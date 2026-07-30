@@ -110,6 +110,33 @@ define(function () {
       );
     },
 
+    // Whether the exploration that started a deal is still the live one by the time the
+    // async card chooser resolves. recordHostTechCardDeal writes into the GW save, and
+    // the recorded count is a standing obligation to every co-op viewer - one whose deal
+    // count falls behind is dealt a catch-up hand for it on reconnect - so a deal that
+    // lands after the turn has moved on must not be recorded. The three checks cover the
+    // three ways gw_game.js ends an exploration: winTurn (sets explored, so hasCard goes
+    // false, and turn state end), move (a new current star), and any other turn state
+    // the exploration no longer owns.
+    explorationStillLive: function (game, starIndex, star) {
+      if (
+        !game ||
+        !_.isFunction(game.turnState) ||
+        !_.isFunction(game.currentStar) ||
+        !_.isNumber(starIndex) ||
+        !star ||
+        !_.isFunction(star.hasCard)
+      ) {
+        return false;
+      }
+
+      return (
+        game.turnState() === "explore" &&
+        game.currentStar() === starIndex &&
+        !!star.hasCard()
+      );
+    },
+
     // Attach the co-op ally's penchant to a subcommander in place. Reads the runtime
     // `loc` global; gwoSettings/gwoAI are injected so this stays pure and testable. A
     // no-op unless the ally is Penchant.

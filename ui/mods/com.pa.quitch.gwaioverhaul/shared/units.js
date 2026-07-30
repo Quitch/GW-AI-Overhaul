@@ -158,9 +158,9 @@ define({
   galataWeapon: "/pa/units/land/air_defense/air_defense_tool_weapon.json",
   gilE: "/pa/units/land/bot_sniper/bot_sniper.json",
   gilEAmmo: "/pa/units/land/bot_sniper/bot_sniper_ammo.json",
-  gileEBeam: "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
-  gileEBeamAmmo: "/pa/units/land/bot_sniper/bot_sniper_beam_ammo.json",
-  gileEWeapon: "/pa/units/land/bot_sniper/bot_sniper_tool_weapon.json",
+  gilEBeam: "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
+  gilEBeamAmmo: "/pa/units/land/bot_sniper/bot_sniper_beam_ammo.json",
+  gilEWeapon: "/pa/units/land/bot_sniper/bot_sniper_tool_weapon.json",
   grenadier: "/pa/units/land/bot_grenadier/bot_grenadier.json",
   grenadierAmmo: "/pa/units/land/bot_grenadier/bot_grenadier_ammo.json",
   grenadierWeapon:
@@ -168,6 +168,7 @@ define({
   halley: "/pa/units/orbital/delta_v_engine/delta_v_engine.json",
   helios: "/pa/units/orbital/titan_orbital/titan_orbital.json",
   heliosAmmo: "/pa/units/orbital/titan_orbital/titan_orbital_ammo.json",
+  heliosDeath: "/pa/units/orbital/titan_orbital/titan_orbital_ammo_death.json",
   heliosWeapon:
     "/pa/units/orbital/titan_orbital/titan_orbital_tool_weapon_orbital.json",
   hermes: "/pa/units/orbital/orbital_probe/orbital_probe.json",

@@ -19,7 +19,7 @@ define([
 
       var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
       if (playerIsCluster) {
-        inventory.addMods(gwoCluster.clusterCommanders);
+        inventory.addMods(gwoCluster.clusterCommanderMods);
       }
 
       var commander = inventory.getTag("global", "commander");

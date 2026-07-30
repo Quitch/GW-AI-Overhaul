@@ -22,7 +22,7 @@ define([
       return gwoCard.upgradeDeal(
         !inventory.hasCard("gwaio_start_rapid") &&
           gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactory),
-        30
+        gwoCard.navalWeight(inventory, 30)
       );
     },
     buff: function (inventory) {

@@ -17,13 +17,12 @@ define([
     deal: function (system, context, inventory) {
       var chance = 0;
       if (gwoCard.missingUnit(inventory.units(), gwoGroup.naval)) {
-        chance = gwoCard.travelledShort(
-          system,
-          context,
-          GW.balance.numberOfSystems
-        )
-          ? 200
-          : 25;
+        chance = gwoCard.navalWeight(
+          inventory,
+          gwoCard.travelledShort(system, context, GW.balance.numberOfSystems)
+            ? 200
+            : 25
+        );
       }
       return { chance: chance };
     },

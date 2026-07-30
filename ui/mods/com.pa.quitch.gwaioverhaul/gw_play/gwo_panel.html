@@ -9,6 +9,11 @@
     <div class="table">
       <div class="tablebody">
         <div class="tr">
+          <!-- Deliberately left as "Mod:" with no entry rather than split into
+          <loc>Mod</loc>:, which would resolve: the only "Mod" the game ships is the
+          server browser's column, translated there as a verb ("Modifizieren" in de,
+          "modell" in zh-CN). Six more locales translate it to the English "Mod"
+          anyway, so adopting it would mislead more players than it would help. -->
           <div class="td"><loc>Mod:</loc></div>
           <div class="data" data-bind="text: $root.gwoVersion"></div>
         </div>
@@ -30,7 +35,10 @@
           <div class="data" data-bind="text: $root.gwoAI"></div>
         </div>
         <div class="tr">
-          <div class="td"><loc>Ally</loc> <loc>AI:</loc></div>
+          <div class="td">
+            <span class="gwo-sentence-case"><loc>ALLY</loc></span>
+            <loc>AI:</loc>
+          </div>
           <div class="data" data-bind="text: $root.gwoAIAlly"></div>
         </div>
         <div class="tr">
@@ -51,8 +59,7 @@
             <span data-bind="visible:$index() === 0"><loc>Options:</loc></span>
           </div>
           <div
-            id="options"
-            class="data"
+            class="data gwo-option"
             data-bind="text: $root.gwoOptions()[$index()]"
           ></div>
         </div>
@@ -67,7 +74,17 @@
       <div class="tablebody">
         <div class="tr">
           <div class="td"><loc>Scaling For:</loc></div>
-          <div class="data" data-bind="text: $root.gwoCoopPlayerScaling"></div>
+          <!-- The count and the word are separate spans because .gwo-sentence-case
+          works through ::first-letter, and on "1 Player" the first letter is the
+          digit. The word carries the class on its own so PLAYER - the only casing the
+          game ships an entry for - is cased back down after translation. -->
+          <div class="data">
+            <span data-bind="text: $root.gwoCoopPlayerScalingCount"></span>
+            <span
+              class="gwo-sentence-case"
+              data-bind="text: $root.gwoCoopPlayerScalingUnit"
+            ></span>
+          </div>
         </div>
         <div class="tr">
           <div class="td"><loc>Armies:</loc></div>
@@ -79,7 +96,16 @@
         </div>
         <div class="tr">
           <div class="td"><loc>Player Slots:</loc></div>
-          <div class="data" data-bind="text: $root.gwoCoopLockedSlots"></div>
+          <!-- LOCKED is the only casing the game ships an entry for, so gwo_panel.js
+          asks for that id and .gwo-sentence-case cases it back down here. The span is
+          deliberate: the class sets display: inline-block for ::first-letter, which
+          would fight the .data cell's display: table-cell if applied to it directly. -->
+          <div class="data">
+            <span
+              class="gwo-sentence-case"
+              data-bind="text: $root.gwoCoopLockedSlots"
+            ></span>
+          </div>
         </div>
       </div>
     </div>

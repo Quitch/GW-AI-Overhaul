@@ -20,7 +20,7 @@ define([
     deal: function (system, context, inventory) {
       return gwoCard.upgradeDeal(
         gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactoryAdvanced),
-        30
+        gwoCard.navalWeight(inventory, 30)
       );
     },
     buff: function (inventory) {

@@ -10,29 +10,16 @@
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const cardsCheats = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js"
 );
 
-const restores = [];
-function setGlobal(name, value) {
-  const had = Object.prototype.hasOwnProperty.call(global, name);
-  const previous = global[name];
-  global[name] = value;
-  restores.push(function () {
-    if (had) {
-      global[name] = previous;
-    } else {
-      delete global[name];
-    }
-  });
-}
-afterEach(() => {
-  while (restores.length) {
-    restores.pop()();
-  }
-});
+// Shared save/restore for the engine globals these helpers read at call time, so
+// no test leaks a model/window stub into the next one.
+const { setGlobal, restoreGlobals } = createGlobalStubs();
+afterEach(restoreGlobals);
 
 describe("cards_cheats factory", () => {
   it("loads as a factory function under the harness", () => {

@@ -194,6 +194,21 @@ describe("setAIEconRate", () => {
     restoreModel = installModel(fixture.game);
     assert.equal(gwoAI.setAIEconRate(0.1), 1);
   });
+
+  // Custom is a real entry in difficulties[] but carries no econ fields, so the
+  // _.find lookup succeeds where the unrecognized-name case above fails. Without
+  // a field check that difference produces NaN rather than a floor.
+  it("falls back to a floor of 1 for the Custom tier, which has no econ fields", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Custom" });
+    restoreModel = installModel(fixture.game);
+    assert.equal(gwoAI.setAIEconRate(0.1), 1);
+  });
+
+  it("leaves a rate above the Custom floor untouched rather than returning NaN", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Custom" });
+    restoreModel = installModel(fixture.game);
+    assert.equal(gwoAI.setAIEconRate(5), 5);
+  });
 });
 
 describe("quellerCompatibleMinions", () => {

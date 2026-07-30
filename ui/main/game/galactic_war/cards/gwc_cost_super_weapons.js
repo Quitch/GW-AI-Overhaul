@@ -1,8 +1,9 @@
 define([
+  "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoUnit, gwoGroup) {
+], function (GW, gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,11 +17,14 @@ define([
       found: "/VO/Computer/gw/board_tech_available_cost_reduction",
     }),
     getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.conditionalDeal(
-        gwoCard.hasUnit(inventory.units(), gwoGroup.structuresSuperWeapons),
-        60
-      );
+    deal: function (system, context) {
+      var sizes = GW.balance.numberOfSystems;
+      if (gwoCard.travelledFar(system, context, sizes)) {
+        return { chance: 60 };
+      }
+      return {
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 30 : 15,
+      };
     },
     buff: function (inventory) {
       var units = gwoGroup.structuresSuperWeapons.concat(

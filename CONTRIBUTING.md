@@ -8,8 +8,8 @@ Run `npm ci` once to install this project's tooling (eslint, stylelint, prettier
 
 Before submitting a change, run:
 
-- `npm run verify` - everything CI checks in one command: lint, structural/data validation, and unit tests.
-- `npm run format:write` - formats Prettier onto the files you touched. Only stage the files your change actually touches, per the "only modify what's necessary" rule below.
+- `npm run verify` - everything CI checks in one command: lint, formatting, structural/data validation, and unit tests.
+- `npm run format:write` - runs Prettier across the whole repo (`prettier --write .`), not just the files you touched. Stage only the files your change actually touches, per the "only modify what's necessary" rule below.
 
 GitHub Actions runs the same checks automatically on every push, pull request, and release. `.stylelintrc.json` disables `color-function-alias-notation` entirely and scopes `declaration-block-no-redundant-longhand-properties` to ignore the `overflow` shorthand - both because PA's embedded Chrome 40 predates the modern CSS syntax those rules otherwise expect (an alpha channel on unprefixed `rgb()`, and the 2-value `overflow` shorthand, respectively). Don't remove those exclusions or "fix" the `rgba()`/`overflow-x`+`overflow-y` usages they cover as a drive-by.
 
@@ -25,7 +25,7 @@ Submissions must include a clear breakdown of the work done.
 
 Any submissions should follow the requirements below:
 
-- Code must comply with ES5/Chrome 40 support. `for...of`, `Promise`, and libraries shipping with PA (see Available Libraries below) may be used.
+- Code must comply with ES5/Chrome 40 support, plus libraries shipping with PA (see Available Libraries below). You do not need to memorise what Chrome 40 has: `eslint-plugin-es-x`'s `restrict-to-es5` config forbids every post-ES5 feature under `ui/**`, and the whitelist in `eslint.config.mjs` lists every one Chrome 40 supports, with the Chrome release that shipped it. If it is not in that list, do not use it - the lint will tell you either way. Note the entries excluded deliberately rather than for lack of support: `const` (Chrome 40's block scoping has no per-iteration loop binding, so `const`/`let` in a loop head misbehaves - use `var`), function declarations inside a block (Chrome 40 hoists them out of the block, so assign a function expression to a `var` instead), and `String.prototype.startsWith`/`endsWith` (present in PA's engine but they ignore the second positional argument and return a wrong answer instead of throwing - use `indexOf`/`slice`).
 - Indent using two spaces (soft tabs).
 - All warnings and errors must be resolved prior to commit.
 - HTML is loaded from a separate file, not included in the body of JavaScript.

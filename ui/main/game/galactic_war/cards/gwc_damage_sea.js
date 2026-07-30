@@ -15,8 +15,11 @@ define([
       found: "/VO/Computer/gw/board_tech_available_ammunition",
     }),
     getContext: gwoCard.getContext,
-    deal: function () {
-      return { chance: 35 };
+    deal: function (system, context, inventory) {
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoGroup.navalMobile),
+        gwoCard.navalWeight(inventory, 70)
+      );
     },
     buff: function (inventory) {
       var mods = _.flatten(

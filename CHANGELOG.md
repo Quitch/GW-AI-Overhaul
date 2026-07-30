@@ -1,5 +1,88 @@
 # CHANGELOG
 
+## v6.5.0 - 2026-07-30
+
+### Added
+
+- You can tag loadouts as favourites to move them to the top of the loadout list (see top right of each loadout)
+
+### Changed
+
+- Rebalance card deal chances
+  - Naval and anti-naval unit techs are more likely when you are using a naval loadout or own Tsunami Tech
+  - Ammunition, armor, cooldown, engine, and fabrication techs for mobile units no longer changes its deal chance with distance travelled
+  - Orbital, artillery, defense, and structure techs arrive at half chance to begin with and reach their full chance only once you have travelled far enough
+  - Air, bot, and vehicle Fabrication Techs are dealt a little less often
+  - Efficiency Tech and Improved Fabricator Build Arms were two of the most common cards in the deck and are now dealt far less often
+  - Commander upgrade techs are dealt more often the more Sub Commanders you have, instead of scaling with distance travelled
+  - Land Anywhere and Tsunami Techs no longer grow without limit, which could see them crowd out the rest of the deck late in a war
+  - Sub Commander upgrade techs are dealt at a useful chance as soon as you have a single subcommander, rather than being rare until you have several
+  - Energy, intelligence, economy, and storage techs are dealt less often
+  - Remove the special casing of small galaxies from orbital and defence techs that meant they almost never got dealt at small and medium sizes
+  - Sudden Death Tech chance is now tied to galaxy size and distance travelled, not number of subcommanders
+  - Super Weapon Fabrication Tech chance increases over distance
+  - Anti-X Tech is less likely to appear
+  - Economy and Intelligence Fabrication Techs no longer became rarer the deeper you travel
+  - Storage Compression Tech no longer became rarer the deeper you travel
+- Updated Protocol Kill-switch for addition of Helios death weapon
+- Updated Pelican Upgrade Tech to allow any unit to fire while being transported
+- Commander selection has moved from its own column into a Commander button above Game Options
+- Loadout column tries to avoid dead space
+- A system's allied commander is coloured after every player's Sub Commanders, not just the host's
+- The Avoid Eco Waste AI personality modifier is now called Prevent Waste so that it can be translated
+- Additional Data Bank offered much less often when you have several slots open
+
+### Bugfix
+
+- Prevent creation of galaxies with isolated stars
+- Improved Fabricator Build Arms treated every galaxy above Uber size the same, so their deal chances ignored distance on the largest galaxies (Bigger Galactic War)
+- Removes the Uber Cannon from Improved Commander Build Arm
+- Commander Upgrade Tech could not be taken when your Data Banks were full, despite granting a Data Bank of its own
+- Commander Combat Tech boosts the damage of the Commander's anti-air
+- Orbital Fabrication Tech became rarer the deeper you travelled, when bigger systems are exactly where orbital pays off
+- Orbital Ammunition and Fabrication Techs no longer buff the Anchor and Kessler, which are structures covered by the defense techs
+- Realigned some distance measures for deals to better align to the intended galaxy percentages and expanded support to include Bigger Galactic War sizes
+- Mend, Barnacle, and Naval Fabber were receiving twice the intended buff for cards applied to all units of their type
+- Terminal Commander quartered mobile unit costs, left structure costs untouched, and incorrectly discounted the Angel and Colonel when playing as Cluster
+- Helios was not being changed when modifications were applied to all units and all mobile units
+- Game Options modal was narrower than intended, because its width was being overridden by the base game's
+- Loadout icons remain in a consistent position regardless of text quantity
+- Bionic Augmentation Commander Of Neutralizing was receiving 9x health rather than 3x
+- Co-op hosts had battle setup applied twice, over-applying Sub Commander Fabber and Tactics Tech and the enemy AI's understanding of when to tech up
+- Custom difficulty broke the AI economy handicap in every battle, and left the intelligence panel reporting a nonsense threat level
+- Paratrooper Commander's Unit Cannon priority never reached the Queller AI, because of a mistyped condition
+- Anti-X Tech deal chances in co-op with per-player tech were weighted by the host's anti-tech rather than your own
+- Exploring in co-op while players were still choosing loadouts left the star stuck with no cards offered and no battle available
+- Loading a save taken mid-exploration miscounted rerolls already spent when your hand was full or you had Lucky Commander, granting a free full-size reroll, and let a UI refresh restore spent rerolls
+- Game mode chances were slightly over-weighted, and a mode set to 0% still appeared on around one star in a hundred
+- The AI received text rather than true/false for whether it goes for the kill, prioritises scouting metal spots, and reacts to Commander danger
+- In-game menu kept the base game's Surrender and Continue War buttons, so they still misbehaved with more than two teams and for a defeated co-op player
+- Custom AI personality modifier choices were not remembered, reverting to the last preset's the next time you opened the war setup screen
+- Queller still looked selectable in the AI dropdowns when playing without TITANS
+- A war generation failure could leave Go To War stuck busy instead of retrying with a new seed
+- Vehicle Ammunition and Combat Techs did nothing for the Manhattan, whose damage all comes from its death explosion
+- Rapid Deployment Commander's orbital fabricators could always build advanced orbital, ignoring the check for whether you had unlocked it
+- Assault Commander lost the land mine granted by Bumblebee, Grenadier, and Sheller Upgrade Tech
+- Barnacle Upgrade Tech's "Which Units?" tooltip named and highlighted the Mend
+- Artillery personality built Long Range Artillery against any nearby enemy structure, rather than excluding metal extractors as intended
+- Ten AI personalities built roughly twice as many Frigates as intended in naval games, from a retired build file that was not gated to the personality it belongs to
+- Intelligence panel labelled surface area k² instead of km²
+- Allied commanders, and any AI given the vanilla penchant, were assigned an empty personality tag
+- Opponent AI and Ally AI labels stayed in English in other languages
+- Winning a Custom difficulty war recorded a meaningless loadout badge, which could overwrite a real one
+- A co-op player whose stored id no longer matched their connection had their tech ignored, rather than being matched by name
+- A corrupted victory or loadout unlock record broke the loadout list, or the whole war setup screen, instead of being ignored
+- A malformed co-op player record stopped tech being offered at all, rather than just being skipped
+- A treasure planet holding a loadout you had unlocked since the war began offered it again as a bonus card alongside a short hand of tech; it now deals a full hand you can reroll, matching how co-op treats a player who already owns the loadout
+- GWO panel showed every co-op player the host's colour, rather than the colour they are given in battle
+- In co-op with per-player tech cards, every player's Sub Commanders fought in the faction's own colour, so they could not be told apart from each other or from the host
+- Intelligence panel showed a Legonis Machina opponent in its first Sub Commander's colour instead of the one it uses in battle
+- A co-op host whose turn ended or moved on while a star's cards were still being chosen recorded the deal anyway, so every other player was later offered a hand of tech for an exploration that never finished
+- When system scaling was disabled the largest systems were not selected as often as the other types
+- Faction Scaling is now always translated to Italian
+- Seven AI Settings labels and six of its dropdown options asked the game for a translation under a spelling it does not ship, so they stayed in English; five of them already had a GWO translation that could never be found, and up to 20 languages now show them translated
+- The Scaling For and Player Slots rows of the war information panel stayed in English in up to six languages, for the same reason
+
 ## v6.4.0 - 2026-07-24
 
 ### Changed
@@ -650,7 +733,7 @@ At this point support for all features in co-op has been implemented
 - Tourist Commander is no longer offered subcommanders
 - Intelligence Fabrication Tech no longer applies to the Stingray
 - Decreased chance of allied commanders on Diamond
-- The more subcommanders you have the more likely you are to be offered subcommander tech
+- The more subcommanders you have the more likely you are to be offered Sub Commander Tech
 - Reduced the number of boss commanders on Uber
 - Updated incompatible mods list
 - Upgrade techs for individual units no longer use a Data Bank
@@ -1436,7 +1519,7 @@ At this point support for all features in co-op has been implemented
 
 ### Changed
 
-- Sub Commander Tactics Tech improves non-Queller Sub Commander eco wastage handling
+- Sub Commander Tactics Tech improves non-Queller subcommander eco wastage handling
 - Reduced the number of fabbers each difficulty may use when TITANS or Penchant AI is in use
 - Platinum gains slightly less eco as you get deeper into the galaxy
 - Queller updated to version 5.20-beta
@@ -2370,7 +2453,7 @@ At this point support for all features in co-op has been implemented
 ### Changed
 
 - Always offer Additional Data Bank as a fourth card when the inventory is full
-- Each Sub Commander in your tech banks reduces the chance of finding another
+- Each subcommander in your tech banks reduces the chance of finding another
 - Nomad Commander loadout can no longer move metal extractors
 
 ### Fixed
@@ -2574,7 +2657,7 @@ At this point support for all features in co-op has been implemented
 
 ### Fixed
 
-- Hide tooltip from Sub Commander cards in your inventory
+- Hide tooltip from subcommander cards in your inventory
 
 ## v4.7.1 - 2020-08-24
 
@@ -2928,7 +3011,7 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 
 ## v2.3.2 - 2020-06-26
 
-- Fix sub commander personalities not being translated
+- Fix subcommander personalities not being translated
 
 ## v2.3.1 - 2020-06-26
 
@@ -2982,7 +3065,7 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 ## v2.0.1 - 2019-11-04
 
 - Added some more lore to ensure full system coverage when Easier Start is selected
-- You will no longer be offered a Sub Commander if you don't have a factory they can open with (air/bot/vehicle)
+- You will no longer be offered a subcommander if you don't have a factory they can open with (air/bot/vehicle)
 
 ## v2.0 - 2019-11-03
 
@@ -3204,9 +3287,9 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 
 ## v0.5 - 2019-01-13
 
-- Fixed issue with turtling Sub Commander personalities only building a single factory
+- Fixed issue with turtling subcommander personalities only building a single factory
 - Skewed personalities closer to Absurd skirmish difficulty settings except where specifically Queller personality aligned
-- Updated Queller Sub Commander personalities with latest Queller personality settings
+- Updated Queller subcommander personalities with latest Queller personality settings
 - Updated difficulty levels to use the latest Queller economic personality settings
 
 ## v0.4 - 2018-04-17
@@ -3238,5 +3321,5 @@ Due to a bad merge the changes of v3.1.1 were not actually applied.
 - Reduce the number of minions per faction to 13
 - Assign a unique commander model to each minion
 - Name minion after commander to allow identification
-- Assign a unique personality to each Sub Commander
+- Assign a unique personality to each subcommander
 - Append five new difficulty levels to Galactic War

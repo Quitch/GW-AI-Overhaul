@@ -3,6 +3,10 @@
     "allow": [
       "Bash(npm run verify)",
       "Bash(npm test)",
+      "Bash(node --test *)",
+      "Bash(npm run test:coverage)",
+      "Bash(npm run format:check)",
+      "Bash(npm run format:write)",
       "Bash(npm run validate)",
       "Bash(npm run validate:json)",
       "Bash(npm run validate:manifest)",

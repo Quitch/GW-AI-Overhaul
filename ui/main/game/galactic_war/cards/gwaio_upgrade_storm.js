@@ -29,7 +29,7 @@ define([
       inventory.addMods(
         gwoCard.mods(gwoUnit.storm, "push", {
           tools: {
-            spec_id: gwoUnit.gileEBeam,
+            spec_id: gwoUnit.gilEBeam,
             aim_bone: "socket_aim",
             muzzle_bone: [
               "socket_muzzle01",

@@ -21,55 +21,36 @@ const {
   makeInventory,
 } = require("../scripts/lib/ai-path-fixtures.js");
 const {
-  createFakeJQuery,
-  createFakeApi,
-} = require("../scripts/lib/fake-jquery.js");
+  installRefereeFakes,
+  runRefereeAi,
+} = require("../scripts/lib/referee-fakes.js");
 
 const refereeAi = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
 );
 
 let restoreModel;
-let previousDollar;
-let previousApi;
+let restoreFakes;
 
 afterEach(() => {
   if (restoreModel) {
     restoreModel();
     restoreModel = undefined;
   }
-  global.$ = previousDollar;
-  global.api = previousApi;
+  if (restoreFakes) {
+    restoreFakes();
+    restoreFakes = undefined;
+  }
 });
 
-function installFakes({ fileListByPath, getJSON }) {
-  previousDollar = global.$;
-  previousApi = global.api;
-
-  const listCalls = [];
-  const getJSONCalls = [];
-
-  global.api = createFakeApi({
-    file: {
-      list: (path) => {
-        listCalls.push(path);
-        return Promise.resolve((fileListByPath && fileListByPath[path]) || []);
-      },
-    },
-  });
-
-  global.$ = createFakeJQuery({
-    getJSON: (url) => {
-      getJSONCalls.push(url);
-      return getJSON ? getJSON(url) : { build_list: [] };
-    },
-  });
-
-  return { listCalls, getJSONCalls };
+function installFakes(options) {
+  const fakes = installRefereeFakes(options);
+  restoreFakes = fakes.restore;
+  return fakes;
 }
 
 function run(filesObj) {
-  return refereeAi.call({ files: () => filesObj || {} });
+  return runRefereeAi(refereeAi, filesObj);
 }
 
 describe("aisShareAPath", () => {
@@ -221,5 +202,81 @@ describe("per-player-tech viewer processing", () => {
       "/pa/ai/player_.player0/fabber_builds/x.json",
       "/pa/ai/player_.player1/fabber_builds/x.json",
     ]);
+  });
+
+  // The base pass plus one pass per viewer all walk the same tree. Reading it once
+  // per launch keeps co-op launch cost flat instead of growing with viewer count.
+  it("lists and fetches the shared tree once, not once per viewer", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.role === "viewer"
+        ? { inventory: makeInventory({ aiModsList: [] }) }
+        : undefined;
+    const connectedClients = [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+      { id: "v2", name: "Viewer2", role: "viewer" },
+    ];
+    restoreModel = installModel(fixture.game, connectedClients);
+    const { listCalls, getJSONCalls } = installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.deepEqual(listCalls, ["/pa/ai/"]);
+    assert.deepEqual(getJSONCalls, ["coui://pa/ai/fabber_builds/x.json"]);
+  });
+
+  // Each pass mutates the JSON it is given, so a shared cache must hand out copies.
+  it("gives each viewer's pass its own copy of a cached file", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
+    const viewerInventory = makeInventory({
+      aiModsList: [
+        {
+          type: "fabber",
+          op: "replace",
+          toBuild: "Bot",
+          idToMod: "priority",
+          value: 42,
+        },
+      ],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.id === "v1" ? { inventory: viewerInventory } : undefined;
+    restoreModel = installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({
+        build_list: [{ to_build: "Bot", priority: 1 }],
+      }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    // The viewer's scoped copy took the mod; the base copy must be untouched. A
+    // cache handing out the same object would leave both reading 42.
+    assert.equal(
+      filesObj["/pa/ai_subcommander/player_.player0/fabber_builds/x.json"]
+        .build_list[0].priority,
+      42
+    );
+    assert.equal(
+      filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].priority,
+      1
+    );
   });
 });

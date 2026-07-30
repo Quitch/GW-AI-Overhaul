@@ -18,13 +18,13 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 100;
-      if (
-        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
-      ) {
-        chance = 50;
+      var sizes = GW.balance.numberOfSystems;
+      if (gwoCard.travelledFar(system, context, sizes)) {
+        return { chance: 120 };
       }
-      return { chance: chance };
+      return {
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 40 : 20,
+      };
     },
     buff: function (inventory) {
       var units = gwoGroup.energyIntel.concat(

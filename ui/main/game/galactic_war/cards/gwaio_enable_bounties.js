@@ -16,7 +16,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       return { chance: 60 };
     },
     buff: function () {
-      // referee_config.js
+      // performed in referee_config.js
     },
     dull: function () {},
   };

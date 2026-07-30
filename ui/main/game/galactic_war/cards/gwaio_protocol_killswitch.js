@@ -27,6 +27,7 @@ define([
         gwoUnit.kesslerAmmo,
         gwoUnit.landMineAmmo,
         gwoUnit.boomAmmo,
+        gwoUnit.heliosDeath,
       ];
       var deathAmmoMods = _.map(deathAmmo, function (ammo) {
         return gwoCard.mods(ammo, "replace", { splash_damages_allies: true });
@@ -42,6 +43,7 @@ define([
             gwoUnit.atlas,
             gwoUnit.ares,
             gwoUnit.jig,
+            gwoUnit.helios,
           ],
           unit
         );

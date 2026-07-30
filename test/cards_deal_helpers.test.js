@@ -281,3 +281,70 @@ describe("applyPenchantToSubcommander", () => {
     assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
 });
+
+describe("explorationStillLive", () => {
+  function game(opts) {
+    return {
+      turnState: () => opts.turnState,
+      currentStar: () => opts.currentStar,
+    };
+  }
+
+  function star(explored) {
+    return { hasCard: () => !explored };
+  }
+
+  const live = game({ turnState: "explore", currentStar: 17 });
+
+  it("accepts a deal landing on the star its exploration started from", () => {
+    assert.equal(helpers.explorationStillLive(live, 17, star(false)), true);
+  });
+
+  it("rejects a deal landing after the turn ended", () => {
+    const ended = game({ turnState: "end", currentStar: 17 });
+    assert.equal(helpers.explorationStillLive(ended, 17, star(false)), false);
+  });
+
+  it("rejects a deal landing after the turn returned to begin", () => {
+    const begun = game({ turnState: "begin", currentStar: 17 });
+    assert.equal(helpers.explorationStillLive(begun, 17, star(false)), false);
+  });
+
+  it("rejects a deal whose star is no longer the current one", () => {
+    const moved = game({ turnState: "explore", currentStar: 18 });
+    assert.equal(helpers.explorationStillLive(moved, 17, star(false)), false);
+  });
+
+  it("rejects a deal for a star already resolved by a win", () => {
+    assert.equal(helpers.explorationStillLive(live, 17, star(true)), false);
+  });
+
+  it("rejects a non-numeric star index", () => {
+    assert.equal(
+      helpers.explorationStillLive(live, undefined, star(false)),
+      false
+    );
+    assert.equal(helpers.explorationStillLive(live, "17", star(false)), false);
+  });
+
+  it("rejects a missing game or star without throwing", () => {
+    assert.equal(
+      helpers.explorationStillLive(undefined, 17, star(false)),
+      false
+    );
+    assert.equal(helpers.explorationStillLive(live, 17, undefined), false);
+  });
+
+  it("rejects a game or star missing the accessors it reads", () => {
+    assert.equal(helpers.explorationStillLive({}, 17, star(false)), false);
+    assert.equal(
+      helpers.explorationStillLive(
+        { turnState: () => "explore" },
+        17,
+        star(false)
+      ),
+      false
+    );
+    assert.equal(helpers.explorationStillLive(live, 17, {}), false);
+  });
+});

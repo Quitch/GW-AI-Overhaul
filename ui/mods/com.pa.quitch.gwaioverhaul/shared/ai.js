@@ -35,11 +35,18 @@ define([
 
   var getAIEconFloor = function (difficultyName) {
     var difficultySettings = getDifficultySettings(difficultyName);
-    var econFloor = difficultySettings
+    // Not every tier carries econ fields - the Custom sentinel in
+    // difficulty_levels.js holds only difficultyName + customDifficulty. A found
+    // tier is therefore not enough; without this check the sum is NaN and every
+    // battle of a Custom war gets NaN econ_rate and adv_eco_mod.
+    var hasEconFields =
+      difficultySettings &&
+      _.isNumber(difficultySettings.econBase) &&
+      _.isNumber(difficultySettings.econRatePerDist);
+
+    return hasEconFields
       ? difficultySettings.econBase + difficultySettings.econRatePerDist
       : 1;
-
-    return econFloor;
   };
 
   return {
@@ -100,7 +107,10 @@ define([
 
     penchants: function () {
       var penchants = [
-        { name: "", tags: "" }, // Vanilla - no changes
+        // Vanilla - no changes. tags must be an array like every other entry; the
+        // caller concats it onto personality_tags, and an empty string concats as
+        // one empty-string tag rather than as nothing.
+        { name: "", tags: [] },
         { name: "!LOC:Artillery", tags: ["Artillery"] },
         {
           name: "!LOC:Fortress",

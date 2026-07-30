@@ -24,13 +24,25 @@
   color: red;
 }
 
-/* This allows us to format text after it has been translated (which is case sensitive) */
-#options {
+/* These allow us to format text after it has been translated (which is case
+   sensitive). Classes, not ids: .gwo-option's markup sits inside a ko foreach, so
+   one row per option is rendered and an id would be duplicated across all of them. */
+.gwo-option,
+.gwo-sentence-case {
   text-transform: lowercase;
 }
 
-#options::first-letter {
+.gwo-option::first-letter,
+.gwo-sentence-case::first-letter {
   text-transform: uppercase;
+}
+
+/* ALLY is the only casing the game ships a translation entry for, so the label has
+   to use that id and is cased back to suit this panel here. inline-block because
+   ::first-letter only applies to block containers, and the label has to stay inline
+   with the AI: beside it. */
+.gwo-sentence-case {
+  display: inline-block;
 }
 
 .gwo-info .data {
@@ -72,13 +84,10 @@
   width: 97%;
 }
 
-.gwo-info .player-masked {
-  height: 16px;
-  width: 16px;
-  -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
-  -webkit-mask-size: cover;
-  mask: url("#player-mask");
-}
+/* The panel's .player-masked icons are styled by the unscoped .player-masked rule in
+   section_of_foreign_intelligence.css, which the gw_play scene always loads alongside
+   this file. This used to carry a byte-identical copy at higher specificity, so an
+   edit to one silently did not reach the other. */
 
 .gwo-info .commander-name {
   margin-left: 18px;

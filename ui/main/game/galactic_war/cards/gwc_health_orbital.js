@@ -15,18 +15,10 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 28;
-      if (
-        context.totalSize <= GW.balance.numberOfSystems[0] ||
-        context.totalSize <= GW.balance.numberOfSystems[1]
-      ) {
-        chance = 14;
-      } else if (
-        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
-      ) {
-        chance = 142;
-      }
-      return { chance: chance };
+      var sizes = GW.balance.numberOfSystems;
+      return {
+        chance: gwoCard.travelledShort(system, context, sizes) ? 70 : 35,
+      };
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.orbitalMobile, function (unit) {

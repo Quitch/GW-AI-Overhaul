@@ -3,8 +3,9 @@ define([
   "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GW, GWCStart, gwoCard, gwoGroup) {
+], function (module, GW, GWCStart, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
     visible: _.constant(false),
@@ -39,7 +40,24 @@ define([
       }
     },
     dull: function (inventory) {
-      gwoCard.applyDulls(CARD, inventory, gwoGroup.structuresDefencesBasic);
+      // Dulls run after every card's buff, and removeUnits strips every copy of a
+      // unit, so removing the whole defence group here would also wipe the land
+      // mine that Bumblebee, Grenadier and Sheller Upgrade Tech grant. The loadout
+      // restricts basic defences; it is not meant to undo a tech the player earned.
+      var mineGranted = _.some(
+        [
+          "gwaio_upgrade_bumblebee",
+          "gwaio_upgrade_grenadier",
+          "gwaio_upgrade_sheller",
+        ],
+        function (cardId) {
+          return inventory.hasCard(cardId);
+        }
+      );
+      var restricted = mineGranted
+        ? _.without(gwoGroup.structuresDefencesBasic, gwoUnit.landMine)
+        : gwoGroup.structuresDefencesBasic;
+      gwoCard.applyDulls(CARD, inventory, restricted);
     },
   };
 });

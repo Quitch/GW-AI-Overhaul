@@ -7,15 +7,17 @@
 // so it catches "wrong export shape" bugs (typos, missing/renamed fields, wrong
 // type), not runtime logic bugs.
 //
-// Empirically tallied across all 225 cards (see amd-loader.js's NOT_SHIPPED note for
-// why not all of them can load here):
+// Empirically tallied across all 237 cards - 175 of which load and are shape-checked
+// here, 61 excluded as NOT_SHIPPED and 1 as KNOWN_UNLOADABLE (see amd-loader.js's
+// NOT_SHIPPED note for why not all of them can load here). Cards get added over time,
+// so treat these numbers as a snapshot: the run prints the live tally, and that - not
+// this comment - is the source of truth. MIN_CHECKED below is the enforced floor.
 //   - visible/describe/summarize/icon/deal/buff/dull: function, on every loadable card.
 //   - audio/getContext: function, on every loadable card except gwaio_enable_bot_aa.js
 //     (explicitly kept for save-compatibility with GWO v5.9.0 and earlier).
-//   - keep/discard: function, present on exactly one loadable card each
-//     (gwc_add_card_slot.js) - legitimate optional extensions to the base contract,
-//     not typos. gwc_minion.js also carries both but is excluded as KNOWN_UNLOADABLE,
-//     so its shape is never checked here.
+// No card carries keep/discard any more; both were dropped in the minion and card-slot
+// redesigns. gw_inventory.js still calls them when present, so a card is free to
+// reintroduce one - but they are not part of the shape this check expects to see.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -48,6 +50,13 @@ const KNOWN_FIELDS = new Set(REQUIRED_FIELDS.concat(OPTIONAL_FIELDS));
 // entry here; the loader already identifies those precisely and they're tolerated
 // generically below. Only non-NOT_SHIPPED failures need a reviewed, named entry -
 // anything else that fails to load is treated as a real regression.
+// Floor on how many cards this check actually covers. NOT_SHIPPED is swallowed
+// generically above, so a mod-shipped dependency breaking demotes every card that
+// requires it from "checked" to "excluded" with CI still green - coverage can shrink
+// silently and has (178 -> 175). Raise this when the checked count genuinely rises;
+// never lower it to make a run pass.
+const MIN_CHECKED = 175;
+
 const KNOWN_UNLOADABLE = {
   "gwc_minion.js":
     "transitively depends on shared/gw_factions.js, which calls " +
@@ -143,6 +152,17 @@ function main() {
       failures.length +
       " failed."
   );
+
+  if (checked < MIN_CHECKED) {
+    console.error(
+      "cards-contract: coverage dropped - " +
+        checked +
+        " cards shape-checked, expected at least " +
+        MIN_CHECKED +
+        ". A card that stopped loading is now silently excluded rather than checked."
+    );
+    process.exitCode = 1;
+  }
 
   if (failures.length) {
     console.error("");

@@ -1,8 +1,7 @@
 define([
-  "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (GW, gwoCard, gwoGroup) {
+], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,19 +19,8 @@ define([
         totalSize: galaxy.stars().length,
       };
     },
-    deal: function (system, context) {
-      var chance = 24;
-      if (
-        context.totalSize <= GW.balance.numberOfSystems[0] ||
-        context.totalSize <= GW.balance.numberOfSystems[1]
-      ) {
-        chance = 12;
-      } else if (
-        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
-      ) {
-        chance = 120;
-      }
-      return { chance: chance };
+    deal: function (system, context, inventory) {
+      return { chance: gwoCard.commanderWeight(inventory, 70) };
     },
     buff: function (inventory) {
       var ammos = gwoGroup.commanderAmmo;

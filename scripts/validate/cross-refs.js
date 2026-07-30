@@ -5,7 +5,7 @@
 // check, which would need the player's local Steam install and can't run in CI; see
 // this repo's docs for that as a separate, local-only script).
 //
-//   1. Every loadout card id (shared/loadouts.js) has a matching file under
+//   1. Every loadout card id (shared/loadout_ids.js) has a matching file under
 //      ui/main/game/galactic_war/cards/.
 //   2. Every `<unitsParam>.someKey` reference in a card that imports shared/units.js
 //      actually exists as a key in units.js (a typo here is `undefined` at runtime
@@ -27,14 +27,8 @@ const CARDS_DIR = path.join(
   "galactic_war",
   "cards"
 );
-const LOADOUTS_PATH = path.join(
-  REPO_ROOT,
-  "ui",
-  "mods",
-  "com.pa.quitch.gwaioverhaul",
-  "shared",
-  "loadouts.js"
-);
+const LOADOUT_IDS_COUI =
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js";
 const UNITS_COUI = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js";
 const UNIT_MAP_PATH = path.join(
   REPO_ROOT,
@@ -54,27 +48,28 @@ function fail(message) {
   failures.push(message);
 }
 
-// Strips `//` line comments before reference extraction - not a real JS parser, so a
-// `//` inside a string literal would (harmlessly) also get stripped, but this repo's
+// Strips comments before reference extraction - not a real JS parser, so a `//`
+// inside a string literal would (harmlessly) also get stripped, but this repo's
 // files don't do that near unit references. Without this, a reference intentionally
-// commented out (e.g. "// gwoUnit.x - explanation") reads as a live one. Matches up to
-// (not through) the next line terminator directly, rather than splitting on "\n" and
-// anchoring on $ per line - these files are CRLF, and "." never matches "\r", so a
-// $-anchored per-line replace silently fails to reach end-of-line on a \r\n file.
-function stripLineComments(src) {
-  return src.replace(/\/\/[^\n\r]*/g, "");
+// commented out (e.g. "// gwoUnit.x - explanation") reads as a live one.
+//
+// Line comments match up to (not through) the next line terminator directly, rather
+// than splitting on "\n" and anchoring on $ per line - these files are CRLF, and "."
+// never matches "\r", so a $-anchored per-line replace silently fails to reach
+// end-of-line on a \r\n file. Block comments are stripped first, so a `//` inside one
+// cannot swallow the block's closing delimiter.
+function stripComments(src) {
+  return src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n\r]*/g, "");
 }
 
 function checkLoadoutCardsExist() {
-  // loadouts.js itself needs shared/gw_common (an unshipped base-game module), so it
-  // can't be loaded through the AMD shim - read its source directly instead.
-  const src = fs.readFileSync(LOADOUTS_PATH, "utf8");
-  const ids = [...src.matchAll(/\bid:\s*"([^"]+)"/g)].map((m) => m[1]);
+  // loadouts.js itself needs shared/gw_common (an unshipped base-game module) and so
+  // cannot load through the AMD shim, but loadout_ids.js is plain data with no engine
+  // coupling - load it rather than scraping source for id literals.
+  const ids = loadCouiModule(LOADOUT_IDS_COUI).all;
 
   if (!ids.length) {
-    fail(
-      "cross-refs: found no card ids in loadouts.js - the extraction pattern may be stale"
-    );
+    fail("cross-refs: loadout_ids.js exported no card ids");
     return;
   }
 
@@ -82,7 +77,7 @@ function checkLoadoutCardsExist() {
     const cardPath = path.join(CARDS_DIR, id + ".js");
     if (!fs.existsSync(cardPath)) {
       fail(
-        'cross-refs: loadouts.js references card id "' +
+        'cross-refs: loadout_ids.js references card id "' +
           id +
           '" with no matching file: ' +
           cardPath
@@ -141,7 +136,7 @@ function checkUnitReferencesInCards() {
       "g"
     );
     const referenced = new Set(
-      [...stripLineComments(src).matchAll(refPattern)].map((m) => m[1])
+      [...stripComments(src).matchAll(refPattern)].map((m) => m[1])
     );
 
     for (const key of referenced) {

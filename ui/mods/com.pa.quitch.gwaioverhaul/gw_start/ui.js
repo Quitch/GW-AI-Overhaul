@@ -156,7 +156,7 @@ function gwoUI() {
       "!LOC:Number of Commanders in the boss's army.";
     // Allow modders to append their deck names
     model.gwoCardsTooltip =
-      "!LOC:BASIC: base game tech cards<BR>GALACTIC WAR OVERHAUL: over 100 additional cards.";
+      "!LOC:BASIC: base game tech cards<BR>GALACTIC WAR OVERHAUL: over 150 additional cards.";
     model.gwoFactionTooltip =
       "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
 
@@ -211,6 +211,80 @@ function gwoUI() {
       return setting() ? loc("!LOC:ON") : loc("!LOC:OFF");
     };
 
+    // The Commander column is replaced by a modal, so the prev/next buttons
+    // that drove gw_start.js's private selectedCommanderIndex go with it.
+    // model.selectedCommander is a read-only computed over that index, so swap
+    // in a writable observable the modal can set. The base computed is still
+    // the source of the initial pick - CommanderUtility.afterCommandersLoaded
+    // resolves after this runs - so forward its value through.
+    var baseSelectedCommander = model.selectedCommander;
+    var selectedCommander = ko.observable(baseSelectedCommander());
+    baseSelectedCommander.subscribe(selectedCommander);
+    model.selectedCommander = selectedCommander;
+    selectedCommander.subscribe(function () {
+      model.updateCommander();
+    });
+
+    // The commander art is rendered in the blue team paint, so rotating its hue
+    // by the difference to the faction's hue recolours it while keeping the
+    // model's shading and panel detail.
+    var commanderArtHue = 210;
+
+    // Returns undefined for an achromatic colour, which has no hue to rotate to.
+    var rgbHue = function (rgb) {
+      var red = rgb[0] / 255;
+      var green = rgb[1] / 255;
+      var blue = rgb[2] / 255;
+      var max = Math.max(red, green, blue);
+      var delta = max - Math.min(red, green, blue);
+
+      if (delta === 0) {
+        return undefined;
+      }
+
+      var hue;
+      if (max === red) {
+        hue = ((green - blue) / delta) % 6;
+      } else if (max === green) {
+        hue = (blue - red) / delta + 2;
+      } else {
+        hue = (red - green) / delta + 4;
+      }
+
+      hue = hue * 60;
+      return hue < 0 ? hue + 360 : hue;
+    };
+
+    model.gwoCommanderTintFilter = ko.computed(function () {
+      var hue = rgbHue(model.playerColor()[0]);
+
+      // Cluster's colour is a neutral grey, so drain the art's colour rather
+      // than rotating a hue it doesn't have.
+      if (hue === undefined) {
+        return "grayscale(1)";
+      }
+
+      return "hue-rotate(" + Math.round(hue - commanderArtHue) + "deg)";
+    });
+
+    model.gwoCommanderModalVisible = ko.observable(false);
+    model.gwoCommanderDraft = ko.observable(model.selectedCommander());
+    model.gwoDraftCommanderName = ko.computed(function () {
+      return CommanderUtility.bySpec.getName(model.gwoCommanderDraft());
+    });
+    model.openGwoCommanderModal = function () {
+      model.gwoCommanderDraft(model.selectedCommander());
+      model.gwoCommanderModalVisible(true);
+    };
+    model.closeGwoCommanderModal = function () {
+      model.gwoCommanderDraft(model.selectedCommander());
+      model.gwoCommanderModalVisible(false);
+    };
+    model.applyGwoCommanderModal = function () {
+      model.selectedCommander(model.gwoCommanderDraft());
+      model.gwoCommanderModalVisible(false);
+    };
+
     var addHtml = {
       path: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/",
       before: function (classOrId, file) {
@@ -239,13 +313,25 @@ function gwoUI() {
     addHtml.append(gameDifficultyLabelId, "difficulty_levels_tooltip.html");
     addHtml.replace(gameDifficultyId, "difficulty_levels.html");
     addHtml.after("#new-game-right", "ai_settings.html");
+    $("#new-game-left").remove();
+    addHtml.before("#gwo-game-options-panel", "commander_button.html");
+    // The modal has to hang off body: .gw-start-coop-settings-modal is
+    // position: absolute, and inside the Setup column its nearest positioned
+    // ancestor is .section_wrapper, which is shorter than the window and sits
+    // inside #tab3's overflow-y: auto.
+    addHtml.append("body", "commander_modal.html");
     locTree($(gameDifficultyId));
+    locTree($("#gwo-commander-panel"));
+    locTree($("#gwo-commander-modal"));
     locTree($("#gwo-game-options-panel"));
     locTree($("#gwo-game-options-modal"));
     locTree($("#difficulty-options"));
-    locTree($("#custom-difficulty-settings"));
+    // #gwo-ai-settings, not #custom-difficulty-settings: the latter starts below the
+    // panel's own header, so the header's <loc> was reached by no locTree call at all.
+    locTree($("#gwo-ai-settings"));
     locTree($("#difficulty-cards"));
-    locTree($("#difficulty-ai"));
+    locTree($("#difficulty-ai-enemy"));
+    locTree($("#difficulty-ai-ally"));
 
     if (api.content.usingTitans()) {
       model.gwoFactionTooltip =
@@ -254,9 +340,13 @@ function gwoUI() {
           "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
         );
     } else {
-      $("select option[value*='Queller']")
-        .prop("disabled", true)
-        .selectpicker("refresh");
+      // bootstrap-select ignores a non-select receiver, so the refresh has to be
+      // called on the parent selects - chaining it off the options left the
+      // rendered dropdown still showing Queller as selectable.
+      $("select option[value*='Queller']").prop("disabled", true);
+      $("#difficulty-ai-enemy-select, #difficulty-ai-ally-select").selectpicker(
+        "refresh"
+      );
     }
 
     // Track difficulty settings so AI Settings' fields display correct values

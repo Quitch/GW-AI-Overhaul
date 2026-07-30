@@ -14,26 +14,22 @@ define([
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var chance = 40;
+      var sizes = GW.balance.numberOfSystems;
       if (
         inventory.hasCard("gwaio_start_naval") ||
         inventory.hasCard("gwaio_enable_tsunami")
       ) {
-        chance = 0;
-      } else if (
-        context.totalSize <= GW.balance.numberOfSystems[0] ||
-        context.totalSize <= GW.balance.numberOfSystems[1]
-      ) {
-        chance = 20;
-      } else if (
-        gwoCard.travelledModerate(system, context, GW.balance.numberOfSystems)
-      ) {
-        chance = 80;
+        return { chance: 0 };
       }
-      return { chance: chance };
+      if (context.totalSize <= sizes[0] || context.totalSize <= sizes[1]) {
+        return { chance: 20 };
+      }
+      return {
+        chance: gwoCard.travelledModerate(system, context, sizes) ? 80 : 40,
+      };
     },
     buff: function () {
-      // referee_config.js
+      // performed in referee_config.js
     },
     dull: function () {},
   };

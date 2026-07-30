@@ -53,18 +53,12 @@ define([
   ];
   var revenantsUnitsMobile = gwoGroup.orbitalMobile.concat(gwoUnit.helios);
   var clusterSubCommanders = [gwoUnit.angel, gwoUnit.colonel];
-  var clusterCommanders = commanderUnits.concat(clusterSubCommanders);
-  var clusterUnitsMobile = clusterCommanders;
+  var clusterCommanderUnits = commanderUnits.concat(clusterSubCommanders);
+  var clusterUnitsMobile = clusterCommanderUnits;
   var clusterUnitsImmobile = gwoGroup.structures.concat(gwoUnit.ragnarok);
   var clusterUnitsFactories = gwoGroup.factories;
 
-  var commanderAmmo = [
-    gwoUnit.commanderAAAmmo,
-    gwoUnit.commanderAmmo,
-    gwoUnit.commanderSecondaryAmmo,
-    gwoUnit.commanderTorpedoLandAmmo,
-    gwoUnit.commanderTorpedoWaterAmmo,
-  ];
+  var commanderAmmo = gwoGroup.commanderAmmo;
   var legonisAmmo = gwoGroup.vehiclesAmmo.concat(
     gwoUnit.aresAmmo,
     gwoUnit.aresSecondaryAmmo
@@ -198,7 +192,7 @@ define([
     revenantsBuildArms: revenantsBuildArms.concat(commanderBuildArms),
 
     clusterSubCommanders: clusterSubCommanders,
-    clusterCommanders: clusterCommanders,
+    clusterCommanderUnits: clusterCommanderUnits,
     clusterCommanderAmmo: clusterCommanderAmmo,
     clusterUnitsMobile: clusterUnitsMobile,
     clusterUnitsImmobile: clusterUnitsImmobile,

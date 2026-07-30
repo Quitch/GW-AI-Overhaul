@@ -177,43 +177,50 @@ describe("enemy AIs: clusterArmyIndex/resolveAiUnitMapPaths never disagrees with
   });
 });
 
-describe("per-player-tech viewers: the unit-map path prefix and the minion ai_path come from the exact same call", () => {
+describe("per-player-tech viewers: each viewer's unit map lands under that viewer's own ai_path", () => {
   // generateUnitSpecsForPlayer's playerScopedPath (used for the viewer's own unit-map
   // key: playerScopedPath + "unit_maps/ai_unit_map.json" + playerTag) and apply()'s
   // viewerAiPath (used for that viewer's minions' personality.ai_path) both call
   // getViewerSubcommanderAiPath with the same (aiInUse, inventory, playerTag) - see
-  // gw_play/gw_per_player_tech_referee.js. Since apply() itself is unreachable under
-  // Node (gated behind shared/gw_common/shared/gw_inventory, not shipped here - see
-  // that file's module.exports comment), this demonstrates the guarantee at the
-  // shared-helper level: identical inputs always produce one identical value used for
-  // both purposes.
+  // gw_play/gw_per_player_tech_referee.js. apply() itself is unreachable under Node
+  // (gated behind shared/gw_common/shared/gw_inventory, not shipped here - see that
+  // file's module.exports comment), so the guarantee is demonstrated at the shared
+  // helper: the key a viewer's unit map gets must sit under that viewer's path and
+  // under no other viewer's. Comparing two identical calls would prove nothing, so
+  // these assert against a second viewer - the case that actually breaks if playerTag
+  // ever stops scoping the path and two viewers silently share a unit map.
   for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
     for (const aiModsList of [[], [{ op: "load" }]]) {
-      it(`${aiInUse}, aiMods=${JSON.stringify(aiModsList)}: unit-map prefix === minion ai_path`, () => {
+      it(`${aiInUse}, aiMods=${JSON.stringify(aiModsList)}: viewer unit-map key is scoped to that viewer`, () => {
         const inventory = { aiMods: () => aiModsList, cards: () => [] };
-        const playerTag = ".player0";
+        const viewerPath = (playerTag) =>
+          perPlayerTechHook.getViewerSubcommanderAiPath(
+            refereeAIPaths,
+            subcommanderTech,
+            aiInUse,
+            inventory,
+            playerTag
+          );
 
-        const unitMapAiPath = perPlayerTechHook.getViewerSubcommanderAiPath(
-          refereeAIPaths,
-          subcommanderTech,
-          aiInUse,
-          inventory,
-          playerTag
-        );
-        const minionAiPath = perPlayerTechHook.getViewerSubcommanderAiPath(
-          refereeAIPaths,
-          subcommanderTech,
-          aiInUse,
-          inventory,
-          playerTag
-        );
+        const ownPath = viewerPath(".player0");
+        const otherPath = viewerPath(".player1");
 
-        assert.equal(unitMapAiPath, minionAiPath);
+        assert.notEqual(
+          ownPath,
+          otherPath,
+          "playerTag must scope the ai_path, or viewers share a unit map"
+        );
 
         // Mirrors generateUnitSpecsForPlayer's actual key construction.
-        const unitMapKey =
-          unitMapAiPath + "unit_maps/ai_unit_map.json" + playerTag;
-        assert.ok(unitMapKey.startsWith(minionAiPath));
+        const unitMapKey = ownPath + "unit_maps/ai_unit_map.json.player0";
+        assert.ok(
+          unitMapKey.startsWith(ownPath),
+          `${unitMapKey} should sit under ${ownPath}`
+        );
+        assert.ok(
+          !unitMapKey.startsWith(otherPath),
+          `${unitMapKey} must not sit under another viewer's path ${otherPath}`
+        );
       });
     }
   }

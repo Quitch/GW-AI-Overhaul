@@ -93,7 +93,7 @@ describe("setupAlliedCommanders", () => {
       ".player"
     );
 
-    const paths = allies.map((ally) => ally.personality.ai_path);
+    const paths = armies.map((army) => army.personality.ai_path);
     assert.equal(paths[0], "/pa/ai_subcommander/");
     assert.equal(paths[1], paths[0]);
     assert.equal(paths[2], paths[0]);
@@ -107,14 +107,66 @@ describe("setupAlliedCommanders", () => {
     restoreModel = installModel(fixture.game);
 
     const allies = [makeAiDescriptor()];
+    const armies = [];
     refereeConfig.setupAlliedCommanders(
       allies,
       [],
-      [],
+      armies,
       fixture.inventory,
       ".player"
     );
-    assert.equal(allies[0].personality.ai_path, "/pa/ai_cluster/");
+    assert.equal(armies[0].personality.ai_path, "/pa/ai_cluster/");
+  });
+
+  // referee_config.js sets the star's ai.ally up with a startPosition of the
+  // subcommander count, so it is coloured after every player's subcommanders rather
+  // than in the middle of them. Compared against a second call rather than asserted
+  // as literal RGB, so this doesn't pin commander_colour.js's palettes.
+  it("startPosition shifts the palette entry an ally is given", () => {
+    const fixture = buildGame({ aiInUse: "Titans" });
+    restoreModel = installModel(fixture.game);
+
+    const setUp = (startPosition) => {
+      const armies = [];
+      refereeConfig.setupAlliedCommanders(
+        [makeAiDescriptor()],
+        [],
+        armies,
+        fixture.inventory,
+        ".player",
+        startPosition
+      );
+      return armies[0].color;
+    };
+
+    assert.deepEqual(setUp(0), setUp(undefined)); // omitted == first position
+    assert.notDeepEqual(setUp(2), setUp(0));
+  });
+
+  it("numbers consecutive allies consecutively from startPosition", () => {
+    const fixture = buildGame({ aiInUse: "Titans" });
+    restoreModel = installModel(fixture.game);
+
+    const fromZero = [];
+    refereeConfig.setupAlliedCommanders(
+      [makeAiDescriptor(), makeAiDescriptor(), makeAiDescriptor()],
+      [],
+      fromZero,
+      fixture.inventory,
+      ".player"
+    );
+
+    const fromTwo = [];
+    refereeConfig.setupAlliedCommanders(
+      [makeAiDescriptor()],
+      [],
+      fromTwo,
+      fixture.inventory,
+      ".player",
+      2
+    );
+
+    assert.deepEqual(fromTwo[0].color, fromZero[2].color);
   });
 });
 
@@ -129,10 +181,11 @@ describe("setupPrimaryAiAndMinions", () => {
     const armies = [];
     refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], "Titans", armies);
 
-    const primaryPath = ai.personality.ai_path;
+    // armies[0] is the primary AI, its minions follow in order.
+    const primaryPath = armies[0].personality.ai_path;
     assert.equal(primaryPath, "/pa/ai/");
-    assert.equal(ai.minions[0].personality.ai_path, primaryPath);
-    assert.equal(ai.minions[1].personality.ai_path, primaryPath);
+    assert.equal(armies[1].personality.ai_path, primaryPath);
+    assert.equal(armies[2].personality.ai_path, primaryPath);
   });
 
   it("routes a Cluster primary AI to the cluster path", () => {
@@ -140,8 +193,9 @@ describe("setupPrimaryAiAndMinions", () => {
     restoreModel = installModel(fixture.game);
 
     const ai = makeAiDescriptor({ faction: 4, minions: [] });
-    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], "Titans", []);
-    assert.equal(ai.personality.ai_path, "/pa/ai_cluster/");
+    const armies = [];
+    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], "Titans", armies);
+    assert.equal(armies[0].personality.ai_path, "/pa/ai_cluster/");
   });
 
   // A guardian (mirror-mode) primary AI derives its personality from the player's card
@@ -183,11 +237,12 @@ describe("setupPrimaryAiAndMinions", () => {
       armies
     );
 
-    assert.ok(Math.abs(ai.personality.percent_air - 2 / 3) < 1e-9);
-    assert.ok(Math.abs(ai.personality.percent_bot - 1 / 3) < 1e-9);
-    assert.equal(ai.personality.percent_orbital, 0);
+    const guardianPersonality = armies[0].personality;
+    assert.ok(Math.abs(guardianPersonality.percent_air - 2 / 3) < 1e-9);
+    assert.ok(Math.abs(guardianPersonality.percent_bot - 1 / 3) < 1e-9);
+    assert.equal(guardianPersonality.percent_orbital, 0);
     // Queller: dominant air share tags the personality "queller" + "air".
-    assert.deepEqual(ai.personality.personality_tags, ["queller", "air"]);
+    assert.deepEqual(guardianPersonality.personality_tags, ["queller", "air"]);
     // penchantName is appended to the display_name via getAIPersonalityName.
     assert.ok(armies[0].personality.display_name.includes("!LOC:Heavy"));
   });
@@ -204,25 +259,160 @@ describe("setupFfaAis", () => {
     const clusterFoe = makeAiDescriptor({ faction: 4 });
     const normalFoeB = makeAiDescriptor();
     const foes = [normalFoeA, clusterFoe, normalFoeB];
+    const armies = [];
 
     refereeConfig.setupFfaAis(
       foes,
       [".ai0", ".ai1", ".ai2", ".ai3"],
       "Titans",
-      []
+      armies
     );
 
-    assert.equal(clusterFoe.personality.ai_path, "/pa/ai_cluster/");
-    assert.equal(normalFoeA.personality.ai_path, "/pa/ai/");
+    // The armies are pushed in foe order.
+    assert.equal(armies[1].personality.ai_path, "/pa/ai_cluster/");
+    assert.equal(armies[0].personality.ai_path, "/pa/ai/");
     // Non-cluster foes share the enemy path with each other by design - they're
     // differentiated by spec_tag, not ai_path.
-    assert.equal(
-      normalFoeB.personality.ai_path,
-      normalFoeA.personality.ai_path
-    );
+    assert.equal(armies[2].personality.ai_path, armies[0].personality.ai_path);
     assert.notEqual(
-      clusterFoe.personality.ai_path,
-      normalFoeA.personality.ai_path
+      armies[1].personality.ai_path,
+      armies[0].personality.ai_path
     );
+  });
+});
+
+// A campaign co-op host hires the referee twice per battle (base gw_play.js's
+// hireRefereesForLaunch: a clean shared referee plus a local one), and a failed launch
+// can leave mutated in-memory state for a later save to serialize. None of the setup
+// below is idempotent - eco mods and fabber caps multiply, personality tags are pushed -
+// so the setup functions must work on copies of the star's ai() and the player's
+// inventory.minions() rather than mutating those live, persisted war objects.
+describe("the setup functions never mutate the war objects they are given", () => {
+  const subcommanderTechCards = [
+    { id: "gwaio_upgrade_subcommander_tactics" },
+    { id: "gwaio_upgrade_subcommander_fabber" },
+  ];
+
+  // econ_rate above the difficulty's econ floor (Beginner: 0.35 + 0.05) so
+  // setAdvEcoMod's multiply is visible, and the fabber/tag fields the subcommander
+  // tech cards act on.
+  function makeMutationBait(overrides) {
+    return makeAiDescriptor(
+      Object.assign(
+        {
+          econ_rate: 2,
+          personality: {
+            adv_eco_mod: 1,
+            adv_eco_mod_alone: 1,
+            max_basic_fabbers: 4,
+            max_advanced_fabbers: 6,
+            personality_tags: ["SlowerExpansion"],
+          },
+        },
+        overrides || {}
+      )
+    );
+  }
+
+  function snapshot(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  it("applies subcommander tech to the army, not to the inventory's minion", () => {
+    const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
+    restoreModel = installModel(fixture.game);
+
+    const minions = [makeMutationBait()];
+    const untouched = snapshot(minions);
+    const firstHire = [];
+    const secondHire = [];
+
+    refereeConfig.setupAlliedCommanders(
+      minions,
+      subcommanderTechCards,
+      firstHire,
+      fixture.inventory,
+      ".player"
+    );
+    refereeConfig.setupAlliedCommanders(
+      minions,
+      subcommanderTechCards,
+      secondHire,
+      fixture.inventory,
+      ".player"
+    );
+
+    assert.deepEqual(
+      snapshot(minions),
+      untouched,
+      "inventory.minions() must survive a referee hire unchanged"
+    );
+    // x1.5 fabber caps once (not x2.25), PreventsWaste once (not twice).
+    assert.equal(firstHire[0].personality.max_basic_fabbers, 6);
+    assert.equal(firstHire[0].personality.max_advanced_fabbers, 9);
+    assert.deepEqual(firstHire[0].personality.personality_tags, [
+      "PreventsWaste",
+    ]);
+    assert.deepEqual(
+      secondHire[0].personality,
+      firstHire[0].personality,
+      "the second hire of a co-op host must produce the same subcommander"
+    );
+  });
+
+  it("does not compound the primary AI's or its minions' eco mods across hires", () => {
+    const fixture = buildGame({ aiInUse: "Titans", enemyType: "neither" });
+    restoreModel = installModel(fixture.game);
+
+    const ai = makeMutationBait({ minions: [makeMutationBait()] });
+    const untouched = snapshot(ai);
+    const firstHire = [];
+    const secondHire = [];
+
+    refereeConfig.setupPrimaryAiAndMinions(
+      ai,
+      [],
+      [".ai0"],
+      "Titans",
+      firstHire
+    );
+    refereeConfig.setupPrimaryAiAndMinions(
+      ai,
+      [],
+      [".ai0"],
+      "Titans",
+      secondHire
+    );
+
+    assert.deepEqual(
+      snapshot(ai),
+      untouched,
+      "star.ai() must survive a referee hire unchanged"
+    );
+    assert.equal(firstHire[0].personality.adv_eco_mod, 2);
+    assert.equal(firstHire[1].personality.adv_eco_mod, 2);
+    assert.equal(secondHire[0].personality.adv_eco_mod, 2);
+    assert.equal(secondHire[1].personality.adv_eco_mod, 2);
+  });
+
+  it("does not compound an FFA foe's eco mod across hires", () => {
+    const fixture = buildGame({ aiInUse: "Titans" });
+    restoreModel = installModel(fixture.game);
+
+    const foes = [makeMutationBait()];
+    const untouched = snapshot(foes);
+    const firstHire = [];
+    const secondHire = [];
+
+    refereeConfig.setupFfaAis(foes, [".ai0", ".ai1"], "Titans", firstHire);
+    refereeConfig.setupFfaAis(foes, [".ai0", ".ai1"], "Titans", secondHire);
+
+    assert.deepEqual(
+      snapshot(foes),
+      untouched,
+      "the star's foes must survive a referee hire unchanged"
+    );
+    assert.equal(firstHire[0].personality.adv_eco_mod, 2);
+    assert.equal(secondHire[0].personality.adv_eco_mod, 2);
   });
 });

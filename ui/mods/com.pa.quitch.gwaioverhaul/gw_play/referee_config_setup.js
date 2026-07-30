@@ -5,11 +5,21 @@
 // referee_config.js keeps only the model/ko/api glue that assembles the final config
 // and is coverage-excluded. All collaborators are shipped mod modules injected the same
 // way referee_config.js injected them, so nothing needs param-threading.
+//
+// Everything passed in here is a live persisted war object - the star's ai() with its
+// minions/foes, and the player's inventory.minions() - while the setup itself is not
+// idempotent: eco mods and fabber caps multiply, personality tags are pushed. A campaign
+// co-op host hires the referee twice per battle (base gw_play.js's
+// hireRefereesForLaunch), and a failed launch can leave mutated state behind for a later
+// save to serialize, so each entity is deep-copied before it is modified. The armies get
+// the battle's values; the war keeps its own. gw_per_player_tech_referee.js copies
+// viewers' minion personalities for the same reason.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
-], function (gwoColour, gwoAI, subcommanderTech) {
+], function (gwoColour, gwoAI, refereeCoop, subcommanderTech) {
   var applySubcommanderTacticsTech =
     subcommanderTech.applySubcommanderTacticsTech;
   var applySubcommanderFabberTech =
@@ -160,36 +170,44 @@ define([
     };
   };
 
+  // startPosition is where these allies sit in the player-faction colour sequence
+  // (see shared/referee_coop.js). It defaults to 0 - the subcommanders, who come
+  // first - and referee_config.js passes the subcommander count when it sets up a
+  // star's ai.ally, which is numbered after every player's subcommanders.
   var setupAlliedCommanders = function (
     allies,
     cards,
     armies,
     inventory,
-    playerTag
+    playerTag,
+    startPosition
   ) {
     var playerFaction = inventory.getTag("global", "playerFaction");
     var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    var firstPosition = startPosition || 0;
 
-    _.forEach(allies, function (ally, index) {
+    _.forEach(allies, function (liveAlly, index) {
+      var ally = _.cloneDeep(liveAlly);
       ally.personality.ai_path = setAIPath(playerIsCluster, true); // Avoid breaking Sub Commanders from earlier versions
       ally.personality = applySubcommanderTacticsTech(ally.personality, cards);
       ally.personality = applySubcommanderFabberTech(ally.personality, cards);
       ally.commanderCount = applySubcommanderDuplicationTech(cards);
       ally.faction = playerFaction;
-      var allyIndex = index + 1;
+      var allyIndex = refereeCoop.alliedColourIndex(firstPosition + index);
       var subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
       armies.push(subcommanderArmy);
     });
   };
 
   var setupPrimaryAiAndMinions = function (
-    ai,
+    liveStarAi,
     connectedPlayerCards,
     aiTag,
     aiInUse,
     armies
   ) {
-    ai = setAdvEcoMod(ai, aiInUse);
+    // Cloning the AI clones its minions with it, so the minion loop below is copying too.
+    var ai = setAdvEcoMod(_.cloneDeep(liveStarAi), aiInUse);
     var guardians = ai.mirrorMode;
 
     if (guardians) {
@@ -216,8 +234,8 @@ define([
   };
 
   var setupFfaAis = function (foes, aiTag, aiInUse, armies) {
-    _.forEach(foes, function (foe, index) {
-      foe = setAdvEcoMod(foe, aiInUse);
+    _.forEach(foes, function (liveFoe, index) {
+      var foe = setAdvEcoMod(_.cloneDeep(liveFoe), aiInUse);
       foe.personality.ai_path = setAIPath(gwoAI.isCluster(foe), false);
       var foeTag = index + 1; // 0 taken by primary AI
       var foeAlliance = index + 3; // 1 & 2 taken by player and primary AI

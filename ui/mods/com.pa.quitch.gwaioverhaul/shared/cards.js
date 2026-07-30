@@ -12,10 +12,17 @@ define(function () {
         return false;
       }
 
+      // Match on id when both sides have one, but fall through to the name rather
+      // than returning on a mismatch. Ids and names have historically drifted apart
+      // in co-op, and a short-circuit there silently drops the viewer's cards.
       var clientId = client.id;
       var dataId = _.isUndefined(data.id) ? data.playerId : data.id;
-      if (!_.isUndefined(clientId) && !_.isUndefined(dataId)) {
-        return clientId === dataId;
+      if (
+        !_.isUndefined(clientId) &&
+        !_.isUndefined(dataId) &&
+        clientId === dataId
+      ) {
+        return true;
       }
 
       var clientName = client.name;
@@ -27,32 +34,43 @@ define(function () {
   // Per-galaxy-size "far" thresholds for deal-chance scaling, indexed by size tier
   // (a GW.balance.numberOfSystems index). Nine entries so they cover Bigger-GW's
   // sizes (numberOfSystems[4..8]) as well as the base five; the final entry also
-  // applies to anything larger. Re-centred on the measured star-distance
-  // distribution (median star distance runs ~0.55x the galaxy's max eccentricity)
-  // so each branch fires for a roughly consistent share of stars across every
-  // size: short ~45%, moderate ~30%, far ~18%.
+  // applies to anything larger. Centred on the star-distance distribution measured
+  // over 1000 generated galaxies per size, so each branch fires for a roughly
+  // consistent share of stars across every size: short ~45%, moderate ~30%,
+  // far ~18%. Measured share of stars past each threshold, Small -> Marathon:
+  //   short     38 50 45 45 45 45 45 46 46  (mean error 1.6pp)
+  //   moderate  38 28 27 29 32 34 26 28 30  (mean error 2.9pp)
+  //   far       15 11 13 16 20 13 17 20 22  (mean error 3.3pp)
+  // Star distance is integer and Small spans only ~8 values, so its bands cannot be
+  // separated to better than one step: short and moderate deliberately share a
+  // threshold there (37.6% - the closest either can get to its target) rather than
+  // firing short for 61% of stars. far is left as-is; no integer change improves it
+  // by more than 0.1pp.
   var distances = {
-    short: [2, 3, 4, 5, 6, 7, 8, 9, 10],
-    moderate: [3, 4, 5, 6, 7, 8, 9, 10, 11],
+    short: [3, 3, 4, 5, 6, 7, 8, 9, 10],
+    moderate: [3, 4, 5, 6, 7, 8, 10, 11, 12],
     far: [4, 5, 6, 7, 8, 10, 11, 12, 13],
   };
 
   // Whether the explored system is beyond the size-appropriate "far" threshold.
-  // thresholds is one of the distances arrays (or any 9-entry array); the size tier
-  // is the first numberOfSystems bucket >= totalSize, clamped to the last entry - so
-  // this works whether numberOfSystems holds the base five sizes or Bigger-GW's nine.
+  // thresholds is one of the distances arrays; the size tier is the first
+  // numberOfSystems bucket >= totalSize - so this works whether numberOfSystems holds
+  // the base five sizes or Bigger-GW's nine. The walk is clamped against thresholds,
+  // not numberOfSystems: a third-party size table longer than thresholds would
+  // otherwise index past the end, and `distance > undefined` is silently false, which
+  // switches the distance tiers off rather than saturating them.
   var farForSize = function (system, context, numberOfSystems, thresholds) {
+    var lastTier = Math.min(numberOfSystems.length, thresholds.length) - 1;
     var tier = 0;
-    while (
-      tier < numberOfSystems.length - 1 &&
-      context.totalSize > numberOfSystems[tier]
-    ) {
+    while (tier < lastTier && context.totalSize > numberOfSystems[tier]) {
       tier++;
     }
     return system.distance() > thresholds[tier];
   };
 
   return {
+    getConnectedClients: getConnectedClients,
+
     hasUnit: function (inventoryUnits, units) {
       if (_.isString(units)) {
         return _.includes(inventoryUnits, units);
@@ -93,7 +111,19 @@ define(function () {
 
     loadoutIcon: function (loadoutId) {
       var raw = window.localStorage["gwaio_victory_" + loadoutId];
-      var decoded = raw ? JSON.parse(raw) : undefined;
+      var decoded;
+
+      // localStorage is user-writable and survives across versions, so one corrupt
+      // badge record must not throw here - this runs while building the loadout
+      // list and would take the whole list down with it.
+      try {
+        decoded = raw ? JSON.parse(raw) : undefined;
+      } catch (e) {
+        console.warn(
+          "Ignoring unreadable victory record for loadout " + loadoutId,
+          e
+        );
+      }
 
       var icon;
       var hardcore = false;
@@ -170,12 +200,16 @@ define(function () {
       };
     },
 
+    // chance is optional and defaults to 60. Tested for undefined rather than for
+    // being falsy so a caller that computes its weight - navalWeight and friends
+    // can legitimately round down to 0 - gets the 0 it asked for, not the default.
     upgradeDeal: function (available, chance) {
+      var weight = _.isUndefined(chance) ? 60 : chance;
       return {
         params: {
           allowOverflow: true,
         },
-        chance: available ? chance || 60 : 0,
+        chance: available ? weight : 0,
       };
     },
 
@@ -183,11 +217,62 @@ define(function () {
       return { chance: available ? chance : 0 };
     },
 
-    // The general size-aware "far" test, exposed for the rare card whose deal-chance
-    // curve needs a bespoke thresholds array that isn't one of the named tiers below
-    // (e.g. a non-monotonic band - see gwc_energy_efficiency_all). Cards using a
-    // standard aggressiveness should prefer the travelled* wrappers, which keep the
-    // distances tables private. numberOfSystems is the caller's
+    // Deal weight for a commander stat card. These all mod base_commander (or its
+    // ammo), the spec every Sub Commander inherits, so one card buffs every
+    // commander you field - which makes the size of your retinue, not how far you
+    // have travelled, the thing that decides how much the card is worth. Capped at
+    // double the base weight so a large retinue cannot crowd out the offer.
+    // Cluster ignores the multiplier as its subcommanders don't use commanders
+    commanderWeight: function (inventory, chance) {
+      var commanders = inventory.minions().length;
+      var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+      var finalChance = playerIsCluster
+        ? chance
+        : Math.min(chance + Math.round(chance / 3) * commanders, chance * 2);
+      return finalChance;
+    },
+
+    // Deal weight for a card that only upgrades Sub Commanders.
+    // referee_config_setup.js applies each of these to every ally in turn, so the
+    // value does scale with the retinue - but the card is worth nothing at all
+    // until you field one, hence the 0. Past that it opens at its full base weight
+    // instead of creeping up from near-nothing the way a bare "minions * n" does,
+    // which left a card that had just become live still being offered at a
+    // throwaway weight. Each further Sub Commander adds a third of the base, and
+    // the whole line stops at 90 so a large retinue cannot crowd out the deck.
+    subcommanderWeight: function (inventory, chance) {
+      var subcommanders = inventory.minions().length;
+      if (subcommanders === 0) {
+        return 0;
+      }
+      return Math.min(
+        chance + Math.round(chance / 3) * (subcommanders - 1),
+        90
+      );
+    },
+
+    // Deal weight for a naval card. Owning ships is not the same as being able to
+    // use them - most generated systems have little water - so the full weight is
+    // reserved for the two states that flood every planet fought on (see
+    // referee_config.js's floodPlanets): a naval start, or Tsunami tech. Anywhere
+    // else naval is a gamble on the map, and the card is offered proportionately
+    // less rather than being withheld outright.
+    // dryChance overrides the default 40% fallback for the rare card whose value
+    // collapses rather than merely dips without water (see gwaio_anti_sea).
+    navalWeight: function (inventory, chance, dryChance) {
+      var floodsPlanets =
+        inventory.hasCard("gwaio_start_naval") ||
+        inventory.hasCard("gwaio_enable_tsunami");
+      if (floodsPlanets) {
+        return chance;
+      }
+      return _.isUndefined(dryChance) ? Math.round(chance * 0.4) : dryChance;
+    },
+
+    // The general size-aware "far" test that backs the travelled* wrappers below,
+    // exported so it can be tested directly and so a card needing a bespoke
+    // thresholds array still can. No card needs one today - prefer the wrappers,
+    // which keep the distances tables private. numberOfSystems is the caller's
     // GW.balance.numberOfSystems tier table - passed in rather than imported so this
     // module stays dependency-free (base-game "shared/gw_common" isn't
     // shippable/loadable here, and every card transitively depends on this file -
@@ -223,16 +308,15 @@ define(function () {
     // countered by a specific opposing anti_ card (chance drops to 0), and
     // otherwise gets half its base chance once any anti_ tech is already held
     // (so the deck doesn't keep offering more of them once the theme is set).
+    // Both checks must read the passed inventory: under per-player tech in co-op
+    // this runs for each viewer, and model.game().inventory() is always the host's.
     antiTechDeal: function (inventory, baseChance, excludedCardId) {
       if (inventory.hasCard(excludedCardId)) {
         return { chance: 0 };
       }
-      var hasAntiTech = _.some(
-        model.game().inventory().cards(),
-        function (card) {
-          return _.startsWith(card.id, "gwaio_anti_");
-        }
-      );
+      var hasAntiTech = _.some(inventory.cards(), function (card) {
+        return _.startsWith(card.id, "gwaio_anti_");
+      });
       return { chance: hasAntiTech ? baseChance / 2 : baseChance };
     },
 

@@ -11,31 +11,16 @@
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const cards = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
 );
 
-// Save/restore engine globals the functions under test read at call time, so no test
-// leaks a model/window stub into the next one.
-const restores = [];
-function setGlobal(name, value) {
-  const had = Object.prototype.hasOwnProperty.call(global, name);
-  const previous = global[name];
-  global[name] = value;
-  restores.push(function () {
-    if (had) {
-      global[name] = previous;
-    } else {
-      delete global[name];
-    }
-  });
-}
-afterEach(() => {
-  while (restores.length) {
-    restores.pop()();
-  }
-});
+// Shared save/restore for the engine globals these helpers read at call time, so
+// no test leaks a model/window stub into the next one.
+const { setGlobal, restoreGlobals } = createGlobalStubs();
+afterEach(restoreGlobals);
 
 describe("hasUnit", () => {
   it("matches a single unit passed as a string", () => {
@@ -106,6 +91,13 @@ describe("upgradeDeal", () => {
       chance: 0,
     });
   });
+
+  it("honours an explicit chance of 0 rather than applying the default", () => {
+    assert.deepEqual(cards.upgradeDeal(true, 0), {
+      params: { allowOverflow: true },
+      chance: 0,
+    });
+  });
 });
 
 describe("conditionalDeal", () => {
@@ -115,6 +107,115 @@ describe("conditionalDeal", () => {
 
   it("returns a chance of 0 when unavailable", () => {
     assert.deepEqual(cards.conditionalDeal(false, 70), { chance: 0 });
+  });
+});
+
+describe("commanderWeight", () => {
+  // Commander stat cards mod base_commander, the spec every Sub Commander
+  // inherits, so their worth tracks the size of the retinue. Faction index 4 is
+  // Cluster, whose Sub Commanders aren't commanders and so multiply nothing.
+  const CLUSTER = 4;
+  const withRetinue = (count, faction) => ({
+    minions: () => new Array(count).fill({}),
+    getTag: (scope, key) =>
+      scope === "global" && key === "playerFaction" ? faction : undefined,
+  });
+
+  it("returns the base weight when no Sub Commanders are fielded", () => {
+    assert.equal(cards.commanderWeight(withRetinue(0, 1), 45), 45);
+  });
+
+  it("adds a third of the base per commander, from the first one on", () => {
+    assert.equal(cards.commanderWeight(withRetinue(1, 1), 45), 60);
+    assert.equal(cards.commanderWeight(withRetinue(2, 1), 45), 75);
+  });
+
+  it("caps at double the base, not subcommanderWeight's flat 90", () => {
+    assert.equal(cards.commanderWeight(withRetinue(3, 1), 45), 90);
+    assert.equal(cards.commanderWeight(withRetinue(20, 1), 45), 90);
+    assert.equal(cards.commanderWeight(withRetinue(20, 1), 70), 140);
+  });
+
+  it("ignores the retinue for Cluster, which fields no extra commanders", () => {
+    assert.equal(cards.commanderWeight(withRetinue(0, CLUSTER), 45), 45);
+    assert.equal(cards.commanderWeight(withRetinue(5, CLUSTER), 45), 45);
+  });
+
+  it("scales for every other faction, and when the tag is unset", () => {
+    for (const faction of [0, 1, 2, 3, 5, undefined]) {
+      assert.equal(cards.commanderWeight(withRetinue(2, faction), 45), 75);
+    }
+  });
+});
+
+describe("subcommanderWeight", () => {
+  const withMinions = (count) => ({
+    minions: () => new Array(count).fill({}),
+  });
+
+  it("returns 0 with no Sub Commanders, as the card does nothing", () => {
+    assert.equal(cards.subcommanderWeight(withMinions(0), 45), 0);
+  });
+
+  it("opens at the full base weight for the first Sub Commander", () => {
+    assert.equal(cards.subcommanderWeight(withMinions(1), 45), 45);
+  });
+
+  it("adds a third of the base for each Sub Commander after the first", () => {
+    assert.equal(cards.subcommanderWeight(withMinions(2), 45), 60);
+    assert.equal(cards.subcommanderWeight(withMinions(3), 45), 75);
+  });
+
+  it("never exceeds the shared ceiling, however large the retinue", () => {
+    assert.equal(cards.subcommanderWeight(withMinions(4), 45), 90);
+    assert.equal(cards.subcommanderWeight(withMinions(20), 45), 90);
+    assert.equal(cards.subcommanderWeight(withMinions(20), 55), 90);
+  });
+
+  it("keeps a lower base below a higher one at every retinue size", () => {
+    for (let n = 1; n <= 6; n++) {
+      assert.ok(
+        cards.subcommanderWeight(withMinions(n), 35) <=
+          cards.subcommanderWeight(withMinions(n), 55)
+      );
+    }
+  });
+});
+
+describe("navalWeight", () => {
+  // Full weight is reserved for the two states that flood every planet fought on;
+  // anywhere else naval is a gamble on the map and the card is offered less rather
+  // than withheld.
+  const holding = (...cardIds) => ({
+    hasCard: (id) => cardIds.includes(id),
+  });
+
+  it("returns the full chance for a naval start", () => {
+    assert.equal(cards.navalWeight(holding("gwaio_start_naval"), 70), 70);
+  });
+
+  it("returns the full chance for Tsunami tech", () => {
+    assert.equal(cards.navalWeight(holding("gwaio_enable_tsunami"), 70), 70);
+  });
+
+  it("falls back to 40% of the base when neither floods planets", () => {
+    assert.equal(cards.navalWeight(holding(), 70), 28);
+    assert.equal(cards.navalWeight(holding("gwaio_start_air"), 30), 12);
+  });
+
+  it("rounds the fallback to a whole chance", () => {
+    // No shipped card passes a base that divides unevenly, so this pins the
+    // rounding for one that later does rather than describing today's callers.
+    assert.equal(cards.navalWeight(holding(), 33), 13);
+  });
+
+  it("uses an explicit dry chance in place of the fallback, including 0", () => {
+    assert.equal(cards.navalWeight(holding(), 70, 15), 15);
+    assert.equal(cards.navalWeight(holding(), 70, 0), 0);
+  });
+
+  it("ignores the dry chance once planets are flooded", () => {
+    assert.equal(cards.navalWeight(holding("gwaio_start_naval"), 70, 15), 70);
   });
 });
 
@@ -134,7 +235,7 @@ describe("travelledShort", () => {
 
   it("is true once distance exceeds the tier threshold for the galaxy size", () => {
     assert.equal(
-      cards.travelledShort(systemAt(3), { totalSize: 10 }, numberOfSystems),
+      cards.travelledShort(systemAt(4), { totalSize: 10 }, numberOfSystems),
       true
     );
   });
@@ -248,15 +349,29 @@ describe("travelled* distance wrappers", () => {
 });
 
 describe("antiTechDeal", () => {
-  function inventoryWithCard(id) {
-    return { hasCard: (cardId) => cardId === id };
+  function inventoryWith(cardIds) {
+    return {
+      hasCard: (cardId) => cardIds.indexOf(cardId) !== -1,
+      cards: () => cardIds.map((id) => ({ id })),
+    };
+  }
+
+  // A host inventory that would flip every assertion below if it were consulted.
+  // Installed on every case so a regression back to model.game().inventory() fails
+  // rather than coincidentally agreeing with the per-player inventory.
+  function installContradictingHost() {
+    setGlobal("model", {
+      game: () => ({
+        inventory: () => ({ cards: () => [{ id: "gwaio_anti_air" }] }),
+      }),
+    });
   }
 
   it("returns a chance of 0 when the excluded counterpart card is held", () => {
-    setGlobal("model", {});
+    installContradictingHost();
     assert.deepEqual(
       cards.antiTechDeal(
-        inventoryWithCard("gwaio_anti_orbital"),
+        inventoryWith(["gwaio_anti_orbital"]),
         70,
         "gwaio_anti_orbital"
       ),
@@ -266,23 +381,31 @@ describe("antiTechDeal", () => {
 
   it("halves the base chance once any anti_ tech card is already held", () => {
     setGlobal("model", {
-      game: () => ({
-        inventory: () => ({ cards: () => [{ id: "gwaio_anti_air" }] }),
-      }),
+      game: () => ({ inventory: () => ({ cards: () => [] }) }),
     });
     assert.deepEqual(
-      cards.antiTechDeal(inventoryWithCard("none"), 70, "gwaio_anti_orbital"),
+      cards.antiTechDeal(
+        inventoryWith(["gwaio_anti_air"]),
+        70,
+        "gwaio_anti_orbital"
+      ),
       { chance: 35 }
     );
   });
 
   it("returns the full base chance when no anti_ tech is held yet", () => {
-    setGlobal("model", {
-      game: () => ({ inventory: () => ({ cards: () => [] }) }),
-    });
+    installContradictingHost();
     assert.deepEqual(
-      cards.antiTechDeal(inventoryWithCard("none"), 70, "gwaio_anti_orbital"),
+      cards.antiTechDeal(inventoryWith([]), 70, "gwaio_anti_orbital"),
       { chance: 70 }
+    );
+  });
+
+  it("weights a co-op viewer's offer on the viewer's own anti_ tech, not the host's", () => {
+    installContradictingHost();
+    assert.deepEqual(
+      cards.antiTechDeal(inventoryWith([]), 40, "gwaio_anti_sea").chance,
+      40
     );
   });
 });

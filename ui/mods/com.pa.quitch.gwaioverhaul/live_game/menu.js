@@ -1,11 +1,11 @@
-var gwoMenuLoaded;
+var gwoLiveGameMenuLoaded;
 
-function gwoMenu() {
-  if (gwoMenuLoaded || model.gameType() !== "Galactic War") {
+function gwoLiveGameMenu() {
+  if (gwoLiveGameMenuLoaded || model.gameType() !== "Galactic War") {
     return;
   }
 
-  gwoMenuLoaded = true;
+  gwoLiveGameMenuLoaded = true;
 
   try {
     var getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
@@ -23,7 +23,11 @@ function gwoMenu() {
         tutorial(game.isTutorial());
       });
 
-      model.menuConfigGenerator = ko.observable(function () {
+      // Write into the existing observable rather than replacing it. The base
+      // game's menuConfig computed (live_game.js) subscribed to the original, so
+      // a replacement leaves that subscription pointing at the old one and the
+      // patched menu only appears once some unrelated dependency happens to fire.
+      model.menuConfigGenerator(function () {
         var overString = getMenuString(
           tutorial(),
           "!LOC:Continue Tutorial",
@@ -105,4 +109,4 @@ function gwoMenu() {
     console.error(JSON.stringify(e));
   }
 }
-gwoMenu();
+gwoLiveGameMenu();

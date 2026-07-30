@@ -20,9 +20,13 @@ define([
       found: "/VO/Computer/gw/board_tech_available_ammunition",
     }),
     getContext: gwoCard.getContext,
-    deal: function () {
-      var chance = 30;
-      return { chance: chance };
+    deal: function (system, context, inventory) {
+      return {
+        params: {
+          allowOverflow: true,
+        },
+        chance: gwoCard.commanderWeight(inventory, 35),
+      };
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);

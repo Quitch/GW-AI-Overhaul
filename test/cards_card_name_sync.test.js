@@ -9,29 +9,16 @@
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const sync = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js"
 );
 
-const restores = [];
-function setGlobal(name, value) {
-  const had = Object.prototype.hasOwnProperty.call(global, name);
-  const previous = global[name];
-  global[name] = value;
-  restores.push(function () {
-    if (had) {
-      global[name] = previous;
-    } else {
-      delete global[name];
-    }
-  });
-}
-afterEach(() => {
-  while (restores.length) {
-    restores.pop()();
-  }
-});
+// Shared save/restore for the engine globals these helpers read at call time, so
+// no test leaks a model/window stub into the next one.
+const { setGlobal, restoreGlobals } = createGlobalStubs();
+afterEach(restoreGlobals);
 
 function starWithAi(ai) {
   return { ai: () => ai };

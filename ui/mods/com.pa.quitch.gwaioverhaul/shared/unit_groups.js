@@ -91,10 +91,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.mend,
     gwoUnit.slammer,
   ];
-  var botsAdvancedMobile = botsAdvancedCombat.concat(
-    gwoUnit.botFabberAdvanced,
-    gwoUnit.mend
-  );
+  var botsAdvancedMobile = botsAdvancedCombat.concat(gwoUnit.botFabberAdvanced);
   var botsAdvancedAmmo = [
     gwoUnit.bluehawkAmmo,
     gwoUnit.bluehawkAmmoOrbital,
@@ -109,7 +106,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.bluehawkWeapon,
     gwoUnit.bluehawkWeaponOrbital,
     gwoUnit.colonelWeapon,
-    gwoUnit.gileEWeapon,
+    gwoUnit.gilEWeapon,
     gwoUnit.locustsWeapon,
     gwoUnit.slammerTorpedo,
     gwoUnit.slammerWeapon,
@@ -129,14 +126,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.barnacle,
     gwoUnit.barracuda,
     gwoUnit.narwhal,
-    gwoUnit.navalFabber,
     gwoUnit.orca,
     gwoUnit.piranha,
   ];
-  var navalBasicMobile = navalBasicCombat.concat(
-    gwoUnit.barnacle,
-    gwoUnit.navalFabber
-  );
+  var navalBasicMobile = navalBasicCombat.concat(gwoUnit.navalFabber);
   var navalBasicAmmo = [
     gwoUnit.barracudaAmmo,
     gwoUnit.narwhalAAAmmo,
@@ -424,6 +417,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   );
   var vehiclesAdvancedAmmo = [
     gwoUnit.levelerAmmo,
+    // The Manhattan self-destructs: its weapon borrows the Dox's ammo spec and
+    // all its real damage is the death burst, so that is the spec vehicle damage
+    // cards have to reach. It has no ammo entry of its own to list here.
+    gwoUnit.manhattanDeath,
     gwoUnit.shellerAmmo,
     gwoUnit.stormAmmo,
     gwoUnit.vanguardAmmo,
@@ -500,14 +497,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.unitCannon
   );
 
+  // titansMobile rather than a restated list of the four, so a titan added there is
+  // picked up here automatically.
   var mobile = airMobile.concat(
     botsMobile,
     navalMobile,
     orbitalMobile,
     vehiclesMobile,
-    gwoUnit.atlas,
-    gwoUnit.ares,
-    gwoUnit.zeus
+    titansMobile
   );
   var immobile = structures.concat(gwoUnit.ragnarok);
   var mobileNoCluster = airMobileNoCluster.concat(
@@ -515,9 +512,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     navalMobile,
     orbitalMobile,
     vehiclesMobile,
-    gwoUnit.atlas,
-    gwoUnit.ares,
-    gwoUnit.zeus
+    titansMobile
   );
 
   var energyIntel = structuresIntel.concat(
@@ -572,9 +567,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   );
 
   var units = mobile.concat(immobile);
-  var unitsNoCluster = mobileNoCluster.concat(mobile);
-
-  var clusterCommanders = [gwoUnit.angel, gwoUnit.colonel];
+  var unitsNoCluster = mobileNoCluster.concat(immobile);
 
   var fabberBuildArms = [
     gwoUnit.airFabberAdvancedBuildArm,
@@ -665,7 +658,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsMobile: botsMobile,
     botsMobileNoCluster: botsMobileNoCluster,
     botsWeapons: botsWeapons,
-    clusterCommanders: clusterCommanders,
     combat: combat,
     combatMobile: combatMobile,
     commanderAmmo: commanderAmmo,

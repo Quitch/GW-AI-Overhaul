@@ -16,7 +16,7 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      return gwoCard.antiTechDeal(inventory, 70, "gwaio_anti_vehicles");
+      return gwoCard.antiTechDeal(inventory, 40, "gwaio_anti_vehicles");
     },
     buff: function (inventory) {
       inventory.addMods(

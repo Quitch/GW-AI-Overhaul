@@ -1,11 +1,17 @@
-#new-game-right.col {
+/* The loadout column and the AI settings column are laid out identically. */
+#new-game-right.col,
+#gwo-ai-settings.col {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   max-height: 100%;
 }
 
+/* An id plus .header already out-specifies the base game's bare .header rule, so no
+   !important is needed here. The two columns' alpha values differ deliberately -
+   the loadout column reads brighter than the AI settings beside it. */
 #new-game-right .header {
-  background: rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 #new-game-right .header + * {
@@ -13,19 +19,10 @@
   flex-grow: 1;
 }
 
-#gwo-game-options-panel {
-  margin: 0 0 16px;
-  padding: 0;
-  border: 0;
-  background: none;
-  box-shadow: none;
-}
-
-#gwo-game-options-panel .coop-setup-configure {
-  text-transform: uppercase;
-}
-
-.gwo-game-options-modal-panel {
+/* gwo_start.css is injected ahead of the scene's own gw_start.css, so this has
+   to out-specify .gw-start-coop-settings-panel's 460px rather than rely on
+   source order. */
+.gw-start-coop-settings-panel.gwo-game-options-modal-panel {
   width: 520px;
 }
 
@@ -34,8 +31,6 @@
 }
 
 .gwo-game-option-row {
-  margin: 0;
-  padding: 4px 0;
   border-bottom: 1px solid #2d3840;
 }
 
@@ -49,12 +44,6 @@
 
 #gwo-ai-settings {
   width: 300px;
-}
-
-#gwo-ai-settings.col {
-  display: flex;
-  flex-direction: column;
-  max-height: 100%;
 }
 
 #gwo-ai-settings .header {
@@ -72,10 +61,191 @@
   text-transform: uppercase;
 }
 
-#custom-difficulty-settings select:disabled {
-  color: #666;
+/* The <loc> ids in ai_dropdown.html carry the casing of the game's own translation
+   entries, because i18n lookups are case sensitive, so the casing this panel wants
+   is applied after translation rather than written into the markup. */
+#difficulty-ai-enemy-label,
+#difficulty-ai-ally-label {
+  text-transform: uppercase;
 }
 
+/* Same reason, for the AI Settings labels: those <loc> ids spell the label the way the
+   translation entry does, and the uppercase this panel displays is applied here. The
+   class goes on the <loc> element itself - locTree only rewrites its innerHTML, so
+   attributes on it survive translation. */
+.gwo-uppercase {
+  text-transform: uppercase;
+}
+
+/* And again for the option text in these four AI Settings dropdowns, which is spelled
+   to match a translation entry rather than the uppercase the panel shows. An <option>
+   is not a reliable CSS hook once selectpicker has rewritten it into a menu, so the
+   rule hangs off the enclosing form-group instead, as #difficulty-cards above does.
+   button is listed because selectpicker renders the current value into a .btn. */
+#gwo-economy-growth,
+#gwo-economy-growth button,
+#gwo-micro-type,
+#gwo-micro-type button,
+#gwo-commander-response,
+#gwo-commander-response button,
+#gwo-personality,
+#gwo-personality button {
+  text-transform: uppercase;
+}
+
+/* #tab3 is a flexbox, so let Loadout take whatever the other columns leave
+   rather than tracking their combined width by hand. This supersedes the base
+   rule's fixed width. The zero flex-basis matters: the cards inside make
+   Loadout's content width far wider than the viewport, so an auto basis would
+   squash the fixed columns to nothing. */
 #loadouts.col {
-  width: calc(100% - 900px);
+  flex: 1 1 0;
+}
+
+/* boot.css sets box-sizing: border-box on everything, so the base rule's
+   max-width of 640px plus a card's 16px margin means a card claims 656px of a
+   flex line. The pixel figures below are for the columns this stylesheet
+   actually ships alongside - Setup 320px and AI Settings 300px, with the base
+   game's Commander column removed in ui.js - which leaves the card line 1271px
+   wide at 1920. Two cards therefore miss fitting by a mere 20.5px each and a
+   column's worth of space goes unused, and the near-miss repeats at every 16:9
+   step up. Giving the cards a flex-basis below that break-even moves the wrap
+   decision off max-width, which is then free to stay a ceiling on how wide a
+   lone card may grow, so displays too narrow to gain a column are unaffected.
+   flex-grow shares out whatever the line has left, so a row still fills
+   exactly. 530px is the basis yielding precisely one extra column at
+   1920/2560/2880/3072/3840 rather than overshooting to two at 4K. All three
+   card states need the rule: they share a flex line, and the base stylesheet
+   styles card_active and card_locked as standalone states. */
+#loadouts #start-cards > .card,
+#loadouts #start-cards > .card_active,
+#loadouts #start-cards > .card_locked {
+  flex: 1 1 530px;
+}
+
+/* The shared card template centres its columns, and the icon column is a fixed
+   90px against a text column that grows with the description, so the icon sank
+   further down the taller the card - by up to 26px here, which reads as jitter
+   once the cards sit side by side. Pin the icon column to the top instead. Only
+   that column is realigned: the text column is the one setting the height in
+   every case where centring did anything, so leaving it centred is a no-op. */
+#loadouts #start-cards .col1 {
+  align-self: flex-start;
+}
+
+/* The Game Options and Commander buttons are the same control in two places. */
+#gwo-game-options-panel,
+#gwo-commander-panel {
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+#gwo-game-options-panel .coop-setup-configure,
+#gwo-commander-panel .coop-setup-configure {
+  text-transform: uppercase;
+}
+
+/* gwo_start.css is injected ahead of the scene's own gw_start.css, so anything
+   overriding a base rule has to out-specify it rather than rely on order. */
+.gw-start-coop-settings-panel.gwo-commander-modal-panel {
+  display: flex;
+  flex-direction: column;
+  width: 96vw;
+  max-width: 1600px;
+  max-height: 94vh;
+}
+
+#gwo-commander-preview-cont {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+#gwo-commander-preview-name {
+  margin: 0;
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#gwo-commander-modal #game-commander-preview {
+  margin: 0;
+  padding: 10px 0;
+}
+
+#gwo-commander-modal #game-commander-preview img {
+  width: 26vh;
+  height: 26vh;
+  max-width: 240px;
+  max-height: 240px;
+}
+
+/* Laid out as inline-blocks rather than a flexbox so the tiles pack from the
+   top: a wrapping flexbox would stretch its rows apart whenever the picker has
+   spare height. */
+.gw-start-coop-settings-body.gwo-commander-picker {
+  flex: 1 1 auto;
+  padding: 10px;
+  overflow-y: auto;
+  background: #0b1a1f;
+  text-align: center;
+}
+
+.gwo-commander-modal-panel .gw-start-coop-settings-apply {
+  flex-shrink: 0;
+}
+
+/* Qualified with .btn_std_ix because boot.css loads after this file and its
+   .btn_std_ix sets a transparent border. */
+.gwo-commander-picker-item.btn_std_ix {
+  display: inline-block;
+  box-sizing: content-box;
+  width: 150px;
+  border: 1px solid rgba(0, 179, 255, 0.5);
+  background: #0b1a1f;
+  text-align: left;
+  vertical-align: top;
+}
+
+.gwo-commander-picker-item.btn_std_ix.selected {
+  border-color: #fff;
+  box-shadow:
+    inset 0 0 12px rgba(0, 179, 255, 0.45),
+    0 0 14px rgba(0, 179, 255, 0.5);
+}
+
+.gwo-profile-commander {
+  height: 38px;
+}
+
+.gwo-profile-commander-name {
+  padding: 0 0 0 4px;
+  border-top: 1px solid rgba(0, 179, 255, 0.15);
+  font-family: Sansation, sans-serif;
+  font-size: 13px;
+  text-shadow: 0 0 0;
+}
+
+.gwo-favourite-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 45px;
+  height: 21px;
+  background-image: url("coui://ui/main/game/leaderboard/img/slot_bground_silver.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.gwo-favourite-btn:hover {
+  /* PA's Chrome 40 only knows the prefixed form; unprefixed filter does nothing. */
+  -webkit-filter: brightness(1.2);
+}
+
+.gwo-favourite-btn.on {
+  background-image: url("coui://ui/main/game/leaderboard/img/slot_bground_uber.png");
 }

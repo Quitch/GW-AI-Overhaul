@@ -12,8 +12,7 @@ var gwoGalaxyMapPerfLoaded;
 // stage's own transform (pan/zoom), the canvas's backing size, and
 // model.galaxy.parallax (a mouse-tracking offset applied to the nebula
 // layer on every body mousemove - see gw_play.js's self.setup) can change
-// what's drawn without going through update() itself (there's no
-// createjs.Tween/ticker-driven animation on this layer), so diffing those
+// what's drawn without going through update() itself, so diffing those
 // values against the last real draw tells us whether a redraw is actually
 // needed. While the camera is moving (drag/zoom/resize) or the mouse is
 // moving (parallax), this still draws, but capped to an interactive frame
@@ -23,6 +22,11 @@ var gwoGalaxyMapPerfLoaded;
 // static does it fall back to a slower heartbeat, which still picks up
 // hover-highlight changes (driven by EaselJS's own mouseover hit testing
 // inside update()) within one heartbeat interval.
+//
+// One thing on this layer is ticker-driven: systems.js rotates the selection
+// icon on every tick. The idle heartbeat is what keeps that animating - it
+// runs at the same 10 FPS, so the rotation is coarser when idle rather than
+// stopped. Do not treat "nothing animates here" as an invariant.
 //
 // Separately, we lower EaselJS's mouseover hit-test rate: the base game
 // enables it with no argument (defaults to 20/sec), and every check runs a

@@ -36,7 +36,7 @@ define([
     inventory.commanderUnits, // Foundation
     inventory.commanderUnits, // Synchronous
     inventory.commanderUnits, // Revenants
-    inventory.clusterCommanders,
+    inventory.clusterCommanderUnits,
   ];
   var speedPaths = [
     "navigation.move_speed",

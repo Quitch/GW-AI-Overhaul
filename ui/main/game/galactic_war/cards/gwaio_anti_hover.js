@@ -16,7 +16,11 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      return gwoCard.antiTechDeal(inventory, 70, "gwaio_anti_sea");
+      return gwoCard.antiTechDeal(
+        inventory,
+        gwoCard.navalWeight(inventory, 40, 15),
+        "gwaio_anti_sea"
+      );
     },
     buff: function (inventory) {
       inventory.addMods(

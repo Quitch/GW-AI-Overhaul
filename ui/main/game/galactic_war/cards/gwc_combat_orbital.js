@@ -17,13 +17,13 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 28;
-
-      if (gwoCard.travelledFar(system, context, GW.balance.numberOfSystems)) {
-        chance = 142;
+      var sizes = GW.balance.numberOfSystems;
+      if (gwoCard.travelledModerate(system, context, sizes)) {
+        return { chance: 60 };
       }
-
-      return { chance: chance };
+      return {
+        chance: gwoCard.travelledShort(system, context, sizes) ? 30 : 15,
+      };
     },
     buff: function (inventory) {
       var paths = [

@@ -32,7 +32,17 @@ const CARDS_DIR = path.join(
   "cards"
 );
 
+// Mirrors validate/cards-contract.js's list: cards that fail to load for a reviewed
+// reason other than a missing base-game module.
+const KNOWN_UNLOADABLE = {
+  "gwc_minion.js":
+    "transitively depends on shared/gw_factions.js, which calls " +
+    "api.content.usingTitans() directly at define-time (real engine coupling, " +
+    "not just a missing file)",
+};
+
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
+const BUILD_LIST_TYPES = new Set(["fabber", "factory", "platoon"]);
 // op -> extra fields required beyond `type` + `op` (mirrors referee_ai.js exactly).
 const REQUIRED_FIELDS_BY_OP = {
   load: ["value"],
@@ -44,12 +54,35 @@ const REQUIRED_FIELDS_BY_OP = {
   squad: ["value", "toBuild"],
 };
 
+// Which `type` each op can legally target. referee_ai.js's ops table walks
+// json.build_list for the build ops and json.platoon_templates for squad, so a
+// mismatched pair validates on field shape alone and then throws at runtime.
+// `load` is not an op in that table at all - it routes through managerPath(), which
+// accepts every type.
+const VALID_TYPES_BY_OP = {
+  load: VALID_TYPES,
+  append: BUILD_LIST_TYPES,
+  prepend: BUILD_LIST_TYPES,
+  replace: BUILD_LIST_TYPES,
+  remove: BUILD_LIST_TYPES,
+  new: BUILD_LIST_TYPES,
+  squad: new Set(["template"]),
+};
+
 function collectAiMods(card) {
   const captured = [];
   const inventory = new Proxy(
     {
       addAIMods: function (mods) {
-        captured.push.apply(captured, mods || []);
+        // gw_inventory.js's addAIMods is aiMods().concat(mods), which accepts a
+        // bare descriptor as readily as an array. push.apply on a non-array
+        // spread its indices and captured nothing, so a card passing one object
+        // went entirely unvalidated while production applied it.
+        if (Array.isArray(mods)) {
+          captured.push.apply(captured, mods);
+        } else if (mods) {
+          captured.push(mods);
+        }
         return createAutoStub();
       },
     },
@@ -115,9 +148,40 @@ function checkMod(mod, index) {
         problems.push(where + ': op "' + mod.op + '" requires `' + field + "`");
       }
     }
+
+    const allowedTypes = VALID_TYPES_BY_OP[mod.op];
+    if (VALID_TYPES.has(mod.type) && !allowedTypes.has(mod.type)) {
+      problems.push(
+        where +
+          ': op "' +
+          mod.op +
+          '" cannot target type "' +
+          mod.type +
+          '" (expected one of: ' +
+          [...allowedTypes].join(", ") +
+          ")"
+      );
+    }
   }
 
   return problems;
+}
+
+// Same shim coverage boundary as validate/cards-contract.js, but discriminating on
+// the reason. A bare catch here also swallowed syntax errors and genuine breakage,
+// quietly reporting them as "excluded" with the run still green.
+function loadCard(file) {
+  try {
+    return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
+  } catch (e) {
+    if (
+      e.code === "NOT_SHIPPED" ||
+      Object.prototype.hasOwnProperty.call(KNOWN_UNLOADABLE, file)
+    ) {
+      return { excluded: true };
+    }
+    return { error: "failed to load: " + e.message };
+  }
 }
 
 function main() {
@@ -132,13 +196,16 @@ function main() {
   const failures = [];
 
   for (const file of files) {
-    let card;
-    try {
-      card = loadCouiModule(path.join(CARDS_DIR, file));
-    } catch {
-      excluded++; // same shim coverage boundary as validate/cards-contract.js
+    const loaded = loadCard(file);
+    if (loaded.excluded) {
+      excluded++;
       continue;
     }
+    if (loaded.error) {
+      failures.push({ file, problems: [loaded.error] });
+      continue;
+    }
+    const card = loaded.card;
 
     let mods;
     try {

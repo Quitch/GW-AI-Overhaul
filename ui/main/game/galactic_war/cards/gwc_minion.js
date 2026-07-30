@@ -14,7 +14,16 @@ define([
         : [];
     var minionCount = 0;
     _.forEach(coopPlayerInventoryData, function (playerData) {
-      minionCount += playerData.inventory.minions.length;
+      // Guard the record shape, as shared/cards.js does for the same source. One
+      // malformed co-op inventory record would otherwise throw here and abort the
+      // whole deal rather than just contributing nothing.
+      if (
+        playerData &&
+        playerData.inventory &&
+        _.isArray(playerData.inventory.minions)
+      ) {
+        minionCount += playerData.inventory.minions.length;
+      }
     });
     return minionCount;
   };
@@ -52,7 +61,7 @@ define([
       };
     },
     deal: function (system, context, inventory) {
-      var chance = 100;
+      var chance = 80;
       var aiOpeningFactories = [
         gwoUnit.vehicleFactory,
         gwoUnit.botFactory,
@@ -109,11 +118,5 @@ define([
       }
     },
     dull: function () {},
-    keep: function (params, context) {
-      context.chance = 50;
-    },
-    discard: function (params, context) {
-      context.chance *= Math.log(context.totalSize) * 0.25;
-    },
   };
 });

@@ -23,7 +23,7 @@ unmodified file looked like before this mod shadowed it, or to find game systems
 
 ```bash
 npm ci                    # install pinned tooling (only needed once / after deps change)
-npm run verify            # everything CI checks: lint + validate + test
+npm run verify            # everything CI checks: lint + format:check + validate + test
 npm run lint:js           # eslint .
 npm run lint:css          # stylelint "**/*.css"
 npm run lint:md           # markdownlint-cli2
@@ -35,6 +35,7 @@ npm run validate:ai-mods  # every card's buff()/dull() emits AI-mod descriptors 
 npm run validate:schemas  # AI build-order JSON + difficulty/personality data: type-consistency checks
 npm run validate:refs     # cross-references: loadout ids <-> card files, unit keys, AI builder roles <-> unit_map
 npm test                  # node --test (runs everything under test/)
+npm run test:coverage     # same tests + lcov to coverage/lcov.info (what the Sonar job uploads)
 npm run format:check      # prettier --check .
 npm run format:write      # prettier --write . (only stage files your change actually touches - see below)
 ```
@@ -46,6 +47,15 @@ CI (`.github/workflows/ci.yml`) runs `lint:js`/`lint:css`/`lint:md`/`validate`/`
 as full-repo hard gates (clean today, so any new violation anywhere is a real
 regression), plus a separate Prettier check scoped only to files a PR/push actually
 changed. `npm run verify` mirrors the hard-gate job; run it before submitting a change.
+
+`.github/workflows/build.yml` is a second CI job: it runs `npm run test:coverage` and
+then `SonarSource/sonarqube-scan-action`, so `sonar-project.properties` is genuinely
+read and enforced by the scanner (its exclusions, coverage exclusions and the S7721
+issue-ignore are live config, not just documentation). The quality gate requires ~80%
+coverage on _new code_ only - see CONTRIBUTING.md's "Test coverage and new code" for
+what to test and what to legitimately exclude. Do not run the `sonar` CLI locally; it
+does not perform real rule analysis for this org. `.github/workflows/release.yml`
+re-runs the hard gates against a published release tag as a post-publish alarm.
 
 ## Architecture
 
@@ -84,16 +94,17 @@ and reaching it is a legitimate reason to fall back to shadowing.
 Every file under `ui/main/game/galactic_war/cards/*.js` is an AMD module
 (`define([deps], function(...) {...})`) returning an object with this fixed shape
 (enforced by `scripts/validate/cards-contract.js`, empirically confirmed across all
-225 cards):
+237 cards - of which the validator shape-checks 175, the rest being excluded as
+`NOT_SHIPPED` or `KNOWN_UNLOADABLE`; the run prints that tally):
 
 - `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` - always
   functions.
 - `audio`, `getContext` - functions on every card except one legacy exception kept
   for save-compatibility.
-- `keep`, `discard` - optional; legitimate extensions, not typos. Present on exactly
-  one loadable card (`gwc_add_card_slot.js`), which is what the contract validator
-  sees and counts; `gwc_minion.js` also carries both but is excluded from the check
-  as `KNOWN_UNLOADABLE`, so a source grep finds two cards with each field.
+- `keep`, `discard` - optional; legitimate extensions, not typos. No card carries
+  either today (both were dropped in the minion and card-slot redesigns), but
+  `gw_inventory.js` and `gw_start/setup.js` still call them when present, so the
+  contract validator continues to accept them.
 
 `buff(inventory)` mutates game state via `inventory.addMods(...)` (unit-spec stat
 mods) and/or `inventory.addAIMods(...)` (AI build-order mod descriptors - see below).
@@ -127,9 +138,16 @@ vs. enemy):
 - `pa/ai_penchant/` - GWO's own personality-driven build trees, shipped in full.
   `shared/ai.js`'s `penchants()` table maps a personality name to build-file tags
   drawn from this tree.
-- `pa_ex1/ai_queller/` - base game's Queller AI data (also not shipped here).
-- `pa/ai_tech/` - destination tree AI-mod `load` descriptors and card-driven output
-  resolve against; not a source tree in this repo.
+- `/pa/ai_queller/` - base game's Queller AI data (not shipped here). Note the path:
+  on disk in the install these files live under `pa_ex1/ai_queller/`, but the
+  expansion overlay is addressed through `/pa/...` at runtime, so that is the path
+  both the base game and `referee_ai_paths.js` use. `getQuellerPath()` picks a skill
+  tier below it - `q_uber/` for enemies, `q_silver/` with Smart Subcommanders,
+  otherwise `q_bronze/`.
+- `pa/ai_tech/` - the tree AI-mod `load` descriptors and card-driven output resolve
+  against. Both a destination and a small source tree: this repo ships the build
+  files `load` descriptors name (currently 8, under `fabber_builds/` and
+  `factory_builds/`), and `referee_ai.js` also writes generated output here.
 - `pa/ai_subcommander/`, `pa/ai_cluster/` - purely runtime-synthesized virtual mount
   paths `referee_ai.js` writes to; no on-disk existence in this repo at all.
 
@@ -140,9 +158,11 @@ Runtime-only paths (with no filesystem backing) are instead covered by
 
 ### Difficulty & personality tuning data
 
-`gw_start/difficulty_levels.js` (nine tiers, Beginner through Uber plus a minimal
-"Custom" sentinel) and `faction/personalities.js` are declarative data, each wrapped
-in `define({...})`. They don't share one fixed key set across entries (the Custom
+`gw_start/difficulty_levels.js` (a `difficulties` array: nine tiers, Beginner /
+Casual / Iron / Bronze / Silver / Gold / Platinum / Diamond / Uber, plus a minimal
+"Custom" sentinel) and `faction/personalities.js` - both under
+`ui/mods/com.pa.quitch.gwaioverhaul/` - are declarative data, each wrapped in
+`define({...})`. They don't share one fixed key set across entries (the Custom
 tier intentionally has far fewer fields than the rest), so `validate:schemas` checks
 type _consistency_ instead of required fields: any field appearing with more than one
 `typeof` across entries that have it is almost certainly a typo, not a legitimate
@@ -166,22 +186,50 @@ in production (e.g. `referee_ai.js`'s `applyAiMods`, guarded by `typeof module !
 
 ## Conventions (see CONTRIBUTING.md for the full list)
 
-- Shipped game code must stay ES5/Chrome 40 compatible - only `for...of` and
-  `Promise` are allowed beyond ES5. `scripts/**` and `test/**` are Node-only tooling
-  and are exempt (see `eslint.config.mjs`'s separate override block for them).
+- Shipped game code must stay ES5/Chrome 40 compatible. This is enforced as a
+  whitelist, not a denylist: `eslint.config.mjs` applies `eslint-plugin-es-x`'s
+  `flat/restrict-to-es5` to `ui/**` (forbidding all post-ES5 syntax _and_ builtins),
+  then switches off the individual rules for what Chrome 40 actually supports. That
+  whitelist is exhaustive rather than as-needed - it covers every post-ES5 feature
+  Chrome 40 has, used by this repo or not, so it doubles as the answer to "may I use
+  X?". No entry means no. Broadly: `for...of`, generators, `Promise`, `Map`/`Set`/
+  `WeakMap`/`WeakSet`, `Symbol`, typed arrays, all ES2015 `Math.*` and `Number.*`
+  additions, `Object.is`/`setPrototypeOf`/`getOwnPropertySymbols`,
+  `String.prototype.normalize`, and `Array.prototype.entries`/`keys` (but _not_
+  `values`, which is Chrome 66). Each entry carries the Chrome release that shipped
+  it, taken from `@mdn/browser-compat-data` and then verified feature-by-feature
+  against a running PA (Chrome/40.0.2214.28) over the DevTools protocol; a rule
+  qualifies only if that is <= 40 and the engine really has it.
+  Four are restated as explicit errors with reasons rather than left implicit:
+  `no-block-scoped-variables` (`let`/`const` - Chrome 41 and strict-only, and `const`
+  stays out regardless because Chrome 40 lacks ES2015 per-iteration loop bindings) and
+  `no-block-scoped-functions` (block scoping for function declarations is Chrome 49;
+  Chrome 40 hoists them out of the block under legacy rules), plus
+  `no-string-prototype-startswith`/`-endswith`, which PA's engine _does_ have but
+  only in one-argument form - it ignores the position argument and returns a wrong
+  answer rather than throwing, so a feature detect is actively misleading.
+  `ecmaVersion` is
+  held at 6 as a backstop so anything past ES2015 also parse-errors; it cannot be
+  lowered to 5, because `for...of` would then be an unsuppressible parse error that
+  silently skips every other rule in the file. `scripts/**` and `test/**` are
+  Node-only tooling and are exempt (see `eslint.config.mjs`'s separate override
+  block for them).
 - camelCase for JS, kebab-case for CSS, 2-space indent, HTML in its own file (never
   inline in JS).
 - PRs must only touch what the request needs - no drive-by cleanup/reformatting
-  (submit those separately). Most of the repo predates Prettier enforcement and
-  isn't reformatted; `format:write` and the CI Prettier check both scope to
-  changed files only, not the whole repo.
+  (submit those separately). `format:write` is repo-wide (`prettier --write .`), so
+  run it and then stage only the files your change actually touches. The whole repo
+  now passes `prettier --check .`, which `npm run verify` enforces; CI additionally
+  runs a changed-files-only Prettier job.
 - `.stylelintrc.json` disables `color-function-alias-notation` and scopes
   `declaration-block-no-redundant-longhand-properties` to ignore `overflow`, both
   because PA's embedded Chrome 40 predates the modern CSS syntax those rules assume.
   Don't remove those exclusions or "fix" the `rgba()`/`overflow-x`+`overflow-y` usage
   they cover as a drive-by.
-- Several `pa/ai_penchant/**/*.json` files are intentionally minified to a single
-  line (see `.prettierignore`) - don't reformat them.
+- The whole `pa/**` data tree is excluded from Prettier (see `.prettierignore`).
+  Those JSON files are intentionally minified to a single line, matching the base
+  game's own convention - don't reformat them, and don't narrow the exclusion back
+  to an enumerated file list.
 - Sonar `javascript:S7721` (function scoping): keep module-private helpers inside the
   `define(...)` factory. In PA's RequireJS runtime a file-top-level declaration is a
   `window` global, so hoisting to the "outer scope" the rule wants leaks a global for

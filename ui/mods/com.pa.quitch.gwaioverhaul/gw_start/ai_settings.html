@@ -7,7 +7,12 @@
       <div class="header">
         <loc>ECONOMY</loc>
       </div>
-      <loc>ECONOMY:</loc>
+      <!-- The trailing colon sits outside the <loc> throughout this panel: i18n keys
+      are case- and character-sensitive, and the game ships entries for the bare label
+      ("ECONOMY") but none for the label plus colon ("ECONOMY:"). Where the entry's
+      casing also differs from what this panel displays, the <loc> carries
+      .gwo-uppercase and gwo_start.css restores the display casing after translation. -->
+      <loc>ECONOMY</loc>:
       <span class="info_tip" data-bind="tooltip: '!LOC:Starting economy.'"
         >?</span
       >
@@ -43,7 +48,10 @@
           <option value="0.025">SLOWEST</option>
           <option value="0.050">SLOWER</option>
           <option value="0.075">SLOW</option>
-          <option value="0.100">AVERAGE</option>
+          <!-- Capitalised because i18n lookups are case sensitive and "Average" is the
+          only casing the game ships an entry for; #gwo-economy-growth in gwo_start.css
+          puts it back in uppercase to match the options either side of it. -->
+          <option value="0.100">Average</option>
           <option value="0.150">FAST</option>
           <option value="0.200">FASTER</option>
           <option value="1">FASTEST</option>
@@ -52,7 +60,9 @@
       <div class="header">
         <loc>Commanders</loc>
       </div>
-      <loc>BOSS COMMANDERS:</loc>
+      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
+      the display casing. See the note by ECONOMY above. -->
+      <loc class="gwo-uppercase">Boss Commanders</loc>:
       <span class="info_tip" data-bind="tooltip: $root.gwoBossCommandersTooltip"
         >?</span
       >
@@ -243,7 +253,9 @@
           <option value="900">LONG</option>
         </select>
       </div>
-      <loc>UNABLE TO EXPAND DELAY:</loc>
+      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
+      the display casing. See the note by ECONOMY above. -->
+      <loc class="gwo-uppercase">Unable To Expand Delay</loc>:
       <span
         class="info_tip"
         data-bind="tooltip: '!LOC:Delay before AI realises it cannot expand.'"
@@ -264,7 +276,9 @@
       <div class="header">
         <loc>Micro</loc>
       </div>
-      <loc>MICRO:</loc>
+      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
+      the display casing. See the note by ECONOMY above. -->
+      <loc class="gwo-uppercase">Micro</loc>:
       <span
         class="info_tip"
         data-bind="tooltip: '!LOC:How well the AI handles its armies in combat.'"
@@ -277,7 +291,10 @@
           data-bind="selectPicker: $root.gwoDifficultySettings.microType"
         >
           <option value="0">POOR</option>
-          <option value="1">AVERAGE</option>
+          <!-- Capitalised because i18n lookups are case sensitive and "Average" is the
+          only casing the game ships an entry for; #gwo-micro-type in gwo_start.css puts
+          it back in uppercase to match the options either side of it. -->
+          <option value="1">Average</option>
           <option value="2">GOOD</option>
         </select>
       </div>
@@ -311,7 +328,9 @@
           <option value="true">GOOD</option>
         </select>
       </div>
-      <loc>LANDING EVALUATION:</loc>
+      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
+      the display casing. See the note by ECONOMY above. -->
+      <loc class="gwo-uppercase">Landing Evaluation</loc>:
       <span
         class="info_tip"
         data-bind="tooltip: '!LOC:Distance examined when choosing spawn.'"
@@ -344,8 +363,11 @@
           id="gwo-commander-response-picker"
           data-bind="selectPicker: $root.gwoDifficultySettings.enableCommanderDangerResponses"
         >
-          <option value="false">DISABLED</option>
-          <option value="true">ENABLED</option>
+          <!-- Capitalised because i18n lookups are case sensitive and these are the
+          casings gw-overhaul.json ships entries for; #gwo-commander-response in
+          gwo_start.css puts them back in uppercase. -->
+          <option value="false">Disabled</option>
+          <option value="true">Enabled</option>
         </select>
       </div>
       <loc>PERSONALITY MODIFIERS:</loc>
@@ -357,9 +379,13 @@
       <div class="form-group" id="gwo-personality">
         <select class="form-control" id="gwo-personality-picker" multiple>
           <optgroup label="TITANS/PENCHANT">
-            <option value="Tutorial">LOBOTOMY</option>
-            <option value="SlowerExpansion">SLOWER EXPANSION</option>
-            <option value="PreventsWaste">AVOID ECO WASTE</option>
+            <!-- Capitalised because i18n lookups are case sensitive and these are the
+            casings gw-overhaul.json ships entries for; #gwo-personality in
+            gwo_start.css puts them back in uppercase. The option values are the AI's
+            own personality flags and are not display text, so they do not change. -->
+            <option value="Tutorial">Lobotomy</option>
+            <option value="SlowerExpansion">Slower Expansion</option>
+            <option value="PreventsWaste">Prevent Waste</option>
           </optgroup>
           <optgroup label="QUELLER">
             <option value="air">LOVES AIR</option>
@@ -375,7 +401,9 @@
       <div class="header">
         <loc>modes</loc>
       </div>
-      <loc>FFA CHANCE:</loc>
+      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
+      the display casing. See the note by ECONOMY above. -->
+      <loc class="gwo-uppercase">FFA Chance</loc>:
       <span
         class="info_tip"
         data-bind="tooltip: '!LOC:Chance of more than one faction being present in a system.'"
@@ -467,7 +495,9 @@
           <option value="100">100%</option>
         </select>
       </div>
-      <loc>BOUNTIES CHANCE:</loc>
+      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
+      the display casing. See the note by ECONOMY above. -->
+      <loc class="gwo-uppercase">Bounties Chance</loc>:
       <span
         class="info_tip"
         data-bind="tooltip: '!LOC:Chance of a system awarding bounties for army kills.'"
@@ -490,7 +520,9 @@
           <option value="100">100%</option>
         </select>
       </div>
-      <loc>BOUNTY VALUE:</loc>
+      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
+      the display casing. See the note by ECONOMY above. -->
+      <loc class="gwo-uppercase">Bounty Value</loc>:
       <span
         class="info_tip"
         data-bind="tooltip: '!LOC:Eco bonus per army kill.'"

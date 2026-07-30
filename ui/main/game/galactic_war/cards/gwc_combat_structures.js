@@ -17,11 +17,10 @@ define([
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context) {
-      var chance = 28;
-      if (gwoCard.travelledFar(system, context, GW.balance.numberOfSystems)) {
-        chance = 142;
-      }
-      return { chance: chance };
+      var sizes = GW.balance.numberOfSystems;
+      return {
+        chance: gwoCard.travelledShort(system, context, sizes) ? 60 : 30,
+      };
     },
     buff: function (inventory) {
       var mods = [];
