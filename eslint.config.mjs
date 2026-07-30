@@ -129,6 +129,17 @@ export default defineConfig([
       // sloppy-mode rules, so the scoping you write is not the scoping you get.
       // Declare it outside the block, or assign a function expression to a var.
       "es-x/no-block-scoped-functions": "error",
+      // These two DO exist in PA's engine (verified against Chrome/40.0.2214.28 over
+      // the DevTools protocol) but are only half-implemented: the one-argument form
+      // works, while the position/endPosition second argument is ignored outright, so
+      // "foobar".startsWith("bar", 3) is false and "foobar".endsWith("foo", 3) is
+      // false - both should be true. A feature detect finds them and they then return
+      // silently wrong answers, which is worse than their being absent, so they stay
+      // forbidden. Use indexOf/slice. (MDN dates both to Chrome 41, which is right
+      // for the complete implementation.) String.prototype.includes and .repeat are
+      // genuinely absent here, as is the legacy .contains spelling.
+      "es-x/no-string-prototype-startswith": "error",
+      "es-x/no-string-prototype-endswith": "error",
     },
   },
   {

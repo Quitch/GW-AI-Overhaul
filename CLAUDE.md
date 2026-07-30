@@ -197,12 +197,18 @@ in production (e.g. `referee_ai.js`'s `applyAiMods`, guarded by `typeof module !
   additions, `Object.is`/`setPrototypeOf`/`getOwnPropertySymbols`,
   `String.prototype.normalize`, and `Array.prototype.entries`/`keys` (but _not_
   `values`, which is Chrome 66). Each entry carries the Chrome release that shipped
-  it, taken from `@mdn/browser-compat-data`; a rule qualifies only if that is <= 40.
-  Two are restated as explicit errors with reasons rather than left implicit:
+  it, taken from `@mdn/browser-compat-data` and then verified feature-by-feature
+  against a running PA (Chrome/40.0.2214.28) over the DevTools protocol; a rule
+  qualifies only if that is <= 40 and the engine really has it.
+  Four are restated as explicit errors with reasons rather than left implicit:
   `no-block-scoped-variables` (`let`/`const` - Chrome 41 and strict-only, and `const`
   stays out regardless because Chrome 40 lacks ES2015 per-iteration loop bindings) and
   `no-block-scoped-functions` (block scoping for function declarations is Chrome 49;
-  Chrome 40 hoists them out of the block under legacy rules). `ecmaVersion` is
+  Chrome 40 hoists them out of the block under legacy rules), plus
+  `no-string-prototype-startswith`/`-endswith`, which PA's engine _does_ have but
+  only in one-argument form - it ignores the position argument and returns a wrong
+  answer rather than throwing, so a feature detect is actively misleading.
+  `ecmaVersion` is
   held at 6 as a backstop so anything past ES2015 also parse-errors; it cannot be
   lowered to 5, because `for...of` would then be an unsuppressible parse error that
   silently skips every other rule in the file. `scripts/**` and `test/**` are
