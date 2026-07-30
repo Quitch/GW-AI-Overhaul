@@ -34,6 +34,7 @@ npm run validate:cards    # every tech card exports the fixed contract shape (se
 npm run validate:ai-mods  # every card's buff()/dull() emits AI-mod descriptors matching referee_ai.js's contract
 npm run validate:schemas  # AI build-order JSON + difficulty/personality data: type-consistency checks
 npm run validate:refs     # cross-references: loadout ids <-> card files, unit keys, AI builder roles <-> unit_map
+npm run validate:sonar    # sonar-project.properties: no stale exclusion paths, every analysed file is UTF-8
 npm test                  # node --test (runs everything under test/)
 npm run test:coverage     # same tests + lcov to coverage/lcov.info (what the Sonar job uploads)
 npm run format:check      # prettier --check .
@@ -54,8 +55,13 @@ read and enforced by the scanner (its exclusions, coverage exclusions and the S7
 issue-ignore are live config, not just documentation). The quality gate requires ~80%
 coverage on _new code_ only - see CONTRIBUTING.md's "Test coverage and new code" for
 what to test and what to legitimately exclude. Do not run the `sonar` CLI locally; it
-does not perform real rule analysis for this org. `.github/workflows/release.yml`
-re-runs the hard gates against a published release tag as a post-publish alarm.
+does not perform real rule analysis for this org. Because that config is live but
+unreferenced by any other tooling, its paths drift silently and only fail on SonarCloud
+after a push - `validate:sonar` is the local guard: every exclusion pattern must still
+match a tracked file (a rename out from under an exclusion once put a GBK-encoded readme
+back into analysis), and every file left in analysis must decode as the UTF-8 that
+`sonar.sourceEncoding` declares. `.github/workflows/release.yml` re-runs the hard gates
+against a published release tag as a post-publish alarm.
 
 ## Architecture
 
