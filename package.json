@@ -1,8 +1,6 @@
 {
   "name": "gw-ai-overhaul",
-  "version": "1.0.0",
   "private": true,
-  "description": "Galactic War: AI Overhaul - Planetary Annihilation: TITANS client mod",
   "scripts": {
     "lint:js": "eslint .",
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\"",
