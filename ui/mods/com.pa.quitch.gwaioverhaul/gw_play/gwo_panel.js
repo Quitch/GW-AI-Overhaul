@@ -128,7 +128,7 @@ function gwoWarInfoPanel(gwoSettings) {
     // creation and never changes - so unwrapping them here is deliberate, not a
     // missed subscription.
     var optionDefs = [
-      [model.gwoSettings.factionScaling, "!LOC:Faction scaling"],
+      [model.gwoSettings.factionScaling, "!LOC:Faction Scaling"],
       [model.gwoSettings.systemScaling, "!LOC:System scaling"],
       [model.gwoSettings.simpleSystems, "!LOC:Easy Systems"],
       [model.gwoSettings.largePlanets, "!LOC:Large Planets"],
