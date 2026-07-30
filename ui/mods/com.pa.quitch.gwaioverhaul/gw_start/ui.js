@@ -328,12 +328,8 @@ function gwoUI() {
     locTree($("#difficulty-options"));
     locTree($("#custom-difficulty-settings"));
     locTree($("#difficulty-cards"));
-    // #difficulty-ai does not exist - ai_dropdown.html defines the enemy and ally
-    // groups separately - and the AI Settings header lives outside every other
-    // container listed here, so all three were left untranslated.
     locTree($("#difficulty-ai-enemy"));
     locTree($("#difficulty-ai-ally"));
-    locTree($("#gwo-ai-settings"));
 
     if (api.content.usingTitans()) {
       model.gwoFactionTooltip =
