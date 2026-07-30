@@ -63,7 +63,6 @@
 - Barnacle Upgrade Tech's "Which Units?" tooltip named and highlighted the Mend
 - Artillery personality built Long Range Artillery against any nearby enemy structure, rather than excluding metal extractors as intended
 - Ten AI personalities built roughly twice as many Frigates as intended in naval games, from a retired build file that was not gated to the personality it belongs to
-- Co-op war information panel did not update when a player changed their name or colour
 - Intelligence panel labelled surface area k² instead of km²
 - Allied commanders, and any AI given the vanilla penchant, were assigned an empty personality tag
 - Opponent AI and Ally AI labels, their tooltips, and the AI Settings header stayed in English in other languages
