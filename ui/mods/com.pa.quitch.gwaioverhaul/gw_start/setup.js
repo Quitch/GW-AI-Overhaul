@@ -363,7 +363,7 @@ function gwoSetup() {
     ) {
       var difficultyName = loc(difficulties[selectedDifficulty].difficultyName);
       var players = playerCount + " " + loc("!LOC:Players");
-      var sizeName = loc(galaxySizeNames[sizeIndex] || galaxySizeNames[1]);
+      var sizeName = loc(galaxySizeNames[sizeIndex] || "!LOC:Unknown");
       var startCardSummary =
         startCard && startCard.summary ? loc(startCard.summary()) : "";
 
@@ -1130,7 +1130,7 @@ function gwoSetup() {
             originSystem.gwaio.difficulty =
               gwoDifficulty.difficulties[selectedDifficulty].difficultyName;
             originSystem.gwaio.galaxySize =
-              galaxySizeNames[model.newGameSizeIndex()] || galaxySizeNames[1];
+              galaxySizeNames[model.newGameSizeIndex()] || "!LOC:Unknown";
             originSystem.gwaio.factionScaling =
               model.gwoDifficultySettings.factionScaling();
             originSystem.gwaio.systemScaling =
