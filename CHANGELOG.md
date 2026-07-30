@@ -75,6 +75,7 @@
 - GWO panel showed every co-op player the host's colour, rather than the colour they are given in battle
 - In co-op with per-player tech cards, every player's Sub Commanders fought in the faction's own colour, so they could not be told apart from each other or from the host
 - Intelligence panel showed a Legonis Machina opponent in its first Sub Commander's colour instead of the one it uses in battle
+- A co-op host whose turn ended or moved on while a star's cards were still being chosen recorded the deal anyway, so every other player was later offered a hand of tech for an exploration that never finished
 
 ## v6.4.0 - 2026-07-24
 

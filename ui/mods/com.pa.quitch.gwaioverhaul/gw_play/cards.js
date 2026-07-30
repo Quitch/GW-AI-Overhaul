@@ -594,7 +594,8 @@ function gwoCard() {
             numCardsToOffer,
             inventory
           );
-          var star = game.galaxy().stars()[game.currentStar()];
+          var starIndex = game.currentStar();
+          var star = game.galaxy().stars()[starIndex];
           // Left unfiltered: the co-op deal picks each viewer a loadout by their own
           // unlock record, so one the host already owns can still be treasure for a
           // viewer (cards_coop_deal.js collectPendingTechTargets).
@@ -642,8 +643,26 @@ function gwoCard() {
             }
 
             var dealEntry;
+            // chooseCards is asynchronous, so the turn can have moved on before this
+            // lands. Recording then would leave every co-op viewer owed a catch-up hand
+            // for a deal no one was ever offered, and the count persists into the save.
+            var explorationLive = helpers.explorationStillLive(
+              game,
+              starIndex,
+              star
+            );
+
+            if (!explorationLive) {
+              console.log(
+                "[GW COOP] discarded a stale explore deal star=" +
+                  starIndex +
+                  " turnState=" +
+                  game.turnState()
+              );
+            }
 
             if (
+              explorationLive &&
               force !== true &&
               (ok || startLoadoutCards.length) &&
               _.isArray(star.cardList()) &&
@@ -651,7 +670,7 @@ function gwoCard() {
               game &&
               _.isFunction(game.recordHostTechCardDeal)
             ) {
-              dealEntry = game.recordHostTechCardDeal(game.currentStar(), {
+              dealEntry = game.recordHostTechCardDeal(starIndex, {
                 startLoadoutCards: startLoadoutCards,
               });
             }
@@ -660,14 +679,10 @@ function gwoCard() {
               return $.Deferred().resolve([]).promise();
             }
 
-            return model.dealCoopPlayerPendingTechCards(
-              game.currentStar(),
-              star,
-              {
-                dealIndex: dealEntry && dealEntry.dealIndex,
-                startLoadoutCards: startLoadoutCards,
-              }
-            );
+            return model.dealCoopPlayerPendingTechCards(starIndex, star, {
+              dealIndex: dealEntry && dealEntry.dealIndex,
+              startLoadoutCards: startLoadoutCards,
+            });
           });
 
           // Return the chain so the base campaign queue can order it. The 2s
