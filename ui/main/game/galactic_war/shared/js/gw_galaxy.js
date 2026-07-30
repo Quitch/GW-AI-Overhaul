@@ -194,7 +194,7 @@ define([
         ) {
           systemSize = star.distance() + coopSystemPlayerBonus;
         } else {
-          systemSize = Math.floor(rng() * 10 + 1 + coopSystemPlayerBonus);
+          systemSize = Math.floor(_.random(13) + coopSystemPlayerBonus);
         }
         if (
           model.gwoDifficultySettings &&
