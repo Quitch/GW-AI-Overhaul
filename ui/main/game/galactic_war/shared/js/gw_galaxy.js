@@ -190,11 +190,11 @@ define([
         );
         if (
           model.gwoDifficultySettings &&
-          !model.gwoDifficultySettings.systemScaling()
+          model.gwoDifficultySettings.systemScaling()
         ) {
-          systemSize = Math.floor(rng() * 10 + 1 + coopSystemPlayerBonus);
-        } else {
           systemSize = star.distance() + coopSystemPlayerBonus;
+        } else {
+          systemSize = Math.floor(rng() * 10 + 1 + coopSystemPlayerBonus);
         }
         if (
           model.gwoDifficultySettings &&
