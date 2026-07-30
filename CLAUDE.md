@@ -186,9 +186,28 @@ in production (e.g. `referee_ai.js`'s `applyAiMods`, guarded by `typeof module !
 
 ## Conventions (see CONTRIBUTING.md for the full list)
 
-- Shipped game code must stay ES5/Chrome 40 compatible - only `for...of` and
-  `Promise` are allowed beyond ES5. `scripts/**` and `test/**` are Node-only tooling
-  and are exempt (see `eslint.config.mjs`'s separate override block for them).
+- Shipped game code must stay ES5/Chrome 40 compatible. This is enforced as a
+  whitelist, not a denylist: `eslint.config.mjs` applies `eslint-plugin-es-x`'s
+  `flat/restrict-to-es5` to `ui/**` (forbidding all post-ES5 syntax _and_ builtins),
+  then switches off the individual rules for what Chrome 40 actually supports. That
+  whitelist is exhaustive rather than as-needed - it covers every post-ES5 feature
+  Chrome 40 has, used by this repo or not, so it doubles as the answer to "may I use
+  X?". No entry means no. Broadly: `for...of`, generators, `Promise`, `Map`/`Set`/
+  `WeakMap`/`WeakSet`, `Symbol`, typed arrays, all ES2015 `Math.*` and `Number.*`
+  additions, `Object.is`/`setPrototypeOf`/`getOwnPropertySymbols`,
+  `String.prototype.normalize`, and `Array.prototype.entries`/`keys` (but _not_
+  `values`, which is Chrome 66). Each entry carries the Chrome release that shipped
+  it, taken from `@mdn/browser-compat-data`; a rule qualifies only if that is <= 40.
+  Two are restated as explicit errors with reasons rather than left implicit:
+  `no-block-scoped-variables` (`let`/`const` - Chrome 41 and strict-only, and `const`
+  stays out regardless because Chrome 40 lacks ES2015 per-iteration loop bindings) and
+  `no-block-scoped-functions` (block scoping for function declarations is Chrome 49;
+  Chrome 40 hoists them out of the block under legacy rules). `ecmaVersion` is
+  held at 6 as a backstop so anything past ES2015 also parse-errors; it cannot be
+  lowered to 5, because `for...of` would then be an unsuppressible parse error that
+  silently skips every other rule in the file. `scripts/**` and `test/**` are
+  Node-only tooling and are exempt (see `eslint.config.mjs`'s separate override
+  block for them).
 - camelCase for JS, kebab-case for CSS, 2-space indent, HTML in its own file (never
   inline in JS).
 - PRs must only touch what the request needs - no drive-by cleanup/reformatting

@@ -25,7 +25,7 @@ Submissions must include a clear breakdown of the work done.
 
 Any submissions should follow the requirements below:
 
-- Code must comply with ES5/Chrome 40 support. `for...of`, `Promise`, and libraries shipping with PA (see Available Libraries below) may be used.
+- Code must comply with ES5/Chrome 40 support, plus libraries shipping with PA (see Available Libraries below). You do not need to memorise what Chrome 40 has: `eslint-plugin-es-x`'s `restrict-to-es5` config forbids every post-ES5 feature under `ui/**`, and the whitelist in `eslint.config.mjs` lists every one Chrome 40 supports, with the Chrome release that shipped it. If it is not in that list, do not use it - the lint will tell you either way. Note two entries that are excluded deliberately rather than for lack of support: `const` (Chrome 40's block scoping has no per-iteration loop binding, so `const`/`let` in a loop head misbehaves - use `var`) and function declarations inside a block (Chrome 40 hoists them out of the block, so assign a function expression to a `var` instead).
 - Indent using two spaces (soft tabs).
 - All warnings and errors must be resolved prior to commit.
 - HTML is loaded from a separate file, not included in the body of JavaScript.
