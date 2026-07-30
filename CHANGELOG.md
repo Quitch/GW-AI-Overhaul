@@ -30,6 +30,7 @@
 - Loadout column tries to avoid dead space
 - A system's allied commander is coloured after every player's Sub Commanders, not just the host's
 - The Avoid Eco Waste AI personality modifier is now called Prevent Waste so that it can be translated
+- Additional Data Bank offered much less often when you have several slots open
 
 ### Bugfix
 
