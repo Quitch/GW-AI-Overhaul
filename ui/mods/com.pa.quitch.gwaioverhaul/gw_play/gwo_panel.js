@@ -447,8 +447,7 @@ var gwoPanelLoader = ko.computed(function () {
   if (!gwoPanelLoadWarned) {
     gwoPanelLoadWarned = true;
     console.warn(
-      "No GWO settings on the origin system yet; the war information panel will " +
-        "load if they appear."
+      "No GWO settings on the origin system yet; the war information panel will load if they appear."
     );
   }
 });
