@@ -8,7 +8,15 @@ export default defineConfig([
   {
     files: ["**/*.js"],
     languageOptions: {
-      ecmaVersion: 6, // `for...of` loops and Promise usage only - PA uses Chrome 40, does not support ES2015 in full
+      // Parser setting, not a statement about what PA can run - Chrome 40 support is
+      // enforced by es-x's restrict-to-es5 in the ui/** block below. 6 is both a floor
+      // and a ceiling. Floor: Chrome 40 has `for...of` and shipped code uses it, but
+      // at ecmaVersion 5 it is a parse error, and no rule can suppress one - the file
+      // is abandoned mid-parse and every other rule in it silently stops running, so
+      // dropping to 5 would lint less, not more. Ceiling: holding it at 6 makes
+      // anything past ES2015 (`?.`, `**`, async/await) fail to parse outright, a free
+      // second line of defence if an es-x rule is ever switched off by mistake.
+      ecmaVersion: 6,
       parserOptions: {
         ecmaFeatures: {
           impliedStrict: true,
@@ -49,9 +57,8 @@ export default defineConfig([
     },
   },
   {
-    // Shipped game code. ecmaVersion 6 is set above only so `for...of` and Promise
-    // parse; it also makes the parser accept the rest of ES2015, most of which PA's
-    // Chrome 40 can't run, and it acts as a backstop that parse-errors anything newer.
+    // Shipped game code. The parser above accepts all of ES2015, much of which PA's
+    // Chrome 40 cannot run, so the real enforcement happens here instead.
     // restrict-to-es5 forbids every post-ES5 feature - syntax *and* builtins - so the
     // block below is the whitelist: the specific things Chrome 40 does support. That
     // inversion is deliberate. A syntax-only denylist can't see `Object.assign`
