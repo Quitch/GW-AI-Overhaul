@@ -9,18 +9,22 @@ define([
   "shared/gw_inventory",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
 ], function (
   GW,
   GWInventory,
   gwoUnit,
   gwoAI,
+  refereeCoop,
   subcommanderTech,
   refereeAIPaths,
   gwoSpecs,
+  gwoColour,
   perPlayerTech
 ) {
   var getPlayerTagGivenIndex = perPlayerTech.getPlayerTagGivenIndex;
@@ -272,6 +276,13 @@ define([
       referee.files(mergedFiles);
       config.files = mergedFiles;
 
+      // Viewers' subcommanders continue the player-faction colour sequence the main
+      // referee started, picking up after the host's own subcommanders. Without this
+      // they all took their raw faction-data colour and collided with each other,
+      // with the host's subcommanders, and with the enemy.
+      var playerFaction = inventory.getTag("global", "playerFaction");
+      var colourPosition = inventory.minions().length;
+
       _.forEach(humanArmies, function (army, index) {
         army.spec_tag = playerTags[index];
 
@@ -315,6 +326,17 @@ define([
           );
           minionPersonality.ai_path = viewerAiPath;
 
+          // Duplicated subcommanders share one colour, the same way the host's
+          // duplication tech produces a single army with several commander slots.
+          var minionColour = gwoColour.pick(
+            playerFaction,
+            // pick() falls back to this when the palette is exhausted, and reads it
+            // to spot The Guardians, so a colourless minion still needs a pair.
+            minion.color || playerColor,
+            refereeCoop.alliedColourIndex(colourPosition)
+          );
+          colourPosition++;
+
           for (
             var duplicateIndex = 0;
             duplicateIndex < minionCount;
@@ -331,7 +353,7 @@ define([
                     ) + playerTags[index],
                 },
               ],
-              color: minion.color || [playerColor[0], playerColor[1]],
+              color: minionColour,
               econ_rate: minion.econ_rate || 1,
               personality: minionPersonality,
               spec_tag: playerTags[index],

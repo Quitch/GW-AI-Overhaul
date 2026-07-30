@@ -117,6 +117,57 @@ describe("setupAlliedCommanders", () => {
     );
     assert.equal(armies[0].personality.ai_path, "/pa/ai_cluster/");
   });
+
+  // referee_config.js sets the star's ai.ally up with a startPosition of the
+  // subcommander count, so it is coloured after every player's subcommanders rather
+  // than in the middle of them. Compared against a second call rather than asserted
+  // as literal RGB, so this doesn't pin commander_colour.js's palettes.
+  it("startPosition shifts the palette entry an ally is given", () => {
+    const fixture = buildGame({ aiInUse: "Titans" });
+    restoreModel = installModel(fixture.game);
+
+    const setUp = (startPosition) => {
+      const armies = [];
+      refereeConfig.setupAlliedCommanders(
+        [makeAiDescriptor()],
+        [],
+        armies,
+        fixture.inventory,
+        ".player",
+        startPosition
+      );
+      return armies[0].color;
+    };
+
+    assert.deepEqual(setUp(0), setUp(undefined)); // omitted == first position
+    assert.notDeepEqual(setUp(2), setUp(0));
+  });
+
+  it("numbers consecutive allies consecutively from startPosition", () => {
+    const fixture = buildGame({ aiInUse: "Titans" });
+    restoreModel = installModel(fixture.game);
+
+    const fromZero = [];
+    refereeConfig.setupAlliedCommanders(
+      [makeAiDescriptor(), makeAiDescriptor(), makeAiDescriptor()],
+      [],
+      fromZero,
+      fixture.inventory,
+      ".player"
+    );
+
+    const fromTwo = [];
+    refereeConfig.setupAlliedCommanders(
+      [makeAiDescriptor()],
+      [],
+      fromTwo,
+      fixture.inventory,
+      ".player",
+      2
+    );
+
+    assert.deepEqual(fromTwo[0].color, fromZero[2].color);
+  });
 });
 
 describe("setupPrimaryAiAndMinions", () => {

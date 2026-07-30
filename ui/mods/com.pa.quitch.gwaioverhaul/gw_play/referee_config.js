@@ -7,8 +7,9 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
-], function (gwoAI, gwoCards, configSetup) {
+], function (gwoAI, gwoCards, refereeCoop, configSetup) {
   var setupAlliedCommanders = configSetup.setupAlliedCommanders;
   var setupPrimaryAiAndMinions = configSetup.setupPrimaryAiAndMinions;
   var setupFfaAis = configSetup.setupFfaAis;
@@ -90,19 +91,33 @@ define([
     var currentStar = game.galaxy().stars()[game.currentStar()];
     var system = currentStar.system();
     var ai = currentStar.ai();
-    var alliedCommanders = _.isUndefined(ai.ally)
-      ? inventory.minions()
-      : inventory.minions().concat(ai.ally);
     var aiInUse = gwoAI.aiInUse("enemy");
     var aiTag = setupAiTags(ai);
 
     setupAlliedCommanders(
-      alliedCommanders,
+      inventory.minions(),
       cards,
       armies,
       inventory,
       playerTag
     );
+
+    // The star's ally is coloured after every player's subcommanders - including the
+    // viewers' ones gw_per_player_tech_referee.js adds later - so that a per-star
+    // commander never shifts a subcommander's colour, which is what lets the war
+    // panel show one. Without per-player tech the count is just the host's minions,
+    // which is exactly where the ally already sat.
+    if (!_.isUndefined(ai.ally)) {
+      setupAlliedCommanders(
+        [ai.ally],
+        cards,
+        armies,
+        inventory,
+        playerTag,
+        refereeCoop.getOrderedSubcommanders(inventory, game).length
+      );
+    }
+
     setupPrimaryAiAndMinions(ai, connectedPlayerCards, aiTag, aiInUse, armies);
     setupFfaAis(ai.foes, aiTag, aiInUse, armies);
     system.planets = modifyPlanets(inventory, system.planets, game);

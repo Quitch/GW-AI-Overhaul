@@ -17,8 +17,9 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
-], function (gwoColour, gwoAI, subcommanderTech) {
+], function (gwoColour, gwoAI, refereeCoop, subcommanderTech) {
   var applySubcommanderTacticsTech =
     subcommanderTech.applySubcommanderTacticsTech;
   var applySubcommanderFabberTech =
@@ -169,15 +170,21 @@ define([
     };
   };
 
+  // startPosition is where these allies sit in the player-faction colour sequence
+  // (see shared/referee_coop.js). It defaults to 0 - the subcommanders, who come
+  // first - and referee_config.js passes the subcommander count when it sets up a
+  // star's ai.ally, which is numbered after every player's subcommanders.
   var setupAlliedCommanders = function (
     allies,
     cards,
     armies,
     inventory,
-    playerTag
+    playerTag,
+    startPosition
   ) {
     var playerFaction = inventory.getTag("global", "playerFaction");
     var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    var firstPosition = startPosition || 0;
 
     _.forEach(allies, function (liveAlly, index) {
       var ally = _.cloneDeep(liveAlly);
@@ -186,7 +193,7 @@ define([
       ally.personality = applySubcommanderFabberTech(ally.personality, cards);
       ally.commanderCount = applySubcommanderDuplicationTech(cards);
       ally.faction = playerFaction;
-      var allyIndex = index + 1;
+      var allyIndex = refereeCoop.alliedColourIndex(firstPosition + index);
       var subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
       armies.push(subcommanderArmy);
     });

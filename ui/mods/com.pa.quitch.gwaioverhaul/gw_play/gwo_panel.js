@@ -151,9 +151,11 @@ function gwoWarInfoPanel(gwoSettings) {
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_colour.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
       ],
-      function (gwoColour, gwoVersion) {
+      function (gwoColour, gwoCoopColour, gwoRefereeCoop, gwoVersion) {
         /* War Information */
         model.gwoVersion = ko.observable(gwoVersion);
 
@@ -221,6 +223,37 @@ function gwoWarInfoPanel(gwoSettings) {
         ];
         var factionIndex = inventory.getTag("global", "playerFaction");
         model.gwoFactionName = factions[factionIndex];
+        // Written once at war creation (gw_start/setup.js); no gw_play path changes
+        // it. It is the host's colour, and with shared armies every co-op commander
+        // fights under it - see coopColour below for the unshared case.
+        var playerColourPair = inventory.getTag("global", "playerColor");
+        var playerColour = gwoColour.rgb(playerColourPair);
+
+        // The colour this client will be given in the next battle. Shared armies are
+        // a single army, so everyone flies the host's colour; unshared armies are
+        // split one per client by gw_coop_referee.js, which colours army 0 with the
+        // host's faction colour and the rest from the custom-game lobby palette.
+        var coopColour = function (client, connectedClients) {
+          if (model.gwCampaignSharedControl()) {
+            return playerColour;
+          }
+
+          var ordered = gwoCoopColour.clientsInPlayerOrder(connectedClients);
+          var index = _.findIndex(ordered, function (candidate) {
+            return candidate.id === client.id && candidate.name === client.name;
+          });
+          var pair =
+            index < 0
+              ? undefined
+              : gwoCoopColour.pairsForPlayers(ordered.length, playerColourPair)[
+                  index
+                ];
+
+          // No pair means the palette ran out, which the referee treats as a reason
+          // to refuse the battle. Fall back to the host's colour rather than leaving
+          // the swatch blank.
+          return pair ? gwoColour.rgb(pair) : playerColour;
+        };
         var cards = inventory.cards();
         var loadoutId = cards[0].id;
         model.gwoLoadout = ko.observable("");
@@ -247,7 +280,7 @@ function gwoWarInfoPanel(gwoSettings) {
               gwoColour.pick(
                 factionIndex,
                 subcommander.color,
-                index + 1 // player uses the primary faction colour
+                gwoRefereeCoop.alliedColourIndex(index)
               )
             ),
             character: personality,
@@ -262,7 +295,9 @@ function gwoWarInfoPanel(gwoSettings) {
         // Keep commander view models stable so async loadout text does not reset during computed reevaluations - prevents flickering.
         var coopCommanderCache = {};
 
-        var updateCoopCommander = function (client, playerColour, human) {
+        var updateCoopCommander = function (client, human, connectedClients) {
+          // The name is part of the cache key, so a rename is a cache miss and the
+          // new name arrives on a freshly built object - nothing to update here.
           var cacheKey =
             String(client.id || "") + "::" + String(client.name || "");
           var commander = coopCommanderCache[cacheKey];
@@ -276,7 +311,10 @@ function gwoWarInfoPanel(gwoSettings) {
           if (!commander) {
             commander = {
               name: client.name,
-              color: playerColour,
+              // Observable because a client's colour is not fixed: it moves when
+              // army control is toggled, and when another client joins or leaves
+              // and shifts the army order.
+              color: ko.observable(),
               // The host's own loadout is already resolved locally via model.gwoLoadout.
               // game.findCoopPlayerInventoryData never returns a record for the host
               // (it only tracks synced remote clients), so without this the host's
@@ -289,8 +327,7 @@ function gwoWarInfoPanel(gwoSettings) {
             coopCommanderCache[cacheKey] = commander;
           }
 
-          commander.name = client.name;
-          commander.color = playerColour;
+          commander.color(coopColour(client, connectedClients));
 
           if (!commander.loadoutResolved) {
             record =
@@ -313,14 +350,11 @@ function gwoWarInfoPanel(gwoSettings) {
         };
 
         model.gwoPlayer = ko.computed(function () {
-          var playerColour = gwoColour.rgb(
-            inventory.getTag("global", "playerColor")
-          );
           var human = loc("!LOC:Human");
           var commanders = [
             {
               name: ko.observable().extend({ session: "displayName" }),
-              color: gwoColour.rgb(inventory.getTag("global", "playerColor")),
+              color: playerColour,
               character: model.gwoLoadout,
             },
           ];
@@ -334,7 +368,7 @@ function gwoWarInfoPanel(gwoSettings) {
               var cacheKey =
                 String(client.id || "") + "::" + String(client.name || "");
               activeCommanderKeys[cacheKey] = true;
-              return updateCoopCommander(client, playerColour, human);
+              return updateCoopCommander(client, human, connectedClients);
             });
 
             // Leaving the co-op campaign causes a page refresh and a cache reinitialisation,
@@ -346,40 +380,13 @@ function gwoWarInfoPanel(gwoSettings) {
             });
           }
 
-          var mergedSubcommanders = [];
-
-          _.forEach(connectedClients, function (client) {
-            var inventoryData =
-              game.findCoopPlayerInventoryData &&
-              game.findCoopPlayerInventoryData({
-                id: client.id,
-                name: client.name,
-              });
-            var inventoryEntry = inventoryData && inventoryData.inventory;
-            var inventoryCards =
-              inventoryEntry && _.isArray(inventoryEntry.cards)
-                ? inventoryEntry.cards
-                : [];
-            if (inventoryEntry && _.isArray(inventoryEntry.minions)) {
-              mergedSubcommanders = mergedSubcommanders.concat(
-                _.map(inventoryEntry.minions, function (minion) {
-                  return {
-                    subcommander: minion,
-                    cards: inventoryCards,
-                  };
-                })
-              );
-            }
-          });
-
-          var subcommanders = mergedSubcommanders.length
-            ? mergedSubcommanders
-            : _.map(inventory.minions(), function (minion) {
-                return {
-                  subcommander: minion,
-                  cards: cards,
-                };
-              });
+          // Host-first, because that is the order the battle config numbers the
+          // subcommander colours in - the same order the human armies are handed out.
+          var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
+            inventory,
+            game,
+            gwoCoopColour.clientsInPlayerOrder(connectedClients)
+          );
 
           _.forEach(subcommanders, function (subcommanderData, index) {
             commanders.push(intelligence(subcommanderData, index));

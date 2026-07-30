@@ -28,6 +28,7 @@
 - Updated Pelican Upgrade Tech to allow any unit to fire while being transported
 - Commander selection has moved from its own column into a Commander button above Game Options
 - Loadout column tries to avoid dead space
+- A system's allied commander is coloured after every player's Sub Commanders, not just the host's
 
 ### Bugfix
 
@@ -71,6 +72,9 @@
 - A corrupted victory or loadout unlock record broke the loadout list, or the whole war setup screen, instead of being ignored
 - A malformed co-op player record stopped tech being offered at all, rather than just being skipped
 - A treasure planet holding a loadout you had unlocked since the war began offered it again as a bonus card alongside a short hand of tech; it now deals a full hand you can reroll, matching how co-op treats a player who already owns the loadout
+- GWO panel showed every co-op player the host's colour, rather than the colour they are given in battle
+- In co-op with per-player tech cards, every player's Sub Commanders fought in the faction's own colour, so they could not be told apart from each other or from the host
+- Intelligence panel showed a Legonis Machina opponent in its first Sub Commander's colour instead of the one it uses in battle
 
 ## v6.4.0 - 2026-07-24
 

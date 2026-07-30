@@ -36,14 +36,12 @@ function gwoIntelligence() {
         : commander.faction;
     };
 
-    var getFactionColourIndex = function (commander, index, currentFaction) {
-      var inventory = model.game().inventory();
-      var playerFaction = inventory.getTag("global", "playerFaction");
-      if (currentFaction === playerFaction) {
-        // allies appear after the player and sub commanders in colour
-        return index + inventory.minions().length + 1;
-      }
-      return commander.faction ? 0 : index + 1;
+    // Only an enemy minion omits faction; the primary AI and the FFA foes always
+    // carry one and take their faction's first colour. Testing the field's presence
+    // rather than its truthiness matters because faction 0 - Legonis Machina - is
+    // falsy, and used to be handed a minion's colour instead of index 0.
+    var getFactionColourIndex = function (commander, index) {
+      return _.isUndefined(commander.faction) ? index + 1 : 0;
     };
 
     var getFactionName = function (commander, currentFaction) {
@@ -194,8 +192,9 @@ function gwoIntelligence() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
       ],
-      function (gwoColour, gwoCards, gwoAI) {
+      function (gwoColour, gwoCards, gwoAI, gwoRefereeCoop) {
         var url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
         $.get(url, function (html) {
@@ -239,13 +238,19 @@ function gwoIntelligence() {
 
         var factionIndex = 0;
 
-        var intelligence = function (commander, index) {
-          factionIndex = setFactionIndex(commander, factionIndex);
-          var adjustedIndex = getFactionColourIndex(
-            commander,
-            index,
-            factionIndex
-          );
+        // allyPosition is set only for a star's ai.ally: its place in the player
+        // faction's allied colour sequence, after every player's subcommanders. The
+        // battle forces the ally into the player's faction (referee_config_setup.js's
+        // setupAlliedCommanders), so its own saved faction is not consulted - wars
+        // made before the ally carried one would otherwise fall to the enemy palette.
+        var intelligence = function (commander, index, allyPosition) {
+          var isStarAlly = !_.isUndefined(allyPosition);
+          factionIndex = isStarAlly
+            ? model.game().inventory().getTag("global", "playerFaction")
+            : setFactionIndex(commander, factionIndex);
+          var adjustedIndex = isStarAlly
+            ? gwoRefereeCoop.alliedColourIndex(allyPosition)
+            : getFactionColourIndex(commander, index);
           var name = commander.name;
           var eco = gwoAI.setAIEconRate(commander.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
           var numCommanders = getNumberOfCommanders(commander);
@@ -268,15 +273,21 @@ function gwoIntelligence() {
           };
         };
 
+        // Named so the _.map calls below can pass it without also handing it lodash's
+        // third collection argument, which intelligence() would read as allyPosition.
+        var intelligenceOf = function (commander, index) {
+          return intelligence(commander, index);
+        };
+
         var measureThreat = function (ai) {
           var commanders = [];
           var totalThreat = 0;
           commanders.push(intelligence(ai, 0));
           if (ai.minions) {
-            commanders = commanders.concat(_.map(ai.minions, intelligence));
+            commanders = commanders.concat(_.map(ai.minions, intelligenceOf));
           }
           if (ai.foes) {
-            commanders = commanders.concat(_.map(ai.foes, intelligence));
+            commanders = commanders.concat(_.map(ai.foes, intelligenceOf));
             _.forEach(ai.foes, function (army) {
               var commanderCount = 1;
               if (army.commanderCount) {
@@ -333,16 +344,20 @@ function gwoIntelligence() {
           var commanders = [];
           commanders.push(intelligence(ai, 0));
           if (ai.minions) {
-            var minions = _.map(ai.minions, intelligence);
+            var minions = _.map(ai.minions, intelligenceOf);
             commanders = commanders.concat(minions);
           }
           if (ai.foes) {
-            var foes = _.map(ai.foes, intelligence);
+            var foes = _.map(ai.foes, intelligenceOf);
             commanders = commanders.concat(foes);
           }
           if (ai.ally) {
-            var commander = intelligence(ai.ally, 0);
-            commanders.push(commander);
+            var game = model.game();
+            var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
+              game.inventory(),
+              game
+            );
+            commanders.push(intelligence(ai.ally, 0, subcommanders.length));
           }
           return commanders;
         };
