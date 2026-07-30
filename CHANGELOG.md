@@ -65,7 +65,6 @@
 - Ten AI personalities built roughly twice as many Frigates as intended in naval games, from a retired build file that was not gated to the personality it belongs to
 - Intelligence panel labelled surface area k² instead of km²
 - Allied commanders, and any AI given the vanilla penchant, were assigned an empty personality tag
-- Opponent AI and Ally AI labels, their tooltips, and the AI Settings header stayed in English in other languages
 - Winning a Custom difficulty war recorded a meaningless loadout badge, which could overwrite a real one
 - A co-op player whose stored id no longer matched their connection had their tech ignored, rather than being matched by name
 - A corrupted victory or loadout unlock record broke the loadout list, or the whole war setup screen, instead of being ignored
