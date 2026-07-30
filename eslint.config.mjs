@@ -136,15 +136,22 @@ export default defineConfig([
       // sloppy-mode rules, so the scoping you write is not the scoping you get.
       // Declare it outside the block, or assign a function expression to a var.
       "es-x/no-block-scoped-functions": "error",
-      // These two DO exist in PA's engine (verified against Chrome/40.0.2214.28 over
-      // the DevTools protocol) but are only half-implemented: the one-argument form
-      // works, while the position/endPosition second argument is ignored outright, so
+      // Chrome 40 lacks both (MDN dates them to Chrome 41, which is correct), so the
+      // guard in ui/main/shared/js/helpers.js:130-142 passes and PA's own polyfill
+      // installs - taking a single parameter:
+      //     String.prototype.startsWith = function (prefix) {
+      //         return this.substring(0, prefix.length) === prefix;
+      //     };
+      // A second argument is therefore dropped in silence, so
       // "foobar".startsWith("bar", 3) is false and "foobar".endsWith("foo", 3) is
-      // false - both should be true. A feature detect finds them and they then return
-      // silently wrong answers, which is worse than their being absent, so they stay
-      // forbidden. Use indexOf/slice. (MDN dates both to Chrome 41, which is right
-      // for the complete implementation.) String.prototype.includes and .repeat are
-      // genuinely absent here, as is the legacy .contains spelling.
+      // false - both should be true. Verified against Chrome/40.0.2214.28 over the
+      // DevTools protocol: the installed function is not native code, its arity is 1,
+      // and its source is the above, in the main, atlas and uberbar contexts alike.
+      // That the polyfill installed at all is itself the proof the natives are absent,
+      // since it only runs when typeof is not 'function'. A wrong answer is worse than
+      // a missing method - nothing throws, the logic just takes the wrong branch - so
+      // they stay forbidden. Use indexOf/slice. String.prototype.includes and .repeat
+      // are genuinely absent here, as is the legacy .contains spelling.
       "es-x/no-string-prototype-startswith": "error",
       "es-x/no-string-prototype-endswith": "error",
     },
