@@ -142,11 +142,11 @@ function gwoWarInfoPanel(gwoSettings) {
       options(model.gwoOptions, element[0], element[1]);
     }
 
-    function gwoHasDuplicatedSubcommanders(playerCards) {
+    var gwoHasDuplicatedSubcommanders = function (playerCards) {
       return _.some(playerCards, {
         id: "gwaio_upgrade_subcommander_duplication",
       });
-    }
+    };
 
     requireGW(
       [
