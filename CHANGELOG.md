@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Prevent edge case where the player's faction would not be removed from the available enemy faction pool
+- Save Game is translated once more
 
 ## v6.5.0 - 2026-07-30
 
