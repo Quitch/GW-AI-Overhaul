@@ -87,7 +87,7 @@ function gwoLiveGameMenu() {
 
         if (model.canSave()) {
           menu.splice(6, 0, {
-            label: "Save Game ",
+            label: "!LOC:Save Game",
             action: "menuSaveWar",
           });
         }

@@ -34,8 +34,22 @@ class NotShippedError extends Error {
 }
 
 const moduleRegistry = new Map();
+const stubbedModules = new Map();
 const loadStack = [];
 let globalsInstalled = false;
+
+// Opt-in escape hatch from the NOT_SHIPPED boundary above: hands `exports` to anything
+// depending on `id` (matched against the dependency string exactly as the define()
+// array writes it, e.g. "shared/gw_common"), instead of throwing.
+//
+// This does NOT weaken the default. A caller has to name the base-game module and
+// supply the stand-in itself, so nothing falls back silently to a fake engine - the
+// failure mode the boundary exists to prevent. Use it only where excluding those files
+// would leave a check vacuously green: 61 of the 237 cards - including every loadout
+// card - depend on shared/gw_common, so a sweep that skips them isn't a sweep.
+function registerModuleStub(id, exports) {
+  stubbedModules.set(id, exports);
+}
 
 function resolveBareId(entry) {
   const slash = entry.indexOf("/");
@@ -170,6 +184,10 @@ function installGlobals() {
 function loadCouiModule(entry) {
   installGlobals();
 
+  if (stubbedModules.has(entry)) {
+    return stubbedModules.get(entry);
+  }
+
   const fsPath = resolveEntryPath(entry);
   if (moduleRegistry.has(fsPath)) {
     return moduleRegistry.get(fsPath);
@@ -220,5 +238,6 @@ module.exports = {
   REPO_ROOT: REPO_ROOT,
   installGlobals: installGlobals,
   loadCouiModule: loadCouiModule,
+  registerModuleStub: registerModuleStub,
   requireShippedModule: requireShippedModule,
 };

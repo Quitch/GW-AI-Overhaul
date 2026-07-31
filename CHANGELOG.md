@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v6.5.1 - 2026-07-31
+
+### Bugfix
+
+- Prevent edge case where the player's faction would not be removed from the available enemy faction pool
+- Save Game is translated once more
+- Cluster can no longer build Angels using advanced air fabricators granted by the Rapid Deployment Commander
+- Rapid Deployment Commander no longer overwrites the build list of Cluster's Colonel Sub Commanders
+
 ## v6.5.0 - 2026-07-30
 
 ### Added
