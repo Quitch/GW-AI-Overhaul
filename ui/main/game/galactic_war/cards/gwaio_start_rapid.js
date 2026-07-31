@@ -28,6 +28,20 @@ define([
         } else {
           GWCStart.buff(inventory);
 
+          var playerIsCluster =
+            inventory.getTag("global", "playerFaction") === 4;
+
+          // Cluster's Angels and Colonels are Sub Commanders, and cluster_setup.js
+          // tags them UNITTYPE_NoBuild to keep them out of every build list. These
+          // replacements run after that (gwc_start is always buffed first), so
+          // without the exclusion an advanced fabber's bare `Mobile & <layer>`
+          // clause would match a Sub Commander and hand Cluster a buildable one.
+          // The basic fabbers need no guard - their clauses require Basic, which
+          // no Sub Commander carries.
+          var advancedBotFabberBuilds =
+            "(Mobile & Bot | Land & Structure & Advanced - Factory | " +
+            "FabAdvBuild | FabBuild - Factory | Titan & Bot) & Custom58 - NoBuild";
+
           var mods = [
             {
               file: gwoUnit.airFactory,
@@ -107,7 +121,7 @@ define([
               path: "buildable_types",
               op: "replace",
               value:
-                "(Mobile & Air | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Air) & Custom58",
+                "(Mobile & Air | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Air) & Custom58 - NoBuild",
             },
             {
               file: gwoUnit.botFabber,
@@ -120,15 +134,7 @@ define([
               file: gwoUnit.botFabberAdvanced,
               path: "buildable_types",
               op: "replace",
-              value:
-                "(Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot) & Custom58",
-            },
-            {
-              file: gwoUnit.colonel,
-              path: "buildable_types",
-              op: "replace",
-              value:
-                "(Mobile & Bot | Land & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & Bot) & Custom58",
+              value: advancedBotFabberBuilds,
             },
             {
               file: gwoUnit.vehicleFabber,
@@ -142,7 +148,7 @@ define([
               path: "buildable_types",
               op: "replace",
               value:
-                "(Mobile & Tank | Structure & Land & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & (Tank | Naval)) & Custom58",
+                "(Mobile & Tank | Structure & Land & Advanced - Factory | FabAdvBuild | FabBuild - Factory | Titan & (Tank | Naval)) & Custom58 - NoBuild",
             },
             {
               file: gwoUnit.navalFabber,
@@ -156,7 +162,7 @@ define([
               path: "buildable_types",
               op: "replace",
               value:
-                "(Mobile & Naval | Naval & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory) & Custom58",
+                "(Mobile & Naval | Naval & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory) & Custom58 - NoBuild",
             },
             // fix placement issues
             {
@@ -184,6 +190,18 @@ define([
               value: "WL_Orbital",
             },
           ];
+          // Cluster's Colonels are Sub Commanders, not fabbers - cluster_setup.js
+          // gives them the commander build list, and this replacement would
+          // overwrite it and leave them unable to build factories while their
+          // Angel counterparts still could.
+          if (!playerIsCluster) {
+            mods.push({
+              file: gwoUnit.colonel,
+              path: "buildable_types",
+              op: "replace",
+              value: advancedBotFabberBuilds,
+            });
+          }
           // Let orbital fabbers build advanced orbital once the player has T2
           // orbital access. This has to be a card check, not a unit check: buff()
           // runs with a units list that applyCards has just cleared and refilled
