@@ -538,6 +538,25 @@ function gwoSetup() {
           }
         };
 
+        // model.playerFactionIndex is a raw observable; the base game only ever
+        // resolves a faction from it through its playerFaction computed, which
+        // wraps with % GWFactions.length (gw_start.js). That was academic in
+        // vanilla, where GWFactions is always four entries, but this mod's
+        // gw_factions.js appends Cluster only under Titans - so an index of 4
+        // saved while playing as Cluster can be restored (gw_start/ui.js's
+        // restorePreviousSettings, out of localStorage) into a session running
+        // classic PA content, where it addresses nothing.
+        //
+        // Unwrapped, that index makes aiFactions.splice() remove no faction at
+        // all - the player's own faction becomes an enemy and the war gets a
+        // full four enemy factions instead of three - and makes
+        // GWFactions[playerFaction] undefined when an allied commander is
+        // rolled, which throws inside a jQuery deferred callback and so escapes
+        // .fail(onWarGenerationError) entirely (see selectMinion's note above).
+        var playerFactionIndex = function () {
+          return model.playerFactionIndex() % GWFactions.length;
+        };
+
         // replicates the functionality of model.makeGame() but
         // only generates the galaxy once the player clicks Go To War
         model.navToNewGame = function () {
@@ -574,7 +593,7 @@ function gwoSetup() {
           var sizes = GW.balance.numberOfSystems;
           var size = sizes[model.newGameSizeIndex()] || 40;
           var aiFactions = _.range(GWFactions.length);
-          aiFactions.splice(model.playerFactionIndex(), 1);
+          aiFactions.splice(playerFactionIndex(), 1);
           if (model.gwoDifficultySettings.factionScaling()) {
             var numFactions = model.newGameSizeIndex() + 1;
             aiFactions = _.sample(aiFactions, numFactions);
@@ -599,7 +618,7 @@ function gwoSetup() {
           model.updateCommander();
           game
             .inventory()
-            .setTag("global", "playerFaction", model.playerFactionIndex());
+            .setTag("global", "playerFaction", playerFactionIndex());
           game.inventory().setTag("global", "playerColor", model.playerColor());
 
           var buildGalaxy = game.galaxy().build({
@@ -1015,7 +1034,7 @@ function gwoSetup() {
                   !startCardBreaksAllies &&
                   gameModeEnabled(difficulty.alliedCommanderChance())
                 ) {
-                  var playerFaction = model.playerFactionIndex();
+                  var playerFaction = playerFactionIndex();
                   var allyMinions = GWFactions[playerFaction].minions;
                   if (difficulty.aiAlly() === "Queller") {
                     allyMinions = gwoAI.quellerCompatibleMinions(allyMinions);
