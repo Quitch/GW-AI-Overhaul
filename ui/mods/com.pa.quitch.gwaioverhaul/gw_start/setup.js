@@ -303,12 +303,13 @@ function gwoSetup() {
       // snapshot below if we push it back - otherwise a Custom difficulty player's
       // modifier picks revert to the last preset's on the next scene load.
       //
-      // Do it here, once, and only when it actually changed. personalityTags is a
-      // dependency of the difficulty computed in gw_start/ui.js, which calls
-      // $("select").selectpicker("refresh") on every re-evaluation. Writing it from
+      // Do it here, once, and only when it actually changed. Writing it from
       // setAIPersonality instead - which runs per AI, per minion, per foe and per
-      // ally - re-rendered every dropdown on the page hundreds of times and added
-      // ten seconds to Go To War.
+      // ally - added ten seconds to Go To War back when personalityTags was a
+      // dependency of the difficulty computed in gw_start/ui.js, so each write
+      // re-rendered every dropdown on the page. That computed no longer reads the
+      // observable it writes, but a single write at save time is still the right
+      // shape: the picker has no binding to keep it in step with per-AI churn.
       var pickedTags = $("#gwo-personality-picker").val() || [];
       if (!_.isEqual(pickedTags, settings.personalityTags())) {
         settings.personalityTags(pickedTags);
