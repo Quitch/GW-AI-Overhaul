@@ -9,6 +9,9 @@
 // matching production code, which calls model.game()/game.galaxy() etc. repeatedly
 // rather than caching a single snapshot.
 
+var CLUSTER_FACTION = 4;
+var DEFAULT_FACTION = 1;
+
 // Canonical scenario-axis values so every test file iterates the same matrix instead
 // of each re-inventing its own list of brains/enemy-types/etc.
 var SCENARIO_AXES = {
@@ -19,9 +22,6 @@ var SCENARIO_AXES = {
   COOP_MODES: ["solo", "sharedTech", "perPlayerTech"],
 };
 
-// makeInventory(overrides) -> a plain inventory-shaped fixture exposing exactly the
-// methods production code calls: aiMods(), cards(), minions(), units(), mods(),
-// getTag(namespace, key).
 function makeInventory(overrides) {
   var data = Object.assign(
     {
@@ -59,20 +59,10 @@ function makeInventory(overrides) {
 
 // buildGame(options) -> { game, star, ai, inventory }
 //
-// options:
-//   aiInUse: "Titans" | "Queller" | "Penchant"          (default "Titans")
-//   aiAllyInUse: same enum, optional override for gwaio.aiAlly (mixed-brain fights)
-//   difficultyName: optional, sets system.gwaio.difficulty
-//   enemyType: "guardians" | "cluster" | "neither"       (default "neither")
-//   subcommanderType: "cluster" | "notCluster" | "none"  (default "notCluster")
-//     drives inventory's global:playerFaction tag (4 for cluster, 1 otherwise)
-//   aiMods: array (default [])                           -> inventory.aiMods()
-//   smartSubcommanders: boolean (default false)          -> adds the subcommander
-//     tactics tech card to inventory.cards()
-//   foes: array of ai-shaped foe descriptors (default []) -> ai.foes
-//   perPlayerTech: boolean (default false)                -> game.perPlayerTechCards()
-//   viewerInventoryData: map of client id -> inventory data record, consumed by a
-//     fake game.findCoopPlayerInventoryData(client)
+// The options that aren't self-evident from the defaults below:
+//   subcommanderType drives inventory's global:playerFaction tag
+//   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
+//   viewerInventoryData is consumed by a fake game.findCoopPlayerInventoryData(client)
 //
 // Connected clients (for model.gwCampaignConnectedClients()) are passed separately
 // to installModel(game, connectedClients), not through buildGame's options.
@@ -91,8 +81,10 @@ function buildGame(options) {
   var viewerInventoryData = opts.viewerInventoryData || {};
 
   var mirrorMode = enemyType === "guardians";
-  var enemyFaction = enemyType === "cluster" ? 4 : 1;
-  var playerFaction = subcommanderType === "cluster" ? 4 : 1;
+  var enemyFaction =
+    enemyType === "cluster" ? CLUSTER_FACTION : DEFAULT_FACTION;
+  var playerFaction =
+    subcommanderType === "cluster" ? CLUSTER_FACTION : DEFAULT_FACTION;
 
   var inventory = makeInventory({
     aiModsList: aiMods,
@@ -161,9 +153,7 @@ function buildGame(options) {
   return { game: game, star: star, ai: ai, inventory: inventory };
 }
 
-// installModel(game) -> restore()
-// Sets global.model to a minimal model.game()/model.gwCampaignConnectedClients()
-// stand-in. Call restore() (e.g. in afterEach) to avoid leaking state across tests.
+// Call restore() in afterEach or the stub leaks into the next test.
 function installModel(game, connectedClients) {
   var previousModel = global.model;
   global.model = {
@@ -181,6 +171,8 @@ function installModel(game, connectedClients) {
 
 module.exports = {
   SCENARIO_AXES: SCENARIO_AXES,
+  CLUSTER_FACTION: CLUSTER_FACTION,
+  DEFAULT_FACTION: DEFAULT_FACTION,
   makeInventory: makeInventory,
   buildGame: buildGame,
   installModel: installModel,

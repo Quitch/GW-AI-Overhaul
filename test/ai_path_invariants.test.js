@@ -197,14 +197,10 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
   it("a per-player-tech viewer's path is identical whether or not the fight is Guardians", () => {
     const inventory = { aiMods: () => [{ op: "load" }], cards: () => [] };
 
-    const pathUnderGuardians = perPlayerTechHook.getViewerSubcommanderAiPath(
-      refereeAIPaths,
-      subcommanderTech,
-      "Titans",
-      inventory,
-      ".player0"
-    );
-    const pathWithoutGuardians = perPlayerTechHook.getViewerSubcommanderAiPath(
+    // getViewerSubcommanderAiPath has no guardians parameter, so the viewer path
+    // cannot vary with the real fight's guardians state - unlike the shared-tech
+    // ally path below, which does react to it. Pinned as the documented asymmetry.
+    const path = perPlayerTechHook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
       "Titans",
@@ -212,12 +208,7 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
       ".player0"
     );
 
-    // Not a meaningful engine-state comparison (the function has no guardians
-    // parameter to vary) - this documents that the per-player-tech viewer path is
-    // computed the same way regardless of the real fight's guardians state, unlike
-    // the shared-tech ally path below, which does react to it.
-    assert.equal(pathUnderGuardians, pathWithoutGuardians);
-    assert.equal(pathUnderGuardians, "/pa/ai_subcommander/player_.player0/");
+    assert.equal(path, "/pa/ai_subcommander/player_.player0/");
   });
 
   it("contrast: the shared-tech ally path DOES react to guardians (falls back to the vanilla brain path)", () => {
@@ -232,13 +223,9 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
 });
 
 describe("invariant: mixed-brain fights (aiAlly differs from ai) never collide", () => {
-  // The existing sweep above only ever sets aiInUse, so subcommanderPath is always
-  // computed from the SAME brain as enemyPath (aiInUse("subcommander") falls back to
-  // aiInUse("enemy") whenever aiAlly is unset). Mixed-brain fights (system.gwaio.aiAlly
-  // set to a different brain than system.gwaio.ai) are a real, supported
-  // configuration - buildGame() already exposes aiAllyInUse for this - but were never
-  // swept. Differing brains resolve to structurally different base paths via
-  // getAIPathSource's switch, so unlike the same-brain sweep above, no
+  // Mixed-brain fights (system.gwaio.aiAlly set to a different brain than
+  // system.gwaio.ai) resolve to structurally different base paths via
+  // getAIPathSource's switch, so unlike the same-brain sweep above no
   // isKnownOverlapCase-style exception is expected here at all.
   for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
     for (const aiAllyInUse of SCENARIO_AXES.AI_BRAINS) {
@@ -382,7 +369,6 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
         filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].builders,
         ["hostMarker", "v1Marker", "v2Marker"]
       );
-      // Each viewer's own scoped destination stays isolated to their own mod only.
       assert.deepEqual(
         filesObj["/pa/ai_subcommander/player_.player0/fabber_builds/x.json"]
           .build_list[0].builders,

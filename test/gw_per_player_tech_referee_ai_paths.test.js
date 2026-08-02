@@ -1,9 +1,9 @@
 "use strict";
 
 // Unit tests for the per-player-tech referee's per-viewer ai_path resolution. The
-// testable helpers live in gw_play/per_player_tech.js (a plain define() over lodash
-// only); the referee file itself depends on the unshipped shared/gw_common and is
-// coverage-excluded glue, so this loads the extracted module directly.
+// testable helpers live in gw_play/per_player_tech.js; the referee file itself depends
+// on the unshipped shared/gw_common and cannot load here, so this loads the extracted
+// module directly.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -257,7 +257,6 @@ describe("getViewerSubcommanderAiPath", () => {
 
     assert.equal(clusterViewerPath, "/pa/ai_subcommander/player_.player0/");
     assert.ok(!clusterViewerPath.includes("ai_cluster"));
-    // Two Cluster-faction viewers still never collide with each other.
     assert.notEqual(clusterViewerPath, otherClusterViewerPath);
   });
 });

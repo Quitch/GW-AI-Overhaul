@@ -44,7 +44,6 @@ describe("isolatedStars", () => {
   });
 
   it("treats a star missing from the sparse connections array as isolated", () => {
-    // Star 1 never appeared in an edge, so connections has a hole at index 1.
     const connections = connectionsFrom([[0, 2]]);
     assert.equal(connections[1], undefined);
     assert.deepEqual(galaxyConnect.isolatedStars(3, connections), [1]);
@@ -57,8 +56,7 @@ describe("isolatedStars", () => {
   });
 
   it("counts trailing stars beyond the connections array length", () => {
-    // connections only extends to the highest star index seen in an edge, so a trailing
-    // isolated star is past the end of the array entirely.
+    // connections only extends to the highest index seen in an edge.
     const connections = connectionsFrom([[0, 1]]);
     assert.deepEqual(galaxyConnect.isolatedStars(4, connections), [2, 3]);
   });

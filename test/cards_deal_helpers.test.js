@@ -2,8 +2,7 @@
 
 // Unit tests for gw_play/cards_deal_helpers.js, the pure card-dealing helpers carved
 // out of gw_play/cards.js (a self-invoking scene script that can't be loaded/tested in
-// place). The module's define() has no deps and touches only the lodash global, so it
-// loads cleanly under the Node AMD harness with no engine stubs.
+// place).
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -192,7 +191,6 @@ describe("buildPendingStartLoadoutCard", () => {
       minions: [{ x: 1 }],
       allowOverflow: true,
     });
-    // A clone, not the same reference.
     assert.notEqual(result, input);
     assert.notEqual(result.minions[0], input.minions[0]);
   });

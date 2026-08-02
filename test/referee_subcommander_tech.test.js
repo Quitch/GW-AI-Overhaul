@@ -2,10 +2,9 @@
 
 // Unit tests for shared/referee_subcommander_tech.js: the three tech-card mutators
 // that rewrite an AI personality when the matching subcommander upgrade card is held.
-// The module is a plain define(function(){...}) over lodash only (no engine globals),
-// so it loads directly under the Node AMD harness. Existing suites already exercise
-// hasSmartSubcommanders and the card-absent branches; these cover the card-present
-// true-branches, which encode the actual AI behaviour change.
+// Existing suites already exercise hasSmartSubcommanders and the card-absent
+// branches; these cover the card-present true-branches, which encode the actual AI
+// behaviour change.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -36,7 +35,7 @@ describe("applySubcommanderTacticsTech", () => {
     assert.equal(result.enable_commander_danger_responses, true);
     assert.ok(!result.personality_tags.includes("SlowerExpansion"));
     assert.ok(result.personality_tags.includes("PreventsWaste"));
-    assert.ok(result.personality_tags.includes("SomethingElse")); // untouched tags stay
+    assert.ok(result.personality_tags.includes("SomethingElse"));
   });
 
   it("leaves the personality unchanged when the tactics card is absent", () => {

@@ -241,7 +241,6 @@ describe("setupPrimaryAiAndMinions", () => {
     assert.ok(Math.abs(guardianPersonality.percent_air - 2 / 3) < 1e-9);
     assert.ok(Math.abs(guardianPersonality.percent_bot - 1 / 3) < 1e-9);
     assert.equal(guardianPersonality.percent_orbital, 0);
-    // Queller: dominant air share tags the personality "queller" + "air".
     assert.deepEqual(guardianPersonality.personality_tags, ["queller", "air"]);
     // penchantName is appended to the display_name via getAIPersonalityName.
     assert.ok(armies[0].personality.display_name.includes("!LOC:Heavy"));

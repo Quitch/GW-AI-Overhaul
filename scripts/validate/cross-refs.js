@@ -126,7 +126,7 @@ function checkUnitReferencesInCards() {
     const src = fs.readFileSync(path.join(CARDS_DIR, file), "utf8");
     const paramName = findUnitsParamName(src);
     if (!paramName) {
-      continue; // this card doesn't depend on units.js at all
+      continue;
     }
     checkedCards++;
 

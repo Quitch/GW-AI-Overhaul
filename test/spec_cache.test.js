@@ -57,7 +57,7 @@ describe("genUnitSpecs - graph walk & tagging", () => {
     const { fetch } = makeFetch(files);
     const results = await specCache.genUnitSpecs([TANK], ".x", { fetch });
 
-    // Every reachable file plus the synthetic unit_list entry, all tagged.
+    // unit_list is synthesized, not fetched.
     for (const id of Object.keys(files)) {
       assert.ok(id + ".x" in results, "missing tagged spec: " + id + ".x");
     }
@@ -109,10 +109,8 @@ describe("genUnitSpecs - fetch caching", () => {
       "second tag should fetch nothing new - everything is cached"
     );
 
-    // No file id was fetched more than once in total.
     assert.equal(new Set(calls).size, calls.length);
 
-    // Both tag outputs are fully populated and independently tagged.
     assert.equal(first[TANK + ".x"].base_spec, "/pa/units/base_bot.json.x");
     assert.equal(second[TANK + ".y"].base_spec, "/pa/units/base_bot.json.y");
   });
@@ -136,7 +134,6 @@ describe("genUnitSpecs - fetch caching", () => {
   });
 
   it("skips a failed fetch without caching the failure (a later tag can retry)", async () => {
-    // base_bot is initially missing, so the first walk can't tag it.
     const partial = Object.assign({}, files);
     delete partial["/pa/units/base_bot.json"];
     const { fetch, calls } = makeFetch(partial);
@@ -144,7 +141,6 @@ describe("genUnitSpecs - fetch caching", () => {
     const first = await specCache.genUnitSpecs([TANK], ".x", { fetch });
     assert.ok(!("/pa/units/base_bot.json.x" in first));
 
-    // Now provide it; a fresh tag should fetch it (the failure wasn't cached).
     partial["/pa/units/base_bot.json"] = { hp: 100 };
     const before = calls.length;
     const second = await specCache.genUnitSpecs([TANK], ".y", { fetch });
