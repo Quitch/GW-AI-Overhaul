@@ -1,4 +1,3 @@
-/* The loadout column and the AI settings column are laid out identically. */
 #new-game-right.col,
 #gwo-ai-settings.col {
   display: flex;
@@ -19,9 +18,8 @@
   flex-grow: 1;
 }
 
-/* gwo_start.css is injected ahead of the scene's own gw_start.css, so this has
-   to out-specify .gw-start-coop-settings-panel's 460px rather than rely on
-   source order. */
+/* gw_start.css sets .gw-start-coop-settings-panel to 460px. Qualified rather than
+   bare so the override does not depend on injection order. */
 .gw-start-coop-settings-panel.gwo-game-options-modal-panel {
   width: 520px;
 }
@@ -102,21 +100,14 @@
   flex: 1 1 0;
 }
 
-/* boot.css sets box-sizing: border-box on everything, so the base rule's
-   max-width of 640px plus a card's 16px margin means a card claims 656px of a
-   flex line. The pixel figures below are for the columns this stylesheet
-   actually ships alongside - Setup 320px and AI Settings 300px, with the base
-   game's Commander column removed in ui.js - which leaves the card line 1271px
-   wide at 1920. Two cards therefore miss fitting by a mere 20.5px each and a
-   column's worth of space goes unused, and the near-miss repeats at every 16:9
-   step up. Giving the cards a flex-basis below that break-even moves the wrap
-   decision off max-width, which is then free to stay a ceiling on how wide a
-   lone card may grow, so displays too narrow to gain a column are unaffected.
-   flex-grow shares out whatever the line has left, so a row still fills
-   exactly. 530px is the basis yielding precisely one extra column at
-   1920/2560/2880/3072/3840 rather than overshooting to two at 4K. All three
-   card states need the rule: they share a flex line, and the base stylesheet
-   styles card_active and card_locked as standalone states. */
+/* The base max-width of 640px plus a card's 16px margin means a card claims 656px
+   of the flex line, which just misses fitting an extra column at every 16:9 step.
+   A flex-basis below that break-even moves the wrap decision off max-width, which
+   stays a ceiling on how wide a lone card may grow; flex-grow then fills the row
+   exactly. 530px is the basis that gains exactly one column at 1920/2560/2880/
+   3072/3840 without overshooting to two at 4K. All three card states need the
+   rule - they share a flex line, and the base stylesheet styles card_active and
+   card_locked as standalone states. */
 #loadouts #start-cards > .card,
 #loadouts #start-cards > .card_active,
 #loadouts #start-cards > .card_locked {
@@ -133,7 +124,6 @@
   align-self: flex-start;
 }
 
-/* The Game Options and Commander buttons are the same control in two places. */
 #gwo-game-options-panel,
 #gwo-commander-panel {
   margin: 0 0 16px;
@@ -148,8 +138,6 @@
   text-transform: uppercase;
 }
 
-/* gwo_start.css is injected ahead of the scene's own gw_start.css, so anything
-   overriding a base rule has to out-specify it rather than rely on order. */
 .gw-start-coop-settings-panel.gwo-commander-modal-panel {
   display: flex;
   flex-direction: column;
@@ -197,8 +185,8 @@
   flex-shrink: 0;
 }
 
-/* Qualified with .btn_std_ix because boot.css loads after this file and its
-   .btn_std_ix sets a transparent border. */
+/* boot.css's .btn_std_ix sets a 1px transparent border. Qualified so this border
+   wins regardless of injection order. */
 .gwo-commander-picker-item.btn_std_ix {
   display: inline-block;
   box-sizing: content-box;

@@ -1,4 +1,6 @@
-// Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul
+// Vendored from wondible's Section of Foreign Intelligence for Galactic War
+// (Apache 2.0, see LICENSE.txt); modified by Quitch - changes documented at
+// https://github.com/Quitch/GW-AI-Overhaul
 var gwoIntelligenceLoaded;
 
 function gwoIntelligence() {
