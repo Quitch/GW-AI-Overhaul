@@ -122,23 +122,20 @@ out-specify rather than rely on source order.
 
 ## Localisation
 
-A file containing `!LOC:` strings declares a **string-extraction namespace** with a
-directive on line 1:
+Base-game files carrying `!LOC:` strings open with a `// !LOCNS:<namespace>`
+directive on line 1. **GWO deliberately does not carry it**, including in shadowed
+copies of files that have it upstream.
 
-```js
-// !LOCNS:galactic_war
-```
-
-This is a build-time directive, not a runtime one. Nothing in the shipped game
+It is a build-time directive, not a runtime one. Nothing in the shipped game
 parses it — all 151 occurrences in the base install are the directive itself, and
 `localization.js` has no namespace handling. It tells Uber's string-extraction
 tooling which translation file (`galactic_war.json`, `leaderboard.json`, …) a
-file's strings belong in; at runtime `loc()` resolves against the merged tables
-regardless.
+file's strings belong in. GWO's strings never go through that tooling, so the
+directive would do nothing here; at runtime `loc()` resolves against the merged
+tables regardless.
 
-So dropping it does not break translation lookup. Shadowed files should still
-preserve it — it is stock content in a file that exists to be diffed against
-stock — with any GWO marker on line 2. See [`shadowing.md`](shadowing.md).
+Don't add it back to a shadowed file "to match stock" — it has no effect and no
+consumer in this repo.
 
 `loc()` lookups are **case sensitive**, and the shipped translation tables are
 inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has

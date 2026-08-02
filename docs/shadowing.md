@@ -110,11 +110,10 @@ what a re-sync after a PA patch is done against.
 The convention is a `// GWO - …` prefix, though some older files use a bare
 descriptive line.
 
-**Do not displace a base-game directive to make room for the marker.** Stock line
-1 of most files under `cards/` and `shared/js/` is `// !LOCNS:galactic_war`, the
-string-extraction namespace for that file's `!LOC:` strings. It has no runtime
-effect (see [`constraints.md`](constraints.md)), but it is stock content in a file
-whose whole purpose is to be diffable against stock. The marker goes on line 2.
+The marker goes on line 1, replacing stock's `// !LOCNS:galactic_war` where the
+upstream file has one. That directive is build-time only and has no consumer in
+this repo, so it is deliberately not carried — see
+[`constraints.md`](constraints.md).
 
 ## Registry files have no append mechanism
 
