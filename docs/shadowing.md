@@ -80,7 +80,7 @@ direction:
 | `gwc_`   | 69    | **Shadows** a stock card of the same name  |
 | `gwaio_` | 162   | GWO-authored, new file at a base-game path |
 | `nem_`   | 4     | GWO-authored (Nemuneko set)                |
-| `tgw_`   | 2     | GWO-authored                               |
+| `tgw_`   | 2     | GWO-authored (trialq set)                  |
 
 Being at a base-game _path_ is not the same as shadowing a base-game _file_. Only
 the `gwc_` cards replace something; the other 168 simply live in the same
