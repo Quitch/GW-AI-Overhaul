@@ -1,6 +1,9 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
 ], function (inventory) {
+  var AMMUNITION_TECH = 1;
+  var ARMOUR_TECH = 2;
+  var COMBAT_TECH = 6;
   var multiply = function (units, multiplier, paths) {
     var outputArray = [];
     if (!_.isArray(paths)) {
@@ -160,11 +163,11 @@ define([
     foundationTech[6] = foundationTech[6].concat(
       multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
     );
-    // Requires setupAITech1AmmunitionTech and setupAITech2ArmourTech to have
-    // already populated faction[1]/faction[2] - do not reorder the setup
-    // calls below without keeping this after both.
     _.forEach(factionTechs, function (faction) {
-      faction[6] = faction[6].concat(faction[1], faction[2]); // Add ammo and armour tech
+      faction[COMBAT_TECH] = faction[COMBAT_TECH].concat(
+        faction[AMMUNITION_TECH],
+        faction[ARMOUR_TECH]
+      );
     });
   };
 

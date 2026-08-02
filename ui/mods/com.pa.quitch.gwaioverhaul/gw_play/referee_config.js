@@ -69,7 +69,6 @@ define([
   return function () {
     var self = this;
 
-    // Set up the player
     var game = self.game();
     var inventory = game.inventory();
     var cards = inventory.cards();

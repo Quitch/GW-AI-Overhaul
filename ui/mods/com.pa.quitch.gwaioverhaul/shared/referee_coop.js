@@ -5,9 +5,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   // already drifted, this one missing the guard against a non-array value.
   var getConnectedViewers = gwoCard.getConnectedClients;
 
-  // Resolves each connected viewer-role client to its co-op inventory data,
-  // dropping clients that aren't viewers or have no resolvable inventory yet.
-  // Returns {client, inventory} pairs.
+  // Returns {client, inventory} pairs for connected viewer-role clients.
   var getConnectedViewerInventories = function (game, connectedClients) {
     var clients = connectedClients || getConnectedViewers();
 

@@ -476,7 +476,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   var fabbers = fabbersBasic.concat(fabbersAdvanced);
 
-  // exclude orbital factories due to their fabber working differently
   var factoriesBasic = [
     gwoUnit.airFactory,
     gwoUnit.botFactory,
@@ -497,8 +496,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.unitCannon
   );
 
-  // titansMobile rather than a restated list of the four, so a titan added there is
-  // picked up here automatically.
+  // titansMobile, so a titan added there is picked up here automatically.
   var mobile = airMobile.concat(
     botsMobile,
     navalMobile,

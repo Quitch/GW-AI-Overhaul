@@ -19,7 +19,6 @@ define(function () {
   var perExpansionDelay = 0;
 
   return {
-    // Legonis Machina
     legonisMachina: {
       percent_vehicle: 0.65,
       percent_bot: 0.1,
@@ -92,7 +91,6 @@ define(function () {
       works_with_queller: false,
     },
 
-    // Foundation
     foundation: {
       percent_vehicle: 0.2,
       percent_bot: 0.05,
@@ -164,7 +162,6 @@ define(function () {
       works_with_queller: false,
     },
 
-    //Synchronous
     synchronous: {
       percent_vehicle: 0.1,
       percent_bot: 0.65,
@@ -233,7 +230,6 @@ define(function () {
       works_with_queller: false,
     },
 
-    // Revenants
     revenants: {
       percent_vehicle: 0.25,
       percent_bot: 0.2,
@@ -301,7 +297,6 @@ define(function () {
       works_with_queller: false,
     },
 
-    // Cluster
     cluster: {
       percent_vehicle: 0.45,
       percent_bot: 0.4,

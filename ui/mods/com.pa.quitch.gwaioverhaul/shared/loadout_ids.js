@@ -3,7 +3,6 @@
 // strings for the deck. loadouts.js cannot serve deal.js directly - it touches
 // model.makeKnown and GW.bank at load time, neither of which exists in gw_play.
 define(function () {
-  // Available from the start.
   var starting = [
     "gwc_start_vehicle",
     "gwc_start_air",

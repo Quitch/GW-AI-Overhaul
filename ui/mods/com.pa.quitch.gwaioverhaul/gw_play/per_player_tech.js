@@ -140,7 +140,6 @@ define(function () {
       };
     };
 
-    // No options means no co-op.
     if (!options || !options.active) {
       return {
         ok: false,
@@ -151,7 +150,6 @@ define(function () {
       };
     }
 
-    // Likewise no per-player tech means this referee is out of a job.
     if (!options.perPlayerTechCards) {
       return {
         ok: false,

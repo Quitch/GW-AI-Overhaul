@@ -37,15 +37,9 @@ define(function () {
   // applies to anything larger. Centred on the star-distance distribution measured
   // over 1000 generated galaxies per size, so each branch fires for a roughly
   // consistent share of stars across every size: short ~45%, moderate ~30%,
-  // far ~18%. Measured share of stars past each threshold, Small -> Marathon:
-  //   short     38 50 45 45 45 45 45 46 46  (mean error 1.6pp)
-  //   moderate  38 28 27 29 32 34 26 28 30  (mean error 2.9pp)
-  //   far       15 11 13 16 20 13 17 20 22  (mean error 3.3pp)
-  // Star distance is integer and Small spans only ~8 values, so its bands cannot be
-  // separated to better than one step: short and moderate deliberately share a
-  // threshold there (37.6% - the closest either can get to its target) rather than
-  // firing short for 61% of stars. far is left as-is; no integer change improves it
-  // by more than 0.1pp.
+  // far ~18%. Star distance is integer and Small spans only ~8 values, so its bands
+  // cannot be separated to better than one step: short and moderate deliberately
+  // share a threshold there rather than firing short for 61% of stars.
   var distances = {
     short: [3, 3, 4, 5, 6, 7, 8, 9, 10],
     moderate: [3, 4, 5, 6, 7, 8, 10, 11, 12],
@@ -236,10 +230,8 @@ define(function () {
     // referee_config_setup.js applies each of these to every ally in turn, so the
     // value does scale with the retinue - but the card is worth nothing at all
     // until you field one, hence the 0. Past that it opens at its full base weight
-    // instead of creeping up from near-nothing the way a bare "minions * n" does,
-    // which left a card that had just become live still being offered at a
-    // throwaway weight. Each further Sub Commander adds a third of the base, and
-    // the whole line stops at 90 so a large retinue cannot crowd out the deck.
+    // rather than creeping up. Each further Sub Commander adds a third of the base,
+    // and the line stops at 90 so a large retinue cannot crowd out the deck.
     subcommanderWeight: function (inventory, chance) {
       var subcommanders = inventory.minions().length;
       if (subcommanders === 0) {
@@ -270,9 +262,8 @@ define(function () {
     },
 
     // The general size-aware "far" test that backs the travelled* wrappers below,
-    // exported so it can be tested directly and so a card needing a bespoke
-    // thresholds array still can. No card needs one today - prefer the wrappers,
-    // which keep the distances tables private. numberOfSystems is the caller's
+    // exported so a card needing a bespoke thresholds array still can, though none
+    // does today. numberOfSystems is the caller's
     // GW.balance.numberOfSystems tier table - passed in rather than imported so this
     // module stays dependency-free (base-game "shared/gw_common" isn't
     // shippable/loadable here, and every card transitively depends on this file -
@@ -296,8 +287,7 @@ define(function () {
       return farForSize(system, context, numberOfSystems, distances.far);
     },
 
-    // Builds an addMods() array for the common case of one file/op applied to
-    // several stat paths, e.g. mods(gwoUnit.x, "replace", { max_health: 100 }).
+    // e.g. mods(gwoUnit.x, "replace", { max_health: 100 })
     mods: function (file, op, props) {
       return _.map(_.keys(props), function (path) {
         return { file: file, path: path, op: op, value: props[path] };

@@ -6,7 +6,6 @@ define([
   // fabber/factory/platoon ops. `json` is passed in (rather than closed over) so this
   // table is built once at module load instead of rebuilt on every applyAiMods call.
   var aiModOps = {
-    // fabber/factory/platoon only
     append: function (
       json,
       value,
@@ -46,7 +45,6 @@ define([
         }
       });
     },
-    // fabber/factory/platoon only
     prepend: function (
       json,
       value,
@@ -92,7 +90,6 @@ define([
         }
       });
     },
-    // fabber/factory/platoon only
     replace: function (
       json,
       value,
@@ -126,7 +123,6 @@ define([
         }
       });
     },
-    // fabber/factory/platoon only
     remove: function (json, value, toBuild) {
       _.forEach(json.build_list, function (build) {
         if (build.to_build !== toBuild) {
@@ -142,7 +138,6 @@ define([
         });
       });
     },
-    // fabber/factory/platoon only
     new: function (json, value, toBuild, idToMod) {
       _.forEach(json.build_list, function (build) {
         if (build.to_build !== toBuild) {
@@ -376,9 +371,6 @@ define([
       configFiles[clusterFilePath] = clusterJson;
     };
 
-    // Determines which destination file path(s) this file's contents apply to, and
-    // which non-load AI mods (if any) are in scope, based on which AIs are being
-    // modified and who owns the file.
     var resolveScopedFileUpdate = function (
       json,
       fileOwner,
@@ -451,8 +443,6 @@ define([
       return changeFilePath(aiPaths.enemyDestination, pathLength);
     };
 
-    // Applies the in-scope AI mods and writes the resulting JSON to every resolved
-    // destination path (falling back to the original path if none were resolved).
     var writeConfigFiles = function (json, filePaths, aiMods) {
       var finalFilePaths = _.isEmpty(filePaths) ? [filePath] : filePaths;
 

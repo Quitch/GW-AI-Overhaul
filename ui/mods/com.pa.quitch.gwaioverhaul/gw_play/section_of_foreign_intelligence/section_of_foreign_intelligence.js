@@ -3,6 +3,19 @@
 // https://github.com/Quitch/GW-AI-Overhaul
 var gwoIntelligenceLoaded;
 
+// The buff indices gw_start/setup.js writes into ai.typeOfBuffs. `commanders` is
+// only present in v5.11.0 and earlier saves.
+var gwoBuffType = {
+  cost: 0,
+  damage: 1,
+  health: 2,
+  speed: 3,
+  build: 4,
+  commanders: 5,
+  combat: 6,
+  cooldown: 7,
+};
+
 function gwoIntelligence() {
   if (gwoIntelligenceLoaded || model.game().isTutorial()) {
     return;
@@ -155,28 +168,28 @@ function gwoIntelligence() {
       var buffNames = [];
       _.forEach(buffs, function (buff) {
         switch (buff) {
-          case 0:
+          case gwoBuffType.cost:
             buffNames.push(loc("!LOC:Costs decreased"));
             break;
-          case 1:
+          case gwoBuffType.damage:
             buffNames.push(loc("!LOC:Damage increased"));
             break;
-          case 2:
+          case gwoBuffType.health:
             buffNames.push(loc("!LOC:Health increased"));
             break;
-          case 3:
+          case gwoBuffType.speed:
             buffNames.push(loc("!LOC:Speed increased"));
             break;
-          case 4:
+          case gwoBuffType.build:
             buffNames.push(loc("!LOC:Build faster"));
             break;
-          case 5: // v5.11.0 and earlier only
+          case gwoBuffType.commanders:
             buffNames.push(loc("!LOC:Commanders enhanced"));
             break;
-          case 6:
+          case gwoBuffType.combat:
             buffNames.push(loc("!LOC:Combat units enhanced"));
             break;
-          case 7:
+          case gwoBuffType.cooldown:
             buffNames.push(loc("!LOC:Factory cooldown decreased"));
             break;
           default:
@@ -254,7 +267,7 @@ function gwoIntelligence() {
             ? gwoRefereeCoop.alliedColourIndex(allyPosition)
             : getFactionColourIndex(commander, index);
           var name = commander.name;
-          var eco = gwoAI.setAIEconRate(commander.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+          var eco = gwoAI.aiEconRateWithFloor(commander.econ_rate);
           var numCommanders = getNumberOfCommanders(commander);
           var faction = getFactionName(commander, factionIndex);
 
@@ -299,7 +312,7 @@ function gwoIntelligence() {
                 commanderCount = army.landing_policy.length;
               }
               totalThreat +=
-                gwoAI.setAIEconRate(army.econ_rate) * // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+                gwoAI.aiEconRateWithFloor(army.econ_rate) *
                 0.4 *
                 (commanderCount - 1);
             });
@@ -316,19 +329,19 @@ function gwoIntelligence() {
           }
           _.forEach(ai.typeOfBuffs, function (buff) {
             switch (buff) {
-              case 0: // cost
-              case 4: // build
+              case gwoBuffType.cost:
+              case gwoBuffType.build:
                 totalThreat *= 1.3;
                 break;
-              case 1: // damage
-              case 2: // health
-              case 7: // cooldown
+              case gwoBuffType.damage:
+              case gwoBuffType.health:
+              case gwoBuffType.cooldown:
                 totalThreat *= 1.2;
                 break;
-              case 3: // speed
+              case gwoBuffType.speed:
                 totalThreat *= 1.1;
                 break;
-              case 6: // combat
+              case gwoBuffType.combat:
                 totalThreat *= 1.5;
                 break;
               default:

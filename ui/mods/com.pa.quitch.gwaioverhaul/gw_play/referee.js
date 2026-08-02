@@ -94,7 +94,6 @@ function gwoRefereeChanges() {
         };
 
         GWReferee.hire = function (game) {
-          // call our own gw_referee implementation
           var ref = new gwoReferee(game);
           return _.bind(gwoGenerateGameFiles, ref)()
             .then(_.bind(gwoGenerateAI, ref))
