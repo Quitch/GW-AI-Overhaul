@@ -1,6 +1,9 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   gwoCard
 ) {
+  var MINIMUM_CHANCE = 25;
+  var FULL_HAND_CHANCE = 100000;
+
   return {
     visible: _.constant(false), // Can't discard this card
     describe: _.constant("!LOC:Adds a new slot for another technology."),
@@ -12,12 +15,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       // Surface expansion as the hand fills: 300 with one empty slot left, tapering
-      // by 100 per additional empty slot (floor 50). A full hand keeps the 100000
-      // guarantee so a maxed-out hand can always be expanded.
+      // by 100 per additional empty slot. A full hand keeps its guaranteed chance
+      // so a maxed-out hand can always be expanded.
       var emptySlots = inventory.maxCards() - inventory.cards().length;
       var chance = inventory.handIsFull()
-        ? 100000
-        : Math.max(300 - (emptySlots - 1) * 100, 25);
+        ? FULL_HAND_CHANCE
+        : Math.max(300 - (emptySlots - 1) * 100, MINIMUM_CHANCE);
       return {
         params: {
           allowOverflow: true,

@@ -164,7 +164,7 @@ define([
               value:
                 "(Mobile & Naval | Naval & Structure & Advanced - Factory | FabAdvBuild | FabBuild - Factory) & Custom58 - NoBuild",
             },
-            // fix placement issues
+            // factory-built fabbers spawn on the wrong layer without this
             {
               file: gwoUnit.barracuda,
               path: "spawn_layers",

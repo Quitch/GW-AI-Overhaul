@@ -1,5 +1,3 @@
-// StarSystemTemplates.generate has systems scale with galaxy depth
-
 // The testable graph core (the GWGalaxy constructor:
 // neighborsMap/areNeighbors/pathBetween, ko/lodash only) lives in the measured
 // shared/gw_galaxy_graph.js and is unit-tested by test/gw_galaxy_path_between.test.js.
@@ -30,7 +28,6 @@ define([
 
   GWGalaxy.saveSystems = function (config) {
     var stars = _.map(config.stars, GWStar.saveSystem);
-    // If we have already been saved, throw away the results.
     if (config.saved) {
       return {};
     }
@@ -100,7 +97,6 @@ define([
         builder.reducedGraph.sortEdges();
       }
 
-      // Re-normalize the stars
       var min = builder.stars[0].slice(0);
       var max = builder.stars[0].slice(0);
       _.forEach(builder.stars, function (star) {
@@ -117,8 +113,7 @@ define([
         builder.stars[index][1] = (star[1] - min[1]) / radius[1] - 1;
       });
 
-      // Transform the stars so that they are moved towards the center in proportion to there distance from the center.
-      // This moves outliers into the galaxy and will cluster more stars in the center
+      // Pulls outliers inward and clusters more stars toward the center.
       var center = _.reduce(builder.stars, function (total, element) {
         return [total[0] + element[0], total[1] + element[1]];
       });
@@ -181,7 +176,8 @@ define([
         config.useEasierSystemTemplate
       );
 
-      // Generate the planets, increasing the size based on the distance from the start.
+      // GWO - system size follows distance from the start only when the System
+      // Scaling difficulty option is on; otherwise it is randomised.
       var starGenerators = _.map(self.stars(), function (star) {
         var systemSize;
         var coopSystemPlayerBonus = Math.max(

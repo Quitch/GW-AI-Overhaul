@@ -106,7 +106,7 @@ define([
         }
       );
 
-      // unit specific fixes required to accommodate the range
+      // Ares needs a high arc to reach the extended range
       var aresFixMods = gwoCard.mods(gwoUnit.aresWeapon, "replace", {
         pitch_range: 89,
         arc_type: "ARC_high",

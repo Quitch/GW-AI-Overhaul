@@ -103,7 +103,7 @@ define([
           file: gwoUnit.ragnarokPbaoe,
           path: "planet_impact_spec.delay_time",
           op: "replace",
-          value: 99999, // this is an ugly hack
+          value: 99999, // never resolves, so the planet survives the blast
         },
       ]);
     },

@@ -53,7 +53,6 @@ define(function () {
       var self = this;
       var cards = self.cards().slice();
 
-      // Apply an override to this object to indicate that we are busy.
       self.isApplyingCards = _.constant(true);
       // Tags are going to come from the current card
       var curCard = "";
@@ -66,7 +65,6 @@ define(function () {
         return protoSetTag(context || curCard, name, value);
       };
       var dirty = false;
-      // Clean-up function that gets called when everything is done.
       var finishApplyCards = function () {
         delete self.getTag;
         delete self.setTag;
@@ -78,8 +76,9 @@ define(function () {
           _.delay(done);
         }
       };
-      // Install a hook that calls the new callback when the current
-      // process has completed.
+      // Replaces applyCards for the duration of the pass: a card calling it from
+      // its own buff/dull only marks the inventory dirty, and finishApplyCards
+      // re-runs the real one afterwards rather than recursing mid-pass.
       self.applyCards = function (queueDone) {
         dirty = true;
         if (!queueDone) {
@@ -185,8 +184,7 @@ define(function () {
       var self = this;
       return self.cards().length >= self.maxCards();
     },
-    // Get a tag value.  When called during card processing, an empty
-    // context will be replaced with the current card.
+    // During card processing an empty context is replaced with the current card.
     getTag: function (context, name, def) {
       var self = this;
       var tags = self.tags();
