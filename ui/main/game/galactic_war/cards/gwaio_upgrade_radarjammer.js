@@ -6,7 +6,7 @@ define([
     visible: _.constant(true),
     describe: _.constant(
       loc(
-        "!LOC:Radar Jamming Station Upgrade Tech doubles the jamming and radar radius of the radar jammer."
+        "!LOC:Radar Jamming Station Upgrade Tech doubles the jamming radius of the radar jammer."
       ) +
         "<br> <br>" +
         loc("!LOC:Adds a new slot for another technology.")
@@ -26,16 +26,14 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods(
-        _.map([1, 3], function (i) {
-          return {
-            file: gwoUnit.radarAdvanced,
-            path: "recon.observer.items." + i + ".radius",
-            op: "multiply",
-            value: 2,
-          };
-        })
-      );
+      inventory.addMods([
+        {
+          file: gwoUnit.radarJammingStation,
+          path: "recon.observer.items.2.radius",
+          op: "multiply",
+          value: 2,
+        },
+      ]);
     },
     dull: function () {},
   };
