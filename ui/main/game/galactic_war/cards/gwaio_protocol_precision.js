@@ -28,19 +28,19 @@ define([
           "navigation.turn_speed": percentageReduction,
         });
       });
-      var sightMods = _.map(gwoGroup.combat, function (unit) {
+      var sightMods = _.map(gwoGroup.combatMobile, function (unit) {
         return gwoCard.mods(unit, "multiply", {
           "recon.observer.items.0.radius": percentageIncrease,
           "recon.observer.items.1.radius": percentageIncrease,
         });
       });
-      var rangeMods = _.map(gwoGroup.weapons, function (weapon) {
+      var rangeMods = _.map(gwoGroup.weaponsMobile, function (weapon) {
         return gwoCard.mods(weapon, "multiply", {
           max_range: percentageIncrease,
         });
       });
       // Try to make sure that units can use their full range
-      var ammoMods = _.map(gwoGroup.ammo, function (ammo) {
+      var ammoMods = _.map(gwoGroup.ammoMobile, function (ammo) {
         return gwoCard.mods(ammo, "multiply", {
           lifetime: percentageIncrease,
           max_velocity: percentageIncrease,

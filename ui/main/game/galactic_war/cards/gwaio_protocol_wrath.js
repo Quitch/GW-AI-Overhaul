@@ -20,7 +20,7 @@ define([
       var percentageReduction = 0.9;
       var percentageIncrease = 1.2;
 
-      var sightMods = _.map(gwoGroup.combat, function (unit) {
+      var sightMods = _.map(gwoGroup.combatMobile, function (unit) {
         return gwoCard.mods(unit, "multiply", {
           "recon.observer.items.0.radius": percentageReduction,
           "recon.observer.items.1.radius": percentageReduction,
@@ -34,7 +34,7 @@ define([
           "navigation.turn_speed": percentageIncrease,
         });
       });
-      var rangeMods = _.map(gwoGroup.weapons, function (weapon) {
+      var rangeMods = _.map(gwoGroup.weaponsMobile, function (weapon) {
         return gwoCard.mods(weapon, "multiply", {
           max_range: percentageReduction,
         });

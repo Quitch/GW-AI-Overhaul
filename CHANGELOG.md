@@ -7,6 +7,7 @@
 - Wyrm Upgrade Tech now has the Wyrm engage at the range of the drones it gains, circling its target instead of making a bombing run
 - Improved Fabricator Build Arms no longer affects the Anti-Nuke Launcher
 - Orbital Combat Tech applies only to mobile orbital units, no longer granting health to the Orbital Launcher, Orbital Factory, and Jig
+- Protocol: Precision and Protocol: Wrath apply only to mobile combat units, no longer changing the sight and weapon range of defensive structures
 
 ### Bugfix
 
