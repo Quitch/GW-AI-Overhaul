@@ -124,6 +124,38 @@ not. A refactor that "fixes" the asymmetry silently changes shipped mount paths.
 `unit_maps/ai_unit_map.json`, or `ai_unit_map_x1.json` when `titans` is set —
 the `_x1` suffix being the base game's own convention for TITANS content.
 
+## Why scoped trees can nest safely
+
+Scoping nests one `ai_path` inside another. A Guardians fight on the Titans brain
+gives the enemy `/pa/ai/player_guardians/` while the subcommander keeps plain
+`/pa/ai/`. That looks alarming, because the engine merges **every** `.json` it
+finds under an `ai_path` and there is no manifest to exclude one.
+
+It is safe, and the reason is worth stating precisely: **the recursive scan is
+rooted at `<ai_path>/<data-dir>`, not at `<ai_path>`.** Per the Queller-AI repo's
+`docs/ai-engine.md` §3 ("The load pipeline"), `AIBrain`
+reads `<ai_path>/unit_maps`, `<ai_path>/platoon_templates`,
+`<ai_path>/fabber_builds`, `<ai_path>/factory_builds` and
+`<ai_path>/platoon_builds`, and recurses below each. So `/pa/ai/`'s five scan roots
+are `/pa/ai/unit_maps/` and friends — and `player_guardians/` is a **sibling** of
+those five, never a child of one. Nothing under it is reachable from `/pa/ai/`'s
+scan. Since `player_<token>` can never collide with a data-directory name, this
+holds for every path the module can emit.
+
+The corollary is the rule to follow when adding data: content that is _meant_ to
+merge goes **inside** a data directory and is gated by a personality tag — the base
+game's `pa_ex1/ai/platoon_builds/tutorial/`, this repo's
+`pa/ai_penchant/factory_builds/penchants/` — and never gets an `ai_path` of its
+own. A tree that wants its own build orders gets its own root instead. Get that
+backwards and one AI silently inherits another's build orders, with no load error
+to show for it.
+
+The other half of the same rule: a nested root is only safe because it is
+self-contained. `referee_ai.js` copies the whole source tree to a scoped
+destination, `ai_config.json` included, for exactly this reason — that file has no
+fallback (§3, "What does not inherit"), so a tree that omitted it would run with no
+unit cap.
+
 ## What `shared/ai.js` adds
 
 `aiInUse(alignment)` reads the origin system's `gwaio` blob — the settings
@@ -160,6 +192,15 @@ check them:
   same unscoped `/pa/ai_cluster/` path regardless of which side asked.
 - **The Guardians are never Cluster.** Stated at `referee_ai.js`'s
   `processClusterJson`, and the reason `isCluster` can early-return on mirror mode.
+
+A third is not an external assumption but a property of the paths themselves, so
+unlike those two it _is_ machine-checkable and is checked:
+
+- **No `ai_path` root ever lands inside another `ai_path`'s five scanned
+  directories.** See [above](#why-scoped-trees-can-nest-safely) for why that is the
+  rule that matters rather than "nothing nests". Swept over the full option matrix,
+  and over the file paths `referee_ai.js` really writes, by
+  `test/ai_path_invariants.test.js`.
 
 ## Where to look next
 

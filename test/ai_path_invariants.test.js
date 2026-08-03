@@ -3,7 +3,8 @@
 // Cross-cutting ai_path invariants that span multiple modules:
 //   1. Enemies and subcommanders never share an ai_path (shared-tech / setAIPath).
 //   2. Subcommanders never share an ai_path with each other under per-player tech.
-// Both have one documented, intentional exception each, pinned here as named
+//   3. No ai_path root sits inside another ai_path's engine-scanned directories.
+// The first two have one documented, intentional exception each, pinned here as named
 // regression tests rather than silently excluded, so a future reader who "fixes"
 // either one discovers it's guarded rather than being surprised in production.
 //
@@ -65,6 +66,97 @@ function installAiProcessingFakes(options) {
 
 function runRefereeAiHere(filesObj) {
   return runRefereeAi(refereeAi, filesObj);
+}
+
+// The five directories the engine loads from each ai_path (Queller-AI's
+// docs/ai-engine.md section 3, "The load pipeline"). Each is scanned RECURSIVELY from
+// <ai_path>/<dir> and every .json below it is merged into one flat namespace, which is
+// why content meant to merge is nested INSIDE one of these and gated by a personality
+// tag - the base game's platoon_builds/tutorial/, GWO's factory_builds/penchants/.
+// A whole ai_path root nested there instead would be silently absorbed by its parent.
+const ENGINE_SCANNED_DIRECTORIES = [
+  "unit_maps",
+  "platoon_templates",
+  "fabber_builds",
+  "factory_builds",
+  "platoon_builds",
+];
+
+// Every ai_path shared/referee_ai_paths.js can hand out, across its whole option
+// matrix. Sources belong here as well as destinations: when the enemy and the
+// subcommander resolve to the same source, the subcommander reads that source path
+// directly as its ai_path (see referee_ai.js's "A shared source doubles as the
+// subcommander's destination").
+function everyResolvableAiPath() {
+  const paths = new Set();
+  // "all" is unreachable from live code today - only getQuellerPath names it - but it
+  // is part of the module's surface, so the sweep covers it too.
+  const types = ["enemy", "subcommander", "cluster", "all"];
+  const scopeTokens = [undefined, "guardians", ".player0", "player0"];
+
+  for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
+    for (const type of types) {
+      paths.add(refereeAIPaths.getAIPathSource(type, aiInUse));
+
+      for (const guardians of [false, true]) {
+        for (const smartSubcommanders of [false, true]) {
+          for (const aiMods of [[], [{ op: "load" }]]) {
+            for (const scopeToken of scopeTokens) {
+              paths.add(
+                refereeAIPaths.getAIPathDestination(type, aiInUse, {
+                  guardians: guardians,
+                  smartSubcommanders: smartSubcommanders,
+                  aiMods: aiMods,
+                  scopeToken: scopeToken,
+                })
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return [...paths];
+}
+
+// The ai_path a written file belongs to: everything up to its scanned-directory
+// segment. Deliberately the LAST such segment - a tree wrongly rooted inside a data
+// directory (/pa/ai/fabber_builds/player_x/fabber_builds/y.json) has to resolve to the
+// inner root for the containment check to see it, not be flattened back to /pa/ai/.
+// Returns undefined for a root-level file such as ai_config.json.
+function aiPathRootOf(filePath) {
+  let root;
+  let bestIndex = -1;
+
+  for (const directory of ENGINE_SCANNED_DIRECTORIES) {
+    const index = filePath.lastIndexOf(`/${directory}/`);
+    if (index > bestIndex) {
+      bestIndex = index;
+      root = filePath.slice(0, index + 1);
+    }
+  }
+
+  return root;
+}
+
+function assertNoRootInsideAnothersScannedDirectory(paths) {
+  for (const parent of paths) {
+    for (const child of paths) {
+      if (child === parent) {
+        continue;
+      }
+
+      for (const directory of ENGINE_SCANNED_DIRECTORIES) {
+        assert.ok(
+          !child.startsWith(`${parent}${directory}/`),
+          `${child} sits inside ${parent}${directory}/, so the engine's recursive ` +
+            `scan of ${parent}${directory} would merge that tree's build data into ` +
+            `${parent}'s`
+        );
+      }
+    }
+  }
 }
 
 function isKnownOverlapCase(aiInUse, enemyType, techState) {
@@ -378,6 +470,106 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
         filesObj["/pa/ai_subcommander/player_.player1/fabber_builds/x.json"]
           .build_list[0].builders,
         ["v2Marker"]
+      );
+    });
+  });
+});
+
+describe("invariant: no ai_path root sits inside another ai_path's scanned directories", () => {
+  // The engine merges every .json it finds under <ai_path>/<one of the five>, so a
+  // second ai_path rooted inside one of those directories would have its whole tree
+  // absorbed by the first - one AI silently inheriting another's build orders, with no
+  // load error to show for it. Scoping nests paths (appendScope), so the property this
+  // pins is not "nothing nests" but "what nests, nests beside the scanned directories
+  // rather than inside them".
+  it("no source or destination path is nested inside another's scanned directories", () => {
+    const paths = everyResolvableAiPath();
+
+    // Guard the guard: a sweep that collapsed to nothing would pass vacuously.
+    assert.ok(paths.length > 5, `expected a full sweep, got: ${paths}`);
+    assertNoRootInsideAnothersScannedDirectory(paths);
+  });
+
+  it("scoped trees really do nest - the safety comes from where, not from avoiding it", () => {
+    const paths = everyResolvableAiPath();
+    const nested = paths.filter((child) =>
+      paths.some((parent) => parent !== child && child.startsWith(parent))
+    );
+
+    assert.ok(
+      nested.includes("/pa/ai/player_guardians/"),
+      `expected scoped roots nested under a plain root, got: ${nested}`
+    );
+  });
+
+  it("the paths referee_ai.js actually writes hold the same property", () => {
+    // Catches the other half of the failure mode: a change that writes a scoped tree
+    // INTO a data directory without altering any of the roots swept above.
+    const hostMod = {
+      op: "append",
+      type: "fabber",
+      toBuild: "Bot",
+      idToMod: "builders",
+      value: "hostMarker",
+    };
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      aiMods: [hostMod],
+    });
+    const viewerInventory = makeInventory({
+      aiModsList: [Object.assign({}, hostMod, { value: "v1Marker" })],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.id === "v1" ? { inventory: viewerInventory } : undefined;
+    restoreModel = installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    installAiProcessingFakes({
+      fileListByPath: {
+        "/pa/ai/": [
+          "/pa/ai/ai_config.json",
+          "/pa/ai/unit_maps/ai_unit_map.json",
+          "/pa/ai/platoon_templates/platoon_templates.json",
+          "/pa/ai/fabber_builds/fabber_land_builds.json",
+          "/pa/ai/factory_builds/factory_bot_builds.json",
+          "/pa/ai/platoon_builds/platoon_land_builds.json",
+          "/pa/ai/neural_networks/land_attack.json",
+        ],
+      },
+      getJSON: () => ({ build_list: [{ to_build: "Bot", builders: [] }] }),
+    });
+
+    const filesObj = {};
+    return runRefereeAiHere(filesObj).then(() => {
+      const written = Object.keys(filesObj);
+      const roots = [...new Set(written.map(aiPathRootOf).filter(Boolean))];
+
+      assert.ok(
+        roots.length > 1,
+        `expected several distinct roots in the write set, got: ${roots}`
+      );
+      assertNoRootInsideAnothersScannedDirectory(roots);
+
+      // "Each root stands alone" is the other half of the same rule: nesting is only
+      // safe because a nested tree is self-contained. ai_config.json in particular has
+      // no fallback - a tree that omits it runs with no unit cap - so the scoped copy
+      // has to carry its own, alongside all five directories.
+      const guardiansRoot = "/pa/ai/player_guardians/";
+      assert.deepEqual(
+        written
+          .filter((path) => path.startsWith(guardiansRoot))
+          .map((path) => path.slice(guardiansRoot.length))
+          .sort(),
+        [
+          "ai_config.json",
+          "fabber_builds/fabber_land_builds.json",
+          "factory_builds/factory_bot_builds.json",
+          "platoon_builds/platoon_land_builds.json",
+          "platoon_templates/platoon_templates.json",
+          "unit_maps/ai_unit_map.json",
+        ]
       );
     });
   });
