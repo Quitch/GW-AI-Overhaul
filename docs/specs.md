@@ -22,7 +22,7 @@ gwoCard.mods(gwoUnit.dox, "replace", { max_health: 100, max_speed: 12 });
 
 | Op                 | Behaviour                                                                                        |
 | ------------------ | ------------------------------------------------------------------------------------------------ |
-| `multiply`         | Numeric multiply. Warns and leaves unchanged if not a number.                                    |
+| `multiply`         | Numeric multiply. Warns and leaves unchanged if the target is missing or not a number.           |
 | `add`              | Numeric add or string concat. A nullish target becomes the value.                                |
 | `replace`          | Overwrites outright.                                                                             |
 | `merge`            | `_.assign` into a plain object. Warns if the target is not one.                                  |
@@ -30,7 +30,7 @@ gwoCard.mods(gwoUnit.dox, "replace", { max_health: 100, max_speed: 12 });
 | `pull`             | `_.pull` — removes values from an array.                                                         |
 | `prepend`          | **GWO addition.** The counterpart to `push`, value-first.                                        |
 | `wipe`             | **GWO addition.** String substitution: `[from, to]`, or a bare value to delete every occurrence. |
-| `multiplyOrCreate` | Multiplies if numeric, otherwise sets the value.                                                 |
+| `multiplyOrCreate` | **GWO addition.** Multiplies if numeric, creates the value if absent.                            |
 | `clone`            | Deep-copies a spec to a new tagged id.                                                           |
 | `tag`              | Rewrites a `.json` reference to carry the current `specTag`.                                     |
 | `eval`             | Runs `new Function("attribute", value)`.                                                         |
@@ -39,6 +39,13 @@ gwoCard.mods(gwoUnit.dox, "replace", { max_health: 100, max_speed: 12 });
 for `buildable_types` and build lists, where the engine takes the **first** match —
 so appending an alternative and prepending one are genuinely different operations.
 `wipe` substitutes _within_ a string value; every base op replaces the whole thing.
+
+`multiplyOrCreate` is a GWO addition, but the behaviour it provides is not new — it
+is what the base game's `multiply` did: `attribute !== undefined ? attribute * value
+: value`. GWO's `multiply` no longer creates. A missing or non-numeric target now
+warns and is left alone, so a card that wants creation has to ask for it by name.
+Splitting the two turns a typo'd path into a warning rather than a silently invented
+stat, and it is why `multiplyOrCreate` runs before `multiply` in the op ordering.
 
 `eval` is theoretically unsafe. It is also pointless to worry about: mods can run
 whatever code they like anyway, so the risk is not meaningful.
