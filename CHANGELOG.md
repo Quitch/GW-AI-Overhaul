@@ -13,6 +13,7 @@
 - Deep Space Excavation Commander no longer offered Complete Orbital Tech
 - Radar Jamming Station Upgrade Tech affects the Radar Jammer rather than Advanced Radar
 - Titan Ammunition Tech increases titan direct damage as well as splash damage
+- Bot, Naval and Defense Ammunition Techs, and their Combat Tech counterparts, increase the damage of the anti-drop missiles carried by the Bluehawk, Catapult, Stingray, and Umbrella
 - Commander Upgrade Tech lets Fabrication Vehicles and Angels reclaim Commanders
 - Improved Fabricator Build Arms speeds up the Unit Cannon's build arm
 - Tech card tooltips list the units each card actually affects
