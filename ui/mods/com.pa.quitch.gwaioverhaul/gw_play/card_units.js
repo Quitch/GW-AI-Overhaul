@@ -30,9 +30,7 @@ define([
       { id: "gwc_combat_air", units: gwoGroup.airMobile },
       { id: "gwc_combat_bots", units: gwoGroup.botsMobile },
       { id: "gwc_combat_commander", units: [gwoUnit.commander] },
-      // The health half of the buff covers gwoGroup.orbital, so the launcher,
-      // the orbital factory and the Jig are affected too.
-      { id: "gwc_combat_orbital", units: gwoGroup.orbital },
+      { id: "gwc_combat_orbital", units: gwoGroup.orbitalMobile },
       { id: "gwc_combat_sea", units: gwoGroup.navalMobile },
       { id: "gwc_combat_structures", units: gwoGroup.structures },
       { id: "gwc_combat_vehicles", units: gwoGroup.vehiclesMobile },
