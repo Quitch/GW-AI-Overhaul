@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Wyrm Upgrade Tech now has the Wyrm engage at the range of the drones it gains, circling its target instead of making a bombing run
+
 ### Bugfix
 
 - Deep Space Excavation Commander no longer offered Complete Orbital Tech
