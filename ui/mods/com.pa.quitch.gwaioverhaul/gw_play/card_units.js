@@ -64,7 +64,23 @@ define([
       { id: "gwc_cost_super_weapons", units: gwoGroup.structuresSuperWeapons },
       { id: "gwc_cost_titans", units: gwoGroup.titans },
       { id: "gwc_cost_vehicles", units: gwoGroup.vehiclesMobile },
-      { id: "gwc_damage_air", units: gwoGroup.airMobile },
+      {
+        id: "gwc_damage_air",
+        // Mirrors gwoGroup.airAmmo: the fabbers and Pelican in airMobile carry no
+        // ammo, so the card cannot touch them.
+        units: [
+          gwoUnit.angel,
+          gwoUnit.bumblebee,
+          gwoUnit.firefly,
+          gwoUnit.hornet,
+          gwoUnit.horsefly,
+          gwoUnit.hummingbird,
+          gwoUnit.icarus,
+          gwoUnit.kestrel,
+          gwoUnit.phoenix,
+          gwoUnit.wyrm,
+        ],
+      },
       { id: "gwc_damage_artillery", units: gwoGroup.structuresArtillery },
       {
         id: "gwc_damage_bots",

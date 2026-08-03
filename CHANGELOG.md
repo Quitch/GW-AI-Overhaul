@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Deep Space Excavation Commander no longer offered Complete Orbital Tech
+- Air Ammunition Tech no longer lists Fabrication Aircraft, Advanced Fabrication Aircraft and Pelican as affected units
 
 ## v6.5.1 - 2026-07-31
 
