@@ -22,6 +22,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
 const { createAutoStub } = require("../lib/auto-stub.js");
+const { KNOWN_UNLOADABLE } = require("../lib/known-unloadable-cards.js");
 
 const CARDS_DIR = path.join(
   REPO_ROOT,
@@ -32,18 +33,9 @@ const CARDS_DIR = path.join(
   "cards"
 );
 
-// Mirrors validate/cards-contract.js's list: cards that fail to load for a reviewed
-// reason other than a missing base-game module.
-const KNOWN_UNLOADABLE = {
-  "gwc_minion.js":
-    "transitively depends on shared/gw_factions.js, which calls " +
-    "api.content.usingTitans() directly at define-time (real engine coupling, " +
-    "not just a missing file)",
-};
-
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
 const BUILD_LIST_TYPES = new Set(["fabber", "factory", "platoon"]);
-// op -> extra fields required beyond `type` + `op` (mirrors referee_ai.js exactly).
+// Mirrors referee_ai.js's own required-field checks exactly.
 const REQUIRED_FIELDS_BY_OP = {
   load: ["value"],
   append: ["value", "toBuild", "idToMod"],

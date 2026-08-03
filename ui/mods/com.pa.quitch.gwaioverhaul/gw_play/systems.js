@@ -142,7 +142,6 @@ function gwoSystemChanges() {
         return ko.pureComputed(function () {
           var system = self.system();
           if (system) {
-            // Display system description in intelligence panel
             return loc(system[field]()) || "";
           }
           return "";
@@ -193,7 +192,6 @@ function gwoSystemChanges() {
           "beforeChange"
         );
 
-        // Create planets' tooltips for intelligence panel
         self.system.subscribe(function () {
           var newSystem = self.system();
 
@@ -320,7 +318,6 @@ function gwoSystemChanges() {
       );
     });
 
-    // System colours
     requireGW(["shared/gw_factions"], function (GWFactions) {
       var normalizedColor = function (faction) {
         return _.map(faction.color[0], function (c) {
@@ -378,7 +375,6 @@ function gwoSystemChanges() {
           return;
         }
 
-        // Colour inner ring to match ally or other faction present
         var innerColour = ai.ally
           ? normalizedColor(GWFactions[ai.ally.faction])
           : normalizedColor(GWFactions[ai.foes[0].faction]);
@@ -421,7 +417,9 @@ function gwoSystemChanges() {
     });
   } catch (e) {
     console.error(e);
-    console.error(JSON.stringify(e));
+    console.error(
+      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+    );
   }
 }
 gwoSystemChanges();

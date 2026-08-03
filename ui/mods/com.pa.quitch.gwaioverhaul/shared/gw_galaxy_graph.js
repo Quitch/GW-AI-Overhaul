@@ -48,8 +48,7 @@ define(function () {
       var neighborsMap = self.neighborsMap();
       var toExplored = stars[to].explored();
 
-      // Fog of war: the final hop into the target is allowed if either endpoint is
-      // explored (or fog is off entirely).
+      // Fog of war: the final hop is allowed if either endpoint is explored.
       var canEnterTarget = function (node) {
         return noFog || stars[node].explored() || toExplored;
       };
@@ -72,7 +71,7 @@ define(function () {
 
         for (var neighbor of neighborsMap[node] || []) {
           if (checked[neighbor]) {
-            continue; // ignore loop
+            continue;
           }
 
           if (neighbor === to) {

@@ -3,6 +3,9 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoCard, gwoUnit, gwoGroup) {
+  // Narrowed so the mod does not also hit Unit Cannon builds.
+  var ADVANCED_BOT_FACTORY_ONLY = ["AdvancedBotFactory"];
+
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -53,7 +56,7 @@ define([
           idToMod: "builders",
           value: "BasicBotFactory",
           refId: "builders",
-          refValue: ["AdvancedBotFactory"], // avoid Unit Cannon builds
+          refValue: ADVANCED_BOT_FACTORY_ONLY,
         };
       });
       // We apply AI priority changes to ALL combat units so that even
@@ -74,7 +77,7 @@ define([
           idToMod: "priority",
           value: 97,
           refId: "builders",
-          refValue: ["AdvancedBotFactory"], // avoid Unit Cannon builds
+          refValue: ADVANCED_BOT_FACTORY_ONLY,
         };
       });
       var aiMods = unitBuilds.concat(unitPriority);

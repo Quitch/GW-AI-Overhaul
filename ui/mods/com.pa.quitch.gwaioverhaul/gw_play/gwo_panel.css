@@ -37,10 +37,8 @@
   text-transform: uppercase;
 }
 
-/* ALLY is the only casing the game ships a translation entry for, so the label has
-   to use that id and is cased back to suit this panel here. inline-block because
-   ::first-letter only applies to block containers, and the label has to stay inline
-   with the AI: beside it. */
+/* inline-block because ::first-letter only applies to block containers, and the
+   label has to stay inline with the AI: beside it. */
 .gwo-sentence-case {
   display: inline-block;
 }

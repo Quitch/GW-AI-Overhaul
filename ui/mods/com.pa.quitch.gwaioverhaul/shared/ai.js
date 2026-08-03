@@ -221,7 +221,10 @@ define([
       };
     },
 
-    setAIEconRate: function (aiEconRate) {
+    // Co-op games in older wars could end up with a negative eco, so a saved
+    // econ_rate cannot be trusted to be valid - hence the floor rather than
+    // using it directly.
+    aiEconRateWithFloor: function (aiEconRate) {
       var game = model.game();
       var galaxy = game.galaxy();
       var originSystem = galaxy.stars()[galaxy.origin()].system();

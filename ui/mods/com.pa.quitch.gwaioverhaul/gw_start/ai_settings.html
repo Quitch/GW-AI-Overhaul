@@ -7,11 +7,12 @@
       <div class="header">
         <loc>ECONOMY</loc>
       </div>
-      <!-- The trailing colon sits outside the <loc> throughout this panel: i18n keys
-      are case- and character-sensitive, and the game ships entries for the bare label
-      ("ECONOMY") but none for the label plus colon ("ECONOMY:"). Where the entry's
-      casing also differs from what this panel displays, the <loc> carries
-      .gwo-uppercase and gwo_start.css restores the display casing after translation. -->
+      <!-- Where a label has a shipped translation entry, the trailing colon sits
+      outside the <loc>: i18n keys are case- and character-sensitive, and the game
+      ships entries for the bare label ("ECONOMY") but none for the label plus colon
+      ("ECONOMY:"). Where the entry's casing also differs from what this panel
+      displays, the <loc> carries .gwo-uppercase and gwo_start.css restores the
+      display casing after translation. -->
       <loc>ECONOMY</loc>:
       <span class="info_tip" data-bind="tooltip: '!LOC:Starting economy.'"
         >?</span
@@ -253,8 +254,6 @@
           <option value="900">LONG</option>
         </select>
       </div>
-      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
-      the display casing. See the note by ECONOMY above. -->
       <loc class="gwo-uppercase">Unable To Expand Delay</loc>:
       <span
         class="info_tip"
@@ -276,8 +275,6 @@
       <div class="header">
         <loc>Micro</loc>
       </div>
-      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
-      the display casing. See the note by ECONOMY above. -->
       <loc class="gwo-uppercase">Micro</loc>:
       <span
         class="info_tip"
@@ -291,9 +288,8 @@
           data-bind="selectPicker: $root.gwoDifficultySettings.microType"
         >
           <option value="0">POOR</option>
-          <!-- Capitalised because i18n lookups are case sensitive and "Average" is the
-          only casing the game ships an entry for; #gwo-micro-type in gwo_start.css puts
-          it back in uppercase to match the options either side of it. -->
+          <!-- "Average": see the ECONOMIC GROWTH note above. #gwo-micro-type in
+          gwo_start.css restores the display casing. -->
           <option value="1">Average</option>
           <option value="2">GOOD</option>
         </select>
@@ -328,8 +324,6 @@
           <option value="true">GOOD</option>
         </select>
       </div>
-      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
-      the display casing. See the note by ECONOMY above. -->
       <loc class="gwo-uppercase">Landing Evaluation</loc>:
       <span
         class="info_tip"
@@ -401,8 +395,6 @@
       <div class="header">
         <loc>modes</loc>
       </div>
-      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
-      the display casing. See the note by ECONOMY above. -->
       <loc class="gwo-uppercase">FFA Chance</loc>:
       <span
         class="info_tip"
@@ -495,8 +487,6 @@
           <option value="100">100%</option>
         </select>
       </div>
-      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
-      the display casing. See the note by ECONOMY above. -->
       <loc class="gwo-uppercase">Bounties Chance</loc>:
       <span
         class="info_tip"
@@ -520,8 +510,6 @@
           <option value="100">100%</option>
         </select>
       </div>
-      <!-- Cased and punctuated to match the shipped translation entry; CSS restores
-      the display casing. See the note by ECONOMY above. -->
       <loc class="gwo-uppercase">Bounty Value</loc>:
       <span
         class="info_tip"

@@ -2,18 +2,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoUnit, gwoGroup) {
-  var unitsWithADeathWeapon = [
-    gwoUnit.wyrm,
-    gwoUnit.zeus,
-    gwoUnit.commander,
-    gwoUnit.manhattan,
-    gwoUnit.ares,
-    gwoUnit.atlas,
-    gwoUnit.jig,
-  ];
-  var unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
-    return _.includes(unitsWithADeathWeapon, unit);
-  });
   var advancedBotFabbers = [
     gwoUnit.colonel,
     gwoUnit.mend,
@@ -32,8 +20,12 @@ define([
     cards: [
       { id: "gwc_bld_efficiency_cdr", units: [gwoUnit.commander] },
       {
+        // The owners of gwoGroup.fabberBuildArms and gwoGroup.factoryBuildArms,
+        // bar the Commander, whose arm is gwc_bld_efficiency_cdr's. Not
+        // gwoGroup.factories: that includes the anti-nuke launcher, which builds
+        // no units and so is outside factoryBuildArms.
         id: "gwc_bld_efficiency_fabs",
-        units: gwoGroup.fabbers.concat(gwoGroup.factories),
+        units: gwoGroup.fabbers.concat(gwoGroup.structuresFactories),
       },
       { id: "gwc_combat_air", units: gwoGroup.airMobile },
       { id: "gwc_combat_bots", units: gwoGroup.botsMobile },
@@ -64,7 +56,23 @@ define([
       { id: "gwc_cost_super_weapons", units: gwoGroup.structuresSuperWeapons },
       { id: "gwc_cost_titans", units: gwoGroup.titans },
       { id: "gwc_cost_vehicles", units: gwoGroup.vehiclesMobile },
-      { id: "gwc_damage_air", units: gwoGroup.airMobile },
+      {
+        id: "gwc_damage_air",
+        // Mirrors gwoGroup.airAmmo: the fabbers and Pelican in airMobile carry no
+        // ammo, so the card cannot touch them.
+        units: [
+          gwoUnit.angel,
+          gwoUnit.bumblebee,
+          gwoUnit.firefly,
+          gwoUnit.hornet,
+          gwoUnit.horsefly,
+          gwoUnit.hummingbird,
+          gwoUnit.icarus,
+          gwoUnit.kestrel,
+          gwoUnit.phoenix,
+          gwoUnit.wyrm,
+        ],
+      },
       { id: "gwc_damage_artillery", units: gwoGroup.structuresArtillery },
       {
         id: "gwc_damage_bots",
@@ -74,6 +82,7 @@ define([
           gwoUnit.colonel,
           gwoUnit.dox,
           gwoUnit.gilE,
+          gwoUnit.grenadier,
           gwoUnit.locusts,
           gwoUnit.slammer,
           gwoUnit.spark,
@@ -114,6 +123,7 @@ define([
           gwoUnit.piranha,
           gwoUnit.squall,
           gwoUnit.stingray,
+          gwoUnit.typhoon,
         ],
       },
       {
@@ -123,9 +133,12 @@ define([
           gwoUnit.drifter,
           gwoUnit.inferno,
           gwoUnit.leveler,
+          gwoUnit.manhattan,
+          gwoUnit.sheller,
           gwoUnit.skitter,
           gwoUnit.spinner,
           gwoUnit.storm,
+          gwoUnit.stryker,
           gwoUnit.vanguard,
         ],
       },
@@ -150,12 +163,7 @@ define([
       },
       {
         id: "gwc_enable_defenses_t2",
-        units: [
-          gwoUnit.catapult,
-          gwoUnit.flak,
-          gwoUnit.laserDefenseTowerAdvanced,
-          gwoUnit.torpedoLauncherAdvanced,
-        ],
+        units: gwoGroup.structuresDefencesAdvanced,
       },
       {
         id: "gwc_enable_orbital_all",
@@ -225,8 +233,13 @@ define([
         id: "gwc_storage_and_buff",
         units: gwoGroup.structuresEco,
       },
-      { id: "gwaio_upgrade_wyrm", units: [gwoUnit.wyrm] },
-      { id: "gwaio_upgrade_ubercannon_structure", units: [gwoUnit.commander] },
+      { id: "gwaio_upgrade_wyrm", units: [gwoUnit.wyrm, gwoUnit.squall] },
+      {
+        // Every fabber build arm gains Commander reclaim, the Commander's own
+        // included.
+        id: "gwaio_upgrade_ubercannon_structure",
+        units: gwoGroup.fabbers.concat(gwoUnit.commander),
+      },
       { id: "gwaio_upgrade_omega", units: [gwoUnit.omega] },
       { id: "gwaio_upgrade_lob", units: [gwoUnit.lob] },
       { id: "gwaio_upgrade_dox", units: [gwoUnit.dox] },
@@ -257,8 +270,12 @@ define([
       { id: "gwaio_upgrade_horsefly", units: [gwoUnit.horsefly] },
       { id: "gwaio_upgrade_hornet", units: [gwoUnit.hornet] },
       { id: "gwaio_upgrade_pelican", units: [gwoUnit.pelican] },
-      { id: "gwaio_upgrade_grenadier", units: [gwoUnit.grenadier] },
-      { id: "gwaio_upgrade_boom", units: [gwoUnit.boom] },
+      {
+        id: "gwaio_upgrade_grenadier",
+        units: [gwoUnit.grenadier, gwoUnit.landMine],
+      },
+      // Enables Lobs and reloads them with Booms; the Boom itself is unchanged.
+      { id: "gwaio_upgrade_boom", units: [gwoUnit.lob] },
       { id: "gwaio_upgrade_holkins", units: [gwoUnit.holkins] },
       { id: "gwaio_upgrade_manhattan", units: [gwoUnit.manhattan] },
       { id: "gwaio_upgrade_colonel", units: [gwoUnit.colonel] },
@@ -285,8 +302,14 @@ define([
       { id: "gwaio_upgrade_squall", units: [gwoUnit.squall] },
       { id: "gwaio_upgrade_typhoon", units: [gwoUnit.typhoon] },
       { id: "gwaio_upgrade_inferno", units: [gwoUnit.inferno] },
-      { id: "gwaio_upgrade_sheller", units: [gwoUnit.sheller] },
-      { id: "gwaio_upgrade_bumblebee", units: [gwoUnit.bumblebee] },
+      {
+        id: "gwaio_upgrade_sheller",
+        units: [gwoUnit.sheller, gwoUnit.landMine],
+      },
+      {
+        id: "gwaio_upgrade_bumblebee",
+        units: [gwoUnit.bumblebee, gwoUnit.landMine],
+      },
       { id: "gwaio_upgrade_kestrel", units: [gwoUnit.kestrel] },
       { id: "gwaio_upgrade_spark", units: [gwoUnit.spark] },
       { id: "gwaio_upgrade_stinger", units: [gwoUnit.stinger] },
@@ -396,23 +419,32 @@ define([
         id: "gwaio_upgrade_advancedenergyplant",
         units: [gwoUnit.energyPlantAdvanced],
       },
+      // The factory loses health, but the units it builds get cheaper, so they
+      // are affected as well.
       {
         id: "gwaio_upgrade_advancedairfactory",
-        units: [gwoUnit.airFactoryAdvanced],
+        units: gwoGroup.airAdvancedMobile.concat(gwoUnit.airFactoryAdvanced),
       },
       {
         id: "gwaio_upgrade_advancedbotfactory",
-        units: [gwoUnit.botFactoryAdvanced],
+        units: gwoGroup.botsAdvancedMobile.concat(gwoUnit.botFactoryAdvanced),
       },
       {
         id: "gwaio_upgrade_advancednavalfactory",
-        units: [gwoUnit.navalFactoryAdvanced],
+        units: gwoGroup.navalAdvancedMobile.concat(
+          gwoUnit.navalFactoryAdvanced
+        ),
       },
       {
         id: "gwaio_upgrade_advancedvehiclefactory",
-        units: [gwoUnit.vehicleFactoryAdvanced],
+        units: gwoGroup.vehiclesAdvancedMobile.concat(
+          gwoUnit.vehicleFactoryAdvanced
+        ),
       },
-      { id: "gwaio_upgrade_orbitalfactory", units: [gwoUnit.orbitalFactory] },
+      {
+        id: "gwaio_upgrade_orbitalfactory",
+        units: gwoGroup.orbitalAdvancedMobile.concat(gwoUnit.orbitalFactory),
+      },
       {
         id: "gwaio_enable_planetaryradar",
         units: [gwoUnit.deepSpaceOrbitalRadar],
@@ -422,8 +454,10 @@ define([
         units: [gwoUnit.deepSpaceOrbitalRadar],
       },
       { id: "gwaio_health_titans", units: gwoGroup.titans },
-      { id: "gwaio_damage_titans", units: gwoGroup.titans },
-      { id: "gwaio_speed_titans", units: gwoGroup.titans },
+      // gwoGroup.titansAmmo carries no Ragnarok entry, so the buff misses it.
+      { id: "gwaio_damage_titans", units: gwoGroup.titansMobile },
+      // Ragnarok is immobile, so the engine buff cannot reach it.
+      { id: "gwaio_speed_titans", units: gwoGroup.titansMobile },
       { id: "gwaio_combat_titans", units: gwoGroup.titans },
       { id: "gwaio_cooldown_vehicles", units: gwoGroup.vehicleFactories },
       { id: "gwaio_cooldown_bots", units: gwoGroup.botFactories },
@@ -451,12 +485,23 @@ define([
         units: [gwoUnit.kessler],
       },
       {
+        // Both also mod gwoGroup.weaponsMobile/ammoMobile wholesale, which
+        // reaches the armed units outside gwoGroup.combatMobile: the mobile
+        // titans and the two armed scouts.
         id: "gwaio_protocol_precision",
-        units: gwoGroup.combat,
+        units: gwoGroup.combatMobile.concat(
+          gwoGroup.titansMobile,
+          gwoUnit.firefly,
+          gwoUnit.skitter
+        ),
       },
       {
         id: "gwaio_protocol_wrath",
-        units: gwoGroup.combat,
+        units: gwoGroup.combatMobile.concat(
+          gwoGroup.titansMobile,
+          gwoUnit.firefly,
+          gwoUnit.skitter
+        ),
       },
       {
         id: "gwaio_protocol_fortitude",
@@ -471,8 +516,10 @@ define([
         units: gwoGroup.structures,
       },
       {
+        // Units already carrying a death weapon get theirs made friendly-fire
+        // capable rather than replaced, so every unit is affected either way.
         id: "gwaio_protocol_killswitch",
-        units: unitsWithoutADeathWeapon,
+        units: gwoGroup.units.concat(gwoUnit.commander),
       },
       {
         id: "gwaio_protocol_blindness",

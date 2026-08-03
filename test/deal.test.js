@@ -18,8 +18,6 @@ const deal = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js"
 );
 
-// Shared save/restore for the engine globals these helpers read at call time, so
-// no test leaks a model/window stub into the next one.
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);
 
@@ -102,7 +100,6 @@ describe("dealCard", () => {
 
 describe("setupGwoCards", () => {
   function loadoutAndBasicPresent(result) {
-    // A loadout and a basic card should always be present regardless of deck mode.
     assert.ok(result.includes("gwaio_start_backpacker"));
     assert.ok(result.includes("gwc_minion"));
   }

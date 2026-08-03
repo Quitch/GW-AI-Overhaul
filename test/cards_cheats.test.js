@@ -16,8 +16,6 @@ const cardsCheats = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js"
 );
 
-// Shared save/restore for the engine globals these helpers read at call time, so
-// no test leaks a model/window stub into the next one.
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);
 

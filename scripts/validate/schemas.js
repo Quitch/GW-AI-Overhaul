@@ -6,11 +6,9 @@
 // these checks are the only thing that would catch a typo'd field name or a
 // wrong-typed value before it silently misbehaves in-game.
 //
-// Empirically tallied across the full corpus (573 build_list entries / 141
-// platoon_templates entries / 119 unit_map entries, all 86 pa/ai*/**/*.json files):
 //   - build_list: name/instance_count/priority/build_conditions are on every entry.
-//     to_build is on 566/573 - the 7 without it are non-unit "action" entries (e.g.
-//     "Teleport Commander To Planet", "Fabber Assist"), not a bug, so it's optional.
+//     to_build is optional - a handful of entries are non-unit "action" entries
+//     (e.g. "Teleport Commander To Planet", "Fabber Assist"), not a bug.
 //   - platoon_templates: every entry has `units` (array).
 //   - unit_map: every entry has exactly one of unit_types or spec_id.
 //   - unit_cap (ai_config.json): the file's full extent is a single numeric
@@ -149,8 +147,6 @@ function valueType(value) {
   return Array.isArray(value) ? "array" : typeof value;
 }
 
-// Flags any field whose typeof is inconsistent across the entries that have it.
-// Robust to entries legitimately having different, non-overlapping field sets.
 function checkTypeConsistency(where, entries) {
   const typesByKey = {};
   for (const entry of entries) {

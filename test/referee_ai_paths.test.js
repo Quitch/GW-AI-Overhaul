@@ -2,9 +2,7 @@
 
 // Unit tests for shared/referee_ai_paths.js, the pure path-construction layer every
 // other ai_path consumer (shared/ai.js, referee_config.js, referee_game_files.js,
-// gw_per_player_tech_referee.js, referee_ai.js) routes through. Fully self-contained
-// (define(function(){...}), no game-engine deps), so it's loaded directly with no
-// model/api/$ mocking needed.
+// gw_per_player_tech_referee.js, referee_ai.js) routes through.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -51,8 +49,7 @@ describe("getScopeToken", () => {
       { playerTag: "", specTag: "s1" },
       "fallback"
     );
-    // playerTag is present but falsy (empty string), so the ||-chain moves on to
-    // specTag rather than stopping - this is subtle enough to pin explicitly.
+    // playerTag is present but falsy, so the ||-chain moves on rather than stopping.
     assert.equal(token, "s1");
   });
 
@@ -276,7 +273,7 @@ describe("scopeToken sanitization asymmetry", () => {
   });
 });
 
-describe("appendScope", () => {
+describe("getAIPathDestination - no scope token", () => {
   it("returns the base path unchanged when no scope token is given", () => {
     assert.equal(
       refereeAIPaths.getAIPathDestination("enemy", "Titans", {}),

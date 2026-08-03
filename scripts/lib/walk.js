@@ -5,8 +5,6 @@ const path = require("node:path");
 
 const DEFAULT_SKIP_DIRS = new Set([".git", "node_modules"]);
 
-// Recursively lists files under `dir` whose name matches `filter(name)`, skipping
-// .git/node_modules (and anything else in skipDirs).
 function walkFiles(dir, filter, skipDirs) {
   const skip = skipDirs || DEFAULT_SKIP_DIRS;
   const results = [];

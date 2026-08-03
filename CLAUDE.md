@@ -1,6 +1,7 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code
+in this repository.
 
 ## What this is
 
@@ -19,6 +20,42 @@ than assuming a fixed path here. Treat it as read-only reference for what an
 unmodified file looked like before this mod shadowed it, or to find game systems
 (units, specs, AI) this mod doesn't touch. Never edit anything there.
 
+## Architecture
+
+**Full developer documentation lives in [`docs/`](docs/).** Read
+[`docs/README.md`](docs/README.md) first - it gives a reading order and a list of
+the traps that have actually caused bugs here.
+
+| Topic                                                                   | Doc                                            |
+| ----------------------------------------------------------------------- | ---------------------------------------------- |
+| Chrome 40 / ES5 limits, available libraries, CSS and localisation rules | [`docs/constraints.md`](docs/constraints.md)   |
+| Tree layout, scenes, entry points, battle launch sequence               | [`docs/architecture.md`](docs/architecture.md) |
+| File shadowing, function hijacking, the full shadowed-file inventory    | [`docs/shadowing.md`](docs/shadowing.md)       |
+| Tech card contract, `buff`/`dull`, deal weighting, loadouts             | [`docs/tech-cards.md`](docs/tech-cards.md)     |
+| AI-mod descriptors, the `ops` table, `managerPath`, the tree cache      | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)   |
+| The five AI trees, source vs destination, scope tokens                  | [`docs/ai-paths.md`](docs/ai-paths.md)         |
+| Host/viewer, per-player tech, colour allocation                         | [`docs/coop.md`](docs/coop.md)                 |
+| Unit spec ops, path segments, spec caching                              | [`docs/specs.md`](docs/specs.md)               |
+| Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)             |
+| The Node AMD harness, the seven validators, coverage                    | [`docs/testing.md`](docs/testing.md)           |
+
+Four things are worth knowing before you touch anything, each covered in full by
+the doc named:
+
+- **Shipped `ui/**` code must be ES5 / Chrome 40 safe.** No `let`, arrow functions,
+  template literals or `class`. A parse error takes out the whole script, not just
+  the line. The `eslint.config.mjs` whitelist is exhaustive, so it doubles as the
+  answer to "may I use X?" - no entry means no.
+  ([`constraints.md`](docs/constraints.md))
+- **A shadowed file is a full copy, not a diff.** Prefer injecting into a scene or
+  hijacking a function; shadow only when neither works.
+  ([`shadowing.md`](docs/shadowing.md))
+- **Keep module-private helpers inside the `define(...)` factory.** A file-top-level
+  declaration is a `window` global in PA's RequireJS runtime, so Sonar's S7721 is
+  deliberately scoped out of `ui/**`. ([`constraints.md`](docs/constraints.md))
+- **`model.game().inventory()` is always the host's.** Under per-player tech in
+  co-op, card code must use the inventory passed to it. ([`coop.md`](docs/coop.md))
+
 ## Commands
 
 ```bash
@@ -30,15 +67,15 @@ npm run lint:md           # markdownlint-cli2
 npm run validate          # all validate:* checks below, in sequence
 npm run validate:json     # every .json file in the repo parses
 npm run validate:manifest # modinfo.json scenes reference files that actually exist
-npm run validate:cards    # every tech card exports the fixed contract shape (see below)
-npm run validate:ai-mods  # every card's buff()/dull() emits AI-mod descriptors matching referee_ai.js's contract
-npm run validate:schemas  # AI build-order JSON + difficulty/personality data: type-consistency checks
-npm run validate:refs     # cross-references: loadout ids <-> card files, unit keys, AI builder roles <-> unit_map
-npm run validate:sonar    # sonar-project.properties: no stale exclusion paths, every analysed file is UTF-8
+npm run validate:cards    # every tech card exports the fixed contract shape
+npm run validate:ai-mods  # every card's buff()/dull() emits valid AI-mod descriptors
+npm run validate:schemas  # AI build-order JSON + difficulty/personality data
+npm run validate:refs     # cross-references: loadout ids, unit keys, AI builder roles
+npm run validate:sonar    # sonar-project.properties: no stale paths, files are UTF-8
 npm test                  # node --test (runs everything under test/)
-npm run test:coverage     # same tests + lcov to coverage/lcov.info (what the Sonar job uploads)
+npm run test:coverage     # same tests + lcov to coverage/lcov.info
 npm run format:check      # prettier --check .
-npm run format:write      # prettier --write . (only stage files your change actually touches - see below)
+npm run format:write      # prettier --write . (stage only your own files - see below)
 ```
 
 Run a single test file: `node --test test/specs.test.js`. Run a single test by name:
@@ -47,205 +84,73 @@ Run a single test file: `node --test test/specs.test.js`. Run a single test by n
 CI (`.github/workflows/ci.yml`) runs `lint:js`/`lint:css`/`lint:md`/`validate`/`test`
 as full-repo hard gates (clean today, so any new violation anywhere is a real
 regression), plus a separate Prettier check scoped only to files a PR/push actually
-changed. `npm run verify` mirrors the hard-gate job; run it before submitting a change.
+changed. `npm run verify` mirrors the hard-gate job; run it before submitting a
+change. `.github/workflows/build.yml` additionally runs `test:coverage` and the
+SonarQube scan; `release.yml` re-runs the hard gates against a published release tag
+as a post-publish alarm. What each validator catches, and why the Sonar config needs
+its own guard, is in [`docs/testing.md`](docs/testing.md).
 
-`.github/workflows/build.yml` is a second CI job: it runs `npm run test:coverage` and
-then `SonarSource/sonarqube-scan-action`, so `sonar-project.properties` is genuinely
-read and enforced by the scanner (its exclusions, coverage exclusions and the S7721
-issue-ignore are live config, not just documentation). The quality gate requires ~80%
-coverage on _new code_ only - see CONTRIBUTING.md's "Test coverage and new code" for
-what to test and what to legitimately exclude. Do not run the `sonar` CLI locally; it
-does not perform real rule analysis for this org. Because that config is live but
-unreferenced by any other tooling, its paths drift silently and only fail on SonarCloud
-after a push - `validate:sonar` is the local guard: every exclusion pattern must still
-match a tracked file (a rename out from under an exclusion once put a GBK-encoded readme
-back into analysis), and every file left in analysis must decode as the UTF-8 that
-`sonar.sourceEncoding` declares. `.github/workflows/release.yml` re-runs the hard gates
-against a published release tag as a post-publish alarm.
+## Conventions
 
-## Architecture
+See CONTRIBUTING.md for the full list. The ones that bite most often:
 
-### File shadowing
-
-The mod overrides base-game files by shipping a file at the identical relative path
-(`pa/**`, `ui/main/**`). CONTRIBUTING.md says avoid this unless unavoidable - prefer
-adding new files under the mod's own namespaced directory,
-`ui/mods/com.pa.quitch.gwaioverhaul/**`. `modinfo.json`'s `scenes` block is the mod's
-real entry-point list: the game loads exactly the `coui://` files listed there per
-scene (`gw_start`, `gw_play`, `gw_war_over`, `live_game`, `shared_build`, `start`,
-`gw_coop_per_player_loadout`) and nothing else - a renamed/deleted file still listed
-there fails silently in-game with no error a contributor would see locally, which is
-what `validate:manifest` exists to catch.
-
-Shadowing files should be treated as a matter of last resort. A shadowed file is a
-full copy of the base file, not a diff - any future base-game update to the parts
-this mod didn't touch is silently lost until someone notices and manually re-syncs.
-There's no base install in CI to diff against, so that drift is invisible until it
-surfaces as an in-game bug. Always look to inject content into a scene, or hijack
-functions, as a first step; shadow only when neither is possible - e.g. the change
-alters markup/DOM structure the base file owns outright, or touches logic the base
-file keeps private and never exposes for hijacking (see below).
-
-### Function hijacking
-
-Where the base game loads something into `self` this is usually in the context of
-the global `model`, which is how this mod will intercept and overwrite individual
-functions without needing to shadow an entire file. This only works for functions
-the base file actually assigns onto `self`/`model` (or a prototype) - a function
-kept as a private closure variable with no such assignment isn't reachable this way,
-and reaching it is a legitimate reason to fall back to shadowing.
-
-### Tech card contract
-
-Every file under `ui/main/game/galactic_war/cards/*.js` is an AMD module
-(`define([deps], function(...) {...})`) returning an object with this fixed shape
-(enforced by `scripts/validate/cards-contract.js`, empirically confirmed across all
-237 cards - of which the validator shape-checks 175, the rest being excluded as
-`NOT_SHIPPED` or `KNOWN_UNLOADABLE`; the run prints that tally):
-
-- `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` - always
-  functions.
-- `audio`, `getContext` - functions on every card except one legacy exception kept
-  for save-compatibility.
-- `keep`, `discard` - optional; legitimate extensions, not typos. No card carries
-  either today (both were dropped in the minion and card-slot redesigns), but
-  `gw_inventory.js` and `gw_start/setup.js` still call them when present, so the
-  contract validator continues to accept them.
-
-`buff(inventory)` mutates game state via `inventory.addMods(...)` (unit-spec stat
-mods) and/or `inventory.addAIMods(...)` (AI build-order mod descriptors - see below).
-`dull(inventory)` reverses it.
-
-### AI-mod pipeline
-
-A card's `buff()`/`dull()` can call `inventory.addAIMods([{type, op, value, toBuild,
-idToMod, refId, refValue, matchAll}, ...])`. These descriptors have no static JSON
-schema - they only exist as objects built at runtime - so `validate:ai-mods` checks
-their shape by actually calling every card's `buff()`/`dull()` against a mock
-inventory (`scripts/lib/auto-stub.js` auto-stubs every inventory method except the
-ones under test, so this doesn't need to hand-mock the whole inventory API).
-
-At game start, `gw_play/referee_ai.js` reads every AI build-order JSON file under the
-resolved AI path, applies the in-scope descriptors via its `ops` table (`append`,
-`prepend`, `replace`, `remove`, `new` - fabber/factory/platoon builds only; `squad` -
-platoon templates only), and writes the result to one or more destination paths
-(`writeConfigFiles`) sent to the server. `managerPath(type)` maps a descriptor's
-`type` (`fabber`/`factory`/`platoon`/`template`) to a directory
-(`fabber_builds/`/`factory_builds/`/`platoon_builds/`/`platoon_templates/`).
-
-Which AI build tree is read/written is resolved by `shared/ai.js` +
-`shared/referee_ai_paths.js` from `aiInUse` (`Titans` | `Penchant` | `Queller`) and
-scoping (per-player, Guardians/mirror-mode, Cluster faction presence, subcommander
-vs. enemy):
-
-- `pa/ai/` - base game's stock Titans AI build data. This repo only ships the
-  handful of files GWO shadows here; most of the tree is base-game-owned and not
-  present in this repo (not available in CI either - no base game install).
-- `pa/ai_penchant/` - GWO's own personality-driven build trees, shipped in full.
-  `shared/ai.js`'s `penchants()` table maps a personality name to build-file tags
-  drawn from this tree.
-- `/pa/ai_queller/` - base game's Queller AI data (not shipped here). Note the path:
-  on disk in the install these files live under `pa_ex1/ai_queller/`, but the
-  expansion overlay is addressed through `/pa/...` at runtime, so that is the path
-  both the base game and `referee_ai_paths.js` use. `getQuellerPath()` picks a skill
-  tier below it - `q_uber/` for enemies, `q_silver/` with Smart Subcommanders,
-  otherwise `q_bronze/`.
-- `pa/ai_tech/` - the tree AI-mod `load` descriptors and card-driven output resolve
-  against. Both a destination and a small source tree: this repo ships the build
-  files `load` descriptors name (currently 8, under `fabber_builds/` and
-  `factory_builds/`), and `referee_ai.js` also writes generated output here.
-- `pa/ai_subcommander/`, `pa/ai_cluster/` - purely runtime-synthesized virtual mount
-  paths `referee_ai.js` writes to; no on-disk existence in this repo at all.
-
-`test/ai_source_files.test.js` documents this dual nature precisely - it's a
-filesystem contract check scoped only to the source paths actually shipped here.
-Runtime-only paths (with no filesystem backing) are instead covered by
-`test/referee_ai_file_processing.test.js` via mocked `api.file.list`/`$.getJSON`.
-
-### Difficulty & personality tuning data
-
-`gw_start/difficulty_levels.js` (a `difficulties` array: nine tiers, Beginner /
-Casual / Iron / Bronze / Silver / Gold / Platinum / Diamond / Uber, plus a minimal
-"Custom" sentinel) and `faction/personalities.js` - both under
-`ui/mods/com.pa.quitch.gwaioverhaul/` - are declarative data, each wrapped in
-`define({...})`. They don't share one fixed key set across entries (the Custom
-tier intentionally has far fewer fields than the rest), so `validate:schemas` checks
-type _consistency_ instead of required fields: any field appearing with more than one
-`typeof` across entries that have it is almost certainly a typo, not a legitimate
-variation.
-
-### Test harness
-
-`scripts/lib/amd-loader.js` loads this mod's shipped AMD modules under plain Node
-(no game/Chromium runtime) by stubbing `define()` and the handful of engine globals
-files reference _inside function bodies_ (`api`/`model`/`ko`/`$`/`createjs`/`window`/
-`requireGW` are deliberately left unstubbed at define-time, so a file that touches
-them at the top level of its factory fails loudly rather than silently passing).
-`loadCouiModule(entry)` resolves both `coui://` paths and bare AMD ids
-(`"cards/x"`, `"shared/x"`) the same way the game's own loader would; an id this repo
-doesn't ship (a base-game module GWO doesn't override) throws a distinct
-`NOT_SHIPPED` error rather than a generic failure, since CI has no base-game install
-to fall back to. `requireShippedModule(entry)` instead pulls a file's plain Node
-`module.exports`, used only where a file deliberately exposes a test-only hook dead
-in production (e.g. `referee_ai.js`'s `applyAiMods`, guarded by `typeof module !==
-"undefined"`, which never executes in-game).
-
-## Conventions (see CONTRIBUTING.md for the full list)
-
-- Shipped game code must stay ES5/Chrome 40 compatible. This is enforced as a
-  whitelist, not a denylist: `eslint.config.mjs` applies `eslint-plugin-es-x`'s
-  `flat/restrict-to-es5` to `ui/**` (forbidding all post-ES5 syntax _and_ builtins),
-  then switches off the individual rules for what Chrome 40 actually supports. That
-  whitelist is exhaustive rather than as-needed - it covers every post-ES5 feature
-  Chrome 40 has, used by this repo or not, so it doubles as the answer to "may I use
-  X?". No entry means no. Broadly: `for...of`, generators, `Promise`, `Map`/`Set`/
-  `WeakMap`/`WeakSet`, `Symbol`, typed arrays, all ES2015 `Math.*` and `Number.*`
-  additions, `Object.is`/`setPrototypeOf`/`getOwnPropertySymbols`,
-  `String.prototype.normalize`, and `Array.prototype.entries`/`keys` (but _not_
-  `values`, which is Chrome 66). Each entry carries the Chrome release that shipped
-  it, taken from `@mdn/browser-compat-data` and then verified feature-by-feature
-  against a running PA (Chrome/40.0.2214.28) over the DevTools protocol; a rule
-  qualifies only if that is <= 40 and the engine really has it.
-  Four are restated as explicit errors with reasons rather than left implicit:
-  `no-block-scoped-variables` (`let`/`const` - Chrome 41 and strict-only, and `const`
-  stays out regardless because Chrome 40 lacks ES2015 per-iteration loop bindings) and
-  `no-block-scoped-functions` (block scoping for function declarations is Chrome 49;
-  Chrome 40 hoists them out of the block under legacy rules), plus
-  `no-string-prototype-startswith`/`-endswith`, which PA's engine _does_ have but
-  only in one-argument form - it ignores the position argument and returns a wrong
-  answer rather than throwing, so a feature detect is actively misleading.
-  `ecmaVersion` is
-  held at 6 as a backstop so anything past ES2015 also parse-errors; it cannot be
-  lowered to 5, because `for...of` would then be an unsuppressible parse error that
-  silently skips every other rule in the file. `scripts/**` and `test/**` are
-  Node-only tooling and are exempt (see `eslint.config.mjs`'s separate override
-  block for them).
 - camelCase for JS, kebab-case for CSS, 2-space indent, HTML in its own file (never
   inline in JS).
 - PRs must only touch what the request needs - no drive-by cleanup/reformatting
   (submit those separately). `format:write` is repo-wide (`prettier --write .`), so
   run it and then stage only the files your change actually touches. The whole repo
-  now passes `prettier --check .`, which `npm run verify` enforces; CI additionally
-  runs a changed-files-only Prettier job.
-- `.stylelintrc.json` disables `color-function-alias-notation` and scopes
-  `declaration-block-no-redundant-longhand-properties` to ignore `overflow`, both
-  because PA's embedded Chrome 40 predates the modern CSS syntax those rules assume.
-  Don't remove those exclusions or "fix" the `rgba()`/`overflow-x`+`overflow-y` usage
-  they cover as a drive-by.
+  passes `prettier --check .`, which `npm run verify` enforces.
 - The whole `pa/**` data tree is excluded from Prettier (see `.prettierignore`).
   Those JSON files are intentionally minified to a single line, matching the base
   game's own convention - don't reformat them, and don't narrow the exclusion back
   to an enumerated file list.
-- Sonar `javascript:S7721` (function scoping): keep module-private helpers inside the
-  `define(...)` factory. In PA's RequireJS runtime a file-top-level declaration is a
-  `window` global, so hoisting to the "outer scope" the rule wants leaks a global for
-  no gain (the factory runs once). S7721 is therefore accepted and scoped out of
-  `ui/**` (it stays active for `scripts/**`/`test/**`). Base-game-shadowed modules whose
-  `define()` can't load under the Node harness reach their testable logic by extracting
-  it into a measured sibling module the shadowed file requires (see CONTRIBUTING.md's
-  "Node test reach for base-game-shadowed modules"), not by hoisting helpers to file top
-  level. See CONTRIBUTING.md's "Function scoping in shipped UI code".
+- `.stylelintrc.json` disables `color-function-alias-notation` and scopes
+  `declaration-block-no-redundant-longhand-properties` to ignore `overflow`, both
+  because Chrome 40 predates the CSS syntax those rules assume. Don't remove those
+  exclusions or "fix" the usage they cover as a drive-by.
+
+### Comments
+
+The repo has been through a full comment audit. These are the rules it was cleaned
+to, and they bind every line you add or touch - mod-owned code, shadowed base-game
+files and tech cards are held to the same bar.
+
+- **A comment earns its place only by saying what the code cannot**: base-game or
+  engine behaviour, a bug workaround, a dependency that lives outside the mod, or a
+  counter-intuitive ordering. Anything that restates the code goes.
+- **If the comment exists because the code is unclear, fix the code.** Rename the
+  identifier, extract the helper, or hoist the magic number to a named constant -
+  the comment then has nothing left to say.
+- **Say it once.** A fact needed in five places is one comment plus four
+  cross-references, or a name that carries it. Copies drift apart.
+- **Keep the rule, drop the story.** Rejected alternatives, tuning history and "this
+  used to live elsewhere" belong in `CHANGELOG.md`.
+- **Don't record counts or measurements nothing enforces** - they are stale as soon
+  as a file is added. An enforced floor (`MIN_CHECKED` in
+  `scripts/lib/cards-contract.js`) is a different thing and stays.
+- **Verify a comment against the code before writing it.** Every path, filename and
+  identifier it names must exist, and the claim must match the lines beside it. The
+  audit found sixteen that failed exactly there; a confidently wrong comment is
+  worse than none.
+- **`docs/` carries system-level knowledge; line-anchored facts stay in the code.**
+  A paragraph explaining a whole subsystem belongs in `docs/` with the code pointing
+  at it - but a documented subsystem is not licence to delete the comments inside
+  it.
+
+Never removed, because they are not prose:
+
+- `eslint-disable`, `prettier-ignore` and `stylelint-disable` directives.
+- Knockout `<!-- ko -->` / `<!-- /ko -->`, which are executable virtual bindings
+  ([`constraints.md`](docs/constraints.md)).
+- The `// GWO - ...` shadow marker on line 1 of a shadowed file - the only record of
+  why that copy exists ([`shadowing.md`](docs/shadowing.md)). Stock's `// !LOCNS:...`
+  is deliberately not carried; don't reinstate it
+  ([`constraints.md`](docs/constraints.md)).
+
+Applying these to comments your change doesn't otherwise touch is drive-by cleanup:
+correct, but a separate PR.
 
 ## Requirements
 
-- Apply a prettier pass to all new and edited files of support types, including test scripts.
+- Apply a prettier pass to all new and edited files of support types, including test
+  scripts.

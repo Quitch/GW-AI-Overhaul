@@ -35,6 +35,18 @@ define([
           op: "replace",
           value: gwoUnit.typhoonWeapon,
         },
+        {
+          file: gwoUnit.wyrm,
+          path: "navigation.aggressive_distance",
+          op: "replace",
+          value: 250, // matches the Typhoon's drone launcher range
+        },
+        {
+          file: gwoUnit.wyrm,
+          path: "navigation.aggressive_behavior",
+          op: "replace",
+          value: "circle", // loiter at range instead of a bombing run
+        },
       ]);
     },
     dull: function () {},

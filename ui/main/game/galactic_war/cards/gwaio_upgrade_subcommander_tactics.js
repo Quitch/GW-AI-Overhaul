@@ -18,7 +18,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       return { chance: gwoCard.subcommanderWeight(inventory, 55) };
     },
     buff: function () {
-      // performed in referee_config.js
+      // performed in shared/referee_subcommander_tech.js
     },
     dull: function () {},
   };

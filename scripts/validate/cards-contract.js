@@ -1,27 +1,19 @@
 "use strict";
 
 // Structurally validates every Galactic War tech card against the fixed contract
-// documented in this repo's CLAUDE.md: each card must export a well-known set of
-// functions. Loads every card through the AMD shim (scripts/lib/amd-loader.js) and
-// checks the shape of what define() returns - it does not call deal/buff/dull/etc,
-// so it catches "wrong export shape" bugs (typos, missing/renamed fields, wrong
-// type), not runtime logic bugs.
+// documented in docs/tech-cards.md. Checks the shape of what define() returns - it
+// does not call deal/buff/dull/etc, so it catches "wrong export shape" bugs, not
+// runtime logic bugs. The run prints the live tally; MIN_CHECKED is the floor.
 //
-// Empirically tallied across all 237 cards - 175 of which load and are shape-checked
-// here, 61 excluded as NOT_SHIPPED and 1 as KNOWN_UNLOADABLE (see amd-loader.js's
-// NOT_SHIPPED note for why not all of them can load here). Cards get added over time,
-// so treat these numbers as a snapshot: the run prints the live tally, and that - not
-// this comment - is the source of truth. MIN_CHECKED below is the enforced floor.
-//   - visible/describe/summarize/icon/deal/buff/dull: function, on every loadable card.
-//   - audio/getContext: function, on every loadable card except gwaio_enable_bot_aa.js
-//     (explicitly kept for save-compatibility with GWO v5.9.0 and earlier).
-// No card carries keep/discard any more; both were dropped in the minion and card-slot
-// redesigns. gw_inventory.js still calls them when present, so a card is free to
-// reintroduce one - but they are not part of the shape this check expects to see.
+// audio/getContext are on every loadable card except gwaio_enable_bot_aa.js, kept
+// for save-compatibility with GWO v5.9.0 and earlier. No card carries keep/discard
+// any more - both were dropped in the minion and card-slot redesigns - but
+// gw_inventory.js still calls them when present, so a card may reintroduce one.
 
 const fs = require("node:fs");
 const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
+const { KNOWN_UNLOADABLE } = require("../lib/known-unloadable-cards.js");
 
 const CARDS_DIR = path.join(
   REPO_ROOT,
@@ -44,25 +36,12 @@ const REQUIRED_FIELDS = [
 const OPTIONAL_FIELDS = ["audio", "getContext", "keep", "discard"];
 const KNOWN_FIELDS = new Set(REQUIRED_FIELDS.concat(OPTIONAL_FIELDS));
 
-// Cards this file's contract check is known not to cover, and why. NOT_SHIPPED
-// failures (a card transitively needs a base-game module GWO doesn't ship, so this
-// repo/CI - with no access to the Steam install - can't resolve it) don't need an
-// entry here; the loader already identifies those precisely and they're tolerated
-// generically below. Only non-NOT_SHIPPED failures need a reviewed, named entry -
-// anything else that fails to load is treated as a real regression.
 // Floor on how many cards this check actually covers. NOT_SHIPPED is swallowed
-// generically above, so a mod-shipped dependency breaking demotes every card that
+// generically below, so a mod-shipped dependency breaking demotes every card that
 // requires it from "checked" to "excluded" with CI still green - coverage can shrink
 // silently and has (178 -> 175). Raise this when the checked count genuinely rises;
 // never lower it to make a run pass.
 const MIN_CHECKED = 175;
-
-const KNOWN_UNLOADABLE = {
-  "gwc_minion.js":
-    "transitively depends on shared/gw_factions.js, which calls " +
-    "api.content.usingTitans() directly at define-time (real engine coupling, " +
-    "not just a missing file)",
-};
 
 function checkShape(file, card) {
   const problems = [];

@@ -88,7 +88,6 @@ function gwoSetup() {
     });
 
     var onSelectedNamesChanged = function (names) {
-      // No systems selected
       if (_.isEmpty(names)) {
         enableGoToWar(false);
       } else {
@@ -100,7 +99,6 @@ function gwoSetup() {
       var modMounted = function (modIdentifier) {
         return _.some(mods, { identifier: modIdentifier });
       };
-      // Shared Systems for Galactic War
       if (modMounted("com.wondible.pa.gw_shared_systems")) {
         sharedSystemsForGalacticWarActive = true;
         model.selectedNames.subscribe(onSelectedNamesChanged);
@@ -115,6 +113,20 @@ function gwoSetup() {
     };
 
     api.mods.getMounted("client", true).then(onModsMounted);
+
+    var foundationFaction = 1;
+
+    // Index into ai_tech.js's factionTechs[faction][n]. 5 is absent because that
+    // tech was removed; see the note by setupAITech5 there.
+    var aiBuffType = {
+      cost: 0,
+      damage: 1,
+      health: 2,
+      speed: 3,
+      build: 4,
+      combat: 6,
+      cooldown: 7,
+    };
 
     var getQuellerAITag = function (faction) {
       var quellerTag = "queller";
@@ -146,8 +158,7 @@ function gwoSetup() {
     };
 
     var selectAIBuffs = function (numberOfBuffs) {
-      var buffType = [0, 1, 2, 3, 4, 6, 7]; // 0 = cost; 1 = damage; 2 = health; 3 = speed; 4 = build; 6 = combat; 7 = cooldown
-      return _.sample(buffType, numberOfBuffs);
+      return _.sample(_.values(aiBuffType), numberOfBuffs);
     };
 
     var setupAIBuffs = function (distance, buffDistanceDelay) {
@@ -449,10 +460,8 @@ function gwoSetup() {
             if (!card) {
               console.error("No matching start card ID found");
               warGenerationFailed = true;
-              // Must reject rather than fall through. jQuery 2.x does not convert a
-              // throw inside a deferred callback into a rejection, so dereferencing
-              // the missing card here would escape .fail(onWarGenerationError) and
-              // leave Go To War spinning with no seed retry.
+              // Must reject, not fall through - see selectMinion's note on throws
+              // inside jQuery deferred callbacks.
               result.reject("no matching start card ID: " + params.id);
               return;
             }
@@ -779,10 +788,9 @@ function gwoSetup() {
           // function-levels deep.
           var setupPlanetForAI = function (ai, planet) {
             planet.generator.shuffleLandingZones = true;
-            // Set up Foundation planets
             if (
               sharedSystemsForGalacticWarActive === false &&
-              ai.faction === 1 &&
+              ai.faction === foundationFaction &&
               !ai.boss
             ) {
               planet.generator.waterHeight = 50;
@@ -808,7 +816,6 @@ function gwoSetup() {
 
             var startCardBreaksAllies = startCardAllyCompatibility(game);
 
-            // Set up the AI
             _.forEach(teamInfo, function (info) {
               var boss = info.boss;
 
@@ -837,7 +844,6 @@ function gwoSetup() {
                 minionPool = gwoAI.quellerCompatibleMinions(minionPool);
               }
 
-              // Set up boss system
               setAIPersonality(boss, difficulty, boss.faction);
               boss.econ_rate = aiEconRate(maxDist);
               var bossCommanders = bossCommanderCount(difficulty, playerCount);
@@ -866,7 +872,6 @@ function gwoSetup() {
               var minionMod =
                 Number.parseFloat(difficulty.minionMod()) * playerCount;
               var clusterType = "";
-              // Set up boss minions
               var numMinions = countMinions(
                 mandatoryMinions,
                 minionMod,
@@ -900,7 +905,6 @@ function gwoSetup() {
                 });
               }
 
-              // Set up non-boss AI system
               _.forEach(workerPool, function (worker) {
                 var ai = worker.ai;
 
@@ -941,7 +945,6 @@ function gwoSetup() {
                   gwoTech.factionTechs
                 );
 
-                // Set up non-boss minions
                 if (numMinions > 0) {
                   ai.minions = [];
 
@@ -979,7 +982,6 @@ function gwoSetup() {
                   }
                 }
 
-                // Set up additional factions for FFA
                 var availableFactions = _.without(aiFactions, ai.faction);
                 _.times(availableFactions.length, function () {
                   if (gameModeEnabled(difficulty.ffaChance())) {
@@ -1030,7 +1032,6 @@ function gwoSetup() {
                   }
                 });
 
-                // Set up allied commander
                 if (
                   !startCardBreaksAllies &&
                   gameModeEnabled(difficulty.alliedCommanderChance())
@@ -1077,7 +1078,6 @@ function gwoSetup() {
                 if (!ai.bossCommanders) {
                   var difficulty = model.gwoDifficultySettings;
 
-                  // Set up The Guardians' treasure planet
                   if (treasurePlanetSetup === false) {
                     treasurePlanetSetup = true;
                     delete ai.commanderCount;
@@ -1109,7 +1109,6 @@ function gwoSetup() {
                       isCardLocked
                     );
 
-                    // Deal a loadout to the treasure planet
                     if (!_.isEmpty(lockedStartCards)) {
                       var treasurePlanetCard = _.sample(lockedStartCards);
                       _.assign(treasurePlanetCard, { allowOverflow: true });
@@ -1121,7 +1120,6 @@ function gwoSetup() {
                     difficulty.paLore() &&
                     gwoLore.aiSystems[optionalLoreEntry]
                   ) {
-                    // Add lore to systems
                     system.description = gwoLore.aiSystems[optionalLoreEntry];
                     optionalLoreEntry += 1;
                   }
@@ -1242,7 +1240,9 @@ function gwoSetup() {
     );
   } catch (e) {
     console.error(e);
-    console.error(JSON.stringify(e));
+    console.error(
+      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+    );
   }
 }
 gwoSetup();

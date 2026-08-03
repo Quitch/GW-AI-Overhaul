@@ -174,25 +174,25 @@ describe("isCluster", () => {
   });
 });
 
-describe("setAIEconRate", () => {
+describe("aiEconRateWithFloor", () => {
   it("floors below the difficulty's econ base + econRatePerDist", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Beginner" });
     restoreModel = installModel(fixture.game);
     // Beginner: econBase 0.35 + econRatePerDist 0.05 = 0.4 floor (floating-point
     // addition, so compare with a tolerance rather than strict equality).
-    assert.ok(Math.abs(gwoAI.setAIEconRate(0.1) - 0.4) < 1e-9);
+    assert.ok(Math.abs(gwoAI.aiEconRateWithFloor(0.1) - 0.4) < 1e-9);
   });
 
   it("leaves a rate above the floor untouched", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Beginner" });
     restoreModel = installModel(fixture.game);
-    assert.equal(gwoAI.setAIEconRate(5), 5);
+    assert.equal(gwoAI.aiEconRateWithFloor(5), 5);
   });
 
   it("falls back to a floor of 1 for an unrecognized difficulty name", () => {
     const fixture = buildGame({ difficultyName: "!LOC:NotARealDifficulty" });
     restoreModel = installModel(fixture.game);
-    assert.equal(gwoAI.setAIEconRate(0.1), 1);
+    assert.equal(gwoAI.aiEconRateWithFloor(0.1), 1);
   });
 
   // Custom is a real entry in difficulties[] but carries no econ fields, so the
@@ -201,13 +201,13 @@ describe("setAIEconRate", () => {
   it("falls back to a floor of 1 for the Custom tier, which has no econ fields", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Custom" });
     restoreModel = installModel(fixture.game);
-    assert.equal(gwoAI.setAIEconRate(0.1), 1);
+    assert.equal(gwoAI.aiEconRateWithFloor(0.1), 1);
   });
 
   it("leaves a rate above the Custom floor untouched rather than returning NaN", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Custom" });
     restoreModel = installModel(fixture.game);
-    assert.equal(gwoAI.setAIEconRate(5), 5);
+    assert.equal(gwoAI.aiEconRateWithFloor(5), 5);
   });
 });
 

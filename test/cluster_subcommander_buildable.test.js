@@ -29,6 +29,9 @@ const {
 } = require("../scripts/lib/amd-loader.js");
 const { createAutoStub } = require("../scripts/lib/auto-stub.js");
 const { matches } = require("../scripts/lib/build-types.js");
+const {
+  KNOWN_UNLOADABLE_FILES,
+} = require("../scripts/lib/known-unloadable-cards.js");
 
 // 61 of the cards - every loadout card among them, which is where the replacements this
 // checks actually live - depend on the base game's shared/gw_common, which this repo
@@ -39,7 +42,7 @@ registerModuleStub("shared/gw_common", createAutoStub());
 
 // The loadout cards pull in shared/bank.js, which constructs itself at define time and
 // so reads ko and localStorage before any test runs. Minimal stand-ins, in the shape
-// test/gw_galaxy_path_between.js uses: an observable is a get/set closure, and a
+// test/gw_galaxy_path_between.test.js uses: an observable is a get/set closure, and a
 // subscription that never fires is correct here - nothing in this file writes one.
 function makeObservable(initial) {
   let value = initial;
@@ -70,11 +73,6 @@ const CARDS_DIR = path.join(
   "galactic_war",
   "cards"
 );
-
-// scripts/validate/{cards,ai-mods}-contract.js each carry their own copy of this for
-// the same reason: a card that fails to load for a reviewed reason other than a missing
-// base-game module. Keep the three in step.
-const KNOWN_UNLOADABLE = new Set(["gwc_minion.js"]);
 
 const CLUSTER_FACTION = 4;
 const UNIT_TYPE_PREFIX = "UNITTYPE_";
@@ -193,7 +191,7 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    if (e.code === "NOT_SHIPPED" || KNOWN_UNLOADABLE.has(file)) {
+    if (e.code === "NOT_SHIPPED" || KNOWN_UNLOADABLE_FILES.has(file)) {
       return { excluded: true };
     }
     throw e;

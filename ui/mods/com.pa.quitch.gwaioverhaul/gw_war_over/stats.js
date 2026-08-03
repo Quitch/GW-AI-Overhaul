@@ -1,12 +1,11 @@
-var gwoWarOverLoadoutStatsLoaded;
+var gwoRecordHighestDifficultyDefeatedLoaded;
 
-// Track the highest difficulty defeated for loadout icons
-function gwoWarOverLoadoutStats() {
-  if (gwoWarOverLoadoutStatsLoaded) {
+function gwoRecordHighestDifficultyDefeated() {
+  if (gwoRecordHighestDifficultyDefeatedLoaded) {
     return;
   }
 
-  gwoWarOverLoadoutStatsLoaded = true;
+  gwoRecordHighestDifficultyDefeatedLoaded = true;
 
   try {
     var game = model.game();
@@ -75,7 +74,9 @@ function gwoWarOverLoadoutStats() {
     );
   } catch (e) {
     console.error(e);
-    console.error(JSON.stringify(e));
+    console.error(
+      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+    );
   }
 }
-gwoWarOverLoadoutStats();
+gwoRecordHighestDifficultyDefeated();

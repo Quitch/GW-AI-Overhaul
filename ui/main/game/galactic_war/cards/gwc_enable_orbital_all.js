@@ -18,7 +18,10 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var chance = 0;
-      if (gwoCard.missingUnit(inventory.units(), gwoGroup.orbital)) {
+      if (
+        !inventory.hasCard("nem_start_deepspace") &&
+        gwoCard.missingUnit(inventory.units(), gwoGroup.orbital)
+      ) {
         chance = gwoCard.travelledShort(
           system,
           context,

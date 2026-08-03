@@ -1,9 +1,9 @@
 "use strict";
 
 // Unit tests for the game-files referee's ai_unit_map path logic. The tested helpers
-// live in the extracted gw_play/referee_game_file_paths.js (a plain define() over
-// lodash/$/Promise only); the referee file itself depends on the unshipped
-// shared/gw_common and is coverage-excluded glue, so this loads the extracted module.
+// live in the extracted gw_play/referee_game_file_paths.js; the referee file itself
+// depends on the unshipped shared/gw_common and cannot load here, so this loads the
+// extracted module.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -200,7 +200,6 @@ describe("buildPlayerFiles", () => {
     const expectedPath = gwoAI.getAIPathDestination("subcommander");
     assert.equal(expectedPath, "/pa/ai_subcommander/");
     assert.ok(expectedPath + "unit_maps/ai_unit_map.json.player" in files);
-    // titans=false: no _x1 variant should be present anywhere.
     for (const key of Object.keys(files)) {
       assert.ok(!key.includes("_x1"));
     }

@@ -148,10 +148,8 @@ function installGlobals() {
 
     let exported;
     if (typeof a === "function" && b === undefined) {
-      // define(function () {...})
       exported = a();
     } else if (Array.isArray(a)) {
-      // define([...deps], function (dep1, dep2) {...})
       const deps = a.map(function (dep) {
         if (dep === "module") {
           return moduleMetaFor(currentPath);
@@ -169,7 +167,6 @@ function installGlobals() {
       });
       exported = b.apply(null, deps);
     } else {
-      // define({...})
       exported = a;
     }
 
@@ -179,8 +176,7 @@ function installGlobals() {
   globalsInstalled = true;
 }
 
-// Returns whatever the target file's define(...) factory returned - the normal way
-// to pull in an AMD module's public interface (e.g. specs.js, units.js, a card).
+// Returns the define() factory's return value. Contrast requireShippedModule below.
 function loadCouiModule(entry) {
   installGlobals();
 

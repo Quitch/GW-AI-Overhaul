@@ -122,8 +122,10 @@ define([
 
   var setAdvEcoMod = function (ai, brain) {
     if (brain !== "Queller") {
-      ai.personality.adv_eco_mod *= gwoAI.setAIEconRate(ai.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
-      ai.personality.adv_eco_mod_alone *= gwoAI.setAIEconRate(ai.econ_rate); // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+      ai.personality.adv_eco_mod *= gwoAI.aiEconRateWithFloor(ai.econ_rate);
+      ai.personality.adv_eco_mod_alone *= gwoAI.aiEconRateWithFloor(
+        ai.econ_rate
+      );
     }
     return ai;
   };
@@ -163,7 +165,7 @@ define([
     return {
       slots: slotsArray,
       color: gwoColour.pick(ai.faction, ai.color, index),
-      econ_rate: gwoAI.setAIEconRate(ai.econ_rate), // co-op games in older wars could result in negative eco - so we can't trust econ_rate to be valid.
+      econ_rate: gwoAI.aiEconRateWithFloor(ai.econ_rate),
       personality: ai.personality,
       spec_tag: specTag,
       alliance_group: alliance,

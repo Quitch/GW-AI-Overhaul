@@ -24,9 +24,8 @@ define(function () {
   // session-lifetime cache is safe.
   var rawCache = {};
 
-  // Returns a Promise of the pristine parsed spec for `item`, fetching (via the
-  // injected deps.fetch) at most once. A rejected fetch is not left cached, so a later
-  // tag can retry rather than inheriting a permanent failure.
+  // A rejected fetch is not left cached, so a later tag can retry rather than
+  // inheriting a permanent failure.
   var getRaw = function (item, deps) {
     if (!Object.prototype.hasOwnProperty.call(rawCache, item)) {
       rawCache[item] = Promise.resolve(deps.fetch(item)).then(
@@ -64,7 +63,6 @@ define(function () {
       }
     };
 
-    // Units
     applyTag(spec, "base_spec");
     if (spec.tools) {
       _.forEach(spec.tools, function (tool) {
@@ -77,7 +75,6 @@ define(function () {
       applyTag(spec.factory, "initial_build_spec");
     }
 
-    // Tools
     if (spec.ammo_id) {
       if (_.isString(spec.ammo_id)) {
         applyTag(spec, "ammo_id");

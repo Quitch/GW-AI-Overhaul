@@ -95,6 +95,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var botsAdvancedAmmo = [
     gwoUnit.bluehawkAmmo,
     gwoUnit.bluehawkAmmoOrbital,
+    gwoUnit.bluehawkBeamAmmo,
     gwoUnit.colonelAmmo,
     gwoUnit.gilEAmmo,
     gwoUnit.locustsAmmo,
@@ -103,6 +104,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.slammerTorpedoWaterAmmo,
   ];
   var botsAdvancedWeapons = [
+    gwoUnit.bluehawkBeam,
     gwoUnit.bluehawkWeapon,
     gwoUnit.bluehawkWeaponOrbital,
     gwoUnit.colonelWeapon,
@@ -167,6 +169,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.squallTorpedoAmmo,
     gwoUnit.stingrayAAAmmo,
     gwoUnit.stingrayAmmo,
+    gwoUnit.stingrayBeamAmmo,
     gwoUnit.typhoonAmmo,
   ];
   var navalAdvancedWeapons = [
@@ -178,6 +181,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.squallTorpedo,
     gwoUnit.squallWeapon,
     gwoUnit.stingrayAA,
+    gwoUnit.stingrayBeam,
     gwoUnit.stingrayWeapon,
     gwoUnit.typhoonWeapon,
   ];
@@ -267,6 +271,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.torpedoLauncherLandAmmo,
     gwoUnit.torpedoLauncherWaterAmmo,
     gwoUnit.umbrellaAmmo,
+    gwoUnit.umbrellaBeamAmmo,
   ];
   var structuresDefencesBasicWeapons = [
     gwoUnit.anchorWeaponAG,
@@ -277,6 +282,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.laserDefenseTowerWeapon,
     gwoUnit.singleLaserDefenseTowerWeapon,
     gwoUnit.torpedoLauncherWeapon,
+    gwoUnit.umbrellaBeam,
     gwoUnit.umbrellaWeapon,
   ];
   var structuresDefencesAdvanced = [
@@ -288,12 +294,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   var structuresDefencesAdvancedAmmo = [
     gwoUnit.catapultAmmo,
+    gwoUnit.catapultBeamAmmo,
     gwoUnit.flakAmmo,
     gwoUnit.laserDefenseTowerAdvancedAmmo,
     gwoUnit.torpedoLauncherAdvancedLandAmmo,
     gwoUnit.torpedoLauncherAdvancedWaterAmmo,
   ];
   var structuresDefencesAdvancedWeapons = [
+    gwoUnit.catapultBeam,
     gwoUnit.catapultWeapon,
     gwoUnit.flakWeapon,
     gwoUnit.laserDefenseTowerAdvancedWeapon,
@@ -476,7 +484,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   ];
   var fabbers = fabbersBasic.concat(fabbersAdvanced);
 
-  // exclude orbital factories due to their fabber working differently
   var factoriesBasic = [
     gwoUnit.airFactory,
     gwoUnit.botFactory,
@@ -497,8 +504,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.unitCannon
   );
 
-  // titansMobile rather than a restated list of the four, so a titan added there is
-  // picked up here automatically.
+  // titansMobile, so a titan added there is picked up here automatically.
   var mobile = airMobile.concat(
     botsMobile,
     navalMobile,
@@ -548,23 +554,26 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   var teleporters = [gwoUnit.teleporter, gwoUnit.helios];
 
-  var ammo = airAmmo.concat(
+  // The titan groups already exclude the immobile Ragnarok, so the only
+  // stationary owners these two drop are the defensive structures - the same
+  // split combatMobile makes, which likewise counts the Kessler as a defence.
+  var ammoMobile = airAmmo.concat(
     botsAmmo,
     navalAmmo,
     orbitalAmmo,
-    structuresDefencesAmmo,
     titansAmmo,
     vehiclesAmmo
   );
+  var ammo = ammoMobile.concat(structuresDefencesAmmo);
 
-  var weapons = airWeapons.concat(
+  var weaponsMobile = airWeapons.concat(
     botsWeapons,
     navalWeapons,
     orbitalWeapons,
-    structuresDefencesWeapons,
     titansWeapons,
     vehiclesWeapons
   );
+  var weapons = weaponsMobile.concat(structuresDefencesWeapons);
 
   var units = mobile.concat(immobile);
   var unitsNoCluster = mobileNoCluster.concat(immobile);
@@ -572,6 +581,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var fabberBuildArms = [
     gwoUnit.airFabberAdvancedBuildArm,
     gwoUnit.airFabberBuildArm,
+    gwoUnit.angelBuildArm,
     gwoUnit.barnacleBuildArm,
     gwoUnit.botFabberAdvancedBuildArm,
     gwoUnit.botFabberBuildArm,
@@ -582,6 +592,25 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.navalFabberBuildArm,
     gwoUnit.orbitalFabberBuildArm,
     gwoUnit.stitchBuildArm,
+    gwoUnit.vehicleFabberAdvancedBuildArm,
+    gwoUnit.vehicleFabberBuildArm,
+  ];
+
+  // The build arms of structuresFactories: a factory here is a structure that
+  // builds mobile units, so the missile launchers are out even though the game
+  // flags them UNITTYPE_Factory. Their arms only ever produce ammo.
+  var factoryBuildArms = [
+    gwoUnit.airFactoryAdvancedBuildArm,
+    gwoUnit.airFactoryBuildArm,
+    gwoUnit.botFactoryAdvancedBuildArm,
+    gwoUnit.botFactoryBuildArm,
+    gwoUnit.navalFactoryAdvancedBuildArm,
+    gwoUnit.navalFactoryBuildArm,
+    gwoUnit.orbitalFactoryBuildArm,
+    gwoUnit.orbitalLauncherBuildArm,
+    gwoUnit.unitCannonBuildArm,
+    gwoUnit.vehicleFactoryAdvancedBuildArm,
+    gwoUnit.vehicleFactoryBuildArm,
   ];
 
   // units all T2 fabbers have access to immediately
@@ -645,6 +674,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     airMobileNoCluster: airMobileNoCluster,
     airWeapons: airWeapons,
     ammo: ammo,
+    ammoMobile: ammoMobile,
     botFactories: botFactories,
     bots: bots,
     botsAdvanced: botsAdvanced,
@@ -672,6 +702,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     factories: factories,
     factoriesAdvanced: factoriesAdvanced,
     factoriesBasic: factoriesBasic,
+    factoryBuildArms: factoryBuildArms,
     immobile: immobile,
     mobile: mobile,
     mobileNoCluster: mobileNoCluster,
@@ -742,5 +773,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesMobile: vehiclesMobile,
     vehiclesWeapons: vehiclesWeapons,
     weapons: weapons,
+    weaponsMobile: weaponsMobile,
   };
 });

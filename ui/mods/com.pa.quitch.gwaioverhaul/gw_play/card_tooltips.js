@@ -8,7 +8,6 @@ function gwoCardTooltips() {
   gwoCardTooltipsLoaded = true;
 
   try {
-    // UI for card tooltips
     $("#system-card").replaceWith(
       loadHtml(
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system.html"
@@ -189,7 +188,6 @@ function gwoCardTooltips() {
           _.forEach(model.currentSystemCardList(), makeCardTooltip);
         }
 
-        // add tooltips to cards
         var hoverCount = 0;
         model.setHoverCard = function (card, hoverEvent) {
           if (card === model.hoverCard()) {
@@ -223,7 +221,9 @@ function gwoCardTooltips() {
     );
   } catch (e) {
     console.error(e);
-    console.error(JSON.stringify(e));
+    console.error(
+      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+    );
   }
 }
 gwoCardTooltips();

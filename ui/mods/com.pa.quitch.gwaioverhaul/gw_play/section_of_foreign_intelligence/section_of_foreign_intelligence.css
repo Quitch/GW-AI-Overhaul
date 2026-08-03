@@ -1,4 +1,6 @@
-/* Modified by Quitch - changes documented at https://github.com/Quitch/GW-AI-Overhaul */
+/* Vendored from wondible's Section of Foreign Intelligence for Galactic War
+   (Apache 2.0, see LICENSE.txt); modified by Quitch - changes documented at
+   https://github.com/Quitch/GW-AI-Overhaul */
 
 .section-of-foreign-intelligence {
   color: #88dbff;
@@ -32,9 +34,9 @@
 }
 
 /* Inherited from the base game's players list. The prefixed properties are the ones
-   that do the work; PA's Chrome 40 has no unprefixed mask support, and there is no
-   <mask id="player-mask"> anywhere in this mod or the base game, so the shorthand
-   that used to sit here was inert twice over while reading as a fallback. */
+   that do the work; PA's Chrome 40 has no unprefixed mask support, and the gw_play
+   scene has no <mask id="player-mask"> (the base game defines it only in live_game),
+   so the shorthand that used to sit here was inert twice over. */
 .player-masked {
   height: 16px;
   width: 16px;

@@ -1,5 +1,35 @@
 # CHANGELOG
 
+## v6.6.0 - 2026-08-03
+
+### Changed
+
+- Wyrm Upgrade Tech now has the Wyrm engage at the range of the drones it gains, circling its target instead of making a bombing run
+- Improved Fabricator Build Arms no longer affects the Anti-Nuke Launcher
+- Orbital Combat Tech applies only to mobile orbital units, no longer granting health to the Orbital Launcher, Orbital Factory, and Jig
+- Protocol: Precision and Protocol: Wrath apply only to mobile combat units, no longer changing the sight and weapon range of defensive structures
+
+### Bugfix
+
+- Deep Space Excavation Commander no longer offered Complete Orbital Tech
+- Radar Jamming Station Upgrade Tech affects the Radar Jammer rather than Advanced Radar
+- Titan Ammunition Tech increases titan direct damage as well as splash damage
+- Bot, Naval and Defense Ammunition Techs, and their Combat Tech counterparts, increase the damage of the anti-drop missiles carried by the Bluehawk, Catapult, Stingray, and Umbrella
+- Protocol: Blindness, Precision and Wrath change the range of those anti-drop turrets alongside the weapons they sit beside, and the Defense Tech Commander speeds up the Catapult's and Umbrella's
+- Commander Upgrade Tech lets Fabrication Vehicles and Angels reclaim Commanders
+- Improved Fabricator Build Arms speeds up the Unit Cannon's build arm
+- Tech card tooltips list the units each card actually affects
+  - Air Ammunition Tech no longer lists Fabrication Aircraft, Advanced Fabrication Aircraft, and the Pelican
+  - Titan Engine and Ammunition Techs no longer list the Ragnarok
+  - Commander Upgrade Tech lists the fabricators it grants Commander reclaim to
+  - Boom Upgrade Tech lists the Lob it modifies rather than the unchanged Boom
+  - Bot, Naval and Vehicle Ammunition Techs list the Grenadier, Typhoon, Manhattan, Sheller, and Stryker
+  - Advanced Defense Technology lists the Anti-Nuclear Missile Launcher it also unlocks
+  - Advanced factory upgrade techs list the units they make cheaper
+  - Bumblebee, Grenadier and Sheller Upgrade Techs list the mine they deploy, and Wyrm Upgrade Tech the drones
+  - Protocol: Precision and Protocol: Wrath list the titans and armed scouts they also affect
+  - Protocol: Kill-switch lists every unit, not just those without a death weapon
+
 ## v6.5.1 - 2026-07-31
 
 ### Bugfix

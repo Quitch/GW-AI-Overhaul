@@ -4,9 +4,8 @@
 // deal()/buff() delegates to: the unit-membership predicates, the loadout-icon
 // lookup (a 9-way tier switch over a localStorage record), the co-op cross-player
 // card matching (id-then-name fallback), advanced-tech detection, and the dull
-// bookkeeping. The module's define() has no deps and touches model/window only
-// inside function bodies, so it loads cleanly under the Node AMD harness; the few
-// functions that read those globals get a minimal stand-in installed per-test.
+// bookkeeping. The few functions that read model/window get a minimal stand-in
+// installed per-test.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -17,8 +16,6 @@ const cards = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
 );
 
-// Shared save/restore for the engine globals these helpers read at call time, so
-// no test leaks a model/window stub into the next one.
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);
 
@@ -594,7 +591,6 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
 });
 
 describe("applyDulls", () => {
-  // A minimal inventory recording removeUnits/setTag so we can assert the dull path.
   function fakeInventory(lookup, buffCount) {
     const tags = { ":buffCount": buffCount };
     return {

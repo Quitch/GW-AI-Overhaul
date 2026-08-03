@@ -25,7 +25,7 @@ define([
       var mods = _.flatten(
         _.map(gwoGroup.titansAmmo, function (ammo) {
           return [
-            ({
+            {
               file: ammo,
               path: "damage",
               op: "multiply",
@@ -36,7 +36,7 @@ define([
               path: "splash_damage",
               op: "multiply",
               value: 1.25,
-            }),
+            },
           ];
         })
       );

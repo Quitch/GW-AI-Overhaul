@@ -37,11 +37,8 @@ function makeDeferred() {
   return deferred;
 }
 
-// createFakeJQuery(options) -> $-like object
-//   options.getJSON: (url) => value | Promise<value>, the resolver behind $.getJSON.
-//   Throws (as a rejected promise) if a URL is requested with no resolver configured,
-//   so a test's fixture data staying in sync with what the code under test actually
-//   requests is enforced rather than silently masked.
+// Requesting a URL with no configured resolver rejects, so a test's fixtures can't
+// silently drift from what the code under test actually asks for.
 function createFakeJQuery(options) {
   var opts = options || {};
 
@@ -64,8 +61,6 @@ function createFakeJQuery(options) {
   };
 }
 
-// createFakeApi(overrides) -> api-like object
-//   overrides.file.list: (path, recursive) => string[] | Promise<string[]>
 function createFakeApi(overrides) {
   var opts = overrides || {};
   var defaultFile = {

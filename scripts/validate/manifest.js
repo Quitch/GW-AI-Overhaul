@@ -18,8 +18,6 @@ const REQUIRED_TOP_LEVEL_FIELDS = [
 ];
 const COUI_PREFIX = "coui://";
 
-// Validates one scene's file list, pushing any problems onto `failures`. Returns the
-// number of entries seen so main() can keep a running total.
 function validateScene(sceneName, files, failures) {
   if (!Array.isArray(files)) {
     failures.push("scene `" + sceneName + "` is not an array");

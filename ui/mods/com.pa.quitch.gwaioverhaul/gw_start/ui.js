@@ -31,10 +31,10 @@ function gwoUI() {
 
     // gw_start uses ko.applyBindings(model)
     model.gwoDifficultySettings = {
-      // Holds a name-keyed snapshot of the last saved settings, e.g.
-      // { hardcore: true, factionScaling: false, ... } - see
-      // restorePreviousSettings/snapshotSettingsForSave below. May still
-      // contain a legacy positional array for players with v6.20 and earlier saves.
+      // Name-keyed snapshot of the last saved settings, written by
+      // gw_start/setup.js's saveDifficultySettings and read by
+      // restorePreviousSettings below. May still be a legacy positional array for
+      // players with v6.20 and earlier saves.
       previousSettings: ko
         .observableArray()
         .extend({ local: "gwo_previous_settings" }),
@@ -149,7 +149,8 @@ function gwoUI() {
 
     difficultySettings = restorePreviousSettings(difficultySettings);
 
-    // Because PA Inc wants to avoid escaping characters in HTML
+    // Tooltip text lives here, not in the HTML: the base-game markup pipeline
+    // won't carry escaped characters through a tooltip attribute.
     model.gwoFactionScalingTooltip =
       "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
     model.gwoBossCommandersTooltip =
@@ -355,12 +356,10 @@ function gwoUI() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
       ],
       function (gwoDifficulty) {
-        // Every select whose disabled state changes below lives inside
-        // #custom-difficulty-settings (25 of the scene's 30), so the refresh is
-        // scoped to match. A bare $("select") also re-rendered the five this
-        // computed never touches - galaxy size, both AI pickers, card deck and the
-        // difficulty level itself - on every difficulty change. Measured against a
-        // live client: 92ms document-wide against 84ms scoped.
+        // Scoped, not a bare $("select"): only the selects inside
+        // #custom-difficulty-settings change disabled state here, and refreshing the
+        // other five (galaxy size, both AI pickers, card deck, difficulty level) on
+        // every difficulty change costs time for nothing.
         var customDifficultySelects = "#custom-difficulty-settings select";
 
         ko.computed(function () {
@@ -469,7 +468,9 @@ function gwoUI() {
     });
   } catch (e) {
     console.error(e);
-    console.error(JSON.stringify(e));
+    console.error(
+      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+    );
   }
 }
 gwoUI();

@@ -49,7 +49,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   }
 
   var flattenBaseSpecs = function (spec, specs, tag) {
-    var visited = {}; // Use object as hash map
+    var visited = {};
 
     function resolve(spec) {
       if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {

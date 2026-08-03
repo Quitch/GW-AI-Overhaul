@@ -160,10 +160,8 @@ function gwoWarInfoPanel(gwoSettings) {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
       ],
       function (gwoColour, gwoCoopColour, gwoRefereeCoop, gwoVersion) {
-        /* War Information */
         model.gwoVersion = ko.observable(gwoVersion);
 
-        /* Co-op Information */
         var coopText = function (setting) {
           if (setting) {
             return loc("!LOC:Shared");
@@ -185,7 +183,6 @@ function gwoWarInfoPanel(gwoSettings) {
           ? loc("!LOC:LOCKED")
           : loc("!LOC:Unlocked");
 
-        /* Incompatible Mods */
         model.gwoIncompatibleMods = ko.observableArray([]);
         api.mods.getMounted("client").then(function (mods) {
           var incompatibleMods = [
@@ -219,7 +216,6 @@ function gwoWarInfoPanel(gwoSettings) {
           model.gwoIncompatibleMods(incompatibleModNames);
         });
 
-        /* Player Information */
         var inventory = game.inventory();
 
         var factions = [
@@ -414,7 +410,9 @@ function gwoWarInfoPanel(gwoSettings) {
     );
   } catch (e) {
     console.error(e);
-    console.error(JSON.stringify(e));
+    console.error(
+      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+    );
   }
 }
 

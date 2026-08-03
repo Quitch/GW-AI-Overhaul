@@ -47,7 +47,7 @@ define([
         })
       );
 
-      _.forEach(gwoGroup.orbital, function (unit) {
+      _.forEach(gwoGroup.orbitalMobile, function (unit) {
         mods.push({
           file: unit,
           path: "max_health",

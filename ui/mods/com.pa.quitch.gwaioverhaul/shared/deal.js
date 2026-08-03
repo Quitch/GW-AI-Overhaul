@@ -255,7 +255,6 @@ define([
           return result;
         }
 
-        // Simulate a deal
         var context =
           card.getContext && card.getContext(params.galaxy, params.inventory);
 

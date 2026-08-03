@@ -2,6 +2,10 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
+  var TITANS_BASIC_DEFENCE = "Structure & Basic & SurfaceDefense";
+  var QUELLER_BASIC_DEFENCE =
+    "Structure & (SurfaceDefense | Tactical) - Shield";
+
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -97,7 +101,7 @@ define([
           idToMod: "value0",
           value: 1,
           refId: "unit_type_string0",
-          refValue: "Structure & Basic & SurfaceDefense", // TITANS
+          refValue: TITANS_BASIC_DEFENCE,
         },
         {
           type: "fabber",
@@ -106,7 +110,7 @@ define([
           idToMod: "unit_type_string0",
           value: "Structure & Basic & Construction",
           refId: "unit_type_string0",
-          refValue: "Structure & Basic & SurfaceDefense", // TITANS
+          refValue: TITANS_BASIC_DEFENCE,
         },
         {
           type: "fabber",
@@ -115,7 +119,7 @@ define([
           idToMod: "value0",
           value: 1,
           refId: "unit_type_string0",
-          refValue: "Structure & (SurfaceDefense | Tactical) - Shield", // Queller
+          refValue: QUELLER_BASIC_DEFENCE,
         },
         {
           type: "fabber",
@@ -124,14 +128,14 @@ define([
           idToMod: "unit_type_string0",
           value: "Structure & Basic & Construction",
           refId: "unit_type_string0",
-          refValue: "Structure & (SurfaceDefense | Tactical) - Shield", // Queller
+          refValue: QUELLER_BASIC_DEFENCE,
         },
         {
           type: "fabber",
           op: "replace",
           toBuild: "BasicLandDefenseSingle",
           idToMod: "priority",
-          value: 0, // Turn off for Queller
+          value: 0, // priority 0 = never build
           refId: "name",
           refValue: "Single Laser Defense Tower - Snipe",
         },

@@ -126,7 +126,6 @@ describe("validatePerPlayerTechInputs - rejection branches", () => {
 
   it("rejects a mismatch between connected players and human armies", () => {
     const { referee, options, config } = validArgs();
-    // Two connected players but only one human army.
     config.armies = [{ slots: [{}] }, { slots: [{ ai: true }] }];
     const result = validate(referee, options);
     assert.equal(result.writeFailure, true);
