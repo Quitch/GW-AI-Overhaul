@@ -108,10 +108,47 @@ See CONTRIBUTING.md for the full list. The ones that bite most often:
   `declaration-block-no-redundant-longhand-properties` to ignore `overflow`, both
   because Chrome 40 predates the CSS syntax those rules assume. Don't remove those
   exclusions or "fix" the usage they cover as a drive-by.
-- Comments explain only what the code cannot: base-game/engine behaviour, a bug
-  workaround, an out-of-repo dependency, or a counter-intuitive ordering. `docs/`
-  carries system-level knowledge; line-anchored facts stay in the code. A documented
-  subsystem is not licence to delete the comments inside it.
+
+### Comments
+
+The repo has been through a full comment audit. These are the rules it was cleaned
+to, and they bind every line you add or touch - mod-owned code, shadowed base-game
+files and tech cards are held to the same bar.
+
+- **A comment earns its place only by saying what the code cannot**: base-game or
+  engine behaviour, a bug workaround, a dependency that lives outside the mod, or a
+  counter-intuitive ordering. Anything that restates the code goes.
+- **If the comment exists because the code is unclear, fix the code.** Rename the
+  identifier, extract the helper, or hoist the magic number to a named constant -
+  the comment then has nothing left to say.
+- **Say it once.** A fact needed in five places is one comment plus four
+  cross-references, or a name that carries it. Copies drift apart.
+- **Keep the rule, drop the story.** Rejected alternatives, tuning history and "this
+  used to live elsewhere" belong in `CHANGELOG.md`.
+- **Don't record counts or measurements nothing enforces** - they are stale as soon
+  as a file is added. An enforced floor (`MIN_CHECKED` in
+  `scripts/lib/cards-contract.js`) is a different thing and stays.
+- **Verify a comment against the code before writing it.** Every path, filename and
+  identifier it names must exist, and the claim must match the lines beside it. The
+  audit found sixteen that failed exactly there; a confidently wrong comment is
+  worse than none.
+- **`docs/` carries system-level knowledge; line-anchored facts stay in the code.**
+  A paragraph explaining a whole subsystem belongs in `docs/` with the code pointing
+  at it - but a documented subsystem is not licence to delete the comments inside
+  it.
+
+Never removed, because they are not prose:
+
+- `eslint-disable`, `prettier-ignore` and `stylelint-disable` directives.
+- Knockout `<!-- ko -->` / `<!-- /ko -->`, which are executable virtual bindings
+  ([`constraints.md`](docs/constraints.md)).
+- The `// GWO - ...` shadow marker on line 1 of a shadowed file - the only record of
+  why that copy exists ([`shadowing.md`](docs/shadowing.md)). Stock's `// !LOCNS:...`
+  is deliberately not carried; don't reinstate it
+  ([`constraints.md`](docs/constraints.md)).
+
+Applying these to comments your change doesn't otherwise touch is drive-by cleanup:
+correct, but a separate PR.
 
 ## Requirements
 
