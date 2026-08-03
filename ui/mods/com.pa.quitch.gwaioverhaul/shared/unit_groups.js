@@ -585,6 +585,23 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.vehicleFabberBuildArm,
   ];
 
+  // The build arms of structuresFactories: a factory here is a structure that
+  // builds mobile units, so the missile launchers are out even though the game
+  // flags them UNITTYPE_Factory. Their arms only ever produce ammo.
+  var factoryBuildArms = [
+    gwoUnit.airFactoryAdvancedBuildArm,
+    gwoUnit.airFactoryBuildArm,
+    gwoUnit.botFactoryAdvancedBuildArm,
+    gwoUnit.botFactoryBuildArm,
+    gwoUnit.navalFactoryAdvancedBuildArm,
+    gwoUnit.navalFactoryBuildArm,
+    gwoUnit.orbitalFactoryBuildArm,
+    gwoUnit.orbitalLauncherBuildArm,
+    gwoUnit.unitCannonBuildArm,
+    gwoUnit.vehicleFactoryAdvancedBuildArm,
+    gwoUnit.vehicleFactoryBuildArm,
+  ];
+
   // units all T2 fabbers have access to immediately
   var starterUnitsAdvanced = structuresSuperWeapons.concat(
     gwoUnit.antiNukeLauncher,
@@ -673,6 +690,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     factories: factories,
     factoriesAdvanced: factoriesAdvanced,
     factoriesBasic: factoriesBasic,
+    factoryBuildArms: factoryBuildArms,
     immobile: immobile,
     mobile: mobile,
     mobileNoCluster: mobileNoCluster,

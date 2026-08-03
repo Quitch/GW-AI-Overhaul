@@ -20,8 +20,12 @@ define([
     cards: [
       { id: "gwc_bld_efficiency_cdr", units: [gwoUnit.commander] },
       {
+        // The owners of gwoGroup.fabberBuildArms and gwoGroup.factoryBuildArms,
+        // bar the Commander, whose arm is gwc_bld_efficiency_cdr's. Not
+        // gwoGroup.factories: that includes the anti-nuke launcher, which builds
+        // no units and so is outside factoryBuildArms.
         id: "gwc_bld_efficiency_fabs",
-        units: gwoGroup.fabbers.concat(gwoGroup.factories),
+        units: gwoGroup.fabbers.concat(gwoGroup.structuresFactories),
       },
       { id: "gwc_combat_air", units: gwoGroup.airMobile },
       { id: "gwc_combat_bots", units: gwoGroup.botsMobile },
@@ -232,7 +236,12 @@ define([
         units: gwoGroup.structuresEco,
       },
       { id: "gwaio_upgrade_wyrm", units: [gwoUnit.wyrm, gwoUnit.squall] },
-      { id: "gwaio_upgrade_ubercannon_structure", units: [gwoUnit.commander] },
+      {
+        // Every fabber build arm gains Commander reclaim, the Commander's own
+        // included.
+        id: "gwaio_upgrade_ubercannon_structure",
+        units: gwoGroup.fabbers.concat(gwoUnit.commander),
+      },
       { id: "gwaio_upgrade_omega", units: [gwoUnit.omega] },
       { id: "gwaio_upgrade_lob", units: [gwoUnit.lob] },
       { id: "gwaio_upgrade_dox", units: [gwoUnit.dox] },
@@ -447,7 +456,8 @@ define([
         units: [gwoUnit.deepSpaceOrbitalRadar],
       },
       { id: "gwaio_health_titans", units: gwoGroup.titans },
-      { id: "gwaio_damage_titans", units: gwoGroup.titans },
+      // gwoGroup.titansAmmo carries no Ragnarok entry, so the buff misses it.
+      { id: "gwaio_damage_titans", units: gwoGroup.titansMobile },
       // Ragnarok is immobile, so the engine buff cannot reach it.
       { id: "gwaio_speed_titans", units: gwoGroup.titansMobile },
       { id: "gwaio_combat_titans", units: gwoGroup.titans },
