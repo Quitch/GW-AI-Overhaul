@@ -5,16 +5,22 @@
 ### Changed
 
 - Wyrm Upgrade Tech now has the Wyrm engage at the range of the drones it gains, circling its target instead of making a bombing run
+- Improved Fabricator Build Arms no longer affects the Anti-Nuke Launcher
+- Orbital Combat Tech applies only to mobile orbital units, no longer granting health to the Orbital Launcher, Orbital Factory, and Jig
 
 ### Bugfix
 
 - Deep Space Excavation Commander no longer offered Complete Orbital Tech
+- Radar Jamming Station Upgrade Tech affects the Radar Jammer rather than Advanced Radar
+- Titan Ammunition Tech increases titan direct damage as well as splash damage
+- Commander Upgrade Tech lets Fabrication Vehicles and Angels reclaim Commanders
+- Improved Fabricator Build Arms speeds up the Unit Cannon's build arm
 - Tech card tooltips list the units each card actually affects
-  - Air Ammunition Tech no longer lists Fabrication Aircraft, Advanced Fabrication Aircraft and Pelican, which carry no weapons
-  - Titan Engine Tech no longer lists the immobile Ragnarok
+  - Air Ammunition Tech no longer lists Fabrication Aircraft, Advanced Fabrication Aircraft, and the Pelican
+  - Titan Engine and Ammunition Techs no longer list the Ragnarok
+  - Commander Upgrade Tech lists the fabricators it grants Commander reclaim to
   - Boom Upgrade Tech lists the Lob it modifies rather than the unchanged Boom
-  - Bot, Naval and Vehicle Ammunition Techs list the Grenadier, Typhoon, and Manhattan, Sheller and Stryker
-  - Orbital Combat Tech lists the orbital launcher, orbital factory and Jig, which gain its health buff
+  - Bot, Naval and Vehicle Ammunition Techs list the Grenadier, Typhoon, Manhattan, Sheller, and Stryker
   - Advanced Defense Technology lists the Anti-Nuclear Missile Launcher it also unlocks
   - Advanced factory upgrade techs list the units they make cheaper
   - Bumblebee, Grenadier and Sheller Upgrade Techs list the mine they deploy, and Wyrm Upgrade Tech the drones
