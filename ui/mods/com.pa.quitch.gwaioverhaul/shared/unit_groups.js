@@ -104,6 +104,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.slammerTorpedoWaterAmmo,
   ];
   var botsAdvancedWeapons = [
+    gwoUnit.bluehawkBeam,
     gwoUnit.bluehawkWeapon,
     gwoUnit.bluehawkWeaponOrbital,
     gwoUnit.colonelWeapon,
@@ -180,6 +181,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.squallTorpedo,
     gwoUnit.squallWeapon,
     gwoUnit.stingrayAA,
+    gwoUnit.stingrayBeam,
     gwoUnit.stingrayWeapon,
     gwoUnit.typhoonWeapon,
   ];
@@ -280,6 +282,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.laserDefenseTowerWeapon,
     gwoUnit.singleLaserDefenseTowerWeapon,
     gwoUnit.torpedoLauncherWeapon,
+    gwoUnit.umbrellaBeam,
     gwoUnit.umbrellaWeapon,
   ];
   var structuresDefencesAdvanced = [
@@ -298,6 +301,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.torpedoLauncherAdvancedWaterAmmo,
   ];
   var structuresDefencesAdvancedWeapons = [
+    gwoUnit.catapultBeam,
     gwoUnit.catapultWeapon,
     gwoUnit.flakWeapon,
     gwoUnit.laserDefenseTowerAdvancedWeapon,

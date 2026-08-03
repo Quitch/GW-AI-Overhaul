@@ -14,6 +14,7 @@
 - Radar Jamming Station Upgrade Tech affects the Radar Jammer rather than Advanced Radar
 - Titan Ammunition Tech increases titan direct damage as well as splash damage
 - Bot, Naval and Defense Ammunition Techs, and their Combat Tech counterparts, increase the damage of the anti-drop missiles carried by the Bluehawk, Catapult, Stingray, and Umbrella
+- Protocol: Blindness, Precision and Wrath change the range of those anti-drop turrets alongside the weapons they sit beside, and the Defense Tech Commander speeds up the Catapult's and Umbrella's
 - Commander Upgrade Tech lets Fabrication Vehicles and Angels reclaim Commanders
 - Improved Fabricator Build Arms speeds up the Unit Cannon's build arm
 - Tech card tooltips list the units each card actually affects
