@@ -570,6 +570,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var fabberBuildArms = [
     gwoUnit.airFabberAdvancedBuildArm,
     gwoUnit.airFabberBuildArm,
+    gwoUnit.angelBuildArm,
     gwoUnit.barnacleBuildArm,
     gwoUnit.botFabberAdvancedBuildArm,
     gwoUnit.botFabberBuildArm,
@@ -580,6 +581,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.navalFabberBuildArm,
     gwoUnit.orbitalFabberBuildArm,
     gwoUnit.stitchBuildArm,
+    gwoUnit.vehicleFabberAdvancedBuildArm,
+    gwoUnit.vehicleFabberBuildArm,
   ];
 
   // units all T2 fabbers have access to immediately
