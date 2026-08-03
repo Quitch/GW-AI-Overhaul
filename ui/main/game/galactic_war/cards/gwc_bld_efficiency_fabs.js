@@ -2,37 +2,15 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (GW, gwoCard, gwoUnit) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (GW, gwoCard, gwoUnit, gwoGroup) {
   // Every build arm bar the Commander's own, which gwc_bld_efficiency_cdr covers.
-  // Deliberately not gwoGroup.fabberBuildArms: that set includes the Commander and
-  // omits the factory arms, so it is neither this card's list nor a subset of it.
-  var buildArms = [
-    gwoUnit.airFabberAdvancedBuildArm,
-    gwoUnit.airFabberBuildArm,
-    gwoUnit.airFactoryAdvancedBuildArm,
-    gwoUnit.airFactoryBuildArm,
-    gwoUnit.angelBuildArm,
-    gwoUnit.antiNukeLauncherBuildArm,
-    gwoUnit.barnacleBuildArm,
-    gwoUnit.botFabberAdvancedBuildArm,
-    gwoUnit.botFabberBuildArm,
-    gwoUnit.botFactoryAdvancedBuildArm,
-    gwoUnit.botFactoryBuildArm,
-    gwoUnit.colonelBuildArm,
-    gwoUnit.mendBuildArm,
-    gwoUnit.navalFabberAdvancedBuildArm,
-    gwoUnit.navalFabberBuildArm,
-    gwoUnit.navalFactoryAdvancedBuildArm,
-    gwoUnit.navalFactoryBuildArm,
-    gwoUnit.orbitalFabberBuildArm,
-    gwoUnit.orbitalFactoryBuildArm,
-    gwoUnit.orbitalLauncherBuildArm,
-    gwoUnit.stitchBuildArm,
-    gwoUnit.vehicleFabberAdvancedBuildArm,
-    gwoUnit.vehicleFabberBuildArm,
-    gwoUnit.vehicleFactoryAdvancedBuildArm,
-    gwoUnit.vehicleFactoryBuildArm,
-  ];
+  // The missile launchers are absent by way of factoryBuildArms, which holds only
+  // the structures that build mobile units.
+  var buildArms = _.without(
+    gwoGroup.fabberBuildArms.concat(gwoGroup.factoryBuildArms),
+    gwoUnit.commanderBuildArm
+  );
 
   return {
     visible: _.constant(true),
