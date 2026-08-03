@@ -5,7 +5,17 @@
 ### Bugfix
 
 - Deep Space Excavation Commander no longer offered Complete Orbital Tech
-- Air Ammunition Tech no longer lists Fabrication Aircraft, Advanced Fabrication Aircraft and Pelican as affected units
+- Tech card tooltips list the units each card actually affects
+  - Air Ammunition Tech no longer lists Fabrication Aircraft, Advanced Fabrication Aircraft and Pelican, which carry no weapons
+  - Titan Engine Tech no longer lists the immobile Ragnarok
+  - Boom Upgrade Tech lists the Lob it modifies rather than the unchanged Boom
+  - Bot, Naval and Vehicle Ammunition Techs list the Grenadier, Typhoon, and Manhattan, Sheller and Stryker
+  - Orbital Combat Tech lists the orbital launcher, orbital factory and Jig, which gain its health buff
+  - Advanced Defense Technology lists the Anti-Nuclear Missile Launcher it also unlocks
+  - Advanced factory upgrade techs list the units they make cheaper
+  - Bumblebee, Grenadier and Sheller Upgrade Techs list the mine they deploy, and Wyrm Upgrade Tech the drones
+  - Protocol: Precision and Protocol: Wrath list the titans and armed scouts they also affect
+  - Protocol: Kill-switch lists every unit, not just those without a death weapon
 
 ## v6.5.1 - 2026-07-31
 
