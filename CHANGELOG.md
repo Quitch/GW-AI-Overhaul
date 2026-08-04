@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- System Scaling now works with Shared Systems for Galactic War
+
 ### Bugfix
 
 - Tourist Commander no longer disables the Guardians
