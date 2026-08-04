@@ -10,6 +10,7 @@
 
 - Tourist Commander no longer disables the Guardians
 - An upgraded Phoenix won't pursue air units
+- A host's allied AI commanders' eco is set properly at Platinum and higher
 
 ## v6.6.0 - 2026-08-03
 

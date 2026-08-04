@@ -315,7 +315,7 @@ define([
                 },
               ],
               color: minionColour,
-              econ_rate: minion.econ_rate || 1,
+              econ_rate: gwoAI.subcommanderEconRate,
               personality: minionPersonality,
               spec_tag: playerTags[index],
               alliance_group: 1,

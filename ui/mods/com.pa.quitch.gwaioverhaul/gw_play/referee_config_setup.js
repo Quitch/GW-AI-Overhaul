@@ -142,7 +142,7 @@ define([
     return gwoAI.getAIPathDestination("enemy");
   };
 
-  var setupAIArmy = function (ai, index, specTag, alliance) {
+  var setupAIArmy = function (ai, index, specTag, alliance, econRateOverride) {
     var slotsArray = [];
     var aiLandingOptions = _.shuffle([
       "off_player_planet",
@@ -165,7 +165,9 @@ define([
     return {
       slots: slotsArray,
       color: gwoColour.pick(ai.faction, ai.color, index),
-      econ_rate: gwoAI.aiEconRateWithFloor(ai.econ_rate),
+      econ_rate: _.isNumber(econRateOverride)
+        ? econRateOverride
+        : gwoAI.aiEconRateWithFloor(ai.econ_rate),
       personality: ai.personality,
       spec_tag: specTag,
       alliance_group: alliance,
@@ -196,7 +198,13 @@ define([
       ally.commanderCount = applySubcommanderDuplicationTech(cards);
       ally.faction = playerFaction;
       var allyIndex = refereeCoop.alliedColourIndex(firstPosition + index);
-      var subcommanderArmy = setupAIArmy(ally, allyIndex, playerTag, 1);
+      var subcommanderArmy = setupAIArmy(
+        ally,
+        allyIndex,
+        playerTag,
+        1,
+        gwoAI.subcommanderEconRate
+      );
       armies.push(subcommanderArmy);
     });
   };

@@ -267,7 +267,9 @@ function gwoIntelligence() {
             ? gwoRefereeCoop.alliedColourIndex(allyPosition)
             : getFactionColourIndex(commander, index);
           var name = commander.name;
-          var eco = gwoAI.aiEconRateWithFloor(commander.econ_rate);
+          var eco = isStarAlly
+            ? gwoAI.subcommanderEconRate
+            : gwoAI.aiEconRateWithFloor(commander.econ_rate);
           var numCommanders = getNumberOfCommanders(commander);
           var faction = getFactionName(commander, factionIndex);
 
@@ -321,11 +323,9 @@ function gwoIntelligence() {
             totalThreat += commanders[n].eco;
           });
           if (ai.ally) {
-            if (ai.ally.econ_rate) {
-              totalThreat /= ai.ally.econ_rate + 1;
-            } else {
-              totalThreat /= 2;
-            }
+            // Not ai.ally.econ_rate - the battle overrides it with this
+            // (referee_config_setup.js).
+            totalThreat /= gwoAI.subcommanderEconRate + 1;
           }
           _.forEach(ai.typeOfBuffs, function (buff) {
             switch (buff) {

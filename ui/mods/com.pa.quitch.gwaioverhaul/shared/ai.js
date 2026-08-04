@@ -221,6 +221,10 @@ define([
       };
     },
 
+    // Kept out of aiEconRateWithFloor: that floor rises above this on the hardest
+    // tiers, which would hand the player's own allies the enemy AI's eco cheat.
+    subcommanderEconRate: 1,
+
     // Co-op games in older wars could end up with a negative eco, so a saved
     // econ_rate cannot be trusted to be valid - hence the floor rather than
     // using it directly.
