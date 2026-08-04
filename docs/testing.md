@@ -132,6 +132,10 @@ extracted into measured sibling modules — see [`shadowing.md`](shadowing.md).
 new-code baseline is the previous version, so a bump always lands inside the
 new-code period and an uncovered one drags "Coverage on New Code" to 0% by itself.
 
+`shared/gwo_rng.js` is deliberately **not** excluded. It carries its own PRNG precisely so
+it loads in Node — `Math.seedrandom` is browser-only — and its stream-independence and
+no-`Math.random` suites are what the rest of the seeding work rests on.
+
 ## What tests cannot cover
 
 No test here starts PA. Anything that only fails at runtime — a renamed identifier

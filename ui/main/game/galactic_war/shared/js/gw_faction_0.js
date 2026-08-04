@@ -1,4 +1,6 @@
-// Overhauls personalities
+// Overhauls personalities. Also declares gwaioRandomSpec, so the Random commander
+// and the boss system description follow the war seed instead of being sampled at
+// module load - see faction/faction_seed.js and galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (personalities) {
@@ -126,7 +128,14 @@ define([
         "/pa/units/commanders/imperial_nagasher/imperial_nagasher.json",
     },
   ];
-  var randomPersonality = _.sample(minions).personality;
+  // GWO - the pool the Random commander draws from, captured before randomAI is
+  // pushed onto it so it can never be handed its own personality. The personality
+  // below is a fixed default: faction/faction_seed.js re-derives it from the war
+  // seed, because sampling here runs at module load and so re-rolled on every entry
+  // into the gw_start scene.
+  var randomFrom = minions.slice();
+  var randomPersonality = minions[0].personality;
+
   var randomAI = {
     name: "Aryst0krat",
     character: "!LOC:Random",
@@ -136,6 +145,15 @@ define([
   };
   minions.push(randomAI);
 
+  // GWO - was sampled inline in the team literal below; see randomFrom above.
+  var systemDescriptions = [
+    "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
+    "!LOC:When Invictus reactivated, his memory was more whole than most commanders. This is where his assertion of his right to rule came from. That may or may not be true, but what is true is that Invictus knows more about the origin of the commanders than he cares to tell his compatriots.",
+    "!LOC:Unlike the other factions, the Legionis Machina operates as a hierarchy. Senior Legates have several Vassal Legates assigned to them, and all Legates are subjects of Invictus himself.",
+    "!LOC:If war is a commander's natural state, then the purest expression of this is the Legionis Machina. It begs the question, though--what happens after they conquer this galaxy, if they do?",
+    "!LOC:The Legionis Machina can be considered a cult of personality, in that their purpose is void without Invictus. This is likely where their bitter hatred of The Synchronous comes from, as they view Metrarch as a false idol of sorts.",
+  ];
+
   return {
     name: factionName,
     color: factionColour,
@@ -143,13 +161,7 @@ define([
       {
         name: factionName,
         boss: _.merge(_.cloneDeep(baselinePersonality), boss),
-        systemDescription: _.sample([
-          "!LOC:The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
-          "!LOC:When Invictus reactivated, his memory was more whole than most commanders. This is where his assertion of his right to rule came from. That may or may not be true, but what is true is that Invictus knows more about the origin of the commanders than he cares to tell his compatriots.",
-          "!LOC:Unlike the other factions, the Legionis Machina operates as a hierarchy. Senior Legates have several Vassal Legates assigned to them, and all Legates are subjects of Invictus himself.",
-          "!LOC:If war is a commander's natural state, then the purest expression of this is the Legionis Machina. It begs the question, though--what happens after they conquer this galaxy, if they do?",
-          "!LOC:The Legionis Machina can be considered a cult of personality, in that their purpose is void without Invictus. This is likely where their bitter hatred of The Synchronous comes from, as they view Metrarch as a false idol of sorts.",
-        ]),
+        systemDescription: systemDescriptions[0],
         systemTemplate: {
           name: factionName,
           Planets: [
@@ -208,5 +220,14 @@ define([
     minions: _.map(minions, function (personalityModifiers) {
       return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
     }),
+    // GWO - read by faction/faction_seed.js, which reseeds this faction once per
+    // war. minions.length - 1 is randomAI: it was pushed above.
+    gwaioRandomSpec: {
+      baseline: baselinePersonality,
+      descriptions: systemDescriptions,
+      randoms: [
+        { index: minions.length - 1, template: randomAI, from: randomFrom },
+      ],
+    },
   };
 });

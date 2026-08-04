@@ -21,6 +21,24 @@ Shadow only when neither injection nor hijacking can work — typically when the
 change alters markup or DOM structure the base file owns outright, or touches
 logic the base file keeps in a private closure and never exposes.
 
+### A shadowed path can only have one owner
+
+Two mods shadowing one path do not merge — one wins outright and the other's copy
+simply is not there. **Check whether a third-party mod already shadows a path before
+adding it to the inventory above**, because the loser fails silently: its module still
+loads, so the symptom is a missing function on an otherwise-working object, surfacing
+far from the cause.
+
+GWO hit this with `systems/template-loader.js`, which Shared Systems for Galactic War
+replaces wholesale to add `loadOptions`/`useSources`. GWO shadowing the same path won,
+and that mod's whole Systems panel rendered as a bare header — its `loadOptions()` call
+threw. The seeded loader now lives at `shared/gwo_system_templates.js` in GWO's own
+namespace and defers to whatever owns the base path when that path carries `loadOptions`.
+
+The general shape: where a mod might reasonably contend for a base path, put the
+replacement in GWO's namespace and choose between it and the base module at the call
+site, rather than competing for the file.
+
 ## Function hijacking
 
 Where the base game assigns something onto `self` — usually in the context of the
@@ -32,6 +50,12 @@ model.someFunction = function () {
   /* GWO's version */
 };
 ```
+
+A prototype method works the same way. `gw_galaxy.js` overrides
+`GalaxyBuilder.prototype.buildGraph` to pass a seed into `reduceConnections`, rather
+than shadowing `GalaxyBuilder.js`: that file has exactly one consumer in the base
+install — `gw_galaxy.js` itself — and a full copy would freeze five other methods GWO
+never calls.
 
 This only works for functions the base file actually assigns onto `self`/`model`
 or a prototype. A function kept as a private closure variable with no such
@@ -50,7 +74,7 @@ Two hijacking traps worth knowing, both recorded at their call sites:
 
 ## The complete shadowing inventory
 
-### `ui/main/` — 9 non-card files
+### `ui/main/` — 11 non-card files
 
 | File                                                      | What GWO changed                                                                                                                                                                                                             |
 | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -63,6 +87,8 @@ Two hijacking traps worth knowing, both recorded at their call sites:
 | `game/galactic_war/shared/js/gw_galaxy.js`                | System size scaling, including army brackets under Shared Systems for Galactic War; repairs stars the base builder leaves with no gates (see [`galaxy.md`](galaxy.md)). Graph core extracted to `shared/gw_galaxy_graph.js`. |
 | `game/galactic_war/shared/js/gw_inventory.js`             | Adds the `aiMods` observable that the whole AI-mod pipeline hangs off; changes `removeUnits` to remove _every_ copy of a unit.                                                                                               |
 | `game/galactic_war/shared/js/systems/titans-normal.js`    | Changes the Players arrays and adds classic systems.                                                                                                                                                                         |
+| `game/galactic_war/gw_start/gw_breeder.js`                | Optional `params.rng` seeds AI spawn placement and the spawn shuffle.                                                                                                                                                        |
+| `game/galactic_war/gw_start/gw_teams.js`                  | Optional rng seeds the team pick; `makeBoss` takes a seed, which stock never passed, so boss systems re-rolled their terrain every build.                                                                                    |
 
 `gw_inventory.js`'s `removeUnits` change is a **reversal of documented base-game
 behaviour** — stock explicitly notes that it does not perform set removes, so that
@@ -136,6 +162,7 @@ module** in the mod's own namespace, which the shadowed file then requires:
 | ------------------------------- | ------------------------------------------------------------------------------------------ |
 | `gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js`                                                               |
 | `gw_galaxy.js`                  | `shared/gw_galaxy_graph.js`, `shared/gw_galaxy_connect.js`, `shared/gw_system_brackets.js` |
+| `gw_faction_*.js`               | `faction/faction_seed.js`                                                                  |
 | `gw_play/referee_game_files.js` | `gw_play/referee_game_file_paths.js`                                                       |
 | `gw_play/referee_config.js`     | `gw_play/referee_config_setup.js`                                                          |
 

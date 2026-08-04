@@ -1,5 +1,15 @@
 /* eslint-disable no-loss-of-precision */
 define({
+  // The biome each of the first three planets may take. These used to be _.sample calls
+  // inline in the generator blocks below, which ran at module load: the Cluster homeworld
+  // re-rolled its terrain on every entry into the gw_start scene rather than following
+  // the war seed. cluster_faction.js hands these to faction/faction_seed.js, which writes
+  // the pick back onto the generator; the values inline below are the defaults.
+  randomBiomes: {
+    planet1: ["asteroid", "desert", "tropical", "lava"],
+    planet2: ["asteroid", "desert", "ice_boss", "lava"],
+    planet3: ["earth", "ice_boss", "moon", "tropical"],
+  },
   planet1: {
     isExplicit: true,
     name: "The Hive",
@@ -2660,7 +2670,7 @@ define({
       metalClusters: 0,
       metalSpotLimit: -1,
       biomeScale: 50,
-      biome: _.sample(["asteroid", "desert", "tropical", "lava"]),
+      biome: "asteroid",
       symmetryType: "none",
       symmetricalMetal: false,
       symmetricalStarts: false,
@@ -4298,7 +4308,7 @@ define({
       metalClusters: 0,
       metalSpotLimit: -1,
       biomeScale: 50,
-      biome: _.sample(["asteroid", "desert", "ice_boss", "lava"]),
+      biome: "asteroid",
       symmetryType: "terrain and CSG",
       symmetricalMetal: true,
       symmetricalStarts: false,
@@ -5913,7 +5923,7 @@ define({
       metalClusters: 0,
       metalSpotLimit: -1,
       biomeScale: 50,
-      biome: _.sample(["earth", "ice_boss", "moon", "tropical"]),
+      biome: "earth",
       symmetryType: "none",
       symmetricalMetal: false,
       symmetricalStarts: false,

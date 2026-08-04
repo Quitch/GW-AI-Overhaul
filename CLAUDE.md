@@ -115,6 +115,9 @@ The repo has been through a full comment audit. These are the rules it was clean
 to, and they bind every line you add or touch - mod-owned code, shadowed base-game
 files and tech cards are held to the same bar.
 
+**The default is no comment.** Code should self-document; when in doubt, leave it
+out. The rules below are the narrow exceptions, not a licence to annotate.
+
 - **A comment earns its place only by saying what the code cannot**: base-game or
   engine behaviour, a bug workaround, a dependency that lives outside the mod, or a
   counter-intuitive ordering. Anything that restates the code goes.
@@ -132,6 +135,8 @@ files and tech cards are held to the same bar.
   identifier it names must exist, and the claim must match the lines beside it. The
   audit found sixteen that failed exactly there; a confidently wrong comment is
   worse than none.
+- **Informative, but concise.** Keep it short. Keep it simple. If it requires an
+  essay then consider that it may belong in the docs not the code.
 - **`docs/` carries system-level knowledge; line-anchored facts stay in the code.**
   A paragraph explaining a whole subsystem belongs in `docs/` with the code pointing
   at it - but a documented subsystem is not licence to delete the comments inside

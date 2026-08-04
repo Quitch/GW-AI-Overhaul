@@ -17,6 +17,9 @@ const {
 const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
 );
+const gwoRng = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+);
 
 let restoreModel;
 
@@ -226,5 +229,30 @@ describe("quellerCompatibleMinions", () => {
       { ai: { personality: { works_with_queller: false } } },
     ];
     assert.deepEqual(gwoAI.quellerCompatibleMinions(minions), [minions[0]]);
+  });
+});
+
+describe("penchants", () => {
+  it("returns the same penchant for the same seed", () => {
+    assert.deepEqual(
+      gwoAI.penchants(gwoRng.create("penchant-seed")),
+      gwoAI.penchants(gwoRng.create("penchant-seed"))
+    );
+  });
+
+  it("varies across seeds", () => {
+    const names = new Set();
+    for (let i = 0; i < 40; i++) {
+      names.add(gwoAI.penchants(gwoRng.create("penchant-" + i)).penchantName);
+    }
+    assert.ok(names.size > 1);
+  });
+
+  // gwc_minion.js and gw_play/cards_deal_helpers.js deal during play, outside the
+  // seeded war-creation path, and pass no rng.
+  it("still works with no rng", () => {
+    const result = gwoAI.penchants();
+    assert.ok(Array.isArray(result.penchants));
+    assert.equal(typeof result.penchantName, "string");
   });
 });

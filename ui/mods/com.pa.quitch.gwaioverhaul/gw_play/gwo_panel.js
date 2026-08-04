@@ -18,6 +18,8 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwoAIAlly =
       model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
     model.gwoDeck = deckName(model.gwoSettings.techCardDeck);
+    // Wars created before seeds were recorded have none.
+    model.gwoSeed = model.gwoSettings.seed || loc("!LOC:Unknown");
     var coopPlayerScalingCount =
       model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
     var playerCount = coopPlayerScalingCount || 1;

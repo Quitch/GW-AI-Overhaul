@@ -314,6 +314,9 @@ function gwoUI() {
     addHtml.append(gameDifficultyLabelId, "difficulty_levels_tooltip.html");
     addHtml.replace(gameDifficultyId, "difficulty_levels.html");
     addHtml.after("#new-game-right", "ai_settings.html");
+    // Stock hides this outright. It is useful now that a seed reproduces a war.
+    $("#game-seed").closest(".form-group").css("display", "");
+    addHtml.before("#game-seed", "seed_tooltip.html");
     $("#new-game-left").remove();
     addHtml.before("#gwo-game-options-panel", "commander_button.html");
     // The modal has to hang off body: .gw-start-coop-settings-modal is

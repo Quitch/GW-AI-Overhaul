@@ -5,10 +5,16 @@
 ### Added
 
 - System Scaling, Large Planets, and Easy Systems now work with Shared Systems for Galactic War
+- The Seed Value field is now shown when creating a war, and a war's seed is displayed in its Galactic War Overhaul panel
+
+### Changed
+
+- The same seed now rebuilds the same galaxy and the same enemies, given the same faction, difficulty, game options and mods. Previously the seed set only the positions of the stars, leaving the gates between them, system sizes, and every AI, minion, ally and game mode to be re-rolled on each attempt. Planet names still vary.
 
 ### Bugfix
 
 - Tourist Commander no longer disables the Guardians
+- Failing to generate a war no longer discards the entered seed, and its five retries are no longer cumulative across a session
 - An upgraded Phoenix won't pursue air units
 - A host's allied AI commanders' eco is set properly at Platinum and higher
 

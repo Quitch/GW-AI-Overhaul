@@ -105,7 +105,10 @@ define([
         : ai.faction === 4;
     },
 
-    penchants: function () {
+    // rng (shared/gwo_rng.js) is optional: war creation passes the AI's own seeded stream
+    // so a seed reproduces its penchant, but the play-scene callers - gwc_minion.js and
+    // gw_play/cards_deal_helpers.js - are outside the seeded path and pass nothing.
+    penchants: function (rng) {
       var penchants = [
         // Vanilla - no changes. tags must be an array like every other entry; the
         // caller concats it onto personality_tags, and an empty string concats as
@@ -213,7 +216,7 @@ define([
         { name: "!LOC:Platoon", tags: ["Platoon", "PenchantPlatoon"] },
         { name: "!LOC:Minelayer", tags: ["Minelayer"] },
       ];
-      var penchant = _.sample(penchants);
+      var penchant = rng ? rng.pick(penchants) : _.sample(penchants);
 
       return {
         penchants: penchant.tags,
