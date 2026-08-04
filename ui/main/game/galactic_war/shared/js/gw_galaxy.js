@@ -210,6 +210,16 @@ define([
         ) {
           systemSize += 4;
         }
+        // Easy Systems has no simpler template set to swap to when the pool is real
+        // systems, so it asks for the lowest bracket instead. Last, so it wins over
+        // Large Planets and distance alike.
+        if (
+          brackets &&
+          model.gwoDifficultySettings &&
+          model.gwoDifficultySettings.simpleSystems()
+        ) {
+          systemSize = Math.min(systemSize, 0);
+        }
         return systemSize;
       };
 
@@ -237,7 +247,6 @@ define([
 
       // GWO - brackets are consumed, so nearer stars must claim the smaller systems
       // before the generator loop below runs in array order.
-      var brackets = config.gwoSystemBrackets;
       var systemByStar = [];
       if (brackets) {
         var selector = gwoSystemBrackets.selectorFor(brackets, rng);

@@ -4,7 +4,7 @@
 
 ### Added
 
-- System Scaling and Large Planets now work with Shared Systems for Galactic War
+- System Scaling, Large Planets, and Easy Systems now work with Shared Systems for Galactic War
 
 ### Bugfix
 

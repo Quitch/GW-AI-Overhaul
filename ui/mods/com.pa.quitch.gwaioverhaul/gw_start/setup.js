@@ -102,11 +102,6 @@ function gwoSetup() {
       if (modMounted("com.wondible.pa.gw_shared_systems")) {
         sharedSystemsForGalacticWarActive = true;
         model.selectedNames.subscribe(onSelectedNamesChanged);
-        // Easy Systems picks a template set, and this mod supplies real systems
-        // instead, so it has nothing to act on. System Scaling and Large Planets both
-        // move systemSize, which the brackets read.
-        $("#system-size").closest(".gwo-game-option-row").remove();
-        model.gwoDifficultySettings.simpleSystems(false);
       }
     };
 
