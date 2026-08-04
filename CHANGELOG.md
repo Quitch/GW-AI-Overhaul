@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Tourist Commander no longer disables the Guardians
+
 ## v6.6.0 - 2026-08-03
 
 ### Changed
