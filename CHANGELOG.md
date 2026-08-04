@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Tourist Commander no longer disables the Guardians
+- An upgraded Phoenix won't pursue air units
 
 ## v6.6.0 - 2026-08-03
 
