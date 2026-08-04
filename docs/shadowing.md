@@ -52,17 +52,17 @@ Two hijacking traps worth knowing, both recorded at their call sites:
 
 ### `ui/main/` — 9 non-card files
 
-| File                                                      | What GWO changed                                                                                                                                                                         |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `game/galactic_war/gw_play/gw_per_player_tech_referee.js` | Per-player tech in co-op. Validation extracted to `gw_play/per_player_tech.js`; viewer subcommanders continue the player-faction colour sequence rather than taking raw faction colours. |
-| `game/galactic_war/shared/js/gw_factions.js`              | Adds the Cluster faction (TITANS only).                                                                                                                                                  |
-| `game/galactic_war/shared/js/gw_faction_0.js`             | Overhauls personalities (Legonis Machina).                                                                                                                                               |
-| `game/galactic_war/shared/js/gw_faction_1.js`             | Overhauls personalities (Foundation).                                                                                                                                                    |
-| `game/galactic_war/shared/js/gw_faction_2.js`             | Overhauls personalities (Synchronous).                                                                                                                                                   |
-| `game/galactic_war/shared/js/gw_faction_3.js`             | Overhauls personalities (Revenants).                                                                                                                                                     |
-| `game/galactic_war/shared/js/gw_galaxy.js`                | System size scaling; repairs stars the base builder leaves with no gates (see [`galaxy.md`](galaxy.md)). Graph core extracted to `shared/gw_galaxy_graph.js`.                            |
-| `game/galactic_war/shared/js/gw_inventory.js`             | Adds the `aiMods` observable that the whole AI-mod pipeline hangs off; changes `removeUnits` to remove _every_ copy of a unit.                                                           |
-| `game/galactic_war/shared/js/systems/titans-normal.js`    | Changes the Players arrays and adds classic systems.                                                                                                                                     |
+| File                                                      | What GWO changed                                                                                                                                                                                                             |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `game/galactic_war/gw_play/gw_per_player_tech_referee.js` | Per-player tech in co-op. Validation extracted to `gw_play/per_player_tech.js`; viewer subcommanders continue the player-faction colour sequence rather than taking raw faction colours.                                     |
+| `game/galactic_war/shared/js/gw_factions.js`              | Adds the Cluster faction (TITANS only).                                                                                                                                                                                      |
+| `game/galactic_war/shared/js/gw_faction_0.js`             | Overhauls personalities (Legonis Machina).                                                                                                                                                                                   |
+| `game/galactic_war/shared/js/gw_faction_1.js`             | Overhauls personalities (Foundation).                                                                                                                                                                                        |
+| `game/galactic_war/shared/js/gw_faction_2.js`             | Overhauls personalities (Synchronous).                                                                                                                                                                                       |
+| `game/galactic_war/shared/js/gw_faction_3.js`             | Overhauls personalities (Revenants).                                                                                                                                                                                         |
+| `game/galactic_war/shared/js/gw_galaxy.js`                | System size scaling, including army brackets under Shared Systems for Galactic War; repairs stars the base builder leaves with no gates (see [`galaxy.md`](galaxy.md)). Graph core extracted to `shared/gw_galaxy_graph.js`. |
+| `game/galactic_war/shared/js/gw_inventory.js`             | Adds the `aiMods` observable that the whole AI-mod pipeline hangs off; changes `removeUnits` to remove _every_ copy of a unit.                                                                                               |
+| `game/galactic_war/shared/js/systems/titans-normal.js`    | Changes the Players arrays and adds classic systems.                                                                                                                                                                         |
 
 `gw_inventory.js`'s `removeUnits` change is a **reversal of documented base-game
 behaviour** — stock explicitly notes that it does not perform set removes, so that
@@ -132,12 +132,12 @@ A shadowed file usually cannot load under the Node AMD harness, because its
 above all). The pattern is to extract the testable logic into a **measured sibling
 module** in the mod's own namespace, which the shadowed file then requires:
 
-| Shadowed file                   | Measured sibling                                           |
-| ------------------------------- | ---------------------------------------------------------- |
-| `gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js`                               |
-| `gw_galaxy.js`                  | `shared/gw_galaxy_graph.js`, `shared/gw_galaxy_connect.js` |
-| `gw_play/referee_game_files.js` | `gw_play/referee_game_file_paths.js`                       |
-| `gw_play/referee_config.js`     | `gw_play/referee_config_setup.js`                          |
+| Shadowed file                   | Measured sibling                                                                           |
+| ------------------------------- | ------------------------------------------------------------------------------------------ |
+| `gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js`                                                               |
+| `gw_galaxy.js`                  | `shared/gw_galaxy_graph.js`, `shared/gw_galaxy_connect.js`, `shared/gw_system_brackets.js` |
+| `gw_play/referee_game_files.js` | `gw_play/referee_game_file_paths.js`                                                       |
+| `gw_play/referee_config.js`     | `gw_play/referee_config_setup.js`                                                          |
 
 The shadowed file keeps only the `model`/`ko`/`api` glue and is coverage-excluded;
 the sibling holds the logic and is unit-tested. Do **not** instead hoist helpers to

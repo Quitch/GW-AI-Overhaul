@@ -63,9 +63,48 @@ systemSize = systemScaling
   : Math.floor(_.random(13) + coopSystemPlayerBonus);
 ```
 
-With scaling off — which is the default in one of the two places it is set, and is
-forced off in another — size is **random**, not distance-based. Any statement that
-planets grow with distance is only half true.
+With scaling off — which is the default in one of the two places it is set — size is
+**random**, not distance-based. Any statement that planets grow with distance is only
+half true.
+
+`coopSystemPlayerBonus` is `coopPlayers - 1`, so a solo war contributes nothing and the
+scale starts at 0. It reads like an off-by-one and is not one; the reasoning is at its
+declaration in `gw_galaxy.js`.
+
+### System brackets, under Shared Systems for Galactic War
+
+With that mod mounted the pool is real `.pas` systems and `systemSize` reaches
+wondible's `template-loader.js`, which reads it as a **surface-area** window
+(`players*0.5 < surface_area < players*4`). That never looks at spawn points, so a
+compact six-army map reads as early-game and a sprawling duel map reads as late-game;
+at the origin the window is empty and every system is equally likely. System Scaling had
+nothing real to scale, which is why it used to be removed from the DOM.
+
+`shared/gw_system_brackets.js` replaces that. Each system resolves to an **army** range —
+declared `players`, else a capacity scan of `landing_zones.rules`, else `numArmies`,
+else dropped with a warning — and systems sharing a range become one bracket.
+
+The quantity is armies, not humans. Map makers use `players` to count humans and humans
+share an army, so a declared `[2,10]` on two landing zones is two armies of five; the
+zone count caps the declared maximum, and the minimum follows it down rather than
+inverting. Without that cap two structurally identical maps land eight brackets apart
+purely because one carries a `players` key.
+
+Two rules make the brackets cover the galaxy. The lowest-minimum, smallest-range bracket
+has its minimum set to **0**, because `star.distance()` starts at 0 and no derived range
+starts below 2. A distance above every bracket **clamps** to the highest — the same
+membership-plus-clamp shape the stock template-loader uses.
+
+Selection is **ordered consumption**, not a draw: the pool is ordered by maximum armies
+(shuffled within equal maxima, from the seeded `rng`, once), stars are served in distance
+order, and each takes the first unused system that still fits. Nearer stars therefore
+claim the smaller systems, and no system repeats until every eligible one is placed. A
+pool smaller than the galaxy exhausts and starts reusing rather than leaving a star
+empty.
+
+This path bypasses wondible's `withoutBrokenSystems`, so its name and `_.matches`
+blocklists no longer apply; the `starting_planet` backfill is reproduced on the returned
+copy, and the pool is never mutated because My Systems is a live IndexedDB row.
 
 ## Factions
 
@@ -145,9 +184,9 @@ that lives entirely outside this repo.
 
 - **Bigger Galactic War** — adds galaxy sizes 5–8. The distance-threshold tables in
   `shared/cards.js` have nine entries to cover them.
-- **Shared Systems for Galactic War** — GWO removes several of its own options when
-  this is loaded, and changes how it watches `model.ready()` so the mod's lobby is
-  not broken.
+- **Shared Systems for Galactic War** — GWO removes Easy Systems when this is loaded,
+  and changes how it watches `model.ready()` so the mod's lobby is not broken. System
+  Scaling and Large Planets both stay, served by the brackets above.
 
 ## Where to look next
 

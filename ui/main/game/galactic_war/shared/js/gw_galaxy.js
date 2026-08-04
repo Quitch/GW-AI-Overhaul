@@ -9,12 +9,14 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_graph.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_connect.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_system_brackets.js",
   "shared/GalaxyBuilder",
   "shared/gw_star",
   "main/game/galactic_war/shared/js/systems/template-loader",
 ], function (
   GWGalaxy,
   gwoGalaxyConnect,
+  gwoSystemBrackets,
   GalaxyBuilder,
   GWStar,
   chooseStarSystemTemplates
@@ -176,10 +178,18 @@ define([
         config.useEasierSystemTemplate
       );
 
+      var brackets = config.gwoSystemBrackets;
+
       // GWO - system size follows distance from the start only when the System
-      // Scaling difficulty option is on; otherwise it is randomised.
-      var starGenerators = _.map(self.stars(), function (star) {
+      // Scaling difficulty option is on; otherwise it is randomised. The randomised
+      // branch does not draw from rng, so call this exactly once per star or the two
+      // passes below would disagree about the same star's size.
+      var systemSizeFor = function (star) {
         var systemSize;
+        // One player is the baseline, so a solo war adds nothing and the origin star
+        // asks for size 0. A nudge towards a bigger fight, not a spawn count: shared
+        // army control gives every co-op client the same army, and only
+        // gw_coop_referee.js's unshared path splits them one per client.
         var coopSystemPlayerBonus = Math.max(
           0,
           Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
@@ -192,19 +202,78 @@ define([
         } else {
           systemSize = Math.floor(_.random(13) + coopSystemPlayerBonus);
         }
+        // Large Planets brings bigger systems forward rather than resizing planets -
+        // the name is kept for its translation strings, see difficulty_options.html.
         if (
           model.gwoDifficultySettings &&
           model.gwoDifficultySettings.largePlanets()
         ) {
           systemSize += 4;
         }
-        return StarSystemTemplates.generate({
-          players: systemSize,
-          seed: rng() * rng(),
-        }).then(function (system) {
+        // Easy Systems has no simpler template set to swap to when the pool is real
+        // systems, so it asks for the lowest bracket instead. Last, so it wins over
+        // Large Planets and distance alike.
+        if (
+          brackets &&
+          model.gwoDifficultySettings &&
+          model.gwoDifficultySettings.simpleSystems()
+        ) {
+          systemSize = Math.min(systemSize, 0);
+        }
+        return systemSize;
+      };
+
+      var placeSystem = function (star, starSystem) {
+        return starSystem.then(function (system) {
+          // Both suppliers can resolve without a system - Shared Systems' pickSystem on
+          // an empty pool, the stock loader when no template matches. Reject rather than
+          // dereference: jQuery 2.x lets a throw here escape .fail(), which leaves Go To
+          // War spinning instead of retrying.
+          if (
+            !system ||
+            !system.planets ||
+            !system.planets.length ||
+            !system.planets[0].generator
+          ) {
+            return $.Deferred().reject(
+              "no usable star system for the star at distance " +
+                star.distance()
+            );
+          }
           star.system(system);
           star.biome(system.planets[0].generator.biome);
         });
+      };
+
+      // GWO - brackets are consumed, so nearer stars must claim the smaller systems
+      // before the generator loop below runs in array order.
+      var systemByStar = [];
+      if (brackets) {
+        var selector = gwoSystemBrackets.selectorFor(brackets, rng);
+        var byDistance = _.sortBy(
+          _.map(self.stars(), function (star, index) {
+            return { star: star, index: index };
+          }),
+          function (entry) {
+            return entry.star.distance();
+          }
+        );
+        _.forEach(byDistance, function (entry) {
+          systemByStar[entry.index] = selector.take(systemSizeFor(entry.star));
+        });
+      }
+
+      var starGenerators = _.map(self.stars(), function (star, index) {
+        if (brackets) {
+          return placeSystem(star, $.when(systemByStar[index]));
+        }
+        return placeSystem(
+          star,
+          StarSystemTemplates.generate({
+            players: systemSizeFor(star),
+            seed: rng() * rng(),
+          })
+        );
       });
 
       return $.when.apply($, starGenerators).then(function () {

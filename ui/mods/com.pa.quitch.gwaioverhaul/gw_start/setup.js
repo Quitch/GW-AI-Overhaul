@@ -102,17 +102,12 @@ function gwoSetup() {
       if (modMounted("com.wondible.pa.gw_shared_systems")) {
         sharedSystemsForGalacticWarActive = true;
         model.selectedNames.subscribe(onSelectedNamesChanged);
-        // Remove features this mod can't use
-        $("#system-scaling").closest(".gwo-game-option-row").remove();
-        model.gwoDifficultySettings.systemScaling(false);
-        $("#system-size").closest(".gwo-game-option-row").remove();
-        model.gwoDifficultySettings.simpleSystems(false);
-        $("#large-planets").closest(".gwo-game-option-row").remove();
-        model.gwoDifficultySettings.largePlanets(false);
       }
     };
 
-    api.mods.getMounted("client", true).then(onModsMounted);
+    // Held so the galaxy build can wait on it: this resolves asynchronously and nothing
+    // stops the player clicking Go To War first.
+    var modsMounted = api.mods.getMounted("client", true).then(onModsMounted);
 
     var foundationFaction = 1;
 
@@ -405,6 +400,8 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourites.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_system_brackets.js",
+        "main/game/galactic_war/shared/js/systems/template-loader",
       ],
       function (
         GW,
@@ -422,7 +419,9 @@ function gwoSetup() {
         loadouts,
         favouriteLoadoutsModule,
         favouritesModule,
-        gwoVersion
+        gwoVersion,
+        gwoSystemBrackets,
+        chooseStarSystemTemplates
       ) {
         // Assign the outer closure vars (declared at the top of gwoSetup(),
         // where model.gwoIsFavourite/model.gwoToggleFavourite are defined)
@@ -567,6 +566,62 @@ function gwoSetup() {
           return model.playerFactionIndex() % GWFactions.length;
         };
 
+        // Never rejects: every failure - no ticked sources, a dead sharing server,
+        // nothing derivable - resolves undefined and leaves the galaxy on Shared Systems'
+        // own pick. Rejecting would spend warGenerationFailure's five reseeded retries on
+        // a condition no seed can change.
+        var loadSystemBrackets = function () {
+          var ready = $.Deferred();
+
+          var withoutBrackets = function () {
+            ready.resolve(undefined);
+          };
+
+          var onSystemsLoaded = function () {
+            // $.when hands back one array per source.
+            var built = gwoSystemBrackets.bracketsFrom(
+              _.flatten(_.toArray(arguments))
+            );
+            ready.resolve(built.length ? built : undefined);
+          };
+
+          var onOptionsLoaded = function (options) {
+            var loading = [];
+            _.forEach(model.selectedNames(), function (name) {
+              var option = _.find(options, "name", name);
+              if (option) {
+                // load() caches per source, so this costs nothing when Shared Systems
+                // asks for the same pool later. Its loading/selected observables drive
+                // that mod's own spinner - leave them alone.
+                loading.push(option.load());
+              }
+            });
+            if (_.isEmpty(loading)) {
+              withoutBrackets();
+              return;
+            }
+            $.when.apply($, loading).then(onSystemsLoaded, withoutBrackets);
+          };
+
+          $.when(modsMounted).always(function () {
+            // Capability rather than the mod identifier: the identifier changes on a
+            // dev build of Shared Systems, this does not.
+            if (
+              !sharedSystemsForGalacticWarActive ||
+              !_.isFunction(chooseStarSystemTemplates.loadOptions) ||
+              !_.isFunction(model.selectedNames)
+            ) {
+              withoutBrackets();
+              return;
+            }
+            chooseStarSystemTemplates
+              .loadOptions()
+              .then(onOptionsLoaded, withoutBrackets);
+          });
+
+          return ready.promise();
+        };
+
         // replicates the functionality of model.makeGame() but
         // only generates the galaxy once the player clicks Go To War
         model.navToNewGame = function () {
@@ -631,19 +686,24 @@ function gwoSetup() {
             .setTag("global", "playerFaction", playerFactionIndex());
           game.inventory().setTag("global", "playerColor", model.playerColor());
 
-          var buildGalaxy = game.galaxy().build({
-            seed: model.newGameSeed(),
-            size: size,
-            difficultyIndex: selectedDifficulty,
-            systemTemplates: systemTemplates,
-            content: game.content(),
-            coopPlayersForSystemGeneration: playerCount,
-            minStarDistance: 2,
-            maxStarDistance: 4,
-            maxConnections: 4,
-            minimumDistanceBonus: 8, // this is inert
-            largePlanets: largePlanets,
-          });
+          var buildGalaxy = loadSystemBrackets().then(
+            function (systemBrackets) {
+              return game.galaxy().build({
+                seed: model.newGameSeed(),
+                size: size,
+                difficultyIndex: selectedDifficulty,
+                systemTemplates: systemTemplates,
+                content: game.content(),
+                coopPlayersForSystemGeneration: playerCount,
+                minStarDistance: 2,
+                maxStarDistance: 4,
+                maxConnections: 4,
+                minimumDistanceBonus: 8, // this is inert
+                largePlanets: largePlanets,
+                gwoSystemBrackets: systemBrackets,
+              });
+            }
+          );
 
           var onStartCardDealt = function (startCardProduct) {
             game

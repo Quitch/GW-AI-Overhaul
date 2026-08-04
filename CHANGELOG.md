@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v6.7.0 - 2026-08-04
+
+### Added
+
+- System Scaling, Large Planets, and Easy Systems now work with Shared Systems for Galactic War
+
+### Bugfix
+
+- Tourist Commander no longer disables the Guardians
+- An upgraded Phoenix won't pursue air units
+- A host's allied AI commanders' eco is set properly at Platinum and higher
+
 ## v6.6.0 - 2026-08-03
 
 ### Changed

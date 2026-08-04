@@ -43,6 +43,12 @@ define([
           op: "replace",
           value: 1,
         },
+        {
+          file: gwoUnit.phoenix,
+          path: "guard_layer",
+          op: "replace",
+          value: "WL_AnySurface",
+        },
       ]);
 
       inventory.addAIMods([
