@@ -107,7 +107,7 @@ describe("armyRange - declared players", () => {
 
 describe("armyRange - the landing zone cap", () => {
   it("caps a declared range at the number of spawns", () => {
-    // players counts humans and humans share an army: two armies of five.
+    // Boading: ten players declared, two landing zones.
     assert.deepEqual(
       brackets.armyRange(sys("a", { players: [2, 10], zoneCount: 2 })),
       [2, 2]

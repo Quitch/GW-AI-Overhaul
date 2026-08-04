@@ -572,15 +572,10 @@ function gwoSetup() {
           return model.playerFactionIndex() % GWFactions.length;
         };
 
-        // Shared Systems for Galactic War hands gw_galaxy.js's `players` to a
-        // surface-area filter that never looks at spawn points, so System Scaling has
-        // nothing to scale. Bracketing the pool by the armies each system's landing
-        // zones can seat gives it something real to scale against.
-        //
-        // Resolves undefined for every failure - no ticked sources, a dead sharing
-        // server, nothing derivable - so the galaxy falls back to Shared Systems' own
-        // pick. Rejecting instead would spend warGenerationFailure's five reseeded
-        // retries on a condition no seed can change.
+        // Never rejects: every failure - no ticked sources, a dead sharing server,
+        // nothing derivable - resolves undefined and leaves the galaxy on Shared Systems'
+        // own pick. Rejecting would spend warGenerationFailure's five reseeded retries on
+        // a condition no seed can change.
         var loadSystemBrackets = function () {
           var ready = $.Deferred();
 
@@ -601,9 +596,9 @@ function gwoSetup() {
             _.forEach(model.selectedNames(), function (name) {
               var option = _.find(options, "name", name);
               if (option) {
-                // load() caches per source, so asking here costs nothing when Shared
-                // Systems asks for the same pool again. Its loading/selected
-                // observables drive that mod's own spinner - leave them alone.
+                // load() caches per source, so this costs nothing when Shared Systems
+                // asks for the same pool later. Its loading/selected observables drive
+                // that mod's own spinner - leave them alone.
                 loading.push(option.load());
               }
             });

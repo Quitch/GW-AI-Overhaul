@@ -1,41 +1,31 @@
 // Groups a pool of real star systems into army-count brackets so Galactic War can scale
 // system size with distance from the origin.
 //
-// Shared Systems for Galactic War replaces the star system templates with real .pas
-// systems and reinterprets gw_galaxy.js's `players` as a surface-area window
-// (players*0.5 < surface_area < players*4), which never looks at spawn points - so a
-// compact map built for eight commanders reads as an early-game system and a sprawling
-// duel map reads as a late-game one. These brackets replace that with what the system's
-// own landing zones say it can seat.
-//
-// The quantity is *armies*, not humans. Map makers routinely use `players` to count
-// humans, and humans share an army, so a system declaring players [2,10] on two landing
-// zones is two armies of five. GW fights army-versus-army with one commander per spawn,
-// so the landing zone count is the ceiling and a larger `players` describes team sizes
-// GW never uses.
+// Shared Systems for Galactic War swaps the star system templates for real .pas systems
+// and reads gw_galaxy.js's `players` as a surface-area window
+// (players*0.5 < surface_area < players*4), which never looks at spawn points - so size
+// stops tracking how many commanders a map was built for. These brackets restore that
+// from the landing zones themselves.
 //
 // This is the measured sibling of the base-game-shadowed gw_galaxy.js (see
 // CONTRIBUTING.md's "Node test reach for base-game-shadowed modules"): pure arithmetic
 // over plain objects, unit-tested by test/gw_system_brackets.test.js, while the builder
 // glue that calls it stays in the coverage-excluded shadowed file.
 define(function () {
-  // The base game's own landing-zone reader (system_editor.js's customLandingZones)
-  // defaults an absent or zero rule bound to exactly these, so a range derived here
-  // matches the spawns the game will actually honour.
+  // What system_editor.js's customLandingZones defaults an absent or zero rule bound to.
   var MIN_ARMIES = 2;
   var MAX_ARMIES = 32;
 
-  // Community map packs ship string-typed rule bounds ({"min": "2"}). In-game the
-  // comparison coerces them, so read them as numbers rather than trusting the type.
+  // Community map packs ship string-typed bounds ({"min": "2"}), which the game coerces.
   var ruleBound = function (value, fallback) {
     var bound = Number(value);
     return bound ? bound : fallback;
   };
 
-  // Each zone as [min, max]: the army counts at which that spawn is used. landing_zones
-  // is either {list, rules} or a bare [[x, y, z], ...]; only map packs and My Systems
-  // use the bare form, so it is the branch stock data never exercises.
-  var landingZones = function (system) {
+  // Each zone's [min, max]: the army counts at which the game uses that spawn.
+  // landing_zones is either {list, rules} or a bare [[x, y, z], ...] - only map packs
+  // and My Systems produce the bare form, so stock data never exercises it.
+  var zoneArmyRanges = function (system) {
     var planets = (system && system.planets) || [];
     var zones = [];
 
@@ -59,8 +49,8 @@ define(function () {
     return zones;
   };
 
-  // How many armies the zones can seat: n works only when at least n zones accept n.
-  // The result is inherently bounded by the zone count, so it needs no further cap.
+  // n armies fit only when at least n zones accept n, so the result is already bounded
+  // by the zone count and needs no further cap.
   var capacityRange = function (zones) {
     var first = 0;
     var last = 0;
@@ -98,8 +88,8 @@ define(function () {
   };
 
   // UberUtility.fixupPlanetConfig renames planet.planet to planet.generator and deletes
-  // the original, and every pooled system has been through it. The raw form is kept as a
-  // fallback so this module can be run against default_systems.json straight off disk.
+  // the original, and every pooled system has been through it. The raw form still reads,
+  // so this runs against default_systems.json straight off disk.
   var generatedArmies = function (system) {
     var planets = (system && system.planets) || [];
     var total = 0;
@@ -115,10 +105,13 @@ define(function () {
   };
 
   var armyRange = function (system) {
-    var zones = landingZones(system);
+    var zones = zoneArmyRanges(system);
     var declared = declaredRange(system);
 
     if (declared) {
+      // `players` counts humans and humans share an army, so a declared [2,10] on two
+      // landing zones is two armies of five. GW seats one commander per spawn, so the
+      // zone count is the ceiling and the minimum follows it down rather than inverting.
       if (zones.length) {
         declared[1] = Math.min(declared[1], zones.length);
         declared[0] = Math.min(declared[0], declared[1]);
@@ -130,9 +123,8 @@ define(function () {
       return capacityRange(zones);
     }
 
-    // Only reachable when no planet has a custom zone list at all: numArmies is the
-    // generator's own symmetric start count, and mixing it with hand-placed zones
-    // measurably worsened the derived range.
+    // numArmies is the generator's symmetric start count, which says nothing about
+    // hand-placed spawns - so it stands in only for a system that has none.
     var generated = generatedArmies(system);
     return generated ? [MIN_ARMIES, Math.max(MIN_ARMIES, generated)] : null;
   };
@@ -160,12 +152,15 @@ define(function () {
       byRange[key].systems.push(pool[i]);
     }
 
+    var span = function (bracket) {
+      return bracket.max - bracket.min;
+    };
     brackets.sort(function (a, b) {
-      return a.min - b.min || a.max - a.min - (b.max - b.min) || a.max - b.max;
+      return a.min - b.min || span(a) - span(b) || a.max - b.max;
     });
 
-    // star.distance() is 0 at the origin, but no derived range starts below 2, so
-    // without this the nearest stars would have nothing to draw from.
+    // star.distance() is 0 at the origin but no derived range starts below 2, so without
+    // this the nearest stars would have nothing to draw from.
     if (brackets.length) {
       brackets[0].min = 0;
     }
@@ -202,7 +197,7 @@ define(function () {
       return systems;
     }
 
-    // A gap in the cover - brackets [0,2] and [6,8] with wanted 4. The clamp above
+    // A gap in the cover - brackets [0,2] and [6,8], wanted 4. The clamp above
     // guarantees some bracket has max >= wanted, so this always finds one.
     var nearest = null;
     for (i = 0; i < list.length; i++) {
@@ -213,6 +208,7 @@ define(function () {
     return nearest ? nearest.systems.slice() : [];
   };
 
+  // What gw_galaxy.js dereferences the moment a star is given a system.
   var usableSystem = function (system) {
     return !!(
       system &&
@@ -223,8 +219,8 @@ define(function () {
   };
 
   // The pool holds live references - My Systems is a bound IndexedDB row - so the
-  // starting_planet backfill wondible's withoutBrokenSystems does in place has to go on
-  // the copy instead.
+  // starting_planet backfill wondible's withoutBrokenSystems does in place goes on the
+  // copy instead.
   var copyOf = function (system) {
     var copy = JSON.parse(JSON.stringify(system));
     var started = false;
@@ -241,9 +237,8 @@ define(function () {
     return copy;
   };
 
-  // Orders the pool once and hands each star the smallest system that still fits,
-  // without repeating one already placed. `random` is consumed only here, at
-  // construction; take() must stay deterministic or a seed would stop reproducing a
+  // Hands each star the smallest unplaced system that still fits. `random` is consumed
+  // only while ordering; take() must stay deterministic or a seed stops reproducing a
   // galaxy.
   var selectorFor = function (brackets, random) {
     var list = brackets || [];
@@ -268,8 +263,7 @@ define(function () {
     });
 
     // Walks in `max` order, so the first out-of-range entry that could still hold the
-    // star is the closest fit above it - the gap fill for covers like [0,2] and [6,8]
-    // asked for 4.
+    // star is the closest fit above it - the gap fill candidatesFor describes.
     var eligible = function (wanted) {
       var inRange = [];
       var gap = [];
@@ -305,8 +299,7 @@ define(function () {
         placed.push(entries[e]);
       }
 
-      // Every eligible system is already on the map: a pool smaller than the galaxy.
-      // Reuse in order rather than leaving the star with nothing.
+      // A pool smaller than the galaxy: reuse in order rather than leave a star empty.
       if (!placed.length) {
         return null;
       }

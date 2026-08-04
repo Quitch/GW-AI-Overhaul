@@ -185,11 +185,9 @@ define([
       var systemSizeFor = function (star) {
         var systemSize;
         // One player is the baseline, so a solo war adds nothing and the origin star
-        // asks for size 0 - which the zero-minimum bracket answers with a two-army
-        // system, the player and one AI. The bonus above that nudges towards a bigger
-        // fight; it is not a spawn count, because shared army control gives every
-        // co-op client the same army and only gw_coop_referee.js's unshared path
-        // splits them one per client.
+        // asks for size 0. A nudge towards a bigger fight, not a spawn count: shared
+        // army control gives every co-op client the same army, and only
+        // gw_coop_referee.js's unshared path splits them one per client.
         var coopSystemPlayerBonus = Math.max(
           0,
           Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
@@ -213,11 +211,10 @@ define([
 
       var placeSystem = function (star, starSystem) {
         return starSystem.then(function (system) {
-          // jQuery 2.x does not turn a throw inside a deferred callback into a
-          // rejection - it escapes .fail() and leaves Go To War spinning - so reject
-          // explicitly instead of dereferencing an absent system. Shared Systems'
-          // pickSystem resolves undefined on an empty pool and the stock template
-          // loader resolves null when no template matches, so both paths reach here.
+          // Both suppliers can resolve without a system - Shared Systems' pickSystem on
+          // an empty pool, the stock loader when no template matches. Reject rather than
+          // dereference: jQuery 2.x lets a throw here escape .fail(), which leaves Go To
+          // War spinning instead of retrying.
           if (
             !system ||
             !system.planets ||
@@ -234,10 +231,8 @@ define([
         });
       };
 
-      // GWO - under Shared Systems for Galactic War the pool is real systems, so size
-      // comes from the armies each one's landing zones can seat rather than from a
-      // template. Brackets are consumed, so nearer stars must claim the smaller systems
-      // first; the generator loop below still runs in array order.
+      // GWO - brackets are consumed, so nearer stars must claim the smaller systems
+      // before the generator loop below runs in array order.
       var brackets = config.gwoSystemBrackets;
       var systemByStar = [];
       if (brackets) {
