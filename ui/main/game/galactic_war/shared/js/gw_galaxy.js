@@ -178,6 +178,8 @@ define([
         config.useEasierSystemTemplate
       );
 
+      var brackets = config.gwoSystemBrackets;
+
       // GWO - system size follows distance from the start only when the System
       // Scaling difficulty option is on; otherwise it is randomised. The randomised
       // branch does not draw from rng, so call this exactly once per star or the two
@@ -200,6 +202,8 @@ define([
         } else {
           systemSize = Math.floor(_.random(13) + coopSystemPlayerBonus);
         }
+        // Large Planets brings bigger systems forward rather than resizing planets -
+        // the name is kept for its translation strings, see difficulty_options.html.
         if (
           model.gwoDifficultySettings &&
           model.gwoDifficultySettings.largePlanets()

@@ -184,9 +184,9 @@ that lives entirely outside this repo.
 
 - **Bigger Galactic War** — adds galaxy sizes 5–8. The distance-threshold tables in
   `shared/cards.js` have nine entries to cover them.
-- **Shared Systems for Galactic War** — GWO removes Easy Systems and Large Planets when
-  this is loaded, and changes how it watches `model.ready()` so the mod's lobby is not
-  broken. System Scaling stays, served by the brackets above.
+- **Shared Systems for Galactic War** — GWO removes Easy Systems when this is loaded,
+  and changes how it watches `model.ready()` so the mod's lobby is not broken. System
+  Scaling and Large Planets both stay, served by the brackets above.
 
 ## Where to look next
 
