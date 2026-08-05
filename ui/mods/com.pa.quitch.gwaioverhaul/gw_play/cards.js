@@ -347,53 +347,22 @@ function gwoCard() {
               return cardChance;
             });
 
-            fullHand = _.map(fullHand, function (deal, i) {
-              deal.index = i;
-              return deal;
-            });
-
-            var hand = _.filter(fullHand, function (deal) {
-              return !!deal && !!deal.chance;
-            });
-
-            if (hand.length) {
-              var resultIndex;
-
-              var probability = _.reduce(
-                hand,
-                function (sum, card) {
-                  return sum + card.chance;
-                },
-                0
-              );
-              var roll = rng() * probability;
-              var index = 0;
-              for (
-                ;
-                index < hand.length && roll >= hand[index].chance;
-                ++index
-              ) {
-                roll -= hand[index].chance;
-              }
-              if (index < hand.length) {
-                resultIndex = hand[index].index;
-              }
-
-              if (!_.isUndefined(resultIndex)) {
-                var resultDeal = fullHand[resultIndex];
-                var cardParams = resultDeal && resultDeal.params;
-                var cardId = deck[resultIndex];
-                var systemCard = {
-                  id: cardId,
-                };
-
-                if (cardParams && _.isPlainObject(cardParams)) {
-                  _.assign(systemCard, cardParams);
-                }
-
-                list.push(systemCard);
-              }
+            var resultIndex = helpers.chooseDealIndex(fullHand, rng());
+            if (_.isUndefined(resultIndex)) {
+              return;
             }
+
+            var resultDeal = fullHand[resultIndex];
+            var cardParams = resultDeal && resultDeal.params;
+            var systemCard = {
+              id: deck[resultIndex],
+            };
+
+            if (cardParams && _.isPlainObject(cardParams)) {
+              _.assign(systemCard, cardParams);
+            }
+
+            list.push(systemCard);
           };
 
           var result = $.Deferred();

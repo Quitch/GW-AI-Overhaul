@@ -69,6 +69,35 @@ define(function () {
       );
     },
 
+    // The weighted walk over one deal iteration. `roll` is [0, 1). Returns the
+    // index into `fullHand` of the chosen card, or undefined when nothing is
+    // dealable or the roll falls off the end through float error.
+    chooseDealIndex: function (fullHand, roll) {
+      var hand = [];
+      var probability = 0;
+
+      _.forEach(fullHand, function (deal, index) {
+        if (deal && deal.chance) {
+          hand.push({ index: index, chance: deal.chance });
+          probability += deal.chance;
+        }
+      });
+
+      if (!hand.length) {
+        return undefined;
+      }
+
+      var remaining = roll * probability;
+      for (var entry of hand) {
+        if (remaining < entry.chance) {
+          return entry.index;
+        }
+        remaining -= entry.chance;
+      }
+
+      return undefined;
+    },
+
     isStartLoadoutCardId: function (cardId) {
       return _.isString(cardId) && _.includes(cardId, "_start_");
     },

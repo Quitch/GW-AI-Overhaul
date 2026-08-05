@@ -140,6 +140,54 @@ describe("doNotDealCard", () => {
   });
 });
 
+describe("chooseDealIndex", () => {
+  function hand(...chances) {
+    return chances.map((chance) => ({ chance: chance }));
+  }
+
+  it("returns the first dealable card for a roll of 0", () => {
+    assert.equal(helpers.chooseDealIndex(hand(10, 30, 60), 0), 0);
+  });
+
+  it("returns an index into fullHand, not into the filtered hand", () => {
+    assert.equal(helpers.chooseDealIndex(hand(0, 0, 10), 0), 2);
+  });
+
+  it("never returns a zero-chance card", () => {
+    const fullHand = hand(0, 5, 0, 5, 0);
+    for (let i = 0; i < 100; i++) {
+      const index = helpers.chooseDealIndex(fullHand, i / 100);
+      assert.ok(index === 1 || index === 3, `roll ${i / 100} gave ${index}`);
+    }
+  });
+
+  it("walks the weights in array order", () => {
+    const fullHand = hand(10, 30, 60);
+    assert.equal(helpers.chooseDealIndex(fullHand, 0.09), 0);
+    assert.equal(helpers.chooseDealIndex(fullHand, 0.11), 1);
+    assert.equal(helpers.chooseDealIndex(fullHand, 0.39), 1);
+    assert.equal(helpers.chooseDealIndex(fullHand, 0.41), 2);
+    assert.equal(helpers.chooseDealIndex(fullHand, 0.99), 2);
+  });
+
+  it("skips holes and entries with no deal", () => {
+    assert.equal(
+      helpers.chooseDealIndex([undefined, null, { chance: 10 }], 0),
+      2
+    );
+  });
+
+  it("returns undefined when nothing is dealable", () => {
+    assert.equal(helpers.chooseDealIndex(hand(0, 0), 0), undefined);
+    assert.equal(helpers.chooseDealIndex([], 0), undefined);
+  });
+
+  // Unreachable from the rng, which is [0, 1), but a caller could supply it.
+  it("returns undefined rather than throwing for a roll of 1", () => {
+    assert.equal(helpers.chooseDealIndex(hand(10, 30), 1), undefined);
+  });
+});
+
 describe("isStartLoadoutCardId", () => {
   it("matches ids containing _start_", () => {
     assert.equal(helpers.isStartLoadoutCardId("gwaio_start_lucky"), true);
