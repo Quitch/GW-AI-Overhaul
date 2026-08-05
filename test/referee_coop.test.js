@@ -170,3 +170,34 @@ describe("referee_coop.getOrderedSubcommanders", () => {
     );
   });
 });
+
+describe("refereeCoop.clientsInPlayerOrder", () => {
+  it("puts the host first and leaves everyone else in join order", () => {
+    const first = { id: "1", name: "Ada", role: "viewer" };
+    const host = { id: "2", name: "Grace", role: "host" };
+    const last = { id: "3", name: "Alan", role: "viewer" };
+
+    assert.deepEqual(refereeCoop.clientsInPlayerOrder([first, host, last]), [
+      host,
+      first,
+      last,
+    ]);
+  });
+
+  it("leaves an already host first list untouched", () => {
+    const clients = [
+      { id: "1", role: "host" },
+      { id: "2", role: "viewer" },
+      { id: "3", role: "viewer" },
+    ];
+
+    assert.deepEqual(refereeCoop.clientsInPlayerOrder(clients), clients);
+  });
+
+  it("tolerates a missing, empty or ragged client list", () => {
+    assert.deepEqual(refereeCoop.clientsInPlayerOrder(undefined), []);
+    assert.deepEqual(refereeCoop.clientsInPlayerOrder("not a list"), []);
+    assert.deepEqual(refereeCoop.clientsInPlayerOrder([]), []);
+    assert.deepEqual(refereeCoop.clientsInPlayerOrder([null]), [null]);
+  });
+});

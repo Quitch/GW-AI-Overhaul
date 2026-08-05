@@ -66,27 +66,32 @@ already included them; the check is `tag === ".player"`.
 
 ## Colour allocation
 
-The hardest part of co-op, because GWO has to _predict_ colours the base game
-assigns privately.
+Human army colours come from the base game. `model.gwCoopPlayerColors` in
+`gw_play.js` is the authoritative source: a host-first record per connected client,
+each carrying the `color` pair that client's army will be given. `gwo_panel.js`
+reads it rather than working the answer out again, so the swatch cannot disagree
+with what the referee assigns.
 
 Shared armies are a single army, so every co-op commander flies the host's
 colour — the `playerColor` global tag, written once at war creation. Unshared
-armies are split one per client by `gw_coop_referee.js`, which colours army 0
-with the host's faction colour and draws the rest from the lobby palette.
+armies are split one per client by `gw_coop_referee.js`, which colours army 0 with
+the host's faction colour, then prefers the faction's own `coopPlayerColors` before
+falling back to the custom-lobby palette in `shared/gw_coop_player_colors.js`.
+That module is why GWO no longer keeps a copy of the palette: before PA 124670 it
+was private to `gw_coop_referee.js`, which exported only `apply()`.
 
-`gw_play/coop_colour.js` mirrors the lobby palette from the base game's
-`server-script/lobby/color_table.js`. That makes it a **third copy** of the same
-data, and the table, the brightness rule and the sort must be kept in sync with
-`gw_coop_referee.js`. The brightness rule applies only when a channel is saturated,
-matching the server.
+**Every faction therefore needs a `coopPlayerColors` array**, including GWO's own
+Cluster in `faction/cluster_faction.js`. It is optional as far as the base game is
+concerned — a faction without one silently drops to the generic lobby palette.
 
-`shared/referee_coop.js` provides the ordering:
+Subcommander colours are a separate system and still GWO's own; see
+`gw_play/commander_colour.js`. `shared/referee_coop.js` provides the ordering:
 
 - `getOrderedSubcommanders(inventory, game, connectedClients)` returns every allied
   AI commander that draws from the player faction's palette, **in the order the
   battle config numbers their colours**: the host's subcommanders first, then each
   connected viewer's. Order in equals order out, so callers that care which colour
-  lands where must pass clients host-first (see `coop_colour.js`'s
+  lands where must pass clients host-first (see this module's
   `clientsInPlayerOrder`). Callers that only want a count can pass any order.
 - `alliedColourIndex(position)` returns `position + 1`. Index 0 is reserved for the
   player, whose army takes the faction's own colour pair rather than a palette

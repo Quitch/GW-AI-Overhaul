@@ -149,11 +149,10 @@ function gwoWarInfoPanel(gwoSettings) {
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_colour.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
       ],
-      function (gwoColour, gwoCoopColour, gwoRefereeCoop, gwoVersion) {
+      function (gwoColour, gwoRefereeCoop, gwoVersion) {
         model.gwoVersion = ko.observable(gwoVersion);
 
         var coopText = function (setting) {
@@ -223,25 +222,21 @@ function gwoWarInfoPanel(gwoSettings) {
         var playerColourPair = inventory.getTag("global", "playerColor");
         var playerColour = gwoColour.rgb(playerColourPair);
 
-        // The colour this client gets in the next battle. See coop.md.
-        var coopColour = function (client, connectedClients) {
-          if (model.gwCampaignSharedControl()) {
-            return playerColour;
-          }
-
-          var ordered = gwoCoopColour.clientsInPlayerOrder(connectedClients);
-          var index = _.findIndex(ordered, function (candidate) {
+        // The colour this client gets in the next battle, as the base game
+        // resolves it. See coop.md.
+        var coopColour = function (client) {
+          var resolved = _.isFunction(model.gwCoopPlayerColors)
+            ? model.gwCoopPlayerColors()
+            : [];
+          var record = _.find(resolved, function (candidate) {
             return candidate.id === client.id && candidate.name === client.name;
           });
-          var pair =
-            index < 0
-              ? undefined
-              : gwoCoopColour.pairsForPlayers(ordered.length, playerColourPair)[
-                  index
-                ];
 
-          // No pair means the palette ran out; fall back rather than blank the swatch.
-          return pair ? gwoColour.rgb(pair) : playerColour;
+          // No record means the base game could not resolve one; fall back
+          // rather than blank the swatch.
+          return record && record.color
+            ? gwoColour.rgb(record.color)
+            : playerColour;
         };
         var cards = inventory.cards();
         var loadoutId = cards[0].id;
@@ -285,7 +280,7 @@ function gwoWarInfoPanel(gwoSettings) {
         // computed below re-evaluates.
         var coopCommanderCache = {};
 
-        var updateCoopCommander = function (client, human, connectedClients) {
+        var updateCoopCommander = function (client, human) {
           var cacheKey =
             String(client.id || "") + "::" + String(client.name || "");
           var commander = coopCommanderCache[cacheKey];
@@ -311,7 +306,7 @@ function gwoWarInfoPanel(gwoSettings) {
             coopCommanderCache[cacheKey] = commander;
           }
 
-          commander.color(coopColour(client, connectedClients));
+          commander.color(coopColour(client));
 
           if (!commander.loadoutResolved) {
             record =
@@ -352,7 +347,7 @@ function gwoWarInfoPanel(gwoSettings) {
               var cacheKey =
                 String(client.id || "") + "::" + String(client.name || "");
               activeCommanderKeys[cacheKey] = true;
-              return updateCoopCommander(client, human, connectedClients);
+              return updateCoopCommander(client, human);
             });
 
             // Leaving the campaign refreshes the page, so that case needs no cleanup.
@@ -367,7 +362,7 @@ function gwoWarInfoPanel(gwoSettings) {
           var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
             inventory,
             game,
-            gwoCoopColour.clientsInPlayerOrder(connectedClients)
+            gwoRefereeCoop.clientsInPlayerOrder(connectedClients)
           );
 
           _.forEach(subcommanders, function (subcommanderData, index) {

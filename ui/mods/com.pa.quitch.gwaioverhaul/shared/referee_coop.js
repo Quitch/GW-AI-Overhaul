@@ -85,10 +85,24 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return position + 1;
   };
 
+  // The order gw_lobby.js's startGame() hands out the split armies: host first,
+  // then join order. The UI list identifies the host by role, not creator id.
+  var clientsInPlayerOrder = function (connectedClients) {
+    if (!_.isArray(connectedClients)) {
+      return [];
+    }
+
+    // _.sortBy is stable, so non-host clients keep their existing order.
+    return _.sortBy(connectedClients, function (client) {
+      return client && client.role === "host" ? 0 : 1;
+    });
+  };
+
   return {
     getConnectedViewers: getConnectedViewers,
     getConnectedViewerInventories: getConnectedViewerInventories,
     getOrderedSubcommanders: getOrderedSubcommanders,
     alliedColourIndex: alliedColourIndex,
+    clientsInPlayerOrder: clientsInPlayerOrder,
   };
 });
