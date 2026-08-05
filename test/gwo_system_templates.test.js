@@ -73,6 +73,64 @@ const TEMPLATES = [
   },
 ];
 
+// A generated planet with enough biomes that two different draws are unlikely to
+// coincide. Shared by the two templates below, at the same index in each.
+const SECOND_PLANET = {
+  mass: 4000,
+  Thrust: [0, 0],
+  Radius: [300, 600],
+  Height: [0, 15],
+  Water: [0, 0],
+  Temp: [0, 50],
+  MetalDensity: [10, 40],
+  MetalClusters: [5, 20],
+  BiomeScale: [50, 100],
+  Position: [1000, 0],
+  Velocity: [0, 10],
+  Biomes: ["moon", "asteroid", "earth", "desert", "lava", "tropical"],
+};
+
+// These two differ only in whether planet 0 takes the isExplicit early return,
+// which draws nothing. Under a shared stream that shifted planet 1's biome.
+TEMPLATES.push(
+  {
+    Players: [9, 10],
+    Systems: [
+      {
+        Planets: [
+          { isExplicit: true, mass: 5000, generator: { biome: "earth" } },
+          SECOND_PLANET,
+        ],
+      },
+    ],
+  },
+  {
+    Players: [11, 12],
+    Systems: [
+      {
+        Planets: [
+          {
+            mass: 5000,
+            Thrust: [0, 0],
+            Radius: [500, 900],
+            Height: [5, 25],
+            Water: [0, 50],
+            Temp: [0, 100],
+            MetalDensity: [20, 70],
+            MetalClusters: [10, 49],
+            BiomeScale: [50, 100],
+            Position: [0, 0],
+            Velocity: [0, 0],
+            Biomes: ["earth", "desert", "moon", "lava"],
+            starting_planet: true,
+          },
+          SECOND_PLANET,
+        ],
+      },
+    ],
+  }
+);
+
 ["pa-easy", "pa-normal", "titans-easy", "titans-normal"].forEach((name) => {
   registerModuleStub(
     "main/game/galactic_war/shared/js/systems/" + name,
@@ -247,6 +305,22 @@ describe("gwo_system_templates generate", () => {
       assert.deepEqual(warnings, []);
     } finally {
       console.warn = priorWarn;
+    }
+  });
+
+  // Each planet draws from its own stream, so a planet's biome cannot depend on
+  // how many planets before it took the isExplicit return - which draws nothing.
+  // Swept over several seeds: with one shared stream a given seed still agrees
+  // about one time in six, so a single comparison proves nothing.
+  it("gives a planet the same biome whatever precedes it in the template", async () => {
+    for (const seed of ["b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8"]) {
+      const afterExplicit = await generate(loader(), { players: 9, seed });
+      const afterGenerated = await generate(loader(), { players: 11, seed });
+      assert.equal(
+        afterExplicit.planets[1].generator.biome,
+        afterGenerated.planets[1].generator.biome,
+        `seed ${seed}`
+      );
     }
   });
 

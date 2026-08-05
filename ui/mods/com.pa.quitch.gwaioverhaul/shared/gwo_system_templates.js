@@ -354,7 +354,9 @@ define([
 
         var bp = _.cloneDeep(planet_template);
         bp.generator.seed = planetRng.int(0, 32767); // GWO
-        bp.generator.biome = rng.pick(plnt.Biomes); // GWO - was _.sample
+        // GWO - was _.sample, then briefly the shared rng, which made a planet's
+        // biome depend on how many earlier planets took the isExplicit return.
+        bp.generator.biome = planetRng.pick(plnt.Biomes);
 
         var biomeGet = $.get(
           "coui://pa/terrain/" + bp.generator.biome + ".json"
