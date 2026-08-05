@@ -326,6 +326,135 @@ describe("applyPenchantToSubcommander", () => {
     assert.equal(sub.character, "Commander");
     assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
+
+  it("forwards its rng to gwoAI.penchants", () => {
+    const priorLoc = global.loc;
+    global.loc = (key) => key;
+    try {
+      const seen = [];
+      const spy = {
+        penchants: (rng) => {
+          seen.push(rng);
+          return { penchantName: "n", penchants: [] };
+        },
+      };
+      const rng = () => 0.5;
+      helpers.applyPenchantToSubcommander(
+        subcommander(),
+        { aiAlly: "Penchant" },
+        spy,
+        rng
+      );
+      assert.deepEqual(seen, [rng]);
+    } finally {
+      global.loc = priorLoc;
+    }
+  });
+});
+
+describe("buildGeneralCommanderMinions", () => {
+  const gwoRng = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+  );
+  const gwoCard = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
+  );
+
+  // Distinct enough that two independent picks landing on the same one by
+  // chance would be a 1-in-64 event, not a coin flip.
+  const POOL = "abcdefgh".split("").map((name) => ({
+    name: name,
+    character: "cdr_" + name,
+    personality: { personality_tags: [] },
+  }));
+
+  const gwoAI = {
+    penchants: (rng) => ({
+      penchantName: "p" + (rng ? Math.floor(rng() * 1000) : "?"),
+      penchants: ["tag"],
+    }),
+  };
+
+  function build(opts) {
+    const priorLoc = global.loc;
+    global.loc = (key) => key;
+    try {
+      return helpers.buildGeneralCommanderMinions({
+        minionPool: opts.pool === undefined ? POOL : opts.pool,
+        gwoSettings: opts.gwoSettings || { aiAlly: "TITANS" },
+        gwoAI: gwoAI,
+        gwoCard: gwoCard,
+        rng: opts.seed === undefined ? undefined : gwoRng.create(opts.seed),
+      });
+    } finally {
+      global.loc = priorLoc;
+    }
+  }
+
+  const names = (minions) => minions.map((m) => m.minion.name);
+
+  it("returns nothing for an empty pool", () => {
+    assert.deepEqual(build({ pool: [], seed: "s" }), []);
+    assert.deepEqual(
+      build({ pool: undefined, seed: "s" }),
+      build({ seed: "s" })
+    );
+  });
+
+  it("grants two Sub Commander cards", () => {
+    const minions = build({ seed: "s" });
+    assert.equal(minions.length, 2);
+    for (const card of minions) {
+      assert.equal(card.id, "gwc_minion");
+      assert.ok(card.minion);
+      assert.ok(card.unique);
+    }
+  });
+
+  it("reproduces the same pair for the same seed", () => {
+    assert.deepEqual(build({ seed: "s" }), build({ seed: "s" }));
+  });
+
+  it("draws a different pair for a different seed", () => {
+    const seen = new Set(
+      ["s1", "s2", "s3", "s4", "s5"].map((seed) =>
+        names(build({ seed })).join()
+      )
+    );
+    assert.ok(seen.size > 1, "every seed produced the same pair");
+  });
+
+  // The property the per-minion streams exist for: turning the ally's penchant
+  // on adds a draw to minion 0, which must not move minion 1.
+  it("leaves the second minion alone when the first draws a penchant", () => {
+    const withPenchant = build({
+      seed: "s",
+      gwoSettings: { aiAlly: "Penchant" },
+    });
+    const without = build({ seed: "s", gwoSettings: { aiAlly: "TITANS" } });
+    assert.equal(withPenchant[1].minion.name, without[1].minion.name);
+    assert.equal(withPenchant[0].minion.name, without[0].minion.name);
+  });
+
+  it("gives each minion its own unique marker", () => {
+    const minions = build({ seed: "s" });
+    assert.notEqual(minions[0].unique, minions[1].unique);
+  });
+
+  it("still deals two minions with no rng, for a war saved before seeds", () => {
+    const minions = build({ seed: undefined });
+    assert.equal(minions.length, 2);
+    assert.ok(minions[0].unique);
+    assert.ok(minions[1].unique);
+  });
+
+  it("copies the pool entry rather than mutating it", () => {
+    build({ seed: "s", gwoSettings: { aiAlly: "Penchant" } });
+    for (const entry of POOL) {
+      assert.deepEqual(entry.personality.personality_tags, []);
+      assert.equal(entry.character, "cdr_" + entry.name);
+    }
+  });
 });
 
 describe("explorationStillLive", () => {

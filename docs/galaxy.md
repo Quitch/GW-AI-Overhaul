@@ -115,6 +115,58 @@ fires inline. It also _must_ stay ordered: `makeWorker` mutates `remainingMinion
 which minions are left depends on the order workers were made in. Making `spawn`, `spread`
 or `canSpread` genuinely async would break both properties at once.
 
+### Play-scene streams
+
+War generation is only half of it. What the player actually sees during a war — the tech
+cards offered at each star, the cards sitting on enemy stars, the General Commander's Sub
+Commanders, the AI's landing behaviour — is dealt in the `gw_play` scene, which re-derives
+the root from the seed stamped on the save: `gwoRng.create(originSystem.gwaio.seed)`.
+
+Every key lives in `gw_play/gwo_streams.js`, so this table has one place to be checked
+against.
+
+| Stream                                       | Consumers                                          |
+| -------------------------------------------- | -------------------------------------------------- |
+| `general_commander.<player>` → `minion.<n>`  | the General Commander loadout's two Sub Commanders |
+| `explore.<star>` → `turn.<n>` → `reroll.<n>` | the host's own tech offer at that star             |
+| `ai_star.<star>` → `turn.<n>`                | the card shown on a selectable AI star that turn   |
+| `coop_deal.<player>` → `deal.<index>`        | a co-op viewer's pending offer                     |
+| ↳ `reroll.<n>`                               | that viewer's rerolled offer                       |
+| ↳ `iteration.<i>`                            | the roll picking the i-th card of a hand           |
+| ↳↳ `<cardId>`                                | that card's own draws inside `deal()`              |
+| `battle.<star>` → `turn.<n>` → `landing_*`   | each army's landing policy                         |
+
+The goal is a war that reproduces **only when it is played the same way**: same seed,
+visiting the same stars, in the same order, winning at the same speed, taking the same
+cards. Randomness has to keep feeling random — retrying a battle must still reshuffle, and
+a star must not have one predetermined hand waiting however late you arrive.
+
+That is what `turn.<n>` is for. It is `game.stats().turns()`, incremented only by
+`GWGame.move()` and persisted with the save — the one monotonic per-turn value on the game
+model. `currentStar()` was the obvious alternative and is wrong: `loseTurn()` rewinds it to
+`previousStar()`, so it repeats. Because `loseTurn()` does not touch `turns`, retrying a
+lost battle needs another `move()` and therefore lands on a fresh turn — the reshuffle is a
+consequence of the key, not an exception to it.
+
+The rest of the components:
+
+- **`reroll.<n>`** — `model.rerollTech` empties the star's card list and re-enters
+  `model.explore`, so the per-card iteration index restarts at 0. Without the reroll count
+  in the key every reroll would hand back the same cards.
+- **`deal.<index>`** — `game.recordHostTechCardDeal`'s counter, host-monotonic and saved,
+  so it separates co-op catch-up deals that share a star.
+- **`<player>`** — `record.playerId`, the uberId, not `client_id`: a viewer who reconnects
+  must get their own minions and offers back. Whitespace in any label is squashed to `_`,
+  because `gwo_rng` joins a label and index with a space and `stream("a b")` would
+  otherwise collide with `stream("a", "b")`.
+- **`<cardId>`** — a deal calls `deal()` on every card in the deck and keeps one result, so
+  a shared sequential rng would couple every card's draws to every other card's draw count.
+  Keyed per card id, adding or removing a draw inside one card moves nothing else.
+
+**Player inventory is deliberately not in any key.** It already reaches the deal through
+each card's `chance` and through `doNotDealCard`. Keying on it as well would double-count,
+and would make a hand depend on the order cards were acquired in.
+
 ### What had to change
 
 | Where                                                                    | Was                                                                                                                                                                                                                                                                                                                                |

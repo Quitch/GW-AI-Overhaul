@@ -620,3 +620,42 @@ describe("applyDulls", () => {
     assert.equal(inventory.removed, null);
   });
 });
+
+describe("uniqueValue", () => {
+  const gwoRng = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+  );
+
+  // gw_inventory.hasCard tests !card.unique, so a zero would permanently stop
+  // that card being dealt again for that seed.
+  it("is always truthy for a seeded rng", () => {
+    const rng = gwoRng.create("unique-seed");
+    for (let i = 0; i < 10000; i++) {
+      const value = cards.uniqueValue(rng);
+      assert.ok(value, `draw ${i} yielded ${value}`);
+      assert.ok(value >= 1 && value < 2, `draw ${i} yielded ${value}`);
+    }
+  });
+
+  it("reproduces the same value for the same seed", () => {
+    assert.equal(
+      cards.uniqueValue(gwoRng.create("s")),
+      cards.uniqueValue(gwoRng.create("s"))
+    );
+    assert.notEqual(
+      cards.uniqueValue(gwoRng.create("s")),
+      cards.uniqueValue(gwoRng.create("t"))
+    );
+  });
+
+  it("falls back to Math.random with no rng, unchanged from before", () => {
+    const priorRandom = Math.random;
+    Math.random = () => 0.25;
+    try {
+      assert.equal(cards.uniqueValue(), 0.25);
+      assert.equal(cards.uniqueValue(undefined), 0.25);
+    } finally {
+      Math.random = priorRandom;
+    }
+  });
+});

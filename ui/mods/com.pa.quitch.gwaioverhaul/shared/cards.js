@@ -180,6 +180,14 @@ define(function () {
       };
     },
 
+    // The marker that lets a card be held more than once - gw_inventory.hasCard
+    // tests !card.unique. Only truthiness matters, so the seeded form is offset
+    // into [1, 2): a seeded zero would be a permanent property of that seed
+    // rather than the one-in-four-billion fluke it is unseeded.
+    uniqueValue: function (rng) {
+      return rng ? 1 + rng() : Math.random();
+    },
+
     // Tested for undefined, not falsiness: a computed weight of 0 is legitimate.
     upgradeDeal: function (available, chance) {
       var weight = _.isUndefined(chance) ? 60 : chance;

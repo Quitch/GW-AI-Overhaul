@@ -155,18 +155,66 @@ define(function () {
     },
 
     // Mutates the subcommander. A no-op unless the ally is Penchant.
-    applyPenchantToSubcommander: function (subcommander, gwoSettings, gwoAI) {
+    applyPenchantToSubcommander: function (
+      subcommander,
+      gwoSettings,
+      gwoAI,
+      rng
+    ) {
       if (!gwoSettings || gwoSettings.aiAlly !== "Penchant") {
         return;
       }
 
-      var penchantValues = gwoAI.penchants();
+      var penchantValues = gwoAI.penchants(rng);
       subcommander.character =
         subcommander.character + (" " + loc(penchantValues.penchantName));
       subcommander.personality.personality_tags =
         subcommander.personality.personality_tags.concat(
           penchantValues.penchants
         );
+    },
+
+    // The two Sub Commanders the General Commander loadout grants. Each draws
+    // from its own stream, so the second is unaffected by whether the first
+    // drew a penchant. Collaborators are injected rather than required, keeping
+    // this file free of define-time dependencies - see testing.md.
+    buildGeneralCommanderMinions: function (params) {
+      var minionPool = params.minionPool || [];
+      var gwoSettings = params.gwoSettings;
+      var gwoAI = params.gwoAI;
+      var gwoCard = params.gwoCard;
+      var rng = params.rng;
+      var self = this;
+      var minions = [];
+
+      if (!minionPool.length) {
+        return minions;
+      }
+
+      _.times(2, function (index) {
+        var minionRng = rng ? rng.stream("minion", index) : undefined;
+        var baseSubcommander = minionRng
+          ? minionRng.pick(minionPool)
+          : _.sample(minionPool);
+        if (!baseSubcommander) {
+          return;
+        }
+
+        var subcommander = _.cloneDeep(baseSubcommander);
+        self.applyPenchantToSubcommander(
+          subcommander,
+          gwoSettings,
+          gwoAI,
+          minionRng
+        );
+        minions.push({
+          id: "gwc_minion",
+          minion: subcommander,
+          unique: gwoCard.uniqueValue(minionRng),
+        });
+      });
+
+      return minions;
     },
   };
 });
