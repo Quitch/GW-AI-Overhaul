@@ -20,6 +20,7 @@ const {
   registerModuleStub,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
 
 const TEMPLATES = [
   {
@@ -60,6 +61,25 @@ const TEMPLATES = [
       },
     ],
   },
+  // isExplicit planets are returned verbatim rather than generated, and reach
+  // getRandomPlanetName directly. GWO's own titans-normal feeds them in through
+  // fromRandomList pools, so this is a live path, not an edge case.
+  {
+    Players: [5, 8],
+    Systems: [
+      {
+        Planets: [
+          { isExplicit: true, mass: 5000, generator: { biome: "earth" } },
+          {
+            isExplicit: true,
+            name: "Prenamed",
+            mass: 5000,
+            generator: { biome: "moon" },
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 ["pa-easy", "pa-normal", "titans-easy", "titans-normal"].forEach((name) => {
@@ -73,25 +93,65 @@ const TEMPLATES = [
 // whichever order it wants.
 const pending = [];
 
-function parked(value) {
+// A jQuery-shaped deferred: carries .promise(), so $.when waits for it.
+function parkedDeferred(value) {
+  const deferred = makeDeferred();
+  pending.push(() => deferred.resolve(value));
+  return deferred;
+}
+
+// A bare engine promise: no .promise(), so $.when must NOT wait for it. This is what
+// api.game.getRandomPlanetName() hands back in the real client.
+function parkedEnginePromise(value) {
   let resolve;
   const promise = new Promise((r) => (resolve = r));
   pending.push(() => resolve(value));
   return promise;
 }
 
+// A jQuery-style promise: .then(fn) spreads the resolved values into fn, and .promise()
+// marks it as something $.when will wait for.
+function jqPromise(valuesPromise) {
+  const self = {
+    values: valuesPromise,
+    then: (fn) => jqPromise(valuesPromise.then((vals) => [fn(...vals)])),
+    promise: () => self,
+  };
+  return self;
+}
+
+// Models jQuery 2's $.when rather than Promise.all. It only waits for arguments that
+// expose a .promise() function; anything else - including a native or engine promise -
+// counts as already resolved and is passed through as *itself*. Getting this wrong is
+// not academic: an earlier version of this fake used Promise.all, which happily awaited
+// engine promises, and so let through a real bug where an isExplicit planet came back as
+// a promise object and war generation failed with "no usable star system". See
+// constraints.md.
+function fakeWhen(...args) {
+  const boxed = args.map((arg) => {
+    if (arg && arg.values) {
+      return arg.values.then((vals) => ({ value: vals[0] }));
+    }
+    if (arg && typeof arg.promise === "function") {
+      return Promise.resolve(arg).then((value) => ({ value }));
+    }
+    return Promise.resolve({ value: arg });
+  });
+  return jqPromise(Promise.all(boxed).then((bs) => bs.map((b) => b.value)));
+}
+
 const stubs = createGlobalStubs();
 
 before(() => {
-  stubs.setGlobal("$", {
-    get: () => parked(JSON.stringify({ radius_range: [100, 1300] })),
-    when: (...args) => ({
-      then: (fn) => Promise.all(args).then((values) => fn(...values)),
-    }),
-  });
+  const $ = function () {};
+  $.Deferred = makeDeferred;
+  $.get = () => parkedDeferred(JSON.stringify({ radius_range: [100, 1300] }));
+  $.when = fakeWhen;
+  $.when.apply = (ctx, list) => fakeWhen(...list);
+  stubs.setGlobal("$", $);
   stubs.setGlobal("parse", JSON.parse);
   stubs.setGlobal("api", {
-    game: { getRandomPlanetName: () => parked("PlanetName") },
+    game: { getRandomPlanetName: () => parkedEnginePromise("PlanetName") },
   });
 });
 
@@ -170,6 +230,21 @@ describe("gwo_system_templates generate", () => {
     const first = await generate(loader(), { players: 2, seed: "gwo-test-1" });
     const second = await generate(loader(), { players: 2, seed: "gwo-test-2" });
     assert.notEqual(shape(first), shape(second));
+  });
+
+  // The regression that broke war generation with Shared Systems disabled: this branch
+  // returned api.game.getRandomPlanetName() directly, and $.when does not wait for an
+  // engine promise - it handed the promise object through as the planet, so
+  // gw_galaxy.js's placeSystem rejected with "no usable star system".
+  it("returns real planets, not promises, for isExplicit templates", async () => {
+    const system = await generate(loader(), { players: 6, seed: "explicit" });
+    assert.equal(system.planets.length, 2);
+    system.planets.forEach((planet) => {
+      assert.equal(typeof planet.promise, "undefined", "planet is a promise");
+      assert.ok(planet.generator, "planet has no generator");
+      assert.equal(typeof planet.name, "string");
+    });
+    assert.equal(system.planets[1].name, "Prenamed");
   });
 
   it("names the system and fills in every planet's generator", async () => {

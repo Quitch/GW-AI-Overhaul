@@ -74,7 +74,7 @@ Two hijacking traps worth knowing, both recorded at their call sites:
 
 ## The complete shadowing inventory
 
-### `ui/main/` — 11 non-card files
+### `ui/main/` — 9 non-card files
 
 | File                                                      | What GWO changed                                                                                                                                                                                                             |
 | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -87,8 +87,6 @@ Two hijacking traps worth knowing, both recorded at their call sites:
 | `game/galactic_war/shared/js/gw_galaxy.js`                | System size scaling, including army brackets under Shared Systems for Galactic War; repairs stars the base builder leaves with no gates (see [`galaxy.md`](galaxy.md)). Graph core extracted to `shared/gw_galaxy_graph.js`. |
 | `game/galactic_war/shared/js/gw_inventory.js`             | Adds the `aiMods` observable that the whole AI-mod pipeline hangs off; changes `removeUnits` to remove _every_ copy of a unit.                                                                                               |
 | `game/galactic_war/shared/js/systems/titans-normal.js`    | Changes the Players arrays and adds classic systems.                                                                                                                                                                         |
-| `game/galactic_war/gw_start/gw_breeder.js`                | Optional `params.rng` seeds AI spawn placement and the spawn shuffle.                                                                                                                                                        |
-| `game/galactic_war/gw_start/gw_teams.js`                  | Optional rng seeds the team pick; `makeBoss` takes a seed, which stock never passed, so boss systems re-rolled their terrain every build.                                                                                    |
 
 `gw_inventory.js`'s `removeUnits` change is a **reversal of documented base-game
 behaviour** — stock explicitly notes that it does not perform set removes, so that

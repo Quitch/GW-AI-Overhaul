@@ -1,5 +1,13 @@
-// GWO - getTeam and makeBoss take a seeded rng / seed (shared/gwo_rng.js), and stay stock
-// without it. See galaxy.md, "Determinism and the war seed".
+// GWO's copy of the two base-game gw_teams.js methods war creation uses, seeded so a war
+// seed picks the same team and generates the same boss system.
+//
+// A copy in GWO's namespace rather than a shadow of pages/gw_start/gw_teams: the base
+// game calls getTeam as _.map(aiFactions, GWTeams.getTeam), which would hand an added rng
+// parameter the array index. Shadowing meant either accepting that hazard or duck-typing
+// around it; owning the module removes it. See shadowing.md.
+//
+// makeWorker is not carried over - gw_start/setup.js has replaced it with its own since
+// long before this, to preserve personality_tags through a _.cloneDeep.
 define([
   "main/game/galactic_war/shared/js/systems/template-loader",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_system_templates.js",
@@ -8,10 +16,7 @@ define([
   return {
     getTeam: function (index, rng) {
       var faction = GWFactions[index],
-        // GWO - duck-typed, not merely checked for presence: the base game
-        // calls this as _.map(aiFactions, GWTeams.getTeam), so rng gets the index.
-        team =
-          rng && rng.pick ? rng.pick(faction.teams) : _.sample(faction.teams);
+        team = rng.pick(faction.teams); // GWO - was _.sample
       return _.extend({}, team, {
         color: faction.color,
         faction: faction,
@@ -41,28 +46,13 @@ define([
           .chooseFor(activeStarSystemTemplates)
           .generate(generatorConfig)
           .then(function (system) {
-            if (team.systemDescription)
+            if (team.systemDescription) {
               system.description = team.systemDescription;
+            }
             system.biome = system.planets[0].generator.biome;
             star.system(system);
             return ai;
           });
-      } else return $.when(ai);
-    },
-
-    makeWorker: function (star, ai, team) {
-      if (team.workers) {
-        _.assign(ai, _.sample(team.workers));
-      } else if (team.remainingMinions) {
-        var minion = _.sample(
-          team.remainingMinions.length
-            ? team.remainingMinions
-            : team.faction.minions
-        );
-        _.assign(ai, minion);
-        _.remove(team.remainingMinions, function (minion) {
-          return minion.name === ai.name;
-        });
       }
       return $.when(ai);
     },

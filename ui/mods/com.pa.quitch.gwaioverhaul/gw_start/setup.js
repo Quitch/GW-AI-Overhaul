@@ -393,8 +393,8 @@ function gwoSetup() {
       [
         "shared/gw_common",
         "shared/gw_factions",
-        "pages/gw_start/gw_breeder",
-        "pages/gw_start/gw_teams",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_breeder.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_teams.js",
         "main/shared/js/star_system_templates",
         "main/game/galactic_war/shared/js/gw_easy_star_systems",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
@@ -415,8 +415,8 @@ function gwoSetup() {
       function (
         GW,
         GWFactions,
-        GWBreeder,
-        GWTeams,
+        gwoBreeder,
+        gwoTeams,
         normalSystemTemplates, // window.star_system_templates is set instead
         easySystemTemplates,
         gwoCluster,
@@ -776,7 +776,7 @@ function gwoSetup() {
             // Wrapped, not passed by reference: _.map would hand getTeam's rng
             // parameter the array index.
             var teams = _.map(aiFactions, function (faction) {
-              return GWTeams.getTeam(faction, teamsRng);
+              return gwoTeams.getTeam(faction, teamsRng);
             });
             if (model.gwoDifficultySettings.ai() === "Queller") {
               // Filter each team's minion pool (used by makeWorker below)
@@ -809,10 +809,10 @@ function gwoSetup() {
             // See galaxy.md.
             var workersRng = warRng.stream("workers");
 
-            // GWTeams.makeWorker() replaced to allow use of _.cloneDeep()
-            // to preserve personality_tags. Defined here (a sibling of handleSpread
-            // below) rather than nested inside it, taking team/ai/star as explicit
-            // params, so the promise callbacks don't sit six function-levels deep.
+            // gwo_teams.js deliberately omits makeWorker; this replaces it to allow
+            // _.cloneDeep() to preserve personality_tags. Defined here (a sibling of
+            // handleSpread below) rather than nested inside it, taking team/ai/star as
+            // explicit params, so the callbacks don't sit six function-levels deep.
             var makeWorker = function (team, ai) {
               if (team.workers) {
                 _.assign(ai, _.cloneDeep(workersRng.pick(team.workers)));
@@ -852,34 +852,38 @@ function gwoSetup() {
             };
 
             var handleBoss = function (star, ai) {
-              return GWTeams.makeBoss(
-                star,
-                ai,
-                teams[ai.team],
-                systemTemplates,
-                // Keyed by team: makeBoss generates a system, so these resolve out of
-                // order. Stock omits the seed entirely.
-                warRng.stream("boss", ai.team).int(0, 2147483647)
-              ).then(onBossMade.bind(null, ai));
+              return gwoTeams
+                .makeBoss(
+                  star,
+                  ai,
+                  teams[ai.team],
+                  systemTemplates,
+                  // Keyed by team: makeBoss generates a system, so these resolve out of
+                  // order. Stock omits the seed entirely.
+                  warRng.stream("boss", ai.team).int(0, 2147483647)
+                )
+                .then(onBossMade.bind(null, ai));
             };
 
             var returnTeamInfo = function () {
               return teamInfo;
             };
 
-            return GWBreeder.populate({
-              galaxy: game.galaxy(),
-              teams: teams,
-              neutralStars: neutralStars,
-              orderedSpawn: false,
-              // Picks each faction's spawn star and shuffles the spawn order.
-              rng: warRng.stream("breeder"),
-              spawn: function () {},
-              canSpread: _.constant(true),
-              spread: handleSpread,
-              boss: handleBoss,
-              breedToOrigin: game.isTutorial(),
-            }).then(returnTeamInfo);
+            return gwoBreeder
+              .populate({
+                galaxy: game.galaxy(),
+                teams: teams,
+                neutralStars: neutralStars,
+                orderedSpawn: false,
+                // Picks each faction's spawn star and shuffles the spawn order.
+                rng: warRng.stream("breeder"),
+                spawn: function () {},
+                canSpread: _.constant(true),
+                spread: handleSpread,
+                boss: handleBoss,
+                breedToOrigin: game.isTutorial(),
+              })
+              .then(returnTeamInfo);
           };
 
           var populate = moveIn.then(onMovedIn);

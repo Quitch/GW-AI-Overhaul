@@ -129,8 +129,24 @@ define(function () {
     return generated ? [MIN_ARMIES, Math.max(MIN_ARMIES, generated)] : null;
   };
 
+  // Systems sharing a bracket keep their pool order, and selectorFor assigns its shuffle
+  // keys in that order - so pool order decides which system lands on which star. Shared
+  // Systems builds the pool as its sources resolve, pushing remote servers and map packs
+  // in completion order, which differs between scene loads. Sorting here makes the result
+  // depend on the seed rather than on which download finished first.
+  var poolOrder = function (system) {
+    var planets = (system && system.planets) || [];
+    return [
+      (system && system.name) || "",
+      planets.length,
+      _.map(planets, function (planet) {
+        return (planet && planet.name) || "";
+      }).join(","),
+    ].join("|");
+  };
+
   var bracketsFrom = function (systems) {
-    var pool = systems || [];
+    var pool = _.sortBy(systems || [], poolOrder);
     var byRange = {};
     var brackets = [];
 

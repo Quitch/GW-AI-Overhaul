@@ -236,11 +236,13 @@ describe("armyRange - underivable", () => {
 });
 
 describe("bracketsFrom", () => {
-  it("collapses identical ranges into one bracket, keeping input order", () => {
+  // Systems within a bracket are ordered by name, not by their position in the pool -
+  // see the pool order independence suite below for why.
+  it("collapses identical ranges into one bracket, ordered by name", () => {
     const pool = [
-      sys("a", { zoneCount: 2 }),
-      sys("b", { zoneCount: 4, rules: repeat({ min: 2, max: 4 }, 4) }),
       sys("c", { zoneCount: 2 }),
+      sys("b", { zoneCount: 4, rules: repeat({ min: 2, max: 4 }, 4) }),
+      sys("a", { zoneCount: 2 }),
     ];
     const built = brackets.bracketsFrom(pool);
     assert.equal(built.length, 2);
@@ -470,5 +472,58 @@ describe("selectorFor", () => {
 
     assert.equal(brackets.selectorFor(built, counter().random).take(2), null);
     assert.equal(brackets.selectorFor([], counter().random).take(2), null);
+  });
+});
+
+describe("bracketsFrom - pool order independence", () => {
+  // Shared Systems assembles the pool as its sources resolve, so the order changes
+  // between scene loads. selectorFor assigns shuffle keys in pool order, so without a
+  // deterministic sort the same seed would place different systems whenever more than
+  // one source is selected.
+  const pool = [
+    sys("Alpha", { zoneCount: 2 }),
+    sys("Bravo", { zoneCount: 4 }),
+    sys("Charlie", { zoneCount: 2 }),
+    sys("Delta", { zoneCount: 8 }),
+    sys("Echo", { zoneCount: 4 }),
+  ];
+
+  const names = (built) =>
+    built.map((b) => [b.min, b.max, b.systems.map((s) => s.name)]);
+
+  it("brackets identically however the pool is ordered", () => {
+    const forwards = names(brackets.bracketsFrom(pool.slice()));
+    const backwards = names(brackets.bracketsFrom(pool.slice().reverse()));
+    const rotated = names(
+      brackets.bracketsFrom(pool.slice(2).concat(pool.slice(0, 2)))
+    );
+    assert.deepEqual(backwards, forwards);
+    assert.deepEqual(rotated, forwards);
+  });
+
+  it("selects the same system for a distance however the pool is ordered", () => {
+    // Same shape as the selectorFor suite's fake: a fixed, repeatable sequence, so any
+    // difference in the result comes from pool order rather than from the draws.
+    const sequence = () => {
+      let count = 0;
+      return () => {
+        count += 1;
+        return (count % 7) / 7;
+      };
+    };
+    const pick = (list) =>
+      brackets.selectorFor(brackets.bracketsFrom(list), sequence()).take(4)
+        .name;
+    assert.equal(pick(pool.slice().reverse()), pick(pool.slice()));
+  });
+
+  it("does not mutate the caller's array", () => {
+    const original = pool.slice().reverse();
+    const snapshot = original.map((s) => s.name);
+    brackets.bracketsFrom(original);
+    assert.deepEqual(
+      original.map((s) => s.name),
+      snapshot
+    );
   });
 });

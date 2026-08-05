@@ -1,6 +1,11 @@
-// GWO - an optional params.rng (shared/gwo_rng.js) seeds the two draws that place each
-// AI faction. Without it, behaviour is stock, which the base game's own caller relies on.
-// See galaxy.md, "Determinism and the war seed".
+// GWO's copy of the base game's gw_breeder.js, with params.rng (shared/gwo_rng.js)
+// seeding the two draws that place each AI faction: which star a faction spawns on,
+// and the order the spawns are assigned in.
+//
+// A copy in GWO's namespace rather than a shadow of pages/gw_start/gw_breeder, so the
+// base module stays available to anything else that wants it. Kept otherwise identical
+// to stock, including the rng-less fallback, so a diff after a PA patch stays readable.
+// See shadowing.md and galaxy.md.
 define(["shared/Graph"], function (Graph) {
   var GWBreeder = {
     populate: function (params) {

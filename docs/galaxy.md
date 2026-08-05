@@ -95,9 +95,9 @@ first. Two consequences worth relying on:
 | ↳ `brackets`                                                          | `gwoSystemBrackets.selectorFor`                                                                   |
 | ↳ `size.<i>`, `star.<i>`                                              | that star's system size, and the seed handed to `generate()`                                      |
 | ↳↳ `planet.<i>`                                                       | that planet's biome and generator values                                                          |
-| `teams`                                                               | faction scaling, the AI faction shuffle, `GWTeams.getTeam`                                        |
+| `teams`                                                               | faction scaling, the AI faction shuffle, `gwoTeams.getTeam`                                       |
 | `breeder`                                                             | which star each faction spawns on, and the spawn order                                            |
-| `boss.<team>`                                                         | the seed handed to `GWTeams.makeBoss`                                                             |
+| `boss.<team>`                                                         | the seed handed to `gwoTeams.makeBoss`                                                            |
 | `workers`                                                             | `makeWorker`'s picks — ordered, see below                                                         |
 | `ai.<team>` → `boss` / `worker.<n>` → `minion.<n>`, `foe.<n>`, `ally` | that AI's buffs, econ, game modes, minions, foes, ally, penchant                                  |
 | `treasure`                                                            | the treasure planet's locked loadout                                                              |
@@ -114,13 +114,31 @@ or `canSpread` genuinely async would break both properties at once.
 | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `GalaxyBuilder.buildGraph`                                               | `reduceConnections(max)` with no seed → `Math.seedrandom(undefined)` → autoseeded from `crypto`. Gate topology re-rolled every build, and with it every star's `distance()`. Hijacked on the prototype from `gw_galaxy.js`; see [`shadowing.md`](shadowing.md).                                                                    |
 | `template-loader.js`                                                     | System name and biome were `_.sample`. Worse, each planet's eight generator values were drawn from a shared stream _inside_ `$.when(biomeGet, nameGet).then(...)`, so a seeded stream was consumed in an unseeded order. Now keyed per planet, taken synchronously — in `shared/gwo_system_templates.js`, not a shadow; see below. |
-| `gw_breeder.js`, `gw_teams.js`                                           | Spawn placement, team pick, and a `makeBoss` that generated its system with no seed at all. Both take the extra argument optionally and stay stock without it.                                                                                                                                                                     |
+| `gw_breeder.js`, `gw_teams.js`                                           | Spawn placement, team pick, and a `makeBoss` that generated its system with no seed at all. Copied into `gw_start/gwo_breeder.js` and `gw_start/gwo_teams.js` rather than shadowed; see below.                                                                                                                                     |
 | `gw_faction_*.js`, `cluster_faction.js`, `cluster_planets.js`, `lore.js` | Sampled at `define()` time, so they re-rolled on every entry into `gw_start` rather than following the seed.                                                                                                                                                                                                                       |
+
+### Copies, not shadows
+
+Three base-game modules are **copied into GWO's namespace** rather than shadowed, and
+chosen between at the call site:
+
+| GWO module                       | Replaces                     | Why not a shadow                                                                                                                                 |
+| -------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `shared/gwo_system_templates.js` | `systems/template-loader.js` | Shared Systems for Galactic War replaces the same path, and a shadowed path can only have one owner                                              |
+| `gw_start/gwo_teams.js`          | `pages/gw_start/gw_teams`    | The base game calls `getTeam` as `_.map(aiFactions, GWTeams.getTeam)`, so a shadow adding an `rng` parameter would receive the array index there |
+| `gw_start/gwo_breeder.js`        | `pages/gw_start/gw_breeder`  | Nothing else needs GWO's version, and the base module stays available                                                                            |
+
+Each is kept line-for-line close to its original, with every change marked `GWO -`, so a
+diff against the base file after a PA patch stays readable. That discipline is not
+cosmetic: restructuring `gwo_system_templates.js` while copying it once dropped the
+`$.Deferred` wrapper around `getRandomPlanetName()`, and because `$.when` does not wait
+for an engine promise (see [`constraints.md`](constraints.md)) every war on the vanilla
+path failed with "no usable star system".
 
 ### Shared Systems for Galactic War
 
-That mod replaces `systems/template-loader.js` wholesale, and a shadowed path can only
-have one owner, so GWO's seeded loader lives at `shared/gwo_system_templates.js` instead.
+That mod replaces `systems/template-loader.js` wholesale, so GWO's seeded loader lives at
+`shared/gwo_system_templates.js` instead.
 Its `chooseFor()` returns the base module whenever that module carries `loadOptions` —
 the same capability check `loadSystemBrackets` uses — and GWO's seeded copy otherwise.
 
@@ -192,6 +210,13 @@ order, and each takes the first unused system that still fits. Nearer stars ther
 claim the smaller systems, and no system repeats until every eligible one is placed. A
 pool smaller than the galaxy exhausts and starts reusing rather than leaving a star
 empty.
+
+`bracketsFrom` **sorts the pool by name** before grouping, and that sort is load-bearing
+for determinism rather than cosmetic. Shared Systems assembles the pool as its sources
+resolve, pushing remote servers and map packs in completion order, so the order differs
+between scene loads — observed directly, with one source moving from third to twelfth.
+Because the shuffle keys above are assigned in pool order, without the sort the same seed
+would place different systems whenever more than one source was selected.
 
 This path bypasses wondible's `withoutBrokenSystems`, so its name and `_.matches`
 blocklists no longer apply; the `starting_planet` backfill is reproduced on the returned
