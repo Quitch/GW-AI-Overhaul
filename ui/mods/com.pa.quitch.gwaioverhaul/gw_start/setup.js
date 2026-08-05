@@ -1377,8 +1377,10 @@ function gwoSetup() {
               return;
             }
 
-            // Without this the counter never returns to 0, so warGenerationFailure's
-            // five retries are cumulative across the session rather than per war.
+            // Defensive rather than load-bearing: success navigates to gw_play, so the
+            // next visit here is a fresh page that re-runs gwoSetup and zeroes this
+            // anyway. Kept so the count stays per-war if gw_start is ever re-entered
+            // without a page load.
             warGenerationAttempts = 0;
 
             saveDifficultySettings();

@@ -14,7 +14,7 @@
 ### Bugfix
 
 - Tourist Commander no longer disables the Guardians
-- Failing to generate a war no longer discards the entered seed, and its five retries are no longer cumulative across a session
+- Failing to generate a war no longer discards the entered seed. Each retry derives from it instead, so the seed shown in the war panel is always the one that built the war and can be re-entered to rebuild it
 - An upgraded Phoenix won't pursue air units
 - A host's allied AI commanders' eco is set properly at Platinum and higher
 
