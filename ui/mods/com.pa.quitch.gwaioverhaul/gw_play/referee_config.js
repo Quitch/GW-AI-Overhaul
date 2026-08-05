@@ -5,7 +5,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
-], function (gwoAI, gwoCards, refereeCoop, configSetup) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
+], function (gwoAI, gwoCards, refereeCoop, configSetup, gwoStreams) {
   var setupAlliedCommanders = configSetup.setupAlliedCommanders;
   var setupPrimaryAiAndMinions = configSetup.setupPrimaryAiAndMinions;
   var setupFfaAis = configSetup.setupFfaAis;
@@ -83,9 +84,18 @@ define([
         alliance_group: 1,
       },
     ];
-    var currentStar = game.galaxy().stars()[game.currentStar()];
+    var galaxy = game.galaxy();
+    var currentStar = galaxy.stars()[game.currentStar()];
     var system = currentStar.system();
     var ai = currentStar.ai();
+    // Keyed on the turn as well as the star, so retrying a lost battle still
+    // reshuffles - loseTurn does not advance the turn, so the retry needs
+    // another move. See galaxy.md, "Play-scene streams".
+    var battleRng = gwoStreams.battleRng(
+      gwoStreams.warRng(galaxy.stars()[galaxy.origin()].system().gwaio),
+      game.currentStar(),
+      game.stats().turns()
+    );
     var aiInUse = gwoAI.aiInUse("enemy");
     var aiTag = setupAiTags(ai);
 
@@ -94,7 +104,9 @@ define([
       cards,
       armies,
       inventory,
-      playerTag
+      playerTag,
+      0,
+      battleRng
     );
 
     // The ally is coloured after every player's subcommanders, viewers' included,
@@ -106,12 +118,20 @@ define([
         armies,
         inventory,
         playerTag,
-        refereeCoop.getOrderedSubcommanders(inventory, game).length
+        refereeCoop.getOrderedSubcommanders(inventory, game).length,
+        battleRng
       );
     }
 
-    setupPrimaryAiAndMinions(ai, connectedPlayerCards, aiTag, aiInUse, armies);
-    setupFfaAis(ai.foes, aiTag, aiInUse, armies);
+    setupPrimaryAiAndMinions(
+      ai,
+      connectedPlayerCards,
+      aiTag,
+      aiInUse,
+      armies,
+      battleRng
+    );
+    setupFfaAis(ai.foes, aiTag, aiInUse, armies, battleRng);
     system.planets = modifyPlanets(inventory, system.planets, game);
 
     var config = {

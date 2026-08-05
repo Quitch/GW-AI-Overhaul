@@ -130,13 +130,23 @@ define([
     return gwoAI.getAIPathDestination("enemy");
   };
 
-  var setupAIArmy = function (ai, index, specTag, alliance, econRateOverride) {
+  var setupAIArmy = function (
+    ai,
+    index,
+    specTag,
+    alliance,
+    econRateOverride,
+    rng
+  ) {
     var slotsArray = [];
-    var aiLandingOptions = _.shuffle([
+    var landingOptions = [
       "off_player_planet",
       "on_player_planet",
       "no_restriction",
-    ]);
+    ];
+    var aiLandingOptions = rng
+      ? rng.shuffle(landingOptions)
+      : _.shuffle(landingOptions);
     _.times(
       ai.bossCommanders ||
         ai.commanderCount ||
@@ -170,7 +180,8 @@ define([
     armies,
     inventory,
     playerTag,
-    startPosition
+    startPosition,
+    battleRng
   ) {
     var playerFaction = inventory.getTag("global", "playerFaction");
     var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
@@ -189,7 +200,8 @@ define([
         allyIndex,
         playerTag,
         1,
-        gwoAI.subcommanderEconRate
+        gwoAI.subcommanderEconRate,
+        battleRng && battleRng.stream("landing_ally", firstPosition + index)
       );
       armies.push(subcommanderArmy);
     });
@@ -200,7 +212,8 @@ define([
     connectedPlayerCards,
     aiTag,
     aiInUse,
-    armies
+    armies,
+    battleRng
   ) {
     // Cloning the AI clones its minions with it, so the minion loop below is copying too.
     var ai = setAdvEcoMod(_.cloneDeep(liveStarAi), aiInUse);
@@ -214,7 +227,14 @@ define([
       );
     }
 
-    var aiArmy = setupAIArmy(ai, 0, aiTag[0], 2);
+    var aiArmy = setupAIArmy(
+      ai,
+      0,
+      aiTag[0],
+      2,
+      undefined,
+      battleRng && battleRng.stream("landing_enemy", 0)
+    );
     armies.push(aiArmy);
     var aiPath = setAIPath(gwoAI.isCluster(ai), false);
     ai.personality.ai_path = aiPath;
@@ -224,18 +244,32 @@ define([
       minion.personality.ai_path = aiPath;
       minion.faction = ai.faction;
       var colourIndex = index + 1; // primary AI has colour 0
-      var aiArmy = setupAIArmy(minion, colourIndex, aiTag[0], 2);
+      var aiArmy = setupAIArmy(
+        minion,
+        colourIndex,
+        aiTag[0],
+        2,
+        undefined,
+        battleRng && battleRng.stream("landing_enemy", colourIndex)
+      );
       armies.push(aiArmy);
     });
   };
 
-  var setupFfaAis = function (foes, aiTag, aiInUse, armies) {
+  var setupFfaAis = function (foes, aiTag, aiInUse, armies, battleRng) {
     _.forEach(foes, function (liveFoe, index) {
       var foe = setAdvEcoMod(_.cloneDeep(liveFoe), aiInUse);
       foe.personality.ai_path = setAIPath(gwoAI.isCluster(foe), false);
       var foeTag = index + 1; // 0 taken by primary AI
       var foeAlliance = index + 3; // 1 & 2 taken by player and primary AI
-      var aiArmy = setupAIArmy(foe, 0, aiTag[foeTag], foeAlliance);
+      var aiArmy = setupAIArmy(
+        foe,
+        0,
+        aiTag[foeTag],
+        foeAlliance,
+        undefined,
+        battleRng && battleRng.stream("landing_foe", index)
+      );
       armies.push(aiArmy);
     });
   };
