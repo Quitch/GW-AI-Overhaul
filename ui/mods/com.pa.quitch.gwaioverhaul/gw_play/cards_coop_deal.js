@@ -99,6 +99,8 @@ define(function () {
     var numCardsToOffer = params.numCardsToOffer;
     var gwoStreams = params.gwoStreams;
     var warRng = params.warRng;
+    var gwoBank = params.gwoBank;
+    var stockBank = params.stockBank;
 
     model.dealCoopPlayerPendingTechCards = function (starIndex, star, options) {
       var result = $.Deferred();
@@ -218,9 +220,13 @@ define(function () {
         inventory.load(_.cloneDeep(record.inventory));
 
         if (inventory.cards().length) {
-          inventory.applyCards(
-            dealCardsForTarget.bind(null, target, job, inventory)
-          );
+          // Applying a viewer's cards runs their loadout card's buff(), which
+          // would otherwise unlock that loadout into the host's own banks.
+          gwoBank.suspendUnlocks(stockBank);
+          inventory.applyCards(function () {
+            gwoBank.resumeUnlocks();
+            dealCardsForTarget(target, job, inventory);
+          });
         } else {
           dealCardsForTarget(target, job, inventory);
         }

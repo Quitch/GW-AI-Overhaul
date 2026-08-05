@@ -407,6 +407,8 @@ function gwoCard() {
           numCardsToOffer: numCardsToOffer,
           gwoStreams: gwoStreams,
           warRng: warRng,
+          gwoBank: gwoBank,
+          stockBank: GW.bank,
         });
 
         // Registers the co-op reroll operator handlers, viewer and host.

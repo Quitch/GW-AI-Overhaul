@@ -12,6 +12,10 @@
 - The same seed now also deals the same tech cards, the same Sub Commanders for the General Commander loadout, and the same AI landing behaviour. A war reproduces only when it is played the same way: visiting the same stars, in the same order, winning at the same speed, and taking the same cards.
 - Seeds entered from v6.6.0 or earlier now generate different planets: biome, radius, height, water and temperature all shift. Existing saved wars are unaffected.
 
+### Bugfix
+
+- Hosting a co-op war quietly unlocked your players' loadouts for you, because the host applies each player's tech to work out the hand they are offered
+
 ## v6.7.0 - 2026-08-04
 
 ### Added
