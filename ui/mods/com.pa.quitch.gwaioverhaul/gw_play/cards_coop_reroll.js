@@ -46,6 +46,19 @@ define(function () {
     return undefined;
   };
 
+  // A reroll is a child of the deal it replaces, so the viewer can reroll the
+  // same offer repeatedly and get a different hand each time.
+  var pendingTechRerollRng = function (params) {
+    var gwoStreams = params.gwoStreams;
+    var pendingTechCards = params.pendingTechCards || {};
+    return gwoStreams.coopRerollRng(
+      params.warRng,
+      gwoStreams.coopPlayerKey(params.record, params.client),
+      pendingTechCards.dealIndex,
+      params.rerollsUsed
+    );
+  };
+
   var factory = function (params) {
     var game = params.game;
     var galaxy = params.galaxy;
@@ -55,6 +68,8 @@ define(function () {
     var numCardsToOffer = params.numCardsToOffer;
     var gwoSave = params.gwoSave;
     var GW = params.GW;
+    var gwoStreams = params.gwoStreams;
+    var warRng = params.warRng;
 
     var rerollPendingTechRequest = "gwo_reroll_pending_tech";
     var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
@@ -215,6 +230,14 @@ define(function () {
           count: rerollState.cardCount,
           star: star,
           systemCards: [],
+          rng: pendingTechRerollRng({
+            gwoStreams: gwoStreams,
+            warRng: warRng,
+            record: record,
+            client: { id: operator.client_id, name: operator.client_name },
+            pendingTechCards: pendingTechCards,
+            rerollsUsed: nextRerollsUsed,
+          }),
         }).then(function (cards) {
           var updatedAt = _.now();
           var nextPendingTechCards = {
@@ -286,6 +309,7 @@ define(function () {
     module.exports = {
       computeRerollDeal: computeRerollDeal,
       pendingTechRerollValidationError: pendingTechRerollValidationError,
+      pendingTechRerollRng: pendingTechRerollRng,
     };
   }
 

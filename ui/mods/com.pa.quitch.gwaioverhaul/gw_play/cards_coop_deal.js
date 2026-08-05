@@ -78,12 +78,27 @@ define(function () {
     return { targets: targets, validationError: validationError };
   };
 
+  // The stream a viewer's hand is dealt from: their own, keyed by the host's
+  // deal counter so a catch-up deal at the same star is a different hand.
+  var pendingTechDealRng = function (gwoStreams, warRng, target) {
+    return gwoStreams.coopDealRng(
+      warRng,
+      gwoStreams.coopPlayerKey(
+        target && target.record,
+        target && target.client
+      ),
+      target && target.dealIndex
+    );
+  };
+
   var factory = function (params) {
     var game = params.game;
     var chooseCards = params.chooseCards;
     var helpers = params.helpers;
     var GWInventory = params.GWInventory;
     var numCardsToOffer = params.numCardsToOffer;
+    var gwoStreams = params.gwoStreams;
+    var warRng = params.warRng;
 
     model.dealCoopPlayerPendingTechCards = function (starIndex, star, options) {
       var result = $.Deferred();
@@ -158,6 +173,7 @@ define(function () {
           count: cardsOffered,
           star: star,
           systemCards: [],
+          rng: pendingTechDealRng(gwoStreams, warRng, target),
         }).then(function (cards) {
           var pendingTechCards = {
             star: starIndex,
@@ -252,7 +268,10 @@ define(function () {
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = { collectPendingTechTargets: collectPendingTechTargets };
+    module.exports = {
+      collectPendingTechTargets: collectPendingTechTargets,
+      pendingTechDealRng: pendingTechDealRng,
+    };
   }
 
   return factory;

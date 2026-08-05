@@ -118,3 +118,71 @@ describe("pendingTechRerollValidationError", () => {
     );
   });
 });
+
+describe("pendingTechRerollRng", () => {
+  const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+  const streams = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
+  );
+  const coopDeal = requireShippedModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js"
+  );
+  const war = () => streams.warRng({ seed: "coop-seed" });
+
+  const args = (over) =>
+    Object.assign(
+      {
+        gwoStreams: streams,
+        warRng: war(),
+        record: { playerId: "uber-1" },
+        client: { id: 3, name: "Bob" },
+        pendingTechCards: { dealIndex: 1 },
+        rerollsUsed: 1,
+      },
+      over
+    );
+
+  function seq(over, count = 4) {
+    const rng = reroll.pendingTechRerollRng(args(over));
+    return Array.from({ length: count }, () => rng());
+  }
+
+  it("reproduces the same rerolled hand for the same reroll", () => {
+    assert.deepEqual(seq(), seq());
+  });
+
+  it("deals a different hand on each successive reroll", () => {
+    assert.notDeepEqual(seq(), seq({ rerollsUsed: 2 }));
+  });
+
+  it("gives two viewers different rerolled hands", () => {
+    assert.notDeepEqual(seq(), seq({ record: { playerId: "uber-2" } }));
+  });
+
+  // The reroll is a child of the deal, not a sibling of it.
+  it("does not collide with the original deal it replaces", () => {
+    const dealRng = coopDeal.pendingTechDealRng(streams, war(), {
+      record: { playerId: "uber-1" },
+      client: { id: 3, name: "Bob" },
+      dealIndex: 1,
+    });
+    assert.notDeepEqual(
+      Array.from({ length: 4 }, () => dealRng()),
+      seq({ rerollsUsed: 0 })
+    );
+  });
+
+  it("tolerates a missing pendingTechCards without throwing", () => {
+    assert.equal(
+      typeof reroll.pendingTechRerollRng(args({ pendingTechCards: undefined })),
+      "function"
+    );
+  });
+
+  it("keeps drawing unseeded for a war saved before seeds", () => {
+    assert.equal(
+      reroll.pendingTechRerollRng(args({ warRng: undefined })),
+      undefined
+    );
+  });
+});

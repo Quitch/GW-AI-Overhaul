@@ -120,3 +120,65 @@ describe("collectPendingTechTargets", () => {
     assert.equal(result.targets[0].startLoadoutCard, undefined);
   });
 });
+
+describe("pendingTechDealRng", () => {
+  const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+  const streams = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
+  );
+  const war = () => streams.warRng({ seed: "coop-seed" });
+
+  function seq(target, count = 4) {
+    const rng = coopDeal.pendingTechDealRng(streams, war(), target);
+    return Array.from({ length: count }, () => rng());
+  }
+
+  const target = (over) =>
+    Object.assign(
+      {
+        record: { playerId: "uber-1" },
+        client: { id: 3, name: "Bob" },
+        dealIndex: 1,
+      },
+      over
+    );
+
+  it("reproduces a viewer's hand for the same deal", () => {
+    assert.deepEqual(seq(target()), seq(target()));
+  });
+
+  it("gives two viewers different hands from the same deal", () => {
+    assert.notDeepEqual(
+      seq(target()),
+      seq(target({ record: { playerId: "uber-2" } }))
+    );
+  });
+
+  it("gives the same viewer a different hand for a later deal", () => {
+    assert.notDeepEqual(seq(target()), seq(target({ dealIndex: 2 })));
+  });
+
+  // A catch-up deal supplies no dealIndex; it must not land on deal 0's hand.
+  it("keeps a missing dealIndex apart from deal zero", () => {
+    assert.notDeepEqual(
+      seq(target({ dealIndex: undefined })),
+      seq(target({ dealIndex: 0 }))
+    );
+  });
+
+  // The uberId outranks the connection, so a viewer keeps their hand across a
+  // reconnect that hands them a new client id and a renamed session.
+  it("ignores the client id and name when the record has a playerId", () => {
+    assert.deepEqual(
+      seq(target()),
+      seq(target({ client: { id: 99, name: "Bob Renamed" } }))
+    );
+  });
+
+  it("keeps drawing unseeded for a war saved before seeds", () => {
+    assert.equal(
+      coopDeal.pendingTechDealRng(streams, undefined, target()),
+      undefined
+    );
+  });
+});

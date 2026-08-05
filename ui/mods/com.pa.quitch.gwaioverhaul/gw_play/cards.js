@@ -278,6 +278,7 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
       ],
       function (
         GW,
@@ -291,7 +292,8 @@ function gwoCard() {
         cardsCardNameSync,
         cardsCoopDeal,
         cardsCoopReroll,
-        cardsCheats
+        cardsCheats,
+        gwoStreams
       ) {
         helpers = cardsDealHelpers;
         restoreExploreSaveRerolls();
@@ -299,6 +301,7 @@ function gwoCard() {
         var playerFaction = inventory.getTag("global", "playerFaction");
         var galaxy = game.galaxy();
         var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+        var warRng = gwoStreams.warRng(gwoSettings);
 
         // Also registers the gwo_sync_star_card_name host handler.
         var cardNameSync = cardsCardNameSync({ game: game });
@@ -316,7 +319,11 @@ function gwoCard() {
 
         // dealer.chooseCards() replacement - use our deck
         var chooseCards = function (params) {
-          var rng = params.rng || new Math.seedrandom();
+          // params.rng is the deal's stream, one sub-stream per card of the
+          // hand. A war saved before seeds were recorded, or any caller with no
+          // stream to give, keeps the unseeded draw it has always had.
+          var dealStream = params.rng;
+          var unseeded = dealStream ? undefined : new Math.seedrandom();
           var count = params.count;
           var star = params.star;
           var dealAddSlot = params.addSlot;
@@ -325,8 +332,10 @@ function gwoCard() {
           var cardContexts = {};
 
           // One iteration of the deal loop below. `list` is the accumulating
-          // result array, which lives in the loaded.then closure.
-          var dealOneCard = function (list) {
+          // result array, which lives in the loaded.then closure; `iteration`
+          // comes from _.times and keys this card's stream.
+          var dealOneCard = function (list, iteration) {
+            var iterationRng = gwoStreams.iterationRng(dealStream, iteration);
             var fullHand = _.map(cards, function (card) {
               var context = cardContexts[card.id];
               var cardChance =
@@ -347,7 +356,10 @@ function gwoCard() {
               return cardChance;
             });
 
-            var resultIndex = helpers.chooseDealIndex(fullHand, rng());
+            var resultIndex = helpers.chooseDealIndex(
+              fullHand,
+              iterationRng ? iterationRng() : unseeded()
+            );
             if (_.isUndefined(resultIndex)) {
               return;
             }
@@ -389,6 +401,8 @@ function gwoCard() {
           helpers: helpers,
           GWInventory: GWInventory,
           numCardsToOffer: numCardsToOffer,
+          gwoStreams: gwoStreams,
+          warRng: warRng,
         });
 
         // Registers the co-op reroll operator handlers, viewer and host.
@@ -401,6 +415,8 @@ function gwoCard() {
           numCardsToOffer: numCardsToOffer,
           gwoSave: gwoSave,
           GW: GW,
+          gwoStreams: gwoStreams,
+          warRng: warRng,
         });
 
         var dealCardToSelectableAI = function (win, turnState) {
@@ -440,6 +456,13 @@ function gwoCard() {
                       system.star && _.isFunction(system.star.cardList)
                         ? system.star.cardList()
                         : [],
+                    // Every selectable AI star is re-dealt each turn, so the
+                    // turn count is what stops a star repeating its own card.
+                    rng: gwoStreams.aiStarDealRng(
+                      warRng,
+                      starIndex,
+                      game.stats().turns()
+                    ),
                   }).then(function (card) {
                     system.star.cardList(card);
                     model.sendCampaignAction("sync_star_cards", {
@@ -564,6 +587,14 @@ function gwoCard() {
               cardsOffered - model.gwoRerollsUsed() - star.cardList().length,
             star: star,
             systemCards: star.cardList(),
+            // A reroll re-enters here with the iteration index back at 0, so
+            // the reroll count is what makes it deal a different hand.
+            rng: gwoStreams.exploreDealRng(
+              warRng,
+              starIndex,
+              game.stats().turns(),
+              model.gwoRerollsUsed()
+            ),
           }).then(function (result) {
             var ok = true;
 
