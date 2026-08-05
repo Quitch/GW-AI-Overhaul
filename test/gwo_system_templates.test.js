@@ -232,6 +232,24 @@ describe("gwo_system_templates generate", () => {
     assert.equal(system.planets[1].name, "Prenamed");
   });
 
+  // The one hole that produced a plausible-looking unseeded war in silence.
+  it("warns when a caller supplies no seed, and not when the seed is 0", async () => {
+    const warnings = [];
+    const priorWarn = console.warn;
+    console.warn = (message) => warnings.push(message);
+    try {
+      await generate(loader(), { players: 2 });
+      assert.equal(warnings.length, 1);
+      assert.match(warnings[0], /no seed/);
+
+      warnings.length = 0;
+      await generate(loader(), { players: 2, seed: 0 });
+      assert.deepEqual(warnings, []);
+    } finally {
+      console.warn = priorWarn;
+    }
+  });
+
   it("names the system and fills in every planet's generator", async () => {
     const system = await generate(loader(), { players: 2, seed: "shape" });
     assert.equal(typeof system.name, "string");

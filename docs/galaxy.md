@@ -66,6 +66,11 @@ faction, difficulty, game options and mod set. The seed is entered in the lobby
 - **The Shared Systems / My Systems pool**, which lives in IndexedDB per machine.
 - **The mod set**, and **the player faction**, which is an input rather than an output.
 
+`gwo_system_templates.generate()` keeps stock's unseeded fallback, because the module
+is a drop-in for `template-loader.js` and a non-GWO caller may reach it without a seed.
+It `console.warn`s when it does: silently substituting `Math.random()` there produces a
+war that looks reproducible and is not.
+
 ### Why a bespoke PRNG
 
 `shared/gwo_rng.js` implements cyrb128 + sfc32 rather than using `Math.seedrandom`, which

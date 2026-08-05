@@ -156,6 +156,14 @@ define([
 
     var generate = function (config) {
       // GWO - was new Math.seedrandom: same [0, 1) callable, plus pick/stream.
+      // The fallback keeps stock's contract for callers outside GWO's seeded
+      // path, but a seedless call from inside it unseeds a whole system, so it
+      // says so rather than producing a plausible-looking war in silence.
+      if (config.seed === undefined) {
+        console.warn(
+          "GWO: generating a system with no seed - it will not reproduce"
+        );
+      }
       var rng = gwoRng.create(
         config.seed !== undefined ? config.seed : Math.random()
       );
