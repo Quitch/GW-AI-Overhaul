@@ -111,46 +111,69 @@ See CONTRIBUTING.md for the full list. The ones that bite most often:
 
 ### Comments
 
-The repo has been through a full comment audit. These are the rules it was cleaned
+The repo has been through repeated comment audits. These are the rules it is cleaned
 to, and they bind every line you add or touch - mod-owned code, shadowed base-game
-files and tech cards are held to the same bar.
+files and tech cards are held to the same bar. Write to them the first time and
+there is nothing left for the next audit to find.
 
 **The default is no comment.** Code should self-document; when in doubt, leave it
 out. The rules below are the narrow exceptions, not a licence to annotate.
 
+**One or two lines.** Three when the fact genuinely needs it, and that should be
+rare. Past that you are writing documentation, so put it in `docs/` instead - a
+comment is not the place to develop an argument.
+
 - **A comment earns its place only by saying what the code cannot**: base-game or
   engine behaviour, a bug workaround, a dependency that lives outside the mod, or a
   counter-intuitive ordering. Anything that restates the code goes.
+- **Check `docs/` before writing more than a line.** If the doc already covers it,
+  the comment is `See <doc>.md` (plus the section, where the doc is long) and
+  nothing more. If it doesn't and the fact is subsystem-level, add it to the doc and
+  point at it. Line-anchored facts stay in the code; a documented subsystem is not
+  licence to delete the comments inside it.
 - **If the comment exists because the code is unclear, fix the code.** Rename the
   identifier, extract the helper, or hoist the magic number to a named constant -
   the comment then has nothing left to say.
-- **Say it once.** A fact needed in five places is one comment plus four
-  cross-references, or a name that carries it. Copies drift apart.
+- **Say it once, across files as well as within one.** A fact needed in five places
+  is one home plus four cross-references, or a name that carries it. Sibling modules
+  that share a shape are where this breaks: describe the shape in `docs/` and let
+  each file's header say only what is true of that file alone.
 - **Keep the rule, drop the story.** Rejected alternatives, tuning history and "this
-  used to live elsewhere" belong in `CHANGELOG.md`.
+  used to live elsewhere" belong in `CHANGELOG.md`. If a sentence contains _used
+  to_, _previously_, _an earlier version_, _once_, or a measured timing, it is story.
+  State the rule that now holds and delete the rest.
+- **Layout is not a subject.** Why a helper sits at this nesting level, why it takes
+  explicit parameters, why it is a declaration rather than a const - the code
+  already shows all of it. Comment the hazard that forced the shape, if there is
+  one, not the shape.
 - **Don't record counts or measurements nothing enforces** - they are stale as soon
   as a file is added. An enforced floor (`MIN_CHECKED` in
-  `scripts/lib/cards-contract.js`) is a different thing and stays.
+  `scripts/validate/cards-contract.js`) is a different thing and stays.
+- **In tests, the test name carries the _what_.** A comment there is for the why:
+  why this case exists, why a fixture has an odd shape, what regression it pins.
+  Restating the module's own documentation in a test header is the common failure.
 - **Verify a comment against the code before writing it.** Every path, filename and
-  identifier it names must exist, and the claim must match the lines beside it. The
-  audit found sixteen that failed exactly there; a confidently wrong comment is
-  worse than none.
-- **Informative, but concise.** Keep it short. Keep it simple. If it requires an
-  essay then consider that it may belong in the docs not the code.
-- **`docs/` carries system-level knowledge; line-anchored facts stay in the code.**
-  A paragraph explaining a whole subsystem belongs in `docs/` with the code pointing
-  at it - but a documented subsystem is not licence to delete the comments inside
-  it.
+  identifier it names must exist, and the claim must match the lines beside it. Past
+  audits found this the most common defect by far - including two in these very
+  rules. A confidently wrong comment is worse than none.
 
 Never removed, because they are not prose:
 
 - `eslint-disable`, `prettier-ignore` and `stylelint-disable` directives.
 - Knockout `<!-- ko -->` / `<!-- /ko -->`, which are executable virtual bindings
   ([`constraints.md`](docs/constraints.md)).
-- The `// GWO - ...` shadow marker on line 1 of a shadowed file - the only record of
-  why that copy exists ([`shadowing.md`](docs/shadowing.md)). Stock's `// !LOCNS:...`
-  is deliberately not carried; don't reinstate it
-  ([`constraints.md`](docs/constraints.md)).
+- `// GWO - ...` markers. These sit inline against the lines a shadowed or copied
+  base-game file changes, and are the only record of what GWO altered
+  ([`shadowing.md`](docs/shadowing.md)). Reword one if it has gone verbose, but the
+  marker itself stays. Stock's `// !LOCNS:...` is deliberately not carried; don't
+  reinstate it ([`constraints.md`](docs/constraints.md)).
+- Stock's own comments inside a deliberate copy of a base-game file - today
+  `gw_start/gwo_breeder.js` and `shared/gwo_system_templates.js`. Those copies are
+  kept line-for-line close to stock so the diff after a PA patch stays readable,
+  which covers stock's comments, its dead branches, and its `TODO`s. Sonar flags
+  that TODO; leave it.
+- The vendored-code attribution at the top of
+  `gw_play/section_of_foreign_intelligence/`, which is a licence condition.
 
 Applying these to comments your change doesn't otherwise touch is drive-by cleanup:
 correct, but a separate PR.
