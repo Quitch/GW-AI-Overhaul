@@ -1,10 +1,7 @@
 "use strict";
 
-// Unit tests for the pure helpers of gw_play/cards_coop_reroll.js: the reroll-count
-// arithmetic and the reroll-request validation chain. The factory it returns registers
-// operator handlers and drives an async jQuery-deferred deal, so that part is exercised
-// in-game; the helpers are reached here through the module's dead-in-production
-// `typeof module` hook, via requireShippedModule.
+// The reroll-count arithmetic and request validation of cards_coop_reroll.js,
+// reached through the module's test-only hook. The rest is exercised in-game.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

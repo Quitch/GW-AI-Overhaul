@@ -180,10 +180,8 @@ define(function () {
       };
     },
 
-    // The marker that lets a card be held more than once - gw_inventory.hasCard
-    // tests !card.unique. Only truthiness matters, so the seeded form is offset
-    // into [1, 2): a seeded zero would be a permanent property of that seed
-    // rather than the one-in-four-billion fluke it is unseeded.
+    // gw_inventory.hasCard tests !card.unique, so only truthiness matters. Offset
+    // into [1, 2) because a seeded zero would be permanent for that seed.
     uniqueValue: function (rng) {
       return rng ? 1 + rng() : Math.random();
     },

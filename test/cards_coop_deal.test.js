@@ -1,10 +1,7 @@
 "use strict";
 
-// Unit tests for the pure target-collection helper of gw_play/cards_coop_deal.js. The
-// factory it returns installs model.dealCoopPlayerPendingTechCards and drives an async
-// jQuery-deferred deal, so that part is exercised in-game; the viewer validation loop is
-// reached here through the module's dead-in-production `typeof module` hook, via
-// requireShippedModule.
+// The target-collection helper of gw_play/cards_coop_deal.js, reached through the
+// module's test-only hook. The async deal the factory drives is exercised in-game.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

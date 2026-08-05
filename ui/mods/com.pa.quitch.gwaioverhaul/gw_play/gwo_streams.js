@@ -21,8 +21,7 @@ define([
 
   return {
     // Wars saved before seeds were recorded have none, and must keep drawing
-    // unseeded rather than all sharing the empty-string seed. Every builder
-    // below propagates the undefined, and every call site falls back.
+    // unseeded rather than all sharing one empty-string seed.
     warRng: function (gwoSettings) {
       var seed = gwoSettings && gwoSettings.seed;
       return seed === undefined || seed === null || seed === ""
@@ -99,9 +98,8 @@ define([
       return dealRng && dealRng.stream("iteration", index(iteration));
     },
 
-    // Per card id rather than per draw order, so a card that adds or drops a
-    // draw cannot move any other card's result. A deal calls every card in the
-    // deck and keeps one, so sequential draws would couple them all together.
+    // Per card id, not draw order: a deal calls every card in the deck and keeps
+    // one, so sequential draws would couple them all together.
     cardRng: function (iterationRng, cardId) {
       return iterationRng && iterationRng.stream(safeLabel(cardId));
     },

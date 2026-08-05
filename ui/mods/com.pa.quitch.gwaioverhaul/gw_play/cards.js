@@ -319,9 +319,8 @@ function gwoCard() {
 
         // dealer.chooseCards() replacement - use our deck
         var chooseCards = function (params) {
-          // params.rng is the deal's stream, one sub-stream per card of the
-          // hand. A war saved before seeds were recorded, or any caller with no
-          // stream to give, keeps the unseeded draw it has always had.
+          // params.rng is the deal's stream, one sub-stream per card of the hand.
+          // A caller with no stream keeps the unseeded draw it always had.
           var dealStream = params.rng;
           var unseeded = dealStream ? undefined : new Math.seedrandom();
           var count = params.count;
@@ -331,9 +330,8 @@ function gwoCard() {
           var dealInventory = params.inventory || inventory;
           var cardContexts = {};
 
-          // One iteration of the deal loop below. `list` is the accumulating
-          // result array, which lives in the loaded.then closure; `iteration`
-          // comes from _.times and keys this card's stream.
+          // One iteration of the deal loop below. `list` accumulates in the
+          // loaded.then closure; `iteration` keys this card's stream.
           var dealOneCard = function (list, iteration) {
             var iterationRng = gwoStreams.iterationRng(dealStream, iteration);
             var fullHand = _.map(cards, function (card) {

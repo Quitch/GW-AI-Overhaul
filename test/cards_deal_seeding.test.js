@@ -1,12 +1,10 @@
 "use strict";
 
 // The two cards that draw inside deal(). Everything else in the deck is a pure
-// function of the star and the inventory; these two pick a Sub Commander, a
-// penchant and a unique marker, and were the last unseeded draws in a deal.
+// function of the star and the inventory.
 //
-// gwc_minion is in KNOWN_UNLOADABLE because gw_factions calls
-// api.content.usingTitans() at define time. Stubbing api before the load is
-// enough here - the list is about what loads bare, not what is untestable.
+// gwc_minion is in KNOWN_UNLOADABLE because gw_factions reads api at define time.
+// Stubbing api first is enough - that list is about what loads bare.
 
 const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");

@@ -1,10 +1,7 @@
 "use strict";
 
-// The AI landing policy gw_play/referee_config_setup.js assigns each commander.
-// It was reshuffled with _.shuffle at every battle launch, so replaying the same
-// battle from the same save gave the AI different landing behaviour. Keyed on the
-// war seed, the star and the turn - a retry needs another move, so the turn
-// advances and the reshuffle is preserved on purpose.
+// The AI landing policy referee_config_setup.js assigns each commander, keyed on
+// the war seed, the star and the turn.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -99,8 +96,7 @@ describe("AI landing policy", () => {
     assert.ok(seen.size > 1, "every star gave the same landing policies");
   });
 
-  // A retry is a fresh move, so the turn advances and the shuffle is expected to
-  // change. This is the property that keeps the randomness feeling random.
+  // A retry is a fresh move, so the turn advances and the shuffle should change.
   it("differs at a different turn, so a retried battle reshuffles", () => {
     const seen = new Set(
       [5, 6, 7, 8, 9].map((turn) =>

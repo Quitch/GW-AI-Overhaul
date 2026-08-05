@@ -1,8 +1,6 @@
 "use strict";
 
-// Unit tests for gw_play/cards_deal_helpers.js, the pure card-dealing helpers carved
-// out of gw_play/cards.js (a self-invoking scene script that can't be loaded/tested in
-// place).
+// Unit tests for gw_play/cards_deal_helpers.js, the measured half of cards.js.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

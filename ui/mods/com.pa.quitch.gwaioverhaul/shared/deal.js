@@ -235,9 +235,8 @@ define([
       return _.uniq(model.gwoCards.concat(loadouts, basicCards));
     },
 
-    // By index rather than push: requireGW resolves in load order, and the deal
-    // walks the deck in array order subtracting each chance, so a loader-ordered
-    // deck maps the same roll to a different card. See galaxy.md.
+    // By index, not push: requireGW resolves in load order, and the deal walks the
+    // deck in array order, so load order would remap every roll. See galaxy.md.
     setupGwoDeck: function (cards, deck, cardsRemaining, promise) {
       _.forEach(model.gwoCards, function (cardId, index) {
         requireGW(["cards/" + cardId], function (card) {

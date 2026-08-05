@@ -69,9 +69,8 @@ define(function () {
       );
     },
 
-    // The weighted walk over one deal iteration. `roll` is [0, 1). Returns the
-    // index into `fullHand` of the chosen card, or undefined when nothing is
-    // dealable or the roll falls off the end through float error.
+    // The weighted walk over one deal iteration; `roll` is [0, 1). Undefined when
+    // nothing is dealable, or the roll falls off the end through float error.
     chooseDealIndex: function (fullHand, roll) {
       var hand = [];
       var probability = 0;
@@ -175,9 +174,7 @@ define(function () {
     },
 
     // The two Sub Commanders the General Commander loadout grants. Each draws
-    // from its own stream, so the second is unaffected by whether the first
-    // drew a penchant. Collaborators are injected rather than required, keeping
-    // this file free of define-time dependencies - see testing.md.
+    // from its own stream, so adding a draw to one cannot move the other.
     buildGeneralCommanderMinions: function (params) {
       var minionPool = params.minionPool || [];
       var gwoSettings = params.gwoSettings;
