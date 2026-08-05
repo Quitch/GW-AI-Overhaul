@@ -1,15 +1,9 @@
 "use strict";
 
-// Minimal $/api stand-ins covering exactly the subset referee_ai.js's default
-// exported function uses ($.Deferred(), $.getJSON(url), api.file.list(path,
-// recursive)) - not a general jQuery/game-API polyfill. Both are Promise-backed
-// under the hood; `.then`/`.always` are exposed because production code calls
-// them directly on the values these return.
+// Covers exactly the $/api subset referee_ai.js uses - not a general polyfill.
 
-// Returns the Promise itself (augmented with resolve/reject/promise/always) rather than
-// a separate plain object wrapping it, so `.then` stays the real, inherited
-// Promise.prototype.then instead of a hand-rolled look-alike (the shape SonarLint's
-// "objects should not have a then property" rule warns about).
+// The Promise itself, augmented, rather than a wrapper - so `.then` stays the
+// inherited Promise.prototype.then rather than a hand-rolled look-alike.
 function makeDeferred() {
   var resolveFn;
   var rejectFn;

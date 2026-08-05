@@ -187,9 +187,8 @@ define([
       var finish;
       var inventoryCards;
 
-      // failGeneralCommanderSetup still sends the error operator back to the
-      // requesting viewer; also reject so the base campaign queue can order this
-      // handler's async work.
+      // Rejects as well as notifying the viewer, so the campaign queue can
+      // order this handler's async work.
       var failSetup = function (reason) {
         failGeneralCommanderSetup(operator, reason);
         result.reject(reason);

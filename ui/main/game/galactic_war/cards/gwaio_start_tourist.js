@@ -40,12 +40,10 @@ define([
             },
           ]);
 
-          // The loaded file holds a single always-firing GiveUp entry, so this
-          // loadout's AI stops looking for anything to build. JSON takes no
-          // comments, so the idiom is documented here: "always true" is spelled as
-          // HasPersonalityTag boolean:false against a tag nothing ever sets. Keep
-          // that tag name reserved - the sentinel inverts the moment it becomes a
-          // real tag, and the entry would then never fire.
+          // The loaded file is a single always-firing GiveUp entry, so this AI
+          // builds nothing. JSON takes no comments, so: "always true" is spelled
+          // HasPersonalityTag boolean:false against a tag nothing sets. Keep that
+          // tag name reserved - a real tag inverts the sentinel.
           inventory.addAIMods([
             {
               type: "fabber",

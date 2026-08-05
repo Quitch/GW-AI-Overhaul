@@ -1,14 +1,10 @@
 "use strict";
 
-// Structurally validates every Galactic War tech card against the fixed contract
-// documented in docs/tech-cards.md. Checks the shape of what define() returns - it
-// does not call deal/buff/dull/etc, so it catches "wrong export shape" bugs, not
-// runtime logic bugs. The run prints the live tally; MIN_CHECKED is the floor.
+// Validates every tech card against the contract in tech-cards.md. Checks only the
+// shape of what define() returns, never calling deal/buff/dull.
 //
-// audio/getContext are on every loadable card except gwaio_enable_bot_aa.js, kept
-// for save-compatibility with GWO v5.9.0 and earlier. No card carries keep/discard
-// any more - both were dropped in the minion and card-slot redesigns - but
-// gw_inventory.js still calls them when present, so a card may reintroduce one.
+// keep/discard are on no card today, but gw_inventory.js still calls them when
+// present, so one may reintroduce them.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -36,11 +32,9 @@ const REQUIRED_FIELDS = [
 const OPTIONAL_FIELDS = ["audio", "getContext", "keep", "discard"];
 const KNOWN_FIELDS = new Set(REQUIRED_FIELDS.concat(OPTIONAL_FIELDS));
 
-// Floor on how many cards this check actually covers. NOT_SHIPPED is swallowed
-// generically below, so a mod-shipped dependency breaking demotes every card that
-// requires it from "checked" to "excluded" with CI still green - coverage can shrink
-// silently and has (178 -> 175). Raise this when the checked count genuinely rises;
-// never lower it to make a run pass.
+// Coverage floor. NOT_SHIPPED is swallowed generically below, so one broken
+// dependency can demote every card requiring it from checked to excluded with CI
+// still green. Raise this when coverage genuinely rises; never lower it to pass.
 const MIN_CHECKED = 175;
 
 function checkShape(file, card) {

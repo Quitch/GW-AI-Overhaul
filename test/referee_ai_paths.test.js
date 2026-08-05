@@ -1,8 +1,7 @@
 "use strict";
 
-// Unit tests for shared/referee_ai_paths.js, the pure path-construction layer every
-// other ai_path consumer (shared/ai.js, referee_config.js, referee_game_files.js,
-// gw_per_player_tech_referee.js, referee_ai.js) routes through.
+// shared/referee_ai_paths.js, the pure path-construction layer every other ai_path
+// consumer routes through. See ai-paths.md.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -183,10 +182,8 @@ describe("getAIPathDestination - Queller", () => {
   });
 
   it("the Queller branch takes priority over the subcommander aiMods gate", () => {
-    // Even with empty aiMods (which would fall back to a shared path for
-    // Titans/Penchant), Queller still separates enemy (q_uber) from subcommander
-    // (q_bronze/q_silver) - Queller structurally never hits the Titans/Penchant
-    // same-brain path-overlap case.
+    // Queller separates enemy from subcommander by tier even with empty aiMods, so
+    // it never hits the same-brain overlap Titans and Penchant can.
     const enemyPath = refereeAIPaths.getAIPathDestination("enemy", "Queller", {
       aiMods: [],
     });
@@ -218,11 +215,8 @@ describe("getAIPathSource", () => {
   });
 
   it("Queller enemy source is q_uber/, subcommander source is always q_bronze/", () => {
-    // getAIPathSource always calls getQuellerPath(type, false) - smartSubcommanders
-    // is hardcoded false, so unlike getAIPathDestination (which can resolve
-    // subcommander to q_silver/), the subcommander SOURCE tree never varies by
-    // smartSubcommanders - it's always q_bronze/, even when the destination the
-    // build orders get copied TO is q_silver/.
+    // The source tree never varies by smartSubcommanders - always q_bronze/, even
+    // when the destination copied to is q_silver/. See ai-paths.md.
     assert.equal(
       refereeAIPaths.getAIPathSource("enemy", "Queller"),
       "/pa/ai_queller/q_uber/"
@@ -240,9 +234,8 @@ describe("scopeToken sanitization asymmetry", () => {
       aiMods: [{ op: "load" }],
       scopeToken: ".player0",
     });
-    // The leading dot from the raw player tag is NOT stripped here - contrast with
-    // getPlayerScopedUnitMapPath below, which does sanitize. A future refactor that
-    // "fixes" this would silently change shipped mount paths.
+    // The leading dot is not stripped here, unlike getPlayerScopedUnitMapPath.
+    // "Fixing" that would silently change shipped mount paths.
     assert.equal(path, "/pa/ai_subcommander/player_.player0/");
   });
 

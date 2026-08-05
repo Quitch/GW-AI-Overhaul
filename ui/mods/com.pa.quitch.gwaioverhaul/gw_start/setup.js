@@ -12,12 +12,8 @@ function gwoSetup() {
       return card && card.id ? card.id() : undefined;
     };
 
-    // Set once shared/favourites.js and shared/favourite_loadouts.js finish
-    // loading (see the requireGW call below) - kept as plain closure
-    // variables (not per-card properties) so model.gwoIsFavourite/
-    // model.gwoToggleFavourite are safe to bind against immediately, rather
-    // than depending on Knockout's foreach clone/bind timing lining up with
-    // an async module load.
+    // Closure vars, not per-card properties, so the model.gwo* functions below
+    // are bindable before the requireGW call sets these.
     var gwoFavourites;
     var gwoFavouriteLoadouts;
 
@@ -43,8 +39,7 @@ function gwoSetup() {
         )
       );
 
-      // Reordering can move the active card to a new index; keep the same
-      // loadout selected (by id, not stale index).
+      // Reordering moves the active card, so reselect by id, not stale index.
       if (activeId) {
         var newIndex = _.findIndex(model.startCards(), function (c) {
           return cardId(c) === activeId;
@@ -55,15 +50,8 @@ function gwoSetup() {
       }
     };
 
-    // Injected into the still-unbound #start-cards .card template before
-    // ko.applyBindings(model) runs (loadMods always executes before
-    // applyBindings, in the same document.ready flow in gw_start.js), so
-    // Knockout's foreach clones this markup, correctly bound per-card, for
-    // every unlocked loadout automatically. Targets only .card, never
-    // .card_locked, so locked loadouts structurally never get the button.
-    // Routed through model.gwoToggleFavourite/model.gwoIsFavourite (always
-    // defined, above) rather than a per-card toggleFavourite/isFavourite
-    // property, so this binding never depends on per-card attachment timing.
+    // Injected before ko.applyBindings runs (gw_start.js calls loadMods first),
+    // so foreach clones it per unlocked loadout. .card_locked is excluded.
     $("#start-cards .card").prepend(
       '<div class="gwo-favourite-btn" data-bind="' +
         "click: function () { model.gwoToggleFavourite($data); }, " +
@@ -105,8 +93,8 @@ function gwoSetup() {
       }
     };
 
-    // Held so the galaxy build can wait on it: this resolves asynchronously and nothing
-    // stops the player clicking Go To War first.
+    // Held so the galaxy build can wait on it - nothing stops the player
+    // clicking Go To War before this resolves.
     var modsMounted = api.mods.getMounted("client", true).then(onModsMounted);
 
     var foundationFaction = 1;
@@ -145,16 +133,14 @@ function gwoSetup() {
         default:
           console.error("Undefined faction:", faction);
           warGenerationFailed = true;
-          // warGenerationFailed aborts the run, but the caller concats this
-          // result straight into personality_tags first - returning undefined
-          // there would append a literal undefined tag.
+          // The caller concats this into personality_tags before the abort
+          // lands, so undefined would append a literal undefined tag.
           return [];
       }
     };
 
-    // Helpers that draw take an rng (shared/gwo_rng.js) as their first parameter rather
-    // than closing over one: the war's seed is only known inside navToNewGame, below.
-    // See galaxy.md, "Determinism and the war seed".
+    // Drawing helpers take an rng parameter rather than closing over one: the
+    // seed is only known inside navToNewGame. See galaxy.md.
     var selectAIBuffs = function (rng, numberOfBuffs) {
       return rng.sample(_.values(aiBuffType), numberOfBuffs);
     };
@@ -194,10 +180,9 @@ function gwoSetup() {
       } else {
         selectedMinion = _.cloneDeep(rng.pick(minions));
       }
-      // Returns undefined on failure. Every call site must check before using the
-      // result: these run inside jQuery deferred callbacks, where a throw is not
-      // converted into a rejection, so a TypeError here escapes
-      // .fail(onWarGenerationError) entirely - no seed retry, and Go To War hangs.
+      // Call sites must check the result. These run inside jQuery deferred
+      // callbacks, where a throw escapes .fail() instead of rejecting, so a
+      // TypeError here hangs Go To War with no seed retry.
       if (_.isUndefined(selectedMinion)) {
         console.error("No minion found for faction " + faction);
         warGenerationFailed = true;
@@ -231,8 +216,7 @@ function gwoSetup() {
       return eco;
     };
 
-    // playerCount is optional; omit it (e.g. for a boss's own econ rate)
-    // to skip the minion-count reduction entirely.
+    // Omitting playerCount skips the minion-count reduction (e.g. a boss's own rate).
     var aiEconRate = function (rng, distance, playerCount) {
       var difficulty = model.gwoDifficultySettings;
       var ecoBase = Number.parseFloat(difficulty.econBase());
@@ -257,8 +241,7 @@ function gwoSetup() {
       return Math.max(ecoBase, eco);
     };
 
-    // Both bounds are inclusive, so rng.int(0, 100) would have 101 outcomes and a 0%
-    // chance would still fire about once per hundred rolls. Hence starting at 1.
+    // rng.int bounds are inclusive - from 0, a 0% chance would still fire 1 in 101.
     var gameModeEnabled = function (rng, gameModeChance) {
       return rng.int(1, 100) <= gameModeChance;
     };
@@ -310,16 +293,7 @@ function gwoSetup() {
       var settings = model.gwoDifficultySettings;
 
       // The personality picker has no data-bind, so its value only reaches the
-      // snapshot below if we push it back - otherwise a Custom difficulty player's
-      // modifier picks revert to the last preset's on the next scene load.
-      //
-      // Do it here, once, and only when it actually changed. Writing it from
-      // setAIPersonality instead - which runs per AI, per minion, per foe and per
-      // ally - added ten seconds to Go To War back when personalityTags was a
-      // dependency of the difficulty computed in gw_start/ui.js, so each write
-      // re-rendered every dropdown on the page. That computed no longer reads the
-      // observable it writes, but a single write at save time is still the right
-      // shape: the picker has no binding to keep it in step with per-AI churn.
+      // snapshot if pushed back here. Write once at save time, not per AI.
       var pickedTags = $("#gwo-personality-picker").val() || [];
       if (!_.isEqual(pickedTags, settings.personalityTags())) {
         settings.personalityTags(pickedTags);
@@ -434,9 +408,6 @@ function gwoSetup() {
         gwoFactionSeed,
         chooseStarSystemTemplates
       ) {
-        // Assign the outer closure vars (declared at the top of gwoSetup(),
-        // where model.gwoIsFavourite/model.gwoToggleFavourite are defined)
-        // now that these async dependencies have actually loaded.
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
         gwoFavourites = favouritesModule;
 
@@ -510,10 +481,8 @@ function gwoSetup() {
           var personality = ai.personality;
 
           personality.micro_type = difficulty.microType();
-          // The stringBoolean extender reads back "true"/"false" strings so the
-          // dropdowns can bind to it; the AI personality contract is real booleans
-          // (see referee_subcommander_tech.js and the base game's gw_balance.js).
-          // .raw is the underlying observable the extender wraps.
+          // .raw unwraps the stringBoolean extender, which reads back "true"/"false"
+          // for the dropdowns. The AI personality contract needs real booleans.
           personality.go_for_the_kill = difficulty.goForKill.raw();
           personality.priority_scout_metal_spots =
             difficulty.priorityScoutMetalSpots.raw();
@@ -527,12 +496,10 @@ function gwoSetup() {
           personality.per_expansion_delay = difficulty.perExpansionDelay();
           personality.max_basic_fabbers = difficulty.maxBasicFabbers();
           personality.max_advanced_fabbers = difficulty.maxAdvancedFabbers();
-          // Read only. The write back into gwoDifficultySettings.personalityTags
-          // happens once in saveDifficultySettings - see the note there.
+          // Read only; saveDifficultySettings owns the write back.
           personality.personality_tags =
             $(personalityId).val() === null ? [] : $(personalityId).val();
-          // We treat 0 as undefined, which means the AI examines the
-          // radius of the spawn zone
+          // 0 means unset, leaving the AI to examine the spawn zone radius.
           if (difficulty.startingLocationEvaluationRadius() > 0) {
             personality.starting_location_evaluation_radius =
               difficulty.startingLocationEvaluationRadius();
@@ -558,29 +525,15 @@ function gwoSetup() {
           }
         };
 
-        // model.playerFactionIndex is a raw observable; the base game only ever
-        // resolves a faction from it through its playerFaction computed, which
-        // wraps with % GWFactions.length (gw_start.js). That was academic in
-        // vanilla, where GWFactions is always four entries, but this mod's
-        // gw_factions.js appends Cluster only under Titans - so an index of 4
-        // saved while playing as Cluster can be restored (gw_start/ui.js's
-        // restorePreviousSettings, out of localStorage) into a session running
-        // classic PA content, where it addresses nothing.
-        //
-        // Unwrapped, that index makes aiFactions.splice() remove no faction at
-        // all - the player's own faction becomes an enemy and the war gets a
-        // full four enemy factions instead of three - and makes
-        // GWFactions[playerFaction] undefined when an allied commander is
-        // rolled, which throws inside a jQuery deferred callback and so escapes
-        // .fail(onWarGenerationError) entirely (see selectMinion's note above).
+        // Must wrap, as stock's playerFaction computed does: gw_factions.js
+        // appends Cluster only under Titans, so a stored index of 4 can be
+        // restored into a session where it addresses nothing.
         var playerFactionIndex = function () {
           return model.playerFactionIndex() % GWFactions.length;
         };
 
-        // Never rejects: every failure - no ticked sources, a dead sharing server,
-        // nothing derivable - resolves undefined and leaves the galaxy on Shared Systems'
-        // own pick. Rejecting would spend warGenerationFailure's five reseeded retries on
-        // a condition no seed can change.
+        // Never rejects - every failure resolves undefined. Rejecting would spend
+        // warGenerationFailure's retries on a condition no reseed can change.
         var loadSystemBrackets = function () {
           var ready = $.Deferred();
 
@@ -601,9 +554,8 @@ function gwoSetup() {
             _.forEach(model.selectedNames(), function (name) {
               var option = _.find(options, "name", name);
               if (option) {
-                // load() caches per source, so this costs nothing when Shared Systems
-                // asks for the same pool later. Its loading/selected observables drive
-                // that mod's own spinner - leave them alone.
+                // load() caches per source. Its loading/selected observables
+                // drive Shared Systems' own spinner - leave them alone.
                 loading.push(option.load());
               }
             });
@@ -652,8 +604,7 @@ function gwoSetup() {
 
           console.log("War created using Galactic War Overhaul v" + gwoVersion);
 
-          // Everything random about this war hangs off here. See galaxy.md,
-          // "Determinism and the war seed", for the stream layout.
+          // Everything random about this war hangs off here. See galaxy.md.
           var warRng = gwoRng.create(model.newGameSeed());
           // Must precede every read of GWFactions: getTeam below shallow-copies a team,
           // snapshotting systemDescription by value.
@@ -771,7 +722,6 @@ function gwoSetup() {
               return;
             }
 
-            // Scatter some AIs
             aiFactions = teamsRng.shuffle(aiFactions);
             // Wrapped, not passed by reference: _.map would hand getTeam's rng
             // parameter the array index.
@@ -779,9 +729,8 @@ function gwoSetup() {
               return gwoTeams.getTeam(faction, teamsRng);
             });
             if (model.gwoDifficultySettings.ai() === "Queller") {
-              // Filter each team's minion pool (used by makeWorker below)
-              // before anything gets sampled from it, so Queller-incompatible
-              // minions can never be spread onto the galaxy as a worker AI.
+              // Filter before anything is sampled, so an incompatible minion
+              // can never be spread onto the galaxy as a worker AI.
               _.forEach(teams, function (team) {
                 team.remainingMinions = gwoAI.quellerCompatibleMinions(
                   team.remainingMinions
@@ -804,15 +753,12 @@ function gwoSetup() {
               neutralStars = 4;
             }
 
-            // Ordered rather than keyed: the breeder's spread loop is synchronous, and
-            // the _.remove below mutates remainingMinions so order is load-bearing.
-            // See galaxy.md.
+            // Ordered rather than keyed: the spread loop is synchronous and the
+            // _.remove below mutates remainingMinions, so order is load-bearing.
             var workersRng = warRng.stream("workers");
 
-            // gwo_teams.js deliberately omits makeWorker; this replaces it to allow
-            // _.cloneDeep() to preserve personality_tags. Defined here (a sibling of
-            // handleSpread below) rather than nested inside it, taking team/ai/star as
-            // explicit params, so the callbacks don't sit six function-levels deep.
+            // gwo_teams.js deliberately omits makeWorker; this replaces it so
+            // _.cloneDeep() preserves personality_tags.
             var makeWorker = function (team, ai) {
               if (team.workers) {
                 _.assign(ai, _.cloneDeep(workersRng.pick(team.workers)));
@@ -888,9 +834,6 @@ function gwoSetup() {
 
           var populate = moveIn.then(onMovedIn);
 
-          // Sibling helpers for onPopulated's nested star/planet loops, defined here
-          // and passed by reference (bind) so the loop bodies don't sit six
-          // function-levels deep.
           var setupPlanetForAI = function (ai, planet) {
             planet.generator.shuffleLandingZones = true;
             if (
@@ -941,13 +884,8 @@ function gwoSetup() {
               var workerPool = info.workers;
               var minionPool = GWFactions[info.faction].minions;
               if (difficulty.ai() === "Queller") {
-                // info.workers is already Queller-compatible: it's built via
-                // makeWorker() from team.remainingMinions/team.faction.minions,
-                // which we pre-filter above. This re-filter is a no-op for the
-                // built-in factions, kept as a safety net for any faction (e.g.
-                // a modded one, in the style of the base game's gw_faction_credits_*
-                // "Credits War" factions) that populates team.workers instead,
-                // a path our pre-filter doesn't cover.
+                // A no-op for the built-in factions, which the pre-filter above
+                // covers. Catches a modded faction populating team.workers.
                 workerPool = gwoAI.quellerCompatibleMinions(workerPool);
                 minionPool = gwoAI.quellerCompatibleMinions(minionPool);
               }
@@ -1377,10 +1315,8 @@ function gwoSetup() {
               return;
             }
 
-            // Defensive rather than load-bearing: success navigates to gw_play, so the
-            // next visit here is a fresh page that re-runs gwoSetup and zeroes this
-            // anyway. Kept so the count stays per-war if gw_start is ever re-entered
-            // without a page load.
+            // Defensive: success navigates away, but keeps the count per-war if
+            // gw_start is ever re-entered without a page load.
             warGenerationAttempts = 0;
 
             saveDifficultySettings();

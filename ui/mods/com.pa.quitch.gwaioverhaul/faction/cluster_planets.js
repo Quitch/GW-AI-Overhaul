@@ -1,10 +1,7 @@
 /* eslint-disable no-loss-of-precision */
 define({
-  // The biome each of the first three planets may take. These used to be _.sample calls
-  // inline in the generator blocks below, which ran at module load: the Cluster homeworld
-  // re-rolled its terrain on every entry into the gw_start scene rather than following
-  // the war seed. cluster_faction.js hands these to faction/faction_seed.js, which writes
-  // the pick back onto the generator; the values inline below are the defaults.
+  // The biome each of the first three planets may take. faction/faction_seed.js
+  // writes the pick onto the generator; the values inline below are defaults.
   randomBiomes: {
     planet1: ["asteroid", "desert", "tropical", "lava"],
     planet2: ["asteroid", "desert", "ice_boss", "lava"],

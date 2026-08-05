@@ -23,9 +23,8 @@ function gwoWarInfoPanel(gwoSettings) {
     var coopPlayerScalingCount =
       model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
     var playerCount = coopPlayerScalingCount || 1;
-    // i18n lookups are case sensitive, and the two forms are covered under different
-    // casings: PLAYER has entries in 20 locales where Player has 14, while the plural
-    // is only ever Players. gwo_panel.html cases the word back down after translation.
+    // i18n lookups are case sensitive, and these two casings have the widest
+    // locale coverage. gwo_panel.html cases the word back down afterwards.
     var playerOrPlayers =
       playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:PLAYER");
     model.gwoCoopPlayerScalingCount = playerCount;
@@ -37,8 +36,7 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwCampaignConnectedClients.subscribe(function () {
       var playerScaling = gwoSettings.coopPlayerScalingCount;
       if (
-        // tooManyPlayers is a latch: once set, the war is flagged for good. Without
-        // this the save is rewritten on every join and leave for the rest of the war.
+        // A latch - without it the save is rewritten on every join and leave.
         !gwoSettings.tooManyPlayers &&
         model.gwCampaignConnectedClients &&
         _.isFunction(model.gwCampaignConnectedClients) &&
@@ -55,12 +53,9 @@ function gwoWarInfoPanel(gwoSettings) {
       }
     });
 
-    // A Viewer whose PA profile has never been loaded by an authenticated user
-    // has an empty uberId/displayName (the base game falls back to "Player").
-    // Co-op records are keyed by identity, so findCoopPlayerInventoryData can
-    // never match this Viewer's own record - its tech inventory, card offers, and
-    // subcommander deals all silently no-op. Surface it once so the state is
-    // diagnosable instead of looking like a GWO bug (the base game shares this).
+    // An unauthenticated Viewer has an empty uberId/displayName. Co-op records
+    // are keyed by identity, so every lookup for them silently no-ops. The base
+    // game shares this, so say so rather than let it read as a GWO bug.
     var gwoViewerIdentityWarned;
 
     var warnIfViewerIdentityMissing = function () {
@@ -129,10 +124,7 @@ function gwoWarInfoPanel(gwoSettings) {
     };
 
     model.gwoOptions = ko.observableArray([]);
-    // Several war settings below are read once rather than subscribed to. They are
-    // observables, but each is fixed for the lifetime of a war - it is decided at
-    // creation and never changes - so unwrapping them here is deliberate, not a
-    // missed subscription.
+    // Unwrapped, not subscribed: each is fixed for the lifetime of a war.
     var optionDefs = [
       [model.gwoSettings.factionScaling, "!LOC:Faction Scaling"],
       [model.gwoSettings.systemScaling, "!LOC:System scaling"],
@@ -177,10 +169,8 @@ function gwoWarInfoPanel(gwoSettings) {
         model.gwoCoopTechControl = coopText(
           !model.gwCampaignPerPlayerTechCards()
         );
-        // LOCKED is asked for rather than Locked because i18n lookups are case
-        // sensitive and that casing has entries in four more locales; gwo_panel.html
-        // cases it back down. Unlocked has no entry under any casing, so locales that
-        // gain a translated "Locked" will still show it in English beside it.
+        // LOCKED, not Locked: case-sensitive i18n, and that casing reaches four
+        // more locales. Unlocked has no entry under any casing.
         model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
           ? loc("!LOC:LOCKED")
           : loc("!LOC:Unlocked");
@@ -229,16 +219,11 @@ function gwoWarInfoPanel(gwoSettings) {
         ];
         var factionIndex = inventory.getTag("global", "playerFaction");
         model.gwoFactionName = factions[factionIndex];
-        // Written once at war creation (gw_start/setup.js); no gw_play path changes
-        // it. It is the host's colour, and with shared armies every co-op commander
-        // fights under it - see coopColour below for the unshared case.
+        // The host's colour, written once at war creation and never changed.
         var playerColourPair = inventory.getTag("global", "playerColor");
         var playerColour = gwoColour.rgb(playerColourPair);
 
-        // The colour this client will be given in the next battle. Shared armies are
-        // a single army, so everyone flies the host's colour; unshared armies are
-        // split one per client by gw_coop_referee.js, which colours army 0 with the
-        // host's faction colour and the rest from the custom-game lobby palette.
+        // The colour this client gets in the next battle. See coop.md.
         var coopColour = function (client, connectedClients) {
           if (model.gwCampaignSharedControl()) {
             return playerColour;
@@ -255,9 +240,7 @@ function gwoWarInfoPanel(gwoSettings) {
                   index
                 ];
 
-          // No pair means the palette ran out, which the referee treats as a reason
-          // to refuse the battle. Fall back to the host's colour rather than leaving
-          // the swatch blank.
+          // No pair means the palette ran out; fall back rather than blank the swatch.
           return pair ? gwoColour.rgb(pair) : playerColour;
         };
         var cards = inventory.cards();
@@ -298,12 +281,11 @@ function gwoWarInfoPanel(gwoSettings) {
           coopCampaign = !!active;
         });
 
-        // Keep commander view models stable so async loadout text does not reset during computed reevaluations - prevents flickering.
+        // Stable view models, so async loadout text does not flicker when the
+        // computed below re-evaluates.
         var coopCommanderCache = {};
 
         var updateCoopCommander = function (client, human, connectedClients) {
-          // The name is part of the cache key, so a rename is a cache miss and the
-          // new name arrives on a freshly built object - nothing to update here.
           var cacheKey =
             String(client.id || "") + "::" + String(client.name || "");
           var commander = coopCommanderCache[cacheKey];
@@ -317,14 +299,10 @@ function gwoWarInfoPanel(gwoSettings) {
           if (!commander) {
             commander = {
               name: client.name,
-              // Observable because a client's colour is not fixed: it moves when
-              // army control is toggled, and when another client joins or leaves
-              // and shifts the army order.
+              // Not fixed: it moves with army control, and with joins and leaves.
               color: ko.observable(),
-              // The host's own loadout is already resolved locally via model.gwoLoadout.
-              // game.findCoopPlayerInventoryData never returns a record for the host
-              // (it only tracks synced remote clients), so without this the host's
-              // character observable would stay stuck on "human" forever.
+              // findCoopPlayerInventoryData only tracks synced remote clients, so
+              // the host would otherwise stay stuck on "human" forever.
               character: usesHostLoadout
                 ? model.gwoLoadout
                 : ko.observable(human),
@@ -377,8 +355,7 @@ function gwoWarInfoPanel(gwoSettings) {
               return updateCoopCommander(client, human, connectedClients);
             });
 
-            // Leaving the co-op campaign causes a page refresh and a cache reinitialisation,
-            // so we don't need to worry about cleaning up the cache in that case.
+            // Leaving the campaign refreshes the page, so that case needs no cleanup.
             _.forEach(_.keys(coopCommanderCache), function (cacheKey) {
               if (!activeCommanderKeys[cacheKey]) {
                 delete coopCommanderCache[cacheKey];
@@ -386,8 +363,7 @@ function gwoWarInfoPanel(gwoSettings) {
             });
           }
 
-          // Host-first, because that is the order the battle config numbers the
-          // subcommander colours in - the same order the human armies are handed out.
+          // Host-first: the order the battle config numbers the colours in.
           var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
             inventory,
             game,
@@ -422,9 +398,8 @@ var gwoPanelLoaderInitialized = false;
 var gwoPanelLoaderNeedsDispose = false;
 var gwoPanelLoadWarned = false;
 
-// The computed can dispose itself on its very first evaluation, which happens inside
-// the ko.computed() call below - before gwoPanelLoader has been assigned. Defer to
-// the flag in that case.
+// The computed below can dispose itself on its first evaluation, which runs
+// before gwoPanelLoader is assigned. Defer to the flag in that case.
 var disposeGwoPanelLoader = function () {
   if (gwoPanelLoaderInitialized) {
     gwoPanelLoader.dispose();
@@ -438,8 +413,6 @@ var gwoPanelLoader = ko.computed(function () {
   var galaxy = game.galaxy();
   var originSystem = galaxy.stars()[galaxy.origin()].system();
 
-  // Nothing left to wait for: the panel is already up, or this war will never
-  // have one.
   if (gwoWarInfoPanelLoaded || game.isTutorial()) {
     disposeGwoPanelLoader();
     return;
@@ -453,9 +426,8 @@ var gwoPanelLoader = ko.computed(function () {
     return;
   }
 
-  // The galaxy may still be loading, so stay subscribed and re-check - but report
-  // the miss once rather than on every galaxy observable change for the rest of
-  // the scene, which is what a war created without GWO used to produce.
+  // The galaxy may still be loading, so stay subscribed - but a non-GWO war
+  // never resolves, so warn once rather than on every galaxy change.
   if (!gwoPanelLoadWarned) {
     gwoPanelLoadWarned = true;
     console.warn(

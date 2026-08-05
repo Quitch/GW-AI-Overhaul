@@ -1,10 +1,7 @@
 "use strict";
 
-// Unit tests for shared/favourite_loadouts.js, the pure logic extracted out of
-// setup.js/favourites.js's ko/model glue: id lookup, toggling a persisted id
-// list, and reordering loadout cards so favourites lead the list, ordered by
-// when they were favourited (favouriteIds' own order), while everything else
-// keeps its existing relative order.
+// Unit tests for shared/favourite_loadouts.js: id lookup, toggling the persisted
+// list, and the favourites-first reorder.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -76,11 +73,8 @@ describe("sortCardsByFavourite", () => {
   });
 
   it("produces the same order whether given the original or an already-sorted card list", () => {
-    // Regression guard: re-sorting model.startCards() after a toggle (already
-    // favourites-first) must land on the same order as sorting straight from
-    // loadouts.startCards on a fresh scene load - the favourites' order must
-    // come from favouriteIds, never from whatever order `cards` happens to
-    // already be in.
+    // Re-sorting an already-sorted list must land where sorting the original does,
+    // so the order comes from favouriteIds and never from `cards`.
     const original = [{ id: "a" }, { id: "b" }, { id: "c" }, { id: "d" }];
     const favouriteIds = ["c", "a"];
     const fromOriginal = favouriteLoadouts.sortCardsByFavourite(

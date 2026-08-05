@@ -20,10 +20,9 @@ define([
     cards: [
       { id: "gwc_bld_efficiency_cdr", units: [gwoUnit.commander] },
       {
-        // The owners of gwoGroup.fabberBuildArms and gwoGroup.factoryBuildArms,
-        // bar the Commander, whose arm is gwc_bld_efficiency_cdr's. Not
-        // gwoGroup.factories: that includes the anti-nuke launcher, which builds
-        // no units and so is outside factoryBuildArms.
+        // Owners of the fabber/factory build arms, less the Commander's, which is
+        // gwc_bld_efficiency_cdr's. Not gwoGroup.factories - that has the
+        // anti-nuke launcher, which builds nothing.
         id: "gwc_bld_efficiency_fabs",
         units: gwoGroup.fabbers.concat(gwoGroup.structuresFactories),
       },
@@ -485,9 +484,8 @@ define([
         units: [gwoUnit.kessler],
       },
       {
-        // Both also mod gwoGroup.weaponsMobile/ammoMobile wholesale, which
-        // reaches the armed units outside gwoGroup.combatMobile: the mobile
-        // titans and the two armed scouts.
+        // Both also mod weaponsMobile/ammoMobile wholesale, reaching the armed
+        // units outside combatMobile: mobile titans and the two armed scouts.
         id: "gwaio_protocol_precision",
         units: gwoGroup.combatMobile.concat(
           gwoGroup.titansMobile,

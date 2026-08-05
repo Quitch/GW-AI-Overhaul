@@ -1,13 +1,8 @@
 "use strict";
 
-// Tests for gw_start/gwo_breeder.js, which decides which star each AI faction spawns on
-// and then spreads those factions outward across the galaxy.
-//
-// This is a copy of the base game's gw_breeder.js rather than a shadow of it (see
-// shadowing.md), which is what makes it reachable here at all - and spawn placement had
-// no coverage of any kind before. shared/Graph is base-game and unshipped, so a small
-// stand-in is registered; it only needs addEdge and calcDistance, and calcDistance is a
-// plain breadth-first walk.
+// Tests for gw_start/gwo_breeder.js, which places each AI faction's spawn star and
+// spreads the factions outward. shared/Graph is unshipped, so a stand-in is
+// registered; only addEdge and calcDistance are needed.
 
 const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
@@ -61,8 +56,8 @@ const gwoRng = loadCouiModule(
 const stubs = createGlobalStubs();
 
 before(() => {
-  // Everything the breeder awaits is already-resolved, and stock relies on jQuery firing
-  // those callbacks inline - see galaxy.md on why the workers stream stays ordered.
+  // Stock relies on jQuery firing these already-resolved callbacks inline. See
+  // galaxy.md on why the workers stream stays ordered.
   const $ = function () {};
   $.when = function (...args) {
     const settled = args.map((a) =>
@@ -157,8 +152,7 @@ describe("gwo_breeder populate", () => {
     }
   });
 
-  // Without an rng it must behave exactly as the base game's copy does, since that is
-  // the whole reason the fallback is kept.
+  // Matching stock without an rng is the whole reason the fallback is kept.
   it("still runs with no rng, drawing from lodash", () => {
     const placed = populate(chain(12), undefined, 3);
     assert.equal(placed.length, 3);

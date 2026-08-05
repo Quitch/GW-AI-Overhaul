@@ -1,6 +1,5 @@
-// Overhauls personalities. Also declares gwaioRandomSpec, so the Random commander
-// and the boss system description follow the war seed instead of being sampled at
-// module load - see faction/faction_seed.js and galaxy.md.
+// Overhauls personalities. The gwaioRandomSpec below is read by
+// faction/faction_seed.js - see galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (personalities) {
@@ -125,11 +124,8 @@ define([
       commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json",
     },
   ];
-  // GWO - the pool the Random commander draws from, captured before randomAI is
-  // pushed onto it so it can never be handed its own personality. The personality
-  // below is a fixed default: faction/faction_seed.js re-derives it from the war
-  // seed, because sampling here runs at module load and so re-rolled on every entry
-  // into the gw_start scene.
+  // GWO - the Random commander's pool, captured before randomAI joins it so it can
+  // never draw its own personality. The one below is a default; see galaxy.md.
   var randomFrom = minions.slice();
   var randomPersonality = minions[0].personality;
 
@@ -232,8 +228,7 @@ define([
     minions: _.map(minions, function (personalityModifiers) {
       return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
     }),
-    // GWO - read by faction/faction_seed.js, which reseeds this faction once per
-    // war. minions.length - 1 is randomAI: it was pushed above.
+    // GWO - minions.length - 1 is randomAI, pushed above.
     gwaioRandomSpec: {
       baseline: baselinePersonality,
       descriptions: systemDescriptions,

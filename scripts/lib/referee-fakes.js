@@ -1,11 +1,8 @@
 "use strict";
 
-// The global $/api wiring referee_ai.js's file-discovery engine needs, shared by the
-// test files that drive it. Each installer returns its own restore function, so a
-// caller is free to sequence it with whatever else its afterEach has to undo.
-//
-// Calls are always recorded. A test that does not care simply ignores the arrays;
-// one that does gets them without a second, subtly different, local installer.
+// The $/api wiring referee_ai.js's file discovery needs. Each installer returns
+// its own restore function. Calls are always recorded, so no test needs a second,
+// subtly different, local installer.
 
 const { createFakeJQuery, createFakeApi } = require("./fake-jquery.js");
 

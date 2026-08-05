@@ -1,16 +1,8 @@
 "use strict";
 
-// Tests for shared/gwo_system_templates.js, GWO's seeded replacement for the base game's
-// systems/template-loader.js.
-//
-// Two things are pinned here. chooseFor's dispatch: Shared Systems for Galactic War
-// replaces the same base path, and GWO shadowing it once left that mod's Systems panel
-// as a bare header. And the per-planet streams: the values below are drawn after a biome
-// fetch and a planet-name call, which resolve in an arbitrary order, so the suite drains
-// them in both orders and requires the same system out.
-//
-// The four systems/* template modules are base-game and unshipped, so they are stubbed;
-// $, api and parse are engine globals the module reaches for at call time.
+// Tests for shared/gwo_system_templates.js. Two things are pinned: chooseFor's
+// dispatch, since shadowing this path once broke Shared Systems' own panel; and the
+// per-planet streams, drained in both resolution orders to require the same system.
 
 const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
@@ -61,9 +53,8 @@ const TEMPLATES = [
       },
     ],
   },
-  // isExplicit planets are returned verbatim rather than generated, and reach
-  // getRandomPlanetName directly. GWO's own titans-normal feeds them in through
-  // fromRandomList pools, so this is a live path, not an edge case.
+  // isExplicit planets are returned verbatim and reach getRandomPlanetName
+  // directly. titans-normal feeds them in, so this is a live path.
   {
     Players: [5, 8],
     Systems: [
@@ -120,13 +111,9 @@ function jqPromise(valuesPromise) {
   return self;
 }
 
-// Models jQuery 2's $.when rather than Promise.all. It only waits for arguments that
-// expose a .promise() function; anything else - including a native or engine promise -
-// counts as already resolved and is passed through as *itself*. Getting this wrong is
-// not academic: an earlier version of this fake used Promise.all, which happily awaited
-// engine promises, and so let through a real bug where an isExplicit planet came back as
-// a promise object and war generation failed with "no usable star system". See
-// constraints.md.
+// jQuery 2's $.when, not Promise.all: it waits only for arguments exposing
+// .promise(), and passes anything else through as itself. A Promise.all-shaped fake
+// here once let a real bug through. See constraints.md.
 function fakeWhen(...args) {
   const boxed = args.map((arg) => {
     if (arg && arg.values) {
@@ -232,10 +219,8 @@ describe("gwo_system_templates generate", () => {
     assert.notEqual(shape(first), shape(second));
   });
 
-  // The regression that broke war generation with Shared Systems disabled: this branch
-  // returned api.game.getRandomPlanetName() directly, and $.when does not wait for an
-  // engine promise - it handed the promise object through as the planet, so
-  // gw_galaxy.js's placeSystem rejected with "no usable star system".
+  // Regression: this branch once returned getRandomPlanetName() directly, and
+  // $.when passed the unresolved promise through as the planet.
   it("returns real planets, not promises, for isExplicit templates", async () => {
     const system = await generate(loader(), { players: 6, seed: "explicit" });
     assert.equal(system.planets.length, 2);

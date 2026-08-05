@@ -1,10 +1,7 @@
 "use strict";
 
 // Tests for shared/gw_system_brackets.js, which derives how many armies a real .pas
-// system can seat and groups a Shared Systems pool into brackets for gw_galaxy.js.
-// The module is pure arithmetic over plain objects, so it loads directly under the Node
-// AMD harness with no ko/api stubs; the builder glue that calls it lives in the
-// coverage-excluded, base-game-shadowed gw_galaxy.js.
+// system seats and groups a Shared Systems pool into brackets.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -476,10 +473,8 @@ describe("selectorFor", () => {
 });
 
 describe("bracketsFrom - pool order independence", () => {
-  // Shared Systems assembles the pool as its sources resolve, so the order changes
-  // between scene loads. selectorFor assigns shuffle keys in pool order, so without a
-  // deterministic sort the same seed would place different systems whenever more than
-  // one source is selected.
+  // Shared Systems assembles its pool in resolution order, and selectorFor keys off
+  // pool order, so without a sort one seed places different systems each load.
   const pool = [
     sys("Alpha", { zoneCount: 2 }),
     sys("Bravo", { zoneCount: 4 }),
@@ -502,8 +497,7 @@ describe("bracketsFrom - pool order independence", () => {
   });
 
   it("selects the same system for a distance however the pool is ordered", () => {
-    // Same shape as the selectorFor suite's fake: a fixed, repeatable sequence, so any
-    // difference in the result comes from pool order rather than from the draws.
+    // A fixed sequence, so any difference comes from pool order, not the draws.
     const sequence = () => {
       let count = 0;
       return () => {

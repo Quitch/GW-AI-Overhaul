@@ -31,13 +31,9 @@ define([
           var playerIsCluster =
             inventory.getTag("global", "playerFaction") === 4;
 
-          // Cluster's Angels and Colonels are Sub Commanders, and cluster_setup.js
-          // tags them UNITTYPE_NoBuild to keep them out of every build list. These
-          // replacements run after that (gwc_start is always buffed first), so
-          // without the exclusion an advanced fabber's bare `Mobile & <layer>`
-          // clause would match a Sub Commander and hand Cluster a buildable one.
-          // The basic fabbers need no guard - their clauses require Basic, which
-          // no Sub Commander carries.
+          // These run after cluster_setup.js tags Cluster's Sub Commanders
+          // NoBuild, so a bare `Mobile & <layer>` clause would match one and
+          // hand Cluster a buildable. The basic fabbers require Basic, so are safe.
           var advancedBotFabberBuilds =
             "(Mobile & Bot | Land & Structure & Advanced - Factory | " +
             "FabAdvBuild | FabBuild - Factory | Titan & Bot) & Custom58 - NoBuild";
@@ -190,10 +186,8 @@ define([
               value: "WL_Orbital",
             },
           ];
-          // Cluster's Colonels are Sub Commanders, not fabbers - cluster_setup.js
-          // gives them the commander build list, and this replacement would
-          // overwrite it and leave them unable to build factories while their
-          // Angel counterparts still could.
+          // Cluster's Colonels are Sub Commanders, not fabbers. This replacement
+          // would overwrite the commander build list cluster_setup.js gives them.
           if (!playerIsCluster) {
             mods.push({
               file: gwoUnit.colonel,
@@ -202,12 +196,9 @@ define([
               value: advancedBotFabberBuilds,
             });
           }
-          // Let orbital fabbers build advanced orbital once the player has T2
-          // orbital access. This has to be a card check, not a unit check: buff()
-          // runs with a units list that applyCards has just cleared and refilled
-          // with the loadout's own grants only, so no other card's units are
-          // visible yet. Complete Orbital Tech is the only route here - Orbital
-          // Launcher Upgrade Tech is never offered to Rapid holders (see its deal).
+          // hasCard, not hasUnit - buff() cannot see other cards' units. Complete
+          // Orbital Tech is the only route: the alternative is never offered to
+          // Rapid holders. See tech-cards.md.
           if (inventory.hasCard("gwc_enable_orbital_all")) {
             mods.push({
               file: gwoUnit.orbitalFabber,

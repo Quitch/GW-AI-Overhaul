@@ -1,19 +1,11 @@
 "use strict";
 
-// Real filesystem contract check for the ai_path SOURCE directories this repo
-// actually ships (pa/ai_penchant/ in full, and the handful of files GWO shadows
-// under pa/ai/). Everything else referee_ai.js/referee_game_files.js read from
-// (pa/ai/ in general, pa_ex1/ai_queller/, pa/ai_subcommander/, pa/ai_cluster/) is
-// either base-game-owned (not present in this repo - see amd-loader.js's own
-// NOT_SHIPPED boundary) or a purely runtime-synthesized virtual mount path with no
-// on-disk existence at all. That coverage instead lives in
-// test/referee_ai_file_processing.test.js's mocked api.file.list/$.getJSON behavior.
+// Filesystem contract check for the ai_path source directories this repo ships.
+// The rest are base-game-owned or runtime-synthesised, and are covered by
+// test/referee_ai_file_processing.test.js's mocks instead.
 //
-// Distinct in purpose from scripts/validate/json-valid.js, which already asserts
-// every .json file in the repo parses - this file is a narrower *contract* check
-// tied to the exact paths referee_ai.js/referee_game_files.js read from, so a
-// rename/move of one of these files fails loudly here instead of surfacing only as
-// a confusing runtime 404 in-game.
+// Narrower than validate:json, which only asserts every .json parses: a rename here
+// fails loudly rather than surfacing as a runtime 404 in-game.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -42,10 +34,8 @@ describe("pa/ai_penchant/ - GWO-owned Penchant unit maps", () => {
 });
 
 describe("pa/ai_penchant/ - AI config", () => {
-  // Membership, not key order: deepEqual on Object.keys also pinned insertion order,
-  // so a re-minify that reordered the file would have failed for no real reason.
-  // The shape itself is validated by scripts/validate/schemas.js; what this adds is
-  // that the file exists on disk where the AI path resolution expects it.
+  // Membership, not key order - a re-minify that reordered the file is not a
+  // failure. The shape itself is validate:schemas' job.
   it("ai_config.json exists with only a numeric unit_cap", () => {
     const json = readJson("pa/ai_penchant/ai_config.json");
     assert.deepEqual(Object.keys(json).sort(), ["unit_cap"]);

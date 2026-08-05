@@ -1,16 +1,8 @@
 "use strict";
 
-// Unit tests for referee_ai.js's default exported function - the file-discovery/copy
-// engine that reads each AI faction's build-order JSON from its ai_path SOURCE
-// directory (api.file.list + $.getJSON) and writes it into configFiles under the
-// matching DESTINATION directory. Complements test/applyAiMods.test.js, which only
-// covers the mod-application engine reached via the same file's other test-only
-// export.
-//
-// referee_ai.js's own dependencies (shared/ai.js, shared/referee_ai_paths.js,
-// shared/referee_coop.js) are all self-contained/coui-resolvable, so the module loads
-// for real via loadCouiModule - only global.model/$/api need mocking (via
-// ai-path-fixtures.js and fake-jquery.js), not the module itself.
+// referee_ai.js's file-discovery engine: source directory in, configFiles out.
+// The mod-application engine is covered by test/applyAiMods.test.js instead.
+// The module loads for real; only model/$/api are mocked.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -136,12 +128,9 @@ describe("Guardians scoped destination", () => {
     });
   });
 
-  // unit_maps/ files aren't excluded from this sweep: referee_game_files.js only
-  // writes spec-tagged unit-map copies (ai_unit_map.json.ai0, ...json.player, etc.)
-  // for specific army instances - it never writes the untagged, scope-aware copy an
-  // ai_path-driven lookup at a moved (Guardians/Cluster/subcommander-tech) or
-  // mod-added (e.g. Penchant) destination needs. This sweep is what supplies that
-  // copy, via the same generic changeFilePath mechanism used for build-order files.
+  // unit_maps/ is deliberately in scope: referee_game_files.js only writes
+  // spec-tagged copies, so this sweep is what supplies the untagged, scope-aware
+  // one an ai_path lookup at a moved destination needs.
   it("also copies a unit_maps file to the guardians-scoped destination, alongside the source copy", async () => {
     const fixture = buildGame({
       aiInUse: "Titans",

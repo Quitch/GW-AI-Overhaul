@@ -1,39 +1,26 @@
 "use strict";
 
-// Structural schema checks for the mod's declarative data: AI build-order JSON
-// (pa/ai*/**/*.json) and the difficulty/personality tuning tables (JS data files
-// wrapped in define({...})). None of this data has a formal schema anywhere else, so
-// these checks are the only thing that would catch a typo'd field name or a
-// wrong-typed value before it silently misbehaves in-game.
+// Structural checks for the mod's declarative data, which has no schema anywhere
+// else. See testing.md.
 //
-//   - build_list: name/instance_count/priority/build_conditions are on every entry.
-//     to_build is optional - a handful of entries are non-unit "action" entries
-//     (e.g. "Teleport Commander To Planet", "Fabber Assist"), not a bug.
+//   - build_list: every entry has name/instance_count/priority/build_conditions.
+//     to_build is optional - some entries are non-unit "action" entries.
 //   - platoon_templates: every entry has `units` (array).
 //   - unit_map: every entry has exactly one of unit_types or spec_id.
-//   - unit_cap (ai_config.json): the file's full extent is a single numeric
-//     `unit_cap` key.
-// difficulty_levels.js/personalities.js entries don't share a single fixed key set
-// (e.g. the difficulties list ends in a minimal {difficultyName, customDifficulty}
-// "Custom" sentinel with none of the other ~25 tier fields) - so rather than a
-// required-field list that would false-positive on legitimate minimal entries, these
-// are checked for type *consistency*: any field that appears with more than one
-// typeof across entries that have it is almost certainly a typo (e.g. a numeric
-// field accidentally quoted as a string on one tier).
+//   - unit_cap (ai_config.json): the whole file is one numeric `unit_cap` key.
+//
+// difficulty_levels.js and personalities.js entries share no fixed key set - the
+// "Custom" sentinel carries two of ~25 fields - so a required-field list would
+// false-positive. They are checked for type consistency across entries instead.
 
 const fs = require("node:fs");
 const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
 const { walkFiles } = require("../lib/walk.js");
 
-// Every `test_type` the engine implements, harvested from the base game's own AI
-// data (media/pa/ai/ plus media/pa_ex1/ai_queller/). An unrecognised value is not an
-// error the engine reports - the condition simply never validates, so the whole build
-// entry silently never fires. That is how "HasEcoForAdvanced" (the real test is
-// HaveEcoForAdvanced) went unnoticed. CI has no base install, so this list has to be
-// committed; re-harvest it after a PA patch adds tests.
-// `UnitCountonPlanet` is a base-game spelling variant, kept because the engine
-// accepts what its own data ships.
+// Every `test_type` the engine implements, harvested from media/pa/ai/ and
+// media/pa_ex1/ai_queller/. Re-harvest after a PA patch adds tests. An entry with
+// an unrecognised test silently never fires. See testing.md.
 const KNOWN_TEST_TYPES = new Set([
   "AllMetalSpotsFull",
   "AlliedUnitCountOnPlanet",

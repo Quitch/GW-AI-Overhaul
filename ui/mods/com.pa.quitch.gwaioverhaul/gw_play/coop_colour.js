@@ -1,15 +1,9 @@
-// Predicts the army colour each connected co-op client will be given in the next
-// battle, so the war information panel can show it on the galaxy map.
+// Predicts the army colour each co-op client will be given in the next battle.
 //
-// With unshared army control the base game's gw_play/gw_coop_referee.js splits the
-// single human army into one army per client: army 0 keeps the host's GW faction
-// colour pair and armies 1..n-1 take primaries from the custom-game lobby palette,
-// each keeping the host's secondary. That palette and every helper around it are
-// private to gw_coop_referee.js, which exports only apply() - there is nothing to
-// require - and gw_coop_referee.js is itself a deliberate mirror of the server's
-// server-script/lobby/color_table.js. This is therefore a third copy of the same
-// data: keep the table, the brightness rule and the sort below in sync with
-// gw_coop_referee.js if the base game ever changes them.
+// The lobby palette is private to gw_coop_referee.js, which exports only apply(),
+// so the table, the brightness rule and the sort below are a third copy of data
+// that ultimately lives in server-script/lobby/color_table.js. Keep them in sync.
+// See coop.md.
 define(function () {
   // Applied only when a channel is saturated, matching the server's table.
   var LOBBY_COLOUR_BRIGHTNESS_ADJUSTMENT = 14 / 16;
@@ -89,8 +83,7 @@ define(function () {
     return !!(a && b && a[0] === b[0] && a[1] === b[1] && a[2] === b[2]);
   };
 
-  // Squared distance is enough - we only sort by it, and the square root would
-  // preserve the ordering.
+  // Squared is enough: the square root would preserve the ordering.
   var colourDistanceSquared = function (a, b) {
     var red = a[0] - b[0];
     var green = a[1] - b[1];
@@ -99,9 +92,8 @@ define(function () {
     return red * red + green * green + blue * blue;
   };
 
-  // Lobby primaries ordered from most to least similar to the host's primary. The
-  // host keeps its exact faction colour, so an exact match is dropped rather than
-  // handed to player 2, as are duplicate entries in the table.
+  // Ordered most to least similar to the host's primary. The host keeps its exact
+  // faction colour, so an exact match is dropped, as are duplicate table entries.
   var lobbyPrimariesBySimilarity = function (hostPrimary) {
     var candidates = [];
 
@@ -129,10 +121,8 @@ define(function () {
   };
 
   return {
-    // Colour pairs for the split human armies, index-aligned with the armies
-    // gw_coop_referee.js creates. Returns fewer pairs than requested when the
-    // palette runs out - the same shortfall the referee reports before refusing
-    // the battle - so callers must tolerate a missing entry.
+    // Index-aligned with the armies gw_coop_referee.js creates. Returns fewer
+    // pairs than asked for when the palette runs out, so callers must cope.
     pairsForPlayers: function (playerCount, factionColour) {
       var pairs = [_.cloneDeep(factionColour)];
       var primaries = lobbyPrimariesBySimilarity(factionColour[0]);
@@ -150,9 +140,8 @@ define(function () {
       return pairs;
     },
 
-    // The order gw_lobby.js's startGame() walks when it hands the split armies to
-    // clients: host first, everyone else left in join order. The UI client list
-    // identifies the host by role rather than by the creator id the server uses.
+    // The order gw_lobby.js's startGame() hands out the split armies: host first,
+    // then join order. The UI list identifies the host by role, not creator id.
     clientsInPlayerOrder: function (connectedClients) {
       if (!_.isArray(connectedClients)) {
         return [];

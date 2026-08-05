@@ -1,9 +1,7 @@
 "use strict";
 
-// modinfo.json's `scenes` block is the mod's real entry-point list: the game loads
-// exactly the coui:// files listed there for each scene, nothing else. A renamed or
-// deleted file that's still referenced here fails silently in-game (that scene just
-// doesn't get the intended behavior) with no error a contributor would see locally.
+// modinfo.json's `scenes` block is the mod's real entry-point list, and a stale
+// entry fails silently in-game. See architecture.md.
 
 const fs = require("node:fs");
 const path = require("node:path");

@@ -1,10 +1,7 @@
 "use strict";
 
-// Tests for shared/gw_galaxy_connect.js, the repair for stars that the base game's
-// GalaxyBuilder.buildGraph() leaves with no gates when it strips the convex-hull edges.
-// The module is pure index/edge arithmetic over plain arrays, so it loads directly under
-// the Node AMD harness with no ko/api stubs; the builder glue that calls it lives in the
-// coverage-excluded, base-game-shadowed gw_galaxy.js.
+// Tests for shared/gw_galaxy_connect.js, the repair for stars buildGraph() leaves
+// with no gates when it strips the convex-hull edges.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -14,8 +11,7 @@ const galaxyConnect = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_connect.js"
 );
 
-// Graph.getConnections() is a sparse array built only from the edges that survived, so a
-// star with no surviving edge has no entry at all. Build the same shape from an edge list.
+// getConnections() is sparse: a star with no surviving edge has no entry at all.
 function connectionsFrom(edges) {
   const connections = [];
   edges.forEach((edge) => {
@@ -102,8 +98,8 @@ describe("reconnectingEdges", () => {
   });
 
   it("reconnects the origin when it is the isolated star", () => {
-    // The origin is always a hull star, so it is itself at risk; if it is the one left
-    // with no edges, calcDistance assigns no distance to any star at all.
+    // The origin is always a hull star, so it is itself at risk - and an isolated
+    // origin leaves calcDistance assigning no distance to any star at all.
     const delaunay = [
       [0, 1],
       [0, 2],

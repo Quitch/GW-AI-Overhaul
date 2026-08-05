@@ -76,9 +76,8 @@ define(function () {
           _.delay(done);
         }
       };
-      // Replaces applyCards for the duration of the pass: a card calling it from
-      // its own buff/dull only marks the inventory dirty, and finishApplyCards
-      // re-runs the real one afterwards rather than recursing mid-pass.
+      // Replaces applyCards for the pass, so a card calling it from its own
+      // buff/dull only marks dirty. finishApplyCards re-runs the real one.
       self.applyCards = function (queueDone) {
         dirty = true;
         if (!queueDone) {

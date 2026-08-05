@@ -1,15 +1,9 @@
-// Pure card-dealing helpers extracted out of gw_play/cards.js so they can be unit
-// tested under the Node AMD harness (cards.js is a self-invoking scene script that
-// never calls define() and so is unloadable/untestable in place). No deps beyond the
-// lodash global, and nothing here touches model/$/ko/game at define time - matching
-// shared/cards.js. cards.js loads this via its main requireGW and threads the returned
-// object through the extracted factories as `helpers`.
+// The measured half of gw_play/cards.js. Nothing here may touch model/$/ko/game
+// at define time - see testing.md, "Coverage".
 define(function () {
   return {
-    // How many tech cards to offer for a deal: the base count plus one for a full hand
-    // and one more when the Lucky start card is held. inventory is passed explicitly
-    // (callers with no inventory in hand pass game.inventory()); a falsy inventory just
-    // yields the base count.
+    // The base count, plus one for a full hand and one for the Lucky start card.
+    // A falsy inventory yields the base count.
     cardsOfferedCount: function (offer, inventory) {
       var cardsToOffer = offer;
 
@@ -32,10 +26,8 @@ define(function () {
       return cardsToOffer;
     },
 
-    // Whether `card` should be withheld from a deal. systemCards is the list of cards
-    // already present in the system (duplicates are allowed across players but not
-    // within one player's deal); callers always pass an array. In testRun mode this
-    // instead asserts a card that *should* be a duplicate is detected as one.
+    // Whether `card` should be withheld from a deal. Duplicates are allowed
+    // across players but not within one player's deal.
     doNotDealCard: function (
       inventory,
       card,
@@ -110,14 +102,10 @@ define(function () {
       );
     },
 
-    // Whether the exploration that started a deal is still the live one by the time the
-    // async card chooser resolves. recordHostTechCardDeal writes into the GW save, and
-    // the recorded count is a standing obligation to every co-op viewer - one whose deal
-    // count falls behind is dealt a catch-up hand for it on reconnect - so a deal that
-    // lands after the turn has moved on must not be recorded. The three checks cover the
-    // three ways gw_game.js ends an exploration: winTurn (sets explored, so hasCard goes
-    // false, and turn state end), move (a new current star), and any other turn state
-    // the exploration no longer owns.
+    // Whether the exploration that started a deal is still live once the async
+    // chooser resolves. A recorded deal is a standing obligation to every viewer,
+    // so a stale one must not be recorded. The three checks cover gw_game.js's
+    // three ways of ending an exploration: winTurn, move, and turn state.
     explorationStillLive: function (game, starIndex, star) {
       if (
         !game ||
@@ -137,9 +125,7 @@ define(function () {
       );
     },
 
-    // Attach the co-op ally's penchant to a subcommander in place. Reads the runtime
-    // `loc` global; gwoSettings/gwoAI are injected so this stays pure and testable. A
-    // no-op unless the ally is Penchant.
+    // Mutates the subcommander. A no-op unless the ally is Penchant.
     applyPenchantToSubcommander: function (subcommander, gwoSettings, gwoAI) {
       if (!gwoSettings || gwoSettings.aiAlly !== "Penchant") {
         return;

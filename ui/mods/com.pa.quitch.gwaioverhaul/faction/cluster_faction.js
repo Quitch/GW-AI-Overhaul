@@ -59,9 +59,8 @@ define([
     })
   );
   var randomCharacter = "!LOC:Random";
-  // The personality here is a fixed default; faction/faction_seed.js re-derives one per
-  // role from the war seed. Sampling here would run at module load, so it re-rolled on
-  // every entry into the gw_start scene rather than following the seed.
+  // A fixed default. faction/faction_seed.js re-derives one per role from the
+  // war seed - sampling here would run at module load. See galaxy.md.
   var randomAIs = _.map(roles, function (role) {
     return {
       name: role.name,
@@ -106,10 +105,8 @@ define([
     minions: _.map(minions, function (personalityModifiers) {
       return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
     }),
-    // Read by faction/faction_seed.js, which reseeds this faction once per war. Cluster
-    // has one Random commander per role, appended by the concat above, so they occupy the
-    // last roles.length slots. The three biomes belong to isExplicit planets, which
-    // template-loader returns verbatim - nothing downstream would otherwise seed them.
+    // Read by faction/faction_seed.js. The concat above puts Cluster's one Random
+    // commander per role in the last roles.length slots.
     gwaioRandomSpec: {
       baseline: baselinePersonality,
       descriptions: systemDescriptions,

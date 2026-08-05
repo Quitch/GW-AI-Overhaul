@@ -1,12 +1,7 @@
 "use strict";
 
-// Unit tests for shared/deal.js: dealCard (resolve/reject and the getContext ->
-// deal -> keep/releaseContext lifecycle over a loaded card) and setupGwoCards (the
-// techCardDeck branch that decides whether the Expanded card set is included). Both
-// touch engine globals only at call time - $ (jQuery Deferred) for dealCard, model
-// for setupGwoCards - so the module loads under the Node AMD harness and we install
-// the fake $/model per describe block. setupGwoDeck is left untested: it's thin glue
-// over requireGW's async card loading with no branching worth pinning.
+// Unit tests for shared/deal.js: dealCard's lifecycle and setupGwoCards' deck
+// branch. setupGwoDeck is untested - thin async glue with no branching to pin.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -21,11 +16,9 @@ const deal = loadCouiModule(
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);
 
-// dealCard runs its body inside loaded.then(...). In the not-found path that callback
-// returns the (already-rejected) result deferred; jQuery's Deferred.then absorbs that,
-// but native promises would surface it as a Node unhandledRejection. This stand-in
-// swallows the callback's own returned rejection while leaving `result` free to reject
-// for the caller to await - so we assert on dealCard's return value, not this seam.
+// jQuery's Deferred.then absorbs the rejection the not-found path returns; a native
+// promise surfaces it as an unhandledRejection. This swallows the callback's own
+// rejection while leaving `result` free to reject for the caller.
 function fakeLoaded() {
   return {
     then: function (callback) {

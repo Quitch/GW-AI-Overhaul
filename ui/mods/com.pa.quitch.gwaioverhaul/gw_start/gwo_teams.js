@@ -1,13 +1,8 @@
-// GWO's copy of the two base-game gw_teams.js methods war creation uses, seeded so a war
-// seed picks the same team and generates the same boss system.
+// Seeded copies of the two gw_teams.js methods war creation uses. A copy, not a
+// shadow: stock calls getTeam as _.map(aiFactions, GWTeams.getTeam), which would
+// hand the added rng parameter the array index. See shadowing.md.
 //
-// A copy in GWO's namespace rather than a shadow of pages/gw_start/gw_teams: the base
-// game calls getTeam as _.map(aiFactions, GWTeams.getTeam), which would hand an added rng
-// parameter the array index. Shadowing meant either accepting that hazard or duck-typing
-// around it; owning the module removes it. See shadowing.md.
-//
-// makeWorker is not carried over - gw_start/setup.js has replaced it with its own since
-// long before this, to preserve personality_tags through a _.cloneDeep.
+// makeWorker is deliberately absent; gw_start/setup.js supplies its own.
 define([
   "main/game/galactic_war/shared/js/systems/template-loader",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_system_templates.js",

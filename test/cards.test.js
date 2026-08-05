@@ -1,11 +1,6 @@
 "use strict";
 
-// Unit tests for shared/cards.js, the pure-logic helpers nearly every tech card's
-// deal()/buff() delegates to: the unit-membership predicates, the loadout-icon
-// lookup (a 9-way tier switch over a localStorage record), the co-op cross-player
-// card matching (id-then-name fallback), advanced-tech detection, and the dull
-// bookkeeping. The few functions that read model/window get a minimal stand-in
-// installed per-test.
+// Unit tests for shared/cards.js, the helpers nearly every card delegates to.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -108,9 +103,7 @@ describe("conditionalDeal", () => {
 });
 
 describe("commanderWeight", () => {
-  // Commander stat cards mod base_commander, the spec every Sub Commander
-  // inherits, so their worth tracks the size of the retinue. Faction index 4 is
-  // Cluster, whose Sub Commanders aren't commanders and so multiply nothing.
+  // Faction index 4 is Cluster, whose Sub Commanders are not commanders.
   const CLUSTER = 4;
   const withRetinue = (count, faction) => ({
     minions: () => new Array(count).fill({}),
@@ -246,9 +239,8 @@ describe("travelledShort", () => {
 });
 
 describe("farForSize", () => {
-  // Real nine-size table (base five + Bigger-GW's four). A distinct-per-tier
-  // thresholds array is used for the indexing assertions so they test the tier
-  // lookup itself, not the shipped threshold values (which are free to be retuned).
+  // A distinct-per-tier thresholds array, so these test the tier lookup itself
+  // rather than the shipped values, which are free to be retuned.
   const numberOfSystems = [18, 24, 36, 54, 78, 108, 144, 186, 234];
   const thresholds = [10, 20, 30, 40, 50, 60, 70, 80, 90];
 
@@ -298,12 +290,9 @@ describe("farForSize", () => {
 });
 
 describe("travelled* distance wrappers", () => {
-  // The named wrappers keep their distances tables private, so their
-  // travelledShort <= travelledModerate <= travelledFar ordering is verified
-  // behaviourally: with all three tested against the same system, the stricter
-  // (larger-threshold) tier can only fire once the looser ones already have.
-  // Sweeping distances and asserting that implication exercises the ordering
-  // without reaching into the distances tables.
+  // The wrappers keep their tables private, so the short <= moderate <= far
+  // ordering is verified behaviourally: a stricter tier can only fire once the
+  // looser ones already have.
   const numberOfSystems = [18, 24, 36, 54, 78, 108, 144, 186, 234];
 
   function systemAt(dist) {
@@ -353,9 +342,8 @@ describe("antiTechDeal", () => {
     };
   }
 
-  // A host inventory that would flip every assertion below if it were consulted.
-  // Installed on every case so a regression back to model.game().inventory() fails
-  // rather than coincidentally agreeing with the per-player inventory.
+  // Deliberately contradicts the per-player inventory, so a regression back to
+  // model.game().inventory() fails rather than coincidentally agreeing.
   function installContradictingHost() {
     setGlobal("model", {
       game: () => ({
@@ -500,9 +488,7 @@ describe("hasT2Access", () => {
 });
 
 describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
-  // A host inventory plus two co-op players; only "alice" is a connected client, so
-  // only her cards should be folded in. "bob" is present in the game data but not
-  // connected, exercising the isConnectedPlayerInventory filter.
+  // "bob" is in the game data but not connected, so only alice's cards fold in.
   function installCoopModel(connectedClients) {
     const hostInventory = {
       cards: function () {

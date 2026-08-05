@@ -1,18 +1,12 @@
 "use strict";
 
-// Cross-reference checks entirely within this repo (no base-game install needed, so
-// these run anywhere including hosted CI - contrast with a unit-id-vs-base-game-specs
-// check, which would need the player's local Steam install and can't run in CI; see
-// this repo's docs for that as a separate, local-only script).
+// Cross-reference checks within this repo only, so they run in CI:
 //
-//   1. Every loadout card id (shared/loadout_ids.js) has a matching file under
-//      ui/main/game/galactic_war/cards/.
-//   2. Every `<unitsParam>.someKey` reference in a card that imports shared/units.js
-//      actually exists as a key in units.js (a typo here is `undefined` at runtime
-//      with no error - e.g. a card silently referencing a nonexistent unit).
-//   3. Every `builders` role string in AI build-order JSON resolves against
-//      pa/ai_penchant/unit_maps/ai_unit_map.json's unit_map, except a small set of
-//      known special-cased literal names (see KNOWN_BUILDER_NAMES below).
+//   1. Every loadout card id has a file under ui/main/game/galactic_war/cards/.
+//   2. Every `<unitsParam>.someKey` reference in a card resolves against units.js.
+//      A typo there is `undefined` at runtime, with no error.
+//   3. Every `builders` role in AI build-order JSON resolves against the unit map,
+//      bar the literals in KNOWN_BUILDER_NAMES.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -38,9 +32,8 @@ const UNIT_MAP_PATH = path.join(
   "ai_unit_map.json"
 );
 
-// Referenced directly in referee_ai.js's clusterAIModsInScopeOfFile() as literal
-// commander/support-platform unit names, not resolved through the fabber/factory
-// role map - confirmed by grep, not a gap in ai_unit_map.json.
+// referee_ai.js names these literally rather than resolving them through the
+// role map, so their absence from ai_unit_map.json is not a gap.
 const KNOWN_BUILDER_NAMES = new Set(["SupportCommander", "SupportPlatform"]);
 
 const failures = [];
@@ -48,24 +41,19 @@ function fail(message) {
   failures.push(message);
 }
 
-// Strips comments before reference extraction - not a real JS parser, so a `//`
-// inside a string literal would (harmlessly) also get stripped, but this repo's
-// files don't do that near unit references. Without this, a reference intentionally
-// commented out (e.g. "// gwoUnit.x - explanation") reads as a live one.
+// Without this, a commented-out reference reads as a live one. Not a real parser,
+// so a `//` inside a string literal is stripped too - harmless here.
 //
-// Line comments match up to (not through) the next line terminator directly, rather
-// than splitting on "\n" and anchoring on $ per line - these files are CRLF, and "."
-// never matches "\r", so a $-anchored per-line replace silently fails to reach
-// end-of-line on a \r\n file. Block comments are stripped first, so a `//` inside one
-// cannot swallow the block's closing delimiter.
+// Line comments match up to the next terminator rather than anchoring on $ per
+// line: these files are CRLF and "." never matches "\r". Block comments go first,
+// so a `//` inside one cannot swallow the closing delimiter.
 function stripComments(src) {
   return src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n\r]*/g, "");
 }
 
 function checkLoadoutCardsExist() {
-  // loadouts.js itself needs shared/gw_common (an unshipped base-game module) and so
-  // cannot load through the AMD shim, but loadout_ids.js is plain data with no engine
-  // coupling - load it rather than scraping source for id literals.
+  // loadout_ids.js is plain data, so load it rather than scraping source.
+  // loadouts.js needs the unshipped shared/gw_common and cannot be loaded.
   const ids = loadCouiModule(LOADOUT_IDS_COUI).all;
 
   if (!ids.length) {
@@ -89,13 +77,11 @@ function checkLoadoutCardsExist() {
   );
 }
 
-// Finds the local parameter name a card bound shared/units.js to (by index-matching
-// the define() dependency array against the factory's parameter list), rather than
-// assuming every card calls it `gwoUnit` - most do, but this doesn't rely on that.
+// Index-matches the define() dependency array against the factory's parameter
+// list, rather than assuming every card names it `gwoUnit`.
 function findUnitsParamName(src) {
-  // Negated character classes ([^\]]/[^)]), not lazy dot-all ([\s\S]*?): deps arrays
-  // and parameter lists here never contain a literal `]`/`)` in their content, and
-  // this avoids the backtracking risk of lazy-matching-across-anything patterns.
+  // Negated character classes, not lazy dot-all: no deps array or parameter list
+  // here contains a literal `]`/`)`, and this cannot backtrack pathologically.
   const match = src.match(
     /define\(\s*\[([^\]]*)\]\s*,\s*function\s*\(([^)]*)\)/
   );

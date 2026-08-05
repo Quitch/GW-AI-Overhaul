@@ -1,7 +1,5 @@
-// The loadout card ids, in one place. shared/loadouts.js turns these into the card
-// objects the loadout picker binds to, and shared/deal.js needs the same ids as bare
-// strings for the deck. loadouts.js cannot serve deal.js directly - it touches
-// model.makeKnown and GW.bank at load time, neither of which exists in gw_play.
+// The loadout card ids, in one place. loadouts.js cannot serve deal.js directly:
+// it touches model.makeKnown and GW.bank at load time, and gw_play has neither.
 define(function () {
   var starting = [
     "gwc_start_vehicle",

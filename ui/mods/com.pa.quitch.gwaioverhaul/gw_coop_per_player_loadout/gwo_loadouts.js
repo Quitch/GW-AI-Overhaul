@@ -110,10 +110,8 @@ function gwoLoadouts() {
 
         gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
 
-        // In this scene, the view model does not expose player faction, so we
-        // resolve it from the active campaign game and carry it into the
-        // temporary/saved loadout inventories. Cluster start cards rely on
-        // global.playerFaction to inject required commander modifiers.
+        // This scene's view model has no player faction, but Cluster start cards
+        // read global.playerFaction, so resolve it from the campaign game.
         var resolvePlayerFaction = function () {
           var deferred = $.Deferred();
           var activeGameId = _.isFunction(model.activeGameId)

@@ -1,9 +1,7 @@
 "use strict";
 
-// Tests for faction/faction_seed.js, which re-derives the random parts of a faction from
-// the war seed. The data it works on lives in the coverage-excluded gw_faction_*.js
-// shadows and faction/cluster_faction.js, so this exercises the module against
-// hand-built factions of the same shape.
+// Tests for faction/faction_seed.js. Its real data lives in coverage-excluded
+// files, so these use hand-built factions of the same shape.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -76,18 +74,15 @@ describe("faction_seed reseedFaction", () => {
 
     const c = faction();
     factionSeed.reseedFaction(c, gwoRng.create("seed-b"));
-    // Distinct seeds must eventually disagree somewhere; a 4-entry pool and a 5-entry
-    // description list make a full collision unlikely but not impossible, so assert on
-    // the pair rather than on either alone.
+    // Small pools make a single-field collision plausible, so assert on the pair.
     assert.notDeepEqual(
       [randomMinion(c).personality, c.teams[0].systemDescription],
       [randomMinion(a).personality, a.teams[0].systemDescription]
     );
   });
 
-  // The faction file builds every minion as baseline + modifiers. Writing .personality
-  // straight onto the existing minion would leave the Random commander without the
-  // faction-wide fields the others carry.
+  // Writing .personality onto the existing minion would skip the baseline's
+  // faction-wide fields.
   it("rebuilds the Random minion through the baseline merge", () => {
     const built = faction();
     factionSeed.reseedFaction(built, gwoRng.create("baseline"));

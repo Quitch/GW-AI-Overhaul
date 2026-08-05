@@ -1,10 +1,6 @@
 "use strict";
 
-// Unit tests for shared/spec_cache.js - GWO's caching reimplementation of the base
-// game's GW.specs.genUnitSpecs (media/ui/main/game/galactic_war/shared/js/gw_specs.js).
-// It walks the unit-spec dependency graph, appending a tag to every spec reference,
-// but fetches+parses each raw file at most once and reuses it across every tag. These
-// tests drive it with an injected mock fetch so no game/Chromium runtime is needed.
+// Unit tests for shared/spec_cache.js, driven with an injected mock fetch.
 
 const { describe, it, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -14,9 +10,8 @@ const specCache = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js"
 );
 
-// A mock deps.fetch that records every file id it is asked for and hands back a fresh
-// deep copy of the pristine fixture (so a caller mutating the result can never reach
-// back into the fixture). Unknown ids reject, mirroring a missing file.
+// Records every id asked for and returns a fresh copy, so a mutating caller cannot
+// reach back into the fixture. Unknown ids reject, mirroring a missing file.
 function makeFetch(files) {
   const calls = [];
   const fetch = (item) => {

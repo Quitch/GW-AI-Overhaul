@@ -1,21 +1,14 @@
 "use strict";
 
-// Characterization tests for GWGalaxy.pathBetween (a fog-of-war-aware BFS over the
-// galaxy's star graph). The GWGalaxy constructor lives in the measured, extracted
-// shared/gw_galaxy_graph.js (ko/lodash only); gw_galaxy.js augments it with the
-// base-game systems glue and is coverage-excluded. We load the graph module directly and
-// drive it with a minimal ko stub plus plain fake stars - no game/Chromium runtime
-// needed. These tests pin current behavior so pathBetween refactors stay
-// behavior-preserving.
+// Characterization tests for GWGalaxy.pathBetween, a fog-of-war-aware BFS over the
+// star graph. These pin current behaviour, so a refactor stays behaviour-preserving.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 
-// pathBetween's enclosing constructor calls ko.observable/observableArray/computed at
-// construction time. A minimal stub is enough: observables are get/set closures, and a
-// computed just re-evaluates its function on each read (so neighborsMap always reflects
-// the current gates()). It has to be installed before the module is loaded further
-// down; global._ (lodash) comes from the amd-loader.
+// The constructor calls ko at construction time, so this must be installed before
+// the module loads. A computed re-evaluates on every read, so neighborsMap always
+// reflects the current gates().
 global.ko = {
   observable: makeObservable,
   observableArray: makeObservable,

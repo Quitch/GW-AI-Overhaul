@@ -1,13 +1,7 @@
 "use strict";
 
-// Unit tests for shared/specs.js, the spec-merge engine that resolves base_spec
-// inheritance and applies tech-card spec mods. This is the most self-contained piece
-// of logic in the mod (see scripts/lib/amd-loader.js's module doc), so these tests
-// exercise real regression risk rather than just exercising the test harness.
-//
-// Only `mod` and `additionalSpecs` are exposed (see the return statement at the
-// bottom of specs.js) - flattenBaseSpecs/orderOfOperations are internal and are
-// exercised indirectly through mod()'s observable behavior, same as any consumer.
+// Unit tests for shared/specs.js. Only `mod` and `additionalSpecs` are exposed, so
+// flattenBaseSpecs and orderOfOperations are reached through mod()'s behaviour.
 
 const { describe, it, mock, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -435,9 +429,7 @@ describe("specs.mod - malformed-mod tolerance", () => {
 });
 
 describe("specs.mod - navigation pruning", () => {
-  // The game treats any unit with a navigation object - even an empty one - as
-  // mobile, so a navigation.* mod applied to a structure (which has no navigation
-  // object) must not leave a stray navigation: {} behind once serialised.
+  // An empty navigation object marks a structure as mobile. See specs.md.
   it("removes a navigation object left empty by a mod on a structure", () => {
     const warnMock = mock.method(console, "warn", () => {});
     const data = { "struct.json": { hp: 100 } };
@@ -556,9 +548,8 @@ describe("specs.mod - navigation pruning", () => {
 });
 
 describe("specs.additionalSpecs", () => {
-  // Pinned by content, not by count. A length check passes just as happily when an
-  // entry is swapped for an unrelated /pa/ path, which is the mistake worth catching;
-  // adding a genuinely new spec is a deliberate one-line edit here.
+  // By content, not count: a length check would pass on a swapped entry, which is
+  // the mistake worth catching.
   it("holds the weapon and ammo specs for the Firefly, Orca torpedo and Skitter", () => {
     assert.deepEqual(
       [...specs.additionalSpecs].sort(),

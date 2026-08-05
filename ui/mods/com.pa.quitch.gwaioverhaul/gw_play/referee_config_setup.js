@@ -1,19 +1,8 @@
-// Army/personality setup helpers for the battle-config referee (gw_play/referee_config.js).
-// These build the player/AI/subcommander armies and resolve their ai_paths - the
-// referee's assertable logic - so they are split out here into their own measured
-// module (directly unit-tested by test/referee_config_ai_paths.test.js) while
-// referee_config.js keeps only the model/ko/api glue that assembles the final config
-// and is coverage-excluded. All collaborators are shipped mod modules injected the same
-// way referee_config.js injected them, so nothing needs param-threading.
+// The measured half of gw_play/referee_config.js - see testing.md, "Coverage".
 //
-// Everything passed in here is a live persisted war object - the star's ai() with its
-// minions/foes, and the player's inventory.minions() - while the setup itself is not
-// idempotent: eco mods and fabber caps multiply, personality tags are pushed. A campaign
-// co-op host hires the referee twice per battle (base gw_play.js's
-// hireRefereesForLaunch), and a failed launch can leave mutated state behind for a later
-// save to serialize, so each entity is deep-copied before it is modified. The armies get
-// the battle's values; the war keeps its own. gw_per_player_tech_referee.js copies
-// viewers' minion personalities for the same reason.
+// Everything passed in is a live persisted war object, and none of this setup is
+// idempotent, so each entity is deep-copied before it is modified. The armies get
+// the battle's values; the war keeps its own. See architecture.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
@@ -130,9 +119,8 @@ define([
     return ai;
   };
 
-  // The game guarantees the player and the enemy are never simultaneously Cluster,
-  // so returning the same unscoped ai_cluster path regardless of isPlayer is safe -
-  // there's only ever one Cluster side per match to route there.
+  // One unscoped path regardless of isPlayer: the player and the enemy are never
+  // simultaneously Cluster. See ai-paths.md, "Invariants".
   var setAIPath = function (isCluster, isPlayer) {
     if (isCluster) {
       return gwoAI.getAIPathDestination("cluster");
@@ -174,10 +162,8 @@ define([
     };
   };
 
-  // startPosition is where these allies sit in the player-faction colour sequence
-  // (see shared/referee_coop.js). It defaults to 0 - the subcommanders, who come
-  // first - and referee_config.js passes the subcommander count when it sets up a
-  // star's ai.ally, which is numbered after every player's subcommanders.
+  // startPosition is a place in the player-faction colour sequence. It defaults
+  // to 0, the subcommanders; a star's ai.ally is numbered after them. See coop.md.
   var setupAlliedCommanders = function (
     allies,
     cards,

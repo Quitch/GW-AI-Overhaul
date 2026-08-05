@@ -1,9 +1,5 @@
-// Battle-config referee: assembles the launch config (armies, planets, game modes) for
-// a Galactic War fight. The army/personality setup and ai_path logic - the assertable
-// part - lives in the measured gw_play/referee_config_setup.js (unit-tested by
-// test/referee_config_ai_paths.test.js). What remains here reads model/ko/api and the
-// game/inventory observables to build and store the final config, so it is
-// coverage-excluded as untestable glue.
+// Battle-config referee: assembles the launch config (armies, planets, game
+// modes). Glue - the measured half is gw_play/referee_config_setup.js.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
@@ -101,11 +97,8 @@ define([
       playerTag
     );
 
-    // The star's ally is coloured after every player's subcommanders - including the
-    // viewers' ones gw_per_player_tech_referee.js adds later - so that a per-star
-    // commander never shifts a subcommander's colour, which is what lets the war
-    // panel show one. Without per-player tech the count is just the host's minions,
-    // which is exactly where the ally already sat.
+    // The ally is coloured after every player's subcommanders, viewers' included,
+    // so it never shifts one the war panel is already showing. See coop.md.
     if (!_.isUndefined(ai.ally)) {
       setupAlliedCommanders(
         [ai.ally],

@@ -1,11 +1,9 @@
-// GWO - a copy of the base game's systems/template-loader.js, seeded so a war seed
-// reproduces the same systems. Kept line-for-line close to stock - its variable names,
-// its comments, even its dead fromRandomList array branch - so a diff against the base
-// file after a PA patch stays readable. Every change is marked "GWO -".
+// GWO - a seeded copy of the base game's systems/template-loader.js. Keep it
+// line-for-line close to stock, its own comments and dead branches included, or
+// the diff after a PA patch stops being readable. Every change is marked "GWO -".
 //
-// A copy rather than a shadow because Shared Systems for Galactic War replaces that same
-// path wholesale, and a shadowed path can only have one owner; chooseFor() at the bottom
-// picks between the two. See shadowing.md and galaxy.md.
+// A copy, not a shadow: Shared Systems for Galactic War claims that same path and
+// a path has one owner. chooseFor() at the bottom picks between the two.
 define([
   "main/game/galactic_war/shared/js/systems/pa-easy",
   "main/game/galactic_war/shared/js/systems/pa-normal",

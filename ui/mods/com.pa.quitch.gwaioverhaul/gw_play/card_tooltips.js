@@ -15,9 +15,8 @@ function gwoCardTooltips() {
     );
     locTree($("#system-card"));
 
-    // Built once per tooltip rather than once per unit in it: the old form rebuilt
-    // and concatenated the whole inventory for every unit a card affects, so a card
-    // covering most of the unit list rescanned it on every hover.
+    // Build once per tooltip, not once per unit in it - a card covering most of
+    // the unit list would otherwise rescan the inventory on every hover.
     var playerUnitLookup = function () {
       var owned = {};
       var playerUnits = model
@@ -80,9 +79,8 @@ function gwoCardTooltips() {
           "gwc_minion"
         );
 
-        // path -> name, replacing a linear scan of the whole name table per unit.
-        // gwoUnitToNames.units is a modder extension point, so rebuild whenever it
-        // grows rather than caching it once and missing late additions.
+        // Rebuilt whenever it grows: gwoUnitToNames.units is a modder extension
+        // point, so caching once would miss late additions.
         var unitNamesByPath = {};
         var unitNamesIndexedCount = -1;
         var unitNameFor = function (unit) {
@@ -169,10 +167,8 @@ function gwoCardTooltips() {
             });
           }
 
-          // Write through the observableArray rather than assigning into the array
-          // it returns. The latter skips valueHasMutated, so nothing is notified -
-          // which only goes unnoticed because the tooltip binding happens to read
-          // lazily at hover time.
+          // Write through the observableArray. Assigning into the array it returns
+          // skips valueHasMutated, so nothing is notified.
           var tooltips = model.gwoTechCardTooltip().slice();
           tooltips[hoverIndex] = tooltip;
           model.gwoTechCardTooltip(tooltips);

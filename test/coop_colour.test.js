@@ -1,11 +1,8 @@
 "use strict";
 
-// Tests for gw_play/coop_colour.js, which predicts the army colour each co-op client
-// will be given in the next battle. The expected values below were produced by running
-// the base game's own gw_coop_referee.js apply() over a synthetic battle config and
-// reading back the split armies' colours, so these assertions are a genuine
-// cross-check of the mirrored palette rather than a restatement of the mod's code. If
-// the base game ever changes its lobby palette these are the tests that should fail.
+// Tests for gw_play/coop_colour.js. The expected values were read back from the
+// base game's own gw_coop_referee.js apply(), so these cross-check the mirrored
+// palette rather than restating the mod. They are what should fail if it changes.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

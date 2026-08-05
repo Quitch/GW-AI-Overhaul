@@ -1,10 +1,7 @@
 "use strict";
 
-// Tests for shared/gwo_rng.js, the seeded PRNG war generation draws from so that one seed
-// reproduces one galaxy. The module is self-contained arithmetic - no ko, no api, and
-// deliberately no Math.seedrandom, which does not exist in Node - so it loads directly
-// under the AMD harness. The stream-independence and no-Math.random suites below are the
-// two properties the rest of the seeding work rests on.
+// Tests for shared/gwo_rng.js. The stream-independence and no-Math.random suites
+// below are the two properties the rest of the seeding work rests on.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -117,9 +114,8 @@ describe("gwo_rng sample", () => {
     assert.deepEqual(rng.sample([1, 2, 3], 10).sort(), [1, 2, 3]);
   });
 
-  // setupAIBuffs asks for Math.floor(distance / 2 - handicap) buffs, which is negative
-  // for stars near the origin. lodash clamps that to []; anything else - undefined, a
-  // throw, a full list - breaks every low-distance AI.
+  // setupAIBuffs asks for a negative count near the origin. lodash clamps to [];
+  // anything else breaks every low-distance AI.
   it("returns an empty array for a zero or negative n", () => {
     const rng = gwoRng.create("sample-negative");
     assert.deepEqual(rng.sample([1, 2, 3], 0), []);
@@ -167,9 +163,8 @@ describe("gwo_rng stream", () => {
     );
   });
 
-  // The property everything else rests on: a stream is derived from the seed path, not
-  // from a counter, so adding a draw in one phase of generation cannot move the results
-  // of another. Without it, the galaxy would shift whenever an AI gained a roll.
+  // A stream derives from the seed path, not a counter, so adding a draw in one
+  // phase cannot move another's results. See galaxy.md.
   it("is unaffected by draws taken from the parent or a sibling first", () => {
     const clean = gwoRng.create("root").stream("a");
 
@@ -211,8 +206,8 @@ describe("gwo_rng stream", () => {
 });
 
 describe("gwo_rng independence from Math.random", () => {
-  // The whole point of the module. A fallback creeping into any helper would make war
-  // generation quietly unreproducible again, and only this test would notice.
+  // A Math.random fallback creeping into any helper would make war generation
+  // unreproducible again, and only this test would notice.
   it("never touches Math.random", () => {
     const nativeRandom = Math.random;
     Math.random = () => {

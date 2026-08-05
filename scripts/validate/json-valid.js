@@ -1,8 +1,7 @@
 "use strict";
 
-// Every .json file in the repo must parse. Cheap, and catches the class of bug that
-// silently breaks the game with no error until something tries to load that exact
-// file in-game (a trailing comma, an unescaped quote in a hand-edited build list, etc).
+// Every .json in the repo must parse. Cheap, and the failure it catches is
+// otherwise silent until something loads that exact file in-game.
 
 const fs = require("node:fs");
 const { REPO_ROOT } = require("../lib/amd-loader.js");

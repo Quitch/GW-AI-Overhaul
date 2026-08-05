@@ -43,8 +43,8 @@ function gwoRecordHighestDifficultyDefeated() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
       ],
       function (gwoDifficulty) {
-        // Read the tiers from the difficulty data rather than restating them, so
-        // renaming or inserting one cannot silently shift everybody's badge history.
+        // Read from the difficulty data, not restated: renaming or inserting a
+        // tier would otherwise shift everybody's badge history.
         var tierIndex = _.findIndex(
           gwoDifficulty.difficulties,
           function (tier) {
@@ -55,8 +55,8 @@ function gwoRecordHighestDifficultyDefeated() {
           }
         );
 
-        // Custom carries no difficulty rating, so there is nothing to rank it
-        // against - recording it produced an index of -2, which no badge matches.
+        // Custom carries no difficulty rating, so it ranks against nothing -
+        // recording it yields an index of -2, which no badge matches.
         if (tierIndex === -1) {
           return;
         }

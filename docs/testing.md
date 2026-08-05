@@ -128,6 +128,42 @@ The Sonar quality gate requires ~80% coverage on **new code only**. Files that a
 pure `model`/`ko`/`api` glue are coverage-excluded, with their testable logic
 extracted into measured sibling modules — see [`shadowing.md`](shadowing.md).
 
+Each sibling is a plain `define()` over lodash and `console` only: no engine
+globals, and no dependency the repo does not ship, so it loads under the Node AMD
+harness. Where a helper needs one of the excluded file's injected modules, it
+takes it as an explicit parameter rather than closing over it. The pairs:
+
+| Excluded glue                           | Measured sibling             |
+| --------------------------------------- | ---------------------------- |
+| `gw_play/gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js` |
+| `shared/js/gw_galaxy.js`                | `shared/gw_galaxy_graph.js`  |
+
+The glue file depends on the unshipped `shared/gw_common`, which is what stops it
+loading in the harness in the first place.
+
+### The `typeof module` hook
+
+Several scene scripts are not modules at all: `gw_play/cards.js` is self-invoking
+and never calls `define()`, so it cannot be loaded in place. Its pure logic is
+extracted into sibling `define()` modules — `cards_deal_helpers.js`,
+`cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_card_name_sync.js`,
+`cards_cheats.js` — each returning a factory that `cards.js` calls with its
+collaborators.
+
+Where a helper inside such a module is not reachable through the returned
+factory, it is re-exported through:
+
+```js
+// eslint-disable-next-line no-undef
+if (typeof module !== "undefined" && module.exports) {
+```
+
+`module` is a Node/CommonJS global that does not exist in the game's Chromium
+runtime, so the branch is dead in production and exists purely for the test
+suite. It is deliberately absent from these files' configured globals, which is
+why each occurrence carries an `eslint-disable-next-line no-undef`. The same hook
+appears in `gw_play/referee_ai.js`.
+
 `test/version.test.js` deliberately covers the one-line version bump: the SonarCloud
 new-code baseline is the previous version, so a bump always lands inside the
 new-code period and an uncovered one drags "Coverage on New Code" to 0% by itself.

@@ -1,23 +1,16 @@
 "use strict";
 
-// A Proxy that answers any property access or call with another instance of itself,
-// recursively, without ever throwing. Used to stand in for the real `inventory`
-// object passed to a card's buff()/dull() when we only care about one or two specific
-// calls it makes (e.g. addAIMods) and want to tolerate whatever else it does
-// (inventory.units(), inventory.maxCards(x), inventory.minions.push(x), ...) without
-// having to hand-mock every method every card happens to touch.
+// A Proxy answering any property access or call with another instance of itself,
+// so a caller inspecting one method of `inventory` need not mock the rest.
+// See testing.md.
 function stubTarget() {
-  // Never actually invoked - Proxy's `apply` trap intercepts calls before this body
-  // would run. It only needs to exist so `typeof` and the Proxy's function-ness hold.
+  // Never invoked; the `apply` trap intercepts first. It exists so `typeof` holds.
 }
 
 function createAutoStub() {
   return new Proxy(stubTarget, {
     get(obj, prop) {
-      // Without these, arithmetic/string-concat on a stubbed value (e.g.
-      // `inventory.maxCards() + 1`) throws instead of silently producing garbage -
-      // and garbage is fine here, since we only care about reaching the specific
-      // call (e.g. addAIMods) we're actually inspecting.
+      // Arithmetic on a stubbed value should produce garbage, not throw.
       if (prop === Symbol.toPrimitive) {
         return function (hint) {
           return hint === "number" ? 0 : "";

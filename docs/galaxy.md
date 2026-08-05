@@ -102,6 +102,13 @@ first. Two consequences worth relying on:
 | `ai.<team>` → `boss` / `worker.<n>` → `minion.<n>`, `foe.<n>`, `ally` | that AI's buffs, econ, game modes, minions, foes, ally, penchant                                  |
 | `treasure`                                                            | the treasure planet's locked loadout                                                              |
 
+The `factions` stream is the odd one out, because faction data is loaded, not
+generated. Each `gw_faction_*.js` declares its random choices as a
+`gwaioRandomSpec` and ships a fixed default alongside; `faction/faction_seed.js`
+resolves the spec against the stream. `gw_start/setup.js` calls `reseed()` once
+per war and **before anything reads `GWFactions`** — `getTeam` shallow-copies a
+team, snapshotting `systemDescription` by value.
+
 `workers` is a single ordered stream rather than a keyed one, because the breeder's spread
 loop is synchronous — every `$.when` in it wraps an already-resolved value, which jQuery 2
 fires inline. It also _must_ stay ordered: `makeWorker` mutates `remainingMinions`, so

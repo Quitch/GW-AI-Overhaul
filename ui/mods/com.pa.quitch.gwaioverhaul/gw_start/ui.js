@@ -31,10 +31,7 @@ function gwoUI() {
 
     // gw_start uses ko.applyBindings(model)
     model.gwoDifficultySettings = {
-      // Name-keyed snapshot of the last saved settings, written by
-      // gw_start/setup.js's saveDifficultySettings and read by
-      // restorePreviousSettings below. May still be a legacy positional array for
-      // players with v6.20 and earlier saves.
+      // Name-keyed, but may be a legacy positional array on v6.20 and earlier saves.
       previousSettings: ko
         .observableArray()
         .extend({ local: "gwo_previous_settings" }),
@@ -92,19 +89,8 @@ function gwoUI() {
       difficultySettings.playerFaction(model.playerFactionIndex());
     });
 
-    // Restores previously-saved settings onto `settings`.
-    //
-    // previousSettings is expected to be a name-keyed object, e.g.
-    // { hardcore: true, factionScaling: false, ... }, so a value is only
-    // ever written into the setting it was saved from - adding, removing,
-    // or reordering settings in gwoDifficultySettings can never cause a
-    // saved value to be silently assigned to the wrong setting.
-    //
-    // Older saves (v6.20 and earlier) may still be sitting in
-    // localStorage as a positional array. That legacy shape is supported
-    // on a best-effort basis: restore only proceeds if the array length
-    // still matches the current setting count, otherwise it's treated as
-    // unusable and skipped rather than risk a mismatched restore.
+    // The legacy array shape is positional, so it is only restored while its
+    // length still matches the setting count - past that, values misassign.
     var restorePreviousSettings = function (settings) {
       var previousSettings = settings.previousSettings();
 
@@ -212,12 +198,9 @@ function gwoUI() {
       return setting() ? loc("!LOC:ON") : loc("!LOC:OFF");
     };
 
-    // The Commander column is replaced by a modal, so the prev/next buttons
-    // that drove gw_start.js's private selectedCommanderIndex go with it.
-    // model.selectedCommander is a read-only computed over that index, so swap
-    // in a writable observable the modal can set. The base computed is still
-    // the source of the initial pick - CommanderUtility.afterCommandersLoaded
-    // resolves after this runs - so forward its value through.
+    // Stock's selectedCommander is a read-only computed over a private index the
+    // modal cannot set, so swap in a writable observable and forward the base
+    // value through - it still resolves the initial pick, after this runs.
     var baseSelectedCommander = model.selectedCommander;
     var selectedCommander = ko.observable(baseSelectedCommander());
     baseSelectedCommander.subscribe(selectedCommander);
@@ -226,9 +209,8 @@ function gwoUI() {
       model.updateCommander();
     });
 
-    // The commander art is rendered in the blue team paint, so rotating its hue
-    // by the difference to the faction's hue recolours it while keeping the
-    // model's shading and panel detail.
+    // The art ships in the blue team paint. Rotating by the difference to the
+    // faction hue recolours it while keeping the model's shading.
     var commanderArtHue = 210;
 
     // Returns undefined for an achromatic colour, which has no hue to rotate to.
@@ -319,10 +301,8 @@ function gwoUI() {
     addHtml.before("#game-seed", "seed_tooltip.html");
     $("#new-game-left").remove();
     addHtml.before("#gwo-game-options-panel", "commander_button.html");
-    // The modal has to hang off body: .gw-start-coop-settings-modal is
-    // position: absolute, and inside the Setup column its nearest positioned
-    // ancestor is .section_wrapper, which is shorter than the window and sits
-    // inside #tab3's overflow-y: auto.
+    // Must hang off body: the modal is position: absolute, and in the Setup
+    // column it would resolve against a short, scrolling ancestor.
     addHtml.append("body", "commander_modal.html");
     locTree($(gameDifficultyId));
     locTree($("#gwo-commander-panel"));
@@ -330,8 +310,8 @@ function gwoUI() {
     locTree($("#gwo-game-options-panel"));
     locTree($("#gwo-game-options-modal"));
     locTree($("#difficulty-options"));
-    // #gwo-ai-settings, not #custom-difficulty-settings: the latter starts below the
-    // panel's own header, so the header's <loc> was reached by no locTree call at all.
+    // Not #custom-difficulty-settings, which starts below the panel's own header
+    // and so leaves that header's <loc> unreached.
     locTree($("#gwo-ai-settings"));
     locTree($("#difficulty-cards"));
     locTree($("#difficulty-ai-enemy"));
@@ -344,9 +324,8 @@ function gwoUI() {
           "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
         );
     } else {
-      // bootstrap-select ignores a non-select receiver, so the refresh has to be
-      // called on the parent selects - chaining it off the options left the
-      // rendered dropdown still showing Queller as selectable.
+      // bootstrap-select ignores a non-select receiver, so the refresh below
+      // must target the parent selects, not the options.
       $("select option[value*='Queller']").prop("disabled", true);
       $("#difficulty-ai-enemy-select, #difficulty-ai-ally-select").selectpicker(
         "refresh"
@@ -359,10 +338,8 @@ function gwoUI() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
       ],
       function (gwoDifficulty) {
-        // Scoped, not a bare $("select"): only the selects inside
-        // #custom-difficulty-settings change disabled state here, and refreshing the
-        // other five (galaxy size, both AI pickers, card deck, difficulty level) on
-        // every difficulty change costs time for nothing.
+        // Scoped, not a bare $("select"): only these change disabled state here,
+        // and refreshing the rest on every difficulty change costs time for nothing.
         var customDifficultySelects = "#custom-difficulty-settings select";
 
         ko.computed(function () {
@@ -446,12 +423,8 @@ function gwoUI() {
             difficultySettings.alliedCommanderChance(
               difficulties[selectedDifficulty].alliedCommanderChance
             );
-            // Push the preset's tags into the picker from the difficulty data,
-            // not by reading personalityTags back. Reading it made the observable
-            // a dependency of the computed that writes it, so every write from
-            // elsewhere - gw_start/setup.js's saveDifficultySettings - re-ran this
-            // whole block and re-rendered the dropdowns for nothing. The value is
-            // the one just written, so the picker sync is unchanged.
+            // From the difficulty data, not by reading personalityTags back -
+            // that makes this computed a dependency of the observable it writes.
             var personalityTags =
               difficulties[selectedDifficulty].personality_tags;
             difficultySettings.personalityTags(personalityTags);

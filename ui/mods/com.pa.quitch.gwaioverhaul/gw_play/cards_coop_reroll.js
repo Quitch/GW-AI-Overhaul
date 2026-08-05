@@ -1,17 +1,8 @@
-// Co-op "pending tech cards" reroll, extracted out of gw_play/cards.js. A viewer asks
-// the host (gwo_reroll_pending_tech) to reroll its still-pending offer; the host deals a
-// smaller hand, stores it, and sends the result back (gwo_reroll_pending_tech_result),
-// which the viewer applies to its own board.
-//
-// Shaped like cards_start_subcdr.js: define() returns a factory taking
-// { game, galaxy, chooseCards, helpers, GWInventory, numCardsToOffer, gwoSave, GW } that
-// registers both operator handlers. The reroll-count arithmetic and the request
-// validation chain are lifted to module-scope pure functions and re-exported through the
-// dead-in-production `typeof module` hook so they can be unit tested.
+// Co-op pending-tech reroll. A viewer asks the host (gwo_reroll_pending_tech) to
+// reroll its pending offer; the host deals a smaller hand, stores it, and returns
+// it (gwo_reroll_pending_tech_result) for the viewer to apply. See coop.md.
 define(function () {
-  // A reroll spends one more of the viewer's offered cards. Given how many cards were
-  // offered and how many remain in the current pending hand, work out the reroll counts
-  // and the size of the next (smaller) deal, and whether no rerolls remain.
+  // A reroll spends one more of the viewer's offered cards.
   var computeRerollDeal = function (cardsOffered, currentCardCount) {
     var rerollsUsed = Math.max(0, cardsOffered - currentCardCount);
     var nextRerollsUsed = rerollsUsed + 1;
@@ -23,9 +14,7 @@ define(function () {
     };
   };
 
-  // Returns the reject reason for a reroll request that is malformed, stale, or targets
-  // unrerollable loadout cards - or undefined when the request is valid. containsLoadout
-  // is the caller's helpers.pendingCardsContainLoadout(pendingTechCards) result.
+  // The reject reason, or undefined when the request is valid.
   var pendingTechRerollValidationError = function (
     payload,
     pendingTechCards,
@@ -143,17 +132,13 @@ define(function () {
       }
       model.gwoOfferRerolls(payload.offer_rerolls === true);
 
-      // Match the host's own reroll/deal path (model.explore): keep the
-      // cards hidden behind the scanning overlay for a cosmetic 2s beat
-      // rather than popping them in the instant the result arrives. Not
-      // awaited - it must not hold up the campaign queue below.
+      // Cosmetic beat, matching model.explore. Deliberately not awaited.
       _.delay(function () {
         model.scanning(false);
       }, 2000);
 
-      // Return the remaining display-prep + save work so the base campaign
-      // queue can order it. The record upsert above is the canonical (and
-      // synchronous) mutation, so early exits above may stay undefined.
+      // Returned so the base campaign queue can order it. The record upsert
+      // above is the canonical mutation, so early exits may stay undefined.
       return $.when(
         model.prepareCoopPlayerInventories(),
         GW.manifest.saveGame(game).then(null, function (err) {
@@ -166,9 +151,8 @@ define(function () {
     var rerollPendingTechForCoopPlayer = function (operator) {
       var result = $.Deferred();
 
-      // failPendingTechReroll still sends the error operator back to the
-      // requesting viewer; also reject so the base campaign queue can order
-      // this handler's async work.
+      // Rejects as well as notifying the viewer, so the campaign queue can
+      // order this handler's async work.
       var failReroll = function (reason) {
         failPendingTechReroll(operator, reason);
         result.reject(reason);
@@ -295,9 +279,7 @@ define(function () {
     }
   };
 
-  // Test-only hook: `module` is absent in the game's Chromium UI runtime, so this never
-  // runs in production; under Node it exposes the pure helpers to the test suite (see
-  // test/cards_coop_reroll.test.js). Hence the eslint disables.
+  // Test-only hook - see testing.md.
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
