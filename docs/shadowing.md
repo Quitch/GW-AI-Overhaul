@@ -169,6 +169,27 @@ the sibling holds the logic and is unit-tested. Do **not** instead hoist helpers
 file top level — in PA's RequireJS runtime that creates a `window` global. See
 [`constraints.md`](constraints.md).
 
+## `gw_galaxy_graph.js`'s `pathBetween` looks redundant and is not
+
+`ui/main/game/community_mods/states/gw_play.js` reassigns `galaxy.pathBetween`
+wholesale, and `gw_play.html` loads it. Reading only that, GWO's own copy in
+`shared/gw_galaxy_graph.js` looks like dead weight — deleting it is the obvious
+tidy-up, and it would break star routing outright.
+
+The shim is a `<script … defer>`, so it runs after `gw_play.js` has finished its
+synchronous top level but while the game is still loading asynchronously. It opens
+with `if (!model.game()) return;`, so it takes that early return and never installs
+its version. Measured on the live client by reading
+`model.game().galaxy().pathBetween.toString()`: GWO's body (`workList`,
+`canEnterTarget`) is what is installed, on both PA 124667 and 124670, host and
+viewer. Checked in the fresh-scene and co-op-reconnect paths, not in a brand-new
+war.
+
+This matters beyond the guard. PA 124670 added the `|| []` guard on
+`neighborsMap[node]` to both of its copies, which is the fix GWO already carried —
+so it is tempting to conclude GWO's is now surplus. It is not, because the copy
+that would replace it never loads.
+
 ## Where to look next
 
 - [`architecture.md`](architecture.md) — how scenes and entry points work.
