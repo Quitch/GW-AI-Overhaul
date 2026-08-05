@@ -84,6 +84,17 @@ define([
   return {
     name: factionName,
     color: factionColour,
+    // Human co-op armies. Deliberately shares no entry with the Cluster palette
+    // in gw_play/commander_colour.js, so a player is never the colour of one of
+    // their own Sub Commanders. See coop.md.
+    coopPlayerColors: [
+      factionColour[0],
+      [215, 215, 215],
+      [100, 140, 160],
+      [176, 196, 222],
+      [105, 105, 105],
+      [54, 78, 102],
+    ],
     teams: [
       {
         name: factionName,
