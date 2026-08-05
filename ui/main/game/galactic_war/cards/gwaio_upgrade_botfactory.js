@@ -59,8 +59,7 @@ define([
           refValue: ADVANCED_BOT_FACTORY_ONLY,
         };
       });
-      // We apply AI priority changes to ALL combat units so that even
-      // unaffected ones will be handled properly by T2 factories
+      // Applied to all combat units, so T2 factories handle the unaffected too.
       var advancedCombatBots = [
         "AdvancedArtilleryBot",
         "AdvancedAssaultBot",

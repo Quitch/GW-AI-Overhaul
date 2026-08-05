@@ -1,15 +1,12 @@
-// Battle-config referee: assembles the launch config (armies, planets, game modes) for
-// a Galactic War fight. The army/personality setup and ai_path logic - the assertable
-// part - lives in the measured gw_play/referee_config_setup.js (unit-tested by
-// test/referee_config_ai_paths.test.js). What remains here reads model/ko/api and the
-// game/inventory observables to build and store the final config, so it is
-// coverage-excluded as untestable glue.
+// Battle-config referee: assembles the launch config (armies, planets, game
+// modes). Glue - the measured half is gw_play/referee_config_setup.js.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
-], function (gwoAI, gwoCards, refereeCoop, configSetup) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
+], function (gwoAI, gwoCards, refereeCoop, configSetup, gwoStreams) {
   var setupAlliedCommanders = configSetup.setupAlliedCommanders;
   var setupPrimaryAiAndMinions = configSetup.setupPrimaryAiAndMinions;
   var setupFfaAis = configSetup.setupFfaAis;
@@ -87,9 +84,18 @@ define([
         alliance_group: 1,
       },
     ];
-    var currentStar = game.galaxy().stars()[game.currentStar()];
+    var galaxy = game.galaxy();
+    var currentStar = galaxy.stars()[game.currentStar()];
     var system = currentStar.system();
     var ai = currentStar.ai();
+    // Keyed on the turn as well as the star, so retrying a lost battle still
+    // reshuffles - loseTurn does not advance the turn, so the retry needs
+    // another move. See galaxy.md, "Play-scene streams".
+    var battleRng = gwoStreams.battleRng(
+      gwoStreams.warRng(galaxy.stars()[galaxy.origin()].system().gwaio),
+      game.currentStar(),
+      game.stats().turns()
+    );
     var aiInUse = gwoAI.aiInUse("enemy");
     var aiTag = setupAiTags(ai);
 
@@ -98,14 +104,13 @@ define([
       cards,
       armies,
       inventory,
-      playerTag
+      playerTag,
+      0,
+      battleRng
     );
 
-    // The star's ally is coloured after every player's subcommanders - including the
-    // viewers' ones gw_per_player_tech_referee.js adds later - so that a per-star
-    // commander never shifts a subcommander's colour, which is what lets the war
-    // panel show one. Without per-player tech the count is just the host's minions,
-    // which is exactly where the ally already sat.
+    // The ally is coloured after every player's subcommanders, viewers' included,
+    // so it never shifts one the war panel is already showing. See coop.md.
     if (!_.isUndefined(ai.ally)) {
       setupAlliedCommanders(
         [ai.ally],
@@ -113,12 +118,20 @@ define([
         armies,
         inventory,
         playerTag,
-        refereeCoop.getOrderedSubcommanders(inventory, game).length
+        refereeCoop.getOrderedSubcommanders(inventory, game).length,
+        battleRng
       );
     }
 
-    setupPrimaryAiAndMinions(ai, connectedPlayerCards, aiTag, aiInUse, armies);
-    setupFfaAis(ai.foes, aiTag, aiInUse, armies);
+    setupPrimaryAiAndMinions(
+      ai,
+      connectedPlayerCards,
+      aiTag,
+      aiInUse,
+      armies,
+      battleRng
+    );
+    setupFfaAis(ai.foes, aiTag, aiInUse, armies, battleRng);
     system.planets = modifyPlanets(inventory, system.planets, game);
 
     var config = {

@@ -1,12 +1,5 @@
-// Pure helpers for the per-player-tech co-op referee (gw_play/gw_per_player_tech_referee.js,
-// a base-game-shadowed file whose define() factory depends on the unshipped
-// shared/gw_common and so cannot load under the Node AMD harness). Split out here as a
-// plain define() over lodash/console only - no engine globals, no unshipped deps - so
-// the referee's testable logic stays measured and directly unit-tested
-// (test/gw_per_player_tech_referee_ai_paths.test.js, ..._validate.test.js) while the
-// referee file itself is coverage-excluded as untestable glue. Helpers that reach the
-// ai_path layer (getViewerSubcommanderAiPath) take their collaborators as explicit
-// parameters rather than closing over the referee's injected modules.
+// The measured half of gw_play/gw_per_player_tech_referee.js. Keep it loadable
+// under the Node AMD harness - see testing.md, "Coverage".
 define(function () {
   var armyHasAI = function (army) {
     return !!(army && _.isArray(army.slots) && _.any(army.slots, "ai"));
@@ -66,31 +59,8 @@ define(function () {
     return value;
   };
 
-  // Resolves the ai_path a per-player-tech viewer should use - both for their own
-  // unit map (see generateUnitSpecsForPlayer in the referee) and for their minions
-  // (see apply() in the referee) - scoped by that viewer's own player tag so co-op
-  // subcommanders never collide with each other's build orders/ai_unit_map (unlike
-  // shared-tech allies, who all use one unscoped path - see referee_config.js's
-  // setupAlliedCommanders). Always passes guardians:false, independent of the actual
-  // fight's guardians state - unlike shared/ai.js's own
-  // getAIPathDestination("subcommander") wrapper (and its own viewer-scoped sibling,
-  // getSubcommanderPathForViewer, used by referee_ai.js), which derive guardians from
-  // the enemy AI. That asymmetry is current, intentional-for-now behavior
-  // (per-player-tech co-op does not currently vary subcommander scoping by
-  // guardians), not something this function should paper over. Takes refereeAIPaths
-  // and subcommanderTech as explicit parameters (rather than closing over the
-  // referee's injected modules).
-  //
-  // Deliberately never routes a Cluster-faction viewer to "cluster" type (unlike
-  // referee_config.js's setupAlliedCommanders/referee_game_files.js's buildPlayerFiles,
-  // which both check inventory.getTag("global", "playerFaction") for the host). That
-  // Cluster-specific destination exists purely to keep a Cluster player's own AI-mod
-  // writes from leaking into the shared brain-based destination tree other allies/
-  // enemies also read from (see getAIPathSource, which never special-cases Cluster for
-  // reads - only getAIPathDestination's write side does). Every per-player-tech viewer
-  // already gets that same leak-proof isolation for free via their own player_.playerN
-  // scope, regardless of faction, so a second Cluster-specific mechanism here would be
-  // redundant.
+  // The hardcoded guardians:false, and the absence of any Cluster routing, are
+  // both deliberate - see ai-paths.md.
   var getViewerSubcommanderAiPath = function (
     refereeAIPaths,
     subcommanderTech,
@@ -107,14 +77,8 @@ define(function () {
     });
   };
 
-  // Validates every precondition apply() (in the referee) needs before it starts
-  // generating per-player tech files, so apply() no longer carries ~14 stacked guard
-  // clauses. Pure: reads only referee/options and the game/inventory objects they
-  // expose - never the referee's injected modules. Returns either { ok: false,
-  // resolveValue, message, writeFailure [, config] } (writeFailure means apply()
-  // should stamp per_player_tech_ready = false onto config before resolving) or
-  // { ok: true, context } carrying the derived values apply() goes on to use. Message
-  // text and resolve values mirror the original inline guards one-for-one.
+  // Every precondition the referee's apply() needs. A writeFailure result means
+  // apply() must stamp per_player_tech_ready = false onto config before resolving.
   var validatePerPlayerTechInputs = function (referee, options) {
     var config = referee && _.isFunction(referee.config) && referee.config();
 
@@ -128,8 +92,6 @@ define(function () {
       };
     }
 
-    // Every failure from here on writes per_player_tech_ready = false back onto config,
-    // so build those results through one helper.
     var failAfterConfig = function (message) {
       return {
         ok: false,

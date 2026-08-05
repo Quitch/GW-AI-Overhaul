@@ -23,10 +23,8 @@ function gwoLiveGameMenu() {
         tutorial(game.isTutorial());
       });
 
-      // Write into the existing observable rather than replacing it. The base
-      // game's menuConfig computed (live_game.js) subscribed to the original, so
-      // a replacement leaves that subscription pointing at the old one and the
-      // patched menu only appears once some unrelated dependency happens to fire.
+      // Write into the existing observable, never replace it: live_game.js's
+      // menuConfig computed subscribed to the original.
       model.menuConfigGenerator(function () {
         var overString = getMenuString(
           tutorial(),

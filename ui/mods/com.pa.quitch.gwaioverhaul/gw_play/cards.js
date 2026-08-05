@@ -37,9 +37,8 @@ function gwoCard() {
     );
 
     var numCardsToOffer = 3;
-    // Pure deal helpers (cards_deal_helpers.js), assigned at the top of the main
-    // requireGW below. Only referenced from function/computed bodies that run after
-    // that load resolves - never synchronously during scene setup.
+    // cards_deal_helpers.js, assigned by the main requireGW below. Only read
+    // from bodies that run after that load resolves.
     var helpers;
 
     var currentCoopPendingTechCards = function () {
@@ -55,9 +54,8 @@ function gwoCard() {
     };
 
     model.rerollTech = function () {
-      // The Reroll button's HTML is injected by setupTechRerolls below, which runs
-      // before the main requireGW assigns helpers. A click in that window would
-      // otherwise throw on the first helpers call.
+      // setupTechRerolls injects the button before helpers is assigned, so a
+      // click in that window reaches here first.
       if (!helpers) {
         return;
       }
@@ -131,10 +129,8 @@ function gwoCard() {
           return;
         }
 
-        // This computed evaluates eagerly on creation (before the main requireGW
-        // assigns `helpers`), but only reaches helpers when pending co-op tech cards
-        // exist - which cannot happen that early. Guard defensively regardless; the
-        // read above already established the observable subscriptions.
+        // Defensive: this computed evaluates eagerly on creation. The read
+        // above has already established the observable subscriptions.
         if (!helpers) {
           return;
         }
@@ -175,13 +171,9 @@ function gwoCard() {
     };
     setupTechRerolls();
 
-    // Loading a save taken mid-exploration: the offer on disk is short by however
-    // many rerolls were already spent, so recover the count from its length. The
-    // offer size is bonus-aware (full hand, Lucky Commander), which is why this
-    // waits for helpers rather than running inside setupTechRerolls - against the
-    // bare constant a 4-card offer yields -1, making the next reroll free.
-    // Assign through the observable; replacing it would drop the session extender
-    // that stops a UI refresh restoring spent rerolls.
+    // A save taken mid-exploration holds a short offer, so the spent rerolls are
+    // recoverable from its length. Needs helpers for the bonus-aware offer size:
+    // against the bare constant a 4-card offer yields -1 and the next reroll is free.
     var restoreExploreSaveRerolls = function () {
       if (game.turnState() !== "explore") {
         return;
@@ -286,6 +278,7 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
       ],
       function (
         GW,
@@ -299,7 +292,8 @@ function gwoCard() {
         cardsCardNameSync,
         cardsCoopDeal,
         cardsCoopReroll,
-        cardsCheats
+        cardsCheats,
+        gwoStreams
       ) {
         helpers = cardsDealHelpers;
         restoreExploreSaveRerolls();
@@ -307,9 +301,9 @@ function gwoCard() {
         var playerFaction = inventory.getTag("global", "playerFaction");
         var galaxy = game.galaxy();
         var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+        var warRng = gwoStreams.warRng(gwoSettings);
 
-        // Registers the gwo_sync_star_card_name host handler; returns setCardName,
-        // used by the AI-dealing path below to name each star after its tech card.
+        // Also registers the gwo_sync_star_card_name host handler.
         var cardNameSync = cardsCardNameSync({ game: game });
 
         /* Start of GWO implementation of GWDealer */
@@ -325,7 +319,10 @@ function gwoCard() {
 
         // dealer.chooseCards() replacement - use our deck
         var chooseCards = function (params) {
-          var rng = params.rng || new Math.seedrandom();
+          // params.rng is the deal's stream, one sub-stream per card of the hand.
+          // A caller with no stream keeps the unseeded draw it always had.
+          var dealStream = params.rng;
+          var unseeded = dealStream ? undefined : new Math.seedrandom();
           var count = params.count;
           var star = params.star;
           var dealAddSlot = params.addSlot;
@@ -333,16 +330,20 @@ function gwoCard() {
           var dealInventory = params.inventory || inventory;
           var cardContexts = {};
 
-          // One iteration of the deal loop below, pulled out of the nested
-          // loaded.then/_.times callbacks (and passed to _.times by reference) so its
-          // own map/filter/reduce callbacks don't sit six function-levels deep.
-          // `list` is the accumulating result array, threaded in explicitly because it
-          // lives inside the loaded.then closure rather than at this scope.
-          var dealOneCard = function (list) {
+          // One iteration of the deal loop below. `list` accumulates in the
+          // loaded.then closure; `iteration` keys this card's stream.
+          var dealOneCard = function (list, iteration) {
+            var iterationRng = gwoStreams.iterationRng(dealStream, iteration);
             var fullHand = _.map(cards, function (card) {
               var context = cardContexts[card.id];
               var cardChance =
-                card.deal && card.deal(star, context, dealInventory);
+                card.deal &&
+                card.deal(
+                  star,
+                  context,
+                  dealInventory,
+                  gwoStreams.cardRng(iterationRng, card.id)
+                );
               var match = helpers.doNotDealCard(
                 dealInventory,
                 card,
@@ -359,53 +360,25 @@ function gwoCard() {
               return cardChance;
             });
 
-            fullHand = _.map(fullHand, function (deal, i) {
-              deal.index = i;
-              return deal;
-            });
-
-            var hand = _.filter(fullHand, function (deal) {
-              return !!deal && !!deal.chance;
-            });
-
-            if (hand.length) {
-              var resultIndex;
-
-              var probability = _.reduce(
-                hand,
-                function (sum, card) {
-                  return sum + card.chance;
-                },
-                0
-              );
-              var roll = rng() * probability;
-              var index = 0;
-              for (
-                ;
-                index < hand.length && roll >= hand[index].chance;
-                ++index
-              ) {
-                roll -= hand[index].chance;
-              }
-              if (index < hand.length) {
-                resultIndex = hand[index].index;
-              }
-
-              if (!_.isUndefined(resultIndex)) {
-                var resultDeal = fullHand[resultIndex];
-                var cardParams = resultDeal && resultDeal.params;
-                var cardId = deck[resultIndex];
-                var systemCard = {
-                  id: cardId,
-                };
-
-                if (cardParams && _.isPlainObject(cardParams)) {
-                  _.assign(systemCard, cardParams);
-                }
-
-                list.push(systemCard);
-              }
+            var resultIndex = helpers.chooseDealIndex(
+              fullHand,
+              iterationRng ? iterationRng() : unseeded()
+            );
+            if (_.isUndefined(resultIndex)) {
+              return;
             }
+
+            var resultDeal = fullHand[resultIndex];
+            var cardParams = resultDeal && resultDeal.params;
+            var systemCard = {
+              id: deck[resultIndex],
+            };
+
+            if (cardParams && _.isPlainObject(cardParams)) {
+              _.assign(systemCard, cardParams);
+            }
+
+            list.push(systemCard);
           };
 
           var result = $.Deferred();
@@ -425,18 +398,18 @@ function gwoCard() {
           return result;
         };
 
-        // Installs model.dealCoopPlayerPendingTechCards - the host-side co-op pending
-        // tech deal path (GWO's bonus-card-aware override of stock gw_play.js).
+        // Installs model.dealCoopPlayerPendingTechCards, overriding stock gw_play.js.
         cardsCoopDeal({
           game: game,
           chooseCards: chooseCards,
           helpers: helpers,
           GWInventory: GWInventory,
           numCardsToOffer: numCardsToOffer,
+          gwoStreams: gwoStreams,
+          warRng: warRng,
         });
 
-        // Registers the co-op pending-tech reroll operator handlers (viewer request +
-        // host result) and their host-side deal logic.
+        // Registers the co-op reroll operator handlers, viewer and host.
         cardsCoopReroll({
           game: game,
           galaxy: galaxy,
@@ -446,6 +419,8 @@ function gwoCard() {
           numCardsToOffer: numCardsToOffer,
           gwoSave: gwoSave,
           GW: GW,
+          gwoStreams: gwoStreams,
+          warRng: warRng,
         });
 
         var dealCardToSelectableAI = function (win, turnState) {
@@ -485,6 +460,13 @@ function gwoCard() {
                       system.star && _.isFunction(system.star.cardList)
                         ? system.star.cardList()
                         : [],
+                    // Every selectable AI star is re-dealt each turn, so the
+                    // turn count is what stops a star repeating its own card.
+                    rng: gwoStreams.aiStarDealRng(
+                      warRng,
+                      starIndex,
+                      game.stats().turns()
+                    ),
                   }).then(function (card) {
                     system.star.cardList(card);
                     model.sendCampaignAction("sync_star_cards", {
@@ -535,8 +517,7 @@ function gwoCard() {
 
         /* end of GWO implementation of GWDealer */
 
-        // Installs model.cheats.testCards / model.cheats.giveCard - dev cheats that deal
-        // from GWO's own deck.
+        // Installs model.cheats.testCards / model.cheats.giveCard.
         cardsCheats({
           game: game,
           galaxy: galaxy,
@@ -553,27 +534,23 @@ function gwoCard() {
           helpers: helpers,
         });
 
-        // The host-side equivalent of cards_coop_deal.js's per-viewer
-        // recordHasUnlockedStartCard test. Both banks are consulted because base game
-        // and GWO loadouts unlock into separate localStorage records.
+        // Both banks: base game and GWO loadouts unlock into separate
+        // localStorage records.
         var startCardUnlocked = function (card) {
           return GW.bank.hasStartCard(card) || gwoBank.hasStartCard(card);
         };
 
         // gw_play self.explore - call our chooseCards()
         model.explore = function (force) {
-          // game.explore() is not a query - it advances turnState from "begin" to
-          // "explore" (gw_game.js). It must therefore stay last, after every guard
-          // that can refuse the action, or a refused call still consumes the star's
-          // begin state and leaves it inert with no deal. The base game orders these
-          // the same way (gw_play.js self.explore).
+          // game.explore() advances turnState rather than querying it, so it must
+          // stay below every guard that can refuse, or a refused call leaves the
+          // star inert with no deal.
           if (model.isCampaignViewer() && !model.gwCampaignReplayingAction) {
             return;
           }
 
-          // For normal player-triggered exploration, block if co-op players are
-          // still selecting loadouts or pending tech cards. For a host reroll,
-          // force the correct deal path even while that state is set.
+          // force is set for a host reroll, which must proceed even while co-op
+          // players are still choosing.
           if (_.isUndefined(force) && model.gwCampaignPlayerSetupBlocked()) {
             return;
           }
@@ -596,17 +573,14 @@ function gwoCard() {
           );
           var starIndex = game.currentStar();
           var star = game.galaxy().stars()[starIndex];
-          // Left unfiltered: the co-op deal picks each viewer a loadout by their own
-          // unlock record, so one the host already owns can still be treasure for a
-          // viewer (cards_coop_deal.js collectPendingTechTargets).
+          // Left unfiltered: a loadout the host owns can still be treasure for a
+          // viewer, who is judged by their own unlock record.
           var startLoadoutCards = helpers.filterStartLoadoutCards(
             star && _.isFunction(star.cardList) ? star.cardList() : []
           );
 
-          // Mirror that rule for the host's own offer: a loadout already in the bank
-          // is no longer treasure, so drop it before the deal is sized and the star
-          // deals a full, rerollable hand instead. A still-locked loadout stays and
-          // takes over the offer on its own, as the ok test below leaves it.
+          // The host's own offer does drop already-owned loadouts, and before the
+          // deal is sized, so the star deals a full rerollable hand instead.
           var unlockedLoadouts = _.filter(startLoadoutCards, startCardUnlocked);
           if (unlockedLoadouts.length) {
             star.cardList(_.difference(star.cardList(), unlockedLoadouts));
@@ -617,6 +591,14 @@ function gwoCard() {
               cardsOffered - model.gwoRerollsUsed() - star.cardList().length,
             star: star,
             systemCards: star.cardList(),
+            // A reroll re-enters here with the iteration index back at 0, so
+            // the reroll count is what makes it deal a different hand.
+            rng: gwoStreams.exploreDealRng(
+              warRng,
+              starIndex,
+              game.stats().turns(),
+              model.gwoRerollsUsed()
+            ),
           }).then(function (result) {
             var ok = true;
 
@@ -643,9 +625,8 @@ function gwoCard() {
             }
 
             var dealEntry;
-            // chooseCards is asynchronous, so the turn can have moved on before this
-            // lands. Recording then would leave every co-op viewer owed a catch-up hand
-            // for a deal no one was ever offered, and the count persists into the save.
+            // chooseCards is async, so the turn can have moved on. Recording then
+            // owes every co-op viewer a catch-up hand for a deal never offered.
             var explorationLive = helpers.explorationStillLive(
               game,
               starIndex,
@@ -685,9 +666,8 @@ function gwoCard() {
             });
           });
 
-          // Return the chain so the base campaign queue can order it. The 2s
-          // cosmetic scanning delay is scheduled but not awaited - it must not
-          // hold the queue.
+          // Returned so the base campaign queue can order it. The cosmetic
+          // scanning delay below is deliberately not awaited.
           return $.when(dealStarCards).then(
             function () {
               if (

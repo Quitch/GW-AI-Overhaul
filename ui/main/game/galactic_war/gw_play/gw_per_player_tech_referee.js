@@ -1,9 +1,4 @@
-// The per-player-tech referee's testable pure helpers live in
-// gw_play/per_player_tech.js (a plain define() over lodash only), so they stay
-// coverage-measured and directly unit-tested
-// (test/gw_per_player_tech_referee_ai_paths.test.js, ..._validate.test.js). This
-// shadowed referee file depends on the unshipped shared/gw_common and so cannot load
-// under the Node AMD harness; it is coverage-excluded as untestable glue.
+// Glue. The measured half is gw_play/per_player_tech.js - see testing.md.
 define([
   "shared/gw_common",
   "shared/gw_inventory",
@@ -104,26 +99,17 @@ define([
     return done.promise();
   };
 
-  // Applied after the co-op referee has done its work: if per-player tech is enabled,
-  // this generates the appropriate config handling each player's inventory.
-  //
-  // config.armies arrives already prepared by gw_coop_referee, one non-AI human army
-  // per connected client. This writes each army's spec_tag, commander and
-  // player_config - the last so gw_lobby can map the matching commander onto the
-  // connected client - plus per_player_tech_ready and per_player_tech_tags, which
-  // later launch steps read.
-  //
-  // A client object carries id, name, role ('host' or 'viewer') and loading status.
-  // The input contract itself is enforced by validatePerPlayerTechInputs in
-  // gw_play/per_player_tech.js, which is unit-tested; do not restate it here.
+  // Runs after the co-op referee, which leaves config.armies holding one non-AI
+  // army per connected client. Writes each army's spec_tag, commander and
+  // player_config, plus the per_player_tech_ready/_tags later launch steps read.
+  // The input contract lives in validatePerPlayerTechInputs.
   var apply = function (referee, options) {
     var done = $.Deferred();
 
     var validation = validatePerPlayerTechInputs(referee, options);
     if (!validation.ok) {
-      // writeFailure marks a genuine failure that has to disable per-player tech;
-      // the remaining rejections (no co-op / feature disabled) are benign no-ops
-      // that still resolve success, so log those at warning level instead.
+      // Only writeFailure is a genuine failure. The rest are benign no-ops that
+      // still resolve success.
       if (validation.writeFailure) {
         console.error(validation.message);
         validation.config.per_player_tech_ready = false;
@@ -155,10 +141,8 @@ define([
     playerInventories[0] = inventory;
     playerCommanders[0] = baseCommander;
 
-    // For each co-op player, we need to find their stored inventory data, load it,
-    // and generate tagged specs for their commander, units, and mods.
-    // If any of that fails, we fail the whole referee since we can't guarantee
-    // a fun fight without all players having their tech.
+    // A failure here fails the whole referee: a fight where some player is
+    // missing their tech is not worth launching.
 
     for (
       var clientIndex = 1;
@@ -240,19 +224,16 @@ define([
       referee.files(mergedFiles);
       config.files = mergedFiles;
 
-      // Viewers' subcommanders continue the player-faction colour sequence the main
-      // referee started, picking up after the host's own subcommanders. Without this
-      // they all took their raw faction-data colour and collided with each other,
-      // with the host's subcommanders, and with the enemy.
+      // Viewers' subcommanders continue the colour sequence the main referee
+      // started. Without this they take their raw faction colour and collide.
       var playerFaction = inventory.getTag("global", "playerFaction");
       var colourPosition = inventory.minions().length;
 
       _.forEach(humanArmies, function (army, index) {
         army.spec_tag = playerTags[index];
 
-        // Per player tech cards requires that all armies are unshared,
-        // thus each army only has one commander. So this is sensible.
-        // If in the future we have multiple commanders, this will not be sensible.
+        // Safe only because per-player tech forces unshared armies, so each
+        // army has exactly one commander.
         army.commander = playerCommanders[index] + playerTags[index];
         army.player_config = _.assign({}, player, {
           commander: army.commander,
@@ -270,8 +251,8 @@ define([
           thisPlayersInventory.cards()
         );
         _.forEach(thisPlayersInventory.minions(), function (minion) {
-          // We skip the host's minions since those are already included in the config from the main referee.
-          // We check if this is the host slot by seeing if the tag is .player, since the host is always .player.
+          // The host is always .player, and the main referee already added
+          // their minions.
           if (playerTags[index] === ".player") {
             return;
           }
@@ -291,8 +272,8 @@ define([
           // duplication tech produces a single army with several commander slots.
           var minionColour = gwoColour.pick(
             playerFaction,
-            // pick() falls back to this when the palette is exhausted, and reads it
-            // to spot The Guardians, so a colourless minion still needs a pair.
+            // pick() falls back to this and reads it to spot The Guardians, so
+            // even a colourless minion needs a pair.
             minion.color || playerColor,
             refereeCoop.alliedColourIndex(colourPosition)
           );

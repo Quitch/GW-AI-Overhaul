@@ -1,13 +1,6 @@
-// GWO dev cheats, extracted out of gw_play/cards.js. model.cheats.testCards deals one of
-// every card in the deck (validating minions and duplicate handling along the way);
-// model.cheats.giveCard deals the single card named in model.cheats.giveCardId(). Both
-// deal from GWO's own deck rather than the base game's.
-//
-// Shaped like cards_start_subcdr.js: define() returns a factory that takes the dealer
-// context it needs and installs the two model.cheats.* entry points. Purely
-// side-effectful developer tooling, so there is no pure logic to export - the value of
-// the split is that this ~190 lines leaves cards.js and the module loads under the Node
-// harness (a structural check; see test/cards_cheats.test.js).
+// GWO dev cheats. testCards deals one of every card in the deck, validating
+// minions and duplicate handling on the way; giveCard deals the one named in
+// model.cheats.giveCardId(). Both use GWO's deck, not the base game's.
 define(function () {
   return function (params) {
     var game = params.game;
@@ -53,9 +46,7 @@ define(function () {
     };
 
     var testMinions = function (product, inventory) {
-      // Load units.js once and flatten the per-faction minion lists into a single
-      // pass, rather than re-require()ing it inside a doubly-nested loop (which
-      // both re-fetched the module per minion and nested six function-levels deep).
+      // Flattened up front, so units.js is required once rather than per minion.
       require([
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
       ], function (gwoUnit) {

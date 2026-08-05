@@ -1,19 +1,8 @@
-// Army/personality setup helpers for the battle-config referee (gw_play/referee_config.js).
-// These build the player/AI/subcommander armies and resolve their ai_paths - the
-// referee's assertable logic - so they are split out here into their own measured
-// module (directly unit-tested by test/referee_config_ai_paths.test.js) while
-// referee_config.js keeps only the model/ko/api glue that assembles the final config
-// and is coverage-excluded. All collaborators are shipped mod modules injected the same
-// way referee_config.js injected them, so nothing needs param-threading.
+// The measured half of gw_play/referee_config.js - see testing.md, "Coverage".
 //
-// Everything passed in here is a live persisted war object - the star's ai() with its
-// minions/foes, and the player's inventory.minions() - while the setup itself is not
-// idempotent: eco mods and fabber caps multiply, personality tags are pushed. A campaign
-// co-op host hires the referee twice per battle (base gw_play.js's
-// hireRefereesForLaunch), and a failed launch can leave mutated state behind for a later
-// save to serialize, so each entity is deep-copied before it is modified. The armies get
-// the battle's values; the war keeps its own. gw_per_player_tech_referee.js copies
-// viewers' minion personalities for the same reason.
+// Everything passed in is a live persisted war object, and none of this setup is
+// idempotent, so each entity is deep-copied before it is modified. The armies get
+// the battle's values; the war keeps its own. See architecture.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
@@ -130,9 +119,8 @@ define([
     return ai;
   };
 
-  // The game guarantees the player and the enemy are never simultaneously Cluster,
-  // so returning the same unscoped ai_cluster path regardless of isPlayer is safe -
-  // there's only ever one Cluster side per match to route there.
+  // One unscoped path regardless of isPlayer: the player and the enemy are never
+  // simultaneously Cluster. See ai-paths.md, "Invariants".
   var setAIPath = function (isCluster, isPlayer) {
     if (isCluster) {
       return gwoAI.getAIPathDestination("cluster");
@@ -142,13 +130,23 @@ define([
     return gwoAI.getAIPathDestination("enemy");
   };
 
-  var setupAIArmy = function (ai, index, specTag, alliance, econRateOverride) {
+  var setupAIArmy = function (
+    ai,
+    index,
+    specTag,
+    alliance,
+    econRateOverride,
+    rng
+  ) {
     var slotsArray = [];
-    var aiLandingOptions = _.shuffle([
+    var landingOptions = [
       "off_player_planet",
       "on_player_planet",
       "no_restriction",
-    ]);
+    ];
+    var aiLandingOptions = rng
+      ? rng.shuffle(landingOptions)
+      : _.shuffle(landingOptions);
     _.times(
       ai.bossCommanders ||
         ai.commanderCount ||
@@ -174,17 +172,16 @@ define([
     };
   };
 
-  // startPosition is where these allies sit in the player-faction colour sequence
-  // (see shared/referee_coop.js). It defaults to 0 - the subcommanders, who come
-  // first - and referee_config.js passes the subcommander count when it sets up a
-  // star's ai.ally, which is numbered after every player's subcommanders.
+  // startPosition is a place in the player-faction colour sequence. It defaults
+  // to 0, the subcommanders; a star's ai.ally is numbered after them. See coop.md.
   var setupAlliedCommanders = function (
     allies,
     cards,
     armies,
     inventory,
     playerTag,
-    startPosition
+    startPosition,
+    battleRng
   ) {
     var playerFaction = inventory.getTag("global", "playerFaction");
     var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
@@ -203,7 +200,8 @@ define([
         allyIndex,
         playerTag,
         1,
-        gwoAI.subcommanderEconRate
+        gwoAI.subcommanderEconRate,
+        battleRng && battleRng.stream("landing_ally", firstPosition + index)
       );
       armies.push(subcommanderArmy);
     });
@@ -214,7 +212,8 @@ define([
     connectedPlayerCards,
     aiTag,
     aiInUse,
-    armies
+    armies,
+    battleRng
   ) {
     // Cloning the AI clones its minions with it, so the minion loop below is copying too.
     var ai = setAdvEcoMod(_.cloneDeep(liveStarAi), aiInUse);
@@ -228,7 +227,14 @@ define([
       );
     }
 
-    var aiArmy = setupAIArmy(ai, 0, aiTag[0], 2);
+    var aiArmy = setupAIArmy(
+      ai,
+      0,
+      aiTag[0],
+      2,
+      undefined,
+      battleRng && battleRng.stream("landing_enemy", 0)
+    );
     armies.push(aiArmy);
     var aiPath = setAIPath(gwoAI.isCluster(ai), false);
     ai.personality.ai_path = aiPath;
@@ -238,18 +244,32 @@ define([
       minion.personality.ai_path = aiPath;
       minion.faction = ai.faction;
       var colourIndex = index + 1; // primary AI has colour 0
-      var aiArmy = setupAIArmy(minion, colourIndex, aiTag[0], 2);
+      var aiArmy = setupAIArmy(
+        minion,
+        colourIndex,
+        aiTag[0],
+        2,
+        undefined,
+        battleRng && battleRng.stream("landing_enemy", colourIndex)
+      );
       armies.push(aiArmy);
     });
   };
 
-  var setupFfaAis = function (foes, aiTag, aiInUse, armies) {
+  var setupFfaAis = function (foes, aiTag, aiInUse, armies, battleRng) {
     _.forEach(foes, function (liveFoe, index) {
       var foe = setAdvEcoMod(_.cloneDeep(liveFoe), aiInUse);
       foe.personality.ai_path = setAIPath(gwoAI.isCluster(foe), false);
       var foeTag = index + 1; // 0 taken by primary AI
       var foeAlliance = index + 3; // 1 & 2 taken by player and primary AI
-      var aiArmy = setupAIArmy(foe, 0, aiTag[foeTag], foeAlliance);
+      var aiArmy = setupAIArmy(
+        foe,
+        0,
+        aiTag[foeTag],
+        foeAlliance,
+        undefined,
+        battleRng && battleRng.stream("landing_foe", index)
+      );
       armies.push(aiArmy);
     });
   };

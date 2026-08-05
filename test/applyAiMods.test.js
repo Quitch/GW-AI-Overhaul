@@ -1,11 +1,7 @@
 "use strict";
 
-// Unit tests for referee_ai.js's applyAiMods, the engine that applies AI-mod
-// descriptors (the same shape validated by scripts/validate/ai-mods-contract.js) to
-// a build-order JSON's build_list/platoon_templates. Reached via the test-only export
-// hook at the bottom of referee_ai.js's define() factory (see that file for why) -
-// requireShippedModule() (not loadCouiModule()) is what surfaces it, since define()
-// itself never returns applyAiMods to the game.
+// referee_ai.js's applyAiMods, reached through its test-only export hook - hence
+// requireShippedModule rather than loadCouiModule. See testing.md.
 
 const { describe, it, mock, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -78,11 +74,8 @@ describe("applyAiMods - append", () => {
 });
 
 describe("applyAiMods - prepend", () => {
-  // Unlike append (`build[idToMod].concat(value)`, array-first), prepend does
-  // `value.concat(build[idToMod])` - value-first, so a bare scalar value must be
-  // normalized to a single-element array before concat or it dispatches to
-  // String.prototype.concat instead of Array.prototype.concat. Both the build-level
-  // branch and the build_conditions branch below pin that normalization.
+  // prepend concats value-first, so a bare scalar must be wrapped or it dispatches
+  // to String.prototype.concat. Both branches below pin that.
   it("concatenates in front of an existing array field, given an array value", () => {
     const json = buildJson([{ to_build: "Bot", builders: ["B"] }]);
     applyAiMods(json, [
@@ -121,10 +114,9 @@ describe("applyAiMods - prepend", () => {
     ]);
   });
 
-  // One descriptor can match both an array target and a non-array target. Normalizing
-  // by reassigning the shared `value` parameter leaked the wrapped array into every
-  // later non-array target. A string target hides this - ["A"] + "B" and "A" + "B"
-  // both give "AB" - so pin it on a numeric target, where [1] + 2 is "12", not 3.
+  // One descriptor can match both array and non-array targets, and reassigning the
+  // shared `value` leaks the wrapper into the later ones. Pinned on a numeric
+  // target, where [1] + 2 is "12"; a string target would hide it.
   it("does not let an array target corrupt a later non-array target", () => {
     const json = buildJson([
       { to_build: "Bot", priority: [10] },

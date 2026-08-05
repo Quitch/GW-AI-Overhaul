@@ -1,21 +1,15 @@
 "use strict";
 
-// `sonar-project.properties` is live scanner config (see CLAUDE.md), but nothing in the
-// repo ties its paths to reality, so it drifts silently and the drift only surfaces on
-// SonarCloud after a push. Two checks, both for failures that already happened:
+// `sonar-project.properties` is live config that nothing else in the repo reads,
+// so it drifts silently. Two checks, both for failures that already happened:
 //
-//   1. Every exclusion pattern must still match at least one tracked file. Renaming a
-//      file out from under an exclusion leaves the old path sitting there looking
-//      intentional - that is how `Readme!.txt` (renamed to `readme-nemuneko.txt`)
-//      quietly came back into analysis and reintroduced the encoding warning below.
-//   2. Every file the scanner will actually index - tracked, minus `sonar.exclusions` -
-//      must decode as UTF-8, matching the `sonar.sourceEncoding` the scanner is told to
-//      use. Anything that doesn't is a binary or legacy-encoded asset that needs an
-//      exclusion, and produces "There are problems with file encoding in the source
-//      code" on SonarCloud otherwise.
+//   1. Every exclusion pattern still matches a tracked file, so a rename cannot
+//      leave a stale path sitting there looking intentional.
+//   2. Every file the scanner indexes decodes as UTF-8, matching the declared
+//      sonar.sourceEncoding.
 //
-// Tracked files are the right population for both: the scanner is SCM-aware and skips
-// git-ignored files by default, so `git ls-files` is what it sees.
+// Tracked files are the right population: the scanner is SCM-aware, so what
+// `git ls-files` returns is what it sees. See testing.md.
 
 const fs = require("node:fs");
 const path = require("node:path");

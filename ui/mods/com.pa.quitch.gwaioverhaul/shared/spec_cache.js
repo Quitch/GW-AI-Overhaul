@@ -1,27 +1,10 @@
-// Cross-tag unit-spec fetch/parse cache.
-//
-// Galactic War game start calls the base game's GW.specs.genUnitSpecs(units, tag)
-// once per AI faction AND once for the player. Each call walks the whole unit-spec
-// dependency graph and re-fetches + re-parses every reachable spec file over
-// coui://. The raw file contents are identical across every call - only the per-tag
-// reference renaming differs - so a multi-foe game fetches+parses the entire spec
-// tree several times over.
-//
-// This module reimplements genUnitSpecs's breadth-first walk faithfully (see base
-// game media/ui/main/game/galactic_war/shared/js/gw_specs.js), but fetches each raw
-// spec file at most once per session and reuses the parsed result across every tag,
-// deep-cloning before tagging so the cached pristine copy is never mutated. Output is
-// intended to be identical to the base implementation - only the redundant fetch/parse
-// work is removed.
-//
-// The reference-tagging list in tagSpec() below MIRRORS base-game gw_specs.js:tagSpec
-// and must be kept in sync with it if the base game adds new spec reference fields.
+// Cross-tag unit-spec fetch/parse cache: a drop-in for the base game's
+// GW.specs.genUnitSpecs, whose output it must reproduce exactly. Ported from
+// media/ui/main/game/galactic_war/shared/js/gw_specs.js. See specs.md.
 
 define(function () {
-  // Untagged spec id -> Promise of the pristine parsed JSON. Module-level so the
-  // cache is shared across every genUnitSpecs() call (all factions + player, and
-  // across successive battles in a session). Unit specs are static game data, so a
-  // session-lifetime cache is safe.
+  // Untagged spec id -> Promise of the pristine parsed JSON. Module-level, so it
+  // is shared across every call and every battle in a session.
   var rawCache = {};
 
   // A rejected fetch is not left cached, so a later tag can retry rather than
@@ -39,11 +22,8 @@ define(function () {
     return rawCache[item];
   };
 
-  // Mirror of base-game gw_specs.js:tagSpec. Appends `tag` to every spec reference
-  // inside `spec` (mutating it in place) and returns the list of untagged references
-  // it discovered, so the caller can enqueue them for tagging too. Kept inside
-  // define() despite closing over nothing - see CONTRIBUTING.md ("Function scoping in
-  // shipped UI code") for why that is the repo-wide rule.
+  // Mirror of base-game gw_specs.js:tagSpec - keep the reference list below in
+  // sync with it. Mutates `spec`; returns the untagged references it found.
   var tagSpec = function (specId, tag, spec) {
     var moreWork = [];
     if (typeof spec !== "object") {
@@ -103,11 +83,8 @@ define(function () {
   };
 
   return {
-    // Faithful port of base-game GW.specs.genUnitSpecs, with per-file fetch/parse
-    // caching. `deps.fetch(item)` returns a thenable of the parsed spec for an
-    // untagged spec id. Resolves to a { "specId.tag": spec } map (including the
-    // trailing "/pa/units/unit_list.json.tag" entry); returns undefined when no tag
-    // is given, matching the base implementation.
+    // Resolves to a { "specId.tag": spec } map, including the trailing
+    // "/pa/units/unit_list.json.tag" entry. No tag gives undefined, as in stock.
     genUnitSpecs: function (units, tag, deps) {
       if (!tag) {
         return undefined;
@@ -167,8 +144,7 @@ define(function () {
       });
     },
 
-    // Test-only: drops the shared fetch cache so tests can assert fetch counts in
-    // isolation. Harmless (and unused) in the game runtime.
+    // Test-only: lets tests assert fetch counts in isolation.
     clearCache: function () {
       rawCache = {};
     },

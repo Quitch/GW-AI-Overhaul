@@ -1,15 +1,8 @@
 "use strict";
 
-// `shared/version.js` and `modinfo.json` both carry the mod version: the first is what
-// the war information panel shows and what gets stamped into new war saves, the second
-// is what the game itself reads. Neither can be derived from the other at runtime, so
-// version.js's comment tells contributors to bump both together when cutting a release
-// - this is the check that they actually did. A half-finished bump is invisible until a
-// save written by one version claims to be the other.
-//
-// It also keeps the release commit's one-line version change covered: the SonarCloud
-// new-code baseline is the previous version, so a bump always lands inside the new-code
-// period, and an uncovered one drags "Coverage on New Code" to 0% on its own.
+// shared/version.js and modinfo.json both carry the version and neither can derive
+// the other, so a half-finished bump is invisible until a save claims the wrong one.
+// This also keeps the release commit's one-line change covered - see testing.md.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

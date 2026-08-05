@@ -1,11 +1,7 @@
 "use strict";
 
-// Save/restore for the engine globals (model/window/$/api) that shipped code reads at
-// call time. Each test installs what it needs and the recorded restores put the
-// process back exactly as it was, so no test can leak a stub into the next one.
-//
-// createGlobalStubs() returns its own restore stack, so two test files - or two
-// suites in one file - never share state.
+// Save/restore for the engine globals shipped code reads at call time. A factory,
+// not a singleton, so two suites never share a restore stack.
 
 function createGlobalStubs() {
   const restores = [];

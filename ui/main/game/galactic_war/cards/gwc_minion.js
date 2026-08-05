@@ -6,17 +6,14 @@ define([
 ], function (GWFactions, gwoCard, gwoUnit, gwoAI) {
   var coopMinionCount = function () {
     var game = model.game();
-    // This will include players who are not currently in the game, but we still count their minions.
-    // This is important for the case where a player leaves the game, but may rejoin.
+    // Counts minions of absent players too, in case one rejoins.
     var coopPlayerInventoryData =
       game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
         ? game.coopPlayerInventoryData()
         : [];
     var minionCount = 0;
     _.forEach(coopPlayerInventoryData, function (playerData) {
-      // Guard the record shape, as shared/cards.js does for the same source. One
-      // malformed co-op inventory record would otherwise throw here and abort the
-      // whole deal rather than just contributing nothing.
+      // One malformed co-op record must contribute nothing, not abort the deal.
       if (
         playerData &&
         playerData.inventory &&
@@ -60,7 +57,7 @@ define([
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: function (system, context, inventory) {
+    deal: function (system, context, inventory, rng) {
       var chance = 80;
       var aiOpeningFactories = [
         gwoUnit.vehicleFactory,
@@ -87,12 +84,14 @@ define([
       if (gwoSettings && gwoSettings.aiAlly === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
-      var minion = _.cloneDeep(_.sample(minionPool));
+      var minion = _.cloneDeep(
+        rng ? rng.pick(minionPool) : _.sample(minionPool)
+      );
 
       if (gwoSettings) {
         var ai = gwoSettings.ai;
         if (ai === "Penchant") {
-          var penchantValues = gwoAI.penchants();
+          var penchantValues = gwoAI.penchants(rng);
           minion.character =
             minion.character + (" " + loc(penchantValues.penchantName));
           minion.personality.personality_tags =
@@ -105,7 +104,7 @@ define([
       return {
         params: {
           minion: minion,
-          unique: Math.random(),
+          unique: gwoCard.uniqueValue(rng),
         },
         chance: chance,
       };

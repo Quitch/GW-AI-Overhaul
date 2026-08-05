@@ -4,7 +4,17 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
   "shared/gw_inventory",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
-], function (GWFactions, gwoAI, gwoSave, GWInventory, helpers) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+], function (
+  GWFactions,
+  gwoAI,
+  gwoSave,
+  GWInventory,
+  helpers,
+  gwoStreams,
+  gwoCard
+) {
   return function (params) {
     var game = params.game;
     var gwoSettings = params.gwoSettings;
@@ -12,6 +22,7 @@ define([
     var inventory =
       params.inventory ||
       (game && _.isFunction(game.inventory) ? game.inventory() : undefined);
+    var warRng = gwoStreams.warRng(gwoSettings);
 
     var setupGeneralCommanderRequest = "gwo_setup_general_commander";
     var setupGeneralCommanderResult = "gwo_setup_general_commander_result";
@@ -38,41 +49,32 @@ define([
         : [];
     };
 
-    var buildGeneralCommanderMinions = function (factionIndex) {
+    var buildGeneralCommanderMinions = function (factionIndex, playerKey) {
       var minionPool = resolveFactionMinions(factionIndex);
       if (gwoSettings && gwoSettings.aiAlly === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
-      var minions = [];
-      if (!minionPool.length) {
-        return minions;
-      }
 
-      _.times(2, function () {
-        var baseSubcommander = _.sample(minionPool);
-        if (!baseSubcommander) {
-          return;
-        }
-
-        var subcommander = _.cloneDeep(baseSubcommander);
-        helpers.applyPenchantToSubcommander(subcommander, gwoSettings, gwoAI);
-        minions.push({
-          id: "gwc_minion",
-          minion: subcommander,
-          unique: Math.random(),
-        });
+      return helpers.buildGeneralCommanderMinions({
+        minionPool: minionPool,
+        gwoSettings: gwoSettings,
+        gwoAI: gwoAI,
+        gwoCard: gwoCard,
+        rng: gwoStreams.generalCommanderRng(warRng, playerKey),
       });
-
-      return minions;
     };
 
-    var appendGeneralCommanderMinions = function (cards, factionIndex) {
+    var appendGeneralCommanderMinions = function (
+      cards,
+      factionIndex,
+      playerKey
+    ) {
       var minions;
       if (!inventoryNeedsGeneralCommanderSetup(cards)) {
         return false;
       }
 
-      minions = buildGeneralCommanderMinions(factionIndex);
+      minions = buildGeneralCommanderMinions(factionIndex, playerKey);
       if (!minions.length) {
         return false;
       }
@@ -187,9 +189,8 @@ define([
       var finish;
       var inventoryCards;
 
-      // failGeneralCommanderSetup still sends the error operator back to the
-      // requesting viewer; also reject so the base campaign queue can order this
-      // handler's async work.
+      // Rejects as well as notifying the viewer, so the campaign queue can
+      // order this handler's async work.
       var failSetup = function (reason) {
         failGeneralCommanderSetup(operator, reason);
         result.reject(reason);
@@ -277,7 +278,16 @@ define([
       };
 
       inventoryCards = playerInventory.cards();
-      if (!appendGeneralCommanderMinions(inventoryCards, factionIndex)) {
+      if (
+        !appendGeneralCommanderMinions(
+          inventoryCards,
+          factionIndex,
+          gwoStreams.coopPlayerKey(record, {
+            id: operator.client_id,
+            name: operator.client_name,
+          })
+        )
+      ) {
         sendGeneralCommanderSetupResult(
           operator.client_id,
           operator.request_id,

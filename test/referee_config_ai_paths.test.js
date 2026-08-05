@@ -1,9 +1,7 @@
 "use strict";
 
-// Unit tests for the battle-config referee's ai_path assignment logic (setAIPath and
-// the army-setup functions that call it). These live in the extracted, measured
-// gw_play/referee_config_setup.js; referee_config.js itself keeps only the model/ko/api
-// glue and is coverage-excluded, so this loads the setup module directly.
+// The battle-config referee's ai_path assignment, which lives in the measured
+// gw_play/referee_config_setup.js.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -26,10 +24,7 @@ afterEach(() => {
   }
 });
 
-// setupAlliedCommanders/setupPrimaryAiAndMinions/setupFfaAis all pass their ai-shaped
-// argument through setupAIArmy, which needs a couple of fields beyond ai_path/faction
-// (personality.adv_eco_mod*, econ_rate, color, name, commander) just to avoid
-// crashing - none of these are asserted on, they only need to be present.
+// Fields setupAIArmy needs to avoid crashing. None are asserted on.
 function makeAiDescriptor(overrides) {
   return Object.assign(
     {
@@ -118,10 +113,8 @@ describe("setupAlliedCommanders", () => {
     assert.equal(armies[0].personality.ai_path, "/pa/ai_cluster/");
   });
 
-  // referee_config.js sets the star's ai.ally up with a startPosition of the
-  // subcommander count, so it is coloured after every player's subcommanders rather
-  // than in the middle of them. Compared against a second call rather than asserted
-  // as literal RGB, so this doesn't pin commander_colour.js's palettes.
+  // Compared against a second call rather than literal RGB, so this does not pin
+  // commander_colour.js's palettes.
   it("startPosition shifts the palette entry an ally is given", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
     restoreModel = installModel(fixture.game);
@@ -198,10 +191,8 @@ describe("setupPrimaryAiAndMinions", () => {
     assert.equal(armies[0].personality.ai_path, "/pa/ai_cluster/");
   });
 
-  // A guardian (mirror-mode) primary AI derives its personality from the player's card
-  // composition: each unit-type card share becomes that type's percent_*, and under
-  // Queller the dominant share also picks a personality tag. penchantName additionally
-  // feeds the display_name (Show AI Personality Names support).
+  // A mirror-mode AI derives its personality from the player's card composition:
+  // each unit-type share becomes a percent_*, and under Queller also a tag.
   it("derives a Queller guardian's personality percentages and tag from the player's cards", () => {
     const fixture = buildGame({ aiInUse: "Queller" });
     restoreModel = installModel(fixture.game);
@@ -252,8 +243,7 @@ describe("setupFfaAis", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
     restoreModel = installModel(fixture.game);
 
-    // Cluster foe placed in the middle, not first/last, to rule out an off-by-one in
-    // any index-based logic downstream (e.g. referee_game_files.js's clusterArmyIndex).
+    // Placed mid-list to catch an off-by-one in downstream index logic.
     const normalFoeA = makeAiDescriptor();
     const clusterFoe = makeAiDescriptor({ faction: 4 });
     const normalFoeB = makeAiDescriptor();
@@ -280,21 +270,15 @@ describe("setupFfaAis", () => {
   });
 });
 
-// A campaign co-op host hires the referee twice per battle (base gw_play.js's
-// hireRefereesForLaunch: a clean shared referee plus a local one), and a failed launch
-// can leave mutated in-memory state for a later save to serialize. None of the setup
-// below is idempotent - eco mods and fabber caps multiply, personality tags are pushed -
-// so the setup functions must work on copies of the star's ai() and the player's
-// inventory.minions() rather than mutating those live, persisted war objects.
+// A co-op host hires the referee twice per battle, and none of the setup is
+// idempotent, so it must work on copies of the live war objects. See architecture.md.
 describe("the setup functions never mutate the war objects they are given", () => {
   const subcommanderTechCards = [
     { id: "gwaio_upgrade_subcommander_tactics" },
     { id: "gwaio_upgrade_subcommander_fabber" },
   ];
 
-  // econ_rate above the difficulty's econ floor (Beginner: 0.35 + 0.05) so
-  // setAdvEcoMod's multiply is visible, and the fabber/tag fields the subcommander
-  // tech cards act on.
+  // econ_rate above the Beginner floor, so setAdvEcoMod's multiply is visible.
   function makeMutationBait(overrides) {
     return makeAiDescriptor(
       Object.assign(

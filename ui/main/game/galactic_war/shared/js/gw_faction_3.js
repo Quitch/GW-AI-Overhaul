@@ -1,4 +1,5 @@
-// Overhauls personalities
+// Overhauls personalities. The gwaioRandomSpec below is read by
+// faction/faction_seed.js - see galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (personalities) {
@@ -123,7 +124,11 @@ define([
       commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
     },
   ];
-  var randomPersonality = _.sample(minions).personality;
+  // GWO - the Random commander's pool, captured before randomAI joins it so it can
+  // never draw its own personality. The one below is a default; see galaxy.md.
+  var randomFrom = minions.slice();
+  var randomPersonality = minions[0].personality;
+
   var randomAI = {
     name: "Enderstryke71",
     character: "!LOC:Random",
@@ -133,6 +138,15 @@ define([
   };
   minions.push(randomAI);
 
+  // GWO - was sampled inline in the team literal below; see randomFrom above.
+  var systemDescriptions = [
+    "!LOC:Osiris has always lead a solitary existence. He was always more interested in the parts of his fellow commanders than the commanders themselves. With every battle won he would take the best pieces left of the broken adversary and integrate them into his form. Osiris is considered one of the most dangerous forces in the galaxy.",
+    "!LOC:As Osiris replaced pieces of himself with those of fallen foes, he would store older parts for replacements and repairs. Eventually, Osiris acquired enough spare parts to construct an entirely new commander. This would be the birth of the first Seeker.",
+    "!LOC:The Revenants are unique in that their motivations are individual rather than collective. Each Seeker follows in the example of their legendary Osiris--they seek battle to become stronger through their fallen enemies, and to create more Revenants.",
+    "!LOC:Osiris holds no interest in ruling, and instead serves more as an exemplar, whether he cares to or not. Therefore, it falls to a small council of older Seekers to direct the affairs of The Revenants at large--primarily making sure that they're fighting the other factions instead of amongst themselves.",
+    "!LOC:Osiris often considered the most dangerous commander in all the galaxy for the amount of annihilations he is credited with. A force of war equal to any army, high command of any faction takes his movements into consideration when deploying forces.",
+  ];
+
   return {
     name: factionName,
     color: factionColour,
@@ -140,13 +154,7 @@ define([
       {
         name: factionName,
         boss: _.merge(_.cloneDeep(baselinePersonality), boss),
-        systemDescription: _.sample([
-          "!LOC:Osiris has always lead a solitary existence. He was always more interested in the parts of his fellow commanders than the commanders themselves. With every battle won he would take the best pieces left of the broken adversary and integrate them into his form. Osiris is considered one of the most dangerous forces in the galaxy.",
-          "!LOC:As Osiris replaced pieces of himself with those of fallen foes, he would store older parts for replacements and repairs. Eventually, Osiris acquired enough spare parts to construct an entirely new commander. This would be the birth of the first Seeker.",
-          "!LOC:The Revenants are unique in that their motivations are individual rather than collective. Each Seeker follows in the example of their legendary Osiris--they seek battle to become stronger through their fallen enemies, and to create more Revenants.",
-          "!LOC:Osiris holds no interest in ruling, and instead serves more as an exemplar, whether he cares to or not. Therefore, it falls to a small council of older Seekers to direct the affairs of The Revenants at large--primarily making sure that they're fighting the other factions instead of amongst themselves.",
-          "!LOC:Osiris often considered the most dangerous commander in all the galaxy for the amount of annihilations he is credited with. A force of war equal to any army, high command of any faction takes his movements into consideration when deploying forces.",
-        ]),
+        systemDescription: systemDescriptions[0],
         systemTemplate: {
           name: factionName,
           Planets: [
@@ -221,5 +229,13 @@ define([
     minions: _.map(minions, function (personalityModifiers) {
       return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
     }),
+    // GWO - minions.length - 1 is randomAI, pushed above.
+    gwaioRandomSpec: {
+      baseline: baselinePersonality,
+      descriptions: systemDescriptions,
+      randoms: [
+        { index: minions.length - 1, template: randomAI, from: randomFrom },
+      ],
+    },
   };
 });

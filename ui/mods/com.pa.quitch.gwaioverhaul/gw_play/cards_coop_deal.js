@@ -1,18 +1,7 @@
-// Host-side co-op "pending tech cards" deal, extracted out of gw_play/cards.js. In
-// stock gw_play.js the host always deals exactly 3 cards to each viewer; this GWO
-// override honours the bonus-card rules (full hand / Lucky start card) and the
-// per-player start-loadout handling.
-//
-// Shaped like cards_start_subcdr.js: define() returns a factory taking
-// { game, chooseCards, helpers, GWInventory, numCardsToOffer } that installs
-// model.dealCoopPlayerPendingTechCards. The viewer validation/target-collection loop is
-// lifted to a module-scope pure function (dependencies injected) and re-exported through
-// the dead-in-production `typeof module` hook so it can be unit tested.
+// Host-side co-op pending-tech deal. Stock gw_play.js always deals each viewer
+// exactly 3 cards; this honours the bonus-card rules and per-player loadouts.
 define(function () {
-  // Walks the viewer clients and builds the list of deal targets, short-circuiting on
-  // the first validation problem. findRecord/getDealCount/hasUnlockedStartCard are
-  // injected (game.findCoopPlayerInventoryData / model.getCoopPlayerTechCardDealCount /
-  // model.recordHasUnlockedStartCard) so this stays pure and testable.
+  // Short-circuits on the first validation problem.
   var collectPendingTechTargets = function (params) {
     var viewers = params.viewers;
     var dealOptions = params.dealOptions;
@@ -89,12 +78,27 @@ define(function () {
     return { targets: targets, validationError: validationError };
   };
 
+  // The stream a viewer's hand is dealt from: their own, keyed by the host's
+  // deal counter so a catch-up deal at the same star is a different hand.
+  var pendingTechDealRng = function (gwoStreams, warRng, target) {
+    return gwoStreams.coopDealRng(
+      warRng,
+      gwoStreams.coopPlayerKey(
+        target && target.record,
+        target && target.client
+      ),
+      target && target.dealIndex
+    );
+  };
+
   var factory = function (params) {
     var game = params.game;
     var chooseCards = params.chooseCards;
     var helpers = params.helpers;
     var GWInventory = params.GWInventory;
     var numCardsToOffer = params.numCardsToOffer;
+    var gwoStreams = params.gwoStreams;
+    var warRng = params.warRng;
 
     model.dealCoopPlayerPendingTechCards = function (starIndex, star, options) {
       var result = $.Deferred();
@@ -156,11 +160,8 @@ define(function () {
         return result.promise();
       }
 
-      // Deals a viewer their pending tech cards. Defined here (a sibling of the
-      // per-target loop below) rather than inside that loop's callback, so its
-      // chooseCards().then() callback doesn't sit six function-levels deep. Takes
-      // the loop-local target/job/inventory explicitly; reads starIndex/star/
-      // updates from this enclosing scope.
+      // Takes the loop-local target/job/inventory explicitly, and reads
+      // starIndex/star/updates from this scope.
       var dealCardsForTarget = function (target, job, inventory) {
         var client = target.client;
         var cardsOffered = helpers.cardsOfferedCount(
@@ -172,6 +173,7 @@ define(function () {
           count: cardsOffered,
           star: star,
           systemCards: [],
+          rng: pendingTechDealRng(gwoStreams, warRng, target),
         }).then(function (cards) {
           var pendingTechCards = {
             star: starIndex,
@@ -262,13 +264,14 @@ define(function () {
     };
   };
 
-  // Test-only hook: `module` is absent in the game's Chromium UI runtime, so this never
-  // runs in production; under Node it exposes the pure target-collection helper to the
-  // test suite (see test/cards_coop_deal.test.js). Hence the eslint disables.
+  // Test-only hook - see testing.md.
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = { collectPendingTechTargets: collectPendingTechTargets };
+    module.exports = {
+      collectPendingTechTargets: collectPendingTechTargets,
+      pendingTechDealRng: pendingTechDealRng,
+    };
   }
 
   return factory;

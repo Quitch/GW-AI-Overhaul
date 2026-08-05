@@ -69,6 +69,11 @@ already included them; the check is `tag === ".player"`.
 The hardest part of co-op, because GWO has to _predict_ colours the base game
 assigns privately.
 
+Shared armies are a single army, so every co-op commander flies the host's
+colour — the `playerColor` global tag, written once at war creation. Unshared
+armies are split one per client by `gw_coop_referee.js`, which colours army 0
+with the host's faction colour and draws the rest from the lobby palette.
+
 `gw_play/coop_colour.js` mirrors the lobby palette from the base game's
 `server-script/lobby/color_table.js`. That makes it a **third copy** of the same
 data, and the table, the brightness rule and the sort must be kept in sync with

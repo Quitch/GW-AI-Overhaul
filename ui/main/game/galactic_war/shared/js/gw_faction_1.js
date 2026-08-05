@@ -1,4 +1,5 @@
-// Overhauls personalities
+// Overhauls personalities. The gwaioRandomSpec below is read by
+// faction/faction_seed.js - see galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (personalities) {
@@ -126,7 +127,11 @@ define([
       commander: "/pa/units/commanders/quad_commandonut/quad_commandonut.json",
     },
   ];
-  var randomPersonality = _.sample(minions).personality;
+  // GWO - the Random commander's pool, captured before randomAI joins it so it can
+  // never draw its own personality. The one below is a default; see galaxy.md.
+  var randomFrom = minions.slice();
+  var randomPersonality = minions[0].personality;
+
   var randomAI = {
     name: "Stelarch",
     character: "!LOC:Random",
@@ -135,6 +140,15 @@ define([
   };
   minions.push(randomAI);
 
+  // GWO - was sampled inline in the team literal below; see randomFrom above.
+  var systemDescriptions = [
+    "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
+    "!LOC:Though he doesn't talk about it, Nemicus reactivated many of the first commanders himself, feeling it his duty and longing for companionship. However, often these commanders would refuse the offer to seek their true purpose, since it was already known--to annihilate. Nemicus would argue otherwise, but ultimately leave them to their own devices.",
+    "!LOC:Nemicus would eventually form The Foundation with other like-minded commanders, with the objective of answering the big questions: Why are the commanders here? How did they get here?",
+    "!LOC:In researching ancient progenitor artifacts and data caches, Nemicus and his followers discovered references to The Great Machine. Supposedly, The Great Machine was what built and directed the commanders long ago. If any answers about the origins and purpose of the commanders were to be found, The Great Machine seemed like the best place to start.",
+    "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",
+  ];
+
   return {
     name: factionName,
     color: factionColour,
@@ -142,13 +156,7 @@ define([
       {
         name: factionName,
         boss: _.merge(_.cloneDeep(baselinePersonality), boss),
-        systemDescription: _.sample([
-          "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
-          "!LOC:Though he doesn't talk about it, Nemicus reactivated many of the first commanders himself, feeling it his duty and longing for companionship. However, often these commanders would refuse the offer to seek their true purpose, since it was already known--to annihilate. Nemicus would argue otherwise, but ultimately leave them to their own devices.",
-          "!LOC:Nemicus would eventually form The Foundation with other like-minded commanders, with the objective of answering the big questions: Why are the commanders here? How did they get here?",
-          "!LOC:In researching ancient progenitor artifacts and data caches, Nemicus and his followers discovered references to The Great Machine. Supposedly, The Great Machine was what built and directed the commanders long ago. If any answers about the origins and purpose of the commanders were to be found, The Great Machine seemed like the best place to start.",
-          "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",
-        ]),
+        systemDescription: systemDescriptions[0],
         systemTemplate: {
           name: factionName,
           Planets: [
@@ -223,5 +231,13 @@ define([
     minions: _.map(minions, function (personalityModifiers) {
       return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
     }),
+    // GWO - minions.length - 1 is randomAI, pushed above.
+    gwaioRandomSpec: {
+      baseline: baselinePersonality,
+      descriptions: systemDescriptions,
+      randoms: [
+        { index: minions.length - 1, template: randomAI, from: randomFrom },
+      ],
+    },
   };
 });

@@ -177,6 +177,15 @@ guardians parameter and cannot react to the real fight's state. The per-viewer
 `player_.playerN/` scope already gives each viewer the isolation that would
 otherwise be needed.
 
+`gw_play/per_player_tech.js`'s `getViewerSubcommanderAiPath` follows the same
+rule, and for the same reason also never routes a Cluster-faction viewer to the
+`"cluster"` type — unlike `referee_config.js`'s `setupAlliedCommanders` and
+`referee_game_files.js`'s `buildPlayerFiles`, which do check the host's
+`playerFaction` tag. The Cluster destination exists only to stop a Cluster
+player's AI-mod writes leaking into the shared brain-based tree that other allies
+and enemies read from. A per-player-tech viewer already has that isolation from
+their own scope, whatever their faction, so a second mechanism would be redundant.
+
 `isCluster(ai)` returns false for Guardians unconditionally — the game guarantees
 the Guardians are never Cluster — then checks faction 4. It handles `ai.faction`
 being either a bare number or an array, the latter being the pre-v5.44.0 save

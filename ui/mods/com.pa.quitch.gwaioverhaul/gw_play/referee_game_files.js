@@ -1,9 +1,4 @@
-// The game-files referee's testable path/file helpers live in
-// gw_play/referee_game_file_paths.js (a plain define() over lodash/$/Promise only), so
-// they stay coverage-measured and directly unit-tested
-// (test/referee_game_files_ai_paths.test.js). This shadowed referee file depends on the
-// unshipped shared/gw_common (aliased GW below) and so cannot load under the Node AMD
-// harness; it is coverage-excluded as untestable glue.
+// Glue. The testable half is gw_play/referee_game_file_paths.js - see testing.md.
 define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
@@ -17,16 +12,13 @@ define([
   var resolveAiUnitMapPaths = gameFilePaths.resolveAiUnitMapPaths;
   var buildPlayerFiles = gameFilePaths.buildPlayerFiles;
   var specFetch = gameFilePaths.specFetch;
-  // Drop-in for GW.specs.genUnitSpecs that fetches+parses each spec file at most
-  // once and reuses it across every tag (player + each AI faction).
+  // Drop-in for GW.specs.genUnitSpecs, fetching each spec file at most once.
   var genUnitSpecs = function (units, tag) {
     return gwoSpecCache.genUnitSpecs(units, tag, { fetch: specFetch });
   };
 
   var guardianMods = function (game, hostMods) {
-    // Viewers only have their own distinct inventory to fold in when per-player
-    // tech is enabled. Under shared control (the default, and solo play) every
-    // connected player draws from the host's inventory, already included below.
+    // Without per-player tech every viewer draws from the host's inventory.
     if (!game.perPlayerTechCards()) {
       return hostMods;
     }

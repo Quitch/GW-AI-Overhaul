@@ -1,23 +1,15 @@
-// Repairs stars that the base game's GalaxyBuilder leaves with no gates.
+// Repairs stars the base game's GalaxyBuilder leaves with no gates.
 //
-// GalaxyBuilder.buildGraph() (base game, not shadowed here) builds a Delaunay
-// triangulation of the stars and then discards every convex-hull edge. A hull star that
-// belonged to exactly one triangle has only hull edges, so the strip drops it to zero
-// connections. The consequences downstream in gw_galaxy.js are silent rather than loud:
-// it gets no entry in self.gates(), so pathBetween can never reach it, and Graph
-// .calcDistance() - a BFS over the surviving connections - never visits it, so its
-// distance stays at gw_star's ko.observable(0) default and its system generates at
-// minimum size. When the isolated star is the origin the whole war is unplayable, and
-// the origin is always a hull star because it is chosen as an extreme point (min of
-// x - y), so it is drawn from exactly the population at risk.
+// buildGraph() triangulates the stars and then discards every convex-hull edge, so
+// a hull star belonging to one triangle is left with zero connections. It fails
+// silently: no gates entry, so pathBetween cannot reach it, and calcDistance never
+// visits it, so it keeps distance 0 and generates at minimum size. The origin is
+// chosen as an extreme point, so it is drawn from exactly the population at risk -
+// and an isolated origin makes the war unplayable.
 //
-// This is the measured sibling of the base-game-shadowed gw_galaxy.js (see
-// CONTRIBUTING.md's "Node test reach for base-game-shadowed modules"): pure index/edge
-// arithmetic over plain arrays, unit-tested by test/gw_galaxy_connect.test.js, while the
-// builder glue that calls it stays in the coverage-excluded shadowed file.
+// A measured sibling of the shadowed gw_galaxy.js - see testing.md.
 define(function () {
-  // Graph.getConnections() is sparse - a star that never appeared in an edge has no
-  // entry at all rather than an empty one - so both cases mean "no gates".
+  // Graph.getConnections() is sparse: a star in no edge has no entry at all.
   var isolatedStars = function (starCount, connections) {
     var isolated = [];
     for (var i = 0; i < starCount; i++) {
@@ -35,9 +27,8 @@ define(function () {
       : edge[1] + "." + edge[0];
   };
 
-  // The Delaunay edges to add back so no star is left without gates. An isolated star's
-  // incident Delaunay edges are precisely the hull edges the strip removed, so restoring
-  // them reconnects it to both of its hull neighbours.
+  // An isolated star's incident Delaunay edges are exactly the hull edges the
+  // strip removed, so restoring them reconnects both its hull neighbours.
   var reconnectingEdges = function (starCount, delaunayEdges, connections) {
     var isolated = isolatedStars(starCount, connections);
     var restored = [];
