@@ -57,7 +57,7 @@ define([
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
-    deal: function (system, context, inventory) {
+    deal: function (system, context, inventory, rng) {
       var chance = 80;
       var aiOpeningFactories = [
         gwoUnit.vehicleFactory,
@@ -84,12 +84,14 @@ define([
       if (gwoSettings && gwoSettings.aiAlly === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
-      var minion = _.cloneDeep(_.sample(minionPool));
+      var minion = _.cloneDeep(
+        rng ? rng.pick(minionPool) : _.sample(minionPool)
+      );
 
       if (gwoSettings) {
         var ai = gwoSettings.ai;
         if (ai === "Penchant") {
-          var penchantValues = gwoAI.penchants();
+          var penchantValues = gwoAI.penchants(rng);
           minion.character =
             minion.character + (" " + loc(penchantValues.penchantName));
           minion.personality.personality_tags =
@@ -102,7 +104,7 @@ define([
       return {
         params: {
           minion: minion,
-          unique: Math.random(),
+          unique: gwoCard.uniqueValue(rng),
         },
         chance: chance,
       };

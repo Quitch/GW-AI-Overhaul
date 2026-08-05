@@ -82,6 +82,37 @@ describe("dealCard", () => {
     assert.equal(calls.releaseContext, context);
   });
 
+  it("forwards params.rng to the card as deal's fourth argument", async () => {
+    setGlobal("$", createFakeJQuery());
+    const rng = () => 0.5;
+    let seen;
+    await deal.dealCard({ id: "c", rng: rng }, fakeLoaded(), [
+      {
+        id: "c",
+        deal: function (system, context, inventory, cardRng) {
+          seen = cardRng;
+          return { params: {} };
+        },
+      },
+    ]);
+    assert.equal(seen, rng);
+  });
+
+  it("passes undefined when the caller supplies no rng", async () => {
+    setGlobal("$", createFakeJQuery());
+    let seen = "untouched";
+    await deal.dealCard({ id: "c" }, fakeLoaded(), [
+      {
+        id: "c",
+        deal: function (system, context, inventory, cardRng) {
+          seen = cardRng;
+          return { params: {} };
+        },
+      },
+    ]);
+    assert.equal(seen, undefined);
+  });
+
   it("rejects when the requested card id is not among the loaded cards", async () => {
     setGlobal("$", createFakeJQuery());
     await assert.rejects(

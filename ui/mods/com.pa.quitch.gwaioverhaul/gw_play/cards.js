@@ -339,7 +339,13 @@ function gwoCard() {
             var fullHand = _.map(cards, function (card) {
               var context = cardContexts[card.id];
               var cardChance =
-                card.deal && card.deal(star, context, dealInventory);
+                card.deal &&
+                card.deal(
+                  star,
+                  context,
+                  dealInventory,
+                  gwoStreams.cardRng(iterationRng, card.id)
+                );
               var match = helpers.doNotDealCard(
                 dealInventory,
                 card,
