@@ -8,11 +8,9 @@
 
 ### Changed
 
-- The same seed now rebuilds the same galaxy and the same enemies, given the same faction, difficulty, game options and mods. Previously the seed set only the positions of the stars, leaving the gates between them, system sizes, and every AI, minion, ally and game mode to be re-rolled on each attempt. Planet names still vary.
-- The same seed now also deals the same tech cards, the same Sub Commanders for the General Commander loadout, and the same AI landing behaviour. A war reproduces only when it is played the same way: visiting the same stars, in the same order, winning at the same speed, and taking the same cards.
-- Seeds entered from v6.6.0 or earlier now generate different planets: biome, radius, height, water and temperature all shift. Existing saved wars are unaffected.
-- Available Tech in a system is now per-player in co-op with separate tech
-- Loadouts offered from a Guardian system are now per-player in co-op with separate tech
+- The same seed now rebuilds the same galaxy, enemies, tech cards, Sub Commanders for the General Commander loadout, and the same AI landing behaviour. A war reproduces only when it is played the same way: visiting the same stars, in the same order, winning at the same speed, and taking the same cards, given the same faction, difficulty, game options, and mods. Planet names still vary.
+- Seeds entered from v6.7.0 or earlier now generate different planets: biome, radius, height, water and temperature all shift. Existing saved wars are unaffected.
+- Available Tech and loadouts in a system are now per-player in co-op with separate tech
 - Loadouts are dealt at time of exploration rather than war generation so you can never unlock a loadout in one war another war wanted to offer you
 
 ### Bugfix
@@ -20,8 +18,7 @@
 - Hosts and viewers don't get each others tech when a viewer joins a war
 - A co-op player joining a war part way through could be offered a loadout they already owned
 - The Lucky Commander no longer applies its bonus to a war where it is unlocked
-- Upgrade tech that gives a unit another unit's weapon, or that makes something spawn a unit on death, now carries the rest of your tech with it. The Wyrm's drones, the Lob's Booms, the mines dropped by the Bumblebee, Grenadier and Sheller, and the borrowed weapons on the Advanced Fabrication Bot, Avenger, Bluehawk, Catapult, Colonel, Horsefly, Inferno, Kaiju, Leviathan, Omega, Single Laser Defense Tower, Solar Array, Stinger, Stingray, Storm, Stryker and Vanguard were all using unmodified stock specs, so no health, damage or other card applied to them
-- The Uber Cannon the CEO Commander loadout gives your Colonels is no longer a stock one, so your damage tech now applies to it
+- Loadouts and upgrade techs that gives a unit another unit's weapon, or that makes something spawn a unit on death, now applies the rest of your bonuses to it
 
 ## v6.7.0 - 2026-08-04
 
