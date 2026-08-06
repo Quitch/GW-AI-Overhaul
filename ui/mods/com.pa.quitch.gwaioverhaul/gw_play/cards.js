@@ -413,6 +413,7 @@ function gwoCard() {
           stockBank: GW.bank,
           gwoSettings: gwoSettings,
           gwoSave: gwoSave,
+          gwoTreasure: gwoTreasure,
         });
 
         // Installs model.dealCoopPlayerPendingTechCards, overriding stock gw_play.js.
@@ -428,6 +429,7 @@ function gwoCard() {
           stockBank: GW.bank,
           gwoTreasure: gwoTreasure,
           coopStarCards: coopStarCards,
+          gwoSettings: gwoSettings,
         });
 
         // Reports a viewer's loadout unlocks to the host, which needs the mod
@@ -450,6 +452,8 @@ function gwoCard() {
           GW: GW,
           gwoStreams: gwoStreams,
           warRng: warRng,
+          gwoBank: gwoBank,
+          stockBank: GW.bank,
         });
 
         var dealCardToSelectableAI = function (win, turnState) {
@@ -467,7 +471,10 @@ function gwoCard() {
               var ai = system.star.ai();
               // A treasure planet offers a loadout derived at exploration, so it
               // never carries a pre-dealt card.
-              var treasurePlanet = ai && ai.treasurePlanet;
+              var treasurePlanet = gwoTreasure.isTreasureStar(
+                gwoSettings,
+                starIndex
+              );
               var validForDeal =
                 gwoSettings && gwoSettings.staticTech
                   ? _.isEmpty(system.star.cardList())
@@ -508,7 +515,11 @@ function gwoCard() {
 
             // $.when() doesn't wait for setCardName() to return
             Promise.all(deferredQueue)
-              .then(coopStarCards.refresh)
+              .then(function () {
+                // The one caller that replaces cards viewers already hold, so
+                // their offers move exactly when the host's do.
+                return coopStarCards.refresh({ redeal: true });
+              })
               .then(function () {
                 deferred.resolve();
               });
@@ -521,13 +532,13 @@ function gwoCard() {
 
         // The turn deal above covers the ordinary case. This covers a viewer
         // joining, and a rejoining viewer finishing its catch-up deals - neither
-        // of which passes through a turn.
+        // of which passes through a turn. It deliberately does not read
+        // stats().turns(): a move must not disturb an offer already advertised.
         ko.computed(function () {
           model.gwCampaignConnectedClients();
           model.gwCampaignPlayerSetupBlocked();
           game.coopPlayerInventoryData();
           game.hostTechCardDealCount();
-          game.stats().turns();
           coopStarCards.refresh();
         });
 
@@ -623,8 +634,7 @@ function gwoCard() {
           if (
             !model.gwCampaignReplayingAction &&
             star &&
-            star.ai() &&
-            star.ai().treasurePlanet
+            gwoTreasure.isTreasureStar(gwoSettings, starIndex)
           ) {
             var treasureLoadout = gwoTreasure.pickTreasureLoadout({
               isUnlocked: startCardUnlocked,

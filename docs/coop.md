@@ -160,6 +160,13 @@ over the existing one, on both the server and the client, so a novel top-level
 field survives. `cardsOffered`/`rerollsUsed` are the standing example of the first
 half: they only persist on the reroll path, which writes the record locally.
 
+**Only the host's own per-turn deal replaces a card a viewer already holds.**
+`refresh({redeal: true})` is called from `dealCardToSelectableAI` and nowhere else;
+every other trigger fills gaps. `game.stats().turns()` moves on every `GWGame.move()`
+while the host's cards are re-dealt only after a win, so a refresh keyed on the turn
+would change what a star advertises to a viewer while the host was merely travelling
+to it — and the card would no longer be the one in their hand on arrival.
+
 Two ordering rules the refresh depends on:
 
 - **Re-read the record immediately before writing it.** `upsertCoopPlayerInventoryData`
@@ -193,6 +200,17 @@ Deriving rather than storing is what lets a catch-up deal replay a star for a vi
 who was absent when it was explored: keyed on `(player, star)` alone, the offer
 reproduces exactly. It also means a host who has unlocked everything no longer denies
 the planet to everyone else.
+
+**The star is identified by index, not by `ai.treasurePlanet`.** Beating the Guardians
+runs `winTurn`'s boss branch, which calls `defeatTeam(ai.team)`; `gw_start/setup.js`
+deletes `ai.team` for the treasure planet, so `defeatTeam(undefined)` matches the star
+itself and clears its `ai()`. Nothing on the star still says "treasure planet" by the
+time it is explored — and exploration is the whole point, since a star is fought
+first and its cards offered afterwards. `gw_start/setup.js` therefore records
+`originSystem.gwaio.treasureStar`, and `isTreasureStar` is the only test any caller
+should use. Wars generated before that field existed get it back from
+`findTreasureStar`, which looks for a live `ai.treasurePlanet` and otherwise for the
+pre-dealt loadout the old war left on the star.
 
 The pool is `loadout_ids.lockedBase + unlockable`. `gw_start/setup.js` drew from
 `model.gwoNewStartCards`, which a third-party mod can push into; `model` is a fresh

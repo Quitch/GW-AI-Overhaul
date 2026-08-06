@@ -37,7 +37,14 @@ define(function () {
       return false;
     }
 
-    return !(params.staticTech && params.existingCard);
+    if (!params.existingCard) {
+      return true;
+    }
+
+    // Only a host re-deal replaces a card already held. A refresh triggered by
+    // anything else fills gaps, so a viewer's advertised card cannot change
+    // under them while the host is merely moving around the galaxy.
+    return !!params.redeal && !params.staticTech;
   };
 
   // Whether the host may re-deal now. Every connected viewer must be level with
@@ -75,20 +82,6 @@ define(function () {
     });
   };
 
-  // Everything a refresh would read. An unchanged key means an unchanged result,
-  // so the snapshot it would publish is not worth sending.
-  var starRefreshKey = function (params) {
-    return [
-      params.turns,
-      params.hostDealCount,
-      _.sortBy(
-        _.map(params.players, function (player) {
-          return player.key + ":" + player.dealCount;
-        })
-      ).join(","),
-    ].join("|");
-  };
-
   var factory = function (params) {
     var game = params.game;
     var chooseCards = params.chooseCards;
@@ -99,10 +92,14 @@ define(function () {
     var stockBank = params.stockBank;
     var gwoSettings = params.gwoSettings;
     var gwoSave = params.gwoSave;
+    var gwoTreasure = params.gwoTreasure;
+
+    var isTreasureStar = function (starIndex) {
+      return gwoTreasure.isTreasureStar(gwoSettings, starIndex);
+    };
 
     var refreshInFlight;
-    var refreshPending = false;
-    var lastAppliedKey;
+    var refreshPending;
 
     var connectedViewers = function () {
       var clients = _.isArray(model.gwCampaignConnectedClients())
@@ -121,21 +118,7 @@ define(function () {
       });
     };
 
-    var currentKey = function (viewers) {
-      return starRefreshKey({
-        turns: game.stats().turns(),
-        hostDealCount: game.hostTechCardDealCount(),
-        players: _.map(viewers, function (client) {
-          var record = findRecord(client);
-          return {
-            key: gwoStreams.coopPlayerKey(record, client),
-            dealCount: model.getCoopPlayerTechCardDealCount(record),
-          };
-        }),
-      });
-    };
-
-    var starsNeedingCards = function (record) {
+    var starsNeedingCards = function (record, redeal) {
       var wanted = [];
 
       _.forEach(model.galaxy.systems(), function (system, starIndex) {
@@ -144,9 +127,10 @@ define(function () {
           starNeedsViewerCard({
             canSelect: model.canSelect(starIndex),
             ai: ai,
-            treasurePlanet: ai && ai.treasurePlanet,
+            treasurePlanet: isTreasureStar(starIndex),
             staticTech: gwoSettings && gwoSettings.staticTech,
             existingCard: starCardForRecord(record, starIndex),
+            redeal: redeal,
           })
         ) {
           wanted.push({ starIndex: starIndex, star: system.star });
@@ -179,9 +163,16 @@ define(function () {
     // Resolves with whether the record changed. The record is re-read at write
     // time: chooseCards is async, so a catch-up deal can have landed
     // pendingTechCards on it since this viewer's work began.
-    var refreshViewer = function (client) {
+    var refreshViewer = function (client, redeal) {
       var record = findRecord(client);
       if (!record || !record.inventory) {
+        return Promise.resolve(false);
+      }
+
+      // Decided before the inventory is built, so a refresh with nothing to do
+      // costs a walk of the galaxy rather than an applyCards per viewer.
+      var targets = starsNeedingCards(record, redeal);
+      if (!targets.length) {
         return Promise.resolve(false);
       }
 
@@ -210,7 +201,7 @@ define(function () {
       return applied
         .then(function () {
           return Promise.all(
-            _.map(starsNeedingCards(record), function (target) {
+            _.map(targets, function (target) {
               return dealStarCard(target, inventory, playerKey, record);
             })
           );
@@ -257,22 +248,22 @@ define(function () {
 
     // A refresh calls deal() on every card of the deck once per star per viewer,
     // which is too much for one frame, so each viewer yields before starting.
-    var refreshViewerLater = function (client) {
+    var refreshViewerLater = function (client, redeal) {
       return new Promise(function (resolve) {
         _.defer(function () {
-          resolve(refreshViewer(client));
+          resolve(refreshViewer(client, redeal));
         });
       });
     };
 
-    var refreshEachViewer = function (viewers) {
+    var refreshEachViewer = function (viewers, redeal) {
       var changedAny = false;
 
       return _.reduce(
         viewers,
         function (chain, client) {
           return chain
-            .then(refreshViewerLater.bind(null, client))
+            .then(refreshViewerLater.bind(null, client, redeal))
             .then(function (changed) {
               changedAny = changedAny || changed;
             });
@@ -283,7 +274,7 @@ define(function () {
       });
     };
 
-    var runRefresh = function () {
+    var runRefresh = function (redeal) {
       var viewers = connectedViewers();
       if (!viewers.length) {
         return Promise.resolve();
@@ -304,24 +295,23 @@ define(function () {
         return Promise.resolve();
       }
 
-      var key = currentKey(viewers);
-      if (key === lastAppliedKey) {
-        return Promise.resolve();
-      }
-
-      return refreshEachViewer(viewers).then(function (changed) {
-        lastAppliedKey = key;
+      return refreshEachViewer(viewers, redeal).then(function (changed) {
         if (!changed) {
           return undefined;
         }
 
+        console.log("[GW COOP] refreshed co-op player star cards");
         return Promise.resolve(gwoSave(game, false)).then(function () {
           model.sendCampaignSnapshot("gwo_star_cards", true);
         });
       });
     };
 
-    var refresh = function () {
+    // redeal replaces every viewer's card, and belongs only to the host's own
+    // per-turn deal. Every other caller fills gaps.
+    var refresh = function (options) {
+      var redeal = !!(options && options.redeal);
+
       if (
         !model.gwCampaignActive() ||
         !model.isCampaignHost() ||
@@ -330,12 +320,15 @@ define(function () {
         return Promise.resolve();
       }
 
+      // A coalesced refresh re-deals if any of the calls it stands in for did.
       if (refreshInFlight) {
-        refreshPending = true;
+        refreshPending = {
+          redeal: redeal || !!(refreshPending && refreshPending.redeal),
+        };
         return refreshInFlight;
       }
 
-      refreshInFlight = runRefresh()
+      refreshInFlight = runRefresh(redeal)
         .then(null, function (reason) {
           console.error(
             "[GW COOP] failed to refresh co-op player star cards: " + reason
@@ -343,11 +336,9 @@ define(function () {
         })
         .then(function () {
           refreshInFlight = undefined;
-          if (refreshPending) {
-            refreshPending = false;
-            return refresh();
-          }
-          return undefined;
+          var queued = refreshPending;
+          refreshPending = undefined;
+          return queued ? refresh(queued) : undefined;
         });
 
       return refreshInFlight;
@@ -373,7 +364,6 @@ define(function () {
       buildStarCardsField: buildStarCardsField,
       starNeedsViewerCard: starNeedsViewerCard,
       viewersReadyForStarRefresh: viewersReadyForStarRefresh,
-      starRefreshKey: starRefreshKey,
     };
   }
 

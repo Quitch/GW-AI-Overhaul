@@ -105,6 +105,7 @@ define(function () {
     var stockBank = params.stockBank;
     var gwoTreasure = params.gwoTreasure;
     var coopStarCards = params.coopStarCards;
+    var gwoSettings = params.gwoSettings;
 
     model.dealCoopPlayerPendingTechCards = function (starIndex, star, options) {
       var result = $.Deferred();
@@ -137,12 +138,11 @@ define(function () {
       var updates = [];
       var jobs = [];
 
-      var ai = star && _.isFunction(star.ai) ? star.ai() : undefined;
       var collected = collectPendingTechTargets({
         viewers: viewers,
         dealOptions: dealOptions,
         starIndex: starIndex,
-        treasurePlanet: !!(ai && ai.treasurePlanet),
+        treasurePlanet: gwoTreasure.isTreasureStar(gwoSettings, starIndex),
         findRecord: function (query) {
           return game.findCoopPlayerInventoryData(query);
         },

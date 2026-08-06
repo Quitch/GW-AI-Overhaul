@@ -843,6 +843,10 @@ function gwoSetup() {
             }
           };
 
+          // Winning the Guardians clears star.ai(), so the star has to be
+          // identified by index for the loadout offer to survive the fight.
+          var treasurePlanetStar;
+
           var onPopulated = function (teamInfo) {
             if (model.makeGameBusy() !== busyToken) {
               return;
@@ -1151,7 +1155,7 @@ function gwoSetup() {
             var loreEntry = 0;
             var optionalLoreEntry = 0;
             var treasureRng = warRng.stream("treasure");
-            _.forEach(game.galaxy().stars(), function (star) {
+            _.forEach(game.galaxy().stars(), function (star, starIndex) {
               var ai = star.ai();
               var system = star.system();
               if (ai) {
@@ -1165,6 +1169,7 @@ function gwoSetup() {
 
                   if (treasurePlanetSetup === false) {
                     treasurePlanetSetup = true;
+                    treasurePlanetStar = starIndex;
                     delete ai.commanderCount;
                     delete ai.minions;
                     delete ai.foes;
@@ -1250,6 +1255,7 @@ function gwoSetup() {
             originSystem.gwaio.clusterFixed = true;
             // This war never pre-dealt a treasure loadout to strip
             originSystem.gwaio.treasureLoadoutDerived = true;
+            originSystem.gwaio.treasureStar = treasurePlanetStar;
             originSystem.gwaio.coopPlayerScalingCount = playerCount;
           };
 

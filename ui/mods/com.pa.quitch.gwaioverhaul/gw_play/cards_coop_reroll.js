@@ -70,6 +70,8 @@ define(function () {
     var GW = params.GW;
     var gwoStreams = params.gwoStreams;
     var warRng = params.warRng;
+    var gwoBank = params.gwoBank;
+    var stockBank = params.stockBank;
 
     var rerollPendingTechRequest = "gwo_reroll_pending_tech";
     var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
@@ -279,7 +281,13 @@ define(function () {
       };
 
       if (playerInventory.cards().length) {
-        playerInventory.applyCards(dealCards);
+        // Their loadout card's buff() would otherwise bank into the host's own
+        // unlocks, as in cards_coop_deal.js.
+        gwoBank.suspendUnlocks(stockBank);
+        playerInventory.applyCards(function () {
+          gwoBank.resumeUnlocks();
+          dealCards();
+        });
       } else {
         dealCards();
       }

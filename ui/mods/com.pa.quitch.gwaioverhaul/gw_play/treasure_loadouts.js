@@ -31,6 +31,42 @@ define([
     );
   };
 
+  // gw_game.js's winTurn passes the Guardians' ai.team to defeatTeam, and
+  // gw_start/setup.js deletes that field, so defeatTeam(undefined) matches the
+  // treasure star itself and clears its ai(). Nothing on the star survives the
+  // fight; the recorded index is what identifies it afterwards.
+  var isTreasureStar = function (gwoSettings, starIndex) {
+    return (
+      !!gwoSettings &&
+      _.isNumber(gwoSettings.treasureStar) &&
+      gwoSettings.treasureStar === starIndex
+    );
+  };
+
+  // For a war generated before the index was recorded. The live ai() answers
+  // while the Guardians stand; afterwards only the pre-dealt card is left.
+  var findTreasureStar = function (stars) {
+    var found = _.findIndex(stars, function (star) {
+      var ai = star && _.isFunction(star.ai) && star.ai();
+      return !!(ai && ai.treasurePlanet);
+    });
+
+    if (found !== -1) {
+      return found;
+    }
+
+    found = _.findIndex(stars, function (star) {
+      return _.some(
+        (star && _.isFunction(star.cardList) && star.cardList()) || [],
+        function (card) {
+          return card && helpers.isStartLoadoutCardId(card.id);
+        }
+      );
+    });
+
+    return found === -1 ? undefined : found;
+  };
+
   var treasureLoadoutPool = function () {
     return _.map(
       gwoLoadoutIds.lockedBase.concat(gwoLoadoutIds.unlockable),
@@ -162,6 +198,8 @@ define([
   };
 
   var api = {
+    isTreasureStar: isTreasureStar,
+    findTreasureStar: findTreasureStar,
     treasureLoadoutPool: treasureLoadoutPool,
     recordHasUnlockedLoadout: recordHasUnlockedLoadout,
     pickTreasureLoadout: pickTreasureLoadout,

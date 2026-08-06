@@ -42,6 +42,77 @@ describe("treasureLoadoutPool", () => {
   });
 });
 
+// gw_game.js's defeatTeam(undefined) clears the Guardians' own ai() when you beat
+// them, so nothing on the star says "treasure planet" by the time it is explored.
+describe("isTreasureStar", () => {
+  it("identifies the star by the index the war recorded", () => {
+    assert.equal(treasure.isTreasureStar({ treasureStar: 7 }, 7), true);
+    assert.equal(treasure.isTreasureStar({ treasureStar: 7 }, 8), false);
+  });
+
+  it("identifies star zero, which must not read as absent", () => {
+    assert.equal(treasure.isTreasureStar({ treasureStar: 0 }, 0), true);
+  });
+
+  it("is false for a war that recorded no treasure star", () => {
+    assert.equal(treasure.isTreasureStar({}, 0), false);
+    assert.equal(treasure.isTreasureStar(undefined, 0), false);
+    assert.equal(
+      treasure.isTreasureStar({ treasureStar: undefined }, 0),
+      false
+    );
+  });
+});
+
+describe("findTreasureStar", () => {
+  const star = (ai, cards) => ({
+    ai: () => ai,
+    cardList: () => cards || [],
+  });
+
+  it("finds the Guardians while they still stand", () => {
+    assert.equal(
+      treasure.findTreasureStar([
+        star(undefined),
+        star({ treasurePlanet: true }),
+        star({}),
+      ]),
+      1
+    );
+  });
+
+  // Once they are beaten the ai is gone, and the pre-dealt loadout the old war
+  // left behind is the only thing marking the star.
+  it("falls back to the star still holding a pre-dealt loadout", () => {
+    assert.equal(
+      treasure.findTreasureStar([
+        star(undefined, [{ id: "gwc_combat_bots" }]),
+        star(undefined, [{ id: "gwaio_start_ceo" }]),
+      ]),
+      1
+    );
+  });
+
+  it("prefers the live Guardians over a stray loadout card", () => {
+    assert.equal(
+      treasure.findTreasureStar([
+        star(undefined, [{ id: "gwaio_start_ceo" }]),
+        star({ treasurePlanet: true }),
+      ]),
+      1
+    );
+  });
+
+  // The loadout has already been taken, or the war never had a treasure planet.
+  it("is undefined when nothing marks a treasure star", () => {
+    assert.equal(
+      treasure.findTreasureStar([star(undefined), star({})]),
+      undefined
+    );
+    assert.equal(treasure.findTreasureStar([]), undefined);
+  });
+});
+
 describe("recordHasUnlockedLoadout", () => {
   it("reads the base game's own unlock list", () => {
     const record = { unlockedStartCardIds: ["gwc_start_subcdr"] };

@@ -203,6 +203,7 @@ describe("starNeedsViewerCard", () => {
     treasurePlanet: false,
     staticTech: false,
     existingCard: undefined,
+    redeal: false,
   };
   const needs = (overrides) =>
     starCards.starNeedsViewerCard(Object.assign({}, base, overrides));
@@ -221,57 +222,23 @@ describe("starNeedsViewerCard", () => {
     assert.equal(needs({ treasurePlanet: true }), false);
   });
 
-  it("re-deals every turn, unless the war froze its tech", () => {
-    assert.equal(needs({ existingCard: { id: "a" } }), true);
-    assert.equal(needs({ staticTech: true, existingCard: { id: "a" } }), false);
-    assert.equal(needs({ staticTech: true }), true);
+  it("fills a gap whatever prompted the refresh", () => {
+    assert.equal(needs({ redeal: false }), true);
+    assert.equal(needs({ redeal: true }), true);
   });
-});
 
-describe("starRefreshKey", () => {
-  const key = (overrides = {}) =>
-    starCards.starRefreshKey(
-      Object.assign(
-        {
-          turns: 3,
-          hostDealCount: 4,
-          players: [
-            { key: "alice", dealCount: 4 },
-            { key: "bob", dealCount: 4 },
-          ],
-        },
-        overrides
-      )
-    );
+  // The regression this exists for: a viewer's advertised card must not change
+  // while the host is only moving. Only the host's own per-turn deal re-deals.
+  it("keeps a card the viewer already holds unless the host re-deals", () => {
+    assert.equal(needs({ existingCard: { id: "a" }, redeal: false }), false);
+    assert.equal(needs({ existingCard: { id: "a" }, redeal: true }), true);
+  });
 
-  it("is stable for unchanged inputs, whatever order the players arrive in", () => {
-    assert.equal(key(), key());
+  it("never replaces a card in a war that froze its tech", () => {
     assert.equal(
-      key({
-        players: [
-          { key: "bob", dealCount: 4 },
-          { key: "alice", dealCount: 4 },
-        ],
-      }),
-      key()
+      needs({ existingCard: { id: "a" }, redeal: true, staticTech: true }),
+      false
     );
-  });
-
-  it("changes when the turn, the host, or any player moves on", () => {
-    assert.notEqual(key({ turns: 4 }), key());
-    assert.notEqual(key({ hostDealCount: 5 }), key());
-    assert.notEqual(
-      key({
-        players: [
-          { key: "alice", dealCount: 5 },
-          { key: "bob", dealCount: 4 },
-        ],
-      }),
-      key()
-    );
-  });
-
-  it("changes when a viewer joins or leaves", () => {
-    assert.notEqual(key({ players: [{ key: "alice", dealCount: 4 }] }), key());
+    assert.equal(needs({ staticTech: true }), true);
   });
 });

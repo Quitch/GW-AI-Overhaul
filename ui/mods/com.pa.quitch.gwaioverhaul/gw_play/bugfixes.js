@@ -33,11 +33,23 @@ function gwoBugfixes() {
       }
     };
 
-    // Wars generated before the offer became derived hold the host's pick. A
-    // treasure star is never pre-dealt anything else, so the list clears whole.
-    var dropPreDealtTreasureLoadout = function (star) {
-      var ai = ko.isObservable(star.ai) && star.ai();
-      if (ai && ai.treasurePlanet && star.cardList().length) {
+    // Wars generated before the offer became derived hold the host's pick, and
+    // recorded no treasure star index. A treasure star is never pre-dealt
+    // anything else, so its list clears whole.
+    var deriveTreasureLoadout = function (gwoTreasure) {
+      var stars = galaxy.stars();
+      gwoSettings.treasureStar = gwoTreasure.findTreasureStar(stars);
+
+      // A save taken mid-exploration is already showing that list, and clearing
+      // it would leave the player nothing to pick.
+      var midExplore =
+        game.turnState() === "explore" &&
+        game.currentStar() === gwoSettings.treasureStar;
+
+      var star = _.isNumber(gwoSettings.treasureStar)
+        ? stars[gwoSettings.treasureStar]
+        : undefined;
+      if (star && !midExplore && star.cardList().length) {
         star.cardList([]);
       }
     };
@@ -141,14 +153,10 @@ function gwoBugfixes() {
       }
     };
 
-    var applyFixes = function () {
+    var applyFixes = function (gwoTreasure) {
       for (var star of galaxy.stars()) {
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
-        }
-
-        if (!gwoSettings.treasureLoadoutDerived) {
-          dropPreDealtTreasureLoadout(star);
         }
 
         if (
@@ -158,6 +166,10 @@ function gwoBugfixes() {
         ) {
           fixClusterCommanderTypes(star.ai());
         }
+      }
+
+      if (!gwoSettings.treasureLoadoutDerived) {
+        deriveTreasureLoadout(gwoTreasure);
       }
 
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
@@ -170,11 +182,14 @@ function gwoBugfixes() {
     };
 
     checkIfPatchesNeeded();
-    applyFixes();
 
     requireGW(
-      ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
-      function (gwoSave) {
+      [
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
+      ],
+      function (gwoSave, gwoTreasure) {
+        applyFixes(gwoTreasure);
         gwoSave(game, true);
       }
     );
