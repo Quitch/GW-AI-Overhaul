@@ -774,6 +774,10 @@ function gwoCard() {
 
         // call dealCardToSelectableAI() so systems' cards update when player acquires a card
         model.win = function (selectedCardIndex) {
+          var resolveExitGate = function () {
+            model.exitGate().resolve();
+          };
+
           if (
             model.canUseCoopTechChoice() &&
             model.isCampaignViewer() &&
@@ -859,11 +863,12 @@ function gwoCard() {
               })
               .then(function () {
                 if (model.gameOver()) {
-                  api.tally.incStatInt("gw_war_victory").always(function () {
-                    model.exitGate().resolve();
-                  });
+                  // always, so a failed stat write still opens the gate.
+                  api.tally
+                    .incStatInt("gw_war_victory")
+                    .always(resolveExitGate);
                 } else {
-                  model.exitGate().resolve();
+                  resolveExitGate();
 
                   if (playTechAudio) {
                     if (techAudio) {

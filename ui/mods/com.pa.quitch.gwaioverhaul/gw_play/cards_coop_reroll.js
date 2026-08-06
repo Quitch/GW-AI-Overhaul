@@ -175,6 +175,14 @@ define(function () {
         result.reject(reason);
       };
 
+      var resolveResult = function () {
+        result.resolve();
+      };
+
+      var rejectResult = function (error) {
+        result.reject(error);
+      };
+
       if (!model.isCampaignHost() || !model.gwCampaignPerPlayerTechCards()) {
         result.reject("not campaign host or per-player tech disabled");
         return result.promise();
@@ -269,14 +277,7 @@ define(function () {
             offer_rerolls: nextRerollsUsed < cardsOffered - 1,
             updated_at: updatedAt,
           });
-          gwoSave(game, false).then(
-            function () {
-              result.resolve();
-            },
-            function (error) {
-              result.reject(error);
-            }
-          );
+          gwoSave(game, false).then(resolveResult, rejectResult);
         });
       };
 
