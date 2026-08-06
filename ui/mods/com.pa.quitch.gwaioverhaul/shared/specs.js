@@ -216,9 +216,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             );
             return attribute;
           }
-          // hack fix for mirrorMode due to the fact that
-          // `attribute` was retaining the previous `specTag`s
-          // and I couldn't track down why
+          // Rewrites the suffix rather than appending one. The op ordering
+          // leaves no `replace` between two cards' `tag`s on a shared path,
+          // so the second sees a value the first already tagged. See specs.md.
           var cleanAttribute = attribute.slice(0, jsonIndex + 5);
           return cleanAttribute + specTag;
         },

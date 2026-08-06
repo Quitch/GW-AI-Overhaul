@@ -65,7 +65,7 @@ on the same path:
 { file: gwoUnit.wyrm, path: "tools.0.spec_id", op: "tag" },
 ```
 
-Two things follow from this.
+Three things follow from this.
 
 The tag needs the **final** index. `replace` runs before `push`, `prepend` and `tag`
 (see the op ordering), so a tool pushed onto a four-tool unit is tagged at
@@ -76,6 +76,16 @@ outright. A file the unit already references is covered — `tagSpec` walked it.
 borrowed from another unit is not, and belongs in `additionalSpecs`, which is
 concatenated onto every army's spec list. Tagging cascades from there: tag a weapon
 and its `ammo_id`, and any `spawn_unit_on_death` that ammo has, come with it.
+
+`tag` **rewrites** the suffix rather than appending one, which makes applying it
+twice harmless. It has to be idempotent, because the op ordering hoists every
+`replace` ahead of every `tag`: when two cards tag the same path, the paired
+`replace` that would reset the value no longer sits between them, and the second
+`tag` sees a value the first already tagged. `gwaio_protocol_killswitch` and
+`gwaio_upgrade_colonel` both tag the Colonel's `death_weapon.ground_ammo_spec`, so
+a player holding both hits this. So does co-op per-player tech, where
+`guardianMods` concatenates every viewer's mods and two players holding one card
+contribute its `tag` twice.
 
 The reference fields that count are the ones `tagSpec` renames — `base_spec`,
 `tools[].spec_id`, `ammo_id`, `replaceable_units`, `buildable_projectiles`,

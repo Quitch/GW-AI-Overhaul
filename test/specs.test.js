@@ -347,6 +347,36 @@ describe("specs.mod - operation ordering", () => {
     // differ from any other application order, so this also pins the order itself)
     assert.equal(data["unit.json"].hp, 25);
   });
+
+  // Hoisting every replace ahead of every tag leaves the two tags adjacent, with
+  // no replace between them to reset the value. Shipped pairing: killswitch and
+  // the Colonel upgrade both tag the Colonel's death_weapon.ground_ammo_spec.
+  it("tags a path only once when two cards tag it", () => {
+    const data = { "unit.json": { ref: "stock.json.player" } };
+    specs.mod(
+      data,
+      [
+        { file: "unit.json", path: "ref", op: "replace", value: "a.json" },
+        { file: "unit.json", path: "ref", op: "tag" },
+        { file: "unit.json", path: "ref", op: "replace", value: "b.json" },
+        { file: "unit.json", path: "ref", op: "tag" },
+      ],
+      ".player"
+    );
+    assert.equal(data["unit.json"].ref, "b.json.player");
+  });
+
+  // Mirror mode concatenates the host's mods onto the guardians' inventory, and
+  // per-player tech adds every viewer's on top, so one card's mods can arrive twice.
+  it("tags a path only once when one card's mods are duplicated", () => {
+    const mods = [
+      { file: "unit.json", path: "ref", op: "replace", value: "a.json" },
+      { file: "unit.json", path: "ref", op: "tag" },
+    ];
+    const data = { "unit.json": { ref: "stock.json.ai0" } };
+    specs.mod(data, mods.concat(mods), ".ai0");
+    assert.equal(data["unit.json"].ref, "a.json.ai0");
+  });
 });
 
 describe("specs.mod - malformed-mod tolerance", () => {
