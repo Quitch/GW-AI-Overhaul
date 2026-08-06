@@ -4,10 +4,11 @@
 // pin the two properties that makes possible: it depends only on the player and
 // the star, and it sees mod loadouts the base game's unlock record cannot hold.
 
-const { describe, it } = require("node:test");
+const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const treasure = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js"
@@ -308,5 +309,298 @@ describe("pickTreasureLoadout", () => {
       pool.every((card) => card.allowOverflow === undefined),
       "buildPendingStartLoadoutCard must clone before stamping allowOverflow"
     );
+  });
+});
+
+// The host has to know which loadouts a viewer already owns to offer them a
+// treasure planet they can use, and cannot learn the mod ones any other way:
+// the base game's own report drops every id outside the "gwc_start" prefix.
+// install() is both halves of that exchange, over model/ko.
+const REPORT = "gwo_report_unlocked_loadouts";
+
+const bank = (ids) => ({
+  added: [],
+  startCards: () => (ids || []).map((id) => ({ id })),
+  addStartCard(card) {
+    this.added.push(card);
+    return true;
+  },
+});
+
+function install(overrides = {}) {
+  const options = Object.assign(
+    {
+      records: { alice: { id: "alice" } },
+      isViewer: true,
+      campaignActive: true,
+      perPlayerTech: true,
+      hasRecord: true,
+      upsertOk: true,
+      stockIds: ["gwc_start_artillery"],
+      gwoIds: ["gwaio_start_ceo"],
+    },
+    overrides
+  );
+
+  const calls = { upserts: [], reported: [], snapshots: [] };
+  const handlers = {};
+  // ko.computed evaluates eagerly and again on every dependency change; the
+  // shipped code's "have I already said this?" guard only shows up on a re-run.
+  const computeds = [];
+
+  const stubs = createGlobalStubs();
+  stubs.setGlobal("ko", {
+    computed: (fn) => {
+      computeds.push(fn);
+      fn();
+    },
+  });
+  stubs.setGlobal("model", {
+    registerCampaignViewerOperatorHandler: (name, fn) => {
+      handlers[name] = fn;
+    },
+    isCampaignViewer: () => options.isViewer,
+    gwCampaignActive: () => options.campaignActive,
+    gwCampaignPerPlayerTechCards: () => options.perPlayerTech,
+    currentCoopPlayerInventoryData: () =>
+      options.hasRecord ? { id: "alice" } : undefined,
+    sendCampaignViewerOperator: (name, payload) =>
+      calls.reported.push([name, payload]),
+    sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
+  });
+
+  const stockBank = bank(options.stockIds);
+  const gwoBank = bank(options.gwoIds);
+
+  const installed = treasure.install({
+    game: {
+      findCoopPlayerInventoryData: (query) => options.records[query.id],
+      upsertCoopPlayerInventoryData: (record) => {
+        if (!options.upsertOk) {
+          return false;
+        }
+        calls.upserts.push(record);
+        options.records[record.id] = record;
+        return true;
+      },
+    },
+    stockBank,
+    gwoBank,
+  });
+
+  return {
+    installed,
+    handlers,
+    calls,
+    options,
+    stockBank,
+    gwoBank,
+    rerun: () => computeds.forEach((fn) => fn()),
+    restore: () => stubs.restoreGlobals(),
+  };
+}
+
+let active;
+
+afterEach(() => {
+  if (active) {
+    active.restore();
+    active = undefined;
+  }
+});
+
+function build(overrides) {
+  active = install(overrides);
+  return active;
+}
+
+describe("localUnlockedLoadoutIds", () => {
+  it("merges both banks into one list of loadout ids", () => {
+    assert.deepEqual(
+      treasure.localUnlockedLoadoutIds(
+        bank(["gwc_start_artillery"]),
+        bank(["gwaio_start_ceo"])
+      ),
+      ["gwc_start_artillery", "gwaio_start_ceo"]
+    );
+  });
+
+  it("drops anything that is not a loadout, and repeats", () => {
+    assert.deepEqual(
+      treasure.localUnlockedLoadoutIds(
+        bank(["gwc_start_artillery", "gwc_combat_bots"]),
+        bank(["gwc_start_artillery", "gwaio_start_ceo"])
+      ),
+      ["gwc_start_artillery", "gwaio_start_ceo"]
+    );
+  });
+
+  it("is empty for a player who has unlocked nothing", () => {
+    assert.deepEqual(treasure.localUnlockedLoadoutIds(bank(), bank()), []);
+  });
+});
+
+describe("treasure loadouts install - reporting a viewer's unlocks", () => {
+  it("tells the host what this viewer owns, mod loadouts included", () => {
+    const { calls } = build();
+
+    assert.deepEqual(calls.reported, [
+      [
+        REPORT,
+        {
+          unlocked_start_card_ids: ["gwc_start_artillery", "gwaio_start_ceo"],
+        },
+      ],
+    ]);
+  });
+
+  it("says nothing when this client is not a co-op viewer", () => {
+    for (const off of [
+      { isViewer: false },
+      { campaignActive: false },
+      { perPlayerTech: false },
+      { hasRecord: false },
+    ]) {
+      const { calls } = build(off);
+      assert.deepEqual(calls.reported, [], JSON.stringify(off));
+      active.restore();
+      active = undefined;
+    }
+  });
+
+  // The computed re-runs on every observable it touched, and the host stores the
+  // list verbatim - repeating an unchanged list is pure snapshot traffic.
+  it("does not repeat a list it has already sent", () => {
+    const { calls, rerun } = build();
+    rerun();
+    rerun();
+    assert.equal(calls.reported.length, 1);
+  });
+
+  it("reports again once the player unlocks something new", () => {
+    const built = build();
+    built.gwoBank.startCards = () => [
+      { id: "gwaio_start_ceo" },
+      { id: "gwaio_start_nomad" },
+    ];
+
+    built.rerun();
+
+    assert.equal(built.calls.reported.length, 2);
+    assert.deepEqual(built.calls.reported[1][1].unlocked_start_card_ids, [
+      "gwc_start_artillery",
+      "gwaio_start_ceo",
+      "gwaio_start_nomad",
+    ]);
+  });
+});
+
+describe("treasure loadouts install - storing a reported list", () => {
+  const operator = (ids) => ({
+    client_id: "alice",
+    client_name: "alice",
+    payload: { unlocked_start_card_ids: ids },
+  });
+
+  it("stores what a viewer reported and broadcasts it", () => {
+    const { handlers, calls } = build();
+
+    handlers[REPORT](operator(["gwaio_start_ceo"]));
+
+    assert.deepEqual(calls.upserts[0].gwaioUnlockedStartCardIds, [
+      "gwaio_start_ceo",
+    ]);
+    assert.deepEqual(calls.snapshots, [[REPORT, true]]);
+  });
+
+  // The payload crosses the wire from another client, so it is filtered rather
+  // than trusted.
+  it("keeps only loadout ids out of what arrives", () => {
+    const { handlers, calls } = build();
+
+    handlers[REPORT](operator(["gwaio_start_ceo", "gwc_combat_bots", 7]));
+
+    assert.deepEqual(calls.upserts[0].gwaioUnlockedStartCardIds, [
+      "gwaio_start_ceo",
+    ]);
+  });
+
+  it("survives a report carrying no list at all", () => {
+    const { handlers, calls } = build();
+
+    handlers[REPORT]({ client_id: "alice", client_name: "alice" });
+
+    assert.deepEqual(calls.upserts[0].gwaioUnlockedStartCardIds, []);
+  });
+
+  it("does not rewrite or rebroadcast an unchanged list", () => {
+    const { handlers, calls } = build();
+
+    handlers[REPORT](operator(["gwaio_start_ceo"]));
+    handlers[REPORT](operator(["gwaio_start_ceo"]));
+
+    assert.equal(calls.upserts.length, 1);
+    assert.equal(calls.snapshots.length, 1);
+  });
+
+  it("warns and stores nothing for a client with no record", () => {
+    const { handlers, calls } = build({ records: {} });
+    const warnings = [];
+    const priorWarn = console.warn;
+    console.warn = (message) => warnings.push(message);
+    try {
+      handlers[REPORT](operator(["gwaio_start_ceo"]));
+    } finally {
+      console.warn = priorWarn;
+    }
+
+    assert.deepEqual(calls.upserts, []);
+    assert.match(warnings[0], /no record for reported loadout unlocks/);
+  });
+
+  it("does not broadcast a list it failed to store", () => {
+    const { handlers, calls } = build({ upsertOk: false });
+    const errors = [];
+    const priorError = console.error;
+    console.error = (message) => errors.push(message);
+    try {
+      handlers[REPORT](operator(["gwaio_start_ceo"]));
+    } finally {
+      console.error = priorError;
+    }
+
+    assert.deepEqual(calls.snapshots, []);
+    assert.match(errors[0], /failed to store reported loadout unlocks/);
+  });
+});
+
+// A viewer's own claim, as opposed to the host's cards being applied to it -
+// gw_inventory.js suspends banking for the latter.
+describe("treasure loadouts install - bankOwnLoadout", () => {
+  it("banks a mod loadout the viewer just won", () => {
+    const { installed, gwoBank, stockBank } = build();
+
+    assert.equal(installed.bankOwnLoadout({ id: "gwaio_start_nomad" }), true);
+
+    assert.deepEqual(gwoBank.added, [{ id: "gwaio_start_nomad" }]);
+    assert.deepEqual(stockBank.added, []);
+  });
+
+  it("banks a base loadout where the base game keeps it", () => {
+    const { installed, gwoBank, stockBank } = build();
+
+    installed.bankOwnLoadout({ id: "gwc_start_storage" });
+
+    assert.deepEqual(stockBank.added, [{ id: "gwc_start_storage" }]);
+    assert.deepEqual(gwoBank.added, []);
+  });
+
+  it("banks nothing for an ordinary tech card", () => {
+    const { installed, gwoBank, stockBank } = build();
+
+    assert.equal(installed.bankOwnLoadout({ id: "gwc_combat_bots" }), false);
+
+    assert.deepEqual(gwoBank.added, []);
+    assert.deepEqual(stockBank.added, []);
   });
 });
