@@ -373,7 +373,6 @@ function gwoSetup() {
         "main/game/galactic_war/shared/js/gw_easy_star_systems",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
@@ -395,7 +394,6 @@ function gwoSetup() {
         easySystemTemplates,
         gwoCluster,
         gwoTech,
-        gwoBank,
         gwoLore,
         gwoDifficulty,
         gwoAI,
@@ -845,10 +843,6 @@ function gwoSetup() {
             }
           };
 
-          var isCardLocked = function (card) {
-            return !GW.bank.hasStartCard(card) && !gwoBank.hasStartCard(card);
-          };
-
           var onPopulated = function (teamInfo) {
             if (model.makeGameBusy() !== busyToken) {
               return;
@@ -1156,9 +1150,6 @@ function gwoSetup() {
             var treasurePlanetSetup = false;
             var loreEntry = 0;
             var optionalLoreEntry = 0;
-            var treasureCards = loadouts.lockedBaseCards.concat(
-              model.gwoNewStartCards
-            );
             var treasureRng = warRng.stream("treasure");
             _.forEach(game.galaxy().stars(), function (star) {
               var ai = star.ai();
@@ -1198,19 +1189,10 @@ function gwoSetup() {
                     ];
                     ai.commander =
                       "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
-                    var lockedStartCards = _.filter(
-                      treasureCards,
-                      isCardLocked
-                    );
-
-                    if (!_.isEmpty(lockedStartCards)) {
-                      var treasurePlanetCard =
-                        treasureRng.pick(lockedStartCards);
-                      _.assign(treasurePlanetCard, { allowOverflow: true });
-                      star.cardList().push(treasurePlanetCard);
-                      system.description =
-                        "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
-                    }
+                    // The loadout itself is derived per player at exploration -
+                    // see gw_play/treasure_loadouts.js.
+                    system.description =
+                      "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
                   } else if (difficulty.paLore() && aiLore[optionalLoreEntry]) {
                     system.description = aiLore[optionalLoreEntry];
                     optionalLoreEntry += 1;
@@ -1266,6 +1248,8 @@ function gwoSetup() {
             originSystem.gwaio.treasurePlanetFixed = true;
             // We don't need to apply the hotfix as it's for v5.22.1 and earlier
             originSystem.gwaio.clusterFixed = true;
+            // This war never pre-dealt a treasure loadout to strip
+            originSystem.gwaio.treasureLoadoutDerived = true;
             originSystem.gwaio.coopPlayerScalingCount = playerCount;
           };
 

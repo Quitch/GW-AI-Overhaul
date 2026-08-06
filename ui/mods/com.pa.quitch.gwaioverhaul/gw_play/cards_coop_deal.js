@@ -5,10 +5,12 @@ define(function () {
   var collectPendingTechTargets = function (params) {
     var viewers = params.viewers;
     var dealOptions = params.dealOptions;
-    var startLoadoutCards = params.startLoadoutCards;
+    var starIndex = params.starIndex;
+    var treasurePlanet = params.treasurePlanet;
     var findRecord = params.findRecord;
     var getDealCount = params.getDealCount;
-    var hasUnlockedStartCard = params.hasUnlockedStartCard;
+    var pickStartLoadoutCard = params.pickStartLoadoutCard;
+    var starCardForRecord = params.starCardForRecord;
 
     var targets = [];
     var validationError;
@@ -51,31 +53,31 @@ define(function () {
         return;
       }
 
-      var startLoadoutCard;
-      if (startLoadoutCards.length) {
-        if (!_.isArray(record.unlockedStartCardIds)) {
-          console.warn(
-            "[GW COOP] Co-op player has no unlocked loadout metadata; treating as missing loadouts client=" +
-              client.id +
-              " name=" +
-              client.name
-          );
-        }
-
-        startLoadoutCard = _.find(startLoadoutCards, function (card) {
-          return !hasUnlockedStartCard(record, card);
-        });
-      }
+      var startLoadoutCard = treasurePlanet
+        ? pickStartLoadoutCard(record, client)
+        : undefined;
 
       targets.push({
         client: client,
         record: record,
         dealIndex: dealIndex,
         startLoadoutCard: startLoadoutCard,
+        // A loadout is offered alone, and a viewer dealt before their first
+        // refresh simply has no card of their own on this star yet.
+        preDealtCard: startLoadoutCard
+          ? undefined
+          : starCardForRecord(record, starIndex),
       });
     });
 
     return { targets: targets, validationError: validationError };
+  };
+
+  // How many cards to draw alongside the pre-dealt one. The stored hand stays
+  // cardsOffered long either way, which is what cards_coop_reroll.js's
+  // computeRerollDeal infers the spent rerolls from.
+  var dealCountForHand = function (cardsOffered, preDealtLength) {
+    return Math.max(cardsOffered - preDealtLength, 1);
   };
 
   // The stream a viewer's hand is dealt from: their own, keyed by the host's
@@ -101,13 +103,12 @@ define(function () {
     var warRng = params.warRng;
     var gwoBank = params.gwoBank;
     var stockBank = params.stockBank;
+    var gwoTreasure = params.gwoTreasure;
+    var coopStarCards = params.coopStarCards;
 
     model.dealCoopPlayerPendingTechCards = function (starIndex, star, options) {
       var result = $.Deferred();
       var dealOptions = options || {};
-      var startLoadoutCards = helpers.filterStartLoadoutCards(
-        dealOptions.startLoadoutCards
-      );
 
       if (
         !model.gwCampaignActive() ||
@@ -136,19 +137,31 @@ define(function () {
       var updates = [];
       var jobs = [];
 
+      var ai = star && _.isFunction(star.ai) ? star.ai() : undefined;
       var collected = collectPendingTechTargets({
         viewers: viewers,
         dealOptions: dealOptions,
-        startLoadoutCards: startLoadoutCards,
+        starIndex: starIndex,
+        treasurePlanet: !!(ai && ai.treasurePlanet),
         findRecord: function (query) {
           return game.findCoopPlayerInventoryData(query);
         },
         getDealCount: function (record) {
           return model.getCoopPlayerTechCardDealCount(record);
         },
-        hasUnlockedStartCard: function (record, card) {
-          return model.recordHasUnlockedStartCard(record, card);
+        pickStartLoadoutCard: function (record, client) {
+          return gwoTreasure.pickTreasureLoadout({
+            isUnlocked: function (card) {
+              return gwoTreasure.recordHasUnlockedLoadout(record, card);
+            },
+            rng: gwoStreams.treasureLoadoutRng(
+              warRng,
+              gwoStreams.coopPlayerKey(record, client),
+              starIndex
+            ),
+          });
         },
+        starCardForRecord: coopStarCards.starCardForClient,
       });
       var targets = collected.targets;
 
@@ -170,16 +183,18 @@ define(function () {
           numCardsToOffer,
           inventory
         );
+        var preDealt = target.preDealtCard ? [target.preDealtCard] : [];
         chooseCards({
           inventory: inventory,
-          count: cardsOffered,
+          count: dealCountForHand(cardsOffered, preDealt.length),
           star: star,
-          systemCards: [],
+          systemCards: preDealt,
           rng: pendingTechDealRng(gwoStreams, warRng, target),
         }).then(function (cards) {
           var pendingTechCards = {
             star: starIndex,
-            cards: cards || [],
+            // Appended last, as model.explore does with the host's own.
+            cards: (cards || []).concat(preDealt),
             dealIndex: target.dealIndex,
             cardsOffered: cardsOffered,
             updatedAt: _.now(),
@@ -276,6 +291,7 @@ define(function () {
     // eslint-disable-next-line no-undef
     module.exports = {
       collectPendingTechTargets: collectPendingTechTargets,
+      dealCountForHand: dealCountForHand,
       pendingTechDealRng: pendingTechDealRng,
     };
   }

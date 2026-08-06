@@ -19,6 +19,7 @@ function gwoBugfixes() {
       gwoSettings &&
       gwoSettings.treasurePlanetFixed &&
       gwoSettings.clusterFixed &&
+      gwoSettings.treasureLoadoutDerived &&
       luckyCommanderFixed();
 
     if (!gwoSettings || allFixesApplied) {
@@ -29,6 +30,15 @@ function gwoBugfixes() {
       if (_.includes(star.cardList(), undefined)) {
         star.cardList([]);
         gwoSettings.treasurePlanetFixed = true;
+      }
+    };
+
+    // Wars generated before the offer became derived hold the host's pick. A
+    // treasure star is never pre-dealt anything else, so the list clears whole.
+    var dropPreDealtTreasureLoadout = function (star) {
+      var ai = ko.isObservable(star.ai) && star.ai();
+      if (ai && ai.treasurePlanet && star.cardList().length) {
+        star.cardList([]);
       }
     };
 
@@ -109,30 +119,36 @@ function gwoBugfixes() {
       });
     };
 
+    var atLeastVersion = function (version) {
+      return checkVersion(version) >= 0;
+    };
+
     var checkIfPatchesNeeded = function () {
       var playerIsCluster =
         model.game().inventory().getTag("global", "playerFaction") === 4;
 
-      if (checkVersion("5.76.1") >= 0) {
+      if (atLeastVersion("6.8.0")) {
+        gwoSettings.treasureLoadoutDerived = true;
+      }
+      if (atLeastVersion("5.76.1")) {
         luckyCommanderFixed("true");
+      }
+      if (atLeastVersion("5.52.2") || playerIsCluster) {
         gwoSettings.clusterFixed = true;
-        gwoSettings.treasurePlanetFixed = true;
-      } else if (checkVersion("5.52.2") >= 0 || playerIsCluster) {
-        gwoSettings.clusterFixed = true;
-        gwoSettings.treasurePlanetFixed = true;
-      } else if (checkVersion("5.18.0") >= 0) {
+      }
+      if (atLeastVersion("5.18.0")) {
         gwoSettings.treasurePlanetFixed = true;
       }
     };
 
     var applyFixes = function () {
       for (var star of galaxy.stars()) {
-        if (gwoSettings.treasurePlanetFixed && gwoSettings.clusterFixed) {
-          break;
-        }
-
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
+        }
+
+        if (!gwoSettings.treasureLoadoutDerived) {
+          dropPreDealtTreasureLoadout(star);
         }
 
         if (
@@ -146,6 +162,7 @@ function gwoBugfixes() {
 
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
       gwoSettings.clusterFixed = true; // Cluster might not exist
+      gwoSettings.treasureLoadoutDerived = true;
 
       if (luckyCommanderFixed() !== "true") {
         fixLuckyCommanderLocalStorageVariable();

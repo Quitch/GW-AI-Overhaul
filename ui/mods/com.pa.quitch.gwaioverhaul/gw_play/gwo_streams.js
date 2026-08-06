@@ -77,6 +77,27 @@ define([
       );
     },
 
+    coopStarDealRng: function (warRng, playerKey, starIndex, turns) {
+      return (
+        warRng &&
+        warRng
+          .stream("coop_ai_star", safeLabel(playerKey))
+          .stream("star", index(starIndex))
+          .stream("turn", counter(turns))
+      );
+    },
+
+    // No turn or deal component: the offer must be identical however often the
+    // star is re-explored or replayed as a catch-up deal.
+    treasureLoadoutRng: function (warRng, playerKey, starIndex) {
+      return (
+        warRng &&
+        warRng
+          .stream("treasure_loadout", safeLabel(playerKey || "host"))
+          .stream("star", index(starIndex))
+      );
+    },
+
     coopRerollRng: function (warRng, playerKey, dealIndex, rerollsUsed) {
       return (
         warRng &&
