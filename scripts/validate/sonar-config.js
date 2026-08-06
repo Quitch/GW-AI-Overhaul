@@ -68,7 +68,7 @@ function patternToRegExp(pattern) {
     } else if (char === "?") {
       source += "[^/]";
     } else {
-      source += char.replace(/[.+^${}()|[\]\\]/g, String.raw`\$&`);
+      source += char.replace(/[.+^${}()|[\]\\]/g, "\\$&");
     }
   }
 
