@@ -60,6 +60,11 @@ define([
           value: gwoUnit.landMine,
         },
         {
+          file: gwoUnit.bumblebeeAmmo,
+          path: "spawn_unit_on_death",
+          op: "tag",
+        },
+        {
           file: gwoUnit.bumblebeeWeapon,
           path: "ammo_per_shot",
           op: "replace",

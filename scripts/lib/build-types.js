@@ -1,24 +1,18 @@
 "use strict";
 
-// Evaluates PA's `buildable_types` expression language - the string on a builder's spec
-// that decides which units it may produce, matched against the target's `unit_types`
-// (with the UNITTYPE_ prefix dropped).
+// Evaluates PA's `buildable_types` expression language against a target's
+// `unit_types`, with the UNITTYPE_ prefix dropped. Grammar, read off the base
+// game's own expressions:
 //
-// Grammar, as read off the base game's own expressions:
 //   or   := and ("|" and)*
 //   and  := atom (("&" | "-") atom)*        `-` is and-not
 //   atom := IDENT | "(" or ")"
-// `|` is the lowest precedence; `&` and `-` share the next level and associate
-// left-to-right. That is what makes the Unit Cannon's "Mobile - NoBuild" mean
-// "any mobile unit except a NoBuild one", and fabrication_bot_adv's
-// "Land & Structure & Advanced - Factory| Factory & Advanced & Bot & Land | ..."
-// exclude Factory from only the first alternative.
 //
-// Unknown tokens are simply absent from the tag set, so a typo'd tag reads as false
-// rather than throwing - the same way the engine treats one.
+// `|` is lowest; `&` and `-` share the next level and associate left-to-right, so
+// "A & B - C | D" excludes C from the first alternative only. An unknown token is
+// absent from the tag set and so reads false, as the engine treats it.
 
-// Whitespace is insignificant; every operator is a single character, so tokenizing is
-// "identifiers or one of ()&|-", and anything else in the string is ignored.
+// Every operator is one character, so anything but an identifier or ()&|- is noise.
 function tokenize(expression) {
   return String(expression).match(/\w+|[()&|-]/g) || [];
 }
@@ -32,15 +26,13 @@ function matches(expression, tags) {
   const peek = () => tokens[position];
   const take = () => tokens[position++];
 
-  // Function declarations rather than consts: the three are mutually recursive
-  // (parseAtom recurses into parseOr for a parenthesised group), so one of them is
-  // always referenced before its definition is reached.
+  // Declarations, not consts: these three are mutually recursive, so one is
+  // always referenced before its definition.
   function parseOr() {
     let value = parseAnd();
     while (peek() === "|") {
       take();
-      // Evaluate before OR-ing so the parse always consumes the whole alternative,
-      // rather than short-circuiting and leaving tokens behind.
+      // Evaluate before OR-ing, or short-circuiting leaves tokens unconsumed.
       const right = parseAnd();
       value = value || right;
     }
@@ -66,8 +58,7 @@ function matches(expression, tags) {
       }
       return value;
     }
-    // An empty or malformed expression lands here with token === undefined, which is
-    // not a tag anyone holds - false, the same answer the engine gives.
+    // An empty or malformed expression arrives as undefined, which no unit holds.
     return token !== undefined && has(token);
   }
 

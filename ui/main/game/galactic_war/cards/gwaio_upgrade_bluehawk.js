@@ -73,6 +73,16 @@ define([
             record_index: 1,
           },
         },
+        {
+          file: gwoUnit.bluehawk,
+          path: "tools.3.spec_id",
+          op: "tag",
+        },
+        {
+          file: gwoUnit.bluehawk,
+          path: "tools.4.spec_id",
+          op: "tag",
+        },
       ]);
     },
     dull: function () {},

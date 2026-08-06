@@ -30,9 +30,13 @@ define([
       inventory.addUnits(gwoUnit.lob);
 
       inventory.addMods(
-        gwoCard.mods(gwoUnit.lobAmmo, "replace", {
-          spawn_unit_on_death: gwoUnit.boom,
-        })
+        gwoCard
+          .mods(gwoUnit.lobAmmo, "replace", {
+            spawn_unit_on_death: gwoUnit.boom,
+          })
+          .concat([
+            { file: gwoUnit.lobAmmo, path: "spawn_unit_on_death", op: "tag" },
+          ])
       );
     },
     dull: function () {},

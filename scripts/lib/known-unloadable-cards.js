@@ -1,14 +1,8 @@
 "use strict";
 
-// Cards that fail to load under the AMD shim for a reviewed reason other than a
-// missing base-game module. NOT_SHIPPED failures don't belong here - the loader
-// identifies those precisely and callers tolerate them generically. Only a
-// non-NOT_SHIPPED failure needs a named entry; anything else failing to load is a
-// real regression.
-//
-// Shared by scripts/validate/cards-contract.js, scripts/validate/ai-mods-contract.js
-// and test/cluster_subcommander_buildable.test.js, which previously each carried
-// their own copy.
+// Cards that fail to load under the AMD shim for a reviewed reason. NOT_SHIPPED
+// does not belong here - callers tolerate that generically. Anything else failing
+// to load is a real regression.
 const KNOWN_UNLOADABLE = {
   "gwc_minion.js":
     "transitively depends on shared/gw_factions.js, which calls " +

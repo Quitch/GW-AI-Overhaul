@@ -12,9 +12,8 @@ define(function () {
         return false;
       }
 
-      // Match on id when both sides have one, but fall through to the name rather
-      // than returning on a mismatch. Ids and names have historically drifted apart
-      // in co-op, and a short-circuit there silently drops the viewer's cards.
+      // Falls through to the name on an id mismatch rather than returning. Ids and
+      // names drift apart in co-op, and short-circuiting drops a viewer's cards.
       var clientId = client.id;
       var dataId = _.isUndefined(data.id) ? data.playerId : data.id;
       if (
@@ -31,28 +30,16 @@ define(function () {
     });
   };
 
-  // Per-galaxy-size "far" thresholds for deal-chance scaling, indexed by size tier
-  // (a GW.balance.numberOfSystems index). Nine entries so they cover Bigger-GW's
-  // sizes (numberOfSystems[4..8]) as well as the base five; the final entry also
-  // applies to anything larger. Centred on the star-distance distribution measured
-  // over 1000 generated galaxies per size, so each branch fires for a roughly
-  // consistent share of stars across every size: short ~45%, moderate ~30%,
-  // far ~18%. Star distance is integer and Small spans only ~8 values, so its bands
-  // cannot be separated to better than one step: short and moderate deliberately
-  // share a threshold there rather than firing short for 61% of stars.
+  // Indexed by GW.balance.numberOfSystems tier - see tech-cards.md. Small shares a
+  // short/moderate threshold because star distance is integer and it spans ~8 values.
   var distances = {
     short: [3, 3, 4, 5, 6, 7, 8, 9, 10],
     moderate: [3, 4, 5, 6, 7, 8, 10, 11, 12],
     far: [4, 5, 6, 7, 8, 10, 11, 12, 13],
   };
 
-  // Whether the explored system is beyond the size-appropriate "far" threshold.
-  // thresholds is one of the distances arrays; the size tier is the first
-  // numberOfSystems bucket >= totalSize - so this works whether numberOfSystems holds
-  // the base five sizes or Bigger-GW's nine. The walk is clamped against thresholds,
-  // not numberOfSystems: a third-party size table longer than thresholds would
-  // otherwise index past the end, and `distance > undefined` is silently false, which
-  // switches the distance tiers off rather than saturating them.
+  // Clamped against thresholds, not numberOfSystems: a longer third-party size
+  // table would index past the end, and `distance > undefined` is silently false.
   var farForSize = function (system, context, numberOfSystems, thresholds) {
     var lastTier = Math.min(numberOfSystems.length, thresholds.length) - 1;
     var tier = 0;
@@ -107,9 +94,8 @@ define(function () {
       var raw = window.localStorage["gwaio_victory_" + loadoutId];
       var decoded;
 
-      // localStorage is user-writable and survives across versions, so one corrupt
-      // badge record must not throw here - this runs while building the loadout
-      // list and would take the whole list down with it.
+      // localStorage is user-writable, and this runs while building the loadout
+      // list, so one corrupt badge record must not take the whole list down.
       try {
         decoded = raw ? JSON.parse(raw) : undefined;
       } catch (e) {
@@ -194,9 +180,13 @@ define(function () {
       };
     },
 
-    // chance is optional and defaults to 60. Tested for undefined rather than for
-    // being falsy so a caller that computes its weight - navalWeight and friends
-    // can legitimately round down to 0 - gets the 0 it asked for, not the default.
+    // gw_inventory.hasCard tests !card.unique, so only truthiness matters. Offset
+    // into [1, 2) because a seeded zero would be permanent for that seed.
+    uniqueValue: function (rng) {
+      return rng ? 1 + rng() : Math.random();
+    },
+
+    // Tested for undefined, not falsiness: a computed weight of 0 is legitimate.
     upgradeDeal: function (available, chance) {
       var weight = _.isUndefined(chance) ? 60 : chance;
       return {
@@ -211,12 +201,8 @@ define(function () {
       return { chance: available ? chance : 0 };
     },
 
-    // Deal weight for a commander stat card. These all mod base_commander (or its
-    // ammo), the spec every Sub Commander inherits, so one card buffs every
-    // commander you field - which makes the size of your retinue, not how far you
-    // have travelled, the thing that decides how much the card is worth. Capped at
-    // double the base weight so a large retinue cannot crowd out the offer.
-    // Cluster ignores the multiplier as its subcommanders don't use commanders
+    // Scales with retinue size, capped at double base. Cluster is exempt - its
+    // subcommanders are not commanders. See tech-cards.md.
     commanderWeight: function (inventory, chance) {
       var commanders = inventory.minions().length;
       var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
@@ -226,12 +212,8 @@ define(function () {
       return finalChance;
     },
 
-    // Deal weight for a card that only upgrades Sub Commanders.
-    // referee_config_setup.js applies each of these to every ally in turn, so the
-    // value does scale with the retinue - but the card is worth nothing at all
-    // until you field one, hence the 0. Past that it opens at its full base weight
-    // rather than creeping up. Each further Sub Commander adds a third of the base,
-    // and the line stops at 90 so a large retinue cannot crowd out the deck.
+    // Worth nothing until you field one, then opens at full base weight rather
+    // than creeping up. See tech-cards.md.
     subcommanderWeight: function (inventory, chance) {
       var subcommanders = inventory.minions().length;
       if (subcommanders === 0) {
@@ -243,14 +225,9 @@ define(function () {
       );
     },
 
-    // Deal weight for a naval card. Owning ships is not the same as being able to
-    // use them - most generated systems have little water - so the full weight is
-    // reserved for the two states that flood every planet fought on (see
-    // referee_config.js's floodPlanets): a naval start, or Tsunami tech. Anywhere
-    // else naval is a gamble on the map, and the card is offered proportionately
-    // less rather than being withheld outright.
-    // dryChance overrides the default 40% fallback for the rare card whose value
-    // collapses rather than merely dips without water (see gwaio_anti_sea).
+    // Full weight only for the two states that flood every planet fought on.
+    // dryChance is for a card whose value collapses without water, not merely
+    // dips (see gwaio_anti_sea). See tech-cards.md.
     navalWeight: function (inventory, chance, dryChance) {
       var floodsPlanets =
         inventory.hasCard("gwaio_start_naval") ||
@@ -261,20 +238,11 @@ define(function () {
       return _.isUndefined(dryChance) ? Math.round(chance * 0.4) : dryChance;
     },
 
-    // The general size-aware "far" test that backs the travelled* wrappers below,
-    // exported so a card needing a bespoke thresholds array still can, though none
-    // does today. numberOfSystems is the caller's
-    // GW.balance.numberOfSystems tier table - passed in rather than imported so this
-    // module stays dependency-free (base-game "shared/gw_common" isn't
-    // shippable/loadable here, and every card transitively depends on this file -
-    // see amd-loader.js's NOT_SHIPPED note).
+    // Prefer the wrappers below, which keep the tables private. numberOfSystems
+    // is a parameter, not an import: this module must stay dependency-free, as
+    // every card transitively depends on it. See tech-cards.md.
     farForSize: farForSize,
 
-    // Named distance thresholds for deal-chance scaling, from least to most strict
-    // (travelledShort <= travelledModerate <= travelledFar, backed by the
-    // short/moderate/far distances). Each answers "is this system distant enough,
-    // relative to how many systems the galaxy has, that a player could plausibly
-    // have skipped this tech tree so far?" - at an escalating distance cutoff.
     travelledShort: function (system, context, numberOfSystems) {
       return farForSize(system, context, numberOfSystems, distances.short);
     },
@@ -294,12 +262,8 @@ define(function () {
       });
     },
 
-    // Shared deal() shape for the gwaio_anti_* counter-tech cards: each one is
-    // countered by a specific opposing anti_ card (chance drops to 0), and
-    // otherwise gets half its base chance once any anti_ tech is already held
-    // (so the deck doesn't keep offering more of them once the theme is set).
-    // Both checks must read the passed inventory: under per-player tech in co-op
-    // this runs for each viewer, and model.game().inventory() is always the host's.
+    // The gwaio_anti_* shape: zero against its counter card, half once any other
+    // anti_ tech is held. Must read the passed inventory, never the host's.
     antiTechDeal: function (inventory, baseChance, excludedCardId) {
       if (inventory.hasCard(excludedCardId)) {
         return { chance: 0 };

@@ -1,22 +1,14 @@
 "use strict";
 
-// Validates every AI-mod descriptor a card's buff()/dull() passes to
-// inventory.addAIMods(...) against the contract referee_ai.js's applyAiMods()
-// actually implements (see gw_play/referee_ai.js's `ops` table and `managerPath()`).
-// AI-mod descriptors only exist as objects built by JS at runtime (there's no static
-// JSON form of them), so checking their shape means actually calling buff()/dull()
-// - against a mock inventory whose only real behavior is capturing addAIMods calls;
-// every other method/property is auto-stubbed (scripts/lib/auto-stub.js) so this
-// doesn't need to hand-mock every inventory method every card happens to touch.
+// Validates every AI-mod descriptor a card's buff()/dull() passes to addAIMods
+// against what referee_ai.js's applyAiMods implements. Descriptors exist only as
+// runtime objects, so checking them means calling buff()/dull() for real.
 //
-// Empirically confirmed against every card that currently authors AI mods:
-//   - Every descriptor has `type` (fabber/factory/platoon/template - see
-//     managerPath() in referee_ai.js) and `op`.
-//   - op: "load" descriptors carry only `value` (a build-file filename); no `toBuild`.
-//   - All other ops carry `value` and `toBuild`; append/prepend/replace also require
-//     `idToMod` (referee_ai.js checks `hasOwnProperty(build, idToMod)`, so an absent
-//     idToMod silently turns the mod into a no-op rather than erroring - exactly the
-//     class of bug this check exists to catch).
+// The contract, confirmed against every card that authors AI mods:
+//   - Every descriptor has `type` and `op`.
+//   - op "load" carries only `value`, a build-file filename.
+//   - Every other op carries `value` and `toBuild`; append/prepend/replace also
+//     need `idToMod`, whose absence silently makes the mod a no-op.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -46,11 +38,9 @@ const REQUIRED_FIELDS_BY_OP = {
   squad: ["value", "toBuild"],
 };
 
-// Which `type` each op can legally target. referee_ai.js's ops table walks
-// json.build_list for the build ops and json.platoon_templates for squad, so a
-// mismatched pair validates on field shape alone and then throws at runtime.
-// `load` is not an op in that table at all - it routes through managerPath(), which
-// accepts every type.
+// Which `type` each op can legally target. A mismatched pair passes the field
+// shape check and then throws at runtime. `load` routes through managerPath()
+// instead of the ops table, and accepts every type.
 const VALID_TYPES_BY_OP = {
   load: VALID_TYPES,
   append: BUILD_LIST_TYPES,
@@ -66,10 +56,8 @@ function collectAiMods(card) {
   const inventory = new Proxy(
     {
       addAIMods: function (mods) {
-        // gw_inventory.js's addAIMods is aiMods().concat(mods), which accepts a
-        // bare descriptor as readily as an array. push.apply on a non-array
-        // spread its indices and captured nothing, so a card passing one object
-        // went entirely unvalidated while production applied it.
+        // addAIMods concats, so it takes a bare descriptor as readily as an
+        // array. push.apply on a non-array captures nothing.
         if (Array.isArray(mods)) {
           captured.push.apply(captured, mods);
         } else if (mods) {
@@ -159,9 +147,8 @@ function checkMod(mod, index) {
   return problems;
 }
 
-// Same shim coverage boundary as validate/cards-contract.js, but discriminating on
-// the reason. A bare catch here also swallowed syntax errors and genuine breakage,
-// quietly reporting them as "excluded" with the run still green.
+// Discriminates on the reason: a bare catch also swallows syntax errors and
+// genuine breakage, reporting them as "excluded" with the run still green.
 function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };

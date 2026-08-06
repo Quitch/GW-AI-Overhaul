@@ -1,4 +1,5 @@
-// Overhauls personalities
+// Overhauls personalities. The gwaioRandomSpec below is read by
+// faction/faction_seed.js - see galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
 ], function (personalities) {
@@ -123,7 +124,11 @@ define([
       commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json",
     },
   ];
-  var randomPersonality = _.sample(minions).personality;
+  // GWO - the Random commander's pool, captured before randomAI joins it so it can
+  // never draw its own personality. The one below is a default; see galaxy.md.
+  var randomFrom = minions.slice();
+  var randomPersonality = minions[0].personality;
+
   var randomAI = {
     name: "Shadowdaemon",
     character: "!LOC:Random",
@@ -132,6 +137,15 @@ define([
   };
   minions.push(randomAI);
 
+  // GWO - was sampled inline in the team literal below; see randomFrom above.
+  var systemDescriptions = [
+    "!LOC:All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",
+    "!LOC:What occurs during the process of Synchronization is unknown, as those subjected to it do not remember it. Its results, however, are obvious: The individual commander and its identity are subsumed for the most part into the Whole, and in return the commander gains an unprecedented ability to coordinate and communicate with fellow Servants, as they are all quite literally of one mind.",
+    "!LOC:The Legionis Machina has claimed confirmed kills of Metrarch the Machinist on several occasions. While these claims could easily be fabricated, it is also possible that Metrarch is not in fact a single commander, but rather an idea--an avatar of the Whole itself that manifests where necessary to protect Synchronous interests.",
+    "!LOC:Part of the doctrine of The Synchronous is favoring the efficiency of 'mechanical purity.' To them, the galaxy as a whole is a great machine, and anything that keeps it from running at peak efficiency must be corrected or removed. This happens to often mean any and all organic life and unsynchronized commanders.",
+    "!LOC:A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
+  ];
+
   return {
     name: factionName,
     color: factionColour,
@@ -139,13 +153,7 @@ define([
       {
         name: factionName,
         boss: _.merge(_.cloneDeep(baselinePersonality), boss),
-        systemDescription: _.sample([
-          "!LOC:All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",
-          "!LOC:What occurs during the process of Synchronization is unknown, as those subjected to it do not remember it. Its results, however, are obvious: The individual commander and its identity are subsumed for the most part into the Whole, and in return the commander gains an unprecedented ability to coordinate and communicate with fellow Servants, as they are all quite literally of one mind.",
-          "!LOC:The Legionis Machina has claimed confirmed kills of Metrarch the Machinist on several occasions. While these claims could easily be fabricated, it is also possible that Metrarch is not in fact a single commander, but rather an idea--an avatar of the Whole itself that manifests where necessary to protect Synchronous interests.",
-          "!LOC:Part of the doctrine of The Synchronous is favoring the efficiency of 'mechanical purity.' To them, the galaxy as a whole is a great machine, and anything that keeps it from running at peak efficiency must be corrected or removed. This happens to often mean any and all organic life and unsynchronized commanders.",
-          "!LOC:A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
-        ]),
+        systemDescription: systemDescriptions[0],
         systemTemplate: {
           name: factionName,
           Planets: [
@@ -220,5 +228,13 @@ define([
     minions: _.map(minions, function (personalityModifiers) {
       return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
     }),
+    // GWO - minions.length - 1 is randomAI, pushed above.
+    gwaioRandomSpec: {
+      baseline: baselinePersonality,
+      descriptions: systemDescriptions,
+      randoms: [
+        { index: minions.length - 1, template: randomAI, from: randomFrom },
+      ],
+    },
   };
 });

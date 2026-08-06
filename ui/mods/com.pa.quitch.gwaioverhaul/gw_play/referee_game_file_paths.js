@@ -1,12 +1,5 @@
-// Pure path/file helpers for the game-files referee (gw_play/referee_game_files.js, a
-// base-game-shadowed file whose define() factory depends on the unshipped
-// shared/gw_common and so cannot load under the Node AMD harness). Split out here as a
-// plain define() over lodash/$/Promise/JSON only - no engine globals at define-time, no
-// unshipped deps - so this ai_unit_map path logic stays coverage-measured and directly
-// unit-tested (test/referee_game_files_ai_paths.test.js) while the referee file itself
-// is coverage-excluded as untestable glue. Helpers that need the referee's collaborators
-// (buildPlayerFiles: gwoAI/gwoSpecs; resolveAiUnitMapPaths/clusterArmyIndex: the cluster
-// predicate) take them as explicit parameters rather than closing over injected modules.
+// The measured half of gw_play/referee_game_files.js. Nothing here may touch an
+// engine global at define time - see testing.md, "Coverage".
 define(function () {
   var getAIUnitMapPath = function (titans, aiInUse) {
     var append = titans ? "_x1.json" : ".json";
@@ -43,9 +36,7 @@ define(function () {
     return -1;
   };
 
-  // Determines whether a given AI faction's ai_unit_map should be written to the
-  // Cluster-specific unit map path instead of its normal per-faction path, so the
-  // unit map always lands wherever that faction's ai_path-scoped build orders do.
+  // The unit map must land wherever that faction's scoped build orders do.
   var resolveAiUnitMapPaths = function (
     ai,
     currentCount,
@@ -105,9 +96,8 @@ define(function () {
     return playerFiles;
   };
 
-  // Fetches an untagged spec file (parsed) for gwoSpecCache. Mirrors the fetch +
-  // JSON.parse + error handling the base game's genUnitSpecs does internally. Touches
-  // only $/Promise/JSON at call time, never the referee's injected modules.
+  // Mirrors the fetch, parse and error handling the base game's genUnitSpecs
+  // does internally.
   var specFetch = function (item) {
     return new Promise(function (resolve, reject) {
       $.ajax({

@@ -27,18 +27,20 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        gwoCard.mods(gwoUnit.storm, "push", {
-          tools: {
-            spec_id: gwoUnit.gilEBeam,
-            aim_bone: "socket_aim",
-            muzzle_bone: [
-              "socket_muzzle01",
-              "socket_muzzle02",
-              "socket_muzzle03",
-              "socket_muzzle04",
-            ],
-          },
-        })
+        gwoCard
+          .mods(gwoUnit.storm, "push", {
+            tools: {
+              spec_id: gwoUnit.gilEBeam,
+              aim_bone: "socket_aim",
+              muzzle_bone: [
+                "socket_muzzle01",
+                "socket_muzzle02",
+                "socket_muzzle03",
+                "socket_muzzle04",
+              ],
+            },
+          })
+          .concat([{ file: gwoUnit.storm, path: "tools.1.spec_id", op: "tag" }])
       );
     },
     dull: function () {},

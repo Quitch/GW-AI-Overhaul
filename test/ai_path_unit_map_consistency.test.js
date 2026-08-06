@@ -1,13 +1,8 @@
 "use strict";
 
-// Requirement: the ai_unit_map assigned to each player and AI is written under that
-// same player/AI's ai_path.
-//
-// referee_game_files.js's unit-map placement and referee_config.js's/shared/ai.js's
-// ai_path assignment are only ever tested in isolation elsewhere (see
-// referee_game_files_ai_paths.test.js and referee_config_ai_paths.test.js). This file
-// cross-checks them against each other for the SAME fixture, for the host, for enemy
-// AIs (including a Cluster foe at a non-zero index), and for per-player-tech viewers.
+// The ai_unit_map assigned to each player and AI must be written under that same
+// player's ai_path. Unit-map placement and ai_path assignment are tested in
+// isolation elsewhere; this cross-checks them against one shared fixture.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -178,17 +173,9 @@ describe("enemy AIs: clusterArmyIndex/resolveAiUnitMapPaths never disagrees with
 });
 
 describe("per-player-tech viewers: each viewer's unit map lands under that viewer's own ai_path", () => {
-  // generateUnitSpecsForPlayer's playerScopedPath (used for the viewer's own unit-map
-  // key: playerScopedPath + "unit_maps/ai_unit_map.json" + playerTag) and apply()'s
-  // viewerAiPath (used for that viewer's minions' personality.ai_path) both call
-  // getViewerSubcommanderAiPath with the same (aiInUse, inventory, playerTag) - see
-  // gw_play/gw_per_player_tech_referee.js. apply() itself is unreachable under Node
-  // (gated behind shared/gw_common/shared/gw_inventory, not shipped here - see that
-  // file's module.exports comment), so the guarantee is demonstrated at the shared
-  // helper: the key a viewer's unit map gets must sit under that viewer's path and
-  // under no other viewer's. Comparing two identical calls would prove nothing, so
-  // these assert against a second viewer - the case that actually breaks if playerTag
-  // ever stops scoping the path and two viewers silently share a unit map.
+  // apply() is unreachable under Node, so the guarantee is demonstrated at the
+  // shared helper both it and generateUnitSpecsForPlayer call. Asserted against a
+  // second viewer - the case that breaks if playerTag stops scoping the path.
   for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
     for (const aiModsList of [[], [{ op: "load" }]]) {
       it(`${aiInUse}, aiMods=${JSON.stringify(aiModsList)}: viewer unit-map key is scoped to that viewer`, () => {

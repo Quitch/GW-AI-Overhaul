@@ -15,6 +15,8 @@ their own cards, and their own subcommanders. That changes several assumptions:
 - `model.game().inventory()` is **always the host's**. Card code that needs the
   acting player's inventory must use the one passed to it. `antiTechDeal` and the
   `gwaio_anti_*` cards get this right deliberately; it is an easy thing to break.
+  The same rule is why viewers get their own pre-dealt star cards and their own
+  treasure loadouts; both have their own sections below.
 - Viewers only field their own subcommanders under per-player tech. Without it
   there is one shared inventory and no co-op records to read at all, so the viewer
   half of `getOrderedSubcommanders` is gated on it.
@@ -68,6 +70,11 @@ already included them; the check is `tag === ".player"`.
 
 The hardest part of co-op, because GWO has to _predict_ colours the base game
 assigns privately.
+
+Shared armies are a single army, so every co-op commander flies the host's
+colour — the `playerColor` global tag, written once at war creation. Unshared
+armies are split one per client by `gw_coop_referee.js`, which colours army 0
+with the host's faction colour and draws the rest from the lobby palette.
 
 `gw_play/coop_colour.js` mirrors the lobby palette from the base game's
 `server-script/lobby/color_table.js`. That makes it a **third copy** of the same
@@ -126,6 +133,143 @@ offered cards.
 The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat, scheduled but not
 awaited.
+
+## Per-player pre-dealt cards
+
+Under per-player tech each viewer gets their **own** card on every selectable AI
+star, dealt by the host from that viewer's inventory
+(`gw_play/cards_coop_star_cards.js`) and folded into their hand when they explore.
+`star.cardList()` remains the host's own; a viewer never sees it.
+
+The transport is a top-level `gwaioStarCards` field on the co-op player inventory
+record, `{turn, cards: {"<star>": card}}`. Three things rule out the alternatives:
+
+- Host→viewer operators reach only **connected** clients and are never replayed, so
+  they cannot carry state a late joiner needs.
+- `applyCampaignSnapshot` calls `game.load()`, which rebuilds every star object.
+  Anything written into `star.ai().cardName` on a viewer is wiped by the next
+  snapshot — which is why the intelligence panel reads the record through
+  `gw_play/coop_star_cards_view.js` rather than the field
+  `gwo_sync_star_card_name` maintains for the host.
+- Records **are** in the game save, and therefore in every snapshot.
+
+Note the asymmetry that makes this work: anything added inside `pendingTechCards`
+is dropped, because the server rebuilds that object as
+`{star, cards, dealIndex, updatedAt}`. Every merge of the _record_ is an `_.assign`
+over the existing one, on both the server and the client, so a novel top-level
+field survives. `cardsOffered`/`rerollsUsed` are the standing example of the first
+half: they only persist on the reroll path, which writes the record locally.
+
+**Only the host's own per-turn deal replaces a card a viewer already holds.**
+`refresh({redeal: true})` is called from `dealCardToSelectableAI` and nowhere else;
+every other trigger fills gaps. `game.stats().turns()` moves on every `GWGame.move()`
+while the host's cards are re-dealt only after a win, so a refresh keyed on the turn
+would change what a star advertises to a viewer while the host was merely travelling
+to it — and the card would no longer be the one in their hand on arrival.
+
+Two ordering rules the refresh depends on:
+
+- **Re-read the record immediately before writing it.** `upsertCoopPlayerInventoryData`
+  replaces the whole record and `chooseCards` is async, so a catch-up deal can land
+  `pendingTechCards` in the window. Writing over a clone captured before the deal
+  erases it and leaves that viewer waiting forever on an offer the host thinks it sent.
+- **A refresh must not run while anyone is catching up.** `gwCampaignPlayerSetupBlocked`
+  is not sufficient on its own: it keys off `client.loading_status`, which arrives on
+  `gw_campaign_control` broadcasts that are deliberately never queued and can lag the
+  record update. `viewersReadyForStarRefresh` therefore also requires every connected
+  viewer to be level with `game.hostTechCardDealCount()` — the server's own catch-up
+  predicate. That is what closes the loop, because the snapshot a refresh publishes
+  makes the server sweep every client for catch-up, and the gate guarantees that sweep
+  finds nothing. Without it, a viewer rejoining ten deals behind would drive ten full
+  re-deals of every selectable star.
+
+Hand sizing: the pre-dealt card is passed as `systemCards` and the draw count is
+reduced by one, so the stored hand is still `cardsOffered` long. `computeRerollDeal`
+reads the spent rerolls back out of that length, so lengthening it would hand the
+viewer a free reroll. A reroll drops the pre-dealt card, matching `model.rerollTech`
+emptying the star's card list for the host.
+
+## Treasure loadouts
+
+The treasure planet's loadout is **not** pre-dealt at war creation. It is derived at
+exploration from the acting player's own locked pool — the same code for the host and
+every viewer, each judged by their own unlock record (`gw_play/treasure_loadouts.js`).
+A player who owns every loadout gets an ordinary tech deal there instead.
+
+Deriving rather than storing is what lets a catch-up deal replay a star for a viewer
+who was absent when it was explored: keyed on `(player, star)` alone, the offer
+reproduces exactly. It also means a host who has unlocked everything no longer denies
+the planet to everyone else.
+
+**Winning one unlocks the commander and grants nothing in this war.** The card is
+banked and never enters the inventory: `model.win` banks it and passes `-1` to
+`winTurn`, which still clears the star and ends the turn. Left in the inventory it
+would read as tech held — `cardsOfferedCount` tests `hasCard` for the Lucky
+Commander, so it would keep paying out a fourth card on every explore. The base
+game instead adds the card and a free slot to cover it (`gwc_start_*.buff`'s
+"Don't clog up a slot" branch); GWO does not.
+
+The server already banks a viewer's loadout choice without touching the inventory —
+but only for ids passing `isBaseLoadoutCardId`, so every mod loadout is pushed into
+the viewer's war inventory instead. GWO therefore intercepts **every** loadout id on
+a viewer, banking locally and submitting `-1`; it cannot leave the base ids to the
+server, because banking is held shut on viewers for the reason below.
+
+## Whose unlocks are whose
+
+`GWGame.load()` calls `game.inventory().applyCards()` on **every** client, and on a
+viewer under per-player tech that inventory is the host's. Each loadout card's
+`buff()` ends in `bank.addStartCard`, so simply loading the campaign collected the
+host's loadouts into the viewer's own bank — and the bank is what `gw_start` reads
+next war.
+
+The guard is in the shadowed `gw_inventory.js`, and **the timing is the whole
+difficulty**. That first apply runs before the campaign half of `model` exists —
+`isCampaignViewer`, `gwCampaignPerPlayerTechCards` and `model.game()` are all
+`undefined` at that point, so no model-based test can answer, and installing a hold
+from a scene script is too late even though `loadMods` has finished. The two signals
+that _are_ available are `sessionStorage.gw_campaign_role`, and the game passed to
+`GWGamePatches.patch` — which `GWGame.load` calls immediately before `applyCards`,
+after setting `perPlayerTechCards`. `gw_inventory.js` therefore hijacks `patch` to
+raise a flag that the next `applyCards` consumes and suspends on.
+
+Hijacking rather than shadowing `gw_game.js` keeps a 459-line save-format file out of
+the tree; `gw_game_patches` is reachable because, like `gw_bank`, it declares no
+dependencies, while `shared/gw_common` and `shared/gw_game` would both close a cycle
+back onto `gw_inventory`.
+
+Only the host's inventory is ever flagged, so a viewer still banks its own claims —
+`bankOwnLoadout` for a treasure loadout, and the loadout scene for its war loadout.
+Winning a war unlocks through `gw_war_over`, a different scene, and is unaffected.
+
+The mirror of this — the host collecting a _viewer's_ loadouts — comes from the host
+applying each viewer's inventory to size their deals, and is suspended at each of
+those call sites (`cards_coop_deal.js`, `cards_coop_reroll.js`,
+`cards_coop_star_cards.js`).
+
+**The star is identified by index, not by `ai.treasurePlanet`.** Beating the Guardians
+runs `winTurn`'s boss branch, which calls `defeatTeam(ai.team)`; `gw_start/setup.js`
+deletes `ai.team` for the treasure planet, so `defeatTeam(undefined)` matches the star
+itself and clears its `ai()`. Nothing on the star still says "treasure planet" by the
+time it is explored — and exploration is the whole point, since a star is fought
+first and its cards offered afterwards. `gw_start/setup.js` therefore records
+`originSystem.gwaio.treasureStar`, and `isTreasureStar` is the only test any caller
+should use. Wars generated before that field existed get it back from
+`findTreasureStar`, which looks for a live `ai.treasurePlanet` and otherwise for the
+pre-dealt loadout the old war left on the star.
+
+The pool is `loadout_ids.lockedBase + unlockable`. `gw_start/setup.js` drew from
+`model.gwoNewStartCards`, which a third-party mod can push into; `model` is a fresh
+page in `gw_play`, so that route is not available here.
+
+**A viewer's unlocks arrive by a GWO route, not the base game's.** Both
+`normalizeStartCardIds` and the server's `normalizeUnlockedStartCardIds` filter to ids
+beginning `gwc_start`, so `record.unlockedStartCardIds` can never hold a
+`gwaio_start_*`, `nem_start_*` or `tgw_start_*` id — 16 of the 21 cards in the pool.
+`model.recordHasUnlockedStartCard` returns false for all of them. Viewers therefore
+report their own list over the `gwo_report_unlocked_loadouts` operator, and the host
+stores it as `gwaioUnlockedStartCardIds`; `recordHasUnlockedLoadout` reads both fields
+plus `loadoutCardId`.
 
 ## Where to look next
 

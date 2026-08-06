@@ -221,22 +221,28 @@ define([
       // global for modder compatibility
       model.gwoCards = _.isArray(model.gwoCards) ? model.gwoCards : [];
 
+      // Deduplicated because setupGwoDeck indexes by position: a modder id that
+      // collides with a shipped one would otherwise leave a hole in the deck.
       if (
         !gwoSettings || // non-GWO saves
         !gwoSettings.techCardDeck || // v5.35.0 and earlier
         gwoSettings.techCardDeck === "Expanded"
       ) {
-        return model.gwoCards.concat(loadouts, basicCards, expandedCards);
+        return _.uniq(
+          model.gwoCards.concat(loadouts, basicCards, expandedCards)
+        );
       }
-      return model.gwoCards.concat(loadouts, basicCards);
+      return _.uniq(model.gwoCards.concat(loadouts, basicCards));
     },
 
+    // By index, not push: requireGW resolves in load order, and the deal walks the
+    // deck in array order, so load order would remap every roll. See galaxy.md.
     setupGwoDeck: function (cards, deck, cardsRemaining, promise) {
-      _.forEach(model.gwoCards, function (cardId) {
+      _.forEach(model.gwoCards, function (cardId, index) {
         requireGW(["cards/" + cardId], function (card) {
           card.id = cardId;
-          cards.push(card);
-          deck.push(cardId);
+          cards[index] = card;
+          deck[index] = cardId;
           --cardsRemaining;
           if (cardsRemaining === 0) {
             promise.resolve();
@@ -259,7 +265,8 @@ define([
           card.getContext && card.getContext(params.galaxy, params.inventory);
 
         var deal =
-          card.deal && card.deal(params.star, context, params.inventory);
+          card.deal &&
+          card.deal(params.star, context, params.inventory, params.rng);
         var product = { id: params.id };
         var cardParams = deal && deal.params;
         if (cardParams && _.isPlainObject(cardParams)) {

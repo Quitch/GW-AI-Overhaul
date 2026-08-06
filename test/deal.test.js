@@ -1,12 +1,7 @@
 "use strict";
 
-// Unit tests for shared/deal.js: dealCard (resolve/reject and the getContext ->
-// deal -> keep/releaseContext lifecycle over a loaded card) and setupGwoCards (the
-// techCardDeck branch that decides whether the Expanded card set is included). Both
-// touch engine globals only at call time - $ (jQuery Deferred) for dealCard, model
-// for setupGwoCards - so the module loads under the Node AMD harness and we install
-// the fake $/model per describe block. setupGwoDeck is left untested: it's thin glue
-// over requireGW's async card loading with no branching worth pinning.
+// Unit tests for shared/deal.js: dealCard's lifecycle, setupGwoCards' deck branch,
+// and setupGwoDeck's ordering, which the seeded deal depends on.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -21,11 +16,9 @@ const deal = loadCouiModule(
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);
 
-// dealCard runs its body inside loaded.then(...). In the not-found path that callback
-// returns the (already-rejected) result deferred; jQuery's Deferred.then absorbs that,
-// but native promises would surface it as a Node unhandledRejection. This stand-in
-// swallows the callback's own returned rejection while leaving `result` free to reject
-// for the caller to await - so we assert on dealCard's return value, not this seam.
+// jQuery's Deferred.then absorbs the rejection the not-found path returns; a native
+// promise surfaces it as an unhandledRejection. This swallows the callback's own
+// rejection while leaving `result` free to reject for the caller.
 function fakeLoaded() {
   return {
     then: function (callback) {
@@ -89,6 +82,37 @@ describe("dealCard", () => {
     assert.equal(calls.releaseContext, context);
   });
 
+  it("forwards params.rng to the card as deal's fourth argument", async () => {
+    setGlobal("$", createFakeJQuery());
+    const rng = () => 0.5;
+    let seen;
+    await deal.dealCard({ id: "c", rng: rng }, fakeLoaded(), [
+      {
+        id: "c",
+        deal: function (system, context, inventory, cardRng) {
+          seen = cardRng;
+          return { params: {} };
+        },
+      },
+    ]);
+    assert.equal(seen, rng);
+  });
+
+  it("passes undefined when the caller supplies no rng", async () => {
+    setGlobal("$", createFakeJQuery());
+    let seen = "untouched";
+    await deal.dealCard({ id: "c" }, fakeLoaded(), [
+      {
+        id: "c",
+        deal: function (system, context, inventory, cardRng) {
+          seen = cardRng;
+          return { params: {} };
+        },
+      },
+    ]);
+    assert.equal(seen, undefined);
+  });
+
   it("rejects when the requested card id is not among the loaded cards", async () => {
     setGlobal("$", createFakeJQuery());
     await assert.rejects(
@@ -134,5 +158,90 @@ describe("setupGwoCards", () => {
     setGlobal("model", { gwoCards: "not-an-array" });
     const result = deal.setupGwoCards({ techCardDeck: "Basic" });
     assert.ok(result.includes("gwc_minion"));
+  });
+
+  // setupGwoDeck indexes by position, so a repeat would leave a hole in the deck.
+  it("deduplicates a modder id that collides with a shipped card", () => {
+    setGlobal("model", { gwoCards: ["gwc_minion"] });
+    const result = deal.setupGwoCards({ techCardDeck: "Basic" });
+    assert.equal(result.filter((id) => id === "gwc_minion").length, 1);
+  });
+
+  it("yields no duplicates at all for either deck", () => {
+    setGlobal("model", {});
+    for (const techCardDeck of ["Basic", "Expanded"]) {
+      const result = deal.setupGwoCards({ techCardDeck: techCardDeck });
+      assert.equal(new Set(result).size, result.length, techCardDeck);
+    }
+  });
+});
+
+describe("setupGwoDeck", () => {
+  // Collects the requireGW callbacks instead of running them, so a test can fire
+  // them in any order - which is what the engine's loader effectively does.
+  function deferredRequireGW() {
+    const pending = [];
+    const requireGW = (ids, callback) => {
+      pending.push({ id: ids[0].replace("cards/", ""), callback: callback });
+    };
+    return { pending, requireGW };
+  }
+
+  function run(gwoCards, order) {
+    const { pending, requireGW } = deferredRequireGW();
+    setGlobal("model", { gwoCards: gwoCards });
+    setGlobal("requireGW", requireGW);
+
+    const cards = [];
+    const deck = [];
+    let resolved = 0;
+    deal.setupGwoDeck(cards, deck, gwoCards.length, {
+      resolve: () => {
+        resolved++;
+      },
+    });
+
+    for (const index of order) {
+      pending[index].callback({ id: "overwritten-by-setupGwoDeck" });
+    }
+
+    return { cards, deck, resolved };
+  }
+
+  const ids = ["gwc_alpha", "gwc_beta", "gwc_gamma", "gwc_delta"];
+
+  it("places each card at its model.gwoCards index whatever order it loads in", () => {
+    const reverse = run(ids, [3, 2, 1, 0]);
+    assert.deepEqual(reverse.deck, ids);
+    assert.deepEqual(
+      reverse.cards.map((card) => card.id),
+      ids
+    );
+  });
+
+  it("produces the same deck regardless of load order", () => {
+    const forward = run(ids, [0, 1, 2, 3]);
+    const shuffled = run(ids, [2, 0, 3, 1]);
+    assert.deepEqual(shuffled.deck, forward.deck);
+  });
+
+  it("resolves exactly once, after the last card loads", () => {
+    const { pending, requireGW } = deferredRequireGW();
+    setGlobal("model", { gwoCards: ids });
+    setGlobal("requireGW", requireGW);
+
+    let resolved = 0;
+    deal.setupGwoDeck([], [], ids.length, {
+      resolve: () => {
+        resolved++;
+      },
+    });
+
+    pending[0].callback({});
+    pending[1].callback({});
+    assert.equal(resolved, 0);
+    pending[2].callback({});
+    pending[3].callback({});
+    assert.equal(resolved, 1);
   });
 });

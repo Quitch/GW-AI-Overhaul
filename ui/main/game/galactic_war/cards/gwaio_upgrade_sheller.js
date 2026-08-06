@@ -29,9 +29,17 @@ define([
       inventory.addUnits(gwoUnit.landMine);
 
       inventory.addMods(
-        gwoCard.mods(gwoUnit.shellerAmmo, "replace", {
-          spawn_unit_on_death: gwoUnit.landMine,
-        })
+        gwoCard
+          .mods(gwoUnit.shellerAmmo, "replace", {
+            spawn_unit_on_death: gwoUnit.landMine,
+          })
+          .concat([
+            {
+              file: gwoUnit.shellerAmmo,
+              path: "spawn_unit_on_death",
+              op: "tag",
+            },
+          ])
       );
     },
     dull: function () {},

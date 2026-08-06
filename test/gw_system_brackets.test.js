@@ -1,10 +1,7 @@
 "use strict";
 
 // Tests for shared/gw_system_brackets.js, which derives how many armies a real .pas
-// system can seat and groups a Shared Systems pool into brackets for gw_galaxy.js.
-// The module is pure arithmetic over plain objects, so it loads directly under the Node
-// AMD harness with no ko/api stubs; the builder glue that calls it lives in the
-// coverage-excluded, base-game-shadowed gw_galaxy.js.
+// system seats and groups a Shared Systems pool into brackets.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -236,11 +233,13 @@ describe("armyRange - underivable", () => {
 });
 
 describe("bracketsFrom", () => {
-  it("collapses identical ranges into one bracket, keeping input order", () => {
+  // Systems within a bracket are ordered by name, not by their position in the pool -
+  // see the pool order independence suite below for why.
+  it("collapses identical ranges into one bracket, ordered by name", () => {
     const pool = [
-      sys("a", { zoneCount: 2 }),
-      sys("b", { zoneCount: 4, rules: repeat({ min: 2, max: 4 }, 4) }),
       sys("c", { zoneCount: 2 }),
+      sys("b", { zoneCount: 4, rules: repeat({ min: 2, max: 4 }, 4) }),
+      sys("a", { zoneCount: 2 }),
     ];
     const built = brackets.bracketsFrom(pool);
     assert.equal(built.length, 2);
@@ -470,5 +469,55 @@ describe("selectorFor", () => {
 
     assert.equal(brackets.selectorFor(built, counter().random).take(2), null);
     assert.equal(brackets.selectorFor([], counter().random).take(2), null);
+  });
+});
+
+describe("bracketsFrom - pool order independence", () => {
+  // Shared Systems assembles its pool in resolution order, and selectorFor keys off
+  // pool order, so without a sort one seed places different systems each load.
+  const pool = [
+    sys("Alpha", { zoneCount: 2 }),
+    sys("Bravo", { zoneCount: 4 }),
+    sys("Charlie", { zoneCount: 2 }),
+    sys("Delta", { zoneCount: 8 }),
+    sys("Echo", { zoneCount: 4 }),
+  ];
+
+  const names = (built) =>
+    built.map((b) => [b.min, b.max, b.systems.map((s) => s.name)]);
+
+  it("brackets identically however the pool is ordered", () => {
+    const forwards = names(brackets.bracketsFrom(pool.slice()));
+    const backwards = names(brackets.bracketsFrom(pool.slice().reverse()));
+    const rotated = names(
+      brackets.bracketsFrom(pool.slice(2).concat(pool.slice(0, 2)))
+    );
+    assert.deepEqual(backwards, forwards);
+    assert.deepEqual(rotated, forwards);
+  });
+
+  it("selects the same system for a distance however the pool is ordered", () => {
+    // A fixed sequence, so any difference comes from pool order, not the draws.
+    const sequence = () => {
+      let count = 0;
+      return () => {
+        count += 1;
+        return (count % 7) / 7;
+      };
+    };
+    const pick = (list) =>
+      brackets.selectorFor(brackets.bracketsFrom(list), sequence()).take(4)
+        .name;
+    assert.equal(pick(pool.slice().reverse()), pick(pool.slice()));
+  });
+
+  it("does not mutate the caller's array", () => {
+    const original = pool.slice().reverse();
+    const snapshot = original.map((s) => s.name);
+    brackets.bracketsFrom(original);
+    assert.deepEqual(
+      original.map((s) => s.name),
+      snapshot
+    );
   });
 });

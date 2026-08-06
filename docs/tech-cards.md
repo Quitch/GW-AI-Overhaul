@@ -14,7 +14,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     describe: function () { … },
     summarize: function () { … },
     icon: function () { … },
-    deal: function (system, context, inventory) { … },
+    deal: function (system, context, inventory, rng) { … },
     buff: function (inventory) { … },
     dull: function (inventory) { … },
     audio: function () { … },
@@ -72,8 +72,22 @@ Ordering matters and is not obvious:
 
 ## Deal weighting
 
-`deal(system, context, inventory)` returns `{ chance, params }`. `chance` is a
+`deal(system, context, inventory, rng)` returns `{ chance, params }`. `chance` is a
 weight, not a percentage; higher means more likely to be offered.
+
+`rng` is **optional**: a seeded stream keyed by the card's own id, supplied by GWO's
+dealer. `shared/deal.js dealCard`, the dev cheats and any third-party dealer pass
+nothing, so a card that draws must fall back to `_.sample`/`Math.random` when it is
+absent. Use `gwoCard.uniqueValue(rng)` for a `unique` marker rather than calling
+`Math.random()` directly — `gw_inventory.hasCard` tests `!card.unique`, and a seeded
+zero would permanently stop that card being dealt again for that seed.
+
+**`chance` must not depend on `rng`.** The dealer calls `deal()` on _every_ card in the
+deck for _every_ card of a hand and keeps one result, so only `params` may be random. A
+random `chance` would make the weighting depend on how many times the card had been
+speculatively dealt. Keying per card id is what lets those speculative calls be free:
+adding or removing a draw inside one card cannot move any other card's result. See
+[`galaxy.md`](galaxy.md), "Play-scene streams".
 
 `shared/cards.js` provides the shared shapes so cards do not each invent their own:
 
@@ -134,6 +148,10 @@ loadouts unlocked by winning a war, and GWO-added loadouts unlocked the same way
 `loadout_ids.js` exists separately from `loadouts.js` because the latter touches
 `model.makeKnown` and `GW.bank` at load time, neither of which exists in the
 `gw_play` scene.
+
+A treasure planet's loadout is drawn from those same unlockable ids, but at
+exploration rather than at war creation, and from the acting player's own locked
+pool — see [`coop.md`](coop.md), "Treasure loadouts".
 
 Unlocks and victory badges live in `localStorage` under `gwaio_`-prefixed keys.
 Badge indices run from **-1 (Beginner)** so that Casual is 0 — see the

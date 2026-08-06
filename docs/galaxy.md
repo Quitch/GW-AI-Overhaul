@@ -52,20 +52,202 @@ one.
 entry at all rather than an empty one. Both cases mean "no gates", which is why the
 check is `!links || links.length === 0`.
 
+## Determinism and the war seed
+
+The same seed rebuilds the same galaxy and the same enemies, given the same player
+faction, difficulty, game options and mod set. The seed is entered in the lobby
+(`#game-seed`, which stock hides and `gw_start/ui.js` un-hides), recorded on the save as
+`originSystem.gwaio.seed`, and shown in the `gw_play` panel.
+
+**Out of the seed's reach**, deliberately or unavoidably:
+
+- **Planet names** — `api.game.getRandomPlanetName()` is an engine call with no seed.
+- **Unlocked loadouts**, which decide what the treasure planet can offer each player.
+- **The Shared Systems / My Systems pool**, which lives in IndexedDB per machine.
+- **The mod set**, and **the player faction**, which is an input rather than an output.
+
+`gwo_system_templates.generate()` keeps stock's unseeded fallback, because the module
+is a drop-in for `template-loader.js` and a non-GWO caller may reach it without a seed.
+It `console.warn`s when it does: silently substituting `Math.random()` there produces a
+war that looks reproducible and is not.
+
+### Why a bespoke PRNG
+
+`shared/gwo_rng.js` implements cyrb128 + sfc32 rather than using `Math.seedrandom`, which
+the game ships but Node does not, so a seedrandom-based module could not be unit-tested.
+
+Reseeding `Math.random` is **not** a shortcut: lodash 3.9.3 captures
+`nativeRandom = Math.random` at load, so `_.sample`/`_.shuffle`/`_.random` keep drawing
+from the original whatever is assigned afterwards. Every draw on the generation path had
+to be replaced by hand, which is why the rng is threaded as an explicit argument.
+
+### Streams, not a single sequence
+
+`rng.stream(label, index)` derives a child from the **seed text**, not from a counter, so a
+stream's output does not depend on how much was drawn from its parent or its siblings
+first. Two consequences worth relying on:
+
+- Adding a draw to one phase of generation cannot shift the results of another.
+- Anything reached through a promise, or visited in a varying order, can be **keyed**
+  instead of drawn in sequence.
+
+| Stream                                                                | Consumers                                                                                         |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `factions` → `faction.<i>`                                            | the Random commander, boss `systemDescription`, Cluster planet biomes (`faction/faction_seed.js`) |
+| `lore`                                                                | `neutralSystems` / `aiSystems` shuffles                                                           |
+| `galaxy`                                                              | passed to `galaxy.build()` as `config.gwoRng`                                                     |
+| ↳ `jitter`                                                            | each star's third coordinate (map layout)                                                         |
+| ↳ `brackets`                                                          | `gwoSystemBrackets.selectorFor`                                                                   |
+| ↳ `size.<i>`, `star.<i>`                                              | that star's system size, and the seed handed to `generate()`                                      |
+| ↳↳ `planet.<i>`                                                       | that planet's biome and generator values                                                          |
+| `teams`                                                               | faction scaling, the AI faction shuffle, `gwoTeams.getTeam`                                       |
+| `breeder`                                                             | which star each faction spawns on, and the spawn order                                            |
+| `boss.<team>`                                                         | the seed handed to `gwoTeams.makeBoss`                                                            |
+| `workers`                                                             | `makeWorker`'s picks — ordered, see below                                                         |
+| `ai.<team>` → `boss` / `worker.<n>` → `minion.<n>`, `foe.<n>`, `ally` | that AI's buffs, econ, game modes, minions, foes, ally, penchant                                  |
+| `treasure`                                                            | the treasure planet's econ rate                                                                   |
+
+The `factions` stream is the odd one out, because faction data is loaded, not
+generated. Each `gw_faction_*.js` declares its random choices as a
+`gwaioRandomSpec` and ships a fixed default alongside; `faction/faction_seed.js`
+resolves the spec against the stream. `gw_start/setup.js` calls `reseed()` once
+per war and **before anything reads `GWFactions`** — `getTeam` shallow-copies a
+team, snapshotting `systemDescription` by value.
+
+`workers` is a single ordered stream rather than a keyed one, because the breeder's spread
+loop is synchronous — every `$.when` in it wraps an already-resolved value, which jQuery 2
+fires inline. It also _must_ stay ordered: `makeWorker` mutates `remainingMinions`, so
+which minions are left depends on the order workers were made in. Making `spawn`, `spread`
+or `canSpread` genuinely async would break both properties at once.
+
+### Play-scene streams
+
+War generation is only half of it. What the player actually sees during a war — the tech
+cards offered at each star, the cards sitting on enemy stars, the General Commander's Sub
+Commanders, the AI's landing behaviour — is dealt in the `gw_play` scene, which re-derives
+the root from the seed stamped on the save: `gwoRng.create(originSystem.gwaio.seed)`.
+
+Every key lives in `gw_play/gwo_streams.js`, so this table has one place to be checked
+against.
+
+| Stream                                            | Consumers                                          |
+| ------------------------------------------------- | -------------------------------------------------- |
+| `general_commander.<player>` → `minion.<n>`       | the General Commander loadout's two Sub Commanders |
+| `explore.<star>` → `turn.<n>` → `reroll.<n>`      | the host's own tech offer at that star             |
+| `ai_star.<star>` → `turn.<n>`                     | the card shown on a selectable AI star that turn   |
+| `coop_ai_star.<player>` → `star.<n>` → `turn.<n>` | that star's card for one co-op viewer              |
+| `treasure_loadout.<player>` → `star.<n>`          | that player's treasure-planet loadout offer        |
+| `coop_deal.<player>` → `deal.<index>`             | a co-op viewer's pending offer                     |
+| ↳ `reroll.<n>`                                    | that viewer's rerolled offer                       |
+| ↳ `iteration.<i>`                                 | the roll picking the i-th card of a hand           |
+| ↳↳ `<cardId>`                                     | that card's own draws inside `deal()`              |
+| `battle.<star>` → `turn.<n>` → `landing_*`        | each army's landing policy                         |
+
+The goal is a war that reproduces **only when it is played the same way**: same seed,
+visiting the same stars, in the same order, winning at the same speed, taking the same
+cards. Randomness has to keep feeling random — retrying a battle must still reshuffle, and
+a star must not have one predetermined hand waiting however late you arrive.
+
+That is what `turn.<n>` is for. It is `game.stats().turns()`, incremented only by
+`GWGame.move()` and persisted with the save — the one monotonic per-turn value on the game
+model. `currentStar()` was the obvious alternative and is wrong: `loseTurn()` rewinds it to
+`previousStar()`, so it repeats. Because `loseTurn()` does not touch `turns`, retrying a
+lost battle needs another `move()` and therefore lands on a fresh turn — the reshuffle is a
+consequence of the key, not an exception to it.
+
+The rest of the components:
+
+- **`reroll.<n>`** — `model.rerollTech` empties the star's card list and re-enters
+  `model.explore`, so the per-card iteration index restarts at 0. Without the reroll count
+  in the key every reroll would hand back the same cards.
+- **`deal.<index>`** — `game.recordHostTechCardDeal`'s counter, host-monotonic and saved,
+  so it separates co-op catch-up deals that share a star.
+- **`treasure_loadout`** — the only play-scene key with neither `turn` nor `deal`, and
+  deliberately so. The offer is derived rather than stored, so a catch-up deal replaying a
+  star a viewer was absent for has to reproduce exactly what they would have been shown.
+  The host's own draw uses the literal player key `host`. See [`coop.md`](coop.md).
+- **`<player>`** — `record.playerId`, the uberId, not `client_id`: a viewer who reconnects
+  must get their own minions and offers back. Whitespace in any label is squashed to `_`,
+  because `gwo_rng` joins a label and index with a space and `stream("a b")` would
+  otherwise collide with `stream("a", "b")`.
+- **`<cardId>`** — a deal calls `deal()` on every card in the deck and keeps one result, so
+  a shared sequential rng would couple every card's draws to every other card's draw count.
+  Keyed per card id, adding or removing a draw inside one card moves nothing else.
+
+**Player inventory is deliberately not in any key.** It already reaches the deal through
+each card's `chance` and through `doNotDealCard`. Keying on it as well would double-count,
+and would make a hand depend on the order cards were acquired in.
+
+### What had to change
+
+| Where                                                                    | Was                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GalaxyBuilder.buildGraph`                                               | `reduceConnections(max)` with no seed → `Math.seedrandom(undefined)` → autoseeded from `crypto`. Gate topology re-rolled every build, and with it every star's `distance()`. Hijacked on the prototype from `gw_galaxy.js`; see [`shadowing.md`](shadowing.md).                                                                    |
+| `template-loader.js`                                                     | System name and biome were `_.sample`. Worse, each planet's eight generator values were drawn from a shared stream _inside_ `$.when(biomeGet, nameGet).then(...)`, so a seeded stream was consumed in an unseeded order. Now keyed per planet, taken synchronously — in `shared/gwo_system_templates.js`, not a shadow; see below. |
+| `gw_breeder.js`, `gw_teams.js`                                           | Spawn placement, team pick, and a `makeBoss` that generated its system with no seed at all. Copied into `gw_start/gwo_breeder.js` and `gw_start/gwo_teams.js` rather than shadowed; see below.                                                                                                                                     |
+| `gw_faction_*.js`, `cluster_faction.js`, `cluster_planets.js`, `lore.js` | Sampled at `define()` time, so they re-rolled on every entry into `gw_start` rather than following the seed.                                                                                                                                                                                                                       |
+| `shared/deal.js setupGwoDeck`                                            | Appended each card as `requireGW` resolved it, so the deck's array order was the loader's rather than `model.gwoCards`'. A deal walks the deck in array order subtracting each chance, so the same roll picked a different card run to run — seeding the roll alone would have changed nothing.                                    |
+| `gw_play/cards.js chooseCards`                                           | Built its own `Math.seedrandom` and no caller ever passed one, so every hand the player was offered and every card on an enemy star came from entropy.                                                                                                                                                                             |
+| `gw_play/referee_config_setup.js`                                        | `setupAIArmy` shuffled the three landing policies with `_.shuffle` at every battle launch, so replaying the same battle from the same save gave the AI different landing behaviour.                                                                                                                                                |
+
+### Copies, not shadows
+
+Three base-game modules are **copied into GWO's namespace** rather than shadowed, and
+chosen between at the call site:
+
+| GWO module                       | Replaces                     | Why not a shadow                                                                                                                                 |
+| -------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `shared/gwo_system_templates.js` | `systems/template-loader.js` | Shared Systems for Galactic War replaces the same path, and a shadowed path can only have one owner                                              |
+| `gw_start/gwo_teams.js`          | `pages/gw_start/gw_teams`    | The base game calls `getTeam` as `_.map(aiFactions, GWTeams.getTeam)`, so a shadow adding an `rng` parameter would receive the array index there |
+| `gw_start/gwo_breeder.js`        | `pages/gw_start/gw_breeder`  | Nothing else needs GWO's version, and the base module stays available                                                                            |
+
+Each is kept line-for-line close to its original, with every change marked `GWO -`, so a
+diff against the base file after a PA patch stays readable. That discipline is not
+cosmetic: restructuring `gwo_system_templates.js` while copying it once dropped the
+`$.Deferred` wrapper around `getRandomPlanetName()`, and because `$.when` does not wait
+for an engine promise (see [`constraints.md`](constraints.md)) every war on the vanilla
+path failed with "no usable star system".
+
+### Shared Systems for Galactic War
+
+That mod replaces `systems/template-loader.js` wholesale, so GWO's seeded loader lives at
+`shared/gwo_system_templates.js` instead.
+Its `chooseFor()` returns the base module whenever that module carries `loadOptions` —
+the same capability check `loadSystemBrackets` uses — and GWO's seeded copy otherwise.
+
+With that mod active the systems are real `.pas` files chosen by
+`gwoSystemBrackets.selectorFor`, which the `brackets` stream already seeds, so the loader
+is only reached for boss systems built from a `systemTemplate`.
+
+### Retries
+
+`warGenerationFailure` used to re-roll the seed at random, discarding what the player
+typed. It now derives `<base>-<attempt>`, and `gwaio.seed` records whichever link
+succeeded — so the string the panel shows is the string to re-enter to get that war back on
+the first attempt.
+
 ## System scaling
 
 Whether system size tracks distance from the start is a user-facing option,
-`gwoDifficultySettings.systemScaling()`:
+`gwoDifficultySettings.systemScaling()`, which defaults to **on** (`gw_start/ui.js`):
 
 ```js
 systemSize = systemScaling
   ? star.distance() + coopSystemPlayerBonus
-  : Math.floor(_.random(13) + coopSystemPlayerBonus);
+  : Math.floor(rng.stream("size", index).int(0, 13) + coopSystemPlayerBonus);
 ```
 
-With scaling off — which is the default in one of the two places it is set — size is
-**random**, not distance-based. Any statement that planets grow with distance is only
-half true.
+Turn it off and size is random — seeded, but not distance-based — so any statement that
+planets grow with distance describes the default only.
+
+The `false` in `gw_start/ui.js`'s `gwoGameOptionsDraft` is not a second default: that is
+the options modal's draft, and `syncGwoGameOptionsDraft()` overwrites it from the live
+settings every time the modal opens.
+
+`systemSizeFor` is keyed by star index rather than drawing in sequence because the two
+passes over the stars visit them in different orders — distance order under Shared
+Systems, array order otherwise. Without the key, one seed would give two different
+galaxies depending on whether that mod is mounted.
 
 `coopSystemPlayerBonus` is `coopPlayers - 1`, so a solo war contributes nothing and the
 scale starts at 0. It reads like an off-by-one and is not one; the reasoning is at its
@@ -101,6 +283,13 @@ order, and each takes the first unused system that still fits. Nearer stars ther
 claim the smaller systems, and no system repeats until every eligible one is placed. A
 pool smaller than the galaxy exhausts and starts reusing rather than leaving a star
 empty.
+
+`bracketsFrom` **sorts the pool by name** before grouping, and that sort is load-bearing
+for determinism rather than cosmetic. Shared Systems assembles the pool as its sources
+resolve, pushing remote servers and map packs in completion order, so the order differs
+between scene loads — observed directly, with one source moving from third to twelfth.
+Because the shuffle keys above are assigned in pool order, without the sort the same seed
+would place different systems whenever more than one source was selected.
 
 This path bypasses wondible's `withoutBrokenSystems`, so its name and `_.matches`
 blocklists no longer apply; the `starting_planet` backfill is reproduced on the returned

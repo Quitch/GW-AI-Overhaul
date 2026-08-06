@@ -37,6 +37,11 @@ define([
         },
         {
           file: gwoUnit.wyrm,
+          path: "tools.0.spec_id",
+          op: "tag",
+        },
+        {
+          file: gwoUnit.wyrm,
           path: "navigation.aggressive_distance",
           op: "replace",
           value: 250, // matches the Typhoon's drone launcher range

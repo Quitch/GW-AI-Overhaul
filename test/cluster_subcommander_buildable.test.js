@@ -1,22 +1,16 @@
 "use strict";
 
-// Cluster fields Angels and Colonels as Sub Commanders and must never be able to build
-// them ("CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build
-// them" - gw_start/ui.js). faction/cluster_setup.js enforces that by replacing their
-// `unit_types`: it strips the tags factories match on (FactoryBuild, Bot, ...) and adds
-// UNITTYPE_NoBuild.
+// Cluster fields Angels and Colonels as Sub Commanders and must never be able to
+// build them. cluster_setup.js enforces that by stripping the tags factories match
+// on and adding UNITTYPE_NoBuild.
 //
-// That enforcement is ordering-fragile. The Cluster mods are added by gwc_start.buff(),
-// which every loadout card calls *before* its own addMods, so they sit at the head of
-// inventory.mods() and lose every conflict with a card applied later. gwaio_start_rapid
-// once replaced the advanced air fabber's list with a bare "Mobile & Air" clause, which
-// a post-Cluster Angel matches - handing Cluster a buildable Sub Commander with no
-// error anywhere, in-game or in CI.
+// The enforcement is ordering-fragile: gwc_start.buff() adds the Cluster mods before
+// any loadout card's own, so they sit at the head of inventory.mods() and lose every
+// later conflict. A bare "Mobile & Air" clause added afterwards matches an Angel,
+// handing Cluster a buildable Sub Commander with no error anywhere.
 //
-// So this sweeps every card: run its buff()/dull(), collect every buildable_types it
-// authors, and assert none of them can match a Cluster Sub Commander. Base-game
-// builders are out of reach here (CI has no install - see CLAUDE.md), but they were
-// checked by hand and none match; cards are the only moving part.
+// So this sweeps every card for the buildable_types it authors. Base-game builders
+// are out of reach in CI; they were checked by hand and none match.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -33,17 +27,13 @@ const {
   KNOWN_UNLOADABLE_FILES,
 } = require("../scripts/lib/known-unloadable-cards.js");
 
-// 61 of the cards - every loadout card among them, which is where the replacements this
-// checks actually live - depend on the base game's shared/gw_common, which this repo
-// doesn't ship. Without a stand-in they'd all be skipped and the sweep below would pass
-// by testing nothing. The cards only read balance constants off it, so an auto-stub is
-// enough; nothing here asserts on values that came through it.
+// Every loadout card - which is where the replacements live - depends on the
+// unshipped shared/gw_common, so without a stand-in the sweep tests nothing. Only
+// balance constants are read off it, and nothing here asserts on those.
 registerModuleStub("shared/gw_common", createAutoStub());
 
-// The loadout cards pull in shared/bank.js, which constructs itself at define time and
-// so reads ko and localStorage before any test runs. Minimal stand-ins, in the shape
-// test/gw_galaxy_path_between.test.js uses: an observable is a get/set closure, and a
-// subscription that never fires is correct here - nothing in this file writes one.
+// shared/bank.js constructs itself at define time, so it reads ko and localStorage
+// before any test runs. A subscription that never fires is correct here.
 function makeObservable(initial) {
   let value = initial;
   const observable = function () {
@@ -97,9 +87,8 @@ function stripPrefix(unitTypes) {
   );
 }
 
-// The tags a Sub Commander carries in-game: whatever cluster_setup.js's `replace`
-// leaves it with, plus anything a card pushes on top (gwaio_upgrade_angel adds Gunship
-// and Offense). Cards can only add tags, so the union is the worst case.
+// What cluster_setup.js leaves, plus anything a card adds. Cards can only add
+// tags, so the union is the worst case.
 function clusterTags(file, cardMods) {
   const replaced = gwoCluster.clusterCommanderMods.find(
     (mod) =>
@@ -128,10 +117,8 @@ function clusterTags(file, cardMods) {
   return tags;
 }
 
-// What cluster_setup.js gives a Sub Commander to build - the commander build list,
-// since that is what it now is. Every loadout card routes through gwc_start.buff(), so
-// this descriptor turns up in the sweep once per card; anything else writing the same
-// path is a card overwriting the faction's rule.
+// The commander build list cluster_setup.js gives a Sub Commander. It appears once
+// per card; anything else writing that path is a card overwriting the faction rule.
 function clusterBuildableTypes(file) {
   const mod = gwoCluster.clusterCommanderMods.find(
     (candidate) =>
@@ -141,17 +128,15 @@ function clusterBuildableTypes(file) {
   return mod.value;
 }
 
-// A mock inventory in the shape validate/ai-mods-contract.js uses - auto-stubbed except
-// for the handful of answers that steer a card down the branch under test: the player
-// is Cluster, and this is the loadout's first buff (lookupCard 0 / buffCount falsy), so
-// loadout cards author their mods instead of just widening the hand.
+// Auto-stubbed except for the answers that steer a card down the branch under test:
+// the player is Cluster, and this is the loadout's first buff, so cards author their
+// mods rather than just widening the hand.
 function collectMods(card, hasCard) {
   const captured = [];
   const inventory = new Proxy(
     {
       addMods: function (mods) {
-        // gw_inventory.js's addMods is mods().concat(mods), which takes a bare
-        // descriptor as readily as an array.
+        // addMods concats, so it takes a bare descriptor as readily as an array.
         if (Array.isArray(mods)) {
           captured.push(...mods);
         } else if (mods) {
@@ -198,8 +183,8 @@ function loadCard(file) {
   }
 }
 
-// Both branches of any `if (inventory.hasCard(...))` fork are real in-game states, so
-// take each card down both rather than whichever one a fixed answer happens to pick.
+// Both branches of a hasCard fork are real in-game states, so take each card down
+// both rather than whichever a fixed answer picks.
 function collectAllCardMods() {
   const mods = [];
   const cards = [];
@@ -222,10 +207,8 @@ function collectAllCardMods() {
   return { mods: mods, cards: cards };
 }
 
-// An `add` on a string spec value concatenates (see shared/specs.js's ops), and every
-// card using it appends an alternative - " | (Air & Mobile & ...)". Judging that
-// fragment on its own is the right test: an alternative that matches makes the whole
-// expression match, whatever the base value it was appended to.
+// `add` concatenates, and every card using it appends an alternative. Judging the
+// fragment alone is right: a matching alternative matches whatever it was appended to.
 function expressionsFrom(mod) {
   if (mod.path !== "buildable_types") {
     return [];
@@ -244,7 +227,7 @@ describe("buildable_types expression evaluator", () => {
   });
 
   it("binds & and - tighter than |", () => {
-    // fabrication_bot_adv's real expression: the - Factory applies to the first
+    // fabrication_bot_adv's real expression: `- Factory` binds to the first
     // alternative only, so a plain Factory still matches via the second.
     const expression =
       "Land & Structure & Advanced - Factory| Factory & Advanced & Bot & Land | FabAdvBuild | FabBuild";
@@ -294,9 +277,8 @@ describe("Cluster Sub Commanders cannot be built", () => {
   );
 
   it("loads the cards it is sweeping", () => {
-    // Guards against a loader change quietly reducing this to a no-op. Same reach as
-    // validate:cards - 175 of the 237 cards load, the rest being NOT_SHIPPED or
-    // KNOWN_UNLOADABLE - so this only needs to catch a collapse, not track the count.
+    // Guards against a loader change reducing this to a no-op. Meant to catch a
+    // collapse, not track the count.
     assert.ok(collected.cards.length > 150, collected.cards.length + " cards");
   });
 
@@ -317,9 +299,8 @@ describe("Cluster Sub Commanders cannot be built", () => {
     );
 
     it("lets no card overwrite " + unit.name + "'s Cluster build list", () => {
-      // Order-independent by design. The Cluster mods are added first and so lose any
-      // conflict, and which cards a player holds is unknowable here - so the invariant
-      // is that nothing else writes the path at all, not that it wins a race.
+      // The Cluster mods lose every conflict, and the player's hand is unknowable
+      // here, so the invariant is that nothing else writes the path at all.
       const clusterValue = clusterBuildableTypes(unit.file);
       const overwrites = collected.mods
         .filter(

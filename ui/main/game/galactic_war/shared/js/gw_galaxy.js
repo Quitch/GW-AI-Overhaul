@@ -1,26 +1,50 @@
-// The testable graph core (the GWGalaxy constructor:
-// neighborsMap/areNeighbors/pathBetween, ko/lodash only) lives in the measured
-// shared/gw_galaxy_graph.js and is unit-tested by test/gw_galaxy_path_between.test.js.
-// This shadowed file augments that constructor with the systems load/save/build glue,
-// which depends on the unshipped shared/GalaxyBuilder, shared/gw_star and template-loader
-// (so it cannot load under the Node AMD harness) and is coverage-excluded. gw_game.js
-// consumes the fully-augmented GWGalaxy via its "shared/gw_galaxy" AMD dependency, so the
-// runtime contract is unchanged.
+// Glue. The measured half is shared/gw_galaxy_graph.js, whose constructor this
+// augments and re-exports under "shared/gw_galaxy". See testing.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_graph.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_connect.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_system_brackets.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_system_templates.js",
   "shared/GalaxyBuilder",
+  // Only for the buildGraph override below, which constructs what stock constructs.
+  "shared/Delaunay",
+  "shared/Graph",
   "shared/gw_star",
   "main/game/galactic_war/shared/js/systems/template-loader",
 ], function (
   GWGalaxy,
   gwoGalaxyConnect,
   gwoSystemBrackets,
+  gwoRng,
+  gwoSystemTemplates,
   GalaxyBuilder,
+  Delaunay,
+  Graph,
   GWStar,
   chooseStarSystemTemplates
 ) {
+  // GWO - stock calls reduceConnections(max) with no seed, so Graph.js autoseeds from
+  // crypto and the gate topology - and every distance derived from it - re-rolled on
+  // every build. Hijacked rather than shadowed because this file is GalaxyBuilder's only
+  // consumer; see shadowing.md. The body is otherwise stock.
+  GalaxyBuilder.prototype.buildGraph = function () {
+    this.graph = new Delaunay(this.stars);
+    var allEdges = this.graph.getEdges();
+    var outerEdges = this.graph.getOuterEdges();
+    var innerEdges = _.filter(allEdges, function (testEdge) {
+      return !_.some(outerEdges, function (o) {
+        return testEdge[0] === o[0] && testEdge[1] === o[1];
+      });
+    });
+    this.reducedGraph = new Graph(innerEdges);
+    this.reducedGraph.reduceConnections(this.maxConnections, this.seed); // GWO - was (this.maxConnections)
+    this.reducedGraph.sortEdges();
+    this.edges = this.reducedGraph.getEdges().map(function (e) {
+      return [this.stars[e[0]].slice(0), this.stars[e[1]].slice(0)];
+    }, this);
+  };
+
   GWGalaxy.loadSystems = function (systems, config) {
     _.forEach(_.zip(systems.stars, config.stars), function (pair) {
       GWStar.loadSystem(pair[0], pair[1]);
@@ -74,19 +98,15 @@ define([
       var self = this;
       config = config || {};
 
-      var rng = new Math.seedrandom(config.seed || 0);
+      // GWO - setup.js passes its galaxy stream; the fallback serves any other caller.
+      var rng = config.gwoRng || gwoRng.create(config.seed || 0);
 
       var builder = new GalaxyBuilder(config);
       builder.build();
 
-      // buildGraph() strips every convex-hull edge, which leaves any hull star that
-      // belonged to a single Delaunay triangle with no edges at all: it gets no gate
-      // below, calcDistance never reaches it so it keeps gw_star's default distance of
-      // 0, and it generates a minimum-size system no route can ever enter. Restore its
-      // hull edges before anything reads the graph. This can take a neighbouring star
-      // one connection above config.maxConnections, which is well worth avoiding an
-      // unreachable star - or an unwinnable war, since the origin picked below is always
-      // a hull star and so is itself at risk.
+      // Must run before anything reads the graph. Can push a neighbour one
+      // connection past config.maxConnections, which beats an unreachable star.
+      // See shared/gw_galaxy_connect.js.
       var reconnect = gwoGalaxyConnect.reconnectingEdges(
         builder.stars.length,
         builder.graph.getEdges(),
@@ -144,10 +164,11 @@ define([
         ];
       });
 
+      var jitterRng = rng.stream("jitter");
       self.stars(
         _.map(builder.stars, function (star) {
           var result = new GWStar();
-          result.coordinates(star.concat([rng()]));
+          result.coordinates(star.concat([jitterRng()]));
           return result;
         })
       );
@@ -173,23 +194,24 @@ define([
       });
 
       self.difficultyIndex = config.difficultyIndex;
-      var StarSystemTemplates = chooseStarSystemTemplates(
+      // GWO - a seeded copy of the stock loader, unless Shared Systems for Galactic War
+      // has replaced it; see shared/gwo_system_templates.js.
+      var StarSystemTemplates = gwoSystemTemplates.chooseFor(
+        chooseStarSystemTemplates,
         config.content,
         config.useEasierSystemTemplate
       );
 
       var brackets = config.gwoSystemBrackets;
 
-      // GWO - system size follows distance from the start only when the System
-      // Scaling difficulty option is on; otherwise it is randomised. The randomised
-      // branch does not draw from rng, so call this exactly once per star or the two
-      // passes below would disagree about the same star's size.
-      var systemSizeFor = function (star) {
+      // GWO - size follows distance only when System Scaling is on, which is the
+      // default. The two passes below visit the stars in different orders, so the
+      // randomised branch keys its stream by star index rather than drawing in sequence;
+      // calling this twice for one star is therefore harmless. See galaxy.md.
+      var systemSizeFor = function (star, index) {
         var systemSize;
-        // One player is the baseline, so a solo war adds nothing and the origin star
-        // asks for size 0. A nudge towards a bigger fight, not a spawn count: shared
-        // army control gives every co-op client the same army, and only
-        // gw_coop_referee.js's unshared path splits them one per client.
+        // A nudge towards a bigger fight, not a spawn count. One player is the
+        // baseline, so a solo war adds nothing.
         var coopSystemPlayerBonus = Math.max(
           0,
           Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
@@ -200,19 +222,21 @@ define([
         ) {
           systemSize = star.distance() + coopSystemPlayerBonus;
         } else {
-          systemSize = Math.floor(_.random(13) + coopSystemPlayerBonus);
+          // "size", not "star": the template seed below already keys stream("star", i).
+          systemSize = Math.floor(
+            rng.stream("size", index).int(0, 13) + coopSystemPlayerBonus
+          );
         }
-        // Large Planets brings bigger systems forward rather than resizing planets -
-        // the name is kept for its translation strings, see difficulty_options.html.
+        // Large Planets brings bigger systems forward rather than resizing
+        // planets. The name is kept for its translation strings.
         if (
           model.gwoDifficultySettings &&
           model.gwoDifficultySettings.largePlanets()
         ) {
           systemSize += 4;
         }
-        // Easy Systems has no simpler template set to swap to when the pool is real
-        // systems, so it asks for the lowest bracket instead. Last, so it wins over
-        // Large Planets and distance alike.
+        // A real-system pool has no simpler template set for Easy Systems to swap
+        // to, so it asks for the lowest bracket. Last, so it wins over the rest.
         if (
           brackets &&
           model.gwoDifficultySettings &&
@@ -225,10 +249,8 @@ define([
 
       var placeSystem = function (star, starSystem) {
         return starSystem.then(function (system) {
-          // Both suppliers can resolve without a system - Shared Systems' pickSystem on
-          // an empty pool, the stock loader when no template matches. Reject rather than
-          // dereference: jQuery 2.x lets a throw here escape .fail(), which leaves Go To
-          // War spinning instead of retrying.
+          // Both suppliers can resolve without a system. Reject rather than
+          // dereference: a throw here escapes .fail() and hangs Go To War.
           if (
             !system ||
             !system.planets ||
@@ -249,7 +271,10 @@ define([
       // before the generator loop below runs in array order.
       var systemByStar = [];
       if (brackets) {
-        var selector = gwoSystemBrackets.selectorFor(brackets, rng);
+        var selector = gwoSystemBrackets.selectorFor(
+          brackets,
+          rng.stream("brackets")
+        );
         var byDistance = _.sortBy(
           _.map(self.stars(), function (star, index) {
             return { star: star, index: index };
@@ -259,7 +284,9 @@ define([
           }
         );
         _.forEach(byDistance, function (entry) {
-          systemByStar[entry.index] = selector.take(systemSizeFor(entry.star));
+          systemByStar[entry.index] = selector.take(
+            systemSizeFor(entry.star, entry.index)
+          );
         });
       }
 
@@ -267,11 +294,13 @@ define([
         if (brackets) {
           return placeSystem(star, $.when(systemByStar[index]));
         }
+        // GWO - keyed by star index, not drawn in sequence: these generate() calls
+        // resolve out of order, so a shared stream would hand out arbitrary seeds.
         return placeSystem(
           star,
           StarSystemTemplates.generate({
-            players: systemSizeFor(star),
-            seed: rng() * rng(),
+            players: systemSizeFor(star, index),
+            seed: rng.stream("star", index).int(0, 2147483647),
           })
         );
       });

@@ -35,10 +35,8 @@ define([
 
   var getAIEconFloor = function (difficultyName) {
     var difficultySettings = getDifficultySettings(difficultyName);
-    // Not every tier carries econ fields - the Custom sentinel in
-    // difficulty_levels.js holds only difficultyName + customDifficulty. A found
-    // tier is therefore not enough; without this check the sum is NaN and every
-    // battle of a Custom war gets NaN econ_rate and adv_eco_mod.
+    // Finding a tier is not enough: the Custom sentinel carries no econ fields,
+    // and the resulting NaN reaches every battle of that war.
     var hasEconFields =
       difficultySettings &&
       _.isNumber(difficultySettings.econBase) &&
@@ -105,11 +103,12 @@ define([
         : ai.faction === 4;
     },
 
-    penchants: function () {
+    // rng is optional. War creation passes the AI's own stream; the play-scene
+    // callers are outside the seeded path and pass nothing.
+    penchants: function (rng) {
       var penchants = [
-        // Vanilla - no changes. tags must be an array like every other entry; the
-        // caller concats it onto personality_tags, and an empty string concats as
-        // one empty-string tag rather than as nothing.
+        // Vanilla. Must be an array like every other entry - the caller concats
+        // this onto personality_tags, and "" would concat as one empty tag.
         { name: "", tags: [] },
         { name: "!LOC:Artillery", tags: ["Artillery"] },
         {
@@ -213,7 +212,7 @@ define([
         { name: "!LOC:Platoon", tags: ["Platoon", "PenchantPlatoon"] },
         { name: "!LOC:Minelayer", tags: ["Minelayer"] },
       ];
-      var penchant = _.sample(penchants);
+      var penchant = rng ? rng.pick(penchants) : _.sample(penchants);
 
       return {
         penchants: penchant.tags,
@@ -221,13 +220,12 @@ define([
       };
     },
 
-    // Kept out of aiEconRateWithFloor: that floor rises above this on the hardest
-    // tiers, which would hand the player's own allies the enemy AI's eco cheat.
+    // Kept out of aiEconRateWithFloor, whose floor rises above this on the
+    // hardest tiers - that would hand the player's allies the enemy's eco cheat.
     subcommanderEconRate: 1,
 
-    // Co-op games in older wars could end up with a negative eco, so a saved
-    // econ_rate cannot be trusted to be valid - hence the floor rather than
-    // using it directly.
+    // Older co-op wars could save a negative eco, so a saved econ_rate needs
+    // the floor rather than being used directly.
     aiEconRateWithFloor: function (aiEconRate) {
       var game = model.game();
       var galaxy = game.galaxy();

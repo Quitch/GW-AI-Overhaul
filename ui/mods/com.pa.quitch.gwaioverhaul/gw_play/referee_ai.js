@@ -3,8 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
 ], function (gwoAI, refereeAIPaths, refereeCoop) {
-  // fabber/factory/platoon ops. `json` is passed in (rather than closed over) so this
-  // table is built once at module load instead of rebuilt on every applyAiMods call.
+  // `json` is a parameter, not a closure capture, so this table is built once
+  // at module load rather than per applyAiMods call.
   var aiModOps = {
     append: function (
       json,
@@ -54,10 +54,8 @@ define([
       refValue,
       matchAll
     ) {
-      // Kept separate from `value` rather than coercing the parameter in place. One
-      // descriptor can match both array and string targets, and reassigning the
-      // shared parameter on the first array target made every later string target
-      // concatenate an array instead.
+      // Separate from `value`: one descriptor can match both array and string
+      // targets, so coercing the parameter in place corrupts the later ones.
       var arrayValue = _.isArray(value) ? value : [value];
 
       _.forEach(json.build_list, function (build) {
@@ -392,16 +390,9 @@ define([
         aiJsonModsInScope = aiModsInScopeOfFile();
       } else if (aisToModify === "SubCommanders" && fileOwner !== "enemy") {
         if (fileOwner === "shared" && !forceSubCommanderScope) {
-          // Make a clean copy of the files for enemy AIs before modification of the
-          // JSON. Skipped during a per-viewer forced-subcommander pass
-          // (forceSubCommanderScope) - that pass exists only to populate ITS OWN
-          // viewer-scoped destination below. The shared plain key already got its one
-          // authoritative write from the base (non-per-player-tech) pass over this
-          // same source tree (pristine-preserved here when aisToModify is
-          // "SubCommanders", or combined with every connected player's mods when
-          // Guardians makes it "All" instead - see aisToModify's assignment above).
-          // Re-running this per viewer would reset that write back to pristine,
-          // discarding whatever the base pass combined there.
+          // A clean copy for enemy AIs, before the JSON is modified. The base
+          // pass already wrote this key authoritatively, so re-running it per
+          // viewer would reset that write back to pristine.
           configFiles[filePath] = _.cloneDeep(json);
         }
 
@@ -422,11 +413,8 @@ define([
       return { filePaths: updatedFilePaths, aiMods: aiJsonModsInScope };
     };
 
-    // Scoped enemy destinations (such as Guardians) must include a full AI file tree
-    // so ai_path lookups resolve against the same destination directory. This also
-    // applies when the enemy and subcommander share a source directory (fileOwner
-    // "shared", e.g. both using Penchant) - excluding only files owned exclusively
-    // by the subcommander tree.
+    // A scoped enemy destination (Guardians) needs a full AI file tree so its
+    // ai_path lookups resolve inside it. Only subcommander-owned files are excluded.
     var scopedEnemyDestinationPath = function (
       fileOwner,
       isSubCommanderTechFile
@@ -452,12 +440,9 @@ define([
       });
     };
 
-    // Duplicates the JSON into a Cluster-specific file when a Cluster commander is
-    // present. The enemy branch takes originalJson - a snapshot from before
-    // writeConfigFiles applied the *subcommander's* aiMods to `json` - so an enemy
-    // Cluster foe never inherits tech it doesn't have. The player branch
-    // deliberately keeps using the mutated `json`: the player's own Cluster
-    // ally/subcommander is supposed to receive that tech.
+    // The enemy branch takes the pre-mod originalJson so an enemy Cluster foe
+    // never inherits the subcommander's tech. The player branch wants it, and
+    // so uses the mutated `json`.
     var applyClusterModsIfNeeded = function (
       json,
       originalJson,
@@ -478,8 +463,7 @@ define([
     };
 
     return treeCache.getJSON(filePath).then(function (json) {
-      // Only the Cluster-enemy branch of applyClusterModsIfNeeded reads a pristine
-      // pre-mod snapshot; skip the deep clone entirely otherwise (the common case).
+      // Only applyClusterModsIfNeeded's enemy branch reads this snapshot.
       var originalJson =
         clusterPresence === "Enemy" ? _.cloneDeep(json) : undefined;
       var fileOwner = whoseFileIsItAnyway(aiPaths);
@@ -493,20 +477,15 @@ define([
         isSubCommanderDirectory
       );
 
-      // A per-viewer forced-subcommander pass (forceSubCommanderScope) never owns the
-      // enemy's scoped destination (e.g. a Guardian's player_guardians/ tree) - the
-      // base pass's single walk over aiPathsToProcess already combines every
-      // connected player's mods and writes it there once. Computing/writing it again
-      // per viewer would race that combined write, each viewer's pass clobbering the
-      // last with only their own mods.
+      // A per-viewer pass never owns the enemy's scoped destination. The base
+      // pass writes it once with every connected player's mods combined;
+      // recomputing it here would race that write.
       var scopedEnemyPath = forceSubCommanderScope
         ? null
         : scopedEnemyDestinationPath(fileOwner, isSubCommanderTechFile);
       if (scopedEnemyPath) {
-        // A shared source also serves as the subcommander/ally's own destination
-        // (it reads the source path directly), so keep that path in the write
-        // list alongside the Guardians' scoped copy rather than losing it to
-        // writeConfigFiles' empty-filePaths fallback.
+        // A shared source is also the subcommander's own destination, so it must
+        // stay in the write list rather than fall to writeConfigFiles' fallback.
         if (_.isEmpty(scopedUpdate.filePaths) && fileOwner === "shared") {
           scopedUpdate.filePaths.push(filePath);
         }
@@ -523,10 +502,8 @@ define([
     });
   };
 
-  // One battle launch walks and reads the same build trees several times over: the
-  // enemy tree, the subcommander tree, and one further pass per connected viewer.
-  // Listing and fetching each file once per launch instead makes that cost flat
-  // rather than growing with co-op size.
+  // One launch walks the same build trees once per tree and once per connected
+  // viewer, so caching keeps that cost flat rather than scaling with co-op size.
   var createTreeCache = function () {
     var listings = {};
     var files = {};
@@ -543,12 +520,10 @@ define([
           return api.file.list(path, true);
         });
       },
-      // Every pass mutates the JSON it is handed - applyAiMods writes in place and
-      // the result is stored in configFiles - so the cache keeps the pristine parse
-      // and hands out a copy, which is exactly what a re-fetch used to provide.
+      // Callers mutate what they are handed, so the cache keeps the pristine
+      // parse and hands out a copy. .then on a jQuery promise returns a new
+      // promise each time, so the stored request is not consumed.
       getJSON: function (filePath) {
-        // .then on a jQuery promise returns a new promise each time, so the stored
-        // request can be chained off repeatedly without being consumed.
         return cached(files, filePath, function (path) {
           return $.getJSON("coui:/" + path);
         }).then(function (json) {
@@ -640,11 +615,7 @@ define([
     return "None";
   };
 
-  // Test-only hook: `module` does not exist in the game's Chromium UI runtime, so this
-  // branch never executes in-game. It exposes applyAiMods (otherwise a private closure
-  // variable define() never returns) so it can be unit-tested outside the game - see
-  // test/applyAiMods.test.js. `module` is a Node/CommonJS test-only global, deliberately
-  // absent from this file's normal (game-runtime) globals, hence the disables below.
+  // Test-only hook - see testing.md.
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef

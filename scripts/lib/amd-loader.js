@@ -1,12 +1,8 @@
 "use strict";
 
-// Loads GWO's shipped AMD-style modules (`define([...deps], factory)`) under plain
-// Node so they can be validated/tested without the game's Chromium UI runtime.
-//
-// The shipped files only reference engine globals (api/model/ko/$/createjs/window/
-// requireGW) *inside function bodies*, never at the top level of a define() factory -
-// so simply loading (evaluating) any of them is safe with no engine mocks. Actually
-// *calling* their exported methods is a different story and is out of scope here.
+// Loads GWO's shipped AMD modules under plain Node, without the game's Chromium
+// UI runtime. Safe because shipped files only touch engine globals inside function
+// bodies, never at define time. See testing.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -15,12 +11,9 @@ const REPO_ROOT = path.resolve(__dirname, "..", "..");
 const COUI_PREFIX = "coui://";
 const GW_ROOT = path.join(REPO_ROOT, "ui", "main", "game", "galactic_war");
 
-// Bare (non-coui://) dependency ids are the base game engine's own relative-id AMD
-// scheme (e.g. a card depending on "cards/gwc_start" or "shared/gw_common"). GWO's
-// file-shadowing means a given id may resolve to a GWO override or fall through to
-// an unshipped base-game file - and this repo/CI has no access to the base game
-// install, so "falls through" is a hard boundary, not something to chase further.
-// Namespace -> directory-under-GW_ROOT, when it differs from the namespace itself.
+// Namespace -> directory under GW_ROOT, where the two differ. Bare ids are the
+// engine's own relative-id scheme, so one may resolve to a GWO override or fall
+// through to an unshipped base-game file. See testing.md, "NOT_SHIPPED".
 const BARE_ID_NAMESPACES = {
   cards: "cards",
   shared: path.join("shared", "js"),
@@ -38,15 +31,8 @@ const stubbedModules = new Map();
 const loadStack = [];
 let globalsInstalled = false;
 
-// Opt-in escape hatch from the NOT_SHIPPED boundary above: hands `exports` to anything
-// depending on `id` (matched against the dependency string exactly as the define()
-// array writes it, e.g. "shared/gw_common"), instead of throwing.
-//
-// This does NOT weaken the default. A caller has to name the base-game module and
-// supply the stand-in itself, so nothing falls back silently to a fake engine - the
-// failure mode the boundary exists to prevent. Use it only where excluding those files
-// would leave a check vacuously green: 61 of the 237 cards - including every loadout
-// card - depend on shared/gw_common, so a sweep that skips them isn't a sweep.
+// Opt-in escape hatch from NOT_SHIPPED. `id` is matched against the dependency
+// string exactly as the define() array writes it. See testing.md.
 function registerModuleStub(id, exports) {
   stubbedModules.set(id, exports);
 }
@@ -86,9 +72,8 @@ function resolveEntryPath(entry) {
     return fsPath;
   }
 
-  // A plain filesystem path (how callers pass an entry point enumerated via
-  // fs.readdir/glob, as opposed to a dependency string found *inside* a define()
-  // array) - never a bare AMD id, which is always namespace-relative like "cards/x".
+  // A filesystem path, how callers pass an enumerated entry point - never a
+  // bare AMD id, which is always namespace-relative like "cards/x".
   if (path.isAbsolute(entry)) {
     if (!fs.existsSync(entry)) {
       throw new Error("amd-loader: path does not exist: " + entry);
@@ -99,11 +84,8 @@ function resolveEntryPath(entry) {
   return resolveBareId(entry);
 }
 
-// The AMD spec's "module" special dependency: a loader-injected object exposing the
-// requesting file's own module id. The only thing observed in use across this repo
-// is `module.id.substring(module.id.lastIndexOf("/") + 1)` to recover a card's own
-// bare id, so a path relative to GW_ROOT (falling back to REPO_ROOT) is sufficient -
-// exact RequireJS module-id semantics elsewhere aren't needed.
+// The AMD "module" special dependency. Only ever used here to recover a card's own
+// bare id, so a GW_ROOT-relative path suffices - not full RequireJS semantics.
 function moduleMetaFor(fsPath) {
   const base = fsPath.startsWith(GW_ROOT) ? GW_ROOT : REPO_ROOT;
   const id = path
@@ -114,11 +96,9 @@ function moduleMetaFor(fsPath) {
   return { id: id };
 }
 
-// Passthrough stubs for the mod's text/localization globals - safe no-ops for a
-// structural check. Deliberately NOT stubbing api/model/ko/$/createjs/window/
-// requireGW: those should only ever be touched inside function bodies (call-time,
-// not define-time), and leaving them undefined makes any file that violates that
-// fail loudly and specifically, instead of silently passing with a fake engine.
+// Text/localisation globals only. api/model/ko/$/createjs/window/requireGW are
+// deliberately left undefined, so a define-time reference fails loudly rather
+// than passing against a fake engine.
 function installGlobals() {
   if (globalsInstalled) {
     return;
@@ -213,11 +193,8 @@ function loadCouiModule(entry) {
   return moduleRegistry.get(fsPath);
 }
 
-// Returns the target file's own `module.exports` via a plain Node require(), rather
-// than its define() return value. Only meaningful for files carrying a deliberate,
-// additive, dead-in-production test-export hook (see referee_ai.js's
-// `if (typeof module !== "undefined" && module.exports) {...}` block) - use this to
-// reach internals that define() itself never returns to the game runtime.
+// The target's own `module.exports` via a plain Node require(), not its define()
+// return value. Only meaningful for a file carrying the test-only hook.
 function requireShippedModule(entry) {
   installGlobals();
 

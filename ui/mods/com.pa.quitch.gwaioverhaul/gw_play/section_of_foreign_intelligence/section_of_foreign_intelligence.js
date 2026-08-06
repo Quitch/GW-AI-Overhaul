@@ -51,10 +51,8 @@ function gwoIntelligence() {
         : commander.faction;
     };
 
-    // Only an enemy minion omits faction; the primary AI and the FFA foes always
-    // carry one and take their faction's first colour. Testing the field's presence
-    // rather than its truthiness matters because faction 0 - Legonis Machina - is
-    // falsy, and used to be handed a minion's colour instead of index 0.
+    // Presence, not truthiness: faction 0 is Legonis Machina. Only an enemy
+    // minion omits the field.
     var getFactionColourIndex = function (commander, index) {
       return _.isUndefined(commander.faction) ? index + 1 : 0;
     };
@@ -106,10 +104,6 @@ function gwoIntelligence() {
       return Math.floor(number);
     };
 
-    // Every planet entry a Galactic War system holds carries `generator` - the base
-    // game's own panel binds $data.generator.biome with no guard, and GWO's explicit
-    // Cluster planets use the same shape. Anything else would have broken long
-    // before reaching here, so there is no second shape to support.
     var calculateSurfaceArea = function (system) {
       var area = 0;
       _.forEach(system.planets(), function (world) {
@@ -125,16 +119,25 @@ function gwoIntelligence() {
       return +Number.parseFloat(value).toFixed(decimals);
     };
 
-    var availableTech = function (star) {
-      var ai = star.ai();
+    // Under per-player tech a viewer is shown their own offer, and nothing at
+    // all until the host has dealt them one - ai.cardName is the host's card,
+    // which is the thing this exists to stop advertising to them.
+    var availableTech = function (star, starIndex, starCardsView) {
       var cardList = star.cardList();
-      if (
-        ai.cardName &&
-        cardList.length === 1 // Don't show when finding cards through Explore
-      ) {
-        return ai.cardName;
+      if (cardList.length !== 1) {
+        return ""; // Don't show when finding cards through Explore
       }
-      return "";
+
+      if (
+        starCardsView.shouldUseViewerStarCard(
+          model.isCampaignViewer(),
+          model.gwCampaignPerPlayerTechCards()
+        )
+      ) {
+        return starCardsView.cardName(starCardsView.cardIdForStar(starIndex));
+      }
+
+      return star.ai().cardName || "";
     };
 
     var eradicatorModeNameBuilder = function (ai) {
@@ -208,8 +211,11 @@ function gwoIntelligence() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
       ],
-      function (gwoColour, gwoCards, gwoAI, gwoRefereeCoop) {
+      function (gwoColour, gwoCards, gwoAI, gwoRefereeCoop, gwoStarCardsView) {
+        var starCardsView = gwoStarCardsView();
+
         var url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
         $.get(url, function (html) {
@@ -253,11 +259,9 @@ function gwoIntelligence() {
 
         var factionIndex = 0;
 
-        // allyPosition is set only for a star's ai.ally: its place in the player
-        // faction's allied colour sequence, after every player's subcommanders. The
-        // battle forces the ally into the player's faction (referee_config_setup.js's
-        // setupAlliedCommanders), so its own saved faction is not consulted - wars
-        // made before the ally carried one would otherwise fall to the enemy palette.
+        // allyPosition is set only for a star's ai.ally. Its own saved faction is
+        // not consulted: the battle forces it into the player's, and wars predating
+        // the field would otherwise fall to the enemy palette.
         var intelligence = function (commander, index, allyPosition) {
           var isStarAlly = !_.isUndefined(allyPosition);
           factionIndex = isStarAlly
@@ -290,8 +294,7 @@ function gwoIntelligence() {
           };
         };
 
-        // Named so the _.map calls below can pass it without also handing it lodash's
-        // third collection argument, which intelligence() would read as allyPosition.
+        // Wrapped so _.map cannot hand its third argument to allyPosition.
         var intelligenceOf = function (commander, index) {
           return intelligence(commander, index);
         };
@@ -387,6 +390,7 @@ function gwoIntelligence() {
         model.generateIntelligence = ko.computed(function () {
           var inventory = model.game().inventory();
           var system = model.selection.system();
+          var starIndex = model.selection.star();
           var star = system.star;
           var ai = star.ai();
           model.gwoSystemSurfaceArea(calculateSurfaceArea(system));
@@ -399,7 +403,7 @@ function gwoIntelligence() {
             return;
           }
           model.gwoSystemThreat(measureThreat(ai));
-          model.gwoAvailableTech(availableTech(star));
+          model.gwoAvailableTech(availableTech(star, starIndex, starCardsView));
           model.gwoAIBuffs(convertBuffNumberToName(ai));
           model.gwoGameModifiers(convertGameModifiersToName(ai, inventory));
           model.gwoAis(createAIIntelligence(ai));

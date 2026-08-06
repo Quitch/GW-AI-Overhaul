@@ -1,9 +1,7 @@
 "use strict";
 
-// Unit tests for shared/ai.js, the wrapper that assembles model.game()-derived
-// settings (guardians, aiMods, smartSubcommanders, scopeToken) and hands them to
-// shared/referee_ai_paths.js (covered on its own in test/referee_ai_paths.test.js).
-// Uses scripts/lib/ai-path-fixtures.js to build a minimal model.game() surface.
+// shared/ai.js, which derives the ai_path settings from model.game() and hands them
+// to referee_ai_paths.js. That layer is covered on its own.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -16,6 +14,9 @@ const {
 
 const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
+);
+const gwoRng = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
 );
 
 let restoreModel;
@@ -195,9 +196,8 @@ describe("aiEconRateWithFloor", () => {
     assert.equal(gwoAI.aiEconRateWithFloor(0.1), 1);
   });
 
-  // Custom is a real entry in difficulties[] but carries no econ fields, so the
-  // _.find lookup succeeds where the unrecognized-name case above fails. Without
-  // a field check that difference produces NaN rather than a floor.
+  // Custom is a real entry carrying no econ fields, so the lookup succeeds where
+  // the case above fails. Without a field check that yields NaN, not a floor.
   it("falls back to a floor of 1 for the Custom tier, which has no econ fields", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Custom" });
     restoreModel = installModel(fixture.game);
@@ -226,5 +226,30 @@ describe("quellerCompatibleMinions", () => {
       { ai: { personality: { works_with_queller: false } } },
     ];
     assert.deepEqual(gwoAI.quellerCompatibleMinions(minions), [minions[0]]);
+  });
+});
+
+describe("penchants", () => {
+  it("returns the same penchant for the same seed", () => {
+    assert.deepEqual(
+      gwoAI.penchants(gwoRng.create("penchant-seed")),
+      gwoAI.penchants(gwoRng.create("penchant-seed"))
+    );
+  });
+
+  it("varies across seeds", () => {
+    const names = new Set();
+    for (let i = 0; i < 40; i++) {
+      names.add(gwoAI.penchants(gwoRng.create("penchant-" + i)).penchantName);
+    }
+    assert.ok(names.size > 1);
+  });
+
+  // gwc_minion.js and gw_play/cards_deal_helpers.js deal during play, outside the
+  // seeded war-creation path, and pass no rng.
+  it("still works with no rng", () => {
+    const result = gwoAI.penchants();
+    assert.ok(Array.isArray(result.penchants));
+    assert.equal(typeof result.penchantName, "string");
   });
 });

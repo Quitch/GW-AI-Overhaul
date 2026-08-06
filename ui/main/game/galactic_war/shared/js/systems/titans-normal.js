@@ -1,8 +1,6 @@
 // GWO - change the Players arrays and add classic systems.
-// template-loader.js picks the first group whose range contains the army count, so
-// these must not overlap: an overlapping lower bound is a dead range that looks
-// meaningful, and re-ordering the groups would silently change which systems a given
-// army count draws from.
+// template-loader.js takes the first group whose range holds the army count, so
+// these must not overlap and their order is load-bearing.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/planets.js",
 ], function (gwoPlanets) {

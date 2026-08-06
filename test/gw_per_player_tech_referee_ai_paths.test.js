@@ -1,9 +1,7 @@
 "use strict";
 
-// Unit tests for the per-player-tech referee's per-viewer ai_path resolution. The
-// testable helpers live in gw_play/per_player_tech.js; the referee file itself depends
-// on the unshipped shared/gw_common and cannot load here, so this loads the extracted
-// module directly.
+// The per-player-tech referee's per-viewer ai_path resolution, whose helpers live
+// in the measured gw_play/per_player_tech.js.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -107,24 +105,13 @@ describe("getViewerSubcommanderAiPath", () => {
       inventory,
       ".player0"
     );
-    // Unlike shared/ai.js's getAIPathDestination("enemy") wrapper (which only
-    // auto-scopes under guardians), getViewerSubcommanderAiPath always passes a
-    // scopeToken for any non-host tag, regardless of the aiMods gate that picks the
-    // *base* path. So even when aiMods is empty and the base path falls back to the
-    // vanilla /pa/ai/ (same base as the enemy - the known Titans/Penchant overlap
-    // pinned in referee_ai_paths.test.js and ai_path_invariants.test.js), the scope
-    // suffix still makes this viewer's path distinct from the enemy's and from every
-    // other viewer's - this is precisely why per-player-tech subcommanders never
-    // collide with each other even without active tech.
+    // A scopeToken is passed for any non-host tag, whatever the aiMods gate picks
+    // as the base path. That suffix is why viewers never collide even with no tech.
     assert.equal(path, "/pa/ai/player_.player0/");
   });
 
   it("is guardians-unaware by construction: always passes guardians:false", () => {
-    // getViewerSubcommanderAiPath has no guardians parameter at all - it can't
-    // vary by the fight's actual guardians state, unlike shared/ai.js's
-    // getAIPathDestination("subcommander") wrapper used for shared-tech allies.
-    // This pins that current, documented asymmetry (see the function's own
-    // comment in gw_per_player_tech_referee.js) rather than asserting it's correct.
+    // Pins the documented guardians asymmetry - see ai-paths.md.
     const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
@@ -226,11 +213,8 @@ describe("getViewerSubcommanderAiPath", () => {
   });
 
   it("a Cluster-faction viewer is NOT routed to /pa/ai_cluster/ - it gets the ordinary brain-based subcommander path, isolated the same way as any other viewer", () => {
-    // Confirms the reasoning in this function's own comment (gw_per_player_tech_referee.js):
-    // getAIPathSource never special-cases Cluster for reads, and the per-viewer
-    // player_.playerN scope already gives every viewer the same write-isolation
-    // /pa/ai_cluster/ exists to provide for the host - so no Cluster branch is needed
-    // (or present) here, regardless of what the inventory's playerFaction tag says.
+    // No Cluster branch is needed here: the per-viewer scope already provides the
+    // isolation /pa/ai_cluster/ exists to give the host. See ai-paths.md.
     const clusterInventory = makeInventory({
       aiModsList: [{ op: "load" }],
       tags: { "global:playerFaction": 4 },

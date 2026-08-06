@@ -27,13 +27,17 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        gwoCard.mods(gwoUnit.horsefly, "push", {
-          tools: {
-            spec_id: gwoUnit.bumblebeeWeapon,
-            aim_bone: "bone_root",
-            muzzle_bone: "bone_root",
-          },
-        })
+        gwoCard
+          .mods(gwoUnit.horsefly, "push", {
+            tools: {
+              spec_id: gwoUnit.bumblebeeWeapon,
+              aim_bone: "bone_root",
+              muzzle_bone: "bone_root",
+            },
+          })
+          .concat([
+            { file: gwoUnit.horsefly, path: "tools.1.spec_id", op: "tag" },
+          ])
       );
     },
     dull: function () {},

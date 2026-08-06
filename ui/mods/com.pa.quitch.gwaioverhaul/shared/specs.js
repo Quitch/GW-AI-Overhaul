@@ -32,20 +32,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     return orderedMods;
   };
 
-  // Arrays in specs represent complete lists (ammo layers, unit type tags,
-  // target priorities, muzzle bones, recon items, etc). A derived spec's
-  // array should fully replace the base's array rather than be merged
-  // index-by-index, which is _.merge's default array behavior and the root
-  // cause of the ammo_id string/array corruption this used to special-case
-  // around (and which silently corrupts any other array field too, once the
-  // base and child arrays differ in length).
+  // Spec arrays are complete lists, so a derived array replaces the base's
+  // outright. _.merge would splice them index-by-index. See specs.md.
   function replaceArrays(destVal, srcVal) {
     if (_.isArray(srcVal)) {
       return _.cloneDeep(srcVal);
     }
-    // returning undefined falls through to _.merge's default behavior
-    // for everything that isn't an array (objects still merge key-by-key,
-    // which is the desired behavior for things like `events` and `audio`).
+    // Undefined falls through to _.merge's default, so objects still merge
+    // key-by-key, which is what `events` and `audio` want.
   }
 
   var flattenBaseSpecs = function (spec, specs, tag) {
@@ -89,10 +83,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       var specCopy = _.omit(spec, "base_spec");
       var flattenedSpec = resolve(base);
 
-      // Specs contain only plain objects, arrays, and primitive values.
-      // _.merge() creates a new object and does not mutate its arguments, and
-      // replaceArrays() clones any array it returns, so no extra cloneDeep()
-      // is needed here.
+      // No cloneDeep needed: _.merge does not mutate its arguments, and
+      // replaceArrays clones every array it returns.
       return _.merge({}, flattenedSpec, specCopy, replaceArrays);
     }
 
@@ -103,27 +95,19 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     return value === undefined || value === null;
   }
 
-  // Whether a path segment denotes an array position ("+" appends, a numeric
-  // string indexes). Used to decide whether a missing intermediate container
-  // should be created as an array rather than a plain object.
+  // "+" appends, a numeric string indexes. See specs.md, "Path segments".
   function isIndexLike(segment) {
     return (
       segment === "+" || (segment !== "" && !Number.isNaN(Number(segment)))
     );
   }
 
-  // The game treats any unit with a navigation object - even an empty one - as
-  // mobile. A navigation.* mod applied to a unit that has no navigation object
-  // auto-creates an empty navigation container whose leaf is left undefined (e.g.
-  // multiply/add on a nonexistent numeric). JSON serialisation drops that
-  // undefined key, leaving navigation: {} - wrongly marking a structure as mobile
-  // and adding needless Nav Agent load - so strip the navigation object back off.
+  // An empty navigation object marks a structure as mobile. See specs.md.
   function pruneEmptyNavigation(spec) {
     if (!_.isPlainObject(spec) || !_.isPlainObject(spec.navigation)) {
       return;
     }
-    // A key whose value is undefined is dropped by JSON serialisation, so
-    // navigation counts as "not empty" only if at least one value survives it.
+    // JSON serialisation drops undefined values, so only a surviving one counts.
     var hasSerialisableValue = _.some(spec.navigation, function (value) {
       return value !== undefined;
     });
@@ -232,9 +216,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             );
             return attribute;
           }
-          // hack fix for mirrorMode due to the fact that
-          // `attribute` was retaining the previous `specTag`s
-          // and I couldn't track down why
+          // Rewrites the suffix rather than appending one. The op ordering
+          // leaves no `replace` between two cards' `tag`s on a shared path,
+          // so the second sees a value the first already tagged. See specs.md.
           var cleanAttribute = attribute.slice(0, jsonIndex + 5);
           return cleanAttribute + specTag;
         },
@@ -284,9 +268,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         },
       };
 
-      // Ops that mutate their target in place or write to `specs` directly, and so
-      // still do something useful when applied to the whole spec with no path.
-      // Every other op only returns a new value, so a pathless mod for it is a no-op.
+      // Ops that mutate in place or write to `specs`. Every other op only returns
+      // a value, so a pathless mod for it is a no-op. See specs.md.
       var opsWithoutPath = {
         eval: true,
         clone: true,
@@ -301,9 +284,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return console.error("Invalid operation in mod", mod);
         }
 
-        // Kept before the path walk reassigns `spec` to a nested container: the
-        // first path segment (e.g. "navigation") is always created on the file's
-        // top-level spec, so this is the object pruneEmptyNavigation must inspect.
+        // Captured before the path walk reassigns `spec` to a nested container.
+        // pruneEmptyNavigation needs the file's top-level spec.
         var rootSpec = spec;
 
         var originalPath = (mod.path || "").split(".");
@@ -322,9 +304,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           );
         };
 
-        // Handed out as-is (not cloned): opDefaults is fresh per applyMod call,
-        // and only the leaf's cookStep call ever reads opDefaults[op], so no
-        // two spec locations can ever alias the same array/object.
+        // Not cloned: opDefaults is fresh per applyMod call, and only the leaf
+        // reads it, so two spec locations can never alias one object.
         var opDefaults = {
           push: [],
           pull: [],
@@ -343,8 +324,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             return spec.length - 1;
           }
           step = Number(step);
-          // Intermediate (op undefined) index into an array with no element
-          // there yet: create a container so the path can continue.
+          // An index into an array with no element there yet.
           if (
             !op &&
             !Number.isNaN(step) &&
@@ -362,11 +342,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           ) {
             return step;
           }
-          // Intermediate (non-leaf) segments always need a traversable
-          // container (op is undefined for those calls). The leaf segment
-          // should instead see a real "missing" signal for any op without a
-          // listed default, so ops like multiplyOrCreate/add can tell "absent"
-          // from "present" and run their own create-on-missing behavior.
+          // Intermediate segments (op undefined) always need a container. The
+          // leaf must instead see a real "missing" signal, so multiplyOrCreate
+          // and friends can tell absent from present.
           if (!op) {
             spec[step] = traversableFor(path[path.length - 1]);
           } else if (Object.prototype.hasOwnProperty.call(opDefaults, op)) {
@@ -429,13 +407,29 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
       });
     },
+    // Files a card lends to a unit that does not already reference them. Without
+    // an entry here the tagged copy never exists, so the card's `tag` op would
+    // point at a missing spec. See specs.md.
     additionalSpecs: [
+      gwoUnit.artemisWeapon,
+      gwoUnit.boomWeapon,
+      gwoUnit.bumblebeeWeapon,
+      gwoUnit.colonelWeapon,
       gwoUnit.fireflyAmmo,
       gwoUnit.fireflyWeapon,
+      gwoUnit.flakWeapon,
+      gwoUnit.gilEBeam,
+      gwoUnit.holkinsWeapon,
+      gwoUnit.mendBuildArm,
       gwoUnit.orcaTorpedo,
       gwoUnit.orcaTorpedoAmmo,
       gwoUnit.skitterAmmo,
       gwoUnit.skitterWeapon,
+      gwoUnit.stitchBuildArm,
+      gwoUnit.stormWeapon,
+      gwoUnit.sxxWeapon,
+      gwoUnit.typhoonWeapon,
+      gwoUnit.umbrellaBeam,
     ],
   };
 });

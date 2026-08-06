@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v6.8.0 - 2026-08-06
+
+### Added
+
+- The Seed Value field is now shown when creating a war, and a war's seed is displayed in its Galactic War Overhaul panel
+
+### Changed
+
+- The same seed now rebuilds the same galaxy, enemies, tech cards, Sub Commanders for the General Commander loadout, and the same AI landing behaviour. A war reproduces only when it is played the same way: visiting the same stars, in the same order, winning at the same speed, and taking the same cards, given the same faction, difficulty, game options, and mods. Planet names still vary.
+- Seeds entered from v6.7.0 or earlier now generate different planets: biome, radius, height, water and temperature all shift. Existing saved wars are unaffected.
+- Available Tech and loadouts in a system are now per-player in co-op with separate tech
+- Loadouts are dealt at time of exploration rather than war generation so you can never unlock a loadout in one war another war wanted to offer you
+
+### Bugfix
+
+- Hosts and viewers don't get each others tech when a viewer joins a war
+- A co-op player joining a war part way through could be offered a loadout they already owned
+- The Lucky Commander no longer applies its bonus to a war where it is unlocked
+- Loadouts and upgrade techs that gives a unit another unit's weapon, or that makes something spawn a unit on death, now applies the rest of your bonuses to it
+
 ## v6.7.0 - 2026-08-04
 
 ### Added
@@ -9,6 +29,7 @@
 ### Bugfix
 
 - Tourist Commander no longer disables the Guardians
+- Failing to generate a war no longer discards the entered seed. Each retry derives from it instead, so the seed shown in the war panel is always the one that built the war and can be re-entered to rebuild it
 - An upgraded Phoenix won't pursue air units
 - A host's allied AI commanders' eco is set properly at Platinum and higher
 

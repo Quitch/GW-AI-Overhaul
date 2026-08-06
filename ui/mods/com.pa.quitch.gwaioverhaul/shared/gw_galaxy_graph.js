@@ -1,13 +1,6 @@
-// The graph core of the Galactic War galaxy model (base-game-shadowed
-// main/game/galactic_war/shared/js/gw_galaxy.js): the GWGalaxy constructor and its
-// neighborsMap/areNeighbors/pathBetween fog-of-war routing. This needs only ko and
-// lodash (at construction/call time), none of the base-game GalaxyBuilder/gw_star/
-// template-loader deps the systems load/save/build glue needs, so it is split out here
-// as a measured module and directly unit-tested (test/gw_galaxy_path_between.test.js),
-// while gw_galaxy.js augments this constructor with that glue and is coverage-excluded.
-// gw_galaxy.js requires this module and returns the augmented constructor to consumers
-// (gw_game.js) via its "shared/gw_galaxy" AMD dependency, so the runtime contract is
-// unchanged.
+// The GWGalaxy constructor and its fog-of-war routing - the measured half of the
+// shadowed gw_galaxy.js, which augments this with the load/save/build glue and
+// re-exports it under "shared/gw_galaxy". See testing.md.
 define(function () {
   var GWGalaxy = function () {
     var self = this;
@@ -53,8 +46,7 @@ define(function () {
         return noFog || stars[node].explored() || toExplored;
       };
 
-      // Fog of war: an intermediate neighbor may be traversed if it has been visited
-      // (noFog) or is currently explored.
+      // Fog of war: an intermediate is traversable once visited or explored.
       var canTraverse = function (neighbor) {
         return noFog
           ? stars[neighbor].history().length > 0

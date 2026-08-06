@@ -4,9 +4,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (GW, gwoCard, gwoUnit, gwoGroup) {
-  // Every build arm bar the Commander's own, which gwc_bld_efficiency_cdr covers.
-  // The missile launchers are absent by way of factoryBuildArms, which holds only
-  // the structures that build mobile units.
+  // Every build arm bar the Commander's, which gwc_bld_efficiency_cdr covers.
   var buildArms = _.without(
     gwoGroup.fabberBuildArms.concat(gwoGroup.factoryBuildArms),
     gwoUnit.commanderBuildArm

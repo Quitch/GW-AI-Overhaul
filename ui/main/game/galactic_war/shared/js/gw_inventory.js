@@ -1,4 +1,39 @@
-define(function () {
+// GWO - a viewer applies the host's inventory every time the campaign loads, and
+// each loadout card's buff() banks, so without this a viewer collects the host's
+// loadouts as its own. The campaign half of `model` does not exist yet when that
+// first apply runs, so the signals are the session role and the game handed to
+// GWGamePatches.patch, which GWGame.load calls immediately beforehand with
+// perPlayerTechCards already set. gw_bank and gw_game_patches are both
+// dependency-free, so requiring them here cannot close the cycle that
+// shared/gw_common or shared/gw_game would. See docs/coop.md.
+define([
+  "shared/gw_bank",
+  "shared/gw_game_patches",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+], function (stockBank, gwoGamePatches, gwoBank) {
+  var loadingAnotherPlayersCards = false;
+
+  var isCampaignViewerSession = function () {
+    try {
+      return (
+        JSON.parse(sessionStorage.getItem("gw_campaign_role")) === "viewer"
+      );
+    } catch (e) {
+      return false;
+    }
+  };
+
+  var stockPatch = gwoGamePatches.patch;
+  gwoGamePatches.patch = function (game) {
+    loadingAnotherPlayersCards = !!(
+      isCampaignViewerSession() &&
+      game &&
+      _.isFunction(game.perPlayerTechCards) &&
+      game.perPlayerTechCards()
+    );
+    return stockPatch.apply(this, arguments);
+  };
+
   var GWInventory = function () {
     var self = this;
     self.units = ko.observableArray();
@@ -52,6 +87,13 @@ define(function () {
     applyCards: function (done) {
       var self = this;
       var cards = self.cards().slice();
+      // GWO - held for the whole pass, so a card's buff() cannot bank. Consumed
+      // here: the apply GWGame.load flagged is the one immediately following.
+      var foreignCards = loadingAnotherPlayersCards;
+      loadingAnotherPlayersCards = false;
+      if (foreignCards) {
+        gwoBank.suspendUnlocks(stockBank);
+      }
 
       self.isApplyingCards = _.constant(true);
       // Tags are going to come from the current card
@@ -70,15 +112,18 @@ define(function () {
         delete self.setTag;
         delete self.applyCards;
         delete self.isApplyingCards;
+        if (foreignCards) {
+          foreignCards = false; // GWO - a dirty re-run suspends for itself
+          gwoBank.resumeUnlocks();
+        }
         if (dirty) {
           _.delay(_.bind(self.applyCards, self, done));
         } else if (done) {
           _.delay(done);
         }
       };
-      // Replaces applyCards for the duration of the pass: a card calling it from
-      // its own buff/dull only marks the inventory dirty, and finishApplyCards
-      // re-runs the real one afterwards rather than recursing mid-pass.
+      // Replaces applyCards for the pass, so a card calling it from its own
+      // buff/dull only marks dirty. finishApplyCards re-runs the real one.
       self.applyCards = function (queueDone) {
         dirty = true;
         if (!queueDone) {

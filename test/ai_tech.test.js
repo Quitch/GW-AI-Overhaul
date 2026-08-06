@@ -1,13 +1,8 @@
 "use strict";
 
-// Unit tests for gw_start/ai_tech.js, which builds the AI faction tech tables at
-// define() time (its private multiply() helper fans a unit list out into per-path
-// "multiply" stat-mod descriptors, and seven setupAITechN builders populate the
-// five factions' tech slots). Loading the module runs all of that; the module only
-// exports factionTechs, so we assert against that. The key thing worth pinning is
-// the documented ordering contract: tech6 concatenates the already-built tech1
-// (ammunition) and tech2 (armour) onto its tail, so reordering the setup calls would
-// silently change the result.
+// gw_start/ai_tech.js builds the faction tech tables at define() time and exports
+// only factionTechs, so these assert against that. The contract worth pinning is
+// the ordering: tech6 concatenates the already-built tech1 and tech2 onto its tail.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -60,9 +55,7 @@ describe("factionTechs", () => {
   });
 
   it("combat tech (6) appends ammunition (1) then armour (2) at its tail", () => {
-    // The ordering contract called out in ai_tech.js: setupAITech6 runs after both
-    // setupAITech1 and setupAITech2 and ends with faction[6].concat(faction[1],
-    // faction[2]). Pinning the tail proves the concat order and guards a reorder.
+    // Pinning the tail proves the concat order and guards against a reorder.
     aiTech.factionTechs.forEach((faction) => {
       const appended = faction[1].concat(faction[2]);
       const tail = faction[6].slice(faction[6].length - appended.length);

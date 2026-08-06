@@ -37,6 +37,11 @@ define([
         },
         {
           file: gwoUnit.inferno,
+          path: "tools.1.spec_id",
+          op: "tag",
+        },
+        {
+          file: gwoUnit.inferno,
           path: "command_caps",
           op: "push",
           value: ["ORDER_Repair"],

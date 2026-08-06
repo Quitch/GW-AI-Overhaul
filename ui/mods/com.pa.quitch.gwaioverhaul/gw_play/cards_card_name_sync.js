@@ -1,13 +1,6 @@
-// Co-op star card-name synchronisation, extracted out of gw_play/cards.js. The host
-// names each AI star after the tech card it holds (star.ai().cardName) and mirrors that
-// name to connected viewers via the gwo_sync_star_card_name operator, so a viewer's
-// board shows the same star names as the host's.
-//
-// Shaped like cards_start_subcdr.js: define() returns a factory that takes { game },
-// registers its host operator handler as a side effect, and returns the { setCardName }
-// the caller wires into its AI-dealing path. The three dependency-free helpers are
-// lifted to module scope and re-exported through the dead-in-production `typeof module`
-// hook (see referee_ai.js) so they can be unit tested under the Node harness.
+// Co-op star card-name synchronisation. The host names each AI star after the
+// tech card it holds (star.ai().cardName) and mirrors that to viewers over the
+// gwo_sync_star_card_name operator.
 define(function () {
   var setAiCardName = function (star, cardName) {
     if (!star || !_.isFunction(star.ai)) {
@@ -23,9 +16,8 @@ define(function () {
     return true;
   };
 
-  // Applies cardName to a star both in model.galaxy (the live board) and in the game's
-  // own galaxy, since the two are separate object graphs. game is passed in rather than
-  // closed over so this stays testable at module scope.
+  // model.galaxy (the live board) and game's own galaxy are separate object
+  // graphs, so both need writing.
   var applyCardNameToStarIndex = function (game, starIndex, cardName) {
     var applied = false;
 
@@ -148,11 +140,7 @@ define(function () {
     };
   };
 
-  // Test-only hook: `module` does not exist in the game's Chromium UI runtime, so this
-  // never runs in production; under Node it exposes the pure helpers to the test suite
-  // (see test/cards_card_name_sync.test.js). `module` is a Node/CommonJS test-only
-  // global, deliberately absent from this file's game-runtime globals, hence the
-  // disables below.
+  // Test-only hook - see testing.md.
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef

@@ -7,6 +7,10 @@ define(function () {
 
   var loading = false;
 
+  var suspended = 0;
+  var suspendedStockBank;
+  var stockAddStartCard;
+
   var gwoBank = function () {
     self = this;
 
@@ -63,8 +67,38 @@ define(function () {
       localStorage.setItem(LS_KEY, ko.toJSON(self));
     },
 
+    // A co-op host applies its viewers' inventories to weight their deals, which
+    // runs their loadout cards' buff(). Each card banks into whichever bank owns
+    // it, so the base game's is held off alongside this one. Counted, because
+    // those applications overlap. See gw_play/cards_coop_deal.js.
+    suspendUnlocks: function (stockBank) {
+      suspended++;
+      if (suspended > 1) {
+        return;
+      }
+      suspendedStockBank = stockBank;
+      stockAddStartCard = stockBank.addStartCard;
+      stockBank.addStartCard = function () {
+        return false;
+      };
+    },
+
+    resumeUnlocks: function () {
+      if (!suspended) {
+        return;
+      }
+      suspended--;
+      if (suspended) {
+        return;
+      }
+      // Restores by value rather than deleting the override, so a bank another
+      // mod had already patched keeps that mod's version.
+      suspendedStockBank.addStartCard = stockAddStartCard;
+      suspendedStockBank = undefined;
+    },
+
     addStartCard: function (card) {
-      if (self.hasStartCard(card)) {
+      if (suspended || self.hasStartCard(card)) {
         return false;
       }
       self.startCards.push(card);

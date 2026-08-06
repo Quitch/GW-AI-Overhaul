@@ -36,8 +36,7 @@ define([
         });
       });
 
-      // We have to exclude radar due to the ordering of their vision
-      // being different from other units.
+      // Radar is excluded: its vision slots are ordered differently.
       var unitsExcludingRadarScoutsCommanders = _.reject(
         gwoGroup.units,
         function (unit) {

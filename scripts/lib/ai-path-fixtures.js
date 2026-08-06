@@ -1,19 +1,15 @@
 "use strict";
 
-// Shared fixtures for testing GWO's ai_path resolution (shared/ai.js,
-// referee_config.js, referee_game_files.js, gw_per_player_tech_referee.js,
-// referee_ai.js). Builds the minimal model.game()-shaped surface those files
-// actually read at call time - not a full GW.Game/inventory implementation.
+// Shared fixtures for testing ai_path resolution: the minimal model.game()-shaped
+// surface those files read, not a full GW.Game.
 //
-// buildGame()/installModel() return the *same* object references on every call,
-// matching production code, which calls model.game()/game.galaxy() etc. repeatedly
-// rather than caching a single snapshot.
+// buildGame()/installModel() return the same object references on every call,
+// matching production code, which re-reads rather than snapshotting.
 
 var CLUSTER_FACTION = 4;
 var DEFAULT_FACTION = 1;
 
-// Canonical scenario-axis values so every test file iterates the same matrix instead
-// of each re-inventing its own list of brains/enemy-types/etc.
+// The canonical scenario matrix, so no test file invents its own.
 var SCENARIO_AXES = {
   AI_BRAINS: ["Titans", "Queller", "Penchant"],
   ENEMY_TYPES: ["guardians", "cluster", "neither"],
@@ -57,15 +53,12 @@ function makeInventory(overrides) {
   };
 }
 
-// buildGame(options) -> { game, star, ai, inventory }
-//
-// The options that aren't self-evident from the defaults below:
+// -> { game, star, ai, inventory }. The non-obvious options:
 //   subcommanderType drives inventory's global:playerFaction tag
 //   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
-//   viewerInventoryData is consumed by a fake game.findCoopPlayerInventoryData(client)
+//   viewerInventoryData feeds a fake game.findCoopPlayerInventoryData(client)
 //
-// Connected clients (for model.gwCampaignConnectedClients()) are passed separately
-// to installModel(game, connectedClients), not through buildGame's options.
+// Connected clients go to installModel(), not here.
 function buildGame(options) {
   var opts = options || {};
   var aiInUse = Object.prototype.hasOwnProperty.call(opts, "aiInUse")

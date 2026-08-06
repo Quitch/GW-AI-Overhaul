@@ -94,6 +94,37 @@ serialise. None of the setup is idempotent — eco mods and fabber caps multiply
 personality tags get pushed — so every setup function works on deep copies. This
 is load-bearing and is pinned by `test/referee_config_ai_paths.test.js`.
 
+## Galaxy map redraw throttling
+
+`gw_play/galaxy_map_perf.js` wraps `model.galaxy.stage.update()` with a dirty
+check. Background: the base game's galaxy-map canvas (an EaselJS
+`createjs.Stage`) is cleared and fully redrawn on every `requestAnimationFrame`
+tick, uncapped — see `updateStage()` in `gw_play.js`. Its backing buffer is sized
+to the real viewport, so that cost scales with display resolution and refresh
+rate. `gw_play.js` is a base-game file and `updateStage()` is a private closure,
+but `model.galaxy.stage` is a shared instance a mod script can reach.
+
+Only three things change what is drawn without going through `update()` itself:
+the stage transform (pan/zoom), the canvas backing size, and
+`model.galaxy.parallax` (a mouse-tracking offset applied to the nebula layer on
+every `body` mousemove, from `gw_play.js`'s `self.setup`). Diffing those against
+the last real draw is therefore a sound dirty check.
+
+While the camera or mouse is moving the wrapper still draws, capped to 60 FPS
+rather than the uncapped monitor refresh. Once everything is static it falls back
+to a 10 FPS heartbeat, which is slow enough to matter and still picks up
+hover-highlight changes, since EaselJS runs its own mouseover hit testing inside
+`update()`.
+
+Two traps:
+
+- **The idle heartbeat is not idle.** `systems.js` rotates the selection icon on
+  every tick, and the heartbeat is what keeps that animating — coarser when idle,
+  not stopped. Do not treat "nothing animates here" as an invariant.
+- The same file also halves EaselJS's mouseover hit-test rate to 10/sec (the base
+  game takes the 20/sec default). Every check hit-tests the whole interactive
+  display list, up to 234 systems. This is independent of the redraw loop.
+
 ## Where state lives
 
 - **The war save** — the campaign game object. GWO piggy-backs its own settings

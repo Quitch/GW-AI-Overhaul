@@ -26,42 +26,52 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        gwoCard.mods(gwoUnit.kaiju, "replace", {
-          tools: [
-            {
-              spec_id: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
-              record_index: 0,
-              fire_event: "fired0",
-              aim_bone: "bone_pitch01",
-              projectiles_per_fire: 2,
-              muzzle_bone: ["socket_leftMuzzle01", "socket_rightMuzzle01"],
-            },
-            {
-              spec_id: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
-              record_index: 1,
-              fire_event: "fired1",
-              aim_bone: "bone_pitch02",
-              projectiles_per_fire: 2,
-              muzzle_bone: ["socket_leftMuzzle02", "socket_rightMuzzle02"],
-            },
-            {
-              spec_id: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
-              record_index: 2,
-              fire_event: "fired2",
-              aim_bone: "bone_pitch03",
-              projectiles_per_fire: 2,
-              muzzle_bone: ["socket_leftMuzzle03", "socket_rightMuzzle03"],
-            },
-            {
-              spec_id: "/pa/units/sea/hover_ship/hover_ship_tool_weapon.json",
-              record_index: 3,
-              fire_event: "fired3",
-              aim_bone: "bone_pitch04",
-              projectiles_per_fire: 2,
-              muzzle_bone: ["socket_leftMuzzle04", "socket_rightMuzzle04"],
-            },
-          ],
-        })
+        gwoCard
+          .mods(gwoUnit.kaiju, "replace", {
+            tools: [
+              {
+                spec_id: gwoUnit.kaijuWeapon,
+                record_index: 0,
+                fire_event: "fired0",
+                aim_bone: "bone_pitch01",
+                projectiles_per_fire: 2,
+                muzzle_bone: ["socket_leftMuzzle01", "socket_rightMuzzle01"],
+              },
+              {
+                spec_id: gwoUnit.kaijuWeapon,
+                record_index: 1,
+                fire_event: "fired1",
+                aim_bone: "bone_pitch02",
+                projectiles_per_fire: 2,
+                muzzle_bone: ["socket_leftMuzzle02", "socket_rightMuzzle02"],
+              },
+              {
+                spec_id: gwoUnit.kaijuWeapon,
+                record_index: 2,
+                fire_event: "fired2",
+                aim_bone: "bone_pitch03",
+                projectiles_per_fire: 2,
+                muzzle_bone: ["socket_leftMuzzle03", "socket_rightMuzzle03"],
+              },
+              {
+                spec_id: gwoUnit.kaijuWeapon,
+                record_index: 3,
+                fire_event: "fired3",
+                aim_bone: "bone_pitch04",
+                projectiles_per_fire: 2,
+                muzzle_bone: ["socket_leftMuzzle04", "socket_rightMuzzle04"],
+              },
+            ],
+          })
+          .concat(
+            _.times(4, function (i) {
+              return {
+                file: gwoUnit.kaiju,
+                path: "tools." + i + ".spec_id",
+                op: "tag",
+              };
+            })
+          )
       );
     },
     dull: function () {},

@@ -1,13 +1,7 @@
 "use strict";
 
-// Unit tests for shared/specs.js, the spec-merge engine that resolves base_spec
-// inheritance and applies tech-card spec mods. This is the most self-contained piece
-// of logic in the mod (see scripts/lib/amd-loader.js's module doc), so these tests
-// exercise real regression risk rather than just exercising the test harness.
-//
-// Only `mod` and `additionalSpecs` are exposed (see the return statement at the
-// bottom of specs.js) - flattenBaseSpecs/orderOfOperations are internal and are
-// exercised indirectly through mod()'s observable behavior, same as any consumer.
+// Unit tests for shared/specs.js. Only `mod` and `additionalSpecs` are exposed, so
+// flattenBaseSpecs and orderOfOperations are reached through mod()'s behaviour.
 
 const { describe, it, mock, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -353,6 +347,36 @@ describe("specs.mod - operation ordering", () => {
     // differ from any other application order, so this also pins the order itself)
     assert.equal(data["unit.json"].hp, 25);
   });
+
+  // Hoisting every replace ahead of every tag leaves the two tags adjacent, with
+  // no replace between them to reset the value. Shipped pairing: killswitch and
+  // the Colonel upgrade both tag the Colonel's death_weapon.ground_ammo_spec.
+  it("tags a path only once when two cards tag it", () => {
+    const data = { "unit.json": { ref: "stock.json.player" } };
+    specs.mod(
+      data,
+      [
+        { file: "unit.json", path: "ref", op: "replace", value: "a.json" },
+        { file: "unit.json", path: "ref", op: "tag" },
+        { file: "unit.json", path: "ref", op: "replace", value: "b.json" },
+        { file: "unit.json", path: "ref", op: "tag" },
+      ],
+      ".player"
+    );
+    assert.equal(data["unit.json"].ref, "b.json.player");
+  });
+
+  // Mirror mode concatenates the host's mods onto the guardians' inventory, and
+  // per-player tech adds every viewer's on top, so one card's mods can arrive twice.
+  it("tags a path only once when one card's mods are duplicated", () => {
+    const mods = [
+      { file: "unit.json", path: "ref", op: "replace", value: "a.json" },
+      { file: "unit.json", path: "ref", op: "tag" },
+    ];
+    const data = { "unit.json": { ref: "stock.json.ai0" } };
+    specs.mod(data, mods.concat(mods), ".ai0");
+    assert.equal(data["unit.json"].ref, "a.json.ai0");
+  });
 });
 
 describe("specs.mod - malformed-mod tolerance", () => {
@@ -435,9 +459,7 @@ describe("specs.mod - malformed-mod tolerance", () => {
 });
 
 describe("specs.mod - navigation pruning", () => {
-  // The game treats any unit with a navigation object - even an empty one - as
-  // mobile, so a navigation.* mod applied to a structure (which has no navigation
-  // object) must not leave a stray navigation: {} behind once serialised.
+  // An empty navigation object marks a structure as mobile. See specs.md.
   it("removes a navigation object left empty by a mod on a structure", () => {
     const warnMock = mock.method(console, "warn", () => {});
     const data = { "struct.json": { hp: 100 } };
@@ -556,19 +578,31 @@ describe("specs.mod - navigation pruning", () => {
 });
 
 describe("specs.additionalSpecs", () => {
-  // Pinned by content, not by count. A length check passes just as happily when an
-  // entry is swapped for an unrelated /pa/ path, which is the mistake worth catching;
-  // adding a genuinely new spec is a deliberate one-line edit here.
-  it("holds the weapon and ammo specs for the Firefly, Orca torpedo and Skitter", () => {
+  // By content, not count: a length check would pass on a swapped entry, which is
+  // the mistake worth catching.
+  it("holds every spec a card lends to a unit that does not already reference it", () => {
     assert.deepEqual(
       [...specs.additionalSpecs].sort(),
       [
         "/pa/units/air/air_scout/air_scout_ammo.json",
         "/pa/units/air/air_scout/air_scout_tool_weapon.json",
+        "/pa/units/air/bomber/bomber_tool_weapon.json",
+        "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
+        "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+        "/pa/units/land/bot_bomb/bot_bomb_tool_weapon.json",
+        "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
+        "/pa/units/land/bot_support_commander/bot_support_commander_tool_weapon.json",
+        "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
+        "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv_build_arm.json",
         "/pa/units/land/land_scout/land_scout_ammo.json",
         "/pa/units/land/land_scout/land_scout_tool_weapon.json",
+        "/pa/units/land/tank_flak/tank_flak_tool_weapon.json",
+        "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json",
+        "/pa/units/orbital/orbital_laser/orbital_laser_tool_weapon.json",
+        "/pa/units/orbital/orbital_railgun/orbital_railgun_tool_weapon.json",
         "/pa/units/sea/destroyer/destroyer_tool_torpedo.json",
         "/pa/units/sea/destroyer/destroyer_torpedo_ammo.json",
+        "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
       ].sort()
     );
   });

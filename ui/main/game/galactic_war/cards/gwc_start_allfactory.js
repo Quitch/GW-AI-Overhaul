@@ -40,10 +40,8 @@ define([
       }
     },
     dull: function (inventory) {
-      // Dulls run after every card's buff, and removeUnits strips every copy of a
-      // unit, so removing the whole defence group here would also wipe the land
-      // mine that Bumblebee, Grenadier and Sheller Upgrade Tech grant. The loadout
-      // restricts basic defences; it is not meant to undo a tech the player earned.
+      // Not the whole defence group: removeUnits strips every copy, which would
+      // take the land mine other cards grant. This restricts basic defences only.
       var mineGranted = _.some(
         [
           "gwaio_upgrade_bumblebee",

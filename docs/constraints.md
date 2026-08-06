@@ -66,7 +66,12 @@ parse error that silently skips every other rule in the file.
 ## Available libraries
 
 Globals in every scene: **lodash** (`_`), **jQuery** (`$`), **Knockout** (`ko`),
-**createjs**. `ui/main/shared/js/thirdparty` holds what else the engine ships.
+**createjs**, **`Math.seedrandom`**. `ui/main/shared/js/thirdparty` holds what else the
+engine ships.
+
+`Math.seedrandom` exists in the game but **not** in Node, so nothing on a testable path
+can use it — hence `shared/gwo_rng.js`, which carries its own PRNG. See
+[`galaxy.md`](galaxy.md).
 
 Lodash is the workaround for most missing builtins. Two of its behaviours are
 relied on deliberately:
@@ -75,7 +80,11 @@ relied on deliberately:
   order during colour allocation.
 - `_.random`'s bounds are **both inclusive**, so `_.random(100)` has 101 outcomes.
   A chance of N would fire at (N+1)/101, meaning a 0% setting still landed roughly
-  one roll in a hundred until that was accounted for.
+  one roll in a hundred until that was accounted for. `gwoRng.int` matches this.
+
+Lodash also captures `nativeRandom = Math.random` at load, so reseeding `Math.random`
+cannot make `_.sample`/`_.shuffle`/`_.random` deterministic — war generation draws from
+`shared/gwo_rng.js` instead.
 
 jQuery 2.x has a trap that has bitten this repo three times: **it does not convert
 a `throw` inside a deferred callback into a rejection.** A `TypeError` there escapes

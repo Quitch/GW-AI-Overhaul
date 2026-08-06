@@ -425,9 +425,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   );
   var vehiclesAdvancedAmmo = [
     gwoUnit.levelerAmmo,
-    // The Manhattan self-destructs: its weapon borrows the Dox's ammo spec and
-    // all its real damage is the death burst, so that is the spec vehicle damage
-    // cards have to reach. It has no ammo entry of its own to list here.
+    // The Manhattan borrows the Dox's ammo spec and does its real damage on
+    // death, so that death spec is what vehicle damage cards must reach.
     gwoUnit.manhattanDeath,
     gwoUnit.shellerAmmo,
     gwoUnit.stormAmmo,
@@ -554,9 +553,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   var teleporters = [gwoUnit.teleporter, gwoUnit.helios];
 
-  // The titan groups already exclude the immobile Ragnarok, so the only
-  // stationary owners these two drop are the defensive structures - the same
-  // split combatMobile makes, which likewise counts the Kessler as a defence.
+  // The titan groups already exclude the immobile Ragnarok, so these two drop
+  // only the defensive structures - the same split combatMobile makes.
   var ammoMobile = airAmmo.concat(
     botsAmmo,
     navalAmmo,
@@ -596,9 +594,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.vehicleFabberBuildArm,
   ];
 
-  // The build arms of structuresFactories: a factory here is a structure that
-  // builds mobile units, so the missile launchers are out even though the game
-  // flags them UNITTYPE_Factory. Their arms only ever produce ammo.
+  // A factory here builds mobile units, so the missile launchers are out despite
+  // their UNITTYPE_Factory flag - their arms only ever produce ammo.
   var factoryBuildArms = [
     gwoUnit.airFactoryAdvancedBuildArm,
     gwoUnit.airFactoryBuildArm,

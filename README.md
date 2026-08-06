@@ -89,6 +89,15 @@ Chosen when you create a war, from the Game Options panel, and applied for its d
 - **System Lore**: display the original pre-release Galactic War lore in the Planetary Intelligence panel.
 - **Static Tech**: the Available Tech in a system never changes.
 
+## Seeds
+
+The **Seed Value** field in the war setup panel controls galaxy generation. Entering the
+same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty,
+game options and installed mods match. Planet names still vary.
+
+A war's seed is shown in its Galactic War Overhaul panel, so a galaxy worth replaying can
+be noted down and returned to. Leave the field alone for a fresh galaxy each time.
+
 ## Planetary Intelligence
 
 Each system will display the following information:

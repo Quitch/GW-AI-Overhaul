@@ -1,17 +1,13 @@
 "use strict";
 
-// Cross-cutting ai_path invariants that span multiple modules:
-//   1. Enemies and subcommanders never share an ai_path (shared-tech / setAIPath).
-//   2. Subcommanders never share an ai_path with each other under per-player tech.
-//   3. No ai_path root sits inside another ai_path's engine-scanned directories.
-// The first two have one documented, intentional exception each, pinned here as named
-// regression tests rather than silently excluded, so a future reader who "fixes"
-// either one discovers it's guarded rather than being surprised in production.
+// Cross-cutting ai_path invariants - see ai-paths.md:
+//   1. Enemies and subcommanders never share an ai_path.
+//   2. Subcommanders never share one with each other under per-player tech.
+//   3. No ai_path root sits inside another's engine-scanned directories.
 //
-// Note: the game guarantees the player and the enemy can never simultaneously be
-// Cluster (confirmed with the mod author) - that combination is an external
-// invariant this suite has no way to independently verify, and is not exercised
-// here for that reason (see referee_config.js's setAIPath comment).
+// The first two have one intentional exception each, pinned below as named tests
+// rather than silently excluded. Simultaneous player/enemy Cluster is not swept:
+// the game rules it out, and this suite cannot verify that independently.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -69,11 +65,9 @@ function runRefereeAiHere(filesObj) {
 }
 
 // The five directories the engine loads from each ai_path (Queller-AI's
-// docs/ai-engine.md section 3, "The load pipeline"). Each is scanned RECURSIVELY from
-// <ai_path>/<dir> and every .json below it is merged into one flat namespace, which is
-// why content meant to merge is nested INSIDE one of these and gated by a personality
-// tag - the base game's platoon_builds/tutorial/, GWO's factory_builds/penchants/.
-// A whole ai_path root nested there instead would be silently absorbed by its parent.
+// docs/ai-engine.md, "The load pipeline"). Each is scanned recursively and merged
+// into one flat namespace, so a whole ai_path root nested inside one would be
+// silently absorbed by its parent.
 const ENGINE_SCANNED_DIRECTORIES = [
   "unit_maps",
   "platoon_templates",
@@ -82,15 +76,11 @@ const ENGINE_SCANNED_DIRECTORIES = [
   "platoon_builds",
 ];
 
-// Every ai_path shared/referee_ai_paths.js can hand out, across its whole option
-// matrix. Sources belong here as well as destinations: when the enemy and the
-// subcommander resolve to the same source, the subcommander reads that source path
-// directly as its ai_path (see referee_ai.js's "A shared source doubles as the
-// subcommander's destination").
+// Every ai_path referee_ai_paths.js can hand out. Sources count too: on a shared
+// source the subcommander reads that path directly as its ai_path.
 function everyResolvableAiPath() {
   const paths = new Set();
-  // "all" is unreachable from live code today - only getQuellerPath names it - but it
-  // is part of the module's surface, so the sweep covers it too.
+  // "all" is unreachable from live code, but is part of the module's surface.
   const types = ["enemy", "subcommander", "cluster", "all"];
   const scopeTokens = [undefined, "guardians", ".player0", "player0"];
 
@@ -120,11 +110,9 @@ function everyResolvableAiPath() {
   return [...paths];
 }
 
-// The ai_path a written file belongs to: everything up to its scanned-directory
-// segment. Deliberately the LAST such segment - a tree wrongly rooted inside a data
-// directory (/pa/ai/fabber_builds/player_x/fabber_builds/y.json) has to resolve to the
-// inner root for the containment check to see it, not be flattened back to /pa/ai/.
-// Returns undefined for a root-level file such as ai_config.json.
+// Everything up to the file's scanned-directory segment - the LAST such segment,
+// so a tree wrongly rooted inside a data directory resolves to the inner root
+// where the containment check can see it. Undefined for a root-level file.
 function aiPathRootOf(filePath) {
   let root;
   let bestIndex = -1;
@@ -160,10 +148,8 @@ function assertNoRootInsideAnothersScannedDirectory(paths) {
 }
 
 function isKnownOverlapCase(aiInUse, enemyType, techState) {
-  // Same brain + no guardians/cluster + no active subcommander tech: confirmed
-  // safe-by-design (both sides fall back to the same vanilla brain path). Reachable
-  // for Titans and Penchant; Queller is structurally exempt (enemy always resolves
-  // to q_uber, subcommander always to q_silver/q_bronze, regardless of tech state).
+  // Safe by design: with the same brain and no scoping, both sides fall back to
+  // the same vanilla path. Queller is structurally exempt, its tiers never meeting.
   return (
     (aiInUse === "Titans" || aiInUse === "Penchant") &&
     enemyType === "neither" &&
@@ -189,9 +175,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
 
           const enemyIsCluster = gwoAI.isCluster(fixture.ai);
           const enemyPath = refereeConfig.setAIPath(enemyIsCluster, false);
-          // Subcommander side is never Cluster in this sweep - enemy-cluster and
-          // subcommander-cluster can't coexist (see file header), so crossing them
-          // here would test a combination the game itself never produces.
+          // Never Cluster here; see the file header.
           const subcommanderPath = refereeConfig.setAIPath(false, true);
 
           assert.notEqual(enemyPath, subcommanderPath);
@@ -289,9 +273,7 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
   it("a per-player-tech viewer's path is identical whether or not the fight is Guardians", () => {
     const inventory = { aiMods: () => [{ op: "load" }], cards: () => [] };
 
-    // getViewerSubcommanderAiPath has no guardians parameter, so the viewer path
-    // cannot vary with the real fight's guardians state - unlike the shared-tech
-    // ally path below, which does react to it. Pinned as the documented asymmetry.
+    // Pins the documented guardians asymmetry - see ai-paths.md.
     const path = perPlayerTechHook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
@@ -315,10 +297,8 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
 });
 
 describe("invariant: mixed-brain fights (aiAlly differs from ai) never collide", () => {
-  // Mixed-brain fights (system.gwaio.aiAlly set to a different brain than
-  // system.gwaio.ai) resolve to structurally different base paths via
-  // getAIPathSource's switch, so unlike the same-brain sweep above no
-  // isKnownOverlapCase-style exception is expected here at all.
+  // Different brains resolve to structurally different base paths, so unlike the
+  // sweep above this expects no exception at all.
   for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
     for (const aiAllyInUse of SCENARIO_AXES.AI_BRAINS) {
       if (aiInUse === aiAllyInUse) {
@@ -349,17 +329,9 @@ describe("invariant: mixed-brain fights (aiAlly differs from ai) never collide",
 });
 
 describe("invariant: Guardians + matching brains + per-player tech never leaks one player's tech onto the Guardian's shared destination", () => {
-  // referee_ai.js's per-player-tech viewer loop (forceSubCommanderScope: true) exists
-  // solely to populate each viewer's OWN scoped destination. When the enemy and
-  // subcommander source trees are the same (brains match, fileOwner "shared") and
-  // Guardians is active (the enemy gets a player_guardians-scoped destination
-  // distinct from its source), the base pass over aiPathsToProcess is the ONE place
-  // that combines every connected player's mods (via getInventoryWithAllPlayerAiMods)
-  // and writes that combined result to both the plain shared key and the Guardian's
-  // scoped destination. A per-viewer pass must never also write to either of those
-  // keys - doing so would silently discard the combined write and leave the Guardian
-  // (or the plain shared key any non-scoped ally also reads) reflecting only one
-  // viewer's own tech instead of everyone's.
+  // On a shared source tree with Guardians active, the base pass is the only place
+  // that combines every connected player's mods. A per-viewer pass writing the same
+  // keys would discard that, leaving the Guardian with one viewer's tech.
   it("per-player tech disabled: the base pass alone writes one combined result to both the plain and Guardian-scoped keys", () => {
     const fixture = buildGame({
       aiInUse: "Titans",
@@ -448,15 +420,13 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
 
     const filesObj = {};
     return runRefereeAiHere(filesObj).then(() => {
-      // The Guardian must see every connected player's contribution, combined by the
-      // base pass alone - never clobbered down to a single viewer's own mod.
+      // Every connected player's contribution, never one viewer's alone.
       assert.deepEqual(
         filesObj["/pa/ai/player_guardians/fabber_builds/x.json"].build_list[0]
           .builders,
         ["hostMarker", "v1Marker", "v2Marker"]
       );
-      // The plain shared key (what a non-scoped ally reads) must match - never reset
-      // back to pristine by a viewer pass.
+      // The plain shared key, which a non-scoped ally reads, must match too.
       assert.deepEqual(
         filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].builders,
         ["hostMarker", "v1Marker", "v2Marker"]
@@ -476,12 +446,9 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
 });
 
 describe("invariant: no ai_path root sits inside another ai_path's scanned directories", () => {
-  // The engine merges every .json it finds under <ai_path>/<one of the five>, so a
-  // second ai_path rooted inside one of those directories would have its whole tree
-  // absorbed by the first - one AI silently inheriting another's build orders, with no
-  // load error to show for it. Scoping nests paths (appendScope), so the property this
-  // pins is not "nothing nests" but "what nests, nests beside the scanned directories
-  // rather than inside them".
+  // A second ai_path rooted inside a scanned directory is absorbed by the first,
+  // silently handing one AI another's build orders. Scoping does nest paths, so the
+  // property is "what nests, nests beside those directories, not inside them".
   it("no source or destination path is nested inside another's scanned directories", () => {
     const paths = everyResolvableAiPath();
 
@@ -503,8 +470,8 @@ describe("invariant: no ai_path root sits inside another ai_path's scanned direc
   });
 
   it("the paths referee_ai.js actually writes hold the same property", () => {
-    // Catches the other half of the failure mode: a change that writes a scoped tree
-    // INTO a data directory without altering any of the roots swept above.
+    // The other half: a scoped tree written into a data directory, with no root
+    // above it changing.
     const hostMod = {
       op: "append",
       type: "fabber",
@@ -552,10 +519,8 @@ describe("invariant: no ai_path root sits inside another ai_path's scanned direc
       );
       assertNoRootInsideAnothersScannedDirectory(roots);
 
-      // "Each root stands alone" is the other half of the same rule: nesting is only
-      // safe because a nested tree is self-contained. ai_config.json in particular has
-      // no fallback - a tree that omits it runs with no unit cap - so the scoped copy
-      // has to carry its own, alongside all five directories.
+      // Nesting is only safe because a nested tree is self-contained. ai_config.json
+      // has no fallback, so a tree omitting it runs with no unit cap.
       const guardiansRoot = "/pa/ai/player_guardians/";
       assert.deepEqual(
         written

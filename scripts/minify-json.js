@@ -14,9 +14,8 @@ if (!targetDir) {
 
 targetDir = path.resolve(targetDir);
 
-// This rewrites every .json it finds in place, so it must never wander into
-// directories whose JSON is not ours to reformat - `node minify-json.js .` would
-// otherwise rewrite package.json, the lockfile and anything under .git.
+// Rewrites in place, so it must never be pointed at a directory holding JSON that
+// is not ours - package.json, the lockfile, anything under .git.
 var SKIP_DIRS = [".git", "node_modules", "coverage"];
 
 function processDirectory(dir) {
@@ -45,8 +44,7 @@ function processDirectory(dir) {
     } catch (err) {
       console.warn("Skipped (invalid JSON):", fullPath);
       console.error(err);
-      // A file that would not parse is a real problem, not a note in passing -
-      // exiting 0 here made a corrupt data file look like a clean run.
+      // Exiting 0 here made a corrupt data file look like a clean run.
       process.exitCode = 1;
     }
   });
