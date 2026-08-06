@@ -633,7 +633,8 @@ describe("uniqueValue", () => {
     for (let i = 0; i < 10000; i++) {
       const value = cards.uniqueValue(rng);
       assert.ok(value, `draw ${i} yielded ${value}`);
-      assert.ok(value >= 1 && value < 2, `draw ${i} yielded ${value}`);
+      assert.ok(value >= 1, `draw ${i} fell below 1: ${value}`);
+      assert.ok(value < 2, `draw ${i} reached 2 or above: ${value}`);
     }
   });
 
