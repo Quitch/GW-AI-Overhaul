@@ -149,6 +149,10 @@ loadouts unlocked by winning a war, and GWO-added loadouts unlocked the same way
 `model.makeKnown` and `GW.bank` at load time, neither of which exists in the
 `gw_play` scene.
 
+A treasure planet's loadout is drawn from those same unlockable ids, but at
+exploration rather than at war creation, and from the acting player's own locked
+pool — see [`coop.md`](coop.md), "Treasure loadouts".
+
 Unlocks and victory badges live in `localStorage` under `gwaio_`-prefixed keys.
 Badge indices run from **-1 (Beginner)** so that Casual is 0 — see the
 `loadoutIcon` switch in `shared/cards.js`, and `gw_war_over/stats.js`, which reads

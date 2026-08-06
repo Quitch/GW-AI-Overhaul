@@ -76,6 +76,8 @@ describe("gwo_streams fallback contract", () => {
     assert.equal(streams.exploreDealRng(undefined, 1, 2, 0), undefined);
     assert.equal(streams.aiStarDealRng(undefined, 1, 2), undefined);
     assert.equal(streams.coopDealRng(undefined, "p", 1), undefined);
+    assert.equal(streams.coopStarDealRng(undefined, "p", 1, 2), undefined);
+    assert.equal(streams.treasureLoadoutRng(undefined, "p", 1), undefined);
     assert.equal(streams.coopRerollRng(undefined, "p", 1, 0), undefined);
     assert.equal(streams.battleRng(undefined, 1, 2), undefined);
     assert.equal(streams.iterationRng(undefined, 0), undefined);
@@ -92,6 +94,8 @@ describe("gwo_streams determinism", () => {
         explore: draws(streams.exploreDealRng(war, 3, 5, 1)),
         ai: draws(streams.aiStarDealRng(war, 3, 5)),
         coop: draws(streams.coopDealRng(war, "uber-1", 2)),
+        coopStar: draws(streams.coopStarDealRng(war, "uber-1", 3, 5)),
+        treasure: draws(streams.treasureLoadoutRng(war, "uber-1", 3)),
         battle: draws(streams.battleRng(war, 3, 5)),
       };
     };
@@ -119,6 +123,46 @@ describe("gwo_streams determinism", () => {
     assert.notDeepEqual(
       draws(streams.battleRng(war, 3, 5)),
       draws(streams.battleRng(war, 3, 6))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopStarDealRng(war, "p", 3, 5)),
+      draws(streams.coopStarDealRng(war, "q", 3, 5))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopStarDealRng(war, "p", 3, 5)),
+      draws(streams.coopStarDealRng(war, "p", 3, 6))
+    );
+    assert.notDeepEqual(
+      draws(streams.treasureLoadoutRng(war, "p", 3)),
+      draws(streams.treasureLoadoutRng(war, "q", 3))
+    );
+    assert.notDeepEqual(
+      draws(streams.treasureLoadoutRng(war, "p", 3)),
+      draws(streams.treasureLoadoutRng(war, "p", 4))
+    );
+  });
+
+  // The absence of a turn component is what makes a treasure offer survive
+  // re-exploration and a catch-up deal replaying an old star.
+  it("keys a treasure loadout on the player and star alone", () => {
+    const war = streams.warRng(SEED);
+    assert.deepEqual(
+      draws(streams.treasureLoadoutRng(war, "p", 3)),
+      draws(streams.treasureLoadoutRng(war, "p", 3))
+    );
+  });
+
+  // The host has no playerKey of its own, and must not land on the key an
+  // unidentifiable viewer falls back to.
+  it("defaults a treasure loadout to the host key", () => {
+    const war = streams.warRng(SEED);
+    assert.deepEqual(
+      draws(streams.treasureLoadoutRng(war, undefined, 3)),
+      draws(streams.treasureLoadoutRng(war, "host", 3))
+    );
+    assert.notDeepEqual(
+      draws(streams.treasureLoadoutRng(war, undefined, 3)),
+      draws(streams.treasureLoadoutRng(war, "unknown", 3))
     );
   });
 
@@ -162,6 +206,18 @@ describe("gwo_streams key collisions", () => {
 
     for (const player of ["host", "uber-1", "uber 1", "0"]) {
       add(`gc:${player}`, streams.generalCommanderRng(war, player));
+      for (const star of [0, 1, 2]) {
+        add(
+          `treasure:${player}:${star}`,
+          streams.treasureLoadoutRng(war, player, star)
+        );
+        for (const turns of [0, 1, 2]) {
+          add(
+            `coopStar:${player}:${star}:${turns}`,
+            streams.coopStarDealRng(war, player, star, turns)
+          );
+        }
+      }
       for (const dealIndex of [-1, 0, 1, 2]) {
         add(
           `coop:${player}:${dealIndex}`,

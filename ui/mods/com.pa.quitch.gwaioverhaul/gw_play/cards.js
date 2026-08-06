@@ -276,9 +276,11 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
       ],
       function (
         GW,
@@ -291,9 +293,11 @@ function gwoCard() {
         cardsDealHelpers,
         cardsCardNameSync,
         cardsCoopDeal,
+        cardsCoopStarCards,
         cardsCoopReroll,
         cardsCheats,
-        gwoStreams
+        gwoStreams,
+        gwoTreasure
       ) {
         helpers = cardsDealHelpers;
         restoreExploreSaveRerolls();
@@ -398,6 +402,20 @@ function gwoCard() {
           return result;
         };
 
+        // Deals each viewer their own card on every selectable AI star.
+        var coopStarCards = cardsCoopStarCards({
+          game: game,
+          chooseCards: chooseCards,
+          GWInventory: GWInventory,
+          gwoStreams: gwoStreams,
+          warRng: warRng,
+          gwoBank: gwoBank,
+          stockBank: GW.bank,
+          gwoSettings: gwoSettings,
+          gwoSave: gwoSave,
+          gwoTreasure: gwoTreasure,
+        });
+
         // Installs model.dealCoopPlayerPendingTechCards, overriding stock gw_play.js.
         cardsCoopDeal({
           game: game,
@@ -409,6 +427,17 @@ function gwoCard() {
           warRng: warRng,
           gwoBank: gwoBank,
           stockBank: GW.bank,
+          gwoTreasure: gwoTreasure,
+          coopStarCards: coopStarCards,
+          gwoSettings: gwoSettings,
+        });
+
+        // Reports a viewer's loadout unlocks to the host, which needs the mod
+        // ones the base game's own record cannot carry.
+        gwoTreasure.install({
+          game: game,
+          stockBank: GW.bank,
+          gwoBank: gwoBank,
         });
 
         // Registers the co-op reroll operator handlers, viewer and host.
@@ -423,6 +452,8 @@ function gwoCard() {
           GW: GW,
           gwoStreams: gwoStreams,
           warRng: warRng,
+          gwoBank: gwoBank,
+          stockBank: GW.bank,
         });
 
         var dealCardToSelectableAI = function (win, turnState) {
@@ -438,11 +469,12 @@ function gwoCard() {
 
             _.forEach(model.galaxy.systems(), function (system, starIndex) {
               var ai = system.star.ai();
-              var treasurePlanet = ai && ai.treasurePlanet;
-              var loadoutPresent =
-                treasurePlanet &&
-                !_.isEmpty(system.star.cardList()) &&
-                helpers.isStartLoadoutCardId(system.star.cardList()[0].id);
+              // A treasure planet offers a loadout derived at exploration, so it
+              // never carries a pre-dealt card.
+              var treasurePlanet = gwoTreasure.isTreasureStar(
+                gwoSettings,
+                starIndex
+              );
               var validForDeal =
                 gwoSettings && gwoSettings.staticTech
                   ? _.isEmpty(system.star.cardList())
@@ -450,7 +482,7 @@ function gwoCard() {
               if (
                 model.canSelect(starIndex) &&
                 ai &&
-                !loadoutPresent &&
+                !treasurePlanet &&
                 validForDeal
               ) {
                 deferredQueue.push(
@@ -482,15 +514,33 @@ function gwoCard() {
             });
 
             // $.when() doesn't wait for setCardName() to return
-            Promise.all(deferredQueue).then(function () {
-              deferred.resolve();
-            });
+            Promise.all(deferredQueue)
+              .then(function () {
+                // The one caller that replaces cards viewers already hold, so
+                // their offers move exactly when the host's do.
+                return coopStarCards.refresh({ redeal: true });
+              })
+              .then(function () {
+                deferred.resolve();
+              });
           } else {
             deferred.resolve();
           }
 
           return deferred.promise();
         };
+
+        // The turn deal above covers the ordinary case. This covers a viewer
+        // joining, and a rejoining viewer finishing its catch-up deals - neither
+        // of which passes through a turn. It deliberately does not read
+        // stats().turns(): a move must not disturb an offer already advertised.
+        ko.computed(function () {
+          model.gwCampaignConnectedClients();
+          model.gwCampaignPlayerSetupBlocked();
+          game.coopPlayerInventoryData();
+          game.hostTechCardDealCount();
+          coopStarCards.refresh();
+        });
 
         requireGW(
           [
@@ -575,18 +625,27 @@ function gwoCard() {
           );
           var starIndex = game.currentStar();
           var star = game.galaxy().stars()[starIndex];
-          // Left unfiltered: a loadout the host owns can still be treasure for a
-          // viewer, who is judged by their own unlock record.
+
+          // Deriving here rather than at war creation is what lets every player
+          // be judged by their own unlock record. Writing the whole list also
+          // clears the pre-dealt card a war generated before this carried.
+          // A replaying viewer reads its own banks, so the host's card reaches
+          // it through sync_star_cards instead.
+          if (
+            !model.gwCampaignReplayingAction &&
+            star &&
+            gwoTreasure.isTreasureStar(gwoSettings, starIndex)
+          ) {
+            var treasureLoadout = gwoTreasure.pickTreasureLoadout({
+              isUnlocked: startCardUnlocked,
+              rng: gwoStreams.treasureLoadoutRng(warRng, undefined, starIndex),
+            });
+            star.cardList(treasureLoadout ? [treasureLoadout] : []);
+          }
+
           var startLoadoutCards = helpers.filterStartLoadoutCards(
             star && _.isFunction(star.cardList) ? star.cardList() : []
           );
-
-          // The host's own offer does drop already-owned loadouts, and before the
-          // deal is sized, so the star deals a full rerollable hand instead.
-          var unlockedLoadouts = _.filter(startLoadoutCards, startCardUnlocked);
-          if (unlockedLoadouts.length) {
-            star.cardList(_.difference(star.cardList(), unlockedLoadouts));
-          }
 
           var dealStarCards = chooseCards({
             count:
