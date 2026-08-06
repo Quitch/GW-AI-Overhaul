@@ -54,6 +54,15 @@
   overflow-x: hidden;
 }
 
+/* Chrome 40 counts the last child's bottom margin in scrollHeight, so the stock
+   Co-op panel's 8px trailing margin overflowed the Setup column by 4px even
+   though its content cleared the box - a scrollbar that scrolled to reveal
+   nothing. Sits below the two rules above rather than beside its own column's,
+   because it out-specifies them on the same elements. */
+#new-game-right .col-padding > *:last-child {
+  margin-bottom: 0;
+}
+
 #difficulty-cards,
 #difficulty-cards button {
   text-transform: uppercase;
