@@ -43,6 +43,11 @@ define([
               ],
             },
           },
+          {
+            file: gwoUnit.stingray,
+            path: "tools.3.spec_id",
+            op: "tag",
+          },
         ].concat(
           _.times(4, function (i) {
             return {

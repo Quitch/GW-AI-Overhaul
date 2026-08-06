@@ -20,6 +20,8 @@
 - Hosts and viewers don't get each others tech when a viewer joins a war
 - A co-op player joining a war part way through could be offered a loadout they already owned
 - The Lucky Commander no longer applies its bonus to a war where it is unlocked
+- Upgrade tech that gives a unit another unit's weapon, or that makes something spawn a unit on death, now carries the rest of your tech with it. The Wyrm's drones, the Lob's Booms, the mines dropped by the Bumblebee, Grenadier and Sheller, and the borrowed weapons on the Advanced Fabrication Bot, Avenger, Bluehawk, Catapult, Colonel, Horsefly, Inferno, Kaiju, Leviathan, Omega, Single Laser Defense Tower, Solar Array, Stinger, Stingray, Storm, Stryker and Vanguard were all using unmodified stock specs, so no health, damage or other card applied to them
+- The Uber Cannon the CEO Commander loadout gives your Colonels is no longer a stock one, so your damage tech now applies to it
 
 ## v6.7.0 - 2026-08-04
 

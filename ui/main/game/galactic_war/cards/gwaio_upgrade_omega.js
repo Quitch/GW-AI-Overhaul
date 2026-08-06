@@ -37,6 +37,11 @@ define([
         },
         {
           file: gwoUnit.omega,
+          path: "tools.4.spec_id",
+          op: "tag",
+        },
+        {
+          file: gwoUnit.omega,
           path: "attack_range_frac",
           op: "replace",
           value: 0.3,

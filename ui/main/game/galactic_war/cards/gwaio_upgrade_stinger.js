@@ -27,16 +27,20 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        gwoCard.mods(gwoUnit.stinger, "replace", {
-          tools: [
-            {
-              spec_id: gwoUnit.flakWeapon,
-              aim_bone: "bone_turret",
-              projectiles_per_fire: 2,
-              muzzle_bone: ["socket_rightMuzzle", "socket_leftMuzzle"],
-            },
-          ],
-        })
+        gwoCard
+          .mods(gwoUnit.stinger, "replace", {
+            tools: [
+              {
+                spec_id: gwoUnit.flakWeapon,
+                aim_bone: "bone_turret",
+                projectiles_per_fire: 2,
+                muzzle_bone: ["socket_rightMuzzle", "socket_leftMuzzle"],
+              },
+            ],
+          })
+          .concat([
+            { file: gwoUnit.stinger, path: "tools.0.spec_id", op: "tag" },
+          ])
       );
     },
     dull: function () {},

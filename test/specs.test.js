@@ -550,16 +550,29 @@ describe("specs.mod - navigation pruning", () => {
 describe("specs.additionalSpecs", () => {
   // By content, not count: a length check would pass on a swapped entry, which is
   // the mistake worth catching.
-  it("holds the weapon and ammo specs for the Firefly, Orca torpedo and Skitter", () => {
+  it("holds every spec a card lends to a unit that does not already reference it", () => {
     assert.deepEqual(
       [...specs.additionalSpecs].sort(),
       [
         "/pa/units/air/air_scout/air_scout_ammo.json",
         "/pa/units/air/air_scout/air_scout_tool_weapon.json",
+        "/pa/units/air/bomber/bomber_tool_weapon.json",
+        "/pa/units/land/air_defense_adv/air_defense_adv_tool_weapon.json",
+        "/pa/units/land/artillery_long/artillery_long_tool_weapon.json",
+        "/pa/units/land/bot_bomb/bot_bomb_tool_weapon.json",
+        "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
+        "/pa/units/land/bot_support_commander/bot_support_commander_tool_weapon.json",
+        "/pa/units/land/fabrication_bot_combat/fabrication_bot_combat_build_arm.json",
+        "/pa/units/land/fabrication_bot_combat_adv/fabrication_bot_combat_adv_build_arm.json",
         "/pa/units/land/land_scout/land_scout_ammo.json",
         "/pa/units/land/land_scout/land_scout_tool_weapon.json",
+        "/pa/units/land/tank_flak/tank_flak_tool_weapon.json",
+        "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json",
+        "/pa/units/orbital/orbital_laser/orbital_laser_tool_weapon.json",
+        "/pa/units/orbital/orbital_railgun/orbital_railgun_tool_weapon.json",
         "/pa/units/sea/destroyer/destroyer_tool_torpedo.json",
         "/pa/units/sea/destroyer/destroyer_torpedo_ammo.json",
+        "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
       ].sort()
     );
   });

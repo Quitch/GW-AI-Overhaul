@@ -71,6 +71,11 @@ define([
           op: "replace",
           value: gwoUnit.landMine,
         },
+        {
+          file: gwoUnit.grenadierAmmo,
+          path: "spawn_unit_on_death",
+          op: "tag",
+        },
       ]);
     },
     dull: function () {},

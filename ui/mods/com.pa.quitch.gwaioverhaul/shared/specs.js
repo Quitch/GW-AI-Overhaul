@@ -407,13 +407,29 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
       });
     },
+    // Files a card lends to a unit that does not already reference them. Without
+    // an entry here the tagged copy never exists, so the card's `tag` op would
+    // point at a missing spec. See specs.md.
     additionalSpecs: [
+      gwoUnit.artemisWeapon,
+      gwoUnit.boomWeapon,
+      gwoUnit.bumblebeeWeapon,
+      gwoUnit.colonelWeapon,
       gwoUnit.fireflyAmmo,
       gwoUnit.fireflyWeapon,
+      gwoUnit.flakWeapon,
+      gwoUnit.gilEBeam,
+      gwoUnit.holkinsWeapon,
+      gwoUnit.mendBuildArm,
       gwoUnit.orcaTorpedo,
       gwoUnit.orcaTorpedoAmmo,
       gwoUnit.skitterAmmo,
       gwoUnit.skitterWeapon,
+      gwoUnit.stitchBuildArm,
+      gwoUnit.stormWeapon,
+      gwoUnit.sxxWeapon,
+      gwoUnit.typhoonWeapon,
+      gwoUnit.umbrellaBeam,
     ],
   };
 });

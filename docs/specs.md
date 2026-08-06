@@ -50,6 +50,38 @@ stat, and it is why `multiplyOrCreate` runs before `multiply` in the op ordering
 `eval` is theoretically unsafe. It is also pointless to worry about: mods can run
 whatever code they like anyway, so the risk is not meaningful.
 
+### Writing a spec reference
+
+Mods run **after** `genUnitSpecs` has tagged the army's specs, so a `.json` path
+written by a mod arrives untagged. Untagged paths still resolve — to the stock file —
+which is why the mistake is invisible: the weapon fires, the unit spawns, and none of
+the player's other tech touches it.
+
+Every mod whose value is a spec reference therefore needs a second mod, `op: "tag"`,
+on the same path:
+
+```js
+{ file: gwoUnit.wyrm, path: "tools.0.spec_id", op: "replace", value: gwoUnit.typhoonWeapon },
+{ file: gwoUnit.wyrm, path: "tools.0.spec_id", op: "tag" },
+```
+
+Two things follow from this.
+
+The tag needs the **final** index. `replace` runs before `push`, `prepend` and `tag`
+(see the op ordering), so a tool pushed onto a four-tool unit is tagged at
+`tools.4.spec_id`. The index comes from the stock spec, not the card.
+
+The target must **exist tagged**, or the tag points at nothing and the tool is lost
+outright. A file the unit already references is covered — `tagSpec` walked it. A file
+borrowed from another unit is not, and belongs in `additionalSpecs`, which is
+concatenated onto every army's spec list. Tagging cascades from there: tag a weapon
+and its `ammo_id`, and any `spawn_unit_on_death` that ammo has, come with it.
+
+The reference fields that count are the ones `tagSpec` renames — `base_spec`,
+`tools[].spec_id`, `ammo_id`, `replaceable_units`, `buildable_projectiles`,
+`factory.initial_build_spec`, `death_weapon.ground_ammo_spec`,
+`death_weapon.air_ammo_spec` and `spawn_unit_on_death`.
+
 ### Pathless mods
 
 ```js

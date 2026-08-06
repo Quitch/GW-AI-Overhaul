@@ -44,6 +44,11 @@ define([
         },
         {
           file: gwoUnit.singleLaserDefenseTower,
+          path: "tools.0.spec_id",
+          op: "tag",
+        },
+        {
+          file: gwoUnit.singleLaserDefenseTower,
           path: "command_caps",
           op: "replace",
           value: ["ORDER_Reclaim", "ORDER_Repair"],

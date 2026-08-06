@@ -45,6 +45,16 @@ define([
           op: "replace",
           value: 50,
         },
+        {
+          file: gwoUnit.colonel,
+          path: "death_weapon.ground_ammo_spec",
+          op: "tag",
+        },
+        {
+          file: gwoUnit.colonel,
+          path: "death_weapon.air_ammo_spec",
+          op: "tag",
+        },
       ]);
     },
     dull: function () {},

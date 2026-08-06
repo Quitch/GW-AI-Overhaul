@@ -48,6 +48,11 @@ define([
             },
             {
               file: gwoUnit.colonel,
+              path: "tools.2.spec_id",
+              op: "tag",
+            },
+            {
+              file: gwoUnit.colonel,
               path: "command_caps",
               op: "push",
               value: "ORDER_FireSecondaryWeapon",

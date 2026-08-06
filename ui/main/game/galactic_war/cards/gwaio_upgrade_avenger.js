@@ -25,15 +25,19 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        gwoCard.mods(gwoUnit.avenger, "push", {
-          tools: [
-            {
-              spec_id: gwoUnit.artemisWeapon,
-              aim_bone: "bone_body",
-              muzzle_bone: "bone_recoil01",
-            },
-          ],
-        })
+        gwoCard
+          .mods(gwoUnit.avenger, "push", {
+            tools: [
+              {
+                spec_id: gwoUnit.artemisWeapon,
+                aim_bone: "bone_body",
+                muzzle_bone: "bone_recoil01",
+              },
+            ],
+          })
+          .concat([
+            { file: gwoUnit.avenger, path: "tools.1.spec_id", op: "tag" },
+          ])
       );
     },
     dull: function () {},

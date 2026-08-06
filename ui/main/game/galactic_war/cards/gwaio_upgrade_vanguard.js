@@ -37,6 +37,11 @@ define([
         },
         {
           file: gwoUnit.vanguard,
+          path: "tools.1.spec_id",
+          op: "tag",
+        },
+        {
+          file: gwoUnit.vanguard,
           path: "command_caps",
           op: "push",
           value: ["ORDER_Repair"],
