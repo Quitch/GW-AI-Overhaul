@@ -11,7 +11,7 @@
 - The same seed now rebuilds the same galaxy, enemies, tech cards, Sub Commanders for the General Commander loadout, and the same AI landing behaviour. A war reproduces only when it is played the same way: visiting the same stars, in the same order, winning at the same speed, and taking the same cards, given the same faction, difficulty, game options, and mods. Planet names still vary.
 - Seeds entered from v6.7.0 or earlier now generate different planets: biome, radius, height, water and temperature all shift. Existing saved wars are unaffected.
 - Available Tech and loadouts in a system are now per-player in co-op with separate tech
-- Loadouts are dealt at time of exploration rather than war generation so you can never unlock a loadout in one war another war wanted to offer you
+- Guardian loadout unlocks are picked at time of exploration rather than war generation
 
 ### Bugfix
 
