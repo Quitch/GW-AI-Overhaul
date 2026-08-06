@@ -433,8 +433,9 @@ function gwoCard() {
         });
 
         // Reports a viewer's loadout unlocks to the host, which needs the mod
-        // ones the base game's own record cannot carry.
-        gwoTreasure.install({
+        // ones the base game's own record cannot carry, and holds a viewer's
+        // banking closed against the host's inventory.
+        var treasureUnlocks = gwoTreasure.install({
           game: game,
           stockBank: GW.bank,
           gwoBank: gwoBank,
@@ -754,6 +755,23 @@ function gwoCard() {
           );
         };
 
+        // A loadout won at a treasure planet unlocks the commander for later
+        // wars and grants nothing in this one. Left in the inventory it would
+        // read as tech held: cardsOfferedCount tests hasCard for the Lucky
+        // Commander, so it would keep paying out an extra card every explore.
+        // Returns the index to submit in place of the player's own.
+        var bankWonLoadout = function (cardId, selectedCardIndex) {
+          if (
+            selectedCardIndex === -1 ||
+            !helpers.isStartLoadoutCardId(cardId)
+          ) {
+            return selectedCardIndex;
+          }
+
+          treasureUnlocks.bankOwnLoadout({ id: cardId });
+          return -1;
+        };
+
         // call dealCardToSelectableAI() so systems' cards update when player acquires a card
         model.win = function (selectedCardIndex) {
           if (
@@ -764,8 +782,15 @@ function gwoCard() {
             var tech_card = model.currentSystemCardList()[selectedCardIndex];
             var tech_audio =
               tech_card && tech_card.audio() ? tech_card.audio().found : null;
+            // Every loadout id, not just the ones the server misfiles: banking
+            // is held for the whole scene on a viewer, so the server's own
+            // GW.bank.addStartCard would be suppressed along with the rest.
+            var submittedIndex = bankWonLoadout(
+              tech_card && tech_card.id(),
+              selectedCardIndex
+            );
 
-            return model.submitCoopTechCardChoice(selectedCardIndex).then(
+            return model.submitCoopTechCardChoice(submittedIndex).then(
               function () {
                 if (tech_audio) {
                   api.audio.playSound(tech_audio);
@@ -809,8 +834,14 @@ function gwoCard() {
           var techAudio =
             techCard && techCard.audio() ? techCard.audio().found : null;
           var playTechAudio = !!techCard;
+          // winTurn(-1) still clears the star and ends the turn; it just adds
+          // nothing to the inventory.
+          var wonIndex = bankWonLoadout(
+            techCard && techCard.id(),
+            selectedCardIndex
+          );
 
-          return game.winTurn(selectedCardIndex).then(function (didWin) {
+          return game.winTurn(wonIndex).then(function (didWin) {
             if (!didWin) {
               console.error("Failed winning turn", game);
               return $.Deferred().reject("Failed winning turn").promise();

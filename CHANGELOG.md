@@ -17,8 +17,9 @@
 
 ### Bugfix
 
-- Hosting a co-op war quietly unlocked your players' loadouts for you, because the host applies each player's tech to work out the hand they are offered
+- Hosts and viewers don't get each others tech when a viewer joins a war
 - A co-op player joining a war part way through could be offered a loadout they already owned
+- The Lucky Commander no longer applies its bonus to a war where it is unlocked
 
 ## v6.7.0 - 2026-08-04
 

@@ -67,6 +67,26 @@ define([
     return found === -1 ? undefined : found;
   };
 
+  // The base game's own predicate, shared by gw_play.js and the server. Ids it
+  // rejects are the ones the server pushes into a viewer's war inventory
+  // instead of recording as an unlock.
+  var isBaseLoadoutCardId = function (id) {
+    return _.isString(id) && id.indexOf("gwc_start") === 0;
+  };
+
+  // A loadout won mid-war unlocks the commander and nothing else, so its buff()
+  // never runs and the bank has to be written directly. Mod ids are kept out of
+  // the base game's bank - see shared/bank.js.
+  var bankStartCard = function (params) {
+    var id = cardId(params.card);
+    if (!helpers.isStartLoadoutCardId(id)) {
+      return false;
+    }
+
+    var bank = isBaseLoadoutCardId(id) ? params.stockBank : params.gwoBank;
+    return bank.addStartCard({ id: id });
+  };
+
   var treasureLoadoutPool = function () {
     return _.map(
       gwoLoadoutIds.lockedBase.concat(gwoLoadoutIds.unlockable),
@@ -195,11 +215,25 @@ define([
         unlocked_start_card_ids: ids,
       });
     });
+
+    // A viewer's own claim, as opposed to the host's cards being applied to it -
+    // gw_inventory.js suspends banking for the latter. See docs/coop.md.
+    return {
+      bankOwnLoadout: function (card) {
+        return bankStartCard({
+          card: card,
+          stockBank: stockBank,
+          gwoBank: gwoBank,
+        });
+      },
+    };
   };
 
   var api = {
     isTreasureStar: isTreasureStar,
     findTreasureStar: findTreasureStar,
+    isBaseLoadoutCardId: isBaseLoadoutCardId,
+    bankStartCard: bankStartCard,
     treasureLoadoutPool: treasureLoadoutPool,
     recordHasUnlockedLoadout: recordHasUnlockedLoadout,
     pickTreasureLoadout: pickTreasureLoadout,

@@ -201,6 +201,52 @@ who was absent when it was explored: keyed on `(player, star)` alone, the offer
 reproduces exactly. It also means a host who has unlocked everything no longer denies
 the planet to everyone else.
 
+**Winning one unlocks the commander and grants nothing in this war.** The card is
+banked and never enters the inventory: `model.win` banks it and passes `-1` to
+`winTurn`, which still clears the star and ends the turn. Left in the inventory it
+would read as tech held — `cardsOfferedCount` tests `hasCard` for the Lucky
+Commander, so it would keep paying out a fourth card on every explore. The base
+game instead adds the card and a free slot to cover it (`gwc_start_*.buff`'s
+"Don't clog up a slot" branch); GWO does not.
+
+The server already banks a viewer's loadout choice without touching the inventory —
+but only for ids passing `isBaseLoadoutCardId`, so every mod loadout is pushed into
+the viewer's war inventory instead. GWO therefore intercepts **every** loadout id on
+a viewer, banking locally and submitting `-1`; it cannot leave the base ids to the
+server, because banking is held shut on viewers for the reason below.
+
+## Whose unlocks are whose
+
+`GWGame.load()` calls `game.inventory().applyCards()` on **every** client, and on a
+viewer under per-player tech that inventory is the host's. Each loadout card's
+`buff()` ends in `bank.addStartCard`, so simply loading the campaign collected the
+host's loadouts into the viewer's own bank — and the bank is what `gw_start` reads
+next war.
+
+The guard is in the shadowed `gw_inventory.js`, and **the timing is the whole
+difficulty**. That first apply runs before the campaign half of `model` exists —
+`isCampaignViewer`, `gwCampaignPerPlayerTechCards` and `model.game()` are all
+`undefined` at that point, so no model-based test can answer, and installing a hold
+from a scene script is too late even though `loadMods` has finished. The two signals
+that _are_ available are `sessionStorage.gw_campaign_role`, and the game passed to
+`GWGamePatches.patch` — which `GWGame.load` calls immediately before `applyCards`,
+after setting `perPlayerTechCards`. `gw_inventory.js` therefore hijacks `patch` to
+raise a flag that the next `applyCards` consumes and suspends on.
+
+Hijacking rather than shadowing `gw_game.js` keeps a 459-line save-format file out of
+the tree; `gw_game_patches` is reachable because, like `gw_bank`, it declares no
+dependencies, while `shared/gw_common` and `shared/gw_game` would both close a cycle
+back onto `gw_inventory`.
+
+Only the host's inventory is ever flagged, so a viewer still banks its own claims —
+`bankOwnLoadout` for a treasure loadout, and the loadout scene for its war loadout.
+Winning a war unlocks through `gw_war_over`, a different scene, and is unaffected.
+
+The mirror of this — the host collecting a _viewer's_ loadouts — comes from the host
+applying each viewer's inventory to size their deals, and is suspended at each of
+those call sites (`cards_coop_deal.js`, `cards_coop_reroll.js`,
+`cards_coop_star_cards.js`).
+
 **The star is identified by index, not by `ai.treasurePlanet`.** Beating the Guardians
 runs `winTurn`'s boss branch, which calls `defeatTeam(ai.team)`; `gw_start/setup.js`
 deletes `ai.team` for the treasure planet, so `defeatTeam(undefined)` matches the star

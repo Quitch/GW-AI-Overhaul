@@ -113,6 +113,68 @@ describe("findTreasureStar", () => {
   });
 });
 
+// A loadout won mid-war unlocks the commander and grants nothing in this war,
+// so the card never reaches the inventory and its buff() never banks for us.
+describe("bankStartCard", () => {
+  const banks = () => {
+    const stockBank = {
+      added: [],
+      addStartCard: (c) => stockBank.added.push(c),
+    };
+    const gwoBank = { added: [], addStartCard: (c) => gwoBank.added.push(c) };
+    return { stockBank, gwoBank };
+  };
+
+  it("keeps mod loadouts out of the base game's bank", () => {
+    const { stockBank, gwoBank } = banks();
+    treasure.bankStartCard({
+      card: { id: "gwaio_start_lucky" },
+      stockBank,
+      gwoBank,
+    });
+    assert.deepEqual(gwoBank.added, [{ id: "gwaio_start_lucky" }]);
+    assert.deepEqual(stockBank.added, []);
+  });
+
+  it("banks a base loadout where the base game keeps it", () => {
+    const { stockBank, gwoBank } = banks();
+    treasure.bankStartCard({
+      card: { id: "gwc_start_artillery" },
+      stockBank,
+      gwoBank,
+    });
+    assert.deepEqual(stockBank.added, [{ id: "gwc_start_artillery" }]);
+    assert.deepEqual(gwoBank.added, []);
+  });
+
+  it("banks nothing for an ordinary tech card", () => {
+    const { stockBank, gwoBank } = banks();
+    assert.equal(
+      treasure.bankStartCard({
+        card: { id: "gwc_combat_bots" },
+        stockBank,
+        gwoBank,
+      }),
+      false
+    );
+    assert.deepEqual(stockBank.added, []);
+    assert.deepEqual(gwoBank.added, []);
+  });
+});
+
+describe("isBaseLoadoutCardId", () => {
+  // The server's own predicate. Ids failing it are pushed into a viewer's war
+  // inventory instead of being recorded as an unlock, which is what GWO has to
+  // intercept.
+  it("matches only the ids the base game records as unlocks", () => {
+    assert.equal(treasure.isBaseLoadoutCardId("gwc_start_artillery"), true);
+    assert.equal(treasure.isBaseLoadoutCardId("gwaio_start_lucky"), false);
+    assert.equal(treasure.isBaseLoadoutCardId("nem_start_nuke"), false);
+    assert.equal(treasure.isBaseLoadoutCardId("gwc_combat_bots"), false);
+    assert.equal(treasure.isBaseLoadoutCardId(undefined), false);
+  });
+});
+
 describe("recordHasUnlockedLoadout", () => {
   it("reads the base game's own unlock list", () => {
     const record = { unlockedStartCardIds: ["gwc_start_subcdr"] };
