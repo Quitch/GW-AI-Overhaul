@@ -13,7 +13,7 @@ define(function () {
   // Community map packs ship string-typed bounds ({"min": "2"}), which the game coerces.
   var ruleBound = function (value, fallback) {
     var bound = Number(value);
-    return bound ? bound : fallback;
+    return bound || fallback;
   };
 
   // Each zone's [min, max]. landing_zones is either {list, rules} or a bare
@@ -22,8 +22,8 @@ define(function () {
     var planets = (system && system.planets) || [];
     var zones = [];
 
-    for (var p = 0; p < planets.length; p++) {
-      var landing = planets[p].landing_zones;
+    for (var planet of planets) {
+      var landing = planet.landing_zones;
       if (!landing) {
         continue;
       }
@@ -49,8 +49,8 @@ define(function () {
 
     for (var n = 1; n <= MAX_ARMIES; n++) {
       var active = 0;
-      for (var z = 0; z < zones.length; z++) {
-        if (zones[z][0] <= n && n <= zones[z][1]) {
+      for (var zone of zones) {
+        if (zone[0] <= n && n <= zone[1]) {
           active++;
         }
       }
@@ -72,7 +72,7 @@ define(function () {
     }
     var min = Number(declared[0]);
     var max = Number(declared[1]);
-    if (!isFinite(min) || !isFinite(max)) {
+    if (!Number.isFinite(min) || !Number.isFinite(max)) {
       return null;
     }
     // new_game.js floors the displayed count at 2 the same way.
@@ -86,8 +86,8 @@ define(function () {
     var planets = (system && system.planets) || [];
     var total = 0;
 
-    for (var p = 0; p < planets.length; p++) {
-      var generator = planets[p].generator || planets[p].planet;
+    for (var planet of planets) {
+      var generator = planet.generator || planet.planet;
       if (generator && generator.numArmies) {
         total += generator.numArmies;
       }
@@ -140,12 +140,12 @@ define(function () {
     var byRange = {};
     var brackets = [];
 
-    for (var i = 0; i < pool.length; i++) {
-      var range = armyRange(pool[i]);
+    for (var system of pool) {
+      var range = armyRange(system);
       if (!range) {
         console.warn(
           "gwoSystemBrackets: no army count could be derived for '" +
-            ((pool[i] && pool[i].name) || "unnamed system") +
+            ((system && system.name) || "unnamed system") +
             "', dropping it from the galaxy pool"
         );
         continue;
@@ -155,7 +155,7 @@ define(function () {
         byRange[key] = { min: range[0], max: range[1], systems: [] };
         brackets.push(byRange[key]);
       }
-      byRange[key].systems.push(pool[i]);
+      byRange[key].systems.push(system);
     }
 
     var span = function (bracket) {
@@ -175,9 +175,9 @@ define(function () {
 
   var highestMax = function (brackets) {
     var highest = 0;
-    for (var i = 0; i < brackets.length; i++) {
-      if (brackets[i].max > highest) {
-        highest = brackets[i].max;
+    for (var bracket of brackets) {
+      if (bracket.max > highest) {
+        highest = bracket.max;
       }
     }
     return highest;
@@ -229,8 +229,8 @@ define(function () {
     var copy = JSON.parse(JSON.stringify(system));
     var started = false;
 
-    for (var i = 0; i < copy.planets.length; i++) {
-      if (copy.planets[i].starting_planet) {
+    for (var planet of copy.planets) {
+      if (planet.starting_planet) {
         started = true;
       }
     }
@@ -248,14 +248,13 @@ define(function () {
     var highest = highestMax(list);
     var ordered = [];
     var reused = 0;
-    var i;
 
-    for (i = 0; i < list.length; i++) {
-      for (var s = 0; s < list[i].systems.length; s++) {
+    for (var bracket of list) {
+      for (var system of bracket.systems) {
         ordered.push({
-          system: list[i].systems[s],
-          min: list[i].min,
-          max: list[i].max,
+          system: system,
+          min: bracket.min,
+          max: bracket.max,
           shuffle: random(),
           taken: false,
         });
@@ -272,8 +271,7 @@ define(function () {
       var gap = [];
       var gapMax = 0;
 
-      for (var e = 0; e < ordered.length; e++) {
-        var entry = ordered[e];
+      for (var entry of ordered) {
         if (entry.min <= wanted && wanted <= entry.max) {
           inRange.push(entry);
         } else if (entry.max >= wanted) {
@@ -291,15 +289,17 @@ define(function () {
       var entries = eligible(Math.min(armies, highest));
       var placed = [];
 
-      for (var e = 0; e < entries.length; e++) {
-        if (!usableSystem(entries[e].system)) {
+      // `entry` is the live `ordered` element, so setting taken here is what
+      // stops a system being placed twice.
+      for (var entry of entries) {
+        if (!usableSystem(entry.system)) {
           continue;
         }
-        if (!entries[e].taken) {
-          entries[e].taken = true;
-          return copyOf(entries[e].system);
+        if (!entry.taken) {
+          entry.taken = true;
+          return copyOf(entry.system);
         }
-        placed.push(entries[e]);
+        placed.push(entry);
       }
 
       // A pool smaller than the galaxy: reuse in order rather than leave a star empty.
