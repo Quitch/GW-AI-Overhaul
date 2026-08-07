@@ -198,6 +198,16 @@ pinged again. Three things about it are not obvious:
   `requestAnimationFrame` while `hidingUI()` is true, so ticks stop dead during a
   battle launch and a tick-only marker would still be frozen on the map on return.
 
+### What can be pinged
+
+`canPing` drives both the button's visibility and the send, so a click landing as
+the war moves on cannot get past it. A star is pingable when this client is a
+connected viewer, the star index is one the galaxy has, and the star is **not**
+already flying the player's own colour — the base game paints it that way once the
+star holds neither an AI nor an undealt card, which is what an explored system looks
+like, and there is nothing left there to ask the host for. A star still hiding a card
+has no owner colour at all, and stays pingable.
+
 The button is a sibling of the stock action row inside `#selected-system-anchor`,
 not a member of it: that row is gated on `canShowCampaignActionButtons`, which is
 false for exactly the viewers Ping is for. `gw_play/coop_ping.js` injects it

@@ -22,19 +22,43 @@ define(function () {
     return String(clientId || "") + "::" + String(clientName || "");
   };
 
-  // The reject reason, or undefined when the ping is valid.
-  var pingValidationError = function (payload, starCount) {
-    if (!_.isPlainObject(payload)) {
-      return "invalid payload";
-    }
-
-    var star = payload.star;
+  var starValidationError = function (star, starCount) {
     if (!_.isFinite(star) || star !== Math.floor(star)) {
       return "invalid star";
     }
 
     if (star < 0 || star >= starCount) {
       return "star out of range";
+    }
+
+    return undefined;
+  };
+
+  // The base game paints a star the player's own colour once it holds neither an
+  // AI nor an undealt card, which is what an explored system looks like.
+  var isPlayerColour = function (ownerColour, playerColour) {
+    if (
+      !_.isArray(ownerColour) ||
+      !_.isArray(playerColour) ||
+      !playerColour.length
+    ) {
+      return false;
+    }
+
+    return _.every(playerColour, function (channel, index) {
+      return ownerColour[index] === channel;
+    });
+  };
+
+  // The reject reason, or undefined when the ping is valid.
+  var pingValidationError = function (payload, starCount) {
+    if (!_.isPlainObject(payload)) {
+      return "invalid payload";
+    }
+
+    var starError = starValidationError(payload.star, starCount);
+    if (starError) {
+      return starError;
     }
 
     var pingId = payload.ping_id;
@@ -83,6 +107,7 @@ define(function () {
 
   var factory = function (params) {
     var marker = params.marker;
+    var systemFor = params.systemFor;
     var starCount = params.starCount;
     var starName = params.starName;
 
@@ -123,17 +148,34 @@ define(function () {
       );
     };
 
+    // Drives both the button's visibility and the send, so a click that lands as
+    // the war moves on cannot get past it.
+    var canPing = function (star) {
+      if (
+        !model.isCampaignViewer() ||
+        !model.gwCampaignConnected() ||
+        model.canShowCampaignActionButtons() ||
+        model.hidingUI() ||
+        starValidationError(star, starCount())
+      ) {
+        return false;
+      }
+
+      var system = systemFor(star);
+      return (
+        !!system && !isPlayerColour(system.ownerColor(), model.player.color())
+      );
+    };
+
     // The pinger renders locally rather than waiting for the relay to come back,
     // and drops its own echo below.
     var pingStar = function () {
-      if (model.gwoPingOnCooldown()) {
+      var star = model.selection.star();
+      if (model.gwoPingOnCooldown() || !canPing(star)) {
         return;
       }
 
-      var payload = { star: model.selection.star(), ping_id: nextPingId() };
-      if (pingValidationError(payload, starCount())) {
-        return;
-      }
+      var payload = { star: star, ping_id: nextPingId() };
 
       if (!model.sendCampaignViewerOperator(PING_REQUEST, payload)) {
         return;
@@ -211,7 +253,7 @@ define(function () {
       );
     }
 
-    return { pingStar: pingStar };
+    return { canPing: canPing, pingStar: pingStar };
   };
 
   // Test-only hook - see testing.md.
@@ -221,9 +263,11 @@ define(function () {
     module.exports = {
       clientKey: clientKey,
       createCooldown: createCooldown,
+      isPlayerColour: isPlayerColour,
       pingChatMessage: pingChatMessage,
       pingPlayerName: pingPlayerName,
       pingValidationError: pingValidationError,
+      starValidationError: starValidationError,
     };
   }
 

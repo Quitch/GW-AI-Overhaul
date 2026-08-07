@@ -18,13 +18,14 @@ function gwoCoopPing() {
     );
     locTree($(".gwo-ping-actions"));
 
-    var sendPing;
+    // Observable, so the button wakes up when the modules below arrive.
+    var ping = ko.observable();
 
     model.gwoPingOnCooldown = ko.observable(false);
     model.gwoCanPingStar = ko.observable(false);
     model.gwoPingStar = function () {
-      if (sendPing) {
-        sendPing();
+      if (ping()) {
+        ping().pingStar();
       }
     };
 
@@ -33,14 +34,7 @@ function gwoCoopPing() {
     _.defer(function () {
       ko.computed(function () {
         var star = model.selection.star();
-        model.gwoCanPingStar(
-          model.isCampaignViewer() &&
-            model.gwCampaignConnected() &&
-            !model.canShowCampaignActionButtons() &&
-            !model.hidingUI() &&
-            _.isNumber(star) &&
-            star >= 0
-        );
+        model.gwoCanPingStar(!!ping() && ping().canPing(star));
       });
     });
 
@@ -54,16 +48,19 @@ function gwoCoopPing() {
           return model.galaxy.systems()[star];
         };
 
-        sendPing = gwoPingOperators({
-          marker: gwoPingMarker.createLayer({ systemFor: systemFor }),
-          starCount: function () {
-            return model.galaxy.systems().length;
-          },
-          starName: function (star) {
-            var system = systemFor(star);
-            return system ? loc(system.name()) : "";
-          },
-        }).pingStar;
+        ping(
+          gwoPingOperators({
+            marker: gwoPingMarker.createLayer({ systemFor: systemFor }),
+            systemFor: systemFor,
+            starCount: function () {
+              return model.galaxy.systems().length;
+            },
+            starName: function (star) {
+              var system = systemFor(star);
+              return system ? loc(system.name()) : "";
+            },
+          })
+        );
       }
     );
   } catch (e) {

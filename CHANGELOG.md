@@ -4,7 +4,7 @@
 
 ### Added
 
-- Co-op viewers can select a star and press Ping to point the host and the other viewers at it
+- Co-op viewers can select a star and press Ping to point the host and the other viewers at it. Systems you have already explored cannot be pinged
 
 ## v6.8.0 - 2026-08-06
 

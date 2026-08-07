@@ -15,9 +15,11 @@ const {
 const {
   clientKey,
   createCooldown,
+  isPlayerColour,
   pingChatMessage,
   pingPlayerName,
   pingValidationError,
+  starValidationError,
 } = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js"
 );
@@ -92,6 +94,45 @@ describe("ping validation", () => {
       pingValidationError(ping({ ping_id: "x".repeat(64) }), 3),
       undefined
     );
+  });
+});
+
+describe("a star the player already holds", () => {
+  const player = [0.1, 0.2, 0.3];
+
+  // ownerColor carries a fourth channel the player's own colour does not.
+  it("matches the player's colour whatever trails it", () => {
+    assert.equal(isPlayerColour([0.1, 0.2, 0.3, 3], player), true);
+    assert.equal(isPlayerColour([0.1, 0.2, 0.3], player), true);
+  });
+
+  it("does not match a colour differing in any channel", () => {
+    assert.equal(isPlayerColour([0.9, 0.2, 0.3, 3], player), false);
+    assert.equal(isPlayerColour([0.1, 0.9, 0.3, 3], player), false);
+    assert.equal(isPlayerColour([0.1, 0.2, 0.9, 3], player), false);
+  });
+
+  // A star holding an undealt card has no owner colour at all, and an empty
+  // player colour must not read as "everything is mine".
+  it("does not match when either colour is missing", () => {
+    assert.equal(isPlayerColour(undefined, player), false);
+    assert.equal(isPlayerColour([0.1, 0.2, 0.3], undefined), false);
+    assert.equal(isPlayerColour([0.1, 0.2, 0.3], []), false);
+    assert.equal(isPlayerColour([], player), false);
+  });
+});
+
+describe("star validation", () => {
+  it("accepts a whole number inside the galaxy", () => {
+    assert.equal(starValidationError(0, 3), undefined);
+    assert.equal(starValidationError(2, 3), undefined);
+  });
+
+  it("refuses what a ping payload would also refuse", () => {
+    assert.equal(starValidationError("1", 3), "invalid star");
+    assert.equal(starValidationError(1.5, 3), "invalid star");
+    assert.equal(starValidationError(-1, 3), "star out of range");
+    assert.equal(starValidationError(3, 3), "star out of range");
   });
 });
 
@@ -194,7 +235,8 @@ describe("marker pulse", () => {
   it("holds the icon lit before fading it out at the end", () => {
     assert.equal(pulseFrame(LIFETIME_MS * 0.75).iconAlpha, 1);
     const late = pulseFrame(LIFETIME_MS - 100).iconAlpha;
-    assert.ok(late > 0 && late < 1, String(late));
+    assert.ok(late > 0, String(late));
+    assert.ok(late < 1, String(late));
   });
 
   it("is done at the end of the last pulse and stays done", () => {

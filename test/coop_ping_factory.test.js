@@ -42,6 +42,11 @@ function setup(overrides = {}) {
       selected: 1,
       displayName: "Alice",
       onCooldown: false,
+      isViewer: true,
+      hostActionButtons: false,
+      hidingUI: false,
+      playerColour: [0.1, 0.2, 0.3],
+      ownerColour: [0.9, 0.9, 0.9, 3],
     },
     overrides
   );
@@ -64,6 +69,10 @@ function setup(overrides = {}) {
   const onCooldown = observable(options.onCooldown);
   stubs.setGlobal("model", {
     isCampaignHost: () => options.isHost,
+    isCampaignViewer: () => options.isViewer,
+    canShowCampaignActionButtons: () => options.hostActionButtons,
+    hidingUI: () => options.hidingUI,
+    player: { color: () => options.playerColour },
     gwCampaignConnected: () => options.connected,
     displayName: () => options.displayName,
     selection: { star: () => options.selected },
@@ -93,6 +102,10 @@ function setup(overrides = {}) {
 
   const api = makeFactory({
     marker: { raise: (star) => calls.raised.push(star) },
+    systemFor: (star) =>
+      star >= 0 && star < options.starCount
+        ? { ownerColor: () => options.ownerColour }
+        : undefined,
     starCount: () => options.starCount,
     starName: (star) => "System " + star,
   });
@@ -292,6 +305,46 @@ describe("ping broadcast handler", () => {
   });
 });
 
+describe("what can be pinged", () => {
+  it("allows a star with somebody else's colour on it", () => {
+    const { api } = build();
+    assert.equal(api.canPing(1), true);
+  });
+
+  // The colour the base game paints a star once it has neither an AI nor an
+  // undealt card: there is nothing left there to ask the host for.
+  it("refuses a star already flying the player's colour", () => {
+    const { api } = build({ ownerColour: [0.1, 0.2, 0.3, 3] });
+    assert.equal(api.canPing(1), false);
+  });
+
+  it("allows a star whose colour is still hidden behind a card", () => {
+    const { api } = build({ ownerColour: undefined });
+    assert.equal(api.canPing(1), true);
+  });
+
+  it("refuses a star index the galaxy does not have", () => {
+    const { api } = build();
+    for (const star of [-1, 3, 1.5, "1", undefined]) {
+      assert.equal(api.canPing(star), false, String(star));
+    }
+  });
+
+  it("refuses anyone who is not a connected viewer", () => {
+    for (const off of [
+      { isViewer: false },
+      { connected: false },
+      { hostActionButtons: true },
+      { hidingUI: true },
+    ]) {
+      const { api } = build(off);
+      assert.equal(api.canPing(1), false, JSON.stringify(off));
+      active.restore();
+      active = undefined;
+    }
+  });
+});
+
 describe("sending a ping", () => {
   // The cooldown is cleared on a _.delay. node:test's timer mocks cannot reach
   // it - lodash 3 binds context.setTimeout once, at load - so the delay is
@@ -371,6 +424,17 @@ describe("sending a ping", () => {
 
   it("does not ping a star that is not in the galaxy", () => {
     const { api, calls } = build({ selected: -1 });
+
+    api.pingStar();
+
+    assert.deepEqual(calls.viewerOperators, []);
+    assert.deepEqual(calls.raised, []);
+  });
+
+  // The button is hidden for these, but a click landing as the war moves on
+  // must not get through either.
+  it("does not ping a star the button would not offer", () => {
+    const { api, calls } = build({ ownerColour: [0.1, 0.2, 0.3, 3] });
 
     api.pingStar();
 
