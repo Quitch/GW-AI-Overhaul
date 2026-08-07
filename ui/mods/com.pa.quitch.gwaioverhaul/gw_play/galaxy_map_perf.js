@@ -18,9 +18,18 @@ function gwoGalaxyMapPerf() {
     var interactiveFrameIntervalMs = 1000 / 60;
     var idleFrameIntervalMs = 1000 / 10;
     var lastDraw = 0;
+    var interactiveUntil = 0;
 
     // Halved; the base game takes the 20/sec default.
     stage.enableMouseOver(10);
+
+    // For animated overlays, which the idle rate renders in too few frames.
+    model.gwoRequestInteractiveFrames = function (durationMs) {
+      interactiveUntil = Math.max(
+        interactiveUntil,
+        window.performance.now() + durationMs
+      );
+    };
 
     var lastX, lastY, lastScaleX, lastScaleY, lastWidth, lastHeight;
     var lastParallaxX, lastParallaxY;
@@ -40,7 +49,7 @@ function gwoGalaxyMapPerf() {
 
       var now = window.performance.now();
       var interval =
-        moved || model.player.moving()
+        moved || model.player.moving() || now < interactiveUntil
           ? interactiveFrameIntervalMs
           : idleFrameIntervalMs;
       if (now - lastDraw < interval) {

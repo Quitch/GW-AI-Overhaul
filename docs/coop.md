@@ -134,6 +134,61 @@ The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat, scheduled but not
 awaited.
 
+## Pings
+
+A viewer selects a star and presses Ping; the host and every other viewer get a
+pulsing marker on that star, the game's own ping cue, and a chat line naming the
+sender. Two operators, viewer → host → every viewer:
+`gwo_ping_star` and `gwo_ping_star_broadcast` (`gw_play/coop_ping_operators.js`).
+
+A ping changes nothing. That is what shapes the whole subsystem:
+
+- **Both handlers return nothing.** A returned promise joins
+  `gwCampaignStateApplyTail`, and a ping has no business sitting in the queue that
+  orders authoritative updates. Nothing sets `stale_snapshot`, writes a record, or
+  saves.
+- **The relay broadcasts with no options object at all.** Omitting both
+  `target_client_id` and `target_client_ids` is what makes the server fan it out to
+  every connected viewer.
+- **It needs no inventory record**, so it works for the unauthenticated viewer whose
+  empty `uberId` breaks every record-keyed path above. The cooldown and the chat
+  label fall back through `client_name` to the `id::name` composite key.
+
+The pinger renders locally on send and drops the returning broadcast by `ping_id`,
+rather than waiting for the round trip. That buys instant feedback on the click, and
+means a host on an older GWO — which logs the unknown operator type and ignores it —
+degrades to "only the pinger sees it" rather than to a dead button.
+
+Rate limiting is on both sides because the relay has none of its own. The viewer's
+3s cooldown is UI feedback, greying the button; the host's is the real one, and is
+deliberately **shorter** at 2.5s, because the viewer's clock starts at the click and
+the host's at receipt. The ping cue is throttled separately again, at 250ms: pings
+from different clients can legitimately land together.
+
+### The marker
+
+`gw_play/coop_ping_marker.js` hangs an expanding ring and an exclamation icon off
+`system.systemDisplay`, one per star, restarting rather than stacking if the star is
+pinged again. Three things about it are not obvious:
+
+- **`z = 2` is load-bearing.** `systems.js`'s `sortContainer` orders an undefined `z`
+  ahead of every number, so an unlabelled container sinks below the star icon.
+- **There is no `createjs.Tween`** — `gw_play.html` loads EaselJS alone — so the
+  pulse runs off a `tick` listener reading the wall clock, like `systems.js`'s
+  rotating selection icon. `galaxy_map_perf.js` would otherwise render it at the idle
+  10fps, hence `model.gwoRequestInteractiveFrames`.
+- **The `_.delay` cleanup is not belt-and-braces.** `updateStage` stops re-arming its
+  `requestAnimationFrame` while `hidingUI()` is true, so ticks stop dead during a
+  battle launch and a tick-only marker would still be frozen on the map on return.
+
+The button is a sibling of the stock action row inside `#selected-system-anchor`,
+not a member of it: that row is gated on `canShowCampaignActionButtons`, which is
+false for exactly the viewers Ping is for. `gw_play/coop_ping.js` injects it
+synchronously, before the scene's single `ko.applyBindings`, and takes its dependency
+on `model.selection.star` inside a `_.defer` — `systems.js` replaces `model.selection`
+wholesale, and a computed built at load time would subscribe to the observable that
+replacement orphans.
+
 ## Per-player pre-dealt cards
 
 Under per-player tech each viewer gets their **own** card on every selectable AI

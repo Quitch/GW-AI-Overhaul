@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Co-op viewers can select a star and press Ping to point the host and the other viewers at it
+
 ## v6.8.0 - 2026-08-06
 
 ### Added
