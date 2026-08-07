@@ -47,6 +47,9 @@ function setup(overrides = {}) {
       hidingUI: false,
       playerColour: [0.1, 0.2, 0.3],
       ownerColour: [0.9, 0.9, 0.9, 3],
+      turnState: "begin",
+      scanning: false,
+      pendingTechRecords: [],
     },
     overrides
   );
@@ -72,7 +75,17 @@ function setup(overrides = {}) {
     isCampaignViewer: () => options.isViewer,
     canShowCampaignActionButtons: () => options.hostActionButtons,
     hidingUI: () => options.hidingUI,
+    scanning: () => options.scanning,
     player: { color: () => options.playerColour },
+    // The base game's own dispatch: the branch named by the turn state, or the
+    // default when it names none.
+    testGameState: (states, fallback) => {
+      const branch = states[options.turnState];
+      if (branch === undefined) {
+        return fallback;
+      }
+      return typeof branch === "function" ? branch() : branch;
+    },
     gwCampaignConnected: () => options.connected,
     displayName: () => options.displayName,
     selection: { star: () => options.selected },
@@ -108,6 +121,7 @@ function setup(overrides = {}) {
         : undefined,
     starCount: () => options.starCount,
     starName: (star) => "System " + star,
+    pendingTechRecords: () => options.pendingTechRecords,
   });
 
   return {
@@ -328,6 +342,42 @@ describe("what can be pinged", () => {
     for (const star of [-1, 3, 1.5, "1", undefined]) {
       assert.equal(api.canPing(star), false, String(star));
     }
+  });
+
+  // Where the host goes next stops being a question once they have committed
+  // to an explore or a fight.
+  it("refuses while the turn is anything but between moves", () => {
+    for (const turnState of ["explore", "fight", "end"]) {
+      const { api } = build({ turnState });
+      assert.equal(api.canPing(1), false, turnState);
+      active.restore();
+      active = undefined;
+    }
+  });
+
+  it("refuses while the scanning overlay is up", () => {
+    const { api } = build({ scanning: true });
+    assert.equal(api.canPing(1), false);
+  });
+
+  // Under per-player tech the turn state is back to begin while viewers are
+  // still choosing, so the records are the only thing that says so.
+  it("refuses while anybody still holds a tech offer", () => {
+    const { api } = build({
+      pendingTechRecords: [
+        undefined,
+        { pendingTechCards: undefined },
+        { pendingTechCards: { star: 2, cards: [{ id: "a" }] } },
+      ],
+    });
+    assert.equal(api.canPing(1), false);
+  });
+
+  it("allows a ping once every offer is resolved", () => {
+    const { api } = build({
+      pendingTechRecords: [undefined, { pendingTechCards: undefined }, {}],
+    });
+    assert.equal(api.canPing(1), true);
   });
 
   it("refuses anyone who is not a connected viewer", () => {

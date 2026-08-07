@@ -208,6 +208,16 @@ star holds neither an AI nor an undealt card, which is what an explored system l
 like, and there is nothing left there to ask the host for. A star still hiding a card
 has no owner colour at all, and stays pingable.
 
+It also requires the turn state to be `begin`. Where to go next stops being a
+question once the host has committed to an explore or a fight, and the state does not
+return to `begin` until that is resolved. Two things sit outside the turn state and
+are tested alongside it: `scanning()`, which is raised a beat before the state moves;
+and, under per-player tech, whether **anybody** still holds a tech offer.
+`gwCampaignPlayerSetupBlocked` answers that for the host and returns false flat for
+everyone else, so `techChoicePending` applies the same shape test to the records
+themselves — the local offer plus every connected client's — which every client has,
+because records travel in the snapshot.
+
 The button is a sibling of the stock action row inside `#selected-system-anchor`,
 not a member of it: that row is gated on `canShowCampaignActionButtons`, which is
 false for exactly the viewers Ping is for. `gw_play/coop_ping.js` injects it

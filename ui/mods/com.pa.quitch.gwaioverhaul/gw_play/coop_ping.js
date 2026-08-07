@@ -59,6 +59,28 @@ function gwoCoopPing() {
               var system = systemFor(star);
               return system ? loc(system.name()) : "";
             },
+            pendingTechRecords: function () {
+              if (!model.gwCampaignPerPlayerTechCards()) {
+                return [];
+              }
+
+              var game = model.game();
+              var records = _.map(
+                model.gwCampaignConnectedClients(),
+                function (client) {
+                  return game.findCoopPlayerInventoryData({
+                    id: client.id,
+                    name: client.name,
+                  });
+                }
+              );
+
+              // This client's own offer arrives by its own route, and a viewer
+              // reading its own record back is not guaranteed to find it.
+              return records.concat({
+                pendingTechCards: model.currentCoopPendingTechCards(),
+              });
+            },
           })
         );
       }

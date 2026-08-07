@@ -50,6 +50,19 @@ define(function () {
     });
   };
 
+  // Matches the predicate gwCampaignPlayerSetupBlocked uses, which is host-only
+  // and so cannot be read from a viewer.
+  var techChoicePending = function (records) {
+    return _.some(records, function (record) {
+      var pending = record && record.pendingTechCards;
+      return !!(
+        pending &&
+        _.isNumber(pending.star) &&
+        _.isArray(pending.cards)
+      );
+    });
+  };
+
   // The reject reason, or undefined when the ping is valid.
   var pingValidationError = function (payload, starCount) {
     if (!_.isPlainObject(payload)) {
@@ -110,6 +123,7 @@ define(function () {
     var systemFor = params.systemFor;
     var starCount = params.starCount;
     var starName = params.starName;
+    var pendingTechRecords = params.pendingTechRecords;
 
     var hostCooldown = createCooldown(HOST_COOLDOWN_MS);
     var ownPings = [];
@@ -157,6 +171,17 @@ define(function () {
         model.canShowCampaignActionButtons() ||
         model.hidingUI() ||
         starValidationError(star, starCount())
+      ) {
+        return false;
+      }
+
+      // Only between turns: an explore or a fight is the host's to finish, and
+      // under per-player tech the turn state returns to begin while viewers can
+      // still be holding an offer.
+      if (
+        !model.testGameState({ begin: true }, false) ||
+        model.scanning() ||
+        techChoicePending(pendingTechRecords())
       ) {
         return false;
       }
@@ -268,6 +293,7 @@ define(function () {
       pingPlayerName: pingPlayerName,
       pingValidationError: pingValidationError,
       starValidationError: starValidationError,
+      techChoicePending: techChoicePending,
     };
   }
 

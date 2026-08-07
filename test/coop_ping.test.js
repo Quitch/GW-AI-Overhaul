@@ -20,6 +20,7 @@ const {
   pingPlayerName,
   pingValidationError,
   starValidationError,
+  techChoicePending,
 } = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js"
 );
@@ -133,6 +134,35 @@ describe("star validation", () => {
     assert.equal(starValidationError(1.5, 3), "invalid star");
     assert.equal(starValidationError(-1, 3), "star out of range");
     assert.equal(starValidationError(3, 3), "star out of range");
+  });
+});
+
+describe("an exploration still being resolved", () => {
+  const offer = { pendingTechCards: { star: 2, cards: [] } };
+
+  it("sees an offer anybody is still holding", () => {
+    assert.equal(techChoicePending([offer]), true);
+    assert.equal(techChoicePending([{}, undefined, offer]), true);
+  });
+
+  it("sees nothing in an empty or resolved set of records", () => {
+    assert.equal(techChoicePending([]), false);
+    assert.equal(techChoicePending(undefined), false);
+    assert.equal(techChoicePending([{}, undefined]), false);
+    assert.equal(techChoicePending([{ pendingTechCards: undefined }]), false);
+  });
+
+  // The same shape test gwCampaignPlayerSetupBlocked applies, so a half-written
+  // record does not read as an open offer.
+  it("ignores a record whose offer is malformed", () => {
+    assert.equal(
+      techChoicePending([{ pendingTechCards: { star: "2", cards: [] } }]),
+      false
+    );
+    assert.equal(
+      techChoicePending([{ pendingTechCards: { star: 2, cards: "a" } }]),
+      false
+    );
   });
 });
 
