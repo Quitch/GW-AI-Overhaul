@@ -15,7 +15,6 @@ const {
 const {
   clientKey,
   createCooldown,
-  isPlayerColour,
   pingChatMessage,
   pingPlayerName,
   pingValidationError,
@@ -95,31 +94,6 @@ describe("ping validation", () => {
       pingValidationError(ping({ ping_id: "x".repeat(64) }), 3),
       undefined
     );
-  });
-});
-
-describe("a star the player already holds", () => {
-  const player = [0.1, 0.2, 0.3];
-
-  // ownerColor carries a fourth channel the player's own colour does not.
-  it("matches the player's colour whatever trails it", () => {
-    assert.equal(isPlayerColour([0.1, 0.2, 0.3, 3], player), true);
-    assert.equal(isPlayerColour([0.1, 0.2, 0.3], player), true);
-  });
-
-  it("does not match a colour differing in any channel", () => {
-    assert.equal(isPlayerColour([0.9, 0.2, 0.3, 3], player), false);
-    assert.equal(isPlayerColour([0.1, 0.9, 0.3, 3], player), false);
-    assert.equal(isPlayerColour([0.1, 0.2, 0.9, 3], player), false);
-  });
-
-  // A star holding an undealt card has no owner colour at all, and an empty
-  // player colour must not read as "everything is mine".
-  it("does not match when either colour is missing", () => {
-    assert.equal(isPlayerColour(undefined, player), false);
-    assert.equal(isPlayerColour([0.1, 0.2, 0.3], undefined), false);
-    assert.equal(isPlayerColour([0.1, 0.2, 0.3], []), false);
-    assert.equal(isPlayerColour([], player), false);
   });
 });
 

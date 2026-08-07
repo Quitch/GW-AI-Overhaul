@@ -202,11 +202,10 @@ pinged again. Three things about it are not obvious:
 
 `canPing` drives both the button's visibility and the send, so a click landing as
 the war moves on cannot get past it. A star is pingable when this client is a
-connected viewer, the star index is one the galaxy has, and the star is **not**
-already flying the player's own colour — the base game paints it that way once the
-star holds neither an AI nor an undealt card, which is what an explored system looks
-like, and there is nothing left there to ask the host for. A star still hiding a card
-has no owner colour at all, and stays pingable.
+connected viewer, the star index is one the galaxy has, and `star.explored()` is
+false — an explored star has been taken, and there is nothing left there to ask the
+host for. That observable travels in `syncViewerStarFromGame`'s copy list, so a
+viewer's own is maintained rather than inferred.
 
 It also requires the turn state to be `begin`. Where to go next stops being a
 question once the host has committed to an explore or a fight, and the state does not

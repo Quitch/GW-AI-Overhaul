@@ -34,22 +34,6 @@ define(function () {
     return undefined;
   };
 
-  // The base game paints a star the player's own colour once it holds neither an
-  // AI nor an undealt card, which is what an explored system looks like.
-  var isPlayerColour = function (ownerColour, playerColour) {
-    if (
-      !_.isArray(ownerColour) ||
-      !_.isArray(playerColour) ||
-      !playerColour.length
-    ) {
-      return false;
-    }
-
-    return _.every(playerColour, function (channel, index) {
-      return ownerColour[index] === channel;
-    });
-  };
-
   // Matches the predicate gwCampaignPlayerSetupBlocked uses, which is host-only
   // and so cannot be read from a viewer.
   var techChoicePending = function (records) {
@@ -186,10 +170,10 @@ define(function () {
         return false;
       }
 
+      // An explored star has been taken: there is nothing left there to ask the
+      // host for.
       var system = systemFor(star);
-      return (
-        !!system && !isPlayerColour(system.ownerColor(), model.player.color())
-      );
+      return !!system && !system.star.explored();
     };
 
     // The pinger renders locally rather than waiting for the relay to come back,
@@ -288,7 +272,6 @@ define(function () {
     module.exports = {
       clientKey: clientKey,
       createCooldown: createCooldown,
-      isPlayerColour: isPlayerColour,
       pingChatMessage: pingChatMessage,
       pingPlayerName: pingPlayerName,
       pingValidationError: pingValidationError,
