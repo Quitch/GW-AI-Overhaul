@@ -34,6 +34,7 @@ Any submissions should follow the requirements below:
 - Kebab case must be used for CSS.
 - Code must be formatted using prettier.
 - Commit summaries must be informative but concise, with any required detail in the body.
+- `CHANGELOG.md` additions always go under an `## Unreleased` heading, as `### Added`, `### Changed` or `### Bugfix`. A versioned heading describes a copy that has shipped, so its entries are static - never add to one or amend it. While a feature is still unreleased, later fixes and refinements to it are not changes anyone can have seen: the entry says the feature exists, and is not extended to describe the work that went into it.
 
 ### Available Libraries
 
