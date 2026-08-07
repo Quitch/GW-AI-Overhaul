@@ -159,11 +159,12 @@ define(function () {
         return false;
       }
 
-      // Only between turns: an explore or a fight is the host's to finish, and
-      // under per-player tech the turn state returns to begin while viewers can
-      // still be holding an offer.
+      // An explore or a fight is the host's to finish. Testing for those rather
+      // than for begin is deliberate: the turn state only returns to begin on
+      // the next move, so a finished exploration rests at end - which is exactly
+      // when somewhere to go next is worth pointing at.
       if (
-        !model.testGameState({ begin: true }, false) ||
+        model.testGameState({ explore: true, fight: true }, false) ||
         model.scanning() ||
         techChoicePending(pendingTechRecords())
       ) {

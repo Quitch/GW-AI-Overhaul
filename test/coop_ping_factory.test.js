@@ -339,13 +339,20 @@ describe("what can be pinged", () => {
 
   // Where the host goes next stops being a question once they have committed
   // to an explore or a fight.
-  it("refuses while the turn is anything but between moves", () => {
-    for (const turnState of ["explore", "fight", "end"]) {
+  it("refuses while an explore or a fight is running", () => {
+    for (const turnState of ["explore", "fight"]) {
       const { api } = build({ turnState });
       assert.equal(api.canPing(1), false, turnState);
       active.restore();
       active = undefined;
     }
+  });
+
+  // The turn state only returns to begin on the next move, so a finished
+  // exploration rests at end - which is exactly when where to go next matters.
+  it("allows a ping once the star is finished with", () => {
+    const { api } = build({ turnState: "end" });
+    assert.equal(api.canPing(1), true);
   });
 
   it("refuses while the scanning overlay is up", () => {

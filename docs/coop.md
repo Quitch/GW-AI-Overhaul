@@ -207,10 +207,14 @@ false — an explored star has been taken, and there is nothing left there to as
 host for. That observable travels in `syncViewerStarFromGame`'s copy list, so a
 viewer's own is maintained rather than inferred.
 
-It also requires the turn state to be `begin`. Where to go next stops being a
-question once the host has committed to an explore or a fight, and the state does not
-return to `begin` until that is resolved. Two things sit outside the turn state and
-are tested alongside it: `scanning()`, which is raised a beat before the state moves;
+It also refuses while the turn state is `explore` or `fight`: where to go next stops
+being a question once the host has committed to one. Testing for those two rather than
+for `begin` is deliberate — **the state only returns to `begin` on the next `move()`**,
+so a finished exploration rests at `end`, which is exactly when somewhere to go next is
+worth pointing at. Gating on `begin` instead left the button dead from the moment a
+star was finished with until the host moved off it. Two things sit outside the turn
+state and are tested alongside it: `scanning()`, which is raised a beat before the
+state moves;
 and, under per-player tech, whether **anybody** still holds a tech offer.
 `gwCampaignPlayerSetupBlocked` answers that for the host and returns false flat for
 everyone else, so `techChoicePending` applies the same shape test to the records
