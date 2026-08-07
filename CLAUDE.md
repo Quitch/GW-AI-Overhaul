@@ -96,6 +96,11 @@ See CONTRIBUTING.md for the full list. The ones that bite most often:
 
 - camelCase for JS, kebab-case for CSS, 2-space indent, HTML in its own file (never
   inline in JS).
+- `CHANGELOG.md` additions always go under `## Unreleased`, as `### Added`,
+  `### Changed` or `### Bugfix`. A versioned heading describes a copy that has
+  shipped, so its entries are static - never add to one or amend it. While a feature
+  is still unreleased, later fixes to it are not changes anyone can have seen: the
+  entry says the feature exists, and does not grow to cover the work behind it.
 - PRs must only touch what the request needs - no drive-by cleanup/reformatting
   (submit those separately). `format:write` is repo-wide (`prettier --write .`), so
   run it and then stage only the files your change actually touches. The whole repo

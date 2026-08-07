@@ -77,9 +77,10 @@ define(function () {
     });
   };
 
-  // Every precondition the referee's apply() needs. A writeFailure result means
-  // apply() must stamp per_player_tech_ready = false onto config before resolving.
-  var validatePerPlayerTechInputs = function (referee, options) {
+  // The guards that must not stamp per_player_tech_ready onto config: either
+  // there is no valid config to stamp it on, or per-player tech is not in play
+  // at all. On success it hands the config to validateRefereeState.
+  var validateTechOptions = function (referee, options) {
     var config = referee && _.isFunction(referee.config) && referee.config();
 
     if (!config || !_.isArray(config.armies)) {
@@ -91,16 +92,6 @@ define(function () {
           "[GW COOP] Per-player tech referee received invalid battle config.",
       };
     }
-
-    var failAfterConfig = function (message) {
-      return {
-        ok: false,
-        resolveValue: false,
-        writeFailure: true,
-        message: message,
-        config: config,
-      };
-    };
 
     if (!options || !options.active) {
       return {
@@ -121,6 +112,22 @@ define(function () {
           "[GW COOP] Per-player tech referee called without per-player tech enabled.",
       };
     }
+
+    return { ok: true, config: config };
+  };
+
+  // Reached only once there is a config to stamp, so every failure here is a
+  // writeFailure.
+  var validateRefereeState = function (referee, options, config) {
+    var failAfterConfig = function (message) {
+      return {
+        ok: false,
+        resolveValue: false,
+        writeFailure: true,
+        message: message,
+        config: config,
+      };
+    };
 
     var playerCount = getConnectedPlayerCount(options);
     if (playerCount < 1) {
@@ -212,6 +219,17 @@ define(function () {
         baseCommander: stripKnownSpecTag(playerCommander),
       },
     };
+  };
+
+  // Every precondition the referee's apply() needs. A writeFailure result means
+  // apply() must stamp per_player_tech_ready = false onto config before resolving.
+  var validatePerPlayerTechInputs = function (referee, options) {
+    var optionsResult = validateTechOptions(referee, options);
+    if (!optionsResult.ok) {
+      return optionsResult;
+    }
+
+    return validateRefereeState(referee, options, optionsResult.config);
   };
 
   return {

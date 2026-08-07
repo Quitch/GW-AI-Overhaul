@@ -44,8 +44,10 @@ describe("gwo_rng create", () => {
   });
 
   it("stays within [0, 1)", () => {
-    const values = draws(gwoRng.create("range"), 1000);
-    assert.ok(values.every((value) => value >= 0 && value < 1));
+    for (const value of draws(gwoRng.create("range"), 1000)) {
+      assert.ok(value >= 0, `below 0: ${value}`);
+      assert.ok(value < 1, `at or above 1: ${value}`);
+    }
   });
 });
 
@@ -60,7 +62,8 @@ describe("gwo_rng int", () => {
     const rng = gwoRng.create("int-range");
     for (let i = 0; i < 1000; i++) {
       const value = rng.int(5, 9);
-      assert.ok(value >= 5 && value <= 9, `out of range: ${value}`);
+      assert.ok(value >= 5, `below min: ${value}`);
+      assert.ok(value <= 9, `above max: ${value}`);
     }
   });
 
@@ -75,7 +78,9 @@ describe("gwo_rng float", () => {
     const rng = gwoRng.create("float");
     for (let i = 0; i < 500; i++) {
       const value = rng.float(0.9, 1.1);
-      assert.ok(value >= 0.9 && value < 1.1, `out of range: ${value}`);
+      assert.ok(value >= 0.9, `below min: ${value}`);
+      // Half-open, so max itself is out.
+      assert.ok(value < 1.1, `at or above max: ${value}`);
     }
   });
 });

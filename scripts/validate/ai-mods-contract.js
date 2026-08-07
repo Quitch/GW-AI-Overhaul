@@ -15,6 +15,7 @@ const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
 const { createAutoStub } = require("../lib/auto-stub.js");
 const { KNOWN_UNLOADABLE } = require("../lib/known-unloadable-cards.js");
+const { reportFailures } = require("../lib/report-failures.js");
 
 const CARDS_DIR = path.join(
   REPO_ROOT,
@@ -163,6 +164,36 @@ function loadCard(file) {
   }
 }
 
+// The second try/catch is separate from loadCard's on purpose: that one
+// discriminates why a card would not load, this one reports a card that loaded
+// but whose descriptors could not be collected.
+function checkFile(file) {
+  const loaded = loadCard(file);
+  if (loaded.excluded) {
+    return { excluded: true };
+  }
+  if (loaded.error) {
+    return { problems: [loaded.error] };
+  }
+
+  let mods;
+  try {
+    mods = collectAiMods(loaded.card);
+  } catch (e) {
+    return { problems: [e.message] };
+  }
+
+  if (!mods.length) {
+    return {};
+  }
+
+  return {
+    cardsChecked: 1,
+    modsChecked: mods.length,
+    problems: mods.flatMap((mod, i) => checkMod(mod, i)),
+  };
+}
+
 function main() {
   const files = fs
     .readdirSync(CARDS_DIR)
@@ -175,34 +206,12 @@ function main() {
   const failures = [];
 
   for (const file of files) {
-    const loaded = loadCard(file);
-    if (loaded.excluded) {
-      excluded++;
-      continue;
-    }
-    if (loaded.error) {
-      failures.push({ file, problems: [loaded.error] });
-      continue;
-    }
-    const card = loaded.card;
-
-    let mods;
-    try {
-      mods = collectAiMods(card);
-    } catch (e) {
-      failures.push({ file, problems: [e.message] });
-      continue;
-    }
-
-    if (!mods.length) {
-      continue;
-    }
-
-    cardsChecked++;
-    const problems = mods.flatMap((mod, i) => checkMod(mod, i));
-    modsChecked += mods.length;
-    if (problems.length) {
-      failures.push({ file, problems });
+    const result = checkFile(file);
+    excluded += result.excluded ? 1 : 0;
+    cardsChecked += result.cardsChecked || 0;
+    modsChecked += result.modsChecked || 0;
+    if (result.problems && result.problems.length) {
+      failures.push({ file, problems: result.problems });
     }
   }
 
@@ -218,16 +227,7 @@ function main() {
       " cards failed."
   );
 
-  if (failures.length) {
-    console.error("");
-    for (const failure of failures) {
-      console.error(failure.file + ":");
-      for (const problem of failure.problems) {
-        console.error("  - " + problem);
-      }
-    }
-    process.exitCode = 1;
-  }
+  reportFailures(failures);
 }
 
 main();

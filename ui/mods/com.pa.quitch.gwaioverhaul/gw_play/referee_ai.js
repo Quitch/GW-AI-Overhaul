@@ -533,22 +533,18 @@ define([
     };
   };
 
-  var processDirectories = function (
-    aiPath,
-    configFiles,
-    aiPaths,
-    clusterPresence,
-    inventory,
-    scopeToken,
-    forceSubCommanderScope,
-    treeCache
-  ) {
+  // `request` carries what the whole launch shares (configFiles, aiPaths,
+  // clusterPresence, treeCache) alongside the per-call inventory, scopeToken and
+  // forceSubCommanderScope. Most of it is passed straight through to the
+  // per-file context below.
+  var processDirectories = function (aiPath, request) {
     var deferred = $.Deferred();
+    var inventory = request.inventory;
 
-    treeCache.list(aiPath).then(function (fileList) {
-      var aisToModify = forceSubCommanderScope
+    request.treeCache.list(aiPath).then(function (fileList) {
+      var aisToModify = request.forceSubCommanderScope
         ? "SubCommanders"
-        : whichAIsAreBeingModified(clusterPresence, inventory);
+        : whichAIsAreBeingModified(request.clusterPresence, inventory);
       var nonLoadAiMods = _.reject(getRefereeInventoryAiMods(inventory), {
         op: "load",
       });
@@ -558,18 +554,18 @@ define([
         fileList,
         inventory,
         aisToModify,
-        aiPaths
+        request.aiPaths
       );
 
       var context = {
-        configFiles: configFiles,
+        configFiles: request.configFiles,
         aisToModify: aisToModify,
-        aiPaths: aiPaths,
-        clusterPresence: clusterPresence,
-        scopeToken: scopeToken,
+        aiPaths: request.aiPaths,
+        clusterPresence: request.clusterPresence,
+        scopeToken: request.scopeToken,
         nonLoadAiMods: nonLoadAiMods,
-        forceSubCommanderScope: forceSubCommanderScope,
-        treeCache: treeCache,
+        forceSubCommanderScope: request.forceSubCommanderScope,
+        treeCache: request.treeCache,
       };
 
       var promises = _.map(fileList, function (filePath) {
@@ -654,16 +650,23 @@ define([
     // Scoped to this launch, so a later battle always re-reads the tree from disk.
     var treeCache = createTreeCache();
 
+    // Shared by every processDirectories call below; the viewer ones override
+    // aiPaths, inventory and the two scope fields.
+    var launch = {
+      configFiles: configFiles,
+      aiPaths: aiPaths,
+      clusterPresence: clusterPresence,
+      treeCache: treeCache,
+    };
+
     var promises = _.map(aiPathsToProcess, function (aiPath) {
       return processDirectories(
         aiPath,
-        configFiles,
-        aiPaths,
-        clusterPresence,
-        playerAiModInventory,
-        undefined,
-        false,
-        treeCache
+        _.assign({}, launch, {
+          inventory: playerAiModInventory,
+          scopeToken: undefined,
+          forceSubCommanderScope: false,
+        })
       );
     });
 
@@ -687,13 +690,12 @@ define([
         promises.push(
           processDirectories(
             aiPaths.subCommanderSource,
-            configFiles,
-            viewerAiPaths,
-            clusterPresence,
-            viewerInventory,
-            viewerScopeToken,
-            true,
-            treeCache
+            _.assign({}, launch, {
+              aiPaths: viewerAiPaths,
+              inventory: viewerInventory,
+              scopeToken: viewerScopeToken,
+              forceSubCommanderScope: true,
+            })
           )
         );
       }

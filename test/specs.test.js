@@ -575,6 +575,19 @@ describe("specs.mod - navigation pruning", () => {
     assert.equal("navigation" in data["unit.json"], true);
     assert.equal(data["unit.json"].hp, 200);
   });
+
+  // Only an object can be "empty" in the sense pruning cares about. A mod that
+  // makes navigation something else has said what it wants; the prune must not
+  // second-guess it.
+  it("leaves a navigation that is not an object alone", () => {
+    const data = { "unit.json": { navigation: { type: "Air" } } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "navigation", op: "replace", value: "walk" }],
+      ""
+    );
+    assert.equal(data["unit.json"].navigation, "walk");
+  });
 });
 
 describe("specs.additionalSpecs", () => {
@@ -605,5 +618,255 @@ describe("specs.additionalSpecs", () => {
         "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
       ].sort()
     );
+  });
+});
+
+// Every op is handed whatever the spec already holds at the path, which for a
+// card written against the wrong unit is routinely the wrong shape. These pin
+// the two answers to that: warn and leave it alone, or coerce it.
+describe("specs.mod - ops given the wrong shape", () => {
+  const refuses = (spec, mod, expected) => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "unit.json": spec };
+    specs.mod(data, [Object.assign({ file: "unit.json" }, mod)], "");
+    assert.deepEqual(data["unit.json"], expected);
+    assert.equal(warnMock.mock.callCount(), 1);
+  };
+
+  it("add refuses a value that is neither number, string nor absent", () => {
+    refuses(
+      { types: ["bot"] },
+      { path: "types", op: "add", value: 1 },
+      { types: ["bot"] }
+    );
+  });
+
+  it("merge refuses a value that is not an object", () => {
+    refuses(
+      { hp: 100 },
+      { path: "hp", op: "merge", value: { armour: 1 } },
+      { hp: 100 }
+    );
+  });
+
+  it("multiplyOrCreate refuses a value that is neither number nor absent", () => {
+    refuses(
+      { hp: "lots" },
+      { path: "hp", op: "multiplyOrCreate", value: 2 },
+      { hp: "lots" }
+    );
+  });
+
+  it("tag refuses a value that is not a string", () => {
+    refuses({ model: 100 }, { path: "model", op: "tag" }, { model: 100 });
+  });
+
+  // tag rewrites a ".json" suffix, so a value without one has nothing to
+  // rewrite - appending the tag anyway would invent a path to a missing spec.
+  it("tag refuses a string that names no .json file", () => {
+    refuses({ model: "tank" }, { path: "model", op: "tag" }, { model: "tank" });
+  });
+});
+
+// The list and string ops coerce instead of refusing, so a card can target a
+// field whose base value is a bare scalar without knowing it in advance.
+describe("specs.mod - ops that coerce what they are given", () => {
+  const apply = (spec, mod) => {
+    const data = { "unit.json": spec };
+    specs.mod(data, [Object.assign({ file: "unit.json" }, mod)], "");
+    return data["unit.json"];
+  };
+
+  it("push wraps a bare value into an array before appending", () => {
+    assert.deepEqual(
+      apply({ types: "bot" }, { path: "types", op: "push", value: "tank" }),
+      { types: ["bot", "tank"] }
+    );
+  });
+
+  it("push treats an explicit null as an empty list", () => {
+    assert.deepEqual(
+      apply({ types: null }, { path: "types", op: "push", value: "tank" }),
+      { types: ["tank"] }
+    );
+  });
+
+  it("push appends every element when the value is itself a list", () => {
+    assert.deepEqual(
+      apply(
+        { types: ["bot"] },
+        { path: "types", op: "push", value: ["tank", "air"] }
+      ),
+      { types: ["bot", "tank", "air"] }
+    );
+  });
+
+  it("pull wraps a bare value before removing from it", () => {
+    assert.deepEqual(
+      apply({ types: "bot" }, { path: "types", op: "pull", value: "bot" }),
+      { types: [] }
+    );
+  });
+
+  it("pull treats an explicit null as an empty list", () => {
+    assert.deepEqual(
+      apply({ types: null }, { path: "types", op: "pull", value: "bot" }),
+      { types: [] }
+    );
+  });
+
+  it("pull removes every element when the value is a list", () => {
+    assert.deepEqual(
+      apply(
+        { types: ["a", "b", "c"] },
+        { path: "types", op: "pull", value: ["a", "c"] }
+      ),
+      { types: ["b"] }
+    );
+  });
+
+  it("prepend wraps a bare value before pushing onto the front", () => {
+    assert.deepEqual(
+      apply({ types: "bot" }, { path: "types", op: "prepend", value: "tank" }),
+      { types: ["tank", "bot"] }
+    );
+  });
+
+  it("prepend treats an explicit null as an empty list", () => {
+    assert.deepEqual(
+      apply({ types: null }, { path: "types", op: "prepend", value: "tank" }),
+      { types: ["tank"] }
+    );
+  });
+
+  // Order matters for buildable_types and build lists, where the engine takes
+  // the first match - so a prepended list keeps its own order ahead of the rest.
+  it("prepend puts a whole list in front, in its own order", () => {
+    assert.deepEqual(
+      apply(
+        { types: ["bot"] },
+        { path: "types", op: "prepend", value: ["tank", "air"] }
+      ),
+      { types: ["tank", "air", "bot"] }
+    );
+  });
+
+  it("wipe stringifies a value that is not a string", () => {
+    assert.deepEqual(
+      apply({ hp: 1200 }, { path: "hp", op: "wipe", value: ["0", ""] }),
+      { hp: "12" }
+    );
+  });
+
+  it("wipe treats an absent value as an empty string", () => {
+    assert.deepEqual(
+      apply({}, { path: "missing", op: "wipe", value: ["a", "b"] }),
+      { missing: "" }
+    );
+  });
+
+  // A bare value means "delete every occurrence", which is what makes wipe
+  // usable for stripping a path fragment.
+  it("wipe deletes every occurrence when given a bare value", () => {
+    assert.deepEqual(
+      apply(
+        { model: "/pa/units/land/tank/tank.json" },
+        { path: "model", op: "wipe", value: "/tank" }
+      ),
+      { model: "/pa/units/land.json" }
+    );
+  });
+});
+
+// A spec field holding a path to another spec is walked into rather than
+// treated as a leaf, which is how a card reaches a unit's tool or ammo without
+// naming that file itself.
+describe("specs.mod - walking into a referenced spec", () => {
+  it("follows a string field to the spec it names and mods that", () => {
+    const data = {
+      "unit.json": { tools: "tool.json" },
+      "tool.json": { damage: 10 },
+    };
+
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tools.damage", op: "multiply", value: 2 }],
+      ""
+    );
+
+    assert.equal(data["tool.json"].damage, 20);
+    // The reference itself is untouched - only what it points at changed.
+    assert.equal(data["unit.json"].tools, "tool.json");
+  });
+
+  it("logs and skips a reference to a spec that is not loaded", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const data = { "unit.json": { tools: "missing.json" } };
+
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tools.damage", op: "multiply", value: 2 }],
+      ""
+    );
+
+    assert.deepEqual(data["unit.json"], { tools: "missing.json" });
+    assert.equal(errorMock.mock.callCount(), 1);
+  });
+});
+
+describe("specs.mod - clone through a reference", () => {
+  it("clones the spec a string field names, not the string", () => {
+    const data = {
+      "unit.json": { tools: "tool.json" },
+      "tool.json": { damage: 10 },
+    };
+
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tools", op: "clone", value: "copy.json" }],
+      ""
+    );
+
+    assert.deepEqual(data["copy.json"], { damage: 10 });
+    assert.notEqual(
+      data["copy.json"],
+      data["tool.json"],
+      "the copy must not alias the spec it was taken from"
+    );
+    assert.equal(data["unit.json"].tools, "tool.json");
+  });
+
+  it("stores the raw string when it names no loaded spec", () => {
+    const data = { "unit.json": { tools: "missing.json" } };
+
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tools", op: "clone", value: "copy.json" }],
+      ""
+    );
+
+    assert.equal(data["copy.json"], "missing.json");
+  });
+});
+
+describe("specs.mod - circular base_spec", () => {
+  // Two specs naming each other would otherwise recurse until the stack blew,
+  // taking the whole scene with it.
+  it("warns and stops at the repeat rather than recursing forever", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = {
+      "a.json": { base_spec: "b.json", hp: 1 },
+      "b.json": { base_spec: "a.json", armour: 2 },
+    };
+
+    specs.mod(
+      data,
+      [{ file: "a.json", path: "hp", op: "replace", value: 9 }],
+      ""
+    );
+
+    assert.deepEqual(data["a.json"], { hp: 9, armour: 2 });
+    assert.equal(warnMock.mock.callCount(), 1);
+    assert.match(warnMock.mock.calls[0].arguments[0], /circular base_spec/);
   });
 });
