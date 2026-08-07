@@ -134,6 +134,23 @@ The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat, scheduled but not
 awaited.
 
+## Whose selection is whose
+
+A viewer's selection follows the host's moves, which is right until the viewer has
+picked a star of their own to look at. `gw_play/coop_selection_follow.js` hijacks
+`applyCampaignAction` and puts the viewer's own choice back once the replayed action
+settles.
+
+It has to be restored **afterwards** rather than defended: `applyCampaignAction`
+writes the destination into `selection.star` itself, because the base game's `move()`
+reads its destination from there. Blocking that write would break the replay.
+
+A viewer counts as having chosen while its selection is neither empty nor the star
+the host is standing on — so selecting the host's own star is how a viewer starts
+following again, and a selection the host has since moved onto needs no restoring.
+The tracking subscription ignores writes made while `gwCampaignReplayingAction` is
+set, which is exactly the host-driven ones.
+
 ## Pings
 
 A viewer selects a star and presses Ping; the host and every other viewer get a
