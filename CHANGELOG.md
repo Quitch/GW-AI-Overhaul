@@ -4,7 +4,7 @@
 
 ### Added
 
-- Co-op viewers can select a star and press Ping to point the host and the other viewers at it. Systems you have already explored cannot be pinged, and pinging is unavailable until an exploration or battle the host has begun is finished
+- Co-op viewers can select a star and press Ping to point the host and the other viewers at it
 
 ## v6.8.0 - 2026-08-06
 
@@ -21,7 +21,6 @@
 
 ### Bugfix
 
-- A co-op viewer who has selected a system no longer has that selection taken from them when the host moves
 - Hosts and viewers don't get each others tech when a viewer joins a war
 - A co-op player joining a war part way through could be offered a loadout they already owned
 - The Lucky Commander no longer applies its bonus to a war where it is unlocked
