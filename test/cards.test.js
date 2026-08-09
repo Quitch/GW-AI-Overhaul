@@ -14,6 +14,26 @@ const cards = loadCouiModule(
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);
 
+// A host holding cards the player being dealt to does not, so a helper that
+// reaches for model.game().inventory() fails rather than coincidentally
+// agreeing. model.game() is always the host's; a card must read the inventory
+// it was passed - see CLAUDE.md.
+function installContradictingHost(hostCardIds, extra) {
+  setGlobal(
+    "model",
+    Object.assign(
+      {
+        game: () => ({
+          inventory: () => ({
+            cards: () => hostCardIds.map((id) => ({ id })),
+          }),
+        }),
+      },
+      extra
+    )
+  );
+}
+
 describe("hasUnit", () => {
   it("matches a single unit passed as a string", () => {
     assert.equal(cards.hasUnit(["a", "b"], "a"), true);
@@ -342,18 +362,10 @@ describe("antiTechDeal", () => {
     };
   }
 
-  // Deliberately contradicts the per-player inventory, so a regression back to
-  // model.game().inventory() fails rather than coincidentally agreeing.
-  function installContradictingHost() {
-    setGlobal("model", {
-      game: () => ({
-        inventory: () => ({ cards: () => [{ id: "gwaio_anti_air" }] }),
-      }),
-    });
-  }
+  const installAntiAirHost = () => installContradictingHost(["gwaio_anti_air"]);
 
   it("returns a chance of 0 when the excluded counterpart card is held", () => {
-    installContradictingHost();
+    installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(
         inventoryWith(["gwaio_anti_orbital"]),
@@ -365,9 +377,7 @@ describe("antiTechDeal", () => {
   });
 
   it("halves the base chance once any anti_ tech card is already held", () => {
-    setGlobal("model", {
-      game: () => ({ inventory: () => ({ cards: () => [] }) }),
-    });
+    installContradictingHost([]);
     assert.deepEqual(
       cards.antiTechDeal(
         inventoryWith(["gwaio_anti_air"]),
@@ -379,7 +389,7 @@ describe("antiTechDeal", () => {
   });
 
   it("returns the full base chance when no anti_ tech is held yet", () => {
-    installContradictingHost();
+    installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(inventoryWith([]), 70, "gwaio_anti_orbital"),
       { chance: 70 }
@@ -387,7 +397,7 @@ describe("antiTechDeal", () => {
   });
 
   it("weights a co-op viewer's offer on the viewer's own anti_ tech, not the host's", () => {
-    installContradictingHost();
+    installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(inventoryWith([]), 40, "gwaio_anti_sea").chance,
       40
@@ -471,8 +481,15 @@ describe("hasT2Access", () => {
     };
   }
 
+  // The host holds the unlock throughout, so a regression to
+  // model.game().inventory() would report true for everybody.
+  const installGrantingHost = () =>
+    installContradictingHost(["gwc_enable_titans"], {
+      gwoCardsGrantingAdvancedTech: ["gwc_enable_titans"],
+    });
+
   it("is true when any held card grants advanced tech", () => {
-    setGlobal("model", { gwoCardsGrantingAdvancedTech: ["gwc_enable_titans"] });
+    installGrantingHost();
     assert.equal(
       cards.hasT2Access(
         inventoryWithCards(["gwc_minion", "gwc_enable_titans"])
@@ -482,8 +499,15 @@ describe("hasT2Access", () => {
   });
 
   it("is false when no held card grants advanced tech", () => {
-    setGlobal("model", { gwoCardsGrantingAdvancedTech: ["gwc_enable_titans"] });
+    installGrantingHost();
     assert.equal(cards.hasT2Access(inventoryWithCards(["gwc_minion"])), false);
+  });
+
+  // Its one caller, cards/gwc_enable_defenses_t2.js, calls it inside deal(),
+  // which under per-player tech runs against a viewer's inventory.
+  it("reads a co-op viewer's own cards, not the host's", () => {
+    installGrantingHost();
+    assert.equal(cards.hasT2Access(inventoryWithCards([])), false);
   });
 });
 
