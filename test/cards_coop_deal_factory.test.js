@@ -219,6 +219,16 @@ describe("dealCoopPlayerPendingTechCards - when it deals", () => {
     assert.deepEqual(calls.deals, []);
   });
 
+  // A campaign that has not synced its clients yet answers with nothing at all.
+  // Defended twice - the _.isArray guard and lodash's own tolerance of a
+  // non-array - so this only goes red if both go, which is the point of having
+  // it: neither defence is individually load-bearing, and the behaviour is.
+  it("survives a campaign that has no client list yet", async () => {
+    const { calls } = build({ viewers: undefined });
+    assert.deepEqual(await deal(1), []);
+    assert.deepEqual(calls.deals, []);
+  });
+
   it("deals to an explicit client list rather than everyone connected", async () => {
     const { calls } = build({
       viewers: [viewer("alice"), viewer("bob")],
