@@ -123,6 +123,28 @@ Minion counting deliberately includes players who are not currently in the game,
 that a player who leaves and rejoins does not have their minions vanish and
 reappear.
 
+## Addressing a host's reply
+
+A host→viewer operator carrying one player's result is addressed with
+`target_client_id`, and **the server is the enforcement point**. It resolves the
+id against its own connected clients, refuses the send outright when that client
+is not connected, and relays only to the clients that matched. It also rebuilds
+the envelope as `{type, payload, request_id, timestamp}` on the way through, so
+`target_client_id` never reaches the viewer at all.
+
+That is why the handlers do not check who a result is for. `payload.client_id` is
+the host echoing back which player it acted on, and it is what the handler uses
+to find the record — not a claim to be validated against local identity.
+Re-validating it would be worse than redundant: `client.id` is per-connection, so
+the check would start rejecting a player's own results the moment they reconnect.
+That is the same reason `gwo_streams.coopPlayerKey` prefers `record.playerId`.
+
+Every reply that concerns one player addresses itself, including the failure
+replies (`failPendingTechReroll`, `failGeneralCommanderSetup`) — an unaddressed
+error would put one viewer's refusal on every viewer's screen. The two host→viewer
+operators that carry **no** target are broadcasts by design: the ping, which
+self-identifies and deduplicates by `ping_id`, and the star-card name sync.
+
 ## Rerolls
 
 A viewer requesting a reroll is a round trip: viewer → host → viewer, implemented as

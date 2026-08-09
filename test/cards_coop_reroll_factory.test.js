@@ -360,6 +360,39 @@ describe("host reroll handler - refusals", () => {
 
     assert.deepEqual(calls.hostOperators, []);
   });
+
+  // A refusal names one player, so it has to be addressed to that player. The
+  // server routes on target_client_id and strips it before the viewer sees it,
+  // which means an unaddressed reply is a broadcast: one viewer's "no rerolls
+  // left" landing on everybody's screen. See coop.md, "Addressing a host's reply".
+  it("addresses every refusal to the viewer that asked", async () => {
+    const refusals = {
+      "no offer to reroll": { records: {} },
+      "a loadout offer": { containsLoadout: true },
+      "a star that has gone": { stars: [{ id: 0 }] },
+      "the rerolls spent": {
+        records: {
+          alice: record({
+            pendingTechCards: pendingTechCards({ cards: [{ id: "a" }] }),
+          }),
+        },
+      },
+    };
+
+    for (const [name, overrides] of Object.entries(refusals)) {
+      const { handlers, calls } = build(overrides);
+
+      await captureErrors(() => rejection(handlers[REQUEST](operator())));
+
+      assert.deepEqual(
+        calls.hostOperators.map((sent) => sent[2]),
+        [{ target_client_id: "alice", request_id: "req-1" }],
+        name
+      );
+      active.restore();
+      active = undefined;
+    }
+  });
 });
 
 describe("host reroll handler - the reroll", () => {
