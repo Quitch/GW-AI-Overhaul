@@ -598,6 +598,42 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
       false
     );
   });
+
+  // section_of_foreign_intelligence.js calls anyPlayerHasCard with two
+  // arguments, so the `game || model.game()` fallback is the live path there
+  // while referee_config.js always passes one.
+  describe("falling back to the current game", () => {
+    it("reads the current game when none is given", () => {
+      const { hostInventory } = installCoopModel([{ id: "alice" }]);
+
+      assert.deepEqual(cards.getAllConnectedPlayerCards(hostInventory), [
+        { id: "host_card" },
+        { id: "alice_card" },
+      ]);
+      assert.equal(cards.anyPlayerHasCard(hostInventory, "alice_card"), true);
+    });
+
+    it("prefers a game it was given over the current one", () => {
+      const { hostInventory } = installCoopModel([
+        { id: "alice" },
+        { id: "carol" },
+      ]);
+      const otherGame = {
+        coopPlayerInventoryData: () => [
+          { id: "carol", inventory: { cards: [{ id: "carol_card" }] } },
+        ],
+      };
+
+      assert.deepEqual(
+        cards.getAllConnectedPlayerCards(hostInventory, otherGame),
+        [{ id: "host_card" }, { id: "carol_card" }]
+      );
+      assert.equal(
+        cards.anyPlayerHasCard(hostInventory, "alice_card", otherGame),
+        false
+      );
+    });
+  });
 });
 
 describe("applyDulls", () => {
