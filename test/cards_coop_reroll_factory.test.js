@@ -612,6 +612,21 @@ describe("viewer reroll result handler", () => {
     }
   });
 
+  // An operator with no payload at all reaches the handler through the campaign
+  // dispatcher, which only checks the type. Its siblings in cards_start_subcdr.js
+  // and coop_ping_operators.js guard the operator itself; this one has to as
+  // well, or the viewer is left with the overlay up and a TypeError in the log.
+  it("stops scanning on an operator with nothing in it", async () => {
+    const { handlers, calls } = build();
+
+    const errors = await captureErrors(() => handlers[RESULT](undefined));
+
+    assert.deepEqual(calls.rerollPending, [false]);
+    assert.deepEqual(calls.scanning, [false]);
+    assert.deepEqual(calls.upserts, []);
+    assert.match(errors[0], /invalid pending tech reroll result/);
+  });
+
   it("stops scanning when the record it names is gone", async () => {
     const { handlers, calls } = build({ records: {} });
 
