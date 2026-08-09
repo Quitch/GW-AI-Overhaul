@@ -26,6 +26,11 @@ const viewer = (id) => ({ id, name: id, role: "viewer" });
 const record = (id, extra) =>
   Object.assign({ id, inventory: { cards: [] } }, extra);
 
+// Hung off the game stub as a trap. model.game().inventory() is always the
+// host's, so a per-player deal that reached for it would weight every viewer's
+// hand on the host's tech - see CLAUDE.md, "the inventory passed to it".
+const HOST_CARDS = [{ id: "gwaio_host_only" }];
+
 // jQuery 2's $.when: waits on anything thenable and passes everything else
 // through. The factory only ever hands it its own deferreds.
 function fakeWhen() {
@@ -65,7 +70,7 @@ function setup(overrides = {}) {
     overrides
   );
 
-  const calls = { deals: [], sent: [], actions: [], bank: [] };
+  const calls = { deals: [], sent: [], actions: [], bank: [], offerCounts: [] };
 
   const stubs = createGlobalStubs();
   const $ = function () {};
@@ -87,6 +92,7 @@ function setup(overrides = {}) {
       findCoopPlayerInventoryData: (query) => options.records[query.id],
       hostTechCardDealCount: () => 4,
       hostTechCardDealHistory: () => ["star-1"],
+      inventory: () => ({ cards: () => HOST_CARDS }),
     },
     chooseCards: (request) => {
       calls.deals.push(request);
@@ -95,7 +101,10 @@ function setup(overrides = {}) {
       );
     },
     helpers: {
-      cardsOfferedCount: () => options.cardsOffered,
+      cardsOfferedCount: (offer, inventory) => {
+        calls.offerCounts.push(inventory);
+        return options.cardsOffered;
+      },
       buildPendingStartLoadoutCard: (card) => ({
         id: card.id,
         startLoadout: true,
@@ -334,6 +343,50 @@ describe("dealCoopPlayerPendingTechCards - the hand", () => {
     const { calls } = build();
     await deal(1);
     assert.deepEqual(calls.bank, []);
+  });
+});
+
+describe("dealCoopPlayerPendingTechCards - whose inventory", () => {
+  // Dropping `inventory: inventory` from the chooseCards request leaves the
+  // deal falling back to the host's, silently and with every other assertion
+  // in this file still green.
+  it("deals each viewer against their own saved cards, not the host's", async () => {
+    const { calls } = build({
+      viewers: [viewer("alice"), viewer("bob")],
+      records: {
+        alice: record("alice", {
+          inventory: { cards: [{ id: "gwaio_alice_tech" }] },
+        }),
+        bob: record("bob", {
+          inventory: { cards: [{ id: "gwaio_bob_tech" }] },
+        }),
+      },
+    });
+
+    await deal(1);
+
+    assert.deepEqual(
+      calls.deals.map((request) => request.inventory.cards()),
+      [[{ id: "gwaio_alice_tech" }], [{ id: "gwaio_bob_tech" }]]
+    );
+  });
+
+  // The hand size is a function of what the player already holds, so reading it
+  // off a different inventory than the one dealt against would size a viewer's
+  // offer on somebody else's Lucky Commander or full hand.
+  it("sizes the hand from the inventory it deals against", async () => {
+    const { calls } = build({
+      records: {
+        alice: record("alice", {
+          inventory: { cards: [{ id: "gwaio_alice_tech" }] },
+        }),
+      },
+    });
+
+    await deal(1);
+
+    assert.equal(calls.offerCounts.length, 1);
+    assert.equal(calls.offerCounts[0], calls.deals[0].inventory);
   });
 });
 

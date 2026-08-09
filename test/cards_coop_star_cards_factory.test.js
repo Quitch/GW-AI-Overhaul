@@ -22,6 +22,11 @@ const makeFactory = loadCouiModule(
 const viewer = (id, extra) =>
   Object.assign({ id, name: id, role: "viewer" }, extra);
 
+// Hung off the game stub as a trap. model.game().inventory() is always the
+// host's, so a per-player deal that reached for it would weight every viewer's
+// pre-dealt card on the host's tech - see CLAUDE.md, "the inventory passed to it".
+const HOST_CARDS = [{ id: "gwaio_host_only" }];
+
 // Systems are built once per star list and handed back by reference, matching
 // production: the factory calls model.galaxy.systems() repeatedly rather than
 // caching a snapshot. `ai: null` is a star the player has already taken.
@@ -104,6 +109,7 @@ function setup(overrides = {}) {
     stats: () => ({ turns: () => options.turn }),
     hostTechCardDealCount: () => options.hostDealCount,
     turnState: () => options.turnState,
+    inventory: () => ({ cards: () => HOST_CARDS }),
   };
 
   const coopStarCards = makeFactory({
@@ -394,6 +400,29 @@ describe("coop star cards refresh - what it writes", () => {
     assert.deepEqual(
       calls.deals.map((request) => request.rng.playerKey),
       ["alice", "bob"]
+    );
+  });
+
+  // Dropping `inventory: inventory` from the chooseCards request leaves the
+  // deal falling back to the host's, silently and with every other assertion
+  // in this file still green.
+  it("deals each viewer against their own saved cards, not the host's", async () => {
+    const { coopStarCards, calls } = build({
+      viewers: [viewer("alice"), viewer("bob")],
+      records: {
+        alice: {
+          id: "alice",
+          inventory: { cards: [{ id: "gwaio_alice_tech" }] },
+        },
+        bob: { id: "bob", inventory: { cards: [{ id: "gwaio_bob_tech" }] } },
+      },
+    });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(
+      calls.deals.map((request) => request.inventory.cards()),
+      [[{ id: "gwaio_alice_tech" }], [{ id: "gwaio_bob_tech" }]]
     );
   });
 });
