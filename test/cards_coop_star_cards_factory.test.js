@@ -79,6 +79,7 @@ function setup(overrides = {}) {
       isHost: true,
       perPlayerTech: true,
       onApply: null,
+      onDeal: null,
       saveFails: false,
     },
     overrides
@@ -118,6 +119,9 @@ function setup(overrides = {}) {
     // by the stream the factory asked for - which is keyed by exactly that.
     chooseCards: (request) => {
       calls.deals.push(request);
+      if (options.onDeal) {
+        options.onDeal(options);
+      }
       return Promise.resolve([{ id: "card_for_" + request.rng.starIndex }]);
     },
     GWInventory: inventoryClass(options.onApply),
@@ -423,6 +427,28 @@ describe("coop star cards refresh - what it writes", () => {
     assert.deepEqual(
       calls.deals.map((request) => request.inventory.cards()),
       [[{ id: "gwaio_alice_tech" }], [{ id: "gwaio_bob_tech" }]]
+    );
+  });
+
+  // Why the record is re-read at write time rather than closed over: chooseCards
+  // is async, so a viewer can have left and had their record dropped since this
+  // pass began. See coop.md, "Per-player pre-dealt cards".
+  it("writes nothing when the record goes while the deal is in flight", async () => {
+    const { coopStarCards, calls } = build({
+      viewers: [viewer("alice"), viewer("bob")],
+      records: {
+        alice: { id: "alice", inventory: { cards: [] } },
+        bob: { id: "bob", inventory: { cards: [] } },
+      },
+      onDeal: (options) => delete options.records.alice,
+    });
+
+    await coopStarCards.refresh();
+
+    // bob's deal ran after alice's record went, and still lands.
+    assert.deepEqual(
+      calls.upserts.map((record) => record.id),
+      ["bob"]
     );
   });
 });
