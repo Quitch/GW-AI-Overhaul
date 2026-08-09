@@ -21,6 +21,12 @@ const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js"
 );
 
+// Injected in place of the cardsOfferedCount stub where the subject is the hand
+// size itself rather than the deal it feeds.
+const realHelpers = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js"
+);
+
 const viewer = (id) => ({ id, name: id, role: "viewer" });
 
 const record = (id, extra) =>
@@ -28,8 +34,15 @@ const record = (id, extra) =>
 
 // Hung off the game stub as a trap. model.game().inventory() is always the
 // host's, so a per-player deal that reached for it would weight every viewer's
-// hand on the host's tech - see CLAUDE.md, "the inventory passed to it".
-const HOST_CARDS = [{ id: "gwaio_host_only" }];
+// hand on the host's tech - see CLAUDE.md, "the inventory passed to it". It
+// holds Lucky and reports a full hand, the two things that grow an offer.
+const HOST_CARDS = [{ id: "gwaio_host_only" }, { id: "gwaio_start_lucky" }];
+
+const hostInventory = () => ({
+  cards: () => HOST_CARDS,
+  handIsFull: () => true,
+  hasCard: (id) => HOST_CARDS.some((card) => card.id === id),
+});
 
 // jQuery 2's $.when: waits on anything thenable and passes everything else
 // through. The factory only ever hands it its own deferreds.
@@ -45,10 +58,14 @@ function fakeWhen() {
 function inventoryClass() {
   return function GWInventory() {
     let loaded = [];
+    let limit = 0;
     this.load = (data) => {
       loaded = (data && data.cards) || [];
+      limit = (data && data.maxCards) || 0;
     };
     this.cards = () => loaded;
+    this.handIsFull = () => loaded.length >= limit;
+    this.hasCard = (id) => loaded.some((card) => card.id === id);
     this.applyCards = (done) => done();
   };
 }
@@ -64,6 +81,7 @@ function setup(overrides = {}) {
       dealCount: () => 0,
       treasureStar: undefined,
       cardsOffered: 3,
+      realHelpers: false,
       sendMessage: undefined,
       loadoutPool: [{ id: "gwc_start_orbital" }],
     },
@@ -92,7 +110,7 @@ function setup(overrides = {}) {
       findCoopPlayerInventoryData: (query) => options.records[query.id],
       hostTechCardDealCount: () => 4,
       hostTechCardDealHistory: () => ["star-1"],
-      inventory: () => ({ cards: () => HOST_CARDS }),
+      inventory: hostInventory,
     },
     chooseCards: (request) => {
       calls.deals.push(request);
@@ -103,7 +121,9 @@ function setup(overrides = {}) {
     helpers: {
       cardsOfferedCount: (offer, inventory) => {
         calls.offerCounts.push(inventory);
-        return options.cardsOffered;
+        return options.realHelpers
+          ? realHelpers.cardsOfferedCount(offer, inventory)
+          : options.cardsOffered;
       },
       buildPendingStartLoadoutCard: (card) => ({
         id: card.id,
@@ -387,6 +407,55 @@ describe("dealCoopPlayerPendingTechCards - whose inventory", () => {
 
     assert.equal(calls.offerCounts.length, 1);
     assert.equal(calls.offerCounts[0], calls.deals[0].inventory);
+  });
+});
+
+// Everywhere else cardsOfferedCount is a constant, so the bonus rules are only
+// pinned against a bare inventory shape in cards_deal_helpers.test.js. Here the
+// real helper runs, against a viewer's inventory and a host holding both bonuses.
+describe("dealCoopPlayerPendingTechCards - the bonus rules", () => {
+  const viewerHolding = (cards, maxCards) => ({
+    realHelpers: true,
+    records: {
+      alice: record("alice", { inventory: { cards, maxCards } }),
+    },
+  });
+
+  const LUCKY = { id: "gwaio_start_lucky" };
+
+  it("offers the base hand to a viewer with room and no Lucky Commander", async () => {
+    const { calls } = build(viewerHolding([{ id: "gwaio_tech" }], 5));
+    await deal(1);
+    assert.equal(calls.deals[0].count, 3);
+  });
+
+  it("offers one more to a viewer whose hand is full", async () => {
+    const { calls } = build(viewerHolding([{ id: "gwaio_tech" }], 1));
+    await deal(1);
+    assert.equal(calls.deals[0].count, 4);
+  });
+
+  it("offers one more to a viewer holding the Lucky Commander", async () => {
+    const { calls } = build(viewerHolding([LUCKY], 5));
+    await deal(1);
+    assert.equal(calls.deals[0].count, 4);
+  });
+
+  it("offers two more to a viewer with both", async () => {
+    const { calls } = build(viewerHolding([LUCKY], 1));
+    await deal(1);
+    assert.equal(calls.deals[0].count, 5);
+  });
+
+  // The host's own bonuses are not the viewer's to spend.
+  it("ignores a host holding both while the viewer holds neither", async () => {
+    const { calls } = build(viewerHolding([{ id: "gwaio_tech" }], 5));
+
+    await deal(1);
+
+    // What the trap inventory would have produced, had it been consulted.
+    assert.equal(realHelpers.cardsOfferedCount(3, hostInventory()), 5);
+    assert.equal(calls.deals[0].count, 3);
   });
 });
 
