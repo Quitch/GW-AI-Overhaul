@@ -34,6 +34,7 @@
 - Economy Fabrication Tech says it discounts storage as well as production, which it has always done
 - Complete Energy Tech and Improved Intelligence Tech say they cut teleport energy costs, which they have always done for the Teleporter and the Helios
 - Complete Air Tech says advanced air factories come from air fabricators. It named vehicle fabricators, which cannot build one
+- Complete Air, Bot, Naval and Vehicle Tech say they also unlock the advanced structures every advanced fabricator can build, which they have always granted
 
 ## v6.9.0 - 2026-08-07
 

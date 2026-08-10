@@ -7,7 +7,7 @@ define([
     visible: _.constant(true),
     describe: function () {
       if (gwoCard.isEnglish()) {
-        return "!LOC:Complete air tech enables building of all mobile air units and factories. Basic air factories are built via your commander or any basic fabricator. Advanced air factories are built via basic or advanced air fabricators.";
+        return "!LOC:Complete air tech enables building of all mobile air units and factories, and the advanced structures every advanced fabricator can build. Basic air factories are built via your commander or any basic fabricator. Advanced air factories are built via basic or advanced air fabricators.";
       }
       return "!LOC:Complete air tech enables building of all mobile air units and factories. Basic air factories are built via your commander or any basic fabricator. Advanced factories are built via a basic or advanced vehicle fabricator.";
     },
