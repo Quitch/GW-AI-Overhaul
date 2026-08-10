@@ -136,7 +136,7 @@ directive on line 1. **GWO deliberately does not carry it**, including in shadow
 copies of files that have it upstream.
 
 It is a build-time directive, not a runtime one. Nothing in the shipped game
-parses it — all 151 occurrences in the base install are the directive itself, and
+parses it — every occurrence in the base install is the directive itself, and
 `localization.js` has no namespace handling. It tells Uber's string-extraction
 tooling which translation file (`galactic_war.json`, `leaderboard.json`, …) a
 file's strings belong in. GWO's strings never go through that tooling, so the
