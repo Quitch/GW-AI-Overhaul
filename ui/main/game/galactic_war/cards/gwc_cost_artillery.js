@@ -24,7 +24,10 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.structuresArtillery, function (unit) {
+      var artillery = gwoGroup.structuresArtillery.concat(
+        gwoGroup.artilleryMobile
+      );
+      var mods = _.map(artillery, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",

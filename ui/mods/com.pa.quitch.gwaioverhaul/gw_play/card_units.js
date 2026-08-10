@@ -34,7 +34,10 @@ define([
       { id: "gwc_combat_structures", units: gwoGroup.structures },
       { id: "gwc_combat_vehicles", units: gwoGroup.vehiclesMobile },
       { id: "gwc_cost_air", units: gwoGroup.airMobile },
-      { id: "gwc_cost_artillery", units: gwoGroup.structuresArtillery },
+      {
+        id: "gwc_cost_artillery",
+        units: gwoGroup.structuresArtillery.concat(gwoGroup.artilleryMobile),
+      },
       { id: "gwc_cost_bots", units: gwoGroup.botsMobile },
       { id: "gwc_cost_defenses", units: gwoGroup.structuresDefences },
       { id: "gwc_cost_economy", units: gwoGroup.structuresEco },

@@ -230,6 +230,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var orbitalCombat = orbitalBasicCombat.concat(orbitalAdvancedCombat);
   var orbital = orbitalBasic.concat(orbitalAdvanced);
 
+  // Everything the base game tags UNITTYPE_Artillery and UNITTYPE_Mobile, less the Ares:
+  // titans answer to titan tech, not to a domain group.
+  var artilleryMobile = [
+    gwoUnit.gilE,
+    gwoUnit.grenadier,
+    gwoUnit.leviathan,
+    gwoUnit.sheller,
+  ];
+
   var structuresArtilleryBasic = [gwoUnit.lob, gwoUnit.pelter];
   var structuresArtilleryBasicAmmo = [gwoUnit.lobAmmo, gwoUnit.pelterAmmo];
   var structuresArtilleryBasicWeapon = [
@@ -672,6 +681,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     airWeapons: airWeapons,
     ammo: ammo,
     ammoMobile: ammoMobile,
+    artilleryMobile: artilleryMobile,
     botFactories: botFactories,
     bots: bots,
     botsAdvanced: botsAdvanced,

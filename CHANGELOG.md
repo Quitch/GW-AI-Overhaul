@@ -7,6 +7,7 @@
 - Orbital Combat Tech now speeds up your orbital units. Its health and damage bonuses were unaffected
 - Pelican Upgrade Tech now lets every transported unit shoot, rather than only basic amphibious bots
 - Protocol: Agility costs mobile combat units the 20% health it advertises, rather than 36%
+- Artillery Fabrication Tech now discounts mobile artillery — the Grenadier, Gil-E, Sheller and Leviathan — as its description has always claimed
 
 ## v6.9.0 - 2026-08-07
 
