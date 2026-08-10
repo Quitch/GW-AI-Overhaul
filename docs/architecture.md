@@ -23,17 +23,17 @@ files that must replace a base-game file at its exact path — see
 
 `modinfo.json`'s `scenes` block is the mod's **real** entry-point list. The game
 loads exactly the `coui://` files listed there, for the scene named, and nothing
-else. Seven scenes, 21 entries:
+else. Seven scenes, 23 entries:
 
-| Scene                        | Entries | What it covers                                                              |
-| ---------------------------- | ------- | --------------------------------------------------------------------------- |
-| `gw_start`                   | 3       | War creation: the setup lobby, difficulty/AI pickers, loadout selection.    |
-| `gw_play`                    | 12      | The galaxy map and everything during a war: cards, referees, panels, intel. |
-| `gw_war_over`                | 1       | Victory/defeat bookkeeping — records the highest difficulty defeated.       |
-| `live_game`                  | 1       | In-battle menu patches (surrender/continue with more than two teams).       |
-| `shared_build`               | 1       | Planetary radar behaviour.                                                  |
-| `start`                      | 2       | Main menu.                                                                  |
-| `gw_coop_per_player_loadout` | 1       | Per-player loadout selection for co-op viewers.                             |
+| Scene                        | Entries | What it covers                                                                                     |
+| ---------------------------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `gw_start`                   | 3       | War creation: the setup lobby, difficulty/AI pickers, loadout selection.                           |
+| `gw_play`                    | 14      | The galaxy map and everything during a war: cards, referees, panels, intel, ping, co-op selection. |
+| `gw_war_over`                | 1       | Victory/defeat bookkeeping — records the highest difficulty defeated.                              |
+| `live_game`                  | 1       | In-battle menu patches (surrender/continue with more than two teams).                              |
+| `shared_build`               | 1       | Planetary radar behaviour.                                                                         |
+| `start`                      | 2       | Main menu.                                                                                         |
+| `gw_coop_per_player_loadout` | 1       | Per-player loadout selection for co-op viewers.                                                    |
 
 Nothing under `ui/main/**` or `pa/**` appears in that list — those load by
 _shadowing_, not by manifest.
