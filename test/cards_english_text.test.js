@@ -109,6 +109,13 @@ const TRANSLATED = [
     file: "nem_start_nuke.js",
     text: "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence.",
   },
+  // The interior !LOC: is the second key showing through the identity loc() stub.
+  // A player sees neither marker, so losing one here means a key stopped being
+  // looked up - which is the regression this entry exists to catch.
+  {
+    file: "gwaio_start_paratrooper.js",
+    text: "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers! !LOC:Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked.",
+  },
   {
     file: "gwaio_upgrade_planetaryradar.js",
     text: "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar.<br> <br>!LOC:Adds a new slot for another technology.",

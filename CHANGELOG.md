@@ -44,6 +44,7 @@ Changes to card descriptions are made to English only. Translated copies will us
 - Planetary Radar Upgrade Tech calls itself by its own name. Its description opened with “Planetary Upgrade Tech”
 - Single Laser Defense Tower Upgrade Tech renders its fabrication effect and keeps the turret's selection sound. The effect was written as a bare object where the engine reads a list, and the sound was replaced wholesale rather than added to
 - Advanced Vehicle Factory Upgrade Tech discounts the units the factory builds, not the factory itself. Its three sibling cards never discounted theirs
+- The Paratrooper Commander's second sentence can be translated. It was appended outside the localisation call, so it stayed in English whatever the language
 
 ## v6.9.0 - 2026-08-07
 

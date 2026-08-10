@@ -21,7 +21,10 @@ define([
         loc(
           "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers!"
         ) +
-        " Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
+        " " +
+        loc(
+          "!LOC:Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
+        )
       );
     },
     hint: _.constant({
