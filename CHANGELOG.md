@@ -9,9 +9,9 @@
 - The Orbital Commander contains all orbital units and factories, and nothing else. It was also letting orbital fabricators build every basic ground structure, which is the Deep Space Excavation Commander’s speciality, and making the Planetary Radar commander-buildable
   - Orbital Fabrication Bot Upgrade Tech is offered to Orbital Commanders again
 - Boom Upgrade Tech is offered once you hold the Boom, and grants the Lob as its description has always promised. It previously required the Lob you were being offered
-- The Rapid Deployment Commander's Unit Cannon launches fabricators, like every other factory in the loadout. It was the one factory still building combat units
+- The Rapid Deployment Commander’s Unit Cannon launches fabricators, like every other factory in the loadout. It was the one factory still building combat units
 - The Bionic Augmentation Commander Of Neutralizing contains the one data bank its description promises. It has always left two slots free
-- The Defense Tech Commander's land mines are 50% cheaper along with every other defense. Their spacing is unchanged
+- The Defense Tech Commander’s land mines are 50% cheaper along with every other defense. Their spacing is unchanged
 
 ### Bugfix
 
@@ -45,9 +45,9 @@ Changes to card descriptions are made to English only. Translated copies will us
 - The Tourist Commander now says it has no Mining Platforms either. It has always removed the Jig alongside the Metal Extractors
 - The Tactical Nuke Commander now says it gives up most advanced defenses, which it has always done
 - Planetary Radar Upgrade Tech calls itself by its own name. Its description opened with “Planetary Upgrade Tech”
-- Single Laser Defense Tower Upgrade Tech renders its fabrication effect and keeps the turret's selection sound. The effect was written as a bare object where the engine reads a list, and the sound was replaced wholesale rather than added to
+- Single Laser Defense Tower Upgrade Tech renders its fabrication effect and keeps the turret’s selection sound. The effect was written as a bare object where the engine reads a list, and the sound was replaced wholesale rather than added to
 - Advanced Vehicle Factory Upgrade Tech discounts the units the factory builds, not the factory itself. Its three sibling cards never discounted theirs
-- The Paratrooper Commander's second sentence can be translated. It was appended outside the localisation call, so it stayed in English whatever the language
+- The Paratrooper Commander’s second sentence can be translated. It was appended outside the localisation call, so it stayed in English whatever the language
 - The Tourist Commander tells English readers that its Sub Commanders only defend themselves and hand over their income. Every other language has always been told
 
 ## v6.9.0 - 2026-08-07
