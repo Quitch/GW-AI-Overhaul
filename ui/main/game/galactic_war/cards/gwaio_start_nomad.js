@@ -15,7 +15,7 @@ define([
     },
     describe: function () {
       if (gwoCard.isEnglish()) {
-        return "!LOC:Non-factory and non-Titan structures are mobile, except metal extractors and the Catalyst, which must stay on the map features they claim. Small structures can be transported and use teleporters, medium size structures can use teleporters.";
+        return "!LOC:Non-factory and non-Titan structures are mobile, except metal extractors and the Catalyst, which must stay on the map features they claim, and the Teleporter. Small structures can be transported and use teleporters, medium size structures can use teleporters.";
       }
       return "!LOC:Non-factory and non-Titan structures are mobile. Small structures can be transported and use teleporters, medium size structures can use teleporters.";
     },
@@ -54,7 +54,6 @@ define([
             gwoUnit.flak,
             gwoUnit.laserDefenseTowerAdvanced,
             gwoUnit.radarJammingStation,
-            gwoUnit.teleporter,
             gwoUnit.torpedoLauncherAdvanced,
           ];
           var largeStructures = [

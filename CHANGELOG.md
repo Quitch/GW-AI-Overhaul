@@ -4,7 +4,7 @@
 
 ### Changed
 
-- The Nomad Commander can now move its Teleporter, Radar Jamming Station and Lob. Its description also notes that metal extractors and the Catalyst stay put, since they are tied to map features
+- The Nomad Commander can now move its Radar Jamming Station and Lob. Its description also notes that metal extractors and the Catalyst stay put, since they are tied to map features
 - Protocol: Precision and Protocol: Wrath change the weapon range of the same combat units they slow down or speed up. Titans and armed scouts were gaining the range without the trade-off, and your Commander was taking the trade-off without the range
 - The Orbital Commander contains all orbital units and factories, and nothing else. It was also letting orbital fabricators build every basic ground structure, which is the Deep Space Excavation Commander’s speciality, and making the Planetary Radar commander-buildable
   - Orbital Fabrication Bot Upgrade Tech is offered to Orbital Commanders again
