@@ -5,9 +5,12 @@ define([
 ], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Economy Fabrication Tech reduces metal build costs of all metal and energy production structures by 50%"
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:Economy Fabrication Tech reduces metal build costs of all metal and energy production and storage structures by 50%";
+      }
+      return "!LOC:Economy Fabrication Tech reduces metal build costs of all metal and energy production structures by 50%";
+    },
     summarize: _.constant("!LOC:Economy Fabrication Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_economy_fabrication.png"

@@ -31,6 +31,7 @@
 - Allied Sub Commanders no longer try to have a basic fabricator build a Zeus after a Fabrication Upgrade Tech, which it was never able to do, and only try to build a Ragnarok once you hold Titan Tech
 - The CEO Commander can build Colonels as Cluster, which is the whole point of the loadout. Cluster fields Colonels as Sub Commanders and nothing can build one, so the loadout did nothing at all for that faction. Cluster's own Colonels are unchanged, and the one your Commander builds cannot come out of a factory
 - Artillery Ammunition Tech says it cuts ammunition cost rather than energy usage. The Lob pays for its shells in metal
+- Economy Fabrication Tech says it discounts storage as well as production, which it has always done
 
 ## v6.9.0 - 2026-08-07
 
