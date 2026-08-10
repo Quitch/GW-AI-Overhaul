@@ -332,6 +332,29 @@ the viewer's war inventory instead. GWO therefore intercepts **every** loadout i
 a viewer, banking locally and submitting `-1`; it cannot leave the base ids to the
 server, because banking is held shut on viewers for the reason below.
 
+## The per-player loadout scene
+
+`gw_coop_per_player_loadout` is its own scene, and
+`gw_coop_per_player_loadout/gwo_loadouts.js` is the only file GWO puts in it. It
+is where a viewer picks their war loadout, and it has to build that loadout's
+starting inventory itself rather than inheriting the host's.
+
+Two things about it are not obvious from the scene it sits in:
+
+- **The view model has no player faction**, but Cluster start cards read
+  `global.playerFaction`. `resolvePlayerFaction` therefore loads the campaign
+  game through `GW.manifest.loadGame(model.activeGameId())` purely to read that
+  tag back out, and resolves `undefined` rather than rejecting when there is no
+  active game — a loadout preview outside a war still has to render.
+- **`validateStartingInventory` refuses rather than proceeds.** It asserts the
+  chosen card produced exactly one card, in first position, with `maxCards` a
+  number leaving room beyond it. Anything else rejects the deferred, because a
+  loadout that quietly banked tech would hand the viewer cards nobody dealt them.
+
+Banking is the other half, and is covered in "Whose unlocks are whose" below: a
+viewer banks its own war loadout from this scene, which is why the hold placed on
+the host's inventory does not reach it.
+
 ## Whose unlocks are whose
 
 `GWGame.load()` calls `game.inventory().applyCards()` on **every** client, and on a
