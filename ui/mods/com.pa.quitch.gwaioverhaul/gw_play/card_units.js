@@ -487,22 +487,12 @@ define([
         units: [gwoUnit.kessler],
       },
       {
-        // Both also mod weaponsMobile/ammoMobile wholesale, reaching the armed
-        // units outside combatMobile: mobile titans and the two armed scouts.
         id: "gwaio_protocol_precision",
-        units: gwoGroup.combatMobile.concat(
-          gwoGroup.titansMobile,
-          gwoUnit.firefly,
-          gwoUnit.skitter
-        ),
+        units: gwoGroup.combatMobile,
       },
       {
         id: "gwaio_protocol_wrath",
-        units: gwoGroup.combatMobile.concat(
-          gwoGroup.titansMobile,
-          gwoUnit.firefly,
-          gwoUnit.skitter
-        ),
+        units: gwoGroup.combatMobile,
       },
       {
         id: "gwaio_protocol_fortitude",

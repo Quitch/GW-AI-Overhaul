@@ -34,7 +34,7 @@ define([
           "navigation.turn_speed": percentageIncrease,
         });
       });
-      var rangeMods = _.map(gwoGroup.weaponsMobile, function (weapon) {
+      var rangeMods = _.map(gwoGroup.combatMobileWeapons, function (weapon) {
         return gwoCard.mods(weapon, "multiply", {
           max_range: percentageReduction,
         });

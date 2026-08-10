@@ -589,6 +589,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.commanderWeaponMissile,
   ];
 
+  // Armed only once their upgrade tech attaches a weapon, so they sit outside
+  // the combat groups despite being in the domain rosters.
+  var scoutAmmo = [gwoUnit.fireflyAmmo, gwoUnit.skitterAmmo];
+  var scoutWeapons = [gwoUnit.fireflyWeapon, gwoUnit.skitterWeapon];
+
   // The silo payloads, the Ares stomp, and the Orca torpedo a card can lend out:
   // ammo no domain group claims.
   var unhomedAmmo = [
@@ -646,6 +651,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       unhomedWeapons
     )
   );
+
+  // What combatMobile carries: the mobile groups drop the defensive structures,
+  // and these drop the titans and scouts too, then add the Commander's.
+  var combatMobileAmmo = _.difference(ammoMobile, titansAmmo, scoutAmmo).concat(
+    commanderAmmo
+  );
+  var combatMobileWeapons = _.difference(
+    weaponsMobile,
+    titansWeapons,
+    scoutWeapons
+  ).concat(commanderWeapons);
 
   var units = mobile.concat(immobile);
   var unitsNoCluster = mobileNoCluster.concat(immobile);
@@ -754,6 +770,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsWeapons: botsWeapons,
     combat: combat,
     combatMobile: combatMobile,
+    combatMobileAmmo: combatMobileAmmo,
+    combatMobileWeapons: combatMobileWeapons,
     commanderAmmo: commanderAmmo,
     energyAll: energyAll,
     energyIntel: energyIntel,
