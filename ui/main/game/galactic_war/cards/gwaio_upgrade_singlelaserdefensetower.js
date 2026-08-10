@@ -57,18 +57,20 @@ define([
           file: gwoUnit.singleLaserDefenseTower,
           path: "fx_offsets",
           op: "replace",
-          value: {
-            type: "build",
-            filename: "/pa/effects/specs/fab_combat_spray.pfx",
-            bone: "socket_muzzle",
-            offset: [0, 0, 0],
-            orientation: [0, 0, 0],
-          },
+          value: [
+            {
+              type: "build",
+              filename: "/pa/effects/specs/fab_combat_spray.pfx",
+              bone: "socket_muzzle",
+              offset: [0, 0, 0],
+              orientation: [0, 0, 0],
+            },
+          ],
         },
         {
           file: gwoUnit.singleLaserDefenseTower,
           path: "audio",
-          op: "replace",
+          op: "merge",
           value: {
             loops: {
               build: {

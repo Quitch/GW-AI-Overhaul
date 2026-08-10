@@ -41,6 +41,7 @@ Changes to card descriptions are made to English only. Translated copies will us
 - The Tourist Commander now says it has no Mining Platforms either. It has always removed the Jig alongside the Metal Extractors
 - The Tactical Nuke Commander now says it gives up most advanced defenses, which it has always done
 - Planetary Radar Upgrade Tech calls itself by its own name. Its description opened with “Planetary Upgrade Tech”
+- Single Laser Defense Tower Upgrade Tech renders its fabrication effect and keeps the turret's selection sound. The effect was written as a bare object where the engine reads a list, and the sound was replaced wholesale rather than added to
 
 ## v6.9.0 - 2026-08-07
 
