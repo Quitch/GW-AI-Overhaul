@@ -4,9 +4,12 @@ define([
 ], function (gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units."
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units. The Kaiju is armoured as a hover unit.";
+      }
+      return "!LOC:Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units.";
+    },
     summarize: _.constant("!LOC:Anti-Ship Ammo Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png"

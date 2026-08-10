@@ -9,6 +9,10 @@
 - Protocol: Agility costs mobile combat units the 20% health it advertises, rather than 36%
 - Artillery Fabrication Tech now discounts mobile artillery — the Grenadier, Gil-E, Sheller and Leviathan — as its description has always claimed
 
+### Changed
+
+- Anti-Ship and Anti-Hover Ammo Tech now say that the Kaiju counts as a hover unit, so the two cards no longer appear to contradict each other
+
 ## v6.9.0 - 2026-08-07
 
 ### Added
