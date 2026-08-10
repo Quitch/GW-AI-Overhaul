@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Orbital Combat Tech now speeds up your orbital units. Its health and damage bonuses were unaffected
+
 ## v6.9.0 - 2026-08-07
 
 ### Added

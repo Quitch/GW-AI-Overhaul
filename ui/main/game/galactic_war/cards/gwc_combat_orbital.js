@@ -35,14 +35,12 @@ define([
       var mods = _.flatten(
         _.map(gwoGroup.orbitalMobile, function (unit) {
           return _.map(paths, function (path) {
-            return [
-              {
-                file: unit,
-                path: path,
-                op: "multiply",
-                value: 1.5,
-              },
-            ];
+            return {
+              file: unit,
+              path: path,
+              op: "multiply",
+              value: 1.5,
+            };
           });
         })
       );
