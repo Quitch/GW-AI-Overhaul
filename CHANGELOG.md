@@ -6,10 +6,12 @@
 
 - The Nomad Commander can now move its Teleporter, Radar Jamming Station and Lob. Its description also notes that metal extractors and the Catalyst stay put, since they are tied to map features
 - Protocol: Precision and Protocol: Wrath change the weapon range of the same combat units they slow down or speed up. Titans and armed scouts were gaining the range without the trade-off, and your Commander was taking the trade-off without the range
-- The Orbital Commander contains all orbital units and factories, and nothing else. It was also letting orbital fabricators build every basic ground structure, which is the Deep Space Excavation Commander’s speciality, and making the Deep Space Radar commander-buildable
-  - Orbital Fabrication Bot Upgrade Tech is offered to Orbital Commanders again, since it now grants something they do not already have
+- The Orbital Commander contains all orbital units and factories, and nothing else. It was also letting orbital fabricators build every basic ground structure, which is the Deep Space Excavation Commander’s speciality, and making the Planetary Radar commander-buildable
+  - Orbital Fabrication Bot Upgrade Tech is offered to Orbital Commanders again
 
 ### Bugfix
+
+Changes to card descriptions are made to English only. Translated copies will use the v6.9.0 text.
 
 - Orbital Combat Tech now speeds up your orbital units. Its health and damage bonuses were unaffected
 - Pelican Upgrade Tech now lets every transported unit shoot, rather than only basic amphibious bots
@@ -21,23 +23,23 @@
 - The Combat Commander now fires twice as fast, as its description has always claimed. The bonus reached none of the weapons a Commander actually carries
 - Allied Sub Commanders of an Artillery Commander now know their Commander can build radar, double barreled turrets and basic artillery turrets
 - Commander Fabrication Tech now reaches Cluster’s Angels and Colonels. Their build arms were left on the unmodified blueprint, for your own Sub Commanders, your allies, and those of Cluster enemies
-- Tech that changes the damage of all your weapons now reaches every one of them. The Anti-Air, Anti-Bot, Anti-Commander, Anti-Hover, Anti-Orbital, Anti-Ship, Anti-Structure and Anti-Vehicle Ammo Techs, the Terminal Commander, the Swarm Commander and the Buff Commander all missed your Commander’s weapons, your artillery, both silos and every death explosion
+- Tech that changes the damage of all your weapons now reaches every one of them. The Anti-Air, Anti-Bot, Anti-Commander, Anti-Hover, Anti-Orbital, Anti-Ship, Anti-Structure and Anti-Vehicle Ammo Techs, the Terminal Commander, the Swarm Commander and the Buff Commander all missed your Commander’s weapons, your artillery, both silos, and every death explosion
   - Protocol: Blindness extends the range of those weapons alongside the rest
   - Bot Ammunition Tech and Bot Combat Tech no longer miss the Gil-E’s interception beam
-- Protocol: Blindness gives your Commander the health and weapon range it promises. The Commander is the one unit the card names, and it was the only one getting neither
+- Protocol: Blindness gives your Commander the health and weapon range it promises.
 - Orbital Combat Tech and Orbital Ammunition Tech increase splash damage alongside direct damage. The Omega and the SXX deal half their damage as splash, so they were getting half the increase
 - Orbital Cooldown Tech lists only the Orbital Factory as affected. The Orbital Launcher has no build cooldown for it to halve
 - Super Weapon Fabrication Tech discounts nuclear missiles rather than the silos that fire them, as its description has always said
 - Allied Sub Commanders no longer try to have a basic fabricator build a Zeus after a Fabrication Upgrade Tech, which it was never able to do, and only try to build a Ragnarok once you hold Titan Tech
-- The CEO Commander can build Colonels as Cluster, which is the whole point of the loadout. Cluster fields Colonels as Sub Commanders and nothing can build one, so the loadout did nothing at all for that faction. Cluster’s own Colonels are unchanged, and the one your Commander builds cannot come out of a factory
+- The CEO Commander can build Colonels as Cluster. Cluster’s Security is unchanged, and the one your Commander builds cannot come out of a factory
 - Artillery Ammunition Tech says it cuts ammunition cost rather than energy usage. The Lob pays for its shells in metal
 - Economy Fabrication Tech says it discounts storage as well as production, which it has always done
-- Complete Energy Tech and Improved Intelligence Tech say they cut teleport energy costs, which they have always done for the Teleporter and the Helios
-- Complete Air Tech says advanced air factories come from air fabricators. It named vehicle fabricators, which cannot build one
-- Complete Air, Bot, Naval and Vehicle Tech say they also unlock the advanced structures every advanced fabricator can build, which they have always granted
+- Complete Energy Tech and Improved Intelligence Tech now say they cut teleporter energy costs, which they have always done for the Teleporter and the Helios
+- Complete Air Tech says advanced air factories come from air fabricators. It previously named vehicle fabricators, which cannot build one
+- Complete Air, Bot, Naval and Vehicle Tech now say they unlock the advanced structures every advanced fabricator can build, which they have always done
 - Advanced Defense Technology no longer lists three of the five defences it grants. The tooltip lists them all
-- The Tourist Commander says it has no Mining Platforms either. It has always removed the Jig alongside the Metal Extractors
-- The Tactical Nuke Commander says it gives up most advanced defenses, which it has always done
+- The Tourist Commander now says it has no Mining Platforms either. It has always removed the Jig alongside the Metal Extractors
+- The Tactical Nuke Commander now says it gives up most advanced defenses, which it has always done
 
 ## v6.9.0 - 2026-08-07
 
