@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Anti-Nuke Launcher Upgrade Tech halves the cost of SR-24 Shield Missile Defense missiles."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Anti-Nuke Launcher Upgrade Tech halves the cost of SR-24 Shield Missile Defense missiles."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Anti-Nuke Launcher Upgrade Tech"),
     icon: _.constant(

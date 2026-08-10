@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 200%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 200%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Spinner Upgrade Tech"),
     icon: _.constant(

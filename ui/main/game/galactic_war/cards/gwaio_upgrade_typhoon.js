@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Typhoon Upgrade Tech doubles the number of drones held by the Typhoon and any other unit with drones."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Typhoon Upgrade Tech doubles the number of drones held by the Typhoon and any other unit with drones."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Typhoon Upgrade Tech"),
     icon: _.constant(

@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Galata Upgrade Tech enables the targeting of land and surface naval units by anti-air defense."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Galata Upgrade Tech enables the targeting of land and surface naval units by anti-air defense."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Galata Upgrade Tech"),
     icon: _.constant(

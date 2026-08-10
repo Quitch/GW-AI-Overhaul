@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Sheller Upgrade Tech causes mines to be left by the mortar tank's attacks."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Sheller Upgrade Tech causes mines to be left by the mortar tank's attacks."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Sheller Upgrade Tech"),
     icon: _.constant(

@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Stryker Upgrade Tech"),
     icon: _.constant(

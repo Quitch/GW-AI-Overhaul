@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Halley Upgrade Tech doubles the health of the delta V engine and halves its cost."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Halley Upgrade Tech doubles the health of the delta V engine and halves its cost."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Halley Upgrade Tech"),
     icon: _.constant(

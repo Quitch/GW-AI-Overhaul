@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Solar Array Upgrade Tech"),
     icon: _.constant(

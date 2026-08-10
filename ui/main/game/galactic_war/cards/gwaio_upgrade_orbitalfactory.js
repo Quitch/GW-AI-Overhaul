@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Orbital Factory Upgrade Tech decreases advanced orbital unit costs by 25% but also decreases the factory's health by 50%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Orbital Factory Upgrade Tech decreases advanced orbital unit costs by 25% but also decreases the factory's health by 50%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Orbital Factory Upgrade Tech"),
     icon: _.constant(

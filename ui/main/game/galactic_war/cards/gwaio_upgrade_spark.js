@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Spark Upgrade Tech increases the tesla bot's splash damage radius by 200%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Spark Upgrade Tech increases the tesla bot's splash damage radius by 200%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Spark Upgrade Tech"),
     icon: _.constant(

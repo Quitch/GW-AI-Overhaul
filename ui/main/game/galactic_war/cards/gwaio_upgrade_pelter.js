@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Pelter Upgrade Tech triples the number of shots fired per volley by the artillery while also tripling their deviation from target."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Pelter Upgrade Tech triples the number of shots fired per volley by the artillery while also tripling their deviation from target."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Pelter Upgrade Tech"),
     icon: _.constant(

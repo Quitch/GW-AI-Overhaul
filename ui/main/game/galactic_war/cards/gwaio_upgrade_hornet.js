@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Hornet Upgrade Tech adds splash damage to the tactical bomber's attacks."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Hornet Upgrade Tech adds splash damage to the tactical bomber's attacks."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Hornet Upgrade Tech"),
     icon: _.constant(

@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Energy Plant Upgrade Tech increases the energy production of this basic economy structure by 25% but decreases its health by 50%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Energy Plant Upgrade Tech increases the energy production of this basic economy structure by 25% but decreases its health by 50%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Energy Plant Upgrade Tech"),
     icon: _.constant(

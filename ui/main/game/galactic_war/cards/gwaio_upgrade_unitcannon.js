@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport and removes all cooldowns."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport and removes all cooldowns."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Unit Cannon Upgrade Tech"),
     icon: _.constant(

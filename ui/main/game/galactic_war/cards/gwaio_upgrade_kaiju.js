@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Kaiju Upgrade Tech"),
     icon: _.constant(

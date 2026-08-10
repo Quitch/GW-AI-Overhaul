@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Angel Upgrade Tech enables the targeting of enemy units and structures by the support platform's interception beam."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Angel Upgrade Tech enables the targeting of enemy units and structures by the support platform's interception beam."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Angel Upgrade Tech"),
     icon: _.constant(

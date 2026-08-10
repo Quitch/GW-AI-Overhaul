@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Naval Factory Upgrade Tech"),
     icon: _.constant(

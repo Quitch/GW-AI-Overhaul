@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Advanced Fabrication Bot Upgrade Tech equips the advanced fabricator with the support commander's weapon."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Advanced Fabrication Bot Upgrade Tech equips the advanced fabricator with the support commander's weapon."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Advanced Fabrication Bot Upgrade Tech"),
     icon: _.constant(

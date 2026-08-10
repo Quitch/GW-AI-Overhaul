@@ -5,13 +5,13 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator."
-      ) +
-        " " +
-        loc("!LOC:Disables the auto-repair feature.") +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator."
+        ) +
+          " " +
+          loc("!LOC:Disables the auto-repair feature.")
+      )
     ),
     summarize: _.constant("!LOC:Mend Upgrade Tech"),
     icon: _.constant(

@@ -5,13 +5,13 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Pelican Upgrade Tech allows air transports to carry commanders."
-      ) +
-        " " +
-        loc("!LOC:Every unit can shoot while being transported.") +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Pelican Upgrade Tech allows air transports to carry commanders."
+        ) +
+          " " +
+          loc("!LOC:Every unit can shoot while being transported.")
+      )
     ),
     summarize: _.constant("!LOC:Pelican Upgrade Tech"),
     icon: _.constant(

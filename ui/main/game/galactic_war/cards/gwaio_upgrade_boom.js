@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Boom Upgrade Tech"),
     icon: _.constant(

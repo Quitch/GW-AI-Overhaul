@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Icarus Upgrade Tech adds production of 2 metal to the solar drone."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Icarus Upgrade Tech adds production of 2 metal to the solar drone."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Icarus Upgrade Tech"),
     icon: _.constant(

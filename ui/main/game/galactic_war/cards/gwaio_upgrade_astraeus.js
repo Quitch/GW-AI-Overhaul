@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200% and increases its carry capacity to 12 units."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200% and increases its carry capacity to 12 units."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Astraeus Upgrade Tech"),
     icon: _.constant(

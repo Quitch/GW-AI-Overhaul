@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Ward Upgrade Tech causes the mobile anti-nuke to start fully charged."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Ward Upgrade Tech causes the mobile anti-nuke to start fully charged."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Ward Upgrade Tech"),
     icon: _.constant(

@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Drifter Upgrade Tech increases the range of hover tank attacks by 25%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Drifter Upgrade Tech increases the range of hover tank attacks by 25%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Drifter Upgrade Tech"),
     icon: _.constant(

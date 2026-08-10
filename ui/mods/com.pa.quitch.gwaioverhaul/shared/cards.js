@@ -99,6 +99,16 @@ define(function () {
       return !language || _.includes(language, "en");
     },
 
+    // Every card that grants a slot says so as its own paragraph. Kept here so the
+    // wording stays one translatable string rather than 114 copies of it.
+    withSlot: function (description) {
+      return (
+        description +
+        "<br> <br>" +
+        loc("!LOC:Adds a new slot for another technology.")
+      );
+    },
+
     loadoutIcon: function (loadoutId) {
       var raw = window.localStorage["gwaio_victory_" + loadoutId];
       var decoded;

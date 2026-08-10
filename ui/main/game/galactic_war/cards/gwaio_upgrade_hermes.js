@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Hermes Upgrade Tech increases the vision of the space probe by 50%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Hermes Upgrade Tech increases the vision of the space probe by 50%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Hermes Upgrade Tech"),
     icon: _.constant(
