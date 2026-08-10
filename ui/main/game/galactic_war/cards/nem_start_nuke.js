@@ -12,9 +12,12 @@ define([
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence."
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.";
+      }
+      return "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence.";
+    },
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:Tactical Nuke Commander",
