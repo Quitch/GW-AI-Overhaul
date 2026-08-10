@@ -1,0 +1,16 @@
+{
+  "sonarlint.connectedMode.project": {
+    "connectionId": "quitch",
+    "projectKey": "Quitch_GW-AI-Overhaul"
+  },
+  "[markdown]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.markdownlint": "explicit"
+    }
+  },
+  "[css]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": "explicit"
+    }
+  }
+}
