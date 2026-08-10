@@ -102,6 +102,13 @@ anything the war panel already shows. Its index is
 Duplicated subcommanders share one colour, matching how the host's duplication tech
 produces a single army with several commander slots.
 
+Which palette entry lands where is `gw_play/commander_colour.js`, and it is shared
+rather than per-caller for a reason: `referee_config_setup.js`, the shadowed
+per-player-tech referee, `gwo_panel.js` and the intel panel must all agree, or the
+panel promises a colour the battle does not deliver. It orders a palette by
+`contrastScore` — squared RGB distance plus a luminance term weighted 16× — so the
+commanders most likely to be confused are the ones pushed furthest apart.
+
 The palette can run out. `pick()` falls back to the caller's colour, and the
 referee treats "no pair available" as a reason to refuse the battle rather than
 letting two armies collide.
@@ -161,7 +168,9 @@ awaited.
 A viewer's selection follows the host's moves, which is right until the viewer has
 picked a star of their own to look at. `gw_play/coop_selection_follow.js` hijacks
 `applyCampaignAction` and puts the viewer's own choice back once the replayed action
-settles.
+settles. The scene entry is the thin `gw_play/coop_selection.js`, which exists only
+to `_.defer` into it — `systems.js` replaces `model.selection` outright, so the
+subscription can only be taken once every `gw_play` mod has loaded.
 
 It has to be restored **afterwards** rather than defended: `applyCampaignAction`
 writes the destination into `selection.star` itself, because the base game's `move()`

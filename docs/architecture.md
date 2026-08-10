@@ -35,6 +35,12 @@ else. Seven scenes, 23 entries:
 | `start`                      | 2       | Main menu.                                                                                         |
 | `gw_coop_per_player_loadout` | 1       | Per-player loadout selection for co-op viewers.                                                    |
 
+`gw_play` carries most of it, and two of its entries own a panel outright:
+`gwo_panel.js` builds GWO's own war panel — seed, difficulty, the AI brains, the
+war's game options, and each client's colour for the next battle — and
+`section_of_foreign_intelligence/` is the intel panel, vendored code under its
+own licence, so the attribution at its head stays.
+
 Nothing under `ui/main/**` or `pa/**` appears in that list — those load by
 _shadowing_, not by manifest.
 
@@ -124,6 +130,34 @@ Two traps:
 - The same file also halves EaselJS's mouseover hit-test rate to 10/sec (the base
   game takes the 20/sec default). Every check hit-tests the whole interactive
   display list, up to 234 systems. This is independent of the redraw loop.
+
+## Repairing wars made by older GWO versions
+
+A war is a save, and a save outlives the version that made it.
+`gw_play/bugfixes.js` runs once per entry into `gw_play` (guarded by
+`gwoBugfixesLoaded`, skipped for tutorials) and retroactively repairs wars whose
+generation had a bug GWO has since fixed.
+
+The shape is worth knowing before adding a fix to it:
+
+- **A fix is gated by a flag, not by a version alone.** `treasurePlanetFixed`,
+  `clusterFixed` and `treasureLoadoutDerived` live on `originSystem.gwaio`, and
+  `gwaio_lucky_commander_fixed` in `localStorage`. Once a repair has run, or been
+  ruled unnecessary, the flag says so and the scan is skipped for good.
+- **`checkIfPatchesNeeded` sets those flags from `gwoSettings.version`** via
+  `atLeastVersion`, so a war created after a fix shipped never pays for the scan.
+  A war with no recorded version compares as older than everything, which is the
+  safe direction.
+- **The flags are set unconditionally after the sweep**, because "the thing this
+  fix targets does not exist in this war" and "it has been fixed" want the same
+  outcome — a war with no treasure planet should not re-scan forever.
+- It finishes by calling `gw_play/save.js`, so a repaired war is persisted rather
+  than repaired again on the next visit.
+
+`gw_play/save.js` is the shared save wrapper used here and by the card code. It
+drives `model.driveAccessInProgress` around the write, and **no-ops for campaign
+viewers** — only the host owns the campaign, so a viewer that saved would be
+writing a war it does not own.
 
 ## Where state lives
 

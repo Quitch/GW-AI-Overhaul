@@ -156,6 +156,9 @@ consequence of the key, not an exception to it.
 
 The rest of the components:
 
+- **`general_commander.<player>`** — drawn by `gw_play/cards_start_subcdr.js`, which
+  is where the General Commander loadout's Sub Commanders are picked. Keyed per
+  player so a co-op viewer's retinue is their own and survives a reconnect.
 - **`reroll.<n>`** — `model.rerollTech` empties the star's card list and re-enters
   `model.explore`, so the per-card iteration index restarts at 0. Without the reroll count
   in the key every reroll would hand back the same cards.
