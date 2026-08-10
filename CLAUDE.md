@@ -63,6 +63,7 @@ npm ci                    # install pinned tooling (only needed once / after dep
 npm run verify            # everything CI checks: lint + format:check + validate + test
 npm run lint:js           # eslint .
 npm run lint:css          # stylelint "**/*.css"
+npm run format:css        # prettier --write + stylelint --fix, on *.css (see below)
 npm run lint:md           # markdownlint-cli2
 npm run format:md         # prettier --write + markdownlint --fix, on *.md (see below)
 npm run validate          # all validate:* checks below, in sequence
@@ -106,12 +107,18 @@ See CONTRIBUTING.md for the full list. The ones that bite most often:
   (submit those separately). `format:write` is repo-wide (`prettier --write .`), so
   run it and then stage only the files your change actually touches. The whole repo
   passes `prettier --check .`, which `npm run verify` enforces.
-- Markdown is checked by two tools, so after touching a `.md` file run `format:md`
-  and then `lint:md`. Prettier runs first because markdownlint's autofix is not
-  Prettier-clean (it leaves `* item` where Prettier wants `- item`), and `lint:md`
-  runs last because markdownlint cannot fix every rule - MD025 and friends need a
-  manual edit. `.vscode/settings.json` applies the same markdownlint fixes on save.
-  Like `format:write`, `format:md` is repo-wide: stage only your own files.
+- Markdown and CSS are each policed by two tools, so after touching a `.md` or `.css`
+  file run `format:md` / `format:css`, then `lint:md` / `lint:css`. Both scripts run
+  Prettier before the linter's `--fix`, which is the order that converges: Prettier
+  first settles the layout the linters report but cannot repair themselves (an
+  unformatted single-line rule block trips stylelint's
+  `declaration-block-single-line-max-declarations`), and once it has, neither
+  linter's own fixes break `prettier --check` - markdownlint only reaches for `*`
+  bullets when Prettier has not already made them `-`. The linter still runs last
+  because `--fix` cannot repair every rule: markdownlint's MD025 and friends need a
+  manual edit, and the exit code is how you learn that.
+  `.vscode/settings.json` applies the same two fix passes on save. Like
+  `format:write`, both scripts are repo-wide: stage only your own files.
 - The whole `pa/**` data tree is excluded from Prettier (see `.prettierignore`).
   Those JSON files are intentionally minified to a single line, matching the base
   game's own convention - don't reformat them, and don't narrow the exclusion back

@@ -16,6 +16,8 @@
       "Bash(npm run validate:refs)",
       "Bash(npm run lint:js)",
       "Bash(npm run lint:css)",
+      "Bash(npm run format:css)",
+      "Bash(npx stylelint *)",
       "Bash(npm run lint:md)",
       "Bash(npm run format:md)",
       "Bash(npx markdownlint-cli2 *)",
