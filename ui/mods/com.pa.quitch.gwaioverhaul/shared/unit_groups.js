@@ -663,8 +663,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     scoutWeapons
   ).concat(commanderWeapons);
 
-  var units = mobile.concat(immobile);
-  var unitsNoCluster = mobileNoCluster.concat(immobile);
+  // The Commander belongs to no domain roster, so mobile cannot reach it.
+  var units = mobile.concat(immobile, gwoUnit.commander);
+  var unitsNoCluster = mobileNoCluster.concat(immobile, gwoUnit.commander);
 
   var fabberBuildArms = [
     gwoUnit.airFabberAdvancedBuildArm,

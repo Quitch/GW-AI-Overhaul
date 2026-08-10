@@ -22,6 +22,7 @@
 - Tech that changes the damage of all your weapons now reaches every one of them. The Anti-Air, Anti-Bot, Anti-Commander, Anti-Hover, Anti-Orbital, Anti-Ship, Anti-Structure and Anti-Vehicle Ammo Techs, the Terminal Commander, the Swarm Commander and the Buff Commander all missed your Commander's weapons, your artillery, both silos and every death explosion
   - Protocol: Blindness extends the range of those weapons alongside the rest
   - Bot Ammunition Tech and Bot Combat Tech no longer miss the Gil-E's interception beam
+- Protocol: Blindness gives your Commander the health and weapon range it promises. The Commander is the one unit the card names, and it was the only one getting neither
 
 ## v6.9.0 - 2026-08-07
 

@@ -510,7 +510,7 @@ define([
         // Units already carrying a death weapon get theirs made friendly-fire
         // capable rather than replaced, so every unit is affected either way.
         id: "gwaio_protocol_killswitch",
-        units: gwoGroup.units.concat(gwoUnit.commander),
+        units: gwoGroup.units,
       },
       {
         id: "gwaio_protocol_blindness",
