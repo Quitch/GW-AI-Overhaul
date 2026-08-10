@@ -16,6 +16,7 @@
 - The Nomad Commander can now move its Teleporter, Radar Jamming Station and Lob. Its description also notes that metal extractors and the Catalyst stay put, since they are tied to map features
 - The Combat Commander now fires twice as fast, as its description has always claimed. The bonus reached none of the weapons a Commander actually carries
 - The Combat Commander’s description now says its speed bonus is 400%, which is what it has always granted
+- Allied Sub Commanders of an Artillery Commander now know their Commander can build radar, double barreled turrets and basic artillery turrets
 
 ## v6.9.0 - 2026-08-07
 
