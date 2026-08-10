@@ -1,8 +1,7 @@
 # Galaxy, factions and difficulty
 
-War creation happens in `gw_start/setup.js` — at ~1,250 lines the largest file in
-the mod. It generates the galaxy, places AIs, assigns personalities and minions,
-and stamps GWO's settings onto the save.
+War creation happens in `gw_start/setup.js`. It generates the galaxy, places AIs,
+assigns personalities and minions, and stamps GWO's settings onto the save.
 
 ## Generation order
 
