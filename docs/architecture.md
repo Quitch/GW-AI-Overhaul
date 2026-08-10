@@ -131,9 +131,14 @@ Two traps:
   onto the origin star system as `originSystem.gwaio` (AI brain, difficulty,
   scaling options). `shared/ai.js`'s `aiInUse()` reads it; a missing blob means a
   non-GWO war and defaults to Titans.
-- **`localStorage`** — start-card unlocks and victory badges, under `gwaio_`-
-  prefixed keys so that uninstalling GWO does not corrupt the base game's loadout
-  list with 404s. See `shared/bank.js` and `shared/favourites.js`.
+- **`localStorage`** — start-card unlocks, victory badges and favourited
+  loadouts, under `gwaio_`-prefixed keys so that uninstalling GWO does not
+  corrupt the base game's loadout list with 404s. See `shared/bank.js` and
+  `shared/favourites.js`, which reads `gwaio_favourite_loadouts`.
+  `shared/favourite_loadouts.js` is the id arithmetic behind that key —
+  `isFavourite`, `toggleId` and `sortCardsByFavourite`, kept free of engine
+  globals so it is testable. Its sort puts favourites in the order they were
+  favourited, not the order the cards happen to be in.
 - **The inventory** — cards, units, minions and AI mods for the current war.
   Under co-op with per-player tech there is one inventory per player, and
   `model.game().inventory()` is always the _host's_ — a real source of bugs when
