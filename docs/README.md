@@ -70,8 +70,13 @@ subsystem as licence to delete the comments inside it.
 ## Verifying a change
 
 ```bash
-npm run verify    # exactly what CI gates on
+npm run verify    # CI's hard gates, plus Prettier over the whole repo
 ```
+
+CI runs `lint:js`/`lint:css`/`lint:md`/`validate`/`test` as full-repo hard gates
+and checks Prettier only over the files a PR changed. `verify` runs those same
+gates and widens the Prettier check to `prettier --check .`, which the repo
+passes today — so a clean `verify` means a clean CI, but not the reverse.
 
 Nothing here starts PA. Anything that can only fail at runtime — a renamed
 identifier in shipped `ui/**`, a CSS class rename spanning HTML and CSS, a
