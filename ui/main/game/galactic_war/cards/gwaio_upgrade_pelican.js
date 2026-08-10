@@ -35,7 +35,7 @@ define([
         },
         {
           file: gwoUnit.pelican,
-          path: "fire_while_loaded.unit_types",
+          path: "transporter.fire_while_loaded.unit_types",
           op: "replace",
           value: "Land & Mobile",
         },

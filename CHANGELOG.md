@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Orbital Combat Tech now speeds up your orbital units. Its health and damage bonuses were unaffected
+- Pelican Upgrade Tech now lets every transported unit shoot, rather than only basic amphibious bots
 
 ## v6.9.0 - 2026-08-07
 
