@@ -110,6 +110,10 @@ const TRANSLATED = [
     text: "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence.",
   },
   {
+    file: "gwaio_upgrade_planetaryradar.js",
+    text: "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar.<br> <br>!LOC:Adds a new slot for another technology.",
+  },
+  {
     file: "gwaio_start_tourist.js",
     text: "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors and no basic land or air factories. Sub Commanders will not do anything except defend themselves and automatically transfer their excess income to you.",
   },

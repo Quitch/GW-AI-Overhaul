@@ -40,6 +40,7 @@ Changes to card descriptions are made to English only. Translated copies will us
 - Advanced Defense Technology no longer lists three of the five defences it grants. The tooltip lists them all
 - The Tourist Commander now says it has no Mining Platforms either. It has always removed the Jig alongside the Metal Extractors
 - The Tactical Nuke Commander now says it gives up most advanced defenses, which it has always done
+- Planetary Radar Upgrade Tech calls itself by its own name. Its description opened with “Planetary Upgrade Tech”
 
 ## v6.9.0 - 2026-08-07
 
