@@ -45,21 +45,26 @@ define([
               };
             }
           );
-          var weapons = [gwoUnit.commanderSecondary, gwoUnit.commanderWeapon];
+          var weapons = [
+            gwoUnit.commanderSecondary,
+            gwoUnit.commanderWeaponBullet,
+            gwoUnit.commanderWeaponLaser,
+            gwoUnit.commanderWeaponMissile,
+          ];
           var ammoAttributes = [
             "ammo_capacity",
             "ammo_demand",
             "ammo_per_shot",
           ];
-          _.forEach(weapons, function (weapon) {
-            _.forEach(ammoAttributes, function (ammoAttribute) {
-              mods.push({
-                file: weapon,
-                path: ammoAttribute,
-                op: "multiply",
-                value: 0.25,
-              });
+          _.forEach(ammoAttributes, function (ammoAttribute) {
+            mods.push({
+              file: gwoUnit.commanderSecondary,
+              path: ammoAttribute,
+              op: "multiply",
+              value: 0.25,
             });
+          });
+          _.forEach(weapons, function (weapon) {
             mods.push({
               file: weapon,
               path: "rate_of_fire",

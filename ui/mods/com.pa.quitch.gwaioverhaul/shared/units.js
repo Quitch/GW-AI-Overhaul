@@ -134,8 +134,14 @@ define({
     "/pa/units/commanders/base_commander/base_commander_torpedo_ammo_land.json",
   commanderTorpedoWaterAmmo:
     "/pa/units/commanders/base_commander/base_commander_torpedo_ammo_water.json",
-  commanderWeapon:
-    "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
+  // Every commander mounts one of these three as its primary. TITANS re-parents them to
+  // base_bot_weapon, leaving base_commander_tool_weapon.json referenced by nothing.
+  commanderWeaponBullet:
+    "/pa/units/commanders/base_commander/base_commander_tool_bullet_weapon.json",
+  commanderWeaponLaser:
+    "/pa/units/commanders/base_commander/base_commander_tool_laser_weapon.json",
+  commanderWeaponMissile:
+    "/pa/units/commanders/base_commander/base_commander_tool_missile_weapon.json",
   deepSpaceOrbitalRadar:
     "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
   dox: "/pa/units/land/assault_bot/assault_bot.json",
