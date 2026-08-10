@@ -465,7 +465,8 @@ define([
       { id: "gwaio_cooldown_bots", units: gwoGroup.botFactories },
       { id: "gwaio_cooldown_air", units: gwoGroup.airFactories },
       { id: "gwaio_cooldown_sea", units: gwoGroup.navalFactories },
-      { id: "gwaio_cooldown_orbital", units: gwoGroup.orbitalFactories },
+      // The Orbital Launcher has no factory_cooldown_time to halve.
+      { id: "gwaio_cooldown_orbital", units: [gwoUnit.orbitalFactory] },
       { id: "gwaio_speed_structure", units: gwoGroup.nomadStructures },
       {
         id: "gwaio_enable_factories_t1_all",
