@@ -110,13 +110,19 @@ Being at a base-game _path_ is not the same as shadowing a base-game _file_. Onl
 the `gwc_` cards replace something; the other 168 simply live in the same
 directory because that is where the game looks for cards.
 
-### `pa/` — 86 files, 8 shadowed
+### `pa/` — 87 files, 8 shadowed
 
 | Tree              | Files | Status                                                                                       |
 | ----------------- | ----- | -------------------------------------------------------------------------------------------- |
 | `pa/ai/`          | 8     | All 8 shadow base-game build data — 4 against `pa/`, 4 against the TITANS overlay `pa_ex1/`. |
 | `pa/ai_penchant/` | 70    | GWO-authored in full.                                                                        |
 | `pa/ai_tech/`     | 8     | GWO-authored; the files that AI-mod `load` descriptors name.                                 |
+| `pa/units/`       | 1     | GWO-authored; the CEO Commander's Colonel buildbar icon.                                     |
+
+That last one is the reminder that **being at a base-game path is not shadowing**.
+`bot_support_commander_ceo_icon_buildbar.png` sits in the stock unit's own
+directory, but the stock icon there is `bot_support_commander_icon_buildbar.png` —
+a different name, so nothing is replaced.
 
 The four shadowing `pa_ex1/` are the `_additional` and `_x1` variants —
 `factory_air_builds_additional.json`, `factory_land_builds_additional.json`,
