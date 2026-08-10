@@ -4,7 +4,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var orderOfOperations = function (mods) {
     var operationsContainer = {};
     operationsContainer.otherOperations = [];
-    var orderedOperations = ["replace", "multiplyOrCreate", "multiply", "add"];
+    // clone leads because it is the only op that creates a spec id, so every
+    // other op has to be able to name the result. See specs.md.
+    var orderedOperations = [
+      "clone",
+      "replace",
+      "multiplyOrCreate",
+      "multiply",
+      "add",
+    ];
 
     _.forEach(mods, function (mod) {
       var operationName = mod.op;
