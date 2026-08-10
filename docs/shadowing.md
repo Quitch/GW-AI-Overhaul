@@ -112,23 +112,43 @@ directory because that is where the game looks for cards.
 
 ### `pa/` — 87 files, 8 shadowed
 
-| Tree              | Files | Status                                                                                       |
-| ----------------- | ----- | -------------------------------------------------------------------------------------------- |
-| `pa/ai/`          | 8     | All 8 shadow base-game build data — 4 against `pa/`, 4 against the TITANS overlay `pa_ex1/`. |
-| `pa/ai_penchant/` | 70    | GWO-authored in full.                                                                        |
-| `pa/ai_tech/`     | 8     | GWO-authored; the files that AI-mod `load` descriptors name.                                 |
-| `pa/units/`       | 1     | GWO-authored; the CEO Commander's Colonel buildbar icon.                                     |
+| Tree              | Files | Status                                                                                        |
+| ----------------- | ----- | --------------------------------------------------------------------------------------------- |
+| `pa/ai/`          | 8     | All 8 shadow base-game build data — see the re-sync table below for which copy each replaces. |
+| `pa/ai_penchant/` | 70    | GWO-authored in full.                                                                         |
+| `pa/ai_tech/`     | 8     | GWO-authored; the files that AI-mod `load` descriptors name.                                  |
+| `pa/units/`       | 1     | GWO-authored; the CEO Commander's Colonel buildbar icon.                                      |
 
 That last one is the reminder that **being at a base-game path is not shadowing**.
 `bot_support_commander_ceo_icon_buildbar.png` sits in the stock unit's own
 directory, but the stock icon there is `bot_support_commander_icon_buildbar.png` —
 a different name, so nothing is replaced.
 
-The four shadowing `pa_ex1/` are the `_additional` and `_x1` variants —
-`factory_air_builds_additional.json`, `factory_land_builds_additional.json`,
-`factory_land_builds_x1.json`, `factory_uc_builds_x1.json`. They are stored under
-`pa_ex1/` in the install but addressed as `/pa/…` at runtime; see
-[`ai-paths.md`](ai-paths.md).
+#### Which copy each `pa/ai/` file replaces
+
+All eight are written as `pa/ai/…` in this repo and addressed as `/pa/…` at
+runtime, but the base file to re-sync against is **not** always the one under
+`pa/`. TITANS is an overlay: where a path exists in both trees, the `pa_ex1/`
+copy is the one the game loads, and therefore the one GWO's copy was derived
+from and must be diffed against.
+
+| GWO file                              | Base copy to diff against |
+| ------------------------------------- | ------------------------- |
+| `factory_air_builds.json`             | `pa/` — the only one      |
+| `fabber_defense_builds.json`          | `pa_ex1/`                 |
+| `factory_land_builds.json`            | `pa_ex1/`                 |
+| `platoon_templates.json`              | `pa_ex1/`                 |
+| `factory_air_builds_additional.json`  | `pa_ex1/`                 |
+| `factory_land_builds_additional.json` | `pa_ex1/`                 |
+| `factory_land_builds_x1.json`         | `pa_ex1/`                 |
+| `factory_uc_builds_x1.json`           | `pa_ex1/`                 |
+
+The `_additional` and `_x1` variants are TITANS-only and exist nowhere else, so
+they are easy to get right. The trap is the middle three, which exist in **both**
+trees under the same name: `pa/platoon_templates.json` is half the size of the
+`pa_ex1/` one, so a re-sync against the wrong copy silently discards every
+TITANS-era entry rather than failing. See [`ai-paths.md`](ai-paths.md) for why
+the overlay is addressed as `/pa/…` regardless.
 
 ## Marking a shadowed file
 
