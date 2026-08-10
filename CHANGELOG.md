@@ -8,6 +8,7 @@
 - Protocol: Precision and Protocol: Wrath change the weapon range of the same combat units they slow down or speed up. Titans and armed scouts were gaining the range without the trade-off, and your Commander was taking the trade-off without the range
 - The Orbital Commander contains all orbital units and factories, and nothing else. It was also letting orbital fabricators build every basic ground structure, which is the Deep Space Excavation Commander’s speciality, and making the Planetary Radar commander-buildable
   - Orbital Fabrication Bot Upgrade Tech is offered to Orbital Commanders again
+- Boom Upgrade Tech is offered once you hold the Boom, and grants the Lob as its description has always promised. It previously required the Lob you were being offered
 
 ### Bugfix
 
