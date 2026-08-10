@@ -36,6 +36,7 @@
 - Complete Air Tech says advanced air factories come from air fabricators. It named vehicle fabricators, which cannot build one
 - Complete Air, Bot, Naval and Vehicle Tech say they also unlock the advanced structures every advanced fabricator can build, which they have always granted
 - Advanced Defense Technology no longer lists three of the five defences it grants. The tooltip lists them all
+- The Tourist Commander says it has no Mining Platforms either. It has always removed the Jig alongside the Metal Extractors
 
 ## v6.9.0 - 2026-08-07
 
