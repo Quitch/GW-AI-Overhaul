@@ -29,6 +29,10 @@ as an `ai_path`: it is a file source the pipeline pulls extra build files out of
 when a card's AI mod carries a `load`, and a place `referee_ai.js` writes
 generated output. See [`ai-pipeline.md`](ai-pipeline.md), "The op table".
 
+Nor is it `gw_start/ai_tech.js`, which shares the name and nothing else: that is
+the AI's own stat tech, applied as unit-spec mods at war creation. See
+[`galaxy.md`](galaxy.md), "AI tech".
+
 **The `/pa/ai_queller/` path is a trap.** On disk in the game install those files
 live under `pa_ex1/ai_queller/`, because Queller is TITANS content and TITANS is
 stored as an overlay. But the overlay is _addressed_ through `/pa/…` at runtime.

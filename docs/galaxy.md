@@ -368,6 +368,33 @@ rather than as nothing.
 Personality display names support the _Show AI Personality Names_ mod, a dependency
 that lives entirely outside this repo.
 
+## AI tech
+
+Distinct from the player's tech cards, and from `/pa/ai_tech/`: this is the AI's
+own stat tech, drawn at war creation and applied as **unit-spec mods** on the
+AI's inventory. Two modules:
+
+- `gw_start/ai_tech.js` returns `factionTechs[faction][tech]` — arrays of
+  `addMods`-shaped descriptors, the same shape [`specs.md`](specs.md) documents.
+- `shared/ai_inventory.js` holds the per-faction unit, ammo and weapon groupings
+  those descriptors multiply over, so each faction's tech hits only what that
+  faction fields.
+
+`setup.js`'s `aiBuffType` names the tech indices: cost 0, damage 1, health 2,
+speed 3, build 4, combat 6, cooldown 7. **Index 5 is deliberately absent** — that
+tech was removed, and the gap is preserved rather than closed so existing saves
+keep meaning what they meant. A contributor renumbering it to tidy the sequence
+would silently repoint every war already carrying a 6 or a 7.
+
+One ordering constraint: combat (6) is built by concatenating ammunition (1) and
+armour (2), so `setupAITech6CombatTech()` must run after both. The call sequence
+at the foot of the file is load-bearing for that reason alone.
+
+How much tech an AI gets is `Math.floor(distance / 2 - buffDistanceDelay)`, so it
+scales with distance from the origin and goes negative near it — `rng.sample`
+clamps that to none. The draw comes from the `ai.<team>` streams above, which is
+what keeps a seed's enemies reproducible.
+
 ## Third-party mods that interact here
 
 - **Bigger Galactic War** — adds galaxy sizes 5–8. The distance-threshold tables in
