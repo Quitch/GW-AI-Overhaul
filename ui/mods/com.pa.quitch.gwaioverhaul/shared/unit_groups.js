@@ -98,6 +98,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.bluehawkBeamAmmo,
     gwoUnit.colonelAmmo,
     gwoUnit.gilEAmmo,
+    gwoUnit.gilEBeamAmmo,
     gwoUnit.locustsAmmo,
     gwoUnit.slammerAmmo,
     gwoUnit.slammerTorpedoLandAmmo,
@@ -108,6 +109,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.bluehawkWeapon,
     gwoUnit.bluehawkWeaponOrbital,
     gwoUnit.colonelWeapon,
+    gwoUnit.gilEBeam,
     gwoUnit.gilEWeapon,
     gwoUnit.locustsWeapon,
     gwoUnit.slammerTorpedo,
@@ -571,7 +573,63 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     titansAmmo,
     vehiclesAmmo
   );
-  var ammo = ammoMobile.concat(structuresDefencesAmmo);
+
+  var commanderAmmo = [
+    gwoUnit.commanderAAAmmo,
+    gwoUnit.commanderAmmo,
+    gwoUnit.commanderSecondaryAmmo,
+    gwoUnit.commanderTorpedoLandAmmo,
+    gwoUnit.commanderTorpedoWaterAmmo,
+  ];
+  var commanderWeapons = [
+    gwoUnit.commanderAA,
+    gwoUnit.commanderSecondary,
+    gwoUnit.commanderWeaponBullet,
+    gwoUnit.commanderWeaponLaser,
+    gwoUnit.commanderWeaponMissile,
+  ];
+
+  // The silo payloads, the Ares stomp, and the Orca torpedo a card can lend out:
+  // ammo no domain group claims.
+  var unhomedAmmo = [
+    gwoUnit.antiNukeLauncherAmmo,
+    gwoUnit.aresStompAmmo,
+    gwoUnit.nukeLauncherAmmo,
+    gwoUnit.orcaTorpedoAmmo,
+  ];
+  var unhomedWeapons = [
+    gwoUnit.antiNukeWeapon,
+    gwoUnit.aresStomp,
+    gwoUnit.nukeLauncherWeapon,
+    gwoUnit.orcaTorpedo,
+  ];
+
+  // A death payload scales a self-destruct rather than a weapon, so no domain
+  // group carries one - except the Manhattan's, which is its real damage.
+  var deathAmmo = [
+    gwoUnit.aresDeath,
+    gwoUnit.atlasDeath,
+    gwoUnit.commanderDeath,
+    gwoUnit.commanderDeathAir,
+    gwoUnit.heliosDeath,
+    gwoUnit.jigDeath,
+    gwoUnit.manhattanDeath,
+    gwoUnit.ragnarokPbaoe,
+    gwoUnit.wyrmDeath,
+    gwoUnit.zeusDeath,
+  ];
+
+  // Every ammo in the game. uniq because the Manhattan's death nuke is also a
+  // vehicle ammo, and addMods concatenates without deduplicating.
+  var ammo = _.uniq(
+    ammoMobile.concat(
+      structuresDefencesAmmo,
+      structuresArtilleryAmmo,
+      commanderAmmo,
+      unhomedAmmo,
+      deathAmmo
+    )
+  );
 
   var weaponsMobile = airWeapons.concat(
     botsWeapons,
@@ -580,7 +638,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     titansWeapons,
     vehiclesWeapons
   );
-  var weapons = weaponsMobile.concat(structuresDefencesWeapons);
+  var weapons = _.uniq(
+    weaponsMobile.concat(
+      structuresDefencesWeapons,
+      structuresArtilleryWeapons,
+      commanderWeapons,
+      unhomedWeapons
+    )
+  );
 
   var units = mobile.concat(immobile);
   var unitsNoCluster = mobileNoCluster.concat(immobile);
@@ -628,14 +693,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.radarJammingStation,
     gwoUnit.unitCannon
   );
-
-  var commanderAmmo = [
-    gwoUnit.commanderAAAmmo,
-    gwoUnit.commanderAmmo,
-    gwoUnit.commanderSecondaryAmmo,
-    gwoUnit.commanderTorpedoLandAmmo,
-    gwoUnit.commanderTorpedoWaterAmmo,
-  ];
 
   var airFactories = [gwoUnit.airFactory, gwoUnit.airFactoryAdvanced];
   var botFactories = [gwoUnit.botFactory, gwoUnit.botFactoryAdvanced];
