@@ -122,6 +122,13 @@ a then property" rule warns about.
 code reads at call time. It is a factory, not a singleton, so two suites never
 share a restore stack.
 
+`scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
+wiring `referee_ai.js`'s file discovery needs, and returns its own restore
+function. It records every `api.file.list` and `$.getJSON` call unconditionally,
+so a test asserting which paths were walked needs no second, subtly different,
+local installer — which is what the three tests using it would otherwise each
+have grown.
+
 ## Coverage
 
 The Sonar quality gate requires ~80% coverage on **new code only**. Files that are
