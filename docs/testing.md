@@ -131,15 +131,11 @@ extracted into measured sibling modules — see [`shadowing.md`](shadowing.md).
 Each sibling is a plain `define()` over lodash and `console` only: no engine
 globals, and no dependency the repo does not ship, so it loads under the Node AMD
 harness. Where a helper needs one of the excluded file's injected modules, it
-takes it as an explicit parameter rather than closing over it. The pairs:
-
-| Excluded glue                           | Measured sibling             |
-| --------------------------------------- | ---------------------------- |
-| `gw_play/gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js` |
-| `shared/js/gw_galaxy.js`                | `shared/gw_galaxy_graph.js`  |
+takes it as an explicit parameter rather than closing over it.
 
 The glue file depends on the unshipped `shared/gw_common`, which is what stops it
-loading in the harness in the first place.
+loading in the harness in the first place. [`shadowing.md`](shadowing.md) carries
+the list of pairs; it is one list, and this is not a second copy of it.
 
 ### The `typeof module` hook
 
