@@ -4,6 +4,7 @@
   "scripts": {
     "lint:js": "eslint .",
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\"",
+    "format:md": "prettier --write \"**/*.md\" && markdownlint-cli2 --fix \"**/*.md\" \"!node_modules\"",
     "lint:css": "stylelint \"**/*.css\"",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",

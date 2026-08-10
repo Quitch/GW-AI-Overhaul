@@ -64,6 +64,7 @@ npm run verify            # everything CI checks: lint + format:check + validate
 npm run lint:js           # eslint .
 npm run lint:css          # stylelint "**/*.css"
 npm run lint:md           # markdownlint-cli2
+npm run format:md         # prettier --write + markdownlint --fix, on *.md (see below)
 npm run validate          # all validate:* checks below, in sequence
 npm run validate:json     # every .json file in the repo parses
 npm run validate:manifest # modinfo.json scenes reference files that actually exist
@@ -105,6 +106,12 @@ See CONTRIBUTING.md for the full list. The ones that bite most often:
   (submit those separately). `format:write` is repo-wide (`prettier --write .`), so
   run it and then stage only the files your change actually touches. The whole repo
   passes `prettier --check .`, which `npm run verify` enforces.
+- Markdown is checked by two tools, so after touching a `.md` file run `format:md`
+  and then `lint:md`. Prettier runs first because markdownlint's autofix is not
+  Prettier-clean (it leaves `* item` where Prettier wants `- item`), and `lint:md`
+  runs last because markdownlint cannot fix every rule - MD025 and friends need a
+  manual edit. `.vscode/settings.json` applies the same markdownlint fixes on save.
+  Like `format:write`, `format:md` is repo-wide: stage only your own files.
 - The whole `pa/**` data tree is excluded from Prettier (see `.prettierignore`).
   Those JSON files are intentionally minified to a single line, matching the base
   game's own convention - don't reformat them, and don't narrow the exclusion back
