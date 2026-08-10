@@ -21,8 +21,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.boom) &&
-          gwoCard.hasUnit(inventory.units(), gwoUnit.lob)
+        gwoCard.hasUnit(inventory.units(), gwoUnit.boom)
       );
     },
     buff: function (inventory) {

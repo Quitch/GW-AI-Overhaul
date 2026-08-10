@@ -35,14 +35,12 @@ define([
       var mods = _.flatten(
         _.map(gwoGroup.orbitalMobile, function (unit) {
           return _.map(paths, function (path) {
-            return [
-              {
-                file: unit,
-                path: path,
-                op: "multiply",
-                value: 1.5,
-              },
-            ];
+            return {
+              file: unit,
+              path: path,
+              op: "multiply",
+              value: 1.5,
+            };
           });
         })
       );
@@ -57,12 +55,20 @@ define([
       });
 
       _.forEach(gwoGroup.orbitalAmmo, function (ammo) {
-        mods.push({
-          file: ammo,
-          path: "damage",
-          op: "multiply",
-          value: 1.25,
-        });
+        mods.push(
+          {
+            file: ammo,
+            path: "damage",
+            op: "multiply",
+            value: 1.25,
+          },
+          {
+            file: ammo,
+            path: "splash_damage",
+            op: "multiply",
+            value: 1.25,
+          }
+        );
       });
 
       inventory.addMods(mods);

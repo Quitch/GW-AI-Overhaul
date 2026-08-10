@@ -77,6 +77,72 @@ define(function () {
     });
   };
 
+  // A viewer's subcommander armies, and the colour position the next viewer
+  // starts from. subcommanderTech, gwoColour and refereeCoop are injected - see
+  // testing.md, "Coverage".
+  var buildViewerSubcommanderArmies = function (params) {
+    var subcommanderTech = params.subcommanderTech;
+    var playerInventory = params.playerInventory;
+    var playerTag = params.playerTag;
+    var colourPosition = params.colourPosition;
+    var armies = [];
+
+    // The host is always .player, and the main referee already added their
+    // minions - including their share of the colour sequence.
+    if (playerTag === ".player") {
+      return { armies: armies, colourPosition: colourPosition };
+    }
+
+    var cards = playerInventory.cards();
+    var minionCount = subcommanderTech.applySubcommanderDuplicationTech(cards);
+
+    _.forEach(playerInventory.minions(), function (minion) {
+      // Cloned because the tech mutators write in place, and the minion here is
+      // the saved inventory one. Editing it would bake the bonus in past a
+      // discard of the card that granted it. See tech-cards.md.
+      var minionPersonality = _.cloneDeep(minion.personality);
+      subcommanderTech.applySubcommanderTacticsTech(minionPersonality, cards);
+      subcommanderTech.applySubcommanderFabberTech(minionPersonality, cards);
+      minionPersonality.ai_path = params.viewerAiPath;
+
+      // Duplicated subcommanders share one colour, the same way the host's
+      // duplication tech produces a single army with several commander slots.
+      var minionColour = params.gwoColour.pick(
+        params.playerFaction,
+        // pick() falls back to this and reads it to spot The Guardians, so
+        // even a colourless minion needs a pair.
+        minion.color || params.playerColor,
+        params.refereeCoop.alliedColourIndex(colourPosition)
+      );
+      colourPosition++;
+
+      for (
+        var duplicateIndex = 0;
+        duplicateIndex < minionCount;
+        duplicateIndex++
+      ) {
+        armies.push({
+          slots: [
+            {
+              ai: true,
+              name: minion.name || "Helper",
+              commander:
+                stripKnownSpecTag(minion.commander || params.playerCommander) +
+                playerTag,
+            },
+          ],
+          color: minionColour,
+          econ_rate: params.subcommanderEconRate,
+          personality: minionPersonality,
+          spec_tag: playerTag,
+          alliance_group: 1,
+        });
+      }
+    });
+
+    return { armies: armies, colourPosition: colourPosition };
+  };
+
   // The guards that must not stamp per_player_tech_ready onto config: either
   // there is no valid config to stamp it on, or per-player tech is not in play
   // at all. On success it hands the config to validateRefereeState.
@@ -236,6 +302,7 @@ define(function () {
     getPlayerTagGivenIndex: getPlayerTagGivenIndex,
     stripKnownSpecTag: stripKnownSpecTag,
     getViewerSubcommanderAiPath: getViewerSubcommanderAiPath,
+    buildViewerSubcommanderArmies: buildViewerSubcommanderArmies,
     validatePerPlayerTechInputs: validatePerPlayerTechInputs,
   };
 });

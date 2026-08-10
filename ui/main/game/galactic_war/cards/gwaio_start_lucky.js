@@ -9,8 +9,7 @@ define([
   return {
     visible: _.constant(false),
     summarize: function () {
-      var english = _.includes(i18n.detectLanguage(), "en");
-      if (english) {
+      if (gwoCard.isEnglish()) {
         return "!LOC:Lucky Commander";
       }
       return loc("!LOC:Reroll Tech") + " " + loc("!LOC:Commander"); // scuffed translation using existing strings
@@ -22,10 +21,9 @@ define([
       "!LOC:The Lucky Commander is offered four cards instead of three at every planet."
     ),
     hint: function () {
-      var english = _.includes(i18n.detectLanguage(), "en");
       var icon =
         "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png";
-      if (english) {
+      if (gwoCard.isEnglish()) {
         return {
           icon: icon,
           description: "!LOC:Lucky Commander",

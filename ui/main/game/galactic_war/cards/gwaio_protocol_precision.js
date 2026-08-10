@@ -34,13 +34,13 @@ define([
           "recon.observer.items.1.radius": percentageIncrease,
         });
       });
-      var rangeMods = _.map(gwoGroup.weaponsMobile, function (weapon) {
+      var rangeMods = _.map(gwoGroup.combatMobileWeapons, function (weapon) {
         return gwoCard.mods(weapon, "multiply", {
           max_range: percentageIncrease,
         });
       });
       // Try to make sure that units can use their full range
-      var ammoMods = _.map(gwoGroup.ammoMobile, function (ammo) {
+      var ammoMods = _.map(gwoGroup.combatMobileAmmo, function (ammo) {
         return gwoCard.mods(ammo, "multiply", {
           lifetime: percentageIncrease,
           max_velocity: percentageIncrease,

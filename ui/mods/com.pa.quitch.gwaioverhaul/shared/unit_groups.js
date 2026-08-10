@@ -98,6 +98,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.bluehawkBeamAmmo,
     gwoUnit.colonelAmmo,
     gwoUnit.gilEAmmo,
+    gwoUnit.gilEBeamAmmo,
     gwoUnit.locustsAmmo,
     gwoUnit.slammerAmmo,
     gwoUnit.slammerTorpedoLandAmmo,
@@ -108,6 +109,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.bluehawkWeapon,
     gwoUnit.bluehawkWeaponOrbital,
     gwoUnit.colonelWeapon,
+    gwoUnit.gilEBeam,
     gwoUnit.gilEWeapon,
     gwoUnit.locustsWeapon,
     gwoUnit.slammerTorpedo,
@@ -229,6 +231,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var orbitalMobile = orbitalBasicMobile.concat(orbitalAdvancedMobile);
   var orbitalCombat = orbitalBasicCombat.concat(orbitalAdvancedCombat);
   var orbital = orbitalBasic.concat(orbitalAdvanced);
+
+  // Everything the base game tags UNITTYPE_Artillery and UNITTYPE_Mobile, less the Ares:
+  // titans answer to titan tech, not to a domain group.
+  var artilleryMobile = [
+    gwoUnit.gilE,
+    gwoUnit.grenadier,
+    gwoUnit.leviathan,
+    gwoUnit.sheller,
+  ];
 
   var structuresArtilleryBasic = [gwoUnit.lob, gwoUnit.pelter];
   var structuresArtilleryBasicAmmo = [gwoUnit.lobAmmo, gwoUnit.pelterAmmo];
@@ -562,7 +573,68 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     titansAmmo,
     vehiclesAmmo
   );
-  var ammo = ammoMobile.concat(structuresDefencesAmmo);
+
+  var commanderAmmo = [
+    gwoUnit.commanderAAAmmo,
+    gwoUnit.commanderAmmo,
+    gwoUnit.commanderSecondaryAmmo,
+    gwoUnit.commanderTorpedoLandAmmo,
+    gwoUnit.commanderTorpedoWaterAmmo,
+  ];
+  var commanderWeapons = [
+    gwoUnit.commanderAA,
+    gwoUnit.commanderSecondary,
+    gwoUnit.commanderWeaponBullet,
+    gwoUnit.commanderWeaponLaser,
+    gwoUnit.commanderWeaponMissile,
+  ];
+
+  // Armed only once their upgrade tech attaches a weapon, so they sit outside
+  // the combat groups despite being in the domain rosters.
+  var scoutAmmo = [gwoUnit.fireflyAmmo, gwoUnit.skitterAmmo];
+  var scoutWeapons = [gwoUnit.fireflyWeapon, gwoUnit.skitterWeapon];
+
+  // The silo payloads, the Ares stomp, and the Orca torpedo a card can lend out:
+  // ammo no domain group claims.
+  var unhomedAmmo = [
+    gwoUnit.antiNukeLauncherAmmo,
+    gwoUnit.aresStompAmmo,
+    gwoUnit.nukeLauncherAmmo,
+    gwoUnit.orcaTorpedoAmmo,
+  ];
+  var unhomedWeapons = [
+    gwoUnit.antiNukeWeapon,
+    gwoUnit.aresStomp,
+    gwoUnit.nukeLauncherWeapon,
+    gwoUnit.orcaTorpedo,
+  ];
+
+  // A death payload scales a self-destruct rather than a weapon, so no domain
+  // group carries one - except the Manhattan's, which is its real damage.
+  var deathAmmo = [
+    gwoUnit.aresDeath,
+    gwoUnit.atlasDeath,
+    gwoUnit.commanderDeath,
+    gwoUnit.commanderDeathAir,
+    gwoUnit.heliosDeath,
+    gwoUnit.jigDeath,
+    gwoUnit.manhattanDeath,
+    gwoUnit.ragnarokPbaoe,
+    gwoUnit.wyrmDeath,
+    gwoUnit.zeusDeath,
+  ];
+
+  // Every ammo in the game. uniq because the Manhattan's death nuke is also a
+  // vehicle ammo, and addMods concatenates without deduplicating.
+  var ammo = _.uniq(
+    ammoMobile.concat(
+      structuresDefencesAmmo,
+      structuresArtilleryAmmo,
+      commanderAmmo,
+      unhomedAmmo,
+      deathAmmo
+    )
+  );
 
   var weaponsMobile = airWeapons.concat(
     botsWeapons,
@@ -571,10 +643,29 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     titansWeapons,
     vehiclesWeapons
   );
-  var weapons = weaponsMobile.concat(structuresDefencesWeapons);
+  var weapons = _.uniq(
+    weaponsMobile.concat(
+      structuresDefencesWeapons,
+      structuresArtilleryWeapons,
+      commanderWeapons,
+      unhomedWeapons
+    )
+  );
 
-  var units = mobile.concat(immobile);
-  var unitsNoCluster = mobileNoCluster.concat(immobile);
+  // What combatMobile carries: the mobile groups drop the defensive structures,
+  // and these drop the titans and scouts too, then add the Commander's.
+  var combatMobileAmmo = _.difference(ammoMobile, titansAmmo, scoutAmmo).concat(
+    commanderAmmo
+  );
+  var combatMobileWeapons = _.difference(
+    weaponsMobile,
+    titansWeapons,
+    scoutWeapons
+  ).concat(commanderWeapons);
+
+  // The Commander belongs to no domain roster, so mobile cannot reach it.
+  var units = mobile.concat(immobile, gwoUnit.commander);
+  var unitsNoCluster = mobileNoCluster.concat(immobile, gwoUnit.commander);
 
   var fabberBuildArms = [
     gwoUnit.airFabberAdvancedBuildArm,
@@ -620,14 +711,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     gwoUnit.unitCannon
   );
 
-  var commanderAmmo = [
-    gwoUnit.commanderAAAmmo,
-    gwoUnit.commanderAmmo,
-    gwoUnit.commanderSecondaryAmmo,
-    gwoUnit.commanderTorpedoLandAmmo,
-    gwoUnit.commanderTorpedoWaterAmmo,
-  ];
-
   var airFactories = [gwoUnit.airFactory, gwoUnit.airFactoryAdvanced];
   var botFactories = [gwoUnit.botFactory, gwoUnit.botFactoryAdvanced];
   var navalFactories = [gwoUnit.navalFactory, gwoUnit.navalFactoryAdvanced];
@@ -672,6 +755,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     airWeapons: airWeapons,
     ammo: ammo,
     ammoMobile: ammoMobile,
+    artilleryMobile: artilleryMobile,
     botFactories: botFactories,
     bots: bots,
     botsAdvanced: botsAdvanced,
@@ -687,6 +771,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     botsWeapons: botsWeapons,
     combat: combat,
     combatMobile: combatMobile,
+    combatMobileAmmo: combatMobileAmmo,
+    combatMobileWeapons: combatMobileWeapons,
     commanderAmmo: commanderAmmo,
     energyAll: energyAll,
     energyIntel: energyIntel,

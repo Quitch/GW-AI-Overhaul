@@ -13,12 +13,20 @@ define([
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      loc(
-        "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers!"
-      ) +
-        " Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:Contains no basic land or air factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers! Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked.";
+      }
+      return (
+        loc(
+          "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers!"
+        ) +
+        " " +
+        loc(
+          "!LOC:Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
+        )
+      );
+    },
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:Paratrooper Commander",

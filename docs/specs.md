@@ -31,7 +31,7 @@ gwoCard.mods(gwoUnit.dox, "replace", { max_health: 100, max_speed: 12 });
 | `prepend`          | **GWO addition.** The counterpart to `push`, value-first.                                        |
 | `wipe`             | **GWO addition.** String substitution: `[from, to]`, or a bare value to delete every occurrence. |
 | `multiplyOrCreate` | **GWO addition.** Multiplies if numeric, creates the value if absent.                            |
-| `clone`            | Deep-copies a spec to a new tagged id.                                                           |
+| `clone`            | Deep-copies a spec to a new tagged id. Runs first, so other ops can target the copy.             |
 | `tag`              | Rewrites a `.json` reference to carry the current `specTag`.                                     |
 | `eval`             | Runs `new Function("attribute", value)`.                                                         |
 
@@ -67,8 +67,8 @@ on the same path:
 
 Three things follow from this.
 
-The tag needs the **final** index. `replace` runs before `push`, `prepend` and `tag`
-(see the op ordering), so a tool pushed onto a four-tool unit is tagged at
+The tag needs the **final** index. `clone` and `replace` run before `push`, `prepend`
+and `tag` (see the op ordering), so a tool pushed onto a four-tool unit is tagged at
 `tools.4.spec_id`. The index comes from the stock spec, not the card.
 
 The target must **exist tagged**, or the tag points at nothing and the tool is lost
@@ -101,6 +101,13 @@ var opsWithoutPath = { eval: true, clone: true };
 Only these two do something useful when applied to a whole spec with no path,
 because they mutate their target in place or write to `specs` directly. Every other
 op merely returns a new value, so a pathless mod for it is a silent no-op.
+
+A pathless `clone` is the only way to mint a new spec id, which is why it leads the
+op ordering: a mod naming the copy has to find it already in `specs`, or `load`
+returns nothing and the mod is dropped with `"Warning: File not found in mod"`. The
+ordering also means `replace`, `multiply`, `multiplyOrCreate` and `add` can all
+target a copy, while the ops after them — `merge`, `push`, `pull`, `prepend`, `wipe`,
+`tag` — apply to it in the order the card declares them.
 
 ## Path segments
 

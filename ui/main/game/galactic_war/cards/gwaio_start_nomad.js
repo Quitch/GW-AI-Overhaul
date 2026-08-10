@@ -13,9 +13,12 @@ define([
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:Non-factory and non-Titan structures are mobile. Small structures can be transported and use teleporters, medium size structures can use teleporters."
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:Non-factory and non-Titan structures are mobile, except metal extractors and the Catalyst, which must stay on the map features they claim. Small structures can be transported and use teleporters, medium size structures can use teleporters.";
+      }
+      return "!LOC:Non-factory and non-Titan structures are mobile. Small structures can be transported and use teleporters, medium size structures can use teleporters.";
+    },
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:Nomad Commander",
@@ -36,6 +39,7 @@ define([
             gwoUnit.galata,
             gwoUnit.landMine,
             gwoUnit.laserDefenseTower,
+            gwoUnit.lob,
             gwoUnit.metalStorage,
             gwoUnit.pelter,
             gwoUnit.radar,
@@ -49,6 +53,8 @@ define([
             gwoUnit.energyPlantAdvanced,
             gwoUnit.flak,
             gwoUnit.laserDefenseTowerAdvanced,
+            gwoUnit.radarJammingStation,
+            gwoUnit.teleporter,
             gwoUnit.torpedoLauncherAdvanced,
           ];
           var largeStructures = [

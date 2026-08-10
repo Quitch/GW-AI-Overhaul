@@ -19,6 +19,7 @@
 # Keep development junk out of our ZIP files
 .claude/ export-ignore
 .github/ export-ignore
+.vscode/settings.json
 docs/ export-ignore
 images/ export-ignore
 scripts/ export-ignore

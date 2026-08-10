@@ -59,7 +59,7 @@ define([
           var structures = ["BasicRadar", "BasicLandDefense", "BasicArtillery"];
           var aiMods = _.map(structures, function (structure) {
             return {
-              type: "factory",
+              type: "fabber",
               op: "append",
               toBuild: structure,
               idToMod: "builders",

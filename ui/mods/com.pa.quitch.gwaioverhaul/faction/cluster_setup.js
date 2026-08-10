@@ -11,6 +11,11 @@ define([
     },
     {
       file: gwoUnit.colonel,
+      path: "tools.0.spec_id",
+      op: "tag",
+    },
+    {
+      file: gwoUnit.colonel,
       path: "max_health",
       op: "multiply",
       value: 1.5625, // match Commander health
@@ -67,6 +72,11 @@ define([
       path: "tools.1.spec_id",
       op: "replace",
       value: gwoUnit.commanderBuildArm,
+    },
+    {
+      file: gwoUnit.angel,
+      path: "tools.1.spec_id",
+      op: "tag",
     },
     {
       file: gwoUnit.angel,

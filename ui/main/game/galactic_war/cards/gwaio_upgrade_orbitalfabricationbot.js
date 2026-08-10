@@ -21,10 +21,8 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.upgradeDeal(
-        !(
-          inventory.hasCard("nem_start_deepspace") ||
-          inventory.hasCard("gwc_start_orbital")
-        ) && gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber)
+        !inventory.hasCard("nem_start_deepspace") &&
+          gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber)
       );
     },
     buff: function (inventory) {

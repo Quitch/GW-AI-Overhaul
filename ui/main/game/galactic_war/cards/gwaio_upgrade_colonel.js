@@ -21,37 +21,47 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.colonel)
+        gwoCard.hasUnit(inventory.units(), [
+          gwoUnit.colonel,
+          gwoUnit.clusterCeoColonel,
+        ])
       );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
+      // Cluster's CEO Commander fields its own copy of the Colonel, and only
+      // that combination has one, so anything else would mod a missing spec.
+      var colonel =
+        inventory.getTag("global", "playerFaction") === 4 &&
+        inventory.hasCard("gwaio_start_ceo")
+          ? gwoUnit.clusterCeoColonel
+          : gwoUnit.colonel;
       inventory.addMods([
         {
-          file: gwoUnit.colonel,
+          file: colonel,
           path: "death_weapon.ground_ammo_spec",
           op: "replace",
           value: gwoUnit.commanderDeath,
         },
         {
-          file: gwoUnit.colonel,
+          file: colonel,
           path: "death_weapon.air_ammo_spec",
           op: "replace",
           value: gwoUnit.commanderDeathAir,
         },
         {
-          file: gwoUnit.colonel,
+          file: colonel,
           path: "death_weapon.air_height_threshold",
           op: "replace",
           value: 50,
         },
         {
-          file: gwoUnit.colonel,
+          file: colonel,
           path: "death_weapon.ground_ammo_spec",
           op: "tag",
         },
         {
-          file: gwoUnit.colonel,
+          file: colonel,
           path: "death_weapon.air_ammo_spec",
           op: "tag",
         },

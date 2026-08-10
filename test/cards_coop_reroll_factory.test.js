@@ -42,6 +42,11 @@ function inventoryClass() {
   };
 }
 
+// Hung off the game stub as a trap. model.game().inventory() is always the
+// host's, so a reroll that reached for it would deal the viewer a replacement
+// hand weighted on the host's tech - see CLAUDE.md, "the inventory passed to it".
+const HOST_CARDS = [{ id: "gwaio_host_only" }];
+
 // A viewer part-way through an offer: three cards on offer, three still in hand,
 // so two rerolls remain.
 const pendingTechCards = (extra) =>
@@ -92,6 +97,7 @@ function setup(overrides = {}) {
     rerollsUsed: [],
     offerRerolls: [],
     bank: [],
+    offerCounts: [],
     prepared: 0,
   };
   const handlers = {};
@@ -134,6 +140,7 @@ function setup(overrides = {}) {
       options.records[rec.id] = rec;
       return true;
     },
+    inventory: () => ({ cards: () => HOST_CARDS }),
   };
 
   makeFactory({
@@ -148,7 +155,10 @@ function setup(overrides = {}) {
       );
     },
     helpers: {
-      cardsOfferedCount: () => options.cardsOffered,
+      cardsOfferedCount: (offer, inventory) => {
+        calls.offerCounts.push(inventory);
+        return options.cardsOffered;
+      },
       pendingCardsContainLoadout: () => options.containsLoadout,
     },
     GWInventory: inventoryClass(),
@@ -350,6 +360,39 @@ describe("host reroll handler - refusals", () => {
 
     assert.deepEqual(calls.hostOperators, []);
   });
+
+  // A refusal names one player, so it has to be addressed to that player. The
+  // server routes on target_client_id and strips it before the viewer sees it,
+  // which means an unaddressed reply is a broadcast: one viewer's "no rerolls
+  // left" landing on everybody's screen. See coop.md, "Addressing a host's reply".
+  it("addresses every refusal to the viewer that asked", async () => {
+    const refusals = {
+      "no offer to reroll": { records: {} },
+      "a loadout offer": { containsLoadout: true },
+      "a star that has gone": { stars: [{ id: 0 }] },
+      "the rerolls spent": {
+        records: {
+          alice: record({
+            pendingTechCards: pendingTechCards({ cards: [{ id: "a" }] }),
+          }),
+        },
+      },
+    };
+
+    for (const [name, overrides] of Object.entries(refusals)) {
+      const { handlers, calls } = build(overrides);
+
+      await captureErrors(() => rejection(handlers[REQUEST](operator())));
+
+      assert.deepEqual(
+        calls.hostOperators.map((sent) => sent[2]),
+        [{ target_client_id: "alice", request_id: "req-1" }],
+        name
+      );
+      active.restore();
+      active = undefined;
+    }
+  });
 });
 
 describe("host reroll handler - the reroll", () => {
@@ -377,6 +420,35 @@ describe("host reroll handler - the reroll", () => {
       target_client_id: "alice",
       request_id: "req-1",
     });
+  });
+
+  // Dropping `inventory: playerInventory` from the chooseCards request leaves
+  // the reroll falling back to the host's inventory, silently and with every
+  // other assertion in this file still green.
+  it("deals against the viewer's own saved cards, not the host's", async () => {
+    const { handlers, calls } = build({
+      records: {
+        alice: record({ inventory: { cards: [{ id: "gwaio_alice_tech" }] } }),
+      },
+    });
+
+    await handlers[REQUEST](operator());
+
+    assert.deepEqual(calls.deals[0].inventory.cards(), [
+      { id: "gwaio_alice_tech" },
+    ]);
+  });
+
+  // The hand size is a function of what the player already holds, so reading it
+  // off a different inventory than the one dealt against would size the
+  // replacement offer on somebody else's full hand.
+  it("sizes the replacement hand from the inventory it deals against", async () => {
+    const { handlers, calls } = build();
+
+    await handlers[REQUEST](operator());
+
+    assert.equal(calls.offerCounts.length, 1);
+    assert.equal(calls.offerCounts[0], calls.deals[0].inventory);
   });
 
   // A reroll is a child of the deal it replaces, so rerolling the same offer
@@ -571,6 +643,21 @@ describe("viewer reroll result handler", () => {
       active.restore();
       active = undefined;
     }
+  });
+
+  // An operator with no payload at all reaches the handler through the campaign
+  // dispatcher, which only checks the type. Its siblings in cards_start_subcdr.js
+  // and coop_ping_operators.js guard the operator itself; this one has to as
+  // well, or the viewer is left with the overlay up and a TypeError in the log.
+  it("stops scanning on an operator with nothing in it", async () => {
+    const { handlers, calls } = build();
+
+    const errors = await captureErrors(() => handlers[RESULT](undefined));
+
+    assert.deepEqual(calls.rerollPending, [false]);
+    assert.deepEqual(calls.scanning, [false]);
+    assert.deepEqual(calls.upserts, []);
+    assert.match(errors[0], /invalid pending tech reroll result/);
   });
 
   it("stops scanning when the record it names is gone", async () => {

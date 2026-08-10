@@ -5,9 +5,12 @@ define([
 ], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Artillery Ammunition Tech increases the damage of all artillery structures by 25% and reduces their energy usage by 90%. Requires technology to build artillery structures and units."
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:Artillery Ammunition Tech increases the damage of all artillery structures by 25% and reduces their ammunition cost by 90%. Requires technology to build artillery structures and units.";
+      }
+      return "!LOC:Artillery Ammunition Tech increases the damage of all artillery structures by 25% and reduces their energy usage by 90%. Requires technology to build artillery structures and units.";
+    },
     summarize: _.constant("!LOC:Artillery Ammunition Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_artillery.png"

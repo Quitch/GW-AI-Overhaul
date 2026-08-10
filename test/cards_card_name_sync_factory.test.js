@@ -59,8 +59,9 @@ function setup(overrides = {}) {
     };
   }
   if (options.hasHostOperator) {
-    model.sendCampaignHostOperator = (name, payload) =>
-      calls.sent.push([name, payload]);
+    model.sendCampaignHostOperator = function (name, payload) {
+      calls.sent.push([name, payload, arguments[2]]);
+    };
   }
   if (options.hasIsCampaignHost) {
     model.isCampaignHost = () => true;
@@ -130,8 +131,12 @@ describe("card name sync - naming a star the host explored", () => {
     await sync.setCardName(system, [{ id: "gwc_combat_bots" }], 1);
 
     assert.equal(options.boardAi.cardName, "Combat Bots");
+    // A star's name is the same for everybody, so this one is deliberately not
+    // addressed: no options means every connected viewer. Contrast the reroll
+    // and general-commander replies, which name one player and must say so.
+    // See coop.md, "Addressing a host's reply".
     assert.deepEqual(calls.sent, [
-      [OPERATOR, { star: 1, card_id: "gwc_combat_bots" }],
+      [OPERATOR, { star: 1, card_id: "gwc_combat_bots" }, undefined],
     ]);
   });
 

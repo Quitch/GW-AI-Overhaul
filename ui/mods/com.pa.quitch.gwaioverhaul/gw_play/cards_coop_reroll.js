@@ -101,7 +101,7 @@ define(function () {
     };
 
     var applyPendingTechRerollResult = function (operator) {
-      var payload = operator.payload || {};
+      var payload = (operator && operator.payload) || {};
       model.gwoRerollPending(false);
 
       if (payload.error) {
@@ -188,7 +188,7 @@ define(function () {
         return result.promise();
       }
 
-      var payload = operator.payload || {};
+      var payload = (operator && operator.payload) || {};
       var record = game.findCoopPlayerInventoryData({
         id: operator.client_id,
         name: operator.client_name,

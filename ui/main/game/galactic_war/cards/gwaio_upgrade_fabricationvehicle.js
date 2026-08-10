@@ -46,11 +46,13 @@ define([
         "LongRangeArtillery",
         "NukeSilo",
         "PlanetEngine",
-        "PlanetSplitter",
-        "TeslaGunship",
         "TML",
         "UnitCannon",
       ];
+      // Titan Tech is the only card that puts a Ragnarok in the army.
+      if (inventory.hasCard("gwc_enable_titans")) {
+        units.push("PlanetSplitter");
+      }
       var aiMods = _.map(units, function (unit) {
         return {
           type: "fabber",

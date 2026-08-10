@@ -26,7 +26,6 @@ define([
           "navigation.brake": percentageIncrease,
           "navigation.acceleration": percentageIncrease,
           "navigation.turn_speed": percentageIncrease,
-          max_health: percentageReduction,
         });
       });
       var healthMods = _.map(gwoGroup.combat, function (unit) {

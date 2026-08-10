@@ -70,6 +70,27 @@ Ordering matters and is not obvious:
 - `removeUnits` strips _every_ copy of a unit (a GWO change to base behaviour), so
   a `dull()` that removes a whole group can wipe units other cards granted.
 
+## Referee-time cards
+
+The three `gwaio_upgrade_subcommander_*` cards carry an empty `buff`/`dull`. They
+are markers: `shared/referee_subcommander_tech.js` reads the live card list while
+the battle config is being built, and nothing is written at acquisition time.
+
+That is deliberate, and the reason is `gwc_minion.js`. Its `buff` pushes
+`params.minion` — the card's **own persistent params object** — into
+`inventory.minions()`, so anything written onto a minion is saved with the war. A
+tech bonus applied there would survive discarding the card that granted it, and
+would compound across battles. Both referees therefore copy before applying:
+
+| Path                                    | Copy                                         |
+| --------------------------------------- | -------------------------------------------- |
+| Host, `gw_play/referee_config_setup.js` | `_.cloneDeep(liveAlly)` per ally             |
+| Viewer, `gw_play/per_player_tech.js`    | `_.cloneDeep(minion.personality)` per minion |
+
+The mutators write in place and return their argument, so this is the callers'
+responsibility. Both copies have a regression test asserting the saved minion is
+byte-identical after two battles — see [`testing.md`](testing.md).
+
 ## Deal weighting
 
 `deal(system, context, inventory, rng)` returns `{ chance, params }`. `chance` is a

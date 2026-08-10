@@ -5,9 +5,12 @@ define([
 ], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Complete Naval Tech enables building of all naval units and all naval factories. Basic naval factories are built via your commander or any basic fabricator. Advanced naval factories are built via basic or advanced naval fabricators."
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:Complete Naval Tech enables building of all naval units and all naval factories, and the advanced structures every advanced fabricator can build. Basic naval factories are built via your commander or any basic fabricator. Advanced naval factories are built via basic or advanced naval fabricators.";
+      }
+      return "!LOC:Complete Naval Tech enables building of all naval units and all naval factories. Basic naval factories are built via your commander or any basic fabricator. Advanced naval factories are built via basic or advanced naval fabricators.";
+    },
     summarize: _.constant("!LOC:Complete Naval Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png"

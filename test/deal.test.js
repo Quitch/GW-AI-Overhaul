@@ -113,6 +113,50 @@ describe("dealCard", () => {
     assert.equal(seen, undefined);
   });
 
+  // A card reads the inventory it is handed, never model.game().inventory(),
+  // which is always the host's. dealCard's own viewer caller is
+  // gw_coop_per_player_loadout/gwo_loadouts.js; the cheats are host-only.
+  it("forwards params.inventory to both getContext and deal", async () => {
+    setGlobal("$", createFakeJQuery());
+    const inventory = { cards: () => [{ id: "gwaio_viewer_tech" }] };
+    const seen = {};
+    await deal.dealCard({ id: "c", inventory: inventory }, fakeLoaded(), [
+      {
+        id: "c",
+        getContext: function (galaxy, contextInventory) {
+          seen.getContext = contextInventory;
+          return {};
+        },
+        deal: function (system, context, dealInventory) {
+          seen.deal = dealInventory;
+          return { params: {} };
+        },
+      },
+    ]);
+    assert.equal(seen.getContext, inventory);
+    assert.equal(seen.deal, inventory);
+  });
+
+  it("passes undefined when the caller supplies no inventory", async () => {
+    setGlobal("$", createFakeJQuery());
+    const seen = { getContext: "untouched", deal: "untouched" };
+    await deal.dealCard({ id: "c" }, fakeLoaded(), [
+      {
+        id: "c",
+        getContext: function (galaxy, contextInventory) {
+          seen.getContext = contextInventory;
+          return {};
+        },
+        deal: function (system, context, dealInventory) {
+          seen.deal = dealInventory;
+          return { params: {} };
+        },
+      },
+    ]);
+    assert.equal(seen.getContext, undefined);
+    assert.equal(seen.deal, undefined);
+  });
+
   it("rejects when the requested card id is not among the loaded cards", async () => {
     setGlobal("$", createFakeJQuery());
     await assert.rejects(

@@ -348,6 +348,23 @@ describe("specs.mod - operation ordering", () => {
     assert.equal(data["unit.json"].hp, 25);
   });
 
+  // A clone is the only op that creates a spec id, so it has to run before the
+  // ops that name the copy. Declared last here to prove the ordering, not luck.
+  it("clones before the ops that target the copy", () => {
+    const data = { "unit.json": { hp: 10 } };
+    specs.mod(
+      data,
+      [
+        { file: "copy.json", path: "hp", op: "replace", value: 50 },
+        { file: "copy.json", path: "armour", op: "push", value: "plate" },
+        { file: "unit.json", op: "clone", value: "copy.json" },
+      ],
+      ".tag1"
+    );
+    assert.deepEqual(data["copy.json.tag1"], { hp: 50, armour: ["plate"] });
+    assert.equal(data["unit.json"].hp, 10, "the source must be left alone");
+  });
+
   // Hoisting every replace ahead of every tag leaves the two tags adjacent, with
   // no replace between them to reset the value. Shipped pairing: killswitch and
   // the Colonel upgrade both tag the Colonel's death_weapon.ground_ammo_spec.

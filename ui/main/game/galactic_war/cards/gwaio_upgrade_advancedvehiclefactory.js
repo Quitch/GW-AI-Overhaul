@@ -27,7 +27,7 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      var mods = _.map(gwoGroup.vehiclesAdvanced, function (unit) {
+      var mods = _.map(gwoGroup.vehiclesAdvancedMobile, function (unit) {
         return {
           file: unit,
           path: "build_metal_cost",
