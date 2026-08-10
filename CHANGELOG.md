@@ -23,6 +23,7 @@
   - Protocol: Blindness extends the range of those weapons alongside the rest
   - Bot Ammunition Tech and Bot Combat Tech no longer miss the Gil-E's interception beam
 - Protocol: Blindness gives your Commander the health and weapon range it promises. The Commander is the one unit the card names, and it was the only one getting neither
+- Orbital Combat Tech and Orbital Ammunition Tech increase splash damage alongside direct damage. The Omega and the SXX deal half their damage as splash, so they were getting half the increase
 
 ## v6.9.0 - 2026-08-07
 

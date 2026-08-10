@@ -26,7 +26,10 @@ define([
       inventory.addMods(
         _.flatten(
           _.map(gwoGroup.orbitalAmmo, function (ammo) {
-            return gwoCard.mods(ammo, "multiply", { damage: 1.25 });
+            return gwoCard.mods(ammo, "multiply", {
+              damage: 1.25,
+              splash_damage: 1.25,
+            });
           })
         )
       );
