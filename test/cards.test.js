@@ -418,6 +418,40 @@ describe("mods", () => {
   });
 });
 
+describe("isEnglish", () => {
+  function detecting(language) {
+    setGlobal("i18n", { detectLanguage: () => language });
+  }
+
+  // The two English locales PA ships in ui/main/_i18n/locales.
+  it("accepts the bare English locale", () => {
+    detecting("en");
+    assert.equal(cards.isEnglish(), true);
+  });
+
+  it("accepts a regional English locale", () => {
+    detecting("en-US");
+    assert.equal(cards.isEnglish(), true);
+  });
+
+  // detectLanguage reads the querystring, a cookie, then navigator.language, none of
+  // which the engine is obliged to supply. Falling through to the non-English arm would
+  // show English players the text the English arm exists to correct.
+  it("treats an undetected language as English", () => {
+    detecting(undefined);
+    assert.equal(cards.isEnglish(), true);
+  });
+
+  it("rejects the other locales the game ships", () => {
+    ["ar", "cs-CZ", "da", "de", "de-AT", "es-ES", "fi", "fr", "hu-HU"].forEach(
+      (language) => {
+        detecting(language);
+        assert.equal(cards.isEnglish(), false, language);
+      }
+    );
+  });
+});
+
 describe("loadoutIcon", () => {
   const iconPath = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/img/";
   const fallback =

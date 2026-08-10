@@ -10,8 +10,7 @@ define([
   return {
     visible: _.constant(false),
     summarize: function () {
-      var english = _.includes(i18n.detectLanguage(), "en");
-      if (english) {
+      if (gwoCard.isEnglish()) {
         return "!LOC:Terminal Commander";
       }
       return loc("!LOC:Deathmark") + " " + loc("!LOC:Commander"); // scuffed translation using existing strings
@@ -23,10 +22,9 @@ define([
       "!LOC:You're dying, but you have one last war left in you. Your units' health decreases over time, and your commander's fastest of all. Life is short and must be lived to the full, so unit damage and movement is doubled and costs are halved. Life through victory, Commander!"
     ),
     hint: function () {
-      var english = _.includes(i18n.detectLanguage(), "en");
       var icon =
         "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png";
-      if (english) {
+      if (gwoCard.isEnglish()) {
         return {
           icon: icon,
           description: "!LOC:Terminal Commander",

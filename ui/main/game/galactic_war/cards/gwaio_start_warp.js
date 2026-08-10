@@ -9,8 +9,7 @@ define([
   return {
     visible: _.constant(false),
     summarize: function () {
-      var english = _.includes(i18n.detectLanguage(), "en");
-      if (english) {
+      if (gwoCard.isEnglish()) {
         return "!LOC:Warp Commander";
       }
       return loc("!LOC:Teleporter") + " " + loc("!LOC:Commander"); // scuffed translation using existing strings
@@ -22,10 +21,9 @@ define([
       "!LOC:The Commander can mass teleport itself and all units within weapons range to anywhere in the system, but they are highly vulnerable to attack afterwards."
     ),
     hint: function () {
-      var english = _.includes(i18n.detectLanguage(), "en");
       var icon =
         "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png";
-      if (english) {
+      if (gwoCard.isEnglish()) {
         return {
           icon: icon,
           description: "!LOC:Warp Commander",

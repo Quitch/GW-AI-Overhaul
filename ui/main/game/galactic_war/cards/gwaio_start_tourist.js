@@ -13,8 +13,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: function () {
-      var english = _.includes(i18n.detectLanguage(), "en");
-      if (english) {
+      if (gwoCard.isEnglish()) {
         return "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors and no basic land or air factories.";
       }
       return "!LOC:You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors and no basic land or air factories. Sub Commanders will not do anything except defend themselves and automatically transfer their excess income to you.";
