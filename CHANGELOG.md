@@ -29,6 +29,7 @@
 - Orbital Cooldown Tech lists only the Orbital Factory as affected. The Orbital Launcher has no build cooldown for it to halve
 - Super Weapon Fabrication Tech discounts nuclear missiles rather than the silos that fire them, as its description has always said
 - Allied Sub Commanders no longer try to have a basic fabricator build a Zeus after a Fabrication Upgrade Tech, which it was never able to do, and only try to build a Ragnarok once you hold Titan Tech
+- The CEO Commander can build Colonels as Cluster, which is the whole point of the loadout. Cluster fields Colonels as Sub Commanders and nothing can build one, so the loadout did nothing at all for that faction. Cluster's own Colonels are unchanged, and the one your Commander builds cannot come out of a factory
 
 ## v6.9.0 - 2026-08-07
 

@@ -27,8 +27,19 @@ define([
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
-          inventory.addUnits(gwoUnit.colonel);
-          inventory.addMods([
+
+          // Cluster fields Colonels as Sub Commanders and replaces their
+          // unit_types with a list carrying neither SupportCommander nor
+          // FactoryBuild, so nothing can build one. This loadout gets a copy
+          // taken before that runs, leaving Cluster's own Colonels alone.
+          var playerIsCluster =
+            inventory.getTag("global", "playerFaction") === 4;
+          var colonel = playerIsCluster
+            ? gwoUnit.clusterCeoColonel
+            : gwoUnit.colonel;
+
+          inventory.addUnits(colonel);
+          var mods = [
             {
               file: gwoUnit.commander,
               path: "buildable_types",
@@ -36,7 +47,7 @@ define([
               value: " | SupportCommander & Custom58",
             },
             {
-              file: gwoUnit.colonel,
+              file: colonel,
               path: "tools",
               op: "push",
               value: {
@@ -47,23 +58,49 @@ define([
               },
             },
             {
-              file: gwoUnit.colonel,
+              file: colonel,
               path: "tools.2.spec_id",
               op: "tag",
             },
             {
-              file: gwoUnit.colonel,
+              file: colonel,
               path: "command_caps",
               op: "push",
               value: "ORDER_FireSecondaryWeapon",
             },
             {
-              file: gwoUnit.colonel,
+              file: colonel,
               path: "build_metal_cost",
               op: "multiply",
               value: 0.5,
             },
-          ]);
+          ];
+          if (playerIsCluster) {
+            mods.push(
+              {
+                file: gwoUnit.colonel,
+                op: "clone",
+                value: gwoUnit.clusterCeoColonel,
+              },
+              // Only your Commander builds it - the advanced bot factory asks
+              // for FactoryBuild.
+              {
+                file: colonel,
+                path: "unit_types",
+                op: "pull",
+                value: "UNITTYPE_FactoryBuild",
+              },
+              // The strategic icon is named after the spec file, and this one
+              // has no file of its own.
+              {
+                file: colonel,
+                path: "si_name",
+                op: "replace",
+                value: "bot_support_commander",
+              }
+            );
+          }
+          inventory.addMods(mods);
           inventory.addAIMods([
             {
               type: "fabber",

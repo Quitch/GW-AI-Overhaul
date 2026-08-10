@@ -112,6 +112,10 @@ define({
     "/pa/units/land/tactical_missile_launcher/tactical_missile_antidrop_ammo.json",
   catapultWeapon:
     "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher_tool_weapon.json",
+  // No file of its own: gwaio_start_ceo clones the Colonel onto this id before
+  // Cluster's setup strips the tags that let one be built.
+  clusterCeoColonel:
+    "/pa/units/land/bot_support_commander/bot_support_commander_ceo.json",
   colonel: "/pa/units/land/bot_support_commander/bot_support_commander.json",
   colonelAmmo:
     "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
