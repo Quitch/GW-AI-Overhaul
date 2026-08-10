@@ -27,9 +27,11 @@ define([
       };
     },
     buff: function (inventory) {
-      var units = gwoGroup.structuresSuperWeapons.concat(
-        gwoUnit.nukeLauncherAmmo
-      );
+      // The card discounts the missile, not the silo that fires it.
+      var units = _.without(
+        gwoGroup.structuresSuperWeapons,
+        gwoUnit.nukeLauncher
+      ).concat(gwoUnit.nukeLauncherAmmo);
       var mods = _.map(units, function (unit) {
         return {
           file: unit,

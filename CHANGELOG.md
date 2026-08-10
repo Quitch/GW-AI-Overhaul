@@ -25,6 +25,7 @@
 - Protocol: Blindness gives your Commander the health and weapon range it promises. The Commander is the one unit the card names, and it was the only one getting neither
 - Orbital Combat Tech and Orbital Ammunition Tech increase splash damage alongside direct damage. The Omega and the SXX deal half their damage as splash, so they were getting half the increase
 - Orbital Cooldown Tech lists only the Orbital Factory as affected. The Orbital Launcher has no build cooldown for it to halve
+- Super Weapon Fabrication Tech discounts nuclear missiles rather than the silos that fire them, as its description has always said
 
 ## v6.9.0 - 2026-08-07
 
