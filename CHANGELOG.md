@@ -11,6 +11,7 @@
 - Boom Upgrade Tech is offered once you hold the Boom, and grants the Lob as its description has always promised. It previously required the Lob you were being offered
 - The Rapid Deployment Commander's Unit Cannon launches fabricators, like every other factory in the loadout. It was the one factory still building combat units
 - The Bionic Augmentation Commander Of Neutralizing contains the one data bank its description promises. It has always left two slots free
+- The Defense Tech Commander's land mines are 50% cheaper along with every other defense. Their spacing is unchanged
 
 ### Bugfix
 
