@@ -13,6 +13,7 @@
 
 - Anti-Ship and Anti-Hover Ammo Tech now say that the Kaiju counts as a hover unit, so the two cards no longer appear to contradict each other
 - The Paratrooper Commander says it contains no basic land or air factories. It has always started with a Naval Factory and an Orbital Launcher
+- The Nomad Commander can now move its Teleporter, Radar Jamming Station and Lob. Its description also notes that metal extractors and the Catalyst stay put, since they are tied to map features
 
 ## v6.9.0 - 2026-08-07
 
