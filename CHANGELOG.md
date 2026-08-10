@@ -9,6 +9,7 @@
 - The Orbital Commander contains all orbital units and factories, and nothing else. It was also letting orbital fabricators build every basic ground structure, which is the Deep Space Excavation Commander’s speciality, and making the Planetary Radar commander-buildable
   - Orbital Fabrication Bot Upgrade Tech is offered to Orbital Commanders again
 - Boom Upgrade Tech is offered once you hold the Boom, and grants the Lob as its description has always promised. It previously required the Lob you were being offered
+- The Rapid Deployment Commander's Unit Cannon launches fabricators, like every other factory in the loadout. It was the one factory still building combat units
 
 ### Bugfix
 
