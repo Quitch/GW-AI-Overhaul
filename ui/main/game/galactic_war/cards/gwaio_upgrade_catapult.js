@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Catapult Upgrade Tech adds flak from the Storm flak tank to the tactical missile launcher."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Catapult Upgrade Tech adds flak from the Storm flak tank to the tactical missile launcher."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Catapult Upgrade Tech"),
     icon: _.constant(

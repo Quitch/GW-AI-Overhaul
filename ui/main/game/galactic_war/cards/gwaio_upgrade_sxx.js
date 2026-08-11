@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:SXX-1304 Laser Platform Upgrade Tech removes the delay between orbital laser platforms arriving at a planet and responding to orders."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:SXX-1304 Laser Platform Upgrade Tech removes the delay between orbital laser platforms arriving at a planet and responding to orders."
+        )
+      )
     ),
     summarize: _.constant("!LOC:SXX-1304 Laser Platform Upgrade Tech"),
     icon: _.constant(

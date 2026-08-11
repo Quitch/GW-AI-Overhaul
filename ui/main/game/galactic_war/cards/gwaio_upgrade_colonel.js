@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Colonel Upgrade Tech causes support commanders to explode on death."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Colonel Upgrade Tech causes support commanders to explode on death."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Colonel Upgrade Tech"),
     icon: _.constant(

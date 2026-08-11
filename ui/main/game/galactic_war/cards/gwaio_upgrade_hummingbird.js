@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Hummingbird Upgrade Tech"),
     icon: _.constant(

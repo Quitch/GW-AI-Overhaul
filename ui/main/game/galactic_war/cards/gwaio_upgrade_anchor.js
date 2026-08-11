@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Anchor Upgrade Tech increases the range of the defense satellite's weapons by 25%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Anchor Upgrade Tech increases the range of the defense satellite's weapons by 25%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Anchor Upgrade Tech"),
     icon: _.constant(

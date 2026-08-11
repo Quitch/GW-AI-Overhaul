@@ -7,7 +7,7 @@ shipped AMD modules under plain Node and asserting against them.
 npm test                  # node --test, everything under test/
 npm run test:coverage     # same, plus lcov for the Sonar job
 npm run validate          # all seven validate:* checks in sequence
-npm run verify            # what CI gates on: lint + format + validate + test
+npm run verify            # CI's hard gates + repo-wide format:check
 ```
 
 Run one file with `node --test test/specs.test.js`, or one test with
@@ -100,6 +100,28 @@ silently and only fail on SonarCloud after a push. A rename out from under an
 exclusion once put a GBK-encoded readme back into analysis. Do not run the `sonar`
 CLI locally; it does not perform real rule analysis for this org.
 
+## The one test that lints
+
+`test/stylelint_config.test.js` is the odd one out: it loads no shipped module and
+instead runs stylelint's Node API over CSS fixtures, asserting that each Chrome 40
+limit is rejected and each supported feature is not. It exists because
+`stylelint.config.mjs` is the only guard against a class of bug the game cannot
+report — an unsupported declaration is silently dropped, so nothing fails loudly.
+
+Two details are load-bearing:
+
+- It passes `configFile` rather than importing the config module, so the test
+  exercises the file the CLI actually resolves. It also asserts `.stylelintrc.json`
+  is **absent**: cosmiconfig ranks that name third and `stylelint.config.mjs` last,
+  so a resurrected JSON would silently shadow the whole profile while every other
+  assertion here still passed.
+- `require("stylelint")` works even though stylelint 17 is ESM-only, via Node's
+  `require(ESM)` interop on the pinned Node version.
+
+The accept cases matter more than the reject cases. Several of these rules are
+fixable, and `format:css` runs `stylelint --fix` repo-wide, so an over-broad denylist
+would rewrite working CSS into CSS the engine drops.
+
 ## Test fixtures
 
 `scripts/lib/ai-path-fixtures.js` holds the shared scenario matrix so each test
@@ -122,6 +144,13 @@ a then property" rule warns about.
 code reads at call time. It is a factory, not a singleton, so two suites never
 share a restore stack.
 
+`scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
+wiring `referee_ai.js`'s file discovery needs, and returns its own restore
+function. It records every `api.file.list` and `$.getJSON` call unconditionally,
+so a test asserting which paths were walked needs no second, subtly different,
+local installer — which is what the three tests using it would otherwise each
+have grown.
+
 ## Coverage
 
 The Sonar quality gate requires ~80% coverage on **new code only**. Files that are
@@ -131,15 +160,11 @@ extracted into measured sibling modules — see [`shadowing.md`](shadowing.md).
 Each sibling is a plain `define()` over lodash and `console` only: no engine
 globals, and no dependency the repo does not ship, so it loads under the Node AMD
 harness. Where a helper needs one of the excluded file's injected modules, it
-takes it as an explicit parameter rather than closing over it. The pairs:
-
-| Excluded glue                           | Measured sibling             |
-| --------------------------------------- | ---------------------------- |
-| `gw_play/gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js` |
-| `shared/js/gw_galaxy.js`                | `shared/gw_galaxy_graph.js`  |
+takes it as an explicit parameter rather than closing over it.
 
 The glue file depends on the unshipped `shared/gw_common`, which is what stops it
-loading in the harness in the first place.
+loading in the harness in the first place. [`shadowing.md`](shadowing.md) carries
+the list of pairs; it is one list, and this is not a second copy of it.
 
 ### The `typeof module` hook
 

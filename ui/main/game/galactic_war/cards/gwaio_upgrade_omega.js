@@ -5,13 +5,13 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser."
-      ) +
-        " " +
-        loc("!LOC:Doubles the rate of fire of the other weapons.") +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser."
+        ) +
+          " " +
+          loc("!LOC:Doubles the rate of fire of the other weapons.")
+      )
     ),
     summarize: _.constant("!LOC:Omega Upgrade Tech"),
     icon: _.constant(

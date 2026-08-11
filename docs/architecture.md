@@ -23,17 +23,23 @@ files that must replace a base-game file at its exact path — see
 
 `modinfo.json`'s `scenes` block is the mod's **real** entry-point list. The game
 loads exactly the `coui://` files listed there, for the scene named, and nothing
-else. Seven scenes, 21 entries:
+else. Seven scenes, 23 entries:
 
-| Scene                        | Entries | What it covers                                                              |
-| ---------------------------- | ------- | --------------------------------------------------------------------------- |
-| `gw_start`                   | 3       | War creation: the setup lobby, difficulty/AI pickers, loadout selection.    |
-| `gw_play`                    | 12      | The galaxy map and everything during a war: cards, referees, panels, intel. |
-| `gw_war_over`                | 1       | Victory/defeat bookkeeping — records the highest difficulty defeated.       |
-| `live_game`                  | 1       | In-battle menu patches (surrender/continue with more than two teams).       |
-| `shared_build`               | 1       | Planetary radar behaviour.                                                  |
-| `start`                      | 2       | Main menu.                                                                  |
-| `gw_coop_per_player_loadout` | 1       | Per-player loadout selection for co-op viewers.                             |
+| Scene                        | Entries | What it covers                                                                                     |
+| ---------------------------- | ------- | -------------------------------------------------------------------------------------------------- |
+| `gw_start`                   | 3       | War creation: the setup lobby, difficulty/AI pickers, loadout selection.                           |
+| `gw_play`                    | 14      | The galaxy map and everything during a war: cards, referees, panels, intel, ping, co-op selection. |
+| `gw_war_over`                | 1       | Victory/defeat bookkeeping — records the highest difficulty defeated.                              |
+| `live_game`                  | 1       | In-battle menu patches (surrender/continue with more than two teams).                              |
+| `shared_build`               | 1       | Planetary radar behaviour.                                                                         |
+| `start`                      | 2       | Main menu.                                                                                         |
+| `gw_coop_per_player_loadout` | 1       | Per-player loadout selection for co-op viewers.                                                    |
+
+`gw_play` carries most of it, and two of its entries own a panel outright:
+`gwo_panel.js` builds GWO's own war panel — seed, difficulty, the AI brains, the
+war's game options, and each client's colour for the next battle — and
+`section_of_foreign_intelligence/` is the intel panel, vendored code under its
+own licence, so the attribution at its head stays.
 
 Nothing under `ui/main/**` or `pa/**` appears in that list — those load by
 _shadowing_, not by manifest.
@@ -125,15 +131,48 @@ Two traps:
   game takes the 20/sec default). Every check hit-tests the whole interactive
   display list, up to 234 systems. This is independent of the redraw loop.
 
+## Repairing wars made by older GWO versions
+
+A war is a save, and a save outlives the version that made it.
+`gw_play/bugfixes.js` runs once per entry into `gw_play` (guarded by
+`gwoBugfixesLoaded`, skipped for tutorials) and retroactively repairs wars whose
+generation had a bug GWO has since fixed.
+
+The shape is worth knowing before adding a fix to it:
+
+- **A fix is gated by a flag, not by a version alone.** `treasurePlanetFixed`,
+  `clusterFixed` and `treasureLoadoutDerived` live on `originSystem.gwaio`, and
+  `gwaio_lucky_commander_fixed` in `localStorage`. Once a repair has run, or been
+  ruled unnecessary, the flag says so and the scan is skipped for good.
+- **`checkIfPatchesNeeded` sets those flags from `gwoSettings.version`** via
+  `atLeastVersion`, so a war created after a fix shipped never pays for the scan.
+  A war with no recorded version compares as older than everything, which is the
+  safe direction.
+- **The flags are set unconditionally after the sweep**, because "the thing this
+  fix targets does not exist in this war" and "it has been fixed" want the same
+  outcome — a war with no treasure planet should not re-scan forever.
+- It finishes by calling `gw_play/save.js`, so a repaired war is persisted rather
+  than repaired again on the next visit.
+
+`gw_play/save.js` is the shared save wrapper used here and by the card code. It
+drives `model.driveAccessInProgress` around the write, and **no-ops for campaign
+viewers** — only the host owns the campaign, so a viewer that saved would be
+writing a war it does not own.
+
 ## Where state lives
 
 - **The war save** — the campaign game object. GWO piggy-backs its own settings
   onto the origin star system as `originSystem.gwaio` (AI brain, difficulty,
   scaling options). `shared/ai.js`'s `aiInUse()` reads it; a missing blob means a
   non-GWO war and defaults to Titans.
-- **`localStorage`** — start-card unlocks and victory badges, under `gwaio_`-
-  prefixed keys so that uninstalling GWO does not corrupt the base game's loadout
-  list with 404s. See `shared/bank.js` and `shared/favourites.js`.
+- **`localStorage`** — start-card unlocks, victory badges and favourited
+  loadouts, under `gwaio_`-prefixed keys so that uninstalling GWO does not
+  corrupt the base game's loadout list with 404s. See `shared/bank.js` and
+  `shared/favourites.js`, which reads `gwaio_favourite_loadouts`.
+  `shared/favourite_loadouts.js` is the id arithmetic behind that key —
+  `isFavourite`, `toggleId` and `sortCardsByFavourite`, kept free of engine
+  globals so it is testable. Its sort puts favourites in the order they were
+  favourited, not the order the cards happen to be in.
 - **The inventory** — cards, units, minions and AI mods for the current war.
   Under co-op with per-player tech there is one inventory per player, and
   `model.game().inventory()` is always the _host's_ — a real source of bugs when

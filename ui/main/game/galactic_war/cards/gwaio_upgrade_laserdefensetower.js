@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 50%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 50%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Laser Defense Tower Upgrade Tech"),
     icon: _.constant(

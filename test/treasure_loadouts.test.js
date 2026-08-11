@@ -20,6 +20,51 @@ const loadoutIds = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js"
 );
 
+// treasureLoadoutPool reads model.gwoNewStartCards for the mod loadouts, so the
+// global has to exist for every test, not just the ones registering any. Set for
+// the file rather than per test: the install helper below stubs model itself and
+// restores back to this.
+const fileStubs = createGlobalStubs();
+fileStubs.setGlobal("model", {});
+
+function withModLoadouts(ids, run) {
+  model.gwoNewStartCards = ids;
+  try {
+    return run();
+  } finally {
+    delete model.gwoNewStartCards;
+  }
+}
+
+const loadoutBanks = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js"
+);
+
+// Registers a mod bank for the duration of one test. resolve() writes module
+// state onto a cached singleton, so it has to be cleared again afterwards.
+function withModBank(prefix, modBank, run) {
+  model.gwoLoadoutBanks = [{ prefix, path: "coui://mym/bank.js" }];
+  loadoutBanks.resolve([modBank]);
+  try {
+    return run();
+  } finally {
+    delete model.gwoLoadoutBanks;
+    loadoutBanks.resolve([]);
+  }
+}
+
+const modBank = (ids) => ({
+  added: [],
+  startCards: () => (ids || []).map((id) => ({ id })),
+  hasStartCard(card) {
+    return (ids || []).indexOf(card && card.id ? card.id : card) !== -1;
+  },
+  addStartCard(card) {
+    this.added.push(card);
+    return true;
+  },
+});
+
 const war = () => streams.warRng({ seed: "a-war-seed" });
 
 function pick(record, playerKey, starIndex) {
@@ -35,11 +80,64 @@ describe("treasureLoadoutPool", () => {
     assert.deepEqual(
       ids,
       loadoutIds.lockedBase.concat(loadoutIds.unlockable),
-      "the pool must match what gw_start/setup.js drew from"
+      "with no mod registered the pool is GWO's own earnable loadouts"
     );
     for (const id of loadoutIds.starting) {
       assert.ok(!ids.includes(id), `${id} is available from the start`);
     }
+  });
+
+  it("offers a mod's locked loadout alongside GWO's", () => {
+    const ids = withModLoadouts([{ id: "mym_start_one" }], () =>
+      treasure.treasureLoadoutPool().map((card) => card.id)
+    );
+
+    assert.ok(ids.includes("mym_start_one"), "the mod loadout is unreachable");
+    assert.ok(ids.includes("gwaio_start_ceo"), "GWO's own are still offered");
+  });
+
+  it("accepts a bare id as well as a card object", () => {
+    const ids = withModLoadouts(["mym_start_bare"], () =>
+      treasure.treasureLoadoutPool().map((card) => card.id)
+    );
+
+    assert.ok(ids.includes("mym_start_bare"));
+  });
+
+  it("deduplicates a mod id that collides with a shipped one", () => {
+    const ids = withModLoadouts([{ id: "gwaio_start_ceo" }], () =>
+      treasure.treasureLoadoutPool().map((card) => card.id)
+    );
+
+    assert.equal(
+      ids.filter((id) => id === "gwaio_start_ceo").length,
+      1,
+      "a duplicate would weight that loadout twice in the draw"
+    );
+  });
+
+  it("ignores registered ids that are not loadouts", () => {
+    const ids = withModLoadouts(
+      [{ id: "mym_damage_bots" }, { id: undefined }, undefined],
+      () => treasure.treasureLoadoutPool().map((card) => card.id)
+    );
+
+    assert.deepEqual(ids, loadoutIds.lockedBase.concat(loadoutIds.unlockable));
+  });
+
+  it("survives the global being absent or the wrong type", () => {
+    const expected = loadoutIds.lockedBase.concat(loadoutIds.unlockable);
+
+    assert.deepEqual(
+      treasure.treasureLoadoutPool().map((card) => card.id),
+      expected
+    );
+    assert.deepEqual(
+      withModLoadouts("not an array", () =>
+        treasure.treasureLoadoutPool().map((card) => card.id)
+      ),
+      expected
+    );
   });
 });
 
@@ -160,6 +258,60 @@ describe("bankStartCard", () => {
     );
     assert.deepEqual(stockBank.added, []);
     assert.deepEqual(gwoBank.added, []);
+  });
+
+  it("banks a mod loadout into the mod's own bank", () => {
+    const { stockBank, gwoBank } = banks();
+    const mym = modBank([]);
+
+    withModBank("mym_start_", mym, () =>
+      treasure.bankStartCard({
+        card: { id: "mym_start_one" },
+        stockBank,
+        gwoBank,
+      })
+    );
+
+    assert.deepEqual(mym.added, [{ id: "mym_start_one" }]);
+    assert.deepEqual(
+      gwoBank.added,
+      [],
+      "uninstalling the mod must take its unlocks with it"
+    );
+    assert.deepEqual(stockBank.added, []);
+  });
+
+  it("falls back to GWO's bank for an id no mod claims", () => {
+    const { stockBank, gwoBank } = banks();
+    const mym = modBank([]);
+
+    withModBank("mym_start_", mym, () =>
+      treasure.bankStartCard({
+        card: { id: "gwaio_start_lucky" },
+        stockBank,
+        gwoBank,
+      })
+    );
+
+    assert.deepEqual(gwoBank.added, [{ id: "gwaio_start_lucky" }]);
+    assert.deepEqual(mym.added, []);
+  });
+
+  it("still sends a gwc_start id to the base game's bank", () => {
+    const { stockBank, gwoBank } = banks();
+    // A mod claiming this prefix would be shadowing base-game ids, and the base
+    // game reads its own bank directly, so the stock route has to win.
+    const mym = modBank([]);
+
+    withModBank("gwc_start_", mym, () =>
+      treasure.bankStartCard({
+        card: { id: "gwc_start_artillery" },
+        stockBank,
+        gwoBank,
+      })
+    );
+
+    assert.deepEqual(stockBank.added, [{ id: "gwc_start_artillery" }]);
   });
 });
 
@@ -437,6 +589,32 @@ describe("localUnlockedLoadoutIds", () => {
 
   it("is empty for a player who has unlocked nothing", () => {
     assert.deepEqual(treasure.localUnlockedLoadoutIds(bank(), bank()), []);
+  });
+
+  it("includes what a registered mod bank holds", () => {
+    // Without this the host cannot learn the viewer owns it - the base game
+    // drops every id outside the gwc_start prefix on its own report - and would
+    // keep offering a treasure loadout the viewer already has.
+    const ids = withModBank("mym_start_", modBank(["mym_start_one"]), () =>
+      treasure.localUnlockedLoadoutIds(
+        bank(["gwc_start_artillery"]),
+        bank(["gwaio_start_ceo"])
+      )
+    );
+
+    assert.deepEqual(ids, [
+      "gwc_start_artillery",
+      "gwaio_start_ceo",
+      "mym_start_one",
+    ]);
+  });
+
+  it("drops a mod bank entry that is not a loadout", () => {
+    const ids = withModBank("mym_", modBank(["mym_damage_bots"]), () =>
+      treasure.localUnlockedLoadoutIds(bank(), bank())
+    );
+
+    assert.deepEqual(ids, []);
   });
 });
 

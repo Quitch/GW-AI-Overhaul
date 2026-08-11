@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Artemis Upgrade Tech allows targeting of planetary units by the railgun platform."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Artemis Upgrade Tech allows targeting of planetary units by the railgun platform."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Artemis Upgrade Tech"),
     icon: _.constant(

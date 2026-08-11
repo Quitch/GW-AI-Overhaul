@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Jig Upgrade Tech adds storage to gas mining and doubles its energy production."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Jig Upgrade Tech adds storage to gas mining and doubles its energy production."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Jig Upgrade Tech"),
     icon: _.constant(

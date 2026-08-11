@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Vanguard Upgrade Tech"),
     icon: _.constant(

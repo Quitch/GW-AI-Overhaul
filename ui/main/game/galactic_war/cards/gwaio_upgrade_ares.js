@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Ares Upgrade Tech increases the range of the rolling fortress by 25%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Ares Upgrade Tech increases the range of the rolling fortress by 25%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Ares Upgrade Tech"),
     icon: _.constant(

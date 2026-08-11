@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Manhattan Upgrade Tech doubles the radius of the mobile nuke's explosion."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Manhattan Upgrade Tech doubles the radius of the mobile nuke's explosion."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Manhattan Upgrade Tech"),
     icon: _.constant(

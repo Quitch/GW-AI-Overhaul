@@ -1,3 +1,7 @@
+// The keys are a published API - third-party cards written from the
+// New-GW-Cards template name them directly, so renaming one breaks those cards
+// silently. The paths are not: re-point them freely when the base game moves a
+// file. See docs/tech-cards.md.
 define({
   airFabber: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
   airFabberAdvanced:

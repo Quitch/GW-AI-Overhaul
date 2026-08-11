@@ -21,9 +21,17 @@ parts that need a running game stay thin.
 | `/pa/ai/`              | Partly        | The base game's stock Titans AI build data. This repo ships only the handful of files GWO shadows; the rest is base-game-owned and absent from CI. |
 | `/pa/ai_penchant/`     | In full       | GWO's own personality-driven build trees. `shared/ai.js`'s `penchants()` maps a personality to build-file tags drawn from here.                    |
 | `/pa/ai_queller/`      | No            | The base game's Queller AI data.                                                                                                                   |
-| `/pa/ai_tech/`         | Partly        | Both a source and a destination. Ships the build files that `load` descriptors name (8 today); `referee_ai.js` also writes generated output here.  |
 | `/pa/ai_subcommander/` | No            | Runtime-synthesised only. No on-disk existence anywhere.                                                                                           |
 | `/pa/ai_cluster/`      | No            | Runtime-synthesised only. Same.                                                                                                                    |
+
+`/pa/ai_tech/` is deliberately **not** in that table. It is never handed to an AI
+as an `ai_path`: it is a file source the pipeline pulls extra build files out of
+when a card's AI mod carries a `load`, and a place `referee_ai.js` writes
+generated output. See [`ai-pipeline.md`](ai-pipeline.md), "The op table".
+
+Nor is it `gw_start/ai_tech.js`, which shares the name and nothing else: that is
+the AI's own stat tech, applied as unit-spec mods at war creation. See
+[`galaxy.md`](galaxy.md), "AI tech".
 
 **The `/pa/ai_queller/` path is a trap.** On disk in the game install those files
 live under `pa_ex1/ai_queller/`, because Queller is TITANS content and TITANS is

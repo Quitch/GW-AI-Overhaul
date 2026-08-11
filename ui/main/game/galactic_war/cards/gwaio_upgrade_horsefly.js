@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Horsefly Upgrade Tech adds the Bumblebee carpet bomber's weapon to the strafer."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Horsefly Upgrade Tech adds the Bumblebee carpet bomber's weapon to the strafer."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Horsefly Upgrade Tech"),
     icon: _.constant(

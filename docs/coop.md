@@ -102,6 +102,13 @@ anything the war panel already shows. Its index is
 Duplicated subcommanders share one colour, matching how the host's duplication tech
 produces a single army with several commander slots.
 
+Which palette entry lands where is `gw_play/commander_colour.js`, and it is shared
+rather than per-caller for a reason: `referee_config_setup.js`, the shadowed
+per-player-tech referee, `gwo_panel.js` and the intel panel must all agree, or the
+panel promises a colour the battle does not deliver. It orders a palette by
+`contrastScore` — squared RGB distance plus a luminance term weighted 16× — so the
+commanders most likely to be confused are the ones pushed furthest apart.
+
 The palette can run out. `pick()` falls back to the caller's colour, and the
 referee treats "no pair available" as a reason to refuse the battle rather than
 letting two armies collide.
@@ -161,7 +168,9 @@ awaited.
 A viewer's selection follows the host's moves, which is right until the viewer has
 picked a star of their own to look at. `gw_play/coop_selection_follow.js` hijacks
 `applyCampaignAction` and puts the viewer's own choice back once the replayed action
-settles.
+settles. The scene entry is the thin `gw_play/coop_selection.js`, which exists only
+to `_.defer` into it — `systems.js` replaces `model.selection` outright, so the
+subscription can only be taken once every `gw_play` mod has loaded.
 
 It has to be restored **afterwards** rather than defended: `applyCampaignAction`
 writes the destination into `selection.star` itself, because the base game's `move()`
@@ -332,6 +341,29 @@ the viewer's war inventory instead. GWO therefore intercepts **every** loadout i
 a viewer, banking locally and submitting `-1`; it cannot leave the base ids to the
 server, because banking is held shut on viewers for the reason below.
 
+## The per-player loadout scene
+
+`gw_coop_per_player_loadout` is its own scene, and
+`gw_coop_per_player_loadout/gwo_loadouts.js` is the only file GWO puts in it. It
+is where a viewer picks their war loadout, and it has to build that loadout's
+starting inventory itself rather than inheriting the host's.
+
+Two things about it are not obvious from the scene it sits in:
+
+- **The view model has no player faction**, but Cluster start cards read
+  `global.playerFaction`. `resolvePlayerFaction` therefore loads the campaign
+  game through `GW.manifest.loadGame(model.activeGameId())` purely to read that
+  tag back out, and resolves `undefined` rather than rejecting when there is no
+  active game — a loadout preview outside a war still has to render.
+- **`validateStartingInventory` refuses rather than proceeds.** It asserts the
+  chosen card produced exactly one card, in first position, with `maxCards` a
+  number leaving room beyond it. Anything else rejects the deferred, because a
+  loadout that quietly banked tech would hand the viewer cards nobody dealt them.
+
+Banking is the other half, and is covered in "Whose unlocks are whose" below: a
+viewer banks its own war loadout from this scene, which is why the hold placed on
+the host's inventory does not reach it.
+
 ## Whose unlocks are whose
 
 `GWGame.load()` calls `game.inventory().applyCards()` on **every** client, and on a
@@ -375,9 +407,12 @@ should use. Wars generated before that field existed get it back from
 `findTreasureStar`, which looks for a live `ai.treasurePlanet` and otherwise for the
 pre-dealt loadout the old war left on the star.
 
-The pool is `loadout_ids.lockedBase + unlockable`. `gw_start/setup.js` drew from
-`model.gwoNewStartCards`, which a third-party mod can push into; `model` is a fresh
-page in `gw_play`, so that route is not available here.
+The pool is `loadout_ids.lockedBase + unlockable`, plus whatever a third-party mod
+registered in `model.gwoNewStartCards`. `model` is a fresh page in `gw_play`, so that
+last part holds only what the mod's own `gw_play` loader pushed — `shared/loadouts.js`,
+which seeds GWO's `unlockable` ids into the same global, runs in `gw_start`. A mod
+registering only in `gw_start` is therefore absent from the pool and its loadouts can
+never be awarded. See [`tech-cards.md`](tech-cards.md), "Third-party card mods".
 
 **A viewer's unlocks arrive by a GWO route, not the base game's.** Both
 `normalizeStartCardIds` and the server's `normalizeUnlockedStartCardIds` filter to ids

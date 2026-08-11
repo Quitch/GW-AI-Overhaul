@@ -5,9 +5,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc("!LOC:Squall Upgrade Tech allows you to issue orders to drones.") +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc("!LOC:Squall Upgrade Tech allows you to issue orders to drones.")
+      )
     ),
     summarize: _.constant("!LOC:Squall Upgrade Tech"),
     icon: _.constant(

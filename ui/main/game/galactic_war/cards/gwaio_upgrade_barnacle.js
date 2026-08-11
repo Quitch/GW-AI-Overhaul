@@ -5,13 +5,13 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Barnacle Upgrade Tech allows the assisting of all builds by the support barge."
-      ) +
-        " " +
-        loc("!LOC:Disables the auto-repair feature.") +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Barnacle Upgrade Tech allows the assisting of all builds by the support barge."
+        ) +
+          " " +
+          loc("!LOC:Disables the auto-repair feature.")
+      )
     ),
     summarize: _.constant("!LOC:Barnacle Upgrade Tech"),
     icon: _.constant(

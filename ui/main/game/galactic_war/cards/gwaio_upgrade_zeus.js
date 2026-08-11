@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Zeus Upgrade Tech adds the ability for the lightning titan to move between planets."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Zeus Upgrade Tech adds the ability for the lightning titan to move between planets."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Zeus Upgrade Tech"),
     icon: _.constant(

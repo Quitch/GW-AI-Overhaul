@@ -5,9 +5,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc("!LOC:Avenger Upgrade Tech adds a railgun to the orbital fighter.") +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc("!LOC:Avenger Upgrade Tech adds a railgun to the orbital fighter.")
+      )
     ),
     summarize: _.constant("!LOC:Avenger Upgrade Tech"),
     icon: _.constant(

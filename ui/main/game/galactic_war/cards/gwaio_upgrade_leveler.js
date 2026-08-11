@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Leveler Upgrade Tech enables the building of assault tanks by the Unit Cannon."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Leveler Upgrade Tech enables the building of assault tanks by the Unit Cannon."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Leveler Upgrade Tech"),
     icon: _.constant(

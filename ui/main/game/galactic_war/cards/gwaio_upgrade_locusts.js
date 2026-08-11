@@ -5,9 +5,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc("!LOC:Locusts Upgrade Tech adds splash damage to nanoswarms.") +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc("!LOC:Locusts Upgrade Tech adds splash damage to nanoswarms.")
+      )
     ),
     summarize: _.constant("!LOC:Locusts Upgrade Tech"),
     icon: _.constant(

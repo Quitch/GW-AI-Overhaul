@@ -1,3 +1,6 @@
+// The helper names this returns are a published API: third-party cards call
+// them directly, and the New-GW-Cards template documents every one. Renaming
+// or dropping one breaks those cards silently. See docs/tech-cards.md.
 define(function () {
   var getConnectedClients = function () {
     return _.isFunction(model.gwCampaignConnectedClients) &&
@@ -97,6 +100,16 @@ define(function () {
     isEnglish: function () {
       var language = i18n.detectLanguage();
       return !language || _.includes(language, "en");
+    },
+
+    // Every card that grants a slot says so as its own paragraph. Kept here so the
+    // wording stays one translatable string rather than 114 copies of it.
+    withSlot: function (description) {
+      return (
+        description +
+        "<br> <br>" +
+        loc("!LOC:Adds a new slot for another technology.")
+      );
     },
 
     loadoutIcon: function (loadoutId) {
