@@ -407,9 +407,12 @@ should use. Wars generated before that field existed get it back from
 `findTreasureStar`, which looks for a live `ai.treasurePlanet` and otherwise for the
 pre-dealt loadout the old war left on the star.
 
-The pool is `loadout_ids.lockedBase + unlockable`. `gw_start/setup.js` drew from
-`model.gwoNewStartCards`, which a third-party mod can push into; `model` is a fresh
-page in `gw_play`, so that route is not available here.
+The pool is `loadout_ids.lockedBase + unlockable`, plus whatever a third-party mod
+registered in `model.gwoNewStartCards`. `model` is a fresh page in `gw_play`, so that
+last part holds only what the mod's own `gw_play` loader pushed — `shared/loadouts.js`,
+which seeds GWO's `unlockable` ids into the same global, runs in `gw_start`. A mod
+registering only in `gw_start` is therefore absent from the pool and its loadouts can
+never be awarded. See [`tech-cards.md`](tech-cards.md), "Third-party card mods".
 
 **A viewer's unlocks arrive by a GWO route, not the base game's.** Both
 `normalizeStartCardIds` and the server's `normalizeUnlockedStartCardIds` filter to ids
