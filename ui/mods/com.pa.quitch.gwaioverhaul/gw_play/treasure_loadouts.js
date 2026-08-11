@@ -3,7 +3,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
-], function (gwoLoadoutIds, helpers) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
+], function (gwoLoadoutIds, helpers, gwoLoadoutBanks) {
   var cardId = function (card) {
     if (_.isString(card)) {
       return card;
@@ -76,15 +77,23 @@ define([
 
   // A loadout won mid-war unlocks the commander and nothing else, so its buff()
   // never runs and the bank has to be written directly. Mod ids are kept out of
-  // the base game's bank - see shared/bank.js.
+  // the base game's bank - see shared/bank.js. A third-party mod that registered
+  // its own bank gets its own unlocks back, so uninstalling it takes its records
+  // with it rather than leaving them in gwaio_bank.
   var bankStartCard = function (params) {
     var id = cardId(params.card);
     if (!helpers.isStartLoadoutCardId(id)) {
       return false;
     }
 
-    var bank = isBaseLoadoutCardId(id) ? params.stockBank : params.gwoBank;
-    return bank.addStartCard({ id: id });
+    // Tested before the registry: the base game reads its own bank directly, so
+    // a mod registering the gwc_start prefix must not capture those ids.
+    if (isBaseLoadoutCardId(id)) {
+      return params.stockBank.addStartCard({ id: id });
+    }
+
+    var modBank = gwoLoadoutBanks.bankFor(id);
+    return (modBank || params.gwoBank).addStartCard({ id: id });
   };
 
   // A mod's locked loadouts join the pool through model.gwoNewStartCards. gw_play
@@ -144,15 +153,18 @@ define([
   var reportOperator = "gwo_report_unlocked_loadouts";
 
   // A viewer's own unlock record, in ids. The base game reports its half too,
-  // but drops everything outside the "gwc_start" prefix on the way.
+  // but drops everything outside the "gwc_start" prefix on the way - which is
+  // every mod loadout, so a registered bank's holdings have to come along here or
+  // the host will keep offering the viewer loadouts they already own.
   var localUnlockedLoadoutIds = function (stockBank, gwoBank) {
+    var held = stockBank
+      .startCards()
+      .concat(gwoBank.startCards(), gwoLoadoutBanks.startCards());
+
     return _.uniq(
-      _.filter(
-        _.map(stockBank.startCards().concat(gwoBank.startCards()), cardId),
-        function (id) {
-          return helpers.isStartLoadoutCardId(id);
-        }
-      )
+      _.filter(_.map(held, cardId), function (id) {
+        return helpers.isStartLoadoutCardId(id);
+      })
     );
   };
 
