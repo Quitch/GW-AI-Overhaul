@@ -20,6 +20,22 @@ const loadoutIds = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js"
 );
 
+// treasureLoadoutPool reads model.gwoNewStartCards for the mod loadouts, so the
+// global has to exist for every test, not just the ones registering any. Set for
+// the file rather than per test: the install helper below stubs model itself and
+// restores back to this.
+const fileStubs = createGlobalStubs();
+fileStubs.setGlobal("model", {});
+
+function withModLoadouts(ids, run) {
+  model.gwoNewStartCards = ids;
+  try {
+    return run();
+  } finally {
+    delete model.gwoNewStartCards;
+  }
+}
+
 const war = () => streams.warRng({ seed: "a-war-seed" });
 
 function pick(record, playerKey, starIndex) {
@@ -35,11 +51,64 @@ describe("treasureLoadoutPool", () => {
     assert.deepEqual(
       ids,
       loadoutIds.lockedBase.concat(loadoutIds.unlockable),
-      "the pool must match what gw_start/setup.js drew from"
+      "with no mod registered the pool is GWO's own earnable loadouts"
     );
     for (const id of loadoutIds.starting) {
       assert.ok(!ids.includes(id), `${id} is available from the start`);
     }
+  });
+
+  it("offers a mod's locked loadout alongside GWO's", () => {
+    const ids = withModLoadouts([{ id: "mym_start_one" }], () =>
+      treasure.treasureLoadoutPool().map((card) => card.id)
+    );
+
+    assert.ok(ids.includes("mym_start_one"), "the mod loadout is unreachable");
+    assert.ok(ids.includes("gwaio_start_ceo"), "GWO's own are still offered");
+  });
+
+  it("accepts a bare id as well as a card object", () => {
+    const ids = withModLoadouts(["mym_start_bare"], () =>
+      treasure.treasureLoadoutPool().map((card) => card.id)
+    );
+
+    assert.ok(ids.includes("mym_start_bare"));
+  });
+
+  it("deduplicates a mod id that collides with a shipped one", () => {
+    const ids = withModLoadouts([{ id: "gwaio_start_ceo" }], () =>
+      treasure.treasureLoadoutPool().map((card) => card.id)
+    );
+
+    assert.equal(
+      ids.filter((id) => id === "gwaio_start_ceo").length,
+      1,
+      "a duplicate would weight that loadout twice in the draw"
+    );
+  });
+
+  it("ignores registered ids that are not loadouts", () => {
+    const ids = withModLoadouts(
+      [{ id: "mym_damage_bots" }, { id: undefined }, undefined],
+      () => treasure.treasureLoadoutPool().map((card) => card.id)
+    );
+
+    assert.deepEqual(ids, loadoutIds.lockedBase.concat(loadoutIds.unlockable));
+  });
+
+  it("survives the global being absent or the wrong type", () => {
+    const expected = loadoutIds.lockedBase.concat(loadoutIds.unlockable);
+
+    assert.deepEqual(
+      treasure.treasureLoadoutPool().map((card) => card.id),
+      expected
+    );
+    assert.deepEqual(
+      withModLoadouts("not an array", () =>
+        treasure.treasureLoadoutPool().map((card) => card.id)
+      ),
+      expected
+    );
   });
 });
 

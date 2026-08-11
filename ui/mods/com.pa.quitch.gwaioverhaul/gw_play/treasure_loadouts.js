@@ -87,9 +87,27 @@ define([
     return bank.addStartCard({ id: id });
   };
 
+  // A mod's locked loadouts join the pool through model.gwoNewStartCards. gw_play
+  // is a fresh page, so this holds only what the mod's own gw_play loader pushed -
+  // shared/loadouts.js, which adds GWO's unlockable list, runs in gw_start.
+  var modLoadoutIds = function () {
+    var registered = _.isArray(model.gwoNewStartCards)
+      ? model.gwoNewStartCards
+      : [];
+
+    return _.filter(_.map(registered, cardId), function (id) {
+      return helpers.isStartLoadoutCardId(id);
+    });
+  };
+
   var treasureLoadoutPool = function () {
     return _.map(
-      gwoLoadoutIds.lockedBase.concat(gwoLoadoutIds.unlockable),
+      _.uniq(
+        gwoLoadoutIds.lockedBase.concat(
+          gwoLoadoutIds.unlockable,
+          modLoadoutIds()
+        )
+      ),
       function (id) {
         return { id: id };
       }
