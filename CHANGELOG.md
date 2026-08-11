@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Correct regressions in modded card support introduced by v6.10.0
+  - Note that the `New-GW-Cards` template has been updated for changes in how support is exposed
+  - Guardrails have been introduced to prevent further breakage
+
 ## v6.10.0 - 2026-08-10
 
 ### Changed
