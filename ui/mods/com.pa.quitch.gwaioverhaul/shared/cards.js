@@ -1,3 +1,6 @@
+// The helper names this returns are a published API: third-party cards call
+// them directly, and the New-GW-Cards template documents every one. Renaming
+// or dropping one breaks those cards silently. See docs/tech-cards.md.
 define(function () {
   var getConnectedClients = function () {
     return _.isFunction(model.gwCampaignConnectedClients) &&

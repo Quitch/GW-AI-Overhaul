@@ -1,6 +1,7 @@
 // Third-party card mods record their loadout unlocks in their own localStorage
 // key, so GWO has to be told where to look. They push { prefix, path } onto
-// model.gwoLoadoutBanks; see docs/tech-cards.md, "Third-party loadout banks".
+// model.gwoLoadoutBanks - the New-GW-Cards template's start_cards.js does this.
+// See docs/tech-cards.md, "Third-party loadout banks".
 //
 // The entry carries the bank's path rather than the loaded module because scene
 // scripts run synchronously at scene load while every requireGW callback resolves

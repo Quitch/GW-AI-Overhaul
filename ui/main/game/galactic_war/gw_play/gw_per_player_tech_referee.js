@@ -29,7 +29,8 @@ define([
     perPlayerTech.buildViewerSubcommanderArmies;
   var validatePerPlayerTechInputs = perPlayerTech.validatePerPlayerTechInputs;
 
-  // Files not assigned by default that we wish to mod - global for modder compatibility
+  // Files not assigned by default that we wish to mod - global for modder
+  // compatibility, New-GW-Cards pushes here - see docs/tech-cards.md
   model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
   model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);
 

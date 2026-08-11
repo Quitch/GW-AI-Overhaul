@@ -260,7 +260,8 @@ function gwoSetup() {
         "nem_start_deepspace",
         "gwaio_start_tourist",
       ];
-      // global for modder compatibility - merge in any modder-added ids
+      // global for modder compatibility - merge in any modder-added ids.
+      // GWO never creates this one, so the mod's loader has to
       if (_.isArray(model.gwoStarCardsWhichBreakAllies)) {
         gwoStarCardsWhichBreakAllies = gwoStarCardsWhichBreakAllies.concat(
           model.gwoStarCardsWhichBreakAllies

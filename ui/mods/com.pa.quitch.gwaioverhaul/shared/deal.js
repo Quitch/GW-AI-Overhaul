@@ -218,7 +218,7 @@ define([
         "gwc_energy_efficiency_intel",
         "gwc_energy_efficiency_weapons",
       ];
-      // global for modder compatibility
+      // global for modder compatibility - New-GW-Cards pushes here
       model.gwoCards = _.isArray(model.gwoCards) ? model.gwoCards : [];
 
       // Deduplicated because setupGwoDeck indexes by position: a modder id that
