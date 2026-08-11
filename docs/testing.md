@@ -100,6 +100,28 @@ silently and only fail on SonarCloud after a push. A rename out from under an
 exclusion once put a GBK-encoded readme back into analysis. Do not run the `sonar`
 CLI locally; it does not perform real rule analysis for this org.
 
+## The one test that lints
+
+`test/stylelint_config.test.js` is the odd one out: it loads no shipped module and
+instead runs stylelint's Node API over CSS fixtures, asserting that each Chrome 40
+limit is rejected and each supported feature is not. It exists because
+`stylelint.config.mjs` is the only guard against a class of bug the game cannot
+report — an unsupported declaration is silently dropped, so nothing fails loudly.
+
+Two details are load-bearing:
+
+- It passes `configFile` rather than importing the config module, so the test
+  exercises the file the CLI actually resolves. It also asserts `.stylelintrc.json`
+  is **absent**: cosmiconfig ranks that name third and `stylelint.config.mjs` last,
+  so a resurrected JSON would silently shadow the whole profile while every other
+  assertion here still passed.
+- `require("stylelint")` works even though stylelint 17 is ESM-only, via Node's
+  `require(ESM)` interop on the pinned Node version.
+
+The accept cases matter more than the reject cases. Several of these rules are
+fixable, and `format:css` runs `stylelint --fix` repo-wide, so an over-broad denylist
+would rewrite working CSS into CSS the engine drops.
+
 ## Test fixtures
 
 `scripts/lib/ai-path-fixtures.js` holds the shared scenario matrix so each test

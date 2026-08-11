@@ -53,7 +53,11 @@ full by the doc named:
   → [constraints.md](constraints.md)
 - **An unrecognised AI `test_type` is not an error** — the condition simply never
   validates and the build entry silently never fires. → [testing.md](testing.md)
-- **`filter` is Chrome 53.** Only `-webkit-filter` does anything.
+- **`filter` is Chrome 53.** Only `-webkit-filter` does anything. So is `animation`
+  and `@keyframes` (Chrome 43), and `mask-*` (Chrome 120) — the base game ships
+  inert declarations of all three. → [constraints.md](constraints.md)
+- **`justify-content: space-evenly` parses, computes, and does nothing.**
+  `CSS.supports()` says yes; flex layout falls through to `flex-start`.
   → [constraints.md](constraints.md)
 
 ## On comments in this codebase

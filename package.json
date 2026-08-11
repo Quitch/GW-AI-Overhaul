@@ -32,6 +32,7 @@
     "markdownlint-cli2": "^0.23.1",
     "prettier": "^3.9.6",
     "stylelint": "^17.14.1",
-    "stylelint-config-standard": "^40.0.0"
+    "stylelint-config-standard": "^40.0.0",
+    "stylelint-no-unsupported-browser-features": "^8.1.1"
   }
 }

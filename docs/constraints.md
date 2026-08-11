@@ -111,18 +111,77 @@ sibling module rather than hoisting helpers to file top level. See
 
 ## CSS
 
-Chrome 40 predates a lot of modern CSS syntax, and `.stylelintrc.json` disables two
-rules for that reason:
+Same problem as the ES5 whitelist, and worse in one way: an unsupported CSS
+declaration is not a parse error, it is **silently dropped**. No console message,
+no failed rule — the page just renders wrong.
 
-- `color-function-alias-notation` — the modern `rgb()`/`rgba()` unification is not
-  available.
-- `declaration-block-no-redundant-longhand-properties`, scoped to ignore `overflow`
-  — `overflow-x` + `overflow-y` cannot be collapsed.
+`stylelint.config.mjs` is the reference, one commented entry per rule, exactly as
+`eslint.config.mjs` is for JS. It works through two nets:
 
-Do not remove those exclusions or "fix" the usage they cover as a drive-by.
+- **`.browserslistrc` + `stylelint-no-unsupported-browser-features`** — checks every
+  declaration against caniuse for `chrome 40`. This is the automatic half.
+- **Hand-written rules** — for what the plugin structurally cannot see: at-rules,
+  selectors, layout-level behaviour, and the rules `stylelint-config-standard`
+  otherwise _forces_ into syntax the engine rejects.
 
-The prefixed-property case that matters most: **`filter` is Chrome 53**, so only
-`-webkit-filter` does anything here. An unprefixed `filter` is silently inert.
+Be honest about the difference from the JS side: **the CSS denylists are curated,
+not exhaustive.** ES5-vs-Chrome-40 is a finite gap that can be enumerated;
+CSS-since-2015 is not. The plugin is the exhaustive half; the hand-written rules are
+the high-traffic set plus everything the plugin misses. "No entry means no" is a
+promise the JS config keeps and this one cannot.
+
+Every Chrome number in that file was verified against a running PA
+(Chrome/40.0.2214.28) over the Coherent inspector — `PA.exe --coherent_port=9999`,
+then `CSS.supports()` and a layout round-trip per feature. Several results
+contradicted caniuse, so do not "correct" an entry from MDN alone.
+
+### The four that catch people
+
+- **`filter` is Chrome 53.** Only `-webkit-filter` does anything.
+- **`animation` and `@keyframes` are Chrome 43.** Only `-webkit-animation` and
+  `@-webkit-keyframes` work. The base game ships 41 prefixed and zero unprefixed.
+- **`mask-*` is Chrome 120**, `user-select` 54, `appearance` 84 — all `-webkit-` only.
+- **`justify-content: space-evenly` parses, computes, and does nothing.**
+  `CSS.supports()` returns `true` and `getComputedStyle` echoes the value back, but
+  flex layout falls through to `flex-start` — measured, it lays out identically to a
+  bogus value. Same for `start`/`end`/`left`/`right` and the `align-*` box-alignment
+  keywords. `space-around` and `space-between` are genuinely implemented.
+
+### What is fine, despite feeling modern
+
+`calc()` (Chrome 26, and the base game uses it ~40 times), `vw`/`vh`/`vmin`/`vmax`
+(26), `rem` (4), `ch` (27), `object-fit` (32), `will-change` (36), `touch-action`
+(36), `all` (37), `shape-outside` (37), `border-image` (16, and PA's panel frames are
+built on it), `@supports` (28), `::before`/`::after`/`::first-letter`, `::backdrop`,
+`::selection`, `:not()` with one simple argument, and flexbox in full (29).
+
+### Which prefixes are actually required
+
+Only where the unprefixed form postdates 40. `transition` (Chrome 26), `transform`
+(36), `box-shadow` (10), `border-radius` (4) and every flex property (29) need **no**
+prefix, and the config rejects them as legacy cruft even though the base game ships
+64 `-webkit-transition` and 10 `-webkit-box-shadow`.
+
+Four are dropped in **both** spellings, so there is no working form and the property
+is banned outright: `hyphens`, `text-decoration-color`, `text-size-adjust`, and
+`-webkit-overflow-scrolling` — the last of which the base game uses three times, inertly.
+
+### Where this repo diverges from stock deliberately
+
+`::first-letter` double-colon (stock writes `:before`); `selector-class-pattern`
+lower-case-only (stock has camelCase classes and ids); `function-url-quotes: "always"`
+(stock is split three ways). Stock is not linted, so stock violating a rule is not a
+reason to loosen it.
+
+The config is calibrated, not over-tuned: run over the base game's own 57 unmodified
+CSS files it reports no false positives. Everything it flags there is either a
+genuinely inert declaration — unprefixed `filter` ×9, `user-select` ×7, `mask` ×2,
+`-webkit-overflow-scrolling` ×1, `word-break: keep-all` ×1 — or a redundant prefix.
+
+Do not remove an exclusion or "fix" the usage it covers as a drive-by. The
+`format:css` pass runs `stylelint --fix` repo-wide, and several of these rules are
+fixable, so a mis-set one rewrites working CSS into dropped CSS.
+`test/stylelint_config.test.js` is what stops that.
 
 CSS load order is also not what it looks like. Mod CSS is injected at runtime via
 `loadCSS`'s `head.appendChild`, fired from a delayed `ko.computed` — so it loads
