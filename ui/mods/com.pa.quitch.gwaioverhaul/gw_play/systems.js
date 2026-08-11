@@ -318,6 +318,26 @@ function gwoSystemChanges() {
       );
     });
 
+    requireGW(
+      [
+        "shared/gw_common",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+      ],
+      function (GW, gwoVictory, gwoSave, gwoTreasure, gwoBank) {
+        gwoVictory({
+          game: game,
+          gwoSettings: gwoSettings,
+          save: gwoSave,
+          treasure: gwoTreasure,
+          stockBank: GW.bank,
+          gwoBank: gwoBank,
+        });
+      }
+    );
+
     requireGW(["shared/gw_factions"], function (GWFactions) {
       var normalizedColor = function (faction) {
         return _.map(faction.color[0], function (c) {
