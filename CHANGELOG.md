@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Victory is now immediate once the last boss is defeated, rather than waiting for the final system to be explored. The Guardians are the exception: their system is still explored first while a commander loadout remains to be won
+
 ## v6.10.1 - 2026-08-11
 
 ### Bugfix
