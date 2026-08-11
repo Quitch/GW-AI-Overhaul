@@ -98,9 +98,16 @@ function gwoLoadouts() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
         "shared/gw_inventory",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
       ],
-      function (GW, loadouts, GWInventory, gwoDeal) {
-        model.startCards(loadouts.startCards);
+      function (GW, loadouts, GWInventory, gwoDeal, gwoLoadoutBanks) {
+        // A viewer picking their own loadout must see the mod ones they have
+        // unlocked, so the banks are resolved before the list is built.
+        requireGW(gwoLoadoutBanks.paths(), function () {
+          gwoLoadoutBanks.resolve(_.toArray(arguments));
+          model.startCards(loadouts.startCards());
+        });
+
         model.gwoCards = gwoDeal.setupGwoCards();
 
         var cards = [];

@@ -2,7 +2,8 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
-], function (GW, gwoBank, gwoLoadoutIds) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
+], function (GW, gwoBank, gwoLoadoutIds, gwoLoadoutBanks) {
   var asCards = function (ids) {
     return _.map(ids, function (id) {
       return { id: id };
@@ -28,17 +29,24 @@ define([
     lockedBaseCards,
     model.gwoNewStartCards
   );
-  var startCards = _.map(allCards, function (cardData) {
-    if (
-      _.includes(model.gwoStartingCards, cardData) ||
-      GW.bank.hasStartCard(cardData) ||
-      gwoBank.hasStartCard(cardData)
-    ) {
-      return model.makeKnown(cardData);
-    } else {
-      return model.makeUnknown(cardData);
-    }
-  });
+  // A function rather than a value because a mod's bank is resolved by a
+  // requireGW that may not have finished when this module's factory runs. Called
+  // after gwoLoadoutBanks.resolve(), it sees every bank; called before, it falls
+  // back to the two banks GWO ships and no mod loadout shows as unlocked.
+  var startCards = function () {
+    return _.map(allCards, function (cardData) {
+      if (
+        _.includes(model.gwoStartingCards, cardData) ||
+        GW.bank.hasStartCard(cardData) ||
+        gwoBank.hasStartCard(cardData) ||
+        gwoLoadoutBanks.hasStartCard(cardData)
+      ) {
+        return model.makeKnown(cardData);
+      } else {
+        return model.makeUnknown(cardData);
+      }
+    });
+  };
 
   return {
     startCards: startCards,

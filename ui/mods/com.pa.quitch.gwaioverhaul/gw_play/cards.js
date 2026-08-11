@@ -281,6 +281,7 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
       ],
       function (
         GW,
@@ -297,9 +298,15 @@ function gwoCard() {
         cardsCoopReroll,
         cardsCheats,
         gwoStreams,
-        gwoTreasure
+        gwoTreasure,
+        gwoLoadoutBanks
       ) {
         helpers = cardsDealHelpers;
+        // Nothing reads the banks until the player explores, so resolving them
+        // alongside setup is early enough and keeps this callback synchronous.
+        requireGW(gwoLoadoutBanks.paths(), function () {
+          gwoLoadoutBanks.resolve(_.toArray(arguments));
+        });
         restoreExploreSaveRerolls();
         var inventory = game.inventory();
         var playerFaction = inventory.getTag("global", "playerFaction");
@@ -587,10 +594,14 @@ function gwoCard() {
           helpers: helpers,
         });
 
-        // Both banks: base game and GWO loadouts unlock into separate
-        // localStorage records.
+        // Every bank: base game, GWO, and any a third-party card mod registered.
+        // Each unlocks into its own localStorage record.
         var startCardUnlocked = function (card) {
-          return GW.bank.hasStartCard(card) || gwoBank.hasStartCard(card);
+          return (
+            GW.bank.hasStartCard(card) ||
+            gwoBank.hasStartCard(card) ||
+            gwoLoadoutBanks.hasStartCard(card)
+          );
         };
 
         // gw_play self.explore - call our chooseCards()

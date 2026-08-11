@@ -377,6 +377,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourites.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
@@ -398,6 +399,7 @@ function gwoSetup() {
         gwoDifficulty,
         gwoAI,
         loadouts,
+        gwoLoadoutBanks,
         favouriteLoadoutsModule,
         favouritesModule,
         gwoVersion,
@@ -409,13 +411,18 @@ function gwoSetup() {
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
         gwoFavourites = favouritesModule;
 
-        model.startCards(
-          gwoFavouriteLoadouts.sortCardsByFavourite(
-            loadouts.startCards,
-            gwoFavourites.ids(),
-            cardId
-          )
-        );
+        // Resolved before the list is built so a mod loadout the player has
+        // earned shows as unlocked rather than as a locked hint.
+        requireGW(gwoLoadoutBanks.paths(), function () {
+          gwoLoadoutBanks.resolve(_.toArray(arguments));
+          model.startCards(
+            gwoFavouriteLoadouts.sortCardsByFavourite(
+              loadouts.startCards(),
+              gwoFavourites.ids(),
+              cardId
+            )
+          );
+        });
         var processedStartCards = {};
         var loadCount = loadouts.allCards.length;
         var loaded = $.Deferred();
