@@ -405,6 +405,10 @@ what keeps a seed's enemies reproducible.
 - **Shared Systems for Galactic War** — GWO removes Easy Systems when this is loaded,
   and changes how it watches `model.ready()` so the mod's lobby is not broken. System
   Scaling and Large Planets both stay, served by the brackets above.
+- **New-GW-Cards** — the template third-party card mods are written from, rather than
+  a mod itself. It is the reason the `model.gwo*` globals are additive and the
+  `shared/cards.js` helper names are fixed; see
+  [`tech-cards.md`](tech-cards.md), "Third-party card mods".
 
 ## Where to look next
 

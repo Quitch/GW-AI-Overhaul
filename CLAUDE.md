@@ -32,6 +32,7 @@ the traps that have actually caused bugs here.
 | Tree layout, scenes, entry points, battle launch sequence               | [`docs/architecture.md`](docs/architecture.md) |
 | File shadowing, function hijacking, the full shadowed-file inventory    | [`docs/shadowing.md`](docs/shadowing.md)       |
 | Tech card contract, `buff`/`dull`, deal weighting, loadouts             | [`docs/tech-cards.md`](docs/tech-cards.md)     |
+| The third-party card mod API and what breaks downstream if it changes   | [`docs/tech-cards.md`](docs/tech-cards.md)     |
 | AI-mod descriptors, the `ops` table, `managerPath`, the tree cache      | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)   |
 | The five AI trees, source vs destination, scope tokens                  | [`docs/ai-paths.md`](docs/ai-paths.md)         |
 | Host/viewer, per-player tech, colour allocation                         | [`docs/coop.md`](docs/coop.md)                 |
@@ -39,7 +40,7 @@ the traps that have actually caused bugs here.
 | Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)             |
 | The Node AMD harness, the seven validators, coverage                    | [`docs/testing.md`](docs/testing.md)           |
 
-Five things are worth knowing before you touch anything, each covered in full by
+Six things are worth knowing before you touch anything, each covered in full by
 the doc named:
 
 - **Shipped `ui/**` code must be ES5 / Chrome 40 safe.** No `let`, arrow functions,
@@ -59,6 +60,15 @@ the doc named:
   deliberately scoped out of `ui/**`. ([`constraints.md`](docs/constraints.md))
 - **`model.game().inventory()` is always the host's.** Under per-player tech in
   co-op, card code must use the inventory passed to it. ([`coop.md`](docs/coop.md))
+- **Part of this mod is a public API with a downstream consumer.** The `model.gwo*`
+  globals, the helper names `shared/cards.js` returns, the key names in
+  `shared/units.js` / `shared/unit_groups.js`, and the `deal()` signature are all
+  built against by the sibling [New-GW-Cards](https://github.com/Quitch/New-GW-Cards)
+  template, which documents them in its own README and card templates. Renaming or
+  dropping any of them breaks every mod written from it, and breaks it _silently_ -
+  a card reading a helper that no longer exists just gets `undefined`. Change one
+  and update that repo in step. `test/modder_api.test.js` pins the whole surface.
+  ([`tech-cards.md`](docs/tech-cards.md))
 
 ## Commands
 
