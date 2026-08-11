@@ -150,6 +150,30 @@ define([
     );
   };
 
+  // Whether the Guardians still hold a loadout worth winning: the local banks,
+  // plus every co-op player's reported unlocks under per-player tech. Records are
+  // not filtered by connection, because a stale one only leaves the offer
+  // standing.
+  var anyPlayerCanUnlockLoadout = function (params) {
+    var pool = params.pool || treasureLoadoutPool();
+    var localIds = _.isArray(params.localUnlockedIds)
+      ? params.localUnlockedIds
+      : [];
+
+    var localLocked = _.some(pool, function (card) {
+      return localIds.indexOf(card.id) === -1;
+    });
+    if (localLocked || !params.perPlayerTech) {
+      return localLocked;
+    }
+
+    return _.some(params.records || [], function (record) {
+      return _.some(pool, function (card) {
+        return !recordHasUnlockedLoadout(record, card);
+      });
+    });
+  };
+
   var reportOperator = "gwo_report_unlocked_loadouts";
 
   // A viewer's own unlock record, in ids. The base game reports its half too,
@@ -267,6 +291,7 @@ define([
     treasureLoadoutPool: treasureLoadoutPool,
     recordHasUnlockedLoadout: recordHasUnlockedLoadout,
     pickTreasureLoadout: pickTreasureLoadout,
+    anyPlayerCanUnlockLoadout: anyPlayerCanUnlockLoadout,
     unlockedLoadoutIds: unlockedIds,
     localUnlockedLoadoutIds: localUnlockedLoadoutIds,
     install: install,
