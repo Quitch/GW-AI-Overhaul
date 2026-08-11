@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v6.10.1
 
 ### Bugfix
 
