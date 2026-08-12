@@ -3,43 +3,39 @@
 define(() => {
   const LS_KEY = "gwaio_bank";
 
-  let self;
-
   let loading = false;
 
   let suspended = 0;
   let suspendedStockBank;
   let stockAddStartCard;
 
-  const gwoBank = function () {
-    self = this;
+  class GwoBank {
+    constructor() {
+      this.startCards = ko.observableArray();
+      this.startCards.subscribe((value) => {
+        this.save();
 
-    self.startCards = ko.observableArray();
-    self.startCards.subscribe((value) => {
-      self.save();
+        const unlocked = value.length;
 
-      const unlocked = value.length;
-
-      if (!unlocked) {
-        return;
-      }
-
-      api.tally.getStatInt("gw_unlocked_loadouts").then((stat) => {
-        if (stat < unlocked) {
-          api.tally.setStatInt("gw_unlocked_loadouts", unlocked);
+        if (!unlocked) {
+          return;
         }
+
+        api.tally.getStatInt("gw_unlocked_loadouts").then((stat) => {
+          if (stat < unlocked) {
+            api.tally.setStatInt("gw_unlocked_loadouts", unlocked);
+          }
+        });
       });
-    });
 
-    self.load();
-  };
+      this.load();
+    }
 
-  gwoBank.prototype = {
-    load: function () {
+    load() {
       loading = true;
       const bankJson = localStorage[LS_KEY];
       if (!_.isString(bankJson)) {
-        self.startCards([]);
+        this.startCards([]);
         loading = false;
         return;
       }
@@ -54,24 +50,24 @@ define(() => {
         console.warn("Ignoring unreadable loadout unlock record", e);
       }
 
-      self.startCards(
+      this.startCards(
         config && _.isArray(config.startCards) ? config.startCards : []
       );
       loading = false;
-    },
+    }
 
-    save: function () {
+    save() {
       if (loading) {
         return;
       }
-      localStorage.setItem(LS_KEY, ko.toJSON(self));
-    },
+      localStorage.setItem(LS_KEY, ko.toJSON(this));
+    }
 
     // A co-op host applies its viewers' inventories to weight their deals, which
     // runs their loadout cards' buff(). Each card banks into whichever bank owns
     // it, so the base game's is held off alongside this one. Counted, because
     // those applications overlap. See gw_play/cards_coop_deal.js.
-    suspendUnlocks: function (stockBank) {
+    suspendUnlocks(stockBank) {
       suspended++;
       if (suspended > 1) {
         return;
@@ -79,9 +75,9 @@ define(() => {
       suspendedStockBank = stockBank;
       stockAddStartCard = stockBank.addStartCard;
       stockBank.addStartCard = () => false;
-    },
+    }
 
-    resumeUnlocks: function () {
+    resumeUnlocks() {
       if (!suspended) {
         return;
       }
@@ -93,23 +89,24 @@ define(() => {
       // mod had already patched keeps that mod's version.
       suspendedStockBank.addStartCard = stockAddStartCard;
       suspendedStockBank = undefined;
-    },
+    }
 
-    addStartCard: function (card) {
-      if (suspended || self.hasStartCard(card)) {
+    addStartCard(card) {
+      if (suspended || this.hasStartCard(card)) {
         return false;
       }
-      self.startCards.push(card);
+      this.startCards.push(card);
       return true;
-    },
-    hasStartCard: function (card) {
+    }
+
+    hasStartCard(card) {
       return _.some(
-        self.startCards(),
+        this.startCards(),
         (element) =>
           card === element || (_.isObject(card) && card.id === element.id)
       );
-    },
-  };
+    }
+  }
 
-  return new gwoBank();
+  return new GwoBank();
 });

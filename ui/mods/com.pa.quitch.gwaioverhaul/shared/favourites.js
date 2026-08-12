@@ -4,21 +4,20 @@ define([
   // gwaio_-prefixed so this survives mod updates/uninstalls without colliding
   // with base-game or other mods' localStorage keys (see shared/bank.js).
   const LS_KEY = "gwaio_favourite_loadouts";
-  let self;
 
-  const gwoFavourites = function () {
-    self = this;
-    self.ids = ko.observableArray().extend({ local: LS_KEY });
-  };
+  class GwoFavourites {
+    constructor() {
+      this.ids = ko.observableArray().extend({ local: LS_KEY });
+    }
 
-  gwoFavourites.prototype = {
-    has: function (id) {
-      return favouriteLoadouts.isFavourite(self.ids(), id);
-    },
-    toggle: function (id) {
-      self.ids(favouriteLoadouts.toggleId(self.ids(), id));
-    },
-  };
+    has(id) {
+      return favouriteLoadouts.isFavourite(this.ids(), id);
+    }
 
-  return new gwoFavourites();
+    toggle(id) {
+      this.ids(favouriteLoadouts.toggleId(this.ids(), id));
+    }
+  }
+
+  return new GwoFavourites();
 });
