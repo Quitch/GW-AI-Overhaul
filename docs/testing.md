@@ -46,7 +46,11 @@ executes in-game. It exists to reach functions `define()` never returns —
 `gw_play/cards_card_name_sync.js`.
 
 `loadCouiModule` resolves both `coui://` paths and bare AMD ids (`"cards/x"`,
-`"shared/x"`) the same way the game's loader would.
+`"shared/x"`) the same way the game's loader would. The scheme it resolves
+comes from `scripts/lib/scheme.js`, the Node-side source of truth paired with
+the shipped `shared/gwo_url.js`; `scripts/migrate/rewrite-scheme.js` rewrites
+both, plus every static literal, if the CEF port changes the scheme. See
+[cef-migration.md](cef-migration.md).
 
 ### `NOT_SHIPPED`
 
