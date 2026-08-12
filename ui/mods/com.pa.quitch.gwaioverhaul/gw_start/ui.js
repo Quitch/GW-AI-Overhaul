@@ -45,7 +45,7 @@ function gwoUI() {
       simpleSystems: ko.observable(false),
       easierStart: ko.observable(true),
       ai: ko.observable("Penchant"),
-      paLore: ko.observable(true),
+      paLore: ko.observable(false),
       techCardDeck: ko.observable("Expanded"),
       customDifficulty: ko.observable(false),
       goForKill: koStringBoolean(false),
