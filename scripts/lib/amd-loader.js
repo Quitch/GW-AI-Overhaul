@@ -6,9 +6,9 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { UI_SCHEME } = require("./scheme.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
-const COUI_PREFIX = "coui://";
 const GW_ROOT = path.join(REPO_ROOT, "ui", "main", "game", "galactic_war");
 
 // Namespace -> directory under GW_ROOT, where the two differ. Bare ids are the
@@ -59,8 +59,8 @@ function resolveBareId(entry) {
 }
 
 function resolveEntryPath(entry) {
-  if (entry.startsWith(COUI_PREFIX)) {
-    const fsPath = path.resolve(REPO_ROOT, entry.slice(COUI_PREFIX.length));
+  if (entry.startsWith(UI_SCHEME)) {
+    const fsPath = path.resolve(REPO_ROOT, entry.slice(UI_SCHEME.length));
     if (!fs.existsSync(fsPath)) {
       throw new Error(
         'amd-loader: "' +

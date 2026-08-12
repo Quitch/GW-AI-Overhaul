@@ -6,6 +6,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { REPO_ROOT } = require("../lib/amd-loader.js");
+const { UI_SCHEME } = require("../lib/scheme.js");
 
 const MODINFO_PATH = path.join(REPO_ROOT, "modinfo.json");
 const REQUIRED_TOP_LEVEL_FIELDS = [
@@ -14,7 +15,6 @@ const REQUIRED_TOP_LEVEL_FIELDS = [
   "version",
   "scenes",
 ];
-const COUI_PREFIX = "coui://";
 
 function validateScene(sceneName, files, failures) {
   if (!Array.isArray(files)) {
@@ -23,13 +23,18 @@ function validateScene(sceneName, files, failures) {
   }
 
   for (const entry of files) {
-    if (!entry.startsWith(COUI_PREFIX)) {
+    if (!entry.startsWith(UI_SCHEME)) {
       failures.push(
-        "scene `" + sceneName + "` entry is not a coui:// path: " + entry
+        "scene `" +
+          sceneName +
+          "` entry is not a " +
+          UI_SCHEME +
+          " path: " +
+          entry
       );
       continue;
     }
-    const fsPath = path.join(REPO_ROOT, entry.slice(COUI_PREFIX.length));
+    const fsPath = path.join(REPO_ROOT, entry.slice(UI_SCHEME.length));
     if (!fs.existsSync(fsPath)) {
       failures.push(
         "scene `" +
