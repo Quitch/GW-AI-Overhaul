@@ -36,8 +36,8 @@ define([
               gwoGroup.naval,
               gwoGroup.orbital,
               gwoGroup.vehicles,
-              gwoGroup.starterUnitsAdvanced
-            )
+              gwoGroup.starterUnitsAdvanced,
+            ),
           );
         }
         ++buffCount;

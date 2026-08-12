@@ -102,7 +102,7 @@ function gwoUI() {
       if (Array.isArray(previousSettings)) {
         if (previousSettings.length !== settingNames.length) {
           console.warn(
-            `gwoUI: previousSettings is a legacy array of length ${previousSettings.length} but there are now ${settingNames.length} settings; skipping restore to avoid misassigning values.`
+            `gwoUI: previousSettings is a legacy array of length ${previousSettings.length} but there are now ${settingNames.length} settings; skipping restore to avoid misassigning values.`,
           );
           return settings;
         }
@@ -246,7 +246,7 @@ function gwoUI() {
     model.gwoCommanderModalVisible = ko.observable(false);
     model.gwoCommanderDraft = ko.observable(model.selectedCommander());
     model.gwoDraftCommanderName = ko.computed(() =>
-      CommanderUtility.bySpec.getName(model.gwoCommanderDraft())
+      CommanderUtility.bySpec.getName(model.gwoCommanderDraft()),
     );
     model.openGwoCommanderModal = () => {
       model.gwoCommanderDraft(model.selectedCommander());
@@ -317,14 +317,14 @@ function gwoUI() {
       model.gwoFactionTooltip =
         model.gwoFactionTooltip +
         loc(
-          "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
+          "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.",
         );
     } else {
       // bootstrap-select ignores a non-select receiver, so the refresh below
       // must target the parent selects, not the options.
       $("select option[value*='Queller']").prop("disabled", true);
       $("#difficulty-ai-enemy-select, #difficulty-ai-ally-select").selectpicker(
-        "refresh"
+        "refresh",
       );
     }
 
@@ -350,74 +350,75 @@ function gwoUI() {
             $(customDifficultySelects).selectpicker("refresh");
             difficultySettings.customDifficulty(false);
             difficultySettings.goForKill(
-              difficulties[selectedDifficulty].goForKill
+              difficulties[selectedDifficulty].goForKill,
             );
             difficultySettings.microType(
-              difficulties[selectedDifficulty].microType
+              difficulties[selectedDifficulty].microType,
             );
             difficultySettings.mandatoryMinions(
-              difficulties[selectedDifficulty].mandatoryMinions
+              difficulties[selectedDifficulty].mandatoryMinions,
             );
             difficultySettings.minionMod(
-              difficulties[selectedDifficulty].minionMod
+              difficulties[selectedDifficulty].minionMod,
             );
             difficultySettings.priorityScoutMetalSpots(
-              difficulties[selectedDifficulty].priority_scout_metal_spots
+              difficulties[selectedDifficulty].priority_scout_metal_spots,
             );
             difficultySettings.factoryBuildDelayMin(
-              difficulties[selectedDifficulty].factory_build_delay_min
+              difficulties[selectedDifficulty].factory_build_delay_min,
             );
             difficultySettings.factoryBuildDelayMax(
-              difficulties[selectedDifficulty].factory_build_delay_max
+              difficulties[selectedDifficulty].factory_build_delay_max,
             );
             difficultySettings.unableToExpandDelay(
-              difficulties[selectedDifficulty].unable_to_expand_delay
+              difficulties[selectedDifficulty].unable_to_expand_delay,
             );
             difficultySettings.enableCommanderDangerResponses(
-              difficulties[selectedDifficulty].enable_commander_danger_responses
+              difficulties[selectedDifficulty]
+                .enable_commander_danger_responses,
             );
             difficultySettings.perExpansionDelay(
-              difficulties[selectedDifficulty].per_expansion_delay
+              difficulties[selectedDifficulty].per_expansion_delay,
             );
             difficultySettings.econBase(
-              difficulties[selectedDifficulty].econBase
+              difficulties[selectedDifficulty].econBase,
             );
             difficultySettings.econRatePerDist(
-              difficulties[selectedDifficulty].econRatePerDist
+              difficulties[selectedDifficulty].econRatePerDist,
             );
             difficultySettings.maxBasicFabbers(
-              difficulties[selectedDifficulty].max_basic_fabbers
+              difficulties[selectedDifficulty].max_basic_fabbers,
             );
             difficultySettings.maxAdvancedFabbers(
-              difficulties[selectedDifficulty].max_advanced_fabbers
+              difficulties[selectedDifficulty].max_advanced_fabbers,
             );
             difficultySettings.ffaChance(
-              difficulties[selectedDifficulty].ffa_chance
+              difficulties[selectedDifficulty].ffa_chance,
             );
             difficultySettings.bossCommanders(
-              difficulties[selectedDifficulty].bossCommanders
+              difficulties[selectedDifficulty].bossCommanders,
             );
             difficultySettings.startingLocationEvaluationRadius(
               difficulties[selectedDifficulty]
-                .starting_location_evaluation_radius
+                .starting_location_evaluation_radius,
             );
             difficultySettings.landAnywhereChance(
-              difficulties[selectedDifficulty].landAnywhereChance
+              difficulties[selectedDifficulty].landAnywhereChance,
             );
             difficultySettings.suddenDeathChance(
-              difficulties[selectedDifficulty].suddenDeathChance
+              difficulties[selectedDifficulty].suddenDeathChance,
             );
             difficultySettings.bountyModeChance(
-              difficulties[selectedDifficulty].bountyModeChance
+              difficulties[selectedDifficulty].bountyModeChance,
             );
             difficultySettings.bountyModeValue(
-              difficulties[selectedDifficulty].bountyModeValue
+              difficulties[selectedDifficulty].bountyModeValue,
             );
             difficultySettings.factionTechHandicap(
-              difficulties[selectedDifficulty].factionTechHandicap
+              difficulties[selectedDifficulty].factionTechHandicap,
             );
             difficultySettings.alliedCommanderChance(
-              difficulties[selectedDifficulty].alliedCommanderChance
+              difficulties[selectedDifficulty].alliedCommanderChance,
             );
             // From the difficulty data, not by reading personalityTags back -
             // that makes this computed a dependency of the observable it writes.
@@ -428,15 +429,15 @@ function gwoUI() {
               .selectpicker("val", personalityTags)
               .trigger("change");
             difficultySettings.eradicationModeChance(
-              difficulties[selectedDifficulty].eradicationModeChance
+              difficulties[selectedDifficulty].eradicationModeChance,
             );
           }
         });
-      }
+      },
     );
 
     model.title = ko.computed(
-      () => model.mode() || loc("!LOC:Galactic War Overhaul")
+      () => model.mode() || loc("!LOC:Galactic War Overhaul"),
     );
   } catch (e) {
     console.error(e);

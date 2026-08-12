@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage."
-      )
-    )
+        "!LOC:Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Kaiju Upgrade Tech",
@@ -23,7 +23,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.kaiju),
-      30
+      30,
     );
   },
 
@@ -72,8 +72,8 @@ define([
             file: gwoUnit.kaiju,
             path: `tools.${i}.spec_id`,
             op: "tag",
-          }))
-        )
+          })),
+        ),
     );
   },
 

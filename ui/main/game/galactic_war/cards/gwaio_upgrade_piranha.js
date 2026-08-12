@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Piranha Upgrade Tech changes the gunboat into a hover unit, allowing it to cross land and lava."
-      )
-    )
+        "!LOC:Piranha Upgrade Tech changes the gunboat into a hover unit, allowing it to cross land and lava.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Piranha Upgrade Tech",
@@ -23,7 +23,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.piranha),
-      30
+      30,
     );
   },
 

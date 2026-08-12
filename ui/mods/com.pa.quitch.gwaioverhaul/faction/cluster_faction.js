@@ -53,8 +53,8 @@ define([
         character: type.character,
         personality: type.personality,
         commander: role.commander,
-      }))
-    )
+      })),
+    ),
   );
   const randomCharacter = "!LOC:Random";
   // A fixed default. faction/faction_seed.js re-derives one per role from the
@@ -110,7 +110,7 @@ define([
       },
     ],
     minions: _.map(minions, (personalityModifiers) =>
-      _.merge(_.cloneDeep(baselinePersonality), personalityModifiers)
+      _.merge(_.cloneDeep(baselinePersonality), personalityModifiers),
     ),
     // Read by faction/faction_seed.js. The concat above puts Cluster's one Random
     // commander per role in the last roles.length slots.

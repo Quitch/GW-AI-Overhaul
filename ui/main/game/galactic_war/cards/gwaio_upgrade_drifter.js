@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Drifter Upgrade Tech increases the range of hover tank attacks by 25%."
-      )
-    )
+        "!LOC:Drifter Upgrade Tech increases the range of hover tank attacks by 25%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Drifter Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.drifter)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.drifter),
     );
   },
 
@@ -34,7 +34,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.drifterWeapon, "multiply", {
         max_range: 1.25,
-      })
+      }),
     );
   },
 

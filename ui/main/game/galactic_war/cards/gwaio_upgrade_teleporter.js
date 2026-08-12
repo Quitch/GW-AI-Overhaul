@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Teleporter Upgrade Tech removes all energy consumption and efficiency requirements from the interplanetary teleporter and makes it invisible to radar."
-      )
-    )
+        "!LOC:Teleporter Upgrade Tech removes all energy consumption and efficiency requirements from the interplanetary teleporter and makes it invisible to radar.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Teleporter Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.teleporter)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.teleporter),
     );
   },
 

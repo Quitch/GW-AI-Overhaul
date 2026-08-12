@@ -12,10 +12,10 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeConfig = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
 );
 const streams = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
 );
 
 const LANDING_POLICIES = [
@@ -37,7 +37,7 @@ function battleRng(star, turns) {
   return streams.battleRng(
     streams.warRng({ seed: "battle-seed" }),
     star,
-    turns
+    turns,
   );
 }
 
@@ -51,7 +51,7 @@ function ai(overrides) {
       faction: 1,
       personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
     },
-    overrides || {}
+    overrides || {},
   );
 }
 
@@ -72,7 +72,7 @@ function primary(opts) {
     [".ai0", ".ai1"],
     "Titans",
     armies,
-    options.rng === null ? undefined : options.rng || battleRng(3, 5)
+    options.rng === null ? undefined : options.rng || battleRng(3, 5),
   );
   const result = policies(armies);
   restoreModel();
@@ -90,8 +90,8 @@ describe("AI landing policy", () => {
   it("differs from star to star", () => {
     const seen = new Set(
       [0, 1, 2, 3, 4, 5].map((star) =>
-        JSON.stringify(primary({ rng: battleRng(star, 5) }))
-      )
+        JSON.stringify(primary({ rng: battleRng(star, 5) })),
+      ),
     );
     assert.ok(seen.size > 1, "every star gave the same landing policies");
   });
@@ -100,8 +100,8 @@ describe("AI landing policy", () => {
   it("differs at a different turn, so a retried battle reshuffles", () => {
     const seen = new Set(
       [5, 6, 7, 8, 9].map((turn) =>
-        JSON.stringify(primary({ rng: battleRng(3, turn) }))
-      )
+        JSON.stringify(primary({ rng: battleRng(3, turn) })),
+      ),
     );
     assert.ok(seen.size > 1, "every turn gave the same landing policies");
   });
@@ -111,7 +111,7 @@ describe("AI landing policy", () => {
     for (const policy of result[0]) {
       assert.ok(
         LANDING_POLICIES.includes(policy),
-        `unexpected landing policy ${policy}`
+        `unexpected landing policy ${policy}`,
       );
     }
   });
@@ -150,7 +150,7 @@ describe("AI landing policy", () => {
       [".ai0"],
       "Titans",
       armies,
-      battleRng(3, 5)
+      battleRng(3, 5),
     );
 
     const slots = armies[0].slots.map((slot) => slot.landing_policy);
@@ -172,12 +172,12 @@ describe("FFA foe landing policy", () => {
     const armies = [];
     refereeConfig.setupFfaAis(
       Array.from({ length: count || 2 }, (unused, i) =>
-        ai({ name: "Foe" + i })
+        ai({ name: "Foe" + i }),
       ),
       [".ai0", ".ai1", ".ai2"],
       "Titans",
       armies,
-      rng
+      rng,
     );
     const result = policies(armies);
     restoreModel();

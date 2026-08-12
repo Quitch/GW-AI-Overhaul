@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Advanced Energy Plant Upgrade Tech increases the energy production of this advanced economy structure by 25% but decreases its health by 50%."
-      )
-    )
+        "!LOC:Advanced Energy Plant Upgrade Tech increases the energy production of this advanced economy structure by 25% but decreases its health by 50%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Advanced Energy Plant Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.energyPlantAdvanced)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.energyPlantAdvanced),
     );
   },
 

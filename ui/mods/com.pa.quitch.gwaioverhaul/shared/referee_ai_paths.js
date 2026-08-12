@@ -112,7 +112,7 @@ define(() => {
       basePath,
       identity,
       fallbackToken,
-      titans
+      titans,
     ) {
       const append = titans ? "_x1.json" : ".json";
       return `${getPlayerScopedPath(basePath, identity, fallbackToken)}unit_maps/ai_unit_map${append}`;

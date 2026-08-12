@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
 
 const coopDeal = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js",
 );
 
 // Builds a collectPendingTechTargets call, defaulting the injected lookups to the
@@ -104,7 +104,7 @@ describe("collectPendingTechTargets", () => {
         viewers: [viewer("alice")],
         records: { alice: readyRecord },
       }).targets[0].startLoadoutCard,
-      undefined
+      undefined,
     );
     assert.deepEqual(
       collect({
@@ -112,7 +112,7 @@ describe("collectPendingTechTargets", () => {
         records: { alice: readyRecord },
         treasurePlanet: true,
       }).targets[0].startLoadoutCard,
-      { id: "gwaio_start_ceo" }
+      { id: "gwaio_start_ceo" },
     );
   });
 
@@ -174,7 +174,7 @@ describe("dealCountForHand", () => {
       for (const preDealt of [0, 1]) {
         assert.equal(
           coopDeal.dealCountForHand(cardsOffered, preDealt) + preDealt,
-          cardsOffered
+          cardsOffered,
         );
       }
     }
@@ -188,7 +188,7 @@ describe("dealCountForHand", () => {
 describe("pendingTechDealRng", () => {
   const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
   const streams = loadCouiModule(
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   );
   const war = () => streams.warRng({ seed: "coop-seed" });
 
@@ -204,7 +204,7 @@ describe("pendingTechDealRng", () => {
         client: { id: 3, name: "Bob" },
         dealIndex: 1,
       },
-      over
+      over,
     );
 
   it("reproduces a viewer's hand for the same deal", () => {
@@ -214,7 +214,7 @@ describe("pendingTechDealRng", () => {
   it("gives two viewers different hands from the same deal", () => {
     assert.notDeepEqual(
       seq(target()),
-      seq(target({ record: { playerId: "uber-2" } }))
+      seq(target({ record: { playerId: "uber-2" } })),
     );
   });
 
@@ -226,7 +226,7 @@ describe("pendingTechDealRng", () => {
   it("keeps a missing dealIndex apart from deal zero", () => {
     assert.notDeepEqual(
       seq(target({ dealIndex: undefined })),
-      seq(target({ dealIndex: 0 }))
+      seq(target({ dealIndex: 0 })),
     );
   });
 
@@ -235,14 +235,14 @@ describe("pendingTechDealRng", () => {
   it("ignores the client id and name when the record has a playerId", () => {
     assert.deepEqual(
       seq(target()),
-      seq(target({ client: { id: 99, name: "Bob Renamed" } }))
+      seq(target({ client: { id: 99, name: "Bob Renamed" } })),
     );
   });
 
   it("keeps drawing unseeded for a war saved before seeds", () => {
     assert.equal(
       coopDeal.pendingTechDealRng(streams, undefined, target()),
-      undefined
+      undefined,
     );
   });
 });

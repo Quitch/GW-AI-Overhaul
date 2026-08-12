@@ -12,7 +12,7 @@ const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const sync = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js",
 );
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
@@ -43,25 +43,25 @@ describe("isValidSyncedStarCardNamePayload", () => {
   it("accepts a numeric star index with a non-empty card id", () => {
     assert.equal(
       sync.isValidSyncedStarCardNamePayload({ star: 3, card_id: "gwc_x" }),
-      true
+      true,
     );
   });
 
   it("rejects a non-numeric or NaN star index", () => {
     assert.equal(
       sync.isValidSyncedStarCardNamePayload({ star: "3", card_id: "gwc_x" }),
-      false
+      false,
     );
     assert.equal(
       sync.isValidSyncedStarCardNamePayload({ star: NaN, card_id: "gwc_x" }),
-      false
+      false,
     );
   });
 
   it("rejects a missing or empty card id", () => {
     assert.equal(
       sync.isValidSyncedStarCardNamePayload({ star: 3, card_id: "" }),
-      false
+      false,
     );
     assert.equal(sync.isValidSyncedStarCardNamePayload({ star: 3 }), false);
   });

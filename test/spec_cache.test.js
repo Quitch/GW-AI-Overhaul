@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const specCache = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
 );
 
 // Records every id asked for and returns a fresh copy, so a mutating caller cannot
@@ -67,11 +67,11 @@ describe("genUnitSpecs - graph walk & tagging", () => {
     assert.equal(tank.buildable_projectiles[0], "/pa/projectiles/shell.json.x");
     assert.equal(
       results["/pa/tools/cannon.json.x"].ammo_id[0].id,
-      "/pa/ammo/shell_ammo.json.x"
+      "/pa/ammo/shell_ammo.json.x",
     );
     assert.equal(
       results["/pa/projectiles/shell.json.x"].spawn_unit_on_death,
-      "/pa/units/debris.json.x"
+      "/pa/units/debris.json.x",
     );
   });
 
@@ -80,7 +80,7 @@ describe("genUnitSpecs - graph walk & tagging", () => {
     assert.equal(specCache.genUnitSpecs([TANK], "", { fetch }), undefined);
     assert.equal(
       specCache.genUnitSpecs([TANK], undefined, { fetch }),
-      undefined
+      undefined,
     );
     assert.equal(calls.length, 0);
   });
@@ -94,14 +94,14 @@ describe("genUnitSpecs - fetch caching", () => {
     assert.equal(
       calls.length,
       uniqueFileCount,
-      "first tag should fetch every unique file once"
+      "first tag should fetch every unique file once",
     );
 
     const second = await specCache.genUnitSpecs([TANK], ".y", { fetch });
     assert.equal(
       calls.length,
       uniqueFileCount,
-      "second tag should fetch nothing new - everything is cached"
+      "second tag should fetch nothing new - everything is cached",
     );
 
     assert.equal(new Set(calls).size, calls.length);
@@ -120,11 +120,11 @@ describe("genUnitSpecs - fetch caching", () => {
     // observe ".x" references instead of ".y".
     assert.equal(
       second[TANK + ".y"].tools[0].spec_id,
-      "/pa/tools/cannon.json.y"
+      "/pa/tools/cannon.json.y",
     );
     assert.equal(
       second["/pa/tools/cannon.json.y"].ammo_id[0].id,
-      "/pa/ammo/shell_ammo.json.y"
+      "/pa/ammo/shell_ammo.json.y",
     );
   });
 
@@ -142,7 +142,7 @@ describe("genUnitSpecs - fetch caching", () => {
     assert.ok("/pa/units/base_bot.json.y" in second);
     assert.ok(
       calls.includes("/pa/units/base_bot.json"),
-      "the previously-failed file should be re-fetched"
+      "the previously-failed file should be re-fetched",
     );
     assert.ok(calls.length > before);
   });

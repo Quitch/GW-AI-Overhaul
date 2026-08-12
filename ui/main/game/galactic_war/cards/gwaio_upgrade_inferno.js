@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders."
-      )
-    )
+        "!LOC:Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Inferno Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.inferno)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.inferno),
     );
   },
 

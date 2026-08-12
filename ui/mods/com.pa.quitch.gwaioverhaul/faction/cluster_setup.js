@@ -155,7 +155,7 @@ define([
           radius: 1,
           shape: "sphere",
         },
-      }
+      },
     );
   });
 

@@ -12,19 +12,19 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const hook = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
 );
 const refereeAIPaths = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
 );
 const subcommanderTech = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
 );
 
 function makePlayerInventory(overrides) {
   const data = Object.assign(
     { aiModsList: [], cardsList: [] },
-    overrides || {}
+    overrides || {},
   );
   return {
     aiMods: () => data.aiModsList,
@@ -48,14 +48,14 @@ describe("stripKnownSpecTag", () => {
   it("strips a trailing .player", () => {
     assert.equal(
       hook.stripKnownSpecTag("commander_uef.player"),
-      "commander_uef"
+      "commander_uef",
     );
   });
 
   it("strips a trailing .playerN", () => {
     assert.equal(
       hook.stripKnownSpecTag("commander_uef.player3"),
-      "commander_uef"
+      "commander_uef",
     );
   });
 
@@ -77,7 +77,7 @@ describe("getViewerSubcommanderAiPath", () => {
       subcommanderTech,
       "Titans",
       inventory,
-      ".player"
+      ".player",
     );
     assert.equal(path, "/pa/ai_subcommander/");
   });
@@ -89,7 +89,7 @@ describe("getViewerSubcommanderAiPath", () => {
       subcommanderTech,
       "Titans",
       inventory,
-      ".player0"
+      ".player0",
     );
     // Matches referee_ai_paths.test.js's pinned raw/unsanitized scopeToken behavior -
     // the literal dot from the player tag is not stripped.
@@ -103,7 +103,7 @@ describe("getViewerSubcommanderAiPath", () => {
       subcommanderTech,
       "Titans",
       inventory,
-      ".player0"
+      ".player0",
     );
     // A scopeToken is passed for any non-host tag, whatever the aiMods gate picks
     // as the base path. That suffix is why viewers never collide even with no tech.
@@ -118,7 +118,7 @@ describe("getViewerSubcommanderAiPath", () => {
       subcommanderTech,
       "Titans",
       inventory,
-      ".player0"
+      ".player0",
     );
     assert.equal(
       path,
@@ -127,7 +127,7 @@ describe("getViewerSubcommanderAiPath", () => {
         aiMods: inventory.aiMods(),
         smartSubcommanders: false,
         scopeToken: ".player0",
-      })
+      }),
     );
   });
 
@@ -143,9 +143,9 @@ describe("getViewerSubcommanderAiPath", () => {
         subcommanderTech,
         "Queller",
         smartInventory,
-        ".player0"
+        ".player0",
       ),
-      "/pa/ai_queller/q_silver/player_.player0/"
+      "/pa/ai_queller/q_silver/player_.player0/",
     );
     assert.equal(
       hook.getViewerSubcommanderAiPath(
@@ -153,9 +153,9 @@ describe("getViewerSubcommanderAiPath", () => {
         subcommanderTech,
         "Queller",
         plainInventory,
-        ".player0"
+        ".player0",
       ),
-      "/pa/ai_queller/q_bronze/player_.player0/"
+      "/pa/ai_queller/q_bronze/player_.player0/",
     );
   });
 
@@ -175,14 +175,14 @@ describe("getViewerSubcommanderAiPath", () => {
         subcommanderTech,
         player.aiInUse,
         makeInventory({ aiModsList: player.aiModsList }),
-        player.tag
-      )
+        player.tag,
+      ),
     );
 
     assert.equal(
       new Set(paths).size,
       paths.length,
-      `expected all distinct, got: ${paths}`
+      `expected all distinct, got: ${paths}`,
     );
   });
 
@@ -194,19 +194,19 @@ describe("getViewerSubcommanderAiPath", () => {
           subcommanderTech,
           aiInUse,
           makeInventory({ aiModsList }),
-          ".player0"
+          ".player0",
         );
         const pathB = hook.getViewerSubcommanderAiPath(
           refereeAIPaths,
           subcommanderTech,
           aiInUse,
           makeInventory({ aiModsList }),
-          ".player1"
+          ".player1",
         );
         assert.notEqual(
           pathA,
           pathB,
-          `${aiInUse}, aiMods=${JSON.stringify(aiModsList)}`
+          `${aiInUse}, aiMods=${JSON.stringify(aiModsList)}`,
         );
       }
     }
@@ -229,14 +229,14 @@ describe("getViewerSubcommanderAiPath", () => {
       subcommanderTech,
       "Titans",
       clusterInventory,
-      ".player0"
+      ".player0",
     );
     const otherClusterViewerPath = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
       "Titans",
       otherClusterInventory,
-      ".player1"
+      ".player1",
     );
 
     assert.equal(clusterViewerPath, "/pa/ai_subcommander/player_.player0/");

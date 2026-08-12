@@ -28,7 +28,7 @@ function makeObservable(initial) {
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const GWGalaxy = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_graph.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_graph.js",
 );
 
 // `explored` is the fog-of-war reveal flag; `history` (non-empty means the player has
@@ -63,7 +63,7 @@ describe("GWGalaxy.pathBetween", () => {
         [0, 1],
         [1, 2],
       ],
-      [exploredStar(), exploredStar(), exploredStar()]
+      [exploredStar(), exploredStar(), exploredStar()],
     );
     assert.deepEqual(galaxy.pathBetween(0, 2, false), [0, 1, 2]);
   });
@@ -74,7 +74,7 @@ describe("GWGalaxy.pathBetween", () => {
         [0, 1],
         [2, 3],
       ],
-      [exploredStar(), exploredStar(), exploredStar(), exploredStar()]
+      [exploredStar(), exploredStar(), exploredStar(), exploredStar()],
     );
     assert.equal(galaxy.pathBetween(0, 2, false), null);
   });
@@ -85,7 +85,7 @@ describe("GWGalaxy.pathBetween", () => {
         [0, 1],
         [1, 2],
       ],
-      [exploredStar(), visitedButUnexploredStar(), exploredStar()]
+      [exploredStar(), visitedButUnexploredStar(), exploredStar()],
     );
     assert.equal(galaxy.pathBetween(0, 2, false), null);
   });
@@ -96,7 +96,7 @@ describe("GWGalaxy.pathBetween", () => {
         [0, 1],
         [1, 2],
       ],
-      [exploredStar(), visitedButUnexploredStar(), exploredStar()]
+      [exploredStar(), visitedButUnexploredStar(), exploredStar()],
     );
     assert.deepEqual(galaxy.pathBetween(0, 2, true), [0, 1, 2]);
   });
@@ -105,7 +105,7 @@ describe("GWGalaxy.pathBetween", () => {
     // The target-adjacency fog check blocks this hop; noFog bypasses it.
     const galaxy = makeGalaxy(
       [[0, 1]],
-      [unknownStar(), visitedButUnexploredStar()]
+      [unknownStar(), visitedButUnexploredStar()],
     );
     assert.equal(galaxy.pathBetween(0, 1, false), null);
     assert.deepEqual(galaxy.pathBetween(0, 1, true), [0, 1]);
@@ -118,7 +118,7 @@ describe("GWGalaxy.pathBetween", () => {
         [1, 2],
         [2, 0],
       ],
-      [exploredStar(), exploredStar(), exploredStar()]
+      [exploredStar(), exploredStar(), exploredStar()],
     );
     assert.deepEqual(galaxy.pathBetween(0, 2, false), [0, 2]);
   });
@@ -126,7 +126,7 @@ describe("GWGalaxy.pathBetween", () => {
   it("handles a start node with no edges (the neighborsMap `|| []` guard)", () => {
     const galaxy = makeGalaxy(
       [[1, 2]],
-      [exploredStar(), exploredStar(), exploredStar()]
+      [exploredStar(), exploredStar(), exploredStar()],
     );
     assert.equal(galaxy.pathBetween(0, 2, false), null);
   });
@@ -143,7 +143,7 @@ describe("GWGalaxy.areNeighbors", () => {
   it("reports adjacency symmetrically for gated stars and false otherwise", () => {
     const galaxy = makeGalaxy(
       [[0, 1]],
-      [exploredStar(), exploredStar(), exploredStar()]
+      [exploredStar(), exploredStar(), exploredStar()],
     );
     assert.equal(galaxy.areNeighbors(0, 1), true);
     assert.equal(galaxy.areNeighbors(1, 0), true);
@@ -154,7 +154,7 @@ describe("GWGalaxy.areNeighbors", () => {
     // Node 2 never appears in a gate, so it is absent from neighborsMap.
     const galaxy = makeGalaxy(
       [[0, 1]],
-      [exploredStar(), exploredStar(), exploredStar()]
+      [exploredStar(), exploredStar(), exploredStar()],
     );
     assert.equal(galaxy.areNeighbors(2, 0), undefined);
   });

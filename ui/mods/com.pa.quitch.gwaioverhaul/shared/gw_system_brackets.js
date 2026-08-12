@@ -142,7 +142,7 @@ define(() => {
       const range = armyRange(system);
       if (!range) {
         console.warn(
-          `gwoSystemBrackets: no army count could be derived for '${(system && system.name) || "unnamed system"}', dropping it from the galaxy pool`
+          `gwoSystemBrackets: no army count could be derived for '${(system && system.name) || "unnamed system"}', dropping it from the galaxy pool`,
         );
         continue;
       }
@@ -156,7 +156,7 @@ define(() => {
 
     const span = (bracket) => bracket.max - bracket.min;
     brackets.sort(
-      (a, b) => a.min - b.min || span(a) - span(b) || a.max - b.max
+      (a, b) => a.min - b.min || span(a) - span(b) || a.max - b.max,
     );
 
     // star.distance() is 0 at the origin, but no derived range starts below 2.

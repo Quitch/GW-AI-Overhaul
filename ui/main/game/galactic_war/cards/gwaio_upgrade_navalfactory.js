@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing."
-      )
-    )
+        "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Naval Factory Upgrade Tech",
@@ -25,7 +25,7 @@ define([
     return gwoCard.upgradeDeal(
       !inventory.hasCard("gwaio_start_rapid") &&
         gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactory),
-      gwoCard.navalWeight(inventory, 30)
+      gwoCard.navalWeight(inventory, 30),
     );
   },
 
@@ -58,13 +58,13 @@ define([
           value: 97,
           matchAll: true,
         },
-      ])
+      ]),
     );
 
     inventory.addMods(
       gwoCard.mods(gwoUnit.navalFactory, "add", {
         buildable_types: " | (Naval & Mobile & FactoryBuild & Custom58)",
-      })
+      }),
     );
     inventory.addAIMods(aiMods);
   },

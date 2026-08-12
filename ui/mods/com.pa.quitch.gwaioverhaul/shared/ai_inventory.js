@@ -16,11 +16,11 @@ define([
   ];
   const foundationUnitsMobileAir = gwoGroup.airMobile.concat(
     gwoUnit.zeus,
-    gwoUnit.squall
+    gwoUnit.squall,
   );
   const foundationUnitsMobileNaval = _.without(
     gwoGroup.navalMobile,
-    gwoUnit.squall
+    gwoUnit.squall,
   );
   const synchronousUnitsImmobile = [
     gwoUnit.botFactoryAdvanced,
@@ -43,7 +43,7 @@ define([
   ];
   const revenantsUnitsImmobileWithAmmo = revenantsUnitsImmobile.concat(
     gwoUnit.antiNukeLauncherAmmo,
-    gwoUnit.nukeLauncherAmmo
+    gwoUnit.nukeLauncherAmmo,
   );
   const revenantsUnitsFactories = [
     gwoUnit.antiNukeLauncher,
@@ -61,22 +61,22 @@ define([
   const commanderAmmo = gwoGroup.commanderAmmo;
   const legonisAmmo = gwoGroup.vehiclesAmmo.concat(
     gwoUnit.aresAmmo,
-    gwoUnit.aresSecondaryAmmo
+    gwoUnit.aresSecondaryAmmo,
   );
   const foundationAmmo = gwoGroup.airAmmo.concat(
     gwoGroup.navalAmmo,
-    gwoUnit.zeusAmmo
+    gwoUnit.zeusAmmo,
   );
   const synchronousAmmo = gwoGroup.botsAmmo.concat(gwoUnit.atlasAmmo);
   const revenantsAmmo = gwoGroup.orbitalAmmo.concat(
     gwoUnit.anchorAmmoAG,
     gwoUnit.anchorAmmoAO,
     gwoUnit.heliosAmmo,
-    gwoUnit.kesslerAmmo
+    gwoUnit.kesslerAmmo,
   );
   const clusterCommanderAmmo = [gwoUnit.angelAmmo, gwoUnit.colonelAmmo];
   const clusterAmmo = gwoGroup.structuresDefencesAmmo.concat(
-    gwoGroup.structuresArtilleryAmmo
+    gwoGroup.structuresArtilleryAmmo,
   );
 
   const commanderWeapons = [gwoUnit.commanderSecondary];
@@ -166,7 +166,7 @@ define([
     foundationUnitsMobileNaval,
     foundationUnits: foundationUnitsMobileAir.concat(
       foundationUnitsMobileNaval,
-      foundationUnitsImmobile
+      foundationUnitsImmobile,
     ),
     foundationWeapons: foundationWeapons.concat(commanderWeapons),
     foundationAmmo: foundationAmmo.concat(commanderAmmo),
@@ -183,7 +183,7 @@ define([
     revenantsUnitsImmobileWithAmmo,
     revenantsUnitsMobile,
     revenantsUnitsWithAmmo: revenantsUnitsMobile.concat(
-      revenantsUnitsImmobileWithAmmo
+      revenantsUnitsImmobileWithAmmo,
     ),
     revenantsUnitsFactories,
     revenantsUnits: revenantsUnitsMobile.concat(revenantsUnitsImmobile),

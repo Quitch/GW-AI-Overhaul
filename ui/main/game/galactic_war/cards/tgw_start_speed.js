@@ -60,7 +60,7 @@ define([
                 path: "build_metal_cost",
                 op: "multiply",
                 value: 0.7,
-              }
+              },
             );
           });
           _.forEach(gwoGroup.ammo, (ammo) => {
@@ -76,7 +76,7 @@ define([
                 path: "splash_damage",
                 op: "multiply",
                 value: 0.5,
-              }
+              },
             );
           });
           _.forEach(gwoGroup.immobile, (unit) => {

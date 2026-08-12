@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout and increases its vision by 100%."
-      )
-    )
+        "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout and increases its vision by 100%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Skitter Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.skitter)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.skitter),
     );
   },
 

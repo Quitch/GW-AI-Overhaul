@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
 
 const { applyAiMods } = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js",
 );
 
 afterEach(() => {

@@ -24,7 +24,7 @@ function main() {
       files.length +
       " JSON files checked, " +
       failures.length +
-      " invalid."
+      " invalid.",
   );
 
   if (failures.length) {

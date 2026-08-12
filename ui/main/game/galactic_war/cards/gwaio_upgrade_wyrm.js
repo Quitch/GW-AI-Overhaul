@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Wyrm Upgrade Tech replaces the siege bomber's bombs with drones."
-      )
-    )
+        "!LOC:Wyrm Upgrade Tech replaces the siege bomber's bombs with drones.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Wyrm Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.wyrm)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.wyrm),
     );
   },
 

@@ -8,7 +8,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const cards = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
 );
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
@@ -29,8 +29,8 @@ function installContradictingHost(hostCardIds, extra) {
           }),
         }),
       },
-      extra
-    )
+      extra,
+    ),
   );
 }
 
@@ -186,7 +186,7 @@ describe("subcommanderWeight", () => {
     for (let n = 1; n <= 6; n++) {
       assert.ok(
         cards.subcommanderWeight(withMinions(n), 35) <=
-          cards.subcommanderWeight(withMinions(n), 55)
+          cards.subcommanderWeight(withMinions(n), 55),
       );
     }
   });
@@ -239,21 +239,21 @@ describe("travelledShort", () => {
   it("is false for a nearby system in a large galaxy", () => {
     assert.equal(
       cards.travelledShort(systemAt(1), { totalSize: 50 }, numberOfSystems),
-      false
+      false,
     );
   });
 
   it("is true once distance exceeds the tier threshold for the galaxy size", () => {
     assert.equal(
       cards.travelledShort(systemAt(4), { totalSize: 10 }, numberOfSystems),
-      true
+      true,
     );
   });
 
   it("is true for any system beyond the final flat distance cutoff", () => {
     assert.equal(
       cards.travelledShort(systemAt(7), { totalSize: 1000 }, numberOfSystems),
-      true
+      true,
     );
   });
 });
@@ -273,7 +273,7 @@ describe("farForSize", () => {
       systemAt(dist),
       { totalSize: totalSize },
       numberOfSystems,
-      thresholds
+      thresholds,
     );
   }
 
@@ -300,11 +300,11 @@ describe("farForSize", () => {
     const baseSizes = [18, 24, 36, 54, 78];
     assert.equal(
       cards.farForSize(systemAt(50), { totalSize: 78 }, baseSizes, thresholds),
-      false
+      false,
     );
     assert.equal(
       cards.farForSize(systemAt(51), { totalSize: 78 }, baseSizes, thresholds),
-      true
+      true,
     );
   });
 });
@@ -328,12 +328,12 @@ describe("travelled* distance wrappers", () => {
       const shortTravel = cards.travelledShort(
         system,
         context,
-        numberOfSystems
+        numberOfSystems,
       );
       const moderate = cards.travelledModerate(
         system,
         context,
-        numberOfSystems
+        numberOfSystems,
       );
       const far = cards.travelledFar(system, context, numberOfSystems);
       if (far) {
@@ -370,9 +370,9 @@ describe("antiTechDeal", () => {
       cards.antiTechDeal(
         inventoryWith(["gwaio_anti_orbital"]),
         70,
-        "gwaio_anti_orbital"
+        "gwaio_anti_orbital",
       ),
-      { chance: 0 }
+      { chance: 0 },
     );
   });
 
@@ -382,9 +382,9 @@ describe("antiTechDeal", () => {
       cards.antiTechDeal(
         inventoryWith(["gwaio_anti_air"]),
         70,
-        "gwaio_anti_orbital"
+        "gwaio_anti_orbital",
       ),
-      { chance: 35 }
+      { chance: 35 },
     );
   });
 
@@ -392,7 +392,7 @@ describe("antiTechDeal", () => {
     installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(inventoryWith([]), 70, "gwaio_anti_orbital"),
-      { chance: 70 }
+      { chance: 70 },
     );
   });
 
@@ -400,7 +400,7 @@ describe("antiTechDeal", () => {
     installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(inventoryWith([]), 40, "gwaio_anti_sea").chance,
-      40
+      40,
     );
   });
 });
@@ -447,7 +447,7 @@ describe("isEnglish", () => {
       (language) => {
         detecting(language);
         assert.equal(cards.isEnglish(), false, language);
-      }
+      },
     );
   });
 });
@@ -526,9 +526,9 @@ describe("hasT2Access", () => {
     installGrantingHost();
     assert.equal(
       cards.hasT2Access(
-        inventoryWithCards(["gwc_minion", "gwc_enable_titans"])
+        inventoryWithCards(["gwc_minion", "gwc_enable_titans"]),
       ),
-      true
+      true,
     );
   });
 
@@ -613,7 +613,7 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
     const { hostInventory, game } = installCoopModel([]);
     assert.equal(
       cards.anyPlayerHasCard(hostInventory, "host_card", game),
-      true
+      true,
     );
   });
 
@@ -621,7 +621,7 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
     const { hostInventory, game } = installCoopModel([{ id: "alice" }]);
     assert.equal(
       cards.anyPlayerHasCard(hostInventory, "alice_card", game),
-      true
+      true,
     );
   });
 
@@ -629,7 +629,7 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
     const { hostInventory, game } = installCoopModel([{ id: "alice" }]);
     assert.equal(
       cards.anyPlayerHasCard(hostInventory, "bob_card", game),
-      false
+      false,
     );
   });
 
@@ -660,11 +660,11 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
 
       assert.deepEqual(
         cards.getAllConnectedPlayerCards(hostInventory, otherGame),
-        [{ id: "host_card" }, { id: "carol_card" }]
+        [{ id: "host_card" }, { id: "carol_card" }],
       );
       assert.equal(
         cards.anyPlayerHasCard(hostInventory, "alice_card", otherGame),
-        false
+        false,
       );
     });
   });
@@ -717,7 +717,7 @@ describe("applyDulls", () => {
 
 describe("uniqueValue", () => {
   const gwoRng = loadCouiModule(
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
   );
 
   // gw_inventory.hasCard tests !card.unique, so a zero would permanently stop
@@ -735,11 +735,11 @@ describe("uniqueValue", () => {
   it("reproduces the same value for the same seed", () => {
     assert.equal(
       cards.uniqueValue(gwoRng.create("s")),
-      cards.uniqueValue(gwoRng.create("s"))
+      cards.uniqueValue(gwoRng.create("s")),
     );
     assert.notEqual(
       cards.uniqueValue(gwoRng.create("s")),
-      cards.uniqueValue(gwoRng.create("t"))
+      cards.uniqueValue(gwoRng.create("t")),
     );
   });
 

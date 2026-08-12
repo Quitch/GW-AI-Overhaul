@@ -7,17 +7,17 @@ define([
   // Every build arm bar the Commander's, which gwc_bld_efficiency_cdr covers.
   var buildArms = _.without(
     gwoGroup.fabberBuildArms.concat(gwoGroup.factoryBuildArms),
-    gwoUnit.commanderBuildArm
+    gwoUnit.commanderBuildArm,
   );
 
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Improved Fabricator Build Arms increase the build speed of all fabricator and factory build arms by 50% and reduces energy usage by 50%."
+      "!LOC:Improved Fabricator Build Arms increase the build speed of all fabricator and factory build arms by 50% and reduces energy usage by 50%.",
     ),
     summarize: _.constant("!LOC:Improved Fabricator Build Arms"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_metal.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_metal.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_efficiency",
@@ -37,8 +37,8 @@ define([
               "construction_demand.energy": 0.5,
               "construction_demand.metal": 1.5,
             });
-          })
-        )
+          }),
+        ),
       );
     },
     dull: function () {},

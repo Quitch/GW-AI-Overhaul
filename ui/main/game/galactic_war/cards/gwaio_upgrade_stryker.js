@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing."
-      )
-    )
+        "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Stryker Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.stryker)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.stryker),
     );
   },
 

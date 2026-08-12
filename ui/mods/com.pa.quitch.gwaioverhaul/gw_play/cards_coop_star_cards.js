@@ -148,7 +148,7 @@ define(() => {
           warRng,
           playerKey,
           target.starIndex,
-          game.stats().turns()
+          game.stats().turns(),
         ),
       }).then((cards) => ({
         starIndex: target.starIndex,
@@ -198,9 +198,9 @@ define(() => {
         .then(() =>
           Promise.all(
             _.map(targets, (target) =>
-              dealStarCard(target, inventory, playerKey, record)
-            )
-          )
+              dealStarCard(target, inventory, playerKey, record),
+            ),
+          ),
         )
         .then((results) => {
           const updates = {};
@@ -220,18 +220,18 @@ define(() => {
             (starIndex) => {
               const system = model.galaxy.systems()[starIndex];
               return !!(system && system.star.ai());
-            }
+            },
           );
           const next = buildStarCardsField(
             pruned,
             updates,
-            game.stats().turns()
+            game.stats().turns(),
           );
 
           if (
             _.isEqual(
               next.cards,
-              fresh.gwaioStarCards && fresh.gwaioStarCards.cards
+              fresh.gwaioStarCards && fresh.gwaioStarCards.cards,
             )
           ) {
             return false;
@@ -241,7 +241,7 @@ define(() => {
             Object.assign({}, _.cloneDeep(fresh), {
               gwaioStarCards: next,
               updatedAt: _.now(),
-            })
+            }),
           );
         });
     };
@@ -266,7 +266,7 @@ define(() => {
             .then((changed) => {
               changedAny = changedAny || changed;
             }),
-        Promise.resolve()
+        Promise.resolve(),
       ).then(() => changedAny);
     };
 
@@ -327,7 +327,7 @@ define(() => {
       refreshInFlight = runRefresh(redeal)
         .then(null, (reason) => {
           console.error(
-            `[GW COOP] failed to refresh co-op player star cards: ${reason}`
+            `[GW COOP] failed to refresh co-op player star cards: ${reason}`,
           );
         })
         .then(() => {

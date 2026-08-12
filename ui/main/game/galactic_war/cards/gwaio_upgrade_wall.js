@@ -6,8 +6,8 @@ define([
 
   describe: _.constant(
     gwoCard.withSlot(
-      loc("!LOC:Wall Upgrade Tech increases the health of walls by 50%.")
-    )
+      loc("!LOC:Wall Upgrade Tech increases the health of walls by 50%."),
+    ),
   ),
 
   summarize: () => "!LOC:Wall Upgrade Tech",
@@ -20,7 +20,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.wall)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.wall),
     );
   },
 
@@ -29,7 +29,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.wall, "multiply", {
         max_health: 1.5,
-      })
+      }),
     );
   },
 

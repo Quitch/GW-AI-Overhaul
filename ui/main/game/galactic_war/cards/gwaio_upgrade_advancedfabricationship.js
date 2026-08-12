@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Advanced Fabrication Ship Upgrade Tech changes the advanced naval fabricator into a hover unit, allowing it to cross land and lava."
-      )
-    )
+        "!LOC:Advanced Fabrication Ship Upgrade Tech changes the advanced naval fabricator into a hover unit, allowing it to cross land and lava.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Advanced Fabrication Ship Upgrade Tech",
@@ -23,7 +23,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactoryAdvanced),
-      gwoCard.navalWeight(inventory, 30)
+      gwoCard.navalWeight(inventory, 30),
     );
   },
 

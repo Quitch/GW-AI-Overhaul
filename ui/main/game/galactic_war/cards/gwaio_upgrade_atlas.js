@@ -6,8 +6,8 @@ define([
 
   describe: _.constant(
     gwoCard.withSlot(
-      loc("!LOC:Atlas Upgrade Tech doubles the health of the seismic titan.")
-    )
+      loc("!LOC:Atlas Upgrade Tech doubles the health of the seismic titan."),
+    ),
   ),
 
   summarize: () => "!LOC:Atlas Upgrade Tech",
@@ -20,7 +20,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.atlas)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.atlas),
     );
   },
 
@@ -29,7 +29,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.atlas, "multiply", {
         max_health: 2,
-      })
+      }),
     );
   },
 

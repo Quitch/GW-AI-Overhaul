@@ -10,8 +10,8 @@ function gwoCardTooltips() {
   try {
     $("#system-card").replaceWith(
       loadHtml(
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system.html"
-      )
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system.html",
+      ),
     );
     locTree($("#system-card"));
 
@@ -52,7 +52,7 @@ function gwoCardTooltips() {
         Array.prototype.push.apply(model.gwoCardsToUnits, cards);
         // global for modder compatibility - New-GW-Cards pushes here
         model.gwoCardsWithoutTooltip = Array.isArray(
-          model.gwoCardsWithoutTooltip
+          model.gwoCardsWithoutTooltip,
         )
           ? model.gwoCardsWithoutTooltip
           : [];
@@ -76,7 +76,7 @@ function gwoCardTooltips() {
           "gwaio_upgrade_subcommander_fabber",
           "gwaio_upgrade_subcommander_tactics",
           "gwc_add_card_slot",
-          "gwc_minion"
+          "gwc_minion",
         );
 
         // Rebuilt whenever it grows: gwoUnitToNames.units is a modder extension
@@ -103,7 +103,7 @@ function gwoCardTooltips() {
 
             if (_.isUndefined(name)) {
               console.warn(
-                `${unit} is invalid or missing from GWO unit_names.js`
+                `${unit} is invalid or missing from GWO unit_names.js`,
               );
               return loc("!LOC:Unknown Unit");
             }
@@ -123,7 +123,7 @@ function gwoCardTooltips() {
           const cardId = card.id();
           const noTooltip = _.some(
             model.gwoCardsWithoutTooltip,
-            (cardWithoutTooltip) => cardWithoutTooltip === cardId
+            (cardWithoutTooltip) => cardWithoutTooltip === cardId,
           );
 
           if (noTooltip) {
@@ -144,7 +144,7 @@ function gwoCardTooltips() {
           if (cardUnitsIndex === -1) {
             if (!_.isUndefined(cardId)) {
               console.warn(
-                `${cardId} is invalid or missing from model.gwoCardsToUnits`
+                `${cardId} is invalid or missing from model.gwoCardsToUnits`,
               );
             }
             return;
@@ -211,7 +211,7 @@ function gwoCardTooltips() {
           model.hoverOffset(`${left.toString()}px`);
           model.hoverCard(card);
         };
-      }
+      },
     );
   } catch (e) {
     console.error(e);

@@ -47,7 +47,7 @@ define([
     const canGlassPlanets = gwoCards.anyPlayerHasCard(
       inventory,
       "gwaio_enable_orbitalbombardment",
-      game
+      game,
     );
     const canFloodPlanets =
       gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_tsunami", game) ||
@@ -71,7 +71,7 @@ define([
     const cards = inventory.cards();
     const connectedPlayerCards = gwoCards.getAllConnectedPlayerCards(
       inventory,
-      game
+      game,
     );
     const playerName = ko.observable().extend({ session: "displayName" });
     const playerTag = ".player";
@@ -94,7 +94,7 @@ define([
     const battleRng = gwoStreams.battleRng(
       gwoStreams.warRng(galaxy.stars()[galaxy.origin()].system().gwaio),
       game.currentStar(),
-      game.stats().turns()
+      game.stats().turns(),
     );
     const aiInUse = gwoAI.aiInUse("enemy");
     const aiTag = setupAiTags(ai);
@@ -106,7 +106,7 @@ define([
       inventory,
       playerTag,
       0,
-      battleRng
+      battleRng,
     );
 
     // The ally is coloured after every player's subcommanders, viewers' included,
@@ -119,7 +119,7 @@ define([
         inventory,
         playerTag,
         refereeCoop.getOrderedSubcommanders(inventory, game).length,
-        battleRng
+        battleRng,
       );
     }
 
@@ -129,7 +129,7 @@ define([
       aiTag,
       aiInUse,
       armies,
-      battleRng
+      battleRng,
     );
     setupFfaAis(ai.foes, aiTag, aiInUse, armies, battleRng);
     system.planets = modifyPlanets(inventory, system.planets, game);

@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Spark Upgrade Tech increases the tesla bot's splash damage radius by 200%."
-      )
-    )
+        "!LOC:Spark Upgrade Tech increases the tesla bot's splash damage radius by 200%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Spark Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.spark)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.spark),
     );
   },
 
@@ -35,7 +35,7 @@ define([
       gwoCard.mods(gwoUnit.sparkAmmo, "multiply", {
         splash_radius: 3,
         full_damage_splash_radius: 3,
-      })
+      }),
     );
   },
 

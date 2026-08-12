@@ -18,7 +18,7 @@ const {
 } = require("../scripts/lib/referee-fakes.js");
 
 const refereeAi = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js",
 );
 
 let restoreModel;
@@ -152,7 +152,7 @@ describe("Guardians scoped destination", () => {
     assert.ok("/pa/ai/player_guardians/unit_maps/ai_unit_map.json" in filesObj);
     assert.deepEqual(
       filesObj["/pa/ai/player_guardians/unit_maps/ai_unit_map.json"],
-      { unit_map: { some_unit: "/pa/units/x/x.json" } }
+      { unit_map: { some_unit: "/pa/units/x/x.json" } },
     );
   });
 });
@@ -185,7 +185,7 @@ describe("per-player-tech viewer processing", () => {
     await run(filesObj);
 
     const viewerKeys = Object.keys(filesObj).filter((key) =>
-      key.includes("player_.player")
+      key.includes("player_.player"),
     );
     assert.deepEqual(viewerKeys.sort(), [
       "/pa/ai/player_.player0/fabber_builds/x.json",
@@ -261,11 +261,11 @@ describe("per-player-tech viewer processing", () => {
     assert.equal(
       filesObj["/pa/ai_subcommander/player_.player0/fabber_builds/x.json"]
         .build_list[0].priority,
-      42
+      42,
     );
     assert.equal(
       filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].priority,
-      1
+      1,
     );
   });
 });

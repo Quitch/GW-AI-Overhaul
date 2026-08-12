@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Hornet Upgrade Tech adds splash damage to the tactical bomber's attacks."
-      )
-    )
+        "!LOC:Hornet Upgrade Tech adds splash damage to the tactical bomber's attacks.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Hornet Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.hornet)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.hornet),
     );
   },
 
@@ -35,7 +35,7 @@ define([
       gwoCard.mods(gwoUnit.hornetAmmo, "replace", {
         splash_damage: 1000,
         splash_radius: 12,
-      })
+      }),
     );
   },
 

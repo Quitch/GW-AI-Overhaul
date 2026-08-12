@@ -18,7 +18,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const { createLayer } = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_marker.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_marker.js",
 );
 
 const LIFETIME_MS = 2700;
@@ -40,7 +40,7 @@ function displayObject(target) {
   };
   target.removeEventListener = function (type, fn) {
     target.listeners = target.listeners.filter(
-      (held) => !(held[0] === type && held[1] === fn)
+      (held) => !(held[0] === type && held[1] === fn),
     );
   };
   return target;

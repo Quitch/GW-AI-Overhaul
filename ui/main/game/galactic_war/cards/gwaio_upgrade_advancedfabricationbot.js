@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Advanced Fabrication Bot Upgrade Tech equips the advanced fabricator with the support commander's weapon."
-      )
-    )
+        "!LOC:Advanced Fabrication Bot Upgrade Tech equips the advanced fabricator with the support commander's weapon.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Advanced Fabrication Bot Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.botFactoryAdvanced)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.botFactoryAdvanced),
     );
   },
 
@@ -45,7 +45,7 @@ define([
             path: "tools.1.spec_id",
             op: "tag",
           },
-        ])
+        ]),
     );
   },
 

@@ -15,7 +15,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const makeFactory = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js",
 );
 
 const REQUEST = "gwo_ping_star";
@@ -50,7 +50,7 @@ function setup(overrides = {}) {
       scanning: false,
       pendingTechRecords: [],
     },
-    overrides
+    overrides,
   );
 
   const calls = {
@@ -152,13 +152,13 @@ const request = (extra) =>
       client_name: "Alice",
       payload: { star: 1, ping_id: "p1" },
     },
-    extra
+    extra,
   );
 
 const broadcast = (extra) => ({
   payload: Object.assign(
     { star: 1, ping_id: "p1", client_id: "abc", client_name: "Alice" },
-    extra
+    extra,
   ),
 });
 
@@ -225,7 +225,7 @@ describe("ping relay - refusals", () => {
 
     handlers[REQUEST](request());
     captureLogs(() =>
-      handlers[REQUEST](request({ payload: { star: 2, ping_id: "p2" } }))
+      handlers[REQUEST](request({ payload: { star: 2, ping_id: "p2" } })),
     );
 
     assert.equal(calls.hostOperators.length, 1);

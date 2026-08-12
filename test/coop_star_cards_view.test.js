@@ -14,11 +14,11 @@ const {
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const view = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
 );
 
 const makeFactory = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
 );
 
 describe("starCardIdForRecord", () => {
@@ -42,9 +42,9 @@ describe("starCardIdForRecord", () => {
     assert.equal(
       view.starCardIdForRecord(
         { gwaioStarCards: { cards: { 12: { unique: 0.4 } } } },
-        12
+        12,
       ),
-      undefined
+      undefined,
     );
   });
 });
@@ -77,7 +77,7 @@ function observable(initial) {
 function setup(overrides = {}) {
   const options = Object.assign(
     { record: undefined, cards: {}, autoResolve: true },
-    overrides
+    overrides,
   );
   const calls = { requested: [] };
   const waiting = [];

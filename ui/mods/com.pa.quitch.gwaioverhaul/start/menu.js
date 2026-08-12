@@ -14,7 +14,7 @@ function gwoStartMenu() {
 
     if (!$gwNav.length) {
       $gwNav = $(
-        ".top-nav-sub-btn.btn_std_ix[data-bind*='navToGalacticWar']"
+        ".top-nav-sub-btn.btn_std_ix[data-bind*='navToGalacticWar']",
       ).first();
       htmlFile = "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.html";
     }

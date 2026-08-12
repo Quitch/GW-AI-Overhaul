@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing."
-      )
-    )
+        "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Orbital Launcher Upgrade Tech",
@@ -27,7 +27,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       !inventory.hasCard("gwaio_start_rapid") &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalLauncher)
+        gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalLauncher),
     );
   },
 
@@ -38,7 +38,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.orbitalLauncher, "add", {
         buildable_types: "| (Orbital & FactoryBuild & Custom58)",
-      })
+      }),
     );
 
     const units = [
@@ -66,7 +66,7 @@ define([
           value: 100,
           matchAll: true,
         },
-      ])
+      ]),
     );
     inventory.addAIMods(aiMods);
   },

@@ -14,13 +14,13 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeConfig = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
 );
 const gwoAI = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 );
 const gwoDifficulty = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
 );
 
 let restoreModel;
@@ -42,7 +42,7 @@ function makeAiDescriptor(overrides) {
       faction: 1,
       personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
     },
-    overrides || {}
+    overrides || {},
   );
 }
 
@@ -56,7 +56,7 @@ function setUpSubcommander(difficultyName, descriptor) {
     [],
     armies,
     fixture.inventory,
-    ".player"
+    ".player",
   );
   return armies[0];
 }
@@ -68,7 +68,7 @@ describe("subcommander econ_rate", () => {
       assert.equal(
         army.econ_rate,
         gwoAI.subcommanderEconRate,
-        difficulty.difficultyName
+        difficulty.difficultyName,
       );
       restoreModel();
       restoreModel = undefined;
@@ -80,15 +80,15 @@ describe("subcommander econ_rate", () => {
   it("ignores whatever econ_rate the saved subcommander carries", () => {
     const high = setUpSubcommander(
       "!LOC:Beginner",
-      makeAiDescriptor({ econ_rate: 7 })
+      makeAiDescriptor({ econ_rate: 7 }),
     );
     const negative = setUpSubcommander(
       "!LOC:Beginner",
-      makeAiDescriptor({ econ_rate: -3 })
+      makeAiDescriptor({ econ_rate: -3 }),
     );
     const missing = setUpSubcommander(
       "!LOC:Beginner",
-      makeAiDescriptor({ econ_rate: undefined })
+      makeAiDescriptor({ econ_rate: undefined }),
     );
 
     assert.equal(high.econ_rate, gwoAI.subcommanderEconRate);
@@ -112,7 +112,7 @@ describe("subcommander econ_rate", () => {
       armies,
       fixture.inventory,
       ".player",
-      3
+      3,
     );
     assert.equal(armies[0].econ_rate, gwoAI.subcommanderEconRate);
   });
@@ -132,7 +132,7 @@ describe("subcommander econ_rate", () => {
     const flooredRate = gwoAI.aiEconRateWithFloor(gwoAI.subcommanderEconRate);
     assert.ok(
       flooredRate > gwoAI.subcommanderEconRate,
-      "Uber's econ floor must exceed the subcommander rate for this to test anything"
+      "Uber's econ floor must exceed the subcommander rate for this to test anything",
     );
     assert.equal(armies[0].econ_rate, flooredRate);
     assert.equal(armies[1].econ_rate, flooredRate);

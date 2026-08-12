@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Metal and energy storage on all commanders and storage structures increased by 300%. Adds in blueprints for storage structures."
+      "!LOC:Metal and energy storage on all commanders and storage structures increased by 300%. Adds in blueprints for storage structures.",
     ),
     summarize: _.constant("!LOC:Storage Compression Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_storage_compression.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_storage_compression.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_economy",
@@ -39,8 +39,8 @@ define([
                 value: 4,
               },
             ];
-          })
-        )
+          }),
+        ),
       );
     },
     dull: function () {},

@@ -24,19 +24,19 @@ define([
     const rangePercentageIncrease = 1.5;
 
     const healthMods = _.map(gwoGroup.units, (unit) =>
-      gwoCard.mods(unit, "multiply", { max_health: 1.3 })
+      gwoCard.mods(unit, "multiply", { max_health: 1.3 }),
     );
     const rangeMods = _.map(gwoGroup.weapons, (weapon) =>
       gwoCard.mods(weapon, "multiply", {
         max_range: rangePercentageIncrease,
-      })
+      }),
     );
     // Try to make sure that units can use their full range
     const ammoMods = _.map(gwoGroup.ammo, (ammo) =>
       gwoCard.mods(ammo, "multiply", {
         lifetime: rangePercentageIncrease,
         max_velocity: rangePercentageIncrease,
-      })
+      }),
     );
 
     // Radar is excluded: its vision slots are ordered differently.
@@ -62,8 +62,8 @@ define([
             gwoUnit.torpedoLauncherAdvanced,
             gwoUnit.ward,
           ],
-          unit
-        )
+          unit,
+        ),
     );
     const radarsWithRadarVisionInSlot0 = [
       gwoUnit.arkyd,
@@ -85,21 +85,21 @@ define([
       gwoCard.mods(unit, "multiply", {
         "recon.observer.items.0.radius": 0,
         "recon.observer.items.1.radius": 0,
-      })
+      }),
     );
     const radarsWithRadarVisionInSlot1Mods = _.map(
       radarsWithRadarVisionInSlot1,
       (unit) =>
         gwoCard.mods(unit, "replace", {
           "recon.observer.items.0.radius": 0,
-        })
+        }),
     );
     const radarsWithRadarVisionInSlot0Mods = _.map(
       radarsWithRadarVisionInSlot0,
       (unit) =>
         gwoCard.mods(unit, "replace", {
           "recon.observer.items.1.radius": 0,
-        })
+        }),
     );
 
     // Ares needs a high arc to reach the extended range
@@ -116,9 +116,9 @@ define([
           blindMods,
           radarsWithRadarVisionInSlot1Mods,
           radarsWithRadarVisionInSlot0Mods,
-          aresFixMods
-        )
-      )
+          aresFixMods,
+        ),
+      ),
     );
   },
 

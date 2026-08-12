@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"], (
-  inventory
+  inventory,
 ) => {
   const AMMUNITION_TECH = 1;
   const ARMOUR_TECH = 2;
@@ -83,7 +83,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"], (
     });
     _.forEach(factionWeapons, (weapons, i) => {
       factionTechs[i][1] = factionTechs[i][1].concat(
-        multiply(weapons, 0.25, weaponPaths)
+        multiply(weapons, 0.25, weaponPaths),
       );
     });
   };
@@ -101,7 +101,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"], (
     });
     _.forEach(factionCommanders, (commanders, i) => {
       factionTechs[i][2] = factionTechs[i][2].concat(
-        multiply(commanders, 2, "max_health")
+        multiply(commanders, 2, "max_health"),
       );
     });
   };
@@ -119,11 +119,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"], (
     });
     _.forEach(factionCommanders, (commanders, i) => {
       factionTechs[i][3] = factionTechs[i][3].concat(
-        multiply(commanders, 2, speedPaths)
+        multiply(commanders, 2, speedPaths),
       );
     });
     foundationTech[3] = foundationTech[3].concat(
-      multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
+      multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths),
     );
   };
 
@@ -139,7 +139,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"], (
       factionTechs[i][4] = multiply(
         buildArms,
         0.5,
-        "construction_demand.energy"
+        "construction_demand.energy",
       ).concat(multiply(buildArms, 1.5, "construction_demand.metal"));
     });
   };
@@ -157,16 +157,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"], (
     });
     _.forEach(factionCommanders, (commanders, i) => {
       factionTechs[i][6] = factionTechs[i][6].concat(
-        multiply(commanders, 3, speedPaths)
+        multiply(commanders, 3, speedPaths),
       );
     });
     foundationTech[6] = foundationTech[6].concat(
-      multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
+      multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths),
     );
     _.forEach(factionTechs, (faction) => {
       faction[COMBAT_TECH] = faction[COMBAT_TECH].concat(
         faction[AMMUNITION_TECH],
-        faction[ARMOUR_TECH]
+        faction[ARMOUR_TECH],
       );
     });
   };

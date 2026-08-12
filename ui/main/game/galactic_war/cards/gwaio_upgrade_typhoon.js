@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Typhoon Upgrade Tech doubles the number of drones held by the Typhoon and any other unit with drones."
-      )
-    )
+        "!LOC:Typhoon Upgrade Tech doubles the number of drones held by the Typhoon and any other unit with drones.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Typhoon Upgrade Tech",
@@ -26,7 +26,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.typhoon),
-      30
+      30,
     );
   },
 
@@ -35,7 +35,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.typhoonWeapon, "multiply", {
         ammo_capacity: 2,
-      })
+      }),
     );
   },
 

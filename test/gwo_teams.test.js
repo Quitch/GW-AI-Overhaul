@@ -53,7 +53,7 @@ sharedSystemsLoader.loadOptions = function () {};
 
 registerModuleStub(
   "main/game/galactic_war/shared/js/systems/template-loader",
-  sharedSystemsLoader
+  sharedSystemsLoader,
 );
 registerModuleStub("shared/gw_factions", FACTIONS);
 ["pa-easy", "pa-normal", "titans-easy", "titans-normal"].forEach((name) => {
@@ -71,7 +71,7 @@ before(() => {
 after(() => stubs.restoreGlobals());
 
 const teams = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_teams.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_teams.js",
 );
 
 // Picks by position, so a test says which team it expects rather than which
@@ -182,7 +182,7 @@ describe("gwo_teams makeBoss - the boss system", () => {
       { econ_rate: 1 },
       team,
       undefined,
-      42
+      42,
     );
 
     assert.equal(generated.length, 1);
@@ -202,7 +202,7 @@ describe("gwo_teams makeBoss - the boss system", () => {
       { econ_rate: 1 },
       team,
       undefined,
-      "boss-seed"
+      "boss-seed",
     );
 
     assert.equal(generated[0].seed, "boss-seed");
@@ -225,7 +225,7 @@ describe("gwo_teams makeBoss - the boss system", () => {
       { econ_rate: 1 },
       { systemTemplate: team.systemTemplate },
       undefined,
-      1
+      1,
     );
 
     assert.equal(target.systems[0].description, undefined);

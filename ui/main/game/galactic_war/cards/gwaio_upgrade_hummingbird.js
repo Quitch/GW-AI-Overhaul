@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets."
-      )
-    )
+        "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Hummingbird Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.hummingbird)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.hummingbird),
     );
   },
 

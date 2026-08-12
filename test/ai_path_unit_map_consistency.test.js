@@ -14,25 +14,25 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeConfig = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
 );
 const refereeGameFiles = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
 );
 const perPlayerTechHook = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
 );
 const gwoAI = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 );
 const gwoSpecs = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
 );
 const refereeAIPaths = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
 );
 const subcommanderTech = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
 );
 
 let restoreModel;
@@ -59,12 +59,12 @@ describe("host: buildPlayerFiles' unit-map prefix matches setAIPath's assigned a
         titans: true,
       },
       gwoAI,
-      gwoSpecs
+      gwoSpecs,
     );
 
     assert.ok(
       expectedAiPath + "unit_maps/ai_unit_map.json.player" in files,
-      `expected a unit-map key under ${expectedAiPath}, got: ${Object.keys(files)}`
+      `expected a unit-map key under ${expectedAiPath}, got: ${Object.keys(files)}`,
     );
   });
 
@@ -85,13 +85,13 @@ describe("host: buildPlayerFiles' unit-map prefix matches setAIPath's assigned a
         titans: false,
       },
       gwoAI,
-      gwoSpecs
+      gwoSpecs,
     );
 
     assert.equal(expectedAiPath, "/pa/ai_cluster/");
     assert.ok(
       expectedAiPath + "unit_maps/ai_unit_map.json.player" in files,
-      `expected a unit-map key under ${expectedAiPath}, got: ${Object.keys(files)}`
+      `expected a unit-map key under ${expectedAiPath}, got: ${Object.keys(files)}`,
     );
   });
 });
@@ -118,14 +118,14 @@ describe("enemy AIs: clusterArmyIndex/resolveAiUnitMapPaths never disagrees with
       currentCount,
       normalPaths,
       clusterPaths,
-      gwoAI.isCluster
+      gwoAI.isCluster,
     );
 
     assert.equal(
       resolvedUnitMapPaths === clusterPaths,
       expectedAiPath === gwoAI.getAIPathDestination("cluster"),
       `currentCount=${currentCount}: unit-map Cluster routing and ai_path Cluster ` +
-        `routing disagree (isCluster=${isClusterAtThisIndex}, ai_path=${expectedAiPath})`
+        `routing disagree (isCluster=${isClusterAtThisIndex}, ai_path=${expectedAiPath})`,
     );
   }
 
@@ -186,7 +186,7 @@ describe("per-player-tech viewers: each viewer's unit map lands under that viewe
             subcommanderTech,
             aiInUse,
             inventory,
-            playerTag
+            playerTag,
           );
 
         const ownPath = viewerPath(".player0");
@@ -195,18 +195,18 @@ describe("per-player-tech viewers: each viewer's unit map lands under that viewe
         assert.notEqual(
           ownPath,
           otherPath,
-          "playerTag must scope the ai_path, or viewers share a unit map"
+          "playerTag must scope the ai_path, or viewers share a unit map",
         );
 
         // Mirrors generateUnitSpecsForPlayer's actual key construction.
         const unitMapKey = ownPath + "unit_maps/ai_unit_map.json.player0";
         assert.ok(
           unitMapKey.startsWith(ownPath),
-          `${unitMapKey} should sit under ${ownPath}`
+          `${unitMapKey} should sit under ${ownPath}`,
         );
         assert.ok(
           !unitMapKey.startsWith(otherPath),
-          `${unitMapKey} must not sit under another viewer's path ${otherPath}`
+          `${unitMapKey} must not sit under another viewer's path ${otherPath}`,
         );
       });
     }

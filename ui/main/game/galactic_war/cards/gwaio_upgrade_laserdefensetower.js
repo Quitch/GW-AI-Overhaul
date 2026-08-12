@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 50%."
-      )
-    )
+        "!LOC:Laser Defense Tower Upgrade Tech increases the range of the turret by 50%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Laser Defense Tower Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.laserDefenseTower)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.laserDefenseTower),
     );
   },
 
@@ -31,7 +31,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.laserDefenseTowerWeapon, "multiply", {
         max_range: 1.5,
-      })
+      }),
     );
   },
 

@@ -48,7 +48,7 @@ define([
                 op: "multiply",
                 value: 5,
               };
-            }
+            },
           );
           var weapons = [
             gwoUnit.commanderSecondary,

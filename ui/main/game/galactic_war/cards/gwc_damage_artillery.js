@@ -13,7 +13,7 @@ define([
     },
     summarize: _.constant("!LOC:Artillery Ammunition Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_artillery.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_artillery.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_ammunition",
@@ -23,7 +23,7 @@ define([
       var sizes = GW.balance.numberOfSystems;
       return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.structuresArtillery),
-        gwoCard.travelledShort(system, context, sizes) ? 70 : 35
+        gwoCard.travelledShort(system, context, sizes) ? 70 : 35,
       );
     },
     buff: function (inventory) {
@@ -41,7 +41,7 @@ define([
             path: "splash_damage",
             op: "multiply",
             value: 1.25,
-          }
+          },
         );
       });
       _.forEach(gwoGroup.structuresArtilleryWeapons, function (weapon) {
@@ -63,7 +63,7 @@ define([
             path: "ammo_per_shot",
             op: "multiply",
             value: 0.1,
-          }
+          },
         );
       });
       inventory.addMods(mods);

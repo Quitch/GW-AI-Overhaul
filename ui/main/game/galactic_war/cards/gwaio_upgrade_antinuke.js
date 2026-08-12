@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Anti-Nuke Launcher Upgrade Tech halves the cost of SR-24 Shield Missile Defense missiles."
-      )
-    )
+        "!LOC:Anti-Nuke Launcher Upgrade Tech halves the cost of SR-24 Shield Missile Defense missiles.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Anti-Nuke Launcher Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.antiNukeLauncher)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.antiNukeLauncher),
     );
   },
 
@@ -34,7 +34,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.antiNukeLauncherAmmo, "multiply", {
         build_metal_cost: 0.5,
-      })
+      }),
     );
   },
 

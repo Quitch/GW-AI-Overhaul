@@ -66,7 +66,7 @@ define([
           ];
           const allStructures = smallStructures.concat(
             mediumStructures,
-            largeStructures
+            largeStructures,
           );
           const orbitalStructures = [
             gwoUnit.anchor,
@@ -74,7 +74,7 @@ define([
             gwoUnit.kessler,
           ];
           const groundStructures = _.reject(allStructures, (structure) =>
-            _.includes(orbitalStructures, structure)
+            _.includes(orbitalStructures, structure),
           );
           _.forEach(groundStructures, (unit) => {
             mods.push(
@@ -160,7 +160,7 @@ define([
                 path: "unit_types",
                 op: "push",
                 value: "UNITTYPE_Hover",
-              }
+              },
             );
           });
           _.forEach(orbitalStructures, (unit) => {
@@ -206,7 +206,7 @@ define([
                 path: "navigation.hover_time",
                 op: "replace",
                 value: -1,
-              }
+              },
             );
           });
           _.forEach(allStructures, (unit) => {
@@ -264,7 +264,7 @@ define([
                 path: "navigation.wobble_speed",
                 op: "replace",
                 value: 0.2,
-              }
+              },
             );
           });
           _.forEach(smallStructures, (unit) => {
@@ -280,7 +280,7 @@ define([
                 path: "attachable",
                 op: "replace",
                 value: { offsets: { root: [0, 0, 0], head: [0, 0, 13] } },
-              }
+              },
             );
           });
           mods.push({
@@ -304,15 +304,15 @@ define([
                 path: "command_caps",
                 op: "push",
                 value: "ORDER_Use",
-              }
+              },
             );
           });
           const defensiveStructures = gwoGroup.structuresArtillery.concat(
-            gwoGroup.structuresDefences
+            gwoGroup.structuresDefences,
           );
           const offensiveStructures = _.filter(
             defensiveStructures,
-            (structure) => structure !== gwoUnit.wall
+            (structure) => structure !== gwoUnit.wall,
           );
           _.forEach(offensiveStructures, (unit) => {
             mods.push({

@@ -106,7 +106,7 @@ function checkPatterns(props, files, failures) {
         failures.push(
           key +
             " pattern matches no tracked file (renamed or deleted?): " +
-            pattern
+            pattern,
         );
       }
       if (key === "sonar.exclusions") {
@@ -121,7 +121,7 @@ function checkPatterns(props, files, failures) {
 function checkEncoding(files, analysisMatchers, failures) {
   const decoder = new TextDecoder("utf-8", { fatal: true });
   const analysed = files.filter(
-    (file) => !analysisMatchers.some((matcher) => matcher.test(file))
+    (file) => !analysisMatchers.some((matcher) => matcher.test(file)),
   );
 
   for (const file of analysed) {
@@ -132,7 +132,7 @@ function checkEncoding(files, analysisMatchers, failures) {
         "not valid " +
           EXPECTED_ENCODING +
           " but still analysed - exclude it or re-encode it: " +
-          file
+          file,
       );
     }
   }
@@ -148,7 +148,7 @@ function main() {
     props = readProperties(fs.readFileSync(CONFIG_PATH, "utf8"));
   } catch (e) {
     console.error(
-      "sonar-config: sonar-project.properties unreadable: " + e.message
+      "sonar-config: sonar-project.properties unreadable: " + e.message,
     );
     process.exitCode = 1;
     return;
@@ -160,7 +160,7 @@ function main() {
         " must be " +
         EXPECTED_ENCODING +
         " (it defaults to the CI runner's platform charset otherwise), found: " +
-        (props[ENCODING_KEY] || "<unset>")
+        (props[ENCODING_KEY] || "<unset>"),
     );
   }
 
@@ -168,7 +168,7 @@ function main() {
   const { analysisMatchers, patternCount } = checkPatterns(
     props,
     files,
-    failures
+    failures,
   );
   const analysedCount = checkEncoding(files, analysisMatchers, failures);
 
@@ -179,7 +179,7 @@ function main() {
       analysedCount +
       " analysed files checked, " +
       failures.length +
-      " problems."
+      " problems.",
   );
 
   if (failures.length) {

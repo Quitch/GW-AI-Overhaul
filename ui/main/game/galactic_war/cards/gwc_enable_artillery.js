@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Activates the Tech to build artillery structures."
+      "!LOC:Activates the Tech to build artillery structures.",
     ),
     summarize: _.constant("!LOC:Artillery Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_artillery.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_artillery.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_artillery",
@@ -18,7 +18,7 @@ define([
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
         gwoCard.missingUnit(inventory.units(), gwoGroup.structuresArtillery),
-        100
+        100,
       );
     },
     buff: function (inventory) {

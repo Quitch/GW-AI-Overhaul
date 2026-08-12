@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js"], (
-  gwoLoadoutIds
+  gwoLoadoutIds,
 ) => ({
   setupGwoCards: function (gwoSettings) {
     const loadouts = gwoLoadoutIds.all;

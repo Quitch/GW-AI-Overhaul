@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Jig Upgrade Tech adds storage to gas mining and doubles its energy production."
-      )
-    )
+        "!LOC:Jig Upgrade Tech adds storage to gas mining and doubles its energy production.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Jig Upgrade Tech",

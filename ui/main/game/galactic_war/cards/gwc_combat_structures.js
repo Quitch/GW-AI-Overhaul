@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Structure Combat Tech increases the health of all structures by 50%. Defensive structures also gain a 25% damage increase."
+      "!LOC:Structure Combat Tech increases the health of all structures by 50%. Defensive structures also gain a 25% damage increase.",
     ),
     summarize: _.constant("!LOC:Structure Combat Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_structure.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_structure.png",
     ),
     audio: _.constant({
       found: "PA/VO/Computer/gw/board_tech_available_combat",
@@ -45,7 +45,7 @@ define([
             path: "splash_damage",
             op: "multiply",
             value: 1.25,
-          }
+          },
         );
       });
       inventory.addMods(mods);

@@ -47,7 +47,7 @@ const CARDS_DIR = path.join(
   "main",
   "game",
   "galactic_war",
-  "cards"
+  "cards",
 );
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();

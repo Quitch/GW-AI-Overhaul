@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Galata Upgrade Tech enables the targeting of land and surface naval units by anti-air defense."
-      )
-    )
+        "!LOC:Galata Upgrade Tech enables the targeting of land and surface naval units by anti-air defense.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Galata Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.galata)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.galata),
     );
   },
 

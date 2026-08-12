@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Fabrication Ship Upgrade Tech enables the building of advanced structures by the basic naval fabricator."
-      )
-    )
+        "!LOC:Fabrication Ship Upgrade Tech enables the building of advanced structures by the basic naval fabricator.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Fabrication Ship Upgrade Tech",
@@ -24,7 +24,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.navalFabber),
-      gwoCard.navalWeight(inventory, 30)
+      gwoCard.navalWeight(inventory, 30),
     );
   },
 
@@ -36,7 +36,7 @@ define([
       gwoCard.mods(gwoUnit.navalFabber, "add", {
         buildable_types:
           " | (Naval & Structure & Advanced | FabAdvBuild) & Custom58",
-      })
+      }),
     );
 
     const units = [

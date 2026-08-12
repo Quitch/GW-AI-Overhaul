@@ -190,7 +190,7 @@ function gwoBugfixes() {
       (gwoSave, gwoTreasure) => {
         applyFixes(gwoTreasure);
         gwoSave(game, true);
-      }
+      },
     );
   } catch (e) {
     console.error(e);

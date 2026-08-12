@@ -51,7 +51,7 @@ define(() => {
       }
 
       this.startCards(
-        config && Array.isArray(config.startCards) ? config.startCards : []
+        config && Array.isArray(config.startCards) ? config.startCards : [],
       );
       loading = false;
     }
@@ -103,7 +103,7 @@ define(() => {
       return _.some(
         this.startCards(),
         (element) =>
-          card === element || (_.isObject(card) && card.id === element.id)
+          card === element || (_.isObject(card) && card.id === element.id),
       );
     }
   }

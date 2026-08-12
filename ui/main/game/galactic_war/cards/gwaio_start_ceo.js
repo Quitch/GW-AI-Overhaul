@@ -96,7 +96,7 @@ define([
                 path: "si_name",
                 op: "replace",
                 value: "bot_support_commander",
-              }
+              },
             );
           }
           inventory.addMods(mods);

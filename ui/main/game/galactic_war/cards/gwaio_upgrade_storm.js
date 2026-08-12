@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Storm Upgrade Tech enables interception of tactical missiles by the flak tank."
-      )
-    )
+        "!LOC:Storm Upgrade Tech enables interception of tactical missiles by the flak tank.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Storm Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.storm)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.storm),
     );
   },
 
@@ -45,7 +45,7 @@ define([
             ],
           },
         })
-        .concat([{ file: gwoUnit.storm, path: "tools.1.spec_id", op: "tag" }])
+        .concat([{ file: gwoUnit.storm, path: "tools.1.spec_id", op: "tag" }]),
     );
   },
 

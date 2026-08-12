@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Radar Upgrade Tech increases the vision and radar radius of basic radar by 50%."
-      )
-    )
+        "!LOC:Radar Upgrade Tech increases the vision and radar radius of basic radar by 50%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Radar Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.radar)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.radar),
     );
   },
 
@@ -37,7 +37,7 @@ define([
         path: `recon.observer.items.${i}.radius`,
         op: "multiply",
         value: 1.5,
-      }))
+      })),
     );
   },
 

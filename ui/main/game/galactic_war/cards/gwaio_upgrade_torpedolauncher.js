@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Torpedo Launcher Upgrade Tech enables the targeting of hover and coastal naval units by the Torpedo Launcher."
-      )
-    )
+        "!LOC:Torpedo Launcher Upgrade Tech enables the targeting of hover and coastal naval units by the Torpedo Launcher.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Torpedo Launcher Upgrade Tech",
@@ -26,7 +26,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.torpedoLauncher),
-      30
+      30,
     );
   },
 
@@ -35,7 +35,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.torpedoLauncherWeapon, "replace", {
         exclude_unit_types: "",
-      })
+      }),
     );
   },
 

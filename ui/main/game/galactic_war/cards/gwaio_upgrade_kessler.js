@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Kessler Upgrade Tech allows orbital mines to explode without self-destructing."
-      )
-    )
+        "!LOC:Kessler Upgrade Tech allows orbital mines to explode without self-destructing.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Kessler Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.kessler)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.kessler),
     );
   },
 
@@ -34,7 +34,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.kesslerWeapon, "replace", {
         self_destruct: false,
-      })
+      }),
     );
   },
 

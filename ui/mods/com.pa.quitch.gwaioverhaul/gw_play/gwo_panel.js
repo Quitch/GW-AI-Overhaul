@@ -47,7 +47,7 @@ function gwoWarInfoPanel(gwoSettings) {
           ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
           (gwoSave) => {
             gwoSave(game, true);
-          }
+          },
         );
       }
     });
@@ -79,7 +79,7 @@ function gwoWarInfoPanel(gwoSettings) {
         "[GW COOP] Viewer identity is missing (uberId/displayName empty) - this " +
           "PA profile has not been loaded by an authenticated user. Co-op tech " +
           "inventory, card offers, and subcommander deals will not work for this " +
-          "Viewer until it runs under an authenticated login."
+          "Viewer until it runs under an authenticated login.",
       );
     };
 
@@ -105,11 +105,11 @@ function gwoWarInfoPanel(gwoSettings) {
             options(
               model.gwoOptions,
               model.gwoSettings.cheatsUsed,
-              "!LOC:dev mode"
+              "!LOC:dev mode",
             );
             gwoSave(game, true);
           }
-        }
+        },
       );
     };
 
@@ -161,10 +161,10 @@ function gwoWarInfoPanel(gwoSettings) {
         };
 
         model.gwoCoopArmyControl = ko.computed(() =>
-          coopText(model.gwCampaignSharedControl())
+          coopText(model.gwCampaignSharedControl()),
         );
         model.gwoCoopTechControl = coopText(
-          !model.gwCampaignPerPlayerTechCards()
+          !model.gwCampaignPerPlayerTechCards(),
         );
         // LOCKED, not Locked: case-sensitive i18n, and that casing reaches four
         // more locales. Unlocked has no entry under any casing.
@@ -194,13 +194,13 @@ function gwoWarInfoPanel(gwoSettings) {
           const modIdentifiers = _.map(mods, "identifier");
           const incompatibleModsInUse = _.intersection(
             incompatibleMods,
-            modIdentifiers
+            modIdentifiers,
           );
           const incompatibleModNames = _.sortBy(
             _.map(incompatibleModsInUse, (incompatibleMod) => {
               const index = _.findIndex(mods, { identifier: incompatibleMod });
               return mods[index].display_name;
-            })
+            }),
           );
           model.gwoIncompatibleMods(incompatibleModNames);
         });
@@ -229,7 +229,7 @@ function gwoWarInfoPanel(gwoSettings) {
           const record = _.find(
             resolved,
             (candidate) =>
-              candidate.id === client.id && candidate.name === client.name
+              candidate.id === client.id && candidate.name === client.name,
           );
 
           // No record means the base game could not resolve one; fall back
@@ -264,8 +264,8 @@ function gwoWarInfoPanel(gwoSettings) {
               gwoColour.pick(
                 factionIndex,
                 subcommander.color,
-                gwoRefereeCoop.alliedColourIndex(index)
-              )
+                gwoRefereeCoop.alliedColourIndex(index),
+              ),
             ),
             character: personality,
           };
@@ -337,7 +337,7 @@ function gwoWarInfoPanel(gwoSettings) {
             },
           ];
           const connectedClients = _.isFunction(
-            model.gwCampaignConnectedClients
+            model.gwCampaignConnectedClients,
           )
             ? model.gwCampaignConnectedClients()
             : [];
@@ -362,7 +362,7 @@ function gwoWarInfoPanel(gwoSettings) {
           const subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
             inventory,
             game,
-            gwoRefereeCoop.clientsInPlayerOrder(connectedClients)
+            gwoRefereeCoop.clientsInPlayerOrder(connectedClients),
           );
 
           _.forEach(subcommanders, (subcommanderData, index) => {
@@ -379,7 +379,7 @@ function gwoWarInfoPanel(gwoSettings) {
           locTree($("#gwo-panel"));
           ko.applyBindings(model, $fi[0]);
         });
-      }
+      },
     );
   } catch (e) {
     console.error(e);
@@ -424,7 +424,7 @@ var gwoPanelLoader = ko.computed(() => {
   if (!gwoPanelLoadWarned) {
     gwoPanelLoadWarned = true;
     console.warn(
-      "No GWO settings on the origin system yet; the war information panel will load if they appear."
+      "No GWO settings on the origin system yet; the war information panel will load if they appear.",
     );
   }
 });

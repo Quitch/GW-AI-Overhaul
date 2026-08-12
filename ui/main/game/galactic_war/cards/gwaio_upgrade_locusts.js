@@ -6,8 +6,8 @@ define([
 
   describe: _.constant(
     gwoCard.withSlot(
-      loc("!LOC:Locusts Upgrade Tech adds splash damage to nanoswarms.")
-    )
+      loc("!LOC:Locusts Upgrade Tech adds splash damage to nanoswarms."),
+    ),
   ),
 
   summarize: () => "!LOC:Locusts Upgrade Tech",
@@ -20,7 +20,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.locusts)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.locusts),
     );
   },
 
@@ -31,7 +31,7 @@ define([
         splash_damage: 20,
         splash_radius: 20,
         full_damage_splash_radius: 5,
-      })
+      }),
     );
   },
 

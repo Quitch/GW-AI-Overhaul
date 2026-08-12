@@ -23,7 +23,7 @@ const CARDS_DIR = path.join(
   "main",
   "game",
   "galactic_war",
-  "cards"
+  "cards",
 );
 
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
@@ -71,7 +71,7 @@ function collectAiMods(card) {
       get(target, prop) {
         return prop in target ? target[prop] : createAutoStub();
       },
-    }
+    },
   );
 
   for (const method of ["buff", "dull"]) {
@@ -85,7 +85,7 @@ function collectAiMods(card) {
         method + "() threw against the mock inventory: " + e.message,
         {
           cause: e,
-        }
+        },
       );
     }
   }
@@ -106,7 +106,7 @@ function checkMod(mod, index) {
         mod.type +
         '" (expected one of: ' +
         [...VALID_TYPES].join(", ") +
-        ")"
+        ")",
     );
   }
 
@@ -118,7 +118,7 @@ function checkMod(mod, index) {
         mod.op +
         '" (expected one of: ' +
         Object.keys(REQUIRED_FIELDS_BY_OP).join(", ") +
-        ")"
+        ")",
     );
   } else {
     for (const field of requiredFields) {
@@ -140,7 +140,7 @@ function checkMod(mod, index) {
           mod.type +
           '" (expected one of: ' +
           [...allowedTypes].join(", ") +
-          ")"
+          ")",
       );
     }
   }
@@ -224,7 +224,7 @@ function main() {
       excluded +
       " cards excluded (unloadable via shim), " +
       failures.length +
-      " cards failed."
+      " cards failed.",
   );
 
   reportFailures(failures);

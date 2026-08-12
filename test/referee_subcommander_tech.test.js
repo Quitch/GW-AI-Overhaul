@@ -11,7 +11,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const subcommanderTech = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
 );
 
 const TACTICS_CARD = { id: "gwaio_upgrade_subcommander_tactics" };
@@ -77,14 +77,14 @@ describe("applySubcommanderDuplicationTech", () => {
   it("returns 2 when the duplication card is held", () => {
     assert.equal(
       subcommanderTech.applySubcommanderDuplicationTech([DUPLICATION_CARD]),
-      2
+      2,
     );
   });
 
   it("returns 1 when the duplication card is absent", () => {
     assert.equal(
       subcommanderTech.applySubcommanderDuplicationTech([TACTICS_CARD]),
-      1
+      1,
     );
   });
 });

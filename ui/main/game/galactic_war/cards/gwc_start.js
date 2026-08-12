@@ -8,13 +8,13 @@ define([
     visible: _.constant(false),
     summarize: _.constant("!LOC:Default Commander"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
+      "coui://ui/main/game/galactic_war/shared/img/red-commander.png",
     ),
     describe: _.constant(""),
     deal: _.constant(false),
     buff: function (inventory) {
       inventory.maxCards(
-        inventory.maxCards() + GW.balance.initialCardSlots + 1
+        inventory.maxCards() + GW.balance.initialCardSlots + 1,
       );
 
       var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
@@ -29,7 +29,7 @@ define([
         gwoGroup.navalBasic,
         gwoGroup.orbitalBasic,
         gwoUnit.teleporter,
-        commander
+        commander,
       );
       inventory.addUnits(starterUnits);
     },

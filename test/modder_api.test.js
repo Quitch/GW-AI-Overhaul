@@ -26,11 +26,11 @@ const MOD_ROOT = "ui/mods/com.pa.quitch.gwaioverhaul";
 const gwoCard = loadCouiModule("coui://" + MOD_ROOT + "/shared/cards.js");
 const gwoUnit = loadCouiModule("coui://" + MOD_ROOT + "/shared/units.js");
 const gwoGroup = loadCouiModule(
-  "coui://" + MOD_ROOT + "/shared/unit_groups.js"
+  "coui://" + MOD_ROOT + "/shared/unit_groups.js",
 );
 const gwoDeal = loadCouiModule("coui://" + MOD_ROOT + "/shared/deal.js");
 const helpers = loadCouiModule(
-  "coui://" + MOD_ROOT + "/gw_play/cards_deal_helpers.js"
+  "coui://" + MOD_ROOT + "/gw_play/cards_deal_helpers.js",
 );
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
@@ -63,17 +63,17 @@ const GLOBALS = [
 describe("the modder globals are adopted, not overwritten", () => {
   for (const [name, file] of GLOBALS) {
     it(`${name} is guarded in ${path.basename(file)}`, () => {
-      // Whitespace-tolerant: Prettier wraps the longer names across lines.
-      // Either spelling counts - shadowed files keep lodash, mod files are
-      // native.
+      // Whitespace-tolerant: Prettier wraps the longer names across lines, and
+      // adds a trailing comma when it does. Either spelling counts - shadowed
+      // files keep lodash, mod files are native.
       const guard = new RegExp(
-        "(?:Array|_)\\.isArray\\(\\s*model\\." + name + "\\s*\\)"
+        "(?:Array|_)\\.isArray\\(\\s*model\\." + name + "\\s*,?\\s*\\)",
       );
       assert.match(
         source(file),
         guard,
         `${file} must keep its isArray guard on model.${name} - a bare ` +
-          "assignment would discard whatever a mod registered before GWO ran"
+          "assignment would discard whatever a mod registered before GWO ran",
       );
     });
   }
@@ -84,7 +84,7 @@ describe("the modder globals are adopted, not overwritten", () => {
   it("gwoStarCardsWhichBreakAllies is read from the mod's own array", () => {
     assert.match(
       source(MOD_ROOT + "/gw_start/setup.js"),
-      /(?:Array|_)\.isArray\(\s*model\.gwoStarCardsWhichBreakAllies\s*\)/
+      /(?:Array|_)\.isArray\(\s*model\.gwoStarCardsWhichBreakAllies\s*\)/,
     );
   });
 });
@@ -152,7 +152,7 @@ describe("shared/cards.js publishes the documented helpers", () => {
       assert.equal(
         typeof gwoCard[name],
         "function",
-        `New-GW-Cards documents gwoCard.${name}`
+        `New-GW-Cards documents gwoCard.${name}`,
       );
     });
   }
@@ -221,7 +221,7 @@ describe("the deal signature", () => {
         rng: rng,
       },
       { then: (callback) => callback() },
-      [card]
+      [card],
     );
 
     assert.deepEqual(seen.star, { name: "a star" });
@@ -241,7 +241,7 @@ describe("the deal signature", () => {
           id: "c",
           deal: () => ({ chance: 1, params: { allowOverflow: true } }),
         },
-      ]
+      ],
     );
 
     assert.equal(product.allowOverflow, true);
@@ -260,7 +260,7 @@ describe("loadout id prefixes", () => {
 
   it("reserves the gwc_start prefix for the base game", () => {
     const treasure = loadCouiModule(
-      "coui://" + MOD_ROOT + "/gw_play/treasure_loadouts.js"
+      "coui://" + MOD_ROOT + "/gw_play/treasure_loadouts.js",
     );
 
     assert.equal(treasure.isBaseLoadoutCardId("gwc_start_bot"), true);

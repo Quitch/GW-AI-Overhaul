@@ -14,11 +14,11 @@ function gwoSystemChanges() {
     const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
     if (gwoSettings) {
       console.log(
-        `War created using Galactic War Overhaul v${gwoSettings.version}`
+        `War created using Galactic War Overhaul v${gwoSettings.version}`,
       );
     } else {
       console.log(
-        "War created using base game, or Galactic War Overhaul v4.12.1 or earlier"
+        "War created using base game, or Galactic War Overhaul v4.12.1 or earlier",
       );
     }
 
@@ -63,8 +63,8 @@ function gwoSystemChanges() {
                 color[0],
                 color[1],
                 color[2],
-                color.length >= 4 ? color[3] : 1
-              )
+                color.length >= 4 ? color[3] : 1,
+              ),
             );
           }
         };
@@ -106,7 +106,9 @@ function gwoSystemChanges() {
 
     // Add tooltips, starting planet, and thruster icons on planet intelligence icons
     $(".all-planets").replaceWith(
-      loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html")
+      loadHtml(
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html",
+      ),
     );
 
     const SelectionViewModel = function (config) {
@@ -135,7 +137,7 @@ function gwoSystemChanges() {
       self.visible = ko.observable(true);
       self.star = ko.observable(-1);
       self.system = ko.computed(() =>
-        self.star() >= 0 ? galaxyView.systems()[self.star()] : undefined
+        self.star() >= 0 ? galaxyView.systems()[self.star()] : undefined,
       );
 
       const extractor = (field) =>
@@ -188,7 +190,7 @@ function gwoSystemChanges() {
             }
           },
           null,
-          "beforeChange"
+          "beforeChange",
         );
 
         self.system.subscribe(() => {
@@ -271,7 +273,7 @@ function gwoSystemChanges() {
     });
 
     model.displayMove = ko.computed(
-      () => model.canShowCampaignActionButtons() && model.canMove()
+      () => model.canShowCampaignActionButtons() && model.canMove(),
     );
 
     model.displayFight = ko.computed(
@@ -279,14 +281,14 @@ function gwoSystemChanges() {
         model.canShowCampaignActionButtons() &&
         model.canFight() &&
         !model.allowLoad() &&
-        model.selection.star() === game.currentStar()
+        model.selection.star() === game.currentStar(),
     );
 
     model.displayExplore = ko.computed(
       () =>
         model.canShowCampaignActionButtons() &&
         model.canExplore() &&
-        model.selection.star() === game.currentStar()
+        model.selection.star() === game.currentStar(),
     );
 
     model.displayLoadSave = ko.computed(
@@ -294,7 +296,7 @@ function gwoSystemChanges() {
         model.canShowCampaignActionButtons() &&
         model.canFight() &&
         model.allowLoad() &&
-        model.selection.star() === game.currentStar()
+        model.selection.star() === game.currentStar(),
     );
 
     requireGW(
@@ -314,7 +316,7 @@ function gwoSystemChanges() {
           stockBank: GW.bank,
           gwoBank,
         });
-      }
+      },
     );
 
     requireGW(["shared/gw_factions"], (GWFactions) => {

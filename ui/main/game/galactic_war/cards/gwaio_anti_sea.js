@@ -25,7 +25,7 @@ define([
     return gwoCard.antiTechDeal(
       inventory,
       gwoCard.navalWeight(inventory, 40, 15),
-      "gwaio_anti_hover"
+      "gwaio_anti_hover",
     );
   },
 
@@ -36,9 +36,9 @@ define([
           gwoCard.mods(ammo, "multiplyOrCreate", {
             "armor_damage_map.AT_Hover": 0.5,
             "armor_damage_map.AT_Naval": 2,
-          })
-        )
-      )
+          }),
+        ),
+      ),
     );
   },
 

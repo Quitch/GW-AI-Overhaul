@@ -15,7 +15,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.conditionalDeal(
       gwoCard.hasUnit(inventory.units(), gwoGroup.titans),
-      70
+      70,
     );
   },
 
@@ -46,7 +46,7 @@ define([
           op: "multiply",
           value: 1.2,
         },
-      ])
+      ]),
     );
     inventory.addMods(mods);
   },

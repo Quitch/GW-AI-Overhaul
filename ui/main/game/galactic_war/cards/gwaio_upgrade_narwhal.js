@@ -6,8 +6,8 @@ define([
 
   describe: _.constant(
     gwoCard.withSlot(
-      loc("!LOC:Narwhal Upgrade Tech doubles the rate of fire of all weapons.")
-    )
+      loc("!LOC:Narwhal Upgrade Tech doubles the rate of fire of all weapons."),
+    ),
   ),
 
   summarize: () => "!LOC:Narwhal Upgrade Tech",
@@ -24,7 +24,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.narwhal),
-      30
+      30,
     );
   },
 

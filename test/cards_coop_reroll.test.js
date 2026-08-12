@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
 
 const reroll = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js",
 );
 
 describe("computeRerollDeal", () => {
@@ -58,16 +58,16 @@ describe("pendingTechRerollValidationError", () => {
       reroll.pendingTechRerollValidationError(
         { star: 2, deal_index: 1 },
         pending,
-        false
+        false,
       ),
-      undefined
+      undefined,
     );
   });
 
   it("accepts a request that omits the optional star/deal_index guards", () => {
     assert.equal(
       reroll.pendingTechRerollValidationError({}, pending, false),
-      undefined
+      undefined,
     );
   });
 
@@ -76,24 +76,24 @@ describe("pendingTechRerollValidationError", () => {
       reroll.pendingTechRerollValidationError(
         {},
         { star: "2", cards: [] },
-        false
+        false,
       ),
-      "invalid pending tech cards"
+      "invalid pending tech cards",
     );
     assert.equal(
       reroll.pendingTechRerollValidationError(
         {},
         { star: 2, cards: null },
-        false
+        false,
       ),
-      "invalid pending tech cards"
+      "invalid pending tech cards",
     );
   });
 
   it("rejects a stale star", () => {
     assert.equal(
       reroll.pendingTechRerollValidationError({ star: 3 }, pending, false),
-      "stale pending tech star"
+      "stale pending tech star",
     );
   });
 
@@ -102,16 +102,16 @@ describe("pendingTechRerollValidationError", () => {
       reroll.pendingTechRerollValidationError(
         { deal_index: 9 },
         pending,
-        false
+        false,
       ),
-      "stale pending tech deal index"
+      "stale pending tech deal index",
     );
   });
 
   it("rejects a reroll of loadout cards", () => {
     assert.equal(
       reroll.pendingTechRerollValidationError({ star: 2 }, pending, true),
-      "loadout cards cannot be rerolled"
+      "loadout cards cannot be rerolled",
     );
   });
 });
@@ -119,10 +119,10 @@ describe("pendingTechRerollValidationError", () => {
 describe("pendingTechRerollRng", () => {
   const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
   const streams = loadCouiModule(
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   );
   const coopDeal = requireShippedModule(
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js"
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js",
   );
   const war = () => streams.warRng({ seed: "coop-seed" });
 
@@ -136,7 +136,7 @@ describe("pendingTechRerollRng", () => {
         pendingTechCards: { dealIndex: 1 },
         rerollsUsed: 1,
       },
-      over
+      over,
     );
 
   function seq(over, count = 4) {
@@ -165,21 +165,21 @@ describe("pendingTechRerollRng", () => {
     });
     assert.notDeepEqual(
       Array.from({ length: 4 }, () => dealRng()),
-      seq({ rerollsUsed: 0 })
+      seq({ rerollsUsed: 0 }),
     );
   });
 
   it("tolerates a missing pendingTechCards without throwing", () => {
     assert.equal(
       typeof reroll.pendingTechRerollRng(args({ pendingTechCards: undefined })),
-      "function"
+      "function",
     );
   });
 
   it("keeps drawing unseeded for a war saved before seeds", () => {
     assert.equal(
       reroll.pendingTechRerollRng(args({ warRng: undefined })),
-      undefined
+      undefined,
     );
   });
 });

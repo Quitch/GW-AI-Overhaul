@@ -10,7 +10,7 @@ const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { createFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const deal = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
 );
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
@@ -44,7 +44,7 @@ describe("dealCard", () => {
     const product = await deal.dealCard(
       { id: "gwaio_upgrade_ant" },
       fakeLoaded(),
-      [card]
+      [card],
     );
     assert.deepEqual(product, { id: "gwaio_upgrade_ant", chance: 60 });
   });
@@ -161,7 +161,7 @@ describe("dealCard", () => {
     setGlobal("$", createFakeJQuery());
     await assert.rejects(
       deal.dealCard({ id: "missing" }, fakeLoaded(), [{ id: "other" }]),
-      { message: "GWO card not found: missing" }
+      { message: "GWO card not found: missing" },
     );
   });
 });
@@ -259,7 +259,7 @@ describe("setupGwoDeck", () => {
     assert.deepEqual(reverse.deck, ids);
     assert.deepEqual(
       reverse.cards.map((card) => card.id),
-      ids
+      ids,
     );
   });
 

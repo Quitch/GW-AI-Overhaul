@@ -25,8 +25,8 @@ define([
     return _.uniq(
       _.filter(
         _.map(base.concat(gwaio, [record && record.loadoutCardId]), cardId),
-        (id) => helpers.isStartLoadoutCardId(id)
-      )
+        (id) => helpers.isStartLoadoutCardId(id),
+      ),
     );
   };
 
@@ -54,8 +54,8 @@ define([
     found = _.findIndex(stars, (star) =>
       _.some(
         (star && _.isFunction(star.cardList) && star.cardList()) || [],
-        (card) => card && helpers.isStartLoadoutCardId(card.id)
-      )
+        (card) => card && helpers.isStartLoadoutCardId(card.id),
+      ),
     );
 
     return found === -1 ? undefined : found;
@@ -97,7 +97,7 @@ define([
       : [];
 
     return _.filter(_.map(registered, cardId), (id) =>
-      helpers.isStartLoadoutCardId(id)
+      helpers.isStartLoadoutCardId(id),
     );
   };
 
@@ -106,12 +106,12 @@ define([
       _.uniq(
         gwoLoadoutIds.lockedBase.concat(
           gwoLoadoutIds.unlockable,
-          modLoadoutIds()
-        )
+          modLoadoutIds(),
+        ),
       ),
       (id) => ({
         id,
-      })
+      }),
     );
 
   const recordHasUnlockedLoadout = (record, card) => {
@@ -135,7 +135,7 @@ define([
     }
 
     return helpers.buildPendingStartLoadoutCard(
-      rng ? rng.pick(locked) : _.sample(locked)
+      rng ? rng.pick(locked) : _.sample(locked),
     );
   };
 
@@ -151,14 +151,14 @@ define([
 
     const localLocked = _.some(
       pool,
-      (card) => localIds.indexOf(card.id) === -1
+      (card) => localIds.indexOf(card.id) === -1,
     );
     if (localLocked || !params.perPlayerTech) {
       return localLocked;
     }
 
     return _.some(params.records || [], (record) =>
-      _.some(pool, (card) => !recordHasUnlockedLoadout(record, card))
+      _.some(pool, (card) => !recordHasUnlockedLoadout(record, card)),
     );
   };
 
@@ -174,7 +174,7 @@ define([
       .concat(gwoBank.startCards(), gwoLoadoutBanks.startCards());
 
     return _.uniq(
-      _.filter(_.map(held, cardId), (id) => helpers.isStartLoadoutCardId(id))
+      _.filter(_.map(held, cardId), (id) => helpers.isStartLoadoutCardId(id)),
     );
   };
 
@@ -184,7 +184,7 @@ define([
       Array.isArray(payload.unlocked_start_card_ids)
         ? payload.unlocked_start_card_ids
         : [],
-      (id) => helpers.isStartLoadoutCardId(id)
+      (id) => helpers.isStartLoadoutCardId(id),
     );
 
     const record = game.findCoopPlayerInventoryData({
@@ -193,7 +193,7 @@ define([
     });
     if (!record) {
       console.warn(
-        `[GW COOP] no record for reported loadout unlocks client=${operator.client_id}`
+        `[GW COOP] no record for reported loadout unlocks client=${operator.client_id}`,
       );
       return;
     }
@@ -206,7 +206,7 @@ define([
       Object.assign({}, _.cloneDeep(record), {
         gwaioUnlockedStartCardIds: ids,
         updatedAt: _.now(),
-      })
+      }),
     );
     if (!stored) {
       console.error("[GW COOP] failed to store reported loadout unlocks");
@@ -226,7 +226,7 @@ define([
     if (model.registerCampaignViewerOperatorHandler) {
       model.registerCampaignViewerOperatorHandler(
         reportOperator,
-        applyReportedLoadouts.bind(null, game)
+        applyReportedLoadouts.bind(null, game),
       );
     }
 

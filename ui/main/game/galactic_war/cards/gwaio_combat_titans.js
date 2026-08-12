@@ -18,7 +18,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.conditionalDeal(
       gwoCard.hasUnit(inventory.units(), gwoGroup.titans),
-      60
+      60,
     );
   },
 
@@ -54,7 +54,7 @@ define([
           path: "navigation.turn_speed",
           op: "multiply",
           value: 1.2,
-        }
+        },
       );
     });
     _.forEach(gwoGroup.titansAmmo, (ammo) => {
@@ -70,7 +70,7 @@ define([
           path: "splash_damage",
           op: "multiply",
           value: 1.25,
-        }
+        },
       );
     });
     inventory.addMods(mods);

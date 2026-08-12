@@ -29,9 +29,9 @@ define([
           gwoCard.mods(ammo, "multiplyOrCreate", {
             "armor_damage_map.AT_Vehicle": 2,
             "armor_damage_map.AT_Bot": 0.5,
-          })
-        )
-      )
+          }),
+        ),
+      ),
     );
   },
 

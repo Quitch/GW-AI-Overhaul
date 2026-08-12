@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Ares Upgrade Tech increases the range of the rolling fortress by 25%."
-      )
-    )
+        "!LOC:Ares Upgrade Tech increases the range of the rolling fortress by 25%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Ares Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.ares)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.ares),
     );
   },
 

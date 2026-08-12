@@ -18,7 +18,7 @@ define(() => {
       faction.minions[random.index] = _.merge(
         _.cloneDeep(spec.baseline),
         random.template,
-        { personality: source.personality }
+        { personality: source.personality },
       );
     });
 

@@ -1,7 +1,7 @@
 // Every seeded stream key the gw_play scene uses, in one file so the key layout
 // documented in docs/galaxy.md has a single place to be checked against.
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"], (
-  gwoRng
+  gwoRng,
 ) => {
   // gwo_rng joins a label and index with a space, so a label carrying one could
   // make stream("a b") collide with stream("a", "b"). Player names carry spaces.

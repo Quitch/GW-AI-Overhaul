@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       `${loc(
-        "!LOC:Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator."
-      )} ${loc("!LOC:Disables the auto-repair feature.")}`
-    )
+        "!LOC:Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator.",
+      )} ${loc("!LOC:Disables the auto-repair feature.")}`,
+    ),
   ),
 
   summarize: () => "!LOC:Mend Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.mend)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.mend),
     );
   },
 
@@ -35,7 +35,7 @@ define([
       gwoCard.mods(gwoUnit.mendBuildArm, "replace", {
         can_only_assist_with_buildable_items: false,
         auto_repair: false,
-      })
+      }),
     );
   },
 

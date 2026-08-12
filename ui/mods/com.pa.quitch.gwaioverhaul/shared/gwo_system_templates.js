@@ -161,11 +161,11 @@ define([
       // says so rather than producing a plausible-looking war in silence.
       if (config.seed === undefined) {
         console.warn(
-          "GWO: generating a system with no seed - it will not reproduce"
+          "GWO: generating a system with no seed - it will not reproduce",
         );
       }
       var rng = gwoRng.create(
-        config.seed !== undefined ? config.seed : Math.random()
+        config.seed !== undefined ? config.seed : Math.random(),
       );
       var getRandomInt = function (min, max) {
         return Math.floor(rng() * (max - min + 1)) + min;
@@ -263,7 +263,7 @@ define([
             usedIndexContainers,
             function (container) {
               return container.planets === plnt.fromRandomList;
-            }
+            },
           );
 
           // if there isn't a container already, create it
@@ -284,7 +284,7 @@ define([
               (typeof plnt.isExplicit === "undefined" ||
                 !!planet.isExplicit === plnt.isExplicit) &&
               usedIndexContainer.usedIndexes.indexOf(
-                planetList.indexOf(planet)
+                planetList.indexOf(planet),
               ) === -1
             );
           });
@@ -359,7 +359,7 @@ define([
         bp.generator.biome = planetRng.pick(plnt.Biomes);
 
         var biomeGet = $.get(
-          "coui://pa/terrain/" + bp.generator.biome + ".json"
+          "coui://pa/terrain/" + bp.generator.biome + ".json",
         ).then(function (data) {
           return parse(data);
         });
@@ -378,30 +378,30 @@ define([
           // pre-drawn so radius can still read the fetched radius_range.
           bp.generator.radius = planetRng.int(
             Math.max(plnt.Radius[0], radius_range[0]),
-            Math.min(plnt.Radius[1], radius_range[1])
+            Math.min(plnt.Radius[1], radius_range[1]),
           );
 
           bp.generator.heightRange = planetRng.int(
             plnt.Height[0],
-            plnt.Height[1]
+            plnt.Height[1],
           );
           bp.generator.waterHeight = planetRng.int(
             plnt.Water[0],
-            plnt.Water[1]
+            plnt.Water[1],
           );
           bp.generator.waterDepth = 100;
           bp.generator.temperature = planetRng.int(plnt.Temp[0], plnt.Temp[1]);
           bp.generator.biomeScale = planetRng.int(
             plnt.BiomeScale[0],
-            plnt.BiomeScale[1]
+            plnt.BiomeScale[1],
           );
           bp.generator.metalDensity = planetRng.int(
             plnt.MetalDensity[0],
-            plnt.MetalDensity[1]
+            plnt.MetalDensity[1],
           );
           bp.generator.metalClusters = planetRng.int(
             plnt.MetalClusters[0],
-            plnt.MetalClusters[1]
+            plnt.MetalClusters[1],
           );
           bp.generator.index = index;
           bp.name = name;
@@ -409,7 +409,7 @@ define([
           bp.velocity = plnt.Velocity;
           bp.required_thrust_to_move = planetRng.int(
             plnt.Thrust[0],
-            plnt.Thrust[1]
+            plnt.Thrust[1],
           );
           bp.mass = plnt.mass;
           bp.starting_planet = plnt.starting_planet;

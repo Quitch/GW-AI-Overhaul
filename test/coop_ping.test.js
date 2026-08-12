@@ -21,11 +21,11 @@ const {
   starValidationError,
   techChoicePending,
 } = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js",
 );
 
 const { pulseFrame } = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_marker.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_marker.js",
 );
 
 const PULSE_MS = 900;
@@ -48,7 +48,7 @@ describe("ping validation", () => {
       assert.equal(
         pingValidationError(payload, 3),
         "invalid payload",
-        JSON.stringify(payload)
+        JSON.stringify(payload),
       );
     }
   });
@@ -60,7 +60,7 @@ describe("ping validation", () => {
       assert.equal(
         pingValidationError(ping({ star }), 3),
         "invalid star",
-        String(star)
+        String(star),
       );
     }
   });
@@ -68,15 +68,15 @@ describe("ping validation", () => {
   it("refuses a star outside the galaxy", () => {
     assert.equal(
       pingValidationError(ping({ star: 3 }), 3),
-      "star out of range"
+      "star out of range",
     );
     assert.equal(
       pingValidationError(ping({ star: -1 }), 3),
-      "star out of range"
+      "star out of range",
     );
     assert.equal(
       pingValidationError(ping({ star: 0 }), 0),
-      "star out of range"
+      "star out of range",
     );
   });
 
@@ -86,13 +86,13 @@ describe("ping validation", () => {
       assert.equal(
         pingValidationError(ping({ ping_id: pingId }), 3),
         "invalid ping id",
-        String(pingId)
+        String(pingId),
       );
     }
 
     assert.equal(
       pingValidationError(ping({ ping_id: "x".repeat(64) }), 3),
-      undefined
+      undefined,
     );
   });
 });
@@ -131,11 +131,11 @@ describe("an exploration still being resolved", () => {
   it("ignores a record whose offer is malformed", () => {
     assert.equal(
       techChoicePending([{ pendingTechCards: { star: "2", cards: [] } }]),
-      false
+      false,
     );
     assert.equal(
       techChoicePending([{ pendingTechCards: { star: 2, cards: "a" } }]),
-      false
+      false,
     );
   });
 });
@@ -230,7 +230,7 @@ describe("marker pulse", () => {
     for (const boundary of [PULSE_MS, PULSE_MS * 2]) {
       assert.ok(
         pulseFrame(boundary).ringScale < pulseFrame(boundary - 1).ringScale,
-        String(boundary)
+        String(boundary),
       );
       assert.equal(pulseFrame(boundary).ringScale, pulseFrame(0).ringScale);
     }

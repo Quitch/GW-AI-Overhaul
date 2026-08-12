@@ -19,7 +19,7 @@ const CARDS_DIR = path.join(
   "main",
   "game",
   "galactic_war",
-  "cards"
+  "cards",
 );
 const LOADOUT_IDS_COUI =
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js";
@@ -29,7 +29,7 @@ const UNIT_MAP_PATH = path.join(
   "pa",
   "ai_penchant",
   "unit_maps",
-  "ai_unit_map.json"
+  "ai_unit_map.json",
 );
 
 // referee_ai.js names these literally rather than resolving them through the
@@ -68,12 +68,12 @@ function checkLoadoutCardsExist() {
         'cross-refs: loadout_ids.js references card id "' +
           id +
           '" with no matching file: ' +
-          cardPath
+          cardPath,
       );
     }
   }
   console.log(
-    "cross-refs: " + ids.length + " loadout card ids checked against cards/."
+    "cross-refs: " + ids.length + " loadout card ids checked against cards/.",
   );
 }
 
@@ -83,7 +83,7 @@ function findUnitsParamName(src) {
   // Negated character classes, not lazy dot-all: no deps array or parameter list
   // here contains a literal `]`/`)`, and this cannot backtrack pathologically.
   const match = src.match(
-    /define\(\s*\[([^\]]*)\]\s*,\s*function\s*\(([^)]*)\)/
+    /define\(\s*\[([^\]]*)\]\s*,\s*function\s*\(([^)]*)\)/,
   );
   if (!match) {
     return null;
@@ -119,10 +119,10 @@ function checkUnitReferencesInCards() {
     const escaped = paramName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const refPattern = new RegExp(
       "\\b" + escaped + "\\.([A-Za-z_$][A-Za-z0-9_$]*)",
-      "g"
+      "g",
     );
     const referenced = new Set(
-      [...stripComments(src).matchAll(refPattern)].map((m) => m[1])
+      [...stripComments(src).matchAll(refPattern)].map((m) => m[1]),
     );
 
     for (const key of referenced) {
@@ -135,7 +135,7 @@ function checkUnitReferencesInCards() {
             paramName +
             "." +
             key +
-            ", which does not exist in units.js"
+            ", which does not exist in units.js",
         );
       }
     }
@@ -148,7 +148,7 @@ function checkUnitReferencesInCards() {
       checkedCards +
       " cards checked against units.js (" +
       unitKeys.size +
-      " known units)."
+      " known units).",
   );
 }
 
@@ -157,10 +157,10 @@ function checkBuilderRoles() {
   const roleKeys = new Set(Object.keys(unitMap));
 
   const aiDirs = ["ai", "ai_penchant", "ai_tech"].map((d) =>
-    path.join(REPO_ROOT, "pa", d)
+    path.join(REPO_ROOT, "pa", d),
   );
   const files = aiDirs.flatMap((dir) =>
-    fs.existsSync(dir) ? walkFiles(dir, (name) => name.endsWith(".json")) : []
+    fs.existsSync(dir) ? walkFiles(dir, (name) => name.endsWith(".json")) : [],
   );
 
   let checked = 0;
@@ -180,7 +180,7 @@ function checkBuilderRoles() {
               entry.name +
               '" has unresolvable builder role "' +
               builder +
-              '"'
+              '"',
           );
         }
       }
@@ -190,7 +190,7 @@ function checkBuilderRoles() {
   console.log(
     "cross-refs: " +
       checked +
-      " builder role references checked against ai_unit_map.json."
+      " builder role references checked against ai_unit_map.json.",
   );
 }
 

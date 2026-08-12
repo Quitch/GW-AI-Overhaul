@@ -27,7 +27,7 @@ define([
       gwoCard.mods(unit, "multiply", {
         "recon.observer.items.0.radius": percentageReduction,
         "recon.observer.items.1.radius": percentageReduction,
-      })
+      }),
     );
     const speedMods = _.map(gwoGroup.combatMobile, (unit) =>
       gwoCard.mods(unit, "multiply", {
@@ -35,12 +35,12 @@ define([
         "navigation.brake": percentageIncrease,
         "navigation.acceleration": percentageIncrease,
         "navigation.turn_speed": percentageIncrease,
-      })
+      }),
     );
     const rangeMods = _.map(gwoGroup.combatMobileWeapons, (weapon) =>
       gwoCard.mods(weapon, "multiply", {
         max_range: percentageReduction,
-      })
+      }),
     );
 
     inventory.addMods(_.flatten(sightMods.concat(speedMods, rangeMods)));

@@ -34,7 +34,7 @@ define([
         "!LOC:Adds a Sub Commander that will join you in battles.",
         "<br>",
         "!LOC:Name:",
-        " " + minion.name
+        " " + minion.name,
       );
       if (minion.character) {
         result.push("<br>", "!LOC:Personality:", " " + loc(minion.character));
@@ -46,7 +46,7 @@ define([
     },
     summarize: _.constant("!LOC:Sub Commander"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/shared/img/red-commander.png"
+      "coui://ui/main/game/galactic_war/shared/img/red-commander.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_subcommander",
@@ -85,7 +85,7 @@ define([
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
       var minion = _.cloneDeep(
-        rng ? rng.pick(minionPool) : _.sample(minionPool)
+        rng ? rng.pick(minionPool) : _.sample(minionPool),
       );
 
       if (gwoSettings) {
@@ -96,7 +96,7 @@ define([
             minion.character + (" " + loc(penchantValues.penchantName));
           minion.personality.personality_tags =
             minion.personality.personality_tags.concat(
-              penchantValues.penchants
+              penchantValues.penchants,
             );
         }
       }

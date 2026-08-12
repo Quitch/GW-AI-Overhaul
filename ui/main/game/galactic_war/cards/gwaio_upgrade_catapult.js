@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Catapult Upgrade Tech adds flak from the Storm flak tank to the tactical missile launcher."
-      )
-    )
+        "!LOC:Catapult Upgrade Tech adds flak from the Storm flak tank to the tactical missile launcher.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Catapult Upgrade Tech",
@@ -26,7 +26,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.catapult),
-      30
+      30,
     );
   },
 
@@ -50,7 +50,7 @@ define([
         })
         .concat([
           { file: gwoUnit.catapult, path: "tools.2.spec_id", op: "tag" },
-        ])
+        ]),
     );
   },
 

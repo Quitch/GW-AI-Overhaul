@@ -13,7 +13,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:The Bot Commander loadout contains basic bot factories."
+      "!LOC:The Bot Commander loadout contains basic bot factories.",
     ),
     deal: gwoCard.startCard,
     buff: function (inventory) {

@@ -13,10 +13,10 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const gwoAI = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 );
 const gwoRng = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
 );
 
 let restoreModel;
@@ -63,7 +63,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
     restoreModel = installModel(fixture.game);
     assert.equal(
       gwoAI.getAIPathDestination("enemy"),
-      "/pa/ai/player_guardians/"
+      "/pa/ai/player_guardians/",
     );
   });
 
@@ -85,7 +85,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
     restoreModel = installModel(fixture.game);
     assert.equal(
       gwoAI.getAIPathDestination("subcommander", { scopeToken: ".player0" }),
-      "/pa/ai_subcommander/player_.player0/"
+      "/pa/ai_subcommander/player_.player0/",
     );
   });
 
@@ -97,7 +97,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
     restoreModel = installModel(fixture.game);
     assert.equal(
       gwoAI.getAIPathDestination("subcommander"),
-      "/pa/ai_subcommander/"
+      "/pa/ai_subcommander/",
     );
   });
 });
@@ -109,7 +109,7 @@ describe("getSubcommanderPathForViewer", () => {
     const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(inventory, ".player"),
-      "/pa/ai_subcommander/"
+      "/pa/ai_subcommander/",
     );
   });
 
@@ -119,7 +119,7 @@ describe("getSubcommanderPathForViewer", () => {
     const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(inventory, ".player0"),
-      "/pa/ai_subcommander/player_.player0/"
+      "/pa/ai_subcommander/player_.player0/",
     );
   });
 
@@ -133,7 +133,7 @@ describe("getSubcommanderPathForViewer", () => {
     const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(inventory, ".player0"),
-      "/pa/ai_subcommander/player_.player0/"
+      "/pa/ai_subcommander/player_.player0/",
     );
   });
 
@@ -147,11 +147,11 @@ describe("getSubcommanderPathForViewer", () => {
 
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(smartInventory, ".player0"),
-      "/pa/ai_queller/q_silver/player_.player0/"
+      "/pa/ai_queller/q_silver/player_.player0/",
     );
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(plainInventory, ".player0"),
-      "/pa/ai_queller/q_bronze/player_.player0/"
+      "/pa/ai_queller/q_bronze/player_.player0/",
     );
   });
 });
@@ -233,7 +233,7 @@ describe("penchants", () => {
   it("returns the same penchant for the same seed", () => {
     assert.deepEqual(
       gwoAI.penchants(gwoRng.create("penchant-seed")),
-      gwoAI.penchants(gwoRng.create("penchant-seed"))
+      gwoAI.penchants(gwoRng.create("penchant-seed")),
     );
   });
 

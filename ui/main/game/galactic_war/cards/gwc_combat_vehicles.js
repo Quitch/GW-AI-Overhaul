@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Vehicle Combat Tech increases speed of all vehicles by 50%, health by 50%, and damage by 25%"
+      "!LOC:Vehicle Combat Tech increases speed of all vehicles by 50%, health by 50%, and damage by 25%",
     ),
     summarize: _.constant("!LOC:Vehicle Combat Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png",
     ),
     audio: _.constant({
       found: "PA/VO/Computer/gw/board_tech_available_combat",
@@ -20,7 +20,7 @@ define([
       var sizes = GW.balance.numberOfSystems;
       return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.vehiclesMobile),
-        gwoCard.travelledShort(system, context, sizes) ? 60 : 30
+        gwoCard.travelledShort(system, context, sizes) ? 60 : 30,
       );
     },
     buff: function (inventory) {
@@ -56,7 +56,7 @@ define([
             path: "max_health",
             op: "multiply",
             value: 1.5,
-          }
+          },
         );
       });
       _.forEach(gwoGroup.vehiclesAmmo, function (ammo) {
@@ -72,7 +72,7 @@ define([
             path: "splash_damage",
             op: "multiply",
             value: 1.25,
-          }
+          },
         );
       });
       inventory.addMods(mods);

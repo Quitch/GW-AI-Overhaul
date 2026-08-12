@@ -33,7 +33,7 @@ define(() => ({
     cardsDealt,
     dealAddSlot,
     testRun,
-    systemCards
+    systemCards,
   ) {
     const cardsInSystem = Array.isArray(systemCards) ? systemCards : [];
     const systemHasCard = _.some(cardsInSystem, (systemCard) => {
@@ -155,7 +155,7 @@ define(() => ({
     subcommander,
     gwoSettings,
     gwoAI,
-    rng
+    rng,
   ) {
     if (!gwoSettings || gwoSettings.aiAlly !== "Penchant") {
       return;
@@ -165,7 +165,7 @@ define(() => ({
     subcommander.character = `${subcommander.character} ${loc(penchantValues.penchantName)}`;
     subcommander.personality.personality_tags =
       subcommander.personality.personality_tags.concat(
-        penchantValues.penchants
+        penchantValues.penchants,
       );
   },
 
@@ -198,7 +198,7 @@ define(() => ({
         subcommander,
         gwoSettings,
         gwoAI,
-        minionRng
+        minionRng,
       );
       minions.push({
         id: "gwc_minion",

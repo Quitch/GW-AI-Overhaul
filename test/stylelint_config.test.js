@@ -24,7 +24,7 @@ const CONFIG_FILE = path.join(REPO_ROOT, "stylelint.config.mjs");
 // in anger.
 const FIXTURE = path.join(
   REPO_ROOT,
-  "ui/mods/com.pa.quitch.gwaioverhaul/__fixture__.css"
+  "ui/mods/com.pa.quitch.gwaioverhaul/__fixture__.css",
 );
 
 // Fixtures must be Prettier-shaped - one declaration per line, trailing newline
@@ -40,7 +40,7 @@ async function rulesFired(code) {
   assert.deepEqual(
     result.invalidOptionWarnings,
     [],
-    "stylelint.config.mjs has invalid options"
+    "stylelint.config.mjs has invalid options",
   );
   assert.deepEqual(result.parseErrors, []);
   return [...new Set(result.warnings.map((warning) => warning.rule))].sort();
@@ -50,7 +50,7 @@ async function rejects(code, rule) {
   const fired = await rulesFired(code);
   assert.ok(
     fired.includes(rule),
-    `expected ${rule} to reject:\n${code}\ngot: ${fired.join(", ") || "nothing"}`
+    `expected ${rule} to reject:\n${code}\ngot: ${fired.join(", ") || "nothing"}`,
   );
 }
 
@@ -76,31 +76,31 @@ describe("CSS the profile forbids", () => {
   it("rejects syntax no Blink release ever shipped", async () => {
     await rejects(
       "@custom-media --small (max-width: 30em);\n@media (--small) {\n  a {\n    color: #fff;\n  }\n}\n",
-      "at-rule-disallowed-list"
+      "at-rule-disallowed-list",
     );
     await rejects(
       '@document url("https://example.com/") {\n  a {\n    color: #fff;\n  }\n}\n',
-      "at-rule-disallowed-list"
+      "at-rule-disallowed-list",
     );
     await rejects(
       rule("a", ["-webkit-overflow-scrolling: touch"]),
-      "property-disallowed-list"
+      "property-disallowed-list",
     );
     await rejects(
       rule("a", ["text-size-adjust: none"]),
-      "property-disallowed-list"
+      "property-disallowed-list",
     );
     await rejects(
       rule("a", ["background: element(#x)"]),
-      "function-disallowed-list"
+      "function-disallowed-list",
     );
     await rejects(
       rule("a:matches(.x)", ["color: #fff"]),
-      "selector-pseudo-class-disallowed-list"
+      "selector-pseudo-class-disallowed-list",
     );
     await rejects(
       rule("a::grammar-error", ["color: #fff"]),
-      "selector-pseudo-element-disallowed-list"
+      "selector-pseudo-element-disallowed-list",
     );
   });
 
@@ -109,34 +109,34 @@ describe("CSS the profile forbids", () => {
     // plugin is wired to .browserslistrc at all.
     await rejects(
       rule("a", ["hanging-punctuation: first"]),
-      "plugin/no-unsupported-browser-features"
+      "plugin/no-unsupported-browser-features",
     );
   });
 
   it("rejects vendor prefixes the engine no longer needs", async () => {
     await rejects(
       rule("a", ["-webkit-filter: brightness(1.2)"]),
-      "property-no-vendor-prefix"
+      "property-no-vendor-prefix",
     );
     await rejects(
       rule("a", ['-webkit-mask-image: url("x.png")']),
-      "property-no-vendor-prefix"
+      "property-no-vendor-prefix",
     );
     await rejects(
       rule("a", ["-webkit-user-select: none"]),
-      "property-no-vendor-prefix"
+      "property-no-vendor-prefix",
     );
     await rejects(
       rule("a", ["-webkit-box-shadow: 0 0 1px #000"]),
-      "property-no-vendor-prefix"
+      "property-no-vendor-prefix",
     );
     await rejects(
       "@-webkit-keyframes gwo-fade-in {\n  from {\n    opacity: 0;\n  }\n}\n",
-      "at-rule-no-vendor-prefix"
+      "at-rule-no-vendor-prefix",
     );
     await rejects(
       rule("a::-webkit-input-placeholder", ["color: #fff"]),
-      "selector-no-vendor-prefix"
+      "selector-no-vendor-prefix",
     );
   });
 
@@ -145,25 +145,25 @@ describe("CSS the profile forbids", () => {
     // one modern spelling so format:css converges instead of flip-flopping.
     await rejects(
       rule("a", ["color: rgba(0, 0, 0, 0.5)"]),
-      "color-function-notation"
+      "color-function-notation",
     );
     await rejects(
       rule("a", ["color: rgb(0 0 0 / 0.5)"]),
-      "alpha-value-notation"
+      "alpha-value-notation",
     );
   });
 
   it("rejects legacy media query notation", async () => {
     await rejects(
       "@media (min-width: 600px) {\n  a {\n    color: #fff;\n  }\n}\n",
-      "media-feature-range-notation"
+      "media-feature-range-notation",
     );
   });
 
   it("rejects house-style violations", async () => {
     await rejects(
       rule(".CamelCase", ["color: #fff"]),
-      "selector-class-pattern"
+      "selector-class-pattern",
     );
     await rejects(rule("#CamelCase", ["color: #fff"]), "selector-id-pattern");
   });
@@ -172,7 +172,7 @@ describe("CSS the profile forbids", () => {
 describe("CSS the engine supports", () => {
   it("accepts the unprefixed forms that used to need a prefix", async () => {
     await accepts(
-      "@keyframes gwo-fade-in {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n"
+      "@keyframes gwo-fade-in {\n  from {\n    opacity: 0;\n  }\n\n  to {\n    opacity: 1;\n  }\n}\n",
     );
     await accepts(rule("a", ["animation: gwo-fade-in 1s linear"]));
     await accepts(rule("a", ["filter: brightness(1.2)"]));
@@ -198,7 +198,7 @@ describe("CSS the engine supports", () => {
         "display: grid",
         "grid-template-columns: repeat(2, 1fr)",
         "gap: 4px",
-      ])
+      ]),
     );
     await accepts(rule("a", ["translate: 10px", "rotate: 45deg"]));
   });
@@ -211,7 +211,7 @@ describe("CSS the engine supports", () => {
 
   it("accepts the flex values Chrome 40 used to silently ignore", async () => {
     await accepts(
-      rule("a", ["display: flex", "justify-content: space-evenly"])
+      rule("a", ["display: flex", "justify-content: space-evenly"]),
     );
     await accepts(rule("a", ["display: flex", "align-items: start"]));
     await accepts(rule("a", ["position: sticky", "top: 0"]));
@@ -221,17 +221,17 @@ describe("CSS the engine supports", () => {
 
   it("accepts modern at-rules", async () => {
     await accepts(
-      "@container (width >= 1px) {\n  a {\n    color: #fff;\n  }\n}\n"
+      "@container (width >= 1px) {\n  a {\n    color: #fff;\n  }\n}\n",
     );
     await accepts("@layer base {\n  a {\n    color: #fff;\n  }\n}\n");
     await accepts(
-      "@media (width >= 600px) {\n  a {\n    color: #fff;\n  }\n}\n"
+      "@media (width >= 600px) {\n  a {\n    color: #fff;\n  }\n}\n",
     );
     await accepts(
-      "@supports (display: flex) {\n  a {\n    display: flex;\n  }\n}\n"
+      "@supports (display: flex) {\n  a {\n    display: flex;\n  }\n}\n",
     );
     await accepts(
-      '@font-face {\n  font-family: Sansation;\n  src: url("x.woff") format("woff");\n}\n'
+      '@font-face {\n  font-family: Sansation;\n  src: url("x.woff") format("woff");\n}\n',
     );
   });
 
@@ -258,7 +258,7 @@ describe("CSS the engine supports", () => {
         "flex: 1 1 0",
         "align-self: flex-start",
         "justify-content: space-between",
-      ])
+      ]),
     );
     await accepts(rule("a", ["display: flex", "flex-flow: row wrap"]));
   });

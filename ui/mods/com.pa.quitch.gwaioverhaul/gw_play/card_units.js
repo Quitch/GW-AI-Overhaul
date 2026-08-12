@@ -9,11 +9,11 @@ define([
   ];
   const advancedBotsExcludingFabbers = _.xor(
     gwoGroup.botsAdvancedMobile,
-    advancedBotFabbers
+    advancedBotFabbers,
   );
   const advancedVehiclesExcludingFabber = _.without(
     gwoGroup.vehiclesAdvancedMobile,
-    gwoUnit.vehicleFabberAdvanced
+    gwoUnit.vehicleFabberAdvanced,
   );
 
   return {
@@ -50,7 +50,7 @@ define([
           gwoUnit.stitch,
           gwoUnit.mend,
           gwoUnit.barnacle,
-          gwoUnit.teleporter
+          gwoUnit.teleporter,
         ),
       },
       { id: "gwc_cost_orbital", units: gwoGroup.orbitalMobile },
@@ -437,13 +437,13 @@ define([
       {
         id: "gwaio_upgrade_advancednavalfactory",
         units: gwoGroup.navalAdvancedMobile.concat(
-          gwoUnit.navalFactoryAdvanced
+          gwoUnit.navalFactoryAdvanced,
         ),
       },
       {
         id: "gwaio_upgrade_advancedvehiclefactory",
         units: gwoGroup.vehiclesAdvancedMobile.concat(
-          gwoUnit.vehicleFactoryAdvanced
+          gwoUnit.vehicleFactoryAdvanced,
         ),
       },
       {
@@ -475,7 +475,7 @@ define([
         id: "gwaio_enable_factories_t1_all",
         units: gwoGroup.airBasic.concat(
           gwoGroup.botsBasic,
-          gwoGroup.vehiclesBasic
+          gwoGroup.vehiclesBasic,
         ),
       },
       {

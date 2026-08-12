@@ -66,7 +66,7 @@ define([
                 path: "max_health",
                 op: "multiply",
                 value: 1.3,
-              }
+              },
             );
           });
           _.forEach(gwoGroup.ammo, (ammo) => {
@@ -82,7 +82,7 @@ define([
                 path: "splash_damage",
                 op: "multiply",
                 value: 1.3,
-              }
+              },
             );
           });
           _.forEach(gwoGroup.immobile, (unit) => {
@@ -98,7 +98,7 @@ define([
                 path: "max_health",
                 op: "multiply",
                 value: 1.3,
-              }
+              },
             );
           });
           inventory.addMods(mods);

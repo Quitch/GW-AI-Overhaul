@@ -31,7 +31,7 @@ define([
       chance = gwoCard.travelledShort(
         system,
         context,
-        GW.balance.numberOfSystems
+        GW.balance.numberOfSystems,
       )
         ? 25
         : 250;
@@ -44,7 +44,7 @@ define([
 
   buff: function (inventory) {
     inventory.addUnits(
-      gwoGroup.airBasic.concat(gwoGroup.botsBasic, gwoGroup.vehiclesBasic)
+      gwoGroup.airBasic.concat(gwoGroup.botsBasic, gwoGroup.vehiclesBasic),
     );
   },
 

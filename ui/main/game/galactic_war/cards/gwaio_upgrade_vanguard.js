@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders."
-      )
-    )
+        "!LOC:Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Vanguard Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.vanguard)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.vanguard),
     );
   },
 

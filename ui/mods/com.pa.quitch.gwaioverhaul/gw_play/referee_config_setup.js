@@ -85,22 +85,22 @@ define([
     };
     const totalCards = Object.values(allCards).reduce(
       (total, count) => total + count,
-      0
+      0,
     );
     if (totalCards > 0) {
       personality.percent_air = calculatePercentage(allCards.air, totalCards);
       personality.percent_bot = calculatePercentage(allCards.bot, totalCards);
       personality.percent_orbital = calculatePercentage(
         allCards.orbital,
-        totalCards
+        totalCards,
       );
       personality.percent_naval = calculatePercentage(
         allCards.naval,
-        totalCards
+        totalCards,
       );
       personality.percent_vehicle = calculatePercentage(
         allCards.vehicle,
-        totalCards
+        totalCards,
       );
     }
     if (aiInUse === "Queller") {
@@ -113,7 +113,7 @@ define([
     if (brain !== "Queller") {
       ai.personality.adv_eco_mod *= gwoAI.aiEconRateWithFloor(ai.econ_rate);
       ai.personality.adv_eco_mod_alone *= gwoAI.aiEconRateWithFloor(
-        ai.econ_rate
+        ai.econ_rate,
       );
     }
     return ai;
@@ -148,9 +148,9 @@ define([
         1,
       (count) => {
         slotsArray.push(
-          aiCommander(ai.name, ai.commander, aiLandingOptions, count)
+          aiCommander(ai.name, ai.commander, aiLandingOptions, count),
         );
-      }
+      },
     );
     ai.personality.display_name = getAIPersonalityName(ai); // support Show AI Personality Names mod
     return {
@@ -174,7 +174,7 @@ define([
     inventory,
     playerTag,
     startPosition,
-    battleRng
+    battleRng,
   ) => {
     const playerFaction = inventory.getTag("global", "playerFaction");
     const playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
@@ -194,7 +194,7 @@ define([
         playerTag,
         1,
         gwoAI.subcommanderEconRate,
-        battleRng && battleRng.stream("landing_ally", firstPosition + index)
+        battleRng && battleRng.stream("landing_ally", firstPosition + index),
       );
       armies.push(subcommanderArmy);
     });
@@ -206,7 +206,7 @@ define([
     aiTag,
     aiInUse,
     armies,
-    battleRng
+    battleRng,
   ) => {
     // Cloning the AI clones its minions with it, so the minion loop below is copying too.
     const ai = setAdvEcoMod(_.cloneDeep(liveStarAi), aiInUse);
@@ -216,7 +216,7 @@ define([
       ai.personality = setupGuardianPersonality(
         connectedPlayerCards,
         ai.personality,
-        aiInUse
+        aiInUse,
       );
     }
 
@@ -226,7 +226,7 @@ define([
       aiTag[0],
       2,
       undefined,
-      battleRng && battleRng.stream("landing_enemy", 0)
+      battleRng && battleRng.stream("landing_enemy", 0),
     );
     armies.push(aiArmy);
     const aiPath = setAIPath(gwoAI.isCluster(ai), false);
@@ -243,7 +243,7 @@ define([
         aiTag[0],
         2,
         undefined,
-        battleRng && battleRng.stream("landing_enemy", colourIndex)
+        battleRng && battleRng.stream("landing_enemy", colourIndex),
       );
       armies.push(aiArmy);
     });
@@ -261,7 +261,7 @@ define([
         aiTag[foeTag],
         foeAlliance,
         undefined,
-        battleRng && battleRng.stream("landing_foe", index)
+        battleRng && battleRng.stream("landing_foe", index),
       );
       armies.push(aiArmy);
     });

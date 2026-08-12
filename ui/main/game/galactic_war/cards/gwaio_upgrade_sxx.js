@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:SXX-1304 Laser Platform Upgrade Tech removes the delay between orbital laser platforms arriving at a planet and responding to orders."
-      )
-    )
+        "!LOC:SXX-1304 Laser Platform Upgrade Tech removes the delay between orbital laser platforms arriving at a planet and responding to orders.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:SXX-1304 Laser Platform Upgrade Tech",
@@ -29,7 +29,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.sxx, "replace", {
         planetary_arrival_cooldown_time: 0,
-      })
+      }),
     );
   },
 

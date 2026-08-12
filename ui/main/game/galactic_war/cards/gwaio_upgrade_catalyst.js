@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Catalyst Upgrade Tech doubles the health of the Catalyst and halves its cost."
-      )
-    )
+        "!LOC:Catalyst Upgrade Tech doubles the health of the Catalyst and halves its cost.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Catalyst Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.catalyst)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.catalyst),
     );
   },
 
@@ -32,7 +32,7 @@ define([
       gwoCard.mods(gwoUnit.catalyst, "multiply", {
         max_health: 2,
         build_metal_cost: 0.5,
-      })
+      }),
     );
   },
 

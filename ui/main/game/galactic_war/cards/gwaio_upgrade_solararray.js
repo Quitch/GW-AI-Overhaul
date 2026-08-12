@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array."
-      )
-    )
+        "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Solar Array Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.solarArray)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.solarArray),
     );
   },
 
@@ -53,8 +53,8 @@ define([
             file: gwoUnit.solarArray,
             path: `tools.${i}.spec_id`,
             op: "tag",
-          }))
-        )
+          })),
+        ),
     );
   },
 

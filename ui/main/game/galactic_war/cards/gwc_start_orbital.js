@@ -13,7 +13,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:The Orbital Commander loadout contains all orbital units and factories."
+      "!LOC:The Orbital Commander loadout contains all orbital units and factories.",
     ),
     deal: gwoCard.startCard,
     buff: function (inventory) {

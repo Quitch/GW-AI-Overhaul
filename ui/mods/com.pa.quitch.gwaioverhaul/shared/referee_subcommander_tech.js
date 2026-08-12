@@ -14,10 +14,10 @@ define(() => {
   const applySubcommanderFabberTech = (personality, cards) => {
     if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
       personality.max_basic_fabbers = Math.round(
-        personality.max_basic_fabbers * 1.5
+        personality.max_basic_fabbers * 1.5,
       );
       personality.max_advanced_fabbers = Math.round(
-        personality.max_advanced_fabbers * 1.5
+        personality.max_advanced_fabbers * 1.5,
       );
     }
     return personality;

@@ -13,8 +13,8 @@ function gwoCoopPing() {
     // what binds it. See coop.md.
     $("#selected-system-anchor").append(
       loadHtml(
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping.html"
-      )
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping.html",
+      ),
     );
     locTree($(".gwo-ping-actions"));
 
@@ -69,7 +69,7 @@ function gwoCoopPing() {
                   game.findCoopPlayerInventoryData({
                     id: client.id,
                     name: client.name,
-                  })
+                  }),
               );
 
               // This client's own offer arrives by its own route, and a viewer
@@ -78,9 +78,9 @@ function gwoCoopPing() {
                 pendingTechCards: model.currentCoopPendingTechCards(),
               });
             },
-          })
+          }),
         );
-      }
+      },
     );
   } catch (e) {
     console.error(e);

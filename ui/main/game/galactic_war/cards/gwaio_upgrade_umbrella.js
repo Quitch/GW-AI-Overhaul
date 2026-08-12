@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Umbrella Upgrade Tech enables the targeting of land and surface naval units by anti-orbital defenses."
-      )
-    )
+        "!LOC:Umbrella Upgrade Tech enables the targeting of land and surface naval units by anti-orbital defenses.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Umbrella Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.umbrella)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.umbrella),
     );
   },
 

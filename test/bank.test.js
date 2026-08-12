@@ -61,7 +61,7 @@ stubs.setGlobal("ko", {
         out[key] =
           typeof target[key] === "function" ? target[key]() : target[key];
         return out;
-      }, {})
+      }, {}),
     ),
 });
 // Defined rather than assigned through the stub helper: Node ships its own
@@ -90,7 +90,7 @@ stubs.setGlobal("api", {
 after(() => stubs.restoreGlobals());
 
 const bank = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
 );
 
 // Seeds the stored value and reloads, which is how a test gets the bank into a

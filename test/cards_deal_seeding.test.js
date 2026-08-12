@@ -15,13 +15,13 @@ setGlobal("api", { content: { usingTitans: () => true } });
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const gwoRng = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
 );
 const minionCard = loadCouiModule(
-  "coui://ui/main/game/galactic_war/cards/gwc_minion.js"
+  "coui://ui/main/game/galactic_war/cards/gwc_minion.js",
 );
 const slotCard = loadCouiModule(
-  "coui://ui/main/game/galactic_war/cards/gwc_add_card_slot.js"
+  "coui://ui/main/game/galactic_war/cards/gwc_add_card_slot.js",
 );
 
 after(restoreGlobals);
@@ -45,7 +45,7 @@ function inventory(over) {
       hasCard: () => false,
       getTag: () => 0,
     },
-    opts
+    opts,
   );
 }
 
@@ -79,7 +79,7 @@ describe("gwc_minion deal seeding", () => {
       star,
       context,
       inventory(),
-      seed === undefined ? undefined : gwoRng.create(seed)
+      seed === undefined ? undefined : gwoRng.create(seed),
     );
   };
 
@@ -93,8 +93,8 @@ describe("gwc_minion deal seeding", () => {
   it("draws a different Sub Commander for a different seed", () => {
     const names = new Set(
       ["s1", "s2", "s3", "s4", "s5", "s6"].map(
-        (seed) => dealWith(seed).params.minion.name
-      )
+        (seed) => dealWith(seed).params.minion.name,
+      ),
     );
     assert.ok(names.size > 1, "every seed drew the same Sub Commander");
   });
@@ -106,7 +106,7 @@ describe("gwc_minion deal seeding", () => {
     assert.equal(a.params.minion.character, b.params.minion.character);
     assert.deepEqual(
       a.params.minion.personality.personality_tags,
-      b.params.minion.personality.personality_tags
+      b.params.minion.personality.personality_tags,
     );
   });
 
@@ -137,7 +137,7 @@ describe("gwc_add_card_slot deal seeding", () => {
       star,
       context,
       inventory(),
-      seed === undefined ? undefined : gwoRng.create(seed)
+      seed === undefined ? undefined : gwoRng.create(seed),
     );
 
   it("reproduces its marker for the same seed and varies it across seeds", () => {

@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
-  gwoCard
+  gwoCard,
 ) {
   var MINIMUM_CHANCE = 25;
   var FULL_HAND_CHANCE = 100000;
@@ -9,7 +9,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     describe: _.constant("!LOC:Adds a new slot for another technology."),
     summarize: _.constant("!LOC:Additional Data Bank"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_storage.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_storage.png",
     ),
     audio: _.constant({ found: "/VO/Computer/gw/board_slot_increased" }),
     getContext: gwoCard.getContext,

@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Air Factory Upgrade Tech enables the building of advanced units by basic air manufacturing."
-      )
-    )
+        "!LOC:Air Factory Upgrade Tech enables the building of advanced units by basic air manufacturing.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Air Factory Upgrade Tech",
@@ -24,7 +24,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       !inventory.hasCard("gwaio_start_rapid") &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.airFactory)
+        gwoCard.hasUnit(inventory.units(), gwoUnit.airFactory),
     );
   },
 
@@ -58,13 +58,13 @@ define([
           value: 97,
           matchAll: true,
         },
-      ])
+      ]),
     );
 
     inventory.addMods(
       gwoCard.mods(gwoUnit.airFactory, "add", {
         buildable_types: " | (Air & Mobile & FactoryBuild & Custom58)",
-      })
+      }),
     );
     inventory.addAIMods(aiMods);
   },

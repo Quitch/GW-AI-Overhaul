@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Ward Upgrade Tech causes the mobile anti-nuke to start fully charged."
-      )
-    )
+        "!LOC:Ward Upgrade Tech causes the mobile anti-nuke to start fully charged.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Ward Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.ward)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.ward),
     );
   },
 
@@ -34,7 +34,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.wardWeapon, "replace", {
         start_fully_charged: true,
-      })
+      }),
     );
   },
 

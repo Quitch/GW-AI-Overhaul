@@ -9,7 +9,7 @@ const assert = require("node:assert/strict");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
 
 const starCards = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js",
 );
 
 const viewer = (id, extra) =>
@@ -44,7 +44,7 @@ describe("viewersReadyForStarRefresh", () => {
   it("is not ready while a viewer is still behind the host's deal count", () => {
     assert.equal(
       ready({ records: { alice: { techCardDealCount: 1 } }, hostDealCount: 4 }),
-      false
+      false,
     );
   });
 
@@ -57,7 +57,7 @@ describe("viewersReadyForStarRefresh", () => {
         hostDealCount: 4,
         setupBlocked: false,
       }),
-      false
+      false,
     );
   });
 
@@ -68,7 +68,7 @@ describe("viewersReadyForStarRefresh", () => {
           alice: { techCardDealCount: 4, pendingTechCards: { star: 1 } },
         },
       }),
-      false
+      false,
     );
   });
 
@@ -86,7 +86,7 @@ describe("viewersReadyForStarRefresh", () => {
       assert.equal(
         ready({ viewers: [viewer("alice", state)] }),
         false,
-        JSON.stringify(state)
+        JSON.stringify(state),
       );
     }
   });
@@ -104,14 +104,14 @@ describe("viewersReadyForStarRefresh", () => {
           bob: { techCardDealCount: 3 },
         },
       }),
-      false
+      false,
     );
   });
 
   it("treats an absent host deal count as zero rather than blocking", () => {
     assert.equal(
       ready({ records: { alice: {} }, hostDealCount: undefined }),
-      true
+      true,
     );
   });
 });
@@ -141,11 +141,11 @@ describe("starCardForRecord", () => {
     assert.equal(starCards.starCardForRecord({}, 12), undefined);
     assert.equal(
       starCards.starCardForRecord({ gwaioStarCards: {} }, 12),
-      undefined
+      undefined,
     );
     assert.equal(
       starCards.starCardForRecord({ gwaioStarCards: { cards: "junk" } }, 12),
-      undefined
+      undefined,
     );
   });
 });
@@ -156,7 +156,7 @@ describe("pruneStarCards", () => {
   it("drops stars the player has already taken", () => {
     assert.deepEqual(
       starCards.pruneStarCards(cards, (star) => star !== 2),
-      { 1: { id: "a" }, 3: { id: "c" } }
+      { 1: { id: "a" }, 3: { id: "c" } },
     );
   });
 
@@ -168,11 +168,11 @@ describe("pruneStarCards", () => {
   it("returns an empty map for a missing or malformed field", () => {
     assert.deepEqual(
       starCards.pruneStarCards(undefined, () => true),
-      {}
+      {},
     );
     assert.deepEqual(
       starCards.pruneStarCards({ 1: "junk" }, () => true),
-      {}
+      {},
     );
   });
 });
@@ -183,9 +183,9 @@ describe("buildStarCardsField", () => {
       starCards.buildStarCardsField(
         { 1: { id: "old" }, 2: { id: "keep" } },
         { 1: { id: "new" } },
-        7
+        7,
       ),
-      { turn: 7, cards: { 1: { id: "new" }, 2: { id: "keep" } } }
+      { turn: 7, cards: { 1: { id: "new" }, 2: { id: "keep" } } },
     );
   });
 
@@ -237,7 +237,7 @@ describe("starNeedsViewerCard", () => {
   it("never replaces a card in a war that froze its tech", () => {
     assert.equal(
       needs({ existingCard: { id: "a" }, redeal: true, staticTech: true }),
-      false
+      false,
     );
     assert.equal(needs({ staticTech: true }), true);
   });

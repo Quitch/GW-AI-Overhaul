@@ -15,7 +15,7 @@ define([
     : [];
   Array.prototype.push.apply(
     model.gwoNewStartCards,
-    asCards(gwoLoadoutIds.unlockable)
+    asCards(gwoLoadoutIds.unlockable),
   );
   // global for modder compatibility - New-GW-Cards pushes here
   model.gwoStartingCards = Array.isArray(model.gwoStartingCards)
@@ -23,12 +23,12 @@ define([
     : [];
   Array.prototype.push.apply(
     model.gwoStartingCards,
-    asCards(gwoLoadoutIds.starting)
+    asCards(gwoLoadoutIds.starting),
   );
   const lockedBaseCards = asCards(gwoLoadoutIds.lockedBase);
   const allCards = model.gwoStartingCards.concat(
     lockedBaseCards,
-    model.gwoNewStartCards
+    model.gwoNewStartCards,
   );
   // A function rather than a value because a mod's bank is resolved by a
   // requireGW that may not have finished when this module's factory runs. Called

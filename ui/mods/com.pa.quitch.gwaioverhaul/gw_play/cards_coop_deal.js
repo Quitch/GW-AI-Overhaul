@@ -74,9 +74,9 @@ define(() => {
       warRng,
       gwoStreams.coopPlayerKey(
         target && target.record,
-        target && target.client
+        target && target.client,
       ),
-      target && target.dealIndex
+      target && target.dealIndex,
     );
 
   const factory = (params) => {
@@ -114,7 +114,7 @@ define(() => {
         : connectedClients;
       const viewers = _.filter(
         sourceClients,
-        (client) => client && client.role === "viewer"
+        (client) => client && client.role === "viewer",
       );
 
       if (!viewers.length) {
@@ -144,7 +144,7 @@ define(() => {
             rng: gwoStreams.treasureLoadoutRng(
               warRng,
               gwoStreams.coopPlayerKey(record, client),
-              starIndex
+              starIndex,
             ),
           });
         },
@@ -168,7 +168,7 @@ define(() => {
         const client = target.client;
         const cardsOffered = helpers.cardsOfferedCount(
           numCardsToOffer,
-          inventory
+          inventory,
         );
         const preDealt = target.preDealtCard ? [target.preDealtCard] : [];
         chooseCards({
@@ -253,13 +253,13 @@ define(() => {
             (success, response) => {
               if (!success) {
                 result.reject(
-                  `set_player_pending_tech_cards failed response=${JSON.stringify(response || {})}`
+                  `set_player_pending_tech_cards failed response=${JSON.stringify(response || {})}`,
                 );
                 return;
               }
 
               result.resolve(updates);
-            }
+            },
           );
         } else {
           model.sendCampaignAction("set_player_pending_tech_cards", payload);

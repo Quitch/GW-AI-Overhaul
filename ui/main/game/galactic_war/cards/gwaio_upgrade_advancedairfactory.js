@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Advanced Air Factory Upgrade Tech decreases advanced air unit costs by 25% but also decreases the factory's health by 50%."
-      )
-    )
+        "!LOC:Advanced Air Factory Upgrade Tech decreases advanced air unit costs by 25% but also decreases the factory's health by 50%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Advanced Air Factory Upgrade Tech",
@@ -23,7 +23,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.airFactoryAdvanced)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.airFactoryAdvanced),
     );
   },
 

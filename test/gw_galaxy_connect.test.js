@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const galaxyConnect = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_connect.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_connect.js",
 );
 
 // getConnections() is sparse: a star with no surviving edge has no entry at all.
@@ -35,7 +35,7 @@ describe("isolatedStars", () => {
     ];
     assert.deepEqual(
       galaxyConnect.isolatedStars(3, connectionsFrom(edges)),
-      []
+      [],
     );
   });
 
@@ -71,7 +71,7 @@ describe("reconnectingEdges", () => {
     ];
     assert.deepEqual(
       galaxyConnect.reconnectingEdges(3, delaunay, connectionsFrom(surviving)),
-      []
+      [],
     );
   });
 
@@ -92,7 +92,7 @@ describe("reconnectingEdges", () => {
     const restored = galaxyConnect.reconnectingEdges(
       4,
       delaunay,
-      connectionsFrom(surviving)
+      connectionsFrom(surviving),
     );
     assert.deepEqual(keys(restored), ["1.3", "2.3"]);
   });
@@ -115,7 +115,7 @@ describe("reconnectingEdges", () => {
     const restored = galaxyConnect.reconnectingEdges(
       4,
       delaunay,
-      connectionsFrom(surviving)
+      connectionsFrom(surviving),
     );
     assert.deepEqual(keys(restored), ["0.1", "0.2"]);
   });
@@ -132,7 +132,7 @@ describe("reconnectingEdges", () => {
     const restored = galaxyConnect.reconnectingEdges(
       4,
       delaunay,
-      connectionsFrom(surviving)
+      connectionsFrom(surviving),
     );
     assert.deepEqual(keys(restored), ["0.2", "1.3", "2.3"]);
   });
@@ -150,11 +150,11 @@ describe("reconnectingEdges", () => {
       [1, 2],
     ];
     const repaired = surviving.concat(
-      galaxyConnect.reconnectingEdges(4, delaunay, connectionsFrom(surviving))
+      galaxyConnect.reconnectingEdges(4, delaunay, connectionsFrom(surviving)),
     );
     assert.deepEqual(
       galaxyConnect.isolatedStars(4, connectionsFrom(repaired)),
-      []
+      [],
     );
   });
 });

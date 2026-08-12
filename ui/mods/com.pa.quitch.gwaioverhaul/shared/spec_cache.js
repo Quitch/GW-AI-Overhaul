@@ -125,7 +125,7 @@ define(() => {
               },
               (error) => {
                 console.log("error loading spec:", item, error);
-              }
+              },
             )
             .then(() => {
               --pending;

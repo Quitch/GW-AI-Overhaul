@@ -11,7 +11,7 @@ function createFakeGwoFetch(options) {
     Promise.resolve().then(() => {
       if (!opts[kind]) {
         throw new Error(
-          `fake-fetch: no ${kind} resolver configured for ${url}`
+          `fake-fetch: no ${kind} resolver configured for ${url}`,
         );
       }
       return opts[kind](url);

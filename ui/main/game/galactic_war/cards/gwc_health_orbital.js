@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orbital Armor Tech increases health of all orbital units by 50%"
+      "!LOC:Orbital Armor Tech increases health of all orbital units by 50%",
     ),
     summarize: _.constant("!LOC:Orbital Armor Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png",
     ),
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
     getContext: gwoCard.getContext,

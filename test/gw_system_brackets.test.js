@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const brackets = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_system_brackets.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_system_brackets.js",
 );
 
 function spots(count) {
@@ -72,7 +72,7 @@ describe("armyRange - declared players", () => {
   it("uses a declared range when the zones can seat it", () => {
     assert.deepEqual(
       brackets.armyRange(sys("a", { players: [4, 8], zoneCount: 8 })),
-      [4, 8]
+      [4, 8],
     );
   });
 
@@ -83,7 +83,7 @@ describe("armyRange - declared players", () => {
   it("reads string-typed declared bounds", () => {
     assert.deepEqual(
       brackets.armyRange(sys("a", { players: ["3", "6"], zoneCount: 6 })),
-      [3, 6]
+      [3, 6],
     );
   });
 
@@ -95,9 +95,9 @@ describe("armyRange - declared players", () => {
           players: [6, 6],
           zoneCount: 8,
           rules: repeat({ min: 2, max: 8 }, 8),
-        })
+        }),
       ),
-      [6, 6]
+      [6, 6],
     );
   });
 });
@@ -107,7 +107,7 @@ describe("armyRange - the landing zone cap", () => {
     // Boading: ten players declared, two landing zones.
     assert.deepEqual(
       brackets.armyRange(sys("a", { players: [2, 10], zoneCount: 2 })),
-      [2, 2]
+      [2, 2],
     );
   });
 
@@ -116,7 +116,7 @@ describe("armyRange - the landing zone cap", () => {
     const undeclared = sys("abyss", { zoneCount: 2 });
     assert.deepEqual(
       brackets.armyRange(declared),
-      brackets.armyRange(undeclared)
+      brackets.armyRange(undeclared),
     );
   });
 
@@ -124,7 +124,7 @@ describe("armyRange - the landing zone cap", () => {
     // Diskus - Shared declares [4, 10] on two zones.
     assert.deepEqual(
       brackets.armyRange(sys("a", { players: [4, 10], zoneCount: 2 })),
-      [2, 2]
+      [2, 2],
     );
   });
 
@@ -132,14 +132,14 @@ describe("armyRange - the landing zone cap", () => {
     // PAF 5p FFA: ten zones, five armies - the extras are alternate positions.
     assert.deepEqual(
       brackets.armyRange(sys("a", { players: [2, 5], zoneCount: 10 })),
-      [2, 5]
+      [2, 5],
     );
   });
 
   it("leaves a declared range alone when the system has no zones at all", () => {
     assert.deepEqual(
       brackets.armyRange(sys("a", { players: [2, 10] })),
-      [2, 10]
+      [2, 10],
     );
   });
 });
@@ -148,38 +148,38 @@ describe("armyRange - the capacity scan", () => {
   it("caps flat zones at the zone count", () => {
     assert.deepEqual(
       brackets.armyRange(
-        sys("a", { zoneCount: 4, rules: repeat({ min: 2, max: 4 }, 4) })
+        sys("a", { zoneCount: 4, rules: repeat({ min: 2, max: 4 }, 4) }),
       ),
-      [2, 4]
+      [2, 4],
     );
   });
 
   it("reads a tiered rule set back as the range its author built", () => {
     // Two zones for a duel plus four that only switch on from three armies.
     const rules = repeat({ min: 2, max: 2 }, 2).concat(
-      repeat({ min: 3, max: 6 }, 4)
+      repeat({ min: 3, max: 6 }, 4),
     );
     assert.deepEqual(
       brackets.armyRange(sys("a", { zoneCount: 6, rules: rules })),
-      [2, 4]
+      [2, 4],
     );
   });
 
   it("reads string-typed rule bounds", () => {
     assert.deepEqual(
       brackets.armyRange(
-        sys("a", { zoneCount: 6, rules: repeat({ min: "3", max: "6" }, 6) })
+        sys("a", { zoneCount: 6, rules: repeat({ min: "3", max: "6" }, 6) }),
       ),
-      [3, 6]
+      [3, 6],
     );
   });
 
   it("falls back to the base game's defaults for a zero bound", () => {
     assert.deepEqual(
       brackets.armyRange(
-        sys("a", { zoneCount: 4, rules: repeat({ min: 0, max: 0 }, 4) })
+        sys("a", { zoneCount: 4, rules: repeat({ min: 0, max: 0 }, 4) }),
       ),
-      [2, 4]
+      [2, 4],
     );
   });
 
@@ -190,7 +190,7 @@ describe("armyRange - the capacity scan", () => {
   it("handles a zone list with no rules at all", () => {
     assert.deepEqual(
       brackets.armyRange(sys("a", { zoneCount: 4, rules: [] })),
-      [2, 4]
+      [2, 4],
     );
   });
 });
@@ -257,7 +257,7 @@ describe("bracketsFrom", () => {
       [
         [0, 2],
         [2, 4],
-      ]
+      ],
     );
   });
 
@@ -273,7 +273,7 @@ describe("bracketsFrom", () => {
         [0, 4],
         [2, 10],
         [4, 4],
-      ]
+      ],
     );
   });
 
@@ -287,7 +287,7 @@ describe("bracketsFrom", () => {
       [
         [0, 6],
         [6, 8],
-      ]
+      ],
     );
   });
 
@@ -297,7 +297,7 @@ describe("bracketsFrom", () => {
         sys("keep", { zoneCount: 2 }),
         sys("drop-me"),
         sys("drop-me-too"),
-      ])
+      ]),
     );
     assert.equal(run.warnings.length, 2);
     assert.match(run.warnings[0], /drop-me/);
@@ -374,7 +374,7 @@ describe("selectorFor", () => {
     const run = () => {
       const selector = brackets.selectorFor(
         brackets.bracketsFrom(pool()),
-        counter().random
+        counter().random,
       );
       return [
         selector.take(2).name,
@@ -490,7 +490,7 @@ describe("bracketsFrom - pool order independence", () => {
     const forwards = names(brackets.bracketsFrom(pool.slice()));
     const backwards = names(brackets.bracketsFrom(pool.slice().reverse()));
     const rotated = names(
-      brackets.bracketsFrom(pool.slice(2).concat(pool.slice(0, 2)))
+      brackets.bracketsFrom(pool.slice(2).concat(pool.slice(0, 2))),
     );
     assert.deepEqual(backwards, forwards);
     assert.deepEqual(rotated, forwards);
@@ -517,7 +517,7 @@ describe("bracketsFrom - pool order independence", () => {
     brackets.bracketsFrom(original);
     assert.deepEqual(
       original.map((s) => s.name),
-      snapshot
+      snapshot,
     );
   });
 });

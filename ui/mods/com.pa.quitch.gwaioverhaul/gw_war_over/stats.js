@@ -45,7 +45,7 @@ function gwoRecordHighestDifficultyDefeated() {
           gwoDifficulty.difficulties,
           (tier) =>
             !tier.customDifficulty &&
-            tier.difficultyName === gwoSettings.difficulty
+            tier.difficultyName === gwoSettings.difficulty,
         );
 
         // Custom carries no difficulty rating, so it ranks against nothing -
@@ -61,9 +61,9 @@ function gwoRecordHighestDifficultyDefeated() {
         defeatedDifficulties(
           isNewHighScore(currentDifficultyIndex, previousBest)
             ? [currentDifficultyIndex, game.hardcore()]
-            : defeatedDifficulties()
+            : defeatedDifficulties(),
         );
-      }
+      },
     );
   } catch (e) {
     console.error(e);

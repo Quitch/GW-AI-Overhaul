@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%."
-      )
-    )
+        "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Kraken Upgrade Tech",
@@ -23,7 +23,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.kraken),
-      30
+      30,
     );
   },
 
@@ -32,7 +32,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.krakenMissile, "multiply", {
         max_range: 3,
-      })
+      }),
     );
   },
 

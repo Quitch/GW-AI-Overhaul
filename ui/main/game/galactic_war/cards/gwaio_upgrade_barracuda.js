@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Barracuda Upgrade Tech increases the rate of fire of the submarine by 200%."
-      )
-    )
+        "!LOC:Barracuda Upgrade Tech increases the rate of fire of the submarine by 200%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Barracuda Upgrade Tech",
@@ -26,7 +26,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.barracuda),
-      30
+      30,
     );
   },
 
@@ -35,7 +35,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.barracudaWeapon, "multiply", {
         rate_of_fire: 3,
-      })
+      }),
     );
   },
 

@@ -30,7 +30,7 @@ function validateScene(sceneName, files, failures) {
           "` entry is not a " +
           UI_SCHEME +
           " path: " +
-          entry
+          entry,
       );
       continue;
     }
@@ -40,7 +40,7 @@ function validateScene(sceneName, files, failures) {
         "scene `" +
           sceneName +
           "` references a file that does not exist: " +
-          entry
+          entry,
       );
     }
   }
@@ -63,7 +63,7 @@ function main() {
   for (const field of REQUIRED_TOP_LEVEL_FIELDS) {
     if (!Object.prototype.hasOwnProperty.call(modinfo, field)) {
       failures.push(
-        "modinfo.json missing required top-level field `" + field + "`"
+        "modinfo.json missing required top-level field `" + field + "`",
       );
     }
   }
@@ -82,7 +82,7 @@ function main() {
       fileCount +
       " files checked, " +
       failures.length +
-      " problems."
+      " problems.",
   );
 
   if (failures.length) {

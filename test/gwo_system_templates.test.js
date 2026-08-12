@@ -128,7 +128,7 @@ TEMPLATES.push(
         ],
       },
     ],
-  }
+  },
 );
 
 // A generated planet template, with the biome list as the only thing that varies
@@ -149,7 +149,7 @@ const generated = (biomes, extra) =>
       Velocity: [0, 0],
       Biomes: biomes,
     },
-    extra
+    extra,
   );
 
 // Pools a system draws planets from by reference. The container that tracks
@@ -217,13 +217,13 @@ TEMPLATES.push(
   {
     Players: [21, 22],
     Systems: [{ Planets: [generated(["asteroid"])] }],
-  }
+  },
 );
 
 ["pa-easy", "pa-normal", "titans-easy", "titans-normal"].forEach((name) => {
   registerModuleStub(
     "main/game/galactic_war/shared/js/systems/" + name,
-    TEMPLATES
+    TEMPLATES,
   );
 });
 
@@ -292,7 +292,7 @@ before(() => {
 after(() => stubs.restoreGlobals());
 
 const templates = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_system_templates.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_system_templates.js",
 );
 
 // Drains `pending` repeatedly, since each round can queue more, until the system settles.
@@ -355,7 +355,7 @@ describe("gwo_system_templates generate", () => {
     const backwards = await generate(
       loader(),
       { players: 2, seed: "gwo-test-1" },
-      { reverse: true }
+      { reverse: true },
     );
     assert.equal(shape(forwards), shape(backwards));
   });
@@ -408,7 +408,7 @@ describe("gwo_system_templates generate", () => {
       assert.equal(
         afterExplicit.planets[1].generator.biome,
         afterGenerated.planets[1].generator.biome,
-        `seed ${seed}`
+        `seed ${seed}`,
       );
     }
   });
@@ -420,7 +420,7 @@ describe("gwo_system_templates generate", () => {
     system.planets.forEach((planet, index) => {
       const generator = planet.generator;
       assert.ok(
-        TEMPLATES[0].Systems[0].Planets[index].Biomes.includes(generator.biome)
+        TEMPLATES[0].Systems[0].Planets[index].Biomes.includes(generator.biome),
       );
       assert.ok(generator.radius > 0);
       assert.equal(typeof generator.temperature, "number");
@@ -457,7 +457,7 @@ describe("gwo_system_templates fromRandomList", () => {
       [
         [100, 0],
         [200, 0],
-      ]
+      ],
     );
   });
 

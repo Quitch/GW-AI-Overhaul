@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Nyx Upgrade Tech doubles the jamming and radar radius of the jamming vehicle."
-      )
-    )
+        "!LOC:Nyx Upgrade Tech doubles the jamming and radar radius of the jamming vehicle.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Nyx Upgrade Tech",
@@ -35,7 +35,7 @@ define([
         path: `recon.observer.items.${i}.radius`,
         op: "multiply",
         value: 2,
-      }))
+      })),
     );
   },
 

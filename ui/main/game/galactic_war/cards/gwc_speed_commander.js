@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Commander Engine Tech increases the speed of your commanders by 100%."
+      "!LOC:Commander Engine Tech increases the speed of your commanders by 100%.",
     ),
     summarize: _.constant("!LOC:Commander Engine Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander.png",
     ),
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
     getContext: gwoCard.getContext,
@@ -23,7 +23,7 @@ define([
           "navigation.brake": 2,
           "navigation.acceleration": 2,
           "navigation.turn_speed": 2,
-        })
+        }),
       );
     },
     dull: function () {},

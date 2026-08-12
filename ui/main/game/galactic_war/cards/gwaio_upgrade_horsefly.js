@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Horsefly Upgrade Tech adds the Bumblebee carpet bomber's weapon to the strafer."
-      )
-    )
+        "!LOC:Horsefly Upgrade Tech adds the Bumblebee carpet bomber's weapon to the strafer.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Horsefly Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.horsefly)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.horsefly),
     );
   },
 
@@ -42,7 +42,7 @@ define([
         })
         .concat([
           { file: gwoUnit.horsefly, path: "tools.1.spec_id", op: "tag" },
-        ])
+        ]),
     );
   },
 

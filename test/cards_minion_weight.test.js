@@ -19,10 +19,10 @@ setGlobal("api", { content: { usingTitans: () => true } });
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const minionCard = loadCouiModule(
-  "coui://ui/main/game/galactic_war/cards/gwc_minion.js"
+  "coui://ui/main/game/galactic_war/cards/gwc_minion.js",
 );
 const gwoUnit = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 );
 
 after(restoreGlobals);
@@ -42,7 +42,7 @@ function inventory(over) {
       minions: () => [],
       hasCard: () => false,
     },
-    over || {}
+    over || {},
   );
 }
 
@@ -73,7 +73,7 @@ const chanceFor = (over, hostMinions) => {
     {},
     { totalSize: 10, faction: 0 },
     inventory(hostMinions === undefined ? {} : { minions: () => hostMinions }),
-    undefined
+    undefined,
   ).chance;
 };
 
@@ -100,7 +100,7 @@ describe("gwc_minion weight - counting Sub Commanders", () => {
   it("falls off with a co-op partner's, against an empty inventory", () => {
     assert.equal(
       chanceFor({ coopRecords: [coopRecord("alice", 2)] }),
-      BASE_CHANCE / 3
+      BASE_CHANCE / 3,
     );
   });
 
@@ -109,7 +109,7 @@ describe("gwc_minion weight - counting Sub Commanders", () => {
       chanceFor({
         coopRecords: [coopRecord("alice", 2), coopRecord("bob", 1)],
       }),
-      BASE_CHANCE / 4
+      BASE_CHANCE / 4,
     );
   });
 
@@ -118,11 +118,11 @@ describe("gwc_minion weight - counting Sub Commanders", () => {
   it("takes whichever of the two counts is larger", () => {
     assert.equal(
       chanceFor({ coopRecords: [coopRecord("alice", 1)] }, minions(3)),
-      BASE_CHANCE / 4
+      BASE_CHANCE / 4,
     );
     assert.equal(
       chanceFor({ coopRecords: [coopRecord("alice", 3)] }, minions(1)),
-      BASE_CHANCE / 4
+      BASE_CHANCE / 4,
     );
   });
 
@@ -137,7 +137,7 @@ describe("gwc_minion weight - counting Sub Commanders", () => {
       {},
       { totalSize: 10, faction: 0 },
       inventory(),
-      undefined
+      undefined,
     );
 
     assert.equal(result.chance, BASE_CHANCE / 3);
@@ -160,7 +160,7 @@ describe("gwc_minion weight - malformed co-op state", () => {
 
     assert.equal(
       chanceFor({ coopRecords: broken.concat([coopRecord("alice", 1)]) }),
-      BASE_CHANCE / 2
+      BASE_CHANCE / 2,
     );
   });
 });
@@ -180,7 +180,7 @@ describe("gwc_minion weight - what zeroes it", () => {
         {},
         { totalSize: 10, faction: 0 },
         inventory(over),
-        undefined
+        undefined,
       );
       assert.equal(result.chance, 0);
     });

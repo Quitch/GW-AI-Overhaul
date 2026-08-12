@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
-  gwoCard
+  gwoCard,
 ) => {
   // Shared with shared/cards.js; the two copies had already drifted apart.
   const getConnectedViewers = gwoCard.getConnectedClients;
@@ -29,7 +29,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
         viewers.push({ client, inventory: playerData.inventory });
         return viewers;
       },
-      []
+      [],
     );
   };
 
@@ -46,7 +46,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
       (minion) => ({
         subcommander: minion,
         cards: hostCards,
-      })
+      }),
     );
 
     const perPlayerTech =
@@ -73,9 +73,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
           _.map(viewer.inventory.minions, (minion) => ({
             subcommander: minion,
             cards: viewerCards,
-          }))
+          })),
         );
-      }
+      },
     );
 
     return subcommanders;
@@ -94,7 +94,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
 
     // _.sortBy is stable, so non-host clients keep their existing order.
     return _.sortBy(connectedClients, (client) =>
-      client && client.role === "host" ? 0 : 1
+      client && client.role === "host" ? 0 : 1,
     );
   };
 

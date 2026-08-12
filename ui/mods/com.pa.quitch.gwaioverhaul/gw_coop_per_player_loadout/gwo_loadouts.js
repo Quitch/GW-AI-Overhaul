@@ -17,7 +17,7 @@ function gwoLoadouts() {
         savedInventory.maxCards <= cards.length
       ) {
         console.error(
-          `[GW COOP] Co-op loadout inventory did not produce empty tech banks loadout=${loadoutCardId} maxCards=${savedInventory.maxCards} cards=${JSON.stringify(cards)}`
+          `[GW COOP] Co-op loadout inventory did not produce empty tech banks loadout=${loadoutCardId} maxCards=${savedInventory.maxCards} cards=${JSON.stringify(cards)}`,
         );
         return false;
       }
@@ -44,7 +44,7 @@ function gwoLoadouts() {
       loadoutCardId,
       dealInventory,
       galaxy,
-      star
+      star,
     ) =>
       gwoDeal.dealCard(
         {
@@ -54,7 +54,7 @@ function gwoLoadouts() {
           star,
         },
         loaded,
-        loadedCards
+        loadedCards,
       );
 
     const applyStartingInventory = (
@@ -62,7 +62,7 @@ function gwoLoadouts() {
       loadoutCardId,
       globalTags,
       startCardProduct,
-      result
+      result,
     ) => {
       const inventory = new GWInventory();
 
@@ -77,7 +77,7 @@ function gwoLoadouts() {
         const savedInventory = inventory.save();
         if (!validateStartingInventory(savedInventory, loadoutCardId)) {
           result.reject(
-            "Co-op loadout inventory did not produce empty tech banks."
+            "Co-op loadout inventory did not produce empty tech banks.",
           );
           return;
         }
@@ -139,7 +139,7 @@ function gwoLoadouts() {
             },
             () => {
               deferred.resolve(undefined);
-            }
+            },
           );
 
           return deferred.promise();
@@ -149,7 +149,7 @@ function gwoLoadouts() {
           loadoutCardId,
           commander,
           galaxy,
-          star
+          star,
         ) => {
           const result = $.Deferred();
           resolvePlayerFaction().then((playerFaction) => {
@@ -168,7 +168,7 @@ function gwoLoadouts() {
               loadoutCardId,
               dealInventory,
               galaxy,
-              star
+              star,
             ).then(
               (startCardProduct) => {
                 applyStartingInventory(
@@ -176,18 +176,18 @@ function gwoLoadouts() {
                   loadoutCardId,
                   globalTags,
                   startCardProduct,
-                  result
+                  result,
                 );
               },
               (err) => {
                 result.reject(err);
-              }
+              },
             );
           });
 
           return result.promise();
         };
-      }
+      },
     );
   } catch (e) {
     console.error(e);

@@ -46,7 +46,7 @@ define([
           op: "multiply",
           value: 1.5,
         },
-      ])
+      ]),
     );
     inventory.addMods(mods);
   },

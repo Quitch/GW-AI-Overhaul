@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const specs = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
 );
 
 afterEach(() => {
@@ -21,7 +21,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "hp", op: "replace", value: 200 }],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].hp, 200);
   });
@@ -31,7 +31,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "hp", op: "multiply", value: 2 }],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].hp, 200);
   });
@@ -42,7 +42,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "hp", op: "multiply", value: 2 }],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].hp, "not-a-number");
     assert.equal(warnMock.mock.callCount(), 1);
@@ -53,7 +53,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "hp", op: "add", value: 50 }],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].hp, 150);
   });
@@ -63,7 +63,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "newField", op: "add", value: 5 }],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].newField, 5);
   });
@@ -73,7 +73,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "audio", op: "merge", value: { lost: "b" } }],
-      ""
+      "",
     );
     assert.deepEqual(data["unit.json"].audio, { found: "a", lost: "b" });
   });
@@ -83,7 +83,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "tags", op: "push", value: "b" }],
-      ""
+      "",
     );
     assert.deepEqual(data["unit.json"].tags, ["a", "b"]);
   });
@@ -93,7 +93,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "tags", op: "push", value: "a" }],
-      ""
+      "",
     );
     assert.deepEqual(data["unit.json"].tags, ["a"]);
   });
@@ -103,7 +103,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "tags", op: "pull", value: "b" }],
-      ""
+      "",
     );
     assert.deepEqual(data["unit.json"].tags, ["a", "c"]);
   });
@@ -120,7 +120,7 @@ describe("specs.mod - basic ops", () => {
           value: ["world", "there"],
         },
       ],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].description, "hello there");
   });
@@ -130,7 +130,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "tags", op: "prepend", value: "a" }],
-      ""
+      "",
     );
     assert.deepEqual(data["unit.json"].tags, ["a", "b"]);
   });
@@ -140,7 +140,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "mult", op: "multiplyOrCreate", value: 5 }],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].mult, 5);
   });
@@ -150,7 +150,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "mult", op: "multiplyOrCreate", value: 5 }],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].mult, 15);
   });
@@ -167,7 +167,7 @@ describe("specs.mod - basic ops", () => {
           value: "return attribute + 50;",
         },
       ],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].hp, 150);
   });
@@ -183,7 +183,7 @@ describe("specs.mod - basic ops", () => {
     specs.mod(
       data,
       [{ file: "unit.json", op: "clone", value: "unit_copy.json" }],
-      ".tag1"
+      ".tag1",
     );
     assert.deepEqual(data["unit_copy.json.tag1"], { hp: 100 });
     assert.notEqual(data["unit_copy.json.tag1"], data["unit.json"]); // real clone, not aliased
@@ -196,7 +196,7 @@ describe("specs.mod - path walking", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "weapon.damage", op: "replace", value: 50 }],
-      ""
+      "",
     );
     assert.deepEqual(data["unit.json"].weapon, { damage: 50 });
   });
@@ -206,7 +206,7 @@ describe("specs.mod - path walking", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "list.0.a", op: "replace", value: 99 }],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].list[0].a, 99);
     assert.equal(data["unit.json"].list[1].a, 2);
@@ -217,7 +217,7 @@ describe("specs.mod - path walking", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "list.+.a", op: "replace", value: 5 }],
-      ""
+      "",
     );
     assert.deepEqual(data["unit.json"].list, [{ a: 5 }]);
   });
@@ -234,7 +234,7 @@ describe("specs.mod - path walking", () => {
           value: 50,
         },
       ],
-      ""
+      "",
     );
     const items = data["unit.json"].recon.observer.items;
     assert.ok(Array.isArray(items), "items should be created as an array");
@@ -253,7 +253,7 @@ describe("specs.mod - path walking", () => {
           value: 50,
         },
       ],
-      ""
+      "",
     );
     const items = data["unit.json"].recon.observer.items;
     assert.ok(Array.isArray(items), "items should be created as an array");
@@ -265,7 +265,7 @@ describe("specs.mod - path walking", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "list.1.a", op: "replace", value: 7 }],
-      ""
+      "",
     );
     assert.ok(Array.isArray(data["unit.json"].list));
     assert.equal(data["unit.json"].list[0].a, 1);
@@ -282,7 +282,7 @@ describe("specs.mod - base_spec inheritance", () => {
     specs.mod(
       data,
       [{ file: "child.json", path: "armor", op: "replace", value: 20 }],
-      ""
+      "",
     );
     assert.equal(data["child.json"].hp, 100);
     assert.deepEqual(data["child.json"].tags, ["base"]);
@@ -299,7 +299,7 @@ describe("specs.mod - base_spec inheritance", () => {
     specs.mod(
       data,
       [{ file: "child.json", path: "armor", op: "replace", value: 5 }],
-      ".mytag"
+      ".mytag",
     );
     assert.equal(data["child.json"].hp, 200);
   });
@@ -312,7 +312,7 @@ describe("specs.mod - base_spec inheritance", () => {
     specs.mod(
       data,
       [{ file: "child.json", path: "other", op: "replace", value: 1 }],
-      ""
+      "",
     );
     assert.deepEqual(data["child.json"].ammo_id, ["x"]);
   });
@@ -323,7 +323,7 @@ describe("specs.mod - base_spec inheritance", () => {
     specs.mod(
       data,
       [{ file: "child.json", path: "armor", op: "replace", value: 10 }],
-      ""
+      "",
     );
     assert.equal(data["child.json"].armor, 10);
     assert.equal("base_spec" in data["child.json"], false);
@@ -341,7 +341,7 @@ describe("specs.mod - operation ordering", () => {
         { file: "unit.json", path: "hp", op: "multiply", value: 2 },
         { file: "unit.json", path: "hp", op: "replace", value: 10 },
       ],
-      ""
+      "",
     );
     // replace -> 10, multiply -> 20, add -> 25 (not the input order: 10*2's result +5 would
     // differ from any other application order, so this also pins the order itself)
@@ -359,7 +359,7 @@ describe("specs.mod - operation ordering", () => {
         { file: "copy.json", path: "armour", op: "push", value: "plate" },
         { file: "unit.json", op: "clone", value: "copy.json" },
       ],
-      ".tag1"
+      ".tag1",
     );
     assert.deepEqual(data["copy.json.tag1"], { hp: 50, armour: ["plate"] });
     assert.equal(data["unit.json"].hp, 10, "the source must be left alone");
@@ -378,7 +378,7 @@ describe("specs.mod - operation ordering", () => {
         { file: "unit.json", path: "ref", op: "replace", value: "b.json" },
         { file: "unit.json", path: "ref", op: "tag" },
       ],
-      ".player"
+      ".player",
     );
     assert.equal(data["unit.json"].ref, "b.json.player");
   });
@@ -406,7 +406,7 @@ describe("specs.mod - malformed-mod tolerance", () => {
         { file: "unit.json", path: "hp", op: "not_a_real_op", value: 1 },
         { file: "unit.json", path: "hp", op: "replace", value: 555 },
       ],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].hp, 555);
     assert.equal(errorMock.mock.callCount(), 1);
@@ -421,7 +421,7 @@ describe("specs.mod - malformed-mod tolerance", () => {
         { file: "unit.json", op: "multiply", value: 2 },
         { file: "unit.json", path: "hp", op: "replace", value: 777 },
       ],
-      ""
+      "",
     );
     // The pathless multiply is a no-op; the later mod still applies.
     assert.equal(data["unit.json"].hp, 777);
@@ -434,7 +434,7 @@ describe("specs.mod - malformed-mod tolerance", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "a.b", op: "replace", value: 1 }],
-      ""
+      "",
     );
     // `a` is a primitive, so it can't be walked into; the mod aborts unchanged.
     assert.equal(data["unit.json"].a, 5);
@@ -448,7 +448,7 @@ describe("specs.mod - malformed-mod tolerance", () => {
       specs.mod(
         data,
         [{ file: "missing.json", path: "hp", op: "replace", value: 1 }],
-        ""
+        "",
       );
     });
     assert.equal(warnMock.mock.callCount(), 1);
@@ -468,7 +468,7 @@ describe("specs.mod - malformed-mod tolerance", () => {
         },
         { file: "unit.json", path: "hp", op: "replace", value: 999 },
       ],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].hp, 999);
     assert.equal(errorMock.mock.callCount(), 1);
@@ -490,7 +490,7 @@ describe("specs.mod - navigation pruning", () => {
           value: 1.5,
         },
       ],
-      ""
+      "",
     );
     // multiply on a nonexistent numeric leaf leaves navigation.move_speed
     // undefined - which serialises to navigation: {} - so navigation is stripped.
@@ -531,7 +531,7 @@ describe("specs.mod - navigation pruning", () => {
           value: 1.5,
         },
       ],
-      ""
+      "",
     );
     assert.equal("navigation" in data["struct.json"], false);
   });
@@ -548,7 +548,7 @@ describe("specs.mod - navigation pruning", () => {
           value: 1.5,
         },
       ],
-      ""
+      "",
     );
     assert.equal("navigation" in data["unit.json"], true);
     assert.equal(data["unit.json"].navigation.move_speed, 15);
@@ -573,7 +573,7 @@ describe("specs.mod - navigation pruning", () => {
           value: 1.5,
         },
       ],
-      ""
+      "",
     );
     // navigation.type is a real value, so navigation must survive (JSON would only
     // drop the undefined move_speed leaf, not the whole object).
@@ -586,7 +586,7 @@ describe("specs.mod - navigation pruning", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "hp", op: "replace", value: 200 }],
-      ""
+      "",
     );
     // Pruning is scoped to navigation-targeting mods; unrelated mods don't trigger it.
     assert.equal("navigation" in data["unit.json"], true);
@@ -601,7 +601,7 @@ describe("specs.mod - navigation pruning", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "navigation", op: "replace", value: "walk" }],
-      ""
+      "",
     );
     assert.equal(data["unit.json"].navigation, "walk");
   });
@@ -633,7 +633,7 @@ describe("specs.additionalSpecs", () => {
         "/pa/units/sea/destroyer/destroyer_tool_torpedo.json",
         "/pa/units/sea/destroyer/destroyer_torpedo_ammo.json",
         "/pa/units/sea/drone_carrier/carrier/carrier_tool_weapon.json",
-      ].sort()
+      ].sort(),
     );
   });
 });
@@ -654,7 +654,7 @@ describe("specs.mod - ops given the wrong shape", () => {
     refuses(
       { types: ["bot"] },
       { path: "types", op: "add", value: 1 },
-      { types: ["bot"] }
+      { types: ["bot"] },
     );
   });
 
@@ -662,7 +662,7 @@ describe("specs.mod - ops given the wrong shape", () => {
     refuses(
       { hp: 100 },
       { path: "hp", op: "merge", value: { armour: 1 } },
-      { hp: 100 }
+      { hp: 100 },
     );
   });
 
@@ -670,7 +670,7 @@ describe("specs.mod - ops given the wrong shape", () => {
     refuses(
       { hp: "lots" },
       { path: "hp", op: "multiplyOrCreate", value: 2 },
-      { hp: "lots" }
+      { hp: "lots" },
     );
   });
 
@@ -697,14 +697,14 @@ describe("specs.mod - ops that coerce what they are given", () => {
   it("push wraps a bare value into an array before appending", () => {
     assert.deepEqual(
       apply({ types: "bot" }, { path: "types", op: "push", value: "tank" }),
-      { types: ["bot", "tank"] }
+      { types: ["bot", "tank"] },
     );
   });
 
   it("push treats an explicit null as an empty list", () => {
     assert.deepEqual(
       apply({ types: null }, { path: "types", op: "push", value: "tank" }),
-      { types: ["tank"] }
+      { types: ["tank"] },
     );
   });
 
@@ -712,23 +712,23 @@ describe("specs.mod - ops that coerce what they are given", () => {
     assert.deepEqual(
       apply(
         { types: ["bot"] },
-        { path: "types", op: "push", value: ["tank", "air"] }
+        { path: "types", op: "push", value: ["tank", "air"] },
       ),
-      { types: ["bot", "tank", "air"] }
+      { types: ["bot", "tank", "air"] },
     );
   });
 
   it("pull wraps a bare value before removing from it", () => {
     assert.deepEqual(
       apply({ types: "bot" }, { path: "types", op: "pull", value: "bot" }),
-      { types: [] }
+      { types: [] },
     );
   });
 
   it("pull treats an explicit null as an empty list", () => {
     assert.deepEqual(
       apply({ types: null }, { path: "types", op: "pull", value: "bot" }),
-      { types: [] }
+      { types: [] },
     );
   });
 
@@ -736,23 +736,23 @@ describe("specs.mod - ops that coerce what they are given", () => {
     assert.deepEqual(
       apply(
         { types: ["a", "b", "c"] },
-        { path: "types", op: "pull", value: ["a", "c"] }
+        { path: "types", op: "pull", value: ["a", "c"] },
       ),
-      { types: ["b"] }
+      { types: ["b"] },
     );
   });
 
   it("prepend wraps a bare value before pushing onto the front", () => {
     assert.deepEqual(
       apply({ types: "bot" }, { path: "types", op: "prepend", value: "tank" }),
-      { types: ["tank", "bot"] }
+      { types: ["tank", "bot"] },
     );
   });
 
   it("prepend treats an explicit null as an empty list", () => {
     assert.deepEqual(
       apply({ types: null }, { path: "types", op: "prepend", value: "tank" }),
-      { types: ["tank"] }
+      { types: ["tank"] },
     );
   });
 
@@ -762,23 +762,23 @@ describe("specs.mod - ops that coerce what they are given", () => {
     assert.deepEqual(
       apply(
         { types: ["bot"] },
-        { path: "types", op: "prepend", value: ["tank", "air"] }
+        { path: "types", op: "prepend", value: ["tank", "air"] },
       ),
-      { types: ["tank", "air", "bot"] }
+      { types: ["tank", "air", "bot"] },
     );
   });
 
   it("wipe stringifies a value that is not a string", () => {
     assert.deepEqual(
       apply({ hp: 1200 }, { path: "hp", op: "wipe", value: ["0", ""] }),
-      { hp: "12" }
+      { hp: "12" },
     );
   });
 
   it("wipe treats an absent value as an empty string", () => {
     assert.deepEqual(
       apply({}, { path: "missing", op: "wipe", value: ["a", "b"] }),
-      { missing: "" }
+      { missing: "" },
     );
   });
 
@@ -788,9 +788,9 @@ describe("specs.mod - ops that coerce what they are given", () => {
     assert.deepEqual(
       apply(
         { model: "/pa/units/land/tank/tank.json" },
-        { path: "model", op: "wipe", value: "/tank" }
+        { path: "model", op: "wipe", value: "/tank" },
       ),
-      { model: "/pa/units/land.json" }
+      { model: "/pa/units/land.json" },
     );
   });
 });
@@ -808,7 +808,7 @@ describe("specs.mod - walking into a referenced spec", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "tools.damage", op: "multiply", value: 2 }],
-      ""
+      "",
     );
 
     assert.equal(data["tool.json"].damage, 20);
@@ -823,7 +823,7 @@ describe("specs.mod - walking into a referenced spec", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "tools.damage", op: "multiply", value: 2 }],
-      ""
+      "",
     );
 
     assert.deepEqual(data["unit.json"], { tools: "missing.json" });
@@ -841,14 +841,14 @@ describe("specs.mod - clone through a reference", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "tools", op: "clone", value: "copy.json" }],
-      ""
+      "",
     );
 
     assert.deepEqual(data["copy.json"], { damage: 10 });
     assert.notEqual(
       data["copy.json"],
       data["tool.json"],
-      "the copy must not alias the spec it was taken from"
+      "the copy must not alias the spec it was taken from",
     );
     assert.equal(data["unit.json"].tools, "tool.json");
   });
@@ -859,7 +859,7 @@ describe("specs.mod - clone through a reference", () => {
     specs.mod(
       data,
       [{ file: "unit.json", path: "tools", op: "clone", value: "copy.json" }],
-      ""
+      "",
     );
 
     assert.equal(data["copy.json"], "missing.json");
@@ -879,7 +879,7 @@ describe("specs.mod - circular base_spec", () => {
     specs.mod(
       data,
       [{ file: "a.json", path: "hp", op: "replace", value: 9 }],
-      ""
+      "",
     );
 
     assert.deepEqual(data["a.json"], { hp: 9, armour: 2 });

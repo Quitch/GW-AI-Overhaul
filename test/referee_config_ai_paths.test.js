@@ -12,7 +12,7 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeConfig = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
 );
 
 let restoreModel;
@@ -35,7 +35,7 @@ function makeAiDescriptor(overrides) {
       faction: 1,
       personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
     },
-    overrides || {}
+    overrides || {},
   );
 }
 
@@ -45,7 +45,7 @@ describe("setAIPath", () => {
     restoreModel = installModel(fixture.game);
     assert.equal(
       refereeConfig.setAIPath(true, true),
-      refereeConfig.setAIPath(true, false)
+      refereeConfig.setAIPath(true, false),
     );
     assert.equal(refereeConfig.setAIPath(true, true), "/pa/ai_cluster/");
   });
@@ -85,7 +85,7 @@ describe("setupAlliedCommanders", () => {
       [],
       armies,
       fixture.inventory,
-      ".player"
+      ".player",
     );
 
     const paths = armies.map((army) => army.personality.ai_path);
@@ -108,7 +108,7 @@ describe("setupAlliedCommanders", () => {
       [],
       armies,
       fixture.inventory,
-      ".player"
+      ".player",
     );
     assert.equal(armies[0].personality.ai_path, "/pa/ai_cluster/");
   });
@@ -127,7 +127,7 @@ describe("setupAlliedCommanders", () => {
         armies,
         fixture.inventory,
         ".player",
-        startPosition
+        startPosition,
       );
       return armies[0].color;
     };
@@ -146,7 +146,7 @@ describe("setupAlliedCommanders", () => {
       [],
       fromZero,
       fixture.inventory,
-      ".player"
+      ".player",
     );
 
     const fromTwo = [];
@@ -156,7 +156,7 @@ describe("setupAlliedCommanders", () => {
       fromTwo,
       fixture.inventory,
       ".player",
-      2
+      2,
     );
 
     assert.deepEqual(fromTwo[0].color, fromZero[2].color);
@@ -225,7 +225,7 @@ describe("setupPrimaryAiAndMinions", () => {
       cards,
       [".ai0"],
       "Queller",
-      armies
+      armies,
     );
 
     const guardianPersonality = armies[0].personality;
@@ -254,7 +254,7 @@ describe("setupFfaAis", () => {
       foes,
       [".ai0", ".ai1", ".ai2", ".ai3"],
       "Titans",
-      armies
+      armies,
     );
 
     // The armies are pushed in foe order.
@@ -265,7 +265,7 @@ describe("setupFfaAis", () => {
     assert.equal(armies[2].personality.ai_path, armies[0].personality.ai_path);
     assert.notEqual(
       armies[1].personality.ai_path,
-      armies[0].personality.ai_path
+      armies[0].personality.ai_path,
     );
   });
 });
@@ -292,8 +292,8 @@ describe("the setup functions never mutate the war objects they are given", () =
             personality_tags: ["SlowerExpansion"],
           },
         },
-        overrides || {}
-      )
+        overrides || {},
+      ),
     );
   }
 
@@ -315,20 +315,20 @@ describe("the setup functions never mutate the war objects they are given", () =
       subcommanderTechCards,
       firstHire,
       fixture.inventory,
-      ".player"
+      ".player",
     );
     refereeConfig.setupAlliedCommanders(
       minions,
       subcommanderTechCards,
       secondHire,
       fixture.inventory,
-      ".player"
+      ".player",
     );
 
     assert.deepEqual(
       snapshot(minions),
       untouched,
-      "inventory.minions() must survive a referee hire unchanged"
+      "inventory.minions() must survive a referee hire unchanged",
     );
     // x1.5 fabber caps once (not x2.25), PreventsWaste once (not twice).
     assert.equal(firstHire[0].personality.max_basic_fabbers, 6);
@@ -339,7 +339,7 @@ describe("the setup functions never mutate the war objects they are given", () =
     assert.deepEqual(
       secondHire[0].personality,
       firstHire[0].personality,
-      "the second hire of a co-op host must produce the same subcommander"
+      "the second hire of a co-op host must produce the same subcommander",
     );
   });
 
@@ -357,20 +357,20 @@ describe("the setup functions never mutate the war objects they are given", () =
       [],
       [".ai0"],
       "Titans",
-      firstHire
+      firstHire,
     );
     refereeConfig.setupPrimaryAiAndMinions(
       ai,
       [],
       [".ai0"],
       "Titans",
-      secondHire
+      secondHire,
     );
 
     assert.deepEqual(
       snapshot(ai),
       untouched,
-      "star.ai() must survive a referee hire unchanged"
+      "star.ai() must survive a referee hire unchanged",
     );
     assert.equal(firstHire[0].personality.adv_eco_mod, 2);
     assert.equal(firstHire[1].personality.adv_eco_mod, 2);
@@ -393,7 +393,7 @@ describe("the setup functions never mutate the war objects they are given", () =
     assert.deepEqual(
       snapshot(foes),
       untouched,
-      "the star's foes must survive a referee hire unchanged"
+      "the star's foes must survive a referee hire unchanged",
     );
     assert.equal(firstHire[0].personality.adv_eco_mod, 2);
     assert.equal(secondHire[0].personality.adv_eco_mod, 2);

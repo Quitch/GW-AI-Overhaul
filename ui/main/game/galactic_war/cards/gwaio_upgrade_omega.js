@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       `${loc(
-        "!LOC:Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser."
-      )} ${loc("!LOC:Doubles the rate of fire of the other weapons.")}`
-    )
+        "!LOC:Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser.",
+      )} ${loc("!LOC:Doubles the rate of fire of the other weapons.")}`,
+    ),
   ),
 
   summarize: () => "!LOC:Omega Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.omega)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.omega),
     );
   },
 

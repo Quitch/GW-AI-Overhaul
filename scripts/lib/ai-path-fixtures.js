@@ -28,7 +28,7 @@ function makeInventory(overrides) {
       modsList: [],
       tags: {},
     },
-    overrides || {}
+    overrides || {},
   );
 
   return {

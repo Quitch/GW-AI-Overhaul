@@ -22,7 +22,7 @@ define([
   Delaunay,
   Graph,
   GWStar,
-  chooseStarSystemTemplates
+  chooseStarSystemTemplates,
 ) {
   // GWO - stock calls reduceConnections(max) with no seed, so Graph.js autoseeds from
   // crypto and the gate topology - and every distance derived from it - re-rolled on
@@ -71,7 +71,7 @@ define([
           var result = new GWStar();
           result.load(star);
           return result;
-        })
+        }),
       );
       self.gates(config.gates || []);
       self.origin(config.origin || 0);
@@ -110,7 +110,7 @@ define([
       var reconnect = gwoGalaxyConnect.reconnectingEdges(
         builder.stars.length,
         builder.graph.getEdges(),
-        builder.reducedGraph.getConnections()
+        builder.reducedGraph.getConnections(),
       );
       if (reconnect.length > 0) {
         _.forEach(reconnect, function (edge) {
@@ -170,7 +170,7 @@ define([
           var result = new GWStar();
           result.coordinates(star.concat([jitterRng()]));
           return result;
-        })
+        }),
       );
       self.gates(builder.reducedGraph.getEdges());
 
@@ -199,7 +199,7 @@ define([
       var StarSystemTemplates = gwoSystemTemplates.chooseFor(
         chooseStarSystemTemplates,
         config.content,
-        config.useEasierSystemTemplate
+        config.useEasierSystemTemplate,
       );
 
       var brackets = config.gwoSystemBrackets;
@@ -214,7 +214,7 @@ define([
         // baseline, so a solo war adds nothing.
         var coopSystemPlayerBonus = Math.max(
           0,
-          Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
+          Math.floor((config.coopPlayersForSystemGeneration || 1) - 1),
         );
         if (
           model.gwoDifficultySettings &&
@@ -224,7 +224,7 @@ define([
         } else {
           // "size", not "star": the template seed below already keys stream("star", i).
           systemSize = Math.floor(
-            rng.stream("size", index).int(0, 13) + coopSystemPlayerBonus
+            rng.stream("size", index).int(0, 13) + coopSystemPlayerBonus,
           );
         }
         // Large Planets brings bigger systems forward rather than resizing
@@ -259,7 +259,7 @@ define([
           ) {
             return $.Deferred().reject(
               "no usable star system for the star at distance " +
-                star.distance()
+                star.distance(),
             );
           }
           star.system(system);
@@ -273,7 +273,7 @@ define([
       if (brackets) {
         var selector = gwoSystemBrackets.selectorFor(
           brackets,
-          rng.stream("brackets")
+          rng.stream("brackets"),
         );
         var byDistance = _.sortBy(
           _.map(self.stars(), function (star, index) {
@@ -281,11 +281,11 @@ define([
           }),
           function (entry) {
             return entry.star.distance();
-          }
+          },
         );
         _.forEach(byDistance, function (entry) {
           systemByStar[entry.index] = selector.take(
-            systemSizeFor(entry.star, entry.index)
+            systemSizeFor(entry.star, entry.index),
           );
         });
       }
@@ -301,7 +301,7 @@ define([
           StarSystemTemplates.generate({
             players: systemSizeFor(star, index),
             seed: rng.stream("star", index).int(0, 2147483647),
-          })
+          }),
         );
       });
 

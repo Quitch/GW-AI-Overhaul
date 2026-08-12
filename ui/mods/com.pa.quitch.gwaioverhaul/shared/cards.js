@@ -109,7 +109,7 @@ define(() => {
       } catch (e) {
         console.warn(
           `Ignoring unreadable victory record for loadout ${loadoutId}`,
-          e
+          e,
         );
       }
 
@@ -229,7 +229,7 @@ define(() => {
       }
       return Math.min(
         chance + Math.round(chance / 3) * (subcommanders - 1),
-        90
+        90,
       );
     },
 
@@ -280,14 +280,14 @@ define(() => {
         return { chance: 0 };
       }
       const hasAntiTech = _.some(inventory.cards(), (card) =>
-        _.startsWith(card.id, "gwaio_anti_")
+        _.startsWith(card.id, "gwaio_anti_"),
       );
       return { chance: hasAntiTech ? baseChance / 2 : baseChance };
     },
 
     hasT2Access: function (inventory) {
       return _.some(inventory.cards(), (card) =>
-        _.includes(model.gwoCardsGrantingAdvancedTech, card.id)
+        _.includes(model.gwoCardsGrantingAdvancedTech, card.id),
       );
     },
 

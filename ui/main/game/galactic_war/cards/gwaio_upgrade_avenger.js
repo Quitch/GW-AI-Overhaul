@@ -6,8 +6,8 @@ define([
 
   describe: _.constant(
     gwoCard.withSlot(
-      loc("!LOC:Avenger Upgrade Tech adds a railgun to the orbital fighter.")
-    )
+      loc("!LOC:Avenger Upgrade Tech adds a railgun to the orbital fighter."),
+    ),
   ),
 
   summarize: () => "!LOC:Avenger Upgrade Tech",
@@ -23,7 +23,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.avenger)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.avenger),
     );
   },
 
@@ -40,7 +40,9 @@ define([
             },
           ],
         })
-        .concat([{ file: gwoUnit.avenger, path: "tools.1.spec_id", op: "tag" }])
+        .concat([
+          { file: gwoUnit.avenger, path: "tools.1.spec_id", op: "tag" },
+        ]),
     );
   },
 

@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Basic Vehicle tech enables building of basic vehicle and basic vehicle factories. Basic vehicle factories are built via your commander or any basic fabricator."
+      "!LOC:Basic Vehicle tech enables building of basic vehicle and basic vehicle factories. Basic vehicle factories are built via your commander or any basic fabricator.",
     ),
     summarize: _.constant("!LOC:Basic Vehicle Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_vehicle",
@@ -22,7 +22,7 @@ define([
         chance = gwoCard.travelledShort(
           system,
           context,
-          GW.balance.numberOfSystems
+          GW.balance.numberOfSystems,
         )
           ? 100
           : 250;

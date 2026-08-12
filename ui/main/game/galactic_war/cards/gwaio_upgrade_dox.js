@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Dox Upgrade Tech replaces the basic infantry's bullet weapons with flamethrowers."
-      )
-    )
+        "!LOC:Dox Upgrade Tech replaces the basic infantry's bullet weapons with flamethrowers.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Dox Upgrade Tech",

@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Ant Upgrade Tech adds splash damage to the light tank's attack."
-      )
-    )
+        "!LOC:Ant Upgrade Tech adds splash damage to the light tank's attack.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Ant Upgrade Tech",
@@ -40,7 +40,7 @@ define([
             effect_spec: "/pa/effects/specs/tesla_hit.pfx",
           },
         },
-      })
+      }),
     );
   },
 

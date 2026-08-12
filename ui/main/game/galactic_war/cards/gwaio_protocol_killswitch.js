@@ -32,7 +32,7 @@ define([
       gwoUnit.heliosDeath,
     ];
     const deathAmmoMods = _.map(deathAmmo, (ammo) =>
-      gwoCard.mods(ammo, "replace", { splash_damages_allies: true })
+      gwoCard.mods(ammo, "replace", { splash_damages_allies: true }),
     );
 
     const unitsWithoutADeathWeapon = _.reject(gwoGroup.units, (unit) =>
@@ -47,8 +47,8 @@ define([
           gwoUnit.jig,
           gwoUnit.helios,
         ],
-        unit
-      )
+        unit,
+      ),
     );
     const deathWeaponMods = _.map(unitsWithoutADeathWeapon, (unit) =>
       gwoCard
@@ -58,8 +58,8 @@ define([
         .concat(
           gwoCard.mods(unit, "tag", {
             "death_weapon.ground_ammo_spec": gwoUnit.kesslerAmmo,
-          })
-        )
+          }),
+        ),
     );
 
     inventory.addMods(_.flatten(deathAmmoMods.concat(deathWeaponMods)));

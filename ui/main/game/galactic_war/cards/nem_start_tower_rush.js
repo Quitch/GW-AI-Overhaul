@@ -30,7 +30,7 @@ define([
           inventory.addUnits(gwoGroup.structuresDefencesAdvanced);
 
           const units = gwoGroup.structuresDefencesAdvanced.concat(
-            gwoUnit.laserDefenseTower
+            gwoUnit.laserDefenseTower,
           );
           const mods = [];
           _.forEach(units, (unit) => {
@@ -46,14 +46,14 @@ define([
                 path: "unit_types",
                 op: "push",
                 value: "UNITTYPE_FabBuild",
-              }
+              },
             );
           });
           // The Wall is 90% cheaper below instead. The mine keeps its spacing:
           // packing a minefield tighter is not something the loadout offers.
           const costUnits = _.filter(
             gwoGroup.structuresDefences,
-            (defence) => defence !== gwoUnit.wall
+            (defence) => defence !== gwoUnit.wall,
           );
           _.forEach(costUnits, (unit) => {
             mods.push({
@@ -65,7 +65,7 @@ define([
           });
           const separationUnits = _.filter(
             costUnits,
-            (defence) => defence !== gwoUnit.landMine
+            (defence) => defence !== gwoUnit.landMine,
           );
           _.forEach(separationUnits, (unit) => {
             mods.push({
@@ -87,11 +87,11 @@ define([
               path: "max_health",
               op: "multiply",
               value: 2,
-            }
+            },
           );
           const weapons = _.filter(
             gwoGroup.structuresDefencesWeapons,
-            (defence) => defence !== gwoUnit.landMineWeapon
+            (defence) => defence !== gwoUnit.landMineWeapon,
           );
           _.forEach(weapons, (unit) => {
             mods.push(
@@ -118,7 +118,7 @@ define([
                 path: "pitch_rate",
                 op: "multiply",
                 value: 4,
-              }
+              },
             );
           });
           inventory.addMods(mods);
@@ -148,7 +148,7 @@ define([
                 value: "AnyBasicFabber",
                 matchAll: true,
               },
-            ])
+            ]),
           );
           inventory.addAIMods(aiMods);
         }

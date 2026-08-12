@@ -14,7 +14,7 @@ const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js",
 );
 
 const OPERATOR = "gwo_sync_star_card_name";
@@ -32,7 +32,7 @@ function setup(overrides = {}) {
       hasConnected: true,
       canRegister: true,
     },
-    overrides
+    overrides,
   );
 
   const calls = { sent: [], requested: [] };
@@ -241,7 +241,7 @@ describe("card name sync - applying a name a viewer received", () => {
       const errors = await capture("error", async () => {
         assert.match(
           await rejection(handlers[OPERATOR]({ payload })),
-          /Invalid synced star card name payload/
+          /Invalid synced star card name payload/,
         );
       });
       assert.deepEqual(calls.requested, [], JSON.stringify(payload));
@@ -256,11 +256,11 @@ describe("card name sync - applying a name a viewer received", () => {
     await capture("error", async () => {
       assert.match(
         await rejection(handlers[OPERATOR]({})),
-        /Invalid synced star card name payload/
+        /Invalid synced star card name payload/,
       );
       assert.match(
         await rejection(handlers[OPERATOR](undefined)),
-        /Invalid synced star card name payload/
+        /Invalid synced star card name payload/,
       );
     });
   });
@@ -273,9 +273,9 @@ describe("card name sync - applying a name a viewer received", () => {
     const errors = await capture("error", async () => {
       assert.match(
         await rejection(
-          handlers[OPERATOR]({ payload: { star: 1, card_id: "gwc_odd" } })
+          handlers[OPERATOR]({ payload: { star: 1, card_id: "gwc_odd" } }),
         ),
-        /Card summarize unavailable for gwc_odd/
+        /Card summarize unavailable for gwc_odd/,
       );
     });
 
@@ -290,9 +290,9 @@ describe("card name sync - applying a name a viewer received", () => {
         await rejection(
           handlers[OPERATOR]({
             payload: { star: 9, card_id: "gwc_combat_bots" },
-          })
+          }),
         ),
-        /Unable to apply card name to star 9/
+        /Unable to apply card name to star 9/,
       );
     });
 

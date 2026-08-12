@@ -41,7 +41,7 @@ beforeEach(() => {
 
   write(
     "modinfo.json",
-    JSON.stringify({ scenes: { start: [COUI + "ui/mods/x/menu.js"] } })
+    JSON.stringify({ scenes: { start: [COUI + "ui/mods/x/menu.js"] } }),
   );
   write(
     "ui/mods/x/menu.js",
@@ -54,11 +54,11 @@ beforeEach(() => {
       '  var map = "' +
       SPEC +
       'pa/units/unit_list.json";\n' +
-      "});\n"
+      "});\n",
   );
   write(
     "ui/mods/x/menu.css",
-    'a { background: url("' + COUI + 'ui/x.png"); }\n'
+    'a { background: url("' + COUI + 'ui/x.png"); }\n',
   );
   write("scripts/lib/scheme.js", 'const UI_SCHEME = "' + COUI + '";\n');
   write("test/menu.test.js", 'const p = "' + COUI + 'ui/mods/x/menu.js";\n');
@@ -104,13 +104,13 @@ describe("rewrite-scheme", () => {
       fs
         .readFileSync(path.join(root, "docs/cef-migration.md"), "utf8")
         .includes(COUI),
-      true
+      true,
     );
     assert.equal(
       fs
         .readFileSync(path.join(root, "ui/mods/x/readme.txt"), "utf8")
         .includes(COUI),
-      true
+      true,
     );
   });
 
@@ -135,7 +135,7 @@ describe("rewrite-scheme", () => {
           { from: COUI, to: "cef://" },
           { from: SPEC, to: "rehearsal" + SPEC },
         ]),
-      /second run would corrupt/
+      /second run would corrupt/,
     );
   });
 });

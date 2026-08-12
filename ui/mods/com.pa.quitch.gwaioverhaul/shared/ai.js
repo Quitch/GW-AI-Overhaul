@@ -67,13 +67,13 @@ define([
           scopeToken:
             type === "enemy" && ai.mirrorMode ? "guardians" : undefined,
         },
-        options || {}
+        options || {},
       );
 
       return refereeAIPaths.getAIPathDestination(
         type,
         currentAiInUse,
-        settings
+        settings,
       );
     },
 
@@ -88,7 +88,7 @@ define([
           aiMods: getInventoryAiMods(inventory),
           smartSubcommanders: subcommanderTech.hasSmartSubcommanders(inventory),
           scopeToken,
-        }
+        },
       );
     },
 

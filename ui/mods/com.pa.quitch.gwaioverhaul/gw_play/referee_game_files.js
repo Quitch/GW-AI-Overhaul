@@ -49,11 +49,11 @@ define([
 
     const enemyAIUnitMap = GW.specs.genAIUnitMap(
       aiUnitMap,
-      aiTag[currentCount]
+      aiTag[currentCount],
     );
     const enemyX1AIUnitMap = GW.specs.genAIUnitMap(
       aiX1UnitMap,
-      aiTag[currentCount]
+      aiTag[currentCount],
     );
 
     return genUnitSpecs(aiSpecs, aiTag[currentCount]).then((aiSpecFiles) => {
@@ -68,7 +68,7 @@ define([
           unitMapPath: clusterUnitMapPath,
           unitMapTitansPath: clusterUnitMapTitansPath,
         },
-        gwoAI.isCluster
+        gwoAI.isCluster,
       );
       const unitMapPath = resolvedPaths.unitMapPath;
       const unitMapTitansPath = resolvedPaths.unitMapTitansPath;
@@ -93,7 +93,7 @@ define([
         const guardians = ai.mirrorMode;
         if (guardians) {
           aiInventory = aiInventory.concat(
-            guardianMods(game, inventory.mods())
+            guardianMods(game, inventory.mods()),
           );
         }
         gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);
@@ -137,11 +137,11 @@ define([
       const enemyDestinationPath = gwoAI.getAIPathDestination("enemy");
       const aiUnitMapDestinationPath = getAIUnitMapDestinationPath(
         false,
-        enemyDestinationPath
+        enemyDestinationPath,
       );
       const aiUnitMapTitansDestinationPath = getAIUnitMapDestinationPath(
         true,
-        enemyDestinationPath
+        enemyDestinationPath,
       );
 
       const unitsLoad = $.get("spec://pa/units/unit_list.json");
@@ -203,11 +203,11 @@ define([
                   titans,
                 },
                 gwoAI,
-                gwoSpecs
-              )
+                gwoSpecs,
+              ),
             );
           });
-        }
+        },
       );
 
       _.times(aiFactionCount, (n) => {

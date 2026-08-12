@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
-  gwoCard
+  gwoCard,
 ) => ({
   visible: () => true,
 
@@ -22,7 +22,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
       return { chance: 0 };
     }
     const navalBonuses = _.filter(inventory.cards(), (card) =>
-      _.includes(card.id, "_sea")
+      _.includes(card.id, "_sea"),
     ).length;
     return { chance: Math.min(30 + navalBonuses * 15, 90) };
   },

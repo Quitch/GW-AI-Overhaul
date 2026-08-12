@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
-  gwoUnit
+  gwoUnit,
 ) => {
   const orderOfOperations = (mods) => {
     const operationsContainer = {};
@@ -65,7 +65,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
         base = specs[baseKey];
         if (!base) {
           console.warn(
-            `flattenBaseSpecs: base_spec "${spec.base_spec}" not found in specs (checked "${spec.base_spec}${tag}" and "${spec.base_spec}") - dropping base_spec reference and returning spec as-is.`
+            `flattenBaseSpecs: base_spec "${spec.base_spec}" not found in specs (checked "${spec.base_spec}${tag}" and "${spec.base_spec}") - dropping base_spec reference and returning spec as-is.`,
           );
           return _.cloneDeep(_.omit(spec, "base_spec"));
         }
@@ -73,7 +73,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
 
       if (visited[baseKey]) {
         console.warn(
-          `flattenBaseSpecs: circular base_spec reference detected at "${baseKey}" - stopping inheritance here.`
+          `flattenBaseSpecs: circular base_spec reference detected at "${baseKey}" - stopping inheritance here.`,
         );
         return _.cloneDeep(_.omit(spec, "base_spec"));
       }
@@ -109,7 +109,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     // JSON serialisation drops undefined values, so only a surviving one counts.
     const hasSerialisableValue = _.some(
       spec.navigation,
-      (value) => value !== undefined
+      (value) => value !== undefined,
     );
     if (!hasSerialisableValue) {
       delete spec.navigation;
@@ -141,7 +141,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
           if (!_.isNumber(attribute)) {
             console.warn(
               "multiply: attribute is not a number. Leaving unchanged:",
-              attribute
+              attribute,
             );
             return attribute;
           }
@@ -155,7 +155,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
           ) {
             console.warn(
               "add: attribute is not a number, string, or nullish. Leaving unchanged:",
-              attribute
+              attribute,
             );
             return attribute;
           } else if (isNullish(attribute)) {
@@ -170,7 +170,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
           if (!_.isPlainObject(attribute)) {
             console.warn(
               "merge: attribute is not an object. Leaving unchanged:",
-              attribute
+              attribute,
             );
             return attribute;
           }
@@ -204,7 +204,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
           if (!_.isString(attribute)) {
             console.warn(
               "tag: attribute is not a string. Leaving unchanged:",
-              attribute
+              attribute,
             );
             return attribute;
           }
@@ -212,7 +212,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
           if (jsonIndex === -1) {
             console.warn(
               "tag: attribute does not contain '.json'. Leaving unchanged:",
-              attribute
+              attribute,
             );
             return attribute;
           }
@@ -260,7 +260,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
           if (!_.isNumber(attribute) && !isNullish(attribute)) {
             console.warn(
               "multiplyOrCreate: attribute is not a number or nullish. Leaving unchanged:",
-              attribute
+              attribute,
             );
             return attribute;
           }
@@ -300,7 +300,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
             "mod",
             mod,
             "path",
-            originalPath.slice(0, -path.length).join(".")
+            originalPath.slice(0, -path.length).join("."),
           );
         };
 
@@ -385,7 +385,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
         } else {
           console.error(
             `Invalid mod: op '${mod.op}' requires a path, but none was given`,
-            mod
+            mod,
           );
         }
 

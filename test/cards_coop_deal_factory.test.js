@@ -18,13 +18,13 @@ const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js",
 );
 
 // Injected in place of the cardsOfferedCount stub where the subject is the hand
 // size itself rather than the deal it feeds.
 const realHelpers = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
 );
 
 const viewer = (id) => ({ id, name: id, role: "viewer" });
@@ -50,8 +50,8 @@ function fakeWhen() {
   const args = Array.prototype.slice.call(arguments);
   return Promise.all(
     args.map((arg) =>
-      arg && typeof arg.then === "function" ? arg : Promise.resolve(arg)
-    )
+      arg && typeof arg.then === "function" ? arg : Promise.resolve(arg),
+    ),
   );
 }
 
@@ -85,7 +85,7 @@ function setup(overrides = {}) {
       sendMessage: undefined,
       loadoutPool: [{ id: "gwc_start_orbital" }],
     },
-    overrides
+    overrides,
   );
 
   const calls = { deals: [], sent: [], actions: [], bank: [], offerCounts: [] };
@@ -115,7 +115,7 @@ function setup(overrides = {}) {
     chooseCards: (request) => {
       calls.deals.push(request);
       return Promise.resolve(
-        _.times(request.count, (n) => ({ id: "dealt_" + n }))
+        _.times(request.count, (n) => ({ id: "dealt_" + n })),
       );
     },
     helpers: {
@@ -184,7 +184,7 @@ const deal = (starIndex, star, options) =>
   global.model.dealCoopPlayerPendingTechCards(
     starIndex,
     star || { id: "star" },
-    options
+    options,
   );
 
 // The deferred rejects with a plain string, which `assert.rejects` will not take
@@ -239,7 +239,7 @@ describe("dealCoopPlayerPendingTechCards - when it deals", () => {
 
     assert.deepEqual(
       calls.deals.map((request) => request.rng.playerKey),
-      ["bob"]
+      ["bob"],
     );
   });
 
@@ -351,7 +351,7 @@ describe("dealCoopPlayerPendingTechCards - the hand", () => {
       [
         { playerKey: "alice", dealIndex: 5 },
         { playerKey: "bob", dealIndex: 5 },
-      ]
+      ],
     );
   });
 
@@ -397,7 +397,7 @@ describe("dealCoopPlayerPendingTechCards - whose inventory", () => {
 
     assert.deepEqual(
       calls.deals.map((request) => request.inventory.cards()),
-      [[{ id: "gwaio_alice_tech" }], [{ id: "gwaio_bob_tech" }]]
+      [[{ id: "gwaio_alice_tech" }], [{ id: "gwaio_bob_tech" }]],
     );
   });
 
@@ -518,7 +518,7 @@ describe("dealCoopPlayerPendingTechCards - delivery", () => {
 
     assert.match(
       await rejection(deal(1)),
-      /set_player_pending_tech_cards failed/
+      /set_player_pending_tech_cards failed/,
     );
   });
 

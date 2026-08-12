@@ -13,15 +13,15 @@ function gwoCard() {
     // Allow tech cards to be deleted at any time
     $("#hover-card").replaceWith(
       loadHtml(
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html"
-      )
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_inventory.html",
+      ),
     );
     locTree($("#hover-card"));
 
     // Used by cards checking for T2 access - global for modders,
     // New-GW-Cards pushes here - see docs/tech-cards.md
     model.gwoCardsGrantingAdvancedTech = Array.isArray(
-      model.gwoCardsGrantingAdvancedTech
+      model.gwoCardsGrantingAdvancedTech,
     )
       ? model.gwoCardsGrantingAdvancedTech
       : [];
@@ -34,7 +34,7 @@ function gwoCard() {
       "gwaio_upgrade_fabricationbot",
       "gwaio_upgrade_fabricationship",
       "gwaio_upgrade_fabricationvehicle",
-      "gwaio_start_hoarder"
+      "gwaio_start_hoarder",
     );
 
     const numCardsToOffer = 3;
@@ -82,14 +82,14 @@ function gwoCard() {
           },
           {
             request_id: _.uniqueId("gwo_reroll_"),
-          }
+          },
         );
         return;
       }
 
       const cardsOffered = helpers.cardsOfferedCount(
         numCardsToOffer,
-        game.inventory()
+        game.inventory(),
       );
       const star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
@@ -158,15 +158,15 @@ function gwoCard() {
         model.gwoRerollsUsed(rerollsUsed);
         model.gwoOfferRerolls(
           !helpers.pendingCardsContainLoadout(pendingTechCards) &&
-            rerollsUsed < cardsOffered - 1
+            rerollsUsed < cardsOffered - 1,
         );
         model.gwoRerollPending(false);
       });
 
       $(".div_options_bar").replaceWith(
         loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html"
-        )
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html",
+        ),
       );
       locTree($(".div_options_bar"));
     };
@@ -183,7 +183,7 @@ function gwoCard() {
       const star = game.galaxy().stars()[game.currentStar()];
       const cardsOffered = helpers.cardsOfferedCount(
         numCardsToOffer,
-        game.inventory()
+        game.inventory(),
       );
       model.gwoRerollsUsed(cardsOffered - star.cardList().length);
       if (model.gwoRerollsUsed() >= cardsOffered - 1) {
@@ -219,11 +219,11 @@ function gwoCard() {
       const loadCard = (card, data) => {
         if (_.isEmpty(card)) {
           self.desc(
-            "!LOC:Data Bank holds one Tech. Explore systems to find new Tech."
+            "!LOC:Data Bank holds one Tech. Explore systems to find new Tech.",
           );
           self.summary("!LOC:Empty Data Bank");
           self.icon(
-            "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_empty.png"
+            "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_empty.png",
           );
           self.iconPlaceholder(undefined);
           self.visible(true);
@@ -234,7 +234,7 @@ function gwoCard() {
           self.iconPlaceholder(!self.icon() && (self.summary() || self.desc()));
           self.audio(card.audio && card.audio(data));
           self.visible(
-            card.visible === true || !!(card.visible && card.visible(data))
+            card.visible === true || !!(card.visible && card.visible(data)),
           );
         }
         completed.resolve(card);
@@ -294,7 +294,7 @@ function gwoCard() {
         cardsCheats,
         gwoStreams,
         gwoTreasure,
-        gwoLoadoutBanks
+        gwoLoadoutBanks,
       ) => {
         helpers = cardsDealHelpers;
         // Nothing reads the banks until the player explores, so resolving them
@@ -348,7 +348,7 @@ function gwoCard() {
                   star,
                   context,
                   dealInventory,
-                  gwoStreams.cardRng(iterationRng, card.id)
+                  gwoStreams.cardRng(iterationRng, card.id),
                 );
               const match = helpers.doNotDealCard(
                 dealInventory,
@@ -356,7 +356,7 @@ function gwoCard() {
                 list,
                 dealAddSlot,
                 false,
-                systemCards
+                systemCards,
               );
 
               if (match) {
@@ -368,7 +368,7 @@ function gwoCard() {
 
             const resultIndex = helpers.chooseDealIndex(
               fullHand,
-              iterationRng ? iterationRng() : unseeded()
+              iterationRng ? iterationRng() : unseeded(),
             );
             if (_.isUndefined(resultIndex)) {
               return;
@@ -476,7 +476,7 @@ function gwoCard() {
               // never carries a pre-dealt card.
               const treasurePlanet = gwoTreasure.isTreasureStar(
                 gwoSettings,
-                starIndex
+                starIndex,
               );
               const validForDeal =
                 gwoSettings && gwoSettings.staticTech
@@ -502,7 +502,7 @@ function gwoCard() {
                     rng: gwoStreams.aiStarDealRng(
                       warRng,
                       starIndex,
-                      game.stats().turns()
+                      game.stats().turns(),
                     ),
                   }).then((card) => {
                     system.star.cardList(card);
@@ -511,7 +511,7 @@ function gwoCard() {
                       cards: system.star.cardList(),
                     });
                     return cardNameSync.setCardName(system, card, starIndex);
-                  })
+                  }),
                 );
               }
             });
@@ -521,7 +521,7 @@ function gwoCard() {
               .then(() =>
                 // The one caller that replaces cards viewers already hold, so
                 // their offers move exactly when the host's do.
-                coopStarCards.refresh({ redeal: true })
+                coopStarCards.refresh({ redeal: true }),
               )
               .then(() => {
                 deferred.resolve();
@@ -557,7 +557,7 @@ function gwoCard() {
               inventory,
             });
             setupGeneralCommander();
-          }
+          },
         );
 
         const dealCardToSelectableAIWhenWarStarts = (settings) => {
@@ -625,7 +625,7 @@ function gwoCard() {
 
           const cardsOffered = helpers.cardsOfferedCount(
             numCardsToOffer,
-            inventory
+            inventory,
           );
           const starIndex = game.currentStar();
           const star = game.galaxy().stars()[starIndex];
@@ -648,7 +648,7 @@ function gwoCard() {
           }
 
           const startLoadoutCards = helpers.filterStartLoadoutCards(
-            star && _.isFunction(star.cardList) ? star.cardList() : []
+            star && _.isFunction(star.cardList) ? star.cardList() : [],
           );
 
           const dealStarCards = chooseCards({
@@ -662,7 +662,7 @@ function gwoCard() {
               warRng,
               starIndex,
               game.stats().turns(),
-              model.gwoRerollsUsed()
+              model.gwoRerollsUsed(),
             ),
           }).then((result) => {
             let ok = true;
@@ -695,12 +695,12 @@ function gwoCard() {
             const explorationLive = helpers.explorationStillLive(
               game,
               starIndex,
-              star
+              star,
             );
 
             if (!explorationLive) {
               console.log(
-                `[GW COOP] discarded a stale explore deal star=${starIndex} turnState=${game.turnState()}`
+                `[GW COOP] discarded a stale explore deal star=${starIndex} turnState=${game.turnState()}`,
               );
             }
 
@@ -746,11 +746,11 @@ function gwoCard() {
             },
             (reason) => {
               console.error(
-                `[GW COOP] failed to deal co-op player pending tech cards: ${reason}`
+                `[GW COOP] failed to deal co-op player pending tech cards: ${reason}`,
               );
               model.scanning(false);
               return $.Deferred().reject(reason).promise();
-            }
+            },
           );
         };
 
@@ -790,7 +790,7 @@ function gwoCard() {
             // GW.bank.addStartCard would be suppressed along with the rest.
             const submittedIndex = bankWonLoadout(
               tech_card && tech_card.id(),
-              selectedCardIndex
+              selectedCardIndex,
             );
 
             return model.submitCoopTechCardChoice(submittedIndex).then(
@@ -803,10 +803,10 @@ function gwoCard() {
               },
               (reason) => {
                 console.error(
-                  `[GW COOP] failed to acquire co-op tech choice: ${reason}`
+                  `[GW COOP] failed to acquire co-op tech choice: ${reason}`,
                 );
                 return $.Deferred().reject(reason).promise();
-              }
+              },
             );
           }
 
@@ -826,7 +826,7 @@ function gwoCard() {
             (!actionCardList || !actionCardList[selectedCardIndex])
           ) {
             console.error(
-              "[GW COOP] Cannot apply win choice without current system card data."
+              "[GW COOP] Cannot apply win choice without current system card data.",
             );
             return;
           }
@@ -841,7 +841,7 @@ function gwoCard() {
           // nothing to the inventory.
           const wonIndex = bankWonLoadout(
             techCard && techCard.id(),
-            selectedCardIndex
+            selectedCardIndex,
           );
 
           return game.winTurn(wonIndex).then((didWin) => {
@@ -872,7 +872,7 @@ function gwoCard() {
                       api.audio.playSound(techAudio);
                     } else {
                       api.audio.playSound(
-                        "/VO/Computer/gw/board_tech_acquired"
+                        "/VO/Computer/gw/board_tech_acquired",
                       );
                     }
                   }
@@ -880,7 +880,7 @@ function gwoCard() {
               });
           });
         };
-      }
+      },
     );
   } catch (e) {
     console.error(e);

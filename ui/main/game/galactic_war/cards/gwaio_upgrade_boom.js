@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs."
-      )
-    )
+        "!LOC:Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Boom Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.boom)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.boom),
     );
   },
 
@@ -40,7 +40,7 @@ define([
         })
         .concat([
           { file: gwoUnit.lobAmmo, path: "spawn_unit_on_death", op: "tag" },
-        ])
+        ]),
     );
   },
 

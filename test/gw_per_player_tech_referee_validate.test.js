@@ -12,7 +12,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const hook = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
 );
 const validate = hook.validatePerPlayerTechInputs;
 

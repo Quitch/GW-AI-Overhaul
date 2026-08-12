@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Stingray Upgrade Tech enables interception of tactical missiles by the missile ship and increases vision and radar radius by 50%."
-      )
-    )
+        "!LOC:Stingray Upgrade Tech enables interception of tactical missiles by the missile ship and increases vision and radar radius by 50%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Stingray Upgrade Tech",
@@ -26,7 +26,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.stingray),
-      30
+      30,
     );
   },
 
@@ -56,8 +56,8 @@ define([
           path: `recon.observer.items.${i}.radius`,
           op: "multiply",
           value: 1.5,
-        }))
-      )
+        })),
+      ),
     );
   },
 

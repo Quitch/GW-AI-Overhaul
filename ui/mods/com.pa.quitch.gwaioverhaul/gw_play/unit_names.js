@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
-  gwoUnit
+  gwoUnit,
 ) => ({
   units: [
     { name: "!LOC:Advanced Air Factory", path: gwoUnit.airFactoryAdvanced },

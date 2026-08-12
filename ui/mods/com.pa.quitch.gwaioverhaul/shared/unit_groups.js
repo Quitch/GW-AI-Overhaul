@@ -3,7 +3,7 @@
 // silently. What a group contains is not: change the membership freely as the
 // roster changes. See docs/tech-cards.md.
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
-  gwoUnit
+  gwoUnit,
 ) => {
   const airBasicCombat = [
     gwoUnit.bumblebee,
@@ -13,7 +13,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   ];
   const airBasicMobile = airBasicCombat.concat(
     gwoUnit.airFabber,
-    gwoUnit.firefly
+    gwoUnit.firefly,
   );
   const airAdvancedCombat = [
     gwoUnit.angel,
@@ -58,7 +58,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   const airMobile = airBasicMobile.concat(airAdvancedMobile);
   const airMobileNoCluster = _.filter(
     airMobile,
-    (unit) => unit !== gwoUnit.angel
+    (unit) => unit !== gwoUnit.angel,
   );
   const airCombat = airBasicCombat.concat(airAdvancedCombat);
   const air = airBasic.concat(airAdvanced);
@@ -72,7 +72,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   ];
   const botsBasicMobile = botsBasicCombat.concat(
     gwoUnit.botFabber,
-    gwoUnit.stitch
+    gwoUnit.stitch,
   );
   const botsBasicAmmo = [
     gwoUnit.boomAmmo,
@@ -97,7 +97,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     gwoUnit.slammer,
   ];
   const botsAdvancedMobile = botsAdvancedCombat.concat(
-    gwoUnit.botFabberAdvanced
+    gwoUnit.botFabberAdvanced,
   );
   const botsAdvancedAmmo = [
     gwoUnit.bluehawkAmmo,
@@ -129,7 +129,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   const botsMobile = botsBasicMobile.concat(botsAdvancedMobile);
   const botsMobileNoCluster = _.filter(
     botsMobile,
-    (unit) => unit !== gwoUnit.colonel
+    (unit) => unit !== gwoUnit.colonel,
   );
   const botsCombat = botsBasicCombat.concat(botsAdvancedCombat);
   const bots = botsBasic.concat(botsAdvanced);
@@ -167,7 +167,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     gwoUnit.typhoon,
   ];
   const navalAdvancedMobile = navalAdvancedCombat.concat(
-    gwoUnit.navalFabberAdvanced
+    gwoUnit.navalFabberAdvanced,
   );
   const navalAdvancedAmmo = [
     gwoUnit.kaijuAmmo,
@@ -197,7 +197,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   ];
   const navalBasic = navalBasicMobile.concat(gwoUnit.navalFactory);
   const navalAdvanced = navalAdvancedMobile.concat(
-    gwoUnit.navalFactoryAdvanced
+    gwoUnit.navalFactoryAdvanced,
   );
   const navalAmmo = navalBasicAmmo.concat(navalAdvancedAmmo);
   const navalWeapons = navalBasicWeapons.concat(navalAdvancedWeapons);
@@ -210,14 +210,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     gwoUnit.arkyd,
     gwoUnit.astraeus,
     gwoUnit.hermes,
-    gwoUnit.orbitalFabber
+    gwoUnit.orbitalFabber,
   );
   const orbitalBasicAmmo = [gwoUnit.avengerAmmo];
   const orbitalBasicWeapons = [gwoUnit.avengerWeapon];
   const orbitalAdvancedCombat = [gwoUnit.artemis, gwoUnit.omega, gwoUnit.sxx];
   const orbitalAdvancedMobile = orbitalAdvancedCombat.concat(
     gwoUnit.radarSatelliteAdvanced,
-    gwoUnit.solarArray
+    gwoUnit.solarArray,
   );
   const orbitalAdvancedAmmo = [
     gwoUnit.artemisAmmo,
@@ -234,7 +234,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   const orbitalBasic = orbitalBasicMobile.concat(gwoUnit.orbitalLauncher);
   const orbitalAdvanced = orbitalAdvancedMobile.concat(
     gwoUnit.orbitalFactory,
-    gwoUnit.jig // this is how GW treats it
+    gwoUnit.jig, // this is how GW treats it
   );
   const orbitalAmmo = orbitalBasicAmmo.concat(orbitalAdvancedAmmo);
   const orbitalWeapons = orbitalBasicWeapons.concat(orbitalAdvancedWeapons);
@@ -261,13 +261,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   const structuresArtilleryAdvancedAmmo = [gwoUnit.holkinsAmmo];
   const structuresArtilleryAdvancedWeapons = [gwoUnit.holkinsWeapon];
   const structuresArtillery = structuresArtilleryBasic.concat(
-    structuresArtilleryAdvanced
+    structuresArtilleryAdvanced,
   );
   const structuresArtilleryAmmo = structuresArtilleryBasicAmmo.concat(
-    structuresArtilleryAdvancedAmmo
+    structuresArtilleryAdvancedAmmo,
   );
   const structuresArtilleryWeapons = structuresArtilleryBasicWeapon.concat(
-    structuresArtilleryAdvancedWeapons
+    structuresArtilleryAdvancedWeapons,
   );
 
   const structuresDefencesBasic = [
@@ -329,13 +329,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     gwoUnit.torpedoLauncherAdvancedWeapon,
   ];
   const structuresDefencesAmmo = structuresDefencesBasicAmmo.concat(
-    structuresDefencesAdvancedAmmo
+    structuresDefencesAdvancedAmmo,
   );
   const structuresDefencesWeapons = structuresDefencesBasicWeapons.concat(
-    structuresDefencesAdvancedWeapons
+    structuresDefencesAdvancedWeapons,
   );
   const structuresDefences = structuresDefencesBasic.concat(
-    structuresDefencesAdvanced
+    structuresDefencesAdvanced,
   );
   const structuresEcoBasic = [gwoUnit.energyPlant, gwoUnit.metalExtractor];
   const structuresEcoAdvanced = [
@@ -346,7 +346,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   const structuresEcoStorage = [gwoUnit.energyStorage, gwoUnit.metalStorage];
   const structuresEco = structuresEcoBasic.concat(
     structuresEcoAdvanced,
-    structuresEcoStorage
+    structuresEcoStorage,
   );
   const structuresFactories = [
     gwoUnit.airFactory,
@@ -379,7 +379,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     structuresIntel,
     structuresEco,
     structuresArtillery,
-    gwoUnit.teleporter
+    gwoUnit.teleporter,
   );
 
   const titans = [
@@ -414,7 +414,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   ];
   const vehiclesBasicMobile = vehiclesBasicCombat.concat(
     gwoUnit.skitter,
-    gwoUnit.vehicleFabber
+    gwoUnit.vehicleFabber,
   );
   const vehiclesBasicAmmo = [
     gwoUnit.antAmmo,
@@ -442,7 +442,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   ];
   const vehiclesAdvancedMobile = vehiclesAdvancedCombat.concat(
     gwoUnit.nyx,
-    gwoUnit.vehicleFabberAdvanced
+    gwoUnit.vehicleFabberAdvanced,
   );
   const vehiclesAdvancedAmmo = [
     gwoUnit.levelerAmmo,
@@ -463,7 +463,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   ];
   const vehiclesBasic = vehiclesBasicMobile.concat(gwoUnit.vehicleFactory);
   const vehiclesAdvanced = vehiclesAdvancedMobile.concat(
-    gwoUnit.vehicleFactoryAdvanced
+    gwoUnit.vehicleFactoryAdvanced,
   );
   const vehiclesAmmo = vehiclesBasicAmmo.concat(vehiclesAdvancedAmmo);
   const vehiclesWeapons = vehiclesBasicWeapons.concat(vehiclesAdvancedWeapons);
@@ -521,7 +521,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   const factories = factoriesBasic.concat(
     factoriesAdvanced,
     gwoUnit.antiNukeLauncher,
-    gwoUnit.unitCannon
+    gwoUnit.unitCannon,
   );
 
   // titansMobile, so a titan added there is picked up here automatically.
@@ -530,7 +530,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     navalMobile,
     orbitalMobile,
     vehiclesMobile,
-    titansMobile
+    titansMobile,
   );
   const immobile = structures.concat(gwoUnit.ragnarok);
   const mobileNoCluster = airMobileNoCluster.concat(
@@ -538,13 +538,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     navalMobile,
     orbitalMobile,
     vehiclesMobile,
-    titansMobile
+    titansMobile,
   );
 
   const energyIntel = structuresIntel.concat(
     gwoUnit.arkyd,
     gwoUnit.nyx,
-    gwoUnit.radarSatelliteAdvanced
+    gwoUnit.radarSatelliteAdvanced,
   );
   const energyUnits = [
     gwoUnit.artemis,
@@ -581,7 +581,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     navalAmmo,
     orbitalAmmo,
     titansAmmo,
-    vehiclesAmmo
+    vehiclesAmmo,
   );
 
   const commanderAmmo = [
@@ -642,8 +642,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
       structuresArtilleryAmmo,
       commanderAmmo,
       unhomedAmmo,
-      deathAmmo
-    )
+      deathAmmo,
+    ),
   );
 
   const weaponsMobile = airWeapons.concat(
@@ -651,15 +651,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     navalWeapons,
     orbitalWeapons,
     titansWeapons,
-    vehiclesWeapons
+    vehiclesWeapons,
   );
   const weapons = _.uniq(
     weaponsMobile.concat(
       structuresDefencesWeapons,
       structuresArtilleryWeapons,
       commanderWeapons,
-      unhomedWeapons
-    )
+      unhomedWeapons,
+    ),
   );
 
   // What combatMobile carries: the mobile groups drop the defensive structures,
@@ -667,12 +667,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   const combatMobileAmmo = _.difference(
     ammoMobile,
     titansAmmo,
-    scoutAmmo
+    scoutAmmo,
   ).concat(commanderAmmo);
   const combatMobileWeapons = _.difference(
     weaponsMobile,
     titansWeapons,
-    scoutWeapons
+    scoutWeapons,
   ).concat(commanderWeapons);
 
   // The Commander belongs to no domain roster, so mobile cannot reach it.
@@ -720,7 +720,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     gwoUnit.metalExtractorAdvanced,
     gwoUnit.radarAdvanced,
     gwoUnit.radarJammingStation,
-    gwoUnit.unitCannon
+    gwoUnit.unitCannon,
   );
 
   const airFactories = [gwoUnit.airFactory, gwoUnit.airFactoryAdvanced];
@@ -737,7 +737,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     structuresEcoStorage,
     gwoUnit.energyPlant,
     gwoUnit.energyPlantAdvanced,
-    gwoUnit.jig
+    gwoUnit.jig,
   );
   const combat = airCombat.concat(
     botsCombat,
@@ -745,10 +745,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     orbitalCombat,
     vehiclesCombat,
     structuresDefences,
-    gwoUnit.commander
+    gwoUnit.commander,
   );
   const combatMobile = _.reject(combat, (unit) =>
-    _.includes(structuresDefences, unit)
+    _.includes(structuresDefences, unit),
   );
 
   return {

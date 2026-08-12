@@ -8,10 +8,10 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const gwoRng = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
 );
 const factionSeed = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js",
 );
 
 const BASELINE = {
@@ -77,7 +77,7 @@ describe("faction_seed reseedFaction", () => {
     // Small pools make a single-field collision plausible, so assert on the pair.
     assert.notDeepEqual(
       [randomMinion(c).personality, c.teams[0].systemDescription],
-      [randomMinion(a).personality, a.teams[0].systemDescription]
+      [randomMinion(a).personality, a.teams[0].systemDescription],
     );
   });
 
@@ -119,8 +119,8 @@ describe("faction_seed reseedFaction", () => {
     assert.equal(slots[1].name, "Security");
     assert.ok(
       slots.every((s) =>
-        POOL.some((p) => p.personality.id === s.personality.id)
-      )
+        POOL.some((p) => p.personality.id === s.personality.id),
+      ),
     );
   });
 
@@ -178,7 +178,7 @@ describe("faction_seed reseed", () => {
       [
         randomMinion(inOrder[1]).personality,
         inOrder[1].teams[0].systemDescription,
-      ]
+      ],
     );
   });
 

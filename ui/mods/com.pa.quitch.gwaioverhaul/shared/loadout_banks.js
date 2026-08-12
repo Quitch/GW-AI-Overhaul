@@ -20,8 +20,8 @@ define(() => {
     _.uniq(
       _.filter(
         _.map(entries(), "path"),
-        (path) => _.isString(path) && path.length > 0
-      )
+        (path) => _.isString(path) && path.length > 0,
+      ),
     );
 
   return {
@@ -40,7 +40,7 @@ define(() => {
             return undefined;
           }
           return { prefix: entry.prefix, bank };
-        })
+        }),
       );
 
       return resolved;
@@ -62,7 +62,7 @@ define(() => {
         (entry) =>
           _.isString(entry.prefix) &&
           _.isString(id) &&
-          id.indexOf(entry.prefix) === 0
+          id.indexOf(entry.prefix) === 0,
       );
 
       return match ? match.bank : undefined;
@@ -71,8 +71,8 @@ define(() => {
     startCards: function () {
       return _.flatten(
         _.map(resolved, (entry) =>
-          _.isFunction(entry.bank.startCards) ? entry.bank.startCards() : []
-        )
+          _.isFunction(entry.bank.startCards) ? entry.bank.startCards() : [],
+        ),
       );
     },
   };

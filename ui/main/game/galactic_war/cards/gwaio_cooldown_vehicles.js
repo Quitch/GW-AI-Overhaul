@@ -21,7 +21,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.conditionalDeal(
       gwoCard.hasUnit(inventory.units(), gwoGroup.vehicleFactories),
-      70
+      70,
     );
   },
 

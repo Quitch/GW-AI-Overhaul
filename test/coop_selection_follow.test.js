@@ -143,7 +143,7 @@ describe("a viewer that has chosen a star", () => {
     move.fail();
     await move.applying.then(
       () => {},
-      () => {}
+      () => {},
     );
 
     assert.equal(selection(), 5);

@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Firefly Upgrade Tech adds a low powered laser to the air scout and increases its vision by 100%."
-      )
-    )
+        "!LOC:Firefly Upgrade Tech adds a low powered laser to the air scout and increases its vision by 100%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Firefly Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.firefly)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.firefly),
     );
   },
 

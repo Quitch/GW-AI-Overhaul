@@ -123,7 +123,7 @@ define([
                 path: "navigation.turn_speed",
                 op: "multiply",
                 value: 2,
-              }
+              },
             );
           });
           _.forEach(gwoGroup.ammo, (ammo) => {
@@ -139,7 +139,7 @@ define([
                 path: "splash_damage",
                 op: "multiply",
                 value: 2,
-              }
+              },
             );
           });
           inventory.addMods(mods);

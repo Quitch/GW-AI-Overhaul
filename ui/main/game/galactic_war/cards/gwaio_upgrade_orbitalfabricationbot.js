@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Orbital Fabrication Bot Upgrade Tech allows the orbital fabricator to build all basic structures."
-      )
-    )
+        "!LOC:Orbital Fabrication Bot Upgrade Tech allows the orbital fabricator to build all basic structures.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Orbital Fabrication Bot Upgrade Tech",
@@ -26,7 +26,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       !inventory.hasCard("nem_start_deepspace") &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber)
+        gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber),
     );
   },
 
@@ -36,7 +36,7 @@ define([
       gwoCard.mods(gwoUnit.orbitalFabber, "add", {
         buildable_types:
           " | (Land & Structure & Basic | Factory & Basic | FabBuild) & Custom58",
-      })
+      }),
     );
 
     const structures = [

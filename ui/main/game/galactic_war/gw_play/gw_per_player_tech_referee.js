@@ -20,7 +20,7 @@ define([
   refereeAIPaths,
   gwoSpecs,
   gwoColour,
-  perPlayerTech
+  perPlayerTech,
 ) {
   var getPlayerTagGivenIndex = perPlayerTech.getPlayerTagGivenIndex;
   var stripKnownSpecTag = perPlayerTech.stripKnownSpecTag;
@@ -75,7 +75,7 @@ define([
               subcommanderTech,
               gwoAI.aiInUse("subcommander"),
               inventory,
-              playerTag
+              playerTag,
             );
 
             playerFilesClassic[
@@ -92,7 +92,7 @@ define([
             {},
             playerFilesClassic,
             playerFilesX1,
-            playerSpecFiles
+            playerSpecFiles,
           );
           gwoSpecs.mod(playerFiles, inventory.mods(), playerTag);
           done.resolve(playerFiles);
@@ -160,7 +160,7 @@ define([
       if (!inventoryDataRecord) {
         console.error(
           "[GW COOP] Missing co-op player inventory data for client " +
-            JSON.stringify(connectedClient)
+            JSON.stringify(connectedClient),
         );
         config.per_player_tech_ready = false;
         referee.config(config);
@@ -174,7 +174,7 @@ define([
       ) {
         console.error(
           "[GW COOP] Invalid co-op player inventory data for client " +
-            JSON.stringify(connectedClient)
+            JSON.stringify(connectedClient),
         );
         config.per_player_tech_ready = false;
         referee.config(config);
@@ -190,7 +190,7 @@ define([
       ) {
         console.error(
           "[GW COOP] Invalid co-op player inventory for client " +
-            JSON.stringify(connectedClient)
+            JSON.stringify(connectedClient),
         );
         config.per_player_tech_ready = false;
         referee.config(config);
@@ -200,7 +200,7 @@ define([
 
       playerInventories[clientIndex] = loadedInventory;
       playerCommanders[clientIndex] = stripKnownSpecTag(
-        inventoryDataRecord.commander
+        inventoryDataRecord.commander,
       );
     }
 
@@ -210,7 +210,7 @@ define([
     for (var i = 1; i < playerTags.length; i++) {
       var thisPlayersInventory = playerInventories[i];
       playerSpecPromises.push(
-        generateUnitSpecsForPlayer(thisPlayersInventory, playerTags[i])
+        generateUnitSpecsForPlayer(thisPlayersInventory, playerTags[i]),
       );
     }
 
@@ -248,7 +248,7 @@ define([
           subcommanderTech,
           gwoAI.aiInUse("subcommander"),
           thisPlayersInventory,
-          playerTags[index]
+          playerTags[index],
         );
         var viewerSubcommanders = buildViewerSubcommanderArmies({
           subcommanderTech: subcommanderTech,

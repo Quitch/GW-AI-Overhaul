@@ -53,7 +53,7 @@ define([
                 op: "replace",
                 value: "none",
               },
-            ])
+            ]),
           );
           mods.push(
             {
@@ -69,7 +69,7 @@ define([
               op: "replace",
               value:
                 "!LOC:Advanced Manufacturing - This modified version of the Advanced Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the basic Metal Extractor. Produces metal.",
-            }
+            },
           );
           inventory.addMods(mods);
 
@@ -114,7 +114,7 @@ define([
                   test_type: "CanFindPlaceToBuild",
                   string0: structure,
                 },
-              }
+              },
             );
           });
           inventory.addAIMods(aiMods);

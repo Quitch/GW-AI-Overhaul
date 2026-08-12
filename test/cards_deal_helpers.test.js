@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const helpers = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
 );
 
 describe("cardsOfferedCount", () => {
@@ -33,7 +33,7 @@ describe("cardsOfferedCount", () => {
   it("adds one for each of a full hand and the Lucky card", () => {
     assert.equal(
       helpers.cardsOfferedCount(3, inventory({ full: true, lucky: true })),
-      5
+      5,
     );
   });
 
@@ -54,9 +54,9 @@ describe("doNotDealCard", () => {
         [],
         true,
         false,
-        []
+        [],
       ),
-      true
+      true,
     );
   });
 
@@ -68,9 +68,9 @@ describe("doNotDealCard", () => {
         [{ id: "gwc_x" }],
         true,
         false,
-        []
+        [],
       ),
-      true
+      true,
     );
   });
 
@@ -79,7 +79,7 @@ describe("doNotDealCard", () => {
       helpers.doNotDealCard(emptyInventory, card, [], true, false, [
         { id: "gwc_x" },
       ]),
-      true
+      true,
     );
   });
 
@@ -88,14 +88,14 @@ describe("doNotDealCard", () => {
       helpers.doNotDealCard(emptyInventory, card, [], true, false, [
         { id: () => "gwc_x" },
       ]),
-      true
+      true,
     );
   });
 
   it("deals a fresh card no one holds", () => {
     assert.equal(
       helpers.doNotDealCard(emptyInventory, card, [], true, false, []),
-      false
+      false,
     );
   });
 
@@ -107,16 +107,16 @@ describe("doNotDealCard", () => {
         [],
         false,
         false,
-        []
+        [],
       ),
-      true
+      true,
     );
   });
 
   it("treats a non-array systemCards as an empty system", () => {
     assert.equal(
       helpers.doNotDealCard(emptyInventory, card, [], true, false, undefined),
-      false
+      false,
     );
   });
 
@@ -126,14 +126,14 @@ describe("doNotDealCard", () => {
       helpers.doNotDealCard(held, card, [{ id: "gwc_x" }], true, true, [
         { id: "gwc_x" },
       ]),
-      true
+      true,
     );
     // System has it, but it is neither held nor dealt this round.
     assert.equal(
       helpers.doNotDealCard(emptyInventory, card, [], true, true, [
         { id: "gwc_x" },
       ]),
-      false
+      false,
     );
   });
 });
@@ -171,7 +171,7 @@ describe("chooseDealIndex", () => {
   it("skips holes and entries with no deal", () => {
     assert.equal(
       helpers.chooseDealIndex([undefined, null, { chance: 10 }], 0),
-      2
+      2,
     );
   });
 
@@ -209,7 +209,7 @@ describe("filterStartLoadoutCards", () => {
         { id: "gwc_minion" },
         { id: "gwaio_start_hoarder" },
       ]),
-      [{ id: "gwaio_start_lucky" }, { id: "gwaio_start_hoarder" }]
+      [{ id: "gwaio_start_lucky" }, { id: "gwaio_start_hoarder" }],
     );
   });
 
@@ -225,7 +225,7 @@ describe("buildPendingStartLoadoutCard", () => {
       {
         id: "gwaio_start_lucky",
         allowOverflow: true,
-      }
+      },
     );
   });
 
@@ -247,7 +247,7 @@ describe("buildPendingStartLoadoutCard", () => {
         id: "gwaio_start_lucky",
         allowOverflow: false,
       }),
-      { id: "gwaio_start_lucky", allowOverflow: false }
+      { id: "gwaio_start_lucky", allowOverflow: false },
     );
   });
 
@@ -256,7 +256,7 @@ describe("buildPendingStartLoadoutCard", () => {
       helpers.buildPendingStartLoadoutCard({ id: "gwc_minion" }),
       {
         id: "gwc_minion",
-      }
+      },
     );
   });
 });
@@ -267,14 +267,14 @@ describe("pendingCardsContainLoadout", () => {
       helpers.pendingCardsContainLoadout({
         cards: [{ id: "gwaio_start_lucky" }, { id: "gwc_minion" }],
       }),
-      true
+      true,
     );
   });
 
   it("is false when the first pending card is not a loadout", () => {
     assert.equal(
       helpers.pendingCardsContainLoadout({ cards: [{ id: "gwc_minion" }] }),
-      false
+      false,
     );
   });
 
@@ -341,7 +341,7 @@ describe("applyPenchantToSubcommander", () => {
         subcommander(),
         { aiAlly: "Penchant" },
         spy,
-        rng
+        rng,
       );
       assert.deepEqual(seen, [rng]);
     } finally {
@@ -352,10 +352,10 @@ describe("applyPenchantToSubcommander", () => {
 
 describe("buildGeneralCommanderMinions", () => {
   const gwoRng = loadCouiModule(
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
   );
   const gwoCard = loadCouiModule(
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   );
 
   // Distinct enough that two independent picks landing on the same one by
@@ -395,7 +395,7 @@ describe("buildGeneralCommanderMinions", () => {
     assert.deepEqual(build({ pool: [], seed: "s" }), []);
     assert.deepEqual(
       build({ pool: undefined, seed: "s" }),
-      build({ seed: "s" })
+      build({ seed: "s" }),
     );
   });
 
@@ -416,8 +416,8 @@ describe("buildGeneralCommanderMinions", () => {
   it("draws a different pair for a different seed", () => {
     const seen = new Set(
       ["s1", "s2", "s3", "s4", "s5"].map((seed) =>
-        names(build({ seed })).join()
-      )
+        names(build({ seed })).join(),
+      ),
     );
     assert.ok(seen.size > 1, "every seed produced the same pair");
   });
@@ -495,7 +495,7 @@ describe("explorationStillLive", () => {
   it("rejects a non-numeric star index", () => {
     assert.equal(
       helpers.explorationStillLive(live, undefined, star(false)),
-      false
+      false,
     );
     assert.equal(helpers.explorationStillLive(live, "17", star(false)), false);
   });
@@ -503,7 +503,7 @@ describe("explorationStillLive", () => {
   it("rejects a missing game or star without throwing", () => {
     assert.equal(
       helpers.explorationStillLive(undefined, 17, star(false)),
-      false
+      false,
     );
     assert.equal(helpers.explorationStillLive(live, 17, undefined), false);
   });
@@ -514,9 +514,9 @@ describe("explorationStillLive", () => {
       helpers.explorationStillLive(
         { turnState: () => "explore" },
         17,
-        star(false)
+        star(false),
       ),
-      false
+      false,
     );
     assert.equal(helpers.explorationStillLive(live, 17, {}), false);
   });

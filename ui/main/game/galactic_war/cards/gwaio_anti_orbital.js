@@ -29,9 +29,9 @@ define([
           gwoCard.mods(ammo, "multiplyOrCreate", {
             "armor_damage_map.AT_Orbital": 2,
             "armor_damage_map.AT_Air": 0.5,
-          })
-        )
-      )
+          }),
+        ),
+      ),
     );
   },
 

@@ -1,5 +1,5 @@
 define(["main/game/galactic_war/shared/js/systems/planets"], (
-  examplePlanetList
+  examplePlanetList,
 ) => ({
   planet1: {
     fromRandomList: examplePlanetList,

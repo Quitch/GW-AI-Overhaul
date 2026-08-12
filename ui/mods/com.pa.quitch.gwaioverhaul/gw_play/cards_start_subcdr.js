@@ -105,7 +105,7 @@ define([
 
       if (payload.error) {
         console.error(
-          `[GW COOP] general commander setup failed: ${payload.error}`
+          `[GW COOP] general commander setup failed: ${payload.error}`,
         );
         return;
       }
@@ -156,7 +156,7 @@ define([
         {},
         {
           request_id: _.uniqueId("gwo_setup_general_commander_"),
-        }
+        },
       );
       return true;
     };
@@ -213,7 +213,7 @@ define([
             client_id: operator.client_id,
             client_name: operator.client_name,
             changed: false,
-          }
+          },
         );
         result.resolve();
         return result.promise();
@@ -248,7 +248,7 @@ define([
             client_name: operator.client_name,
             changed: true,
             updated_at: nextRecord.updatedAt,
-          }
+          },
         );
         gwoSave(game, false).then(
           () => {
@@ -256,7 +256,7 @@ define([
           },
           (error) => {
             result.reject(error);
-          }
+          },
         );
       };
 
@@ -268,7 +268,7 @@ define([
           gwoStreams.coopPlayerKey(record, {
             id: operator.client_id,
             name: operator.client_name,
-          })
+          }),
         )
       ) {
         sendGeneralCommanderSetupResult(
@@ -278,7 +278,7 @@ define([
             client_id: operator.client_id,
             client_name: operator.client_name,
             changed: false,
-          }
+          },
         );
         result.resolve();
         return result.promise();
@@ -292,14 +292,14 @@ define([
     if (model.registerCampaignViewerOperatorHandler) {
       model.registerCampaignViewerOperatorHandler(
         setupGeneralCommanderRequest,
-        setupGeneralCommanderForCoopPlayer
+        setupGeneralCommanderForCoopPlayer,
       );
     }
 
     if (model.registerCampaignHostOperatorHandler) {
       model.registerCampaignHostOperatorHandler(
         setupGeneralCommanderResult,
-        applyGeneralCommanderSetupResult
+        applyGeneralCommanderSetupResult,
       );
     }
 

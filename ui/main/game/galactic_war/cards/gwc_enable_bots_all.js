@@ -13,7 +13,7 @@ define([
     },
     summarize: _.constant("!LOC:Complete Bot Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_factory.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_factory.png",
     ),
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_bot" }),
     getContext: gwoCard.getContext,
@@ -23,7 +23,7 @@ define([
         chance = gwoCard.travelledShort(
           system,
           context,
-          GW.balance.numberOfSystems
+          GW.balance.numberOfSystems,
         )
           ? 200
           : 25;

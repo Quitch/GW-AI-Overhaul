@@ -24,7 +24,7 @@ define(() => (params) => {
       cardsDealt,
       false,
       true,
-      [card]
+      [card],
     );
 
     if (!duplicate) {
@@ -47,7 +47,7 @@ define(() => (params) => {
   const testMinions = (product, inventory) => {
     // Flattened up front, so units.js is required once rather than per minion.
     require(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
-      gwoUnit
+      gwoUnit,
     ) => {
       const clusterSecurity = gwoUnit.colonel;
       const clusterWorker = gwoUnit.angel;
@@ -55,7 +55,7 @@ define(() => (params) => {
       const allMinions = _.reduce(
         GWFactions,
         (collected, faction) => collected.concat(faction.minions || []),
-        []
+        [],
       );
 
       _.forEach(allMinions, (minion) => {
@@ -71,13 +71,13 @@ define(() => (params) => {
 
         if (
           !CommanderUtility.bySpec.getObjectName(
-            minionStock.minion.commander
+            minionStock.minion.commander,
           ) &&
           minionStock.minion.commander !== clusterSecurity &&
           minionStock.minion.commander !== clusterWorker
         ) {
           console.error(
-            `Minion commander unit spec ${minionStock.minion.commander} invalid`
+            `Minion commander unit spec ${minionStock.minion.commander} invalid`,
           );
         }
       });
@@ -86,7 +86,7 @@ define(() => (params) => {
 
   const dealSubCommander = (product) => {
     const subcommander = _.cloneDeep(
-      _.sample(GWFactions[playerFaction].minions)
+      _.sample(GWFactions[playerFaction].minions),
     );
     helpers.applyPenchantToSubcommander(subcommander, gwoSettings, gwoAI);
     product.minion = subcommander;
@@ -109,12 +109,12 @@ define(() => (params) => {
               star,
             },
             loaded,
-            cards
+            cards,
           )
           .then((product) => {
             product = setupNewCardSlot(product);
             applyCheatCards(product, inventory);
-          })
+          }),
       );
     });
     return $.when.apply($, deferredQueue);
@@ -124,7 +124,7 @@ define(() => (params) => {
   model.cheats.testCards = () => {
     if (model.isCampaignViewer()) {
       console.error(
-        "[GW COOP] cheats.testCards is unavailable for co-op viewers"
+        "[GW COOP] cheats.testCards is unavailable for co-op viewers",
       );
       return;
     }
@@ -144,7 +144,7 @@ define(() => (params) => {
               star,
             },
             loaded,
-            cards
+            cards,
           )
           .then((product) => {
             if (product.id === "gwc_minion") {
@@ -157,7 +157,7 @@ define(() => (params) => {
             if (!product.unique) {
               testCardForMatches(inventory, product);
             }
-          })
+          }),
       );
     });
     deferredQueue.push(expandInventorySize(galaxy, inventory, star, maxCards));
@@ -173,7 +173,7 @@ define(() => (params) => {
   model.cheats.giveCard = () => {
     if (model.isCampaignViewer()) {
       console.error(
-        "[GW COOP] cheats.giveCard is unavailable for co-op viewers"
+        "[GW COOP] cheats.giveCard is unavailable for co-op viewers",
       );
       return;
     }
@@ -191,7 +191,7 @@ define(() => (params) => {
             star: galaxy.stars()[game.currentStar()],
           },
           loaded,
-          cards
+          cards,
         )
         .then((product) => {
           if (product.id === "gwc_minion") {
@@ -208,7 +208,7 @@ define(() => (params) => {
         });
     } else {
       console.error(
-        `Unable to find a card called ${model.cheats.giveCardId()}`
+        `Unable to find a card called ${model.cheats.giveCardId()}`,
       );
     }
   };

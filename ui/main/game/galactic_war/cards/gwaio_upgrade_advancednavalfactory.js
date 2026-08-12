@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Advanced Naval Factory Upgrade Tech decreases advanced naval unit costs by 25% but also decreases the factory's health by 50%."
-      )
-    )
+        "!LOC:Advanced Naval Factory Upgrade Tech decreases advanced naval unit costs by 25% but also decreases the factory's health by 50%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Advanced Naval Factory Upgrade Tech",
@@ -24,7 +24,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactoryAdvanced),
-      gwoCard.navalWeight(inventory, 30)
+      gwoCard.navalWeight(inventory, 30),
     );
   },
 

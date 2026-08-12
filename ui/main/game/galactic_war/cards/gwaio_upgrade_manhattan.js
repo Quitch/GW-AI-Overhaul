@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Manhattan Upgrade Tech doubles the radius of the mobile nuke's explosion."
-      )
-    )
+        "!LOC:Manhattan Upgrade Tech doubles the radius of the mobile nuke's explosion.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Manhattan Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.manhattan)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.manhattan),
     );
   },
 

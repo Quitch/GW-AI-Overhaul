@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Mine Upgrade Tech allows mines to explode without self-destructing."
-      )
-    )
+        "!LOC:Mine Upgrade Tech allows mines to explode without self-destructing.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Mine Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.landMine)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.landMine),
     );
   },
 
@@ -34,7 +34,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.landMineWeapon, "replace", {
         self_destruct: false,
-      })
+      }),
     );
   },
 

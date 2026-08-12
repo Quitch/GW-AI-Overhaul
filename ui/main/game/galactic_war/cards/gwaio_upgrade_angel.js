@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Angel Upgrade Tech enables the targeting of enemy units and structures by the support platform's interception beam."
-      )
-    )
+        "!LOC:Angel Upgrade Tech enables the targeting of enemy units and structures by the support platform's interception beam.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Angel Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.angel)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.angel),
     );
   },
 

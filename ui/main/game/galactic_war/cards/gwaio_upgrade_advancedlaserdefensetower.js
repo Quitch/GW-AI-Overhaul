@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Advanced Laser Defense Tower Upgrade Tech increases the rate of fire of the advanced turret by 300%, but it fires in bursts and requires energy to recharge."
-      )
-    )
+        "!LOC:Advanced Laser Defense Tower Upgrade Tech increases the rate of fire of the advanced turret by 300%, but it fires in bursts and requires energy to recharge.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Advanced Laser Defense Tower Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.laserDefenseTowerAdvanced)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.laserDefenseTowerAdvanced),
     );
   },
 

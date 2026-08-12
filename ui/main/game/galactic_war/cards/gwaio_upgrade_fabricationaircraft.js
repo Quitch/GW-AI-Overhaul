@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Fabrication Aircraft Upgrade Tech enables the building of advanced structures by the basic air fabricator."
-      )
-    )
+        "!LOC:Fabrication Aircraft Upgrade Tech enables the building of advanced structures by the basic air fabricator.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Fabrication Aircraft Upgrade Tech",
@@ -23,7 +23,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.airFabber)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.airFabber),
     );
   },
 
@@ -35,7 +35,7 @@ define([
       gwoCard.mods(gwoUnit.airFabber, "add", {
         buildable_types:
           " | (Land & Structure & Advanced - Factory | FabAdvBuild) & Custom58",
-      })
+      }),
     );
 
     const units = [

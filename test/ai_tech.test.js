@@ -9,7 +9,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const aiTech = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js",
 );
 
 // Tech slots that are populated (tech5 was removed and is intentionally left absent).
@@ -25,7 +25,7 @@ describe("factionTechs", () => {
       POPULATED_SLOTS.forEach((slot) => {
         assert.ok(
           Array.isArray(faction[slot]),
-          "slot " + slot + " is an array"
+          "slot " + slot + " is an array",
         );
       });
       assert.equal(faction[5], undefined);

@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orbital Ammunition Tech increases damage of all orbital units by 25%"
+      "!LOC:Orbital Ammunition Tech increases damage of all orbital units by 25%",
     ),
     summarize: _.constant("!LOC:Orbital Ammunition Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_ammunition",
@@ -30,8 +30,8 @@ define([
               damage: 1.25,
               splash_damage: 1.25,
             });
-          })
-        )
+          }),
+        ),
       );
     },
     dull: function () {},

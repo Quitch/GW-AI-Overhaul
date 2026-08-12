@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Leveler Upgrade Tech enables the building of assault tanks by the Unit Cannon."
-      )
-    )
+        "!LOC:Leveler Upgrade Tech enables the building of assault tanks by the Unit Cannon.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Leveler Upgrade Tech",
@@ -27,7 +27,7 @@ define([
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.leveler) &&
         gwoCard.hasUnit(inventory.units(), gwoUnit.unitCannon) &&
-        !inventory.hasCard("gwaio_start_paratrooper")
+        !inventory.hasCard("gwaio_start_paratrooper"),
     );
   },
 
@@ -36,7 +36,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.leveler, "push", {
         unit_types: "UNITTYPE_CannonBuildable",
-      })
+      }),
     );
 
     inventory.addAIMods([

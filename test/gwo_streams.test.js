@@ -9,7 +9,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const streams = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
 );
 
 const SEED = { seed: "a-war-seed" };
@@ -38,7 +38,7 @@ describe("warRng", () => {
   it("gives different wars different streams", () => {
     assert.notDeepEqual(
       draws(streams.warRng({ seed: "one" })),
-      draws(streams.warRng({ seed: "two" }))
+      draws(streams.warRng({ seed: "two" })),
     );
   });
 });
@@ -47,7 +47,7 @@ describe("coopPlayerKey", () => {
   it("prefers the record's playerId, which survives a reconnect", () => {
     assert.equal(
       streams.coopPlayerKey({ playerId: "uber-1" }, { id: 7, name: "Bob" }),
-      "uber-1"
+      "uber-1",
     );
   });
 
@@ -64,7 +64,7 @@ describe("coopPlayerKey", () => {
   it("squashes whitespace in a player name", () => {
     assert.equal(
       streams.coopPlayerKey({}, { name: "Big Bad Bob" }),
-      "Big_Bad_Bob"
+      "Big_Bad_Bob",
     );
   });
 });
@@ -106,39 +106,39 @@ describe("gwo_streams determinism", () => {
     const war = streams.warRng(SEED);
     assert.notDeepEqual(
       draws(streams.exploreDealRng(war, 3, 5, 0)),
-      draws(streams.exploreDealRng(war, 4, 5, 0))
+      draws(streams.exploreDealRng(war, 4, 5, 0)),
     );
     assert.notDeepEqual(
       draws(streams.exploreDealRng(war, 3, 5, 0)),
-      draws(streams.exploreDealRng(war, 3, 6, 0))
+      draws(streams.exploreDealRng(war, 3, 6, 0)),
     );
     assert.notDeepEqual(
       draws(streams.exploreDealRng(war, 3, 5, 0)),
-      draws(streams.exploreDealRng(war, 3, 5, 1))
+      draws(streams.exploreDealRng(war, 3, 5, 1)),
     );
     assert.notDeepEqual(
       draws(streams.aiStarDealRng(war, 3, 5)),
-      draws(streams.aiStarDealRng(war, 3, 6))
+      draws(streams.aiStarDealRng(war, 3, 6)),
     );
     assert.notDeepEqual(
       draws(streams.battleRng(war, 3, 5)),
-      draws(streams.battleRng(war, 3, 6))
+      draws(streams.battleRng(war, 3, 6)),
     );
     assert.notDeepEqual(
       draws(streams.coopStarDealRng(war, "p", 3, 5)),
-      draws(streams.coopStarDealRng(war, "q", 3, 5))
+      draws(streams.coopStarDealRng(war, "q", 3, 5)),
     );
     assert.notDeepEqual(
       draws(streams.coopStarDealRng(war, "p", 3, 5)),
-      draws(streams.coopStarDealRng(war, "p", 3, 6))
+      draws(streams.coopStarDealRng(war, "p", 3, 6)),
     );
     assert.notDeepEqual(
       draws(streams.treasureLoadoutRng(war, "p", 3)),
-      draws(streams.treasureLoadoutRng(war, "q", 3))
+      draws(streams.treasureLoadoutRng(war, "q", 3)),
     );
     assert.notDeepEqual(
       draws(streams.treasureLoadoutRng(war, "p", 3)),
-      draws(streams.treasureLoadoutRng(war, "p", 4))
+      draws(streams.treasureLoadoutRng(war, "p", 4)),
     );
   });
 
@@ -148,7 +148,7 @@ describe("gwo_streams determinism", () => {
     const war = streams.warRng(SEED);
     assert.deepEqual(
       draws(streams.treasureLoadoutRng(war, "p", 3)),
-      draws(streams.treasureLoadoutRng(war, "p", 3))
+      draws(streams.treasureLoadoutRng(war, "p", 3)),
     );
   });
 
@@ -158,11 +158,11 @@ describe("gwo_streams determinism", () => {
     const war = streams.warRng(SEED);
     assert.deepEqual(
       draws(streams.treasureLoadoutRng(war, undefined, 3)),
-      draws(streams.treasureLoadoutRng(war, "host", 3))
+      draws(streams.treasureLoadoutRng(war, "host", 3)),
     );
     assert.notDeepEqual(
       draws(streams.treasureLoadoutRng(war, undefined, 3)),
-      draws(streams.treasureLoadoutRng(war, "unknown", 3))
+      draws(streams.treasureLoadoutRng(war, "unknown", 3)),
     );
   });
 
@@ -171,11 +171,11 @@ describe("gwo_streams determinism", () => {
     const deal = streams.coopDealRng(war, "p", 1);
     assert.notDeepEqual(
       draws(deal),
-      draws(streams.coopRerollRng(war, "p", 1, 0))
+      draws(streams.coopRerollRng(war, "p", 1, 0)),
     );
     assert.notDeepEqual(
       draws(streams.coopDealRng(war, "p", 1)),
-      draws(streams.iterationRng(streams.coopDealRng(war, "p", 1), 0))
+      draws(streams.iterationRng(streams.coopDealRng(war, "p", 1), 0)),
     );
   });
 
@@ -185,11 +185,11 @@ describe("gwo_streams determinism", () => {
     const war = streams.warRng(SEED);
     assert.notDeepEqual(
       draws(streams.coopDealRng(war, "p", undefined)),
-      draws(streams.coopDealRng(war, "p", 0))
+      draws(streams.coopDealRng(war, "p", 0)),
     );
     assert.notDeepEqual(
       draws(streams.iterationRng(streams.coopDealRng(war, "p", 1), undefined)),
-      draws(streams.iterationRng(streams.coopDealRng(war, "p", 1), 0))
+      draws(streams.iterationRng(streams.coopDealRng(war, "p", 1), 0)),
     );
   });
 });
@@ -209,24 +209,24 @@ describe("gwo_streams key collisions", () => {
       for (const star of [0, 1, 2]) {
         add(
           `treasure:${player}:${star}`,
-          streams.treasureLoadoutRng(war, player, star)
+          streams.treasureLoadoutRng(war, player, star),
         );
         for (const turns of [0, 1, 2]) {
           add(
             `coopStar:${player}:${star}:${turns}`,
-            streams.coopStarDealRng(war, player, star, turns)
+            streams.coopStarDealRng(war, player, star, turns),
           );
         }
       }
       for (const dealIndex of [-1, 0, 1, 2]) {
         add(
           `coop:${player}:${dealIndex}`,
-          streams.coopDealRng(war, player, dealIndex)
+          streams.coopDealRng(war, player, dealIndex),
         );
         for (const reroll of [0, 1]) {
           add(
             `coopReroll:${player}:${dealIndex}:${reroll}`,
-            streams.coopRerollRng(war, player, dealIndex, reroll)
+            streams.coopRerollRng(war, player, dealIndex, reroll),
           );
         }
       }
@@ -239,7 +239,7 @@ describe("gwo_streams key collisions", () => {
         for (const reroll of [0, 1, 2]) {
           add(
             `explore:${star}:${turns}:${reroll}`,
-            streams.exploreDealRng(war, star, turns, reroll)
+            streams.exploreDealRng(war, star, turns, reroll),
           );
         }
       }
@@ -273,7 +273,7 @@ describe("gwo_streams key collisions", () => {
     const war = streams.warRng(SEED);
     assert.deepEqual(
       draws(streams.generalCommanderRng(war, "big bob")),
-      draws(streams.generalCommanderRng(war, "big_bob"))
+      draws(streams.generalCommanderRng(war, "big_bob")),
     );
   });
 });

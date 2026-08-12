@@ -12,7 +12,7 @@ const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory.js",
 );
 
 const WAR_END = "gwo_war_end";
@@ -47,7 +47,7 @@ function setup(overrides = {}) {
       records: [{ gwaioUnlockedStartCardIds: [] }],
       stars: [],
     },
-    overrides
+    overrides,
   );
 
   const calls = { operators: [], handlers: {}, stats: [], unlockQueries: [] };
@@ -80,7 +80,7 @@ function setup(overrides = {}) {
         },
         () => {
           settled.reject();
-        }
+        },
       );
       return settled;
     },
@@ -139,7 +139,7 @@ function settled(deferred) {
   let done = false;
   deferred.then(
     () => (done = true),
-    () => (done = true)
+    () => (done = true),
   );
   return Promise.resolve()
     .then(() => Promise.resolve())
@@ -162,7 +162,7 @@ describe("ending a won war", () => {
     assert.notEqual(
       gateWrites[0],
       originalGate,
-      "gw_war_over opens against whichever gate was in place when the turn ended"
+      "gw_war_over opens against whichever gate was in place when the turn ended",
     );
     assert.equal(await settled(gateWrites[0]), false);
     assert.deepEqual(saves[0].args, [game, true]);

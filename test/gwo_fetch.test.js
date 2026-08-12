@@ -11,7 +11,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const gwoFetch = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_fetch.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_fetch.js",
 );
 
 const stubs = createGlobalStubs();
@@ -39,7 +39,7 @@ describe("gwo_fetch", () => {
     stubFetch({ ok: false, status: 404 });
     await assert.rejects(
       gwoFetch.json(url),
-      (err) => err.message.includes("404") && err.message.includes(url)
+      (err) => err.message.includes("404") && err.message.includes(url),
     );
   });
 });

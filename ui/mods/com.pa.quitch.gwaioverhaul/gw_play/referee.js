@@ -21,7 +21,7 @@ function gwoRefereeChanges() {
         GWReferee,
         gwoGenerateGameFiles,
         gwoGenerateAI,
-        gwoGenerateConfig
+        gwoGenerateConfig,
       ) => {
         class GwoReferee {
           constructor(game) {
@@ -107,11 +107,11 @@ function gwoRefereeChanges() {
           const hired = $.Deferred();
           generated.then(
             () => hired.resolve(ref),
-            (error) => hired.reject(error)
+            (error) => hired.reject(error),
           );
           return hired.promise();
         };
-      }
+      },
     );
   } catch (e) {
     console.error(e);

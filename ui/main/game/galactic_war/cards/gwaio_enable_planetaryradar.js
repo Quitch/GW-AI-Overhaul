@@ -22,7 +22,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.conditionalDeal(
       gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced),
-      100
+      100,
     );
   },
 

@@ -14,13 +14,13 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeGameFiles = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
 );
 const gwoAI = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 );
 const gwoSpecs = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
 );
 
 let restoreModel;
@@ -39,32 +39,32 @@ describe("getAIUnitMapPath", () => {
   it("Queller source is under q_uber/, regardless of titans", () => {
     assert.equal(
       refereeGameFiles.getAIUnitMapPath(false, "Queller"),
-      "/pa/ai_queller/q_uber/unit_maps/ai_unit_map.json"
+      "/pa/ai_queller/q_uber/unit_maps/ai_unit_map.json",
     );
     assert.equal(
       refereeGameFiles.getAIUnitMapPath(true, "Queller"),
-      "/pa/ai_queller/q_uber/unit_maps/ai_unit_map_x1.json"
+      "/pa/ai_queller/q_uber/unit_maps/ai_unit_map_x1.json",
     );
   });
 
   it("Penchant source is under /pa/ai_penchant/", () => {
     assert.equal(
       refereeGameFiles.getAIUnitMapPath(false, "Penchant"),
-      "/pa/ai_penchant/unit_maps/ai_unit_map.json"
+      "/pa/ai_penchant/unit_maps/ai_unit_map.json",
     );
   });
 
   it("Titans (default) source is under /pa/ai/", () => {
     assert.equal(
       refereeGameFiles.getAIUnitMapPath(false, "Titans"),
-      "/pa/ai/unit_maps/ai_unit_map.json"
+      "/pa/ai/unit_maps/ai_unit_map.json",
     );
   });
 
   it("titans=false never produces an _x1.json path", () => {
     for (const aiInUse of ["Titans", "Queller", "Penchant"]) {
       assert.ok(
-        !refereeGameFiles.getAIUnitMapPath(false, aiInUse).includes("_x1")
+        !refereeGameFiles.getAIUnitMapPath(false, aiInUse).includes("_x1"),
       );
     }
   });
@@ -75,9 +75,9 @@ describe("getAIUnitMapDestinationPath", () => {
     assert.equal(
       refereeGameFiles.getAIUnitMapDestinationPath(
         false,
-        "/pa/ai_subcommander/"
+        "/pa/ai_subcommander/",
       ),
-      "/pa/ai_subcommander/unit_maps/ai_unit_map.json"
+      "/pa/ai_subcommander/unit_maps/ai_unit_map.json",
     );
   });
 
@@ -85,9 +85,9 @@ describe("getAIUnitMapDestinationPath", () => {
     assert.equal(
       refereeGameFiles.getAIUnitMapDestinationPath(
         true,
-        "/pa/ai_subcommander/"
+        "/pa/ai_subcommander/",
       ),
-      "/pa/ai_subcommander/unit_maps/ai_unit_map_x1.json"
+      "/pa/ai_subcommander/unit_maps/ai_unit_map_x1.json",
     );
   });
 });
@@ -135,7 +135,7 @@ describe("resolveAiUnitMapPaths", () => {
       0,
       normalPaths,
       clusterPaths,
-      isClusterFalse
+      isClusterFalse,
     );
     assert.deepEqual(resolved, clusterPaths);
   });
@@ -147,7 +147,7 @@ describe("resolveAiUnitMapPaths", () => {
       0,
       normalPaths,
       clusterPaths,
-      isClusterFalse
+      isClusterFalse,
     );
     assert.deepEqual(resolved, normalPaths);
   });
@@ -170,7 +170,7 @@ describe("buildPlayerFiles", () => {
         titans: true,
       },
       gwoAI,
-      gwoSpecs
+      gwoSpecs,
     );
 
     assert.ok("/pa/ai_cluster/unit_maps/ai_unit_map.json.player" in files);
@@ -194,7 +194,7 @@ describe("buildPlayerFiles", () => {
         titans: false,
       },
       gwoAI,
-      gwoSpecs
+      gwoSpecs,
     );
 
     const expectedPath = gwoAI.getAIPathDestination("subcommander");
@@ -232,7 +232,7 @@ describe("specFetch", () => {
     return withFetch(okBody('{ "a": 1 }'), () =>
       refereeGameFiles.specFetch("/pa/units/x.json").then((data) => {
         assert.deepEqual(data, { a: 1 });
-      })
+      }),
     );
   });
 
@@ -240,7 +240,7 @@ describe("specFetch", () => {
     return withFetch(okBody("not json"), () =>
       refereeGameFiles.specFetch("/pa/units/x.json").then((data) => {
         assert.equal(data, "not json");
-      })
+      }),
     );
   });
 
@@ -258,8 +258,8 @@ describe("specFetch", () => {
             assert.match(err.message, /404/);
             // "coui:/" + a leading-slash spec path yields a coui:// url.
             assert.equal(requestedUrl, "coui://pa/units/x.json");
-          }
-        )
+          },
+        ),
     );
   });
 });

@@ -50,7 +50,7 @@ Graph.prototype.calcDistance = function (nodes, callback) {
 registerModuleStub("shared/Graph", Graph);
 
 const gwoRng = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
 );
 
 const stubs = createGlobalStubs();
@@ -61,7 +61,7 @@ before(() => {
   const $ = function () {};
   $.when = function (...args) {
     const settled = args.map((a) =>
-      a && a.__value !== undefined ? a.__value : a
+      a && a.__value !== undefined ? a.__value : a,
     );
     return {
       __value: settled.length === 1 ? settled[0] : settled,
@@ -80,7 +80,7 @@ before(() => {
 after(() => stubs.restoreGlobals());
 
 const gwoBreeder = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_breeder.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_breeder.js",
 );
 
 // A line of `count` stars, 0 - 1 - 2 - ... so distances are unambiguous.
@@ -137,7 +137,7 @@ describe("gwo_breeder populate", () => {
     const runs = new Set();
     for (let i = 0; i < 12; i++) {
       runs.add(
-        JSON.stringify(populate(chain(12), gwoRng.create("seed-" + i), 3))
+        JSON.stringify(populate(chain(12), gwoRng.create("seed-" + i), 3)),
       );
     }
     assert.ok(runs.size > 1, "every seed produced the same placement");

@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Artemis Upgrade Tech allows targeting of planetary units by the railgun platform."
-      )
-    )
+        "!LOC:Artemis Upgrade Tech allows targeting of planetary units by the railgun platform.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Artemis Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.artemis)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.artemis),
     );
   },
 

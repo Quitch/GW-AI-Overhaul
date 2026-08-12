@@ -131,7 +131,7 @@ function gwoIntelligence() {
       if (
         starCardsView.shouldUseViewerStarCard(
           model.isCampaignViewer(),
-          model.gwCampaignPerPlayerTechCards()
+          model.gwCampaignPerPlayerTechCards(),
         )
       ) {
         return starCardsView.cardName(starCardsView.cardIdForStar(starIndex));
@@ -251,7 +251,7 @@ function gwoIntelligence() {
             gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication")
           ) {
             gameModifiers.push(
-              loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
+              loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai),
             );
           }
           return gameModifiers;
@@ -285,7 +285,7 @@ function gwoIntelligence() {
           return {
             name: name,
             color: gwoColour.rgb(
-              gwoColour.pick(factionIndex, commander.color, adjustedIndex)
+              gwoColour.pick(factionIndex, commander.color, adjustedIndex),
             ),
             character: getCommanderCharacter(commander),
             eco: eco,
@@ -373,7 +373,7 @@ function gwoIntelligence() {
             var game = model.game();
             var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
               game.inventory(),
-              game
+              game,
             );
             commanders.push(intelligence(ai.ally, 0, subcommanders.length));
           }
@@ -408,12 +408,12 @@ function gwoIntelligence() {
           model.gwoGameModifiers(convertGameModifiersToName(ai, inventory));
           model.gwoAis(createAIIntelligence(ai));
         });
-      }
+      },
     );
   } catch (e) {
     console.error(e);
     console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e),
     );
   }
 }

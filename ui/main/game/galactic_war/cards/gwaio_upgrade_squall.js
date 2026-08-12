@@ -6,8 +6,8 @@ define([
 
   describe: _.constant(
     gwoCard.withSlot(
-      loc("!LOC:Squall Upgrade Tech allows you to issue orders to drones.")
-    )
+      loc("!LOC:Squall Upgrade Tech allows you to issue orders to drones."),
+    ),
   ),
 
   summarize: () => "!LOC:Squall Upgrade Tech",
@@ -23,7 +23,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.squall)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.squall),
     );
   },
 
@@ -37,7 +37,7 @@ define([
           "ORDER_Attack",
           "ORDER_Assist",
         ],
-      })
+      }),
     );
   },
 

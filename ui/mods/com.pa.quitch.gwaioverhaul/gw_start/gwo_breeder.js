@@ -78,7 +78,7 @@ define(["shared/Graph"], function (Graph) {
             star.ai(spawnResult || ai);
             return star.ai();
           });
-        })
+        }),
       );
       var spread = doSpawn.then(function () {
         // Spread out.
@@ -128,9 +128,9 @@ define(["shared/Graph"], function (Graph) {
                     star.ai(spreadResult || ai);
                     --spreadStars;
                     return star.ai();
-                  }
+                  },
                 );
-              })
+              }),
             )
             .then(function () {
               return true;
@@ -156,7 +156,7 @@ define(["shared/Graph"], function (Graph) {
             if (!ai) return;
             ai.boss = true;
             return boost(star, ai);
-          })
+          }),
         );
       });
 

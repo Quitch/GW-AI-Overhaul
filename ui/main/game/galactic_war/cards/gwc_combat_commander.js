@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Commander Combat Tech increases the speed of your commanders by 200%, doubles commander health, and increases damage by 25%."
+      "!LOC:Commander Combat Tech increases the speed of your commanders by 200%, doubles commander health, and increases damage by 25%.",
     ),
     summarize: _.constant("!LOC:Commander Combat Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander.png",
     ),
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
     getContext: gwoCard.getContext,
@@ -31,7 +31,7 @@ define([
           gwoCard.mods(ammo, "multiply", {
             damage: 1.25,
             splash_damage: 1.25,
-          })
+          }),
         );
       });
 

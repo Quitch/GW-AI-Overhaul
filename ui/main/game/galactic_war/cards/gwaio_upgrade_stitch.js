@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       `${loc(
-        "!LOC:Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator."
-      )} ${loc("!LOC:Disables the auto-repair feature.")}`
-    )
+        "!LOC:Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator.",
+      )} ${loc("!LOC:Disables the auto-repair feature.")}`,
+    ),
   ),
 
   summarize: () => "!LOC:Stitch Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.stitch)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.stitch),
     );
   },
 
@@ -35,7 +35,7 @@ define([
       gwoCard.mods(gwoUnit.stitchBuildArm, "replace", {
         can_only_assist_with_buildable_items: false,
         auto_repair: false,
-      })
+      }),
     );
   },
 

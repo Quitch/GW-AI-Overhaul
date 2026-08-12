@@ -13,7 +13,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:The Vehicle Commander loadout contains basic vehicle factories."
+      "!LOC:The Vehicle Commander loadout contains basic vehicle factories.",
     ),
     deal: gwoCard.startCard,
     buff: function (inventory) {

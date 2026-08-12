@@ -11,10 +11,10 @@ const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../scripts/lib/amd-loader.js");
 
 const version = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
 );
 const modinfo = JSON.parse(
-  fs.readFileSync(path.join(REPO_ROOT, "modinfo.json"), "utf8")
+  fs.readFileSync(path.join(REPO_ROOT, "modinfo.json"), "utf8"),
 );
 
 describe("mod version", () => {

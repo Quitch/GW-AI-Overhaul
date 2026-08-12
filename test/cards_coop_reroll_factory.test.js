@@ -16,7 +16,7 @@ const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js",
 );
 
 const REQUEST = "gwo_reroll_pending_tech";
@@ -26,8 +26,8 @@ function fakeWhen() {
   const args = Array.prototype.slice.call(arguments);
   return Promise.all(
     args.map((arg) =>
-      arg && typeof arg.then === "function" ? arg : Promise.resolve(arg)
-    )
+      arg && typeof arg.then === "function" ? arg : Promise.resolve(arg),
+    ),
   );
 }
 
@@ -56,7 +56,7 @@ const pendingTechCards = (extra) =>
       cards: [{ id: "a" }, { id: "b" }, { id: "c" }],
       dealIndex: 4,
     },
-    extra
+    extra,
   );
 
 const record = (extra) =>
@@ -66,7 +66,7 @@ const record = (extra) =>
       inventory: { cards: [] },
       pendingTechCards: pendingTechCards(),
     },
-    extra
+    extra,
   );
 
 function setup(overrides = {}) {
@@ -83,7 +83,7 @@ function setup(overrides = {}) {
       manifestFails: false,
       hasHostOperator: true,
     },
-    overrides
+    overrides,
   );
 
   const calls = {
@@ -151,7 +151,7 @@ function setup(overrides = {}) {
       return Promise.resolve(
         Array.from({ length: request.count }, (unused, n) => ({
           id: "reroll_" + n,
-        }))
+        })),
       );
     },
     helpers: {
@@ -224,7 +224,7 @@ const operator = (extra) =>
       request_id: "req-1",
       payload: { star: 2, deal_index: 4 },
     },
-    extra
+    extra,
   );
 
 // The host handler rejects with a plain string, not an Error.
@@ -268,7 +268,7 @@ describe("host reroll handler - refusals", () => {
       const { handlers, calls } = build(off);
       assert.match(
         await rejection(handlers[REQUEST](operator())),
-        /not campaign host or per-player tech disabled/
+        /not campaign host or per-player tech disabled/,
       );
       assert.deepEqual(calls.hostOperators, []);
       active.restore();
@@ -282,7 +282,7 @@ describe("host reroll handler - refusals", () => {
     const errors = await captureErrors(async () => {
       assert.match(
         await rejection(handlers[REQUEST](operator())),
-        /missing pending tech cards/
+        /missing pending tech cards/,
       );
     });
 
@@ -296,7 +296,7 @@ describe("host reroll handler - refusals", () => {
     const errors = await captureErrors(async () => {
       assert.match(
         await rejection(handlers[REQUEST](operator({ payload: { star: 9 } }))),
-        /stale pending tech star/
+        /stale pending tech star/,
       );
     });
 
@@ -346,7 +346,7 @@ describe("host reroll handler - refusals", () => {
     const { handlers, calls } = build({ records: {} });
 
     const errors = await captureErrors(() =>
-      rejection(handlers[REQUEST](operator({ client_id: undefined })))
+      rejection(handlers[REQUEST](operator({ client_id: undefined }))),
     );
 
     assert.deepEqual(calls.hostOperators, []);
@@ -387,7 +387,7 @@ describe("host reroll handler - refusals", () => {
       assert.deepEqual(
         calls.hostOperators.map((sent) => sent[2]),
         [{ target_client_id: "alice", request_id: "req-1" }],
-        name
+        name,
       );
       active.restore();
       active = undefined;
@@ -564,7 +564,7 @@ describe("viewer reroll result handler", () => {
         offer_rerolls: false,
         updated_at: 1234,
       },
-      payload
+      payload,
     ),
   });
 
@@ -619,7 +619,7 @@ describe("viewer reroll result handler", () => {
     const { handlers, calls } = build();
 
     const errors = await captureErrors(() =>
-      handlers[RESULT](result({ error: "nope" }))
+      handlers[RESULT](result({ error: "nope" })),
     );
 
     assert.deepEqual(calls.scanning, [false]);
@@ -635,7 +635,7 @@ describe("viewer reroll result handler", () => {
     ]) {
       const { handlers, calls } = build();
       const errors = await captureErrors(() =>
-        handlers[RESULT](result(payload))
+        handlers[RESULT](result(payload)),
       );
       assert.deepEqual(calls.scanning, [false], JSON.stringify(payload));
       assert.deepEqual(calls.upserts, []);
@@ -691,11 +691,11 @@ describe("viewer reroll result handler", () => {
     const { handlers } = build({ manifestFails: true });
 
     const errors = await captureErrors(() =>
-      rejection(handlers[RESULT](result()))
+      rejection(handlers[RESULT](result())),
     );
 
     assert.ok(
-      errors.some((message) => /failed to save rerolled tech/.test(message))
+      errors.some((message) => /failed to save rerolled tech/.test(message)),
     );
   });
 });

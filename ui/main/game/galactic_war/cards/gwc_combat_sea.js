@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Naval Combat Tech increases speed of all naval units by 50%, health by 50%, and damage by 25%"
+      "!LOC:Naval Combat Tech increases speed of all naval units by 50%, health by 50%, and damage by 25%",
     ),
     summarize: _.constant("!LOC:Naval Combat Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png",
     ),
     audio: _.constant({
       found: "PA/VO/Computer/gw/board_tech_available_combat",
@@ -22,8 +22,8 @@ define([
         gwoCard.hasUnit(inventory.units(), gwoGroup.navalMobile),
         gwoCard.navalWeight(
           inventory,
-          gwoCard.travelledShort(system, context, sizes) ? 60 : 30
-        )
+          gwoCard.travelledShort(system, context, sizes) ? 60 : 30,
+        ),
       );
     },
     buff: function (inventory) {
@@ -59,7 +59,7 @@ define([
             path: "max_health",
             op: "multiply",
             value: 1.5,
-          }
+          },
         );
       });
       _.forEach(gwoGroup.navalAmmo, function (ammo) {
@@ -75,7 +75,7 @@ define([
             path: "splash_damage",
             op: "multiply",
             value: 1.25,
-          }
+          },
         );
       });
       inventory.addMods(mods);

@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Energy Storage Upgrade Tech increases the amount of energy storage by 300%."
-      )
-    )
+        "!LOC:Energy Storage Upgrade Tech increases the amount of energy storage by 300%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Energy Storage Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.energyStorage)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.energyStorage),
     );
   },
 

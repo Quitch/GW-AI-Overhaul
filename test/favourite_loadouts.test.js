@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const favouriteLoadouts = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
 );
 
 describe("isFavourite", () => {
@@ -67,7 +67,7 @@ describe("sortCardsByFavourite", () => {
     const sorted = favouriteLoadouts.sortCardsByFavourite(
       cards,
       ["c", "a"],
-      getId
+      getId,
     );
     assert.deepEqual(sorted.map(getId), ["c", "a", "b", "d", "e"]);
   });
@@ -80,12 +80,12 @@ describe("sortCardsByFavourite", () => {
     const fromOriginal = favouriteLoadouts.sortCardsByFavourite(
       original,
       favouriteIds,
-      getId
+      getId,
     );
     const fromAlreadySorted = favouriteLoadouts.sortCardsByFavourite(
       fromOriginal,
       favouriteIds,
-      getId
+      getId,
     );
     assert.deepEqual(fromAlreadySorted.map(getId), fromOriginal.map(getId));
   });
@@ -108,7 +108,7 @@ describe("sortCardsByFavourite", () => {
     const sorted = favouriteLoadouts.sortCardsByFavourite(
       cards,
       [undefined],
-      getId
+      getId,
     );
     assert.deepEqual(sorted, [{ id: "a" }, lockedCard]);
   });
@@ -124,7 +124,7 @@ describe("sortCardsByFavourite", () => {
     const sorted = favouriteLoadouts.sortCardsByFavourite(
       cards,
       ["missing", "a"],
-      getId
+      getId,
     );
     assert.deepEqual(sorted.map(getId), ["a"]);
   });

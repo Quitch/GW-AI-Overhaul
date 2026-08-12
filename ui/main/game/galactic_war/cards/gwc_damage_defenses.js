@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Defense Ammunition Tech increases damage of all defensive structures by 25%"
+      "!LOC:Defense Ammunition Tech increases damage of all defensive structures by 25%",
     ),
     summarize: _.constant("!LOC:Defense Ammunition Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_turret.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_turret.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_ammunition",
@@ -39,7 +39,7 @@ define([
               value: 1.25,
             },
           ];
-        })
+        }),
       );
       inventory.addMods(mods);
     },

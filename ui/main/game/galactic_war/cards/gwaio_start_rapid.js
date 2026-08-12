@@ -288,7 +288,7 @@ define([
                 value: 0,
                 refId: "priority",
                 refValue: 515,
-              }
+              },
             );
           });
           const factoriesAdvanced = [
@@ -316,7 +316,7 @@ define([
                 value: 0,
                 refId: "priority",
                 refValue: 525,
-              }
+              },
             );
           });
           inventory.addAIMods(aiMods);

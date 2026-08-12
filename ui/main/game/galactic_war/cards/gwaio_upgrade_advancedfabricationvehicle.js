@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Advanced Fabrication Vehicle Upgrade Tech increases the build range of the advanced vehicle fabricator by 150%."
-      )
-    )
+        "!LOC:Advanced Fabrication Vehicle Upgrade Tech increases the build range of the advanced vehicle fabricator by 150%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Advanced Fabrication Vehicle Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactoryAdvanced)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactoryAdvanced),
     );
   },
 
@@ -34,7 +34,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.vehicleFabberAdvancedBuildArm, "multiply", {
         max_range: 2.5,
-      })
+      }),
     );
   },
 

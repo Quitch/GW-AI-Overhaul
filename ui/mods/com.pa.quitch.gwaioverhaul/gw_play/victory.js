@@ -34,7 +34,7 @@ define(() => {
       treasure.anyPlayerCanUnlockLoadout({
         localUnlockedIds: treasure.localUnlockedLoadoutIds(
           params.stockBank,
-          params.gwoBank
+          params.gwoBank,
         ),
         records: _.isFunction(game.coopPlayerInventoryData)
           ? game.coopPlayerInventoryData()

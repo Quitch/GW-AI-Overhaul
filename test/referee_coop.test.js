@@ -15,7 +15,7 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeCoop = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
 );
 
 const HOST = { id: "host-1", name: "Grace", role: "host" };
@@ -81,9 +81,9 @@ describe("referee_coop.getOrderedSubcommanders", () => {
         refereeCoop.getOrderedSubcommanders(hostInventory, game, [
           HOST,
           VIEWER_ONE,
-        ])
+        ]),
       ),
-      ["Alpha", "Beta"]
+      ["Alpha", "Beta"],
     );
   });
 
@@ -102,9 +102,9 @@ describe("referee_coop.getOrderedSubcommanders", () => {
           HOST,
           VIEWER_ONE,
           VIEWER_TWO,
-        ])
+        ]),
       ),
-      ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"]
+      ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"],
     );
   });
 
@@ -119,9 +119,9 @@ describe("referee_coop.getOrderedSubcommanders", () => {
         refereeCoop.getOrderedSubcommanders(hostInventory, game, [
           VIEWER_ONE,
           HOST,
-        ])
+        ]),
       ),
-      ["Alpha", "Beta", "Gamma"]
+      ["Alpha", "Beta", "Gamma"],
     );
   });
 
@@ -156,9 +156,9 @@ describe("referee_coop.getOrderedSubcommanders", () => {
           HOST,
           VIEWER_ONE,
           VIEWER_TWO,
-        ])
+        ]),
       ),
-      ["Alpha", "Beta"]
+      ["Alpha", "Beta"],
     );
   });
 
@@ -190,9 +190,9 @@ describe("referee_coop.getOrderedSubcommanders", () => {
         refereeCoop.getOrderedSubcommanders(hostInventory, game, [
           HOST,
           VIEWER_ONE,
-        ])
+        ]),
       ),
-      ["Alpha", "Beta"]
+      ["Alpha", "Beta"],
     );
   });
 
@@ -210,7 +210,7 @@ describe("referee_coop.getOrderedSubcommanders", () => {
 
     assert.deepEqual(
       names(refereeCoop.getOrderedSubcommanders(hostInventory, game)),
-      ["Alpha", "Beta", "Gamma"]
+      ["Alpha", "Beta", "Gamma"],
     );
   });
 
@@ -230,7 +230,7 @@ describe("referee_coop.getOrderedSubcommanders", () => {
 
     assert.equal(
       refereeCoop.alliedColourIndex(ordered.length),
-      hostInventory.minions().length + 1
+      hostInventory.minions().length + 1,
     );
   });
 });

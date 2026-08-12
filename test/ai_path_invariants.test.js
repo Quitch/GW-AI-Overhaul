@@ -24,22 +24,22 @@ const {
 } = require("../scripts/lib/referee-fakes.js");
 
 const refereeConfig = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
 );
 const gwoAI = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
 );
 const refereeAIPaths = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
 );
 const subcommanderTech = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
 );
 const perPlayerTechHook = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
 );
 const refereeAi = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js",
 );
 
 let restoreModel;
@@ -98,7 +98,7 @@ function everyResolvableAiPath() {
                   smartSubcommanders: smartSubcommanders,
                   aiMods: aiMods,
                   scopeToken: scopeToken,
-                })
+                }),
               );
             }
           }
@@ -140,7 +140,7 @@ function assertNoRootInsideAnothersScannedDirectory(paths) {
           !child.startsWith(`${parent}${directory}/`),
           `${child} sits inside ${parent}${directory}/, so the engine's recursive ` +
             `scan of ${parent}${directory} would merge that tree's build data into ` +
-            `${parent}'s`
+            `${parent}'s`,
         );
       }
     }
@@ -193,7 +193,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
     restoreModel = installModel(fixture.game);
     assert.equal(
       refereeConfig.setAIPath(false, false),
-      refereeConfig.setAIPath(false, true)
+      refereeConfig.setAIPath(false, true),
     );
     assert.equal(refereeConfig.setAIPath(false, false), "/pa/ai/");
   });
@@ -207,7 +207,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
     restoreModel = installModel(fixture.game);
     assert.equal(
       refereeConfig.setAIPath(false, false),
-      refereeConfig.setAIPath(false, true)
+      refereeConfig.setAIPath(false, true),
     );
     assert.equal(refereeConfig.setAIPath(false, false), "/pa/ai_penchant/");
   });
@@ -221,7 +221,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
     restoreModel = installModel(fixture.game);
     assert.notEqual(
       refereeConfig.setAIPath(false, false),
-      refereeConfig.setAIPath(false, true)
+      refereeConfig.setAIPath(false, true),
     );
   });
 });
@@ -241,14 +241,14 @@ describe("invariant: per-player-tech viewer paths are pairwise distinct", () => 
         subcommanderTech,
         player.aiInUse,
         { aiMods: () => player.aiMods, cards: () => [] },
-        player.tag
-      )
+        player.tag,
+      ),
     );
 
     assert.equal(
       new Set(paths).size,
       paths.length,
-      `expected all distinct, got: ${paths}`
+      `expected all distinct, got: ${paths}`,
     );
   });
 
@@ -261,8 +261,8 @@ describe("invariant: per-player-tech viewer paths are pairwise distinct", () => 
           subcommanderTech,
           "Titans",
           { aiMods: () => [], cards: () => [] },
-          perPlayerTechHook.getPlayerTagGivenIndex(i + 1)
-        )
+          perPlayerTechHook.getPlayerTagGivenIndex(i + 1),
+        ),
       );
     }
     assert.equal(new Set(paths).size, paths.length);
@@ -279,7 +279,7 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
       subcommanderTech,
       "Titans",
       inventory,
-      ".player0"
+      ".player0",
     );
 
     assert.equal(path, "/pa/ai_subcommander/player_.player0/");
@@ -356,12 +356,12 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
     return runRefereeAiHere(filesObj).then(() => {
       assert.deepEqual(
         filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].builders,
-        ["hostMarker"]
+        ["hostMarker"],
       );
       assert.deepEqual(
         filesObj["/pa/ai/player_guardians/fabber_builds/x.json"].build_list[0]
           .builders,
-        ["hostMarker"]
+        ["hostMarker"],
       );
     });
   });
@@ -424,22 +424,22 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
       assert.deepEqual(
         filesObj["/pa/ai/player_guardians/fabber_builds/x.json"].build_list[0]
           .builders,
-        ["hostMarker", "v1Marker", "v2Marker"]
+        ["hostMarker", "v1Marker", "v2Marker"],
       );
       // The plain shared key, which a non-scoped ally reads, must match too.
       assert.deepEqual(
         filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].builders,
-        ["hostMarker", "v1Marker", "v2Marker"]
+        ["hostMarker", "v1Marker", "v2Marker"],
       );
       assert.deepEqual(
         filesObj["/pa/ai_subcommander/player_.player0/fabber_builds/x.json"]
           .build_list[0].builders,
-        ["v1Marker"]
+        ["v1Marker"],
       );
       assert.deepEqual(
         filesObj["/pa/ai_subcommander/player_.player1/fabber_builds/x.json"]
           .build_list[0].builders,
-        ["v2Marker"]
+        ["v2Marker"],
       );
     });
   });
@@ -460,12 +460,12 @@ describe("invariant: no ai_path root sits inside another ai_path's scanned direc
   it("scoped trees really do nest - the safety comes from where, not from avoiding it", () => {
     const paths = everyResolvableAiPath();
     const nested = paths.filter((child) =>
-      paths.some((parent) => parent !== child && child.startsWith(parent))
+      paths.some((parent) => parent !== child && child.startsWith(parent)),
     );
 
     assert.ok(
       nested.includes("/pa/ai/player_guardians/"),
-      `expected scoped roots nested under a plain root, got: ${nested}`
+      `expected scoped roots nested under a plain root, got: ${nested}`,
     );
   });
 
@@ -515,7 +515,7 @@ describe("invariant: no ai_path root sits inside another ai_path's scanned direc
 
       assert.ok(
         roots.length > 1,
-        `expected several distinct roots in the write set, got: ${roots}`
+        `expected several distinct roots in the write set, got: ${roots}`,
       );
       assertNoRootInsideAnothersScannedDirectory(roots);
 
@@ -534,7 +534,7 @@ describe("invariant: no ai_path root sits inside another ai_path's scanned direc
           "platoon_builds/platoon_land_builds.json",
           "platoon_templates/platoon_templates.json",
           "unit_maps/ai_unit_map.json",
-        ]
+        ],
       );
     });
   });

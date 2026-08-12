@@ -149,7 +149,7 @@ function checkTypeConsistency(where, entries) {
         "field `" +
           key +
           "` has inconsistent types across entries: " +
-          [...types].join(", ")
+          [...types].join(", "),
       );
     }
   }
@@ -164,7 +164,7 @@ function checkBuildConditions(where, entryLabel, buildConditions) {
     if (!Array.isArray(testArray)) {
       fail(
         where,
-        entryLabel + ": build_conditions[" + i + "] must be an array"
+        entryLabel + ": build_conditions[" + i + "] must be an array",
       );
       return;
     }
@@ -177,7 +177,7 @@ function checkBuildConditions(where, entryLabel, buildConditions) {
             i +
             "][" +
             j +
-            "] must be an object"
+            "] must be an object",
         );
       } else if (typeof test.test_type !== "string") {
         fail(
@@ -187,7 +187,7 @@ function checkBuildConditions(where, entryLabel, buildConditions) {
             i +
             "][" +
             j +
-            "] missing string `test_type`"
+            "] missing string `test_type`",
         );
       } else if (!KNOWN_TEST_TYPES.has(test.test_type)) {
         fail(
@@ -199,7 +199,7 @@ function checkBuildConditions(where, entryLabel, buildConditions) {
             j +
             '] unknown test_type "' +
             test.test_type +
-            '" - the engine ignores it, so the condition group can never validate'
+            '" - the engine ignores it, so the condition group can never validate',
         );
       }
     });
@@ -227,13 +227,13 @@ function checkPlatoonTemplatesFile(where, data) {
   const entries = Object.entries(data.platoon_templates);
   checkTypeConsistency(
     where,
-    entries.map(([, v]) => v)
+    entries.map(([, v]) => v),
   );
   for (const [name, entry] of entries) {
     if (!Array.isArray(entry.units) || entry.units.length === 0) {
       fail(
         where,
-        'platoon_templates["' + name + '"]: missing non-empty `units` array'
+        'platoon_templates["' + name + '"]: missing non-empty `units` array',
       );
       continue;
     }
@@ -245,7 +245,7 @@ function checkPlatoonTemplatesFile(where, data) {
             name +
             '"].units[' +
             i +
-            "]: missing string `unit_types`"
+            "]: missing string `unit_types`",
         );
       }
     });
@@ -262,7 +262,7 @@ function checkUnitMapFile(where, data) {
         'unit_map["' +
           name +
           '"]: must have exactly one of string `unit_types` or `spec_id`, has ' +
-          (hasUnitTypes ? "both" : "neither")
+          (hasUnitTypes ? "both" : "neither"),
       );
     }
   }
@@ -277,10 +277,10 @@ function checkAiConfigFile(where, data) {
 
 function checkAiJsonFiles() {
   const aiDirs = ["ai", "ai_penchant", "ai_tech"].map((d) =>
-    path.join(REPO_ROOT, "pa", d)
+    path.join(REPO_ROOT, "pa", d),
   );
   const files = aiDirs.flatMap((dir) =>
-    fs.existsSync(dir) ? walkFiles(dir, (name) => name.endsWith(".json")) : []
+    fs.existsSync(dir) ? walkFiles(dir, (name) => name.endsWith(".json")) : [],
   );
 
   let checked = 0;
@@ -311,13 +311,13 @@ function checkAiJsonFiles() {
     } else {
       fail(
         where,
-        "unrecognized top-level shape (expected build_list, platoon_templates, unit_map, or unit_cap)"
+        "unrecognized top-level shape (expected build_list, platoon_templates, unit_map, or unit_cap)",
       );
     }
   }
 
   console.log(
-    "schemas: " + checked + " / " + files.length + " AI JSON files checked."
+    "schemas: " + checked + " / " + files.length + " AI JSON files checked.",
   );
 }
 
@@ -346,7 +346,7 @@ function checkDifficultyLevels() {
   console.log(
     "schemas: difficulty_levels.js checked (" +
       data.difficulties.length +
-      " tiers)."
+      " tiers).",
   );
 }
 
@@ -357,7 +357,7 @@ function checkPersonalities() {
 
   checkTypeConsistency(where, entries);
   console.log(
-    "schemas: personalities.js checked (" + entries.length + " personalities)."
+    "schemas: personalities.js checked (" + entries.length + " personalities).",
   );
 }
 

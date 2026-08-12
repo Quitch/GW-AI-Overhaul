@@ -7,11 +7,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Intelligence Fabrication Tech reduces metal build costs of all intelligence structures and mobile units by 50%"
+      "!LOC:Intelligence Fabrication Tech reduces metal build costs of all intelligence structures and mobile units by 50%",
     ),
     summarize: _.constant("!LOC:Intelligence Fabrication Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_intelligence_fabrication.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_intelligence_fabrication.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_cost_reduction",
@@ -34,7 +34,7 @@ define([
         gwoUnit.stitch,
         gwoUnit.mend,
         gwoUnit.barnacle,
-        gwoUnit.teleporter
+        gwoUnit.teleporter,
       );
       var mods = _.map(units, function (unit) {
         return {

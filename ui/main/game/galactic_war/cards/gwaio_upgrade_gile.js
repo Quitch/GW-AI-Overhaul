@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Gil-E Upgrade Tech allows the sniper's shots to pass through terrain and hit their target instantly."
-      )
-    )
+        "!LOC:Gil-E Upgrade Tech allows the sniper's shots to pass through terrain and hit their target instantly.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Gil-E Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.gilE)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.gilE),
     );
   },
 

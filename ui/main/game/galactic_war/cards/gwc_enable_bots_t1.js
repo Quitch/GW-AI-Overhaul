@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Basic Bot tech enables building of basic Bots and basic Bot Factories. Basic Bot factories are built via your commander or any basic fabricator."
+      "!LOC:Basic Bot tech enables building of basic Bots and basic Bot Factories. Basic Bot factories are built via your commander or any basic fabricator.",
     ),
     summarize: _.constant("!LOC:Basic Bot Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png",
     ),
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_bot" }),
     getContext: gwoCard.getContext,
@@ -20,7 +20,7 @@ define([
         chance = gwoCard.travelledShort(
           system,
           context,
-          GW.balance.numberOfSystems
+          GW.balance.numberOfSystems,
         )
           ? 100
           : 250;

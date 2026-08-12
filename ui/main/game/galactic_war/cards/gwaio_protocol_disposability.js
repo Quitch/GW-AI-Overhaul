@@ -27,10 +27,10 @@ define([
             gwoCard.mods(unit, "multiply", {
               build_metal_cost: 0.7,
               max_health: 0.5,
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     );
   },
 

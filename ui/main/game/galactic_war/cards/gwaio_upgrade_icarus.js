@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Icarus Upgrade Tech adds production of 2 metal to the solar drone."
-      )
-    )
+        "!LOC:Icarus Upgrade Tech adds production of 2 metal to the solar drone.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Icarus Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.icarus)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.icarus),
     );
   },
 

@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       `${loc(
-        "!LOC:Barnacle Upgrade Tech allows the assisting of all builds by the support barge."
-      )} ${loc("!LOC:Disables the auto-repair feature.")}`
-    )
+        "!LOC:Barnacle Upgrade Tech allows the assisting of all builds by the support barge.",
+      )} ${loc("!LOC:Disables the auto-repair feature.")}`,
+    ),
   ),
 
   summarize: () => "!LOC:Barnacle Upgrade Tech",
@@ -26,7 +26,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.barnacle),
-      30
+      30,
     );
   },
 
@@ -36,7 +36,7 @@ define([
       gwoCard.mods(gwoUnit.barnacleBuildArm, "replace", {
         can_only_assist_with_buildable_items: false,
         auto_repair: false,
-      })
+      }),
     );
   },
 

@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 200%."
-      )
-    )
+        "!LOC:Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 200%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Spinner Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.spinner)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.spinner),
     );
   },
 
@@ -34,7 +34,7 @@ define([
     inventory.addMods(
       gwoCard.mods(gwoUnit.spinnerWeapon, "multiply", {
         rate_of_fire: 3,
-      })
+      }),
     );
   },
 

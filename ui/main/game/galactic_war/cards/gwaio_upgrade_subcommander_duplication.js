@@ -1,5 +1,5 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
-  gwoCard
+  gwoCard,
 ) => ({
   visible: () => true,
 

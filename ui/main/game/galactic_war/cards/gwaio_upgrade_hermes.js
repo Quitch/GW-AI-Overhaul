@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Hermes Upgrade Tech increases the vision of the space probe by 50%."
-      )
-    )
+        "!LOC:Hermes Upgrade Tech increases the vision of the space probe by 50%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Hermes Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.hermes)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.hermes),
     );
   },
 
@@ -37,7 +37,7 @@ define([
         path: `recon.observer.items.${i}.radius`,
         op: "multiply",
         value: 1.5,
-      }))
+      })),
     );
   },
 

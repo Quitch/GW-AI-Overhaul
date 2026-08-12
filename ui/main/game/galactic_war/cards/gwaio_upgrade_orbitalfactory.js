@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Orbital Factory Upgrade Tech decreases advanced orbital unit costs by 25% but also decreases the factory's health by 50%."
-      )
-    )
+        "!LOC:Orbital Factory Upgrade Tech decreases advanced orbital unit costs by 25% but also decreases the factory's health by 50%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Orbital Factory Upgrade Tech",
@@ -26,7 +26,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory),
     );
   },
 

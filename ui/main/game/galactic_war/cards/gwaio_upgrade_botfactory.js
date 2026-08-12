@@ -11,9 +11,9 @@ define([
     describe: _.constant(
       gwoCard.withSlot(
         loc(
-          "!LOC:Bot Factory Upgrade Tech enables the building of advanced units by basic bot manufacturing."
-        )
-      )
+          "!LOC:Bot Factory Upgrade Tech enables the building of advanced units by basic bot manufacturing.",
+        ),
+      ),
     ),
     summarize: () => "!LOC:Bot Factory Upgrade Tech",
     icon: () =>
@@ -23,7 +23,7 @@ define([
     deal: function (system, context, inventory) {
       return gwoCard.upgradeDeal(
         !inventory.hasCard("gwaio_start_rapid") &&
-          gwoCard.hasUnit(inventory.units(), gwoUnit.botFactory)
+          gwoCard.hasUnit(inventory.units(), gwoUnit.botFactory),
       );
     },
     buff: function (inventory) {
@@ -36,7 +36,7 @@ define([
       ];
       const advancedBotsWithoutFabbers = _.xor(
         gwoGroup.botsAdvancedMobile,
-        advancedBotFabbers
+        advancedBotFabbers,
       );
 
       inventory.addUnits(advancedBotsWithoutFabbers);
@@ -79,7 +79,7 @@ define([
       inventory.addMods(
         gwoCard.mods(gwoUnit.botFactory, "add", {
           buildable_types: " | (Bot & Mobile & FactoryBuild & Custom58)",
-        })
+        }),
       );
       inventory.addAIMods(aiMods);
     },

@@ -166,7 +166,7 @@ define([
           function (error) {
             console.error("Failed loading card " + cardId, " : " + error);
             finishCard();
-          }
+          },
         );
       };
       var resetCardCount = function () {

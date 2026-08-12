@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:ARKYD Upgrade Tech increases the vision and radar of the basic orbital radar by 50%."
-      )
-    )
+        "!LOC:ARKYD Upgrade Tech increases the vision and radar of the basic orbital radar by 50%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:ARKYD Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.arkyd)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.arkyd),
     );
   },
 
@@ -37,7 +37,7 @@ define([
         path: `recon.observer.items.${i}.radius`,
         op: "multiply",
         value: 1.5,
-      }))
+      })),
     );
   },
 

@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Fabrication Vehicle Upgrade Tech enables the building of advanced structures by the basic vehicle fabricator."
-      )
-    )
+        "!LOC:Fabrication Vehicle Upgrade Tech enables the building of advanced structures by the basic vehicle fabricator.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Fabrication Vehicle Upgrade Tech",
@@ -26,7 +26,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFabber)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFabber),
     );
   },
 
@@ -38,7 +38,7 @@ define([
       gwoCard.mods(gwoUnit.vehicleFabber, "add", {
         buildable_types:
           " | (Structure & Land & Advanced - Factory | FabAdvBuild) & Custom58",
-      })
+      }),
     );
 
     const units = [

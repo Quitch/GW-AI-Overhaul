@@ -15,7 +15,7 @@ define(() => {
     }
 
     console.error(
-      "[GW COOP] Per-player tech referee has no connected players."
+      "[GW COOP] Per-player tech referee has no connected players.",
     );
     return 0;
   };
@@ -68,7 +68,7 @@ define(() => {
     subcommanderTech,
     aiInUse,
     playerInventory,
-    playerTag
+    playerTag,
   ) =>
     refereeAIPaths.getAIPathDestination("subcommander", aiInUse, {
       guardians: false,
@@ -114,7 +114,7 @@ define(() => {
         // pick() falls back to this and reads it to spot The Guardians, so
         // even a colourless minion needs a pair.
         minion.color || params.playerColor,
-        params.refereeCoop.alliedColourIndex(colourPosition)
+        params.refereeCoop.alliedColourIndex(colourPosition),
       );
       colourPosition++;
 
@@ -198,26 +198,26 @@ define(() => {
     const playerCount = getConnectedPlayerCount(options);
     if (playerCount < 1) {
       return failAfterConfig(
-        "[GW COOP] Per-player tech referee has no connected players."
+        "[GW COOP] Per-player tech referee has no connected players.",
       );
     }
 
     if (options.sharedControl) {
       return failAfterConfig(
-        "[GW COOP] Per-player tech referee does not support shared control."
+        "[GW COOP] Per-player tech referee does not support shared control.",
       );
     }
 
     const humanArmies = collectHumanArmies(config);
     if (humanArmies.length < 1) {
       return failAfterConfig(
-        "[GW COOP] Per-player tech referee has no human armies."
+        "[GW COOP] Per-player tech referee has no human armies.",
       );
     }
 
     if (playerCount !== humanArmies.length) {
       return failAfterConfig(
-        "[GW COOP] Per-player tech referee has a mismatch between connected players and human armies."
+        "[GW COOP] Per-player tech referee has a mismatch between connected players and human armies.",
       );
     }
 
@@ -234,7 +234,7 @@ define(() => {
     const inventory = _.isFunction(game.inventory) && game.inventory();
     if (!inventory) {
       return failAfterConfig(
-        "[GW COOP] Per-player tech referee has no inventory."
+        "[GW COOP] Per-player tech referee has no inventory.",
       );
     }
 
@@ -244,28 +244,28 @@ define(() => {
       !_.isFunction(inventory.minions)
     ) {
       return failAfterConfig(
-        `[GW COOP] Per-player tech referee has invalid inventory units, mods, or minions. Per-player tech game inventory is: ${JSON.stringify(inventory)}`
+        `[GW COOP] Per-player tech referee has invalid inventory units, mods, or minions. Per-player tech game inventory is: ${JSON.stringify(inventory)}`,
       );
     }
 
     const player = config.player;
     if (!player || !_.isPlainObject(player)) {
       return failAfterConfig(
-        "[GW COOP] Per-player tech referee has no player."
+        "[GW COOP] Per-player tech referee has no player.",
       );
     }
 
     const playerCommander = player.commander;
     if (!playerCommander || !_.isString(playerCommander)) {
       return failAfterConfig(
-        "[GW COOP] Per-player tech referee has no player commander."
+        "[GW COOP] Per-player tech referee has no player commander.",
       );
     }
 
     const playerColor = inventory.getTag("global", "playerColor");
     if (!Array.isArray(playerColor) || playerColor.length < 2) {
       return failAfterConfig(
-        "[GW COOP] Per-player tech referee has no player color."
+        "[GW COOP] Per-player tech referee has no player color.",
       );
     }
 

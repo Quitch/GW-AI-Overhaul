@@ -138,7 +138,7 @@ define(() => {
       model.addCampaignChatMessage(
         pingPlayerName(playerName),
         pingChatMessage(starName(star)),
-        true
+        true,
       );
     };
 
@@ -248,14 +248,14 @@ define(() => {
     if (model.registerCampaignViewerOperatorHandler) {
       model.registerCampaignViewerOperatorHandler(
         PING_REQUEST,
-        relayPingToViewers
+        relayPingToViewers,
       );
     }
 
     if (model.registerCampaignHostOperatorHandler) {
       model.registerCampaignHostOperatorHandler(
         PING_BROADCAST,
-        applyPingBroadcast
+        applyPingBroadcast,
       );
     }
 

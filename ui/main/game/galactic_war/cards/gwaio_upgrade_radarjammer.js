@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Radar Jamming Station Upgrade Tech doubles the jamming radius of the radar jammer."
-      )
-    )
+        "!LOC:Radar Jamming Station Upgrade Tech doubles the jamming radius of the radar jammer.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Radar Jamming Station Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.radarJammingStation)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.radarJammingStation),
     );
   },
 

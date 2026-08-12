@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       `${loc(
-        "!LOC:Pelican Upgrade Tech allows air transports to carry commanders."
-      )} ${loc("!LOC:Every unit can shoot while being transported.")}`
-    )
+        "!LOC:Pelican Upgrade Tech allows air transports to carry commanders.",
+      )} ${loc("!LOC:Every unit can shoot while being transported.")}`,
+    ),
   ),
 
   summarize: () => "!LOC:Pelican Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.pelican)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.pelican),
     );
   },
 

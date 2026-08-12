@@ -43,7 +43,7 @@ define([
     currentCount,
     normalPaths,
     clusterPaths,
-    isClusterFn
+    isClusterFn,
   ) => {
     if (clusterArmyIndex(ai, isClusterFn) === currentCount) {
       return clusterPaths;
@@ -68,7 +68,7 @@ define([
         {
           "/pa/ai_cluster/unit_maps/ai_unit_map.json.player": playerAIUnitMap,
         },
-        playerSpecFiles
+        playerSpecFiles,
       );
       playerFilesX1 = titans
         ? _.assign(
@@ -76,7 +76,7 @@ define([
               "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player":
                 playerX1AIUnitMap,
             },
-            playerSpecFiles
+            playerSpecFiles,
           )
         : {};
     } else {

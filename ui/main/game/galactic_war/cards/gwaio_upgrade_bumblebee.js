@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop a mine instead of bombs."
-      )
-    )
+        "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop a mine instead of bombs.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Bumblebee Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.bumblebee)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.bumblebee),
     );
   },
 

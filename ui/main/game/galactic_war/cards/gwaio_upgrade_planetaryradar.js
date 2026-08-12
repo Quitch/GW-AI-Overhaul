@@ -8,14 +8,14 @@ define([
     if (gwoCard.isEnglish()) {
       return gwoCard.withSlot(
         loc(
-          "!LOC:Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar."
-        )
+          "!LOC:Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar.",
+        ),
       );
     }
     return gwoCard.withSlot(
       loc(
-        "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar."
-      )
+        "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar.",
+      ),
     );
   },
 
@@ -32,7 +32,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      inventory.hasCard("gwaio_enable_planetaryradar")
+      inventory.hasCard("gwaio_enable_planetaryradar"),
     );
   },
 

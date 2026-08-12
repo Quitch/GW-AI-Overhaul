@@ -59,7 +59,7 @@ describe("pa/ai/ - files GWO shadows over the base game", () => {
       const json = readJson(relativePath);
       assert.ok(
         Array.isArray(json.build_list),
-        "expected build_list to be an array"
+        "expected build_list to be an array",
       );
     });
   }

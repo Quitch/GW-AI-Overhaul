@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Air Fabrication Tech reduces metal build costs of all mobile air units by 25%"
+      "!LOC:Air Fabrication Tech reduces metal build costs of all mobile air units by 25%",
     ),
     summarize: _.constant("!LOC:Air Fabrication Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_cost_reduction",
@@ -18,7 +18,7 @@ define([
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.airMobileNoCluster),
-        70
+        70,
       );
     },
     buff: function (inventory) {

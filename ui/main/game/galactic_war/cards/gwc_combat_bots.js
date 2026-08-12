@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Bot Combat Tech increases health of all bots by 50%, damage by 25%, and speed by 50%"
+      "!LOC:Bot Combat Tech increases health of all bots by 50%, damage by 25%, and speed by 50%",
     ),
     summarize: _.constant("!LOC:Bot Combat Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_combat.png",
     ),
     audio: _.constant({
       found: "PA/VO/Computer/gw/board_tech_available_combat",
@@ -20,7 +20,7 @@ define([
       var sizes = GW.balance.numberOfSystems;
       return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.botsMobileNoCluster),
-        gwoCard.travelledShort(system, context, sizes) ? 60 : 30
+        gwoCard.travelledShort(system, context, sizes) ? 60 : 30,
       );
     },
     buff: function (inventory) {
@@ -56,7 +56,7 @@ define([
             path: "max_health",
             op: "multiply",
             value: 1.5,
-          }
+          },
         );
       });
       _.forEach(gwoGroup.botsAmmo, function (ammo) {
@@ -72,7 +72,7 @@ define([
             path: "splash_damage",
             op: "multiply",
             value: 1.25,
-          }
+          },
         );
       });
       inventory.addMods(mods);

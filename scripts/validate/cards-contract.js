@@ -18,7 +18,7 @@ const CARDS_DIR = path.join(
   "main",
   "game",
   "galactic_war",
-  "cards"
+  "cards",
 );
 
 const REQUIRED_FIELDS = [
@@ -46,7 +46,7 @@ function checkShape(file, card) {
       problems.push("missing required field `" + field + "`");
     } else if (typeof card[field] !== "function") {
       problems.push(
-        "`" + field + "` must be a function, got " + typeof card[field]
+        "`" + field + "` must be a function, got " + typeof card[field],
       );
     }
   }
@@ -57,7 +57,7 @@ function checkShape(file, card) {
       typeof card[field] !== "function"
     ) {
       problems.push(
-        "`" + field + "` must be a function, got " + typeof card[field]
+        "`" + field + "` must be a function, got " + typeof card[field],
       );
     }
   }
@@ -68,7 +68,7 @@ function checkShape(file, card) {
         "unexpected field `" +
           field +
           "` - typo of a known field, or a genuinely new one that " +
-          "REQUIRED_FIELDS/OPTIONAL_FIELDS in this script needs to learn about"
+          "REQUIRED_FIELDS/OPTIONAL_FIELDS in this script needs to learn about",
       );
     }
   }
@@ -130,7 +130,7 @@ function main() {
       skipped.knownUnloadable +
       " excluded (known engine coupling), " +
       failures.length +
-      " failed."
+      " failed.",
   );
 
   if (checked < MIN_CHECKED) {
@@ -139,7 +139,7 @@ function main() {
         checked +
         " cards shape-checked, expected at least " +
         MIN_CHECKED +
-        ". A card that stopped loading is now silently excluded rather than checked."
+        ". A card that stopped loading is now silently excluded rather than checked.",
     );
     process.exitCode = 1;
   }

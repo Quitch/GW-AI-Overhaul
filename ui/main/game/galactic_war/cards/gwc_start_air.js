@@ -13,7 +13,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:The Air Commander loadout contains basic air factories."
+      "!LOC:The Air Commander loadout contains basic air factories.",
     ),
     deal: gwoCard.startCard,
     buff: function (inventory) {

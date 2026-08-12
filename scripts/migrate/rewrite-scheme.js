@@ -45,7 +45,7 @@ function assertPairsStayIdempotent(pairs) {
             pair.to +
             '" contains searched scheme "' +
             other.from +
-            '" - a second run would corrupt it. Pick a non-overlapping name.'
+            '" - a second run would corrupt it. Pick a non-overlapping name.',
         );
       }
     }
@@ -61,7 +61,7 @@ function rewriteScheme(repoRoot, pairs) {
   }
 
   const candidates = walkFiles(repoRoot, (name) =>
-    TEXT_EXTENSIONS.has(path.extname(name))
+    TEXT_EXTENSIONS.has(path.extname(name)),
   );
 
   for (const filePath of candidates) {
@@ -102,7 +102,7 @@ function parseArgs(argv) {
     if ((flag !== "--from" && flag !== "--to") || value === undefined) {
       throw new Error(
         "rewrite-scheme: expected --from <scheme> --to <scheme> pairs, got: " +
-          argv.join(" ")
+          argv.join(" "),
       );
     }
     if (flag === "--from") {
@@ -118,7 +118,7 @@ function parseArgs(argv) {
   if (!pairs.length || pairs.some((p) => p.to === undefined)) {
     throw new Error(
       "rewrite-scheme: every --from needs a --to. " +
-        "Usage: node scripts/migrate/rewrite-scheme.js --from coui:// --to cef://"
+        "Usage: node scripts/migrate/rewrite-scheme.js --from coui:// --to cef://",
     );
   }
   return pairs;
@@ -138,7 +138,7 @@ function assertCleanTree(repoRoot) {
   if (status.trim()) {
     throw new Error(
       "rewrite-scheme: working tree is dirty - commit or stash first, " +
-        "so the rewrite stays a clean, revertable diff"
+        "so the rewrite stays a clean, revertable diff",
     );
   }
 }
@@ -166,7 +166,7 @@ function main() {
         count.occurrences +
         " occurrences in " +
         count.files +
-        " files"
+        " files",
     );
   }
   console.log("rewrite-scheme: " + total + " occurrences rewritten");

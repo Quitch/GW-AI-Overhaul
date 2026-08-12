@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Slammer Upgrade Tech changes the advanced assault bot's torpedo into a rocket that targets surface units."
-      )
-    )
+        "!LOC:Slammer Upgrade Tech changes the advanced assault bot's torpedo into a rocket that targets surface units.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Slammer Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.slammer)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.slammer),
     );
   },
 

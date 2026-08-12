@@ -11,13 +11,13 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const treasure = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
 );
 const streams = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
 );
 const loadoutIds = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
 );
 
 // treasureLoadoutPool reads model.gwoNewStartCards for the mod loadouts, so the
@@ -37,7 +37,7 @@ function withModLoadouts(ids, run) {
 }
 
 const loadoutBanks = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
 );
 
 // Registers a mod bank for the duration of one test. resolve() writes module
@@ -80,7 +80,7 @@ describe("treasureLoadoutPool", () => {
     assert.deepEqual(
       ids,
       loadoutIds.lockedBase.concat(loadoutIds.unlockable),
-      "with no mod registered the pool is GWO's own earnable loadouts"
+      "with no mod registered the pool is GWO's own earnable loadouts",
     );
     for (const id of loadoutIds.starting) {
       assert.ok(!ids.includes(id), `${id} is available from the start`);
@@ -89,7 +89,7 @@ describe("treasureLoadoutPool", () => {
 
   it("offers a mod's locked loadout alongside GWO's", () => {
     const ids = withModLoadouts([{ id: "mym_start_one" }], () =>
-      treasure.treasureLoadoutPool().map((card) => card.id)
+      treasure.treasureLoadoutPool().map((card) => card.id),
     );
 
     assert.ok(ids.includes("mym_start_one"), "the mod loadout is unreachable");
@@ -98,7 +98,7 @@ describe("treasureLoadoutPool", () => {
 
   it("accepts a bare id as well as a card object", () => {
     const ids = withModLoadouts(["mym_start_bare"], () =>
-      treasure.treasureLoadoutPool().map((card) => card.id)
+      treasure.treasureLoadoutPool().map((card) => card.id),
     );
 
     assert.ok(ids.includes("mym_start_bare"));
@@ -106,20 +106,20 @@ describe("treasureLoadoutPool", () => {
 
   it("deduplicates a mod id that collides with a shipped one", () => {
     const ids = withModLoadouts([{ id: "gwaio_start_ceo" }], () =>
-      treasure.treasureLoadoutPool().map((card) => card.id)
+      treasure.treasureLoadoutPool().map((card) => card.id),
     );
 
     assert.equal(
       ids.filter((id) => id === "gwaio_start_ceo").length,
       1,
-      "a duplicate would weight that loadout twice in the draw"
+      "a duplicate would weight that loadout twice in the draw",
     );
   });
 
   it("ignores registered ids that are not loadouts", () => {
     const ids = withModLoadouts(
       [{ id: "mym_damage_bots" }, { id: undefined }, undefined],
-      () => treasure.treasureLoadoutPool().map((card) => card.id)
+      () => treasure.treasureLoadoutPool().map((card) => card.id),
     );
 
     assert.deepEqual(ids, loadoutIds.lockedBase.concat(loadoutIds.unlockable));
@@ -130,13 +130,13 @@ describe("treasureLoadoutPool", () => {
 
     assert.deepEqual(
       treasure.treasureLoadoutPool().map((card) => card.id),
-      expected
+      expected,
     );
     assert.deepEqual(
       withModLoadouts("not an array", () =>
-        treasure.treasureLoadoutPool().map((card) => card.id)
+        treasure.treasureLoadoutPool().map((card) => card.id),
       ),
-      expected
+      expected,
     );
   });
 });
@@ -158,7 +158,7 @@ describe("isTreasureStar", () => {
     assert.equal(treasure.isTreasureStar(undefined, 0), false);
     assert.equal(
       treasure.isTreasureStar({ treasureStar: undefined }, 0),
-      false
+      false,
     );
   });
 });
@@ -176,7 +176,7 @@ describe("findTreasureStar", () => {
         star({ treasurePlanet: true }),
         star({}),
       ]),
-      1
+      1,
     );
   });
 
@@ -188,7 +188,7 @@ describe("findTreasureStar", () => {
         star(undefined, [{ id: "gwc_combat_bots" }]),
         star(undefined, [{ id: "gwaio_start_ceo" }]),
       ]),
-      1
+      1,
     );
   });
 
@@ -198,7 +198,7 @@ describe("findTreasureStar", () => {
         star(undefined, [{ id: "gwaio_start_ceo" }]),
         star({ treasurePlanet: true }),
       ]),
-      1
+      1,
     );
   });
 
@@ -206,7 +206,7 @@ describe("findTreasureStar", () => {
   it("is undefined when nothing marks a treasure star", () => {
     assert.equal(
       treasure.findTreasureStar([star(undefined), star({})]),
-      undefined
+      undefined,
     );
     assert.equal(treasure.findTreasureStar([]), undefined);
   });
@@ -254,7 +254,7 @@ describe("bankStartCard", () => {
         stockBank,
         gwoBank,
       }),
-      false
+      false,
     );
     assert.deepEqual(stockBank.added, []);
     assert.deepEqual(gwoBank.added, []);
@@ -269,14 +269,14 @@ describe("bankStartCard", () => {
         card: { id: "mym_start_one" },
         stockBank,
         gwoBank,
-      })
+      }),
     );
 
     assert.deepEqual(mym.added, [{ id: "mym_start_one" }]);
     assert.deepEqual(
       gwoBank.added,
       [],
-      "uninstalling the mod must take its unlocks with it"
+      "uninstalling the mod must take its unlocks with it",
     );
     assert.deepEqual(stockBank.added, []);
   });
@@ -290,7 +290,7 @@ describe("bankStartCard", () => {
         card: { id: "gwaio_start_lucky" },
         stockBank,
         gwoBank,
-      })
+      }),
     );
 
     assert.deepEqual(gwoBank.added, [{ id: "gwaio_start_lucky" }]);
@@ -308,7 +308,7 @@ describe("bankStartCard", () => {
         card: { id: "gwc_start_artillery" },
         stockBank,
         gwoBank,
-      })
+      }),
     );
 
     assert.deepEqual(stockBank.added, [{ id: "gwc_start_artillery" }]);
@@ -333,11 +333,11 @@ describe("recordHasUnlockedLoadout", () => {
     const record = { unlockedStartCardIds: ["gwc_start_subcdr"] };
     assert.equal(
       treasure.recordHasUnlockedLoadout(record, "gwc_start_subcdr"),
-      true
+      true,
     );
     assert.equal(
       treasure.recordHasUnlockedLoadout(record, "gwc_start_storage"),
-      false
+      false,
     );
   });
 
@@ -350,11 +350,11 @@ describe("recordHasUnlockedLoadout", () => {
     };
     assert.equal(
       treasure.recordHasUnlockedLoadout(record, "gwaio_start_ceo"),
-      true
+      true,
     );
     assert.equal(
       treasure.recordHasUnlockedLoadout(record, "nem_start_nuke"),
-      false
+      false,
     );
   });
 
@@ -362,9 +362,9 @@ describe("recordHasUnlockedLoadout", () => {
     assert.equal(
       treasure.recordHasUnlockedLoadout(
         { loadoutCardId: "gwaio_start_nomad" },
-        "gwaio_start_nomad"
+        "gwaio_start_nomad",
       ),
-      true
+      true,
     );
   });
 
@@ -372,7 +372,7 @@ describe("recordHasUnlockedLoadout", () => {
     const record = { gwaioUnlockedStartCardIds: ["gwaio_start_ceo"] };
     assert.equal(
       treasure.recordHasUnlockedLoadout(record, { id: "gwaio_start_ceo" }),
-      true
+      true,
     );
   });
 
@@ -380,7 +380,7 @@ describe("recordHasUnlockedLoadout", () => {
     const record = { gwaioUnlockedStartCardIds: ["gwaio_start_ceo"] };
     assert.equal(
       treasure.recordHasUnlockedLoadout(record, "gwaio_upgrade_airfactory"),
-      false
+      false,
     );
     assert.equal(treasure.recordHasUnlockedLoadout(record, undefined), false);
   });
@@ -388,18 +388,18 @@ describe("recordHasUnlockedLoadout", () => {
   it("survives a record with no unlock metadata at all", () => {
     assert.equal(
       treasure.recordHasUnlockedLoadout(undefined, "gwc_start_subcdr"),
-      false
+      false,
     );
     assert.equal(
       treasure.recordHasUnlockedLoadout({}, "gwc_start_subcdr"),
-      false
+      false,
     );
     assert.equal(
       treasure.recordHasUnlockedLoadout(
         { unlockedStartCardIds: "not an array" },
-        "gwc_start_subcdr"
+        "gwc_start_subcdr",
       ),
-      false
+      false,
     );
   });
 });
@@ -427,7 +427,7 @@ describe("pickTreasureLoadout", () => {
 
   it("gives each player and each star their own offer", () => {
     const perPlayer = ["host", "uber-1", "uber-2", "uber-3"].map(
-      (key) => pick({}, key, 3).id
+      (key) => pick({}, key, 3).id,
     );
     const perStar = [3, 4, 5, 6].map((star) => pick({}, "uber-1", star).id);
     assert.ok(new Set(perPlayer).size > 1, "every player got the same loadout");
@@ -450,7 +450,7 @@ describe("pickTreasureLoadout", () => {
       rng: undefined,
     });
     assert.ok(
-      treasure.treasureLoadoutPool().some((entry) => entry.id === card.id)
+      treasure.treasureLoadoutPool().some((entry) => entry.id === card.id),
     );
   });
 
@@ -459,7 +459,7 @@ describe("pickTreasureLoadout", () => {
     treasure.pickTreasureLoadout({ pool: pool, isUnlocked: () => false });
     assert.ok(
       pool.every((card) => card.allowOverflow === undefined),
-      "buildPendingStartLoadoutCard must clone before stamping allowOverflow"
+      "buildPendingStartLoadoutCard must clone before stamping allowOverflow",
     );
   });
 });
@@ -476,14 +476,14 @@ describe("anyPlayerCanUnlockLoadout", () => {
       treasure.anyPlayerCanUnlockLoadout({
         localUnlockedIds: everyLoadout().slice(1),
       }),
-      true
+      true,
     );
   });
 
   it("is false once the local player holds them all", () => {
     assert.equal(
       treasure.anyPlayerCanUnlockLoadout({ localUnlockedIds: everyLoadout() }),
-      false
+      false,
     );
   });
 
@@ -499,7 +499,7 @@ describe("anyPlayerCanUnlockLoadout", () => {
         records: records,
         perPlayerTech: true,
       }),
-      true
+      true,
     );
   });
 
@@ -512,7 +512,7 @@ describe("anyPlayerCanUnlockLoadout", () => {
         records: [{ gwaioUnlockedStartCardIds: [] }],
         perPlayerTech: false,
       }),
-      false
+      false,
     );
   });
 
@@ -523,7 +523,7 @@ describe("anyPlayerCanUnlockLoadout", () => {
         localUnlockedIds: everyLoadout(),
         perPlayerTech: true,
       }),
-      false
+      false,
     );
     assert.equal(treasure.anyPlayerCanUnlockLoadout({ pool: [] }), false);
   });
@@ -556,7 +556,7 @@ function install(overrides = {}) {
       stockIds: ["gwc_start_artillery"],
       gwoIds: ["gwaio_start_ceo"],
     },
-    overrides
+    overrides,
   );
 
   const calls = { upserts: [], reported: [], snapshots: [] };
@@ -636,9 +636,9 @@ describe("localUnlockedLoadoutIds", () => {
     assert.deepEqual(
       treasure.localUnlockedLoadoutIds(
         bank(["gwc_start_artillery"]),
-        bank(["gwaio_start_ceo"])
+        bank(["gwaio_start_ceo"]),
       ),
-      ["gwc_start_artillery", "gwaio_start_ceo"]
+      ["gwc_start_artillery", "gwaio_start_ceo"],
     );
   });
 
@@ -646,9 +646,9 @@ describe("localUnlockedLoadoutIds", () => {
     assert.deepEqual(
       treasure.localUnlockedLoadoutIds(
         bank(["gwc_start_artillery", "gwc_combat_bots"]),
-        bank(["gwc_start_artillery", "gwaio_start_ceo"])
+        bank(["gwc_start_artillery", "gwaio_start_ceo"]),
       ),
-      ["gwc_start_artillery", "gwaio_start_ceo"]
+      ["gwc_start_artillery", "gwaio_start_ceo"],
     );
   });
 
@@ -663,8 +663,8 @@ describe("localUnlockedLoadoutIds", () => {
     const ids = withModBank("mym_start_", modBank(["mym_start_one"]), () =>
       treasure.localUnlockedLoadoutIds(
         bank(["gwc_start_artillery"]),
-        bank(["gwaio_start_ceo"])
-      )
+        bank(["gwaio_start_ceo"]),
+      ),
     );
 
     assert.deepEqual(ids, [
@@ -676,7 +676,7 @@ describe("localUnlockedLoadoutIds", () => {
 
   it("drops a mod bank entry that is not a loadout", () => {
     const ids = withModBank("mym_", modBank(["mym_damage_bots"]), () =>
-      treasure.localUnlockedLoadoutIds(bank(), bank())
+      treasure.localUnlockedLoadoutIds(bank(), bank()),
     );
 
     assert.deepEqual(ids, []);

@@ -13,7 +13,7 @@ define([
     },
     summarize: _.constant("!LOC:Complete Energy Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_energy.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_energy.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_efficiency",
@@ -65,7 +65,7 @@ define([
             path: "ammo_per_shot",
             op: "multiply",
             value: 0.25,
-          }
+          },
         );
       });
       inventory.addMods(mods);

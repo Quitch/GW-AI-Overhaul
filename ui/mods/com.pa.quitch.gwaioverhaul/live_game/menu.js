@@ -28,12 +28,12 @@ function gwoLiveGameMenu() {
         const overString = getMenuString(
           tutorial(),
           "!LOC:Continue Tutorial",
-          "!LOC:Continue War"
+          "!LOC:Continue War",
         );
         const exitString = getMenuString(
           hardcore(),
           "!LOC:Abandon War",
-          "!LOC:Surrender"
+          "!LOC:Surrender",
         );
 
         const getMenuAction = (boolean) => {

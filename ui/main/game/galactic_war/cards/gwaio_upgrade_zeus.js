@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Zeus Upgrade Tech adds the ability for the lightning titan to move between planets."
-      )
-    )
+        "!LOC:Zeus Upgrade Tech adds the ability for the lightning titan to move between planets.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Zeus Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.zeus)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.zeus),
     );
   },
 

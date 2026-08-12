@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Sheller Upgrade Tech causes mines to be left by the mortar tank's attacks."
-      )
-    )
+        "!LOC:Sheller Upgrade Tech causes mines to be left by the mortar tank's attacks.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Sheller Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.sheller)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.sheller),
     );
   },
 
@@ -44,7 +44,7 @@ define([
             path: "spawn_unit_on_death",
             op: "tag",
           },
-        ])
+        ]),
     );
   },
 

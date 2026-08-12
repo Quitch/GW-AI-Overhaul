@@ -83,7 +83,7 @@ define(() => {
       requireGW([`cards/${payload.card_id}`], (data) => {
         if (!data || !_.isFunction(data.summarize)) {
           console.error(
-            `[GW COOP] card summarize unavailable for synced card name id=${payload.card_id}`
+            `[GW COOP] card summarize unavailable for synced card name id=${payload.card_id}`,
           );
           result.reject(`Card summarize unavailable for ${payload.card_id}`);
           return;
@@ -92,7 +92,7 @@ define(() => {
         const cardName = loc(data.summarize());
         if (!applyCardNameToStarIndex(game, payload.star, cardName)) {
           console.warn(
-            `[GW COOP] unable to apply synced star card name for star=${payload.star}`
+            `[GW COOP] unable to apply synced star card name for star=${payload.star}`,
           );
           result.reject(`Unable to apply card name to star ${payload.star}`);
           return;
@@ -126,7 +126,7 @@ define(() => {
     if (model.registerCampaignHostOperatorHandler) {
       model.registerCampaignHostOperatorHandler(
         setCardNameSyncOperator,
-        applySyncedStarCardName
+        applySyncedStarCardName,
       );
     }
 

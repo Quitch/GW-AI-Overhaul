@@ -54,7 +54,7 @@ function resolveBareId(entry) {
     'amd-loader: "' +
       entry +
       "\" is not shipped by this mod (likely a base-game module GWO doesn't override) - " +
-      "not resolvable without the game's own base install, which CI does not have."
+      "not resolvable without the game's own base install, which CI does not have.",
   );
 }
 
@@ -66,7 +66,7 @@ function resolveEntryPath(entry) {
         'amd-loader: "' +
           entry +
           '" resolved to a path that does not exist: ' +
-          fsPath
+          fsPath,
       );
     }
     return fsPath;
@@ -122,7 +122,7 @@ function installGlobals() {
     const currentPath = loadStack[loadStack.length - 1];
     if (!currentPath) {
       throw new Error(
-        "amd-loader: define() was called outside of a loadCouiModule()/requireShippedModule() load"
+        "amd-loader: define() was called outside of a loadCouiModule()/requireShippedModule() load",
       );
     }
 
@@ -140,7 +140,7 @@ function installGlobals() {
               dep +
               '" is not supported yet (seen in ' +
               currentPath +
-              ")"
+              ")",
           );
         }
         return loadCouiModule(dep);
@@ -174,7 +174,7 @@ function loadCouiModule(entry) {
         fsPath +
         " (stack: " +
         loadStack.concat(fsPath).join(" -> ") +
-        ")"
+        ")",
     );
   }
 
@@ -187,7 +187,7 @@ function loadCouiModule(entry) {
 
   if (!moduleRegistry.has(fsPath)) {
     throw new Error(
-      "amd-loader: " + fsPath + " did not call define() while loading"
+      "amd-loader: " + fsPath + " did not call define() while loading",
     );
   }
   return moduleRegistry.get(fsPath);

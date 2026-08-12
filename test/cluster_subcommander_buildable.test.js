@@ -61,17 +61,17 @@ const CARDS_DIR = path.join(
   "main",
   "game",
   "galactic_war",
-  "cards"
+  "cards",
 );
 
 const CLUSTER_FACTION = 4;
 const UNIT_TYPE_PREFIX = "UNITTYPE_";
 
 const gwoUnit = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 );
 const gwoCluster = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
 );
 
 const SUB_COMMANDERS = [
@@ -83,7 +83,7 @@ function stripPrefix(unitTypes) {
   return unitTypes.map((type) =>
     type.startsWith(UNIT_TYPE_PREFIX)
       ? type.slice(UNIT_TYPE_PREFIX.length)
-      : type
+      : type,
   );
 }
 
@@ -92,13 +92,13 @@ function stripPrefix(unitTypes) {
 function clusterTags(file, cardMods) {
   const replaced = gwoCluster.clusterCommanderMods.find(
     (mod) =>
-      mod.file === file && mod.path === "unit_types" && mod.op === "replace"
+      mod.file === file && mod.path === "unit_types" && mod.op === "replace",
   );
   assert.ok(
     replaced,
     "cluster_setup.js no longer replaces unit_types for " +
       file +
-      " - this check's tag sets are derived from that mod"
+      " - this check's tag sets are derived from that mod",
   );
 
   const tags = new Set(stripPrefix(replaced.value));
@@ -122,7 +122,7 @@ function clusterTags(file, cardMods) {
 function clusterBuildableTypes(file) {
   const mod = gwoCluster.clusterCommanderMods.find(
     (candidate) =>
-      candidate.file === file && candidate.path === "buildable_types"
+      candidate.file === file && candidate.path === "buildable_types",
   );
   assert.ok(mod, "cluster_setup.js no longer sets buildable_types for " + file);
   return mod.value;
@@ -161,7 +161,7 @@ function collectMods(card, hasCard) {
       get(target, prop) {
         return prop in target ? target[prop] : createAutoStub();
       },
-    }
+    },
   );
 
   for (const method of ["buff", "dull"]) {
@@ -233,18 +233,18 @@ describe("buildable_types expression evaluator", () => {
       "Land & Structure & Advanced - Factory| Factory & Advanced & Bot & Land | FabAdvBuild | FabBuild";
     assert.equal(
       matches(expression, new Set(["Land", "Structure", "Advanced"])),
-      true
+      true,
     );
     assert.equal(
       matches(
         expression,
-        new Set(["Land", "Structure", "Advanced", "Factory"])
+        new Set(["Land", "Structure", "Advanced", "Factory"]),
       ),
-      false
+      false,
     );
     assert.equal(
       matches(expression, new Set(["Factory", "Advanced", "Bot", "Land"])),
-      true
+      true,
     );
   });
 
@@ -254,7 +254,7 @@ describe("buildable_types expression evaluator", () => {
     assert.equal(matches(expression, mobile), true);
     assert.equal(
       matches(expression, new Set(["Mobile", "Air", "Custom58", "NoBuild"])),
-      false
+      false,
     );
   });
 
@@ -271,9 +271,9 @@ describe("Cluster Sub Commanders cannot be built", () => {
       unit.name,
       clusterTags(
         unit.file,
-        collected.mods.map((entry) => entry.mod)
+        collected.mods.map((entry) => entry.mod),
       ),
-    ])
+    ]),
   );
 
   it("loads the cards it is sweeping", () => {
@@ -289,13 +289,15 @@ describe("Cluster Sub Commanders cannot be built", () => {
         const tags = tagsByName.get(unit.name);
         assert.ok(
           tags.has("NoBuild"),
-          unit.name + " lost UNITTYPE_NoBuild: " + [...tags].join(", ")
+          unit.name + " lost UNITTYPE_NoBuild: " + [...tags].join(", "),
         );
         assert.ok(
           !tags.has("FactoryBuild"),
-          unit.name + " regained UNITTYPE_FactoryBuild: " + [...tags].join(", ")
+          unit.name +
+            " regained UNITTYPE_FactoryBuild: " +
+            [...tags].join(", "),
         );
-      }
+      },
     );
 
     it("lets no card overwrite " + unit.name + "'s Cluster build list", () => {
@@ -307,7 +309,7 @@ describe("Cluster Sub Commanders cannot be built", () => {
           (entry) =>
             entry.mod.file === unit.file &&
             entry.mod.path === "buildable_types" &&
-            entry.mod.value !== clusterValue
+            entry.mod.value !== clusterValue,
         )
         .map((entry) => entry.card + ': "' + entry.mod.value + '"');
       assert.deepEqual([...new Set(overwrites)], []);
@@ -320,13 +322,13 @@ describe("Cluster Sub Commanders cannot be built", () => {
           .filter((expression) => matches(expression, tags))
           .map(
             (expression) =>
-              entry.card + " -> " + entry.mod.file + ': "' + expression + '"'
-          )
+              entry.card + " -> " + entry.mod.file + ': "' + expression + '"',
+          ),
       );
       assert.deepEqual(
         [...new Set(leaks)],
         [],
-        unit.name + " is buildable via " + leaks.length + " card mod(s)"
+        unit.name + " is buildable via " + leaks.length + " card mod(s)",
       );
     });
   }
@@ -343,7 +345,7 @@ describe("the CEO Commander's Cluster Colonel", () => {
 
   it("copies the Colonel rather than modifying it", () => {
     const clone = ceoMods.find(
-      (mod) => mod.op === "clone" && mod.file === gwoUnit.colonel
+      (mod) => mod.op === "clone" && mod.file === gwoUnit.colonel,
     );
     assert.ok(clone, "gwaio_start_ceo no longer clones the Colonel");
     assert.equal(clone.value, gwoUnit.clusterCeoColonel);
@@ -354,7 +356,7 @@ describe("the CEO Commander's Cluster Colonel", () => {
       (mod) =>
         mod.file === gwoUnit.clusterCeoColonel &&
         mod.path === "unit_types" &&
-        mod.op === "pull"
+        mod.op === "pull",
     );
     assert.ok(pull, "the copy keeps UNITTYPE_FactoryBuild");
     assert.equal(pull.value, "UNITTYPE_FactoryBuild");
@@ -368,7 +370,7 @@ describe("the CEO Commander's Cluster Colonel", () => {
         (mod) =>
           mod.file === gwoUnit.colonel &&
           mod.op !== "clone" &&
-          !gwoCluster.clusterCommanderMods.includes(mod)
+          !gwoCluster.clusterCommanderMods.includes(mod),
       )
       .map((mod) => mod.op + " " + mod.path);
     assert.deepEqual([...new Set(touched)], []);

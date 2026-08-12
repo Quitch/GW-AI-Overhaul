@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Fabrication Bot Upgrade Tech enables the building of advanced structures by the basic bot fabricator."
-      )
-    )
+        "!LOC:Fabrication Bot Upgrade Tech enables the building of advanced structures by the basic bot fabricator.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Fabrication Bot Upgrade Tech",
@@ -23,7 +23,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.botFabber)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.botFabber),
     );
   },
 
@@ -35,7 +35,7 @@ define([
       gwoCard.mods(gwoUnit.botFabber, "add", {
         buildable_types:
           " | (Land & Structure & Advanced - Factory | FabAdvBuild) & Custom58",
-      })
+      }),
     );
 
     const units = [

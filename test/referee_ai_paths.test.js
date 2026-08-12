@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const refereeAIPaths = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
 );
 
 describe("sanitizeToken", () => {
@@ -38,7 +38,7 @@ describe("getScopeToken", () => {
   it("prefers playerTag over other identity fields", () => {
     const token = refereeAIPaths.getScopeToken(
       { playerTag: "p1", specTag: "s1", name: "n1" },
-      "fallback"
+      "fallback",
     );
     assert.equal(token, "p1");
   });
@@ -46,7 +46,7 @@ describe("getScopeToken", () => {
   it("falls through the priority chain to the first present-and-truthy field", () => {
     const token = refereeAIPaths.getScopeToken(
       { playerTag: "", specTag: "s1" },
-      "fallback"
+      "fallback",
     );
     // playerTag is present but falsy, so the ||-chain moves on rather than stopping.
     assert.equal(token, "s1");
@@ -68,7 +68,7 @@ describe("getScopeToken", () => {
   it("uses identity directly when it is already a non-empty string", () => {
     assert.equal(
       refereeAIPaths.getScopeToken(".player0", "fallback"),
-      "player0"
+      "player0",
     );
   });
 
@@ -117,7 +117,7 @@ describe("getAIPathDestination - Titans/Penchant subcommander aiMods gate", () =
       "Penchant",
       {
         aiMods: [],
-      }
+      },
     );
     assert.equal(path, "/pa/ai_penchant/");
   });
@@ -128,7 +128,7 @@ describe("getAIPathDestination - Titans/Penchant subcommander aiMods gate", () =
       "Penchant",
       {
         aiMods: [{ op: "load" }],
-      }
+      },
     );
     assert.equal(path, "/pa/ai_subcommander/");
   });
@@ -165,7 +165,7 @@ describe("getAIPathDestination - Queller", () => {
       "Queller",
       {
         smartSubcommanders: true,
-      }
+      },
     );
     assert.equal(path, "/pa/ai_queller/q_silver/");
   });
@@ -176,7 +176,7 @@ describe("getAIPathDestination - Queller", () => {
       "Queller",
       {
         smartSubcommanders: false,
-      }
+      },
     );
     assert.equal(path, "/pa/ai_queller/q_bronze/");
   });
@@ -192,7 +192,7 @@ describe("getAIPathDestination - Queller", () => {
       "Queller",
       {
         aiMods: [],
-      }
+      },
     );
     assert.notEqual(enemyPath, subPath);
   });
@@ -202,7 +202,7 @@ describe("getAIPathSource", () => {
   it("Penchant resolves to /pa/ai_penchant/", () => {
     assert.equal(
       refereeAIPaths.getAIPathSource("subcommander", "Penchant"),
-      "/pa/ai_penchant/"
+      "/pa/ai_penchant/",
     );
   });
 
@@ -210,7 +210,7 @@ describe("getAIPathSource", () => {
     assert.equal(refereeAIPaths.getAIPathSource("enemy", "Titans"), "/pa/ai/");
     assert.equal(
       refereeAIPaths.getAIPathSource("enemy", "SomethingElse"),
-      "/pa/ai/"
+      "/pa/ai/",
     );
   });
 
@@ -219,11 +219,11 @@ describe("getAIPathSource", () => {
     // when the destination copied to is q_silver/. See ai-paths.md.
     assert.equal(
       refereeAIPaths.getAIPathSource("enemy", "Queller"),
-      "/pa/ai_queller/q_uber/"
+      "/pa/ai_queller/q_uber/",
     );
     assert.equal(
       refereeAIPaths.getAIPathSource("subcommander", "Queller"),
-      "/pa/ai_queller/q_bronze/"
+      "/pa/ai_queller/q_bronze/",
     );
   });
 });
@@ -244,11 +244,11 @@ describe("scopeToken sanitization asymmetry", () => {
       "/pa/ai_subcommander/",
       ".player0",
       "fallback",
-      false
+      false,
     );
     assert.equal(
       path,
-      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map.json"
+      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map.json",
     );
   });
 
@@ -257,11 +257,11 @@ describe("scopeToken sanitization asymmetry", () => {
       "/pa/ai_subcommander/",
       ".player0",
       "fallback",
-      true
+      true,
     );
     assert.equal(
       path,
-      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map_x1.json"
+      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map_x1.json",
     );
   });
 });
@@ -270,7 +270,7 @@ describe("getAIPathDestination - no scope token", () => {
   it("returns the base path unchanged when no scope token is given", () => {
     assert.equal(
       refereeAIPaths.getAIPathDestination("enemy", "Titans", {}),
-      "/pa/ai/"
+      "/pa/ai/",
     );
   });
 });

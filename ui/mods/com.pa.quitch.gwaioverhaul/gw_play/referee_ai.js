@@ -15,7 +15,7 @@ define([
       idToMod,
       refId,
       refValue,
-      matchAll
+      matchAll,
     ) {
       _.forEach(json.build_list, (build) => {
         if (build.to_build !== toBuild) {
@@ -54,7 +54,7 @@ define([
       idToMod,
       refId,
       refValue,
-      matchAll
+      matchAll,
     ) {
       // Separate from `value`: one descriptor can match both array and string
       // targets, so coercing the parameter in place corrupts the later ones.
@@ -97,7 +97,7 @@ define([
       idToMod,
       refId,
       refValue,
-      matchAll
+      matchAll,
     ) {
       _.forEach(json.build_list, (build) => {
         if (build.to_build !== toBuild) {
@@ -174,7 +174,7 @@ define([
         mod.idToMod,
         mod.refId,
         mod.refValue,
-        mod.matchAll
+        mod.matchAll,
       );
     });
   };
@@ -198,9 +198,9 @@ define([
       refereeCoop.getConnectedViewerInventories(game, connectedClients),
       (viewer) => {
         connectedClientAiMods = connectedClientAiMods.concat(
-          getRefereeInventoryAiMods(viewer.inventory)
+          getRefereeInventoryAiMods(viewer.inventory),
         );
-      }
+      },
     );
 
     return connectedClientAiMods;
@@ -209,10 +209,10 @@ define([
   const getInventoryWithAllPlayerAiMods = (
     inventory,
     game,
-    connectedClients
+    connectedClients,
   ) => {
     const allPlayerAiMods = getRefereeInventoryAiMods(inventory).concat(
-      getConnectedClientAiMods(game, connectedClients)
+      getConnectedClientAiMods(game, connectedClients),
     );
 
     return {
@@ -260,7 +260,7 @@ define([
     fileList,
     inventory,
     aisToModify,
-    aiPaths
+    aiPaths,
   ) => {
     const isSubCommanderDirectory =
       aiPath === aiPaths.subCommanderSource ||
@@ -355,9 +355,9 @@ define([
           gwoAI.aiInUse("subcommander"),
           {
             scopeToken,
-          }
+          },
         ),
-        pathLength
+        pathLength,
       );
 
       applyAiMods(clusterJson, clusterOps);
@@ -368,7 +368,7 @@ define([
       json,
       fileOwner,
       isSubCommanderTechFile,
-      isSubCommanderDirectory
+      isSubCommanderDirectory,
     ) => {
       const updatedFilePaths = [];
       let aiJsonModsInScope = [];
@@ -379,7 +379,7 @@ define([
           // File's source is not an AI path so it needs to be copied to the AIs' paths
           updatedFilePaths.push(
             changeFilePath(aiPaths.enemyDestination, aiTechPath.length),
-            changeFilePath(aiPaths.subCommanderDestination, aiTechPath.length)
+            changeFilePath(aiPaths.subCommanderDestination, aiTechPath.length),
           );
         }
         aiJsonModsInScope = aiModsInScopeOfFile();
@@ -400,7 +400,7 @@ define([
         }
 
         updatedFilePaths.push(
-          changeFilePath(aiPaths.subCommanderDestination, pathLength)
+          changeFilePath(aiPaths.subCommanderDestination, pathLength),
         );
         aiJsonModsInScope = aiModsInScopeOfFile();
       }
@@ -439,7 +439,7 @@ define([
       json,
       originalJson,
       fileOwner,
-      isSubCommanderTechFile
+      isSubCommanderTechFile,
     ) => {
       if (clusterPresence === "Player" && fileOwner !== "enemy") {
         const pathLength = isSubCommanderTechFile
@@ -460,7 +460,7 @@ define([
         clusterPresence === "Enemy" ? _.cloneDeep(json) : undefined;
       const fileOwner = whoseFileIsItAnyway(aiPaths);
       const isSubCommanderDirectory = filePathStarts(
-        aiPaths.subCommanderSource
+        aiPaths.subCommanderSource,
       );
       const isSubCommanderTechFile = filePathStarts(aiTechPath);
 
@@ -468,7 +468,7 @@ define([
         json,
         fileOwner,
         isSubCommanderTechFile,
-        isSubCommanderDirectory
+        isSubCommanderDirectory,
       );
 
       // A per-viewer pass never owns the enemy's scoped destination. The base
@@ -491,7 +491,7 @@ define([
         json,
         originalJson,
         fileOwner,
-        isSubCommanderTechFile
+        isSubCommanderTechFile,
       );
     });
   };
@@ -513,7 +513,7 @@ define([
       // cached listing can be .then'd repeatedly with native semantics.
       list: function (aiPath) {
         return cached(listings, aiPath, (path) =>
-          Promise.resolve(api.file.list(path, true))
+          Promise.resolve(api.file.list(path, true)),
         );
       },
       // Callers mutate what they are handed, so the cache keeps the pristine
@@ -521,7 +521,7 @@ define([
       // call, so the stored request is not consumed.
       getJSON: function (filePath) {
         return cached(files, filePath, (path) =>
-          gwoFetch.json(gwoUrl.gameFile(path))
+          gwoFetch.json(gwoUrl.gameFile(path)),
         ).then((json) => _.cloneDeep(json));
       },
     };
@@ -547,7 +547,7 @@ define([
         fileList,
         inventory,
         aisToModify,
-        request.aiPaths
+        request.aiPaths,
       );
 
       const context = {
@@ -627,7 +627,7 @@ define([
       ? getInventoryWithAllPlayerAiMods(
           game.inventory(),
           game,
-          connectedClients
+          connectedClients,
         )
       : game.inventory();
 
@@ -650,8 +650,8 @@ define([
           inventory: playerAiModInventory,
           scopeToken: undefined,
           forceSubCommanderScope: false,
-        })
-      )
+        }),
+      ),
     );
 
     _.forEach(
@@ -661,7 +661,7 @@ define([
         const viewerPlayerTag = `.player${viewerIndex}`;
         const viewerScopeToken = refereeAIPaths.getScopeToken(
           viewerPlayerTag,
-          viewerPlayerTag
+          viewerPlayerTag,
         );
         const viewerSubCommanderDestination =
           gwoAI.getSubcommanderPathForViewer(viewerInventory, viewerPlayerTag);
@@ -677,10 +677,10 @@ define([
               inventory: viewerInventory,
               scopeToken: viewerScopeToken,
               forceSubCommanderScope: true,
-            })
-          )
+            }),
+          ),
         );
-      }
+      },
     );
 
     return Promise.all(promises);

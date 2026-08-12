@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Stinger Upgrade Tech replaces the anti-air bot's missiles with flak from the Flak Cannon. It fires two projectiles per volley as opposed to the Flak Cannons' four."
-      )
-    )
+        "!LOC:Stinger Upgrade Tech replaces the anti-air bot's missiles with flak from the Flak Cannon. It fires two projectiles per volley as opposed to the Flak Cannons' four.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Stinger Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.stinger)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.stinger),
     );
   },
 
@@ -43,7 +43,9 @@ define([
             },
           ],
         })
-        .concat([{ file: gwoUnit.stinger, path: "tools.0.spec_id", op: "tag" }])
+        .concat([
+          { file: gwoUnit.stinger, path: "tools.0.spec_id", op: "tag" },
+        ]),
     );
   },
 

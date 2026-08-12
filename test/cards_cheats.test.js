@@ -13,7 +13,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const cardsCheats = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js",
 );
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();

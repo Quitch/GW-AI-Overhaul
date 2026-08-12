@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Vehicle Factory Upgrade Tech enables the building of advanced units by basic vehicle manufacturing."
-      )
-    )
+        "!LOC:Vehicle Factory Upgrade Tech enables the building of advanced units by basic vehicle manufacturing.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Vehicle Factory Upgrade Tech",
@@ -27,7 +27,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       !inventory.hasCard("gwaio_start_rapid") &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)
+        gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory),
     );
   },
 
@@ -36,7 +36,7 @@ define([
 
     const advancedVehiclesExcludingFabber = _.without(
       gwoGroup.vehiclesAdvancedMobile,
-      gwoUnit.vehicleFabberAdvanced
+      gwoUnit.vehicleFabberAdvanced,
     );
 
     inventory.addUnits(advancedVehiclesExcludingFabber);
@@ -67,13 +67,13 @@ define([
           refId: "builders",
           refValue: ["AdvancedVehicleFactory"],
         },
-      ])
+      ]),
     );
 
     inventory.addMods(
       gwoCard.mods(gwoUnit.vehicleFactory, "add", {
         buildable_types: " | (Tank & Mobile & FactoryBuild & Custom58)",
-      })
+      }),
     );
     inventory.addAIMods(aiMods);
   },

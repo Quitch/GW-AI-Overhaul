@@ -18,7 +18,7 @@ define(() => {
   const pendingTechRerollValidationError = (
     payload,
     pendingTechCards,
-    containsLoadout
+    containsLoadout,
   ) => {
     if (
       !_.isNumber(pendingTechCards.star) ||
@@ -55,7 +55,7 @@ define(() => {
       params.warRng,
       gwoStreams.coopPlayerKey(params.record, params.client),
       pendingTechCards.dealIndex,
-      params.rerollsUsed
+      params.rerollsUsed,
     );
   };
 
@@ -127,7 +127,7 @@ define(() => {
       });
       if (!record || !record.inventory) {
         console.error(
-          "[GW COOP] missing inventory for pending tech reroll result"
+          "[GW COOP] missing inventory for pending tech reroll result",
         );
         model.scanning(false);
         return;
@@ -161,7 +161,7 @@ define(() => {
         GW.manifest.saveGame(game).then(null, (err) => {
           console.error("[GW COOP] failed to save rerolled tech", err);
           return $.Deferred().reject(err).promise();
-        })
+        }),
       );
     };
 
@@ -203,7 +203,7 @@ define(() => {
       const validationError = pendingTechRerollValidationError(
         payload,
         pendingTechCards,
-        helpers.pendingCardsContainLoadout(pendingTechCards)
+        helpers.pendingCardsContainLoadout(pendingTechCards),
       );
       if (validationError) {
         failReroll(validationError);
@@ -222,11 +222,11 @@ define(() => {
       const dealCards = () => {
         const cardsOffered = helpers.cardsOfferedCount(
           numCardsToOffer,
-          playerInventory
+          playerInventory,
         );
         const rerollState = computeRerollDeal(
           cardsOffered,
-          pendingTechCards.cards.length
+          pendingTechCards.cards.length,
         );
 
         if (rerollState.exhausted) {
@@ -299,14 +299,14 @@ define(() => {
     if (model.registerCampaignViewerOperatorHandler) {
       model.registerCampaignViewerOperatorHandler(
         rerollPendingTechRequest,
-        rerollPendingTechForCoopPlayer
+        rerollPendingTechForCoopPlayer,
       );
     }
 
     if (model.registerCampaignHostOperatorHandler) {
       model.registerCampaignHostOperatorHandler(
         rerollPendingTechResult,
-        applyPendingTechRerollResult
+        applyPendingTechRerollResult,
       );
     }
   };

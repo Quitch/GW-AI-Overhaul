@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Colonel Upgrade Tech causes support commanders to explode on death."
-      )
-    )
+        "!LOC:Colonel Upgrade Tech causes support commanders to explode on death.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Colonel Upgrade Tech",
@@ -28,7 +28,7 @@ define([
       gwoCard.hasUnit(inventory.units(), [
         gwoUnit.colonel,
         gwoUnit.clusterCeoColonel,
-      ])
+      ]),
     );
   },
 

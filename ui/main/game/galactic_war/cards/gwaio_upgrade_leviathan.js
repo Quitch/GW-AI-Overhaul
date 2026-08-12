@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery."
-      )
-    )
+        "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Leviathan Upgrade Tech",
@@ -23,7 +23,7 @@ define([
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.leviathan),
-      30
+      30,
     );
   },
 
@@ -84,8 +84,8 @@ define([
           file: gwoUnit.leviathan,
           path: `tools.${i}.spec_id`,
           op: "tag",
-        }))
-      )
+        })),
+      ),
     );
   },
 

@@ -9,16 +9,16 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const hook = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
 );
 const subcommanderTech = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
 );
 const gwoColour = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
 );
 const refereeCoop = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
 );
 
 const TACTICS_CARD = { id: "gwaio_upgrade_subcommander_tactics" };
@@ -42,7 +42,7 @@ function makeMinion(overrides) {
         personality_tags: ["SlowerExpansion"],
       },
     },
-    overrides || {}
+    overrides || {},
   );
 }
 
@@ -68,8 +68,8 @@ function build(overrides) {
         subcommanderEconRate: 1.5,
         colourPosition: 0,
       },
-      overrides || {}
-    )
+      overrides || {},
+    ),
   );
 }
 
@@ -92,7 +92,7 @@ describe("buildViewerSubcommanderArmies", () => {
     assert.deepEqual(
       snapshot(minions),
       untouched,
-      "a viewer's saved minion must survive a battle unchanged"
+      "a viewer's saved minion must survive a battle unchanged",
     );
     // x1.5 fabber caps once (not x2.25), PreventsWaste once (not twice).
     assert.equal(firstBattle.armies[0].personality.max_basic_fabbers, 6);
@@ -103,7 +103,7 @@ describe("buildViewerSubcommanderArmies", () => {
     assert.deepEqual(
       secondBattle.armies[0].personality,
       firstBattle.armies[0].personality,
-      "a second battle must produce the same subcommander"
+      "a second battle must produce the same subcommander",
     );
   });
 
@@ -121,7 +121,7 @@ describe("buildViewerSubcommanderArmies", () => {
     // The ai_path is still a per-battle write, so it lands on the copy only.
     assert.equal(
       result.armies[0].personality.ai_path,
-      "/pa/ai_subcommander/player_.player0/"
+      "/pa/ai_subcommander/player_.player0/",
     );
     assert.equal(minions[0].personality.ai_path, undefined);
   });
@@ -148,7 +148,7 @@ describe("buildViewerSubcommanderArmies", () => {
       playerTag: ".player",
       playerInventory: makePlayerInventory(
         [makeMinion(), makeMinion()],
-        [TACTICS_CARD]
+        [TACTICS_CARD],
       ),
       colourPosition: 3,
     });
@@ -161,7 +161,7 @@ describe("buildViewerSubcommanderArmies", () => {
     const firstViewer = build({
       playerInventory: makePlayerInventory(
         [makeMinion(), makeMinion()],
-        [DUPLICATION_CARD]
+        [DUPLICATION_CARD],
       ),
       colourPosition: 1,
     });
@@ -191,7 +191,7 @@ describe("buildViewerSubcommanderArmies", () => {
     assert.equal(result.armies[0].slots[0].ai, true);
     assert.equal(
       result.armies[0].slots[0].commander,
-      "/pa/units/commanders/imperial_alpha/imperial_alpha.json.player0"
+      "/pa/units/commanders/imperial_alpha/imperial_alpha.json.player0",
     );
   });
 
@@ -205,11 +205,11 @@ describe("buildViewerSubcommanderArmies", () => {
     assert.equal(result.armies[0].slots[0].name, "Helper");
     assert.equal(
       result.armies[0].slots[0].commander,
-      "/pa/units/commanders/base_commander/base.json.player0"
+      "/pa/units/commanders/base_commander/base.json.player0",
     );
     assert.deepEqual(
       result.armies[0].color,
-      gwoColour.pick(1, PLAYER_COLOR, refereeCoop.alliedColourIndex(0))
+      gwoColour.pick(1, PLAYER_COLOR, refereeCoop.alliedColourIndex(0)),
     );
   });
 });

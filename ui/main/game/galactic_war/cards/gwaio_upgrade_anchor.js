@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Anchor Upgrade Tech increases the range of the defense satellite's weapons by 25%."
-      )
-    )
+        "!LOC:Anchor Upgrade Tech increases the range of the defense satellite's weapons by 25%.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Anchor Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.anchor)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.anchor),
     );
   },
 

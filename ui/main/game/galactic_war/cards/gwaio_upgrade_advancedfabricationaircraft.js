@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Advanced Fabrication Aircraft Upgrade Tech adds the ability for the advanced fabricator to move between planets."
-      )
-    )
+        "!LOC:Advanced Fabrication Aircraft Upgrade Tech adds the ability for the advanced fabricator to move between planets.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Advanced Fabrication Aircraft Upgrade Tech",
@@ -22,7 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.airFactoryAdvanced)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.airFactoryAdvanced),
     );
   },
 

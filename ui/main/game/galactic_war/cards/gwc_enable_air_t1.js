@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Basic air tech enables building of mobile air units and factories. Basic air factories are built via your commander or any basic fabricator."
+      "!LOC:Basic air tech enables building of mobile air units and factories. Basic air factories are built via your commander or any basic fabricator.",
     ),
     summarize: _.constant("!LOC:Basic Air Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png",
     ),
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_air" }),
     getContext: gwoCard.getContext,
@@ -20,7 +20,7 @@ define([
         chance = gwoCard.travelledShort(
           system,
           context,
-          GW.balance.numberOfSystems
+          GW.balance.numberOfSystems,
         )
           ? 50
           : 200;

@@ -29,12 +29,12 @@ define([
         "navigation.brake": percentageIncrease,
         "navigation.acceleration": percentageIncrease,
         "navigation.turn_speed": percentageIncrease,
-      })
+      }),
     );
     const healthMods = _.map(gwoGroup.combat, (unit) =>
       gwoCard.mods(unit, "multiply", {
         max_health: percentageReduction,
-      })
+      }),
     );
 
     inventory.addMods(_.flatten(mobileMods.concat(healthMods)));

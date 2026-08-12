@@ -27,7 +27,7 @@ function loadBanks(registry) {
   banks.resolve([]);
   stubs.setGlobal(
     "model",
-    registry === undefined ? {} : { gwoLoadoutBanks: registry }
+    registry === undefined ? {} : { gwoLoadoutBanks: registry },
   );
   return banks;
 }
@@ -181,7 +181,7 @@ describe("startCards", () => {
 
     assert.deepEqual(
       banks.startCards().map((card) => card.id),
-      ["a_start_one", "b_start_one"]
+      ["a_start_one", "b_start_one"],
     );
   });
 

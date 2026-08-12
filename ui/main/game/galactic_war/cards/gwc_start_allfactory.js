@@ -14,7 +14,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: _.constant(
-      "!LOC:The Assault Commander loadout contains all basic factories and units but no basic defenses."
+      "!LOC:The Assault Commander loadout contains all basic factories and units but no basic defenses.",
     ),
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
@@ -29,7 +29,10 @@ define([
         } else {
           GWCStart.buff(inventory);
           inventory.addUnits(
-            gwoGroup.airBasic.concat(gwoGroup.botsBasic, gwoGroup.vehiclesBasic)
+            gwoGroup.airBasic.concat(
+              gwoGroup.botsBasic,
+              gwoGroup.vehiclesBasic,
+            ),
           );
         }
         ++buffCount;
@@ -50,7 +53,7 @@ define([
         ],
         function (cardId) {
           return inventory.hasCard(cardId);
-        }
+        },
       );
       var restricted = mineGranted
         ? _.without(gwoGroup.structuresDefencesBasic, gwoUnit.landMine)

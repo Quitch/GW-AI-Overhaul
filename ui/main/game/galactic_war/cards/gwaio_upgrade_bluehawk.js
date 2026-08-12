@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Bluehawk Upgrade Tech doubles the number of tactical missiles Bluehawks fire per volley."
-      )
-    )
+        "!LOC:Bluehawk Upgrade Tech doubles the number of tactical missiles Bluehawks fire per volley.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Bluehawk Upgrade Tech",
@@ -25,7 +25,7 @@ define([
 
   deal: function (system, context, inventory) {
     return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.bluehawk)
+      gwoCard.hasUnit(inventory.units(), gwoUnit.bluehawk),
     );
   },
 

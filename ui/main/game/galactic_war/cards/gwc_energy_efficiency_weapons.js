@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Improved Energy Weapons tech reduces energy costs for energy based weapons by 75%"
+      "!LOC:Improved Energy Weapons tech reduces energy costs for energy based weapons by 75%",
     ),
     summarize: _.constant("!LOC:Improved Energy Weapons"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_energy.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_energy.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_weapon_upgrade",
@@ -48,7 +48,7 @@ define([
               value: 0.25,
             },
           ];
-        })
+        }),
       );
       inventory.addMods(mods);
     },

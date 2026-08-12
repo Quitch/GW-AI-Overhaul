@@ -8,9 +8,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       loc(
-        "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal."
-      )
-    )
+        "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal.",
+      ),
+    ),
   ),
 
   summarize: () => "!LOC:Commander Upgrade Tech",
@@ -59,7 +59,7 @@ define([
         path: "burn_damage",
         op: "multiply",
         value: 4,
-      }
+      },
     );
     inventory.addMods(mods);
   },

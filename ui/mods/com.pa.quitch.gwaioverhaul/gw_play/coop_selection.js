@@ -18,7 +18,7 @@ function gwoCoopSelection() {
         _.defer(() => {
           gwoSelectionFollow({ game: model.game() });
         });
-      }
+      },
     );
   } catch (e) {
     console.error(e);

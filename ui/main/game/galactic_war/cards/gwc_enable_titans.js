@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC: Allows advanced fabricators to build all Titan-class units."
+      "!LOC: Allows advanced fabricators to build all Titan-class units.",
     ),
     summarize: _.constant("!LOC:Titan Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_enable_titans.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_enable_titans.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_titans_all",
@@ -21,7 +21,7 @@ define([
         gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced) ||
           (gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory) &&
             gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber)),
-        150
+        150,
       );
     },
     buff: function (inventory) {

@@ -12,7 +12,7 @@ define([
     },
     summarize: _.constant("!LOC:Advanced Defense Technology"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_defense.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_defense.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_defence",
@@ -22,9 +22,9 @@ define([
       return gwoCard.conditionalDeal(
         gwoCard.missingUnit(
           inventory.units(),
-          gwoGroup.structuresDefencesAdvanced
+          gwoGroup.structuresDefencesAdvanced,
         ) && gwoCard.hasT2Access(inventory),
-        100
+        100,
       );
     },
     buff: function (inventory) {

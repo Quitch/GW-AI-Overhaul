@@ -18,9 +18,9 @@ define([
         return "!LOC:Contains no basic land or air factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers! Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked.";
       }
       return `${loc(
-        "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers!"
+        "!LOC:Contains no basic factories, just Lobs and Unit Cannons built by the commander. Strike from the skies, brothers!",
       )} ${loc(
-        "!LOC:Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked."
+        "!LOC:Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked.",
       )}`;
     },
     hint: _.constant({
@@ -41,11 +41,11 @@ define([
           inventory.addUnits(units);
 
           const mobileLandUnits = gwoGroup.botsMobile.concat(
-            gwoGroup.vehiclesMobile
+            gwoGroup.vehiclesMobile,
           );
           const landUnitsNotInUnitCannon = _.filter(
             mobileLandUnits,
-            (unit) => !_.includes(gwoGroup.unitCannonMobile, unit)
+            (unit) => !_.includes(gwoGroup.unitCannonMobile, unit),
           );
           const mods = _.flatten(
             _.map(unitCannons, (unit) => [
@@ -61,7 +61,7 @@ define([
                 op: "multiply",
                 value: 0.5,
               },
-            ])
+            ]),
           );
           _.forEach(landUnitsNotInUnitCannon, (unit) => {
             mods.push({
@@ -93,7 +93,7 @@ define([
               path: "transporter.transportable_unit_types",
               op: "add",
               value: " - Important",
-            }
+            },
           );
           inventory.addMods(mods);
 

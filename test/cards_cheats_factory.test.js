@@ -18,7 +18,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const makeFactory = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js",
 );
 
 // An inventory whose card list is a callable observable, as the base game's is.
@@ -52,7 +52,7 @@ function setup(overrides = {}) {
       currentStar: 2,
       playerFaction: 0,
     },
-    overrides
+    overrides,
   );
 
   const calls = {
@@ -190,7 +190,7 @@ describe("cheats testCards", () => {
 
     assert.deepEqual(
       inventory.cards().map((card) => card.id),
-      ["gwc_combat_bots", "gwc_orbital"]
+      ["gwc_combat_bots", "gwc_orbital"],
     );
     assert.equal(inventory.applied, 2);
   });
@@ -284,7 +284,7 @@ describe("cheats testCards", () => {
     assert.deepEqual(calls.saves, []);
     assert.match(
       errors[0],
-      /cheats.testCards is unavailable for co-op viewers/
+      /cheats.testCards is unavailable for co-op viewers/,
     );
   });
 });
@@ -299,7 +299,7 @@ describe("cheats giveCard", () => {
     assert.deepEqual(dealtIds(calls), ["gwc_orbital"]);
     assert.deepEqual(
       inventory.cards().map((card) => card.id),
-      ["gwc_orbital"]
+      ["gwc_orbital"],
     );
     assert.equal(inventory.applied, 1);
     assert.deepEqual(calls.aiDeals, [false]);

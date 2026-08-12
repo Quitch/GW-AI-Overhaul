@@ -7,9 +7,9 @@ define([
   describe: _.constant(
     gwoCard.withSlot(
       `${loc("!LOC:Lob Upgrade Tech increases the range of the Lob by 150%.")} ${loc(
-        "!LOC:Fires twice as fast and no longer costs metal to recharge its ammo."
-      )}`
-    )
+        "!LOC:Fires twice as fast and no longer costs metal to recharge its ammo.",
+      )}`,
+    ),
   ),
 
   summarize: () => "!LOC:Lob Upgrade Tech",

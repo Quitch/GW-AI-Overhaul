@@ -27,7 +27,7 @@ function gwoGalaxyMapPerf() {
     model.gwoRequestInteractiveFrames = (durationMs) => {
       interactiveUntil = Math.max(
         interactiveUntil,
-        window.performance.now() + durationMs
+        window.performance.now() + durationMs,
       );
     };
 

@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Orbital Combat Tech increases speed of all orbital units by 50%, health by 50%, and damage by 25%"
+      "!LOC:Orbital Combat Tech increases speed of all orbital units by 50%, health by 50%, and damage by 25%",
     ),
     summarize: _.constant("!LOC:Orbital Combat Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_orbital.png",
     ),
     audio: _.constant({
       found: "PA/VO/Computer/gw/board_tech_available_combat",
@@ -42,7 +42,7 @@ define([
               value: 1.5,
             };
           });
-        })
+        }),
       );
 
       _.forEach(gwoGroup.orbitalMobile, function (unit) {
@@ -67,7 +67,7 @@ define([
             path: "splash_damage",
             op: "multiply",
             value: 1.25,
-          }
+          },
         );
       });
 

@@ -16,7 +16,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const makeFactory = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js",
 );
 
 const viewer = (id, extra) =>
@@ -82,7 +82,7 @@ function setup(overrides = {}) {
       onDeal: null,
       saveFails: false,
     },
-    overrides
+    overrides,
   );
 
   const calls = { upserts: [], deals: [], saves: [], snapshots: [], bank: [] };
@@ -380,7 +380,7 @@ describe("coop star cards refresh - what it writes", () => {
 
     assert.deepEqual(
       calls.upserts.map((record) => record.id),
-      ["alice"]
+      ["alice"],
     );
   });
 
@@ -397,13 +397,13 @@ describe("coop star cards refresh - what it writes", () => {
 
     assert.deepEqual(
       calls.upserts.map((record) => record.id),
-      ["alice", "bob"]
+      ["alice", "bob"],
     );
     // Each viewer deals from their own stream, or two viewers would be offered
     // the same card on the same star.
     assert.deepEqual(
       calls.deals.map((request) => request.rng.playerKey),
-      ["alice", "bob"]
+      ["alice", "bob"],
     );
   });
 
@@ -426,7 +426,7 @@ describe("coop star cards refresh - what it writes", () => {
 
     assert.deepEqual(
       calls.deals.map((request) => request.inventory.cards()),
-      [[{ id: "gwaio_alice_tech" }], [{ id: "gwaio_bob_tech" }]]
+      [[{ id: "gwaio_alice_tech" }], [{ id: "gwaio_bob_tech" }]],
     );
   });
 
@@ -448,7 +448,7 @@ describe("coop star cards refresh - what it writes", () => {
     // bob's deal ran after alice's record went, and still lands.
     assert.deepEqual(
       calls.upserts.map((record) => record.id),
-      ["bob"]
+      ["bob"],
     );
   });
 });
@@ -546,9 +546,9 @@ describe("starCardForClient", () => {
     assert.deepEqual(
       coopStarCards.starCardForClient(
         { gwaioStarCards: { cards: { 4: { id: "gwc_combat_bots" } } } },
-        4
+        4,
       ),
-      { id: "gwc_combat_bots" }
+      { id: "gwc_combat_bots" },
     );
   });
 });

@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const gwoRng = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
 );
 
 function draws(rng, count) {
@@ -19,14 +19,14 @@ describe("gwo_rng create", () => {
   it("reproduces the same sequence for the same seed", () => {
     assert.deepEqual(
       draws(gwoRng.create("gwo-test-1"), 100),
-      draws(gwoRng.create("gwo-test-1"), 100)
+      draws(gwoRng.create("gwo-test-1"), 100),
     );
   });
 
   it("produces a different sequence for an adjacent seed", () => {
     assert.notDeepEqual(
       draws(gwoRng.create("gwo-test-1"), 20),
-      draws(gwoRng.create("gwo-test-2"), 20)
+      draws(gwoRng.create("gwo-test-2"), 20),
     );
   });
 
@@ -34,12 +34,12 @@ describe("gwo_rng create", () => {
     assert.deepEqual(draws(gwoRng.create(0), 10), draws(gwoRng.create(0), 10));
     assert.notDeepEqual(
       draws(gwoRng.create(0), 10),
-      draws(gwoRng.create(1), 10)
+      draws(gwoRng.create(1), 10),
     );
     // The lobby stores the seed as a string, so "12345" and 12345 must agree.
     assert.deepEqual(
       draws(gwoRng.create(12345), 10),
-      draws(gwoRng.create("12345"), 10)
+      draws(gwoRng.create("12345"), 10),
     );
   });
 
@@ -100,7 +100,7 @@ describe("gwo_rng pick", () => {
   it("reaches every element", () => {
     const rng = gwoRng.create("pick-spread");
     const seen = new Set(
-      Array.from({ length: 200 }, () => rng.pick(["a", "b", "c"]))
+      Array.from({ length: 200 }, () => rng.pick(["a", "b", "c"])),
     );
     assert.deepEqual([...seen].sort(), ["a", "b", "c"]);
   });
@@ -148,7 +148,7 @@ describe("gwo_rng shuffle", () => {
     const list = [1, 2, 3, 4, 5, 6, 7, 8];
     assert.deepEqual(
       gwoRng.create("shuffle-same").shuffle(list),
-      gwoRng.create("shuffle-same").shuffle(list)
+      gwoRng.create("shuffle-same").shuffle(list),
     );
   });
 
@@ -164,7 +164,7 @@ describe("gwo_rng stream", () => {
     const root = gwoRng.create("root");
     assert.notDeepEqual(
       draws(root.stream("a"), 20),
-      draws(root.stream("b"), 20)
+      draws(root.stream("b"), 20),
     );
   });
 
@@ -185,7 +185,7 @@ describe("gwo_rng stream", () => {
     const root = gwoRng.create("root");
     assert.notDeepEqual(
       draws(root.stream("star", 0), 20),
-      draws(root.stream("star", 1), 20)
+      draws(root.stream("star", 1), 20),
     );
   });
 
@@ -193,7 +193,7 @@ describe("gwo_rng stream", () => {
     const root = gwoRng.create("root");
     assert.notDeepEqual(
       draws(root.stream("a", 1), 20),
-      draws(root.stream("a1"), 20)
+      draws(root.stream("a1"), 20),
     );
   });
 
@@ -201,11 +201,11 @@ describe("gwo_rng stream", () => {
     const root = gwoRng.create("root");
     assert.notDeepEqual(
       draws(root.stream("ai", 0).stream("worker", 0), 20),
-      draws(root.stream("ai", 0).stream("worker", 1), 20)
+      draws(root.stream("ai", 0).stream("worker", 1), 20),
     );
     assert.deepEqual(
       draws(gwoRng.create("root").stream("ai", 2).stream("boss"), 20),
-      draws(gwoRng.create("root").stream("ai", 2).stream("boss"), 20)
+      draws(gwoRng.create("root").stream("ai", 2).stream("boss"), 20),
     );
   });
 });

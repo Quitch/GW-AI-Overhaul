@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      "!LOC:Vehicle Ammunition Tech increases damage of all vehicles by 25%"
+      "!LOC:Vehicle Ammunition Tech increases damage of all vehicles by 25%",
     ),
     summarize: _.constant("!LOC:Vehicle Ammunition Tech"),
     icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png"
+      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_vehicle.png",
     ),
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_ammunition",
@@ -18,7 +18,7 @@ define([
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
         gwoCard.hasUnit(inventory.units(), gwoGroup.vehiclesMobile),
-        70
+        70,
       );
     },
     buff: function (inventory) {
@@ -38,7 +38,7 @@ define([
               value: 1.25,
             },
           ];
-        })
+        }),
       );
       inventory.addMods(mods);
     },
