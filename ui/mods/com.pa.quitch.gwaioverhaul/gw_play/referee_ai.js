@@ -3,7 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
-], (gwoAI, refereeAIPaths, refereeCoop, gwoUrl) => {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_fetch.js",
+], (gwoAI, refereeAIPaths, refereeCoop, gwoUrl, gwoFetch) => {
   // `json` is a parameter, not a closure capture, so this table is built once
   // at module load rather than per applyAiMods call.
   const aiModOps = {
@@ -508,15 +509,19 @@ define([
     };
 
     return {
+      // Promise.resolve assimilates the engine's jQuery-style promise, so the
+      // cached listing can be .then'd repeatedly with native semantics.
       list: function (aiPath) {
-        return cached(listings, aiPath, (path) => api.file.list(path, true));
+        return cached(listings, aiPath, (path) =>
+          Promise.resolve(api.file.list(path, true))
+        );
       },
       // Callers mutate what they are handed, so the cache keeps the pristine
-      // parse and hands out a copy. .then on a jQuery promise returns a new
-      // promise each time, so the stored request is not consumed.
+      // parse and hands out a copy - native .then returns a new promise each
+      // call, so the stored request is not consumed.
       getJSON: function (filePath) {
         return cached(files, filePath, (path) =>
-          $.getJSON(gwoUrl.gameFile(path))
+          gwoFetch.json(gwoUrl.gameFile(path))
         ).then((json) => _.cloneDeep(json));
       },
     };
@@ -527,10 +532,9 @@ define([
   // forceSubCommanderScope. Most of it is passed straight through to the
   // per-file context below.
   const processDirectories = (aiPath, request) => {
-    const deferred = $.Deferred();
     const inventory = request.inventory;
 
-    request.treeCache.list(aiPath).then((fileList) => {
+    return request.treeCache.list(aiPath).then((fileList) => {
       const aisToModify = request.forceSubCommanderScope
         ? "SubCommanders"
         : whichAIsAreBeingModified(request.clusterPresence, inventory);
@@ -568,12 +572,8 @@ define([
         return processFilesInDirectory(filePath, context);
       });
 
-      Promise.all(promises).then(() => {
-        deferred.resolve();
-      });
+      return Promise.all(promises);
     });
-
-    return deferred.promise();
   };
 
   const whoIsCluster = () => {
@@ -606,8 +606,6 @@ define([
 
   // parse AI files, apply AI mods, and load the results into self.files()
   return function () {
-    const deferred = $.Deferred();
-
     const self = this;
     const configFiles = self.files(); // JSON files passed to the server
     const aiPaths = {
@@ -685,10 +683,6 @@ define([
       }
     );
 
-    Promise.all(promises).then(() => {
-      deferred.resolve();
-    });
-
-    return deferred.promise();
+    return Promise.all(promises);
   };
 });

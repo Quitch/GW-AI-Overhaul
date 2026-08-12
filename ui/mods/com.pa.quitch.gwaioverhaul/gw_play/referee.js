@@ -37,6 +37,8 @@ function gwoRefereeChanges() {
             GW.Game.saveSystems(gw);
           }
 
+          // Returns a $.Deferred promise: stock gw_play.js fight() calls
+          // .always() on it, which a native promise does not have.
           mountFiles() {
             const deferred = $.Deferred();
 
@@ -91,10 +93,23 @@ function gwoRefereeChanges() {
 
         GWReferee.hire = (game) => {
           const ref = new GwoReferee(game);
-          return _.bind(gwoGenerateGameFiles, ref)()
-            .then(_.bind(gwoGenerateAI, ref))
-            .then(_.bind(gwoGenerateConfig, ref))
-            .then(() => ref);
+          // Native-first so each step's return value is assimilated whether it
+          // is a native promise or a jQuery deferred - jQuery 2.x's own .then
+          // would treat a returned native promise as a plain value.
+          const generated = Promise.resolve()
+            .then(() => gwoGenerateGameFiles.call(ref))
+            .then(() => gwoGenerateAI.call(ref))
+            .then(() => gwoGenerateConfig.call(ref));
+
+          // Stock gw_play.js fight() collects this through $.when, which does
+          // not await native promises - the deferred is the compatibility
+          // boundary.
+          const hired = $.Deferred();
+          generated.then(
+            () => hired.resolve(ref),
+            (error) => hired.reject(error)
+          );
+          return hired.promise();
         };
       }
     );
