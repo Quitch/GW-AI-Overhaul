@@ -1,7 +1,7 @@
 var gwoCardsLoaded;
 
 function gwoCard() {
-  var game = model.game();
+  const game = model.game();
 
   if (gwoCardsLoaded || game.isTutorial()) {
     return;
@@ -37,12 +37,12 @@ function gwoCard() {
       "gwaio_start_hoarder"
     );
 
-    var numCardsToOffer = 3;
+    const numCardsToOffer = 3;
     // cards_deal_helpers.js, assigned by the main requireGW below. Only read
     // from bodies that run after that load resolves.
-    var helpers;
+    let helpers;
 
-    var currentCoopPendingTechCards = function () {
+    const currentCoopPendingTechCards = () => {
       if (
         model.currentCoopPendingTechCards &&
         model.canChooseCoopTechCards &&
@@ -54,14 +54,14 @@ function gwoCard() {
       return undefined;
     };
 
-    model.rerollTech = function () {
+    model.rerollTech = () => {
       // setupTechRerolls injects the button before helpers is assigned, so a
       // click in that window reaches here first.
       if (!helpers) {
         return;
       }
 
-      var pendingTechCards = currentCoopPendingTechCards();
+      const pendingTechCards = currentCoopPendingTechCards();
       if (pendingTechCards) {
         if (
           helpers.pendingCardsContainLoadout(pendingTechCards) ||
@@ -87,11 +87,11 @@ function gwoCard() {
         return;
       }
 
-      var cardsOffered = helpers.cardsOfferedCount(
+      const cardsOffered = helpers.cardsOfferedCount(
         numCardsToOffer,
         game.inventory()
       );
-      var star = game.galaxy().stars()[game.currentStar()];
+      const star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
       if (model.gwoRerollsUsed() >= cardsOffered - 1) {
         model.gwoOfferRerolls(false);
@@ -101,7 +101,7 @@ function gwoCard() {
       model.explore(true);
     };
 
-    var setupTechRerolls = function () {
+    const setupTechRerolls = () => {
       model.gwoOfferRerolls = ko.observable(true);
       model.gwoRerollPending = ko.observable(false);
       model.gwoRerollsUsed = ko
@@ -113,7 +113,7 @@ function gwoCard() {
         model.gwoRerollsUsed(0);
       }
 
-      ko.computed(function () {
+      ko.computed(() => {
         if (game.turnState() === "end") {
           model.gwoRerollsUsed(0);
           model.gwoOfferRerolls(true);
@@ -121,9 +121,9 @@ function gwoCard() {
         }
       });
 
-      var coopPendingRerollKey = "";
-      ko.computed(function () {
-        var pendingTechCards = currentCoopPendingTechCards();
+      let coopPendingRerollKey = "";
+      ko.computed(() => {
+        const pendingTechCards = currentCoopPendingTechCards();
         if (!pendingTechCards) {
           model.gwoRerollPending(false);
           coopPendingRerollKey = "";
@@ -136,7 +136,7 @@ function gwoCard() {
           return;
         }
 
-        var key = [
+        const key = [
           pendingTechCards.star,
           pendingTechCards.dealIndex,
           pendingTechCards.updatedAt,
@@ -149,10 +149,10 @@ function gwoCard() {
         }
 
         coopPendingRerollKey = key;
-        var cardsOffered = _.isNumber(pendingTechCards.cardsOffered)
+        const cardsOffered = _.isNumber(pendingTechCards.cardsOffered)
           ? pendingTechCards.cardsOffered
           : Math.max(numCardsToOffer, pendingTechCards.cards.length);
-        var rerollsUsed = _.isNumber(pendingTechCards.rerollsUsed)
+        const rerollsUsed = _.isNumber(pendingTechCards.rerollsUsed)
           ? pendingTechCards.rerollsUsed
           : Math.max(0, cardsOffered - pendingTechCards.cards.length);
         model.gwoRerollsUsed(rerollsUsed);
@@ -175,13 +175,13 @@ function gwoCard() {
     // A save taken mid-exploration holds a short offer, so the spent rerolls are
     // recoverable from its length. Needs helpers for the bonus-aware offer size:
     // against the bare constant a 4-card offer yields -1 and the next reroll is free.
-    var restoreExploreSaveRerolls = function () {
+    const restoreExploreSaveRerolls = () => {
       if (game.turnState() !== "explore") {
         return;
       }
 
-      var star = game.galaxy().stars()[game.currentStar()];
-      var cardsOffered = helpers.cardsOfferedCount(
+      const star = game.galaxy().stars()[game.currentStar()];
+      const cardsOffered = helpers.cardsOfferedCount(
         numCardsToOffer,
         game.inventory()
       );
@@ -193,36 +193,30 @@ function gwoCard() {
 
     // modified to recognise mod loadouts
     globals.CardViewModel = function (params) {
-      var self = this;
+      const self = this;
 
       self.params = ko.observable(params);
-      self.id = ko.computed(function () {
-        var p = self.params();
+      self.id = ko.computed(() => {
+        const p = self.params();
         return _.isObject(p) ? p.id : p;
       });
 
       self.visible = ko.observable(false);
       self.desc = ko.observable();
-      self.locDesc = ko.computed(function () {
-        return loc(self.desc());
-      });
+      self.locDesc = ko.computed(() => loc(self.desc()));
       self.summary = ko.observable();
       self.icon = ko.observable();
       self.iconPlaceholder = ko.observable(); // Displayed when the icon is empty
       self.audio = ko.observable();
 
-      self.isEmpty = ko.computed(function () {
-        return !self.id();
-      });
+      self.isEmpty = ko.computed(() => !self.id());
       // Recognise loadouts introduced by mods as loadouts
-      self.isLoadout = ko.computed(function () {
-        return _.includes(self.id(), "_start_");
-      });
+      self.isLoadout = ko.computed(() => _.includes(self.id(), "_start_"));
 
-      var completed = $.Deferred();
+      const completed = $.Deferred();
       self.card = completed.promise();
 
-      var loadCard = function (card, data) {
+      const loadCard = (card, data) => {
         if (_.isEmpty(card)) {
           self.desc(
             "!LOC:Data Bank holds one Tech. Explore systems to find new Tech."
@@ -246,14 +240,14 @@ function gwoCard() {
         completed.resolve(card);
       };
 
-      var loadToken = 0;
-      ko.computed(function () {
-        var data = self.params();
+      let loadToken = 0;
+      ko.computed(() => {
+        const data = self.params();
         ++loadToken;
-        var myToken = loadToken;
-        var cardId = self.id();
+        const myToken = loadToken;
+        const cardId = self.id();
         if (cardId) {
-          requireGW(["cards/" + cardId], function (card) {
+          requireGW([`cards/${cardId}`], (card) => {
             if (loadToken !== myToken) {
               return;
             }
@@ -284,7 +278,7 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
       ],
-      function (
+      (
         GW,
         GWFactions,
         gwoAI,
@@ -301,7 +295,7 @@ function gwoCard() {
         gwoStreams,
         gwoTreasure,
         gwoLoadoutBanks
-      ) {
+      ) => {
         helpers = cardsDealHelpers;
         // Nothing reads the banks until the player explores, so resolving them
         // alongside setup is early enough and keeps this callback synchronous.
@@ -309,46 +303,46 @@ function gwoCard() {
           gwoLoadoutBanks.resolve(_.toArray(arguments));
         });
         restoreExploreSaveRerolls();
-        var inventory = game.inventory();
-        var playerFaction = inventory.getTag("global", "playerFaction");
-        var galaxy = game.galaxy();
-        var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-        var warRng = gwoStreams.warRng(gwoSettings);
+        const inventory = game.inventory();
+        const playerFaction = inventory.getTag("global", "playerFaction");
+        const galaxy = game.galaxy();
+        const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+        const warRng = gwoStreams.warRng(gwoSettings);
 
         // Also registers the gwo_sync_star_card_name host handler.
-        var cardNameSync = cardsCardNameSync({ game: game });
+        const cardNameSync = cardsCardNameSync({ game });
 
         /* Start of GWO implementation of GWDealer */
 
         model.gwoCards = gwoDeal.setupGwoCards(gwoSettings);
 
-        var cards = [];
-        var deck = [];
-        var numberOfCards = model.gwoCards.length;
-        var loaded = $.Deferred();
+        const cards = [];
+        const deck = [];
+        const numberOfCards = model.gwoCards.length;
+        const loaded = $.Deferred();
 
         gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
 
         // dealer.chooseCards() replacement - use our deck
-        var chooseCards = function (params) {
+        const chooseCards = (params) => {
           // params.rng is the deal's stream, one sub-stream per card of the hand.
           // A caller with no stream keeps the unseeded draw it always had.
-          var dealStream = params.rng;
-          var unseeded = dealStream ? undefined : new Math.seedrandom();
-          var count = params.count;
-          var star = params.star;
-          var dealAddSlot = params.addSlot;
-          var systemCards = params.systemCards;
-          var dealInventory = params.inventory || inventory;
-          var cardContexts = {};
+          const dealStream = params.rng;
+          const unseeded = dealStream ? undefined : new Math.seedrandom();
+          const count = params.count;
+          const star = params.star;
+          const dealAddSlot = params.addSlot;
+          const systemCards = params.systemCards;
+          const dealInventory = params.inventory || inventory;
+          const cardContexts = {};
 
           // One iteration of the deal loop below. `list` accumulates in the
           // loaded.then closure; `iteration` keys this card's stream.
-          var dealOneCard = function (list, iteration) {
-            var iterationRng = gwoStreams.iterationRng(dealStream, iteration);
-            var fullHand = _.map(cards, function (card) {
-              var context = cardContexts[card.id];
-              var cardChance =
+          const dealOneCard = (list, iteration) => {
+            const iterationRng = gwoStreams.iterationRng(dealStream, iteration);
+            const fullHand = _.map(cards, (card) => {
+              const context = cardContexts[card.id];
+              const cardChance =
                 card.deal &&
                 card.deal(
                   star,
@@ -356,7 +350,7 @@ function gwoCard() {
                   dealInventory,
                   gwoStreams.cardRng(iterationRng, card.id)
                 );
-              var match = helpers.doNotDealCard(
+              const match = helpers.doNotDealCard(
                 dealInventory,
                 card,
                 list,
@@ -372,7 +366,7 @@ function gwoCard() {
               return cardChance;
             });
 
-            var resultIndex = helpers.chooseDealIndex(
+            const resultIndex = helpers.chooseDealIndex(
               fullHand,
               iterationRng ? iterationRng() : unseeded()
             );
@@ -380,9 +374,9 @@ function gwoCard() {
               return;
             }
 
-            var resultDeal = fullHand[resultIndex];
-            var cardParams = resultDeal && resultDeal.params;
-            var systemCard = {
+            const resultDeal = fullHand[resultIndex];
+            const cardParams = resultDeal && resultDeal.params;
+            const systemCard = {
               id: deck[resultIndex],
             };
 
@@ -393,15 +387,15 @@ function gwoCard() {
             list.push(systemCard);
           };
 
-          var result = $.Deferred();
-          loaded.then(function () {
-            _.forEach(cards, function (card) {
+          const result = $.Deferred();
+          loaded.then(() => {
+            _.forEach(cards, (card) => {
               if (card.getContext && !cardContexts[card.id]) {
                 cardContexts[card.id] = card.getContext(galaxy, dealInventory);
               }
             });
 
-            var list = [];
+            const list = [];
 
             _.times(count, dealOneCard.bind(null, list));
 
@@ -411,80 +405,80 @@ function gwoCard() {
         };
 
         // Deals each viewer their own card on every selectable AI star.
-        var coopStarCards = cardsCoopStarCards({
-          game: game,
-          chooseCards: chooseCards,
-          GWInventory: GWInventory,
-          gwoStreams: gwoStreams,
-          warRng: warRng,
-          gwoBank: gwoBank,
+        const coopStarCards = cardsCoopStarCards({
+          game,
+          chooseCards,
+          GWInventory,
+          gwoStreams,
+          warRng,
+          gwoBank,
           stockBank: GW.bank,
-          gwoSettings: gwoSettings,
-          gwoSave: gwoSave,
-          gwoTreasure: gwoTreasure,
+          gwoSettings,
+          gwoSave,
+          gwoTreasure,
         });
 
         // Installs model.dealCoopPlayerPendingTechCards, overriding stock gw_play.js.
         cardsCoopDeal({
-          game: game,
-          chooseCards: chooseCards,
-          helpers: helpers,
-          GWInventory: GWInventory,
-          numCardsToOffer: numCardsToOffer,
-          gwoStreams: gwoStreams,
-          warRng: warRng,
-          gwoBank: gwoBank,
+          game,
+          chooseCards,
+          helpers,
+          GWInventory,
+          numCardsToOffer,
+          gwoStreams,
+          warRng,
+          gwoBank,
           stockBank: GW.bank,
-          gwoTreasure: gwoTreasure,
-          coopStarCards: coopStarCards,
-          gwoSettings: gwoSettings,
+          gwoTreasure,
+          coopStarCards,
+          gwoSettings,
         });
 
         // Reports a viewer's loadout unlocks to the host, which needs the mod
         // ones the base game's own record cannot carry, and holds a viewer's
         // banking closed against the host's inventory.
-        var treasureUnlocks = gwoTreasure.install({
-          game: game,
+        const treasureUnlocks = gwoTreasure.install({
+          game,
           stockBank: GW.bank,
-          gwoBank: gwoBank,
+          gwoBank,
         });
 
         // Registers the co-op reroll operator handlers, viewer and host.
         cardsCoopReroll({
-          game: game,
-          galaxy: galaxy,
-          chooseCards: chooseCards,
-          helpers: helpers,
-          GWInventory: GWInventory,
-          numCardsToOffer: numCardsToOffer,
-          gwoSave: gwoSave,
-          GW: GW,
-          gwoStreams: gwoStreams,
-          warRng: warRng,
-          gwoBank: gwoBank,
+          game,
+          galaxy,
+          chooseCards,
+          helpers,
+          GWInventory,
+          numCardsToOffer,
+          gwoSave,
+          GW,
+          gwoStreams,
+          warRng,
+          gwoBank,
           stockBank: GW.bank,
         });
 
-        var dealCardToSelectableAI = function (win, turnState) {
+        const dealCardToSelectableAI = (win, turnState) => {
           if (model.isCampaignViewer()) {
             return $.when().promise(); // already resolved jQuery promise
           }
 
-          var deferred = $.Deferred();
+          const deferred = $.Deferred();
 
           // Avoid running twice after winning a fight
           if (!win || turnState === "end") {
-            var deferredQueue = [];
+            const deferredQueue = [];
 
-            _.forEach(model.galaxy.systems(), function (system, starIndex) {
-              var ai = system.star.ai();
+            _.forEach(model.galaxy.systems(), (system, starIndex) => {
+              const ai = system.star.ai();
               // A treasure planet offers a loadout derived at exploration, so it
               // never carries a pre-dealt card.
-              var treasurePlanet = gwoTreasure.isTreasureStar(
+              const treasurePlanet = gwoTreasure.isTreasureStar(
                 gwoSettings,
                 starIndex
               );
-              var validForDeal =
+              const validForDeal =
                 gwoSettings && gwoSettings.staticTech
                   ? _.isEmpty(system.star.cardList())
                   : true;
@@ -510,7 +504,7 @@ function gwoCard() {
                       starIndex,
                       game.stats().turns()
                     ),
-                  }).then(function (card) {
+                  }).then((card) => {
                     system.star.cardList(card);
                     model.sendCampaignAction("sync_star_cards", {
                       star: starIndex,
@@ -524,12 +518,12 @@ function gwoCard() {
 
             // $.when() doesn't wait for setCardName() to return
             Promise.all(deferredQueue)
-              .then(function () {
+              .then(() =>
                 // The one caller that replaces cards viewers already hold, so
                 // their offers move exactly when the host's do.
-                return coopStarCards.refresh({ redeal: true });
-              })
-              .then(function () {
+                coopStarCards.refresh({ redeal: true })
+              )
+              .then(() => {
                 deferred.resolve();
               });
           } else {
@@ -543,7 +537,7 @@ function gwoCard() {
         // joining, and a rejoining viewer finishing its catch-up deals - neither
         // of which passes through a turn. It deliberately does not read
         // stats().turns(): a move must not disturb an offer already advertised.
-        ko.computed(function () {
+        ko.computed(() => {
           model.gwCampaignConnectedClients();
           model.gwCampaignPlayerSetupBlocked();
           game.coopPlayerInventoryData();
@@ -555,21 +549,21 @@ function gwoCard() {
           [
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
           ],
-          function (cardsStartSubcdr) {
-            var setupGeneralCommander = cardsStartSubcdr({
-              game: game,
-              gwoSettings: gwoSettings,
-              playerFaction: playerFaction,
-              inventory: inventory,
+          (cardsStartSubcdr) => {
+            const setupGeneralCommander = cardsStartSubcdr({
+              game,
+              gwoSettings,
+              playerFaction,
+              inventory,
             });
             setupGeneralCommander();
           }
         );
 
-        var dealCardToSelectableAIWhenWarStarts = function (settings) {
+        const dealCardToSelectableAIWhenWarStarts = (settings) => {
           if (settings && !settings.firstDealComplete) {
             settings.firstDealComplete = true;
-            dealCardToSelectableAI(false).then(function () {
+            dealCardToSelectableAI(false).then(() => {
               gwoSave(game, true);
             });
           }
@@ -580,33 +574,30 @@ function gwoCard() {
 
         // Installs model.cheats.testCards / model.cheats.giveCard.
         cardsCheats({
-          game: game,
-          galaxy: galaxy,
-          inventory: inventory,
-          gwoSettings: gwoSettings,
-          playerFaction: playerFaction,
-          gwoDeal: gwoDeal,
-          gwoAI: gwoAI,
-          GWFactions: GWFactions,
-          gwoSave: gwoSave,
-          cards: cards,
-          loaded: loaded,
-          dealCardToSelectableAI: dealCardToSelectableAI,
-          helpers: helpers,
+          game,
+          galaxy,
+          inventory,
+          gwoSettings,
+          playerFaction,
+          gwoDeal,
+          gwoAI,
+          GWFactions,
+          gwoSave,
+          cards,
+          loaded,
+          dealCardToSelectableAI,
+          helpers,
         });
 
         // Every bank: base game, GWO, and any a third-party card mod registered.
         // Each unlocks into its own localStorage record.
-        var startCardUnlocked = function (card) {
-          return (
-            GW.bank.hasStartCard(card) ||
-            gwoBank.hasStartCard(card) ||
-            gwoLoadoutBanks.hasStartCard(card)
-          );
-        };
+        const startCardUnlocked = (card) =>
+          GW.bank.hasStartCard(card) ||
+          gwoBank.hasStartCard(card) ||
+          gwoLoadoutBanks.hasStartCard(card);
 
         // gw_play self.explore - call our chooseCards()
-        model.explore = function (force) {
+        model.explore = (force) => {
           // game.explore() advances turnState rather than querying it, so it must
           // stay below every guard that can refuse, or a refused call leaves the
           // star inert with no deal.
@@ -632,12 +623,12 @@ function gwoCard() {
 
           api.audio.playSound("/VO/Computer/gw/board_exploring");
 
-          var cardsOffered = helpers.cardsOfferedCount(
+          const cardsOffered = helpers.cardsOfferedCount(
             numCardsToOffer,
             inventory
           );
-          var starIndex = game.currentStar();
-          var star = game.galaxy().stars()[starIndex];
+          const starIndex = game.currentStar();
+          const star = game.galaxy().stars()[starIndex];
 
           // Deriving here rather than at war creation is what lets every player
           // be judged by their own unlock record. Writing the whole list also
@@ -649,21 +640,21 @@ function gwoCard() {
             star &&
             gwoTreasure.isTreasureStar(gwoSettings, starIndex)
           ) {
-            var treasureLoadout = gwoTreasure.pickTreasureLoadout({
+            const treasureLoadout = gwoTreasure.pickTreasureLoadout({
               isUnlocked: startCardUnlocked,
               rng: gwoStreams.treasureLoadoutRng(warRng, undefined, starIndex),
             });
             star.cardList(treasureLoadout ? [treasureLoadout] : []);
           }
 
-          var startLoadoutCards = helpers.filterStartLoadoutCards(
+          const startLoadoutCards = helpers.filterStartLoadoutCards(
             star && _.isFunction(star.cardList) ? star.cardList() : []
           );
 
-          var dealStarCards = chooseCards({
+          const dealStarCards = chooseCards({
             count:
               cardsOffered - model.gwoRerollsUsed() - star.cardList().length,
-            star: star,
+            star,
             systemCards: star.cardList(),
             // A reroll re-enters here with the iteration index back at 0, so
             // the reroll count is what makes it deal a different hand.
@@ -673,10 +664,10 @@ function gwoCard() {
               game.stats().turns(),
               model.gwoRerollsUsed()
             ),
-          }).then(function (result) {
-            var ok = true;
+          }).then((result) => {
+            let ok = true;
 
-            _.forEach(star.cardList(), function (card) {
+            _.forEach(star.cardList(), (card) => {
               if (
                 helpers.isStartLoadoutCardId(card.id) &&
                 !startCardUnlocked(card)
@@ -687,7 +678,7 @@ function gwoCard() {
 
             if (ok) {
               // Combine the deal with pre-dealt system card
-              var cardList = result.concat(star.cardList());
+              const cardList = result.concat(star.cardList());
               star.cardList(cardList);
             }
 
@@ -698,10 +689,10 @@ function gwoCard() {
               });
             }
 
-            var dealEntry;
+            let dealEntry;
             // chooseCards is async, so the turn can have moved on. Recording then
             // owes every co-op viewer a catch-up hand for a deal never offered.
-            var explorationLive = helpers.explorationStillLive(
+            const explorationLive = helpers.explorationStillLive(
               game,
               starIndex,
               star
@@ -709,10 +700,7 @@ function gwoCard() {
 
             if (!explorationLive) {
               console.log(
-                "[GW COOP] discarded a stale explore deal star=" +
-                  starIndex +
-                  " turnState=" +
-                  game.turnState()
+                `[GW COOP] discarded a stale explore deal star=${starIndex} turnState=${game.turnState()}`
               );
             }
 
@@ -726,7 +714,7 @@ function gwoCard() {
               _.isFunction(game.recordHostTechCardDeal)
             ) {
               dealEntry = game.recordHostTechCardDeal(starIndex, {
-                startLoadoutCards: startLoadoutCards,
+                startLoadoutCards,
               });
             }
 
@@ -736,14 +724,14 @@ function gwoCard() {
 
             return model.dealCoopPlayerPendingTechCards(starIndex, star, {
               dealIndex: dealEntry && dealEntry.dealIndex,
-              startLoadoutCards: startLoadoutCards,
+              startLoadoutCards,
             });
           });
 
           // Returned so the base campaign queue can order it. The cosmetic
           // scanning delay below is deliberately not awaited.
           return $.when(dealStarCards).then(
-            function () {
+            () => {
               if (
                 model.currentSystemCardList() &&
                 model.currentSystemCardList()[0] &&
@@ -751,15 +739,14 @@ function gwoCard() {
               ) {
                 model.gwoOfferRerolls(false);
               }
-              _.delay(function () {
+              _.delay(() => {
                 model.scanning(false);
               }, 2000);
               return gwoSave(game, false);
             },
-            function (reason) {
+            (reason) => {
               console.error(
-                "[GW COOP] failed to deal co-op player pending tech cards: " +
-                  reason
+                `[GW COOP] failed to deal co-op player pending tech cards: ${reason}`
               );
               model.scanning(false);
               return $.Deferred().reject(reason).promise();
@@ -772,7 +759,7 @@ function gwoCard() {
         // read as tech held: cardsOfferedCount tests hasCard for the Lucky
         // Commander, so it would keep paying out an extra card every explore.
         // Returns the index to submit in place of the player's own.
-        var bankWonLoadout = function (cardId, selectedCardIndex) {
+        const bankWonLoadout = (cardId, selectedCardIndex) => {
           if (
             selectedCardIndex === -1 ||
             !helpers.isStartLoadoutCardId(cardId)
@@ -785,8 +772,8 @@ function gwoCard() {
         };
 
         // call dealCardToSelectableAI() so systems' cards update when player acquires a card
-        model.win = function (selectedCardIndex) {
-          var resolveExitGate = function () {
+        model.win = (selectedCardIndex) => {
+          const resolveExitGate = () => {
             model.exitGate().resolve();
           };
 
@@ -795,28 +782,28 @@ function gwoCard() {
             model.isCampaignViewer() &&
             !model.gwCampaignReplayingAction
           ) {
-            var tech_card = model.currentSystemCardList()[selectedCardIndex];
-            var tech_audio =
+            const tech_card = model.currentSystemCardList()[selectedCardIndex];
+            const tech_audio =
               tech_card && tech_card.audio() ? tech_card.audio().found : null;
             // Every loadout id, not just the ones the server misfiles: banking
             // is held for the whole scene on a viewer, so the server's own
             // GW.bank.addStartCard would be suppressed along with the rest.
-            var submittedIndex = bankWonLoadout(
+            const submittedIndex = bankWonLoadout(
               tech_card && tech_card.id(),
               selectedCardIndex
             );
 
             return model.submitCoopTechCardChoice(submittedIndex).then(
-              function () {
+              () => {
                 if (tech_audio) {
                   api.audio.playSound(tech_audio);
                 } else {
                   api.audio.playSound("/VO/Computer/gw/board_tech_acquired");
                 }
               },
-              function (reason) {
+              (reason) => {
                 console.error(
-                  "[GW COOP] failed to acquire co-op tech choice: " + reason
+                  `[GW COOP] failed to acquire co-op tech choice: ${reason}`
                 );
                 return $.Deferred().reject(reason).promise();
               }
@@ -833,7 +820,7 @@ function gwoCard() {
             });
           }
 
-          var actionCardList = model.currentSystemActionCardList();
+          const actionCardList = model.currentSystemActionCardList();
           if (
             selectedCardIndex !== -1 &&
             (!actionCardList || !actionCardList[selectedCardIndex])
@@ -846,18 +833,18 @@ function gwoCard() {
 
           model.exitGate($.Deferred());
 
-          var techCard = actionCardList && actionCardList[selectedCardIndex];
-          var techAudio =
+          const techCard = actionCardList && actionCardList[selectedCardIndex];
+          const techAudio =
             techCard && techCard.audio() ? techCard.audio().found : null;
-          var playTechAudio = !!techCard;
+          const playTechAudio = !!techCard;
           // winTurn(-1) still clears the star and ends the turn; it just adds
           // nothing to the inventory.
-          var wonIndex = bankWonLoadout(
+          const wonIndex = bankWonLoadout(
             techCard && techCard.id(),
             selectedCardIndex
           );
 
-          return game.winTurn(wonIndex).then(function (didWin) {
+          return game.winTurn(wonIndex).then((didWin) => {
             if (!didWin) {
               console.error("Failed winning turn", game);
               return $.Deferred().reject("Failed winning turn").promise();
@@ -870,10 +857,8 @@ function gwoCard() {
             model.maybePlayCaptureSound();
 
             return dealCardToSelectableAI(true, game.turnState())
-              .then(function () {
-                return gwoSave(game, true);
-              })
-              .then(function () {
+              .then(() => gwoSave(game, true))
+              .then(() => {
                 if (model.gameOver()) {
                   // always, so a failed stat write still opens the gate.
                   api.tally
@@ -899,9 +884,7 @@ function gwoCard() {
     );
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoCard();

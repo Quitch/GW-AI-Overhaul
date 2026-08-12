@@ -1,22 +1,23 @@
 // Host-side per-viewer pre-dealt star cards. Each viewer gets their own card on
 // every selectable AI star, stored on their co-op inventory record so it rides
 // the campaign snapshot. See docs/coop.md, "Per-player pre-dealt cards".
-define(function () {
+define(() => {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.
-  var starCardForRecord = function (record, starIndex) {
-    var field = record && record.gwaioStarCards;
-    var cards = field && _.isPlainObject(field.cards) ? field.cards : undefined;
-    var card = cards && cards[String(starIndex)];
+  const starCardForRecord = (record, starIndex) => {
+    const field = record && record.gwaioStarCards;
+    const cards =
+      field && _.isPlainObject(field.cards) ? field.cards : undefined;
+    const card = cards && cards[String(starIndex)];
     return _.isPlainObject(card) ? card : undefined;
   };
 
   // A star the player has taken keeps no offer. Without this the map grows for
   // the whole war rather than shrinking with the AI stars left to fight.
-  var pruneStarCards = function (cards, hasAiForStar) {
-    var kept = {};
+  const pruneStarCards = (cards, hasAiForStar) => {
+    const kept = {};
 
-    _.forEach(_.isPlainObject(cards) ? cards : {}, function (card, key) {
+    _.forEach(_.isPlainObject(cards) ? cards : {}, (card, key) => {
       if (_.isPlainObject(card) && hasAiForStar(Number(key))) {
         kept[key] = card;
       }
@@ -25,14 +26,12 @@ define(function () {
     return kept;
   };
 
-  var buildStarCardsField = function (existing, updates, turn) {
-    return {
-      turn: turn,
-      cards: _.assign({}, existing, updates),
-    };
-  };
+  const buildStarCardsField = (existing, updates, turn) => ({
+    turn,
+    cards: _.assign({}, existing, updates),
+  });
 
-  var starNeedsViewerCard = function (params) {
+  const starNeedsViewerCard = (params) => {
     if (!params.canSelect || !params.ai || params.treasurePlanet) {
       return false;
     }
@@ -51,21 +50,21 @@ define(function () {
   // the host's deal counter, which is the server's own catch-up predicate - a
   // viewer part-way through catching up would otherwise trigger one full refresh
   // per outstanding deal. See docs/coop.md.
-  var viewersReadyForStarRefresh = function (params) {
+  const viewersReadyForStarRefresh = (params) => {
     if (params.setupBlocked || params.turnState === "explore") {
       return false;
     }
 
-    var hostDealCount = _.isNumber(params.hostDealCount)
+    const hostDealCount = _.isNumber(params.hostDealCount)
       ? params.hostDealCount
       : 0;
 
-    return !_.some(params.viewers, function (client) {
+    return !_.some(params.viewers, (client) => {
       if (!client || client.requires_loadout || client.loading) {
         return true;
       }
 
-      var loadingStatus = client.loading_status || "";
+      const loadingStatus = client.loading_status || "";
       if (
         loadingStatus === "picking_loadout" ||
         loadingStatus === "picking_tech_cards"
@@ -73,7 +72,7 @@ define(function () {
         return true;
       }
 
-      var record = params.findRecord(client);
+      const record = params.findRecord(client);
       if (!record || record.pendingTechCards) {
         return true;
       }
@@ -82,69 +81,65 @@ define(function () {
     });
   };
 
-  var factory = function (params) {
-    var game = params.game;
-    var chooseCards = params.chooseCards;
-    var GWInventory = params.GWInventory;
-    var gwoStreams = params.gwoStreams;
-    var warRng = params.warRng;
-    var gwoBank = params.gwoBank;
-    var stockBank = params.stockBank;
-    var gwoSettings = params.gwoSettings;
-    var gwoSave = params.gwoSave;
-    var gwoTreasure = params.gwoTreasure;
+  const factory = (params) => {
+    const game = params.game;
+    const chooseCards = params.chooseCards;
+    const GWInventory = params.GWInventory;
+    const gwoStreams = params.gwoStreams;
+    const warRng = params.warRng;
+    const gwoBank = params.gwoBank;
+    const stockBank = params.stockBank;
+    const gwoSettings = params.gwoSettings;
+    const gwoSave = params.gwoSave;
+    const gwoTreasure = params.gwoTreasure;
 
-    var isTreasureStar = function (starIndex) {
-      return gwoTreasure.isTreasureStar(gwoSettings, starIndex);
-    };
+    const isTreasureStar = (starIndex) =>
+      gwoTreasure.isTreasureStar(gwoSettings, starIndex);
 
-    var refreshInFlight;
-    var refreshPending;
+    let refreshInFlight;
+    let refreshPending;
 
-    var connectedViewers = function () {
-      var clients = _.isArray(model.gwCampaignConnectedClients())
+    const connectedViewers = () => {
+      const clients = _.isArray(model.gwCampaignConnectedClients())
         ? model.gwCampaignConnectedClients()
         : [];
 
-      return _.filter(clients, function (client) {
-        return client && client.role === "viewer";
-      });
+      return _.filter(clients, (client) => client && client.role === "viewer");
     };
 
-    var findRecord = function (client) {
-      return game.findCoopPlayerInventoryData({
+    const findRecord = (client) =>
+      game.findCoopPlayerInventoryData({
         id: client.id,
         name: client.name,
       });
-    };
 
-    var starsNeedingCards = function (record, redeal) {
-      var wanted = [];
+    const starsNeedingCards = (record, redeal) => {
+      const wanted = [];
 
-      _.forEach(model.galaxy.systems(), function (system, starIndex) {
-        var ai = system.star.ai();
+      _.forEach(model.galaxy.systems(), (system, starIndex) => {
+        const ai = system.star.ai();
         if (
           starNeedsViewerCard({
             canSelect: model.canSelect(starIndex),
-            ai: ai,
+            ai,
             treasurePlanet: isTreasureStar(starIndex),
             staticTech: gwoSettings && gwoSettings.staticTech,
             existingCard: starCardForRecord(record, starIndex),
-            redeal: redeal,
+            redeal,
           })
         ) {
-          wanted.push({ starIndex: starIndex, star: system.star });
+          wanted.push({ starIndex, star: system.star });
         }
       });
 
       return wanted;
     };
 
-    var dealStarCard = function (target, inventory, playerKey, record) {
-      var existing = starCardForRecord(record, target.starIndex);
+    const dealStarCard = (target, inventory, playerKey, record) => {
+      const existing = starCardForRecord(record, target.starIndex);
 
       return chooseCards({
-        inventory: inventory,
+        inventory,
         count: 1,
         star: target.star,
         addSlot: false,
@@ -155,32 +150,33 @@ define(function () {
           target.starIndex,
           game.stats().turns()
         ),
-      }).then(function (cards) {
-        return { starIndex: target.starIndex, card: cards && cards[0] };
-      });
+      }).then((cards) => ({
+        starIndex: target.starIndex,
+        card: cards && cards[0],
+      }));
     };
 
     // Resolves with whether the record changed. The record is re-read at write
     // time: chooseCards is async, so a catch-up deal can have landed
     // pendingTechCards on it since this viewer's work began.
-    var refreshViewer = function (client, redeal) {
-      var record = findRecord(client);
+    const refreshViewer = (client, redeal) => {
+      const record = findRecord(client);
       if (!record || !record.inventory) {
         return Promise.resolve(false);
       }
 
       // Decided before the inventory is built, so a refresh with nothing to do
       // costs a walk of the galaxy rather than an applyCards per viewer.
-      var targets = starsNeedingCards(record, redeal);
+      const targets = starsNeedingCards(record, redeal);
       if (!targets.length) {
         return Promise.resolve(false);
       }
 
-      var playerKey = gwoStreams.coopPlayerKey(record, client);
-      var inventory = new GWInventory();
+      const playerKey = gwoStreams.coopPlayerKey(record, client);
+      const inventory = new GWInventory();
       inventory.load(_.cloneDeep(record.inventory));
 
-      var applied = new Promise(function (resolve) {
+      const applied = new Promise((resolve) => {
         if (!inventory.cards().length) {
           resolve();
           return;
@@ -188,7 +184,7 @@ define(function () {
 
         gwoBank.suspendUnlocks(stockBank);
         try {
-          inventory.applyCards(function () {
+          inventory.applyCards(() => {
             gwoBank.resumeUnlocks();
             resolve();
           });
@@ -199,34 +195,38 @@ define(function () {
       });
 
       return applied
-        .then(function () {
-          return Promise.all(
-            _.map(targets, function (target) {
-              return dealStarCard(target, inventory, playerKey, record);
-            })
-          );
-        })
-        .then(function (results) {
-          var updates = {};
-          _.forEach(results, function (result) {
+        .then(() =>
+          Promise.all(
+            _.map(targets, (target) =>
+              dealStarCard(target, inventory, playerKey, record)
+            )
+          )
+        )
+        .then((results) => {
+          const updates = {};
+          _.forEach(results, (result) => {
             if (result && result.card) {
               updates[String(result.starIndex)] = result.card;
             }
           });
 
-          var fresh = findRecord(client);
+          const fresh = findRecord(client);
           if (!fresh) {
             return false;
           }
 
-          var pruned = pruneStarCards(
+          const pruned = pruneStarCards(
             fresh.gwaioStarCards && fresh.gwaioStarCards.cards,
-            function (starIndex) {
-              var system = model.galaxy.systems()[starIndex];
+            (starIndex) => {
+              const system = model.galaxy.systems()[starIndex];
               return !!(system && system.star.ai());
             }
           );
-          var next = buildStarCardsField(pruned, updates, game.stats().turns());
+          const next = buildStarCardsField(
+            pruned,
+            updates,
+            game.stats().turns()
+          );
 
           if (
             _.isEqual(
@@ -248,42 +248,38 @@ define(function () {
 
     // A refresh calls deal() on every card of the deck once per star per viewer,
     // which is too much for one frame, so each viewer yields before starting.
-    var refreshViewerLater = function (client, redeal) {
-      return new Promise(function (resolve) {
-        _.defer(function () {
+    const refreshViewerLater = (client, redeal) =>
+      new Promise((resolve) => {
+        _.defer(() => {
           resolve(refreshViewer(client, redeal));
         });
       });
-    };
 
-    var refreshEachViewer = function (viewers, redeal) {
-      var changedAny = false;
+    const refreshEachViewer = (viewers, redeal) => {
+      let changedAny = false;
 
       return _.reduce(
         viewers,
-        function (chain, client) {
-          return chain
+        (chain, client) =>
+          chain
             .then(refreshViewerLater.bind(null, client, redeal))
-            .then(function (changed) {
+            .then((changed) => {
               changedAny = changedAny || changed;
-            });
-        },
+            }),
         Promise.resolve()
-      ).then(function () {
-        return changedAny;
-      });
+      ).then(() => changedAny);
     };
 
-    var runRefresh = function (redeal) {
-      var viewers = connectedViewers();
+    const runRefresh = (redeal) => {
+      const viewers = connectedViewers();
       if (!viewers.length) {
         return Promise.resolve();
       }
 
       if (
         !viewersReadyForStarRefresh({
-          viewers: viewers,
-          findRecord: findRecord,
+          viewers,
+          findRecord,
           getDealCount: function (record) {
             return model.getCoopPlayerTechCardDealCount(record);
           },
@@ -295,13 +291,13 @@ define(function () {
         return Promise.resolve();
       }
 
-      return refreshEachViewer(viewers, redeal).then(function (changed) {
+      return refreshEachViewer(viewers, redeal).then((changed) => {
         if (!changed) {
           return undefined;
         }
 
         console.log("[GW COOP] refreshed co-op player star cards");
-        return Promise.resolve(gwoSave(game, false)).then(function () {
+        return Promise.resolve(gwoSave(game, false)).then(() => {
           model.sendCampaignSnapshot("gwo_star_cards", true);
         });
       });
@@ -309,8 +305,8 @@ define(function () {
 
     // redeal replaces every viewer's card, and belongs only to the host's own
     // per-turn deal. Every other caller fills gaps.
-    var refresh = function (options) {
-      var redeal = !!(options && options.redeal);
+    const refresh = (options) => {
+      const redeal = !!(options && options.redeal);
 
       if (
         !model.gwCampaignActive() ||
@@ -329,14 +325,14 @@ define(function () {
       }
 
       refreshInFlight = runRefresh(redeal)
-        .then(null, function (reason) {
+        .then(null, (reason) => {
           console.error(
-            "[GW COOP] failed to refresh co-op player star cards: " + reason
+            `[GW COOP] failed to refresh co-op player star cards: ${reason}`
           );
         })
-        .then(function () {
+        .then(() => {
           refreshInFlight = undefined;
-          var queued = refreshPending;
+          const queued = refreshPending;
           refreshPending = undefined;
           return queued ? refresh(queued) : undefined;
         });
@@ -345,7 +341,7 @@ define(function () {
     };
 
     return {
-      refresh: refresh,
+      refresh,
       starCardForClient: starCardForRecord,
     };
   };
@@ -359,11 +355,11 @@ define(function () {
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
     module.exports = {
-      starCardForRecord: starCardForRecord,
-      pruneStarCards: pruneStarCards,
-      buildStarCardsField: buildStarCardsField,
-      starNeedsViewerCard: starNeedsViewerCard,
-      viewersReadyForStarRefresh: viewersReadyForStarRefresh,
+      starCardForRecord,
+      pruneStarCards,
+      buildStarCardsField,
+      starNeedsViewerCard,
+      viewersReadyForStarRefresh,
     };
   }
 

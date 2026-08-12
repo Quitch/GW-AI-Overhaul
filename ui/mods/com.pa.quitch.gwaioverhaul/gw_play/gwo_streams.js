@@ -1,29 +1,23 @@
 // Every seeded stream key the gw_play scene uses, in one file so the key layout
 // documented in docs/galaxy.md has a single place to be checked against.
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
-], function (gwoRng) {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"], (
+  gwoRng
+) => {
   // gwo_rng joins a label and index with a space, so a label carrying one could
   // make stream("a b") collide with stream("a", "b"). Player names carry spaces.
-  var safeLabel = function (value) {
-    return String(value).replace(/\s+/g, "_");
-  };
+  const safeLabel = (value) => String(value).replace(/\s+/g, "_");
 
   // A non-number would degrade stream(label, undefined) into stream(label),
   // colliding with the parent.
-  var index = function (value) {
-    return _.isNumber(value) ? value : -1;
-  };
+  const index = (value) => (_.isNumber(value) ? value : -1);
 
-  var counter = function (value) {
-    return _.isNumber(value) && value > 0 ? value : 0;
-  };
+  const counter = (value) => (_.isNumber(value) && value > 0 ? value : 0);
 
   return {
     // Wars saved before seeds were recorded have none, and must keep drawing
     // unseeded rather than all sharing one empty-string seed.
     warRng: function (gwoSettings) {
-      var seed = gwoSettings && gwoSettings.seed;
+      const seed = gwoSettings && gwoSettings.seed;
       return seed === undefined || seed === null || seed === ""
         ? undefined
         : gwoRng.create(seed);
@@ -32,7 +26,7 @@ define([
     // record.playerId is the uberId and survives a reconnect; client.id is a
     // per-connection value and does not.
     coopPlayerKey: function (record, client) {
-      var id = record && record.playerId;
+      let id = record && record.playerId;
       if (id === undefined || id === null) {
         id = client && client.id;
       }

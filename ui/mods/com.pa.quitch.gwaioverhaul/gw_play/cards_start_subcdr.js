@@ -6,70 +6,57 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-], function (
-  GWFactions,
-  gwoAI,
-  gwoSave,
-  GWInventory,
-  helpers,
-  gwoStreams,
-  gwoCard
-) {
-  return function (params) {
-    var game = params.game;
-    var gwoSettings = params.gwoSettings;
-    var playerFaction = params.playerFaction;
-    var inventory =
+], (GWFactions, gwoAI, gwoSave, GWInventory, helpers, gwoStreams, gwoCard) =>
+  (params) => {
+    const game = params.game;
+    const gwoSettings = params.gwoSettings;
+    const playerFaction = params.playerFaction;
+    const inventory =
       params.inventory ||
       (game && _.isFunction(game.inventory) ? game.inventory() : undefined);
-    var warRng = gwoStreams.warRng(gwoSettings);
+    const warRng = gwoStreams.warRng(gwoSettings);
 
-    var setupGeneralCommanderRequest = "gwo_setup_general_commander";
-    var setupGeneralCommanderResult = "gwo_setup_general_commander_result";
+    const setupGeneralCommanderRequest = "gwo_setup_general_commander";
+    const setupGeneralCommanderResult = "gwo_setup_general_commander_result";
 
-    var inventoryNeedsGeneralCommanderSetup = function (cards) {
-      return !!(
+    const inventoryNeedsGeneralCommanderSetup = (cards) =>
+      !!(
         _.isArray(cards) &&
         cards.length === 1 &&
         cards[0] &&
         cards[0].id === "gwc_start_subcdr" &&
         !cards[0].minions
       );
-    };
 
-    var resolveFactionMinions = function (factionIndex) {
-      var chosenFaction = GWFactions[factionIndex];
+    const resolveFactionMinions = (factionIndex) => {
+      const chosenFaction = GWFactions[factionIndex];
       if (chosenFaction && _.isArray(chosenFaction.minions)) {
         return chosenFaction.minions;
       }
 
-      var fallbackFaction = GWFactions[playerFaction];
+      const fallbackFaction = GWFactions[playerFaction];
       return fallbackFaction && _.isArray(fallbackFaction.minions)
         ? fallbackFaction.minions
         : [];
     };
 
-    var buildGeneralCommanderMinions = function (factionIndex, playerKey) {
-      var minionPool = resolveFactionMinions(factionIndex);
+    const buildGeneralCommanderMinions = (factionIndex, playerKey) => {
+      let minionPool = resolveFactionMinions(factionIndex);
       if (gwoSettings && gwoSettings.aiAlly === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
 
       return helpers.buildGeneralCommanderMinions({
-        minionPool: minionPool,
-        gwoSettings: gwoSettings,
-        gwoAI: gwoAI,
-        gwoCard: gwoCard,
+        minionPool,
+        gwoSettings,
+        gwoAI,
+        gwoCard,
         rng: gwoStreams.generalCommanderRng(warRng, playerKey),
       });
     };
 
-    var appendGeneralCommanderMinions = function (
-      cards,
-      factionIndex,
-      playerKey
-    ) {
-      var minions;
+    const appendGeneralCommanderMinions = (cards, factionIndex, playerKey) => {
+      let minions;
       if (!inventoryNeedsGeneralCommanderSetup(cards)) {
         return false;
       }
@@ -79,18 +66,14 @@ define([
         return false;
       }
 
-      _.forEach(minions, function (minionCard) {
+      _.forEach(minions, (minionCard) => {
         cards.push(minionCard);
       });
 
       return true;
     };
 
-    var sendGeneralCommanderSetupResult = function (
-      clientId,
-      requestId,
-      payload
-    ) {
+    const sendGeneralCommanderSetupResult = (clientId, requestId, payload) => {
       if (!model.sendCampaignHostOperator) {
         return;
       }
@@ -101,8 +84,8 @@ define([
       });
     };
 
-    var failGeneralCommanderSetup = function (operator, reason) {
-      console.error("[GW COOP] failed to setup general commander: " + reason);
+    const failGeneralCommanderSetup = (operator, reason) => {
+      console.error(`[GW COOP] failed to setup general commander: ${reason}`);
       if (_.isUndefined(operator.client_id)) {
         return;
       }
@@ -114,15 +97,15 @@ define([
       });
     };
 
-    var applyGeneralCommanderSetupResult = function (operator) {
-      var payload = operator && operator.payload ? operator.payload : {};
+    const applyGeneralCommanderSetupResult = (operator) => {
+      const payload = operator && operator.payload ? operator.payload : {};
       if (model.gwoGeneralCommanderSetupPending) {
         model.gwoGeneralCommanderSetupPending(false);
       }
 
       if (payload.error) {
         console.error(
-          "[GW COOP] general commander setup failed: " + payload.error
+          `[GW COOP] general commander setup failed: ${payload.error}`
         );
         return;
       }
@@ -136,10 +119,10 @@ define([
       }
     };
 
-    var setupGeneralCommanderForViewer = function () {
-      var record;
-      var recordInventory;
-      var cards;
+    const setupGeneralCommanderForViewer = () => {
+      let record;
+      let recordInventory;
+      let cards;
 
       if (
         !model.isCampaignViewer() ||
@@ -178,20 +161,20 @@ define([
       return true;
     };
 
-    var setupGeneralCommanderForCoopPlayer = function (operator) {
-      var result = $.Deferred();
-      var record;
-      var recordInventory;
-      var cards;
-      var recordFaction;
-      var factionIndex;
-      var playerInventory;
-      var finish;
-      var inventoryCards;
+    const setupGeneralCommanderForCoopPlayer = (operator) => {
+      const result = $.Deferred();
+      let record;
+      let recordInventory;
+      let cards;
+      let recordFaction;
+      let factionIndex;
+      let playerInventory;
+      let finish;
+      let inventoryCards;
 
       // Rejects as well as notifying the viewer, so the campaign queue can
       // order this handler's async work.
-      var failSetup = function (reason) {
+      const failSetup = (reason) => {
         failGeneralCommanderSetup(operator, reason);
         result.reject(reason);
       };
@@ -245,8 +228,8 @@ define([
       playerInventory = new GWInventory();
       playerInventory.load(recordInventory);
 
-      finish = function () {
-        var nextRecord = _.assign({}, _.cloneDeep(record), {
+      finish = () => {
+        const nextRecord = _.assign({}, _.cloneDeep(record), {
           inventory: playerInventory.save(),
           updatedAt: _.now(),
         });
@@ -268,10 +251,10 @@ define([
           }
         );
         gwoSave(game, false).then(
-          function () {
+          () => {
             result.resolve();
           },
-          function (error) {
+          (error) => {
             result.reject(error);
           }
         );
@@ -321,7 +304,7 @@ define([
     }
 
     return function setupGeneralCommander() {
-      var cards;
+      let cards;
 
       if (
         model.isCampaignViewer() &&
@@ -341,5 +324,4 @@ define([
         gwoSave(game, false);
       }
     };
-  };
-});
+  });

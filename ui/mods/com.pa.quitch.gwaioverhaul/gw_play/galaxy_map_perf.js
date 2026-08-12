@@ -3,7 +3,7 @@ var gwoGalaxyMapPerfLoaded;
 // Dirty-checks the base game's uncapped galaxy-map redraw. The idle heartbeat
 // is load-bearing: systems.js animates off it. See architecture.md.
 function gwoGalaxyMapPerf() {
-  var game = model.game();
+  const game = model.game();
 
   if (gwoGalaxyMapPerfLoaded || game.isTutorial()) {
     return;
@@ -12,32 +12,32 @@ function gwoGalaxyMapPerf() {
   gwoGalaxyMapPerfLoaded = true;
 
   try {
-    var stage = model.galaxy.stage;
-    var parallax = model.galaxy.parallax;
-    var originalUpdate = stage.update;
-    var interactiveFrameIntervalMs = 1000 / 60;
-    var idleFrameIntervalMs = 1000 / 10;
-    var lastDraw = 0;
-    var interactiveUntil = 0;
+    const stage = model.galaxy.stage;
+    const parallax = model.galaxy.parallax;
+    const originalUpdate = stage.update;
+    const interactiveFrameIntervalMs = 1000 / 60;
+    const idleFrameIntervalMs = 1000 / 10;
+    let lastDraw = 0;
+    let interactiveUntil = 0;
 
     // Halved; the base game takes the 20/sec default.
     stage.enableMouseOver(10);
 
     // For animated overlays, which the idle rate renders in too few frames.
-    model.gwoRequestInteractiveFrames = function (durationMs) {
+    model.gwoRequestInteractiveFrames = (durationMs) => {
       interactiveUntil = Math.max(
         interactiveUntil,
         window.performance.now() + durationMs
       );
     };
 
-    var lastX, lastY, lastScaleX, lastScaleY, lastWidth, lastHeight;
-    var lastParallaxX, lastParallaxY;
+    let lastX, lastY, lastScaleX, lastScaleY, lastWidth, lastHeight;
+    let lastParallaxX, lastParallaxY;
 
     stage.update = function () {
-      var canvas = stage.canvas;
-      var currentParallax = parallax();
-      var moved =
+      const canvas = stage.canvas;
+      const currentParallax = parallax();
+      const moved =
         stage.x !== lastX ||
         stage.y !== lastY ||
         stage.scaleX !== lastScaleX ||
@@ -47,8 +47,8 @@ function gwoGalaxyMapPerf() {
         currentParallax[0] !== lastParallaxX ||
         currentParallax[1] !== lastParallaxY;
 
-      var now = window.performance.now();
-      var interval =
+      const now = window.performance.now();
+      const interval =
         moved || model.player.moving() || now < interactiveUntil
           ? interactiveFrameIntervalMs
           : idleFrameIntervalMs;
@@ -70,9 +70,7 @@ function gwoGalaxyMapPerf() {
     };
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoGalaxyMapPerf();

@@ -1,17 +1,17 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoUnit, gwoGroup) {
-  var advancedBotFabbers = [
+], (gwoUnit, gwoGroup) => {
+  const advancedBotFabbers = [
     gwoUnit.colonel,
     gwoUnit.mend,
     gwoUnit.botFabberAdvanced,
   ];
-  var advancedBotsExcludingFabbers = _.xor(
+  const advancedBotsExcludingFabbers = _.xor(
     gwoGroup.botsAdvancedMobile,
     advancedBotFabbers
   );
-  var advancedVehiclesExcludingFabber = _.without(
+  const advancedVehiclesExcludingFabber = _.without(
     gwoGroup.vehiclesAdvancedMobile,
     gwoUnit.vehicleFabberAdvanced
   );

@@ -3,10 +3,10 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
-], function (gwoAI, refereeAIPaths, refereeCoop, gwoUrl) {
+], (gwoAI, refereeAIPaths, refereeCoop, gwoUrl) => {
   // `json` is a parameter, not a closure capture, so this table is built once
   // at module load rather than per applyAiMods call.
-  var aiModOps = {
+  const aiModOps = {
     append: function (
       json,
       value,
@@ -16,12 +16,12 @@ define([
       refValue,
       matchAll
     ) {
-      _.forEach(json.build_list, function (build) {
+      _.forEach(json.build_list, (build) => {
         if (build.to_build !== toBuild) {
           return;
         }
 
-        var validMatch =
+        const validMatch =
           (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
           Object.prototype.hasOwnProperty.call(build, idToMod);
 
@@ -30,9 +30,9 @@ define([
         } else if (validMatch) {
           build[idToMod] += value;
         } else {
-          _.forEach(build.build_conditions, function (testArray) {
-            _.forEach(testArray, function (test) {
-              var testMatches =
+          _.forEach(build.build_conditions, (testArray) => {
+            _.forEach(testArray, (test) => {
+              const testMatches =
                 matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
               if (testMatches) {
                 if (_.isArray(test[idToMod])) {
@@ -57,14 +57,14 @@ define([
     ) {
       // Separate from `value`: one descriptor can match both array and string
       // targets, so coercing the parameter in place corrupts the later ones.
-      var arrayValue = _.isArray(value) ? value : [value];
+      const arrayValue = _.isArray(value) ? value : [value];
 
-      _.forEach(json.build_list, function (build) {
+      _.forEach(json.build_list, (build) => {
         if (build.to_build !== toBuild) {
           return;
         }
 
-        var validMatch =
+        const validMatch =
           (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
           Object.prototype.hasOwnProperty.call(build, idToMod);
 
@@ -73,9 +73,9 @@ define([
         } else if (validMatch) {
           build[idToMod] = value + build[idToMod];
         } else {
-          _.forEach(build.build_conditions, function (testArray) {
-            _.forEach(testArray, function (test) {
-              var testMatches =
+          _.forEach(build.build_conditions, (testArray) => {
+            _.forEach(testArray, (test) => {
+              const testMatches =
                 matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
               if (testMatches) {
                 if (_.isArray(test[idToMod])) {
@@ -98,21 +98,21 @@ define([
       refValue,
       matchAll
     ) {
-      _.forEach(json.build_list, function (build) {
+      _.forEach(json.build_list, (build) => {
         if (build.to_build !== toBuild) {
           return;
         }
 
-        var validMatch =
+        const validMatch =
           (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
           Object.prototype.hasOwnProperty.call(build, idToMod);
 
         if (validMatch) {
           build[idToMod] = value;
         } else {
-          _.forEach(build.build_conditions, function (testArray) {
-            _.forEach(testArray, function (test) {
-              var testMatches =
+          _.forEach(build.build_conditions, (testArray) => {
+            _.forEach(testArray, (test) => {
+              const testMatches =
                 matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
               if (testMatches && test[idToMod]) {
                 test[idToMod] = value;
@@ -123,13 +123,13 @@ define([
       });
     },
     remove: function (json, value, toBuild) {
-      _.forEach(json.build_list, function (build) {
+      _.forEach(json.build_list, (build) => {
         if (build.to_build !== toBuild) {
           return;
         }
 
-        _.forEach(build.build_conditions, function (testArray) {
-          _.remove(testArray, function (object) {
+        _.forEach(build.build_conditions, (testArray) => {
+          _.remove(testArray, (object) => {
             if (_.isEqual(object, value)) {
               return object;
             }
@@ -138,13 +138,13 @@ define([
       });
     },
     new: function (json, value, toBuild, idToMod) {
-      _.forEach(json.build_list, function (build) {
+      _.forEach(json.build_list, (build) => {
         if (build.to_build !== toBuild) {
           return;
         }
 
         if (idToMod) {
-          _.forEach(build.build_conditions, function (testArray) {
+          _.forEach(build.build_conditions, (testArray) => {
             testArray.push(value);
           });
         } else {
@@ -160,8 +160,8 @@ define([
     },
   };
 
-  var applyAiMods = function (json, mods) {
-    _.forEach(mods, function (mod) {
+  const applyAiMods = (json, mods) => {
+    _.forEach(mods, (mod) => {
       if (!Object.prototype.hasOwnProperty.call(aiModOps, mod.op)) {
         console.error("Invalid AI mod operation:", mod);
         return;
@@ -178,7 +178,7 @@ define([
     });
   };
 
-  var getRefereeInventoryAiMods = function (inventory) {
+  const getRefereeInventoryAiMods = (inventory) => {
     if (!inventory) {
       return [];
     }
@@ -190,12 +190,12 @@ define([
     return inventory.aiMods || [];
   };
 
-  var getConnectedClientAiMods = function (game, connectedClients) {
-    var connectedClientAiMods = [];
+  const getConnectedClientAiMods = (game, connectedClients) => {
+    let connectedClientAiMods = [];
 
     _.forEach(
       refereeCoop.getConnectedViewerInventories(game, connectedClients),
-      function (viewer) {
+      (viewer) => {
         connectedClientAiMods = connectedClientAiMods.concat(
           getRefereeInventoryAiMods(viewer.inventory)
         );
@@ -205,12 +205,12 @@ define([
     return connectedClientAiMods;
   };
 
-  var getInventoryWithAllPlayerAiMods = function (
+  const getInventoryWithAllPlayerAiMods = (
     inventory,
     game,
     connectedClients
-  ) {
-    var allPlayerAiMods = getRefereeInventoryAiMods(inventory).concat(
+  ) => {
+    const allPlayerAiMods = getRefereeInventoryAiMods(inventory).concat(
       getConnectedClientAiMods(game, connectedClients)
     );
 
@@ -221,10 +221,10 @@ define([
     };
   };
 
-  var whichAIsAreBeingModified = function (clusterPresence, inventory) {
-    var game = model.game();
-    var ai = game.galaxy().stars()[game.currentStar()].ai();
-    var guardians = ai.mirrorMode;
+  const whichAIsAreBeingModified = (clusterPresence, inventory) => {
+    const game = model.game();
+    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const guardians = ai.mirrorMode;
 
     if (
       !_.isEmpty(getRefereeInventoryAiMods(inventory)) ||
@@ -239,7 +239,7 @@ define([
     return "None";
   };
 
-  var managerPath = function (type) {
+  const managerPath = (type) => {
     switch (type) {
       case "fabber":
         return "fabber_builds/";
@@ -250,54 +250,52 @@ define([
       case "template":
         return "platoon_templates/";
       default:
-        throw new Error("Invalid AI file type: " + type);
+        throw new Error(`Invalid AI file type: ${type}`);
     }
   };
 
-  var addApplicableAiLoadModsToFileList = function (
+  const addApplicableAiLoadModsToFileList = (
     aiPath,
     fileList,
     inventory,
     aisToModify,
     aiPaths
-  ) {
-    var isSubCommanderDirectory =
+  ) => {
+    const isSubCommanderDirectory =
       aiPath === aiPaths.subCommanderSource ||
       aiPaths.enemySource === aiPaths.subCommanderSource;
 
     if (isSubCommanderDirectory || aisToModify === "All") {
-      var aiLoadMods = _.filter(getRefereeInventoryAiMods(inventory), {
+      const aiLoadMods = _.filter(getRefereeInventoryAiMods(inventory), {
         op: "load",
       });
 
-      _.forEach(aiLoadMods, function (file) {
-        fileList.push("/pa/ai_tech/" + managerPath(file.type) + file.value);
+      _.forEach(aiLoadMods, (file) => {
+        fileList.push(`/pa/ai_tech/${managerPath(file.type)}${file.value}`);
       });
     }
   };
 
-  var processFilesInDirectory = function (filePath, context) {
-    var configFiles = context.configFiles;
-    var aisToModify = context.aisToModify;
-    var aiPaths = context.aiPaths;
-    var clusterPresence = context.clusterPresence;
-    var scopeToken = context.scopeToken;
-    var nonLoadAiMods = context.nonLoadAiMods;
-    var forceSubCommanderScope = context.forceSubCommanderScope;
-    var treeCache = context.treeCache;
+  const processFilesInDirectory = (filePath, context) => {
+    const configFiles = context.configFiles;
+    const aisToModify = context.aisToModify;
+    const aiPaths = context.aiPaths;
+    const clusterPresence = context.clusterPresence;
+    const scopeToken = context.scopeToken;
+    const nonLoadAiMods = context.nonLoadAiMods;
+    const forceSubCommanderScope = context.forceSubCommanderScope;
+    const treeCache = context.treeCache;
 
-    var aiTechPath = "/pa/ai_tech/";
+    const aiTechPath = "/pa/ai_tech/";
 
-    var filePathStarts = function (filePathFragment) {
-      return _.startsWith(filePath, filePathFragment);
-    };
+    const filePathStarts = (filePathFragment) =>
+      _.startsWith(filePath, filePathFragment);
 
-    var filePathIncludes = function (filePathFragment) {
-      return _.includes(filePath, filePathFragment);
-    };
+    const filePathIncludes = (filePathFragment) =>
+      _.includes(filePath, filePathFragment);
 
-    var whoseFileIsItAnyway = function (aiPaths) {
-      var aisShareAPath = aiPaths.enemySource === aiPaths.subCommanderSource;
+    const whoseFileIsItAnyway = (aiPaths) => {
+      const aisShareAPath = aiPaths.enemySource === aiPaths.subCommanderSource;
 
       if (aisShareAPath) {
         return "shared";
@@ -307,60 +305,55 @@ define([
       return "subcommander";
     };
 
-    var aiModsInScopeOfFile = function () {
+    const aiModsInScopeOfFile = () => {
       if (!nonLoadAiMods.length) {
         return [];
       }
 
-      var pathTypeMap = {
+      const pathTypeMap = {
         "/fabber_builds/": "fabber",
         "/factory_builds/": "factory",
         "/platoon_builds/": "platoon",
         "/platoon_templates/": "template",
       };
-      var aiManager =
+      const aiManager =
         _(pathTypeMap)
           .keys()
-          .find(function (key) {
-            return filePathIncludes(key);
-          }) || "";
+          .find((key) => filePathIncludes(key)) || "";
 
       return _.filter(nonLoadAiMods, { type: pathTypeMap[aiManager] });
     };
 
-    var changeFilePath = function (aiPath, pathLength) {
-      return aiPath + filePath.slice(pathLength);
-    };
+    const changeFilePath = (aiPath, pathLength) =>
+      aiPath + filePath.slice(pathLength);
 
-    var clusterAIModsInScopeOfFile = function () {
+    const clusterAIModsInScopeOfFile = () => {
       if (!filePathIncludes("/factory_builds/")) {
         return;
       }
 
-      var clusterCommanders = ["SupportPlatform", "SupportCommander"];
+      const clusterCommanders = ["SupportPlatform", "SupportCommander"];
 
-      return _.map(clusterCommanders, function (commander) {
-        return {
-          type: "factory",
-          op: "replace",
-          toBuild: commander,
-          idToMod: "priority",
-          value: 0,
-          matchAll: true,
-        };
-      });
+      return _.map(clusterCommanders, (commander) => ({
+        type: "factory",
+        op: "replace",
+        toBuild: commander,
+        idToMod: "priority",
+        value: 0,
+        matchAll: true,
+      }));
     };
 
     // built on the assumption that the Guardians are never Cluster
-    var processClusterJson = function (json, pathLength) {
-      var clusterOps = clusterAIModsInScopeOfFile() || [];
-      var clusterJson = _.cloneDeep(json);
-      var clusterFilePath = changeFilePath(
+    const processClusterJson = (json, pathLength) => {
+      const clusterOps = clusterAIModsInScopeOfFile() || [];
+      const clusterJson = _.cloneDeep(json);
+      const clusterFilePath = changeFilePath(
         refereeAIPaths.getAIPathDestination(
           "cluster",
           gwoAI.aiInUse("subcommander"),
           {
-            scopeToken: scopeToken,
+            scopeToken,
           }
         ),
         pathLength
@@ -370,15 +363,15 @@ define([
       configFiles[clusterFilePath] = clusterJson;
     };
 
-    var resolveScopedFileUpdate = function (
+    const resolveScopedFileUpdate = (
       json,
       fileOwner,
       isSubCommanderTechFile,
       isSubCommanderDirectory
-    ) {
-      var updatedFilePaths = [];
-      var aiJsonModsInScope = [];
-      var pathLength = 0;
+    ) => {
+      const updatedFilePaths = [];
+      let aiJsonModsInScope = [];
+      let pathLength = 0;
 
       if (aisToModify === "All") {
         if (isSubCommanderTechFile) {
@@ -416,27 +409,24 @@ define([
 
     // A scoped enemy destination (Guardians) needs a full AI file tree so its
     // ai_path lookups resolve inside it. Only subcommander-owned files are excluded.
-    var scopedEnemyDestinationPath = function (
-      fileOwner,
-      isSubCommanderTechFile
-    ) {
+    const scopedEnemyDestinationPath = (fileOwner, isSubCommanderTechFile) => {
       if (
         fileOwner === "subcommander" ||
         aiPaths.enemyDestination === aiPaths.enemySource
       ) {
         return null;
       }
-      var pathLength = isSubCommanderTechFile
+      const pathLength = isSubCommanderTechFile
         ? aiTechPath.length
         : aiPaths.enemySource.length;
       return changeFilePath(aiPaths.enemyDestination, pathLength);
     };
 
-    var writeConfigFiles = function (json, filePaths, aiMods) {
-      var finalFilePaths = _.isEmpty(filePaths) ? [filePath] : filePaths;
+    const writeConfigFiles = (json, filePaths, aiMods) => {
+      const finalFilePaths = _.isEmpty(filePaths) ? [filePath] : filePaths;
 
       applyAiMods(json, aiMods);
-      _.forEach(finalFilePaths, function (finalFilePath) {
+      _.forEach(finalFilePaths, (finalFilePath) => {
         configFiles[finalFilePath] = json;
       });
     };
@@ -444,34 +434,36 @@ define([
     // The enemy branch takes the pre-mod originalJson so an enemy Cluster foe
     // never inherits the subcommander's tech. The player branch wants it, and
     // so uses the mutated `json`.
-    var applyClusterModsIfNeeded = function (
+    const applyClusterModsIfNeeded = (
       json,
       originalJson,
       fileOwner,
       isSubCommanderTechFile
-    ) {
+    ) => {
       if (clusterPresence === "Player" && fileOwner !== "enemy") {
-        var pathLength = isSubCommanderTechFile
+        const pathLength = isSubCommanderTechFile
           ? aiTechPath.length
           : aiPaths.subCommanderSource.length;
         processClusterJson(json, pathLength);
       } else if (clusterPresence === "Enemy" && fileOwner !== "subcommander") {
-        var enemyPathLength = isSubCommanderTechFile
+        const enemyPathLength = isSubCommanderTechFile
           ? aiTechPath.length
           : aiPaths.enemySource.length;
         processClusterJson(originalJson, enemyPathLength);
       }
     };
 
-    return treeCache.getJSON(filePath).then(function (json) {
+    return treeCache.getJSON(filePath).then((json) => {
       // Only applyClusterModsIfNeeded's enemy branch reads this snapshot.
-      var originalJson =
+      const originalJson =
         clusterPresence === "Enemy" ? _.cloneDeep(json) : undefined;
-      var fileOwner = whoseFileIsItAnyway(aiPaths);
-      var isSubCommanderDirectory = filePathStarts(aiPaths.subCommanderSource);
-      var isSubCommanderTechFile = filePathStarts(aiTechPath);
+      const fileOwner = whoseFileIsItAnyway(aiPaths);
+      const isSubCommanderDirectory = filePathStarts(
+        aiPaths.subCommanderSource
+      );
+      const isSubCommanderTechFile = filePathStarts(aiTechPath);
 
-      var scopedUpdate = resolveScopedFileUpdate(
+      const scopedUpdate = resolveScopedFileUpdate(
         json,
         fileOwner,
         isSubCommanderTechFile,
@@ -481,7 +473,7 @@ define([
       // A per-viewer pass never owns the enemy's scoped destination. The base
       // pass writes it once with every connected player's mods combined;
       // recomputing it here would race that write.
-      var scopedEnemyPath = forceSubCommanderScope
+      const scopedEnemyPath = forceSubCommanderScope
         ? null
         : scopedEnemyDestinationPath(fileOwner, isSubCommanderTechFile);
       if (scopedEnemyPath) {
@@ -505,10 +497,10 @@ define([
 
   // One launch walks the same build trees once per tree and once per connected
   // viewer, so caching keeps that cost flat rather than scaling with co-op size.
-  var createTreeCache = function () {
-    var listings = {};
-    var files = {};
-    var cached = function (store, key, produce) {
+  const createTreeCache = () => {
+    const listings = {};
+    const files = {};
+    const cached = (store, key, produce) => {
       if (!Object.prototype.hasOwnProperty.call(store, key)) {
         store[key] = produce(key);
       }
@@ -517,19 +509,15 @@ define([
 
     return {
       list: function (aiPath) {
-        return cached(listings, aiPath, function (path) {
-          return api.file.list(path, true);
-        });
+        return cached(listings, aiPath, (path) => api.file.list(path, true));
       },
       // Callers mutate what they are handed, so the cache keeps the pristine
       // parse and hands out a copy. .then on a jQuery promise returns a new
       // promise each time, so the stored request is not consumed.
       getJSON: function (filePath) {
-        return cached(files, filePath, function (path) {
-          return $.getJSON(gwoUrl.gameFile(path));
-        }).then(function (json) {
-          return _.cloneDeep(json);
-        });
+        return cached(files, filePath, (path) =>
+          $.getJSON(gwoUrl.gameFile(path))
+        ).then((json) => _.cloneDeep(json));
       },
     };
   };
@@ -538,15 +526,15 @@ define([
   // clusterPresence, treeCache) alongside the per-call inventory, scopeToken and
   // forceSubCommanderScope. Most of it is passed straight through to the
   // per-file context below.
-  var processDirectories = function (aiPath, request) {
-    var deferred = $.Deferred();
-    var inventory = request.inventory;
+  const processDirectories = (aiPath, request) => {
+    const deferred = $.Deferred();
+    const inventory = request.inventory;
 
-    request.treeCache.list(aiPath).then(function (fileList) {
-      var aisToModify = request.forceSubCommanderScope
+    request.treeCache.list(aiPath).then((fileList) => {
+      const aisToModify = request.forceSubCommanderScope
         ? "SubCommanders"
         : whichAIsAreBeingModified(request.clusterPresence, inventory);
-      var nonLoadAiMods = _.reject(getRefereeInventoryAiMods(inventory), {
+      const nonLoadAiMods = _.reject(getRefereeInventoryAiMods(inventory), {
         op: "load",
       });
 
@@ -558,18 +546,18 @@ define([
         request.aiPaths
       );
 
-      var context = {
+      const context = {
         configFiles: request.configFiles,
-        aisToModify: aisToModify,
+        aisToModify,
         aiPaths: request.aiPaths,
         clusterPresence: request.clusterPresence,
         scopeToken: request.scopeToken,
-        nonLoadAiMods: nonLoadAiMods,
+        nonLoadAiMods,
         forceSubCommanderScope: request.forceSubCommanderScope,
         treeCache: request.treeCache,
       };
 
-      var promises = _.map(fileList, function (filePath) {
+      const promises = _.map(fileList, (filePath) => {
         if (
           !_.endsWith(filePath, ".json") ||
           _.includes(filePath, "/neural_networks/") // AIs fall back to /pa/ai/neural_networks/
@@ -580,7 +568,7 @@ define([
         return processFilesInDirectory(filePath, context);
       });
 
-      Promise.all(promises).then(function () {
+      Promise.all(promises).then(() => {
         deferred.resolve();
       });
     });
@@ -588,20 +576,17 @@ define([
     return deferred.promise();
   };
 
-  var whoIsCluster = function () {
-    var game = model.game();
-    var inventory = game.inventory();
-    var ai = game.galaxy().stars()[game.currentStar()].ai();
-    var alliedCommanders = _.isUndefined(ai.ally)
+  const whoIsCluster = () => {
+    const game = model.game();
+    const inventory = game.inventory();
+    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
-    var numberOfAllies = alliedCommanders.length;
-    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
-    var enemyIsCluster =
-      gwoAI.isCluster(ai) ||
-      _.some(ai.foes, function (foe) {
-        return gwoAI.isCluster(foe);
-      });
+    const numberOfAllies = alliedCommanders.length;
+    const playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    const enemyIsCluster =
+      gwoAI.isCluster(ai) || _.some(ai.foes, (foe) => gwoAI.isCluster(foe));
 
     if (playerIsCluster && numberOfAllies > 0) {
       return "Player";
@@ -616,31 +601,31 @@ define([
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = { applyAiMods: applyAiMods };
+    module.exports = { applyAiMods };
   }
 
   // parse AI files, apply AI mods, and load the results into self.files()
   return function () {
-    var deferred = $.Deferred();
+    const deferred = $.Deferred();
 
-    var self = this;
-    var configFiles = self.files(); // JSON files passed to the server
-    var aiPaths = {
+    const self = this;
+    const configFiles = self.files(); // JSON files passed to the server
+    const aiPaths = {
       enemySource: gwoAI.getAIPathSource("enemy"),
       enemyDestination: gwoAI.getAIPathDestination("enemy"),
       subCommanderSource: gwoAI.getAIPathSource("subcommander"),
       subCommanderDestination: gwoAI.getAIPathDestination("subcommander"),
     };
-    var aisShareAPath = aiPaths.enemySource === aiPaths.subCommanderSource;
-    var aiPathsToProcess = aisShareAPath
+    const aisShareAPath = aiPaths.enemySource === aiPaths.subCommanderSource;
+    const aiPathsToProcess = aisShareAPath
       ? [aiPaths.enemySource]
       : [aiPaths.enemySource, aiPaths.subCommanderSource];
-    var clusterPresence = whoIsCluster();
-    var game = model.game();
-    var ai = game.galaxy().stars()[game.currentStar()].ai();
-    var guardians = ai.mirrorMode;
-    var connectedClients = refereeCoop.getConnectedViewers();
-    var playerAiModInventory = guardians
+    const clusterPresence = whoIsCluster();
+    const game = model.game();
+    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const guardians = ai.mirrorMode;
+    const connectedClients = refereeCoop.getConnectedViewers();
+    const playerAiModInventory = guardians
       ? getInventoryWithAllPlayerAiMods(
           game.inventory(),
           game,
@@ -649,42 +634,40 @@ define([
       : game.inventory();
 
     // Scoped to this launch, so a later battle always re-reads the tree from disk.
-    var treeCache = createTreeCache();
+    const treeCache = createTreeCache();
 
     // Shared by every processDirectories call below; the viewer ones override
     // aiPaths, inventory and the two scope fields.
-    var launch = {
-      configFiles: configFiles,
-      aiPaths: aiPaths,
-      clusterPresence: clusterPresence,
-      treeCache: treeCache,
+    const launch = {
+      configFiles,
+      aiPaths,
+      clusterPresence,
+      treeCache,
     };
 
-    var promises = _.map(aiPathsToProcess, function (aiPath) {
-      return processDirectories(
+    const promises = _.map(aiPathsToProcess, (aiPath) =>
+      processDirectories(
         aiPath,
         _.assign({}, launch, {
           inventory: playerAiModInventory,
           scopeToken: undefined,
           forceSubCommanderScope: false,
         })
-      );
-    });
+      )
+    );
 
     _.forEach(
       refereeCoop.getConnectedViewerInventories(game, connectedClients),
-      function (viewer, viewerIndex) {
-        var viewerInventory = viewer.inventory;
-        var viewerPlayerTag = ".player" + viewerIndex;
-        var viewerScopeToken = refereeAIPaths.getScopeToken(
+      (viewer, viewerIndex) => {
+        const viewerInventory = viewer.inventory;
+        const viewerPlayerTag = `.player${viewerIndex}`;
+        const viewerScopeToken = refereeAIPaths.getScopeToken(
           viewerPlayerTag,
           viewerPlayerTag
         );
-        var viewerSubCommanderDestination = gwoAI.getSubcommanderPathForViewer(
-          viewerInventory,
-          viewerPlayerTag
-        );
-        var viewerAiPaths = _.assign({}, aiPaths, {
+        const viewerSubCommanderDestination =
+          gwoAI.getSubcommanderPathForViewer(viewerInventory, viewerPlayerTag);
+        const viewerAiPaths = _.assign({}, aiPaths, {
           subCommanderDestination: viewerSubCommanderDestination,
         });
 
@@ -702,7 +685,7 @@ define([
       }
     );
 
-    Promise.all(promises).then(function () {
+    Promise.all(promises).then(() => {
       deferred.resolve();
     });
 

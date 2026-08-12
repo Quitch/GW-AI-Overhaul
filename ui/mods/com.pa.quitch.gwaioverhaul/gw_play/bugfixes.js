@@ -1,7 +1,7 @@
 var gwoBugfixesLoaded;
 
 function gwoBugfixes() {
-  var game = model.game();
+  const game = model.game();
 
   if (gwoBugfixesLoaded || game.isTutorial()) {
     return;
@@ -10,12 +10,12 @@ function gwoBugfixes() {
   gwoBugfixesLoaded = true;
 
   try {
-    var galaxy = game.galaxy();
-    var luckyCommanderFixed = ko
+    const galaxy = game.galaxy();
+    const luckyCommanderFixed = ko
       .observable()
       .extend({ local: "gwaio_lucky_commander_fixed" });
-    var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-    var allFixesApplied =
+    const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+    const allFixesApplied =
       gwoSettings &&
       gwoSettings.treasurePlanetFixed &&
       gwoSettings.clusterFixed &&
@@ -26,7 +26,7 @@ function gwoBugfixes() {
       return;
     }
 
-    var fixTreasurePlanetCardList = function (star) {
+    const fixTreasurePlanetCardList = (star) => {
       if (_.includes(star.cardList(), undefined)) {
         star.cardList([]);
         gwoSettings.treasurePlanetFixed = true;
@@ -36,17 +36,17 @@ function gwoBugfixes() {
     // Wars generated before the offer became derived hold the host's pick, and
     // recorded no treasure star index. A treasure star is never pre-dealt
     // anything else, so its list clears whole.
-    var deriveTreasureLoadout = function (gwoTreasure) {
-      var stars = galaxy.stars();
+    const deriveTreasureLoadout = (gwoTreasure) => {
+      const stars = galaxy.stars();
       gwoSettings.treasureStar = gwoTreasure.findTreasureStar(stars);
 
       // A save taken mid-exploration is already showing that list, and clearing
       // it would leave the player nothing to pick.
-      var midExplore =
+      const midExplore =
         game.turnState() === "explore" &&
         game.currentStar() === gwoSettings.treasureStar;
 
-      var star = _.isNumber(gwoSettings.treasureStar)
+      const star = _.isNumber(gwoSettings.treasureStar)
         ? stars[gwoSettings.treasureStar]
         : undefined;
       if (star && !midExplore && star.cardList().length) {
@@ -54,10 +54,10 @@ function gwoBugfixes() {
       }
     };
 
-    var fixClusterType = function (mod, security) {
+    const fixClusterType = (mod, security) => {
       // Worker needs two fixes but each fix is applied in a separate mod
       if (mod.path === "buildable_types") {
-        mod.value = mod.value + " & Custom58";
+        mod.value = `${mod.value} & Custom58`;
         return mod.file;
       } else if (mod.file === security && mod.path === "unit_types") {
         mod.value.push("UNITTYPE_Custom58");
@@ -66,22 +66,23 @@ function gwoBugfixes() {
       return null;
     };
 
-    var fixClusterCommanderTypes = function (ai) {
-      var securityFix = false; // we have to fix `unit_types`
-      var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
-      var security =
+    const fixClusterCommanderTypes = (ai) => {
+      let securityFix = false; // we have to fix `unit_types`
+      let workerFix = 0; // we have to fix `buildable_types` and `unit_types`
+      const security =
         "/pa/units/land/bot_support_commander/bot_support_commander.json";
-      var worker = "/pa/units/air/support_platform/support_platform.json";
+      const worker = "/pa/units/air/support_platform/support_platform.json";
 
-      for (var mod of ai.inventory) {
-        var isSecurityCandidate = securityFix !== true && mod.file === security;
-        var isWorkerCandidate = workerFix < 2 && mod.file === worker;
+      for (const mod of ai.inventory) {
+        const isSecurityCandidate =
+          securityFix !== true && mod.file === security;
+        const isWorkerCandidate = workerFix < 2 && mod.file === worker;
 
         if (!isSecurityCandidate && !isWorkerCandidate) {
           continue;
         }
 
-        var result = fixClusterType(mod, security);
+        const result = fixClusterType(mod, security);
         switch (result) {
           case security:
             securityFix = true;
@@ -98,14 +99,14 @@ function gwoBugfixes() {
       }
     };
 
-    var fixLuckyCommanderLocalStorageVariable = function () {
-      var unlockedVanillaStartCards = ko
+    const fixLuckyCommanderLocalStorageVariable = () => {
+      const unlockedVanillaStartCards = ko
         .observableArray()
         .extend({ local: "gw_bank" });
-      var unlockedGwoStartCards = ko
+      const unlockedGwoStartCards = ko
         .observableArray()
         .extend({ local: "gwaio_bank" });
-      var index = _.findIndex(unlockedVanillaStartCards().startCards, {
+      const index = _.findIndex(unlockedVanillaStartCards().startCards, {
         id: "gwaio_start_lucky",
       });
 
@@ -121,7 +122,7 @@ function gwoBugfixes() {
       luckyCommanderFixed("true");
     };
 
-    var checkVersion = function (fixedVersion) {
+    const checkVersion = (fixedVersion) => {
       if (!gwoSettings.version) {
         return -1;
       }
@@ -131,12 +132,10 @@ function gwoBugfixes() {
       });
     };
 
-    var atLeastVersion = function (version) {
-      return checkVersion(version) >= 0;
-    };
+    const atLeastVersion = (version) => checkVersion(version) >= 0;
 
-    var checkIfPatchesNeeded = function () {
-      var playerIsCluster =
+    const checkIfPatchesNeeded = () => {
+      const playerIsCluster =
         model.game().inventory().getTag("global", "playerFaction") === 4;
 
       if (atLeastVersion("6.8.0")) {
@@ -153,8 +152,8 @@ function gwoBugfixes() {
       }
     };
 
-    var applyFixes = function (gwoTreasure) {
-      for (var star of galaxy.stars()) {
+    const applyFixes = (gwoTreasure) => {
+      for (const star of galaxy.stars()) {
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
         }
@@ -188,16 +187,14 @@ function gwoBugfixes() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
       ],
-      function (gwoSave, gwoTreasure) {
+      (gwoSave, gwoTreasure) => {
         applyFixes(gwoTreasure);
         gwoSave(game, true);
       }
     );
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoBugfixes();

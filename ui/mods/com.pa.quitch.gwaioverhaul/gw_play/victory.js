@@ -2,17 +2,17 @@
 // war in its fight branch but leaves the turn on "begin", and gw_play.js only
 // opens gw_war_over once the turn reaches "end" - which nothing but exploring the
 // star and taking a card ever does.
-define(function () {
-  var warEndOperator = "gwo_war_end";
+define(() => {
+  const warEndOperator = "gwo_war_end";
 
-  var factory = function (params) {
-    var game = params.game;
-    var gwoSettings = params.gwoSettings;
-    var treasure = params.treasure;
-    var ended = false;
+  const factory = (params) => {
+    const game = params.game;
+    const gwoSettings = params.gwoSettings;
+    const treasure = params.treasure;
+    let ended = false;
 
-    var onTreasureStar = function () {
-      var star = game.currentStar();
+    const onTreasureStar = () => {
+      const star = game.currentStar();
 
       if (gwoSettings && _.isNumber(gwoSettings.treasureStar)) {
         return treasure.isTreasureStar(gwoSettings, star);
@@ -23,34 +23,29 @@ define(function () {
       return treasure.findTreasureStar(game.galaxy().stars()) === star;
     };
 
-    var perPlayerTech = function () {
-      return !!(
+    const perPlayerTech = () =>
+      !!(
         _.isFunction(model.gwCampaignPerPlayerTechCards) &&
         model.gwCampaignPerPlayerTechCards()
       );
-    };
 
-    var guardiansStillOweALoadout = function () {
-      return (
-        onTreasureStar() &&
-        treasure.anyPlayerCanUnlockLoadout({
-          localUnlockedIds: treasure.localUnlockedLoadoutIds(
-            params.stockBank,
-            params.gwoBank
-          ),
-          records: _.isFunction(game.coopPlayerInventoryData)
-            ? game.coopPlayerInventoryData()
-            : [],
-          perPlayerTech: perPlayerTech(),
-        })
-      );
-    };
+    const guardiansStillOweALoadout = () =>
+      onTreasureStar() &&
+      treasure.anyPlayerCanUnlockLoadout({
+        localUnlockedIds: treasure.localUnlockedLoadoutIds(
+          params.stockBank,
+          params.gwoBank
+        ),
+        records: _.isFunction(game.coopPlayerInventoryData)
+          ? game.coopPlayerInventoryData()
+          : [],
+        perPlayerTech: perPlayerTech(),
+      });
 
-    var warWon = function () {
-      return !ended && game.gameState() === "won" && game.turnState() !== "end";
-    };
+    const warWon = () =>
+      !ended && game.gameState() === "won" && game.turnState() !== "end";
 
-    var endWar = function () {
+    const endWar = () => {
       if (!warWon()) {
         return;
       }
@@ -62,16 +57,16 @@ define(function () {
       model.exitGate($.Deferred());
       game.turnState("end");
 
-      $.when(params.save(game, true)).always(function () {
+      $.when(params.save(game, true)).always(() => {
         // always, so a failed stat write still opens the gate.
-        api.tally.incStatInt("gw_war_victory").always(function () {
+        api.tally.incStatInt("gw_war_victory").always(() => {
           model.exitGate().resolve();
         });
       });
     };
 
     // Only the host holds every player's unlock record, so only the host decides.
-    var endWarIfWon = function () {
+    const endWarIfWon = () => {
       if (
         model.isCampaignViewer() ||
         !warWon() ||
@@ -91,7 +86,7 @@ define(function () {
       model.registerCampaignHostOperatorHandler(warEndOperator, endWar);
     }
 
-    game.gameState.subscribe(function () {
+    game.gameState.subscribe(() => {
       // defeatTeam wins the war from inside winTurn, which sets the turn back to
       // "begin" immediately afterwards.
       _.defer(endWarIfWon);
@@ -99,7 +94,7 @@ define(function () {
 
     _.defer(endWarIfWon);
 
-    return { endWar: endWar, endWarIfWon: endWarIfWon };
+    return { endWar, endWarIfWon };
   };
 
   return factory;

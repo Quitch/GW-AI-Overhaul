@@ -1,7 +1,7 @@
 var gwoSystemChangesLoaded;
 
 function gwoSystemChanges() {
-  var game = model.game();
+  const game = model.game();
 
   if (gwoSystemChangesLoaded || game.isTutorial()) {
     return;
@@ -10,11 +10,11 @@ function gwoSystemChanges() {
   gwoSystemChangesLoaded = true;
 
   try {
-    var galaxy = game.galaxy();
-    var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+    const galaxy = game.galaxy();
+    const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
     if (gwoSettings) {
       console.log(
-        "War created using Galactic War Overhaul v" + gwoSettings.version
+        `War created using Galactic War Overhaul v${gwoSettings.version}`
       );
     } else {
       console.log(
@@ -23,12 +23,12 @@ function gwoSystemChanges() {
     }
 
     // Don't allow starting zoom higher than maximum zoom
-    _.defer(function () {
+    _.defer(() => {
       model.galaxy.zoom(Math.max(model.galaxy.zoom(), model.galaxy.minZoom()));
       model.centerOnPlayer();
     });
 
-    var createBitmap = function (params) {
+    const createBitmap = (params) => {
       if (!params.url) {
         throw new Error("No URL specified");
       }
@@ -36,13 +36,13 @@ function gwoSystemChanges() {
         throw new Error("No size specified");
       }
 
-      var result = new createjs.Bitmap(params.url);
+      const result = new createjs.Bitmap(params.url);
       result.x = 0;
       result.y = 0;
       result.regX = params.size[0] / 2;
       result.regY = params.size[1] / 2;
 
-      var scale = params.scale;
+      const scale = params.scale;
       if (!_.isUndefined(scale)) {
         result.scaleX = scale;
         result.scaleY = scale;
@@ -54,8 +54,8 @@ function gwoSystemChanges() {
           throw new Error("noCache incompatible with color");
         }
 
-        var updateFilters = function () {
-          var color = result.color();
+        const updateFilters = () => {
+          const color = result.color();
           result.filters = [];
           if (color) {
             result.filters.push(
@@ -70,7 +70,7 @@ function gwoSystemChanges() {
         };
         updateFilters();
 
-        result.color.subscribe(function () {
+        result.color.subscribe(() => {
           updateFilters();
           result.updateCache();
         });
@@ -83,15 +83,15 @@ function gwoSystemChanges() {
       if (!params.noCache) {
         // Note: Extra pixel compensates for bad filtering on the edges
         result.cache(-1, -1, params.size[0] + 2, params.size[1] + 2);
-        $(result.image).on("load", function () {
+        $(result.image).on("load", () => {
           result.updateCache();
         });
       }
       return result;
     };
 
-    var sortContainer = function (container) {
-      container.sortChildren(function (a, b) {
+    const sortContainer = (container) => {
+      container.sortChildren((a, b) => {
         if (_.isUndefined(a.z)) {
           if (_.isUndefined(b.z)) {
             return 0;
@@ -109,12 +109,12 @@ function gwoSystemChanges() {
       loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html")
     );
 
-    var SelectionViewModel = function (config) {
-      var self = this;
-      var galaxyView = config.galaxy;
-      var hover = !!config.hover;
-      var iconUrl = config.iconUrl;
-      var color = config.color;
+    const SelectionViewModel = function (config) {
+      const self = this;
+      const galaxyView = config.galaxy;
+      const hover = !!config.hover;
+      let iconUrl = config.iconUrl;
+      let color = config.color;
 
       if (!iconUrl) {
         if (hover) {
@@ -134,19 +134,18 @@ function gwoSystemChanges() {
 
       self.visible = ko.observable(true);
       self.star = ko.observable(-1);
-      self.system = ko.computed(function () {
-        return self.star() >= 0 ? galaxyView.systems()[self.star()] : undefined;
-      });
+      self.system = ko.computed(() =>
+        self.star() >= 0 ? galaxyView.systems()[self.star()] : undefined
+      );
 
-      var extractor = function (field) {
-        return ko.pureComputed(function () {
-          var system = self.system();
+      const extractor = (field) =>
+        ko.pureComputed(() => {
+          const system = self.system();
           if (system) {
             return loc(system[field]()) || "";
           }
           return "";
         });
-      };
 
       self.name = extractor("name");
       self.html = extractor("html");
@@ -157,19 +156,19 @@ function gwoSystemChanges() {
       self.icon = createBitmap({
         url: iconUrl,
         size: [240, 240],
-        color: color,
+        color,
       });
       self.scale.addChild(self.icon);
 
-      ko.computed(function () {
-        var system = self.system();
-        var visible = !!system && self.visible();
+      ko.computed(() => {
+        const system = self.system();
+        let visible = !!system && self.visible();
         if (hover && visible) {
           visible = system.mouseOver() !== system.mouseOut();
         }
         self.icon.visible = visible;
         if (self.icon.visible) {
-          var container = system.systemDisplay;
+          const container = system.systemDisplay;
           container.addChild(self.scale);
           sortContainer(container);
         } else if (self.scale.parent) {
@@ -178,12 +177,12 @@ function gwoSystemChanges() {
       });
 
       if (!hover) {
-        self.icon.addEventListener("tick", function () {
+        self.icon.addEventListener("tick", () => {
           self.icon.rotation = (_.now() * 0.02) % 360;
         });
 
         self.system.subscribe(
-          function (oldSystem) {
+          (oldSystem) => {
             if (oldSystem) {
               oldSystem.selected(false);
             }
@@ -192,54 +191,37 @@ function gwoSystemChanges() {
           "beforeChange"
         );
 
-        self.system.subscribe(function () {
-          var newSystem = self.system();
+        self.system.subscribe(() => {
+          const newSystem = self.system();
 
           if (newSystem) {
             newSystem.selected(true);
 
-            var radius = loc("!LOC:Radius:");
-            var metalSpots = loc("!LOC:Metal Spots:");
-            var metalClusters = loc("!LOC:Metal Clusters:");
-            var metalDensity = loc("!LOC:Metal Density:");
-            var temperature = loc("!LOC:Temperature:");
-            var waterHeight = loc("!LOC:Water Height:");
+            const radius = loc("!LOC:Radius:");
+            const metalSpots = loc("!LOC:Metal Spots:");
+            const metalClusters = loc("!LOC:Metal Clusters:");
+            const metalDensity = loc("!LOC:Metal Density:");
+            const temperature = loc("!LOC:Temperature:");
+            const waterHeight = loc("!LOC:Water Height:");
 
-            model.gwoPlanetData = _.map(newSystem.planets(), function (planet) {
-              var tooltip = radius + " " + planet.generator.radius;
+            model.gwoPlanetData = _.map(newSystem.planets(), (planet) => {
+              let tooltip = `${radius} ${planet.generator.radius}`;
 
               if (planet.generator.biome === "gas") {
                 return tooltip;
               }
 
               if (planet.metal_spots) {
-                tooltip +=
-                  "<br>" + metalSpots + " " + planet.metal_spots.length;
+                tooltip += `<br>${metalSpots} ${planet.metal_spots.length}`;
               } else {
-                tooltip +=
-                  "<br>" +
-                  metalClusters +
-                  " " +
-                  Math.round(planet.generator.metalClusters) +
-                  "<br>" +
-                  metalDensity +
-                  " " +
-                  Math.round(planet.generator.metalDensity);
+                tooltip += `<br>${metalClusters} ${Math.round(planet.generator.metalClusters)}<br>${metalDensity} ${Math.round(planet.generator.metalDensity)}`;
               }
               if (
                 planet.generator.biome !== "metal" &&
                 planet.generator.biome !== "metal_boss" &&
                 planet.generator.biome !== "moon"
               ) {
-                tooltip +=
-                  "<br>" +
-                  temperature +
-                  " " +
-                  Math.round(planet.generator.temperature) +
-                  "<br>" +
-                  waterHeight +
-                  " " +
-                  Math.round(planet.generator.waterHeight);
+                tooltip += `<br>${temperature} ${Math.round(planet.generator.temperature)}<br>${waterHeight} ${Math.round(planet.generator.waterHeight)}`;
               }
               return tooltip;
             });
@@ -261,7 +243,7 @@ function gwoSystemChanges() {
       hover: true,
     });
 
-    model.canMove = ko.computed(function () {
+    model.canMove = ko.computed(() => {
       if (model.isCampaignViewer() && !model.gwCampaignReplayingAction) {
         return false;
       }
@@ -270,8 +252,8 @@ function gwoSystemChanges() {
         return false;
       }
 
-      var from = game.currentStar();
-      var to = model.selection.star();
+      const from = game.currentStar();
+      const to = model.selection.star();
 
       if (to < 0 || to >= galaxy.stars().length) {
         return false;
@@ -288,35 +270,32 @@ function gwoSystemChanges() {
       return galaxy.pathBetween(from, to, model.cheats.noFog());
     });
 
-    model.displayMove = ko.computed(function () {
-      return model.canShowCampaignActionButtons() && model.canMove();
-    });
+    model.displayMove = ko.computed(
+      () => model.canShowCampaignActionButtons() && model.canMove()
+    );
 
-    model.displayFight = ko.computed(function () {
-      return (
+    model.displayFight = ko.computed(
+      () =>
         model.canShowCampaignActionButtons() &&
         model.canFight() &&
         !model.allowLoad() &&
         model.selection.star() === game.currentStar()
-      );
-    });
+    );
 
-    model.displayExplore = ko.computed(function () {
-      return (
+    model.displayExplore = ko.computed(
+      () =>
         model.canShowCampaignActionButtons() &&
         model.canExplore() &&
         model.selection.star() === game.currentStar()
-      );
-    });
+    );
 
-    model.displayLoadSave = ko.computed(function () {
-      return (
+    model.displayLoadSave = ko.computed(
+      () =>
         model.canShowCampaignActionButtons() &&
         model.canFight() &&
         model.allowLoad() &&
         model.selection.star() === game.currentStar()
-      );
-    });
+    );
 
     requireGW(
       [
@@ -326,43 +305,40 @@ function gwoSystemChanges() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
       ],
-      function (GW, gwoVictory, gwoSave, gwoTreasure, gwoBank) {
+      (GW, gwoVictory, gwoSave, gwoTreasure, gwoBank) => {
         gwoVictory({
-          game: game,
-          gwoSettings: gwoSettings,
+          game,
+          gwoSettings,
           save: gwoSave,
           treasure: gwoTreasure,
           stockBank: GW.bank,
-          gwoBank: gwoBank,
+          gwoBank,
         });
       }
     );
 
-    requireGW(["shared/gw_factions"], function (GWFactions) {
-      var normalizedColor = function (faction) {
-        return _.map(faction.color[0], function (c) {
-          return c / 255;
-        });
-      };
+    requireGW(["shared/gw_factions"], (GWFactions) => {
+      const normalizedColor = (faction) =>
+        _.map(faction.color[0], (c) => c / 255);
 
-      game.defeatTeam = function (defeatedTeam) {
-        var remainingBosses = 0;
+      game.defeatTeam = (defeatedTeam) => {
+        let remainingBosses = 0;
 
         api.tally.incStatInt("gw_eliminate_faction");
 
-        _.forEach(model.galaxy.systems(), function (system) {
-          var star = system.star;
-          var ai = star.ai();
-          var guardians = ai && ai.mirrorMode;
+        _.forEach(model.galaxy.systems(), (system) => {
+          const star = system.star;
+          const ai = star.ai();
+          const guardians = ai && ai.mirrorMode;
 
           if (ai && ai.team === defeatedTeam) {
-            var replacementAI = _.first(ai.foes);
+            const replacementAI = _.first(ai.foes);
             if (replacementAI) {
-              var newAI = _.extend({}, ai, replacementAI);
+              const newAI = _.extend({}, ai, replacementAI);
               newAI.foes = _.rest(ai.foes);
               delete newAI.minions;
 
-              var factionColor = normalizedColor(GWFactions[newAI.faction]);
+              const factionColor = normalizedColor(GWFactions[newAI.faction]);
               system.ownerColor(factionColor.concat(3));
 
               star.ai(newAI);
@@ -379,14 +355,14 @@ function gwoSystemChanges() {
         });
 
         if (!remainingBosses) {
-          requireGW(["shared/gw_game"], function (GWGame) {
+          requireGW(["shared/gw_game"], (GWGame) => {
             game.gameState(GWGame.gameStates.won);
           });
         }
       };
 
-      _.forEach(model.galaxy.systems(), function (system) {
-        var ai = system.star.ai();
+      _.forEach(model.galaxy.systems(), (system) => {
+        const ai = system.star.ai();
         if (!ai) {
           return;
         }
@@ -395,11 +371,11 @@ function gwoSystemChanges() {
           return;
         }
 
-        var innerColour = ai.ally
+        const innerColour = ai.ally
           ? normalizedColor(GWFactions[ai.ally.faction])
           : normalizedColor(GWFactions[ai.foes[0].faction]);
 
-        var innerRing = createBitmap({
+        const innerRing = createBitmap({
           url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
           size: [240, 240],
           color: innerColour.concat(7),
@@ -407,14 +383,14 @@ function gwoSystemChanges() {
           alpha: 0.8,
         });
 
-        var scaleInnerRing = new createjs.Container();
+        const scaleInnerRing = new createjs.Container();
         scaleInnerRing.addChild(innerRing);
         scaleInnerRing.z = 0;
         system.systemDisplay.addChild(scaleInnerRing);
 
         innerRing.visible = false;
 
-        ko.computed(function () {
+        ko.computed(() => {
           innerRing.visible =
             (system.connected() || model.cheats.noFog()) &&
             !!system.ownerColor() &&
@@ -437,9 +413,7 @@ function gwoSystemChanges() {
     });
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoSystemChanges();

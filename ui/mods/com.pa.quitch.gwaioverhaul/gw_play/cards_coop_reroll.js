@@ -1,25 +1,25 @@
 // Co-op pending-tech reroll. A viewer asks the host (gwo_reroll_pending_tech) to
 // reroll its pending offer; the host deals a smaller hand, stores it, and returns
 // it (gwo_reroll_pending_tech_result) for the viewer to apply. See coop.md.
-define(function () {
+define(() => {
   // A reroll spends one more of the viewer's offered cards.
-  var computeRerollDeal = function (cardsOffered, currentCardCount) {
-    var rerollsUsed = Math.max(0, cardsOffered - currentCardCount);
-    var nextRerollsUsed = rerollsUsed + 1;
+  const computeRerollDeal = (cardsOffered, currentCardCount) => {
+    const rerollsUsed = Math.max(0, cardsOffered - currentCardCount);
+    const nextRerollsUsed = rerollsUsed + 1;
     return {
-      rerollsUsed: rerollsUsed,
-      nextRerollsUsed: nextRerollsUsed,
+      rerollsUsed,
+      nextRerollsUsed,
       cardCount: cardsOffered - nextRerollsUsed,
       exhausted: nextRerollsUsed > cardsOffered - 1,
     };
   };
 
   // The reject reason, or undefined when the request is valid.
-  var pendingTechRerollValidationError = function (
+  const pendingTechRerollValidationError = (
     payload,
     pendingTechCards,
     containsLoadout
-  ) {
+  ) => {
     if (
       !_.isNumber(pendingTechCards.star) ||
       !_.isArray(pendingTechCards.cards)
@@ -48,9 +48,9 @@ define(function () {
 
   // A reroll is a child of the deal it replaces, so the viewer can reroll the
   // same offer repeatedly and get a different hand each time.
-  var pendingTechRerollRng = function (params) {
-    var gwoStreams = params.gwoStreams;
-    var pendingTechCards = params.pendingTechCards || {};
+  const pendingTechRerollRng = (params) => {
+    const gwoStreams = params.gwoStreams;
+    const pendingTechCards = params.pendingTechCards || {};
     return gwoStreams.coopRerollRng(
       params.warRng,
       gwoStreams.coopPlayerKey(params.record, params.client),
@@ -59,24 +59,24 @@ define(function () {
     );
   };
 
-  var factory = function (params) {
-    var game = params.game;
-    var galaxy = params.galaxy;
-    var chooseCards = params.chooseCards;
-    var helpers = params.helpers;
-    var GWInventory = params.GWInventory;
-    var numCardsToOffer = params.numCardsToOffer;
-    var gwoSave = params.gwoSave;
-    var GW = params.GW;
-    var gwoStreams = params.gwoStreams;
-    var warRng = params.warRng;
-    var gwoBank = params.gwoBank;
-    var stockBank = params.stockBank;
+  const factory = (params) => {
+    const game = params.game;
+    const galaxy = params.galaxy;
+    const chooseCards = params.chooseCards;
+    const helpers = params.helpers;
+    const GWInventory = params.GWInventory;
+    const numCardsToOffer = params.numCardsToOffer;
+    const gwoSave = params.gwoSave;
+    const GW = params.GW;
+    const gwoStreams = params.gwoStreams;
+    const warRng = params.warRng;
+    const gwoBank = params.gwoBank;
+    const stockBank = params.stockBank;
 
-    var rerollPendingTechRequest = "gwo_reroll_pending_tech";
-    var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
+    const rerollPendingTechRequest = "gwo_reroll_pending_tech";
+    const rerollPendingTechResult = "gwo_reroll_pending_tech_result";
 
-    var sendPendingTechRerollResult = function (clientId, requestId, payload) {
+    const sendPendingTechRerollResult = (clientId, requestId, payload) => {
       if (!model.sendCampaignHostOperator) {
         return;
       }
@@ -87,8 +87,8 @@ define(function () {
       });
     };
 
-    var failPendingTechReroll = function (operator, reason) {
-      console.error("[GW COOP] failed to reroll pending tech: " + reason);
+    const failPendingTechReroll = (operator, reason) => {
+      console.error(`[GW COOP] failed to reroll pending tech: ${reason}`);
       if (_.isUndefined(operator.client_id)) {
         return;
       }
@@ -100,17 +100,17 @@ define(function () {
       });
     };
 
-    var applyPendingTechRerollResult = function (operator) {
-      var payload = (operator && operator.payload) || {};
+    const applyPendingTechRerollResult = (operator) => {
+      const payload = (operator && operator.payload) || {};
       model.gwoRerollPending(false);
 
       if (payload.error) {
-        console.error("[GW COOP] pending tech reroll failed: " + payload.error);
+        console.error(`[GW COOP] pending tech reroll failed: ${payload.error}`);
         model.scanning(false);
         return;
       }
 
-      var pendingTechCards = payload.pendingTechCards;
+      const pendingTechCards = payload.pendingTechCards;
       if (
         !pendingTechCards ||
         !_.isNumber(pendingTechCards.star) ||
@@ -121,7 +121,7 @@ define(function () {
         return;
       }
 
-      var record = game.findCoopPlayerInventoryData({
+      const record = game.findCoopPlayerInventoryData({
         id: payload.client_id,
         name: payload.client_name,
       });
@@ -133,8 +133,8 @@ define(function () {
         return;
       }
 
-      var nextRecord = _.assign({}, _.cloneDeep(record), {
-        pendingTechCards: pendingTechCards,
+      const nextRecord = _.assign({}, _.cloneDeep(record), {
+        pendingTechCards,
         updatedAt: payload.updated_at || _.now(),
       });
 
@@ -150,7 +150,7 @@ define(function () {
       model.gwoOfferRerolls(payload.offer_rerolls === true);
 
       // Cosmetic beat, matching model.explore. Deliberately not awaited.
-      _.delay(function () {
+      _.delay(() => {
         model.scanning(false);
       }, 2000);
 
@@ -158,28 +158,28 @@ define(function () {
       // above is the canonical mutation, so early exits may stay undefined.
       return $.when(
         model.prepareCoopPlayerInventories(),
-        GW.manifest.saveGame(game).then(null, function (err) {
+        GW.manifest.saveGame(game).then(null, (err) => {
           console.error("[GW COOP] failed to save rerolled tech", err);
           return $.Deferred().reject(err).promise();
         })
       );
     };
 
-    var rerollPendingTechForCoopPlayer = function (operator) {
-      var result = $.Deferred();
+    const rerollPendingTechForCoopPlayer = (operator) => {
+      const result = $.Deferred();
 
       // Rejects as well as notifying the viewer, so the campaign queue can
       // order this handler's async work.
-      var failReroll = function (reason) {
+      const failReroll = (reason) => {
         failPendingTechReroll(operator, reason);
         result.reject(reason);
       };
 
-      var resolveResult = function () {
+      const resolveResult = () => {
         result.resolve();
       };
 
-      var rejectResult = function (error) {
+      const rejectResult = (error) => {
         result.reject(error);
       };
 
@@ -188,8 +188,8 @@ define(function () {
         return result.promise();
       }
 
-      var payload = (operator && operator.payload) || {};
-      var record = game.findCoopPlayerInventoryData({
+      const payload = (operator && operator.payload) || {};
+      const record = game.findCoopPlayerInventoryData({
         id: operator.client_id,
         name: operator.client_name,
       });
@@ -199,8 +199,8 @@ define(function () {
         return result.promise();
       }
 
-      var pendingTechCards = record.pendingTechCards;
-      var validationError = pendingTechRerollValidationError(
+      const pendingTechCards = record.pendingTechCards;
+      const validationError = pendingTechRerollValidationError(
         payload,
         pendingTechCards,
         helpers.pendingCardsContainLoadout(pendingTechCards)
@@ -210,21 +210,21 @@ define(function () {
         return result.promise();
       }
 
-      var star = galaxy.stars()[pendingTechCards.star];
+      const star = galaxy.stars()[pendingTechCards.star];
       if (!star) {
         failReroll("missing pending tech star");
         return result.promise();
       }
 
-      var playerInventory = new GWInventory();
+      const playerInventory = new GWInventory();
       playerInventory.load(_.cloneDeep(record.inventory));
 
-      var dealCards = function () {
-        var cardsOffered = helpers.cardsOfferedCount(
+      const dealCards = () => {
+        const cardsOffered = helpers.cardsOfferedCount(
           numCardsToOffer,
           playerInventory
         );
-        var rerollState = computeRerollDeal(
+        const rerollState = computeRerollDeal(
           cardsOffered,
           pendingTechCards.cards.length
         );
@@ -234,33 +234,33 @@ define(function () {
           return;
         }
 
-        var nextRerollsUsed = rerollState.nextRerollsUsed;
+        const nextRerollsUsed = rerollState.nextRerollsUsed;
         chooseCards({
           inventory: playerInventory,
           count: rerollState.cardCount,
-          star: star,
+          star,
           systemCards: [],
           rng: pendingTechRerollRng({
-            gwoStreams: gwoStreams,
-            warRng: warRng,
-            record: record,
+            gwoStreams,
+            warRng,
+            record,
             client: { id: operator.client_id, name: operator.client_name },
-            pendingTechCards: pendingTechCards,
+            pendingTechCards,
             rerollsUsed: nextRerollsUsed,
           }),
-        }).then(function (cards) {
-          var updatedAt = _.now();
-          var nextPendingTechCards = {
+        }).then((cards) => {
+          const updatedAt = _.now();
+          const nextPendingTechCards = {
             star: pendingTechCards.star,
             cards: cards || [],
             dealIndex: pendingTechCards.dealIndex,
-            cardsOffered: cardsOffered,
+            cardsOffered,
             rerollsUsed: nextRerollsUsed,
-            updatedAt: updatedAt,
+            updatedAt,
           };
-          var nextRecord = _.assign({}, _.cloneDeep(record), {
+          const nextRecord = _.assign({}, _.cloneDeep(record), {
             pendingTechCards: nextPendingTechCards,
-            updatedAt: updatedAt,
+            updatedAt,
           });
 
           if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
@@ -285,7 +285,7 @@ define(function () {
         // Their loadout card's buff() would otherwise bank into the host's own
         // unlocks, as in cards_coop_deal.js.
         gwoBank.suspendUnlocks(stockBank);
-        playerInventory.applyCards(function () {
+        playerInventory.applyCards(() => {
           gwoBank.resumeUnlocks();
           dealCards();
         });
@@ -316,9 +316,9 @@ define(function () {
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
     module.exports = {
-      computeRerollDeal: computeRerollDeal,
-      pendingTechRerollValidationError: pendingTechRerollValidationError,
-      pendingTechRerollRng: pendingTechRerollRng,
+      computeRerollDeal,
+      pendingTechRerollValidationError,
+      pendingTechRerollRng,
     };
   }
 

@@ -19,11 +19,11 @@ function gwoCoopPing() {
     locTree($(".gwo-ping-actions"));
 
     // Observable, so the button wakes up when the modules below arrive.
-    var ping = ko.observable();
+    const ping = ko.observable();
 
     model.gwoPingOnCooldown = ko.observable(false);
     model.gwoCanPingStar = ko.observable(false);
-    model.gwoPingStar = function () {
+    model.gwoPingStar = () => {
       if (ping()) {
         ping().pingStar();
       }
@@ -31,9 +31,9 @@ function gwoCoopPing() {
 
     // systems.js replaces model.selection outright, so the dependency on its
     // star observable can only be taken once every gw_play mod has loaded.
-    _.defer(function () {
-      ko.computed(function () {
-        var star = model.selection.star();
+    _.defer(() => {
+      ko.computed(() => {
+        const star = model.selection.star();
         model.gwoCanPingStar(!!ping() && ping().canPing(star));
       });
     });
@@ -43,20 +43,18 @@ function gwoCoopPing() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_marker.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js",
       ],
-      function (gwoPingMarker, gwoPingOperators) {
-        var systemFor = function (star) {
-          return model.galaxy.systems()[star];
-        };
+      (gwoPingMarker, gwoPingOperators) => {
+        const systemFor = (star) => model.galaxy.systems()[star];
 
         ping(
           gwoPingOperators({
-            marker: gwoPingMarker.createLayer({ systemFor: systemFor }),
-            systemFor: systemFor,
+            marker: gwoPingMarker.createLayer({ systemFor }),
+            systemFor,
             starCount: function () {
               return model.galaxy.systems().length;
             },
             starName: function (star) {
-              var system = systemFor(star);
+              const system = systemFor(star);
               return system ? loc(system.name()) : "";
             },
             pendingTechRecords: function () {
@@ -64,15 +62,14 @@ function gwoCoopPing() {
                 return [];
               }
 
-              var game = model.game();
-              var records = _.map(
+              const game = model.game();
+              const records = _.map(
                 model.gwCampaignConnectedClients(),
-                function (client) {
-                  return game.findCoopPlayerInventoryData({
+                (client) =>
+                  game.findCoopPlayerInventoryData({
                     id: client.id,
                     name: client.name,
-                  });
-                }
+                  })
               );
 
               // This client's own offer arrives by its own route, and a viewer
@@ -87,9 +84,7 @@ function gwoCoopPing() {
     );
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoCoopPing();

@@ -8,8 +8,8 @@ function gwoRefereeChanges() {
   gwoRefereeChangesLoaded = true;
 
   try {
-    var gwoReferee = function (game) {
-      var self = this;
+    const gwoReferee = function (game) {
+      const self = this;
 
       self.game = ko.observable(game);
       self.files = ko.observable();
@@ -25,38 +25,38 @@ function gwoRefereeChanges() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js",
       ],
-      function (
+      (
         GW,
         GWReferee,
         gwoGenerateGameFiles,
         gwoGenerateAI,
         gwoGenerateConfig
-      ) {
+      ) => {
         gwoReferee.prototype.stripSystems = function () {
-          var self = this;
+          const self = this;
 
           // remove the systems from the galaxy
-          var gw = self.config().gw;
+          const gw = self.config().gw;
           GW.Game.saveSystems(gw);
         };
 
         gwoReferee.prototype.mountFiles = function () {
-          var self = this;
+          const self = this;
 
-          var deferred = $.Deferred();
+          const deferred = $.Deferred();
 
-          var allFiles = _.cloneDeep(self.files());
+          const allFiles = _.cloneDeep(self.files());
           // The player unit list needs to be the superset of units for proper UI behavior
-          var unitList = "/pa/units/unit_list.json";
-          var playerUnits = allFiles[unitList + ".player"];
+          const unitList = "/pa/units/unit_list.json";
+          const playerUnits = allFiles[`${unitList}.player`];
 
           if (playerUnits) {
-            var allUnits = _.cloneDeep(playerUnits);
+            const allUnits = _.cloneDeep(playerUnits);
             // AI factions are tagged .ai0, .ai1, .ai2, ... (never a bare .ai),
             // so every matching key needs to be folded in, not just one fixed tag.
-            _.forEach(allFiles, function (value, key) {
+            _.forEach(allFiles, (value, key) => {
               if (
-                _.startsWith(key, unitList + ".ai") &&
+                _.startsWith(key, `${unitList}.ai`) &&
                 value &&
                 value.units &&
                 allUnits.units
@@ -71,7 +71,7 @@ function gwoRefereeChanges() {
             _.assign(allFiles, self.localFiles());
           }
 
-          var cookedFiles = _.mapValues(allFiles, function (value) {
+          const cookedFiles = _.mapValues(allFiles, (value) => {
             if (_.isString(value)) {
               return value;
             } else {
@@ -80,8 +80,8 @@ function gwoRefereeChanges() {
           });
 
           // community mods will hook unmountAllMemoryFiles to remount client mods
-          api.file.unmountAllMemoryFiles().always(function () {
-            api.file.mountMemoryFiles(cookedFiles).then(function () {
+          api.file.unmountAllMemoryFiles().always(() => {
+            api.file.mountMemoryFiles(cookedFiles).then(() => {
               deferred.resolve();
             });
           });
@@ -89,26 +89,22 @@ function gwoRefereeChanges() {
           return deferred.promise();
         };
 
-        gwoReferee.prototype.tagGame = function () {
+        gwoReferee.prototype.tagGame = () => {
           api.game.setUnitSpecTag(".player");
         };
 
-        GWReferee.hire = function (game) {
-          var ref = new gwoReferee(game);
+        GWReferee.hire = (game) => {
+          const ref = new gwoReferee(game);
           return _.bind(gwoGenerateGameFiles, ref)()
             .then(_.bind(gwoGenerateAI, ref))
             .then(_.bind(gwoGenerateConfig, ref))
-            .then(function () {
-              return ref;
-            });
+            .then(() => ref);
         };
       }
     );
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoRefereeChanges();

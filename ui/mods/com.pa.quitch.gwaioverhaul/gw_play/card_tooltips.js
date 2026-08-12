@@ -17,37 +17,35 @@ function gwoCardTooltips() {
 
     // Build once per tooltip, not once per unit in it - a card covering most of
     // the unit list would otherwise rescan the inventory on every hover.
-    var playerUnitLookup = function () {
-      var owned = {};
-      var playerUnits = model
+    const playerUnitLookup = () => {
+      const owned = {};
+      const playerUnits = model
         .game()
         .inventory()
         .units()
         .concat("/pa/units/commanders/base_commander/base_commander.json");
-      _.forEach(playerUnits, function (playerUnit) {
+      _.forEach(playerUnits, (playerUnit) => {
         owned[playerUnit] = true;
       });
       return owned;
     };
 
-    var lookupHas = function (lookup, key) {
-      return Object.prototype.hasOwnProperty.call(lookup, key);
-    };
+    const lookupHas = (lookup, key) =>
+      Object.prototype.hasOwnProperty.call(lookup, key);
 
-    var highlightUnitName = function (unitName) {
-      return "<span class='highlight'>" + unitName + "</span>";
-    };
+    const highlightUnitName = (unitName) =>
+      `<span class='highlight'>${unitName}</span>`;
 
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
       ],
-      function (gwoUnitToNames, gwoCardsToUnits) {
+      (gwoUnitToNames, gwoCardsToUnits) => {
         model.gwoTechCardTooltip = ko.observableArray([]);
 
         // global for modder compatibility - New-GW-Cards pushes here
-        var cards = gwoCardsToUnits.cards;
+        const cards = gwoCardsToUnits.cards;
         model.gwoCardsToUnits = _.isArray(model.gwoCardsToUnits)
           ? model.gwoCardsToUnits
           : [];
@@ -81,12 +79,12 @@ function gwoCardTooltips() {
 
         // Rebuilt whenever it grows: gwoUnitToNames.units is a modder extension
         // point, so caching once would miss late additions.
-        var unitNamesByPath = {};
-        var unitNamesIndexedCount = -1;
-        var unitNameFor = function (unit) {
+        let unitNamesByPath = {};
+        let unitNamesIndexedCount = -1;
+        const unitNameFor = (unit) => {
           if (unitNamesIndexedCount !== gwoUnitToNames.units.length) {
             unitNamesByPath = {};
-            _.forEach(gwoUnitToNames.units, function (entry) {
+            _.forEach(gwoUnitToNames.units, (entry) => {
               unitNamesByPath[entry.path] = entry.name;
             });
             unitNamesIndexedCount = gwoUnitToNames.units.length;
@@ -96,36 +94,34 @@ function gwoCardTooltips() {
             : undefined;
         };
 
-        var sortUnitNames = function (units) {
-          var owned = playerUnitLookup();
-          return _.map(units, function (unit) {
-            var name = unitNameFor(unit);
+        const sortUnitNames = (units) => {
+          const owned = playerUnitLookup();
+          return _.map(units, (unit) => {
+            const name = unitNameFor(unit);
 
             if (_.isUndefined(name)) {
               console.warn(
-                unit + " is invalid or missing from GWO unit_names.js"
+                `${unit} is invalid or missing from GWO unit_names.js`
               );
               return loc("!LOC:Unknown Unit");
             }
 
-            var translatedName = loc(name);
+            const translatedName = loc(name);
             return lookupHas(owned, unit)
               ? translatedName
               : highlightUnitName(translatedName);
           }).sort();
         };
 
-        var makeCardTooltip = function (card, hoverIndex) {
+        const makeCardTooltip = (card, hoverIndex) => {
           if (card.isLoadout()) {
             return;
           }
 
-          var cardId = card.id();
-          var noTooltip = _.some(
+          const cardId = card.id();
+          const noTooltip = _.some(
             model.gwoCardsWithoutTooltip,
-            function (cardWithoutTooltip) {
-              return cardWithoutTooltip === cardId;
-            }
+            (cardWithoutTooltip) => cardWithoutTooltip === cardId
           );
 
           if (noTooltip) {
@@ -139,24 +135,24 @@ function gwoCardTooltips() {
             hoverIndex += 1;
           }
 
-          var cardUnitsIndex = _.findIndex(model.gwoCardsToUnits, {
+          const cardUnitsIndex = _.findIndex(model.gwoCardsToUnits, {
             id: cardId,
           });
 
           if (cardUnitsIndex === -1) {
             if (!_.isUndefined(cardId)) {
               console.warn(
-                cardId + " is invalid or missing from model.gwoCardsToUnits"
+                `${cardId} is invalid or missing from model.gwoCardsToUnits`
               );
             }
             return;
           }
 
-          var units = model.gwoCardsToUnits[cardUnitsIndex].units;
-          var tooltip;
+          const units = model.gwoCardsToUnits[cardUnitsIndex].units;
+          let tooltip;
           if (units) {
-            var affectedUnits = sortUnitNames(units);
-            tooltip = _.map(affectedUnits, function (unitName, index) {
+            const affectedUnits = sortUnitNames(units);
+            tooltip = _.map(affectedUnits, (unitName, index) => {
               if (affectedUnits.length < 13) {
                 return unitName.concat("<br>");
               } else if (index < affectedUnits.length - 1) {
@@ -169,12 +165,12 @@ function gwoCardTooltips() {
 
           // Write through the observableArray. Assigning into the array it returns
           // skips valueHasMutated, so nothing is notified.
-          var tooltips = model.gwoTechCardTooltip().slice();
+          const tooltips = model.gwoTechCardTooltip().slice();
           tooltips[hoverIndex] = tooltip;
           model.gwoTechCardTooltip(tooltips);
         };
 
-        model.showSystemCard.subscribe(function () {
+        model.showSystemCard.subscribe(() => {
           if (model.showSystemCard()) {
             _.forEach(model.currentSystemCardList(), makeCardTooltip);
           }
@@ -184,8 +180,8 @@ function gwoCardTooltips() {
           _.forEach(model.currentSystemCardList(), makeCardTooltip);
         }
 
-        var hoverCount = 0;
-        model.setHoverCard = function (card, hoverEvent) {
+        let hoverCount = 0;
+        model.setHoverCard = (card, hoverEvent) => {
           if (card === model.hoverCard()) {
             card = undefined;
           }
@@ -195,8 +191,8 @@ function gwoCardTooltips() {
             makeCardTooltip(card);
           } else {
             // Delay clears for a bit to avoid flashing
-            var oldCount = hoverCount;
-            _.delay(function () {
+            const oldCount = hoverCount;
+            _.delay(() => {
               if (oldCount !== hoverCount) {
                 return;
               }
@@ -205,21 +201,19 @@ function gwoCardTooltips() {
             return;
           }
 
-          var $block = $(hoverEvent.target);
+          let $block = $(hoverEvent.target);
           if (!$block.is(".one-card")) {
             $block = $block.parent(".one-card");
           }
-          var left = $block.offset().left + $block.width() / 2;
-          model.hoverOffset(left.toString() + "px");
+          const left = $block.offset().left + $block.width() / 2;
+          model.hoverOffset(`${left.toString()}px`);
           model.hoverCard(card);
         };
       }
     );
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoCardTooltips();

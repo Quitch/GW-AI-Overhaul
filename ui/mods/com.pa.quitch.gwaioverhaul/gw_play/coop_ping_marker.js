@@ -1,28 +1,28 @@
 // The marker a co-op ping raises on the galaxy map. See coop.md.
-define(function () {
-  var PULSE_MS = 900;
-  var PULSES = 3;
-  var LIFETIME_MS = PULSE_MS * PULSES;
-  var BACKSTOP_GRACE_MS = 2000;
-  var RING_RADIUS = 100;
-  var RING_WIDTH = 6;
-  var RING_COLOUR = "rgba(255,214,64,1)";
-  var RING_MIN_SCALE = 0.35;
-  var RING_GROWTH = 0.9;
-  var ICON_URL =
+define(() => {
+  const PULSE_MS = 900;
+  const PULSES = 3;
+  const LIFETIME_MS = PULSE_MS * PULSES;
+  const BACKSTOP_GRACE_MS = 2000;
+  const RING_RADIUS = 100;
+  const RING_WIDTH = 6;
+  const RING_COLOUR = "rgba(255,214,64,1)";
+  const RING_MIN_SCALE = 0.35;
+  const RING_GROWTH = 0.9;
+  const ICON_URL =
     "coui://ui/main/atlas/icon_atlas/img/strategic_icons/icon_si_ping.png";
-  var ICON_SIZE = 52;
-  var ICON_SCALE = 1.6;
-  var ICON_FADE_SHARPNESS = 4;
+  const ICON_SIZE = 52;
+  const ICON_SCALE = 1.6;
+  const ICON_FADE_SHARPNESS = 4;
 
-  var pulseFrame = function (elapsedMs) {
-    var elapsed = _.isFinite(elapsedMs) && elapsedMs > 0 ? elapsedMs : 0;
+  const pulseFrame = (elapsedMs) => {
+    const elapsed = _.isFinite(elapsedMs) && elapsedMs > 0 ? elapsedMs : 0;
 
     if (elapsed >= LIFETIME_MS) {
       return { ringScale: 0, ringAlpha: 0, iconAlpha: 0, done: true };
     }
 
-    var phase = (elapsed % PULSE_MS) / PULSE_MS;
+    const phase = (elapsed % PULSE_MS) / PULSE_MS;
     return {
       ringScale: RING_MIN_SCALE + phase * RING_GROWTH,
       ringAlpha: 1 - phase,
@@ -31,19 +31,19 @@ define(function () {
     };
   };
 
-  var createLayer = function (params) {
-    var systemFor = params.systemFor;
-    var live = {};
+  const createLayer = (params) => {
+    const systemFor = params.systemFor;
+    const live = {};
 
-    var buildMarker = function () {
-      var container = new createjs.Container();
+    const buildMarker = () => {
+      const container = new createjs.Container();
       // systems.js sorts an undefined z ahead of every number, which would sink
       // the marker under the star icon.
       container.z = 2;
       container.mouseEnabled = false;
       container.mouseChildren = false;
 
-      var ring = new createjs.Shape();
+      const ring = new createjs.Shape();
       // ignoreScale, so the stroke keeps one width as the ring expands.
       ring.graphics
         .setStrokeStyle(RING_WIDTH, null, null, null, true)
@@ -51,7 +51,7 @@ define(function () {
         .drawCircle(0, 0, RING_RADIUS);
       container.addChild(ring);
 
-      var icon = new createjs.Bitmap(ICON_URL);
+      const icon = new createjs.Bitmap(ICON_URL);
       icon.regX = ICON_SIZE / 2;
       icon.regY = ICON_SIZE / 2;
       icon.scaleX = ICON_SCALE;
@@ -59,11 +59,11 @@ define(function () {
       icon.y = -RING_RADIUS;
       container.addChild(icon);
 
-      return { container: container, ring: ring, icon: icon };
+      return { container, ring, icon };
     };
 
-    var remove = function (star) {
-      var state = live[star];
+    const remove = (star) => {
+      const state = live[star];
       if (!state) {
         return;
       }
@@ -78,15 +78,15 @@ define(function () {
 
     // Ticks stop entirely while hidingUI() is true, so a marker raised just
     // before a battle launch would still be sitting there on return.
-    var armBackstop = function (star, state) {
+    const armBackstop = (star, state) => {
       clearTimeout(state.backstop);
-      state.backstop = _.delay(function () {
+      state.backstop = _.delay(() => {
         remove(star);
       }, LIFETIME_MS + BACKSTOP_GRACE_MS);
     };
 
-    var raise = function (star) {
-      var system = systemFor(star);
+    const raise = (star) => {
+      const system = systemFor(star);
       if (!system || !system.systemDisplay) {
         return;
       }
@@ -95,19 +95,19 @@ define(function () {
         model.gwoRequestInteractiveFrames(LIFETIME_MS);
       }
 
-      var state = live[star];
+      let state = live[star];
       if (state) {
         state.start = _.now();
         armBackstop(star, state);
         return;
       }
 
-      var marker = buildMarker();
+      const marker = buildMarker();
       state = {
         container: marker.container,
         start: _.now(),
         onTick: function () {
-          var frame = pulseFrame(_.now() - state.start);
+          const frame = pulseFrame(_.now() - state.start);
           if (frame.done) {
             remove(star);
             return;
@@ -126,11 +126,11 @@ define(function () {
       armBackstop(star, state);
     };
 
-    return { raise: raise, remove: remove };
+    return { raise, remove };
   };
 
   return {
-    createLayer: createLayer,
-    pulseFrame: pulseFrame,
+    createLayer,
+    pulseFrame,
   };
 });

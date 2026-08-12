@@ -1,12 +1,11 @@
 // The measured half of gw_play/gw_per_player_tech_referee.js. Keep it loadable
 // under the Node AMD harness - see testing.md, "Coverage".
-define(function () {
-  var armyHasAI = function (army) {
-    return !!(army && _.isArray(army.slots) && _.any(army.slots, "ai"));
-  };
+define(() => {
+  const armyHasAI = (army) =>
+    !!(army && _.isArray(army.slots) && _.any(army.slots, "ai"));
 
-  var getConnectedPlayerCount = function (options) {
-    var connectedClients = options && options.connectedClients;
+  const getConnectedPlayerCount = (options) => {
+    const connectedClients = options && options.connectedClients;
     if (_.isArray(connectedClients) && connectedClients.length) {
       return connectedClients.length;
     }
@@ -17,10 +16,10 @@ define(function () {
     return 0;
   };
 
-  var collectHumanArmies = function (config) {
-    var humanArmies = [];
+  const collectHumanArmies = (config) => {
+    const humanArmies = [];
 
-    _.forEach(config.armies, function (army) {
+    _.forEach(config.armies, (army) => {
       if (!armyHasAI(army)) {
         humanArmies.push(army);
       }
@@ -29,20 +28,19 @@ define(function () {
     return humanArmies;
   };
 
-  var getPlayerTagGivenIndex = function (index) {
+  const getPlayerTagGivenIndex = (index) => {
     // Host is still .player, and then subsequent players are .player0, .player1, etc.
     if (index === 0) {
       return ".player";
     } else {
-      return ".player" + (index - 1);
+      return `.player${index - 1}`;
     }
   };
 
-  var stringEndsWith = function (value, suffix) {
-    return _.isString(value) && value.slice(-suffix.length) === suffix;
-  };
+  const stringEndsWith = (value, suffix) =>
+    _.isString(value) && value.slice(-suffix.length) === suffix;
 
-  var stripKnownSpecTag = function (value) {
+  const stripKnownSpecTag = (value) => {
     if (!_.isString(value)) {
       return value;
     }
@@ -51,7 +49,7 @@ define(function () {
       return value.slice(0, -".player".length);
     }
 
-    var match = value.match(/\.player\d+$/);
+    const match = value.match(/\.player\d+$/);
     if (match) {
       return value.slice(0, -match[0].length);
     }
@@ -61,53 +59,53 @@ define(function () {
 
   // The hardcoded guardians:false, and the absence of any Cluster routing, are
   // both deliberate - see ai-paths.md.
-  var getViewerSubcommanderAiPath = function (
+  const getViewerSubcommanderAiPath = (
     refereeAIPaths,
     subcommanderTech,
     aiInUse,
     playerInventory,
     playerTag
-  ) {
-    return refereeAIPaths.getAIPathDestination("subcommander", aiInUse, {
+  ) =>
+    refereeAIPaths.getAIPathDestination("subcommander", aiInUse, {
       guardians: false,
       aiMods: playerInventory.aiMods(),
       smartSubcommanders:
         subcommanderTech.hasSmartSubcommanders(playerInventory),
       scopeToken: playerTag === ".player" ? undefined : playerTag,
     });
-  };
 
   // A viewer's subcommander armies, and the colour position the next viewer
   // starts from. subcommanderTech, gwoColour and refereeCoop are injected - see
   // testing.md, "Coverage".
-  var buildViewerSubcommanderArmies = function (params) {
-    var subcommanderTech = params.subcommanderTech;
-    var playerInventory = params.playerInventory;
-    var playerTag = params.playerTag;
-    var colourPosition = params.colourPosition;
-    var armies = [];
+  const buildViewerSubcommanderArmies = (params) => {
+    const subcommanderTech = params.subcommanderTech;
+    const playerInventory = params.playerInventory;
+    const playerTag = params.playerTag;
+    let colourPosition = params.colourPosition;
+    const armies = [];
 
     // The host is always .player, and the main referee already added their
     // minions - including their share of the colour sequence.
     if (playerTag === ".player") {
-      return { armies: armies, colourPosition: colourPosition };
+      return { armies, colourPosition };
     }
 
-    var cards = playerInventory.cards();
-    var minionCount = subcommanderTech.applySubcommanderDuplicationTech(cards);
+    const cards = playerInventory.cards();
+    const minionCount =
+      subcommanderTech.applySubcommanderDuplicationTech(cards);
 
-    _.forEach(playerInventory.minions(), function (minion) {
+    _.forEach(playerInventory.minions(), (minion) => {
       // Cloned because the tech mutators write in place, and the minion here is
       // the saved inventory one. Editing it would bake the bonus in past a
       // discard of the card that granted it. See tech-cards.md.
-      var minionPersonality = _.cloneDeep(minion.personality);
+      const minionPersonality = _.cloneDeep(minion.personality);
       subcommanderTech.applySubcommanderTacticsTech(minionPersonality, cards);
       subcommanderTech.applySubcommanderFabberTech(minionPersonality, cards);
       minionPersonality.ai_path = params.viewerAiPath;
 
       // Duplicated subcommanders share one colour, the same way the host's
       // duplication tech produces a single army with several commander slots.
-      var minionColour = params.gwoColour.pick(
+      const minionColour = params.gwoColour.pick(
         params.playerFaction,
         // pick() falls back to this and reads it to spot The Guardians, so
         // even a colourless minion needs a pair.
@@ -117,7 +115,7 @@ define(function () {
       colourPosition++;
 
       for (
-        var duplicateIndex = 0;
+        let duplicateIndex = 0;
         duplicateIndex < minionCount;
         duplicateIndex++
       ) {
@@ -140,14 +138,14 @@ define(function () {
       }
     });
 
-    return { armies: armies, colourPosition: colourPosition };
+    return { armies, colourPosition };
   };
 
   // The guards that must not stamp per_player_tech_ready onto config: either
   // there is no valid config to stamp it on, or per-player tech is not in play
   // at all. On success it hands the config to validateRefereeState.
-  var validateTechOptions = function (referee, options) {
-    var config = referee && _.isFunction(referee.config) && referee.config();
+  const validateTechOptions = (referee, options) => {
+    const config = referee && _.isFunction(referee.config) && referee.config();
 
     if (!config || !_.isArray(config.armies)) {
       return {
@@ -179,23 +177,21 @@ define(function () {
       };
     }
 
-    return { ok: true, config: config };
+    return { ok: true, config };
   };
 
   // Reached only once there is a config to stamp, so every failure here is a
   // writeFailure.
-  var validateRefereeState = function (referee, options, config) {
-    var failAfterConfig = function (message) {
-      return {
-        ok: false,
-        resolveValue: false,
-        writeFailure: true,
-        message: message,
-        config: config,
-      };
-    };
+  const validateRefereeState = (referee, options, config) => {
+    const failAfterConfig = (message) => ({
+      ok: false,
+      resolveValue: false,
+      writeFailure: true,
+      message,
+      config,
+    });
 
-    var playerCount = getConnectedPlayerCount(options);
+    const playerCount = getConnectedPlayerCount(options);
     if (playerCount < 1) {
       return failAfterConfig(
         "[GW COOP] Per-player tech referee has no connected players."
@@ -208,7 +204,7 @@ define(function () {
       );
     }
 
-    var humanArmies = collectHumanArmies(config);
+    const humanArmies = collectHumanArmies(config);
     if (humanArmies.length < 1) {
       return failAfterConfig(
         "[GW COOP] Per-player tech referee has no human armies."
@@ -221,17 +217,17 @@ define(function () {
       );
     }
 
-    var files = _.isFunction(referee.files) && referee.files();
+    const files = _.isFunction(referee.files) && referee.files();
     if (!files || !_.isPlainObject(files)) {
       return failAfterConfig("[GW COOP] Per-player tech referee has no files.");
     }
 
-    var game = _.isFunction(referee.game) && referee.game();
+    const game = _.isFunction(referee.game) && referee.game();
     if (!game) {
       return failAfterConfig("[GW COOP] Per-player tech referee has no game.");
     }
 
-    var inventory = _.isFunction(game.inventory) && game.inventory();
+    const inventory = _.isFunction(game.inventory) && game.inventory();
     if (!inventory) {
       return failAfterConfig(
         "[GW COOP] Per-player tech referee has no inventory."
@@ -244,26 +240,25 @@ define(function () {
       !_.isFunction(inventory.minions)
     ) {
       return failAfterConfig(
-        "[GW COOP] Per-player tech referee has invalid inventory units, mods, or minions. Per-player tech game inventory is: " +
-          JSON.stringify(inventory)
+        `[GW COOP] Per-player tech referee has invalid inventory units, mods, or minions. Per-player tech game inventory is: ${JSON.stringify(inventory)}`
       );
     }
 
-    var player = config.player;
+    const player = config.player;
     if (!player || !_.isPlainObject(player)) {
       return failAfterConfig(
         "[GW COOP] Per-player tech referee has no player."
       );
     }
 
-    var playerCommander = player.commander;
+    const playerCommander = player.commander;
     if (!playerCommander || !_.isString(playerCommander)) {
       return failAfterConfig(
         "[GW COOP] Per-player tech referee has no player commander."
       );
     }
 
-    var playerColor = inventory.getTag("global", "playerColor");
+    const playerColor = inventory.getTag("global", "playerColor");
     if (!_.isArray(playerColor) || playerColor.length < 2) {
       return failAfterConfig(
         "[GW COOP] Per-player tech referee has no player color."
@@ -273,15 +268,15 @@ define(function () {
     return {
       ok: true,
       context: {
-        config: config,
-        playerCount: playerCount,
+        config,
+        playerCount,
         connectedClients: options.connectedClients,
-        humanArmies: humanArmies,
-        files: files,
-        game: game,
-        inventory: inventory,
-        player: player,
-        playerColor: playerColor,
+        humanArmies,
+        files,
+        game,
+        inventory,
+        player,
+        playerColor,
         baseCommander: stripKnownSpecTag(playerCommander),
       },
     };
@@ -289,8 +284,8 @@ define(function () {
 
   // Every precondition the referee's apply() needs. A writeFailure result means
   // apply() must stamp per_player_tech_ready = false onto config before resolving.
-  var validatePerPlayerTechInputs = function (referee, options) {
-    var optionsResult = validateTechOptions(referee, options);
+  const validatePerPlayerTechInputs = (referee, options) => {
+    const optionsResult = validateTechOptions(referee, options);
     if (!optionsResult.ok) {
       return optionsResult;
     }
@@ -299,10 +294,10 @@ define(function () {
   };
 
   return {
-    getPlayerTagGivenIndex: getPlayerTagGivenIndex,
-    stripKnownSpecTag: stripKnownSpecTag,
-    getViewerSubcommanderAiPath: getViewerSubcommanderAiPath,
-    buildViewerSubcommanderArmies: buildViewerSubcommanderArmies,
-    validatePerPlayerTechInputs: validatePerPlayerTechInputs,
+    getPlayerTagGivenIndex,
+    stripKnownSpecTag,
+    getViewerSubcommanderAiPath,
+    buildViewerSubcommanderArmies,
+    validatePerPlayerTechInputs,
   };
 });

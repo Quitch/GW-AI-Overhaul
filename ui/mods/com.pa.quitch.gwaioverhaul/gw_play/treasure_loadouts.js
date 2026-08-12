@@ -4,8 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
-], function (gwoLoadoutIds, helpers, gwoLoadoutBanks) {
-  var cardId = function (card) {
+], (gwoLoadoutIds, helpers, gwoLoadoutBanks) => {
+  const cardId = (card) => {
     if (_.isString(card)) {
       return card;
     }
@@ -14,20 +14,18 @@ define([
 
   // The base game records only ids beginning "gwc_start", so every mod loadout a
   // player owns reaches us through gwaioUnlockedStartCardIds instead.
-  var unlockedIds = function (record) {
-    var base = _.isArray(record && record.unlockedStartCardIds)
+  const unlockedIds = (record) => {
+    const base = _.isArray(record && record.unlockedStartCardIds)
       ? record.unlockedStartCardIds
       : [];
-    var gwaio = _.isArray(record && record.gwaioUnlockedStartCardIds)
+    const gwaio = _.isArray(record && record.gwaioUnlockedStartCardIds)
       ? record.gwaioUnlockedStartCardIds
       : [];
 
     return _.uniq(
       _.filter(
         _.map(base.concat(gwaio, [record && record.loadoutCardId]), cardId),
-        function (id) {
-          return helpers.isStartLoadoutCardId(id);
-        }
+        (id) => helpers.isStartLoadoutCardId(id)
       )
     );
   };
@@ -36,19 +34,16 @@ define([
   // gw_start/setup.js deletes that field, so defeatTeam(undefined) matches the
   // treasure star itself and clears its ai(). Nothing on the star survives the
   // fight; the recorded index is what identifies it afterwards.
-  var isTreasureStar = function (gwoSettings, starIndex) {
-    return (
-      !!gwoSettings &&
-      _.isNumber(gwoSettings.treasureStar) &&
-      gwoSettings.treasureStar === starIndex
-    );
-  };
+  const isTreasureStar = (gwoSettings, starIndex) =>
+    !!gwoSettings &&
+    _.isNumber(gwoSettings.treasureStar) &&
+    gwoSettings.treasureStar === starIndex;
 
   // For a war generated before the index was recorded. The live ai() answers
   // while the Guardians stand; afterwards only the pre-dealt card is left.
-  var findTreasureStar = function (stars) {
-    var found = _.findIndex(stars, function (star) {
-      var ai = star && _.isFunction(star.ai) && star.ai();
+  const findTreasureStar = (stars) => {
+    let found = _.findIndex(stars, (star) => {
+      const ai = star && _.isFunction(star.ai) && star.ai();
       return !!(ai && ai.treasurePlanet);
     });
 
@@ -56,14 +51,12 @@ define([
       return found;
     }
 
-    found = _.findIndex(stars, function (star) {
-      return _.some(
+    found = _.findIndex(stars, (star) =>
+      _.some(
         (star && _.isFunction(star.cardList) && star.cardList()) || [],
-        function (card) {
-          return card && helpers.isStartLoadoutCardId(card.id);
-        }
-      );
-    });
+        (card) => card && helpers.isStartLoadoutCardId(card.id)
+      )
+    );
 
     return found === -1 ? undefined : found;
   };
@@ -71,17 +64,16 @@ define([
   // The base game's own predicate, shared by gw_play.js and the server. Ids it
   // rejects are the ones the server pushes into a viewer's war inventory
   // instead of recording as an unlock.
-  var isBaseLoadoutCardId = function (id) {
-    return _.isString(id) && id.indexOf("gwc_start") === 0;
-  };
+  const isBaseLoadoutCardId = (id) =>
+    _.isString(id) && id.indexOf("gwc_start") === 0;
 
   // A loadout won mid-war unlocks the commander and nothing else, so its buff()
   // never runs and the bank has to be written directly. Mod ids are kept out of
   // the base game's bank - see shared/bank.js. A third-party mod that registered
   // its own bank gets its own unlocks back, so uninstalling it takes its records
   // with it rather than leaving them in gwaio_bank.
-  var bankStartCard = function (params) {
-    var id = cardId(params.card);
+  const bankStartCard = (params) => {
+    const id = cardId(params.card);
     if (!helpers.isStartLoadoutCardId(id)) {
       return false;
     }
@@ -89,42 +81,41 @@ define([
     // Tested before the registry: the base game reads its own bank directly, so
     // a mod registering the gwc_start prefix must not capture those ids.
     if (isBaseLoadoutCardId(id)) {
-      return params.stockBank.addStartCard({ id: id });
+      return params.stockBank.addStartCard({ id });
     }
 
-    var modBank = gwoLoadoutBanks.bankFor(id);
-    return (modBank || params.gwoBank).addStartCard({ id: id });
+    const modBank = gwoLoadoutBanks.bankFor(id);
+    return (modBank || params.gwoBank).addStartCard({ id });
   };
 
   // A mod's locked loadouts join the pool through model.gwoNewStartCards. gw_play
   // is a fresh page, so this holds only what the mod's own gw_play loader pushed -
   // shared/loadouts.js, which adds GWO's unlockable list, runs in gw_start.
-  var modLoadoutIds = function () {
-    var registered = _.isArray(model.gwoNewStartCards)
+  const modLoadoutIds = () => {
+    const registered = _.isArray(model.gwoNewStartCards)
       ? model.gwoNewStartCards
       : [];
 
-    return _.filter(_.map(registered, cardId), function (id) {
-      return helpers.isStartLoadoutCardId(id);
-    });
+    return _.filter(_.map(registered, cardId), (id) =>
+      helpers.isStartLoadoutCardId(id)
+    );
   };
 
-  var treasureLoadoutPool = function () {
-    return _.map(
+  const treasureLoadoutPool = () =>
+    _.map(
       _.uniq(
         gwoLoadoutIds.lockedBase.concat(
           gwoLoadoutIds.unlockable,
           modLoadoutIds()
         )
       ),
-      function (id) {
-        return { id: id };
-      }
+      (id) => ({
+        id,
+      })
     );
-  };
 
-  var recordHasUnlockedLoadout = function (record, card) {
-    var id = cardId(card);
+  const recordHasUnlockedLoadout = (record, card) => {
+    const id = cardId(card);
     if (!helpers.isStartLoadoutCardId(id)) {
       return false;
     }
@@ -133,13 +124,11 @@ define([
   };
 
   // The loadout this player is offered, or undefined once they hold them all.
-  var pickTreasureLoadout = function (params) {
-    var pool = params.pool || treasureLoadoutPool();
-    var isUnlocked = params.isUnlocked;
-    var rng = params.rng;
-    var locked = _.filter(pool, function (card) {
-      return !isUnlocked(card);
-    });
+  const pickTreasureLoadout = (params) => {
+    const pool = params.pool || treasureLoadoutPool();
+    const isUnlocked = params.isUnlocked;
+    const rng = params.rng;
+    const locked = _.filter(pool, (card) => !isUnlocked(card));
 
     if (!locked.length) {
       return undefined;
@@ -154,63 +143,57 @@ define([
   // plus every co-op player's reported unlocks under per-player tech. Records are
   // not filtered by connection, because a stale one only leaves the offer
   // standing.
-  var anyPlayerCanUnlockLoadout = function (params) {
-    var pool = params.pool || treasureLoadoutPool();
-    var localIds = _.isArray(params.localUnlockedIds)
+  const anyPlayerCanUnlockLoadout = (params) => {
+    const pool = params.pool || treasureLoadoutPool();
+    const localIds = _.isArray(params.localUnlockedIds)
       ? params.localUnlockedIds
       : [];
 
-    var localLocked = _.some(pool, function (card) {
-      return localIds.indexOf(card.id) === -1;
-    });
+    const localLocked = _.some(
+      pool,
+      (card) => localIds.indexOf(card.id) === -1
+    );
     if (localLocked || !params.perPlayerTech) {
       return localLocked;
     }
 
-    return _.some(params.records || [], function (record) {
-      return _.some(pool, function (card) {
-        return !recordHasUnlockedLoadout(record, card);
-      });
-    });
+    return _.some(params.records || [], (record) =>
+      _.some(pool, (card) => !recordHasUnlockedLoadout(record, card))
+    );
   };
 
-  var reportOperator = "gwo_report_unlocked_loadouts";
+  const reportOperator = "gwo_report_unlocked_loadouts";
 
   // A viewer's own unlock record, in ids. The base game reports its half too,
   // but drops everything outside the "gwc_start" prefix on the way - which is
   // every mod loadout, so a registered bank's holdings have to come along here or
   // the host will keep offering the viewer loadouts they already own.
-  var localUnlockedLoadoutIds = function (stockBank, gwoBank) {
-    var held = stockBank
+  const localUnlockedLoadoutIds = (stockBank, gwoBank) => {
+    const held = stockBank
       .startCards()
       .concat(gwoBank.startCards(), gwoLoadoutBanks.startCards());
 
     return _.uniq(
-      _.filter(_.map(held, cardId), function (id) {
-        return helpers.isStartLoadoutCardId(id);
-      })
+      _.filter(_.map(held, cardId), (id) => helpers.isStartLoadoutCardId(id))
     );
   };
 
-  var applyReportedLoadouts = function (game, operator) {
-    var payload = (operator && operator.payload) || {};
-    var ids = _.filter(
+  const applyReportedLoadouts = (game, operator) => {
+    const payload = (operator && operator.payload) || {};
+    const ids = _.filter(
       _.isArray(payload.unlocked_start_card_ids)
         ? payload.unlocked_start_card_ids
         : [],
-      function (id) {
-        return helpers.isStartLoadoutCardId(id);
-      }
+      (id) => helpers.isStartLoadoutCardId(id)
     );
 
-    var record = game.findCoopPlayerInventoryData({
+    const record = game.findCoopPlayerInventoryData({
       id: operator.client_id,
       name: operator.client_name,
     });
     if (!record) {
       console.warn(
-        "[GW COOP] no record for reported loadout unlocks client=" +
-          operator.client_id
+        `[GW COOP] no record for reported loadout unlocks client=${operator.client_id}`
       );
       return;
     }
@@ -219,7 +202,7 @@ define([
       return;
     }
 
-    var stored = game.upsertCoopPlayerInventoryData(
+    const stored = game.upsertCoopPlayerInventoryData(
       _.assign({}, _.cloneDeep(record), {
         gwaioUnlockedStartCardIds: ids,
         updatedAt: _.now(),
@@ -235,10 +218,10 @@ define([
 
   // The host has to know which loadouts a viewer already owns to offer them a
   // treasure planet they can use, and cannot learn the mod ones any other way.
-  var install = function (params) {
-    var game = params.game;
-    var stockBank = params.stockBank;
-    var gwoBank = params.gwoBank;
+  const install = (params) => {
+    const game = params.game;
+    const stockBank = params.stockBank;
+    const gwoBank = params.gwoBank;
 
     if (model.registerCampaignViewerOperatorHandler) {
       model.registerCampaignViewerOperatorHandler(
@@ -247,8 +230,8 @@ define([
       );
     }
 
-    var reported = "";
-    ko.computed(function () {
+    let reported = "";
+    ko.computed(() => {
       if (
         !model.isCampaignViewer() ||
         !model.gwCampaignActive() ||
@@ -258,8 +241,8 @@ define([
         return;
       }
 
-      var ids = localUnlockedLoadoutIds(stockBank, gwoBank);
-      var key = ids.join(",");
+      const ids = localUnlockedLoadoutIds(stockBank, gwoBank);
+      const key = ids.join(",");
       if (key === reported) {
         return;
       }
@@ -275,26 +258,26 @@ define([
     return {
       bankOwnLoadout: function (card) {
         return bankStartCard({
-          card: card,
-          stockBank: stockBank,
-          gwoBank: gwoBank,
+          card,
+          stockBank,
+          gwoBank,
         });
       },
     };
   };
 
-  var api = {
-    isTreasureStar: isTreasureStar,
-    findTreasureStar: findTreasureStar,
-    isBaseLoadoutCardId: isBaseLoadoutCardId,
-    bankStartCard: bankStartCard,
-    treasureLoadoutPool: treasureLoadoutPool,
-    recordHasUnlockedLoadout: recordHasUnlockedLoadout,
-    pickTreasureLoadout: pickTreasureLoadout,
-    anyPlayerCanUnlockLoadout: anyPlayerCanUnlockLoadout,
+  const api = {
+    isTreasureStar,
+    findTreasureStar,
+    isBaseLoadoutCardId,
+    bankStartCard,
+    treasureLoadoutPool,
+    recordHasUnlockedLoadout,
+    pickTreasureLoadout,
+    anyPlayerCanUnlockLoadout,
     unlockedLoadoutIds: unlockedIds,
-    localUnlockedLoadoutIds: localUnlockedLoadoutIds,
-    install: install,
+    localUnlockedLoadoutIds,
+    install,
   };
 
   // Test-only hook - see testing.md.

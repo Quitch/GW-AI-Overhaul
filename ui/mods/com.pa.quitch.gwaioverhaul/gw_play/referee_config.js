@@ -6,14 +6,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
-], function (gwoAI, gwoCards, refereeCoop, configSetup, gwoStreams) {
-  var setupAlliedCommanders = configSetup.setupAlliedCommanders;
-  var setupPrimaryAiAndMinions = configSetup.setupPrimaryAiAndMinions;
-  var setupFfaAis = configSetup.setupFfaAis;
+], (gwoAI, gwoCards, refereeCoop, configSetup, gwoStreams) => {
+  const setupAlliedCommanders = configSetup.setupAlliedCommanders;
+  const setupPrimaryAiAndMinions = configSetup.setupPrimaryAiAndMinions;
+  const setupFfaAis = configSetup.setupFfaAis;
 
-  var glassPlanets = function (planets) {
-    var unglassableBiome = ["moon", "asteroid", "gas", "metal"];
-    _.forEach(planets, function (planet) {
+  const glassPlanets = (planets) => {
+    const unglassableBiome = ["moon", "asteroid", "gas", "metal"];
+    _.forEach(planets, (planet) => {
       if (!_.includes(unglassableBiome, planet.generator.biome)) {
         planet.generator.biome = "moon";
       }
@@ -21,9 +21,9 @@ define([
     return planets;
   };
 
-  var floodPlanets = function (planets) {
-    _.forEach(planets, function (planet) {
-      var floodPlanet =
+  const floodPlanets = (planets) => {
+    _.forEach(planets, (planet) => {
+      const floodPlanet =
         !planet.generator.waterHeight || planet.generator.waterHeight < 50;
       if (floodPlanet) {
         planet.generator.waterHeight = 50;
@@ -32,24 +32,24 @@ define([
     return planets;
   };
 
-  var setupAiTags = function (ai) {
-    var aiTag = [];
-    var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
-    _.times(aiFactionCount, function (n) {
-      var aiNewTag = ".ai" + n.toString();
+  const setupAiTags = (ai) => {
+    const aiTag = [];
+    const aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
+    _.times(aiFactionCount, (n) => {
+      const aiNewTag = `.ai${n.toString()}`;
       aiTag.push(aiNewTag);
     });
 
     return aiTag;
   };
 
-  var modifyPlanets = function (inventory, planets, game) {
-    var canGlassPlanets = gwoCards.anyPlayerHasCard(
+  const modifyPlanets = (inventory, planets, game) => {
+    const canGlassPlanets = gwoCards.anyPlayerHasCard(
       inventory,
       "gwaio_enable_orbitalbombardment",
       game
     );
-    var canFloodPlanets =
+    const canFloodPlanets =
       gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_tsunami", game) ||
       gwoCards.anyPlayerHasCard(inventory, "gwaio_start_naval", game);
 
@@ -64,18 +64,18 @@ define([
   };
 
   return function () {
-    var self = this;
+    const self = this;
 
-    var game = self.game();
-    var inventory = game.inventory();
-    var cards = inventory.cards();
-    var connectedPlayerCards = gwoCards.getAllConnectedPlayerCards(
+    const game = self.game();
+    const inventory = game.inventory();
+    const cards = inventory.cards();
+    const connectedPlayerCards = gwoCards.getAllConnectedPlayerCards(
       inventory,
       game
     );
-    var playerName = ko.observable().extend({ session: "displayName" });
-    var playerTag = ".player";
-    var armies = [
+    const playerName = ko.observable().extend({ session: "displayName" });
+    const playerTag = ".player";
+    const armies = [
       {
         slots: [{ name: playerName() || "Player" }],
         color: inventory.getTag("global", "playerColor"),
@@ -84,20 +84,20 @@ define([
         alliance_group: 1,
       },
     ];
-    var galaxy = game.galaxy();
-    var currentStar = galaxy.stars()[game.currentStar()];
-    var system = currentStar.system();
-    var ai = currentStar.ai();
+    const galaxy = game.galaxy();
+    const currentStar = galaxy.stars()[game.currentStar()];
+    const system = currentStar.system();
+    const ai = currentStar.ai();
     // Keyed on the turn as well as the star, so retrying a lost battle still
     // reshuffles - loseTurn does not advance the turn, so the retry needs
     // another move. See galaxy.md, "Play-scene streams".
-    var battleRng = gwoStreams.battleRng(
+    const battleRng = gwoStreams.battleRng(
       gwoStreams.warRng(galaxy.stars()[galaxy.origin()].system().gwaio),
       game.currentStar(),
       game.stats().turns()
     );
-    var aiInUse = gwoAI.aiInUse("enemy");
-    var aiTag = setupAiTags(ai);
+    const aiInUse = gwoAI.aiInUse("enemy");
+    const aiTag = setupAiTags(ai);
 
     setupAlliedCommanders(
       inventory.minions(),
@@ -134,9 +134,9 @@ define([
     setupFfaAis(ai.foes, aiTag, aiInUse, armies, battleRng);
     system.planets = modifyPlanets(inventory, system.planets, game);
 
-    var config = {
+    const config = {
       files: self.files(),
-      armies: armies,
+      armies,
       player: {
         commander: inventory.getTag("global", "commander"),
       },
@@ -159,8 +159,8 @@ define([
       eradication_mode_fabricators: ai.eradicationModeFabbers,
     };
 
-    _.forEach(config.armies, function (army) {
-      _.forEach(army.slots, function (slot) {
+    _.forEach(config.armies, (army) => {
+      _.forEach(army.slots, (slot) => {
         if (slot.ai) {
           slot.commander += army.spec_tag;
         }

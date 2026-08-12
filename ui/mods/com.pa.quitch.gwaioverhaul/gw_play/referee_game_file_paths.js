@@ -1,36 +1,34 @@
 // The measured half of gw_play/referee_game_files.js. Nothing here may touch an
 // engine global at define time - see testing.md, "Coverage".
-define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
-], function (gwoUrl) {
-  var getAIUnitMapPath = function (titans, aiInUse) {
-    var append = titans ? "_x1.json" : ".json";
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js"], (
+  gwoUrl
+) => {
+  const getAIUnitMapPath = (titans, aiInUse) => {
+    const append = titans ? "_x1.json" : ".json";
 
     switch (aiInUse) {
       case "Queller":
-        return "/pa/ai_queller/q_uber/unit_maps/ai_unit_map" + append;
+        return `/pa/ai_queller/q_uber/unit_maps/ai_unit_map${append}`;
       case "Penchant":
-        return "/pa/ai_penchant/unit_maps/ai_unit_map" + append;
+        return `/pa/ai_penchant/unit_maps/ai_unit_map${append}`;
       default:
-        return "/pa/ai/unit_maps/ai_unit_map" + append;
+        return `/pa/ai/unit_maps/ai_unit_map${append}`;
     }
   };
 
-  var getAIUnitMapDestinationPath = function (titans, aiPath) {
-    var append = titans ? "_x1.json" : ".json";
-    return aiPath + "unit_maps/ai_unit_map" + append;
+  const getAIUnitMapDestinationPath = (titans, aiPath) => {
+    const append = titans ? "_x1.json" : ".json";
+    return `${aiPath}unit_maps/ai_unit_map${append}`;
   };
 
-  var clusterArmyIndex = function (ai, isClusterFn) {
-    var guardians = ai.mirrorMode;
+  const clusterArmyIndex = (ai, isClusterFn) => {
+    const guardians = ai.mirrorMode;
     if (guardians) {
       return -1;
     } else if (ai.faction === 4) {
       return 0;
     } else if (ai.foes) {
-      var index = _.findIndex(ai.foes, function (foe) {
-        return isClusterFn(foe);
-      });
+      const index = _.findIndex(ai.foes, (foe) => isClusterFn(foe));
       if (index !== -1) {
         return index + 1;
       }
@@ -39,30 +37,30 @@ define([
   };
 
   // The unit map must land wherever that faction's scoped build orders do.
-  var resolveAiUnitMapPaths = function (
+  const resolveAiUnitMapPaths = (
     ai,
     currentCount,
     normalPaths,
     clusterPaths,
     isClusterFn
-  ) {
+  ) => {
     if (clusterArmyIndex(ai, isClusterFn) === currentCount) {
       return clusterPaths;
     }
     return normalPaths;
   };
 
-  var buildPlayerFiles = function (params, gwoAI, gwoSpecs) {
-    var playerAIUnitMap = params.playerAIUnitMap;
-    var playerX1AIUnitMap = params.playerX1AIUnitMap;
-    var playerSpecFiles = params.playerSpecFiles;
-    var inventory = params.inventory;
-    var titans = params.titans;
+  const buildPlayerFiles = (params, gwoAI, gwoSpecs) => {
+    const playerAIUnitMap = params.playerAIUnitMap;
+    const playerX1AIUnitMap = params.playerX1AIUnitMap;
+    const playerSpecFiles = params.playerSpecFiles;
+    const inventory = params.inventory;
+    const titans = params.titans;
 
-    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
-    var hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander");
-    var playerFilesClassic;
-    var playerFilesX1;
+    const playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    const hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander");
+    let playerFilesClassic;
+    let playerFilesX1;
 
     if (playerIsCluster) {
       playerFilesClassic = _.assign(
@@ -83,25 +81,25 @@ define([
     } else {
       playerFilesClassic = _.assign({}, playerSpecFiles);
       playerFilesClassic[
-        hostSubcommanderPath + "unit_maps/ai_unit_map.json.player"
+        `${hostSubcommanderPath}unit_maps/ai_unit_map.json.player`
       ] = playerAIUnitMap;
       playerFilesX1 = {};
       if (titans) {
         playerFilesX1[
-          hostSubcommanderPath + "unit_maps/ai_unit_map_x1.json.player"
+          `${hostSubcommanderPath}unit_maps/ai_unit_map_x1.json.player`
         ] = playerX1AIUnitMap;
       }
     }
 
-    var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
+    const playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
     gwoSpecs.mod(playerFiles, inventory.mods(), ".player");
     return playerFiles;
   };
 
   // Mirrors the fetch, parse and error handling the base game's genUnitSpecs
   // does internally.
-  var specFetch = function (item) {
-    return new Promise(function (resolve, reject) {
+  const specFetch = (item) =>
+    new Promise((resolve, reject) => {
       $.ajax({
         url: gwoUrl.gameFile(item),
         success: function (data) {
@@ -117,14 +115,13 @@ define([
         },
       });
     });
-  };
 
   return {
-    getAIUnitMapPath: getAIUnitMapPath,
-    getAIUnitMapDestinationPath: getAIUnitMapDestinationPath,
-    clusterArmyIndex: clusterArmyIndex,
-    resolveAiUnitMapPaths: resolveAiUnitMapPaths,
-    buildPlayerFiles: buildPlayerFiles,
-    specFetch: specFetch,
+    getAIUnitMapPath,
+    getAIUnitMapDestinationPath,
+    clusterArmyIndex,
+    resolveAiUnitMapPaths,
+    buildPlayerFiles,
+    specFetch,
   };
 });

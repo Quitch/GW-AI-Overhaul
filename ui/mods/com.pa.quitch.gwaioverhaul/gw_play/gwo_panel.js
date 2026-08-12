@@ -2,7 +2,7 @@ var gwoWarInfoPanelLoaded;
 
 function gwoWarInfoPanel(gwoSettings) {
   try {
-    var deckName = function (deckName) {
+    const deckName = (deckName) => {
       if (!deckName || deckName === "Expanded") {
         return loc("!LOC:Galactic War Overhaul");
       }
@@ -10,7 +10,7 @@ function gwoWarInfoPanel(gwoSettings) {
       return loc(deckName);
     };
 
-    var game = model.game();
+    const game = model.game();
     model.gwoSettings = gwoSettings;
     model.gwoDifficulty = loc(model.gwoSettings.difficulty);
     model.gwoSize = loc(model.gwoSettings.galaxySize);
@@ -20,21 +20,20 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwoDeck = deckName(model.gwoSettings.techCardDeck);
     // Wars created before seeds were recorded have none.
     model.gwoSeed = model.gwoSettings.seed || loc("!LOC:Unknown");
-    var coopPlayerScalingCount =
+    const coopPlayerScalingCount =
       model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
-    var playerCount = coopPlayerScalingCount || 1;
+    const playerCount = coopPlayerScalingCount || 1;
     // i18n lookups are case sensitive, and these two casings have the widest
     // locale coverage. gwo_panel.html cases the word back down afterwards.
-    var playerOrPlayers =
+    const playerOrPlayers =
       playerCount > 1 ? loc("!LOC:Players") : loc("!LOC:PLAYER");
     model.gwoCoopPlayerScalingCount = playerCount;
     model.gwoCoopPlayerScalingUnit = playerOrPlayers;
-    var lobbyTitle =
-      "GWO Co-op - " + loc("!LOC:Difficulty:") + " " + model.gwoDifficulty;
+    const lobbyTitle = `GWO Co-op - ${loc("!LOC:Difficulty:")} ${model.gwoDifficulty}`;
     model.setDefaultGwCoopLobbyTitle(lobbyTitle);
 
-    model.gwCampaignConnectedClients.subscribe(function () {
-      var playerScaling = gwoSettings.coopPlayerScalingCount;
+    model.gwCampaignConnectedClients.subscribe(() => {
+      const playerScaling = gwoSettings.coopPlayerScalingCount;
       if (
         // A latch - without it the save is rewritten on every join and leave.
         !gwoSettings.tooManyPlayers &&
@@ -46,7 +45,7 @@ function gwoWarInfoPanel(gwoSettings) {
         gwoSettings.tooManyPlayers = true;
         requireGW(
           ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
-          function (gwoSave) {
+          (gwoSave) => {
             gwoSave(game, true);
           }
         );
@@ -56,9 +55,9 @@ function gwoWarInfoPanel(gwoSettings) {
     // An unauthenticated Viewer has an empty uberId/displayName. Co-op records
     // are keyed by identity, so every lookup for them silently no-ops. The base
     // game shares this, so say so rather than let it read as a GWO bug.
-    var gwoViewerIdentityWarned;
+    let gwoViewerIdentityWarned;
 
-    var warnIfViewerIdentityMissing = function () {
+    const warnIfViewerIdentityMissing = () => {
       if (gwoViewerIdentityWarned) {
         return;
       }
@@ -66,8 +65,8 @@ function gwoWarInfoPanel(gwoSettings) {
         return;
       }
 
-      var uberId = _.isFunction(model.uberId) ? model.uberId() : undefined;
-      var displayName = _.isFunction(model.displayName)
+      const uberId = _.isFunction(model.uberId) ? model.uberId() : undefined;
+      const displayName = _.isFunction(model.displayName)
         ? model.displayName()
         : undefined;
 
@@ -89,7 +88,7 @@ function gwoWarInfoPanel(gwoSettings) {
       model.gwCampaignConnected.subscribe(warnIfViewerIdentityMissing);
     }
 
-    var cheatsDetected = function () {
+    const cheatsDetected = () => {
       if (!model.devMode()) {
         return;
       }
@@ -99,8 +98,8 @@ function gwoWarInfoPanel(gwoSettings) {
 
       requireGW(
         ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
-        function (gwoSave) {
-          var gwoSettings = model.gwoSettings;
+        (gwoSave) => {
+          const gwoSettings = model.gwoSettings;
           if (gwoSettings && !gwoSettings.cheatsUsed) {
             gwoSettings.cheatsUsed = true;
             options(
@@ -117,7 +116,7 @@ function gwoWarInfoPanel(gwoSettings) {
     cheatsDetected();
     model.devMode.subscribe(cheatsDetected);
 
-    var options = function (optionsList, setting, text) {
+    var options = (optionsList, setting, text) => {
       if (setting) {
         optionsList.push(loc(text));
       }
@@ -125,7 +124,7 @@ function gwoWarInfoPanel(gwoSettings) {
 
     model.gwoOptions = ko.observableArray([]);
     // Unwrapped, not subscribed: each is fixed for the lifetime of a war.
-    var optionDefs = [
+    const optionDefs = [
       [model.gwoSettings.factionScaling, "!LOC:Faction Scaling"],
       [model.gwoSettings.systemScaling, "!LOC:System scaling"],
       [model.gwoSettings.simpleSystems, "!LOC:Easy Systems"],
@@ -136,15 +135,14 @@ function gwoWarInfoPanel(gwoSettings) {
       [game.hardcore(), "!LOC:Hardcore mode"],
       [model.gwoSettings.tougherCommanders, "!LOC:Tougher commanders"], // deprecated - pre-v5.27.0 support only
     ];
-    for (var element of optionDefs) {
+    for (const element of optionDefs) {
       options(model.gwoOptions, element[0], element[1]);
     }
 
-    var gwoHasDuplicatedSubcommanders = function (playerCards) {
-      return _.some(playerCards, {
+    const gwoHasDuplicatedSubcommanders = (playerCards) =>
+      _.some(playerCards, {
         id: "gwaio_upgrade_subcommander_duplication",
       });
-    };
 
     requireGW(
       [
@@ -152,19 +150,19 @@ function gwoWarInfoPanel(gwoSettings) {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
       ],
-      function (gwoColour, gwoRefereeCoop, gwoVersion) {
+      (gwoColour, gwoRefereeCoop, gwoVersion) => {
         model.gwoVersion = ko.observable(gwoVersion);
 
-        var coopText = function (setting) {
+        const coopText = (setting) => {
           if (setting) {
             return loc("!LOC:Shared");
           }
           return loc("!LOC:Separate");
         };
 
-        model.gwoCoopArmyControl = ko.computed(function () {
-          return coopText(model.gwCampaignSharedControl());
-        });
+        model.gwoCoopArmyControl = ko.computed(() =>
+          coopText(model.gwCampaignSharedControl())
+        );
         model.gwoCoopTechControl = coopText(
           !model.gwCampaignPerPlayerTechCards()
         );
@@ -175,8 +173,8 @@ function gwoWarInfoPanel(gwoSettings) {
           : loc("!LOC:Unlocked");
 
         model.gwoIncompatibleMods = ko.observableArray([]);
-        api.mods.getMounted("client").then(function (mods) {
-          var incompatibleMods = [
+        api.mods.getMounted("client").then((mods) => {
+          const incompatibleMods = [
             "com.heiz.aurora_arty", // Aurora-Artillery
             "com.wondible.pa.gw_challenge", // Challenge Levels for galactic war
             "com.wondible.pa.gw_ramp", // Enemy Ramp for galactic war
@@ -193,44 +191,46 @@ function gwoWarInfoPanel(gwoSettings) {
             "ca.pa.metapod.effectsandstuffNikVersion", // Nik's 'How is this even legal?!' Mod Pack
             "com.wondible.pa.gw_classic_systems", // Classic Systems for galactic war
           ];
-          var modIdentifiers = _.map(mods, "identifier");
-          var incompatibleModsInUse = _.intersection(
+          const modIdentifiers = _.map(mods, "identifier");
+          const incompatibleModsInUse = _.intersection(
             incompatibleMods,
             modIdentifiers
           );
-          var incompatibleModNames = _.sortBy(
-            _.map(incompatibleModsInUse, function (incompatibleMod) {
-              var index = _.findIndex(mods, { identifier: incompatibleMod });
+          const incompatibleModNames = _.sortBy(
+            _.map(incompatibleModsInUse, (incompatibleMod) => {
+              const index = _.findIndex(mods, { identifier: incompatibleMod });
               return mods[index].display_name;
             })
           );
           model.gwoIncompatibleMods(incompatibleModNames);
         });
 
-        var inventory = game.inventory();
+        const inventory = game.inventory();
 
-        var factions = [
+        const factions = [
           "Legonis Machina",
           "Foundation",
           "Synchronous",
           "Revenants",
           "Cluster",
         ];
-        var factionIndex = inventory.getTag("global", "playerFaction");
+        const factionIndex = inventory.getTag("global", "playerFaction");
         model.gwoFactionName = factions[factionIndex];
         // The host's colour, written once at war creation and never changed.
-        var playerColourPair = inventory.getTag("global", "playerColor");
-        var playerColour = gwoColour.rgb(playerColourPair);
+        const playerColourPair = inventory.getTag("global", "playerColor");
+        const playerColour = gwoColour.rgb(playerColourPair);
 
         // The colour this client gets in the next battle, as the base game
         // resolves it. See coop.md.
-        var coopColour = function (client) {
-          var resolved = _.isFunction(model.gwCoopPlayerColors)
+        const coopColour = (client) => {
+          const resolved = _.isFunction(model.gwCoopPlayerColors)
             ? model.gwCoopPlayerColors()
             : [];
-          var record = _.find(resolved, function (candidate) {
-            return candidate.id === client.id && candidate.name === client.name;
-          });
+          const record = _.find(
+            resolved,
+            (candidate) =>
+              candidate.id === client.id && candidate.name === client.name
+          );
 
           // No record means the base game could not resolve one; fall back
           // rather than blank the swatch.
@@ -238,23 +238,23 @@ function gwoWarInfoPanel(gwoSettings) {
             ? gwoColour.rgb(record.color)
             : playerColour;
         };
-        var cards = inventory.cards();
-        var loadoutId = cards[0].id;
+        const cards = inventory.cards();
+        const loadoutId = cards[0].id;
         model.gwoLoadout = ko.observable("");
-        requireGW(["cards/" + loadoutId], function (card) {
+        requireGW([`cards/${loadoutId}`], (card) => {
           model.gwoLoadout(loc(card.summarize()));
         });
 
-        var intelligence = function (subcommanderData, index) {
-          var subcommander = subcommanderData.subcommander;
-          var personality = subcommander.character
+        const intelligence = (subcommanderData, index) => {
+          const subcommander = subcommanderData.subcommander;
+          let personality = subcommander.character
             ? loc(subcommander.character)
             : loc("!LOC:None");
           if (subcommander.penchant) {
-            personality = personality + " " + loc(subcommander.penchant);
+            personality = `${personality} ${loc(subcommander.penchant)}`;
           }
           // avoid modifying the original name to prevent duplication of addendum
-          var subcommanderName = subcommander.name;
+          let subcommanderName = subcommander.name;
           if (gwoHasDuplicatedSubcommanders(subcommanderData.cards)) {
             subcommanderName += " x2";
           }
@@ -271,23 +271,22 @@ function gwoWarInfoPanel(gwoSettings) {
           };
         };
 
-        var coopCampaign = !!model.gwCampaignActive();
-        model.gwCampaignActive.subscribe(function (active) {
+        let coopCampaign = !!model.gwCampaignActive();
+        model.gwCampaignActive.subscribe((active) => {
           coopCampaign = !!active;
         });
 
         // Stable view models, so async loadout text does not flicker when the
         // computed below re-evaluates.
-        var coopCommanderCache = {};
+        const coopCommanderCache = {};
 
-        var updateCoopCommander = function (client, human) {
-          var cacheKey =
-            String(client.id || "") + "::" + String(client.name || "");
-          var commander = coopCommanderCache[cacheKey];
-          var record;
-          var loadoutCardId;
-          var isHost = client.role === "host";
-          var usesHostLoadout =
+        const updateCoopCommander = (client, human) => {
+          const cacheKey = `${String(client.id || "")}::${String(client.name || "")}`;
+          let commander = coopCommanderCache[cacheKey];
+          let record;
+          let loadoutCardId;
+          const isHost = client.role === "host";
+          const usesHostLoadout =
             isHost ||
             (client.role === "viewer" && !model.gwCampaignPerPlayerTechCards());
 
@@ -319,7 +318,7 @@ function gwoWarInfoPanel(gwoSettings) {
 
             if (loadoutCardId) {
               commander.loadoutResolved = true;
-              requireGW(["cards/" + loadoutCardId], function (card) {
+              requireGW([`cards/${loadoutCardId}`], (card) => {
                 commander.character(loc(card.summarize()));
               });
             }
@@ -328,30 +327,31 @@ function gwoWarInfoPanel(gwoSettings) {
           return commander;
         };
 
-        model.gwoPlayer = ko.computed(function () {
-          var human = loc("!LOC:Human");
-          var commanders = [
+        model.gwoPlayer = ko.computed(() => {
+          const human = loc("!LOC:Human");
+          let commanders = [
             {
               name: ko.observable().extend({ session: "displayName" }),
               color: playerColour,
               character: model.gwoLoadout,
             },
           ];
-          var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
+          const connectedClients = _.isFunction(
+            model.gwCampaignConnectedClients
+          )
             ? model.gwCampaignConnectedClients()
             : [];
-          var activeCommanderKeys = {};
+          const activeCommanderKeys = {};
 
           if (coopCampaign) {
-            commanders = _.map(connectedClients, function (client) {
-              var cacheKey =
-                String(client.id || "") + "::" + String(client.name || "");
+            commanders = _.map(connectedClients, (client) => {
+              const cacheKey = `${String(client.id || "")}::${String(client.name || "")}`;
               activeCommanderKeys[cacheKey] = true;
               return updateCoopCommander(client, human);
             });
 
             // Leaving the campaign refreshes the page, so that case needs no cleanup.
-            _.forEach(_.keys(coopCommanderCache), function (cacheKey) {
+            _.forEach(_.keys(coopCommanderCache), (cacheKey) => {
               if (!activeCommanderKeys[cacheKey]) {
                 delete coopCommanderCache[cacheKey];
               }
@@ -359,22 +359,22 @@ function gwoWarInfoPanel(gwoSettings) {
           }
 
           // Host-first: the order the battle config numbers the colours in.
-          var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
+          const subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
             inventory,
             game,
             gwoRefereeCoop.clientsInPlayerOrder(connectedClients)
           );
 
-          _.forEach(subcommanders, function (subcommanderData, index) {
+          _.forEach(subcommanders, (subcommanderData, index) => {
             commanders.push(intelligence(subcommanderData, index));
           });
           return commanders;
         });
 
-        var url =
+        const url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.html";
-        $.get(url, function (html) {
-          var $fi = $(html);
+        $.get(url, (html) => {
+          const $fi = $(html);
           $("#header").append($fi);
           locTree($("#gwo-panel"));
           ko.applyBindings(model, $fi[0]);
@@ -383,9 +383,7 @@ function gwoWarInfoPanel(gwoSettings) {
     );
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 
@@ -395,7 +393,7 @@ var gwoPanelLoadWarned = false;
 
 // The computed below can dispose itself on its first evaluation, which runs
 // before gwoPanelLoader is assigned. Defer to the flag in that case.
-var disposeGwoPanelLoader = function () {
+var disposeGwoPanelLoader = () => {
   if (gwoPanelLoaderInitialized) {
     gwoPanelLoader.dispose();
   } else {
@@ -403,10 +401,10 @@ var disposeGwoPanelLoader = function () {
   }
 };
 
-var gwoPanelLoader = ko.computed(function () {
-  var game = model.game();
-  var galaxy = game.galaxy();
-  var originSystem = galaxy.stars()[galaxy.origin()].system();
+var gwoPanelLoader = ko.computed(() => {
+  const game = model.game();
+  const galaxy = game.galaxy();
+  const originSystem = galaxy.stars()[galaxy.origin()].system();
 
   if (gwoWarInfoPanelLoaded || game.isTutorial()) {
     disposeGwoPanelLoader();
