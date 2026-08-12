@@ -4,21 +4,20 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GW, GWCStart, gwoCard, gwoGroup) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GW, GWCStart, gwoCard, gwoGroup) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant(loc("!LOC:Naval") + " " + loc("!LOC:Commander")), // scuffed translation using existing strings
+    visible: () => false,
+    summarize: _.constant(`${loc("!LOC:Naval")} ${loc("!LOC:Commander")}`), // scuffed translation using existing strings
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets."
-    ),
+    describe: () =>
+      "!LOC:The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.",
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {

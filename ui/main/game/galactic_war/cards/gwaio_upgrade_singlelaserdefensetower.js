@@ -1,13 +1,13 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwoCard, gwoUnit) {
-  var TITANS_BASIC_DEFENCE = "Structure & Basic & SurfaceDefense";
-  var QUELLER_BASIC_DEFENCE =
+], (gwoCard, gwoUnit) => {
+  const TITANS_BASIC_DEFENCE = "Structure & Basic & SurfaceDefense";
+  const QUELLER_BASIC_DEFENCE =
     "Structure & (SurfaceDefense | Tactical) - Shield";
 
   return {
-    visible: _.constant(true),
+    visible: () => true,
     describe: _.constant(
       gwoCard.withSlot(
         loc(
@@ -15,10 +15,9 @@ define([
         )
       )
     ),
-    summarize: _.constant("!LOC:Single Laser Defense Tower Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_turret_upgrade.png"
-    ),
+    summarize: () => "!LOC:Single Laser Defense Tower Upgrade Tech",
+    icon: () =>
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_turret_upgrade.png",
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_ammunition",
     }),
@@ -30,7 +29,7 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      var mods = [
+      const mods = [
         {
           file: gwoUnit.singleLaserDefenseTower,
           path: "tools",

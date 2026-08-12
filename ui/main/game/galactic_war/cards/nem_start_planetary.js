@@ -5,17 +5,16 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:Planetary Excavation Commander"),
+    visible: () => false,
+    summarize: () => "!LOC:Planetary Excavation Commander",
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:Modifies Metal Extractors to enable building them anywhere at 150% the cost and 50% efficiency. Starts with basic vehicles."
-    ),
+    describe: () =>
+      "!LOC:Modifies Metal Extractors to enable building them anywhere at 150% the cost and 50% efficiency. Starts with basic vehicles.",
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:Planetary Excavation Commander",
@@ -23,37 +22,38 @@ define([
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.vehiclesBasic);
 
-          var units = [gwoUnit.metalExtractorAdvanced, gwoUnit.metalExtractor];
-          var mods = _.flatten(
-            _.map(units, function (unit) {
-              return [
-                {
-                  file: unit,
-                  path: "build_metal_cost",
-                  op: "multiply",
-                  value: 1.5,
-                },
-                {
-                  file: unit,
-                  path: "production.metal",
-                  op: "multiply",
-                  value: 0.5,
-                },
-                {
-                  file: unit,
-                  path: "feature_requirements",
-                  op: "replace",
-                  value: "none",
-                },
-              ];
-            })
+          const units = [
+            gwoUnit.metalExtractorAdvanced,
+            gwoUnit.metalExtractor,
+          ];
+          const mods = _.flatten(
+            _.map(units, (unit) => [
+              {
+                file: unit,
+                path: "build_metal_cost",
+                op: "multiply",
+                value: 1.5,
+              },
+              {
+                file: unit,
+                path: "production.metal",
+                op: "multiply",
+                value: 0.5,
+              },
+              {
+                file: unit,
+                path: "feature_requirements",
+                op: "replace",
+                value: "none",
+              },
+            ])
           );
           mods.push(
             {
@@ -73,8 +73,8 @@ define([
           );
           inventory.addMods(mods);
 
-          var structures = ["BasicMetalExtractor", "AdvancedMetalExtractor"];
-          var aiMods = [
+          const structures = ["BasicMetalExtractor", "AdvancedMetalExtractor"];
+          const aiMods = [
             {
               type: "fabber",
               op: "remove",
@@ -94,7 +94,7 @@ define([
               },
             },
           ];
-          _.forEach(structures, function (structure) {
+          _.forEach(structures, (structure) => {
             aiMods.push(
               {
                 type: "fabber",

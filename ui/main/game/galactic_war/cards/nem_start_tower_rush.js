@@ -5,17 +5,16 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:Defense Tech Commander"),
+    visible: () => false,
+    summarize: () => "!LOC:Defense Tech Commander",
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:Defenses are 50% cheaper, fire 25% faster, have 50% more range, and turn 300% quicker. Barriers are 90% cheaper and have their health doubled. All defenses can be built by both the commander and basic fabricators."
-    ),
+    describe: () =>
+      "!LOC:Defenses are 50% cheaper, fire 25% faster, have 50% more range, and turn 300% quicker. Barriers are 90% cheaper and have their health doubled. All defenses can be built by both the commander and basic fabricators.",
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:Defense Tech Commander",
@@ -23,18 +22,18 @@ define([
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.structuresDefencesAdvanced);
 
-          var units = gwoGroup.structuresDefencesAdvanced.concat(
+          const units = gwoGroup.structuresDefencesAdvanced.concat(
             gwoUnit.laserDefenseTower
           );
-          var mods = [];
-          _.forEach(units, function (unit) {
+          const mods = [];
+          _.forEach(units, (unit) => {
             mods.push(
               {
                 file: unit,
@@ -52,13 +51,11 @@ define([
           });
           // The Wall is 90% cheaper below instead. The mine keeps its spacing:
           // packing a minefield tighter is not something the loadout offers.
-          var costUnits = _.filter(
+          const costUnits = _.filter(
             gwoGroup.structuresDefences,
-            function (defence) {
-              return defence !== gwoUnit.wall;
-            }
+            (defence) => defence !== gwoUnit.wall
           );
-          _.forEach(costUnits, function (unit) {
+          _.forEach(costUnits, (unit) => {
             mods.push({
               file: unit,
               path: "build_metal_cost",
@@ -66,10 +63,11 @@ define([
               value: 0.5,
             });
           });
-          var separationUnits = _.filter(costUnits, function (defence) {
-            return defence !== gwoUnit.landMine;
-          });
-          _.forEach(separationUnits, function (unit) {
+          const separationUnits = _.filter(
+            costUnits,
+            (defence) => defence !== gwoUnit.landMine
+          );
+          _.forEach(separationUnits, (unit) => {
             mods.push({
               file: unit,
               path: "area_build_separation",
@@ -91,13 +89,11 @@ define([
               value: 2,
             }
           );
-          var weapons = _.filter(
+          const weapons = _.filter(
             gwoGroup.structuresDefencesWeapons,
-            function (defence) {
-              return defence !== gwoUnit.landMineWeapon;
-            }
+            (defence) => defence !== gwoUnit.landMineWeapon
           );
-          _.forEach(weapons, function (unit) {
+          _.forEach(weapons, (unit) => {
             mods.push(
               {
                 file: unit,
@@ -127,34 +123,32 @@ define([
           });
           inventory.addMods(mods);
 
-          var structures = [
+          const structures = [
             "AdvancedAirDefense",
             "AdvancedLandDefense",
             "AdvancedNavalDefense",
             "BasicLandDefense",
             "TML",
           ];
-          var aiMods = _.flatten(
-            _.map(structures, function (structure) {
-              return [
-                {
-                  type: "fabber",
-                  op: "append",
-                  toBuild: structure,
-                  idToMod: "builders",
-                  value: "Commander",
-                  matchAll: true,
-                },
-                {
-                  type: "fabber",
-                  op: "append",
-                  toBuild: structure,
-                  idToMod: "builders",
-                  value: "AnyBasicFabber",
-                  matchAll: true,
-                },
-              ];
-            })
+          const aiMods = _.flatten(
+            _.map(structures, (structure) => [
+              {
+                type: "fabber",
+                op: "append",
+                toBuild: structure,
+                idToMod: "builders",
+                value: "Commander",
+                matchAll: true,
+              },
+              {
+                type: "fabber",
+                op: "append",
+                toBuild: structure,
+                idToMod: "builders",
+                value: "AnyBasicFabber",
+                matchAll: true,
+              },
+            ])
           );
           inventory.addAIMods(aiMods);
         }

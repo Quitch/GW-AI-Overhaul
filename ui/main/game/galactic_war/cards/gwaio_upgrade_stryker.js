@@ -1,55 +1,60 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing."
-        )
+], (gwoCard, gwoUnit) => ({
+  visible: () => true,
+
+  describe: _.constant(
+    gwoCard.withSlot(
+      loc(
+        "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing."
       )
-    ),
-    summarize: _.constant("!LOC:Stryker Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.stryker)
-      );
-    },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.stryker,
-          path: "tools",
-          op: "prepend",
-          value: {
-            spec_id: gwoUnit.boomWeapon,
-            aim_bone: "bone_root",
-            muzzle_bone: "bone_root",
-          },
+    )
+  ),
+
+  summarize: () => "!LOC:Stryker Upgrade Tech",
+
+  icon: () =>
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png",
+
+  audio: _.constant({
+    found: "/VO/Computer/gw/board_tech_available_ammunition",
+  }),
+
+  getContext: gwoCard.getContext,
+
+  deal: function (system, context, inventory) {
+    return gwoCard.upgradeDeal(
+      gwoCard.hasUnit(inventory.units(), gwoUnit.stryker)
+    );
+  },
+
+  buff: function (inventory) {
+    inventory.maxCards(inventory.maxCards() + 1);
+    inventory.addMods([
+      {
+        file: gwoUnit.stryker,
+        path: "tools",
+        op: "prepend",
+        value: {
+          spec_id: gwoUnit.boomWeapon,
+          aim_bone: "bone_root",
+          muzzle_bone: "bone_root",
         },
-        {
-          file: gwoUnit.stryker,
-          path: "tools.0.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.stryker,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_SelfDestruct",
-        },
-      ]);
-    },
-    dull: function () {},
-  };
-});
+      },
+      {
+        file: gwoUnit.stryker,
+        path: "tools.0.spec_id",
+        op: "tag",
+      },
+      {
+        file: gwoUnit.stryker,
+        path: "unit_types",
+        op: "push",
+        value: "UNITTYPE_SelfDestruct",
+      },
+    ]);
+  },
+
+  dull: function () {},
+}));

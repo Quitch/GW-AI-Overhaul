@@ -1,57 +1,55 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoGroup) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Structure Engine Tech increases the speed of all mobile structures by 50%"
-    ),
-    summarize: _.constant("!LOC:Structure Engine Tech"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_structure.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.conditionalDeal(
-        inventory.hasCard("gwaio_start_nomad"),
-        70
-      );
-    },
-    buff: function (inventory) {
-      var mods = _.flatten(
-        _.map(gwoGroup.nomadStructures, function (unit) {
-          return [
-            {
-              file: unit,
-              path: "navigation.move_speed",
-              op: "multiply",
-              value: 1.5,
-            },
-            {
-              file: unit,
-              path: "navigation.brake",
-              op: "multiply",
-              value: 1.5,
-            },
-            {
-              file: unit,
-              path: "navigation.acceleration",
-              op: "multiply",
-              value: 1.5,
-            },
-            {
-              file: unit,
-              path: "navigation.turn_speed",
-              op: "multiply",
-              value: 1.5,
-            },
-          ];
-        })
-      );
-      inventory.addMods(mods);
-    },
-    dull: function () {},
-  };
-});
+], (gwoCard, gwoGroup) => ({
+  visible: () => true,
+
+  describe: () =>
+    "!LOC:Structure Engine Tech increases the speed of all mobile structures by 50%",
+
+  summarize: () => "!LOC:Structure Engine Tech",
+
+  icon: () =>
+    "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_structure.png",
+
+  audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
+  getContext: gwoCard.getContext,
+
+  deal: function (system, context, inventory) {
+    return gwoCard.conditionalDeal(inventory.hasCard("gwaio_start_nomad"), 70);
+  },
+
+  buff: function (inventory) {
+    const mods = _.flatten(
+      _.map(gwoGroup.nomadStructures, (unit) => [
+        {
+          file: unit,
+          path: "navigation.move_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.brake",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.acceleration",
+          op: "multiply",
+          value: 1.5,
+        },
+        {
+          file: unit,
+          path: "navigation.turn_speed",
+          op: "multiply",
+          value: 1.5,
+        },
+      ])
+    );
+    inventory.addMods(mods);
+  },
+
+  dull: function () {},
+}));

@@ -1,58 +1,63 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Galata Upgrade Tech enables the targeting of land and surface naval units by anti-air defense."
-        )
+], (gwoCard, gwoUnit) => ({
+  visible: () => true,
+
+  describe: _.constant(
+    gwoCard.withSlot(
+      loc(
+        "!LOC:Galata Upgrade Tech enables the targeting of land and surface naval units by anti-air defense."
       )
-    ),
-    summarize: _.constant("!LOC:Galata Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_turret_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.galata)
-      );
-    },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.galata,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_SurfaceDefense",
-        },
-        {
-          file: gwoUnit.galataWeapon,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
-        },
-        {
-          file: gwoUnit.galataWeapon,
-          path: "target_priorities",
-          op: "push",
-          value: ["Mobile & (Land | Naval)"],
-        },
-        {
-          file: gwoUnit.galataAmmo,
-          path: "armor_damage_map",
-          op: "replace",
-          value: {},
-        },
-      ]);
-    },
-    dull: function () {},
-  };
-});
+    )
+  ),
+
+  summarize: () => "!LOC:Galata Upgrade Tech",
+
+  icon: () =>
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_turret_upgrade.png",
+
+  audio: _.constant({
+    found: "/VO/Computer/gw/board_tech_available_ammunition",
+  }),
+
+  getContext: gwoCard.getContext,
+
+  deal: function (system, context, inventory) {
+    return gwoCard.upgradeDeal(
+      gwoCard.hasUnit(inventory.units(), gwoUnit.galata)
+    );
+  },
+
+  buff: function (inventory) {
+    inventory.maxCards(inventory.maxCards() + 1);
+    inventory.addMods([
+      {
+        file: gwoUnit.galata,
+        path: "unit_types",
+        op: "push",
+        value: "UNITTYPE_SurfaceDefense",
+      },
+      {
+        file: gwoUnit.galataWeapon,
+        path: "target_layers",
+        op: "push",
+        value: ["WL_LandHorizontal", "WL_WaterSurface"],
+      },
+      {
+        file: gwoUnit.galataWeapon,
+        path: "target_priorities",
+        op: "push",
+        value: ["Mobile & (Land | Naval)"],
+      },
+      {
+        file: gwoUnit.galataAmmo,
+        path: "armor_damage_map",
+        op: "replace",
+        value: {},
+      },
+    ]);
+  },
+
+  dull: function () {},
+}));

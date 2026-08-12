@@ -2,12 +2,12 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoUnit, gwoGroup) {
+], (gwoCard, gwoUnit, gwoGroup) => {
   // Narrowed so the mod does not also hit Unit Cannon builds.
-  var ADVANCED_BOT_FACTORY_ONLY = ["AdvancedBotFactory"];
+  const ADVANCED_BOT_FACTORY_ONLY = ["AdvancedBotFactory"];
 
   return {
-    visible: _.constant(true),
+    visible: () => true,
     describe: _.constant(
       gwoCard.withSlot(
         loc(
@@ -15,10 +15,9 @@ define([
         )
       )
     ),
-    summarize: _.constant("!LOC:Bot Factory Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_factory_upgrade.png"
-    ),
+    summarize: () => "!LOC:Bot Factory Upgrade Tech",
+    icon: () =>
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_factory_upgrade.png",
     audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_bot" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
@@ -30,37 +29,35 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
 
-      var advancedBotFabbers = [
+      const advancedBotFabbers = [
         gwoUnit.colonel,
         gwoUnit.mend,
         gwoUnit.botFabberAdvanced,
       ];
-      var advancedBotsWithoutFabbers = _.xor(
+      const advancedBotsWithoutFabbers = _.xor(
         gwoGroup.botsAdvancedMobile,
         advancedBotFabbers
       );
 
       inventory.addUnits(advancedBotsWithoutFabbers);
 
-      var advancedNonFabberBots = [
+      const advancedNonFabberBots = [
         "AdvancedArtilleryBot",
         "AdvancedAssaultBot",
         "NanoSwarm",
         "TMLBot",
       ];
-      var unitBuilds = _.map(advancedNonFabberBots, function (unit) {
-        return {
-          type: "factory",
-          op: "append",
-          toBuild: unit,
-          idToMod: "builders",
-          value: "BasicBotFactory",
-          refId: "builders",
-          refValue: ADVANCED_BOT_FACTORY_ONLY,
-        };
-      });
+      const unitBuilds = _.map(advancedNonFabberBots, (unit) => ({
+        type: "factory",
+        op: "append",
+        toBuild: unit,
+        idToMod: "builders",
+        value: "BasicBotFactory",
+        refId: "builders",
+        refValue: ADVANCED_BOT_FACTORY_ONLY,
+      }));
       // Applied to all combat units, so T2 factories handle the unaffected too.
-      var advancedCombatBots = [
+      const advancedCombatBots = [
         "AdvancedArtilleryBot",
         "AdvancedAssaultBot",
         "AdvancedBotCombatFabber",
@@ -68,18 +65,16 @@ define([
         "SupportCommander",
         "TMLBot",
       ];
-      var unitPriority = _.map(advancedCombatBots, function (unit) {
-        return {
-          type: "factory",
-          op: "replace",
-          toBuild: unit,
-          idToMod: "priority",
-          value: 97,
-          refId: "builders",
-          refValue: ADVANCED_BOT_FACTORY_ONLY,
-        };
-      });
-      var aiMods = unitBuilds.concat(unitPriority);
+      const unitPriority = _.map(advancedCombatBots, (unit) => ({
+        type: "factory",
+        op: "replace",
+        toBuild: unit,
+        idToMod: "priority",
+        value: 97,
+        refId: "builders",
+        refValue: ADVANCED_BOT_FACTORY_ONLY,
+      }));
+      const aiMods = unitBuilds.concat(unitPriority);
 
       inventory.addMods(
         gwoCard.mods(gwoUnit.botFactory, "add", {

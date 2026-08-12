@@ -4,17 +4,16 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GWCStart, gwoBank, gwoCard, gwoUnit) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:Backpacker Commander"),
+    visible: () => false,
+    summarize: () => "!LOC:Backpacker Commander",
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:Contains 16 data banks. Alas, travelling light means you start with only the most basic of bots."
-    ),
+    describe: () =>
+      "!LOC:Contains 16 data banks. Alas, travelling light means you start with only the most basic of bots.",
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:Backpacker Commander",
@@ -22,7 +21,7 @@ define([
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {

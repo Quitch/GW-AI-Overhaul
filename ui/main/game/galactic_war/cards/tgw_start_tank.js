@@ -4,17 +4,16 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoGroup) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GWCStart, gwoBank, gwoCard, gwoGroup) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:Buff Commander"),
+    visible: () => false,
+    summarize: () => "!LOC:Buff Commander",
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:This Commander prefers quality over quantity and has modified its units to that end. 30% more health, 30% more damage and splash, but 25% slower, and with 30% higher build costs."
-    ),
+    describe: () =>
+      "!LOC:This Commander prefers quality over quantity and has modified its units to that end. 30% more health, 30% more damage and splash, but 25% slower, and with 30% higher build costs.",
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:Buff Commander",
@@ -22,15 +21,15 @@ define([
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.vehiclesBasic);
 
-          var mods = [];
-          _.forEach(gwoGroup.mobile, function (unit) {
+          const mods = [];
+          _.forEach(gwoGroup.mobile, (unit) => {
             mods.push(
               {
                 file: unit,
@@ -70,7 +69,7 @@ define([
               }
             );
           });
-          _.forEach(gwoGroup.ammo, function (ammo) {
+          _.forEach(gwoGroup.ammo, (ammo) => {
             mods.push(
               {
                 file: ammo,
@@ -86,7 +85,7 @@ define([
               }
             );
           });
-          _.forEach(gwoGroup.immobile, function (unit) {
+          _.forEach(gwoGroup.immobile, (unit) => {
             mods.push(
               {
                 file: unit,

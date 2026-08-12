@@ -2,64 +2,67 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoUnit, gwoGroup) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal."
-        )
+], (gwoCard, gwoUnit, gwoGroup) => ({
+  visible: () => true,
+
+  describe: _.constant(
+    gwoCard.withSlot(
+      loc(
+        "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal."
       )
-    ),
-    summarize: _.constant("!LOC:Commander Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_combat_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: gwoCard.commanderWeight(inventory, 35),
-      };
-    },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      var mods = _.map(gwoGroup.fabberBuildArms, function (fabberBuildArm) {
-        return {
-          file: fabberBuildArm,
-          path: "reclaim_types",
-          op: "push",
-          value: "Friendly_Commander",
-        };
-      });
-      mods.push(
-        {
-          file: gwoUnit.commanderSecondaryAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 4,
-        },
-        {
-          file: gwoUnit.commanderSecondaryAmmo,
-          path: "splash_damage",
-          op: "multiply",
-          value: 4,
-        },
-        {
-          file: gwoUnit.commanderSecondaryAmmo,
-          path: "burn_damage",
-          op: "multiply",
-          value: 4,
-        }
-      );
-      inventory.addMods(mods);
-    },
-    dull: function () {},
-  };
-});
+    )
+  ),
+
+  summarize: () => "!LOC:Commander Upgrade Tech",
+
+  icon: () =>
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_combat_upgrade.png",
+
+  audio: _.constant({
+    found: "/VO/Computer/gw/board_tech_available_ammunition",
+  }),
+
+  getContext: gwoCard.getContext,
+
+  deal: function (system, context, inventory) {
+    return {
+      params: {
+        allowOverflow: true,
+      },
+      chance: gwoCard.commanderWeight(inventory, 35),
+    };
+  },
+
+  buff: function (inventory) {
+    inventory.maxCards(inventory.maxCards() + 1);
+    const mods = _.map(gwoGroup.fabberBuildArms, (fabberBuildArm) => ({
+      file: fabberBuildArm,
+      path: "reclaim_types",
+      op: "push",
+      value: "Friendly_Commander",
+    }));
+    mods.push(
+      {
+        file: gwoUnit.commanderSecondaryAmmo,
+        path: "damage",
+        op: "multiply",
+        value: 4,
+      },
+      {
+        file: gwoUnit.commanderSecondaryAmmo,
+        path: "splash_damage",
+        op: "multiply",
+        value: 4,
+      },
+      {
+        file: gwoUnit.commanderSecondaryAmmo,
+        path: "burn_damage",
+        op: "multiply",
+        value: 4,
+      }
+    );
+    inventory.addMods(mods);
+  },
+
+  dull: function () {},
+}));

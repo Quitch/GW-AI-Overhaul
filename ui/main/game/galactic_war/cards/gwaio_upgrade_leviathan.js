@@ -1,91 +1,93 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery."
-        )
+], (gwoCard, gwoUnit) => ({
+  visible: () => true,
+
+  describe: _.constant(
+    gwoCard.withSlot(
+      loc(
+        "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery."
       )
-    ),
-    summarize: _.constant("!LOC:Leviathan Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_naval_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.leviathan),
-        30
-      );
-    },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods(
-        [
-          {
-            file: gwoUnit.leviathan,
-            path: "tools.0.spec_id",
-            op: "replace",
-            value: gwoUnit.holkinsWeapon,
-          },
-          {
-            file: gwoUnit.leviathan,
-            path: "tools.0.projectiles_per_fire",
-            op: "replace",
-            value: 1,
-          },
-          {
-            file: gwoUnit.leviathan,
-            path: "tools.1.spec_id",
-            op: "replace",
-            value: gwoUnit.holkinsWeapon,
-          },
-          {
-            file: gwoUnit.leviathan,
-            path: "tools.1.projectiles_per_fire",
-            op: "replace",
-            value: 1,
-          },
-          {
-            file: gwoUnit.leviathan,
-            path: "tools.2.spec_id",
-            op: "replace",
-            value: gwoUnit.holkinsWeapon,
-          },
-          {
-            file: gwoUnit.leviathan,
-            path: "tools.2.projectiles_per_fire",
-            op: "replace",
-            value: 1,
-          },
-          {
-            file: gwoUnit.leviathan,
-            path: "tools.3.spec_id",
-            op: "replace",
-            value: gwoUnit.holkinsWeapon,
-          },
-          {
-            file: gwoUnit.leviathan,
-            path: "tools.3.projectiles_per_fire",
-            op: "replace",
-            value: 1,
-          },
-        ].concat(
-          _.times(4, function (i) {
-            return {
-              file: gwoUnit.leviathan,
-              path: "tools." + i + ".spec_id",
-              op: "tag",
-            };
-          })
-        )
-      );
-    },
-    dull: function () {},
-  };
-});
+    )
+  ),
+
+  summarize: () => "!LOC:Leviathan Upgrade Tech",
+
+  icon: () =>
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_naval_upgrade.png",
+
+  audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
+  getContext: gwoCard.getContext,
+
+  deal: function (system, context, inventory) {
+    return gwoCard.upgradeDeal(
+      gwoCard.hasUnit(inventory.units(), gwoUnit.leviathan),
+      30
+    );
+  },
+
+  buff: function (inventory) {
+    inventory.maxCards(inventory.maxCards() + 1);
+    inventory.addMods(
+      [
+        {
+          file: gwoUnit.leviathan,
+          path: "tools.0.spec_id",
+          op: "replace",
+          value: gwoUnit.holkinsWeapon,
+        },
+        {
+          file: gwoUnit.leviathan,
+          path: "tools.0.projectiles_per_fire",
+          op: "replace",
+          value: 1,
+        },
+        {
+          file: gwoUnit.leviathan,
+          path: "tools.1.spec_id",
+          op: "replace",
+          value: gwoUnit.holkinsWeapon,
+        },
+        {
+          file: gwoUnit.leviathan,
+          path: "tools.1.projectiles_per_fire",
+          op: "replace",
+          value: 1,
+        },
+        {
+          file: gwoUnit.leviathan,
+          path: "tools.2.spec_id",
+          op: "replace",
+          value: gwoUnit.holkinsWeapon,
+        },
+        {
+          file: gwoUnit.leviathan,
+          path: "tools.2.projectiles_per_fire",
+          op: "replace",
+          value: 1,
+        },
+        {
+          file: gwoUnit.leviathan,
+          path: "tools.3.spec_id",
+          op: "replace",
+          value: gwoUnit.holkinsWeapon,
+        },
+        {
+          file: gwoUnit.leviathan,
+          path: "tools.3.projectiles_per_fire",
+          op: "replace",
+          value: 1,
+        },
+      ].concat(
+        _.times(4, (i) => ({
+          file: gwoUnit.leviathan,
+          path: `tools.${i}.spec_id`,
+          op: "tag",
+        }))
+      )
+    );
+  },
+
+  dull: function () {},
+}));

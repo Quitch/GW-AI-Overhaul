@@ -5,11 +5,11 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:Nomad Commander"),
+    visible: () => false,
+    summarize: () => "!LOC:Nomad Commander",
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
@@ -26,14 +26,14 @@ define([
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
 
-          var mods = [];
-          var smallStructures = [
+          const mods = [];
+          const smallStructures = [
             gwoUnit.energyPlant,
             gwoUnit.energyStorage,
             gwoUnit.galata,
@@ -48,7 +48,7 @@ define([
             gwoUnit.umbrella,
             gwoUnit.wall,
           ];
-          var mediumStructures = [
+          const mediumStructures = [
             gwoUnit.catapult,
             gwoUnit.energyPlantAdvanced,
             gwoUnit.flak,
@@ -56,7 +56,7 @@ define([
             gwoUnit.radarJammingStation,
             gwoUnit.torpedoLauncherAdvanced,
           ];
-          var largeStructures = [
+          const largeStructures = [
             gwoUnit.anchor,
             gwoUnit.deepSpaceOrbitalRadar,
             gwoUnit.holkins,
@@ -64,19 +64,19 @@ define([
             gwoUnit.kessler,
             gwoUnit.radarAdvanced,
           ];
-          var allStructures = smallStructures.concat(
+          const allStructures = smallStructures.concat(
             mediumStructures,
             largeStructures
           );
-          var orbitalStructures = [
+          const orbitalStructures = [
             gwoUnit.anchor,
             gwoUnit.jig,
             gwoUnit.kessler,
           ];
-          var groundStructures = _.reject(allStructures, function (structure) {
-            return _.includes(orbitalStructures, structure);
-          });
-          _.forEach(groundStructures, function (unit) {
+          const groundStructures = _.reject(allStructures, (structure) =>
+            _.includes(orbitalStructures, structure)
+          );
+          _.forEach(groundStructures, (unit) => {
             mods.push(
               {
                 file: unit,
@@ -163,7 +163,7 @@ define([
               }
             );
           });
-          _.forEach(orbitalStructures, function (unit) {
+          _.forEach(orbitalStructures, (unit) => {
             mods.push(
               {
                 file: unit,
@@ -209,7 +209,7 @@ define([
               }
             );
           });
-          _.forEach(allStructures, function (unit) {
+          _.forEach(allStructures, (unit) => {
             mods.push(
               {
                 file: unit,
@@ -267,7 +267,7 @@ define([
               }
             );
           });
-          _.forEach(smallStructures, function (unit) {
+          _.forEach(smallStructures, (unit) => {
             mods.push(
               {
                 file: unit,
@@ -289,8 +289,9 @@ define([
             op: "replace",
             value: "Mobile & ((Land - Commander) | CmdBuild | FabBuild)",
           });
-          var teleportableStructures = smallStructures.concat(mediumStructures);
-          _.forEach(teleportableStructures, function (unit) {
+          const teleportableStructures =
+            smallStructures.concat(mediumStructures);
+          _.forEach(teleportableStructures, (unit) => {
             mods.push(
               {
                 file: unit,
@@ -306,16 +307,14 @@ define([
               }
             );
           });
-          var defensiveStructures = gwoGroup.structuresArtillery.concat(
+          const defensiveStructures = gwoGroup.structuresArtillery.concat(
             gwoGroup.structuresDefences
           );
-          var offensiveStructures = _.filter(
+          const offensiveStructures = _.filter(
             defensiveStructures,
-            function (structure) {
-              return structure !== gwoUnit.wall;
-            }
+            (structure) => structure !== gwoUnit.wall
           );
-          _.forEach(offensiveStructures, function (unit) {
+          _.forEach(offensiveStructures, (unit) => {
             mods.push({
               file: unit,
               path: "command_caps",

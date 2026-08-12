@@ -1,23 +1,26 @@
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
   gwoCard
-) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Eradication tech enables the eradicate game modifier in every system."
-    ),
-    summarize: _.constant("!LOC:Eradication Tech"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
-    getContext: gwoCard.getContext,
-    deal: function () {
-      return { chance: 60 };
-    },
-    buff: function () {
-      // performed in referee_config.js
-    },
-    dull: function () {},
-  };
-});
+) => ({
+  visible: () => true,
+
+  describe: () =>
+    "!LOC:Eradication tech enables the eradicate game modifier in every system.",
+
+  summarize: () => "!LOC:Eradication Tech",
+
+  icon: () =>
+    "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+
+  audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
+  getContext: gwoCard.getContext,
+
+  deal: function () {
+    return { chance: 60 };
+  },
+
+  buff: function () {
+    // performed in referee_config.js
+  },
+
+  dull: function () {},
+}));

@@ -4,17 +4,16 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GWCStart, gwoBank, gwoCard, gwoUnit) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:Rapid Deployment Commander"),
+    visible: () => false,
+    summarize: () => "!LOC:Rapid Deployment Commander",
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:Factories build fabricators and fabricators build units."
-    ),
+    describe: () =>
+      "!LOC:Factories build fabricators and fabricators build units.",
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:Rapid Deployment Commander",
@@ -22,23 +21,23 @@ define([
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
 
-          var playerIsCluster =
+          const playerIsCluster =
             inventory.getTag("global", "playerFaction") === 4;
 
           // These run after cluster_setup.js tags Cluster's Sub Commanders
           // NoBuild, so a bare `Mobile & <layer>` clause would match one and
           // hand Cluster a buildable. The basic fabbers require Basic, so are safe.
-          var advancedBotFabberBuilds =
+          const advancedBotFabberBuilds =
             "(Mobile & Bot | Land & Structure & Advanced - Factory | " +
             "FabAdvBuild | FabBuild - Factory | Titan & Bot) & Custom58 - NoBuild";
 
-          var mods = [
+          const mods = [
             {
               file: gwoUnit.airFactory,
               path: "buildable_types",
@@ -227,7 +226,7 @@ define([
           }
           inventory.addMods(mods);
 
-          var aiMods = [
+          const aiMods = [
             {
               type: "fabber",
               op: "replace",
@@ -256,21 +255,21 @@ define([
               refValue: 477,
             },
           ];
-          var types = ["fabber", "factory"];
-          _.forEach(types, function (type) {
+          const types = ["fabber", "factory"];
+          _.forEach(types, (type) => {
             aiMods.push({
-              type: type,
+              type,
               op: "load",
-              value: CARD.id + ".json",
+              value: `${CARD.id}.json`,
             });
           });
-          var factoriesBasic = [
+          const factoriesBasic = [
             "BasicAirFactory",
             "BasicBotFactory",
             "BasicNavalFactory",
             "BasicVehicleFactory",
           ];
-          _.forEach(factoriesBasic, function (factory) {
+          _.forEach(factoriesBasic, (factory) => {
             aiMods.push(
               {
                 type: "fabber",
@@ -292,13 +291,13 @@ define([
               }
             );
           });
-          var factoriesAdvanced = [
+          const factoriesAdvanced = [
             "AdvancedAirFactory",
             "AdvancedBotFactory",
             "AdvancedNavalFactory",
             "AdvancedVehicleFactory",
           ];
-          _.forEach(factoriesAdvanced, function (factory) {
+          _.forEach(factoriesAdvanced, (factory) => {
             aiMods.push(
               {
                 type: "fabber",

@@ -5,52 +5,51 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
+    visible: () => false,
     summarize: function () {
       if (gwoCard.isEnglish()) {
         return "!LOC:Terminal Commander";
       }
-      return loc("!LOC:Deathmark") + " " + loc("!LOC:Commander"); // scuffed translation using existing strings
+      return `${loc("!LOC:Deathmark")} ${loc("!LOC:Commander")}`; // scuffed translation using existing strings
     },
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:You're dying, but you have one last war left in you. Your units' health decreases over time, and your commander's fastest of all. Life is short and must be lived to the full, so unit damage and movement is doubled and costs are halved. Life through victory, Commander!"
-    ),
+    describe: () =>
+      "!LOC:You're dying, but you have one last war left in you. Your units' health decreases over time, and your commander's fastest of all. Life is short and must be lived to the full, so unit damage and movement is doubled and costs are halved. Life through victory, Commander!",
     hint: function () {
-      var icon =
+      const icon =
         "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png";
       if (gwoCard.isEnglish()) {
         return {
-          icon: icon,
+          icon,
           description: "!LOC:Terminal Commander",
         };
       }
       return {
-        icon: icon,
-        description: loc("!LOC:Deathmark") + " " + loc("!LOC:Commander"), // scuffed translation using existing strings
+        icon,
+        description: `${loc("!LOC:Deathmark")} ${loc("!LOC:Commander")}`, // scuffed translation using existing strings
       };
     },
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
 
-          var playerIsCluster =
+          const playerIsCluster =
             inventory.getTag("global", "playerFaction") === 4;
-          var mods = [];
-          var mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
+          const mods = [];
+          const mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
 
           if (playerIsCluster) {
-            _.forEach(gwoGroup.unitsNoCluster, function (unit) {
+            _.forEach(gwoGroup.unitsNoCluster, (unit) => {
               mods.push({
                 file: unit,
                 path: "build_metal_cost",
@@ -59,7 +58,7 @@ define([
               });
             });
           } else {
-            _.forEach(gwoGroup.units, function (unit) {
+            _.forEach(gwoGroup.units, (unit) => {
               mods.push({
                 file: unit,
                 path: "build_metal_cost",
@@ -75,7 +74,7 @@ define([
             op: "add",
             value: -15,
           });
-          _.forEach(gwoGroup.immobile, function (unit) {
+          _.forEach(gwoGroup.immobile, (unit) => {
             mods.push({
               file: unit,
               path: "passive_health_regen",
@@ -83,7 +82,7 @@ define([
               value: -3,
             });
           });
-          _.forEach(gwoGroup.factories, function (unit) {
+          _.forEach(gwoGroup.factories, (unit) => {
             mods.push({
               file: unit,
               path: "passive_health_regen",
@@ -91,7 +90,7 @@ define([
               value: -7,
             });
           });
-          _.forEach(gwoGroup.mobile, function (unit) {
+          _.forEach(gwoGroup.mobile, (unit) => {
             mods.push({
               file: unit,
               path: "passive_health_regen",
@@ -99,7 +98,7 @@ define([
               value: -1,
             });
           });
-          _.forEach(mobileUnits, function (unit) {
+          _.forEach(mobileUnits, (unit) => {
             mods.push(
               {
                 file: unit,
@@ -127,7 +126,7 @@ define([
               }
             );
           });
-          _.forEach(gwoGroup.ammo, function (ammo) {
+          _.forEach(gwoGroup.ammo, (ammo) => {
             mods.push(
               {
                 file: ammo,

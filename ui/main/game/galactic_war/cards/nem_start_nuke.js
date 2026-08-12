@@ -4,11 +4,11 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GWCStart, gwoBank, gwoCard, gwoUnit) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:Tactical Nuke Commander"),
+    visible: () => false,
+    summarize: () => "!LOC:Tactical Nuke Commander",
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
@@ -25,7 +25,7 @@ define([
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
@@ -128,7 +128,7 @@ define([
       }
     },
     dull: function (inventory) {
-      var units = [
+      const units = [
         gwoUnit.anchor,
         gwoUnit.catapult,
         gwoUnit.flak,

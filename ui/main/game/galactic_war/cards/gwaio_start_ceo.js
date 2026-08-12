@@ -4,17 +4,16 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GWCStart, gwoBank, gwoCard, gwoUnit) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:CEO Commander"),
+    visible: () => false,
+    summarize: () => "!LOC:CEO Commander",
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons. Halves their cost."
-    ),
+    describe: () =>
+      "!LOC:Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons. Halves their cost.",
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:CEO Commander",
@@ -22,7 +21,7 @@ define([
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
@@ -32,14 +31,14 @@ define([
           // unit_types with a list carrying neither SupportCommander nor
           // FactoryBuild, so nothing can build one. This loadout gets a copy
           // taken before that runs, leaving Cluster's own Colonels alone.
-          var playerIsCluster =
+          const playerIsCluster =
             inventory.getTag("global", "playerFaction") === 4;
-          var colonel = playerIsCluster
+          const colonel = playerIsCluster
             ? gwoUnit.clusterCeoColonel
             : gwoUnit.colonel;
 
           inventory.addUnits(colonel);
-          var mods = [
+          const mods = [
             {
               file: gwoUnit.commander,
               path: "buildable_types",
@@ -105,7 +104,7 @@ define([
             {
               type: "fabber",
               op: "load",
-              value: CARD.id + ".json",
+              value: `${CARD.id}.json`,
             },
           ]);
         }
