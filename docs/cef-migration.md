@@ -165,11 +165,14 @@ Per stage close, in order:
 
 ### Stage 2 — should
 
-- [ ] `npm run verify` green at every commit
-- [ ] Rename rehearsal passes
-- [ ] `npm run test:coverage` floor holds
-- [ ] Recorded: the branch no longer parses on the shipping build from the
-      first modern-syntax commit onward
+- [x] `npm run verify` green at every commit
+- [x] Rename rehearsal passes — 2026-08-12, counts identical to stage 1
+      (1,076), full verify green in the rewritten copy
+- [x] `npm run test:coverage` floor holds (96% lines overall)
+- [x] Recorded: **the branch no longer parses on the shipping Coherent build**
+      from the first modern-syntax commit (`Modernise shared module syntax`)
+      onward. Live checks against the shipping game happen on the
+      `cef-stage1-baseline` tag, nothing later.
 
 ### Stage 3 — can
 

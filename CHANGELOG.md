@@ -5,7 +5,7 @@
 ### Changed
 
 - Victory is now immediate once the last boss is defeated, rather than waiting for the final system to be explored. The Guardians are the exception: their system is still explored first while a commander loadout remains to be won
-- Prepared the mod for PA's move from Coherent UI to the Chrome Embedded Framework: engine URL handling is centralised behind a scheme adapter and a one-command rewrite tool, with the migration assumptions and test plan documented in `docs/cef-migration.md`
+- Prepared the mod for PA's move from Coherent UI to the Chrome Embedded Framework: engine URL handling is centralised behind a scheme adapter and a one-command rewrite tool, the toolchain and mod-owned code target Chromium 151 (modern JavaScript and CSS), and the migration assumptions and test plan are documented in `docs/cef-migration.md`
 
 ## v6.10.1 - 2026-08-11
 
