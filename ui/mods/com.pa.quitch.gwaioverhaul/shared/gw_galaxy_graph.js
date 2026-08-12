@@ -11,7 +11,7 @@ define(() => {
     self.saved = ko.observable(false);
 
     // Map of node -> node list that share an edge, going both directions.
-    // This means that _.contains(self.neighborsMap()[a], b) <=> _.contains(self.neighborsMap()[b], a).
+    // This means that _.includes(self.neighborsMap()[a], b) <=> _.includes(self.neighborsMap()[b], a).
     self.neighborsMap = ko.computed(() => {
       const edges = {};
       _.forEach(self.gates(), (gate) => {

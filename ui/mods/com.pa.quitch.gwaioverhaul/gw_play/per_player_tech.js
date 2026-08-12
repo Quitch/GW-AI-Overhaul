@@ -2,7 +2,11 @@
 // under the Node AMD harness - see testing.md, "Coverage".
 define(() => {
   const armyHasAI = (army) =>
-    !!(army && _.isArray(army.slots) && _.any(army.slots, "ai"));
+    !!(
+      army &&
+      _.isArray(army.slots) &&
+      army.slots.some((slot) => slot && slot.ai)
+    );
 
   const getConnectedPlayerCount = (options) => {
     const connectedClients = options && options.connectedClients;

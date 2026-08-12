@@ -332,10 +332,10 @@ function gwoSystemChanges() {
           const guardians = ai && ai.mirrorMode;
 
           if (ai && ai.team === defeatedTeam) {
-            const replacementAI = _.first(ai.foes);
+            const replacementAI = ai.foes && ai.foes[0];
             if (replacementAI) {
               const newAI = _.extend({}, ai, replacementAI);
-              newAI.foes = _.rest(ai.foes);
+              newAI.foes = ai.foes.slice(1);
               delete newAI.minions;
 
               const factionColor = normalizedColor(GWFactions[newAI.faction]);

@@ -83,7 +83,10 @@ define([
       naval: countCards(cards, "_sea"),
       vehicle: countCards(cards, "_vehicle"),
     };
-    const totalCards = _.sum(allCards);
+    const totalCards = Object.values(allCards).reduce(
+      (total, count) => total + count,
+      0
+    );
     if (totalCards > 0) {
       personality.percent_air = calculatePercentage(allCards.air, totalCards);
       personality.percent_bot = calculatePercentage(allCards.bot, totalCards);
