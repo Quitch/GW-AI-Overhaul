@@ -1,6 +1,7 @@
 "use strict";
 
-// Covers exactly the $/api subset referee_ai.js uses - not a general polyfill.
+// Covers exactly the $/api subset the deliberately-still-jQuery deal/cards
+// subsystem's tests use (see cef-migration.md) - not a general polyfill.
 
 // The Promise itself, augmented, rather than a wrapper - so `.then` stays the
 // inherited Promise.prototype.then rather than a hand-rolled look-alike.
@@ -31,27 +32,9 @@ function makeDeferred() {
   return deferred;
 }
 
-// Requesting a URL with no configured resolver rejects, so a test's fixtures can't
-// silently drift from what the code under test actually asks for.
-function createFakeJQuery(options) {
-  var opts = options || {};
-
+function createFakeJQuery() {
   return {
     Deferred: makeDeferred,
-    getJSON: function (url) {
-      return Promise.resolve()
-        .then(function () {
-          if (!opts.getJSON) {
-            throw new Error(
-              "fake-jquery: no getJSON resolver configured for " + url
-            );
-          }
-          return opts.getJSON(url);
-        })
-        .then(undefined, function (err) {
-          throw err;
-        });
-    },
   };
 }
 

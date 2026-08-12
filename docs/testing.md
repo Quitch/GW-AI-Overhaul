@@ -137,9 +137,12 @@ file does not reinvent its own list. Two things about it are load-bearing:
 - Connected clients are passed separately to `installModel(game, connectedClients)`,
   **not** through `buildGame`'s options.
 
-`scripts/lib/fake-jquery.js` covers exactly the `$`/`api` subset `referee_ai.js`
-uses. Requesting a URL with no configured resolver rejects, so a test's fixtures
-cannot silently drift from what the code actually asks for. It returns the Promise
+`scripts/lib/fake-jquery.js` covers exactly the `$`/`api` subset the
+deliberately-still-jQuery deal/cards subsystem's tests use —
+`$.Deferred` and `api.file.list`. `scripts/lib/fake-fetch.js` is the
+counterpart for `shared/gwo_fetch.js`; requesting a URL with no configured
+resolver rejects, so a test's fixtures cannot silently drift from what the
+code actually asks for. `makeDeferred` returns the Promise
 itself rather than an object with a `then` property, keeping `.then` the real
 inherited `Promise.prototype.then` — the shape SonarLint's "objects should not have
 a then property" rule warns about.
@@ -148,9 +151,9 @@ a then property" rule warns about.
 code reads at call time. It is a factory, not a singleton, so two suites never
 share a restore stack.
 
-`scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
-wiring `referee_ai.js`'s file discovery needs, and returns its own restore
-function. It records every `api.file.list` and `$.getJSON` call unconditionally,
+`scripts/lib/referee-fakes.js` installs the `fetch`/`api` wiring
+`referee_ai.js`'s file discovery needs, and returns its own restore
+function. It records every `api.file.list` and fetched-URL call unconditionally,
 so a test asserting which paths were walked needs no second, subtly different,
 local installer — which is what the three tests using it would otherwise each
 have grown.
