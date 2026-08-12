@@ -1,10 +1,10 @@
 #gwo-panel {
   width: 280px;
   text-align: left;
-  background: rgba(11, 26, 31, 0.9);
+  background: rgb(11 26 31 / 90%);
   padding: 0 0 0 9px;
-  box-shadow: 0 0 100px rgb(0, 0, 0);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 100px rgb(0 0 0);
+  border: 1px solid rgb(255 255 255 / 10%);
   position: relative;
   float: right;
   margin: 10px;

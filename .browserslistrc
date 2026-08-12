@@ -1,4 +1,4 @@
-# PA renders its UI with Coherent UI, which embeds Chrome/40.0.2214.28.
+# PA renders its UI with CEF, which embeds Chromium 151.
 # Read by stylelint-no-unsupported-browser-features via doiuse. Nothing else in
 # this repo uses browserslist - there is no build step. See docs/constraints.md.
-chrome 40
+chrome 151

@@ -33,15 +33,14 @@
   opacity: 1;
 }
 
-/* Inherited from the base game's players list. The prefixed properties are the ones
-   that do the work; PA's Chrome 40 has no unprefixed mask support, and the gw_play
-   scene has no <mask id="player-mask"> (the base game defines it only in live_game),
-   so the shorthand that used to sit here was inert twice over. */
+/* Inherited from the base game's players list. The longhands are used because
+   the gw_play scene has no <mask id="player-mask"> (the base game defines it
+   only in live_game), so the stock shorthand's reference half would be inert. */
 .player-masked {
   height: 16px;
   width: 16px;
-  -webkit-mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
-  -webkit-mask-size: cover;
+  mask-image: url("coui://ui/main/game/live_game/img/players_list_panel/icon_player_fill.png");
+  mask-size: cover;
 }
 
 .div-player-icon .fill,
