@@ -144,16 +144,23 @@ Per stage close, in order:
 
 ### Stage 1 — must
 
-- [ ] `npm run verify` green at every commit
-- [ ] Rename rehearsal passes
-- [ ] Removed-web-API audit recorded (see below)
-- [ ] **Live baseline on the shipping Coherent build:** branch mounted as
-      `com.pa.quitch.gwaioverhaul-dev`, driven over CDP
-      (`--coherent_port`): `start` → new war in `gw_start` → `gw_play` card
-      deal, galaxy map and GWO panel → battle launch (referee memory-file
-      mount) → client log clean of mod errors. This is the last commit that
-      can be live-tested before a CEF build exists, hence the
-      `cef-stage1-baseline` tag.
+- [x] `npm run verify` green at every commit
+- [x] Rename rehearsal passes — 2026-08-12, `couj://`/`sped://`: 1,076
+      occurrences (modinfo.json 23, ui 913 in 293 files, scripts 8, test
+      132), full verify green in the rewritten copy
+- [x] Removed-web-API audit recorded (see below)
+- [x] **Live baseline on the shipping Coherent build** — 2026-08-12, driven
+      over CDP (`--coherent_port`): `start` → new war in `gw_start`
+      (generation and the `gwo_url`-routed navigation) → `gw_play` (18 stars,
+      235 cards, GWO panel) → explore/deal/take card → battle launch (referee
+      memory-file mounts observed as `.ai0` spec loads, AI tree walk through
+      `gwoUrl.gameFile`) → local server → `live_game` loaded. Zero GWO errors
+      in the client log. This is the last commit that can be live-tested
+      before a CEF build exists, hence the `cef-stage1-baseline` tag.
+      (Unrelated stock trap met on the way: `fight()` immediately after a
+      dev-cheat star jump throws inside a jQuery `.always` on
+      `model.currentSystem()` and hangs silently — the swallowed-throw trap
+      constraints.md documents, present on develop too.)
 
 ### Stage 2 — should
 
