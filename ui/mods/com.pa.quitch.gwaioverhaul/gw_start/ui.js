@@ -8,8 +8,8 @@ function gwoUI() {
   gwoUILoaded = true;
 
   try {
-    ko.extenders.stringBoolean = function (target) {
-      var result = ko.computed({
+    ko.extenders.stringBoolean = (target) => {
+      const result = ko.computed({
         read: function () {
           return target() ? "true" : "false";
         },
@@ -21,13 +21,11 @@ function gwoUI() {
       return result;
     };
 
-    var koStringBoolean = function (value) {
-      return ko.observable(value).extend({ stringBoolean: true });
-    };
+    const koStringBoolean = (value) =>
+      ko.observable(value).extend({ stringBoolean: true });
 
-    var koNumeric = function (value, precision) {
-      return ko.observable(value).extend({ numeric: precision });
-    };
+    const koNumeric = (value, precision) =>
+      ko.observable(value).extend({ numeric: precision });
 
     // gw_start uses ko.applyBindings(model)
     model.gwoDifficultySettings = {
@@ -79,51 +77,47 @@ function gwoUI() {
       largePlanets: ko.observable(false),
     };
 
-    var difficultySettings = model.gwoDifficultySettings;
+    let difficultySettings = model.gwoDifficultySettings;
 
     // duplicate settings we don't own in our view model
     model.newGameSizeIndex = difficultySettings.galaxySize;
     model.newGameHardcore = difficultySettings.hardcore;
     model.activeStartCardIndex = difficultySettings.chosenLoadout;
-    model.playerFactionIndex.subscribe(function () {
+    model.playerFactionIndex.subscribe(() => {
       difficultySettings.playerFaction(model.playerFactionIndex());
     });
 
     // The legacy array shape is positional, so it is only restored while its
     // length still matches the setting count - past that, values misassign.
-    var restorePreviousSettings = function (settings) {
-      var previousSettings = settings.previousSettings();
+    const restorePreviousSettings = (settings) => {
+      const previousSettings = settings.previousSettings();
 
       if (_.isEmpty(previousSettings)) {
         return settings;
       }
 
-      var settingNames = _.keys(settings);
+      const settingNames = _.keys(settings);
       _.pull(settingNames, "previousSettings");
 
       if (_.isArray(previousSettings)) {
         if (previousSettings.length !== settingNames.length) {
           console.warn(
-            "gwoUI: previousSettings is a legacy array of length " +
-              previousSettings.length +
-              " but there are now " +
-              settingNames.length +
-              " settings; skipping restore to avoid misassigning values."
+            `gwoUI: previousSettings is a legacy array of length ${previousSettings.length} but there are now ${settingNames.length} settings; skipping restore to avoid misassigning values.`
           );
           return settings;
         }
-        _.forEach(settingNames, function (name, i) {
+        _.forEach(settingNames, (name, i) => {
           settings[name](previousSettings[i]);
         });
       } else {
-        _.forEach(settingNames, function (name) {
+        _.forEach(settingNames, (name) => {
           if (_.has(previousSettings, name)) {
             settings[name](previousSettings[name]);
           }
         });
       }
 
-      _.defer(function () {
+      _.defer(() => {
         $("#gwo-personality-picker")
           .selectpicker("val", settings.personalityTags())
           .trigger("change");
@@ -158,8 +152,8 @@ function gwoUI() {
       staticTech: ko.observable(false),
     };
 
-    var syncGwoGameOptionsDraft = function () {
-      var draft = model.gwoGameOptionsDraft;
+    const syncGwoGameOptionsDraft = () => {
+      const draft = model.gwoGameOptionsDraft;
       draft.hardcore(model.newGameHardcore());
       draft.factionScaling(difficultySettings.factionScaling());
       draft.systemScaling(difficultySettings.systemScaling());
@@ -171,16 +165,16 @@ function gwoUI() {
     };
 
     model.gwoGameOptionsModalVisible = ko.observable(false);
-    model.openGwoGameOptionsModal = function () {
+    model.openGwoGameOptionsModal = () => {
       syncGwoGameOptionsDraft();
       model.gwoGameOptionsModalVisible(true);
     };
-    model.closeGwoGameOptionsModal = function () {
+    model.closeGwoGameOptionsModal = () => {
       syncGwoGameOptionsDraft();
       model.gwoGameOptionsModalVisible(false);
     };
-    model.applyGwoGameOptionsModal = function () {
-      var draft = model.gwoGameOptionsDraft;
+    model.applyGwoGameOptionsModal = () => {
+      const draft = model.gwoGameOptionsDraft;
       model.newGameHardcore(draft.hardcore());
       difficultySettings.factionScaling(draft.factionScaling());
       difficultySettings.systemScaling(draft.systemScaling());
@@ -191,41 +185,40 @@ function gwoUI() {
       difficultySettings.staticTech(draft.staticTech());
       model.gwoGameOptionsModalVisible(false);
     };
-    model.toggleGwoBooleanSetting = function (setting) {
+    model.toggleGwoBooleanSetting = (setting) => {
       setting(!setting());
     };
-    model.gwoBooleanSettingText = function (setting) {
-      return setting() ? loc("!LOC:ON") : loc("!LOC:OFF");
-    };
+    model.gwoBooleanSettingText = (setting) =>
+      setting() ? loc("!LOC:ON") : loc("!LOC:OFF");
 
     // Stock's selectedCommander is a read-only computed over a private index the
     // modal cannot set, so swap in a writable observable and forward the base
     // value through - it still resolves the initial pick, after this runs.
-    var baseSelectedCommander = model.selectedCommander;
-    var selectedCommander = ko.observable(baseSelectedCommander());
+    const baseSelectedCommander = model.selectedCommander;
+    const selectedCommander = ko.observable(baseSelectedCommander());
     baseSelectedCommander.subscribe(selectedCommander);
     model.selectedCommander = selectedCommander;
-    selectedCommander.subscribe(function () {
+    selectedCommander.subscribe(() => {
       model.updateCommander();
     });
 
     // The art ships in the blue team paint. Rotating by the difference to the
     // faction hue recolours it while keeping the model's shading.
-    var commanderArtHue = 210;
+    const commanderArtHue = 210;
 
     // Returns undefined for an achromatic colour, which has no hue to rotate to.
-    var rgbHue = function (rgb) {
-      var red = rgb[0] / 255;
-      var green = rgb[1] / 255;
-      var blue = rgb[2] / 255;
-      var max = Math.max(red, green, blue);
-      var delta = max - Math.min(red, green, blue);
+    const rgbHue = (rgb) => {
+      const red = rgb[0] / 255;
+      const green = rgb[1] / 255;
+      const blue = rgb[2] / 255;
+      const max = Math.max(red, green, blue);
+      const delta = max - Math.min(red, green, blue);
 
       if (delta === 0) {
         return undefined;
       }
 
-      var hue;
+      let hue;
       if (max === red) {
         hue = ((green - blue) / delta) % 6;
       } else if (max === green) {
@@ -238,8 +231,8 @@ function gwoUI() {
       return hue < 0 ? hue + 360 : hue;
     };
 
-    model.gwoCommanderTintFilter = ko.computed(function () {
-      var hue = rgbHue(model.playerColor()[0]);
+    model.gwoCommanderTintFilter = ko.computed(() => {
+      const hue = rgbHue(model.playerColor()[0]);
 
       // Cluster's colour is a neutral grey, so drain the art's colour rather
       // than rotating a hue it doesn't have.
@@ -247,28 +240,28 @@ function gwoUI() {
         return "grayscale(1)";
       }
 
-      return "hue-rotate(" + Math.round(hue - commanderArtHue) + "deg)";
+      return `hue-rotate(${Math.round(hue - commanderArtHue)}deg)`;
     });
 
     model.gwoCommanderModalVisible = ko.observable(false);
     model.gwoCommanderDraft = ko.observable(model.selectedCommander());
-    model.gwoDraftCommanderName = ko.computed(function () {
-      return CommanderUtility.bySpec.getName(model.gwoCommanderDraft());
-    });
-    model.openGwoCommanderModal = function () {
+    model.gwoDraftCommanderName = ko.computed(() =>
+      CommanderUtility.bySpec.getName(model.gwoCommanderDraft())
+    );
+    model.openGwoCommanderModal = () => {
       model.gwoCommanderDraft(model.selectedCommander());
       model.gwoCommanderModalVisible(true);
     };
-    model.closeGwoCommanderModal = function () {
+    model.closeGwoCommanderModal = () => {
       model.gwoCommanderDraft(model.selectedCommander());
       model.gwoCommanderModalVisible(false);
     };
-    model.applyGwoCommanderModal = function () {
+    model.applyGwoCommanderModal = () => {
       model.selectedCommander(model.gwoCommanderDraft());
       model.gwoCommanderModalVisible(false);
     };
 
-    var addHtml = {
+    const addHtml = {
       path: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/",
       before: function (classOrId, file) {
         $(classOrId).before(loadHtml(this.path + file));
@@ -283,12 +276,12 @@ function gwoUI() {
         $(classOrId).replaceWith(loadHtml(this.path + file));
       },
     };
-    var gameDifficultyLabelId = "#game-difficulty-label";
-    var gameDifficultyId = "#game-difficulty";
+    const gameDifficultyLabelId = "#game-difficulty-label";
+    const gameDifficultyId = "#game-difficulty";
 
     $("#game-settings-label")
       .closest(".form-group")
-      .replaceWith(loadHtml(addHtml.path + "difficulty_options.html"));
+      .replaceWith(loadHtml(`${addHtml.path}difficulty_options.html`));
     // Same reason as the commander modal below, plus it keeps a hidden node out
     // of the Setup column's scroll flow.
     $("#gwo-game-options-modal").appendTo("body");
@@ -340,14 +333,14 @@ function gwoUI() {
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
       ],
-      function (gwoDifficulty) {
+      (gwoDifficulty) => {
         // Scoped, not a bare $("select"): only these change disabled state here,
         // and refreshing the rest on every difficulty change costs time for nothing.
-        var customDifficultySelects = "#custom-difficulty-settings select";
+        const customDifficultySelects = "#custom-difficulty-settings select";
 
-        ko.computed(function () {
-          var selectedDifficulty = difficultySettings.difficultyLevel();
-          var difficulties = gwoDifficulty.difficulties;
+        ko.computed(() => {
+          const selectedDifficulty = difficultySettings.difficultyLevel();
+          const difficulties = gwoDifficulty.difficulties;
           if (difficulties[selectedDifficulty].customDifficulty) {
             $(customDifficultySelects).attr("disabled", false);
             $(customDifficultySelects).selectpicker("refresh");
@@ -428,7 +421,7 @@ function gwoUI() {
             );
             // From the difficulty data, not by reading personalityTags back -
             // that makes this computed a dependency of the observable it writes.
-            var personalityTags =
+            const personalityTags =
               difficulties[selectedDifficulty].personality_tags;
             difficultySettings.personalityTags(personalityTags);
             $("#gwo-personality-picker")
@@ -442,14 +435,12 @@ function gwoUI() {
       }
     );
 
-    model.title = ko.computed(function () {
-      return model.mode() || loc("!LOC:Galactic War Overhaul");
-    });
+    model.title = ko.computed(
+      () => model.mode() || loc("!LOC:Galactic War Overhaul")
+    );
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoUI();
