@@ -58,8 +58,9 @@ number.
   stays.
 - **A6 — native two-argument `startsWith`/`endsWith` win under CEF.** PA's
   one-argument polyfill in `ui/main/shared/js/helpers.js` is what breaks them
-  on Chrome 40; if it is conditional (`if (!String.prototype.startsWith)`) it
-  no-ops on a modern engine. _Probe:_ `"abc".startsWith("b", 1) === true`.
+  on Chrome 40, and it is guarded by `typeof ... !== "function"` (verified in
+  the base install source), so it no-ops on a modern engine. _Probe:_
+  `"abc".startsWith("b", 1) === true`.
 - **A7 — the debugger flag is `--webview-port <port>`** (replacing
   `--coherent_port=<port>`), feeding Chromium's `remote_debugging_port`.
   _Evidence, all v149:_ confirmed working; CDP Protocol-Version 1.3 (Coherent

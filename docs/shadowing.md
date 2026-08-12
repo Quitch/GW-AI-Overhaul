@@ -165,6 +165,26 @@ upstream file has one. That directive is build-time only and has no consumer in
 this repo, so it is deliberately not carried — see
 [`constraints.md`](constraints.md).
 
+## The modernisation boundary
+
+The CEF engine takes modern JavaScript, but not every file here uses it.
+**Shadowed base-game files, the `gwc_` cards, and the deliberate line-for-line
+stock copies (`gw_start/gwo_breeder.js`, `shared/gwo_system_templates.js`) stay
+in ES5 and stock idiom** — `var`, `self = this`, prototype assignment, literal
+scheme strings — even where the mod namespace has moved on. Two reasons:
+
+- The minimal-diff-vs-stock property is what a post-patch re-sync runs on.
+  Modernising GWO's copy of a stock file turns every future re-sync into a
+  three-way merge between old stock, new stock, and a reformatted copy.
+- Stock's own CEF-era form is unknown. If PA modernises a file this repo
+  shadows, the re-sync adopts stock's new form then — matching stock is the
+  rule, not ES5 itself.
+
+Everything the mod owns outright — `ui/mods/com.pa.quitch.gwaioverhaul/**` and
+the mod-authored cards (`gwaio_`/`nem_`/`tgw_`) — modernises freely, including
+the measured siblings extracted from shadowed files: the sibling is mod code,
+only the glue file it serves is stock-shaped.
+
 ## Registry files have no append mechanism
 
 A mod adding entries to `pa/units/unit_list.json`,

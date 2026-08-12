@@ -2,7 +2,7 @@
 
 GWO is a client mod for Planetary Annihilation: TITANS that overhauls the
 single-player Galactic War campaign. It ships as plain JS/CSS/JSON loaded by the
-game's embedded Chrome 40 — no build step, no bundler, no transpiler. What is in
+game's embedded Chromium — no build step, no bundler, no transpiler. What is in
 the repo is what runs.
 
 ## The two halves of the tree
@@ -182,8 +182,9 @@ writing a war it does not own.
 
 Covered in full by CONTRIBUTING.md; the load-bearing ones:
 
-- Shipped `ui/**` code must be ES5 / Chrome 40 safe — see
-  [`constraints.md`](constraints.md).
+- Shipped `ui/**` code obeys the scene-scope rule (no top-level
+  `let`/`const`/`class`), and shadowed files stay in ES5/stock idiom — see
+  [`constraints.md`](constraints.md) and [`shadowing.md`](shadowing.md).
 - camelCase JS, kebab-case CSS, 2-space indent, HTML in its own file (never
   inline in JS).
 - `pa/**` JSON is intentionally minified to one line, matching the base game, and

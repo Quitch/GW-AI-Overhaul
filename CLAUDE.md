@@ -8,8 +8,8 @@ in this repository.
 GW-AI-Overhaul (GWO/GWAIO) is a client mod for Planetary Annihilation: TITANS that
 overhauls the single-player Galactic War campaign (AI personalities, difficulty
 tiers, tech cards, factions, planetary intel, etc). It ships as plain JS/CSS/JSON
-loaded by the game's embedded Chrome 40, not a bundled/transpiled app - there is no
-build step, only lint/validate/test.
+loaded by the game's embedded Chromium (CEF, Chromium 151 - this branch), not a
+bundled/transpiled app - there is no build step, only lint/validate/test.
 
 The base game install (a `media` folder under Steam's `.../Planetary Annihilation
 Titans/`) is not part of this repo and lives at a different path on every
@@ -26,32 +26,33 @@ unmodified file looked like before this mod shadowed it, or to find game systems
 [`docs/README.md`](docs/README.md) first - it gives a reading order and a list of
 the traps that have actually caused bugs here.
 
-| Topic                                                                   | Doc                                            |
-| ----------------------------------------------------------------------- | ---------------------------------------------- |
-| Chrome 40 / ES5 limits, available libraries, CSS and localisation rules | [`docs/constraints.md`](docs/constraints.md)   |
-| Tree layout, scenes, entry points, battle launch sequence               | [`docs/architecture.md`](docs/architecture.md) |
-| File shadowing, function hijacking, the full shadowed-file inventory    | [`docs/shadowing.md`](docs/shadowing.md)       |
-| Tech card contract, `buff`/`dull`, deal weighting, loadouts             | [`docs/tech-cards.md`](docs/tech-cards.md)     |
-| The third-party card mod API and what breaks downstream if it changes   | [`docs/tech-cards.md`](docs/tech-cards.md)     |
-| AI-mod descriptors, the `ops` table, `managerPath`, the tree cache      | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)   |
-| The five AI trees, source vs destination, scope tokens                  | [`docs/ai-paths.md`](docs/ai-paths.md)         |
-| Host/viewer, per-player tech, colour allocation                         | [`docs/coop.md`](docs/coop.md)                 |
-| Unit spec ops, path segments, spec caching                              | [`docs/specs.md`](docs/specs.md)               |
-| Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)             |
-| The Node AMD harness, the seven validators, coverage                    | [`docs/testing.md`](docs/testing.md)           |
+| Topic                                                                 | Doc                                            |
+| --------------------------------------------------------------------- | ---------------------------------------------- |
+| Scene-scope rules, available libraries, CSS and localisation rules    | [`docs/constraints.md`](docs/constraints.md)   |
+| Tree layout, scenes, entry points, battle launch sequence             | [`docs/architecture.md`](docs/architecture.md) |
+| File shadowing, function hijacking, the full shadowed-file inventory  | [`docs/shadowing.md`](docs/shadowing.md)       |
+| Tech card contract, `buff`/`dull`, deal weighting, loadouts           | [`docs/tech-cards.md`](docs/tech-cards.md)     |
+| The third-party card mod API and what breaks downstream if it changes | [`docs/tech-cards.md`](docs/tech-cards.md)     |
+| AI-mod descriptors, the `ops` table, `managerPath`, the tree cache    | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)   |
+| The five AI trees, source vs destination, scope tokens                | [`docs/ai-paths.md`](docs/ai-paths.md)         |
+| Host/viewer, per-player tech, colour allocation                       | [`docs/coop.md`](docs/coop.md)                 |
+| Unit spec ops, path segments, spec caching                            | [`docs/specs.md`](docs/specs.md)               |
+| Galaxy generation, factions, difficulty tiers, penchants              | [`docs/galaxy.md`](docs/galaxy.md)             |
+| The Node AMD harness, the seven validators, coverage                  | [`docs/testing.md`](docs/testing.md)           |
 
 Six things are worth knowing before you touch anything, each covered in full by
 the doc named:
 
-- **Shipped `ui/**` code must be ES5 / Chrome 40 safe.** No `let`, arrow functions,
-  template literals or `class`. A parse error takes out the whole script, not just
-  the line. The `eslint.config.mjs` whitelist is exhaustive, so it doubles as the
-  answer to "may I use X?" - no entry means no.
+- **Shipped `ui/**` files share one scope per scene.** No top-level `let`, `const`
+  or `class` - a duplicate lexical declaration across mods is a scene-killing
+  `SyntaxError`, so everything stays inside the `define(...)` factory or an IIFE.
+  `eslint.config.mjs` enforces it. Shadowed base-game files additionally stay in
+  ES5/stock idiom - see the modernisation boundary.
+  ([`constraints.md`](docs/constraints.md), [`shadowing.md`](docs/shadowing.md))
+- **Shipped CSS fails quietly.** An unsupported declaration is dropped silently
+  rather than erroring, so `stylelint.config.mjs` - a Chromium 151 profile - is
+  the answer to "may I use this property?".
   ([`constraints.md`](docs/constraints.md))
-- **Shipped CSS is bound by the same engine, and fails more quietly.** An
-  unsupported declaration is dropped silently rather than erroring, so
-  `stylelint.config.mjs` is the CSS half of that whitelist and the answer to "may I
-  use this property?". ([`constraints.md`](docs/constraints.md))
 - **A shadowed file is a full copy, not a diff.** Prefer injecting into a scene or
   hijacking a function; shadow only when neither works.
   ([`shadowing.md`](docs/shadowing.md))
@@ -137,13 +138,13 @@ See CONTRIBUTING.md for the full list. The ones that bite most often:
   Those JSON files are intentionally minified to a single line, matching the base
   game's own convention - don't reformat them, and don't narrow the exclusion back
   to an enumerated file list.
-- `stylelint.config.mjs` is the CSS counterpart of `eslint.config.mjs`: a Chrome 40
-  profile with one commented `// Chrome NN` entry per rule, backed by
-  `.browserslistrc` and `stylelint-no-unsupported-browser-features`. Every number in
-  it is verified against a running PA, and several contradict caniuse. Don't remove
-  an exclusion or "fix" the usage it covers as a drive-by - `format:css` runs
-  `stylelint --fix` repo-wide, and a mis-set rule there rewrites working CSS into CSS
-  the engine silently drops. ([`constraints.md`](docs/constraints.md))
+- `stylelint.config.mjs` is the CSS counterpart of `eslint.config.mjs`: a Chromium
+  151 profile backed by `.browserslistrc` and
+  `stylelint-no-unsupported-browser-features`, plus hand-written bans on syntax no
+  Blink release ever shipped. Don't remove an entry or "fix" the usage it covers as
+  a drive-by - `format:css` runs `stylelint --fix` repo-wide, and a mis-set rule
+  there rewrites working CSS into CSS the engine silently drops.
+  ([`constraints.md`](docs/constraints.md))
 
 ### Comments
 

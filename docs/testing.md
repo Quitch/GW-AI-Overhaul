@@ -107,8 +107,8 @@ CLI locally; it does not perform real rule analysis for this org.
 ## The one test that lints
 
 `test/stylelint_config.test.js` is the odd one out: it loads no shipped module and
-instead runs stylelint's Node API over CSS fixtures, asserting that each Chrome 40
-limit is rejected and each supported feature is not. It exists because
+instead runs stylelint's Node API over CSS fixtures, asserting that the Chromium
+151 profile rejects what it must and accepts what it must. It exists because
 `stylelint.config.mjs` is the only guard against a class of bug the game cannot
 report — an unsupported declaration is silently dropped, so nothing fails loudly.
 

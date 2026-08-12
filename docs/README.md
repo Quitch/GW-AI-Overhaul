@@ -14,10 +14,10 @@ built on, the scheme strategy, and the migration test plan.
 
 If you are new to the codebase, read in this order:
 
-1. **[constraints.md](constraints.md)** — the runtime is Chrome 40. Read this
-   first, because it rules out things you would otherwise reach for by reflex
-   (`let`, arrow functions, template literals, `class`) and one arrow function
-   silently kills an entire scene.
+1. **[constraints.md](constraints.md)** — the runtime is CEF (Chromium 151),
+   but PA loads every mod's scene scripts into one shared scope. Read this
+   first, because the scene-scope rule (no top-level `let`/`const`/`class`)
+   and the library traps are what still break scenes silently.
 2. **[architecture.md](architecture.md)** — the shape of the tree, how scenes and
    entry points work, what runs when a battle launches.
 3. **[shadowing.md](shadowing.md)** — how GWO overrides base-game behaviour, why
@@ -57,11 +57,9 @@ full by the doc named:
   → [constraints.md](constraints.md)
 - **An unrecognised AI `test_type` is not an error** — the condition simply never
   validates and the build entry silently never fires. → [testing.md](testing.md)
-- **`filter` is Chrome 53.** Only `-webkit-filter` does anything. So is `animation`
-  and `@keyframes` (Chrome 43), and `mask-*` (Chrome 120) — the base game ships
-  inert declarations of all three. → [constraints.md](constraints.md)
-- **`justify-content: space-evenly` parses, computes, and does nothing.**
-  `CSS.supports()` says yes; flex layout falls through to `flex-start`.
+- **A top-level `let`/`const`/`class` can kill someone else's scene.** Scene
+  scripts share one scope, and a duplicate lexical declaration across mods is a
+  `SyntaxError` for whichever script loads second.
   → [constraints.md](constraints.md)
 
 ## On comments in this codebase
