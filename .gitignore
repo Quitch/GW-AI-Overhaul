@@ -8,9 +8,6 @@ Desktop.ini
 # Windows shortcuts
 *.lnk
 
-# IDE
-.vscode/settings.json
-
 # LLM
 .claude/settings.local.json
 

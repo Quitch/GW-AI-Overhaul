@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Wyrm Upgrade Tech replaces the siege bomber's bombs with drones."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Wyrm Upgrade Tech replaces the siege bomber's bombs with drones."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Wyrm Upgrade Tech"),
     icon: _.constant(
@@ -34,6 +34,11 @@ define([
           path: "tools.0.spec_id",
           op: "replace",
           value: gwoUnit.typhoonWeapon,
+        },
+        {
+          file: gwoUnit.wyrm,
+          path: "tools.0.spec_id",
+          op: "tag",
         },
         {
           file: gwoUnit.wyrm,

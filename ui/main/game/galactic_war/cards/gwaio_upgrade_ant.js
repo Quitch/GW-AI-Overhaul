@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Ant Upgrade Tech adds splash damage to the light tank's attack."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Ant Upgrade Tech adds splash damage to the light tank's attack."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Ant Upgrade Tech"),
     icon: _.constant(

@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Metal Storage Upgrade Tech increases the amount of metal storage by 300%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Metal Storage Upgrade Tech increases the amount of metal storage by 300%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Metal Storage Upgrade Tech"),
     icon: _.constant(

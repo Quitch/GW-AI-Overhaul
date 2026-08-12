@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Boom Upgrade Tech"),
     icon: _.constant(
@@ -21,8 +21,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.boom) &&
-          gwoCard.hasUnit(inventory.units(), gwoUnit.lob)
+        gwoCard.hasUnit(inventory.units(), gwoUnit.boom)
       );
     },
     buff: function (inventory) {
@@ -30,9 +29,13 @@ define([
       inventory.addUnits(gwoUnit.lob);
 
       inventory.addMods(
-        gwoCard.mods(gwoUnit.lobAmmo, "replace", {
-          spawn_unit_on_death: gwoUnit.boom,
-        })
+        gwoCard
+          .mods(gwoUnit.lobAmmo, "replace", {
+            spawn_unit_on_death: gwoUnit.boom,
+          })
+          .concat([
+            { file: gwoUnit.lobAmmo, path: "spawn_unit_on_death", op: "tag" },
+          ])
       );
     },
     dull: function () {},

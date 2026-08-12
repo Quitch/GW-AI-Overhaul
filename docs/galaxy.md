@@ -1,8 +1,7 @@
 # Galaxy, factions and difficulty
 
-War creation happens in `gw_start/setup.js` — at ~1,250 lines the largest file in
-the mod. It generates the galaxy, places AIs, assigns personalities and minions,
-and stamps GWO's settings onto the save.
+War creation happens in `gw_start/setup.js`. It generates the galaxy, places AIs,
+assigns personalities and minions, and stamps GWO's settings onto the save.
 
 ## Generation order
 
@@ -62,7 +61,7 @@ faction, difficulty, game options and mod set. The seed is entered in the lobby
 **Out of the seed's reach**, deliberately or unavoidably:
 
 - **Planet names** — `api.game.getRandomPlanetName()` is an engine call with no seed.
-- **Unlocked loadouts**, which decide the treasure planet's card.
+- **Unlocked loadouts**, which decide what the treasure planet can offer each player.
 - **The Shared Systems / My Systems pool**, which lives in IndexedDB per machine.
 - **The mod set**, and **the player faction**, which is an input rather than an output.
 
@@ -105,7 +104,7 @@ first. Two consequences worth relying on:
 | `boss.<team>`                                                         | the seed handed to `gwoTeams.makeBoss`                                                            |
 | `workers`                                                             | `makeWorker`'s picks — ordered, see below                                                         |
 | `ai.<team>` → `boss` / `worker.<n>` → `minion.<n>`, `foe.<n>`, `ally` | that AI's buffs, econ, game modes, minions, foes, ally, penchant                                  |
-| `treasure`                                                            | the treasure planet's locked loadout                                                              |
+| `treasure`                                                            | the treasure planet's econ rate                                                                   |
 
 The `factions` stream is the odd one out, because faction data is loaded, not
 generated. Each `gw_faction_*.js` declares its random choices as a
@@ -130,16 +129,18 @@ the root from the seed stamped on the save: `gwoRng.create(originSystem.gwaio.se
 Every key lives in `gw_play/gwo_streams.js`, so this table has one place to be checked
 against.
 
-| Stream                                       | Consumers                                          |
-| -------------------------------------------- | -------------------------------------------------- |
-| `general_commander.<player>` → `minion.<n>`  | the General Commander loadout's two Sub Commanders |
-| `explore.<star>` → `turn.<n>` → `reroll.<n>` | the host's own tech offer at that star             |
-| `ai_star.<star>` → `turn.<n>`                | the card shown on a selectable AI star that turn   |
-| `coop_deal.<player>` → `deal.<index>`        | a co-op viewer's pending offer                     |
-| ↳ `reroll.<n>`                               | that viewer's rerolled offer                       |
-| ↳ `iteration.<i>`                            | the roll picking the i-th card of a hand           |
-| ↳↳ `<cardId>`                                | that card's own draws inside `deal()`              |
-| `battle.<star>` → `turn.<n>` → `landing_*`   | each army's landing policy                         |
+| Stream                                            | Consumers                                          |
+| ------------------------------------------------- | -------------------------------------------------- |
+| `general_commander.<player>` → `minion.<n>`       | the General Commander loadout's two Sub Commanders |
+| `explore.<star>` → `turn.<n>` → `reroll.<n>`      | the host's own tech offer at that star             |
+| `ai_star.<star>` → `turn.<n>`                     | the card shown on a selectable AI star that turn   |
+| `coop_ai_star.<player>` → `star.<n>` → `turn.<n>` | that star's card for one co-op viewer              |
+| `treasure_loadout.<player>` → `star.<n>`          | that player's treasure-planet loadout offer        |
+| `coop_deal.<player>` → `deal.<index>`             | a co-op viewer's pending offer                     |
+| ↳ `reroll.<n>`                                    | that viewer's rerolled offer                       |
+| ↳ `iteration.<i>`                                 | the roll picking the i-th card of a hand           |
+| ↳↳ `<cardId>`                                     | that card's own draws inside `deal()`              |
+| `battle.<star>` → `turn.<n>` → `landing_*`        | each army's landing policy                         |
 
 The goal is a war that reproduces **only when it is played the same way**: same seed,
 visiting the same stars, in the same order, winning at the same speed, taking the same
@@ -155,11 +156,18 @@ consequence of the key, not an exception to it.
 
 The rest of the components:
 
+- **`general_commander.<player>`** — drawn by `gw_play/cards_start_subcdr.js`, which
+  is where the General Commander loadout's Sub Commanders are picked. Keyed per
+  player so a co-op viewer's retinue is their own and survives a reconnect.
 - **`reroll.<n>`** — `model.rerollTech` empties the star's card list and re-enters
   `model.explore`, so the per-card iteration index restarts at 0. Without the reroll count
   in the key every reroll would hand back the same cards.
 - **`deal.<index>`** — `game.recordHostTechCardDeal`'s counter, host-monotonic and saved,
   so it separates co-op catch-up deals that share a star.
+- **`treasure_loadout`** — the only play-scene key with neither `turn` nor `deal`, and
+  deliberately so. The offer is derived rather than stored, so a catch-up deal replaying a
+  star a viewer was absent for has to reproduce exactly what they would have been shown.
+  The host's own draw uses the literal player key `host`. See [`coop.md`](coop.md).
 - **`<player>`** — `record.playerId`, the uberId, not `client_id`: a viewer who reconnects
   must get their own minions and offers back. Whitespace in any label is squashed to `_`,
   because `gwo_rng` joins a label and index with a space and `stream("a b")` would
@@ -363,6 +371,33 @@ rather than as nothing.
 Personality display names support the _Show AI Personality Names_ mod, a dependency
 that lives entirely outside this repo.
 
+## AI tech
+
+Distinct from the player's tech cards, and from `/pa/ai_tech/`: this is the AI's
+own stat tech, drawn at war creation and applied as **unit-spec mods** on the
+AI's inventory. Two modules:
+
+- `gw_start/ai_tech.js` returns `factionTechs[faction][tech]` — arrays of
+  `addMods`-shaped descriptors, the same shape [`specs.md`](specs.md) documents.
+- `shared/ai_inventory.js` holds the per-faction unit, ammo and weapon groupings
+  those descriptors multiply over, so each faction's tech hits only what that
+  faction fields.
+
+`setup.js`'s `aiBuffType` names the tech indices: cost 0, damage 1, health 2,
+speed 3, build 4, combat 6, cooldown 7. **Index 5 is deliberately absent** — that
+tech was removed, and the gap is preserved rather than closed so existing saves
+keep meaning what they meant. A contributor renumbering it to tidy the sequence
+would silently repoint every war already carrying a 6 or a 7.
+
+One ordering constraint: combat (6) is built by concatenating ammunition (1) and
+armour (2), so `setupAITech6CombatTech()` must run after both. The call sequence
+at the foot of the file is load-bearing for that reason alone.
+
+How much tech an AI gets is `Math.floor(distance / 2 - buffDistanceDelay)`, so it
+scales with distance from the origin and goes negative near it — `rng.sample`
+clamps that to none. The draw comes from the `ai.<team>` streams above, which is
+what keeps a seed's enemies reproducible.
+
 ## Third-party mods that interact here
 
 - **Bigger Galactic War** — adds galaxy sizes 5–8. The distance-threshold tables in
@@ -370,6 +405,10 @@ that lives entirely outside this repo.
 - **Shared Systems for Galactic War** — GWO removes Easy Systems when this is loaded,
   and changes how it watches `model.ready()` so the mod's lobby is not broken. System
   Scaling and Large Planets both stay, served by the brackets above.
+- **New-GW-Cards** — the template third-party card mods are written from, rather than
+  a mod itself. It is the reason the `model.gwo*` globals are additive and the
+  `shared/cards.js` helper names are fixed; see
+  [`tech-cards.md`](tech-cards.md), "Third-party card mods".
 
 ## Where to look next
 

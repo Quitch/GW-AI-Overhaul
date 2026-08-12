@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Nyx Upgrade Tech doubles the jamming and radar radius of the jamming vehicle."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Nyx Upgrade Tech doubles the jamming and radar radius of the jamming vehicle."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Nyx Upgrade Tech"),
     icon: _.constant(

@@ -5,9 +5,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc("!LOC:Atlas Upgrade Tech doubles the health of the seismic titan.") +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc("!LOC:Atlas Upgrade Tech doubles the health of the seismic titan.")
+      )
     ),
     summarize: _.constant("!LOC:Atlas Upgrade Tech"),
     icon: _.constant(

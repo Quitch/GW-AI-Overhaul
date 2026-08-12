@@ -32,6 +32,7 @@ the traps that have actually caused bugs here.
 | Tree layout, scenes, entry points, battle launch sequence               | [`docs/architecture.md`](docs/architecture.md) |
 | File shadowing, function hijacking, the full shadowed-file inventory    | [`docs/shadowing.md`](docs/shadowing.md)       |
 | Tech card contract, `buff`/`dull`, deal weighting, loadouts             | [`docs/tech-cards.md`](docs/tech-cards.md)     |
+| The third-party card mod API and what breaks downstream if it changes   | [`docs/tech-cards.md`](docs/tech-cards.md)     |
 | AI-mod descriptors, the `ops` table, `managerPath`, the tree cache      | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)   |
 | The five AI trees, source vs destination, scope tokens                  | [`docs/ai-paths.md`](docs/ai-paths.md)         |
 | Host/viewer, per-player tech, colour allocation                         | [`docs/coop.md`](docs/coop.md)                 |
@@ -39,7 +40,7 @@ the traps that have actually caused bugs here.
 | Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)             |
 | The Node AMD harness, the seven validators, coverage                    | [`docs/testing.md`](docs/testing.md)           |
 
-Four things are worth knowing before you touch anything, each covered in full by
+Six things are worth knowing before you touch anything, each covered in full by
 the doc named:
 
 - **Shipped `ui/**` code must be ES5 / Chrome 40 safe.** No `let`, arrow functions,
@@ -47,6 +48,10 @@ the doc named:
   the line. The `eslint.config.mjs` whitelist is exhaustive, so it doubles as the
   answer to "may I use X?" - no entry means no.
   ([`constraints.md`](docs/constraints.md))
+- **Shipped CSS is bound by the same engine, and fails more quietly.** An
+  unsupported declaration is dropped silently rather than erroring, so
+  `stylelint.config.mjs` is the CSS half of that whitelist and the answer to "may I
+  use this property?". ([`constraints.md`](docs/constraints.md))
 - **A shadowed file is a full copy, not a diff.** Prefer injecting into a scene or
   hijacking a function; shadow only when neither works.
   ([`shadowing.md`](docs/shadowing.md))
@@ -55,6 +60,15 @@ the doc named:
   deliberately scoped out of `ui/**`. ([`constraints.md`](docs/constraints.md))
 - **`model.game().inventory()` is always the host's.** Under per-player tech in
   co-op, card code must use the inventory passed to it. ([`coop.md`](docs/coop.md))
+- **Part of this mod is a public API with a downstream consumer.** The `model.gwo*`
+  globals, the helper names `shared/cards.js` returns, the key names in
+  `shared/units.js` / `shared/unit_groups.js`, and the `deal()` signature are all
+  built against by the sibling [New-GW-Cards](https://github.com/Quitch/New-GW-Cards)
+  template, which documents them in its own README and card templates. Renaming or
+  dropping any of them breaks every mod written from it, and breaks it _silently_ -
+  a card reading a helper that no longer exists just gets `undefined`. Change one
+  and update that repo in step. `test/modder_api.test.js` pins the whole surface.
+  ([`tech-cards.md`](docs/tech-cards.md))
 
 ## Commands
 
@@ -63,7 +77,9 @@ npm ci                    # install pinned tooling (only needed once / after dep
 npm run verify            # everything CI checks: lint + format:check + validate + test
 npm run lint:js           # eslint .
 npm run lint:css          # stylelint "**/*.css"
+npm run format:css        # prettier --write + stylelint --fix, on *.css (see below)
 npm run lint:md           # markdownlint-cli2
+npm run format:md         # prettier --write + markdownlint --fix, on *.md (see below)
 npm run validate          # all validate:* checks below, in sequence
 npm run validate:json     # every .json file in the repo parses
 npm run validate:manifest # modinfo.json scenes reference files that actually exist
@@ -96,18 +112,38 @@ See CONTRIBUTING.md for the full list. The ones that bite most often:
 
 - camelCase for JS, kebab-case for CSS, 2-space indent, HTML in its own file (never
   inline in JS).
+- `CHANGELOG.md` additions always go under `## Unreleased`, as `### Added`,
+  `### Changed` or `### Bugfix`. A versioned heading describes a copy that has
+  shipped, so its entries are static - never add to one or amend it. While a feature
+  is still unreleased, later fixes to it are not changes anyone can have seen: the
+  entry says the feature exists, and does not grow to cover the work behind it.
 - PRs must only touch what the request needs - no drive-by cleanup/reformatting
   (submit those separately). `format:write` is repo-wide (`prettier --write .`), so
   run it and then stage only the files your change actually touches. The whole repo
   passes `prettier --check .`, which `npm run verify` enforces.
+- Markdown and CSS are each policed by two tools, so after touching a `.md` or `.css`
+  file run `format:md` / `format:css`, then `lint:md` / `lint:css`. Both scripts run
+  Prettier before the linter's `--fix`, which is the order that converges: Prettier
+  first settles the layout the linters report but cannot repair themselves (an
+  unformatted single-line rule block trips stylelint's
+  `declaration-block-single-line-max-declarations`), and once it has, neither
+  linter's own fixes break `prettier --check` - markdownlint only reaches for `*`
+  bullets when Prettier has not already made them `-`. The linter still runs last
+  because `--fix` cannot repair every rule: markdownlint's MD025 and friends need a
+  manual edit, and the exit code is how you learn that.
+  `.vscode/settings.json` applies the same two fix passes on save. Like
+  `format:write`, both scripts are repo-wide: stage only your own files.
 - The whole `pa/**` data tree is excluded from Prettier (see `.prettierignore`).
   Those JSON files are intentionally minified to a single line, matching the base
   game's own convention - don't reformat them, and don't narrow the exclusion back
   to an enumerated file list.
-- `.stylelintrc.json` disables `color-function-alias-notation` and scopes
-  `declaration-block-no-redundant-longhand-properties` to ignore `overflow`, both
-  because Chrome 40 predates the CSS syntax those rules assume. Don't remove those
-  exclusions or "fix" the usage they cover as a drive-by.
+- `stylelint.config.mjs` is the CSS counterpart of `eslint.config.mjs`: a Chrome 40
+  profile with one commented `// Chrome NN` entry per rule, backed by
+  `.browserslistrc` and `stylelint-no-unsupported-browser-features`. Every number in
+  it is verified against a running PA, and several contradict caniuse. Don't remove
+  an exclusion or "fix" the usage it covers as a drive-by - `format:css` runs
+  `stylelint --fix` repo-wide, and a mis-set rule there rewrites working CSS into CSS
+  the engine silently drops. ([`constraints.md`](docs/constraints.md))
 
 ### Comments
 

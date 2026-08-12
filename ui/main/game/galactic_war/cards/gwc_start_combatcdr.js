@@ -12,9 +12,12 @@ define([
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
-    describe: _.constant(
-      "!LOC:The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 650%."
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 400%.";
+      }
+      return "!LOC:The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 650%.";
+    },
     hint: _.constant({
       icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
       description: "!LOC:Bionic Augmentation Commander Of Neutralizing",
@@ -27,7 +30,9 @@ define([
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
-          inventory.maxCards(inventory.maxCards() - 2);
+          // One data bank, as the description says: gwc_start grants
+          // initialCardSlots + 1, and the loadout card holds one of what is left.
+          inventory.maxCards(inventory.maxCards() - 3);
           var navigationAttributes = [
             "navigation.move_speed",
             "navigation.brake",
@@ -45,21 +50,26 @@ define([
               };
             }
           );
-          var weapons = [gwoUnit.commanderSecondary, gwoUnit.commanderWeapon];
+          var weapons = [
+            gwoUnit.commanderSecondary,
+            gwoUnit.commanderWeaponBullet,
+            gwoUnit.commanderWeaponLaser,
+            gwoUnit.commanderWeaponMissile,
+          ];
           var ammoAttributes = [
             "ammo_capacity",
             "ammo_demand",
             "ammo_per_shot",
           ];
-          _.forEach(weapons, function (weapon) {
-            _.forEach(ammoAttributes, function (ammoAttribute) {
-              mods.push({
-                file: weapon,
-                path: ammoAttribute,
-                op: "multiply",
-                value: 0.25,
-              });
+          _.forEach(ammoAttributes, function (ammoAttribute) {
+            mods.push({
+              file: gwoUnit.commanderSecondary,
+              path: ammoAttribute,
+              op: "multiply",
+              value: 0.25,
             });
+          });
+          _.forEach(weapons, function (weapon) {
             mods.push({
               file: weapon,
               path: "rate_of_fire",

@@ -5,9 +5,9 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc("!LOC:Wall Upgrade Tech increases the health of walls by 50%.") +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc("!LOC:Wall Upgrade Tech increases the health of walls by 50%.")
+      )
     ),
     summarize: _.constant("!LOC:Wall Upgrade Tech"),
     icon: _.constant(

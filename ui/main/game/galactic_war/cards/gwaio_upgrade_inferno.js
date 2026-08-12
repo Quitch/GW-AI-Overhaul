@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Inferno Upgrade Tech"),
     icon: _.constant(
@@ -34,6 +34,11 @@ define([
             aim_bone: "bone_turret",
             muzzle_bone: "socket_muzzle",
           },
+        },
+        {
+          file: gwoUnit.inferno,
+          path: "tools.1.spec_id",
+          op: "tag",
         },
         {
           file: gwoUnit.inferno,

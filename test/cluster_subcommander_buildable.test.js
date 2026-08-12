@@ -331,3 +331,46 @@ describe("Cluster Sub Commanders cannot be built", () => {
     });
   }
 });
+
+// The CEO Commander is the one loadout that gives Cluster a buildable Colonel,
+// and it does so without touching Cluster's own. The sweep above only proves the
+// faction's Colonel stayed locked, so these pin the mechanism that keeps it that
+// way: a clone taken before cluster_setup.js runs.
+describe("the CEO Commander's Cluster Colonel", () => {
+  const ceoMods = collectAllCardMods()
+    .mods.filter((entry) => entry.card === "gwaio_start_ceo.js")
+    .map((entry) => entry.mod);
+
+  it("copies the Colonel rather than modifying it", () => {
+    const clone = ceoMods.find(
+      (mod) => mod.op === "clone" && mod.file === gwoUnit.colonel
+    );
+    assert.ok(clone, "gwaio_start_ceo no longer clones the Colonel");
+    assert.equal(clone.value, gwoUnit.clusterCeoColonel);
+  });
+
+  it("drops FactoryBuild from the copy, so only a Commander builds it", () => {
+    const pull = ceoMods.find(
+      (mod) =>
+        mod.file === gwoUnit.clusterCeoColonel &&
+        mod.path === "unit_types" &&
+        mod.op === "pull"
+    );
+    assert.ok(pull, "the copy keeps UNITTYPE_FactoryBuild");
+    assert.equal(pull.value, "UNITTYPE_FactoryBuild");
+  });
+
+  it("changes nothing on the Colonel Cluster fields", () => {
+    // gwc_start.buff hands Cluster's own mods to every loadout, so those come
+    // back through this card too. They are the same objects, so drop them.
+    const touched = ceoMods
+      .filter(
+        (mod) =>
+          mod.file === gwoUnit.colonel &&
+          mod.op !== "clone" &&
+          !gwoCluster.clusterCommanderMods.includes(mod)
+      )
+      .map((mod) => mod.op + " " + mod.path);
+    assert.deepEqual([...new Set(touched)], []);
+  });
+});

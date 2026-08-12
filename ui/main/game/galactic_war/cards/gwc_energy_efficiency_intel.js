@@ -5,9 +5,12 @@ define([
 ], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Improved Intelligence Tech reduces energy costs for intelligence structures by 75%"
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:Improved Intelligence Tech reduces energy costs for intelligence structures by 75%, and teleport energy costs by 75%";
+      }
+      return "!LOC:Improved Intelligence Tech reduces energy costs for intelligence structures by 75%";
+    },
     summarize: _.constant("!LOC:Improved Intelligence Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_energy.png"

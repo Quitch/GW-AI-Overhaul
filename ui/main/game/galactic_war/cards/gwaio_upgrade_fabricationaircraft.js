@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Fabrication Aircraft Upgrade Tech enables the building of advanced structures by the basic air fabricator."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Fabrication Aircraft Upgrade Tech enables the building of advanced structures by the basic air fabricator."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Fabrication Aircraft Upgrade Tech"),
     icon: _.constant(
@@ -44,11 +44,13 @@ define([
         "LongRangeArtillery",
         "NukeSilo",
         "PlanetEngine",
-        "PlanetSplitter",
-        "TeslaGunship",
         "TML",
         "UnitCannon",
       ];
+      // Titan Tech is the only card that puts a Ragnarok in the army.
+      if (inventory.hasCard("gwc_enable_titans")) {
+        units.push("PlanetSplitter");
+      }
       var aiMods = _.map(units, function (unit) {
         return {
           type: "fabber",

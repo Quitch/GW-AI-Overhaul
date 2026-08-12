@@ -50,27 +50,32 @@ define([
               }
             );
           });
+          // The Wall is 90% cheaper below instead. The mine keeps its spacing:
+          // packing a minefield tighter is not something the loadout offers.
           var costUnits = _.filter(
             gwoGroup.structuresDefences,
             function (defence) {
-              return defence !== gwoUnit.wall && defence !== gwoUnit.landMine;
+              return defence !== gwoUnit.wall;
             }
           );
           _.forEach(costUnits, function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "multiply",
-                value: 0.5,
-              },
-              {
-                file: unit,
-                path: "area_build_separation",
-                op: "multiply",
-                value: 0.2,
-              }
-            );
+            mods.push({
+              file: unit,
+              path: "build_metal_cost",
+              op: "multiply",
+              value: 0.5,
+            });
+          });
+          var separationUnits = _.filter(costUnits, function (defence) {
+            return defence !== gwoUnit.landMine;
+          });
+          _.forEach(separationUnits, function (unit) {
+            mods.push({
+              file: unit,
+              path: "area_build_separation",
+              op: "multiply",
+              value: 0.2,
+            });
           });
           mods.push(
             {

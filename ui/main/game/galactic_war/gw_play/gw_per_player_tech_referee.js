@@ -25,9 +25,12 @@ define([
   var getPlayerTagGivenIndex = perPlayerTech.getPlayerTagGivenIndex;
   var stripKnownSpecTag = perPlayerTech.stripKnownSpecTag;
   var getViewerSubcommanderAiPath = perPlayerTech.getViewerSubcommanderAiPath;
+  var buildViewerSubcommanderArmies =
+    perPlayerTech.buildViewerSubcommanderArmies;
   var validatePerPlayerTechInputs = perPlayerTech.validatePerPlayerTechInputs;
 
-  // Files not assigned by default that we wish to mod - global for modder compatibility
+  // Files not assigned by default that we wish to mod - global for modder
+  // compatibility, New-GW-Cards pushes here - see docs/tech-cards.md
   model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
   model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);
 
@@ -247,61 +250,22 @@ define([
           thisPlayersInventory,
           playerTags[index]
         );
-        var minionCount = subcommanderTech.applySubcommanderDuplicationTech(
-          thisPlayersInventory.cards()
-        );
-        _.forEach(thisPlayersInventory.minions(), function (minion) {
-          // The host is always .player, and the main referee already added
-          // their minions.
-          if (playerTags[index] === ".player") {
-            return;
-          }
-
-          var minionPersonality = _.cloneDeep(minion.personality);
-          subcommanderTech.applySubcommanderTacticsTech(
-            minionPersonality,
-            thisPlayersInventory.cards()
-          );
-          subcommanderTech.applySubcommanderFabberTech(
-            minionPersonality,
-            thisPlayersInventory.cards()
-          );
-          minionPersonality.ai_path = viewerAiPath;
-
-          // Duplicated subcommanders share one colour, the same way the host's
-          // duplication tech produces a single army with several commander slots.
-          var minionColour = gwoColour.pick(
-            playerFaction,
-            // pick() falls back to this and reads it to spot The Guardians, so
-            // even a colourless minion needs a pair.
-            minion.color || playerColor,
-            refereeCoop.alliedColourIndex(colourPosition)
-          );
-          colourPosition++;
-
-          for (
-            var duplicateIndex = 0;
-            duplicateIndex < minionCount;
-            duplicateIndex++
-          ) {
-            config.armies.push({
-              slots: [
-                {
-                  ai: true,
-                  name: minion.name || "Helper",
-                  commander:
-                    stripKnownSpecTag(
-                      minion.commander || playerCommanders[index]
-                    ) + playerTags[index],
-                },
-              ],
-              color: minionColour,
-              econ_rate: gwoAI.subcommanderEconRate,
-              personality: minionPersonality,
-              spec_tag: playerTags[index],
-              alliance_group: 1,
-            });
-          }
+        var viewerSubcommanders = buildViewerSubcommanderArmies({
+          subcommanderTech: subcommanderTech,
+          gwoColour: gwoColour,
+          refereeCoop: refereeCoop,
+          playerInventory: thisPlayersInventory,
+          playerTag: playerTags[index],
+          playerCommander: playerCommanders[index],
+          playerFaction: playerFaction,
+          playerColor: playerColor,
+          viewerAiPath: viewerAiPath,
+          subcommanderEconRate: gwoAI.subcommanderEconRate,
+          colourPosition: colourPosition,
+        });
+        colourPosition = viewerSubcommanders.colourPosition;
+        _.forEach(viewerSubcommanders.armies, function (subcommanderArmy) {
+          config.armies.push(subcommanderArmy);
         });
       });
 

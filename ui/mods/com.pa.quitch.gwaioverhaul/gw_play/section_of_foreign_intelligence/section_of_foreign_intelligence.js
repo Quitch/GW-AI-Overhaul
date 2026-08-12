@@ -119,16 +119,25 @@ function gwoIntelligence() {
       return +Number.parseFloat(value).toFixed(decimals);
     };
 
-    var availableTech = function (star) {
-      var ai = star.ai();
+    // Under per-player tech a viewer is shown their own offer, and nothing at
+    // all until the host has dealt them one - ai.cardName is the host's card,
+    // which is the thing this exists to stop advertising to them.
+    var availableTech = function (star, starIndex, starCardsView) {
       var cardList = star.cardList();
-      if (
-        ai.cardName &&
-        cardList.length === 1 // Don't show when finding cards through Explore
-      ) {
-        return ai.cardName;
+      if (cardList.length !== 1) {
+        return ""; // Don't show when finding cards through Explore
       }
-      return "";
+
+      if (
+        starCardsView.shouldUseViewerStarCard(
+          model.isCampaignViewer(),
+          model.gwCampaignPerPlayerTechCards()
+        )
+      ) {
+        return starCardsView.cardName(starCardsView.cardIdForStar(starIndex));
+      }
+
+      return star.ai().cardName || "";
     };
 
     var eradicatorModeNameBuilder = function (ai) {
@@ -202,8 +211,11 @@ function gwoIntelligence() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
       ],
-      function (gwoColour, gwoCards, gwoAI, gwoRefereeCoop) {
+      function (gwoColour, gwoCards, gwoAI, gwoRefereeCoop, gwoStarCardsView) {
+        var starCardsView = gwoStarCardsView();
+
         var url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
         $.get(url, function (html) {
@@ -378,6 +390,7 @@ function gwoIntelligence() {
         model.generateIntelligence = ko.computed(function () {
           var inventory = model.game().inventory();
           var system = model.selection.system();
+          var starIndex = model.selection.star();
           var star = system.star;
           var ai = star.ai();
           model.gwoSystemSurfaceArea(calculateSurfaceArea(system));
@@ -390,7 +403,7 @@ function gwoIntelligence() {
             return;
           }
           model.gwoSystemThreat(measureThreat(ai));
-          model.gwoAvailableTech(availableTech(star));
+          model.gwoAvailableTech(availableTech(star, starIndex, starCardsView));
           model.gwoAIBuffs(convertBuffNumberToName(ai));
           model.gwoGameModifiers(convertGameModifiersToName(ai, inventory));
           model.gwoAis(createAIIntelligence(ai));

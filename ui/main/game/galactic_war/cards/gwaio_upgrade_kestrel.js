@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Kestrel Upgrade Tech replaces the gunship's bullet weapons with flamethrowers."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Kestrel Upgrade Tech replaces the gunship's bullet weapons with flamethrowers."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Kestrel Upgrade Tech"),
     icon: _.constant(

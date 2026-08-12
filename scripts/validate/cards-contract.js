@@ -10,6 +10,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
 const { KNOWN_UNLOADABLE } = require("../lib/known-unloadable-cards.js");
+const { reportFailures } = require("../lib/report-failures.js");
 
 const CARDS_DIR = path.join(
   REPO_ROOT,
@@ -75,6 +76,23 @@ function checkShape(file, card) {
   return problems;
 }
 
+// Discriminates on the reason: a bare catch also swallows syntax errors and
+// genuine breakage, reporting them as excluded with the run still green. The two
+// skip reasons stay distinct because the summary counts them separately.
+function loadCard(file) {
+  try {
+    return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
+  } catch (e) {
+    if (e.code === "NOT_SHIPPED") {
+      return { skip: "notShipped" };
+    }
+    if (Object.prototype.hasOwnProperty.call(KNOWN_UNLOADABLE, file)) {
+      return { skip: "knownUnloadable" };
+    }
+    return { error: "failed to load: " + e.message };
+  }
+}
+
 function main() {
   const files = fs
     .readdirSync(CARDS_DIR)
@@ -82,33 +100,22 @@ function main() {
     .sort();
 
   let checked = 0;
-  let notShipped = 0;
-  let knownUnloadable = 0;
+  const skipped = { notShipped: 0, knownUnloadable: 0 };
   const failures = [];
 
   for (const file of files) {
-    const fsPath = path.join(CARDS_DIR, file);
-    let card;
-    try {
-      card = loadCouiModule(fsPath);
-    } catch (e) {
-      if (e.code === "NOT_SHIPPED") {
-        notShipped++;
-        continue;
-      }
-      if (Object.prototype.hasOwnProperty.call(KNOWN_UNLOADABLE, file)) {
-        knownUnloadable++;
-        continue;
-      }
-      failures.push({
-        file,
-        problems: ["failed to load: " + e.message],
-      });
+    const loaded = loadCard(file);
+    if (loaded.skip) {
+      skipped[loaded.skip]++;
+      continue;
+    }
+    if (loaded.error) {
+      failures.push({ file, problems: [loaded.error] });
       continue;
     }
 
     checked++;
-    const problems = checkShape(file, card);
+    const problems = checkShape(file, loaded.card);
     if (problems.length) {
       failures.push({ file, problems });
     }
@@ -118,9 +125,9 @@ function main() {
     "cards-contract: " +
       checked +
       " cards shape-checked, " +
-      notShipped +
+      skipped.notShipped +
       " excluded (base-game dependency unavailable outside the game), " +
-      knownUnloadable +
+      skipped.knownUnloadable +
       " excluded (known engine coupling), " +
       failures.length +
       " failed."
@@ -137,16 +144,7 @@ function main() {
     process.exitCode = 1;
   }
 
-  if (failures.length) {
-    console.error("");
-    for (const failure of failures) {
-      console.error(failure.file + ":");
-      for (const problem of failure.problems) {
-        console.error("  - " + problem);
-      }
-    }
-    process.exitCode = 1;
-  }
+  reportFailures(failures);
 }
 
 main();

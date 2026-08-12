@@ -105,6 +105,15 @@ define([
               value:
                 "(Orbital & Fabber & Basic & Mobile) & FactoryBuild & Custom58",
             },
+            // CannonBuildable is stock's roster for the Unit Cannon. Narrowed to
+            // Fabber it leaves the same four the other factories build, the
+            // combat fabbers carrying no Fabber tag.
+            {
+              file: gwoUnit.unitCannon,
+              path: "buildable_types",
+              op: "replace",
+              value: "CannonBuildable & Fabber & Custom58",
+            },
             {
               file: gwoUnit.airFabber,
               path: "buildable_types",

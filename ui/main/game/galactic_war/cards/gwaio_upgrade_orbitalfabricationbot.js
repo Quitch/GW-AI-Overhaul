@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Orbital Fabrication Bot Upgrade Tech allows the orbital fabricator to build all basic structures."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Orbital Fabrication Bot Upgrade Tech allows the orbital fabricator to build all basic structures."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Orbital Fabrication Bot Upgrade Tech"),
     icon: _.constant(
@@ -21,10 +21,8 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.upgradeDeal(
-        !(
-          inventory.hasCard("nem_start_deepspace") ||
-          inventory.hasCard("gwc_start_orbital")
-        ) && gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber)
+        !inventory.hasCard("nem_start_deepspace") &&
+          gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber)
       );
     },
     buff: function (inventory) {

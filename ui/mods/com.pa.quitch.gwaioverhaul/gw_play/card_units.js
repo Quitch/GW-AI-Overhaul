@@ -34,7 +34,10 @@ define([
       { id: "gwc_combat_structures", units: gwoGroup.structures },
       { id: "gwc_combat_vehicles", units: gwoGroup.vehiclesMobile },
       { id: "gwc_cost_air", units: gwoGroup.airMobile },
-      { id: "gwc_cost_artillery", units: gwoGroup.structuresArtillery },
+      {
+        id: "gwc_cost_artillery",
+        units: gwoGroup.structuresArtillery.concat(gwoGroup.artilleryMobile),
+      },
       { id: "gwc_cost_bots", units: gwoGroup.botsMobile },
       { id: "gwc_cost_defenses", units: gwoGroup.structuresDefences },
       { id: "gwc_cost_economy", units: gwoGroup.structuresEco },
@@ -52,7 +55,10 @@ define([
       },
       { id: "gwc_cost_orbital", units: gwoGroup.orbitalMobile },
       { id: "gwc_cost_sea", units: gwoGroup.navalMobile },
-      { id: "gwc_cost_super_weapons", units: gwoGroup.structuresSuperWeapons },
+      {
+        id: "gwc_cost_super_weapons",
+        units: _.without(gwoGroup.structuresSuperWeapons, gwoUnit.nukeLauncher),
+      },
       { id: "gwc_cost_titans", units: gwoGroup.titans },
       { id: "gwc_cost_vehicles", units: gwoGroup.vehiclesMobile },
       {
@@ -462,7 +468,8 @@ define([
       { id: "gwaio_cooldown_bots", units: gwoGroup.botFactories },
       { id: "gwaio_cooldown_air", units: gwoGroup.airFactories },
       { id: "gwaio_cooldown_sea", units: gwoGroup.navalFactories },
-      { id: "gwaio_cooldown_orbital", units: gwoGroup.orbitalFactories },
+      // The Orbital Launcher has no factory_cooldown_time to halve.
+      { id: "gwaio_cooldown_orbital", units: [gwoUnit.orbitalFactory] },
       { id: "gwaio_speed_structure", units: gwoGroup.nomadStructures },
       {
         id: "gwaio_enable_factories_t1_all",
@@ -484,22 +491,12 @@ define([
         units: [gwoUnit.kessler],
       },
       {
-        // Both also mod weaponsMobile/ammoMobile wholesale, reaching the armed
-        // units outside combatMobile: mobile titans and the two armed scouts.
         id: "gwaio_protocol_precision",
-        units: gwoGroup.combatMobile.concat(
-          gwoGroup.titansMobile,
-          gwoUnit.firefly,
-          gwoUnit.skitter
-        ),
+        units: gwoGroup.combatMobile,
       },
       {
         id: "gwaio_protocol_wrath",
-        units: gwoGroup.combatMobile.concat(
-          gwoGroup.titansMobile,
-          gwoUnit.firefly,
-          gwoUnit.skitter
-        ),
+        units: gwoGroup.combatMobile,
       },
       {
         id: "gwaio_protocol_fortitude",
@@ -517,7 +514,7 @@ define([
         // Units already carrying a death weapon get theirs made friendly-fire
         // capable rather than replaced, so every unit is affected either way.
         id: "gwaio_protocol_killswitch",
-        units: gwoGroup.units.concat(gwoUnit.commander),
+        units: gwoGroup.units,
       },
       {
         id: "gwaio_protocol_blindness",

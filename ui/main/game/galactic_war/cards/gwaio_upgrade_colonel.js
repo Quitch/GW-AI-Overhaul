@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Colonel Upgrade Tech causes support commanders to explode on death."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Colonel Upgrade Tech causes support commanders to explode on death."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Colonel Upgrade Tech"),
     icon: _.constant(
@@ -21,29 +21,49 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.colonel)
+        gwoCard.hasUnit(inventory.units(), [
+          gwoUnit.colonel,
+          gwoUnit.clusterCeoColonel,
+        ])
       );
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
+      // Cluster's CEO Commander fields its own copy of the Colonel, and only
+      // that combination has one, so anything else would mod a missing spec.
+      var colonel =
+        inventory.getTag("global", "playerFaction") === 4 &&
+        inventory.hasCard("gwaio_start_ceo")
+          ? gwoUnit.clusterCeoColonel
+          : gwoUnit.colonel;
       inventory.addMods([
         {
-          file: gwoUnit.colonel,
+          file: colonel,
           path: "death_weapon.ground_ammo_spec",
           op: "replace",
           value: gwoUnit.commanderDeath,
         },
         {
-          file: gwoUnit.colonel,
+          file: colonel,
           path: "death_weapon.air_ammo_spec",
           op: "replace",
           value: gwoUnit.commanderDeathAir,
         },
         {
-          file: gwoUnit.colonel,
+          file: colonel,
           path: "death_weapon.air_height_threshold",
           op: "replace",
           value: 50,
+        },
+        {
+          file: colonel,
+          path: "death_weapon.ground_ammo_spec",
+          op: "tag",
+        },
+        {
+          file: colonel,
+          path: "death_weapon.air_ammo_spec",
+          op: "tag",
         },
       ]);
     },

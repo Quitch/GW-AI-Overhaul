@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:ARKYD Upgrade Tech increases the vision and radar of the basic orbital radar by 50%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:ARKYD Upgrade Tech increases the vision and radar of the basic orbital radar by 50%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:ARKYD Upgrade Tech"),
     icon: _.constant(

@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop a mine instead of bombs."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Bumblebee Upgrade Tech causes the carpet bomber to drop a mine instead of bombs."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Bumblebee Upgrade Tech"),
     icon: _.constant(
@@ -58,6 +58,11 @@ define([
           path: "spawn_unit_on_death",
           op: "replace",
           value: gwoUnit.landMine,
+        },
+        {
+          file: gwoUnit.bumblebeeAmmo,
+          path: "spawn_unit_on_death",
+          op: "tag",
         },
         {
           file: gwoUnit.bumblebeeWeapon,

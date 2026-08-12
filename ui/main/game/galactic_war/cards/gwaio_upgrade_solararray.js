@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Solar Array Upgrade Tech"),
     icon: _.constant(
@@ -25,24 +25,34 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        gwoCard.mods(gwoUnit.solarArray, "push", {
-          tools: [
-            {
-              spec_id: gwoUnit.gilEBeam,
-              aim_bone: "bone_root",
-              record_index: 0,
-              fire_event: "fired",
-              muzzle_bone: "bone_root",
-            },
-            {
-              spec_id: gwoUnit.umbrellaBeam,
-              aim_bone: "bone_root",
-              record_index: 1,
-              fire_event: "fired",
-              muzzle_bone: "bone_root",
-            },
-          ],
-        })
+        gwoCard
+          .mods(gwoUnit.solarArray, "push", {
+            tools: [
+              {
+                spec_id: gwoUnit.gilEBeam,
+                aim_bone: "bone_root",
+                record_index: 0,
+                fire_event: "fired",
+                muzzle_bone: "bone_root",
+              },
+              {
+                spec_id: gwoUnit.umbrellaBeam,
+                aim_bone: "bone_root",
+                record_index: 1,
+                fire_event: "fired",
+                muzzle_bone: "bone_root",
+              },
+            ],
+          })
+          .concat(
+            _.times(2, function (i) {
+              return {
+                file: gwoUnit.solarArray,
+                path: "tools." + i + ".spec_id",
+                op: "tag",
+              };
+            })
+          )
       );
     },
     dull: function () {},

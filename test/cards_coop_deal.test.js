@@ -18,10 +18,13 @@ function collect(overrides) {
   return coopDeal.collectPendingTechTargets({
     viewers: overrides.viewers,
     dealOptions: overrides.dealOptions || {},
-    startLoadoutCards: overrides.startLoadoutCards || [],
+    starIndex: overrides.starIndex,
+    treasurePlanet: overrides.treasurePlanet || false,
     findRecord: overrides.findRecord || ((query) => records[query.id]),
     getDealCount: overrides.getDealCount || (() => 0),
-    hasUnlockedStartCard: overrides.hasUnlockedStartCard || (() => false),
+    pickStartLoadoutCard:
+      overrides.pickStartLoadoutCard || (() => ({ id: "gwaio_start_ceo" })),
+    starCardForRecord: overrides.starCardForRecord || (() => undefined),
   });
 }
 
@@ -93,28 +96,92 @@ describe("collectPendingTechTargets", () => {
     assert.equal(result.targets.length, 1);
   });
 
-  it("assigns the first still-locked start loadout when loadouts are on offer", () => {
-    const result = collect({
-      viewers: [viewer("alice")],
-      records: { alice: { inventory: {}, unlockedStartCardIds: ["x"] } },
-      startLoadoutCards: [{ id: "gwaio_start_x" }, { id: "gwaio_start_y" }],
-      // "x" already unlocked, "y" not - so the locked "y" is chosen.
-      hasUnlockedStartCard: (record, card) => card.id === "gwaio_start_x",
-    });
-    assert.deepEqual(result.targets[0].startLoadoutCard, {
-      id: "gwaio_start_y",
-    });
+  // The offer is derived per viewer, so the host's own unlocks - and whatever
+  // the star was generated holding - have no say in it.
+  it("asks for a loadout only at a treasure planet", () => {
+    assert.equal(
+      collect({
+        viewers: [viewer("alice")],
+        records: { alice: readyRecord },
+      }).targets[0].startLoadoutCard,
+      undefined
+    );
+    assert.deepEqual(
+      collect({
+        viewers: [viewer("alice")],
+        records: { alice: readyRecord },
+        treasurePlanet: true,
+      }).targets[0].startLoadoutCard,
+      { id: "gwaio_start_ceo" }
+    );
   });
 
-  it("leaves startLoadoutCard undefined when every offered loadout is unlocked", () => {
+  it("falls back to an ordinary deal when the viewer owns every loadout", () => {
     const result = collect({
       viewers: [viewer("alice")],
-      records: { alice: { inventory: {}, unlockedStartCardIds: ["x"] } },
-      startLoadoutCards: [{ id: "gwaio_start_x" }],
-      hasUnlockedStartCard: () => true,
+      records: { alice: readyRecord },
+      treasurePlanet: true,
+      pickStartLoadoutCard: () => undefined,
+      starCardForRecord: () => ({ id: "gwc_combat_bots" }),
     });
     assert.equal(result.targets.length, 1);
     assert.equal(result.targets[0].startLoadoutCard, undefined);
+    assert.deepEqual(result.targets[0].preDealtCard, { id: "gwc_combat_bots" });
+  });
+
+  it("carries the viewer's own pre-dealt card for the star", () => {
+    const result = collect({
+      viewers: [viewer("alice")],
+      records: { alice: readyRecord },
+      starIndex: 12,
+      starCardForRecord: (record, starIndex) =>
+        starIndex === 12 ? { id: "gwc_combat_bots" } : undefined,
+    });
+    assert.deepEqual(result.targets[0].preDealtCard, { id: "gwc_combat_bots" });
+  });
+
+  // A catch-up deal replays a star the viewer was absent for, so the host has
+  // never refreshed a card for them there.
+  it("collects a viewer with no pre-dealt card without erroring", () => {
+    const result = collect({
+      viewers: [viewer("alice")],
+      records: { alice: readyRecord },
+      starCardForRecord: () => undefined,
+    });
+    assert.equal(result.validationError, undefined);
+    assert.equal(result.targets[0].preDealtCard, undefined);
+  });
+
+  it("never offers a loadout and a pre-dealt card at once", () => {
+    const result = collect({
+      viewers: [viewer("alice")],
+      records: { alice: readyRecord },
+      treasurePlanet: true,
+      starCardForRecord: () => ({ id: "gwc_combat_bots" }),
+    });
+    assert.deepEqual(result.targets[0].startLoadoutCard, {
+      id: "gwaio_start_ceo",
+    });
+    assert.equal(result.targets[0].preDealtCard, undefined);
+  });
+});
+
+describe("dealCountForHand", () => {
+  // cards_coop_reroll.js reads the spent rerolls back out of the stored hand's
+  // length, so concatenating the pre-dealt card must not lengthen it.
+  it("leaves the hand cardsOffered long however it is made up", () => {
+    for (const cardsOffered of [3, 4, 5]) {
+      for (const preDealt of [0, 1]) {
+        assert.equal(
+          coopDeal.dealCountForHand(cardsOffered, preDealt) + preDealt,
+          cardsOffered
+        );
+      }
+    }
+  });
+
+  it("still deals a card if the offer were ever sized down to nothing", () => {
+    assert.equal(coopDeal.dealCountForHand(1, 1), 1);
   });
 });
 

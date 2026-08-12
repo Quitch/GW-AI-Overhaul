@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Kraken Upgrade Tech"),
     icon: _.constant(

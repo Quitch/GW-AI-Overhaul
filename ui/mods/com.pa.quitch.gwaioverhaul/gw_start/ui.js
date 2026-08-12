@@ -289,6 +289,9 @@ function gwoUI() {
     $("#game-settings-label")
       .closest(".form-group")
       .replaceWith(loadHtml(addHtml.path + "difficulty_options.html"));
+    // Same reason as the commander modal below, plus it keeps a hidden node out
+    // of the Setup column's scroll flow.
+    $("#gwo-game-options-modal").appendTo("body");
     addHtml.before("#faction-select", "faction_tooltip.html");
     addHtml.before("#game-size", "size_tooltip.html");
     addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");

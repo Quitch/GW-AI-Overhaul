@@ -70,6 +70,27 @@ Ordering matters and is not obvious:
 - `removeUnits` strips _every_ copy of a unit (a GWO change to base behaviour), so
   a `dull()` that removes a whole group can wipe units other cards granted.
 
+## Referee-time cards
+
+The three `gwaio_upgrade_subcommander_*` cards carry an empty `buff`/`dull`. They
+are markers: `shared/referee_subcommander_tech.js` reads the live card list while
+the battle config is being built, and nothing is written at acquisition time.
+
+That is deliberate, and the reason is `gwc_minion.js`. Its `buff` pushes
+`params.minion` — the card's **own persistent params object** — into
+`inventory.minions()`, so anything written onto a minion is saved with the war. A
+tech bonus applied there would survive discarding the card that granted it, and
+would compound across battles. Both referees therefore copy before applying:
+
+| Path                                    | Copy                                         |
+| --------------------------------------- | -------------------------------------------- |
+| Host, `gw_play/referee_config_setup.js` | `_.cloneDeep(liveAlly)` per ally             |
+| Viewer, `gw_play/per_player_tech.js`    | `_.cloneDeep(minion.personality)` per minion |
+
+The mutators write in place and return their argument, so this is the callers'
+responsibility. Both copies have a regression test asserting the saved minion is
+byte-identical after two battles — see [`testing.md`](testing.md).
+
 ## Deal weighting
 
 `deal(system, context, inventory, rng)` returns `{ chance, params }`. `chance` is a
@@ -149,11 +170,78 @@ loadouts unlocked by winning a war, and GWO-added loadouts unlocked the same way
 `model.makeKnown` and `GW.bank` at load time, neither of which exists in the
 `gw_play` scene.
 
+A treasure planet's loadout is drawn from those same unlockable ids, but at
+exploration rather than at war creation, and from the acting player's own locked
+pool — see [`coop.md`](coop.md), "Treasure loadouts".
+
 Unlocks and victory badges live in `localStorage` under `gwaio_`-prefixed keys.
 Badge indices run from **-1 (Beginner)** so that Casual is 0 — see the
 `loadoutIcon` switch in `shared/cards.js`, and `gw_war_over/stats.js`, which reads
 tiers from the difficulty data rather than restating them so that renaming or
 inserting a tier cannot silently shift everyone's badge history.
+
+## Third-party card mods
+
+Part of this mod is a public API. The sibling
+[New-GW-Cards](https://github.com/Quitch/New-GW-Cards) template is the starter kit
+third-party card mods are written from, and it documents this surface in its own
+README and card templates. Renaming or dropping any of it breaks every mod written
+from that template, and breaks it **silently** — a card reading a helper GWO no
+longer exports just gets `undefined`, and a global GWO stops reading simply has no
+effect. Change any of it and update that repo in step.
+
+`test/modder_api.test.js` pins the whole surface, including that the globals below
+are _adopted_ rather than assigned over. A mod's scene script runs synchronously at
+scene load, so it has always pushed before GWO's own `requireGW` callbacks run;
+replacing an `_.isArray(...) ? ... : []` guard with a bare assignment silently
+discards everything the mod registered.
+
+| Global                         | Scene                     | Read by                                         |
+| ------------------------------ | ------------------------- | ----------------------------------------------- |
+| `gwoCards`                     | play, coop loadout        | `shared/deal.js` `setupGwoCards`                |
+| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`                      |
+| `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                      |
+| `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                 |
+| `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee |
+| `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`    |
+| `gwoStartingCards`             | start, coop loadout       | `shared/loadouts.js`                            |
+| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
+| `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
+
+Beyond the globals: the helper names `shared/cards.js` returns, and the **key**
+names in `shared/units.js` and `shared/unit_groups.js`, are equally published. The
+values behind those keys are not — re-point a unit path whenever the base game
+moves a file. So is `deal(system, context, inventory, rng)`'s signature.
+
+**Register in every scene the data is read in.** `model` is a fresh page per scene,
+so a mod that pushes its loadouts only in `gw_start` is missing from the treasure
+pool in `gw_play` and from the co-op per-player loadout picker.
+
+### Third-party loadout banks
+
+A mod records its loadout unlocks in its own `localStorage` key rather than in
+`gwaio_bank`, so that removing the mod takes its records with it. GWO cannot find
+that key by itself, so the mod registers it:
+
+```js
+model.gwoLoadoutBanks.push({
+  prefix: "mym_start_",
+  path: "coui://ui/mods/com.pa.YOURNAME.MODNAME/bank.js",
+});
+```
+
+The entry carries the bank's **path**, not the loaded module, because a mod that
+`requireGW`d its own bank before registering would resolve after the loadout list
+was already built. `shared/loadout_banks.js` resolves the paths once and every
+later reader — the unlock test in `shared/loadouts.js`, `startCardUnlocked` in
+`gw_play/cards.js`, and `bankStartCard` / `localUnlockedLoadoutIds` in
+`treasure_loadouts.js` — reads the result. The module at `path` need only expose
+`hasStartCard` and `addStartCard`.
+
+`prefix` routes a won loadout back to the mod that shipped it. Ids beginning
+`gwc_start` are tested first and always go to the base game's bank, which the base
+game reads directly, so a mod cannot capture them — which is also why a mod's
+loadout ids must contain `_start_` but must not begin `gwc_start`.
 
 ## Cluster and buildable types
 

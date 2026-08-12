@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Advanced Radar Satellite Upgrade Tech increases the vision and radar of the advanced orbital radar by 50%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Advanced Radar Satellite Upgrade Tech increases the vision and radar of the advanced orbital radar by 50%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Advanced Radar Satellite Upgrade Tech"),
     icon: _.constant(

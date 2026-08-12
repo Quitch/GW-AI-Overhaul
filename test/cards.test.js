@@ -14,6 +14,26 @@ const cards = loadCouiModule(
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);
 
+// A host holding cards the player being dealt to does not, so a helper that
+// reaches for model.game().inventory() fails rather than coincidentally
+// agreeing. model.game() is always the host's; a card must read the inventory
+// it was passed - see CLAUDE.md.
+function installContradictingHost(hostCardIds, extra) {
+  setGlobal(
+    "model",
+    Object.assign(
+      {
+        game: () => ({
+          inventory: () => ({
+            cards: () => hostCardIds.map((id) => ({ id })),
+          }),
+        }),
+      },
+      extra
+    )
+  );
+}
+
 describe("hasUnit", () => {
   it("matches a single unit passed as a string", () => {
     assert.equal(cards.hasUnit(["a", "b"], "a"), true);
@@ -342,18 +362,10 @@ describe("antiTechDeal", () => {
     };
   }
 
-  // Deliberately contradicts the per-player inventory, so a regression back to
-  // model.game().inventory() fails rather than coincidentally agreeing.
-  function installContradictingHost() {
-    setGlobal("model", {
-      game: () => ({
-        inventory: () => ({ cards: () => [{ id: "gwaio_anti_air" }] }),
-      }),
-    });
-  }
+  const installAntiAirHost = () => installContradictingHost(["gwaio_anti_air"]);
 
   it("returns a chance of 0 when the excluded counterpart card is held", () => {
-    installContradictingHost();
+    installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(
         inventoryWith(["gwaio_anti_orbital"]),
@@ -365,9 +377,7 @@ describe("antiTechDeal", () => {
   });
 
   it("halves the base chance once any anti_ tech card is already held", () => {
-    setGlobal("model", {
-      game: () => ({ inventory: () => ({ cards: () => [] }) }),
-    });
+    installContradictingHost([]);
     assert.deepEqual(
       cards.antiTechDeal(
         inventoryWith(["gwaio_anti_air"]),
@@ -379,7 +389,7 @@ describe("antiTechDeal", () => {
   });
 
   it("returns the full base chance when no anti_ tech is held yet", () => {
-    installContradictingHost();
+    installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(inventoryWith([]), 70, "gwaio_anti_orbital"),
       { chance: 70 }
@@ -387,7 +397,7 @@ describe("antiTechDeal", () => {
   });
 
   it("weights a co-op viewer's offer on the viewer's own anti_ tech, not the host's", () => {
-    installContradictingHost();
+    installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(inventoryWith([]), 40, "gwaio_anti_sea").chance,
       40
@@ -405,6 +415,40 @@ describe("mods", () => {
 
   it("returns an empty array for an empty props object", () => {
     assert.deepEqual(cards.mods("unit.json", "replace", {}), []);
+  });
+});
+
+describe("isEnglish", () => {
+  function detecting(language) {
+    setGlobal("i18n", { detectLanguage: () => language });
+  }
+
+  // The two English locales PA ships in ui/main/_i18n/locales.
+  it("accepts the bare English locale", () => {
+    detecting("en");
+    assert.equal(cards.isEnglish(), true);
+  });
+
+  it("accepts a regional English locale", () => {
+    detecting("en-US");
+    assert.equal(cards.isEnglish(), true);
+  });
+
+  // detectLanguage reads the querystring, a cookie, then navigator.language, none of
+  // which the engine is obliged to supply. Falling through to the non-English arm would
+  // show English players the text the English arm exists to correct.
+  it("treats an undetected language as English", () => {
+    detecting(undefined);
+    assert.equal(cards.isEnglish(), true);
+  });
+
+  it("rejects the other locales the game ships", () => {
+    ["ar", "cs-CZ", "da", "de", "de-AT", "es-ES", "fi", "fr", "hu-HU"].forEach(
+      (language) => {
+        detecting(language);
+        assert.equal(cards.isEnglish(), false, language);
+      }
+    );
   });
 });
 
@@ -471,8 +515,15 @@ describe("hasT2Access", () => {
     };
   }
 
+  // The host holds the unlock throughout, so a regression to
+  // model.game().inventory() would report true for everybody.
+  const installGrantingHost = () =>
+    installContradictingHost(["gwc_enable_titans"], {
+      gwoCardsGrantingAdvancedTech: ["gwc_enable_titans"],
+    });
+
   it("is true when any held card grants advanced tech", () => {
-    setGlobal("model", { gwoCardsGrantingAdvancedTech: ["gwc_enable_titans"] });
+    installGrantingHost();
     assert.equal(
       cards.hasT2Access(
         inventoryWithCards(["gwc_minion", "gwc_enable_titans"])
@@ -482,8 +533,15 @@ describe("hasT2Access", () => {
   });
 
   it("is false when no held card grants advanced tech", () => {
-    setGlobal("model", { gwoCardsGrantingAdvancedTech: ["gwc_enable_titans"] });
+    installGrantingHost();
     assert.equal(cards.hasT2Access(inventoryWithCards(["gwc_minion"])), false);
+  });
+
+  // Its one caller, cards/gwc_enable_defenses_t2.js, calls it inside deal(),
+  // which under per-player tech runs against a viewer's inventory.
+  it("reads a co-op viewer's own cards, not the host's", () => {
+    installGrantingHost();
+    assert.equal(cards.hasT2Access(inventoryWithCards([])), false);
   });
 });
 
@@ -574,6 +632,42 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
       false
     );
   });
+
+  // section_of_foreign_intelligence.js calls anyPlayerHasCard with two
+  // arguments, so the `game || model.game()` fallback is the live path there
+  // while referee_config.js always passes one.
+  describe("falling back to the current game", () => {
+    it("reads the current game when none is given", () => {
+      const { hostInventory } = installCoopModel([{ id: "alice" }]);
+
+      assert.deepEqual(cards.getAllConnectedPlayerCards(hostInventory), [
+        { id: "host_card" },
+        { id: "alice_card" },
+      ]);
+      assert.equal(cards.anyPlayerHasCard(hostInventory, "alice_card"), true);
+    });
+
+    it("prefers a game it was given over the current one", () => {
+      const { hostInventory } = installCoopModel([
+        { id: "alice" },
+        { id: "carol" },
+      ]);
+      const otherGame = {
+        coopPlayerInventoryData: () => [
+          { id: "carol", inventory: { cards: [{ id: "carol_card" }] } },
+        ],
+      };
+
+      assert.deepEqual(
+        cards.getAllConnectedPlayerCards(hostInventory, otherGame),
+        [{ id: "host_card" }, { id: "carol_card" }]
+      );
+      assert.equal(
+        cards.anyPlayerHasCard(hostInventory, "alice_card", otherGame),
+        false
+      );
+    });
+  });
 });
 
 describe("applyDulls", () => {
@@ -633,7 +727,8 @@ describe("uniqueValue", () => {
     for (let i = 0; i < 10000; i++) {
       const value = cards.uniqueValue(rng);
       assert.ok(value, `draw ${i} yielded ${value}`);
-      assert.ok(value >= 1 && value < 2, `draw ${i} yielded ${value}`);
+      assert.ok(value >= 1, `draw ${i} fell below 1: ${value}`);
+      assert.ok(value < 2, `draw ${i} reached 2 or above: ${value}`);
     }
   });
 

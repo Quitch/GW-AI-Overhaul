@@ -131,6 +131,95 @@ TEMPLATES.push(
   }
 );
 
+// A generated planet template, with the biome list as the only thing that varies
+// so the pool entry a slot drew is identifiable from the finished planet.
+const generated = (biomes, extra) =>
+  Object.assign(
+    {
+      mass: 4000,
+      Thrust: [0, 0],
+      Radius: [300, 600],
+      Height: [0, 15],
+      Water: [0, 0],
+      Temp: [0, 50],
+      MetalDensity: [10, 40],
+      MetalClusters: [5, 20],
+      BiomeScale: [50, 100],
+      Position: [0, 0],
+      Velocity: [0, 0],
+      Biomes: biomes,
+    },
+    extra
+  );
+
+// Pools a system draws planets from by reference. The container that tracks
+// which entries are spent is keyed by the pool object itself, so two slots
+// pointing at the same pool must not draw the same entry.
+const RANDOM_POOL = {
+  planets: [
+    generated(["earth"]),
+    generated(["moon"]),
+    generated(["lava"]),
+    generated(["ice"]),
+  ],
+};
+const SINGLE_POOL = { planets: [generated(["tropical"])] };
+const EMPTY_POOL = { planets: [] };
+
+TEMPLATES.push(
+  {
+    Players: [13, 14],
+    Systems: [
+      {
+        Planets: [
+          {
+            fromRandomList: RANDOM_POOL,
+            isExplicit: false,
+            Position: [100, 0],
+          },
+          {
+            fromRandomList: RANDOM_POOL,
+            isExplicit: false,
+            Position: [200, 0],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    Players: [15, 16],
+    Systems: [{ Planets: [{ fromRandomList: SINGLE_POOL }] }],
+  },
+  {
+    Players: [17, 18],
+    Systems: [
+      {
+        Planets: [
+          { fromRandomList: EMPTY_POOL, isExplicit: false },
+          generated(["desert"]),
+        ],
+      },
+    ],
+  },
+  {
+    // The drawn entry carries the properties, the requesting slot overrides
+    // them - including into the isExplicit path, which returns verbatim.
+    Players: [19, 20],
+    Systems: [
+      {
+        Planets: [
+          { fromRandomList: RANDOM_POOL, isExplicit: true, name: "Handpicked" },
+        ],
+      },
+    ],
+  },
+  // Last on purpose: it is what a player count matching no template falls back to.
+  {
+    Players: [21, 22],
+    Systems: [{ Planets: [generated(["asteroid"])] }],
+  }
+);
+
 ["pa-easy", "pa-normal", "titans-easy", "titans-normal"].forEach((name) => {
   registerModuleStub(
     "main/game/galactic_war/shared/js/systems/" + name,
@@ -337,5 +426,134 @@ describe("gwo_system_templates generate", () => {
       assert.equal(typeof generator.temperature, "number");
       assert.equal(generator.index, index);
     });
+  });
+});
+
+// A system template can point a planet slot at a shared list and let the
+// generator draw from it. This is stock logic GWO carries verbatim, seeded; the
+// tests below pin what it actually does, which in two places is not what its
+// stock comments claim.
+describe("gwo_system_templates fromRandomList", () => {
+  const loader = () => templates.chooseFor(undefined, "PAExpansion1", false);
+
+  const biomes = (system) =>
+    system.planets.map((planet) => planet.generator.biome);
+
+  it("gives two slots drawing on one list different planets", async () => {
+    // Every entry has a biome of its own, so equal biomes would mean both slots
+    // drew the same template - what usedIndexes exists to prevent.
+    for (const seed of ["r1", "r2", "r3", "r4", "r5", "r6"]) {
+      const system = await generate(loader(), { players: 13, seed });
+      assert.equal(system.planets.length, 2);
+      const drawn = biomes(system);
+      assert.notEqual(drawn[0], drawn[1], `seed ${seed} drew ${drawn}`);
+    }
+  });
+
+  it("lets the requesting slot override what it drew", async () => {
+    const system = await generate(loader(), { players: 13, seed: "override" });
+    assert.deepEqual(
+      system.planets.map((planet) => planet.position),
+      [
+        [100, 0],
+        [200, 0],
+      ]
+    );
+  });
+
+  // The draw nulls fromRandomList before cloning so the whole pool is not
+  // copied into every planet, then puts it back. A slot that lost it would draw
+  // nothing at all on the next war.
+  it("leaves the template able to draw again", async () => {
+    const slot = TEMPLATES.find((entry) => entry.Players[0] === 13).Systems[0]
+      .Planets[0];
+
+    await generate(loader(), { players: 13, seed: "restore-1" });
+    assert.equal(slot.fromRandomList, RANDOM_POOL);
+
+    const again = await generate(loader(), { players: 13, seed: "restore-1" });
+    assert.equal(again.planets.length, 2);
+  });
+
+  it("reproduces the same draw for the same seed", async () => {
+    const first = await generate(loader(), { players: 13, seed: "same" });
+    const second = await generate(loader(), { players: 13, seed: "same" });
+    assert.equal(shape(first), shape(second));
+  });
+
+  it("draws the only entry when the list holds one", async () => {
+    const system = await generate(loader(), { players: 15, seed: "single" });
+    assert.deepEqual(biomes(system), ["tropical"]);
+  });
+
+  // The slot cannot be fulfilled, so it is dropped rather than becoming a null
+  // planet in the finished system.
+  it("drops a slot whose list is empty, keeping the rest of the system", async () => {
+    const system = await generate(loader(), { players: 17, seed: "empty" });
+    assert.deepEqual(biomes(system), ["desert"]);
+  });
+
+  // Extending happens before the isExplicit check, so a slot can draw a
+  // template and still be returned verbatim under its own name.
+  it("returns a drawn planet verbatim when the slot is explicit", async () => {
+    const system = await generate(loader(), { players: 19, seed: "explicit" });
+    assert.equal(system.planets.length, 1);
+    assert.equal(system.planets[0].name, "Handpicked");
+    assert.equal(system.planets[0].isExplicit, true);
+    // Verbatim: the drawn template's own fields, not a generated planet.
+    assert.deepEqual(system.planets[0].Radius, [300, 600]);
+  });
+
+  // lodash 3's _.where takes a source object, not a predicate, so the isExplicit
+  // filter these lines read as applying is inert - every entry stays viable and
+  // the do/while's usedIndexes check is what actually keeps the draws apart.
+  //
+  // Deliberately not corrected. It is stock's, character for character
+  // (media/ui/main/game/galactic_war/shared/js/systems/template-loader.js), and
+  // this file tracks stock line for line. Nothing in stock or GWO pairs
+  // isExplicit with fromRandomList, so the filter would be a no-op either way -
+  // while switching to _.filter would shrink the viable list, shift the draw and
+  // regenerate every existing war's boss systems from the same seed.
+  it("does not in fact filter the list by isExplicit", async () => {
+    const system = await generate(loader(), { players: 19, seed: "explicit" });
+    // The pool holds no isExplicit entry, yet the explicit slot still drew one.
+    assert.ok(RANDOM_POOL.planets.every((planet) => !planet.isExplicit));
+    assert.equal(system.planets.length, 1);
+  });
+});
+
+describe("gwo_system_templates template selection", () => {
+  const loader = () => templates.chooseFor(undefined, "PAExpansion1", false);
+
+  // A galaxy can ask for more players than any template covers, and a war with
+  // no system at all is worse than one from the largest template available.
+  it("falls back to the last template for an uncovered player count", async () => {
+    const system = await generate(loader(), { players: 999, seed: "fallback" });
+    assert.equal(system.planets.length, 1);
+    assert.equal(system.planets[0].generator.biome, "asteroid");
+  });
+
+  it("uses a system handed to it directly, over any template", async () => {
+    const system = await generate(loader(), {
+      players: 2,
+      seed: "explicit-system",
+      name: "Hand Built",
+      template: { Planets: [generated(["ice"])] },
+    });
+
+    assert.equal(system.name, "Hand Built");
+    assert.equal(system.planets.length, 1);
+    assert.equal(system.planets[0].generator.biome, "ice");
+    // A named system carries no Players range: that comes from a template.
+    assert.equal(system.players, undefined);
+  });
+
+  it("names an unnamed system it was handed directly", async () => {
+    const system = await generate(loader(), {
+      players: 2,
+      seed: "unnamed-system",
+      template: { Planets: [generated(["ice"])] },
+    });
+    assert.match(system.name, /^PA-\d+$/);
   });
 });

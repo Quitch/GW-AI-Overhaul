@@ -76,17 +76,17 @@ Two hijacking traps worth knowing, both recorded at their call sites:
 
 ### `ui/main/` — 9 non-card files
 
-| File                                                      | What GWO changed                                                                                                                                                                                                             |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `game/galactic_war/gw_play/gw_per_player_tech_referee.js` | Per-player tech in co-op. Validation extracted to `gw_play/per_player_tech.js`; viewer subcommanders continue the player-faction colour sequence rather than taking raw faction colours.                                     |
-| `game/galactic_war/shared/js/gw_factions.js`              | Adds the Cluster faction (TITANS only).                                                                                                                                                                                      |
-| `game/galactic_war/shared/js/gw_faction_0.js`             | Overhauls personalities (Legonis Machina).                                                                                                                                                                                   |
-| `game/galactic_war/shared/js/gw_faction_1.js`             | Overhauls personalities (Foundation).                                                                                                                                                                                        |
-| `game/galactic_war/shared/js/gw_faction_2.js`             | Overhauls personalities (Synchronous).                                                                                                                                                                                       |
-| `game/galactic_war/shared/js/gw_faction_3.js`             | Overhauls personalities (Revenants).                                                                                                                                                                                         |
-| `game/galactic_war/shared/js/gw_galaxy.js`                | System size scaling, including army brackets under Shared Systems for Galactic War; repairs stars the base builder leaves with no gates (see [`galaxy.md`](galaxy.md)). Graph core extracted to `shared/gw_galaxy_graph.js`. |
-| `game/galactic_war/shared/js/gw_inventory.js`             | Adds the `aiMods` observable that the whole AI-mod pipeline hangs off; changes `removeUnits` to remove _every_ copy of a unit.                                                                                               |
-| `game/galactic_war/shared/js/systems/titans-normal.js`    | Changes the Players arrays and adds classic systems.                                                                                                                                                                         |
+| File                                                      | What GWO changed                                                                                                                                                                                                                  |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `game/galactic_war/gw_play/gw_per_player_tech_referee.js` | Per-player tech in co-op. Validation extracted to `gw_play/per_player_tech.js`; viewer subcommanders continue the player-faction colour sequence rather than taking raw faction colours.                                          |
+| `game/galactic_war/shared/js/gw_factions.js`              | Adds the Cluster faction (TITANS only).                                                                                                                                                                                           |
+| `game/galactic_war/shared/js/gw_faction_0.js`             | Overhauls personalities (Legonis Machina).                                                                                                                                                                                        |
+| `game/galactic_war/shared/js/gw_faction_1.js`             | Overhauls personalities (Foundation).                                                                                                                                                                                             |
+| `game/galactic_war/shared/js/gw_faction_2.js`             | Overhauls personalities (Synchronous).                                                                                                                                                                                            |
+| `game/galactic_war/shared/js/gw_faction_3.js`             | Overhauls personalities (Revenants).                                                                                                                                                                                              |
+| `game/galactic_war/shared/js/gw_galaxy.js`                | System size scaling, including army brackets under Shared Systems for Galactic War; repairs stars the base builder leaves with no gates (see [`galaxy.md`](galaxy.md)). Graph core extracted to `shared/gw_galaxy_graph.js`.      |
+| `game/galactic_war/shared/js/gw_inventory.js`             | Adds the `aiMods` observable that the whole AI-mod pipeline hangs off; changes `removeUnits` to remove _every_ copy of a unit; suspends loadout banking while a co-op viewer applies the host's inventory ([`coop.md`](coop.md)). |
+| `game/galactic_war/shared/js/systems/titans-normal.js`    | Changes the Players arrays and adds classic systems.                                                                                                                                                                              |
 
 `gw_inventory.js`'s `removeUnits` change is a **reversal of documented base-game
 behaviour** — stock explicitly notes that it does not perform set removes, so that
@@ -110,19 +110,45 @@ Being at a base-game _path_ is not the same as shadowing a base-game _file_. Onl
 the `gwc_` cards replace something; the other 168 simply live in the same
 directory because that is where the game looks for cards.
 
-### `pa/` — 86 files, 8 shadowed
+### `pa/` — 87 files, 8 shadowed
 
-| Tree              | Files | Status                                                                                       |
-| ----------------- | ----- | -------------------------------------------------------------------------------------------- |
-| `pa/ai/`          | 8     | All 8 shadow base-game build data — 4 against `pa/`, 4 against the TITANS overlay `pa_ex1/`. |
-| `pa/ai_penchant/` | 70    | GWO-authored in full.                                                                        |
-| `pa/ai_tech/`     | 8     | GWO-authored; the files that AI-mod `load` descriptors name.                                 |
+| Tree              | Files | Status                                                                                        |
+| ----------------- | ----- | --------------------------------------------------------------------------------------------- |
+| `pa/ai/`          | 8     | All 8 shadow base-game build data — see the re-sync table below for which copy each replaces. |
+| `pa/ai_penchant/` | 70    | GWO-authored in full.                                                                         |
+| `pa/ai_tech/`     | 8     | GWO-authored; the files that AI-mod `load` descriptors name.                                  |
+| `pa/units/`       | 1     | GWO-authored; the CEO Commander's Colonel buildbar icon.                                      |
 
-The four shadowing `pa_ex1/` are the `_additional` and `_x1` variants —
-`factory_air_builds_additional.json`, `factory_land_builds_additional.json`,
-`factory_land_builds_x1.json`, `factory_uc_builds_x1.json`. They are stored under
-`pa_ex1/` in the install but addressed as `/pa/…` at runtime; see
-[`ai-paths.md`](ai-paths.md).
+That last one is the reminder that **being at a base-game path is not shadowing**.
+`bot_support_commander_ceo_icon_buildbar.png` sits in the stock unit's own
+directory, but the stock icon there is `bot_support_commander_icon_buildbar.png` —
+a different name, so nothing is replaced.
+
+#### Which copy each `pa/ai/` file replaces
+
+All eight are written as `pa/ai/…` in this repo and addressed as `/pa/…` at
+runtime, but the base file to re-sync against is **not** always the one under
+`pa/`. TITANS is an overlay: where a path exists in both trees, the `pa_ex1/`
+copy is the one the game loads, and therefore the one GWO's copy was derived
+from and must be diffed against.
+
+| GWO file                              | Base copy to diff against |
+| ------------------------------------- | ------------------------- |
+| `factory_air_builds.json`             | `pa/` — the only one      |
+| `fabber_defense_builds.json`          | `pa_ex1/`                 |
+| `factory_land_builds.json`            | `pa_ex1/`                 |
+| `platoon_templates.json`              | `pa_ex1/`                 |
+| `factory_air_builds_additional.json`  | `pa_ex1/`                 |
+| `factory_land_builds_additional.json` | `pa_ex1/`                 |
+| `factory_land_builds_x1.json`         | `pa_ex1/`                 |
+| `factory_uc_builds_x1.json`           | `pa_ex1/`                 |
+
+The `_additional` and `_x1` variants are TITANS-only and exist nowhere else, so
+they are easy to get right. The trap is the middle three, which exist in **both**
+trees under the same name: `pa/platoon_templates.json` is half the size of the
+`pa_ex1/` one, so a re-sync against the wrong copy silently discards every
+TITANS-era entry rather than failing. See [`ai-paths.md`](ai-paths.md) for why
+the overlay is addressed as `/pa/…` regardless.
 
 ## Marking a shadowed file
 

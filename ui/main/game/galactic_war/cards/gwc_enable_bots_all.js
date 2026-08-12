@@ -5,9 +5,12 @@ define([
 ], function (GW, gwoCard, gwoGroup) {
   return {
     visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Complete Bot tech enables building of all Bots and all Bot Factories. Basic Bot factories are built via your commander or any basic fabricator. Advanced Bot factories are built via basic or advanced bot fabricators."
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return "!LOC:Complete Bot tech enables building of all Bots and all Bot Factories, and the advanced structures every advanced fabricator can build. Basic Bot factories are built via your commander or any basic fabricator. Advanced Bot factories are built via basic or advanced bot fabricators.";
+      }
+      return "!LOC:Complete Bot tech enables building of all Bots and all Bot Factories. Basic Bot factories are built via your commander or any basic fabricator. Advanced Bot factories are built via basic or advanced bot fabricators.";
+    },
     summarize: _.constant("!LOC:Complete Bot Tech"),
     icon: _.constant(
       "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_bot_factory.png"

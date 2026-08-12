@@ -6,10 +6,13 @@
 // referee, gwo_panel.js and the intelligence panel), and all four are coverage-excluded
 // glue, so this is where that arithmetic is actually pinned down.
 
-const { describe, it } = require("node:test");
+const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { makeInventory } = require("../scripts/lib/ai-path-fixtures.js");
+const {
+  makeInventory,
+  installModel,
+} = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeCoop = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js"
@@ -44,6 +47,15 @@ function makeRecord(minionNames, cards) {
 function names(subcommanders) {
   return subcommanders.map((entry) => entry.subcommander.name);
 }
+
+let restoreModel;
+
+afterEach(() => {
+  if (restoreModel) {
+    restoreModel();
+    restoreModel = undefined;
+  }
+});
 
 describe("referee_coop.alliedColourIndex", () => {
   it("reserves palette index 0 for the player", () => {
@@ -147,6 +159,58 @@ describe("referee_coop.getOrderedSubcommanders", () => {
         ])
       ),
       ["Alpha", "Beta"]
+    );
+  });
+
+  // A viewer whose record predates its first card deal, or was written by an
+  // older version. Its subcommanders still have to reach the battle, paired
+  // with no tech rather than dropped.
+  it("keeps a viewer whose record has minions but no card array", () => {
+    const game = makeGame({
+      perPlayerTechCards: true,
+      records: {
+        "view-1": { inventory: { minions: [{ name: "Gamma" }] } },
+      },
+    });
+
+    const ordered = refereeCoop.getOrderedSubcommanders(hostInventory, game, [
+      HOST,
+      VIEWER_ONE,
+    ]);
+
+    assert.deepEqual(names(ordered), ["Alpha", "Beta", "Gamma"]);
+    assert.deepEqual(ordered[2].cards, []);
+  });
+
+  it("finds no viewers in a game that cannot look records up", () => {
+    const game = { perPlayerTechCards: () => true };
+
+    assert.deepEqual(
+      names(
+        refereeCoop.getOrderedSubcommanders(hostInventory, game, [
+          HOST,
+          VIEWER_ONE,
+        ])
+      ),
+      ["Alpha", "Beta"]
+    );
+  });
+
+  // referee_game_files.js and referee_config.js both call through without a
+  // client list, leaving it to read model.gwCampaignConnectedClients().
+  it("reads the connected clients itself when given none", () => {
+    const game = makeGame({
+      perPlayerTechCards: true,
+      records: {
+        "view-1": makeRecord(["Gamma"]),
+        "view-2": makeRecord(["Delta"]),
+      },
+    });
+    restoreModel = installModel(game, [HOST, VIEWER_ONE]);
+
+    assert.deepEqual(
+      names(refereeCoop.getOrderedSubcommanders(hostInventory, game)),
+      ["Alpha", "Beta", "Gamma"]
     );
   });
 

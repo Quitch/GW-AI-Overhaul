@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Catapult Upgrade Tech adds flak from the Storm flak tank to the tactical missile launcher."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Catapult Upgrade Tech adds flak from the Storm flak tank to the tactical missile launcher."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Catapult Upgrade Tech"),
     icon: _.constant(
@@ -28,20 +28,24 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        gwoCard.mods(gwoUnit.catapult, "push", {
-          tools: {
-            spec_id: gwoUnit.stormWeapon,
-            aim_bone: "bone_missile01",
-            projectiles_per_fire: 4,
-            muzzle_bone: [
-              "bone_missile01",
-              "bone_missile01",
-              "bone_missile01",
-              "bone_missile01",
-            ],
-          },
-          unit_types: "UNITTYPE_AirDefense",
-        })
+        gwoCard
+          .mods(gwoUnit.catapult, "push", {
+            tools: {
+              spec_id: gwoUnit.stormWeapon,
+              aim_bone: "bone_missile01",
+              projectiles_per_fire: 4,
+              muzzle_bone: [
+                "bone_missile01",
+                "bone_missile01",
+                "bone_missile01",
+                "bone_missile01",
+              ],
+            },
+            unit_types: "UNITTYPE_AirDefense",
+          })
+          .concat([
+            { file: gwoUnit.catapult, path: "tools.2.spec_id", op: "tag" },
+          ])
       );
     },
     dull: function () {},

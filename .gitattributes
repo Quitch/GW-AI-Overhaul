@@ -19,6 +19,7 @@
 # Keep development junk out of our ZIP files
 .claude/ export-ignore
 .github/ export-ignore
+.vscode/settings.json
 docs/ export-ignore
 images/ export-ignore
 scripts/ export-ignore
@@ -29,9 +30,10 @@ test/ export-ignore
 .nvmrc export-ignore
 .prettierignore export-ignore
 .prettierrc export-ignore
-.stylelintrc.json export-ignore
+.browserslistrc export-ignore
 CLAUDE.md export-ignore
 eslint.config.mjs export-ignore
+stylelint.config.mjs export-ignore
 package-lock.json export-ignore
 package.json export-ignore
 sonar-project.properties export-ignore

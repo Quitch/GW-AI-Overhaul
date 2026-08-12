@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Mine Upgrade Tech allows mines to explode without self-destructing."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Mine Upgrade Tech allows mines to explode without self-destructing."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Mine Upgrade Tech"),
     icon: _.constant(

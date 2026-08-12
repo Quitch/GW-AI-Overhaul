@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Stryker Upgrade Tech"),
     icon: _.constant(
@@ -32,10 +32,15 @@ define([
           path: "tools",
           op: "prepend",
           value: {
-            spec_id: "/pa/units/land/bot_bomb/bot_bomb_tool_weapon.json",
+            spec_id: gwoUnit.boomWeapon,
             aim_bone: "bone_root",
             muzzle_bone: "bone_root",
           },
+        },
+        {
+          file: gwoUnit.stryker,
+          path: "tools.0.spec_id",
+          op: "tag",
         },
         {
           file: gwoUnit.stryker,

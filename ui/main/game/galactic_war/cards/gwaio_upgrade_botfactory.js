@@ -9,11 +9,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Bot Factory Upgrade Tech enables the building of advanced units by basic bot manufacturing."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Bot Factory Upgrade Tech enables the building of advanced units by basic bot manufacturing."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Bot Factory Upgrade Tech"),
     icon: _.constant(

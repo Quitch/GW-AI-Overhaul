@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout and increases its vision by 100%."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout and increases its vision by 100%."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Skitter Upgrade Tech"),
     icon: _.constant(

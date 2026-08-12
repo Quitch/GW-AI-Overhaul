@@ -19,6 +19,7 @@ function gwoBugfixes() {
       gwoSettings &&
       gwoSettings.treasurePlanetFixed &&
       gwoSettings.clusterFixed &&
+      gwoSettings.treasureLoadoutDerived &&
       luckyCommanderFixed();
 
     if (!gwoSettings || allFixesApplied) {
@@ -29,6 +30,27 @@ function gwoBugfixes() {
       if (_.includes(star.cardList(), undefined)) {
         star.cardList([]);
         gwoSettings.treasurePlanetFixed = true;
+      }
+    };
+
+    // Wars generated before the offer became derived hold the host's pick, and
+    // recorded no treasure star index. A treasure star is never pre-dealt
+    // anything else, so its list clears whole.
+    var deriveTreasureLoadout = function (gwoTreasure) {
+      var stars = galaxy.stars();
+      gwoSettings.treasureStar = gwoTreasure.findTreasureStar(stars);
+
+      // A save taken mid-exploration is already showing that list, and clearing
+      // it would leave the player nothing to pick.
+      var midExplore =
+        game.turnState() === "explore" &&
+        game.currentStar() === gwoSettings.treasureStar;
+
+      var star = _.isNumber(gwoSettings.treasureStar)
+        ? stars[gwoSettings.treasureStar]
+        : undefined;
+      if (star && !midExplore && star.cardList().length) {
+        star.cardList([]);
       }
     };
 
@@ -109,28 +131,30 @@ function gwoBugfixes() {
       });
     };
 
+    var atLeastVersion = function (version) {
+      return checkVersion(version) >= 0;
+    };
+
     var checkIfPatchesNeeded = function () {
       var playerIsCluster =
         model.game().inventory().getTag("global", "playerFaction") === 4;
 
-      if (checkVersion("5.76.1") >= 0) {
+      if (atLeastVersion("6.8.0")) {
+        gwoSettings.treasureLoadoutDerived = true;
+      }
+      if (atLeastVersion("5.76.1")) {
         luckyCommanderFixed("true");
+      }
+      if (atLeastVersion("5.52.2") || playerIsCluster) {
         gwoSettings.clusterFixed = true;
-        gwoSettings.treasurePlanetFixed = true;
-      } else if (checkVersion("5.52.2") >= 0 || playerIsCluster) {
-        gwoSettings.clusterFixed = true;
-        gwoSettings.treasurePlanetFixed = true;
-      } else if (checkVersion("5.18.0") >= 0) {
+      }
+      if (atLeastVersion("5.18.0")) {
         gwoSettings.treasurePlanetFixed = true;
       }
     };
 
-    var applyFixes = function () {
+    var applyFixes = function (gwoTreasure) {
       for (var star of galaxy.stars()) {
-        if (gwoSettings.treasurePlanetFixed && gwoSettings.clusterFixed) {
-          break;
-        }
-
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
         }
@@ -144,8 +168,13 @@ function gwoBugfixes() {
         }
       }
 
+      if (!gwoSettings.treasureLoadoutDerived) {
+        deriveTreasureLoadout(gwoTreasure);
+      }
+
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
       gwoSettings.clusterFixed = true; // Cluster might not exist
+      gwoSettings.treasureLoadoutDerived = true;
 
       if (luckyCommanderFixed() !== "true") {
         fixLuckyCommanderLocalStorageVariable();
@@ -153,11 +182,14 @@ function gwoBugfixes() {
     };
 
     checkIfPatchesNeeded();
-    applyFixes();
 
     requireGW(
-      ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
-      function (gwoSave) {
+      [
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
+      ],
+      function (gwoSave, gwoTreasure) {
+        applyFixes(gwoTreasure);
         gwoSave(game, true);
       }
     );

@@ -1,3 +1,7 @@
+// The keys are a published API - third-party cards written from the
+// New-GW-Cards template name them directly, so renaming one breaks those cards
+// silently. The paths are not: re-point them freely when the base game moves a
+// file. See docs/tech-cards.md.
 define({
   airFabber: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
   airFabberAdvanced:
@@ -112,6 +116,10 @@ define({
     "/pa/units/land/tactical_missile_launcher/tactical_missile_antidrop_ammo.json",
   catapultWeapon:
     "/pa/units/land/tactical_missile_launcher/tactical_missile_launcher_tool_weapon.json",
+  // No file of its own: gwaio_start_ceo clones the Colonel onto this id before
+  // Cluster's setup strips the tags that let one be built.
+  clusterCeoColonel:
+    "/pa/units/land/bot_support_commander/bot_support_commander_ceo.json",
   colonel: "/pa/units/land/bot_support_commander/bot_support_commander.json",
   colonelAmmo:
     "/pa/units/land/bot_support_commander/bot_support_commander_ammo.json",
@@ -134,8 +142,14 @@ define({
     "/pa/units/commanders/base_commander/base_commander_torpedo_ammo_land.json",
   commanderTorpedoWaterAmmo:
     "/pa/units/commanders/base_commander/base_commander_torpedo_ammo_water.json",
-  commanderWeapon:
-    "/pa/units/commanders/base_commander/base_commander_tool_weapon.json",
+  // Every commander mounts one of these three as its primary. TITANS re-parents them to
+  // base_bot_weapon, leaving base_commander_tool_weapon.json referenced by nothing.
+  commanderWeaponBullet:
+    "/pa/units/commanders/base_commander/base_commander_tool_bullet_weapon.json",
+  commanderWeaponLaser:
+    "/pa/units/commanders/base_commander/base_commander_tool_laser_weapon.json",
+  commanderWeaponMissile:
+    "/pa/units/commanders/base_commander/base_commander_tool_missile_weapon.json",
   deepSpaceOrbitalRadar:
     "/pa/units/orbital/deep_space_radar/deep_space_radar.json",
   dox: "/pa/units/land/assault_bot/assault_bot.json",

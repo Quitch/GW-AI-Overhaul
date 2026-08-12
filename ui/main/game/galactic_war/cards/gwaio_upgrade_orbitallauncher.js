@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Orbital Launcher Upgrade Tech"),
     icon: _.constant(

@@ -70,6 +70,8 @@ define(function () {
     var GW = params.GW;
     var gwoStreams = params.gwoStreams;
     var warRng = params.warRng;
+    var gwoBank = params.gwoBank;
+    var stockBank = params.stockBank;
 
     var rerollPendingTechRequest = "gwo_reroll_pending_tech";
     var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
@@ -99,7 +101,7 @@ define(function () {
     };
 
     var applyPendingTechRerollResult = function (operator) {
-      var payload = operator.payload || {};
+      var payload = (operator && operator.payload) || {};
       model.gwoRerollPending(false);
 
       if (payload.error) {
@@ -173,12 +175,20 @@ define(function () {
         result.reject(reason);
       };
 
+      var resolveResult = function () {
+        result.resolve();
+      };
+
+      var rejectResult = function (error) {
+        result.reject(error);
+      };
+
       if (!model.isCampaignHost() || !model.gwCampaignPerPlayerTechCards()) {
         result.reject("not campaign host or per-player tech disabled");
         return result.promise();
       }
 
-      var payload = operator.payload || {};
+      var payload = (operator && operator.payload) || {};
       var record = game.findCoopPlayerInventoryData({
         id: operator.client_id,
         name: operator.client_name,
@@ -267,19 +277,18 @@ define(function () {
             offer_rerolls: nextRerollsUsed < cardsOffered - 1,
             updated_at: updatedAt,
           });
-          gwoSave(game, false).then(
-            function () {
-              result.resolve();
-            },
-            function (error) {
-              result.reject(error);
-            }
-          );
+          gwoSave(game, false).then(resolveResult, rejectResult);
         });
       };
 
       if (playerInventory.cards().length) {
-        playerInventory.applyCards(dealCards);
+        // Their loadout card's buff() would otherwise bank into the host's own
+        // unlocks, as in cards_coop_deal.js.
+        gwoBank.suspendUnlocks(stockBank);
+        playerInventory.applyCards(function () {
+          gwoBank.resumeUnlocks();
+          dealCards();
+        });
       } else {
         dealCards();
       }

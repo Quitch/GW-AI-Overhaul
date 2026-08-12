@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Leviathan Upgrade Tech"),
     icon: _.constant(
@@ -25,56 +25,66 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.leviathan,
-          path: "tools.0.spec_id",
-          op: "replace",
-          value: gwoUnit.holkinsWeapon,
-        },
-        {
-          file: gwoUnit.leviathan,
-          path: "tools.0.projectiles_per_fire",
-          op: "replace",
-          value: 1,
-        },
-        {
-          file: gwoUnit.leviathan,
-          path: "tools.1.spec_id",
-          op: "replace",
-          value: gwoUnit.holkinsWeapon,
-        },
-        {
-          file: gwoUnit.leviathan,
-          path: "tools.1.projectiles_per_fire",
-          op: "replace",
-          value: 1,
-        },
-        {
-          file: gwoUnit.leviathan,
-          path: "tools.2.spec_id",
-          op: "replace",
-          value: gwoUnit.holkinsWeapon,
-        },
-        {
-          file: gwoUnit.leviathan,
-          path: "tools.2.projectiles_per_fire",
-          op: "replace",
-          value: 1,
-        },
-        {
-          file: gwoUnit.leviathan,
-          path: "tools.3.spec_id",
-          op: "replace",
-          value: gwoUnit.holkinsWeapon,
-        },
-        {
-          file: gwoUnit.leviathan,
-          path: "tools.3.projectiles_per_fire",
-          op: "replace",
-          value: 1,
-        },
-      ]);
+      inventory.addMods(
+        [
+          {
+            file: gwoUnit.leviathan,
+            path: "tools.0.spec_id",
+            op: "replace",
+            value: gwoUnit.holkinsWeapon,
+          },
+          {
+            file: gwoUnit.leviathan,
+            path: "tools.0.projectiles_per_fire",
+            op: "replace",
+            value: 1,
+          },
+          {
+            file: gwoUnit.leviathan,
+            path: "tools.1.spec_id",
+            op: "replace",
+            value: gwoUnit.holkinsWeapon,
+          },
+          {
+            file: gwoUnit.leviathan,
+            path: "tools.1.projectiles_per_fire",
+            op: "replace",
+            value: 1,
+          },
+          {
+            file: gwoUnit.leviathan,
+            path: "tools.2.spec_id",
+            op: "replace",
+            value: gwoUnit.holkinsWeapon,
+          },
+          {
+            file: gwoUnit.leviathan,
+            path: "tools.2.projectiles_per_fire",
+            op: "replace",
+            value: 1,
+          },
+          {
+            file: gwoUnit.leviathan,
+            path: "tools.3.spec_id",
+            op: "replace",
+            value: gwoUnit.holkinsWeapon,
+          },
+          {
+            file: gwoUnit.leviathan,
+            path: "tools.3.projectiles_per_fire",
+            op: "replace",
+            value: 1,
+          },
+        ].concat(
+          _.times(4, function (i) {
+            return {
+              file: gwoUnit.leviathan,
+              path: "tools." + i + ".spec_id",
+              op: "tag",
+            };
+          })
+        )
+      );
     },
     dull: function () {},
   };

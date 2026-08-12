@@ -4,7 +4,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var orderOfOperations = function (mods) {
     var operationsContainer = {};
     operationsContainer.otherOperations = [];
-    var orderedOperations = ["replace", "multiplyOrCreate", "multiply", "add"];
+    // clone leads because it is the only op that creates a spec id, so every
+    // other op has to be able to name the result. See specs.md.
+    var orderedOperations = [
+      "clone",
+      "replace",
+      "multiplyOrCreate",
+      "multiply",
+      "add",
+    ];
 
     _.forEach(mods, function (mod) {
       var operationName = mod.op;
@@ -216,9 +224,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             );
             return attribute;
           }
-          // hack fix for mirrorMode due to the fact that
-          // `attribute` was retaining the previous `specTag`s
-          // and I couldn't track down why
+          // Rewrites the suffix rather than appending one. The op ordering
+          // leaves no `replace` between two cards' `tag`s on a shared path,
+          // so the second sees a value the first already tagged. See specs.md.
           var cleanAttribute = attribute.slice(0, jsonIndex + 5);
           return cleanAttribute + specTag;
         },
@@ -407,13 +415,29 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
       });
     },
+    // Files a card lends to a unit that does not already reference them. Without
+    // an entry here the tagged copy never exists, so the card's `tag` op would
+    // point at a missing spec. See specs.md.
     additionalSpecs: [
+      gwoUnit.artemisWeapon,
+      gwoUnit.boomWeapon,
+      gwoUnit.bumblebeeWeapon,
+      gwoUnit.colonelWeapon,
       gwoUnit.fireflyAmmo,
       gwoUnit.fireflyWeapon,
+      gwoUnit.flakWeapon,
+      gwoUnit.gilEBeam,
+      gwoUnit.holkinsWeapon,
+      gwoUnit.mendBuildArm,
       gwoUnit.orcaTorpedo,
       gwoUnit.orcaTorpedoAmmo,
       gwoUnit.skitterAmmo,
       gwoUnit.skitterWeapon,
+      gwoUnit.stitchBuildArm,
+      gwoUnit.stormWeapon,
+      gwoUnit.sxxWeapon,
+      gwoUnit.typhoonWeapon,
+      gwoUnit.umbrellaBeam,
     ],
   };
 });

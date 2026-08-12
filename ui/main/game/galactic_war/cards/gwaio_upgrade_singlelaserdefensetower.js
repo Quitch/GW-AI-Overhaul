@@ -9,11 +9,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabrication arm which repairs units and reclaims wreckage within range."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabrication arm which repairs units and reclaims wreckage within range."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Single Laser Defense Tower Upgrade Tech"),
     icon: _.constant(
@@ -44,6 +44,11 @@ define([
         },
         {
           file: gwoUnit.singleLaserDefenseTower,
+          path: "tools.0.spec_id",
+          op: "tag",
+        },
+        {
+          file: gwoUnit.singleLaserDefenseTower,
           path: "command_caps",
           op: "replace",
           value: ["ORDER_Reclaim", "ORDER_Repair"],
@@ -52,18 +57,20 @@ define([
           file: gwoUnit.singleLaserDefenseTower,
           path: "fx_offsets",
           op: "replace",
-          value: {
-            type: "build",
-            filename: "/pa/effects/specs/fab_combat_spray.pfx",
-            bone: "socket_muzzle",
-            offset: [0, 0, 0],
-            orientation: [0, 0, 0],
-          },
+          value: [
+            {
+              type: "build",
+              filename: "/pa/effects/specs/fab_combat_spray.pfx",
+              bone: "socket_muzzle",
+              offset: [0, 0, 0],
+              orientation: [0, 0, 0],
+            },
+          ],
         },
         {
           file: gwoUnit.singleLaserDefenseTower,
           path: "audio",
-          op: "replace",
+          op: "merge",
           value: {
             loops: {
               build: {

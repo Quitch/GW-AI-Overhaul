@@ -34,10 +34,8 @@ define(function () {
     var restored = [];
     var added = {};
 
-    for (var i = 0; i < isolated.length; i++) {
-      var star = isolated[i];
-      for (var j = 0; j < delaunayEdges.length; j++) {
-        var edge = delaunayEdges[j];
+    for (var star of isolated) {
+      for (var edge of delaunayEdges) {
         if (edge[0] !== star && edge[1] !== star) {
           continue;
         }

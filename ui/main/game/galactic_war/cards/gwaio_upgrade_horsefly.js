@@ -5,11 +5,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Horsefly Upgrade Tech adds the Bumblebee carpet bomber's weapon to the strafer."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Horsefly Upgrade Tech adds the Bumblebee carpet bomber's weapon to the strafer."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Horsefly Upgrade Tech"),
     icon: _.constant(
@@ -27,13 +27,17 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        gwoCard.mods(gwoUnit.horsefly, "push", {
-          tools: {
-            spec_id: gwoUnit.bumblebeeWeapon,
-            aim_bone: "bone_root",
-            muzzle_bone: "bone_root",
-          },
-        })
+        gwoCard
+          .mods(gwoUnit.horsefly, "push", {
+            tools: {
+              spec_id: gwoUnit.bumblebeeWeapon,
+              aim_bone: "bone_root",
+              muzzle_bone: "bone_root",
+            },
+          })
+          .concat([
+            { file: gwoUnit.horsefly, path: "tools.1.spec_id", op: "tag" },
+          ])
       );
     },
     dull: function () {},

@@ -2,6 +2,74 @@
 
 ## Unreleased
 
+### Changed
+
+- Victory is now immediate once the last boss is defeated, rather than waiting for the final system to be explored. The Guardians are the exception: their system is still explored first while a commander loadout remains to be won
+
+## v6.10.1 - 2026-08-11
+
+### Bugfix
+
+- Correct regressions in modded card support introduced by v6.10.0
+  - Note that the `New-GW-Cards` template has been updated for changes in how support is exposed
+  - Guardrails have been introduced to prevent further breakage
+
+## v6.10.0 - 2026-08-10
+
+### Changed
+
+- The Nomad Commander can now move its Radar Jamming Station and Lob. Its description also notes that metal extractors and the Catalyst stay put, since they are tied to map features
+- The Defense Tech Commander’s land mines are 50% cheaper along with every other defense. Their spacing is unchanged
+
+### Bugfix
+
+Changes to card descriptions are made to English only. Translated copies will use the v6.9.0 text.
+
+- Orbital Combat Tech now speeds up your orbital units. Its health and damage bonuses were unaffected
+- Pelican Upgrade Tech now lets every transported unit shoot, rather than only basic amphibious bots
+- Protocol: Agility costs mobile combat units the 20% health it advertises, rather than 36%
+- Artillery Fabrication Tech now discounts mobile artillery — the Grenadier, Gil-E, Sheller and Leviathan — as its description has always claimed
+- Anti-Ship and Anti-Hover Ammo Tech now explain that the Kaiju counts as a hover unit
+- The Paratrooper Commander description properly scopes its starting factories
+- The Combat Commander’s description now has the right speed bonus
+- The Combat Commander now fires twice as fast, as its description has always claimed
+- AI allies of an Artillery Commander can now build the Commander accessible units with their Commander
+- Commander Fabrication Tech now reaches Cluster’s Workers and Security
+- Tech that changes the damage of all your weapons no longer misses some of them
+  - Protocol: Blindness extends the range of those weapons alongside the rest
+  - Bot Ammunition Tech and Bot Combat Tech no longer miss the Gil-E’s interception beam
+- Protocol: Blindness gives your Commander the health and weapon range it promises
+- Orbital Combat Tech and Orbital Ammunition Tech increase splash damage alongside direct damage
+- Orbital Cooldown Tech lists only the Orbital Factory as affected as the Orbital Launcher has no cooldown
+- Super Weapon Fabrication Tech discounts nuclear missiles rather than the silos that fire them
+- Allied AIs no longer try to have a basic fabricator build a Zeus after a Fabrication Upgrade Tech
+- The CEO Commander can build Colonels as Cluster
+- Artillery Ammunition Tech says it cuts ammunition cost rather than energy usage
+- Economy Fabrication Tech says it discounts storage as well as production
+- Complete Energy Tech and Improved Intelligence Tech now say they cut teleporter energy costs
+- Complete Air Tech says advanced air factories come from air fabricators
+- Complete Air, Bot, Naval and Vehicle Tech now say they unlock advanced structures
+- Advanced Defense Technology no longer lists three of the five defences it grants
+- The Tourist Commander now says it has no Mining Platforms either
+- The Tactical Nuke Commander now says it gives up most advanced defenses
+- Planetary Radar Upgrade Tech calls itself by its own name
+- Single Laser Defense Tower Upgrade Tech renders its fabrication effect and keeps the turret’s selection sound
+- Advanced Vehicle Factory Upgrade Tech discounts the units the factory builds, not the factory itself
+- The Tourist Commander tells English readers that its Sub Commanders only defend themselves and hand over their income. Every other language has always been told
+- Protocol: Precision and Protocol: Wrath correctly hand the buff and nerf to all affected units
+- The Orbital Commander no longer allows the Orbital Fabricator to build all ground structures, nor the Commander to build Planetary Radar
+- Boom Upgrade Tech is offered once you hold the Boom, and grants the Lob as its description has always promised
+- The Rapid Deployment Commander’s Unit Cannon launches fabricators only
+- The Bionic Augmentation Commander Of Neutralizing correctly provides only one Data Bank
+
+## v6.9.0 - 2026-08-07
+
+### Added
+
+- Co-op viewers can select a star and press Ping to point the host and the other viewers at it
+
+## v6.8.0 - 2026-08-06
+
 ### Added
 
 - The Seed Value field is now shown when creating a war, and a war's seed is displayed in its Galactic War Overhaul panel
@@ -9,13 +77,17 @@
 
 ### Changed
 
-- The same seed now rebuilds the same galaxy and the same enemies, given the same faction, difficulty, game options and mods. Previously the seed set only the positions of the stars, leaving the gates between them, system sizes, and every AI, minion, ally and game mode to be re-rolled on each attempt. Planet names still vary.
-- The same seed now also deals the same tech cards, the same Sub Commanders for the General Commander loadout, and the same AI landing behaviour. A war reproduces only when it is played the same way: visiting the same stars, in the same order, winning at the same speed, and taking the same cards.
-- Seeds entered from v6.6.0 or earlier now generate different planets: biome, radius, height, water and temperature all shift. Existing saved wars are unaffected.
+- The same seed now rebuilds the same galaxy, enemies, tech cards, Sub Commanders for the General Commander loadout, and the same AI landing behaviour. A war reproduces only when it is played the same way: visiting the same stars, in the same order, winning at the same speed, and taking the same cards, given the same faction, difficulty, game options, and mods. Planet names still vary.
+- Seeds entered from v6.7.0 or earlier now generate different planets: biome, radius, height, water and temperature all shift. Existing saved wars are unaffected.
+- Available Tech and loadouts in a system are now per-player in co-op with separate tech
+- Guardian loadout unlocks are picked at time of exploration rather than war generation
 
 ### Bugfix
 
-- Hosting a co-op war quietly unlocked your players' loadouts for you, because the host applies each player's tech to work out the hand they are offered
+- Hosts and viewers don't get each others tech when a viewer joins a war
+- A co-op player joining a war part way through could be offered a loadout they already owned
+- The Lucky Commander no longer applies its bonus to a war where it is unlocked
+- Loadouts and upgrade techs that gives a unit another unit's weapon, or that makes something spawn a unit on death, now applies the rest of your bonuses to it
 
 ## v6.7.0 - 2026-08-04
 

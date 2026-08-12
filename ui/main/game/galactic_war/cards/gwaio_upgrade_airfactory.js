@@ -6,11 +6,11 @@ define([
   return {
     visible: _.constant(true),
     describe: _.constant(
-      loc(
-        "!LOC:Air Factory Upgrade Tech enables the building of advanced units by basic air manufacturing."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
+      gwoCard.withSlot(
+        loc(
+          "!LOC:Air Factory Upgrade Tech enables the building of advanced units by basic air manufacturing."
+        )
+      )
     ),
     summarize: _.constant("!LOC:Air Factory Upgrade Tech"),
     icon: _.constant(

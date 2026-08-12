@@ -4,13 +4,20 @@ define([
 ], function (gwoCard, gwoUnit) {
   return {
     visible: _.constant(true),
-    describe: _.constant(
-      loc(
-        "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar."
-      ) +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
-    ),
+    describe: function () {
+      if (gwoCard.isEnglish()) {
+        return gwoCard.withSlot(
+          loc(
+            "!LOC:Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar."
+          )
+        );
+      }
+      return gwoCard.withSlot(
+        loc(
+          "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar."
+        )
+      );
+    },
     summarize: _.constant("!LOC:Planetary Radar Upgrade Tech"),
     icon: _.constant(
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_intelligence_fabrication_upgrade.png"
