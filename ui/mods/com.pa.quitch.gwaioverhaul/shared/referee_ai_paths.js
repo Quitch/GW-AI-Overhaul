@@ -1,12 +1,12 @@
-define(function () {
-  var titansAiPath = "/pa/ai/";
-  var subCommanderPath = "/pa/ai_subcommander/";
-  var clusterPath = "/pa/ai_cluster/";
-  var penchantPath = "/pa/ai_penchant/";
-  var quellerPath = "/pa/ai_queller/";
+define(() => {
+  const titansAiPath = "/pa/ai/";
+  const subCommanderPath = "/pa/ai_subcommander/";
+  const clusterPath = "/pa/ai_cluster/";
+  const penchantPath = "/pa/ai_penchant/";
+  const quellerPath = "/pa/ai_queller/";
 
-  var sanitizeToken = function (value) {
-    var token = String(value || "");
+  const sanitizeToken = (value) => {
+    let token = String(value || "");
     token = token.replace(/^\.+/, "");
     token = token.replace(/[^A-Za-z0-9_-]+/g, "_");
     token = token.replace(/^_+/, "");
@@ -16,8 +16,8 @@ define(function () {
     return token;
   };
 
-  var getScopeToken = function (identity, fallbackToken) {
-    var token = identity;
+  const getScopeToken = (identity, fallbackToken) => {
+    let token = identity;
 
     if (token && _.isObject(token)) {
       token =
@@ -44,32 +44,31 @@ define(function () {
     return token.length ? token : "player";
   };
 
-  var appendScope = function (basePath, scopeToken) {
+  const appendScope = (basePath, scopeToken) => {
     if (!scopeToken) {
       return basePath;
     }
-    return basePath + "player_" + scopeToken + "/";
+    return `${basePath}player_${scopeToken}/`;
   };
 
-  var getPlayerScopedPath = function (basePath, identity, fallbackToken) {
-    return appendScope(basePath, getScopeToken(identity, fallbackToken));
-  };
+  const getPlayerScopedPath = (basePath, identity, fallbackToken) =>
+    appendScope(basePath, getScopeToken(identity, fallbackToken));
 
-  var getQuellerPath = function (type, smartSubcommanders) {
+  const getQuellerPath = (type, smartSubcommanders) => {
     if (type === "all") {
       return quellerPath;
     } else if (type === "enemy") {
-      return quellerPath + "q_uber/";
+      return `${quellerPath}q_uber/`;
     } else if (type === "subcommander" && smartSubcommanders) {
-      return quellerPath + "q_silver/";
+      return `${quellerPath}q_silver/`;
     }
-    return quellerPath + "q_bronze/";
+    return `${quellerPath}q_bronze/`;
   };
 
   return {
-    sanitizeToken: sanitizeToken,
+    sanitizeToken,
 
-    getScopeToken: getScopeToken,
+    getScopeToken,
 
     getAIPathSource: function (type, aiInUse) {
       switch (aiInUse) {
@@ -83,12 +82,12 @@ define(function () {
     },
 
     getAIPathDestination: function (type, aiInUse, options) {
-      var settings = options || {};
-      var isGuardians = !!settings.guardians;
-      var aiMods = settings.aiMods || [];
-      var scopeToken = settings.scopeToken;
-      var smartSubcommanders = !!settings.smartSubcommanders;
-      var basePath;
+      const settings = options || {};
+      const isGuardians = !!settings.guardians;
+      const aiMods = settings.aiMods || [];
+      const scopeToken = settings.scopeToken;
+      const smartSubcommanders = !!settings.smartSubcommanders;
+      let basePath;
 
       if (type === "cluster") {
         basePath = clusterPath;
@@ -115,12 +114,8 @@ define(function () {
       fallbackToken,
       titans
     ) {
-      var append = titans ? "_x1.json" : ".json";
-      return (
-        getPlayerScopedPath(basePath, identity, fallbackToken) +
-        "unit_maps/ai_unit_map" +
-        append
-      );
+      const append = titans ? "_x1.json" : ".json";
+      return `${getPlayerScopedPath(basePath, identity, fallbackToken)}unit_maps/ai_unit_map${append}`;
     },
   };
 });

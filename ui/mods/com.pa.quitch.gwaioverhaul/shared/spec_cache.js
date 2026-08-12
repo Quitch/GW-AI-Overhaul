@@ -2,40 +2,37 @@
 // GW.specs.genUnitSpecs, whose output it must reproduce exactly. Ported from
 // media/ui/main/game/galactic_war/shared/js/gw_specs.js. See specs.md.
 
-define(function () {
+define(() => {
   // Untagged spec id -> Promise of the pristine parsed JSON. Module-level, so it
   // is shared across every call and every battle in a session.
-  var rawCache = {};
+  let rawCache = {};
 
   // A rejected fetch is not left cached, so a later tag can retry rather than
   // inheriting a permanent failure.
-  var getRaw = function (item, deps) {
+  const getRaw = (item, deps) => {
     if (!Object.prototype.hasOwnProperty.call(rawCache, item)) {
-      rawCache[item] = Promise.resolve(deps.fetch(item)).then(
-        null,
-        function (error) {
-          delete rawCache[item];
-          throw error;
-        }
-      );
+      rawCache[item] = Promise.resolve(deps.fetch(item)).then(null, (error) => {
+        delete rawCache[item];
+        throw error;
+      });
     }
     return rawCache[item];
   };
 
   // Mirror of base-game gw_specs.js:tagSpec - keep the reference list below in
   // sync with it. Mutates `spec`; returns the untagged references it found.
-  var tagSpec = function (specId, tag, spec) {
-    var moreWork = [];
+  const tagSpec = (specId, tag, spec) => {
+    const moreWork = [];
     if (typeof spec !== "object") {
       return moreWork;
     }
-    var applyTag = function (obj, key) {
+    const applyTag = (obj, key) => {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
         if (typeof obj[key] === "string") {
           moreWork.push(obj[key]);
           obj[key] = obj[key] + tag;
         } else if (_.isArray(obj[key])) {
-          obj[key] = _.map(obj[key], function (value) {
+          obj[key] = _.map(obj[key], (value) => {
             moreWork.push(value);
             return value + tag;
           });
@@ -45,7 +42,7 @@ define(function () {
 
     applyTag(spec, "base_spec");
     if (spec.tools) {
-      _.forEach(spec.tools, function (tool) {
+      _.forEach(spec.tools, (tool) => {
         applyTag(tool, "spec_id");
       });
     }
@@ -59,7 +56,7 @@ define(function () {
       if (_.isString(spec.ammo_id)) {
         applyTag(spec, "ammo_id");
       } else {
-        _.forEach(spec.ammo_id, function (ammo) {
+        _.forEach(spec.ammo_id, (ammo) => {
           applyTag(ammo, "id");
         });
       }
@@ -90,23 +87,21 @@ define(function () {
         return undefined;
       }
 
-      return new Promise(function (resolve) {
-        var results = {};
-        var work = units.slice(0);
-        var pending = 0;
+      return new Promise((resolve) => {
+        const results = {};
+        let work = units.slice(0);
+        let pending = 0;
 
-        var finish = _.once(function () {
-          results["/pa/units/unit_list.json" + tag] = {
-            units: _.map(units, function (unit) {
-              return unit + tag;
-            }),
+        const finish = _.once(() => {
+          results[`/pa/units/unit_list.json${tag}`] = {
+            units: _.map(units, (unit) => unit + tag),
           };
           resolve(results);
         });
 
-        var step = function () {
+        const step = () => {
           while (work.length) {
-            var item = work.pop();
+            const item = work.pop();
             if (Object.prototype.hasOwnProperty.call(results, item + tag)) {
               continue;
             }
@@ -118,21 +113,21 @@ define(function () {
           }
         };
 
-        var fetch = function (item) {
+        const fetch = (item) => {
           getRaw(item, deps)
             .then(
-              function (raw) {
+              (raw) => {
                 // Tag a clone, never the cached pristine copy.
-                var data = _.cloneDeep(raw);
-                var newWork = tagSpec(item, tag, data);
+                const data = _.cloneDeep(raw);
+                const newWork = tagSpec(item, tag, data);
                 work = work.concat(newWork);
                 results[item + tag] = data;
               },
-              function (error) {
+              (error) => {
                 console.log("error loading spec:", item, error);
               }
             )
-            .then(function () {
+            .then(() => {
               --pending;
               if (!pending) {
                 step();

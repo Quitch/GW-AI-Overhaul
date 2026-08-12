@@ -1,12 +1,12 @@
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   gwoUnit
-) {
-  var orderOfOperations = function (mods) {
-    var operationsContainer = {};
+) => {
+  const orderOfOperations = (mods) => {
+    const operationsContainer = {};
     operationsContainer.otherOperations = [];
     // clone leads because it is the only op that creates a spec id, so every
     // other op has to be able to name the result. See specs.md.
-    var orderedOperations = [
+    const orderedOperations = [
       "clone",
       "replace",
       "multiplyOrCreate",
@@ -14,9 +14,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       "add",
     ];
 
-    _.forEach(mods, function (mod) {
-      var operationName = mod.op;
-      var isOrderedOperation = _.includes(orderedOperations, operationName);
+    _.forEach(mods, (mod) => {
+      const operationName = mod.op;
+      const isOrderedOperation = _.includes(orderedOperations, operationName);
 
       if (!operationsContainer[operationName] && isOrderedOperation) {
         operationsContainer[operationName] = [];
@@ -29,8 +29,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       }
     });
 
-    var orderedMods = [];
-    _.forEach(orderedOperations, function (operation) {
+    let orderedMods = [];
+    _.forEach(orderedOperations, (operation) => {
       if (operationsContainer[operation]) {
         orderedMods = orderedMods.concat(operationsContainer[operation]);
       }
@@ -50,29 +50,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     // key-by-key, which is what `events` and `audio` want.
   }
 
-  var flattenBaseSpecs = function (spec, specs, tag) {
-    var visited = {};
+  const flattenBaseSpecs = (spec, specs, tag) => {
+    const visited = {};
 
     function resolve(spec) {
       if (!Object.prototype.hasOwnProperty.call(spec, "base_spec")) {
         return _.cloneDeep(spec);
       }
 
-      var baseKey = spec.base_spec + tag;
-      var base = specs[baseKey];
+      let baseKey = spec.base_spec + tag;
+      let base = specs[baseKey];
       if (!base) {
         baseKey = spec.base_spec;
         base = specs[baseKey];
         if (!base) {
           console.warn(
-            'flattenBaseSpecs: base_spec "' +
-              spec.base_spec +
-              '" not found in specs (checked "' +
-              spec.base_spec +
-              tag +
-              '" and "' +
-              spec.base_spec +
-              '") - dropping base_spec reference and returning spec as-is.'
+            `flattenBaseSpecs: base_spec "${spec.base_spec}" not found in specs (checked "${spec.base_spec}${tag}" and "${spec.base_spec}") - dropping base_spec reference and returning spec as-is.`
           );
           return _.cloneDeep(_.omit(spec, "base_spec"));
         }
@@ -80,16 +73,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
       if (visited[baseKey]) {
         console.warn(
-          'flattenBaseSpecs: circular base_spec reference detected at "' +
-            baseKey +
-            '" - stopping inheritance here.'
+          `flattenBaseSpecs: circular base_spec reference detected at "${baseKey}" - stopping inheritance here.`
         );
         return _.cloneDeep(_.omit(spec, "base_spec"));
       }
       visited[baseKey] = true;
 
-      var specCopy = _.omit(spec, "base_spec");
-      var flattenedSpec = resolve(base);
+      const specCopy = _.omit(spec, "base_spec");
+      const flattenedSpec = resolve(base);
 
       // No cloneDeep needed: _.merge does not mutate its arguments, and
       // replaceArrays clones every array it returns.
@@ -116,9 +107,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       return;
     }
     // JSON serialisation drops undefined values, so only a surviving one counts.
-    var hasSerialisableValue = _.some(spec.navigation, function (value) {
-      return value !== undefined;
-    });
+    const hasSerialisableValue = _.some(
+      spec.navigation,
+      (value) => value !== undefined
+    );
     if (!hasSerialisableValue) {
       delete spec.navigation;
     }
@@ -126,15 +118,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   return {
     mod: function (specs, mods, specTag) {
-      var load = function (specId) {
-        var taggedId = specId;
+      const load = (specId) => {
+        let taggedId = specId;
         if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
           taggedId = specId + specTag;
           if (!Object.prototype.hasOwnProperty.call(specs, taggedId)) {
             return;
           }
         }
-        var result = specs[taggedId];
+        let result = specs[taggedId];
         if (
           result &&
           Object.prototype.hasOwnProperty.call(result, "base_spec")
@@ -144,7 +136,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         return result;
       };
 
-      var ops = {
+      const ops = {
         multiply: function (attribute, value) {
           if (!_.isNumber(attribute)) {
             console.warn(
@@ -200,7 +192,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return new Function("attribute", value)(attribute);
         },
         clone: function (attribute, value) {
-          var loaded = _.isString(attribute) ? load(attribute) : attribute;
+          let loaded = _.isString(attribute) ? load(attribute) : attribute;
           if (loaded) {
             loaded = _.cloneDeep(loaded);
           }
@@ -216,7 +208,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             );
             return attribute;
           }
-          var jsonIndex = attribute.lastIndexOf(".json");
+          const jsonIndex = attribute.lastIndexOf(".json");
           if (jsonIndex === -1) {
             console.warn(
               "tag: attribute does not contain '.json'. Leaving unchanged:",
@@ -227,14 +219,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           // Rewrites the suffix rather than appending one. The op ordering
           // leaves no `replace` between two cards' `tag`s on a shared path,
           // so the second sees a value the first already tagged. See specs.md.
-          var cleanAttribute = attribute.slice(0, jsonIndex + 5);
+          const cleanAttribute = attribute.slice(0, jsonIndex + 5);
           return cleanAttribute + specTag;
         },
         pull: function (attribute, value) {
           if (!_.isArray(attribute)) {
             attribute = isNullish(attribute) ? [] : [attribute];
           }
-          var args = [attribute, value];
+          let args = [attribute, value];
           if (_.isArray(value)) {
             args = [attribute].concat(value);
           }
@@ -278,13 +270,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
       // Ops that mutate in place or write to `specs`. Every other op only returns
       // a value, so a pathless mod for it is a no-op. See specs.md.
-      var opsWithoutPath = {
+      const opsWithoutPath = {
         eval: true,
         clone: true,
       };
 
-      var applyMod = function (mod) {
-        var spec = load(mod.file);
+      const applyMod = (mod) => {
+        let spec = load(mod.file);
         if (!spec) {
           return console.warn("Warning: File not found in mod", mod);
         }
@@ -294,12 +286,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
         // Captured before the path walk reassigns `spec` to a nested container.
         // pruneEmptyNavigation needs the file's top-level spec.
-        var rootSpec = spec;
+        const rootSpec = spec;
 
-        var originalPath = (mod.path || "").split(".");
-        var path = originalPath.slice().reverse();
+        const originalPath = (mod.path || "").split(".");
+        const path = originalPath.slice().reverse();
 
-        var reportError = function (error, step) {
+        const reportError = (error, step) => {
           console.error(
             error,
             spec[step],
@@ -314,7 +306,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
         // Not cloned: opDefaults is fresh per applyMod call, and only the leaf
         // reads it, so two spec locations can never alias one object.
-        var opDefaults = {
+        const opDefaults = {
           push: [],
           pull: [],
           merge: {}, // merge's own check treats {} as a valid empty base
@@ -322,11 +314,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
         // A missing intermediate segment needs a traversable container: an
         // array when the next segment indexes into it, otherwise a plain object.
-        var traversableFor = function (nextSegment) {
-          return isIndexLike(nextSegment) ? [] : {};
-        };
+        const traversableFor = (nextSegment) =>
+          isIndexLike(nextSegment) ? [] : {};
 
-        var cookArrayStep = function (step, op) {
+        const cookArrayStep = (step, op) => {
           if (step === "+") {
             spec.push({});
             return spec.length - 1;
@@ -343,7 +334,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return step;
         };
 
-        var cookObjectStep = function (step, op) {
+        const cookObjectStep = (step, op) => {
           if (
             !path.length ||
             Object.prototype.hasOwnProperty.call(spec, step)
@@ -363,17 +354,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return step;
         };
 
-        var cookStep = function (step, op) {
-          return _.isArray(spec)
-            ? cookArrayStep(step, op)
-            : cookObjectStep(step, op);
-        };
+        const cookStep = (step, op) =>
+          _.isArray(spec) ? cookArrayStep(step, op) : cookObjectStep(step, op);
 
         while (path.length > 1) {
-          var level = cookStep(path.pop());
+          const level = cookStep(path.pop());
 
           if (_.isString(spec[level])) {
-            var newSpec = load(spec[level]);
+            const newSpec = load(spec[level]);
             if (!newSpec) {
               reportError("Undefined mod spec encountered,", level);
               return;
@@ -388,15 +376,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
 
         if (path.length && path[0]) {
-          var leaf = cookStep(path[0], mod.op);
+          const leaf = cookStep(path[0], mod.op);
           spec[leaf] = ops[mod.op](spec[leaf], mod.value);
         } else if (opsWithoutPath[mod.op]) {
           ops[mod.op](spec, mod.value);
         } else {
           console.error(
-            "Invalid mod: op '" +
-              mod.op +
-              "' requires a path, but none was given",
+            `Invalid mod: op '${mod.op}' requires a path, but none was given`,
             mod
           );
         }
@@ -406,8 +392,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
       };
 
-      var orderedMods = orderOfOperations(mods);
-      _.forEach(orderedMods, function (mod) {
+      const orderedMods = orderOfOperations(mods);
+      _.forEach(orderedMods, (mod) => {
         try {
           applyMod(mod);
         } catch (e) {

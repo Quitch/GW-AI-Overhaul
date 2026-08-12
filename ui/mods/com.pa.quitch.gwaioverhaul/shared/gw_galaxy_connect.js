@@ -8,12 +8,12 @@
 // and an isolated origin makes the war unplayable.
 //
 // A measured sibling of the shadowed gw_galaxy.js - see testing.md.
-define(function () {
+define(() => {
   // Graph.getConnections() is sparse: a star in no edge has no entry at all.
-  var isolatedStars = function (starCount, connections) {
-    var isolated = [];
-    for (var i = 0; i < starCount; i++) {
-      var links = connections[i];
+  const isolatedStars = (starCount, connections) => {
+    const isolated = [];
+    for (let i = 0; i < starCount; i++) {
+      const links = connections[i];
       if (!links || links.length === 0) {
         isolated.push(i);
       }
@@ -21,26 +21,23 @@ define(function () {
     return isolated;
   };
 
-  var edgeKey = function (edge) {
-    return edge[0] < edge[1]
-      ? edge[0] + "." + edge[1]
-      : edge[1] + "." + edge[0];
-  };
+  const edgeKey = (edge) =>
+    edge[0] < edge[1] ? `${edge[0]}.${edge[1]}` : `${edge[1]}.${edge[0]}`;
 
   // An isolated star's incident Delaunay edges are exactly the hull edges the
   // strip removed, so restoring them reconnects both its hull neighbours.
-  var reconnectingEdges = function (starCount, delaunayEdges, connections) {
-    var isolated = isolatedStars(starCount, connections);
-    var restored = [];
-    var added = {};
+  const reconnectingEdges = (starCount, delaunayEdges, connections) => {
+    const isolated = isolatedStars(starCount, connections);
+    const restored = [];
+    const added = {};
 
-    for (var star of isolated) {
-      for (var edge of delaunayEdges) {
+    for (const star of isolated) {
+      for (const edge of delaunayEdges) {
         if (edge[0] !== star && edge[1] !== star) {
           continue;
         }
         // Two isolated stars can share a hull edge; only restore it once.
-        var key = edgeKey(edge);
+        const key = edgeKey(edge);
         if (added[key]) {
           continue;
         }
@@ -53,7 +50,7 @@ define(function () {
   };
 
   return {
-    isolatedStars: isolatedStars,
-    reconnectingEdges: reconnectingEdges,
+    isolatedStars,
+    reconnectingEdges,
   };
 });

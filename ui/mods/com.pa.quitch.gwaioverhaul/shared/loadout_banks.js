@@ -10,37 +10,36 @@
 // the result is module state: AMD modules are singletons per page, so a caller
 // that resolves early makes the banks available to every later reader without
 // each one having to thread them through.
-define(function () {
-  var resolved = [];
+define(() => {
+  let resolved = [];
 
-  var entries = function () {
-    return _.isArray(model.gwoLoadoutBanks) ? model.gwoLoadoutBanks : [];
-  };
+  const entries = () =>
+    _.isArray(model.gwoLoadoutBanks) ? model.gwoLoadoutBanks : [];
 
-  var paths = function () {
-    return _.uniq(
-      _.filter(_.map(entries(), "path"), function (path) {
-        return _.isString(path) && path.length > 0;
-      })
+  const paths = () =>
+    _.uniq(
+      _.filter(
+        _.map(entries(), "path"),
+        (path) => _.isString(path) && path.length > 0
+      )
     );
-  };
 
   return {
-    paths: paths,
+    paths,
 
     // modules are what requireGW(paths()) handed back, in the same order. A path
     // that failed to load arrives undefined and is dropped rather than throwing:
     // one broken mod must not take out the loadout list.
     resolve: function (modules) {
-      var byPath = _.zipObject(paths(), modules || []);
+      const byPath = _.zipObject(paths(), modules || []);
 
       resolved = _.filter(
-        _.map(entries(), function (entry) {
-          var bank = entry && byPath[entry.path];
+        _.map(entries(), (entry) => {
+          const bank = entry && byPath[entry.path];
           if (!bank || !_.isFunction(bank.hasStartCard)) {
             return undefined;
           }
-          return { prefix: entry.prefix, bank: bank };
+          return { prefix: entry.prefix, bank };
         })
       );
 
@@ -52,32 +51,28 @@ define(function () {
     },
 
     hasStartCard: function (card) {
-      return _.some(resolved, function (entry) {
-        return entry.bank.hasStartCard(card);
-      });
+      return _.some(resolved, (entry) => entry.bank.hasStartCard(card));
     },
 
     // Which mod owns this id, by the prefix it registered. Used to write an
     // unlock back to the mod that shipped the loadout rather than to gwaio_bank.
     bankFor: function (id) {
-      var match = _.find(resolved, function (entry) {
-        return (
+      const match = _.find(
+        resolved,
+        (entry) =>
           _.isString(entry.prefix) &&
           _.isString(id) &&
           id.indexOf(entry.prefix) === 0
-        );
-      });
+      );
 
       return match ? match.bank : undefined;
     },
 
     startCards: function () {
       return _.flatten(
-        _.map(resolved, function (entry) {
-          return _.isFunction(entry.bank.startCards)
-            ? entry.bank.startCards()
-            : [];
-        })
+        _.map(resolved, (entry) =>
+          _.isFunction(entry.bank.startCards) ? entry.bank.startCards() : []
+        )
       );
     },
   };

@@ -1,12 +1,12 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
-], function (favouriteLoadouts) {
+], (favouriteLoadouts) => {
   // gwaio_-prefixed so this survives mod updates/uninstalls without colliding
   // with base-game or other mods' localStorage keys (see shared/bank.js).
-  var LS_KEY = "gwaio_favourite_loadouts";
-  var self;
+  const LS_KEY = "gwaio_favourite_loadouts";
+  let self;
 
-  var gwoFavourites = function () {
+  const gwoFavourites = function () {
     self = this;
     self.ids = ko.observableArray().extend({ local: LS_KEY });
   };

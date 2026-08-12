@@ -3,12 +3,11 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
-], function (GW, gwoBank, gwoLoadoutIds, gwoLoadoutBanks) {
-  var asCards = function (ids) {
-    return _.map(ids, function (id) {
-      return { id: id };
-    });
-  };
+], (GW, gwoBank, gwoLoadoutIds, gwoLoadoutBanks) => {
+  const asCards = (ids) =>
+    _.map(ids, (id) => ({
+      id,
+    }));
 
   // global for modder compatibility - New-GW-Cards pushes here
   model.gwoNewStartCards = _.isArray(model.gwoNewStartCards)
@@ -26,8 +25,8 @@ define([
     model.gwoStartingCards,
     asCards(gwoLoadoutIds.starting)
   );
-  var lockedBaseCards = asCards(gwoLoadoutIds.lockedBase);
-  var allCards = model.gwoStartingCards.concat(
+  const lockedBaseCards = asCards(gwoLoadoutIds.lockedBase);
+  const allCards = model.gwoStartingCards.concat(
     lockedBaseCards,
     model.gwoNewStartCards
   );
@@ -35,8 +34,8 @@ define([
   // requireGW that may not have finished when this module's factory runs. Called
   // after gwoLoadoutBanks.resolve(), it sees every bank; called before, it falls
   // back to the two banks GWO ships and no mod loadout shows as unlocked.
-  var startCards = function () {
-    return _.map(allCards, function (cardData) {
+  const startCards = () =>
+    _.map(allCards, (cardData) => {
       if (
         _.includes(model.gwoStartingCards, cardData) ||
         GW.bank.hasStartCard(cardData) ||
@@ -48,11 +47,10 @@ define([
         return model.makeUnknown(cardData);
       }
     });
-  };
 
   return {
-    startCards: startCards,
-    allCards: allCards,
-    lockedBaseCards: lockedBaseCards,
+    startCards,
+    allCards,
+    lockedBaseCards,
   };
 });

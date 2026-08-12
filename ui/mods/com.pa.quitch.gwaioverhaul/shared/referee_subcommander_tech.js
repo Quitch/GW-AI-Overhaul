@@ -1,5 +1,5 @@
-define(function () {
-  var applySubcommanderTacticsTech = function (personality, cards) {
+define(() => {
+  const applySubcommanderTacticsTech = (personality, cards) => {
     if (_.some(cards, { id: "gwaio_upgrade_subcommander_tactics" })) {
       personality.micro_type = 2;
       personality.go_for_the_kill = true;
@@ -11,7 +11,7 @@ define(function () {
     return personality;
   };
 
-  var applySubcommanderFabberTech = function (personality, cards) {
+  const applySubcommanderFabberTech = (personality, cards) => {
     if (_.some(cards, { id: "gwaio_upgrade_subcommander_fabber" })) {
       personality.max_basic_fabbers = Math.round(
         personality.max_basic_fabbers * 1.5
@@ -23,7 +23,7 @@ define(function () {
     return personality;
   };
 
-  var applySubcommanderDuplicationTech = function (cards) {
+  const applySubcommanderDuplicationTech = (cards) => {
     if (
       _.some(cards, {
         id: "gwaio_upgrade_subcommander_duplication",
@@ -34,8 +34,8 @@ define(function () {
     return 1;
   };
 
-  var hasSmartSubcommanders = function (inventory) {
-    var cards = _.isFunction(inventory && inventory.cards)
+  const hasSmartSubcommanders = (inventory) => {
+    const cards = _.isFunction(inventory && inventory.cards)
       ? inventory.cards()
       : (inventory && inventory.cards) || [];
     return _.some(cards, {
@@ -44,9 +44,9 @@ define(function () {
   };
 
   return {
-    applySubcommanderTacticsTech: applySubcommanderTacticsTech,
-    applySubcommanderFabberTech: applySubcommanderFabberTech,
-    applySubcommanderDuplicationTech: applySubcommanderDuplicationTech,
-    hasSmartSubcommanders: hasSmartSubcommanders,
+    applySubcommanderTacticsTech,
+    applySubcommanderFabberTech,
+    applySubcommanderDuplicationTech,
+    hasSmartSubcommanders,
   };
 });

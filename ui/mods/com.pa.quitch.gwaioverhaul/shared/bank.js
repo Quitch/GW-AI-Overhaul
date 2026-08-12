@@ -1,30 +1,30 @@
 /* We want to write our start cards to a different localStorage key so that if
    the mod is uninstalled the gw_start loadout list isn't messed up by 404s */
-define(function () {
-  var LS_KEY = "gwaio_bank";
+define(() => {
+  const LS_KEY = "gwaio_bank";
 
-  var self;
+  let self;
 
-  var loading = false;
+  let loading = false;
 
-  var suspended = 0;
-  var suspendedStockBank;
-  var stockAddStartCard;
+  let suspended = 0;
+  let suspendedStockBank;
+  let stockAddStartCard;
 
-  var gwoBank = function () {
+  const gwoBank = function () {
     self = this;
 
     self.startCards = ko.observableArray();
-    self.startCards.subscribe(function (value) {
+    self.startCards.subscribe((value) => {
       self.save();
 
-      var unlocked = value.length;
+      const unlocked = value.length;
 
       if (!unlocked) {
         return;
       }
 
-      api.tally.getStatInt("gw_unlocked_loadouts").then(function (stat) {
+      api.tally.getStatInt("gw_unlocked_loadouts").then((stat) => {
         if (stat < unlocked) {
           api.tally.setStatInt("gw_unlocked_loadouts", unlocked);
         }
@@ -37,7 +37,7 @@ define(function () {
   gwoBank.prototype = {
     load: function () {
       loading = true;
-      var bankJson = localStorage[LS_KEY];
+      const bankJson = localStorage[LS_KEY];
       if (!_.isString(bankJson)) {
         self.startCards([]);
         loading = false;
@@ -47,7 +47,7 @@ define(function () {
       // This runs during AMD load, so an unreadable value would reject the module
       // and take down every gw_start module that requires bank.js - a corrupt
       // unlock list must degrade to an empty one, not to a broken scene.
-      var config;
+      let config;
       try {
         config = JSON.parse(bankJson);
       } catch (e) {
@@ -78,9 +78,7 @@ define(function () {
       }
       suspendedStockBank = stockBank;
       stockAddStartCard = stockBank.addStartCard;
-      stockBank.addStartCard = function () {
-        return false;
-      };
+      stockBank.addStartCard = () => false;
     },
 
     resumeUnlocks: function () {
@@ -105,9 +103,11 @@ define(function () {
       return true;
     },
     hasStartCard: function (card) {
-      return _.some(self.startCards(), function (element) {
-        return card === element || (_.isObject(card) && card.id === element.id);
-      });
+      return _.some(
+        self.startCards(),
+        (element) =>
+          card === element || (_.isObject(card) && card.id === element.id)
+      );
     },
   };
 

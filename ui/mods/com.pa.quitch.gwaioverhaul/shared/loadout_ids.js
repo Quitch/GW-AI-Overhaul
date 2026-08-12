@@ -1,7 +1,7 @@
 // The loadout card ids, in one place. loadouts.js cannot serve deal.js directly:
 // it touches model.makeKnown and GW.bank at load time, and gw_play has neither.
-define(function () {
-  var starting = [
+define(() => {
+  const starting = [
     "gwc_start_vehicle",
     "gwc_start_air",
     "gwc_start_orbital",
@@ -10,7 +10,7 @@ define(function () {
   ];
 
   // Base-game loadouts unlocked by winning a war with them.
-  var lockedBase = [
+  const lockedBase = [
     "gwc_start_artillery",
     "gwc_start_subcdr",
     "gwc_start_combatcdr",
@@ -19,7 +19,7 @@ define(function () {
   ];
 
   // Loadouts this mod adds, also unlocked by winning a war.
-  var unlockable = [
+  const unlockable = [
     "gwaio_start_ceo",
     "gwaio_start_paratrooper",
     "nem_start_deepspace",
@@ -39,9 +39,9 @@ define(function () {
   ];
 
   return {
-    starting: starting,
-    lockedBase: lockedBase,
-    unlockable: unlockable,
+    starting,
+    lockedBase,
+    unlockable,
     all: starting.concat(lockedBase, unlockable),
   };
 });
