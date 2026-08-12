@@ -176,10 +176,15 @@ Per stage close, in order:
 
 ### Stage 3 — can
 
-- [ ] `npm run verify` green at every commit
-- [ ] Rename rehearsal passes
-- [ ] `npm run test:coverage` floor holds
-- [ ] Converted async code's stock boundaries carry a comment naming the
+- [x] `npm run verify` green at every commit
+- [x] Rename rehearsal passes — 2026-08-12, 1,082 occurrences (the growth
+      over stage 2 is `gwo_fetch`'s own references), full verify green in the
+      rewritten copy. The rehearsal caught two test files whose own fixtures
+      the rewriter rewrites; both are now built to move with it.
+- [x] `npm run test:coverage` floor holds (96% lines; the functions metric
+      dipped locally because the card sweep introduced arrows in
+      Sonar-excluded files, which the quality gate does not measure)
+- [x] Converted async code's stock boundaries carry a comment naming the
       consumer that requires the `$.Deferred` (see "Deliberately still
       jQuery" below for what was not converted, and why)
 
