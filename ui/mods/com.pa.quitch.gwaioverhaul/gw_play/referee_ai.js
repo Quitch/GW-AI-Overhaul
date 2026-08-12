@@ -2,7 +2,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
-], function (gwoAI, refereeAIPaths, refereeCoop) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
+], function (gwoAI, refereeAIPaths, refereeCoop, gwoUrl) {
   // `json` is a parameter, not a closure capture, so this table is built once
   // at module load rather than per applyAiMods call.
   var aiModOps = {
@@ -525,7 +526,7 @@ define([
       // promise each time, so the stored request is not consumed.
       getJSON: function (filePath) {
         return cached(files, filePath, function (path) {
-          return $.getJSON("coui:/" + path);
+          return $.getJSON(gwoUrl.gameFile(path));
         }).then(function (json) {
           return _.cloneDeep(json);
         });

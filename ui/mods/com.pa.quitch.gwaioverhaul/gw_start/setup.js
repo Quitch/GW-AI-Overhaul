@@ -386,6 +386,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js",
         "main/game/galactic_war/shared/js/systems/template-loader",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
       ],
       function (
         GW,
@@ -407,7 +408,8 @@ function gwoSetup() {
         gwoSystemBrackets,
         gwoRng,
         gwoFactionSeed,
-        chooseStarSystemTemplates
+        chooseStarSystemTemplates,
+        gwoUrl
       ) {
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
         gwoFavourites = favouritesModule;
@@ -1299,10 +1301,11 @@ function gwoSetup() {
 
           var onGameSaved = function () {
             model.lastSceneUrl(
-              "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
+              gwoUrl.ui("ui/main/game/galactic_war/gw_start/gw_start.html")
             );
-            window.location.href =
-              "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
+            window.location.href = gwoUrl.ui(
+              "ui/main/game/galactic_war/gw_play/gw_play.html"
+            );
           };
 
           var onSetupFinished = function () {

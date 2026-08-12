@@ -1,6 +1,8 @@
 // The measured half of gw_play/referee_game_files.js. Nothing here may touch an
 // engine global at define time - see testing.md, "Coverage".
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
+], function (gwoUrl) {
   var getAIUnitMapPath = function (titans, aiInUse) {
     var append = titans ? "_x1.json" : ".json";
 
@@ -101,7 +103,7 @@ define(function () {
   var specFetch = function (item) {
     return new Promise(function (resolve, reject) {
       $.ajax({
-        url: "coui:/" + item,
+        url: gwoUrl.gameFile(item),
         success: function (data) {
           try {
             data = JSON.parse(data);
