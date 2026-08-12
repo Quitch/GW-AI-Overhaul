@@ -130,6 +130,7 @@ function assertCleanTree(repoRoot) {
   try {
     status = execFileSync("git", ["-C", repoRoot, "status", "--porcelain"], {
       encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
     });
   } catch {
     return;

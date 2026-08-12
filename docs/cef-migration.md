@@ -131,12 +131,15 @@ Per stage close, in order:
 1. `npm run test:coverage` — the 80% new-code floor holds locally before
    SonarCloud sees the push.
 2. **Rename rehearsal:** in a scratch copy of the repo, run the rewriter with
-   throwaway schemes (`--from coui:// --to rehearsal:// --from spec:// --to rehearsals://`
-   — the rewriter refuses a replacement that contains a searched scheme),
-   check the reported counts against the previous rehearsal, then run
-   `npm run verify` in the rewritten copy and discard it. This proves the "one
-   command later" remediation for A1/A2 end to end, including that the
-   harness and validators follow the constants.
+   equal-length throwaway schemes
+   (`--from coui:// --to couj:// --from spec:// --to sped://` — equal length so
+   the rewrite cannot move any line past Prettier's print width, and the
+   rewriter refuses a replacement that contains a searched scheme), check the
+   reported counts against the previous rehearsal, then run `npm run verify`
+   in the rewritten copy and discard it. This proves the "one command later"
+   remediation for A1/A2 end to end, including that the harness and
+   validators follow the constants. A real scheme of a different length just
+   means one repo-wide `format:write` after the real run.
 3. Stage-specific checks, recorded below.
 
 ### Stage 1 — must
