@@ -22,7 +22,7 @@ define(() => {
   ) => {
     if (
       !_.isNumber(pendingTechCards.star) ||
-      !_.isArray(pendingTechCards.cards)
+      !Array.isArray(pendingTechCards.cards)
     ) {
       return "invalid pending tech cards";
     }
@@ -114,7 +114,7 @@ define(() => {
       if (
         !pendingTechCards ||
         !_.isNumber(pendingTechCards.star) ||
-        !_.isArray(pendingTechCards.cards)
+        !Array.isArray(pendingTechCards.cards)
       ) {
         console.error("[GW COOP] invalid pending tech reroll result");
         model.scanning(false);
@@ -133,7 +133,7 @@ define(() => {
         return;
       }
 
-      const nextRecord = _.assign({}, _.cloneDeep(record), {
+      const nextRecord = Object.assign({}, _.cloneDeep(record), {
         pendingTechCards,
         updatedAt: payload.updated_at || _.now(),
       });
@@ -258,7 +258,7 @@ define(() => {
             rerollsUsed: nextRerollsUsed,
             updatedAt,
           };
-          const nextRecord = _.assign({}, _.cloneDeep(record), {
+          const nextRecord = Object.assign({}, _.cloneDeep(record), {
             pendingTechCards: nextPendingTechCards,
             updatedAt,
           });

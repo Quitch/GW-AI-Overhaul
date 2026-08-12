@@ -26,7 +26,7 @@ define([
           (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
           Object.prototype.hasOwnProperty.call(build, idToMod);
 
-        if (validMatch && _.isArray(build[idToMod])) {
+        if (validMatch && Array.isArray(build[idToMod])) {
           build[idToMod] = build[idToMod].concat(value);
         } else if (validMatch) {
           build[idToMod] += value;
@@ -36,7 +36,7 @@ define([
               const testMatches =
                 matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
               if (testMatches) {
-                if (_.isArray(test[idToMod])) {
+                if (Array.isArray(test[idToMod])) {
                   test[idToMod] = test[idToMod].concat(value);
                 } else if (test[idToMod]) {
                   test[idToMod] += value;
@@ -58,7 +58,7 @@ define([
     ) {
       // Separate from `value`: one descriptor can match both array and string
       // targets, so coercing the parameter in place corrupts the later ones.
-      const arrayValue = _.isArray(value) ? value : [value];
+      const arrayValue = Array.isArray(value) ? value : [value];
 
       _.forEach(json.build_list, (build) => {
         if (build.to_build !== toBuild) {
@@ -69,7 +69,7 @@ define([
           (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
           Object.prototype.hasOwnProperty.call(build, idToMod);
 
-        if (validMatch && _.isArray(build[idToMod])) {
+        if (validMatch && Array.isArray(build[idToMod])) {
           build[idToMod] = arrayValue.concat(build[idToMod]);
         } else if (validMatch) {
           build[idToMod] = value + build[idToMod];
@@ -79,7 +79,7 @@ define([
               const testMatches =
                 matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
               if (testMatches) {
-                if (_.isArray(test[idToMod])) {
+                if (Array.isArray(test[idToMod])) {
                   test[idToMod] = arrayValue.concat(test[idToMod]);
                 } else if (test[idToMod]) {
                   test[idToMod] = value + test[idToMod];
@@ -646,7 +646,7 @@ define([
     const promises = _.map(aiPathsToProcess, (aiPath) =>
       processDirectories(
         aiPath,
-        _.assign({}, launch, {
+        Object.assign({}, launch, {
           inventory: playerAiModInventory,
           scopeToken: undefined,
           forceSubCommanderScope: false,
@@ -665,14 +665,14 @@ define([
         );
         const viewerSubCommanderDestination =
           gwoAI.getSubcommanderPathForViewer(viewerInventory, viewerPlayerTag);
-        const viewerAiPaths = _.assign({}, aiPaths, {
+        const viewerAiPaths = Object.assign({}, aiPaths, {
           subCommanderDestination: viewerSubCommanderDestination,
         });
 
         promises.push(
           processDirectories(
             aiPaths.subCommanderSource,
-            _.assign({}, launch, {
+            Object.assign({}, launch, {
               aiPaths: viewerAiPaths,
               inventory: viewerInventory,
               scopeToken: viewerScopeToken,

@@ -253,7 +253,7 @@ function gwoSetup() {
       ];
       // global for modder compatibility - merge in any modder-added ids.
       // GWO never creates this one, so the mod's loader has to
-      if (_.isArray(model.gwoStarCardsWhichBreakAllies)) {
+      if (Array.isArray(model.gwoStarCardsWhichBreakAllies)) {
         gwoStarCardsWhichBreakAllies = gwoStarCardsWhichBreakAllies.concat(
           model.gwoStarCardsWhichBreakAllies
         );
@@ -271,7 +271,7 @@ function gwoSetup() {
 
       const ffa = ["ffa", "platoon"];
 
-      if (_.isArray(ais)) {
+      if (Array.isArray(ais)) {
         _.forEach(ais, (ai) => {
           ai.personality.personality_tags =
             ai.personality.personality_tags.concat(ffa);
@@ -732,7 +732,7 @@ function gwoSetup() {
                 team.remainingMinions = gwoAI.quellerCompatibleMinions(
                   team.remainingMinions
                 );
-                team.faction = _.assign({}, team.faction, {
+                team.faction = Object.assign({}, team.faction, {
                   minions: gwoAI.quellerCompatibleMinions(team.faction.minions),
                 });
               });

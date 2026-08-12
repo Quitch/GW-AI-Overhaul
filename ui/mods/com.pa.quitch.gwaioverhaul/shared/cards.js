@@ -4,7 +4,7 @@
 define(() => {
   const getConnectedClients = () =>
     _.isFunction(model.gwCampaignConnectedClients) &&
-    _.isArray(model.gwCampaignConnectedClients())
+    Array.isArray(model.gwCampaignConnectedClients())
       ? model.gwCampaignConnectedClients()
       : [];
 
@@ -116,7 +116,7 @@ define(() => {
       let icon;
       let hardcore = false;
 
-      if (_.isArray(decoded)) {
+      if (Array.isArray(decoded)) {
         icon = decoded[0];
         hardcore = decoded[1];
       } else {
@@ -308,7 +308,7 @@ define(() => {
           return;
         }
 
-        if (data.inventory && _.isArray(data.inventory.cards)) {
+        if (data.inventory && Array.isArray(data.inventory.cards)) {
           allCards = allCards.concat(data.inventory.cards);
         }
       });
@@ -335,7 +335,7 @@ define(() => {
 
           return (
             data.inventory &&
-            _.isArray(data.inventory.cards) &&
+            Array.isArray(data.inventory.cards) &&
             _.some(data.inventory.cards, { id: cardId })
           );
         })

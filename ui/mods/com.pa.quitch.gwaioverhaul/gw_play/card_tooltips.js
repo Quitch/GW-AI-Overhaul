@@ -46,12 +46,14 @@ function gwoCardTooltips() {
 
         // global for modder compatibility - New-GW-Cards pushes here
         const cards = gwoCardsToUnits.cards;
-        model.gwoCardsToUnits = _.isArray(model.gwoCardsToUnits)
+        model.gwoCardsToUnits = Array.isArray(model.gwoCardsToUnits)
           ? model.gwoCardsToUnits
           : [];
         Array.prototype.push.apply(model.gwoCardsToUnits, cards);
         // global for modder compatibility - New-GW-Cards pushes here
-        model.gwoCardsWithoutTooltip = _.isArray(model.gwoCardsWithoutTooltip)
+        model.gwoCardsWithoutTooltip = Array.isArray(
+          model.gwoCardsWithoutTooltip
+        )
           ? model.gwoCardsWithoutTooltip
           : [];
         model.gwoCardsWithoutTooltip.push(

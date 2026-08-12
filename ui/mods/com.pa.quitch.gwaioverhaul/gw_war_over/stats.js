@@ -19,7 +19,7 @@ function gwoRecordHighestDifficultyDefeated() {
     }
 
     const getPreviousBest = (defeatedDifficulties) =>
-      _.isArray(defeatedDifficulties)
+      Array.isArray(defeatedDifficulties)
         ? defeatedDifficulties[0]
         : defeatedDifficulties;
 

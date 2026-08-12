@@ -1,5 +1,5 @@
 define(() => {
-  const normalizeIds = (ids) => (_.isArray(ids) ? ids : []);
+  const normalizeIds = (ids) => (Array.isArray(ids) ? ids : []);
 
   const isFavourite = (ids, id) => !!id && _.includes(normalizeIds(ids), id);
 

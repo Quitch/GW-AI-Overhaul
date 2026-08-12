@@ -71,6 +71,17 @@ Lodash also captures `nativeRandom = Math.random` at load, so reseeding
 `Math.random` cannot make `_.sample`/`_.shuffle`/`_.random` deterministic -
 war generation draws from `shared/gwo_rng.js` instead.
 
+Mod-owned code prefers native forms only where they are true drop-ins -
+`Array.isArray`, `Object.assign` onto a literal target, `[0]`/`.slice(1)`,
+`.some` with an explicit callback. The rest of the lodash surface stays
+deliberately: `_.forEach`/`_.map`/`_.includes`/`_.keys` tolerate a null
+collection and iterate plain objects where the native forms throw or don't
+exist, `_.cloneDeep` clones structures that hold functions
+(`structuredClone` throws on them, and cards hold functions), and
+`_.random`/`_.sortBy`/`_.sample`/`_.shuffle` carry the semantics documented
+above. Converting one of those is a per-site null-safety review, not a
+rename.
+
 jQuery 2.x has a trap that has bitten this repo more than once: **it does not
 convert a `throw` inside a deferred callback into a rejection.** A `TypeError`
 there escapes `.fail()` entirely - no retry, no console line, and the caller

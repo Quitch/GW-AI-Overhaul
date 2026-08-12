@@ -31,7 +31,7 @@ define([
       if (!requested[cardId]) {
         requested[cardId] = true;
         requireGW([`cards/${cardId}`], (card) => {
-          const next = _.assign({}, names());
+          const next = Object.assign({}, names());
           next[cardId] =
             card && _.isFunction(card.summarize) ? loc(card.summarize()) : "";
           names(next);

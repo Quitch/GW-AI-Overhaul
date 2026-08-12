@@ -49,7 +49,7 @@ function gwoSystemChanges() {
       }
 
       result.color = ko.observable(params.color);
-      if (_.isArray(result.color())) {
+      if (Array.isArray(result.color())) {
         if (params.noCache) {
           throw new Error("noCache incompatible with color");
         }

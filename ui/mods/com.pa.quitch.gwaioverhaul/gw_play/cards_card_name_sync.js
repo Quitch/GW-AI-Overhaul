@@ -25,7 +25,7 @@ define(() => {
       model.galaxy && _.isFunction(model.galaxy.systems)
         ? model.galaxy.systems()
         : undefined;
-    const system = _.isArray(systems) ? systems[starIndex] : undefined;
+    const system = Array.isArray(systems) ? systems[starIndex] : undefined;
     if (system && system.star) {
       applied = setAiCardName(system.star, cardName) || applied;
     }
@@ -36,7 +36,7 @@ define(() => {
       gameGalaxy && _.isFunction(gameGalaxy.stars)
         ? gameGalaxy.stars()
         : undefined;
-    const gameStar = _.isArray(stars) ? stars[starIndex] : undefined;
+    const gameStar = Array.isArray(stars) ? stars[starIndex] : undefined;
     applied = setAiCardName(gameStar, cardName) || applied;
 
     return applied;

@@ -106,10 +106,10 @@ define(() => {
         return result.promise();
       }
 
-      const connectedClients = _.isArray(model.gwCampaignConnectedClients())
+      const connectedClients = Array.isArray(model.gwCampaignConnectedClients())
         ? model.gwCampaignConnectedClients()
         : [];
-      const sourceClients = _.isArray(dealOptions.clients)
+      const sourceClients = Array.isArray(dealOptions.clients)
         ? dealOptions.clients
         : connectedClients;
       const viewers = _.filter(

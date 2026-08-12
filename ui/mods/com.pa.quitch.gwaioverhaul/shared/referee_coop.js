@@ -61,11 +61,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
     _.forEach(
       getConnectedViewerInventories(game, connectedClients),
       (viewer) => {
-        if (!_.isArray(viewer.inventory.minions)) {
+        if (!Array.isArray(viewer.inventory.minions)) {
           return;
         }
 
-        const viewerCards = _.isArray(viewer.inventory.cards)
+        const viewerCards = Array.isArray(viewer.inventory.cards)
           ? viewer.inventory.cards
           : [];
 
@@ -88,7 +88,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
   // The order gw_lobby.js's startGame() hands out the split armies: host first,
   // then join order. The UI list identifies the host by role, not creator id.
   const clientsInPlayerOrder = (connectedClients) => {
-    if (!_.isArray(connectedClients)) {
+    if (!Array.isArray(connectedClients)) {
       return [];
     }
 

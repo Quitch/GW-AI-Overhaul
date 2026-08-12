@@ -51,7 +51,7 @@ define(() => {
       }
 
       this.startCards(
-        config && _.isArray(config.startCards) ? config.startCards : []
+        config && Array.isArray(config.startCards) ? config.startCards : []
       );
       loading = false;
     }

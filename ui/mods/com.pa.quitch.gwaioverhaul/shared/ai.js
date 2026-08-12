@@ -97,7 +97,7 @@ define([
       if (guardians) {
         return false;
       }
-      return _.isArray(ai.faction) // was an array before v5.44.0
+      return Array.isArray(ai.faction) // was an array before v5.44.0
         ? Number.parseInt(ai.faction[0]) === 4
         : ai.faction === 4;
     },

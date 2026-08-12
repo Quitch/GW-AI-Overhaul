@@ -41,7 +41,7 @@ define(() => {
       return !!(
         pending &&
         _.isNumber(pending.star) &&
-        _.isArray(pending.cards)
+        Array.isArray(pending.cards)
       );
     });
 

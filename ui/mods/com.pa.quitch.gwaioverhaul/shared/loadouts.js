@@ -10,7 +10,7 @@ define([
     }));
 
   // global for modder compatibility - New-GW-Cards pushes here
-  model.gwoNewStartCards = _.isArray(model.gwoNewStartCards)
+  model.gwoNewStartCards = Array.isArray(model.gwoNewStartCards)
     ? model.gwoNewStartCards
     : [];
   Array.prototype.push.apply(
@@ -18,7 +18,7 @@ define([
     asCards(gwoLoadoutIds.unlockable)
   );
   // global for modder compatibility - New-GW-Cards pushes here
-  model.gwoStartingCards = _.isArray(model.gwoStartingCards)
+  model.gwoStartingCards = Array.isArray(model.gwoStartingCards)
     ? model.gwoStartingCards
     : [];
   Array.prototype.push.apply(

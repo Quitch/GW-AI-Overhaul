@@ -6,7 +6,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"], (
   const COMBAT_TECH = 6;
   const multiply = (units, multiplier, paths) => {
     const outputArray = [];
-    if (!_.isArray(paths)) {
+    if (!Array.isArray(paths)) {
       paths = [paths];
     }
     _.forEach(paths, (path) => {

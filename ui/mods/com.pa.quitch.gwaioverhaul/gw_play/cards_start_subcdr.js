@@ -21,7 +21,7 @@ define([
 
     const inventoryNeedsGeneralCommanderSetup = (cards) =>
       !!(
-        _.isArray(cards) &&
+        Array.isArray(cards) &&
         cards.length === 1 &&
         cards[0] &&
         cards[0].id === "gwc_start_subcdr" &&
@@ -30,12 +30,12 @@ define([
 
     const resolveFactionMinions = (factionIndex) => {
       const chosenFaction = GWFactions[factionIndex];
-      if (chosenFaction && _.isArray(chosenFaction.minions)) {
+      if (chosenFaction && Array.isArray(chosenFaction.minions)) {
         return chosenFaction.minions;
       }
 
       const fallbackFaction = GWFactions[playerFaction];
-      return fallbackFaction && _.isArray(fallbackFaction.minions)
+      return fallbackFaction && Array.isArray(fallbackFaction.minions)
         ? fallbackFaction.minions
         : [];
     };
@@ -200,7 +200,7 @@ define([
 
       recordInventory = _.cloneDeep(record.inventory);
       cards = recordInventory && recordInventory.cards;
-      if (!_.isArray(cards)) {
+      if (!Array.isArray(cards)) {
         failSetup("invalid co-op player inventory");
         return result.promise();
       }
@@ -229,7 +229,7 @@ define([
       playerInventory.load(recordInventory);
 
       finish = () => {
-        const nextRecord = _.assign({}, _.cloneDeep(record), {
+        const nextRecord = Object.assign({}, _.cloneDeep(record), {
           inventory: playerInventory.save(),
           updatedAt: _.now(),
         });

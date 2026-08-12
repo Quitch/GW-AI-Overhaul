@@ -99,7 +99,7 @@ function gwoUI() {
       const settingNames = _.keys(settings);
       _.pull(settingNames, "previousSettings");
 
-      if (_.isArray(previousSettings)) {
+      if (Array.isArray(previousSettings)) {
         if (previousSettings.length !== settingNames.length) {
           console.warn(
             `gwoUI: previousSettings is a legacy array of length ${previousSettings.length} but there are now ${settingNames.length} settings; skipping restore to avoid misassigning values.`

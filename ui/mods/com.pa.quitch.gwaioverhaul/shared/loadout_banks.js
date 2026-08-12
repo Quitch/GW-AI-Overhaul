@@ -14,7 +14,7 @@ define(() => {
   let resolved = [];
 
   const entries = () =>
-    _.isArray(model.gwoLoadoutBanks) ? model.gwoLoadoutBanks : [];
+    Array.isArray(model.gwoLoadoutBanks) ? model.gwoLoadoutBanks : [];
 
   const paths = () =>
     _.uniq(

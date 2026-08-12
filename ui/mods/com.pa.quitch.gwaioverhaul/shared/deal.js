@@ -218,7 +218,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js"], (
       "gwc_energy_efficiency_weapons",
     ];
     // global for modder compatibility - New-GW-Cards pushes here
-    model.gwoCards = _.isArray(model.gwoCards) ? model.gwoCards : [];
+    model.gwoCards = Array.isArray(model.gwoCards) ? model.gwoCards : [];
 
     // Deduplicated because setupGwoDeck indexes by position: a modder id that
     // collides with a shipped one would otherwise leave a hole in the deck.

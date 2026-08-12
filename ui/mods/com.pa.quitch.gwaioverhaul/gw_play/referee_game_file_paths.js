@@ -80,7 +80,7 @@ define([
           )
         : {};
     } else {
-      playerFilesClassic = _.assign({}, playerSpecFiles);
+      playerFilesClassic = Object.assign({}, playerSpecFiles);
       playerFilesClassic[
         `${hostSubcommanderPath}unit_maps/ai_unit_map.json.player`
       ] = playerAIUnitMap;
@@ -92,7 +92,7 @@ define([
       }
     }
 
-    const playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
+    const playerFiles = Object.assign({}, playerFilesClassic, playerFilesX1);
     gwoSpecs.mod(playerFiles, inventory.mods(), ".player");
     return playerFiles;
   };

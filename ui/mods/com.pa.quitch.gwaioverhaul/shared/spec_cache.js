@@ -31,7 +31,7 @@ define(() => {
         if (typeof obj[key] === "string") {
           moreWork.push(obj[key]);
           obj[key] = obj[key] + tag;
-        } else if (_.isArray(obj[key])) {
+        } else if (Array.isArray(obj[key])) {
           obj[key] = _.map(obj[key], (value) => {
             moreWork.push(value);
             return value + tag;

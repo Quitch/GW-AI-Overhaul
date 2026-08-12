@@ -83,7 +83,7 @@ define([
       const aiFilesX1 = titans
         ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
         : {};
-      const aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
+      const aiFiles = Object.assign({}, aiFilesClassic, aiFilesX1);
 
       if (ai.inventory) {
         let aiInventory =
@@ -104,7 +104,7 @@ define([
 
   // Files not assigned by default that we wish to mod - global for modder
   // compatibility, New-GW-Cards pushes here - see docs/tech-cards.md
-  model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
+  model.gwoSpecs = Array.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
   model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);
 
   return function () {

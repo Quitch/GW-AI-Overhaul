@@ -35,7 +35,7 @@ define(() => ({
     testRun,
     systemCards
   ) {
-    const cardsInSystem = _.isArray(systemCards) ? systemCards : [];
+    const cardsInSystem = Array.isArray(systemCards) ? systemCards : [];
     const systemHasCard = _.some(cardsInSystem, (systemCard) => {
       if (!systemCard) {
         return false;
@@ -121,7 +121,7 @@ define(() => ({
   pendingCardsContainLoadout: function (pendingTechCards) {
     return !!(
       pendingTechCards &&
-      _.isArray(pendingTechCards.cards) &&
+      Array.isArray(pendingTechCards.cards) &&
       pendingTechCards.cards.length &&
       _.includes(pendingTechCards.cards[0].id, "_start_")
     );

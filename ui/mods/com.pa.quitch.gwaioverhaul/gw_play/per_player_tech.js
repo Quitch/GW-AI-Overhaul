@@ -4,13 +4,13 @@ define(() => {
   const armyHasAI = (army) =>
     !!(
       army &&
-      _.isArray(army.slots) &&
+      Array.isArray(army.slots) &&
       army.slots.some((slot) => slot && slot.ai)
     );
 
   const getConnectedPlayerCount = (options) => {
     const connectedClients = options && options.connectedClients;
-    if (_.isArray(connectedClients) && connectedClients.length) {
+    if (Array.isArray(connectedClients) && connectedClients.length) {
       return connectedClients.length;
     }
 
@@ -151,7 +151,7 @@ define(() => {
   const validateTechOptions = (referee, options) => {
     const config = referee && _.isFunction(referee.config) && referee.config();
 
-    if (!config || !_.isArray(config.armies)) {
+    if (!config || !Array.isArray(config.armies)) {
       return {
         ok: false,
         resolveValue: false,
@@ -263,7 +263,7 @@ define(() => {
     }
 
     const playerColor = inventory.getTag("global", "playerColor");
-    if (!_.isArray(playerColor) || playerColor.length < 2) {
+    if (!Array.isArray(playerColor) || playerColor.length < 2) {
       return failAfterConfig(
         "[GW COOP] Per-player tech referee has no player color."
       );

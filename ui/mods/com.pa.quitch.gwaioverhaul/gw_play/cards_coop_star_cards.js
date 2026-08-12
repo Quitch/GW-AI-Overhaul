@@ -28,7 +28,7 @@ define(() => {
 
   const buildStarCardsField = (existing, updates, turn) => ({
     turn,
-    cards: _.assign({}, existing, updates),
+    cards: Object.assign({}, existing, updates),
   });
 
   const starNeedsViewerCard = (params) => {
@@ -100,7 +100,7 @@ define(() => {
     let refreshPending;
 
     const connectedViewers = () => {
-      const clients = _.isArray(model.gwCampaignConnectedClients())
+      const clients = Array.isArray(model.gwCampaignConnectedClients())
         ? model.gwCampaignConnectedClients()
         : [];
 
@@ -238,7 +238,7 @@ define(() => {
           }
 
           return game.upsertCoopPlayerInventoryData(
-            _.assign({}, _.cloneDeep(fresh), {
+            Object.assign({}, _.cloneDeep(fresh), {
               gwaioStarCards: next,
               updatedAt: _.now(),
             })

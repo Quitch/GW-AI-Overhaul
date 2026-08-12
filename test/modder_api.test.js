@@ -64,11 +64,15 @@ describe("the modder globals are adopted, not overwritten", () => {
   for (const [name, file] of GLOBALS) {
     it(`${name} is guarded in ${path.basename(file)}`, () => {
       // Whitespace-tolerant: Prettier wraps the longer names across lines.
-      const guard = new RegExp("_\\.isArray\\(\\s*model\\." + name + "\\s*\\)");
+      // Either spelling counts - shadowed files keep lodash, mod files are
+      // native.
+      const guard = new RegExp(
+        "(?:Array|_)\\.isArray\\(\\s*model\\." + name + "\\s*\\)"
+      );
       assert.match(
         source(file),
         guard,
-        `${file} must keep its _.isArray guard on model.${name} - a bare ` +
+        `${file} must keep its isArray guard on model.${name} - a bare ` +
           "assignment would discard whatever a mod registered before GWO ran"
       );
     });
@@ -80,7 +84,7 @@ describe("the modder globals are adopted, not overwritten", () => {
   it("gwoStarCardsWhichBreakAllies is read from the mod's own array", () => {
     assert.match(
       source(MOD_ROOT + "/gw_start/setup.js"),
-      /_\.isArray\(\s*model\.gwoStarCardsWhichBreakAllies\s*\)/
+      /(?:Array|_)\.isArray\(\s*model\.gwoStarCardsWhichBreakAllies\s*\)/
     );
   });
 });

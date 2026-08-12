@@ -20,7 +20,7 @@ function gwoCard() {
 
     // Used by cards checking for T2 access - global for modders,
     // New-GW-Cards pushes here - see docs/tech-cards.md
-    model.gwoCardsGrantingAdvancedTech = _.isArray(
+    model.gwoCardsGrantingAdvancedTech = Array.isArray(
       model.gwoCardsGrantingAdvancedTech
     )
       ? model.gwoCardsGrantingAdvancedTech
@@ -708,7 +708,7 @@ function gwoCard() {
               explorationLive &&
               force !== true &&
               (ok || startLoadoutCards.length) &&
-              _.isArray(star.cardList()) &&
+              Array.isArray(star.cardList()) &&
               star.cardList().length &&
               game &&
               _.isFunction(game.recordHostTechCardDeal)

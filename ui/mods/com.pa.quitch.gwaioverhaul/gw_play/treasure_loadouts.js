@@ -15,10 +15,10 @@ define([
   // The base game records only ids beginning "gwc_start", so every mod loadout a
   // player owns reaches us through gwaioUnlockedStartCardIds instead.
   const unlockedIds = (record) => {
-    const base = _.isArray(record && record.unlockedStartCardIds)
+    const base = Array.isArray(record && record.unlockedStartCardIds)
       ? record.unlockedStartCardIds
       : [];
-    const gwaio = _.isArray(record && record.gwaioUnlockedStartCardIds)
+    const gwaio = Array.isArray(record && record.gwaioUnlockedStartCardIds)
       ? record.gwaioUnlockedStartCardIds
       : [];
 
@@ -92,7 +92,7 @@ define([
   // is a fresh page, so this holds only what the mod's own gw_play loader pushed -
   // shared/loadouts.js, which adds GWO's unlockable list, runs in gw_start.
   const modLoadoutIds = () => {
-    const registered = _.isArray(model.gwoNewStartCards)
+    const registered = Array.isArray(model.gwoNewStartCards)
       ? model.gwoNewStartCards
       : [];
 
@@ -145,7 +145,7 @@ define([
   // standing.
   const anyPlayerCanUnlockLoadout = (params) => {
     const pool = params.pool || treasureLoadoutPool();
-    const localIds = _.isArray(params.localUnlockedIds)
+    const localIds = Array.isArray(params.localUnlockedIds)
       ? params.localUnlockedIds
       : [];
 
@@ -181,7 +181,7 @@ define([
   const applyReportedLoadouts = (game, operator) => {
     const payload = (operator && operator.payload) || {};
     const ids = _.filter(
-      _.isArray(payload.unlocked_start_card_ids)
+      Array.isArray(payload.unlocked_start_card_ids)
         ? payload.unlocked_start_card_ids
         : [],
       (id) => helpers.isStartLoadoutCardId(id)
@@ -203,7 +203,7 @@ define([
     }
 
     const stored = game.upsertCoopPlayerInventoryData(
-      _.assign({}, _.cloneDeep(record), {
+      Object.assign({}, _.cloneDeep(record), {
         gwaioUnlockedStartCardIds: ids,
         updatedAt: _.now(),
       })

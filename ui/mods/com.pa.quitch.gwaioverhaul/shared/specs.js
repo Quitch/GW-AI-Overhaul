@@ -43,7 +43,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   // Spec arrays are complete lists, so a derived array replaces the base's
   // outright. _.merge would splice them index-by-index. See specs.md.
   function replaceArrays(destVal, srcVal) {
-    if (_.isArray(srcVal)) {
+    if (Array.isArray(srcVal)) {
       return _.cloneDeep(srcVal);
     }
     // Undefined falls through to _.merge's default, so objects still merge
@@ -174,13 +174,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
             );
             return attribute;
           }
-          return _.assign({}, attribute, value);
+          return Object.assign({}, attribute, value);
         },
         push: function (attribute, value) {
-          if (!_.isArray(attribute)) {
+          if (!Array.isArray(attribute)) {
             attribute = isNullish(attribute) ? [] : [attribute];
           }
-          if (_.isArray(value)) {
+          if (Array.isArray(value)) {
             attribute = attribute.concat(value);
           } else {
             attribute.push(value);
@@ -223,11 +223,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
           return cleanAttribute + specTag;
         },
         pull: function (attribute, value) {
-          if (!_.isArray(attribute)) {
+          if (!Array.isArray(attribute)) {
             attribute = isNullish(attribute) ? [] : [attribute];
           }
           let args = [attribute, value];
-          if (_.isArray(value)) {
+          if (Array.isArray(value)) {
             args = [attribute].concat(value);
           }
           return _.pull.apply(null, args);
@@ -239,7 +239,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
           if (!_.isString(attribute)) {
             attribute = isNullish(attribute) ? "" : attribute.toString();
           }
-          if (!_.isArray(value)) {
+          if (!Array.isArray(value)) {
             value = [value, ""];
           }
           return attribute.split(value[0]).join(value[1]);
@@ -247,10 +247,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
         // GWO addition, the counterpart to the base game's append. Order matters for
         // buildable_types and build lists, where the engine takes the first match.
         prepend: function (attribute, value) {
-          if (!_.isArray(attribute)) {
+          if (!Array.isArray(attribute)) {
             attribute = isNullish(attribute) ? [] : [attribute];
           }
-          if (_.isArray(value)) {
+          if (Array.isArray(value)) {
             return value.concat(attribute);
           }
           attribute.unshift(value);
@@ -355,7 +355,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
         };
 
         const cookStep = (step, op) =>
-          _.isArray(spec) ? cookArrayStep(step, op) : cookObjectStep(step, op);
+          Array.isArray(spec)
+            ? cookArrayStep(step, op)
+            : cookObjectStep(step, op);
 
         while (path.length > 1) {
           const level = cookStep(path.pop());
