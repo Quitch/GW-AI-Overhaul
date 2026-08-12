@@ -1,22 +1,22 @@
-define(function () {
+define(() => {
   // These values are the same across all factions.
   // They're overridden by difficulty levels but are used by subcommanders.
-  var microType = 0;
-  var goForTheKill = false;
-  var neuralDataMod = 1;
-  var personality_tags = [
+  const microType = 0;
+  const goForTheKill = false;
+  const neuralDataMod = 1;
+  const personality_tags = [
     "Default",
     "GWAlly",
     "SlowerExpansion",
     "queller",
     "GalacticWar",
   ];
-  var priorityScoutMetalSpots = false;
-  var factoryBuildDelayMin = 0;
-  var factoryBuildDelayMax = 0;
-  var unableToExpandDelay = 0;
-  var enableCommanderDangerResponses = false;
-  var perExpansionDelay = 0;
+  const priorityScoutMetalSpots = false;
+  const factoryBuildDelayMin = 0;
+  const factoryBuildDelayMax = 0;
+  const unableToExpandDelay = 0;
+  const enableCommanderDangerResponses = false;
+  const perExpansionDelay = 0;
 
   return {
     legonisMachina: {
@@ -32,7 +32,7 @@ define(function () {
       micro_type: microType,
       go_for_the_kill: goForTheKill,
       neural_data_mod: neuralDataMod,
-      personality_tags: personality_tags,
+      personality_tags,
       adv_eco_mod: 1,
       adv_eco_mod_alone: 0.85,
       priority_scout_metal_spots: priorityScoutMetalSpots,
@@ -104,7 +104,7 @@ define(function () {
       micro_type: microType,
       go_for_the_kill: goForTheKill,
       neural_data_mod: neuralDataMod,
-      personality_tags: personality_tags,
+      personality_tags,
       adv_eco_mod: 1.3,
       adv_eco_mod_alone: 0.85,
       priority_scout_metal_spots: priorityScoutMetalSpots,
@@ -175,7 +175,7 @@ define(function () {
       micro_type: microType,
       go_for_the_kill: goForTheKill,
       neural_data_mod: neuralDataMod,
-      personality_tags: personality_tags,
+      personality_tags,
       adv_eco_mod: 1.3,
       adv_eco_mod_alone: 0.85,
       priority_scout_metal_spots: priorityScoutMetalSpots,
@@ -243,7 +243,7 @@ define(function () {
       micro_type: microType,
       go_for_the_kill: goForTheKill,
       neural_data_mod: neuralDataMod,
-      personality_tags: personality_tags,
+      personality_tags,
       adv_eco_mod: 1.3,
       adv_eco_mod_alone: 0.85,
       priority_scout_metal_spots: priorityScoutMetalSpots,
@@ -310,7 +310,7 @@ define(function () {
       micro_type: microType,
       go_for_the_kill: goForTheKill,
       neural_data_mod: neuralDataMod,
-      personality_tags: personality_tags,
+      personality_tags,
       adv_eco_mod: 1.5,
       adv_eco_mod_alone: 0.85,
       priority_scout_metal_spots: priorityScoutMetalSpots,

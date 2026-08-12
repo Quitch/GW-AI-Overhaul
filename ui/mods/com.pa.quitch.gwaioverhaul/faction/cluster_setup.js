@@ -1,8 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (inventory, gwoUnit) {
-  var clusterSubCommanderTech = [
+], (inventory, gwoUnit) => {
+  const clusterSubCommanderTech = [
     {
       file: gwoUnit.colonel,
       path: "tools.0.spec_id",
@@ -99,7 +99,7 @@ define([
       ],
     },
   ];
-  _.forEach(inventory.clusterSubCommanders, function (commander) {
+  _.forEach(inventory.clusterSubCommanders, (commander) => {
     // match with key Commander stats
     clusterSubCommanderTech.push(
       {

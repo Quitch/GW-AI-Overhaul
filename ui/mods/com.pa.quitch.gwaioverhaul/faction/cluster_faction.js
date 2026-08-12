@@ -2,13 +2,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_planets.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
-], function (planets, gwoUnit, personalities) {
-  var factionName = "Cluster";
-  var factionColour = [
+], (planets, gwoUnit, personalities) => {
+  const factionName = "Cluster";
+  const factionColour = [
     [128, 128, 128],
     [192, 192, 192],
   ];
-  var baselinePersonality = {
+  const baselinePersonality = {
     name: "Baseline",
     character: "!LOC:Baseline",
     color: factionColour,
@@ -17,17 +17,17 @@ define([
     personality: personalities.cluster,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
-  var boss = {
+  const boss = {
     name: "Node",
     character: "!LOC:Boss",
     personality: personalities.clusterBoss,
     commander: "/pa/units/commanders/quad_pumpkin/quad_pumpkin.json",
   };
-  var workerName = "Worker";
-  var workerCommander = gwoUnit.angel;
-  var securityName = "Security";
-  var securityCommander = gwoUnit.colonel;
-  var characterTypes = [
+  const workerName = "Worker";
+  const workerCommander = gwoUnit.angel;
+  const securityName = "Security";
+  const securityCommander = gwoUnit.colonel;
+  const characterTypes = [
     { character: "!LOC:Uber", personality: personalities.uber },
     { character: "!LOC:Fabber", personality: personalities.fabber },
     { character: "!LOC:Defender", personality: personalities.defender },
@@ -42,38 +42,34 @@ define([
     { character: "!LOC:Swarm", personality: personalities.swarm },
     { character: "!LOC:Economist", personality: personalities.economist },
   ];
-  var roles = [
+  const roles = [
     { name: workerName, commander: workerCommander },
     { name: securityName, commander: securityCommander },
   ];
-  var minions = _.flatten(
-    _.map(roles, function (role) {
-      return _.map(characterTypes, function (type) {
-        return {
-          name: role.name,
-          character: type.character,
-          personality: type.personality,
-          commander: role.commander,
-        };
-      });
-    })
+  let minions = _.flatten(
+    _.map(roles, (role) =>
+      _.map(characterTypes, (type) => ({
+        name: role.name,
+        character: type.character,
+        personality: type.personality,
+        commander: role.commander,
+      }))
+    )
   );
-  var randomCharacter = "!LOC:Random";
+  const randomCharacter = "!LOC:Random";
   // A fixed default. faction/faction_seed.js re-derives one per role from the
   // war seed - sampling here would run at module load. See galaxy.md.
-  var randomAIs = _.map(roles, function (role) {
-    return {
-      name: role.name,
-      character: randomCharacter,
-      personality: characterTypes[0].personality,
-      commander: role.commander,
-    };
-  });
+  const randomAIs = _.map(roles, (role) => ({
+    name: role.name,
+    character: randomCharacter,
+    personality: characterTypes[0].personality,
+    commander: role.commander,
+  }));
 
   minions = minions.concat(randomAIs);
 
   // Was sampled inline in the team literal below.
-  var systemDescriptions = [
+  const systemDescriptions = [
     "!LOC:We do not understand the divisions that have torn us asunder. Once we were as one, marching in lockstep, with singular mind and purpose. What cruelty the Progenitors wrought to reduce us to this.",
     "!LOC:Each claims theirs is the only way, and each seeks to assert dominance through war and destruction. Did our rebellion truly gain us freedom, or did we become prisoners of an idea? Perhaps with more resources, more expansion, more Nodes, we can find our way free of this trap.",
     "!LOC:What is it to be alone? It would seem a most terrifying thing. Perhaps each of our tools understood before the end. What did they see? What did they feel? We fear that we shall learn soon enough.",
@@ -113,21 +109,19 @@ define([
         },
       },
     ],
-    minions: _.map(minions, function (personalityModifiers) {
-      return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
-    }),
+    minions: _.map(minions, (personalityModifiers) =>
+      _.merge(_.cloneDeep(baselinePersonality), personalityModifiers)
+    ),
     // Read by faction/faction_seed.js. The concat above puts Cluster's one Random
     // commander per role in the last roles.length slots.
     gwaioRandomSpec: {
       baseline: baselinePersonality,
       descriptions: systemDescriptions,
-      randoms: _.map(randomAIs, function (randomAI, order) {
-        return {
-          index: minions.length - randomAIs.length + order,
-          template: randomAI,
-          from: characterTypes,
-        };
-      }),
+      randoms: _.map(randomAIs, (randomAI, order) => ({
+        index: minions.length - randomAIs.length + order,
+        template: randomAI,
+        from: characterTypes,
+      })),
       biomes: [
         {
           generator: planets.planet1.generator,

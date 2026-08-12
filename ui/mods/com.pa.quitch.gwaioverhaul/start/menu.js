@@ -8,8 +8,8 @@ function gwoStartMenu() {
   gwoStartMenuLoaded = true;
 
   try {
-    var $gwNav = $("#nav-gw");
-    var htmlFile =
+    let $gwNav = $("#nav-gw");
+    let htmlFile =
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu_old.html";
 
     if (!$gwNav.length) {
@@ -19,7 +19,7 @@ function gwoStartMenu() {
       htmlFile = "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.html";
     }
 
-    var $replacement = $(loadHtml(htmlFile));
+    const $replacement = $(loadHtml(htmlFile));
 
     if ($gwNav.length) {
       $gwNav.replaceWith($replacement);
@@ -27,9 +27,7 @@ function gwoStartMenu() {
     }
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoStartMenu();

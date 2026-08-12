@@ -8,8 +8,8 @@ function gwoLoadouts() {
   gwoLoadoutsLoaded = true;
 
   try {
-    var validateStartingInventory = function (savedInventory, loadoutCardId) {
-      var cards = savedInventory.cards || [];
+    const validateStartingInventory = (savedInventory, loadoutCardId) => {
+      const cards = savedInventory.cards || [];
       if (
         !cards.length ||
         cards[0].id !== loadoutCardId ||
@@ -17,12 +17,7 @@ function gwoLoadouts() {
         savedInventory.maxCards <= cards.length
       ) {
         console.error(
-          "[GW COOP] Co-op loadout inventory did not produce empty tech banks loadout=" +
-            loadoutCardId +
-            " maxCards=" +
-            savedInventory.maxCards +
-            " cards=" +
-            JSON.stringify(cards)
+          `[GW COOP] Co-op loadout inventory did not produce empty tech banks loadout=${loadoutCardId} maxCards=${savedInventory.maxCards} cards=${JSON.stringify(cards)}`
         );
         return false;
       }
@@ -30,9 +25,9 @@ function gwoLoadouts() {
       return true;
     };
 
-    var buildGlobalTags = function (commander, playerFaction) {
-      var globalTags = {
-        commander: commander,
+    const buildGlobalTags = (commander, playerFaction) => {
+      const globalTags = {
+        commander,
       };
 
       if (_.isNumber(playerFaction)) {
@@ -42,7 +37,7 @@ function gwoLoadouts() {
       return globalTags;
     };
 
-    var dealStartingCard = function (
+    const dealStartingCard = (
       gwoDeal,
       loaded,
       loadedCards,
@@ -50,27 +45,26 @@ function gwoLoadouts() {
       dealInventory,
       galaxy,
       star
-    ) {
-      return gwoDeal.dealCard(
+    ) =>
+      gwoDeal.dealCard(
         {
           id: loadoutCardId,
           inventory: dealInventory,
-          galaxy: galaxy,
-          star: star,
+          galaxy,
+          star,
         },
         loaded,
         loadedCards
       );
-    };
 
-    var applyStartingInventory = function (
+    const applyStartingInventory = (
       GWInventory,
       loadoutCardId,
       globalTags,
       startCardProduct,
       result
-    ) {
-      var inventory = new GWInventory();
+    ) => {
+      const inventory = new GWInventory();
 
       inventory.load({
         cards: [startCardProduct || { id: loadoutCardId }],
@@ -79,8 +73,8 @@ function gwoLoadouts() {
         },
       });
 
-      inventory.applyCards(function () {
-        var savedInventory = inventory.save();
+      inventory.applyCards(() => {
+        const savedInventory = inventory.save();
         if (!validateStartingInventory(savedInventory, loadoutCardId)) {
           result.reject(
             "Co-op loadout inventory did not produce empty tech banks."
@@ -100,7 +94,7 @@ function gwoLoadouts() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
       ],
-      function (GW, loadouts, GWInventory, gwoDeal, gwoLoadoutBanks) {
+      (GW, loadouts, GWInventory, gwoDeal, gwoLoadoutBanks) => {
         // A viewer picking their own loadout must see the mod ones they have
         // unlocked, so the banks are resolved before the list is built.
         requireGW(gwoLoadoutBanks.paths(), function () {
@@ -110,18 +104,18 @@ function gwoLoadouts() {
 
         model.gwoCards = gwoDeal.setupGwoCards();
 
-        var cards = [];
-        var deck = [];
-        var numberOfCards = model.gwoCards.length;
-        var loaded = $.Deferred();
+        const cards = [];
+        const deck = [];
+        const numberOfCards = model.gwoCards.length;
+        const loaded = $.Deferred();
 
         gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
 
         // This scene's view model has no player faction, but Cluster start cards
         // read global.playerFaction, so resolve it from the campaign game.
-        var resolvePlayerFaction = function () {
-          var deferred = $.Deferred();
-          var activeGameId = _.isFunction(model.activeGameId)
+        const resolvePlayerFaction = () => {
+          const deferred = $.Deferred();
+          const activeGameId = _.isFunction(model.activeGameId)
             ? model.activeGameId()
             : undefined;
 
@@ -131,19 +125,19 @@ function gwoLoadouts() {
           }
 
           GW.manifest.loadGame(activeGameId).then(
-            function (game) {
-              var gameInventory =
+            (game) => {
+              const gameInventory =
                 game && _.isFunction(game.inventory)
                   ? game.inventory()
                   : undefined;
-              var playerFaction =
+              const playerFaction =
                 gameInventory && _.isFunction(gameInventory.getTag)
                   ? gameInventory.getTag("global", "playerFaction")
                   : undefined;
 
               deferred.resolve(playerFaction);
             },
-            function () {
+            () => {
               deferred.resolve(undefined);
             }
           );
@@ -151,16 +145,16 @@ function gwoLoadouts() {
           return deferred.promise();
         };
 
-        model.buildStartingInventory = function (
+        model.buildStartingInventory = (
           loadoutCardId,
           commander,
           galaxy,
           star
-        ) {
-          var result = $.Deferred();
-          resolvePlayerFaction().then(function (playerFaction) {
-            var dealInventory = new GWInventory();
-            var globalTags = buildGlobalTags(commander, playerFaction);
+        ) => {
+          const result = $.Deferred();
+          resolvePlayerFaction().then((playerFaction) => {
+            const dealInventory = new GWInventory();
+            const globalTags = buildGlobalTags(commander, playerFaction);
 
             dealInventory.setTag("global", "commander", commander);
             if (_.isNumber(playerFaction)) {
@@ -176,7 +170,7 @@ function gwoLoadouts() {
               galaxy,
               star
             ).then(
-              function (startCardProduct) {
+              (startCardProduct) => {
                 applyStartingInventory(
                   GWInventory,
                   loadoutCardId,
@@ -185,7 +179,7 @@ function gwoLoadouts() {
                   result
                 );
               },
-              function (err) {
+              (err) => {
                 result.reject(err);
               }
             );
@@ -197,9 +191,7 @@ function gwoLoadouts() {
     );
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoLoadouts();

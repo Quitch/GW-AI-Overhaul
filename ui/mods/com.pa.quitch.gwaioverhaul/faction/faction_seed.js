@@ -1,14 +1,14 @@
 // Re-derives the random parts of a faction from the war seed. The measured
 // sibling of the shadowed gw_faction_*.js files - see galaxy.md and shadowing.md.
-define(function () {
-  var reseedFaction = function (faction, rng) {
-    var spec = faction && faction.gwaioRandomSpec;
+define(() => {
+  const reseedFaction = (faction, rng) => {
+    const spec = faction && faction.gwaioRandomSpec;
     if (!spec || !rng) {
       return;
     }
 
-    _.forEach(spec.randoms, function (random, order) {
-      var source = rng.stream("minion", order).pick(random.from);
+    _.forEach(spec.randoms, (random, order) => {
+      const source = rng.stream("minion", order).pick(random.from);
       // An empty pool keeps the default the faction file shipped.
       if (!source || !faction.minions) {
         return;
@@ -30,25 +30,25 @@ define(function () {
 
     // Cluster only: its boss planets are isExplicit, so template-loader returns
     // them verbatim and the biome written here is the one used.
-    _.forEach(spec.biomes, function (entry, order) {
-      var biome = rng.stream("biome", order).pick(entry.from);
+    _.forEach(spec.biomes, (entry, order) => {
+      const biome = rng.stream("biome", order).pick(entry.from);
       if (biome && entry.generator) {
         entry.generator.biome = biome;
       }
     });
   };
 
-  var reseed = function (factions, rng) {
+  const reseed = (factions, rng) => {
     if (!rng) {
       return;
     }
-    _.forEach(factions, function (faction, index) {
+    _.forEach(factions, (faction, index) => {
       reseedFaction(faction, rng.stream("faction", index));
     });
   };
 
   return {
-    reseedFaction: reseedFaction,
-    reseed: reseed,
+    reseedFaction,
+    reseed,
   };
 });

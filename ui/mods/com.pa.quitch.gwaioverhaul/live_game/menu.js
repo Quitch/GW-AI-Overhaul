@@ -8,45 +8,44 @@ function gwoLiveGameMenu() {
   gwoLiveGameMenuLoaded = true;
 
   try {
-    var getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
-      return boolean ? stringIfTrue : stringIfFalse;
-    };
+    const getMenuString = (boolean, stringIfTrue, stringIfFalse) =>
+      boolean ? stringIfTrue : stringIfFalse;
 
-    requireGW(["shared/gw_common"], function (GW) {
-      var activeGameId = ko.observable().extend({ local: "gw_active_game" });
-      var hardcore = ko.observable();
-      var tutorial = ko.observable(false);
+    requireGW(["shared/gw_common"], (GW) => {
+      const activeGameId = ko.observable().extend({ local: "gw_active_game" });
+      const hardcore = ko.observable();
+      const tutorial = ko.observable(false);
 
-      var gameLoader = GW.manifest.loadGame(activeGameId());
-      gameLoader.then(function (game) {
+      const gameLoader = GW.manifest.loadGame(activeGameId());
+      gameLoader.then((game) => {
         hardcore(game.hardcore());
         tutorial(game.isTutorial());
       });
 
       // Write into the existing observable, never replace it: live_game.js's
       // menuConfig computed subscribed to the original.
-      model.menuConfigGenerator(function () {
-        var overString = getMenuString(
+      model.menuConfigGenerator(() => {
+        const overString = getMenuString(
           tutorial(),
           "!LOC:Continue Tutorial",
           "!LOC:Continue War"
         );
-        var exitString = getMenuString(
+        const exitString = getMenuString(
           hardcore(),
           "!LOC:Abandon War",
           "!LOC:Surrender"
         );
 
-        var getMenuAction = function (boolean) {
+        const getMenuAction = (boolean) => {
           if (boolean) {
             return "menuReturnToWar";
           }
           return getMenuString(hardcore(), "menuAbandonWar", "menuSurrender");
         };
 
-        var playerLost = model.gameOver() || model.defeated();
+        const playerLost = model.gameOver() || model.defeated();
 
-        var menu = [
+        const menu = [
           {
             label: "!LOC:Pause Game",
             action: "menuPauseGame",
@@ -90,13 +89,11 @@ function gwoLiveGameMenu() {
           });
         }
 
-        var translatedMenu = _.map(menu, function (entry) {
-          return {
-            label: loc(entry.label),
-            action: entry.action,
-            game_over: loc(entry.game_over),
-          };
-        });
+        const translatedMenu = _.map(menu, (entry) => ({
+          label: loc(entry.label),
+          action: entry.action,
+          game_over: loc(entry.game_over),
+        }));
         api.Panel.message("", "menu_config", translatedMenu);
 
         return translatedMenu;
@@ -104,9 +101,7 @@ function gwoLiveGameMenu() {
     });
   } catch (e) {
     console.error(e);
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }
 gwoLiveGameMenu();
