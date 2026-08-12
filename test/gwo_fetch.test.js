@@ -33,10 +33,13 @@ describe("gwo_fetch", () => {
   });
 
   it("rejects a non-ok response with status and url", async () => {
+    // One string for request and assertion, so a scheme rewrite of test/**
+    // moves both together.
+    const url = "coui://pa/missing.json";
     stubFetch({ ok: false, status: 404 });
     await assert.rejects(
-      gwoFetch.json("coui://pa/missing.json"),
-      /404.*coui:\/\/pa\/missing\.json/
+      gwoFetch.json(url),
+      (err) => err.message.includes("404") && err.message.includes(url)
     );
   });
 });
