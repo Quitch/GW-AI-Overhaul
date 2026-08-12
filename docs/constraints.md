@@ -1,5 +1,10 @@
 # Runtime constraints
 
+> **This branch targets the CEF runtime** (Chromium 151). This page still
+> describes the shipping Chrome 40 engine and is rewritten in stage 2 of the
+> migration — until then it remains the answer for the `cef-stage1-baseline`
+> live checks. See [cef-migration.md](cef-migration.md).
+
 PA renders its UI with Coherent UI, which embeds **Chrome 40**. Shipped code has
 to run there, unbundled and untranspiled. This page is the answer to "may I use
 X?".

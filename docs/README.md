@@ -8,6 +8,10 @@ repo's [README](../README.md); for how to submit a change, see
 
 ## Start here
 
+This branch prepares GWO for PA's move from Coherent UI to the Chrome Embedded
+Framework: [cef-migration.md](cef-migration.md) holds the assumptions it is
+built on, the scheme strategy, and the migration test plan.
+
 If you are new to the codebase, read in this order:
 
 1. **[constraints.md](constraints.md)** — the runtime is Chrome 40. Read this
