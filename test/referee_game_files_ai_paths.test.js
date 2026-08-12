@@ -207,56 +207,55 @@ describe("buildPlayerFiles", () => {
 });
 
 describe("specFetch", () => {
-  // Drives specFetch with a fake $.ajax that invokes success/error synchronously, so we
-  // can pin its parse-on-success, parse-fallback, and reject-on-error behaviour without
-  // a real network/game runtime.
-  function withAjax(handler, run) {
-    const had = Object.prototype.hasOwnProperty.call(global, "$");
-    const previous = global.$;
-    global.$ = { ajax: handler };
+  // Drives specFetch with a fake global fetch, so we can pin its
+  // parse-on-success, parse-fallback, and reject-on-error behaviour without a
+  // real network/game runtime.
+  function withFetch(handler, run) {
+    const had = Object.prototype.hasOwnProperty.call(global, "fetch");
+    const previous = global.fetch;
+    global.fetch = handler;
     return Promise.resolve()
       .then(run)
       .finally(() => {
         if (had) {
-          global.$ = previous;
+          global.fetch = previous;
         } else {
-          delete global.$;
+          delete global.fetch;
         }
       });
   }
 
+  const okBody = (body) => () =>
+    Promise.resolve({ ok: true, text: () => Promise.resolve(body) });
+
   it("parses a JSON response body and resolves the object", () => {
-    return withAjax(
-      (opts) => opts.success('{ "a": 1 }'),
-      () =>
-        refereeGameFiles.specFetch("/pa/units/x.json").then((data) => {
-          assert.deepEqual(data, { a: 1 });
-        })
+    return withFetch(okBody('{ "a": 1 }'), () =>
+      refereeGameFiles.specFetch("/pa/units/x.json").then((data) => {
+        assert.deepEqual(data, { a: 1 });
+      })
     );
   });
 
   it("resolves the raw body when it is not valid JSON (mirrors base behaviour)", () => {
-    return withAjax(
-      (opts) => opts.success("not json"),
-      () =>
-        refereeGameFiles.specFetch("/pa/units/x.json").then((data) => {
-          assert.equal(data, "not json");
-        })
+    return withFetch(okBody("not json"), () =>
+      refereeGameFiles.specFetch("/pa/units/x.json").then((data) => {
+        assert.equal(data, "not json");
+      })
     );
   });
 
-  it("prefixes the request url with coui:/ and rejects on an ajax error", () => {
+  it("prefixes the request url with coui:/ and rejects on a failed response", () => {
     let requestedUrl;
-    return withAjax(
-      (opts) => {
-        requestedUrl = opts.url;
-        opts.error({}, "error", "boom");
+    return withFetch(
+      (url) => {
+        requestedUrl = url;
+        return Promise.resolve({ ok: false, status: 404 });
       },
       () =>
         refereeGameFiles.specFetch("/pa/units/x.json").then(
           () => assert.fail("expected specFetch to reject"),
           (err) => {
-            assert.equal(err, "boom");
+            assert.match(err.message, /404/);
             // "coui:/" + a leading-slash spec path yields a coui:// url.
             assert.equal(requestedUrl, "coui://pa/units/x.json");
           }

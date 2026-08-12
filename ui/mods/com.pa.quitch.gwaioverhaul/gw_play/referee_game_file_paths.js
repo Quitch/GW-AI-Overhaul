@@ -1,8 +1,9 @@
 // The measured half of gw_play/referee_game_files.js. Nothing here may touch an
 // engine global at define time - see testing.md, "Coverage".
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js"], (
-  gwoUrl
-) => {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_fetch.js",
+], (gwoUrl, gwoFetch) => {
   const getAIUnitMapPath = (titans, aiInUse) => {
     const append = titans ? "_x1.json" : ".json";
 
@@ -96,24 +97,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js"], (
     return playerFiles;
   };
 
-  // Mirrors the fetch, parse and error handling the base game's genUnitSpecs
-  // does internally.
+  // Mirrors the parse and error handling the base game's genUnitSpecs does
+  // internally.
   const specFetch = (item) =>
-    new Promise((resolve, reject) => {
-      $.ajax({
-        url: gwoUrl.gameFile(item),
-        success: function (data) {
-          try {
-            data = JSON.parse(data);
-          } catch (e) {
-            // Mirror base behaviour: keep whatever came back if it won't parse.
-          }
-          resolve(data);
-        },
-        error: function (request, status, error) {
-          reject(error);
-        },
-      });
+    gwoFetch.text(gwoUrl.gameFile(item)).then((data) => {
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        // Mirror base behaviour: keep whatever came back if it won't parse.
+        return data;
+      }
     });
 
   return {

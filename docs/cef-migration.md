@@ -179,8 +179,23 @@ Per stage close, in order:
 - [ ] `npm run verify` green at every commit
 - [ ] Rename rehearsal passes
 - [ ] `npm run test:coverage` floor holds
-- [ ] Every remaining `$.Deferred` site carries a comment naming the stock
-      consumer that requires it
+- [ ] Converted async code's stock boundaries carry a comment naming the
+      consumer that requires the `$.Deferred` (see "Deliberately still
+      jQuery" below for what was not converted, and why)
+
+## Deliberately still jQuery
+
+The referee pipeline and the spec transports moved to native promises and
+`gwo_fetch`. The cards/deal/co-op subsystem (`gw_play/cards*.js`,
+`shared/deal.js`, `gw_coop_per_player_loadout/`, `gw_play/victory.js`,
+`gw_start/setup.js`'s war generation) **stays on `$.Deferred`/`$.when`
+deliberately**: it is one interlocked promise graph with several stock
+touchpoints (`model.exitGate`, the deal invoked from stock `gw_play.js`,
+`$.when`'s argument-splat resolution shapes that several callbacks rely on),
+so a partial conversion breaks it and a full one cannot be runtime-verified
+until a CEF build exists. Converting it is a follow-up for after the live CEF
+test plan has run, with the boundary rule in
+[constraints.md](constraints.md) as the guide.
 
 ## Live CEF test plan
 
