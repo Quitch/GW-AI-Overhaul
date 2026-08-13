@@ -345,6 +345,13 @@ function gwoSystemChanges() {
         });
       };
 
+      var innerRingColour = function (ai) {
+        var occupant = ai && (ai.ally || _.first(ai.foes));
+        return occupant
+          ? normalizedColor(GWFactions[occupant.faction]).concat(7)
+          : undefined;
+      };
+
       game.defeatTeam = function (defeatedTeam) {
         var remainingBosses = 0;
 
@@ -386,23 +393,12 @@ function gwoSystemChanges() {
       };
 
       _.forEach(model.galaxy.systems(), function (system) {
-        var ai = system.star.ai();
-        if (!ai) {
-          return;
-        }
-
-        if (!ai.ally && !ai.foes) {
-          return;
-        }
-
-        var innerColour = ai.ally
-          ? normalizedColor(GWFactions[ai.ally.faction])
-          : normalizedColor(GWFactions[ai.foes[0].faction]);
-
+        // Every system gets a ring: Conquest rolls allies and foes turn by
+        // turn, and War's defeatTeam rewrites them, so load-time state is not final
         var innerRing = createBitmap({
           url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
           size: [240, 240],
-          color: innerColour.concat(7),
+          color: innerRingColour(system.star.ai()) || [1, 1, 1, 7],
           scale: 0.71,
           alpha: 0.8,
         });
@@ -414,8 +410,18 @@ function gwoSystemChanges() {
 
         innerRing.visible = false;
 
+        var ringColour = ko.computed(function () {
+          return innerRingColour(system.star.ai());
+        });
+        ringColour.subscribe(function (colour) {
+          if (colour) {
+            innerRing.color(colour);
+          }
+        });
+
         ko.computed(function () {
           innerRing.visible =
+            !!ringColour() &&
             (system.connected() || model.cheats.noFog()) &&
             !!system.ownerColor() &&
             system.ownerColor()[0] !== model.player.color()[0];
