@@ -1,0 +1,245 @@
+// The Galactic Conquest turn driver: runs the AI phase after every player
+// move, blocks input while it does, and carries the loss and elimination rules
+// a Conquest war changes. A factory in victory.js's style so the logic stays
+// measurable; gw_play/conquest.js instantiates it with the live scene objects.
+//
+// The phase runs on the host and on every co-op viewer alike: a viewer's
+// applyCampaignAction('move_to_star') calls model.move() itself, so the wrap
+// below fires there too and the deterministic planner reproduces the host's
+// phase locally. Only the host's save persists. It must not consult
+// gwCampaignReplayingAction, which is cleared before async work completes.
+// See docs/conquest.md.
+define([], function () {
+  var factory = function (params) {
+    var game = params.game;
+    var cfg = params.cfg;
+
+    var currentStarAi = function () {
+      return game.galaxy().stars()[game.currentStar()].ai();
+    };
+
+    var buildBoard = function () {
+      var galaxy = game.galaxy();
+      return {
+        turns: game.stats().turns(),
+        playerStar: game.currentStar(),
+        treasureStar: params.gwoSettings.treasureStar,
+        maxDist: cfg.maxDist,
+        neighbors: galaxy.neighborsMap(),
+        stars: _.map(galaxy.stars(), function (star) {
+          return {
+            // Cloned so the planner never mutates live state: a failed phase
+            // leaves the board untouched and the re-run reproduces it.
+            ai: star.ai() ? _.cloneDeep(star.ai()) : null,
+            explored: !!star.explored(),
+            visited: star.history().length > 0,
+          };
+        }),
+      };
+    };
+
+    var applyWrites = function (step) {
+      var stars = game.galaxy().stars();
+      _.forEach(step.writes || [], function (entry) {
+        stars[entry.star].ai(entry.ai === null ? undefined : entry.ai);
+      });
+      _.forEach(step.clearCards || [], function (starIndex) {
+        stars[starIndex].cardList([]);
+      });
+    };
+
+    var applySteps = function (steps, done) {
+      var next = function (index) {
+        if (index >= steps.length) {
+          done();
+          return;
+        }
+        var step = steps[index];
+        var proceed = function () {
+          applyWrites(step);
+          next(index + 1);
+        };
+        if (step.kind === "move" && params.animate) {
+          params.animate(step, proceed);
+        } else {
+          proceed();
+        }
+      };
+      next(0);
+    };
+
+    var announce = function (teams) {
+      if (teams.length && params.announce) {
+        params.announce(teams);
+      }
+    };
+
+    var phaseRunning = false;
+
+    // Runs the phase exactly once per turn: the marker persists with the save,
+    // so a battle's scene teardown or a crash mid-phase re-runs it from
+    // identical state - the planner is deterministic, so with an identical
+    // outcome. Doubles as the no-op path when move() rejected the click.
+    var runPhaseIfDue = function () {
+      var turns = game.stats().turns();
+      if (
+        phaseRunning ||
+        cfg.lastAiPhaseTurn >= turns ||
+        game.gameState() !== "active"
+      ) {
+        return undefined;
+      }
+      phaseRunning = true;
+      params.aiPhase(true);
+      var finished = $.Deferred();
+
+      var finish = function () {
+        params.aiPhase(false);
+        phaseRunning = false;
+        finished.resolve();
+      };
+
+      try {
+        var result = params.engine.planPhase(buildBoard(), {
+          warRng: params.warRng,
+          streams: params.streams,
+          builder: params.builder,
+          alliesSuppressed: params.alliesSuppressed,
+          cfg: cfg,
+        });
+        applySteps(result.steps, function () {
+          cfg.lastAiPhaseTurn = turns;
+          $.when(params.save(game, true)).always(function () {
+            announce(_.map(result.events, "team"));
+            finish();
+          });
+        });
+      } catch (error) {
+        console.error("Conquest AI phase failed");
+        console.error(error && (error.stack || error.message || error));
+        finish();
+      }
+      return finished;
+    };
+
+    // After every completed player move - and, on a viewer, after every
+    // replayed one. The original promise is extended, not replaced, so the
+    // co-op action queue orders on the phase completing everywhere.
+    var baseMove = model.move;
+    model.move = function () {
+      var moved = baseMove.apply(model, arguments);
+      return $.when(moved)
+        .then(runPhaseIfDue)
+        .then(function () {
+          return moved;
+        });
+    };
+
+    // One hop per turn: a longer path costs the game several turns in one
+    // click, which Conquest's you-then-them rhythm cannot allow.
+    var baseCanMove = model.canMove;
+    model.canMove = ko.computed(function () {
+      if (params.aiPhase()) {
+        return false;
+      }
+      var path = baseCanMove();
+      return path && path.length === 2 ? path : false;
+    });
+
+    _.forEach(
+      ["displayFight", "displayExplore", "displayLoadSave"],
+      function (name) {
+        var base = model[name];
+        model[name] = ko.computed(function () {
+          return !params.aiPhase() && !!base();
+        });
+      }
+    );
+
+    // Losing against a faction boss loses the war outright. Guardians and
+    // garrisons keep the stock retreat. Read before the base call: loseTurn
+    // rewinds currentStar and clears the star's history.
+    var baseLoseTurn = game.loseTurn;
+    game.loseTurn = function () {
+      var ai = currentStarAi();
+      var facedFactionBoss = !!(ai && ai.boss && !ai.mirrorMode);
+      var result = baseLoseTurn.apply(game, arguments);
+      if (facedFactionBoss) {
+        game.gameState("lost");
+      }
+      return result;
+    };
+
+    // Conquest elimination: no foe inheritance (a foe carrying the dead
+    // ai.team would corrupt ownership tracking), and every boss stacked on
+    // the fought star died in the same battle, so their teams fall too.
+    game.defeatTeam = function (defeatedTeam) {
+      api.tally.incStatInt("gw_eliminate_faction");
+
+      var currentAi = currentStarAi();
+      var defeated = [defeatedTeam];
+      _.forEach((currentAi && currentAi.foes) || [], function (foe) {
+        if (foe.boss && !_.includes(defeated, foe.team)) {
+          defeated.push(foe.team);
+        }
+      });
+
+      var remainingBosses = 0;
+      _.forEach(game.galaxy().stars(), function (star) {
+        var ai = star.ai();
+        if (!ai) {
+          return;
+        }
+        var guardians = !!ai.mirrorMode;
+        // A beaten Guardians star matches on team undefined, as in the War
+        // path, and keeps its cards - the loadout offer survives the fight.
+        if (_.includes(defeated, ai.team)) {
+          star.ai(undefined);
+          if (!guardians) {
+            star.cardList([]);
+          }
+          return;
+        }
+        if (ai.foes) {
+          var survivors = _.filter(ai.foes, function (foe) {
+            return !(foe.boss && _.includes(defeated, foe.team));
+          });
+          if (survivors.length !== ai.foes.length) {
+            if (survivors.length) {
+              ai.foes = survivors;
+            } else {
+              delete ai.foes;
+            }
+            star.ai(ai);
+          }
+        }
+        ai = star.ai();
+        if (ai && ai.boss) {
+          ++remainingBosses;
+        }
+        _.forEach((ai && ai.foes) || [], function (foe) {
+          if (foe.boss) {
+            ++remainingBosses;
+          }
+        });
+      });
+
+      // The Guardians carry no team, and their defeat is not a faction's.
+      announce(_.filter(defeated, _.isNumber));
+
+      if (!remainingBosses) {
+        game.gameState("won");
+      }
+    };
+
+    // Covers scene entry after a battle or a crash mid-phase.
+    _.defer(runPhaseIfDue);
+
+    return {
+      runPhaseIfDue: runPhaseIfDue,
+      defeatTeam: game.defeatTeam,
+    };
+  };
+
+  return factory;
+});
