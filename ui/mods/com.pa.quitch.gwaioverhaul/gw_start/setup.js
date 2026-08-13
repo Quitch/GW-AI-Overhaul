@@ -185,6 +185,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/conquest_setup.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_scaling.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
@@ -208,6 +209,7 @@ function gwoSetup() {
         gwoTech,
         gwoLore,
         gwoDifficulty,
+        gwoConquestSetup,
         gwoAI,
         gwoScaling,
         loadouts,
@@ -316,33 +318,41 @@ function gwoSetup() {
           );
         };
 
-        var setAIPersonality = function (rng, ai, difficulty, faction) {
+        // The raw values applyPersonality consumes; also snapshotted onto
+        // gwaio.conquest so the play scene can build AIs the same way.
+        var personalitySettings = function () {
+          var difficulty = model.gwoDifficultySettings;
           // Read only; saveDifficultySettings owns the write back.
           var pickedTags = $("#gwo-personality-picker").val();
+          return {
+            microType: difficulty.microType(),
+            // .raw unwraps the stringBoolean extender, which reads back
+            // "true"/"false" for the dropdowns. The AI personality contract
+            // needs real booleans.
+            goForKill: difficulty.goForKill.raw(),
+            priorityScoutMetalSpots: difficulty.priorityScoutMetalSpots.raw(),
+            factoryBuildDelayMin: difficulty.factoryBuildDelayMin(),
+            factoryBuildDelayMax: difficulty.factoryBuildDelayMax(),
+            unableToExpandDelay: difficulty.unableToExpandDelay(),
+            enableCommanderDangerResponses:
+              difficulty.enableCommanderDangerResponses.raw(),
+            perExpansionDelay: difficulty.perExpansionDelay(),
+            maxBasicFabbers: difficulty.maxBasicFabbers(),
+            maxAdvancedFabbers: difficulty.maxAdvancedFabbers(),
+            startingLocationEvaluationRadius:
+              difficulty.startingLocationEvaluationRadius(),
+            personalityTags: pickedTags === null ? [] : pickedTags,
+          };
+        };
+
+        var setAIPersonality = function (rng, ai, difficulty, faction) {
           var applied = gwoScaling.applyPersonality(
             rng,
             ai,
-            {
-              microType: difficulty.microType(),
-              // .raw unwraps the stringBoolean extender, which reads back
-              // "true"/"false" for the dropdowns. The AI personality contract
-              // needs real booleans.
-              goForKill: difficulty.goForKill.raw(),
-              priorityScoutMetalSpots: difficulty.priorityScoutMetalSpots.raw(),
-              factoryBuildDelayMin: difficulty.factoryBuildDelayMin(),
-              factoryBuildDelayMax: difficulty.factoryBuildDelayMax(),
-              unableToExpandDelay: difficulty.unableToExpandDelay(),
-              enableCommanderDangerResponses:
-                difficulty.enableCommanderDangerResponses.raw(),
-              perExpansionDelay: difficulty.perExpansionDelay(),
-              maxBasicFabbers: difficulty.maxBasicFabbers(),
-              maxAdvancedFabbers: difficulty.maxAdvancedFabbers(),
-              startingLocationEvaluationRadius:
-                difficulty.startingLocationEvaluationRadius(),
-              personalityTags: pickedTags === null ? [] : pickedTags,
+            _.assign(personalitySettings(), {
               aiType: difficulty.ai(),
               faction: faction,
-            },
+            }),
             gwoAI.penchants
           );
           if (!applied) {
@@ -466,6 +476,8 @@ function gwoSetup() {
           var playerCount = game.coopPlayers();
           var largePlanets = model.gwoDifficultySettings.largePlanets();
           var startCard = model.activeStartCard();
+          var conquestMode =
+            model.gwoDifficultySettings.warMode() === "conquest";
 
           if (model.newGameName() === defaultNewGameName) {
             model.newGameName(
@@ -621,11 +633,16 @@ function gwoSetup() {
             };
 
             var handleBoss = function (star, ai) {
+              // Conquest keeps the origin's procedural system: without
+              // systemTemplate, makeBoss still merges the boss and its card.
+              var team = conquestMode
+                ? _.omit(teams[ai.team], "systemTemplate")
+                : teams[ai.team];
               return gwoTeams
                 .makeBoss(
                   star,
                   ai,
-                  teams[ai.team],
+                  team,
                   systemTemplates,
                   // Keyed by team: makeBoss generates a system, so these resolve out of
                   // order. Stock omits the seed entirely.
@@ -647,7 +664,10 @@ function gwoSetup() {
                 // Picks each faction's spawn star and shuffles the spawn order.
                 rng: warRng.stream("breeder"),
                 spawn: function () {},
-                canSpread: _.constant(true),
+                // Refusing every spread leaves each faction its spawn star
+                // only; the breeder still drains its queues and still marks
+                // every spawn as the boss.
+                canSpread: _.constant(!conquestMode),
                 spread: handleSpread,
                 boss: handleBoss,
                 breedToOrigin: game.isTutorial(),
@@ -671,13 +691,15 @@ function gwoSetup() {
           // Winning the Guardians clears star.ai(), so the star has to be
           // identified by index for the loadout offer to survive the fight.
           var treasurePlanetStar;
+          // Assigned in onPopulated; the Conquest snapshot reads it later.
+          var maxDist;
 
           var onPopulated = function (teamInfo) {
             if (model.makeGameBusy() !== busyToken) {
               return;
             }
 
-            var maxDist = _.reduce(
+            maxDist = _.reduce(
               game.galaxy().stars(),
               function (value, star) {
                 return Math.max(star.distance(), value);
@@ -713,8 +735,12 @@ function gwoSetup() {
                 minionPool = gwoAI.quellerCompatibleMinions(minionPool);
               }
 
+              // A Conquest boss owns one star at birth and rescales as its
+              // faction grows; a War boss is always scaled to the galaxy rim.
+              var bossDist = conquestMode ? Math.min(1, maxDist) : maxDist;
+
               setAIPersonality(bossRng, boss, difficulty, boss.faction);
-              boss.econ_rate = aiEconRate(bossRng, maxDist);
+              boss.econ_rate = aiEconRate(bossRng, bossDist);
               var bossCommanders = bossCommanderCount(difficulty, playerCount);
               boss.bossCommanders = bossCommanders;
 
@@ -729,7 +755,7 @@ function gwoSetup() {
               );
               var bossBuffs = gwoScaling.buffs(
                 bossRng,
-                maxDist,
+                bossDist,
                 factionTechHandicap
               );
               boss.typeOfBuffs = bossBuffs; // for intelligence reports
@@ -748,7 +774,7 @@ function gwoSetup() {
               var numMinions = gwoScaling.countMinions(
                 mandatoryMinions,
                 minionMod,
-                maxDist
+                bossDist
               );
               var totalMinions = numMinions;
 
@@ -774,7 +800,7 @@ function gwoSetup() {
                   setAIPersonality(minionRng, minion, difficulty, boss.faction);
                   minion.econ_rate = aiEconRate(
                     minionRng,
-                    maxDist,
+                    bossDist,
                     playerCount
                   );
                   if (boss.isCluster === true) {
@@ -782,6 +808,11 @@ function gwoSetup() {
                   }
                   boss.minions.push(minion);
                 });
+              }
+
+              if (conquestMode) {
+                boss.capturedTurn = 1;
+                boss.appliedTier = bossDist;
               }
 
               _.forEach(workerPool, function (worker, workerIndex) {
@@ -994,6 +1025,32 @@ function gwoSetup() {
             var loreEntry = 0;
             var optionalLoreEntry = 0;
             var treasureRng = warRng.stream("treasure");
+
+            // Placed before the sweep so the treasure star reads as an AI star
+            // there: planets prepared, no lore, no stock conversion.
+            if (conquestMode) {
+              var candidates = gwoConquestSetup.guardiansCandidates(
+                game.galaxy().stars(),
+                game.galaxy().origin()
+              );
+              if (candidates.length) {
+                treasurePlanetStar = treasureRng.pick(candidates);
+                var treasureStar = game.galaxy().stars()[treasurePlanetStar];
+                treasureStar.ai(
+                  gwoConquestSetup.buildGuardiansAi(
+                    aiEconRate(treasureRng, maxDist),
+                    bossCommanderCount(model.gwoDifficultySettings, playerCount)
+                  )
+                );
+                // The loadout itself is derived per player at exploration -
+                // see gw_play/treasure_loadouts.js.
+                treasureStar.system().description =
+                  gwoConquestSetup.treasureDescription;
+              } else {
+                console.warn("No unowned star available for the Guardians");
+              }
+            }
+
             _.forEach(game.galaxy().stars(), function (star, starIndex) {
               var ai = star.ai();
               var system = star.system();
@@ -1015,28 +1072,16 @@ function gwoSetup() {
                     delete ai.ally;
                     delete ai.team;
                     delete ai.penchantName;
-                    ai.icon =
-                      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/guardians.png";
-                    ai.boss = true; // otherwise it won't display its icon
-                    ai.mirrorMode = true;
-                    ai.treasurePlanet = true;
-                    ai.econ_rate = aiEconRate(treasureRng, maxDist);
-                    ai.bossCommanders = bossCommanderCount(
-                      difficulty,
-                      playerCount
+                    _.assign(
+                      ai,
+                      gwoConquestSetup.buildGuardiansAi(
+                        aiEconRate(treasureRng, maxDist),
+                        bossCommanderCount(difficulty, playerCount)
+                      )
                     );
-                    ai.name = "The Guardians";
-                    ai.character = "!LOC:Unknown";
-                    ai.color = [
-                      [255, 255, 255],
-                      [255, 192, 203],
-                    ];
-                    ai.commander =
-                      "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
                     // The loadout itself is derived per player at exploration -
                     // see gw_play/treasure_loadouts.js.
-                    system.description =
-                      "!LOC:This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.";
+                    system.description = gwoConquestSetup.treasureDescription;
                   } else if (difficulty.paLore() && aiLore[optionalLoreEntry]) {
                     system.description = aiLore[optionalLoreEntry];
                     optionalLoreEntry += 1;
@@ -1096,6 +1141,38 @@ function gwoSetup() {
             originSystem.gwaio.treasureLoadoutDerived = true;
             originSystem.gwaio.treasureStar = treasurePlanetStar;
             originSystem.gwaio.coopPlayerScalingCount = playerCount;
+            if (conquestMode) {
+              var difficulty = model.gwoDifficultySettings;
+              originSystem.gwaio.conquest = gwoConquestSetup.settings({
+                maxDist: maxDist,
+                playerCount: playerCount,
+                factions: aiFactions,
+                difficulty: {
+                  econBase: Number.parseFloat(difficulty.econBase()),
+                  econRatePerDist: Number.parseFloat(
+                    difficulty.econRatePerDist()
+                  ),
+                  mandatoryMinions: difficulty.mandatoryMinions(),
+                  minionMod: Number.parseFloat(difficulty.minionMod()),
+                  factionTechHandicap: Number.parseFloat(
+                    difficulty.factionTechHandicap()
+                  ),
+                  ffaChance: difficulty.ffaChance(),
+                  alliedCommanderChance: difficulty.alliedCommanderChance(),
+                  bossCommanders: difficulty.bossCommanders(),
+                },
+                personality: personalitySettings(),
+                gameModes: {
+                  landAnywhereChance: difficulty.landAnywhereChance(),
+                  suddenDeathChance: difficulty.suddenDeathChance(),
+                  bountyModeChance: difficulty.bountyModeChance(),
+                  bountyModeValue: Number.parseFloat(
+                    difficulty.bountyModeValue()
+                  ),
+                  eradicationModeChance: difficulty.eradicationModeChance(),
+                },
+              });
+            }
           };
 
           var warInfo = finishAis.then(onAisFinished);

@@ -157,4 +157,33 @@ describe("gwo_breeder populate", () => {
     const placed = populate(chain(12), undefined, 3);
     assert.equal(placed.length, 3);
   });
+
+  // The contract Conquest generation rests on: refusing every spread must
+  // still terminate, leave exactly the spawn stars owned, and boss-mark them.
+  it("leaves only boss-marked spawn stars when canSpread always refuses", () => {
+    const galaxy = chain(12);
+    const bossed = [];
+    gwoBreeder.populate({
+      galaxy: galaxy,
+      teams: [{ color: 0 }, { color: 1 }, { color: 2 }],
+      neutralStars: 1,
+      orderedSpawn: false,
+      rng: gwoRng.create("conquest-1"),
+      spawn: function () {},
+      canSpread: () => false,
+      spread: function () {
+        assert.fail("spread must never be reached");
+      },
+      boss: function (star, ai) {
+        bossed.push(galaxy.stars().indexOf(star));
+        assert.equal(ai.boss, true);
+      },
+    });
+    const owned = galaxy
+      .stars()
+      .map((star, i) => (star.ai() ? i : undefined))
+      .filter((i) => i !== undefined);
+    assert.deepEqual(owned.sort(), bossed.sort());
+    assert.equal(owned.length, 3);
+  });
 });
