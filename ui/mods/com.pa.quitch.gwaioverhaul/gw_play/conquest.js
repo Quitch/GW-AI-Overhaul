@@ -78,8 +78,12 @@ function gwoConquest() {
             var faction = GWFactions[cfg.factions[team]];
             return faction ? faction.name : "?";
           });
+          var verb =
+            names.length > 1
+              ? loc("!LOC:have been eliminated!")
+              : loc("!LOC:has been eliminated!");
           model.popUp({
-            msg: names.join(", ") + " " + loc("!LOC:has been eliminated!"),
+            msg: names.join(", ") + " " + verb,
             actions: { primary: undefined },
             tags: { primary: "!LOC:OK", secondary: "" },
           });
