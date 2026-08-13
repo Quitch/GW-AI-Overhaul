@@ -484,10 +484,15 @@ function gwoCard() {
                 gwoSettings,
                 starIndex
               );
+              // A Conquest system the player already explored offers no new
+              // tech, however often it changes hands.
+              var alreadyExplored =
+                gwoSettings && gwoSettings.conquest && system.star.explored();
               var validForDeal =
-                gwoSettings && gwoSettings.staticTech
+                !alreadyExplored &&
+                (gwoSettings && gwoSettings.staticTech
                   ? _.isEmpty(system.star.cardList())
-                  : true;
+                  : true);
               if (
                 model.canSelect(starIndex) &&
                 ai &&

@@ -222,6 +222,13 @@ describe("starNeedsViewerCard", () => {
     assert.equal(needs({ treasurePlanet: true }), false);
   });
 
+  // Conquest: a system the player already explored offers no new tech,
+  // however often it changes hands.
+  it("skips a star explored before", () => {
+    assert.equal(needs({ alreadyExplored: true }), false);
+    assert.equal(needs({ alreadyExplored: true, redeal: true }), false);
+  });
+
   it("fills a gap whatever prompted the refresh", () => {
     assert.equal(needs({ redeal: false }), true);
     assert.equal(needs({ redeal: true }), true);

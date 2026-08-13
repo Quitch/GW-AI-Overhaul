@@ -380,9 +380,16 @@ function gwoIntelligence() {
           return commanders;
         };
 
+        var conquestWar = (function () {
+          var galaxy = model.game().galaxy();
+          var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+          return !!(gwoSettings && gwoSettings.conquest);
+        })();
+
         model.gwoSystemSurfaceArea = ko.observable(0);
         model.gwoSystemThreat = ko.observable(0);
         model.gwoAvailableTech = ko.observable("");
+        model.gwoNoNewTech = ko.observable(false);
         model.gwoGameModifiers = ko.observableArray([]);
         model.gwoAIBuffs = ko.observableArray([]);
         model.gwoAis = ko.observableArray([]);
@@ -394,6 +401,9 @@ function gwoIntelligence() {
           var star = system.star;
           var ai = star.ai();
           model.gwoSystemSurfaceArea(calculateSurfaceArea(system));
+          // Before the early return: a Conquest system explored before offers
+          // no new tech on reconquest, and the panel says so.
+          model.gwoNoNewTech(conquestWar && !!ai && !!star.explored());
           if (!ai) {
             model.gwoSystemThreat(0);
             model.gwoAvailableTech("");

@@ -33,7 +33,12 @@ define(function () {
   };
 
   var starNeedsViewerCard = function (params) {
-    if (!params.canSelect || !params.ai || params.treasurePlanet) {
+    if (
+      !params.canSelect ||
+      !params.ai ||
+      params.treasurePlanet ||
+      params.alreadyExplored
+    ) {
       return false;
     }
 
@@ -128,6 +133,12 @@ define(function () {
             canSelect: model.canSelect(starIndex),
             ai: ai,
             treasurePlanet: isTreasureStar(starIndex),
+            // Conquest: an explored system offers no new tech to anyone.
+            alreadyExplored: !!(
+              gwoSettings &&
+              gwoSettings.conquest &&
+              system.star.explored()
+            ),
             staticTech: gwoSettings && gwoSettings.staticTech,
             existingCard: starCardForRecord(record, starIndex),
             redeal: redeal,

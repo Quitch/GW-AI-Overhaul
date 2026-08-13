@@ -30,6 +30,12 @@
     </h3>
     <div class="td" data-bind="text: $root.gwoAvailableTech"></div>
   </div>
+  <div data-bind="visible: $root.gwoNoNewTech">
+    <h3><loc>Available Tech</loc></h3>
+    <div class="td">
+      <loc>None. You have already explored this system.</loc>
+    </div>
+  </div>
   <div data-bind="visible: $root.gwoGameModifiers().length > 0">
     <h3>
       <loc>Game Modifiers</loc
