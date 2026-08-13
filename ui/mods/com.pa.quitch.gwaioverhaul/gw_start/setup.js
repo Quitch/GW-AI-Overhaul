@@ -99,197 +99,6 @@ function gwoSetup() {
 
     var foundationFaction = 1;
 
-    // Index into ai_tech.js's factionTechs[faction][n]. 5 is absent because that
-    // tech was removed; see the note by setupAITech5 there.
-    var aiBuffType = {
-      cost: 0,
-      damage: 1,
-      health: 2,
-      speed: 3,
-      build: 4,
-      combat: 6,
-      cooldown: 7,
-    };
-
-    var getQuellerAITag = function (faction) {
-      var quellerTag = "queller";
-      var legonisMachinaTags = ["tank", quellerTag];
-      var foundationTags = ["air", quellerTag];
-      var synchronousTags = ["bot", quellerTag];
-      var revenantsTags = ["orbital", quellerTag];
-      var clusterTags = ["land", quellerTag];
-
-      switch (faction) {
-        case 0:
-          return legonisMachinaTags;
-        case 1:
-          return foundationTags;
-        case 2:
-          return synchronousTags;
-        case 3:
-          return revenantsTags;
-        case 4:
-          return clusterTags;
-        default:
-          console.error("Undefined faction:", faction);
-          warGenerationFailed = true;
-          // The caller concats this into personality_tags before the abort
-          // lands, so undefined would append a literal undefined tag.
-          return [];
-      }
-    };
-
-    // Drawing helpers take an rng parameter rather than closing over one: the
-    // seed is only known inside navToNewGame. See galaxy.md.
-    var selectAIBuffs = function (rng, numberOfBuffs) {
-      return rng.sample(_.values(aiBuffType), numberOfBuffs);
-    };
-
-    var setupAIBuffs = function (rng, distance, buffDistanceDelay) {
-      // Negative near the origin once a tech handicap applies; rng.sample clamps to [].
-      var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
-      return selectAIBuffs(rng, numberBuffs);
-    };
-
-    var aiTech = function (buffs, inventory, faction, tech) {
-      _.times(buffs.length, function (n) {
-        inventory = inventory.concat(tech[faction][buffs[n]]);
-      });
-      return inventory;
-    };
-
-    var countMinions = function (minionBase, minionStep, distance) {
-      return Math.floor(minionBase + distance * minionStep);
-    };
-
-    var clusterCommanderCount = function (minionCount, bossCommanders) {
-      return minionCount + Math.floor(bossCommanders / 2);
-    };
-
-    var selectMinion = function (rng, minions, faction, minionName) {
-      var isCluster = minionName === "Worker" || minionName === "Security";
-      var selectedMinion;
-      if (isCluster) {
-        selectedMinion = _.cloneDeep(
-          rng.pick(
-            _.filter(minions, {
-              name: minionName,
-            })
-          )
-        );
-      } else {
-        selectedMinion = _.cloneDeep(rng.pick(minions));
-      }
-      // Call sites must check the result. These run inside jQuery deferred
-      // callbacks, where a throw escapes .fail() instead of rejecting, so a
-      // TypeError here hangs Go To War with no seed retry.
-      if (_.isUndefined(selectedMinion)) {
-        console.error("No minion found for faction " + faction);
-        warGenerationFailed = true;
-      }
-      return selectedMinion;
-    };
-
-    var randomPercentageAdjustment = function (rng, min, max) {
-      return rng.float(min, max);
-    };
-
-    var aiEcoMinionReduction = function (
-      eco,
-      ecoStep,
-      distance,
-      minionBase,
-      minionStep
-    ) {
-      var minions = 0;
-      var previousMinions = 0;
-
-      if (distance > 0) {
-        minions = countMinions(minionBase, minionStep, distance);
-        previousMinions = countMinions(minionBase, minionStep, distance - 1);
-      }
-
-      if (minions > previousMinions) {
-        return eco - ecoStep;
-      }
-
-      return eco;
-    };
-
-    // Omitting playerCount skips the minion-count reduction (e.g. a boss's own rate).
-    var aiEconRate = function (rng, distance, playerCount) {
-      var difficulty = model.gwoDifficultySettings;
-      var ecoBase = Number.parseFloat(difficulty.econBase());
-      var ecoStep = Number.parseFloat(difficulty.econRatePerDist());
-      var eco =
-        (ecoBase + distance * ecoStep) *
-        randomPercentageAdjustment(rng, 0.9, 1.1);
-
-      if (playerCount) {
-        var minionBase = difficulty.mandatoryMinions() * playerCount;
-        var minionStep =
-          Number.parseFloat(difficulty.minionMod()) * playerCount;
-        eco = aiEcoMinionReduction(
-          eco,
-          ecoStep,
-          distance,
-          minionBase,
-          minionStep
-        );
-      }
-
-      return Math.max(ecoBase, eco);
-    };
-
-    // rng.int bounds are inclusive - from 0, a 0% chance would still fire 1 in 101.
-    var gameModeEnabled = function (rng, gameModeChance) {
-      return rng.int(1, 100) <= gameModeChance;
-    };
-
-    var enableAnEradicationModeTypes = function (rng, ai) {
-      var numberOfModes = rng.int(1, 3);
-      var modes = ["SubCommanders", "Factories", "Fabbers"];
-
-      _.forEach(rng.sample(modes, numberOfModes), function (mode) {
-        ai["eradicationMode" + mode] = true;
-      });
-    };
-
-    var startCardAllyCompatibility = function (game) {
-      var gwoStarCardsWhichBreakAllies = [
-        "nem_start_deepspace",
-        "gwaio_start_tourist",
-      ];
-      // global for modder compatibility - merge in any modder-added ids.
-      // GWO never creates this one, so the mod's loader has to
-      if (_.isArray(model.gwoStarCardsWhichBreakAllies)) {
-        gwoStarCardsWhichBreakAllies = gwoStarCardsWhichBreakAllies.concat(
-          model.gwoStarCardsWhichBreakAllies
-        );
-      }
-      return _.some(gwoStarCardsWhichBreakAllies, function (card) {
-        return card === game.inventory().cards()[0].id;
-      });
-    };
-
-    var setupQuellerFFATag = function (ais) {
-      if (!ais) {
-        return;
-      }
-
-      var ffa = ["ffa", "platoon"];
-
-      if (_.isArray(ais)) {
-        _.forEach(ais, function (ai) {
-          ai.personality.personality_tags =
-            ai.personality.personality_tags.concat(ffa);
-        });
-      } else {
-        ais.personality.personality_tags =
-          ais.personality.personality_tags.concat(ffa);
-      }
-    };
-
     var saveDifficultySettings = function () {
       var settings = model.gwoDifficultySettings;
 
@@ -377,6 +186,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_scaling.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
@@ -399,6 +209,7 @@ function gwoSetup() {
         gwoLore,
         gwoDifficulty,
         gwoAI,
+        gwoScaling,
         loadouts,
         gwoLoadoutBanks,
         favouriteLoadoutsModule,
@@ -470,64 +281,72 @@ function gwoSetup() {
           return result;
         };
 
-        // titansAITags is optional: concat would otherwise append a literal undefined
-        // to personality_tags, which the save round-trips back as null.
-        var setupPenchantAI = function (rng, ai, titansAITags) {
-          var penchantValues = gwoAI.penchants(rng);
-          ai.personality.personality_tags =
-            ai.personality.personality_tags.concat(
-              penchantValues.penchants,
-              titansAITags || []
-            );
-          ai.penchantName = penchantValues.penchantName;
+        var selectMinion = function (rng, minions, faction, minionName) {
+          var minion = gwoScaling.selectMinion(
+            rng,
+            minions,
+            faction,
+            minionName
+          );
+          if (_.isUndefined(minion)) {
+            warGenerationFailed = true;
+          }
+          return minion;
+        };
+
+        // Omitting playerCount skips the minion-count reduction (e.g. a boss's
+        // own rate).
+        var aiEconRate = function (rng, distance, playerCount) {
+          var difficulty = model.gwoDifficultySettings;
+          return gwoScaling.econRate(rng, distance, {
+            econBase: Number.parseFloat(difficulty.econBase()),
+            econRatePerDist: Number.parseFloat(difficulty.econRatePerDist()),
+            mandatoryMinions: difficulty.mandatoryMinions(),
+            minionMod: Number.parseFloat(difficulty.minionMod()),
+            playerCount: playerCount,
+          });
+        };
+
+        var startCardAllyCompatibility = function (game) {
+          // model.gwoStarCardsWhichBreakAllies is a modder-compatibility global
+          // GWO never creates; the mod's loader has to.
+          return gwoScaling.startCardBreaksAllies(
+            game.inventory().cards()[0].id,
+            model.gwoStarCardsWhichBreakAllies
+          );
         };
 
         var setAIPersonality = function (rng, ai, difficulty, faction) {
-          var personalityId = "#gwo-personality-picker";
-          var personality = ai.personality;
-
-          personality.micro_type = difficulty.microType();
-          // .raw unwraps the stringBoolean extender, which reads back "true"/"false"
-          // for the dropdowns. The AI personality contract needs real booleans.
-          personality.go_for_the_kill = difficulty.goForKill.raw();
-          personality.priority_scout_metal_spots =
-            difficulty.priorityScoutMetalSpots.raw();
-          personality.factory_build_delay_min =
-            difficulty.factoryBuildDelayMin();
-          personality.factory_build_delay_max =
-            difficulty.factoryBuildDelayMax();
-          personality.unable_to_expand_delay = difficulty.unableToExpandDelay();
-          personality.enable_commander_danger_responses =
-            difficulty.enableCommanderDangerResponses.raw();
-          personality.per_expansion_delay = difficulty.perExpansionDelay();
-          personality.max_basic_fabbers = difficulty.maxBasicFabbers();
-          personality.max_advanced_fabbers = difficulty.maxAdvancedFabbers();
           // Read only; saveDifficultySettings owns the write back.
-          personality.personality_tags =
-            $(personalityId).val() === null ? [] : $(personalityId).val();
-          // 0 means unset, leaving the AI to examine the spawn zone radius.
-          if (difficulty.startingLocationEvaluationRadius() > 0) {
-            personality.starting_location_evaluation_radius =
-              difficulty.startingLocationEvaluationRadius();
-          }
-
-          var titansAITags = ["Default"];
-
-          switch (difficulty.ai()) {
-            case "Penchant":
-              setupPenchantAI(rng, ai, titansAITags);
-              break;
-            case "Queller":
-              personality.personality_tags =
-                personality.personality_tags.concat(getQuellerAITag(faction));
-              break;
-            case "Titans":
-              personality.personality_tags =
-                personality.personality_tags.concat(titansAITags);
-              break;
-            default:
-              console.error("Undefined AI type:", difficulty.ai());
-              warGenerationFailed = true;
+          var pickedTags = $("#gwo-personality-picker").val();
+          var applied = gwoScaling.applyPersonality(
+            rng,
+            ai,
+            {
+              microType: difficulty.microType(),
+              // .raw unwraps the stringBoolean extender, which reads back
+              // "true"/"false" for the dropdowns. The AI personality contract
+              // needs real booleans.
+              goForKill: difficulty.goForKill.raw(),
+              priorityScoutMetalSpots: difficulty.priorityScoutMetalSpots.raw(),
+              factoryBuildDelayMin: difficulty.factoryBuildDelayMin(),
+              factoryBuildDelayMax: difficulty.factoryBuildDelayMax(),
+              unableToExpandDelay: difficulty.unableToExpandDelay(),
+              enableCommanderDangerResponses:
+                difficulty.enableCommanderDangerResponses.raw(),
+              perExpansionDelay: difficulty.perExpansionDelay(),
+              maxBasicFabbers: difficulty.maxBasicFabbers(),
+              maxAdvancedFabbers: difficulty.maxAdvancedFabbers(),
+              startingLocationEvaluationRadius:
+                difficulty.startingLocationEvaluationRadius(),
+              personalityTags: pickedTags === null ? [] : pickedTags,
+              aiType: difficulty.ai(),
+              faction: faction,
+            },
+            gwoAI.penchants
+          );
+          if (!applied) {
+            warGenerationFailed = true;
           }
         };
 
@@ -908,13 +727,13 @@ function gwoSetup() {
               var factionTechHandicap = Number.parseFloat(
                 difficulty.factionTechHandicap()
               );
-              var bossBuffs = setupAIBuffs(
+              var bossBuffs = gwoScaling.buffs(
                 bossRng,
                 maxDist,
                 factionTechHandicap
               );
               boss.typeOfBuffs = bossBuffs; // for intelligence reports
-              boss.inventory = aiTech(
+              boss.inventory = gwoScaling.applyTech(
                 bossBuffs,
                 boss.inventory,
                 boss.faction,
@@ -926,7 +745,7 @@ function gwoSetup() {
               var minionMod =
                 Number.parseFloat(difficulty.minionMod()) * playerCount;
               var clusterType = "";
-              var numMinions = countMinions(
+              var numMinions = gwoScaling.countMinions(
                 mandatoryMinions,
                 minionMod,
                 maxDist
@@ -969,30 +788,34 @@ function gwoSetup() {
                 var ai = worker.ai;
                 var aiRng = teamRng.stream("worker", workerIndex);
 
-                ai.landAnywhere = gameModeEnabled(
+                ai.landAnywhere = gwoScaling.gameModeEnabled(
                   aiRng,
                   difficulty.landAnywhereChance()
                 );
-                ai.suddenDeath = gameModeEnabled(
+                ai.suddenDeath = gwoScaling.gameModeEnabled(
                   aiRng,
                   difficulty.suddenDeathChance()
                 );
-                ai.bountyMode = gameModeEnabled(
+                ai.bountyMode = gwoScaling.gameModeEnabled(
                   aiRng,
                   difficulty.bountyModeChance()
                 );
                 ai.bountyModeValue = Number.parseFloat(
                   difficulty.bountyModeValue()
                 );
-                ai.eradicationMode = gameModeEnabled(
+                ai.eradicationMode = gwoScaling.gameModeEnabled(
                   aiRng,
                   difficulty.eradicationModeChance()
                 );
-                enableAnEradicationModeTypes(aiRng, ai);
+                gwoScaling.enableEradicationModeTypes(aiRng, ai);
 
                 var dist = worker.star.distance();
 
-                numMinions = countMinions(mandatoryMinions, minionMod, dist);
+                numMinions = gwoScaling.countMinions(
+                  mandatoryMinions,
+                  minionMod,
+                  dist
+                );
 
                 setAIPersonality(aiRng, ai, difficulty, ai.faction);
                 ai.econ_rate = aiEconRate(aiRng, dist, playerCount);
@@ -1003,13 +826,13 @@ function gwoSetup() {
                   ai.inventory = gwoCluster.clusterCommanderMods;
                 }
 
-                var workerBuffs = setupAIBuffs(
+                var workerBuffs = gwoScaling.buffs(
                   aiRng,
                   dist,
                   factionTechHandicap
                 );
                 ai.typeOfBuffs = workerBuffs; // for intelligence reports
-                ai.inventory = aiTech(
+                ai.inventory = gwoScaling.applyTech(
                   workerBuffs,
                   ai.inventory,
                   ai.faction,
@@ -1023,7 +846,7 @@ function gwoSetup() {
                   var clusterWorkers = 0;
                   if (ai.isCluster === true) {
                     clusterType = "Worker";
-                    clusterWorkers = clusterCommanderCount(
+                    clusterWorkers = gwoScaling.clusterCommanderCount(
                       numMinions,
                       bossCommanders
                     );
@@ -1067,7 +890,9 @@ function gwoSetup() {
                 var availableFactions = _.without(aiFactions, ai.faction);
                 _.times(availableFactions.length, function (foeIndex) {
                   var foeRng = aiRng.stream("foe", foeIndex);
-                  if (gameModeEnabled(foeRng, difficulty.ffaChance())) {
+                  if (
+                    gwoScaling.gameModeEnabled(foeRng, difficulty.ffaChance())
+                  ) {
                     if (!ai.foes) {
                       ai.foes = [];
                     }
@@ -1101,7 +926,7 @@ function gwoSetup() {
                     var numFoes = Math.round((numMinions + 1) / 2);
                     // Cluster Workers get additional commanders in place of armies
                     if (foeCommander.name === "Worker") {
-                      numFoes = clusterCommanderCount(
+                      numFoes = gwoScaling.clusterCommanderCount(
                         numMinions,
                         bossCommanders
                       );
@@ -1113,7 +938,7 @@ function gwoSetup() {
                       foeCommander.inventory = gwoCluster.clusterCommanderMods;
                     }
 
-                    foeCommander.inventory = aiTech(
+                    foeCommander.inventory = gwoScaling.applyTech(
                       workerBuffs,
                       foeCommander.inventory,
                       foeCommander.faction,
@@ -1127,7 +952,10 @@ function gwoSetup() {
                 var allyRng = aiRng.stream("ally");
                 if (
                   !startCardBreaksAllies &&
-                  gameModeEnabled(allyRng, difficulty.alliedCommanderChance())
+                  gwoScaling.gameModeEnabled(
+                    allyRng,
+                    difficulty.alliedCommanderChance()
+                  )
                 ) {
                   var playerFaction = playerFactionIndex();
                   var allyMinions = GWFactions[playerFaction].minions;
@@ -1143,16 +971,21 @@ function gwoSetup() {
                     allyCommander.faction = playerFaction;
                     ai.ally = allyCommander;
                     if (difficulty.aiAlly() === "Penchant") {
-                      setupPenchantAI(allyRng, ai.ally);
+                      gwoScaling.applyPenchant(
+                        allyRng,
+                        ai.ally,
+                        undefined,
+                        gwoAI.penchants
+                      );
                     }
                   }
                 }
 
                 if (difficulty.ai() === "Queller" && ai.foes) {
-                  setupQuellerFFATag(ai);
-                  setupQuellerFFATag(ai.minions);
-                  setupQuellerFFATag(ai.foes);
-                  setupQuellerFFATag(ai.ally);
+                  gwoScaling.applyQuellerFFATags(ai);
+                  gwoScaling.applyQuellerFFATags(ai.minions);
+                  gwoScaling.applyQuellerFFATags(ai.foes);
+                  gwoScaling.applyQuellerFFATags(ai.ally);
                 }
               });
             });

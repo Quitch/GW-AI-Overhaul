@@ -76,11 +76,20 @@ describe("the modder globals are adopted, not overwritten", () => {
 
   // gwoStarCardsWhichBreakAllies is read rather than seeded, so it has no
   // assignment guard - GWO never creates this one, which is why New-GW-Cards'
-  // loader has to.
+  // loader has to. setup.js hands the global to startCardBreaksAllies, whose
+  // behaviour test lives with ai_scaling.
   it("gwoStarCardsWhichBreakAllies is read from the mod's own array", () => {
     assert.match(
       source(MOD_ROOT + "/gw_start/setup.js"),
-      /_\.isArray\(\s*model\.gwoStarCardsWhichBreakAllies\s*\)/
+      /startCardBreaksAllies\(\s*[\s\S]*?model\.gwoStarCardsWhichBreakAllies/
+    );
+    const scaling = loadCouiModule(
+      "coui://" + MOD_ROOT + "/shared/ai_scaling.js"
+    );
+    assert.equal(
+      scaling.startCardBreaksAllies("mod_card", ["mod_card"]),
+      true,
+      "a modder-registered loadout id must reach the ally-compatibility check"
     );
   });
 });
