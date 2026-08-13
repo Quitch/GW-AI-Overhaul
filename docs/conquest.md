@@ -1,0 +1,128 @@
+# Galactic Conquest
+
+A war mode selected in the lobby's **Mode** dropdown ("Galactic War" is the
+default and is unchanged). In Conquest the galaxy starts almost empty: each
+enemy faction holds a single system, and after every player move each faction's
+boss takes one adjacent system. The player and the AIs alternate, so the player
+can only ever move one system at a time.
+
+## Module map
+
+| File                             | Role                                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `gw_start/conquest_setup.js`     | Measured: Guardians placement candidates and identity, the `gwaio.conquest` snapshot             |
+| `gw_play/conquest_engine.js`     | Measured: plans one full AI phase from a plain-object board and returns ordered steps and events |
+| `gw_play/conquest_ai_builder.js` | Measured: builds and re-scales garrisons, foes and allies; rolls capture-time game modifiers     |
+| `gw_play/conquest_turn.js`       | Measured: the driver - wraps `model.move`, blocks input, applies steps, saves, announces         |
+| `gw_play/conquest.js`            | Scene shell: instantiates the driver when the save carries `gwaio.conquest`. Coverage-excluded   |
+| `gw_play/conquest_sprite.js`     | Boss-move animation, a copy of the stock transit visuals. Coverage-excluded                      |
+
+## Generation
+
+`gw_start/setup.js` branches on `gwoDifficultySettings.warMode()`:
+
+- The breeder runs with `canSpread` refusing everything, which leaves each
+  faction exactly its spawn star, still boss-marked (pinned in
+  `test/gwo_breeder.test.js`).
+- `makeBoss` receives the team without its `systemTemplate`, so the boss keeps
+  its personality and card but the origin keeps its procedural system.
+- The boss is scaled to one owned system rather than the galaxy rim, and
+  stamped `capturedTurn: 1` / `appliedTier`.
+- No workers exist, so the setup-time foe and ally rolls never run.
+- The Guardians are placed on a seeded unowned star (the stock sweep's "first
+  non-boss AI star" finds nothing when every AI star is a boss). They are
+  scaled to `maxDist` once and never expand or re-scale.
+- `onAisFinished` stamps `originSystem.gwaio.conquest`: `maxDist`,
+  `playerCount`, `lastAiPhaseTurn`, the team-to-faction map, the effective
+  difficulty numbers (Custom has no tier to re-derive them from at play time),
+  the raw personality values `applyPersonality` consumes, and the
+  game-modifier chances.
+
+## The turn engine
+
+`conquest_turn.js` wraps `model.move`; after the move's own promise resolves it
+snapshots the board (cloned - the planner never mutates live state), runs
+`conquest_engine.planPhase`, applies the returned steps in order, saves once
+with `gwoSave(game, true)`, and announces any eliminations with the stock
+popup. `model.gwoConquestAiPhase` blocks Move/Fight/Explore while it runs, and
+`canMove` only passes single-hop paths.
+
+Each faction, in team order:
+
+1. A boss adjacent to the player moves onto the player's star and waits to be
+   fought - unless the player is at the treasure star, which would mean taking
+   the Guardians' system.
+2. Otherwise it captures one adjacent system by the priority ladder: never the
+   Guardians; prefer unexplored; prefer a candidate bordering at least one
+   non-friendly system, else the candidate closest to the player; then most
+   friendly neighbours; then most non-friendly neighbours; remaining ties fall
+   to the seeded `conquest_move` stream. Movement itself draws nothing else.
+3. With nothing capturable it marches one hop through friendly territory
+   toward the frontier, or holds.
+
+Rules the engine carries:
+
+- **Captures** roll the game modifiers (land anywhere, sudden death, bounty,
+  eradication) from `conquest_modes.<star>.turn.<captured>`, exactly as setup
+  rolls them. When the boss moves on it leaves a garrison built at the system's
+  tier, inheriting those capture-time rolls; a boss crossing its own territory
+  instead carries the displaced garrison (`ai.conquestDisplaced`) and restores
+  it on departure.
+- **Boss versus boss**: the faction with more systems wins; the attacker wins
+  ties; the loser is eliminated and its systems become unowned. On the
+  player's star bosses stack instead - the arrival becomes a boss-flagged
+  entry in the occupier's `foes`, every boss present joins the one battle, and
+  a stacked star is not capturable by anyone else.
+- **Tiers**: presence scales with `min(floor(heldTurns / 2), maxDist)` fed to
+  the same scaling arithmetic as war generation (`shared/ai_scaling.js`).
+  Garrisons key on their system's `capturedTurn`, foes on their own
+  `createdTurn`, bosses on systems owned. Re-scaling happens in the phase, so
+  the referee and the intelligence panel read `star.ai()` unchanged.
+- **Foes and allies** roll every second turn: per AI system, a foe of a
+  bordering faction at `ffaChance x bordering systems` percent (never
+  duplicated per faction), and an allied commander at
+  `alliedCommanderChance x bordering player systems` percent, suppressed by
+  the same ally-breaking loadouts as setup.
+- **Losing to a faction boss loses the war**, hardcore or not; the Guardians
+  and garrisons keep the stock retreat.
+- **defeatTeam** (Conquest variant, installed by the driver) clears a beaten
+  faction outright - no foe inheritance, which would carry a dead `ai.team` -
+  defeats every boss stacked on the fought star, and wins the war when no
+  boss remains anywhere.
+- A system the player explored before deals no new card when an AI retakes it
+  (guarded in `cards.js` and the co-op deal path), and the intelligence panel
+  says so.
+
+## Determinism, resume and co-op
+
+Everything the phase does is a pure function of (war seed, saved state, turn):
+every draw comes from the `conquest_*` streams in `gw_play/gwo_streams.js`.
+`cfg.lastAiPhaseTurn`, persisted with the save, marks the last turn whose
+phase completed - a battle's scene teardown or a crash mid-phase re-runs the
+phase from identical saved state with an identical outcome, and a move that
+changed nothing runs no phase at all.
+
+Co-op needs no protocol of its own: a viewer's
+`applyCampaignAction('move_to_star')` calls `model.move()` itself, so the same
+wrap runs the same deterministic phase on every client; only the host's save
+persists (`gw_play/save.js` no-ops for viewers). The phase must never consult
+`gwCampaignReplayingAction`, which the viewer clears before async work
+completes.
+
+## Victory badges
+
+Conquest victories record under `gwaio_conquest_victory_<loadoutId>`, parallel
+to the War badges, via `victoryKey` in `shared/cards.js`. The loadout list
+shows the selected mode's badges; a mode change rebuilds the list because a
+card view model snapshots its icon at load.
+
+## Accepted limitations
+
+- Play-time minion picks draw from the full faction pool, so names can repeat
+  across garrisons - war generation's `remainingMinions` uniqueness is not
+  threaded through saves.
+- A boss stacked into another's `foes` fights with its commander slots but
+  without its own minions - the referee treats every `foes` entry as a single
+  FFA army.
+- A boss standing on friendly territory suppresses that garrison (and its
+  foes) for any battle fought there while it visits.

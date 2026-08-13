@@ -31,6 +31,7 @@ Then whichever subsystem you are touching.
 | [coop.md](coop.md)               | Host/viewer, per-player tech, colour allocation            | `shared/referee_coop.js`     |
 | [specs.md](specs.md)             | Unit spec modification and caching                         | `shared/specs.js`            |
 | [galaxy.md](galaxy.md)           | Galaxy generation, factions, difficulty tiers              | `gw_start/setup.js`          |
+| [conquest.md](conquest.md)       | The Galactic Conquest mode: turn engine, tiers, badges     | `gw_play/conquest_turn.js`   |
 | [testing.md](testing.md)         | The Node AMD harness and the seven validators              | `scripts/lib/amd-loader.js`  |
 
 ## Things that surprise people

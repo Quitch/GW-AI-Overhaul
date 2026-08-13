@@ -22,6 +22,10 @@ Roughly:
 Step 5 is a piggy-back channel rather than a real API — the origin system is simply
 the one object guaranteed to survive into the play scene.
 
+Under the lobby's **Galactic Conquest** mode, step 3 stops after the boss
+systems — each faction starts with one star and expands during play. That mode
+has its own doc: [conquest.md](conquest.md).
+
 ## The isolated-star bug
 
 The base game's `GalaxyBuilder.buildGraph()` builds a Delaunay triangulation of the
