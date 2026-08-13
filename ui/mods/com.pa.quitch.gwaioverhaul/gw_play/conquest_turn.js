@@ -146,15 +146,15 @@ define([], function () {
       return path && path.length === 2 ? path : false;
     });
 
-    _.forEach(
-      ["displayFight", "displayExplore", "displayLoadSave"],
-      function (name) {
-        var base = model[name];
-        model[name] = ko.computed(function () {
-          return !params.aiPhase() && !!base();
-        });
-      }
-    );
+    // Gating canFight/canExplore rather than the display computeds: those
+    // re-read these by property on every evaluation, so the gate takes hold
+    // whether or not the bindings captured the display computeds first.
+    _.forEach(["canFight", "canExplore"], function (name) {
+      var base = model[name];
+      model[name] = ko.computed(function () {
+        return !params.aiPhase() && !!base();
+      });
+    });
 
     // Losing against a faction boss loses the war outright. Guardians and
     // garrisons keep the stock retreat. Read before the base call: loseTurn

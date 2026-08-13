@@ -89,9 +89,8 @@ function setup(overrides) {
       return options.moveResult;
     },
     canMove: () => options.canMovePath,
-    displayFight: () => true,
-    displayExplore: () => true,
-    displayLoadSave: () => true,
+    canFight: () => true,
+    canExplore: () => true,
   });
   stubs.setGlobal("ko", {
     computed: (fn) => fn,
@@ -306,15 +305,14 @@ describe("input rules", () => {
     assert.equal(model.canMove(), false);
   });
 
-  it("disables movement and the action buttons during the AI phase", () => {
+  it("disables movement, fighting and exploring during the AI phase", () => {
     const t = setup();
     t.aiPhase(true);
     assert.equal(model.canMove(), false);
-    assert.equal(model.displayFight(), false);
-    assert.equal(model.displayExplore(), false);
-    assert.equal(model.displayLoadSave(), false);
+    assert.equal(model.canFight(), false);
+    assert.equal(model.canExplore(), false);
     t.aiPhase(false);
-    assert.equal(model.displayFight(), true);
+    assert.equal(model.canFight(), true);
   });
 });
 

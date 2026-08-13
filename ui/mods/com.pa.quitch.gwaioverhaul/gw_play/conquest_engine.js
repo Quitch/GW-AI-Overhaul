@@ -324,6 +324,7 @@ define([], function () {
           team: team,
           from: bossInfo.star,
           to: toStar,
+          movedAi: boss,
           writes: writes,
         });
         return;
