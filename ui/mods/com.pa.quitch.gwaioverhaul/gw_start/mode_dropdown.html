@@ -1,0 +1,14 @@
+<div class="form-group" id="gwo-war-mode">
+  <label id="gwo-war-mode-label" for="gwo-war-mode-select"
+    ><loc>Mode</loc>:</label
+  >
+  <span class="info_tip" data-bind="tooltip: model.gwoWarModeTooltip">?</span>
+  <select
+    class="form-control"
+    id="gwo-war-mode-select"
+    data-bind="selectPicker: gwoDifficultySettings.warMode"
+  >
+    <option value="war">GALACTIC WAR</option>
+    <option value="conquest">GALACTIC CONQUEST</option>
+  </select>
+</div>

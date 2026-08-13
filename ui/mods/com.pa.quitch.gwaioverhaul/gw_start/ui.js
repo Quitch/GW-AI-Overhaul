@@ -77,6 +77,7 @@ function gwoUI() {
       aiAlly: ko.observable("Penchant"),
       staticTech: ko.observable(false),
       largePlanets: ko.observable(false),
+      warMode: ko.observable("war"),
     };
 
     var difficultySettings = model.gwoDifficultySettings;
@@ -146,6 +147,8 @@ function gwoUI() {
       "!LOC:BASIC: base game tech cards<BR>GALACTIC WAR OVERHAUL: over 150 additional cards.";
     model.gwoFactionTooltip =
       "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
+    model.gwoWarModeTooltip =
+      "!LOC:GALACTIC WAR: every system is enemy-held from the start.<br>GALACTIC CONQUEST: each enemy faction expands from a single system, one system per turn, and you may only move one system at a time.";
 
     model.gwoGameOptionsDraft = {
       hardcore: ko.observable(false),
@@ -293,6 +296,10 @@ function gwoUI() {
     // of the Setup column's scroll flow.
     $("#gwo-game-options-modal").appendTo("body");
     addHtml.before("#faction-select", "faction_tooltip.html");
+    // Between the Faction and (hidden) Size form-groups.
+    $("#game-size")
+      .closest(".form-group")
+      .before(loadHtml(addHtml.path + "mode_dropdown.html"));
     addHtml.before("#game-size", "size_tooltip.html");
     addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");
     addHtml.before(gameDifficultyLabelId, "cards_dropdown.html");
@@ -319,6 +326,7 @@ function gwoUI() {
     locTree($("#difficulty-cards"));
     locTree($("#difficulty-ai-enemy"));
     locTree($("#difficulty-ai-ally"));
+    locTree($("#gwo-war-mode"));
 
     if (api.content.usingTitans()) {
       model.gwoFactionTooltip =
