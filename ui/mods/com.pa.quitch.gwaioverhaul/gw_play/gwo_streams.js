@@ -115,6 +115,73 @@ define([
       );
     },
 
+    // Conquest movement itself draws nothing; this only breaks ties left after
+    // the target-priority rules.
+    conquestMoveRng: function (warRng, team, turns) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_move", index(team))
+          .stream("turn", counter(turns))
+      );
+    },
+
+    // Keyed by the star's capture turn, not the current one: the garrison and
+    // game-modifier rolls must reproduce whenever that capture is rebuilt.
+    conquestModesRng: function (warRng, starIndex, capturedTurn) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_modes", index(starIndex))
+          .stream("turn", counter(capturedTurn))
+      );
+    },
+
+    conquestGarrisonRng: function (warRng, starIndex, capturedTurn) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_worker", index(starIndex))
+          .stream("turn", counter(capturedTurn))
+      );
+    },
+
+    conquestFoeRng: function (warRng, starIndex, turns) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_foe", index(starIndex))
+          .stream("turn", counter(turns))
+      );
+    },
+
+    conquestAllyRng: function (warRng, starIndex, turns) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_ally", index(starIndex))
+          .stream("turn", counter(turns))
+      );
+    },
+
+    conquestScaleRng: function (warRng, starIndex, tier) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_scale", index(starIndex))
+          .stream("tier", counter(tier))
+      );
+    },
+
+    conquestBossScaleRng: function (warRng, team, ownedStars) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_boss", index(team))
+          .stream("owned", counter(ownedStars))
+      );
+    },
+
     iterationRng: function (dealRng, iteration) {
       return dealRng && dealRng.stream("iteration", index(iteration));
     },

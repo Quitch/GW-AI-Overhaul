@@ -141,6 +141,13 @@ against.
 | ↳ `iteration.<i>`                                 | the roll picking the i-th card of a hand           |
 | ↳↳ `<cardId>`                                     | that card's own draws inside `deal()`              |
 | `battle.<star>` → `turn.<n>` → `landing_*`        | each army's landing policy                         |
+| `conquest_move.<team>` → `turn.<n>`               | a Conquest boss's movement tie-break               |
+| `conquest_modes.<star>` → `turn.<captured>`       | game-modifier rolls when a star is captured        |
+| `conquest_worker.<star>` → `turn.<captured>`      | the garrison left when a boss vacates a star       |
+| `conquest_foe.<star>` → `turn.<n>`                | that star's border-foe chance roll and build       |
+| `conquest_ally.<star>` → `turn.<n>`               | that star's allied-commander chance roll and build |
+| `conquest_scale.<star>` → `tier.<t>`              | a garrison's or foe's re-scaling at tier t         |
+| `conquest_boss.<team>` → `owned.<k>`              | a boss's re-scaling at k owned stars               |
 
 The goal is a war that reproduces **only when it is played the same way**: same seed,
 visiting the same stars, in the same order, winning at the same speed, taking the same

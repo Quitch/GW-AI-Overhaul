@@ -82,6 +82,13 @@ describe("gwo_streams fallback contract", () => {
     assert.equal(streams.battleRng(undefined, 1, 2), undefined);
     assert.equal(streams.iterationRng(undefined, 0), undefined);
     assert.equal(streams.cardRng(undefined, "gwc_minion"), undefined);
+    assert.equal(streams.conquestMoveRng(undefined, 0, 2), undefined);
+    assert.equal(streams.conquestModesRng(undefined, 1, 2), undefined);
+    assert.equal(streams.conquestGarrisonRng(undefined, 1, 2), undefined);
+    assert.equal(streams.conquestFoeRng(undefined, 1, 2), undefined);
+    assert.equal(streams.conquestAllyRng(undefined, 1, 2), undefined);
+    assert.equal(streams.conquestScaleRng(undefined, 1, 0), undefined);
+    assert.equal(streams.conquestBossScaleRng(undefined, 0, 1), undefined);
   });
 });
 
@@ -97,6 +104,13 @@ describe("gwo_streams determinism", () => {
         coopStar: draws(streams.coopStarDealRng(war, "uber-1", 3, 5)),
         treasure: draws(streams.treasureLoadoutRng(war, "uber-1", 3)),
         battle: draws(streams.battleRng(war, 3, 5)),
+        conquestMove: draws(streams.conquestMoveRng(war, 1, 5)),
+        conquestModes: draws(streams.conquestModesRng(war, 3, 5)),
+        conquestGarrison: draws(streams.conquestGarrisonRng(war, 3, 5)),
+        conquestFoe: draws(streams.conquestFoeRng(war, 3, 5)),
+        conquestAlly: draws(streams.conquestAllyRng(war, 3, 5)),
+        conquestScale: draws(streams.conquestScaleRng(war, 3, 2)),
+        conquestBoss: draws(streams.conquestBossScaleRng(war, 1, 4)),
       };
     };
     assert.deepEqual(build(), build());
@@ -236,12 +250,45 @@ describe("gwo_streams key collisions", () => {
       for (const turns of [0, 1, 2]) {
         add(`ai:${star}:${turns}`, streams.aiStarDealRng(war, star, turns));
         add(`battle:${star}:${turns}`, streams.battleRng(war, star, turns));
+        add(
+          `conquestModes:${star}:${turns}`,
+          streams.conquestModesRng(war, star, turns)
+        );
+        add(
+          `conquestGarrison:${star}:${turns}`,
+          streams.conquestGarrisonRng(war, star, turns)
+        );
+        add(
+          `conquestFoe:${star}:${turns}`,
+          streams.conquestFoeRng(war, star, turns)
+        );
+        add(
+          `conquestAlly:${star}:${turns}`,
+          streams.conquestAllyRng(war, star, turns)
+        );
+        add(
+          `conquestScale:${star}:${turns}`,
+          streams.conquestScaleRng(war, star, turns)
+        );
         for (const reroll of [0, 1, 2]) {
           add(
             `explore:${star}:${turns}:${reroll}`,
             streams.exploreDealRng(war, star, turns, reroll)
           );
         }
+      }
+    }
+
+    for (const team of [0, 1, 2]) {
+      for (const turns of [0, 1, 2]) {
+        add(
+          `conquestMove:${team}:${turns}`,
+          streams.conquestMoveRng(war, team, turns)
+        );
+        add(
+          `conquestBoss:${team}:${turns}`,
+          streams.conquestBossScaleRng(war, team, turns)
+        );
       }
     }
 
