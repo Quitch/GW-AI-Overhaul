@@ -502,6 +502,32 @@ describe("loadoutIcon", () => {
     withVictory("x", 99);
     assert.equal(cards.loadoutIcon("x"), fallback);
   });
+
+  it("derives the storage key from the mode", () => {
+    assert.equal(cards.victoryKey("x", false), "gwaio_victory_x");
+    assert.equal(cards.victoryKey("x", true), "gwaio_conquest_victory_x");
+  });
+
+  // A Conquest win must never light up a War badge, nor the reverse.
+  it("reads the Conquest key in Conquest mode, and only then", () => {
+    const store = {
+      gwaio_victory_x: JSON.stringify(4),
+      gwaio_conquest_victory_x: JSON.stringify(1),
+    };
+    setGlobal("window", { localStorage: store });
+    try {
+      cards.setLoadoutIconMode("conquest");
+      assert.equal(cards.loadoutIcon("x"), iconPath + "1_iron.png");
+      cards.setLoadoutIconMode("war");
+      assert.equal(cards.loadoutIcon("x"), iconPath + "4_gold.png");
+
+      cards.setLoadoutIconMode("conquest");
+      delete store.gwaio_conquest_victory_x;
+      assert.equal(cards.loadoutIcon("x"), fallback);
+    } finally {
+      cards.setLoadoutIconMode("war");
+    }
+  });
 });
 
 describe("hasT2Access", () => {

@@ -25,10 +25,6 @@ function gwoRecordHighestDifficultyDefeated() {
     };
 
     var loadoutId = game.inventory().cards()[0].id;
-    var defeatedDifficulties = ko
-      .observable()
-      .extend({ local: "gwaio_victory_" + loadoutId });
-    var previousBest = getPreviousBest(defeatedDifficulties());
 
     var isNewHighScore = function (currentDifficulty, previousBest) {
       return (
@@ -41,8 +37,15 @@ function gwoRecordHighestDifficultyDefeated() {
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
       ],
-      function (gwoDifficulty) {
+      function (gwoDifficulty, gwoCard) {
+        // A Conquest win records to its own key and never touches the
+        // Galactic War badge - see victoryKey in shared/cards.js.
+        var defeatedDifficulties = ko.observable().extend({
+          local: gwoCard.victoryKey(loadoutId, !!gwoSettings.conquest),
+        });
+        var previousBest = getPreviousBest(defeatedDifficulties());
         // Read from the difficulty data, not restated: renaming or inserting a
         // tier would otherwise shift everybody's badge history.
         var tierIndex = _.findIndex(

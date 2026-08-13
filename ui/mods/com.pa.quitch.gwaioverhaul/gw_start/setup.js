@@ -188,6 +188,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/conquest_setup.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_scaling.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
@@ -212,6 +213,7 @@ function gwoSetup() {
         gwoConquestSetup,
         gwoAI,
         gwoScaling,
+        gwoCard,
         loadouts,
         gwoLoadoutBanks,
         favouriteLoadoutsModule,
@@ -225,10 +227,7 @@ function gwoSetup() {
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
         gwoFavourites = favouritesModule;
 
-        // Resolved before the list is built so a mod loadout the player has
-        // earned shows as unlocked rather than as a locked hint.
-        requireGW(gwoLoadoutBanks.paths(), function () {
-          gwoLoadoutBanks.resolve(_.toArray(arguments));
+        var rebuildStartCards = function () {
           model.startCards(
             gwoFavouriteLoadouts.sortCardsByFavourite(
               loadouts.startCards(),
@@ -236,6 +235,27 @@ function gwoSetup() {
               cardId
             )
           );
+        };
+
+        // Resolved before the list is built so a mod loadout the player has
+        // earned shows as unlocked rather than as a locked hint.
+        requireGW(gwoLoadoutBanks.paths(), function () {
+          gwoLoadoutBanks.resolve(_.toArray(arguments));
+          rebuildStartCards();
+        });
+
+        // Each mode shows its own victory badges, and a card view model
+        // snapshots its icon at load - so a mode change rebuilds the list.
+        // Deferred: ui.js creates gwoDifficultySettings after this script.
+        _.defer(function () {
+          var applyLoadoutIconMode = function (mode) {
+            gwoCard.setLoadoutIconMode(mode);
+            rebuildStartCards();
+          };
+          model.gwoDifficultySettings.warMode.subscribe(applyLoadoutIconMode);
+          if (model.gwoDifficultySettings.warMode() !== "war") {
+            applyLoadoutIconMode(model.gwoDifficultySettings.warMode());
+          }
         });
         var processedStartCards = {};
         var loadCount = loadouts.allCards.length;

@@ -52,6 +52,16 @@ define(function () {
     return system.distance() > thresholds[tier];
   };
 
+  // Galactic Conquest victories record under their own key, so the two modes'
+  // badge histories never overwrite each other.
+  var victoryKey = function (loadoutId, conquest) {
+    return (
+      (conquest ? "gwaio_conquest_victory_" : "gwaio_victory_") + loadoutId
+    );
+  };
+
+  var loadoutIconMode = "war";
+
   return {
     getConnectedClients: getConnectedClients,
 
@@ -112,8 +122,19 @@ define(function () {
       );
     },
 
+    victoryKey: victoryKey,
+
+    // gw_start sets this from the Mode dropdown so the loadout list shows the
+    // badges of the mode about to be played.
+    setLoadoutIconMode: function (mode) {
+      loadoutIconMode = mode;
+    },
+
     loadoutIcon: function (loadoutId) {
-      var raw = window.localStorage["gwaio_victory_" + loadoutId];
+      var raw =
+        window.localStorage[
+          victoryKey(loadoutId, loadoutIconMode === "conquest")
+        ];
       var decoded;
 
       // localStorage is user-writable, and this runs while building the loadout
