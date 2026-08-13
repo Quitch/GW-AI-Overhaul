@@ -305,6 +305,31 @@ describe("input rules", () => {
     assert.equal(model.canMove(), false);
   });
 
+  it("refuses to jump away from a boss in the player's system", () => {
+    setup({ stars: [makeStar({ boss: true, team: 0 }), makeStar()] });
+    assert.equal(model.canMove(), false);
+  });
+
+  it("refuses to jump away from a boss stacked on the player's star", () => {
+    setup({
+      stars: [
+        makeStar({ boss: true, team: 0, foes: [{ boss: true, team: 1 }] }),
+        makeStar(),
+      ],
+    });
+    assert.equal(model.canMove(), false);
+  });
+
+  it("still allows a jump away from the Guardians or a garrison", () => {
+    setup({ stars: [makeStar({ boss: true, mirrorMode: true }), makeStar()] });
+    assert.deepEqual(model.canMove(), [0, 1]);
+
+    setup({
+      stars: [makeStar({ team: 0, foes: [{ faction: 2 }] }), makeStar()],
+    });
+    assert.deepEqual(model.canMove(), [0, 1]);
+  });
+
   it("disables movement, fighting and exploring during the AI phase", () => {
     const t = setup();
     t.aiPhase(true);

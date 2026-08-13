@@ -45,7 +45,8 @@ snapshots the board (cloned - the planner never mutates live state), runs
 `conquest_engine.planPhase`, applies the returned steps in order, saves once
 with `gwoSave(game, true)`, and announces any eliminations with the stock
 popup. `model.gwoConquestAiPhase` blocks Move/Fight/Explore while it runs, and
-`canMove` only passes single-hop paths.
+`canMove` only passes single-hop paths, and none at all while a faction boss
+stands in the player's system.
 
 Each faction, in team order:
 
@@ -83,6 +84,9 @@ Rules the engine carries:
   duplicated per faction), and an allied commander at
   `alliedCommanderChance x bordering player systems` percent, suppressed by
   the same ally-breaking loadouts as setup.
+- **A faction boss in the player's system has to be fought**: the jump button
+  is withheld while one stands there, stacked bosses included. The Guardians
+  and garrisons keep the stock freedom to leave.
 - **Losing to a faction boss loses the war**, hardcore or not; the Guardians
   and garrisons keep the stock retreat.
 - **defeatTeam** (Conquest variant, installed by the driver) clears a beaten

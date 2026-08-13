@@ -135,11 +135,21 @@ define([], function () {
         });
     };
 
+    // A faction boss that has moved onto the player's star has to be fought;
+    // the Guardians and garrisons keep the stock freedom to jump away.
+    var bossInPlayerSystem = function () {
+      var ai = currentStarAi();
+      if (!ai) {
+        return false;
+      }
+      return (!!ai.boss && !ai.mirrorMode) || _.some(ai.foes || [], "boss");
+    };
+
     // One hop per turn: a longer path costs the game several turns in one
     // click, which Conquest's you-then-them rhythm cannot allow.
     var baseCanMove = model.canMove;
     model.canMove = ko.computed(function () {
-      if (params.aiPhase()) {
+      if (params.aiPhase() || bossInPlayerSystem()) {
         return false;
       }
       var path = baseCanMove();
