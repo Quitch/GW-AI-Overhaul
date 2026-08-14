@@ -25,19 +25,26 @@ function gwoConquest() {
   try {
     model.gwoConquestAiPhase = ko.observable(false);
 
-    // The stock owner computed paints a jumped boss's colour; counter-write
-    // the player's after it (scene mods register later), tracking the same
-    // dependencies so every stock repaint re-runs this. See docs/conquest.md.
+    // The stock owner computed paints a jumped boss's colour and reads
+    // ownerColor back, so a counter-writing computed only triggers another
+    // boss-coloured repaint. Intercept the write instead: while the boss
+    // waits to be fought the star is still the player's, whatever repaints.
     _.forEach(model.galaxy.systems(), function (system) {
-      ko.computed(function () {
-        var ai = system.star.ai();
-        system.connected();
-        model.cheats.noFog();
-        system.star.hasCard();
-        if (ai && ai.conquestJumped) {
-          system.ownerColor(model.player.color().concat(3));
+      var baseOwnerColor = system.ownerColor;
+      system.ownerColor = function (value) {
+        if (arguments.length) {
+          var ai = system.star.ai();
+          if (ai && ai.conquestJumped) {
+            value = model.player.color().concat(3);
+          }
+          return baseOwnerColor(value);
         }
-      });
+        return baseOwnerColor();
+      };
+      var jumpedAi = system.star.ai();
+      if (jumpedAi && jumpedAi.conquestJumped) {
+        baseOwnerColor(model.player.color().concat(3));
+      }
     });
 
     requireGW(
