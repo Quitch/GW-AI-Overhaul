@@ -18,9 +18,13 @@ define([], function () {
   };
 
   // A star's persistent owner: a boss standing on its own garrison carries the
-  // displaced garrison until it moves on.
+  // displaced garrison until it moves on, and a boss that jumped the player
+  // (ai.conquestJumped) holds nothing - the star stays the player's.
   var ownerAi = function (ai) {
-    return ai && ai.conquestDisplaced ? ai.conquestDisplaced : ai;
+    if (!ai || ai.conquestJumped) {
+      return null;
+    }
+    return ai.conquestDisplaced ? ai.conquestDisplaced : ai;
   };
 
   var planPhase = function (board, ctx) {
@@ -358,6 +362,11 @@ define([], function () {
         boss.conquestDisplaced = target;
       } else {
         capture(boss, toStar);
+        // The player's star is attacked, not captured: ownership stays with
+        // the player until the boss wins. See docs/conquest.md.
+        if (toStar === board.playerStar) {
+          boss.conquestJumped = true;
+        }
       }
       writes.push(write(toStar, boss));
       record({
@@ -481,7 +490,7 @@ define([], function () {
           neighborsOf(starIndex),
           function (neighbor) {
             var neighbourStar = board.stars[neighbor];
-            return !neighbourStar.ai && neighbourStar.visited;
+            return !ownerAi(neighbourStar.ai) && neighbourStar.visited;
           }
         ).length;
         if (!playerNeighbours) {

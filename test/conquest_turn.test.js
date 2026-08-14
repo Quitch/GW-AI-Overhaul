@@ -542,6 +542,17 @@ describe("the pending fight stamp", () => {
     assert.equal(t.calls.saves.length, 0);
   });
 
+  it("records no owner for a boss that jumped the player", () => {
+    const t = setup({
+      stars: [
+        makeStar({ boss: true, team: 0, conquestJumped: true }),
+        makeStar({ team: 1 }),
+      ],
+    });
+    assert.equal(t.game.fight(), true);
+    assert.deepEqual(t.cfg.pendingFight.owners, [null, 1]);
+  });
+
   it("leaves no stamp when the fight was refused", () => {
     const t = setup({
       fightResult: false,

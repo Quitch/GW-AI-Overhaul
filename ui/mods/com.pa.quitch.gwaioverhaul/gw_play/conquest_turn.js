@@ -315,7 +315,10 @@ define([], function () {
           ai: _.cloneDeep(currentStarAi()),
           owners: _.map(game.galaxy().stars(), function (star) {
             var ai = star.ai();
-            return ai && _.isNumber(ai.team) ? ai.team : null;
+            // A jumped boss holds nothing - the star is still the player's.
+            return ai && !ai.conquestJumped && _.isNumber(ai.team)
+              ? ai.team
+              : null;
           }),
         };
         game.saved(false);

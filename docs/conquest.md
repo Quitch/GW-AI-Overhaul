@@ -65,7 +65,8 @@ Each faction, in team order:
 
 1. A boss adjacent to the player moves onto the player's star and waits to be
    fought - unless the player is at the treasure star, which would mean taking
-   the Guardians' system.
+   the Guardians' system. The jump is an attack, not a capture (see the engine
+   rules below).
 2. Otherwise it captures one adjacent system by the priority ladder: never the
    Guardians; prefer unexplored; prefer a candidate bordering at least one
    non-friendly system, else the candidate closest to the player; then most
@@ -82,6 +83,12 @@ Rules the engine carries:
   tier, inheriting those capture-time rolls; a boss crossing its own territory
   instead carries the displaced garrison (`ai.conquestDisplaced`) and restores
   it on departure.
+- **The player's star is attacked, not captured**: a jump stamps
+  `ai.conquestJumped` and the system stays under the player's control - it is
+  not counted, painted or rolled as the boss's, and the player's neighbours
+  still see a player system. The boss must beat the player to take it, and as
+  that loss ends the war the transfer is never recorded. The battle itself is
+  unchanged: the jump still rolls the capture-time game modifiers.
 - **Boss versus boss**: the faction with more systems wins; the attacker wins
   ties; the loser is eliminated and its systems become unowned. On the
   player's star bosses stack instead - the arrival becomes a boss-flagged
@@ -129,7 +136,8 @@ or explore that resolves it.
 The base game applies a battle's result and saves before scene mods load, so
 no wrap in the driver ever sees the host's own fight resolve. `game.fight`
 therefore stamps `cfg.pendingFight` - the fought star, the turn, a clone of
-its ai and a map of every star's owning team - and clears `galaxy.saved` so
+its ai and a map of every star's owning team (a jumped boss's star records no
+owner) - and clears `galaxy.saved` so
 that gw_play.js's own save, the next statement it runs, carries the stamp to
 disk. The next driver install reconciles: a loss against a faction
 boss loses the war, a boss win replays the Conquest elimination from the

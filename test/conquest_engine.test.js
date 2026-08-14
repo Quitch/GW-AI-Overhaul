@@ -172,7 +172,12 @@ describe("boss movement", () => {
     });
     const result = engine.planPhase(board, makeCtx());
     assert.equal(stepsOf(result, "move")[0].to, 0);
-    assert.equal(board.stars[0].ai.boss, true);
+    const jumped = board.stars[0].ai;
+    assert.equal(jumped.boss, true);
+    // An attack, not a capture: the battle rolls stay, ownership does not.
+    assert.equal(jumped.conquestJumped, true);
+    assert.equal(jumped.capturedTurn, 3);
+    assert.equal(jumped.modifiersRolled, 1);
   });
 
   it("holds while it occupies the player's star", () => {
@@ -449,7 +454,7 @@ describe("boss versus boss", () => {
 
 describe("stacking on the player's star", () => {
   it("joins a boss already holding the player's star instead of colliding", () => {
-    const hostBoss = boss(0);
+    const hostBoss = boss(0, { conquestJumped: true });
     const arriving = boss(1);
     const board = makeBoard({
       playerStar: 0,
@@ -460,6 +465,8 @@ describe("stacking on the player's star", () => {
     assert.deepEqual(result.events, []);
     assert.equal(board.stars[0].ai, hostBoss);
     assert.deepEqual(hostBoss.foes, [arriving]);
+    assert.equal(hostBoss.conquestJumped, true);
+    assert.equal(arriving.conquestJumped, undefined);
     assert.equal(board.stars[1].ai.garrison, true);
   });
 
@@ -566,6 +573,22 @@ describe("foe rolls", () => {
     assert.equal(stepsOf(borderBoard(5, { foe: 10 }).result, "foe").length, 0);
   });
 
+  it("rolls nothing for a boss that jumped the player", () => {
+    // The jumped star has no owner to gain a foe, and its boss's team does
+    // not count as bordering the garrison next door.
+    const board = makeBoard({
+      turns: 4,
+      playerStar: 0,
+      edges: [[0, 1]],
+      stars: [
+        star(boss(0, { conquestJumped: true }), { visited: true }),
+        star(garrison(1)),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+    assert.equal(stepsOf(result, "foe").length, 0);
+  });
+
   it("never duplicates a faction's foe on one star", () => {
     const withFoe = borderBoard(4, { foe: 10 });
     const board = withFoe.board;
@@ -629,6 +652,25 @@ describe("ally rolls", () => {
     );
   });
 
+  it("still counts the player's star as player-held under a jumped boss", () => {
+    const owner = garrison(1);
+    const board = makeBoard({
+      turns: 4,
+      playerStar: 0,
+      edges: [[0, 1]],
+      stars: [
+        star(boss(0, { conquestJumped: true }), { visited: true }),
+        star(owner),
+      ],
+    });
+    const result = engine.planPhase(
+      board,
+      makeCtx({ factions: [0, 1], rolls: { ally: 10 } })
+    );
+    assert.equal(stepsOf(result, "ally").length, 1);
+    assert.equal(owner.ally.name, "Ally");
+  });
+
   it("never doubles up an existing ally", () => {
     assert.equal(
       stepsOf(
@@ -679,6 +721,20 @@ describe("tier refresh", () => {
     engine.planPhase(board, makeCtx({ factions: [0, 1] }));
     assert.equal(foe.refreshedAt, 2);
     assert.equal(foe.appliedTier, 2);
+  });
+
+  it("does not count the jump toward the boss's tier", () => {
+    const theBoss = boss(0, { appliedTier: 1 });
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[0, 1]],
+      stars: [star(null, { visited: true }), star(theBoss)],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    // The boss owns only the garrison it left behind, matching appliedTier.
+    assert.equal(board.stars[0].ai, theBoss);
+    assert.equal(theBoss.refreshedAt, undefined);
+    assert.equal(stepsOf(result, "refresh").length, 0);
   });
 
   it("re-scales a boss by the number of systems its faction owns", () => {

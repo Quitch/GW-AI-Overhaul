@@ -25,6 +25,21 @@ function gwoConquest() {
   try {
     model.gwoConquestAiPhase = ko.observable(false);
 
+    // The stock owner computed paints a jumped boss's colour; counter-write
+    // the player's after it (scene mods register later), tracking the same
+    // dependencies so every stock repaint re-runs this. See docs/conquest.md.
+    _.forEach(model.galaxy.systems(), function (system) {
+      ko.computed(function () {
+        var ai = system.star.ai();
+        system.connected();
+        model.cheats.noFog();
+        system.star.hasCard();
+        if (ai && ai.conquestJumped) {
+          system.ownerColor(model.player.color().concat(3));
+        }
+      });
+    });
+
     requireGW(
       [
         "shared/gw_factions",
