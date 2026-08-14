@@ -108,6 +108,10 @@ Rules the engine carries:
 
 Everything the phase does is a pure function of (war seed, saved state, turn):
 every draw comes from the `conquest_*` streams in `gw_play/gwo_streams.js`.
+`cfg` lives in the origin star's `system` block, which `gw_galaxy.js` omits
+from an ordinary save once `galaxy.saved` is set - so every write to it must
+be persisted with `gwoSave(game, true)`, whose second argument is
+`saveStars`, not a force flag.
 `cfg.lastAiPhaseTurn`, persisted with the save, marks the last turn whose
 phase completed - a battle's scene teardown or a crash mid-phase re-runs the
 phase from identical saved state with an identical outcome, a rejected click
@@ -117,8 +121,8 @@ or explore that resolves it.
 The base game applies a battle's result and saves before scene mods load, so
 no wrap in the driver ever sees the host's own fight resolve. `game.fight`
 therefore stamps `cfg.pendingFight` - the fought star, the turn, a clone of
-its ai and a map of every star's owning team - which the fight-launch save
-persists, and the next driver install reconciles: a loss against a faction
+its ai and a map of every star's owning team - saves with
+`gwoSave(game, true)`, and the next driver install reconciles: a loss against a faction
 boss loses the war, a boss win replays the Conquest elimination from the
 stamp (the owner map recovers the ownership stock `defeatTeam` wiped), and an
 abandoned battle keeps the stamp. Viewers replay battle results as campaign

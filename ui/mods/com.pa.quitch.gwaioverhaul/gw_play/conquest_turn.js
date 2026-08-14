@@ -301,8 +301,9 @@ define([], function () {
 
     // gw_play.js applies lastBattleResult before scene mods load, so on the
     // host no wrap here ever sees a real battle's outcome. The launch stamp
-    // records what was fought - self.fight saves right after game.fight() -
-    // and the next install reconciles the result below.
+    // records what was fought, and the next install reconciles it below.
+    // Saved with the stars: cfg lives in a star's system block, which an
+    // ordinary save omits once galaxy.saved is set.
     var baseFight = game.fight;
     game.fight = function () {
       var result = baseFight.apply(game, arguments);
@@ -316,6 +317,7 @@ define([], function () {
             return ai && _.isNumber(ai.team) ? ai.team : null;
           }),
         };
+        params.save(game, true);
       }
       return result;
     };

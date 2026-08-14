@@ -535,6 +535,9 @@ describe("the pending fight stamp", () => {
     assert.deepEqual(pending.ai, ai);
     assert.notEqual(pending.ai, ai);
     assert.deepEqual(pending.owners, [0, 1, null]);
+    // Saved with the stars, or the stamp never reaches the disk: cfg lives
+    // in a star's system block.
+    assert.deepEqual(t.calls.saves, [[t.game, true]]);
   });
 
   it("leaves no stamp when the fight was refused", () => {
@@ -544,6 +547,7 @@ describe("the pending fight stamp", () => {
     });
     assert.equal(t.game.fight(), false);
     assert.equal(t.cfg.pendingFight, undefined);
+    assert.equal(t.calls.saves.length, 0);
   });
 
   it("is cleared by an in-scene defeatTeam", () => {
