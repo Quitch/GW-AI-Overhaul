@@ -34,11 +34,11 @@ system at a time.
   faction exactly its spawn star, still boss-marked (pinned in
   `test/gwo_breeder.test.js`).
 - `makeBoss` receives the team without its `systemTemplate`, so the boss keeps
-  its personality and card but the origin keeps its procedural system.
+  its personality and card but its spawn star keeps its procedural system.
 - The boss is scaled to one owned system rather than the galaxy rim, and
   stamped `capturedTurn: 1` / `appliedTier`.
 - No workers exist, so the setup-time foe and ally rolls never run.
-- The Guardians are placed on a seeded unowned star (the stock sweep's "first
+- The Guardians are placed on a seeded unowned star (the War sweep's "first
   non-boss AI star" finds nothing when every AI star is a boss). They are
   scaled to `maxDist` once and never expand or re-scale.
 - `onAisFinished` stamps `originSystem.gwaio.conquest`: `maxDist`,

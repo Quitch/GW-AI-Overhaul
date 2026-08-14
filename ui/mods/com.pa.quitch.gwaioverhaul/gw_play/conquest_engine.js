@@ -173,7 +173,7 @@ define([], function () {
     };
 
     // One hop toward the nearest friendly star that borders something
-    // capturable, walked through friendly territory only.
+    // capturable or the player's star, walked through friendly territory only.
     var marchStep = function (fromStar, team) {
       var isFrontier = function (starIndex) {
         return _.some(neighborsOf(starIndex), function (neighbor) {

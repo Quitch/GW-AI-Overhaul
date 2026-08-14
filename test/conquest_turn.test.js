@@ -169,8 +169,8 @@ function setup(overrides) {
     warRng: {},
     alliesSuppressed: false,
     aiPhase: trackedAiPhase,
-    save: (savedGame, force) => {
-      calls.saves.push([savedGame, force]);
+    save: (savedGame, saveStars) => {
+      calls.saves.push([savedGame, saveStars]);
       if (options.onSave) {
         options.onSave(savedGame);
       }
@@ -325,7 +325,7 @@ describe("the phase run", () => {
     assert.deepEqual(t.aiPhaseWrites, [true, false]);
   });
 
-  it("saves once, with force, after the steps land", async () => {
+  it("saves once, with saveStars set, after the steps land", async () => {
     const t = setup();
     await t.driver.runPhaseIfDue();
     assert.equal(t.calls.saves.length, 1);

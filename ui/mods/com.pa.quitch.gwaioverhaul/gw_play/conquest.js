@@ -104,8 +104,9 @@ function gwoConquest() {
           });
         };
 
-        // Deferred so systems.js's async overrides of canMove, the display
-        // computeds and defeatTeam exist before the driver wraps them.
+        // Deferred so the overrides systems.js installs after this script -
+        // canMove, the display computeds and defeatTeam - exist before the
+        // driver wraps them.
         _.defer(function () {
           gwoTurnFactory({
             game: game,

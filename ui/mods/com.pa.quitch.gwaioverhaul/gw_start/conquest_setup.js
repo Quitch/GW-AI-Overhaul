@@ -55,9 +55,10 @@ define([], function () {
   };
 
   return {
-    // In Conquest every AI star is a boss star, so the stock sweep's "first
-    // non-boss AI star" rule finds nothing and the Guardians need their own
-    // placement: any star no faction spawned on, except the player's origin.
+    // In Conquest no faction spreads, so every star holding an AI is that
+    // faction's boss star and the War sweep's "first non-boss AI star" rule
+    // finds nothing. The Guardians need their own placement: any star no
+    // faction spawned on, except the player's origin.
     guardiansCandidates: function (stars, originIndex) {
       var candidates = [];
       _.forEach(stars, function (star, starIndex) {

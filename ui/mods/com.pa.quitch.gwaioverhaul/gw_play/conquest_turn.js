@@ -5,11 +5,8 @@
 // so the logic stays measurable; gw_play/conquest.js instantiates it with
 // the live scene objects.
 //
-// The phase runs on the host and on every co-op viewer alike: a viewer's
-// applyCampaignAction calls the same wrapped verbs, so the deterministic
-// planner reproduces the host's phase locally. Only the host's save
-// persists. It must not consult gwCampaignReplayingAction, which is cleared
-// before async work completes. See docs/conquest.md.
+// The phase runs identically on the host and every co-op viewer, and must
+// never consult gwCampaignReplayingAction. See docs/conquest.md.
 define([], function () {
   var factory = function (params) {
     var game = params.game;
@@ -93,10 +90,9 @@ define([], function () {
     };
 
     // Runs the phase exactly once per turn, and only after the turn is
-    // resolved: the marker persists with the save, so a battle's scene
-    // teardown or a crash mid-phase re-runs it from identical state - the
-    // planner is deterministic, so with an identical outcome. Doubles as the
-    // no-op path when move() rejected the click.
+    // resolved (cfg.lastAiPhaseTurn persists with the save; see
+    // docs/conquest.md). Doubles as the no-op path when move() rejected the
+    // click.
     var runPhaseIfDue = function () {
       var turns = game.stats().turns();
       if (
@@ -175,7 +171,7 @@ define([], function () {
 
     // One hop per turn - a longer path costs the game several turns in one
     // click, which Conquest's you-then-them rhythm cannot allow - and none
-    // at all until the destination is resolved.
+    // at all until the turn is resolved.
     var baseCanMove = model.canMove;
     model.canMove = ko.computed(function () {
       if (params.aiPhase() || !turnResolved()) {
@@ -299,12 +295,10 @@ define([], function () {
       delete cfg.pendingFight;
     };
 
-    // gw_play.js applies lastBattleResult before scene mods load, so on the
-    // host no wrap here ever sees a real battle's outcome. The launch stamp
-    // records what was fought, and the next install reconciles it below.
-    // cfg lives in a star's system block, which a save omits once
-    // galaxy.saved is set, so clear the flag and let gw_play.js's own save -
-    // the next statement after this call - carry the stamp to disk.
+    // The host's battle outcomes are applied before scene mods load, so the
+    // launch stamps what was fought and clears galaxy.saved - gw_play.js's
+    // save, the next statement after this call, then carries the stamp to
+    // disk for the next install to reconcile. See docs/conquest.md.
     var baseFight = game.fight;
     game.fight = function () {
       var result = baseFight.apply(game, arguments);

@@ -653,7 +653,7 @@ function gwoSetup() {
             };
 
             var handleBoss = function (star, ai) {
-              // Conquest keeps the origin's procedural system: without
+              // Conquest keeps the spawn star's procedural system: without
               // systemTemplate, makeBoss still merges the boss and its card.
               var team = conquestMode
                 ? _.omit(teams[ai.team], "systemTemplate")
