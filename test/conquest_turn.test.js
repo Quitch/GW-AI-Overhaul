@@ -74,6 +74,7 @@ function setup(overrides) {
     stats: () => ({ turns: () => options.turns }),
     gameState: observable(options.gameState),
     turnState: observable(options.turnState || "end"),
+    saved: observable(true),
     currentStar: observable(options.currentStar),
     galaxy: () => ({
       stars: () => options.stars,
@@ -535,9 +536,10 @@ describe("the pending fight stamp", () => {
     assert.deepEqual(pending.ai, ai);
     assert.notEqual(pending.ai, ai);
     assert.deepEqual(pending.owners, [0, 1, null]);
-    // Saved with the stars, or the stamp never reaches the disk: cfg lives
-    // in a star's system block.
-    assert.deepEqual(t.calls.saves, [[t.game, true]]);
+    // gw_play.js saves immediately after game.fight(); clearing the flag is
+    // what makes that save carry the star systems the stamp lives in.
+    assert.equal(t.game.saved(), false);
+    assert.equal(t.calls.saves.length, 0);
   });
 
   it("leaves no stamp when the fight was refused", () => {
@@ -547,7 +549,7 @@ describe("the pending fight stamp", () => {
     });
     assert.equal(t.game.fight(), false);
     assert.equal(t.cfg.pendingFight, undefined);
-    assert.equal(t.calls.saves.length, 0);
+    assert.equal(t.game.saved(), true);
   });
 
   it("is cleared by an in-scene defeatTeam", () => {
