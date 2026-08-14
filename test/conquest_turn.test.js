@@ -704,6 +704,28 @@ describe("battle reconciliation at install", () => {
     assert.equal(t.calls.saves.length, 1);
   });
 
+  // A stamp shape from before ai was recorded must not kill the install.
+  it("reconciles a stamp with no recorded ai as a non-boss fight", () => {
+    const rewound = setup({
+      currentStar: 0,
+      pendingFight: { star: 1, turn: 2, owners: [null, 0] },
+      stars: [makeStar(), makeStar({ team: 0 })],
+    });
+    assert.equal(rewound.game.gameState(), "active");
+    assert.equal(rewound.cfg.pendingFight, undefined);
+    assert.deepEqual(rewound.calls.saves, [[rewound.game, true]]);
+    assert.equal(rewound.calls.gateWrites.length, 0);
+
+    const inPlace = setup({
+      currentStar: 0,
+      pendingFight: { star: 0, turn: 2, owners: [0, null] },
+      stars: [makeStar(undefined, { cards: ["gwc_a"] }), makeStar()],
+    });
+    assert.deepEqual(inPlace.options.stars[0].cardList(), ["gwc_a"]);
+    assert.equal(inPlace.cfg.pendingFight, undefined);
+    assert.equal(inPlace.calls.saves.length, 1);
+  });
+
   it("replays the Conquest elimination for a boss win the stock path resolved", () => {
     const t = setup({
       currentStar: 0,

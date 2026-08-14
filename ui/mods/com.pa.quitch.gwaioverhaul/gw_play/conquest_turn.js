@@ -363,18 +363,22 @@ define([], function () {
         return;
       }
       delete cfg.pendingFight;
+      // A save can carry a stamp with no ai. Throwing on one would fail
+      // every load of that war: the stamp stays in the save until this
+      // reconciliation completes and the save below rewrites it.
+      var pendingAi = pending.ai || {};
       var facedFactionBoss =
-        (!!pending.ai.boss && !pending.ai.mirrorMode) ||
-        _.some(pending.ai.foes || [], "boss");
+        (!!pendingAi.boss && !pendingAi.mirrorMode) ||
+        _.some(pendingAi.foes || [], "boss");
       if (game.currentStar() !== pending.star) {
         // Stock loseTurn rewound the player.
         if (facedFactionBoss && game.gameState() === "active") {
           loseWar();
           return;
         }
-      } else if (!foughtStarAi && pending.ai.boss) {
+      } else if (!foughtStarAi && pendingAi.boss) {
         // Stock winTurn cleared the star through stock defeatTeam.
-        eliminate(pending.ai, pending.ai.team, pending.owners);
+        eliminate(pendingAi, pendingAi.team, pending.owners);
       }
       params.save(game, true);
     };
