@@ -35,8 +35,8 @@ system at a time.
   `test/gwo_breeder.test.js`).
 - `makeBoss` receives the team without its `systemTemplate`, so the boss keeps
   its personality and card but its spawn star keeps its procedural system.
-- The boss is scaled to one owned system rather than the galaxy rim, and
-  stamped `capturedTurn: 1` / `appliedTier`.
+- The boss is scaled to the fair-share tier for its one owned system rather
+  than the galaxy rim, and stamped `capturedTurn: 1` / `appliedTier`.
 - No workers exist, so the setup-time foe and ally rolls never run.
 - The Guardians are placed on a seeded unowned star (the War sweep's "first
   non-boss AI star" finds nothing when every AI star is a boss). They are
@@ -104,10 +104,14 @@ Rules the engine carries:
   arrival becomes a boss-flagged entry in the occupier's `foes`, every boss
   present joins the one battle, and a stacked star is not capturable by
   anyone else.
-- **Tiers**: presence scales with `min(floor(heldTurns / 2), maxDist)` fed to
-  the same scaling arithmetic as war generation (`shared/ai_scaling.js`).
-  Garrisons key on their system's `capturedTurn`, foes on their own
-  `createdTurn`, bosses on systems owned. Re-scaling happens in the phase, so
+- **Tiers**: garrison and foe presence scales with
+  `min(floor(heldTurns / 2), maxDist)` fed to the same scaling arithmetic as
+  war generation (`shared/ai_scaling.js`); garrisons key on their system's
+  `capturedTurn`, foes on their own `createdTurn`. A boss scales by the
+  fraction of its faction's fair share it owns -
+  `ceil(owned * (bossCount + 1) * maxDist / totalStars)`, the galaxy split
+  among bosses plus the player - reaching the War boss's rim scale at its full
+  share and continuing uncapped past it. Re-scaling happens in the phase, so
   the referee and the intelligence panel read `star.ai()` unchanged.
 - **Foes and allies** roll every second turn: per AI system, a foe of a
   bordering faction at `ffaChance x bordering systems` percent (never

@@ -77,6 +77,21 @@ describe("countMinions", () => {
   });
 });
 
+describe("conquestBossTier", () => {
+  it("reaches the rim scale exactly at the faction's fair share", () => {
+    // 36 stars split among 3 bosses + player: fair share 9, maxDist 8.
+    assert.equal(scaling.conquestBossTier(9, 3, 8, 36), 8);
+  });
+
+  it("keeps a one-system boss at tier 1 on a large galaxy", () => {
+    assert.equal(scaling.conquestBossTier(1, 4, 18, 234), 1);
+  });
+
+  it("scales past maxDist beyond the fair share", () => {
+    assert.equal(scaling.conquestBossTier(18, 3, 8, 36), 16);
+  });
+});
+
 describe("clusterCommanderCount", () => {
   it("adds half the boss commanders, floored", () => {
     assert.equal(scaling.clusterCommanderCount(3, 5), 5);

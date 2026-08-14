@@ -30,6 +30,13 @@ define([], function () {
     return Math.floor(minionBase + distance * minionStep);
   };
 
+  // A Conquest boss reaches the War boss's rim scale (maxDist) on owning its
+  // faction's fair share of the galaxy - totalStars split among bosses plus the
+  // player - and keeps scaling uncapped past it.
+  var conquestBossTier = function (owned, bossCount, maxDist, totalStars) {
+    return Math.ceil((owned * (bossCount + 1) * maxDist) / totalStars);
+  };
+
   var clusterCommanderCount = function (minionCount, bossCommanders) {
     return minionCount + Math.floor(bossCommanders / 2);
   };
@@ -226,6 +233,7 @@ define([], function () {
     buffTypes: buffTypes,
     buffs: buffs,
     applyTech: applyTech,
+    conquestBossTier: conquestBossTier,
     countMinions: countMinions,
     clusterCommanderCount: clusterCommanderCount,
     econRate: econRate,

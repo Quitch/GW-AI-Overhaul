@@ -769,9 +769,17 @@ function gwoSetup() {
                 minionPool = gwoAI.quellerCompatibleMinions(minionPool);
               }
 
-              // A Conquest boss owns one star at birth and rescales as its
-              // faction grows; a War boss is always scaled to the galaxy rim.
-              var bossDist = conquestMode ? Math.min(1, maxDist) : maxDist;
+              // A Conquest boss is born at the fair-share tier for its one
+              // owned star and rescales as its faction grows; a War boss is
+              // always scaled to the galaxy rim.
+              var bossDist = conquestMode
+                ? gwoScaling.conquestBossTier(
+                    1,
+                    teamInfo.length,
+                    maxDist,
+                    game.galaxy().stars().length
+                  )
+                : maxDist;
 
               setAIPersonality(bossRng, boss, difficulty, boss.faction);
               boss.econ_rate = aiEconRate(bossRng, bossDist);

@@ -4,7 +4,9 @@
 // to apply and animate. Pure: it owns the board it is given (the driver hands
 // it clones), touches no observables, and draws only from the streams in ctx.
 // The rules are documented in docs/conquest.md.
-define([], function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_scaling.js",
+], function (gwoScaling) {
   var tierFor = function (sinceTurn, turns, maxDist) {
     return Math.min(Math.floor((turns - sinceTurn) / 2), maxDist);
   };
@@ -618,7 +620,12 @@ define([], function () {
           return;
         }
         var owned = ownedCount(team);
-        var tier = Math.min(owned, board.maxDist);
+        var tier = gwoScaling.conquestBossTier(
+          owned,
+          teams,
+          board.maxDist,
+          board.stars.length
+        );
         if (tier === bossInfo.ai.appliedTier) {
           return;
         }

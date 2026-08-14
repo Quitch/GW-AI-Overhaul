@@ -869,7 +869,9 @@ describe("tier refresh", () => {
   });
 
   it("does not count the jump toward the boss's tier", () => {
-    const theBoss = boss(0, { appliedTier: 1 });
+    // appliedTier is seeded to the fair-share tier for one owned system:
+    // ceil(1 * 2 * 8 / 2).
+    const theBoss = boss(0, { appliedTier: 8 });
     const board = makeBoard({
       playerStar: 0,
       edges: [[0, 1]],
@@ -899,9 +901,10 @@ describe("tier refresh", () => {
       ],
     });
     engine.planPhase(board, makeCtx());
-    // The boss holds and its faction owns three systems.
-    assert.equal(theBoss.refreshedAt, 3);
-    assert.equal(theBoss.appliedTier, 3);
+    // The boss holds and its faction owns three of its fair share of two
+    // systems: ceil(3 * 2 * 8 / 4), past maxDist because the tier is uncapped.
+    assert.equal(theBoss.refreshedAt, 12);
+    assert.equal(theBoss.appliedTier, 12);
   });
 });
 
