@@ -1131,3 +1131,38 @@ describe("Conquest defeatTeam", () => {
     assert.equal(t.game.gameState(), "active");
   });
 });
+
+describe("army sequence plumbing", () => {
+  it("hands the engine the persisted counters, cloned", async () => {
+    const t = setup({});
+    t.cfg.armySeq = { 0: 2 };
+    await t.driver.runPhaseIfDue();
+    const board = t.calls.engineBoards[0];
+    assert.deepEqual(board.armySeq, { 0: 2 });
+    assert.notEqual(board.armySeq, t.cfg.armySeq);
+  });
+
+  it("defaults a save without counters to an empty map", async () => {
+    const t = setup({});
+    await t.driver.runPhaseIfDue();
+    assert.deepEqual(t.calls.engineBoards[0].armySeq, {});
+  });
+
+  it("carries the engine's conquest state onto the cfg before the save", async () => {
+    const box = {};
+    const t = setup({
+      engineResult: {
+        steps: [],
+        events: [],
+        conquest: { armySeq: { 0: 3 } },
+      },
+      onSave: () => {
+        box.seqAtSave = box.read();
+      },
+    });
+    box.read = () => t.cfg.armySeq;
+    await t.driver.runPhaseIfDue();
+    assert.deepEqual(box.seqAtSave, { 0: 3 });
+    assert.deepEqual(t.cfg.armySeq, { 0: 3 });
+  });
+});

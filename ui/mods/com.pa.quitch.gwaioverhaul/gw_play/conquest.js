@@ -74,6 +74,7 @@ function gwoConquest() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_announce.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_turn.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_sprite.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_scaling.js",
@@ -88,6 +89,7 @@ function gwoConquest() {
         gwoAnnounceFactory,
         gwoTurnFactory,
         gwoSpriteFactory,
+        gwoCommanderColour,
         gwoSave,
         gwoAI,
         gwoScaling,
@@ -104,6 +106,11 @@ function gwoConquest() {
 
         var playerFaction =
           game.inventory().getTag("global", "playerFaction") || 0;
+
+        var paletteSizes = _.times(GWFactions.length, function (faction) {
+          var palette = gwoCommanderColour.paletteFor(faction);
+          return palette ? palette.length : 0;
+        });
 
         var builder = gwoBuilder.create({
           cfg: cfg,
@@ -153,6 +160,7 @@ function gwoConquest() {
             streams: gwoStreams,
             warRng: warRng,
             save: gwoSave,
+            paletteSizes: paletteSizes,
             animate: gwoSpriteFactory({ game: game }),
             announce: announce,
             aiPhase: model.gwoConquestAiPhase,

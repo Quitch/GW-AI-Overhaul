@@ -13,6 +13,34 @@ define([
     return Math.min(Math.floor(growth / maxConnections), maxDist);
   };
 
+  // First free palette colour, else the least used; ties go to the lowest
+  // index.
+  var pickArmyColour = function (usedColours, paletteSize) {
+    if (!paletteSize) {
+      return 0;
+    }
+    var counts = [];
+    var i;
+    for (i = 0; i < paletteSize; i++) {
+      counts.push(0);
+    }
+    _.forEach(usedColours, function (colour) {
+      if (counts[colour] !== undefined) {
+        ++counts[colour];
+      }
+    });
+    var best = 0;
+    for (i = 0; i < paletteSize; i++) {
+      if (!counts[i]) {
+        return i;
+      }
+      if (counts[i] < counts[best]) {
+        best = i;
+      }
+    }
+    return best;
+  };
+
   var isGuardians = function (ai) {
     return !!ai && !!ai.mirrorMode;
   };
@@ -38,6 +66,11 @@ define([
     // Saves from before the field was snapshotted always built 4-connection
     // galaxies.
     var maxConnections = cfg.maxConnections || 4;
+    var paletteSizes = ctx.paletteSizes || [];
+    if (!board.armySeq) {
+      board.armySeq = {};
+    }
+    var armySeq = board.armySeq;
 
     var tierFromGrowth = function (growth) {
       return growthTier(growth, maxConnections, board.maxDist);
@@ -558,6 +591,68 @@ define([
       });
     };
 
+    var nextArmySeq = function (team) {
+      var key = String(team);
+      var seq = armySeq[key] || 0;
+      armySeq[key] = seq + 1;
+      return seq;
+    };
+
+    var armyColoursInUse = function (team) {
+      var used = [];
+      _.forEach(board.stars, function (star) {
+        var ai = star.ai;
+        if (!ai) {
+          return;
+        }
+        if (ai.conquestArmy && ai.team === team) {
+          used.push(ai.conquestArmy.colour);
+        }
+        _.forEach(ai.minionArmies || [], function (army) {
+          if (army.team === team) {
+            used.push(army.conquestArmy.colour);
+          }
+        });
+      });
+      return used;
+    };
+
+    // A capped garrison converts each further full tier of growth into a
+    // minion army, mustered on its star until the next phase moves it out.
+    // The debit makes a full tier re-accrue before the next spawn.
+    var spawnArmy = function (starIndex, owner) {
+      var army = builder.buildGarrison({
+        rng: streams.conquestArmyRng(warRng, starIndex, board.turns),
+        team: owner.team,
+        faction: owner.faction,
+        color: owner.color,
+        tier: board.maxDist,
+      });
+      if (!army) {
+        return false;
+      }
+      owner.growth -= maxConnections;
+      army.capturedTurn = board.turns;
+      army.growth = 0;
+      army.appliedTier = board.maxDist;
+      army.conquestArmy = {
+        seq: nextArmySeq(owner.team),
+        colour: pickArmyColour(
+          armyColoursInUse(owner.team),
+          paletteSizes[owner.faction]
+        ),
+        origin: starIndex,
+      };
+      owner.minionArmies = (owner.minionArmies || []).concat([army]);
+      record({
+        kind: "spawn",
+        star: starIndex,
+        team: owner.team,
+        writes: [write(starIndex, owner)],
+      });
+      return true;
+    };
+
     var refreshScaling = function () {
       // Seeds the counter pre-growth saves lack, reproducing the saved tier.
       // Returns whether the piece mutated: the planner owns a clone, so every
@@ -593,10 +688,19 @@ define([
                 changed = true;
               }
             }
+          } else if (owner.conquestArmy) {
+            // An army never rescales; growth feeds only its departure
+            // garrison.
+            changed =
+              accrueGrowth(owner, teamNeighbours(starIndex, owner.team)) ||
+              changed;
           } else if (owner.capturedTurn !== undefined) {
             changed =
               accrueGrowth(owner, teamNeighbours(starIndex, owner.team)) ||
               changed;
+            if (owner.growth >= (board.maxDist + 1) * maxConnections) {
+              changed = spawnArmy(starIndex, owner) || changed;
+            }
             var tier = tierFromGrowth(owner.growth);
             if (tier !== owner.appliedTier) {
               builder.refreshGarrison(
@@ -675,8 +779,16 @@ define([
     }
     refreshScaling();
 
-    return { steps: steps, events: events };
+    return {
+      steps: steps,
+      events: events,
+      conquest: { armySeq: armySeq },
+    };
   };
 
-  return { planPhase: planPhase, growthTier: growthTier };
+  return {
+    planPhase: planPhase,
+    growthTier: growthTier,
+    pickArmyColour: pickArmyColour,
+  };
 });

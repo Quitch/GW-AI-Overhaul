@@ -31,6 +31,7 @@ function makeStreams(rolls) {
     conquestAllyRng: () => rngFor("ally"),
     conquestScaleRng: () => rngFor("scale"),
     conquestBossScaleRng: () => rngFor("bossScale"),
+    conquestArmyRng: () => rngFor("army"),
   };
 }
 
@@ -70,6 +71,7 @@ function makeCtx(opts) {
     warRng: {},
     streams: makeStreams(options.rolls),
     builder: makeBuilder(),
+    paletteSizes: options.paletteSizes || [4, 4, 4, 4, 4],
     alliesSuppressed: !!options.alliesSuppressed,
     cfg: {
       factions: options.factions || [0],
@@ -95,6 +97,7 @@ function makeBoard(opts) {
     maxDist: opts.maxDist !== undefined ? opts.maxDist : 8,
     neighbors: neighbors,
     stars: opts.stars,
+    armySeq: opts.armySeq,
   };
 }
 
@@ -1190,5 +1193,165 @@ describe("growthTier", () => {
     assert.equal(engine.growthTier(100, 4, 8), 8);
     // Integer accumulation keeps a non-power-of-2 divisor exact.
     assert.equal(engine.growthTier(5, 3, 8), 1);
+  });
+});
+
+describe("minion army spawning", () => {
+  // maxDist 2 and four connections put the spawn threshold at growth 12.
+  const cappedBoard = (opts) =>
+    makeBoard(
+      Object.assign(
+        {
+          maxDist: 2,
+          playerStar: 0,
+          edges: [[1, 2]],
+          stars: [
+            star(null, { visited: true }),
+            star(garrison(0, { growth: 11, appliedTier: 2 })),
+            star(garrison(0, { growth: 0, appliedTier: 0 })),
+          ],
+        },
+        opts || {}
+      )
+    );
+
+  it("spawns an army when growth crosses a full tier past the cap", () => {
+    const board = cappedBoard();
+    const result = engine.planPhase(board, makeCtx());
+
+    const spawns = stepsOf(result, "spawn");
+    assert.equal(spawns.length, 1);
+    assert.equal(spawns[0].star, 1);
+    assert.equal(spawns[0].team, 0);
+
+    const host = board.stars[1].ai;
+    assert.equal(host.minionArmies.length, 1);
+    // The spawn consumed one tier of growth: 11 accrued to 12, debited to 8.
+    assert.equal(host.growth, 8);
+    assert.equal(host.appliedTier, 2);
+
+    const army = host.minionArmies[0];
+    assert.equal(army.garrison, true);
+    assert.equal(army.team, 0);
+    assert.equal(army.builtAtTier, 2);
+    assert.equal(army.capturedTurn, 3);
+    assert.equal(army.growth, 0);
+    assert.equal(army.appliedTier, 2);
+    assert.deepEqual(army.conquestArmy, { seq: 0, colour: 0, origin: 1 });
+    assert.deepEqual(result.conquest.armySeq, { 0: 1 });
+  });
+
+  it("does not spawn again until a full tier re-accrues", () => {
+    const board = cappedBoard();
+    engine.planPhase(board, makeCtx());
+    const second = engine.planPhase(board, makeCtx());
+
+    // Growth 8 accrued to 9, short of the threshold.
+    assert.equal(stepsOf(second, "spawn").length, 0);
+    assert.equal(board.stars[1].ai.minionArmies.length, 1);
+
+    board.stars[1].ai.growth = 11;
+    const third = engine.planPhase(board, makeCtx());
+    assert.equal(stepsOf(third, "spawn").length, 1);
+    const armies = board.stars[1].ai.minionArmies;
+    assert.equal(armies.length, 2);
+    assert.deepEqual(armies[1].conquestArmy, { seq: 1, colour: 1, origin: 1 });
+  });
+
+  it("continues the persisted sequence rather than renumbering", () => {
+    const board = cappedBoard({ armySeq: { 0: 3 } });
+    const result = engine.planPhase(board, makeCtx());
+    assert.equal(board.stars[1].ai.minionArmies[0].conquestArmy.seq, 3);
+    assert.deepEqual(result.conquest.armySeq, { 0: 4 });
+  });
+
+  it("gives same-phase spawns distinct colours in star order", () => {
+    const board = cappedBoard({
+      stars: [
+        star(null, { visited: true }),
+        star(garrison(0, { growth: 11, appliedTier: 2 })),
+        star(garrison(0, { growth: 11, appliedTier: 2 })),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.equal(stepsOf(result, "spawn").length, 2);
+    assert.deepEqual(board.stars[1].ai.minionArmies[0].conquestArmy, {
+      seq: 0,
+      colour: 0,
+      origin: 1,
+    });
+    assert.deepEqual(board.stars[2].ai.minionArmies[0].conquestArmy, {
+      seq: 1,
+      colour: 1,
+      origin: 2,
+    });
+  });
+
+  it("accrues an army-held star's growth without rescaling or spawning", () => {
+    const army = garrison(0, {
+      growth: 11,
+      appliedTier: 2,
+      conquestArmy: { seq: 0, colour: 0, origin: 9 },
+    });
+    const board = cappedBoard({
+      stars: [
+        star(null, { visited: true }),
+        star(army),
+        star(garrison(0, { growth: 0, appliedTier: 0 })),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.equal(stepsOf(result, "spawn").length, 0);
+    assert.equal(army.growth, 12);
+    assert.equal(army.refreshedAt, undefined);
+    assert.equal(army.minionArmies, undefined);
+  });
+
+  it("never spawns from a boss or a Guardians star", () => {
+    const board = cappedBoard({
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0, { growth: 40 })),
+        star({ mirrorMode: true, capturedTurn: 1, growth: 40 }),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.equal(stepsOf(result, "spawn").length, 0);
+  });
+
+  it("spawns nothing and keeps the growth when the pool is empty", () => {
+    const board = cappedBoard({
+      stars: [
+        star(null, { visited: true }),
+        star(garrison(0, { growth: 12, appliedTier: 2 })),
+        star(),
+      ],
+      edges: [],
+    });
+    const ctx = makeCtx();
+    ctx.builder.buildGarrison = () => null;
+    const result = engine.planPhase(board, ctx);
+    assert.equal(stepsOf(result, "spawn").length, 0);
+    assert.equal(board.stars[1].ai.growth, 12);
+    assert.equal(board.stars[1].ai.minionArmies, undefined);
+  });
+});
+
+describe("pickArmyColour", () => {
+  it("hands out the lowest free colour first", () => {
+    assert.equal(engine.pickArmyColour([], 4), 0);
+    assert.equal(engine.pickArmyColour([0], 4), 1);
+    assert.equal(engine.pickArmyColour([1, 0], 4), 2);
+  });
+
+  it("falls back to the least used colour, ties to the lowest", () => {
+    assert.equal(engine.pickArmyColour([0, 0, 1], 2), 1);
+    assert.equal(engine.pickArmyColour([0, 1], 2), 0);
+    assert.equal(engine.pickArmyColour([0, 1, 1], 2), 0);
+  });
+
+  it("tolerates a missing palette", () => {
+    assert.equal(engine.pickArmyColour([], 0), 0);
+    assert.equal(engine.pickArmyColour([3], undefined), 0);
   });
 });

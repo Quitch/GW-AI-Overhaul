@@ -24,6 +24,7 @@ define([], function () {
         treasureStar: params.gwoSettings.treasureStar,
         maxDist: cfg.maxDist,
         neighbors: galaxy.neighborsMap(),
+        armySeq: cfg.armySeq ? _.cloneDeep(cfg.armySeq) : {},
         stars: _.map(galaxy.stars(), function (star) {
           return {
             // Cloned so the planner never mutates live state: a failed phase
@@ -126,6 +127,7 @@ define([], function () {
           builder: params.builder,
           alliesSuppressed: params.alliesSuppressed,
           cfg: cfg,
+          paletteSizes: params.paletteSizes,
         });
         applySteps(result.steps, function () {
           // An ambushing boss landed after the turn resolved: canFight needs
@@ -134,6 +136,7 @@ define([], function () {
           if (currentStarAi()) {
             game.turnState("begin");
           }
+          _.assign(cfg, result.conquest);
           cfg.lastAiPhaseTurn = turns;
           $.when(params.save(game, true)).always(function () {
             announce(eliminationsOf(result.events));
