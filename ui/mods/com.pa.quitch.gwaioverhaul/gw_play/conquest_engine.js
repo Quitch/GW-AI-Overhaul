@@ -100,6 +100,30 @@ define([], function () {
       return !ai || (!isGuardians(ai) && ai.team !== team);
     };
 
+    // A boss star is attackable only from strength: half again the defender's
+    // owned systems, or strictly more when it is the sole capturable neighbour
+    // of fromStar. See docs/conquest.md; the cornered exception is actTeam's.
+    var isTargetable = function (starIndex, team, fromStar) {
+      if (!isCapturable(starIndex, team)) {
+        return false;
+      }
+      var ai = board.stars[starIndex].ai;
+      if (!ai || !ai.boss) {
+        return true;
+      }
+      var attackerOwned = ownedCount(team);
+      var defenderOwned = ownedCount(ai.team);
+      if (attackerOwned * 2 >= defenderOwned * 3) {
+        return true;
+      }
+      return (
+        attackerOwned > defenderOwned &&
+        !_.some(neighborsOf(fromStar), function (neighbor) {
+          return neighbor !== starIndex && isCapturable(neighbor, team);
+        })
+      );
+    };
+
     var isFriendly = function (starIndex, team) {
       var ai = board.stars[starIndex].ai;
       return !!ai && !isGuardians(ai) && ai.team === team;
@@ -173,11 +197,14 @@ define([], function () {
     };
 
     // One hop toward the nearest friendly star that borders something
-    // capturable or the player's star, walked through friendly territory only.
+    // targetable or the player's star, walked through friendly territory only.
     var marchStep = function (fromStar, team) {
       var isFrontier = function (starIndex) {
         return _.some(neighborsOf(starIndex), function (neighbor) {
-          return isCapturable(neighbor, team) || neighbor === board.playerStar;
+          return (
+            isTargetable(neighbor, team, starIndex) ||
+            neighbor === board.playerStar
+          );
         });
       };
       var parent = [];
@@ -403,9 +430,12 @@ define([], function () {
       var candidates = _.filter(neighborsOf(atStar), function (neighbor) {
         return isCapturable(neighbor, team);
       });
-      if (candidates.length) {
+      var targetable = _.filter(candidates, function (neighbor) {
+        return isTargetable(neighbor, team, atStar);
+      });
+      if (targetable.length) {
         var target = pickTarget(
-          candidates,
+          targetable,
           team,
           streams.conquestMoveRng(warRng, team, board.turns)
         );
@@ -416,6 +446,21 @@ define([], function () {
       var towards = marchStep(atStar, team);
       if (towards !== undefined) {
         moveBoss(team, bossInfo, towards);
+        return;
+      }
+
+      // Cornered: every capturable neighbour is a gated boss star and no march
+      // exists, so attack anyway and let the collision in moveBoss decide.
+      if (candidates.length) {
+        moveBoss(
+          team,
+          bossInfo,
+          pickTarget(
+            candidates,
+            team,
+            streams.conquestMoveRng(warRng, team, board.turns)
+          )
+        );
         return;
       }
 

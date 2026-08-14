@@ -73,8 +73,13 @@ Each faction, in team order:
    non-friendly system, else the candidate closest to the player; then most
    friendly neighbours; then most non-friendly neighbours; remaining ties fall
    to the seeded `conquest_move` stream. Movement itself draws nothing else.
-3. With nothing capturable it marches one hop through friendly territory
-   toward the frontier, or holds.
+   Another boss's star is only a candidate when the attack gate passes (see
+   the boss-versus-boss rule below).
+3. With nothing targetable it marches one hop through friendly territory
+   toward the frontier - a frontier star must border something targetable, so
+   a gated boss star draws no march. Cornered - nothing to capture, nowhere to
+   march, a gated boss star adjacent - it attacks that star regardless.
+   Otherwise it holds.
 
 Rules the engine carries:
 
@@ -90,11 +95,15 @@ Rules the engine carries:
   still see a player system. The boss must beat the player to take it, and as
   that loss ends the war the transfer is never recorded. The battle itself is
   unchanged: the jump still rolls the capture-time game modifiers.
-- **Boss versus boss**: the faction with more systems wins; the attacker wins
-  ties; the loser is eliminated and its systems become unowned. On the
-  player's star bosses stack instead - the arrival becomes a boss-flagged
-  entry in the occupier's `foes`, every boss present joins the one battle, and
-  a stacked star is not capturable by anyone else.
+- **Boss versus boss**: a boss only attacks another boss's star with at least
+  half again that faction's systems, or with strictly more when the star is
+  its only capturable neighbour; a cornered boss (nothing to capture, nowhere
+  to march) attacks regardless. When the attack lands, the faction with more
+  systems wins; the attacker wins ties; the loser is eliminated and its
+  systems become unowned. On the player's star bosses stack instead - the
+  arrival becomes a boss-flagged entry in the occupier's `foes`, every boss
+  present joins the one battle, and a stacked star is not capturable by
+  anyone else.
 - **Tiers**: presence scales with `min(floor(heldTurns / 2), maxDist)` fed to
   the same scaling arithmetic as war generation (`shared/ai_scaling.js`).
   Garrisons key on their system's `capturedTurn`, foes on their own

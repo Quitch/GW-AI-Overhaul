@@ -428,20 +428,37 @@ describe("boss versus boss", () => {
     assert.deepEqual(cleared.clearCards, [3]);
   });
 
-  it("lets the attacker win a tie", () => {
-    const board = collisionBoard(1, 1);
+  it("lets a cornered attacker win a tie", () => {
+    // The boss star is the attacker's only neighbour, so the gate is bypassed.
+    const board = makeBoard({
+      edges: [[1, 2]],
+      stars: [star(null, { visited: true }), star(boss(0)), star(boss(1))],
+    });
     const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
     assert.deepEqual(result.events, [
       { type: "eliminated", team: 1, byTeam: 0 },
     ]);
-    assert.equal(board.stars[3].ai.team, 0);
+    assert.equal(board.stars[2].ai.team, 0);
   });
 
-  it("eliminates the attacker when the defender owns more systems", () => {
-    const board = collisionBoard(1, 2);
+  it("eliminates a cornered attacker when the defender owns more", () => {
+    const board = makeBoard({
+      edges: [
+        [1, 2],
+        [2, 3],
+      ],
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0)),
+        star(boss(1)),
+        star(garrison(1)),
+      ],
+    });
     const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
     assert.equal(result.events[0].team, 0);
     assert.equal(result.events[0].byTeam, 1);
+    // The attacker dies in place, so no move step carries its team.
+    assert.ok(stepsOf(result, "move").every((move) => move.team !== 0));
     // The attacker's holdings are gone; the defender survives (and is free to
     // expand later in the same phase).
     const owners = board.stars
@@ -449,6 +466,134 @@ describe("boss versus boss", () => {
       .filter((team) => team !== null && team !== undefined);
     assert.ok(!owners.includes(0), "the attacker still owns a star");
     assert.ok(owners.includes(1), "the defender was wrongly eliminated");
+  });
+});
+
+describe("boss attack gate", () => {
+  // Star 0 is the player's, disconnected; the attacker's boss sits at star 1
+  // heading a chain of garrisons, the defender's at star 5 heading its own.
+  function gateBoard(options) {
+    const stars = [
+      star(null, { visited: true }),
+      star(boss(0)),
+      star(garrison(0)),
+      star(garrison(0)),
+      star(garrison(0)),
+      star(boss(1)),
+      star(garrison(1)),
+      star(garrison(1)),
+    ];
+    const edges = [
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [1, 5],
+      [5, 6],
+      [6, 7],
+    ];
+    if (options && options.withEmptyNeighbour) {
+      stars.push(star());
+      edges.push([1, stars.length - 1]);
+    }
+    return makeBoard({ edges, stars });
+  }
+
+  it("attacks with strictly more systems when the boss star is the only capturable neighbour", () => {
+    // 4-vs-3 fails the 50% branch, so only the sole-neighbour branch passes.
+    const board = gateBoard();
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+    assert.deepEqual(result.events, [
+      { type: "eliminated", team: 1, byTeam: 0 },
+    ]);
+    assert.equal(board.stars[5].ai.team, 0);
+    assert.equal(board.stars[5].ai.boss, true);
+  });
+
+  it("prefers another capturable neighbour under 50% more systems", () => {
+    // Without the gate the ladder would pick the boss star: it borders a
+    // non-friendly system while the empty star borders only friendly ones.
+    const board = gateBoard({ withEmptyNeighbour: true });
+    const result = engine.planPhase(board, makeCtx());
+    assert.deepEqual(result.events, []);
+    assert.equal(stepsOf(result, "move")[0].to, 8);
+    assert.equal(board.stars[8].ai.boss, true);
+  });
+
+  it("attacks past an alternative with exactly 50% more systems", () => {
+    const board = makeBoard({
+      edges: [
+        [1, 2],
+        [2, 3],
+        [1, 5],
+        [5, 6],
+        [1, 8],
+      ],
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0)),
+        star(garrison(0)),
+        star(garrison(0)),
+        star(),
+        star(boss(1)),
+        star(garrison(1)),
+        star(),
+        star(),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+    assert.deepEqual(result.events, [
+      { type: "eliminated", team: 1, byTeam: 0 },
+    ]);
+    assert.equal(board.stars[5].ai.team, 0);
+  });
+
+  it("marches toward another frontier when the boss star is gated", () => {
+    const theBoss = boss(0);
+    const midGarrison = garrison(0);
+    const board = makeBoard({
+      edges: [
+        [1, 5],
+        [5, 6],
+        [1, 2],
+        [2, 3],
+      ],
+      stars: [
+        star(null, { visited: true }),
+        star(theBoss),
+        star(midGarrison),
+        star(),
+        star(),
+        star(boss(1)),
+        star(garrison(1)),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.deepEqual(result.events, []);
+    assert.equal(stepsOf(result, "move")[0].to, 2);
+    assert.equal(board.stars[2].ai, theBoss);
+    assert.equal(theBoss.conquestDisplaced, midGarrison);
+  });
+
+  it("holds rather than march toward a gated boss star", () => {
+    const board = makeBoard({
+      edges: [
+        [1, 2],
+        [2, 5],
+        [5, 6],
+      ],
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0)),
+        star(garrison(0)),
+        star(),
+        star(),
+        star(boss(1)),
+        star(garrison(1)),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.equal(stepsOf(result, "hold").length, 1);
+    assert.equal(stepsOf(result, "move").length, 0);
   });
 });
 
