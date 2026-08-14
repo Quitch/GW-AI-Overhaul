@@ -1,0 +1,36 @@
+/* Skinned per showing by conquest.js, as the popup markup is shared by every
+   GW popup: the message carries the tech card hover's gradient and border
+   (stock gw_play.css #hover-card), the panel the explore offering's
+   translucent black (stock .div_card_bground). */
+.div_popup_panel.gwo-conquest-elim-popup {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* Half the stock 32px message-to-button gap (global.css .commit). */
+.div_popup_panel.gwo-conquest-elim-popup .commit {
+  margin-top: 16px;
+}
+
+/* Scaled, not font-sized: the stock template fixes the button font inline,
+   and scale grows the 9-slice sprite with the text. */
+.div_popup_panel.gwo-conquest-elim-popup .commit input[type="button"] {
+  transform: scale(1.25);
+}
+
+.gwo-conquest-elim {
+  font-size: 30px;
+  text-align: center;
+  background: linear-gradient(to top, #222 0%, #000 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px;
+}
+
+.gwo-conquest-elim-icon {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: middle;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}

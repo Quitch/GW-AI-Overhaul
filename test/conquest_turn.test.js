@@ -176,7 +176,7 @@ function setup(overrides) {
       }
       return Promise.resolve();
     },
-    announce: (teams) => calls.announced.push(teams),
+    announce: (eliminations) => calls.announced.push(eliminations),
     animate: options.animate,
   });
 
@@ -341,7 +341,7 @@ describe("the phase run", () => {
       },
     });
     await t.driver.runPhaseIfDue();
-    assert.deepEqual(t.calls.announced, [[1]]);
+    assert.deepEqual(t.calls.announced, [[{ team: 1, byTeam: 0 }]]);
   });
 
   it("waits for each move animation before applying its writes", async () => {
@@ -643,7 +643,7 @@ describe("battle reconciliation at install", () => {
     assert.deepEqual(t.options.stars[2].cardList(), []);
     assert.deepEqual(t.options.stars[3].cardList(), ["loadout"]);
     assert.equal(t.game.gameState(), "active");
-    assert.deepEqual(t.calls.announced, [[0, 1]]);
+    assert.deepEqual(t.calls.announced, [[{ team: 0 }, { team: 1 }]]);
     assert.deepEqual(t.calls.stats, ["gw_eliminate_faction"]);
     assert.equal(t.cfg.pendingFight, undefined);
     assert.deepEqual(t.calls.saves, [[t.game, true]]);
@@ -715,7 +715,7 @@ describe("Conquest defeatTeam", () => {
     assert.deepEqual(garrisonStar.cardList(), []);
     assert.equal(survivorStar.ai().team, 1);
     assert.equal(t.game.gameState(), "active");
-    assert.deepEqual(t.calls.announced, [[0]]);
+    assert.deepEqual(t.calls.announced, [[{ team: 0 }]]);
     assert.deepEqual(t.calls.stats, ["gw_eliminate_faction"]);
   });
 
@@ -733,7 +733,7 @@ describe("Conquest defeatTeam", () => {
     assert.equal(hostStar.ai(), undefined);
     assert.equal(stackedHome.ai(), undefined);
     assert.equal(t.game.gameState(), "won");
-    assert.deepEqual(t.calls.announced, [[0, 1]]);
+    assert.deepEqual(t.calls.announced, [[{ team: 0 }, { team: 1 }]]);
   });
 
   it("leaves other factions' ordinary foes in place", () => {

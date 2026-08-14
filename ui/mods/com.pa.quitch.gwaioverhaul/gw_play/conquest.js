@@ -1,7 +1,8 @@
 // The Galactic Conquest scene shell: no-ops unless the war carries a
 // gwaio.conquest snapshot, then instantiates the measured turn driver with the
-// live scene objects. Logic lives in conquest_turn.js, conquest_engine.js and
-// conquest_ai_builder.js; this file only wires. See docs/conquest.md.
+// live scene objects. Logic lives in conquest_turn.js, conquest_engine.js,
+// conquest_ai_builder.js and conquest_announce.js; this file only wires. See
+// docs/conquest.md.
 var gwoConquestLoaded;
 
 function gwoConquest() {
@@ -53,6 +54,7 @@ function gwoConquest() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_engine.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_ai_builder.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_announce.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_turn.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_sprite.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
@@ -66,6 +68,7 @@ function gwoConquest() {
         gwoStreams,
         gwoEngine,
         gwoBuilder,
+        gwoAnnounceFactory,
         gwoTurnFactory,
         gwoSpriteFactory,
         gwoSave,
@@ -82,6 +85,9 @@ function gwoConquest() {
           return;
         }
 
+        var playerFaction =
+          game.inventory().getTag("global", "playerFaction") || 0;
+
         var builder = gwoBuilder.create({
           cfg: cfg,
           factions: GWFactions,
@@ -91,21 +97,27 @@ function gwoConquest() {
           quellerCompatibleMinions: gwoAI.quellerCompatibleMinions,
           aiType: gwoSettings.ai,
           aiAllyType: gwoSettings.aiAlly,
-          playerFaction:
-            game.inventory().getTag("global", "playerFaction") || 0,
+          playerFaction: playerFaction,
         });
 
-        var announce = function (teams) {
-          var names = _.map(teams, function (team) {
-            var faction = GWFactions[cfg.factions[team]];
-            return faction ? faction.name : "?";
-          });
-          var verb =
-            names.length > 1
-              ? loc("!LOC:have been eliminated!")
-              : loc("!LOC:has been eliminated!");
+        var announceFormat = gwoAnnounceFactory({
+          factions: GWFactions,
+          cfg: cfg,
+          playerFaction: playerFaction,
+        });
+
+        // The popup markup is shared by every GW popup, so the card-hover
+        // skin is applied per showing and dropped when the popup hides.
+        model.showPopUp.subscribe(function (visible) {
+          if (!visible) {
+            $(".div_popup_panel").removeClass("gwo-conquest-elim-popup");
+          }
+        });
+
+        var announce = function (eliminations) {
+          $(".div_popup_panel").addClass("gwo-conquest-elim-popup");
           model.popUp({
-            msg: names.join(", ") + " " + verb,
+            msg: announceFormat.message(eliminations),
             actions: { primary: undefined },
             tags: { primary: "!LOC:OK", secondary: "" },
           });

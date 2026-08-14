@@ -66,10 +66,16 @@ define([], function () {
       next(0);
     };
 
-    var announce = function (teams) {
-      if (teams.length && params.announce) {
-        params.announce(teams);
+    var announce = function (eliminations) {
+      if (eliminations.length && params.announce) {
+        params.announce(eliminations);
       }
+    };
+
+    var eliminationsOf = function (events) {
+      return _.map(events, function (event) {
+        return { team: event.team, byTeam: event.byTeam };
+      });
     };
 
     var phaseRunning = false;
@@ -130,7 +136,7 @@ define([], function () {
           }
           cfg.lastAiPhaseTurn = turns;
           $.when(params.save(game, true)).always(function () {
-            announce(_.map(result.events, "team"));
+            announce(eliminationsOf(result.events));
             finish();
           });
         });
@@ -282,7 +288,12 @@ define([], function () {
       });
 
       // The Guardians carry no team, and their defeat is not a faction's.
-      announce(_.filter(defeated, _.isNumber));
+      // No byTeam: these fell to the player.
+      announce(
+        _.map(_.filter(defeated, _.isNumber), function (team) {
+          return { team: team };
+        })
+      );
 
       if (!remainingBosses) {
         game.gameState("won");

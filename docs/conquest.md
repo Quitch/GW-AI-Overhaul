@@ -57,7 +57,8 @@ the fight and/or explore that resolves the turn - through the wrapped
 battle returns. The phase snapshots the board (cloned - the planner never
 mutates live state), runs `conquest_engine.planPhase`, applies the returned
 steps in order, saves once with `gwoSave(game, true)`, and announces any
-eliminations with the stock popup. `model.gwoConquestAiPhase` blocks
+eliminations with the stock popup, naming victor and vanquished
+(`conquest_announce.js` formats the message). `model.gwoConquestAiPhase` blocks
 Move/Fight/Explore while it runs, and `canMove` only passes single-hop
 paths, and none at all until the turn is resolved.
 
