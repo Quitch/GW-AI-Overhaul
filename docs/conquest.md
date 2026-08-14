@@ -4,8 +4,9 @@ A war mode selected in the lobby's **Mode** dropdown ("Galactic War" is the
 default and is unchanged). In Conquest the galaxy starts almost empty: each
 enemy faction holds a single system, and once the player has ended their turn -
 fought and explored where they landed, or passed on a friendly system - each
-faction's boss takes one adjacent system. The player and the AIs alternate, so
-the player can only ever move one system at a time.
+faction's boss takes one adjacent system. The player and the AIs alternate: a
+jump moves freely through the player's own territory but counts as one turn
+however far it goes, and where it lands is where the turn is played out.
 
 ## Module map
 
@@ -67,9 +68,19 @@ still awaiting its Pass, fight or explore. The phase snapshots the board
 with `gwoSave(game, true)`, and announces any eliminations with the stock
 popup, naming victor and vanquished (`conquest_announce.js` formats the
 message). `model.gwoConquestAiPhase` blocks Move/Fight/Explore/Pass while it
-runs, and `canMove` only passes single-hop paths - none at all until the
-turn is resolved, and none between the move and the Pass, fight or explore
-that ends the turn.
+runs.
+
+Movement itself is War's, narrowed to Conquest's ownership: `canMove` routes
+through `pathBetween` with a traversal predicate that crosses only systems
+no AI holds (a jumped boss holds nothing), so a jump detours around enemy
+territory or is refused outright; the destination itself may be enemy-held -
+the final hop is the predicate's one exemption. No move passes until the
+turn is resolved, nor between the move and the Pass, fight or explore that
+ends it. The stock `moveStep` advances `stats.turns` and saves once per hop,
+so the driver's `game.move` wrap unwinds the tick on every hop short of the
+destination - inside the hop's own call, before its save - and a jump nets
+exactly one turn on every save a crash could leave behind. A transit
+interrupted mid-route resumes as a fresh jump from the star it reached.
 
 Each faction, in team order:
 

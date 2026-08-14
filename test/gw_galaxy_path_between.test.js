@@ -137,6 +137,60 @@ describe("GWGalaxy.pathBetween", () => {
     const galaxy = makeGalaxy([[0, 1]], [exploredStar(), exploredStar()]);
     assert.equal(galaxy.pathBetween(0, 0, false), null);
   });
+
+  it("lets the optional predicate veto an intermediate", () => {
+    const blocked = exploredStar();
+    const galaxy = makeGalaxy(
+      [
+        [0, 1],
+        [1, 2],
+        [0, 3],
+        [3, 2],
+      ],
+      [exploredStar(), blocked, exploredStar(), exploredStar()]
+    );
+    const detour = galaxy.pathBetween(0, 2, false, (s) => s !== blocked);
+    assert.deepEqual(detour, [0, 3, 2]);
+
+    const galaxyNoDetour = makeGalaxy(
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      [exploredStar(), blocked, exploredStar()]
+    );
+    assert.equal(
+      galaxyNoDetour.pathBetween(0, 2, false, (s) => s !== blocked),
+      null
+    );
+  });
+
+  it("exempts the final hop from the predicate", () => {
+    const target = exploredStar();
+    const galaxy = makeGalaxy(
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      [exploredStar(), exploredStar(), target]
+    );
+    assert.deepEqual(
+      galaxy.pathBetween(0, 2, false, (s) => s !== target),
+      [0, 1, 2]
+    );
+  });
+
+  it("behaves identically when the predicate is omitted", () => {
+    const galaxy = makeGalaxy(
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      [exploredStar(), visitedButUnexploredStar(), exploredStar()]
+    );
+    assert.equal(galaxy.pathBetween(0, 2, false), null);
+    assert.deepEqual(galaxy.pathBetween(0, 2, true), [0, 1, 2]);
+  });
 });
 
 describe("GWGalaxy.areNeighbors", () => {

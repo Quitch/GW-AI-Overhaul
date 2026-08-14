@@ -148,6 +148,57 @@ define([], function () {
       return finished;
     };
 
+    // Player traversal: a jump crosses only systems no AI holds. A jumped
+    // boss (ai.conquestJumped) holds nothing - the star is still the
+    // player's.
+    var conquestTraversable = function (star) {
+      var ai = star.ai();
+      return !ai || !!ai.conquestJumped;
+    };
+
+    // A jump is one turn however many systems it crosses. The stock moveStep
+    // advances the clock once per hop, so every hop short of the destination
+    // is unwound inside its own game.move call - before the per-hop save -
+    // and the whole transit nets one.
+    var transitTo;
+    var baseGameMove = game.move;
+    game.move = function (destination) {
+      var result = baseGameMove.apply(game, arguments);
+      if (transitTo !== undefined && destination !== transitTo) {
+        game.stats().turns(game.stats().turns() - 1);
+      }
+      return result;
+    };
+
+    // The base move() recomputes its route itself, so the traversal rule is
+    // slipped under pathBetween for the synchronous call that plans the
+    // transit; the hops it then walks are already fixed.
+    var baseMove = model.move;
+    model.move = function () {
+      var galaxy = game.galaxy();
+      var basePathBetween = galaxy.pathBetween;
+      galaxy.pathBetween = function (from, to, noFog) {
+        return basePathBetween.call(
+          galaxy,
+          from,
+          to,
+          noFog,
+          conquestTraversable
+        );
+      };
+      transitTo = model.selection.star();
+      var moved;
+      try {
+        moved = baseMove.apply(model, arguments);
+      } finally {
+        galaxy.pathBetween = basePathBetween;
+      }
+      $.when(moved).always(function () {
+        transitTo = undefined;
+      });
+      return moved;
+    };
+
     var canPass = function () {
       return (
         !params.aiPhase() &&
@@ -202,12 +253,13 @@ define([], function () {
       });
     };
 
-    // One hop per turn - a longer path costs the game several turns in one
-    // click, which Conquest's you-then-them rhythm cannot allow - none at
-    // all until the turn is resolved, and none between the move and the
-    // Pass, fight or explore that ends the turn. cfg.lastAiPhaseTurn is a
-    // plain value, but every write to it precedes an aiPhase or turns write,
-    // so the computed always re-reads it fresh.
+    // Movement is free through the player's own territory but earns nothing
+    // until the turn is resolved, and nothing between the move and the Pass,
+    // fight or explore that ends it. The stock computed carries the
+    // viewer/moving/selection guards; the conquest route then narrows its
+    // path to friendly intermediates. cfg.lastAiPhaseTurn is a plain value,
+    // but every write to it precedes an aiPhase or turns write, so the
+    // computed always re-reads it fresh.
     var baseCanMove = model.canMove;
     model.canMove = ko.computed(function () {
       if (
@@ -217,8 +269,19 @@ define([], function () {
       ) {
         return false;
       }
-      var path = baseCanMove();
-      return path && path.length === 2 ? path : false;
+      if (!baseCanMove()) {
+        return false;
+      }
+      return (
+        game
+          .galaxy()
+          .pathBetween(
+            game.currentStar(),
+            model.selection.star(),
+            model.cheats.noFog(),
+            conquestTraversable
+          ) || false
+      );
     });
 
     // Gating canFight/canExplore rather than the display computeds: those

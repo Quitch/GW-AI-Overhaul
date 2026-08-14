@@ -66,6 +66,7 @@ function setup(overrides) {
     engineBoards: [],
     gateWrites: [],
     sent: [],
+    paths: [],
     baseMoves: 0,
     baseLoses: 0,
     baseFights: 0,
@@ -74,16 +75,29 @@ function setup(overrides) {
   };
 
   const turns = observable(options.turns);
+  // Stable, as in the scene: the driver swaps pathBetween on the instance.
+  const galaxy = {
+    stars: () => options.stars,
+    neighborsMap: () => options.neighbors || { 0: [1], 1: [0] },
+    pathBetween: (from, to, noFog, traversable) => {
+      calls.paths.push([from, to, noFog, traversable]);
+      return options.conquestPath !== undefined
+        ? options.conquestPath
+        : options.canMovePath;
+    },
+  };
   const game = {
     stats: () => ({ turns }),
     gameState: observable(options.gameState),
     turnState: observable(options.turnState || "end"),
     saved: observable(true),
     currentStar: observable(options.currentStar),
-    galaxy: () => ({
-      stars: () => options.stars,
-      neighborsMap: () => options.neighbors || { 0: [1], 1: [0] },
-    }),
+    galaxy: () => galaxy,
+    // The stock move: one hop, one clock tick.
+    move: (destination) => {
+      turns(turns() + 1);
+      game.currentStar(destination);
+    },
     fight: () => {
       calls.baseFights += 1;
       return options.fightResult !== false;
@@ -123,6 +137,9 @@ function setup(overrides) {
   stubs.setGlobal("model", {
     move: () => {
       calls.baseMoves += 1;
+      if (options.moveEffect) {
+        return options.moveEffect(game);
+      }
       return options.moveResult;
     },
     canMove: () => options.canMovePath,
@@ -130,6 +147,12 @@ function setup(overrides) {
     canExplore: () => true,
     exitGate: trackedExitGate,
     player: { moving: observable(!!options.playerMoving) },
+    selection: {
+      star: observable(
+        options.selectionStar !== undefined ? options.selectionStar : 1
+      ),
+    },
+    cheats: { noFog: () => false },
     sendCampaignAction: (type, payload) => calls.sent.push([type, payload]),
     applyCampaignAction: () => {
       calls.baseApplies += 1;
@@ -226,6 +249,66 @@ describe("moving", () => {
     assert.equal(t.calls.baseMoves, 1);
     assert.equal(t.calls.engineBoards.length, 0);
     assert.equal(t.cfg.lastAiPhaseTurn, 1);
+  });
+
+  it("advances the clock once for a multi-hop jump, hop saves included", async () => {
+    const seenPerHop = [];
+    const t = setup({
+      lastAiPhaseTurn: 2,
+      turnState: "begin",
+      selectionStar: 3,
+      stars: [
+        makeStar(undefined, { explored: true }),
+        makeStar(undefined, { explored: true }),
+        makeStar(undefined, { explored: true }),
+        makeStar(undefined, { explored: true }),
+      ],
+      moveEffect: (game) => {
+        [1, 2, 3].forEach((hop) => {
+          game.move(hop);
+          // What a per-hop save would persist.
+          seenPerHop.push(game.stats().turns());
+        });
+        return Promise.resolve("moved");
+      },
+    });
+    await model.move();
+    // Intermediate hops net nothing; only the landing keeps its tick.
+    assert.deepEqual(seenPerHop, [2, 2, 3]);
+    assert.equal(t.game.stats().turns(), 3);
+    assert.equal(t.game.currentStar(), 3);
+  });
+
+  it("stops unwinding once the transit settles", async () => {
+    const t = setup({
+      lastAiPhaseTurn: 2,
+      turnState: "begin",
+      selectionStar: 1,
+      moveEffect: (game) => {
+        game.move(1);
+        return Promise.resolve("moved");
+      },
+    });
+    await model.move();
+    assert.equal(t.game.stats().turns(), 3);
+    t.game.move(0);
+    assert.equal(t.game.stats().turns(), 4);
+  });
+
+  it("plans the route under the friendly-traversal rule and restores it", async () => {
+    const t = setup({
+      lastAiPhaseTurn: 2,
+      turnState: "begin",
+      selectionStar: 1,
+      moveEffect: (game) => {
+        game.galaxy().pathBetween(0, 1, false);
+        return Promise.resolve("moved");
+      },
+    });
+    await model.move();
+    assert.equal(typeof t.calls.paths[0][3], "function");
+    t.game.galaxy().pathBetween(0, 1, false);
+    assert.equal(t.calls.paths[1][3], undefined);
   });
 });
 
@@ -528,15 +611,41 @@ describe("the phase run", () => {
 
 describe("input rules", () => {
   // Movement needs the turn at rest: lastAiPhaseTurn caught up to the clock.
-  it("allows only single-hop moves", () => {
+  it("passes the friendly route however many hops it crosses", () => {
     setup({ lastAiPhaseTurn: 2, canMovePath: [0, 1] });
     assert.deepEqual(model.canMove(), [0, 1]);
 
     setup({ lastAiPhaseTurn: 2, canMovePath: [0, 1, 2] });
-    assert.equal(model.canMove(), false);
+    assert.deepEqual(model.canMove(), [0, 1, 2]);
 
     setup({ lastAiPhaseTurn: 2, canMovePath: false });
     assert.equal(model.canMove(), false);
+  });
+
+  it("refuses a route the stock rules allow but enemy territory blocks", () => {
+    const t = setup({
+      lastAiPhaseTurn: 2,
+      canMovePath: [0, 1, 2],
+      conquestPath: null,
+    });
+    assert.equal(model.canMove(), false);
+    assert.equal(t.calls.paths.length, 1);
+  });
+
+  it("narrows the route to systems no AI holds", () => {
+    const t = setup({ lastAiPhaseTurn: 2, canMovePath: [0, 1] });
+    model.canMove();
+    const traversable = t.calls.paths[0][3];
+    assert.equal(traversable(makeStar(undefined)), true);
+    assert.equal(traversable(makeStar({ team: 0 })), false);
+    assert.equal(
+      traversable(makeStar({ boss: true, mirrorMode: true })),
+      false
+    );
+    assert.equal(
+      traversable(makeStar({ boss: true, team: 0, conquestJumped: true })),
+      true
+    );
   });
 
   it("withholds the jump between the move and the turn's end", () => {

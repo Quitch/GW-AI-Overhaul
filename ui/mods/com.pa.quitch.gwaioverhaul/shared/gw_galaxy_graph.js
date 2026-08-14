@@ -36,21 +36,31 @@ define(function () {
       }
     };
 
-    self.pathBetween = function (from, to, noFog) {
+    // The optional traversable(star) predicate narrows intermediates only -
+    // the final hop keeps the fog rule alone, so a route may end on a star
+    // the predicate refuses to cross.
+    self.pathBetween = function (from, to, noFog, traversable) {
       var stars = self.stars();
       var neighborsMap = self.neighborsMap();
       var toExplored = stars[to].explored();
+      var crossable =
+        traversable ||
+        function () {
+          return true;
+        };
 
       // Fog of war: the final hop is allowed if either endpoint is explored.
       var canEnterTarget = function (node) {
         return noFog || stars[node].explored() || toExplored;
       };
 
-      // Fog of war: an intermediate is traversable once visited or explored.
+      // Fog of war: an intermediate is traversable once visited or explored,
+      // and past whatever rule the optional predicate adds.
       var canTraverse = function (neighbor) {
-        return noFog
+        var visible = noFog
           ? stars[neighbor].history().length > 0
           : stars[neighbor].explored();
+        return visible && crossable(stars[neighbor]);
       };
 
       var checked = {};

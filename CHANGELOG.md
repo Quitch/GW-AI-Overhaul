@@ -4,7 +4,7 @@
 
 ### Added
 
-- Galactic Conquest, a new war mode in the lobby's Mode dropdown. Each enemy faction starts with a single system and its boss conquers one adjacent system after every turn you take - a turn ends once you have fought and explored where you landed, or passed in a friendly system; presence grows the longer a system is held, bosses hunt you down (losing to one loses the war) and fight each other for the galaxy, foes and allied commanders appear along contested borders, and a system you already explored offers no new tech when retaken. Victory badges are tracked separately from Galactic War
+- Galactic Conquest, a new war mode in the lobby's Mode dropdown. Each enemy faction starts with a single system and its boss conquers one adjacent system after every turn you take - you jump freely through your own territory in a single turn, but enemy systems block the route, and a turn ends once you have fought and explored where you landed, or passed in a friendly system; presence grows the longer a system is held, bosses hunt you down (losing to one loses the war) and fight each other for the galaxy, foes and allied commanders appear along contested borders, and a system you already explored offers no new tech when retaken. Victory badges are tracked separately from Galactic War
 
 ### Changed
 
