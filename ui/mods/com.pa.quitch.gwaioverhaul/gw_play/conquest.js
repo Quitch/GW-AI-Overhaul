@@ -26,6 +26,23 @@ function gwoConquest() {
   try {
     model.gwoConquestAiPhase = ko.observable(false);
 
+    var conquestDriver;
+    model.gwoDisplayConquestPass = ko.observable(false);
+    model.gwoConquestPass = function () {
+      if (conquestDriver) {
+        conquestDriver.pass();
+      }
+    };
+
+    // A sibling of the stock action row, injected before gw_play.js's own
+    // ko.applyBindings, which is what binds it.
+    $("#selected-system-anchor").append(
+      loadHtml(
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_pass.html"
+      )
+    );
+    locTree($(".gwo-conquest-actions"));
+
     // The stock owner computed paints a jumped boss's colour and reads
     // ownerColor back, so a counter-writing computed only triggers another
     // boss-coloured repaint. Intercept the write instead: while the boss
@@ -127,7 +144,7 @@ function gwoConquest() {
         // canMove, the display computeds and defeatTeam - exist before the
         // driver wraps them.
         _.defer(function () {
-          gwoTurnFactory({
+          conquestDriver = gwoTurnFactory({
             game: game,
             gwoSettings: gwoSettings,
             cfg: cfg,
@@ -143,6 +160,15 @@ function gwoConquest() {
               game.inventory().cards()[0].id,
               model.gwoStarCardsWhichBreakAllies
             ),
+          });
+
+          // Shown with the player's own star selected, like Fight/Explore.
+          ko.computed(function () {
+            model.gwoDisplayConquestPass(
+              model.canShowCampaignActionButtons() &&
+                model.selection.star() === game.currentStar() &&
+                conquestDriver.canPass()
+            );
           });
         });
       }

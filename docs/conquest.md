@@ -2,21 +2,21 @@
 
 A war mode selected in the lobby's **Mode** dropdown ("Galactic War" is the
 default and is unchanged). In Conquest the galaxy starts almost empty: each
-enemy faction holds a single system, and once the player has resolved a move -
-fought and explored where they landed - each faction's boss takes one adjacent
-system. The player and the AIs alternate, so the player can only ever move one
-system at a time.
+enemy faction holds a single system, and once the player has ended their turn -
+fought and explored where they landed, or passed on a friendly system - each
+faction's boss takes one adjacent system. The player and the AIs alternate, so
+the player can only ever move one system at a time.
 
 ## Module map
 
-| File                             | Role                                                                                             |
-| -------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `gw_start/conquest_setup.js`     | Measured: boss spawn placement, Guardians placement and identity, the `gwaio.conquest` snapshot  |
-| `gw_play/conquest_engine.js`     | Measured: plans one full AI phase from a plain-object board and returns ordered steps and events |
-| `gw_play/conquest_ai_builder.js` | Measured: builds and re-scales garrisons, foes and allies; rolls capture-time game modifiers     |
-| `gw_play/conquest_turn.js`       | Measured: the driver - wraps the turn verbs, runs the phase once the turn resolves, saves        |
-| `gw_play/conquest.js`            | Scene shell: instantiates the driver when the save carries `gwaio.conquest`. Coverage-excluded   |
-| `gw_play/conquest_sprite.js`     | Boss-move animation, a copy of the stock transit visuals. Coverage-excluded                      |
+| File                             | Role                                                                                                                       |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `gw_start/conquest_setup.js`     | Measured: boss spawn placement, Guardians placement and identity, the `gwaio.conquest` snapshot                            |
+| `gw_play/conquest_engine.js`     | Measured: plans one full AI phase from a plain-object board and returns ordered steps and events                           |
+| `gw_play/conquest_ai_builder.js` | Measured: builds and re-scales garrisons, foes and allies; rolls capture-time game modifiers                               |
+| `gw_play/conquest_turn.js`       | Measured: the driver - wraps the turn verbs, runs the phase once the turn resolves, saves                                  |
+| `gw_play/conquest.js`            | Scene shell: instantiates the driver and injects the Pass button when the save carries `gwaio.conquest`. Coverage-excluded |
+| `gw_play/conquest_sprite.js`     | Boss-move animation, a copy of the stock transit visuals. Coverage-excluded                                                |
 
 ## Generation
 
@@ -49,18 +49,27 @@ system at a time.
 
 ## The turn engine
 
-`conquest_turn.js` runs the AI phase once the player's turn is resolved: any
-AI on their star but the Guardians fought, an unexplored star explored. A
-move onto an already-resolved system runs it at once; otherwise it follows
-the fight and/or explore that resolves the turn - through the wrapped
-`winTurn` and `loseTurn`, or the install-time defer for the host's own
-battle returns. The phase snapshots the board (cloned - the planner never
-mutates live state), runs `conquest_engine.planPhase`, applies the returned
-steps in order, saves once with `gwoSave(game, true)`, and announces any
-eliminations with the stock popup, naming victor and vanquished
-(`conquest_announce.js` formats the message). `model.gwoConquestAiPhase` blocks
-Move/Fight/Explore while it runs, and `canMove` only passes single-hop
-paths, and none at all until the turn is resolved.
+`conquest_turn.js` runs the AI phase once the player ends their turn: the
+fight and/or explore the move demands - through the wrapped `winTurn` and
+`loseTurn` - or, on a system that demands nothing, the explicit **Pass**
+button (`conquest_pass.html`, injected by `conquest.js` beside the stock
+action row and shown with the player's own star selected, like
+Fight/Explore). A landing alone never runs the phase. A pass at rest opens a
+fresh turn - it advances `stats.turns` itself - while a pass after a move
+finds the clock already ahead and only runs the owed phase, which also makes
+it the safe retry after a failed phase. Every pass stamps `turnState`
+`"end"`, the marker the install-time recovery reads: the deferred
+`runPhaseIfDue` at install runs only after a reconciled battle or when
+`turnState` is not `"begin"`, because an unreconciled `"begin"` is a move
+still awaiting its Pass, fight or explore. The phase snapshots the board
+(cloned - the planner never mutates live state), runs
+`conquest_engine.planPhase`, applies the returned steps in order, saves once
+with `gwoSave(game, true)`, and announces any eliminations with the stock
+popup, naming victor and vanquished (`conquest_announce.js` formats the
+message). `model.gwoConquestAiPhase` blocks Move/Fight/Explore/Pass while it
+runs, and `canMove` only passes single-hop paths - none at all until the
+turn is resolved, and none between the move and the Pass, fight or explore
+that ends the turn.
 
 Each faction, in team order:
 
@@ -118,11 +127,13 @@ Rules the engine carries:
   duplicated per faction), and an allied commander at
   `alliedCommanderChance x bordering player systems` percent, suppressed by
   the same ally-breaking loadouts as setup.
-- **The turn must be resolved before the next jump**: any AI in the player's
-  system has to be fought, stacked bosses included, and an unexplored system
-  explored - the jump button is withheld until then. The Guardians alone
-  keep the stock freedom to leave. A boss that lands on the player during
-  the phase reopens the turn (`begin`) so the fight is offered.
+- **The turn must be resolved and answered before the next jump**: any AI in
+  the player's system has to be fought, stacked bosses included, and an
+  unexplored system explored - the jump button is withheld until then, and
+  again between the move and the Pass, fight or explore that ends the turn.
+  The Guardians alone keep the stock freedom to leave (and to be passed
+  beside). A boss that lands on the player during the phase reopens the turn
+  (`begin`) so the fight is offered.
 - **Losing to a faction boss loses the war**, hardcore or not; the Guardians
   and garrisons keep the stock retreat.
 - **defeatTeam** (Conquest variant, installed by the driver) clears a beaten
@@ -164,12 +175,17 @@ before the state flip, resolved once the loss is saved - because gw_play.js's
 `gameState` turns lost, and the gate the scene opens with is already
 resolved. `victory.js` documents the same hazard on the won path.
 
-Co-op needs no protocol of its own: a viewer's
-`applyCampaignAction('move_to_star')` calls `model.move()` itself, so the same
-wrap runs the same deterministic phase on every client; only the host's save
-persists (`gw_play/save.js` no-ops for viewers). The phase must never consult
-`gwCampaignReplayingAction`, which the viewer clears before async work
-completes.
+Co-op adds one action of its own: the host's pass sends `gwo_conquest_pass`,
+which the driver's `applyCampaignAction` hijack replays as `pass()` on every
+viewer - the base handler rejects unknown types, so the hijack intercepts
+first and returns the phase's promise, which is what orders the campaign
+queue on it. `sendCampaignAction` no-ops off-host, so the replayed pass never
+re-sends. Everything else needs no protocol: a viewer's
+`applyCampaignAction('move_to_star')` calls `model.move()` itself, so every
+client ends the same turns with the same deterministic phase; only the
+host's save persists (`gw_play/save.js` no-ops for viewers). The phase must
+never consult `gwCampaignReplayingAction`, which the viewer clears before
+async work completes.
 
 ## Victory badges
 

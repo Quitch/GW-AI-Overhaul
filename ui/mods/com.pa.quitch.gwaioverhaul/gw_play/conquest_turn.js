@@ -1,9 +1,9 @@
-// The Galactic Conquest turn driver: runs the AI phase once the player's
-// turn is resolved - after the fight and/or explore the move demands, and
-// never before - blocks input while it does, and carries the loss and
-// elimination rules a Conquest war changes. A factory in victory.js's style
-// so the logic stays measurable; gw_play/conquest.js instantiates it with
-// the live scene objects.
+// The Galactic Conquest turn driver: runs the AI phase once the player ends
+// their turn - the fight and/or explore the move demands, or the explicit
+// Pass on a friendly system - blocks input while it does, and carries the
+// loss and elimination rules a Conquest war changes. A factory in
+// victory.js's style so the logic stays measurable; gw_play/conquest.js
+// instantiates it with the live scene objects.
 //
 // The phase runs identically on the host and every co-op viewer, and must
 // never consult gwCampaignReplayingAction. See docs/conquest.md.
@@ -148,18 +148,45 @@ define([], function () {
       return finished;
     };
 
-    // Covers the move that lands on an already-resolved star - and, on a
-    // viewer, the replayed one. The original promise is extended, not
-    // replaced, so the co-op action queue orders on the phase completing
-    // everywhere.
-    var baseMove = model.move;
-    model.move = function () {
-      var moved = baseMove.apply(model, arguments);
-      return $.when(moved)
-        .then(runPhaseIfDue)
-        .then(function () {
-          return moved;
-        });
+    var canPass = function () {
+      return (
+        !params.aiPhase() &&
+        game.gameState() === "active" &&
+        game.turnState() !== "fight" &&
+        game.turnState() !== "explore" &&
+        !model.player.moving() &&
+        turnResolved()
+      );
+    };
+
+    // Ends the turn by hand. A pass at rest opens a fresh turn; after a move
+    // the clock is already ahead and the phase merely owed, which also makes
+    // a repeated pass the safe retry after a failed phase. The action is sent
+    // before the state changes; sendCampaignAction no-ops off-host.
+    var pass = function () {
+      if (!canPass()) {
+        return undefined;
+      }
+      model.sendCampaignAction("gwo_conquest_pass", {});
+      var turns = game.stats().turns();
+      if (cfg.lastAiPhaseTurn >= turns) {
+        game.stats().turns(turns + 1);
+      }
+      // 'end' marks the turn as ended for the install-time recovery; a plain
+      // 'begin' is a move still awaiting its Pass, fight or explore.
+      game.turnState("end");
+      return runPhaseIfDue();
+    };
+
+    // The base rejects unknown campaign action types, so a viewer's pass
+    // replay is intercepted ahead of it. The returned promise is what orders
+    // the co-op action queue on the phase completing.
+    var baseApplyCampaignAction = model.applyCampaignAction;
+    model.applyCampaignAction = function (action) {
+      if (action && action.type === "gwo_conquest_pass") {
+        return $.when(pass());
+      }
+      return baseApplyCampaignAction.apply(model, arguments);
     };
 
     // The in-scene resolutions: the explore pick and a viewer's replayed
@@ -176,11 +203,18 @@ define([], function () {
     };
 
     // One hop per turn - a longer path costs the game several turns in one
-    // click, which Conquest's you-then-them rhythm cannot allow - and none
-    // at all until the turn is resolved.
+    // click, which Conquest's you-then-them rhythm cannot allow - none at
+    // all until the turn is resolved, and none between the move and the
+    // Pass, fight or explore that ends the turn. cfg.lastAiPhaseTurn is a
+    // plain value, but every write to it precedes an aiPhase or turns write,
+    // so the computed always re-reads it fresh.
     var baseCanMove = model.canMove;
     model.canMove = ko.computed(function () {
-      if (params.aiPhase() || !turnResolved()) {
+      if (
+        params.aiPhase() ||
+        !turnResolved() ||
+        cfg.lastAiPhaseTurn < game.stats().turns()
+      ) {
         return false;
       }
       var path = baseCanMove();
@@ -352,7 +386,7 @@ define([], function () {
     var reconcilePendingFight = function () {
       var pending = cfg.pendingFight;
       if (!pending) {
-        return;
+        return false;
       }
       var foughtStarAi = game.galaxy().stars()[pending.star].ai();
       var abandoned =
@@ -360,7 +394,7 @@ define([], function () {
         game.turnState() === "fight" &&
         !!foughtStarAi;
       if (abandoned) {
-        return;
+        return false;
       }
       delete cfg.pendingFight;
       // A save can carry a stamp with no ai. Throwing on one would fail
@@ -374,23 +408,30 @@ define([], function () {
         // Stock loseTurn rewound the player.
         if (facedFactionBoss && game.gameState() === "active") {
           loseWar();
-          return;
+          return true;
         }
       } else if (!foughtStarAi && pendingAi.boss) {
         // Stock winTurn cleared the star through stock defeatTeam.
         eliminate(pendingAi, pendingAi.team, pending.owners);
       }
       params.save(game, true);
+      return true;
     };
 
-    reconcilePendingFight();
+    var reconciled = reconcilePendingFight();
 
-    // Covers scene entry after a battle or a crash mid-phase.
-    _.defer(runPhaseIfDue);
+    // Covers scene entry after a battle or a crash mid-phase. An unreconciled
+    // 'begin' is a move still awaiting its Pass, fight or explore - the
+    // phase is not owed, however the clock reads.
+    if (reconciled || game.turnState() !== "begin") {
+      _.defer(runPhaseIfDue);
+    }
 
     return {
       runPhaseIfDue: runPhaseIfDue,
       defeatTeam: game.defeatTeam,
+      canPass: canPass,
+      pass: pass,
     };
   };
 
