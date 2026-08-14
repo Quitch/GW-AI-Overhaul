@@ -219,6 +219,7 @@ define([], function () {
     settings: function (params) {
       return {
         maxDist: params.maxDist,
+        maxConnections: params.maxConnections,
         playerCount: params.playerCount,
         lastAiPhaseTurn: 1,
         factions: params.factions.slice(),

@@ -7,8 +7,10 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_scaling.js",
 ], function (gwoScaling) {
-  var tierFor = function (sinceTurn, turns, maxDist) {
-    return Math.min(Math.floor((turns - sinceTurn) / 2), maxDist);
+  // growth accumulates one friendly-neighbour count per phase; the integer
+  // sum divides once here so no float drift can cross a floor boundary.
+  var growthTier = function (growth, maxConnections, maxDist) {
+    return Math.min(Math.floor(growth / maxConnections), maxDist);
   };
 
   var isGuardians = function (ai) {
@@ -33,6 +35,13 @@ define([
     var builder = ctx.builder;
     var cfg = ctx.cfg;
     var teams = cfg.factions.length;
+    // Saves from before the field was snapshotted always built 4-connection
+    // galaxies.
+    var maxConnections = cfg.maxConnections || 4;
+
+    var tierFromGrowth = function (growth) {
+      return growthTier(growth, maxConnections, board.maxDist);
+    };
 
     var neighborsOf = function (starIndex) {
       return board.neighbors[starIndex] || [];
@@ -127,6 +136,28 @@ define([
       return _.filter(neighborsOf(starIndex), function (neighbor) {
         return isFriendly(neighbor, team);
       }).length;
+    };
+
+    // Persistent-owner adjacency (ownerAi: a jumped boss holds nothing) -
+    // the count that spawns foes and feeds growth. isFriendly above is
+    // movement's looser test.
+    var owningNeighbours = function (starIndex, keep) {
+      return _.filter(neighborsOf(starIndex), function (neighbor) {
+        var owner = ownerAi(board.stars[neighbor].ai);
+        return !!owner && !isGuardians(owner) && keep(owner);
+      }).length;
+    };
+
+    var teamNeighbours = function (starIndex, team) {
+      return owningNeighbours(starIndex, function (owner) {
+        return owner.team === team;
+      });
+    };
+
+    var factionNeighbours = function (starIndex, faction) {
+      return owningNeighbours(starIndex, function (owner) {
+        return owner.faction === faction;
+      });
     };
 
     // Hop distances from the player's star over the whole graph, fog ignored.
@@ -264,7 +295,8 @@ define([
 
     // The garrison left behind when a boss departs.
     var departureAi = function (boss, fromStar) {
-      var tier = tierFor(boss.capturedTurn, board.turns, board.maxDist);
+      var growth = boss.growth || 0;
+      var tier = tierFromGrowth(growth);
       var left = builder.buildGarrison({
         rng: streams.conquestGarrisonRng(warRng, fromStar, boss.capturedTurn),
         team: boss.team,
@@ -274,6 +306,7 @@ define([
       });
       if (left) {
         left.capturedTurn = boss.capturedTurn;
+        left.growth = growth;
         left.appliedTier = tier;
         builder.copyGameModifiers(boss, left);
       }
@@ -294,6 +327,7 @@ define([
 
     var capture = function (boss, toStar) {
       boss.capturedTurn = board.turns;
+      boss.growth = 0;
       builder.rollGameModifiers(
         streams.conquestModesRng(warRng, toStar, board.turns),
         boss
@@ -454,14 +488,7 @@ define([
           if (hasFoe) {
             return;
           }
-          var bordering = _.filter(neighborsOf(starIndex), function (neighbor) {
-            var neighbourOwner = ownerAi(board.stars[neighbor].ai);
-            return (
-              neighbourOwner &&
-              !isGuardians(neighbourOwner) &&
-              neighbourOwner.team === otherTeam
-            );
-          }).length;
+          var bordering = teamNeighbours(starIndex, otherTeam);
           if (!bordering) {
             return;
           }
@@ -479,6 +506,7 @@ define([
             return;
           }
           foe.createdTurn = board.turns;
+          foe.growth = 0;
           foe.appliedTier = 0;
           owner.foes = (owner.foes || []).concat([foe]);
           builder.ensureQuellerFFATags(owner);
@@ -531,6 +559,22 @@ define([
     };
 
     var refreshScaling = function () {
+      // Seeds the counter pre-growth saves lack, reproducing the saved tier.
+      // Returns whether the piece mutated: the planner owns a clone, so every
+      // mutation must reach a step's writes or the live board never sees it.
+      var accrueGrowth = function (piece, count) {
+        var mutated = false;
+        if (piece.growth === undefined) {
+          piece.growth = (piece.appliedTier || 0) * maxConnections;
+          mutated = true;
+        }
+        if (count > 0) {
+          piece.growth += count;
+          mutated = true;
+        }
+        return mutated;
+      };
+
       _.forEach(board.stars, function (star, starIndex) {
         var ai = star.ai;
         if (!ai || isGuardians(ai)) {
@@ -538,24 +582,40 @@ define([
         }
         var changed = false;
         var refreshOwner = function (owner) {
-          if (owner.boss || owner.capturedTurn === undefined) {
-            return;
-          }
-          var tier = tierFor(owner.capturedTurn, board.turns, board.maxDist);
-          if (tier !== owner.appliedTier) {
-            builder.refreshGarrison(
-              streams.conquestScaleRng(warRng, starIndex, tier),
-              owner,
-              tier
-            );
-            owner.appliedTier = tier;
-            changed = true;
+          if (owner.boss) {
+            // The counter only sets the departure garrison's tier; the
+            // boss's own tier is the fair-share loop below. A jumped boss
+            // holds nothing and never departs.
+            if (!owner.conquestJumped) {
+              var count = teamNeighbours(starIndex, owner.team);
+              if (count > 0) {
+                owner.growth = (owner.growth || 0) + count;
+                changed = true;
+              }
+            }
+          } else if (owner.capturedTurn !== undefined) {
+            changed =
+              accrueGrowth(owner, teamNeighbours(starIndex, owner.team)) ||
+              changed;
+            var tier = tierFromGrowth(owner.growth);
+            if (tier !== owner.appliedTier) {
+              builder.refreshGarrison(
+                streams.conquestScaleRng(warRng, starIndex, tier),
+                owner,
+                tier
+              );
+              owner.appliedTier = tier;
+              changed = true;
+            }
           }
           _.forEach(owner.foes || [], function (foe) {
             if (foe.boss || foe.createdTurn === undefined) {
               return;
             }
-            var foeTier = tierFor(foe.createdTurn, board.turns, board.maxDist);
+            changed =
+              accrueGrowth(foe, factionNeighbours(starIndex, foe.faction)) ||
+              changed;
+            var foeTier = tierFromGrowth(foe.growth);
             if (foeTier !== foe.appliedTier) {
               builder.refreshFoe(
                 streams
@@ -618,5 +678,5 @@ define([
     return { steps: steps, events: events };
   };
 
-  return { planPhase: planPhase, tierFor: tierFor };
+  return { planPhase: planPhase, growthTier: growthTier };
 });

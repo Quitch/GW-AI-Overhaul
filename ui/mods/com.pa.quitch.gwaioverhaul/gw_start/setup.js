@@ -498,6 +498,7 @@ function gwoSetup() {
           var startCard = model.activeStartCard();
           var conquestMode =
             model.gwoDifficultySettings.warMode() === "conquest";
+          var galaxyMaxConnections = 4;
 
           if (model.newGameName() === defaultNewGameName) {
             model.newGameName(
@@ -530,7 +531,7 @@ function gwoSetup() {
                 coopPlayersForSystemGeneration: playerCount,
                 minStarDistance: 2,
                 maxStarDistance: 4,
-                maxConnections: 4,
+                maxConnections: galaxyMaxConnections,
                 minimumDistanceBonus: 8, // this is inert
                 largePlanets: largePlanets,
                 gwoSystemBrackets: systemBrackets,
@@ -1187,6 +1188,7 @@ function gwoSetup() {
               var difficulty = model.gwoDifficultySettings;
               originSystem.gwaio.conquest = gwoConquestSetup.settings({
                 maxDist: maxDist,
+                maxConnections: galaxyMaxConnections,
                 playerCount: playerCount,
                 factions: aiFactions,
                 difficulty: {

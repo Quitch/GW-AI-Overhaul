@@ -43,7 +43,8 @@ however far it goes, and where it lands is where the turn is played out.
   non-boss AI star" finds nothing when every AI star is a boss). They are
   scaled to `maxDist` once and never expand or re-scale.
 - `onAisFinished` stamps `originSystem.gwaio.conquest`: `maxDist`,
-  `playerCount`, `lastAiPhaseTurn`, the team-to-faction map, the effective
+  `maxConnections`, `playerCount`, `lastAiPhaseTurn`, the team-to-faction
+  map, the effective
   difficulty numbers (Custom has no tier to re-derive them from at play time),
   the raw personality values `applyPersonality` consumes, and the
   game-modifier chances.
@@ -126,15 +127,25 @@ Rules the engine carries:
   stack instead - the arrival becomes a boss-flagged entry in the occupier's
   `foes`, every boss present joins the one battle, and a stacked star is not
   capturable by anyone else.
-- **Tiers**: garrison and foe presence scales with
-  `min(floor(heldTurns / 2), maxDist)` fed to the same scaling arithmetic as
-  war generation (`shared/ai_scaling.js`); garrisons key on their system's
-  `capturedTurn`, foes on their own `createdTurn`. A boss scales by the
-  fraction of its faction's fair share it owns -
+- **Tiers**: garrison and foe presence grows with friendly adjacency. Each
+  phase a piece adds its bordering friendly systems to a persisted `growth`
+  counter and scales at `min(floor(growth / maxConnections), maxDist)`, fed
+  to the same scaling arithmetic as war generation (`shared/ai_scaling.js`).
+  Garrisons count systems their own team persistently owns (a jumped boss
+  holds nothing); foes count their own faction's - the adjacency that
+  spawned them - and refresh wherever they besiege, boss-held systems
+  included. An isolated system never strengthens; a fully surrounded one
+  gains a tier per turn (a shade more where the isolated-star repair
+  exceeded `maxConnections` - see `galaxy.md`), and a capture feeds its
+  neighbours from the phase it lands. A boss-held system accrues the same
+  counter, but it only sets the garrison the boss leaves on departure - the
+  boss itself scales by the fraction of its faction's fair share it owns,
   `ceil(owned * (bossCount + 1) * maxDist / totalStars)`, the galaxy split
   among bosses plus the player - reaching the War boss's rim scale at its full
   share and continuing uncapped past it. Re-scaling happens in the phase, so
-  the referee and the intelligence panel read `star.ai()` unchanged.
+  the referee and the intelligence panel read `star.ai()` unchanged; accrual
+  without a tier change still writes the star, because the planner's board is
+  a clone and only written stars reach the save.
 - **Foes and allies** roll every second turn: per AI system, a foe of a
   bordering faction at `ffaChance x bordering systems` percent (never
   duplicated per faction), and an allied commander at

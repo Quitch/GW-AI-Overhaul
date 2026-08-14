@@ -147,6 +147,7 @@ describe("buildGuardiansAi", () => {
 describe("settings", () => {
   const params = {
     maxDist: 7,
+    maxConnections: 4,
     playerCount: 2,
     factions: [3, 0, 4],
     difficulty: {
@@ -172,6 +173,7 @@ describe("settings", () => {
   it("snapshots every field the play scene needs", () => {
     const settings = conquestSetup.settings(params);
     assert.equal(settings.maxDist, 7);
+    assert.equal(settings.maxConnections, 4);
     assert.equal(settings.playerCount, 2);
     assert.deepEqual(settings.factions, [3, 0, 4]);
     assert.deepEqual(settings.difficulty, params.difficulty);

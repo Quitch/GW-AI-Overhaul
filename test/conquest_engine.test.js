@@ -73,6 +73,7 @@ function makeCtx(opts) {
     alliesSuppressed: !!options.alliesSuppressed,
     cfg: {
       factions: options.factions || [0],
+      maxConnections: 4,
       difficulty: {
         ffaChance: 10,
         alliedCommanderChance: 10,
@@ -105,15 +106,17 @@ function boss(team, extra) {
       faction: team,
       color: [[team, team, team]],
       capturedTurn: 1,
+      growth: 0,
       appliedTier: 1,
     },
     extra
   );
 }
 
+// growth 4 is appliedTier 1 at the ctx default of four connections.
 function garrison(team, extra) {
   return Object.assign(
-    { team: team, faction: team, capturedTurn: 1, appliedTier: 1 },
+    { team: team, faction: team, capturedTurn: 1, growth: 4, appliedTier: 1 },
     extra
   );
 }
@@ -131,7 +134,7 @@ function stepsOf(result, kind) {
 
 describe("boss movement", () => {
   it("captures an adjacent star and leaves a scaled garrison behind", () => {
-    const theBoss = boss(0, { capturedTurn: 1 });
+    const theBoss = boss(0, { capturedTurn: 1, growth: 8 });
     const board = makeBoard({
       turns: 5,
       playerStar: 3,
@@ -151,13 +154,18 @@ describe("boss movement", () => {
     );
     const left = board.stars[1].ai;
     assert.equal(left.garrison, true);
-    // tierFor(captured 1, turns 5) = 2, stamped and used for the build.
+    // The boss's growth of 8 over four connections builds the garrison at
+    // tier 2; the garrison inherits the counter, then accrues its new boss
+    // neighbour in the same phase.
     assert.equal(left.builtAtTier, 2);
     assert.equal(left.capturedTurn, 1);
+    assert.equal(left.growth, 9);
     assert.equal(left.appliedTier, 2);
     assert.equal(left.modifiersCopied, true);
     assert.equal(board.stars[2].ai, theBoss);
     assert.equal(theBoss.capturedTurn, 5);
+    // Capture resets the counter; the garrison left behind then feeds it.
+    assert.equal(theBoss.growth, 1);
     assert.equal(theBoss.modifiersRolled, 1);
   });
 
@@ -895,37 +903,213 @@ describe("ally rolls", () => {
 });
 
 describe("tier refresh", () => {
-  it("re-scales a garrison every second held turn, capped at maxDist", () => {
-    const held = garrison(0, { capturedTurn: 1, appliedTier: 1 });
+  it("never grows an isolated garrison", () => {
+    const held = garrison(0, { growth: 0, appliedTier: 0 });
     const board = makeBoard({
-      turns: 9,
+      playerStar: 1,
+      edges: [[0, 1]],
+      stars: [star(held), star(null, { visited: true })],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.equal(held.growth, 0);
+    assert.equal(held.refreshedAt, undefined);
+    assert.equal(stepsOf(result, "refresh").length, 0);
+  });
+
+  it("matches the old two-turn cadence with two of four friendly neighbours", () => {
+    const held = garrison(0, { growth: 0, appliedTier: 0 });
+    const board = makeBoard({
+      playerStar: 3,
+      edges: [
+        [0, 1],
+        [0, 2],
+      ],
+      stars: [
+        star(held),
+        star(garrison(0)),
+        star(garrison(0)),
+        star(null, { visited: true }),
+      ],
+    });
+    const first = engine.planPhase(board, makeCtx());
+    // The planner owns a clone, so accrual alone must still write the star
+    // or the live board never sees the counter move.
+    assert.equal(held.growth, 2);
+    assert.equal(held.refreshedAt, undefined);
+    assert.ok(
+      stepsOf(first, "refresh").some((step) =>
+        step.writes.some((entry) => entry.star === 0)
+      )
+    );
+
+    engine.planPhase(board, makeCtx());
+    assert.equal(held.growth, 4);
+    assert.equal(held.refreshedAt, 1);
+    assert.equal(held.appliedTier, 1);
+  });
+
+  it("gains a tier every turn when fully surrounded", () => {
+    const held = garrison(0, { growth: 0, appliedTier: 0 });
+    const board = makeBoard({
+      playerStar: 5,
+      edges: [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [0, 4],
+      ],
+      stars: [
+        star(held),
+        star(garrison(0)),
+        star(garrison(0)),
+        star(garrison(0)),
+        star(garrison(0)),
+        star(null, { visited: true }),
+      ],
+    });
+    engine.planPhase(board, makeCtx());
+    assert.equal(held.refreshedAt, 1);
+    engine.planPhase(board, makeCtx());
+    assert.equal(held.refreshedAt, 2);
+    assert.equal(held.appliedTier, 2);
+  });
+
+  it("caps the tier at maxDist", () => {
+    const held = garrison(0, { growth: 100, appliedTier: 1 });
+    const board = makeBoard({
       playerStar: 1,
       maxDist: 3,
       edges: [[0, 1]],
       stars: [star(held), star(null, { visited: true })],
     });
-    const result = engine.planPhase(board, makeCtx());
-    // tierFor(1, 9) is 4, capped to maxDist 3.
+    engine.planPhase(board, makeCtx());
     assert.equal(held.refreshedAt, 3);
     assert.equal(held.appliedTier, 3);
-    assert.equal(stepsOf(result, "refresh").length, 1);
-
-    const again = engine.planPhase(board, makeCtx());
-    assert.equal(stepsOf(again, "refresh").length, 0);
   });
 
-  it("re-scales a foe from its own creation turn", () => {
-    const foe = { name: "Foe", faction: 1, createdTurn: 5, appliedTier: 0 };
-    const held = garrison(0, { capturedTurn: 1, appliedTier: 4, foes: [foe] });
+  it("does not count a jumped boss's star as friendly territory", () => {
+    // The jumped boss holds nothing, so its own team's garrison next door
+    // draws no growth from the star. appliedTier 8 is the boss's fair-share
+    // tier for one owned system - ceil(1 * 2 * 8 / 2) - so the boss loop
+    // stays quiet too.
+    const held = garrison(0, { growth: 0, appliedTier: 0 });
     const board = makeBoard({
-      turns: 9,
-      playerStar: 1,
+      playerStar: 0,
       edges: [[0, 1]],
-      stars: [star(held), star(null, { visited: true })],
+      stars: [
+        star(boss(0, { conquestJumped: true, appliedTier: 8 }), {
+          visited: true,
+        }),
+        star(held),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.equal(held.growth, 0);
+    assert.equal(stepsOf(result, "refresh").length, 0);
+  });
+
+  it("scales a foe by its own faction's neighbours, not its host's", () => {
+    const foe = {
+      name: "Foe",
+      faction: 1,
+      createdTurn: 1,
+      growth: 3,
+      appliedTier: 0,
+    };
+    const host = garrison(0, { foes: [foe] });
+    const board = makeBoard({
+      playerStar: 3,
+      edges: [
+        [0, 1],
+        [0, 2],
+      ],
+      stars: [
+        star(host),
+        star(garrison(1)),
+        star(garrison(0)),
+        star(null, { visited: true }),
+      ],
     });
     engine.planPhase(board, makeCtx({ factions: [0, 1] }));
-    assert.equal(foe.refreshedAt, 2);
-    assert.equal(foe.appliedTier, 2);
+    // The one faction-1 neighbour tips the foe over a tier boundary; the
+    // host's own single friendly neighbour leaves it short of its next.
+    assert.equal(foe.growth, 4);
+    assert.equal(foe.refreshedAt, 1);
+    assert.equal(foe.appliedTier, 1);
+    assert.equal(host.growth, 5);
+    assert.equal(host.refreshedAt, undefined);
+  });
+
+  it("accrues growth on a boss-held star for its departure garrison", () => {
+    const theBoss = boss(0);
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[1, 2]],
+      stars: [star(null, { visited: true }), star(theBoss), star(garrison(0))],
+    });
+    engine.planPhase(board, makeCtx());
+    assert.equal(theBoss.growth, 1);
+    engine.planPhase(board, makeCtx());
+    assert.equal(theBoss.growth, 2);
+  });
+
+  it("refreshes a foe stacked on a boss in place", () => {
+    // The old held-turns rule deferred a stacked foe's tier until the boss
+    // departed; the counter cannot defer, so the foes loop runs on
+    // boss-held stars too.
+    const foe = {
+      name: "Foe",
+      faction: 1,
+      createdTurn: 1,
+      growth: 4,
+      appliedTier: 0,
+    };
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[1, 2]],
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0, { foes: [foe] })),
+        star(garrison(0)),
+      ],
+    });
+    engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+    assert.equal(foe.refreshedAt, 1);
+    assert.equal(foe.appliedTier, 1);
+  });
+
+  it("seeds the counter for a save from before growth existed", () => {
+    const held = garrison(0, { appliedTier: 2 });
+    delete held.growth;
+    const board = makeBoard({
+      playerStar: 2,
+      edges: [[0, 1]],
+      stars: [star(held), star(garrison(0)), star(null, { visited: true })],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    // appliedTier 2 seeds growth 8, keeping the saved tier; the friendly
+    // neighbour then adds one, and the seeding alone demands a write.
+    assert.equal(held.growth, 9);
+    assert.equal(held.appliedTier, 2);
+    assert.equal(held.refreshedAt, undefined);
+    assert.ok(
+      stepsOf(result, "refresh").some((step) =>
+        step.writes.some((entry) => entry.star === 0)
+      )
+    );
+  });
+
+  it("defaults maxConnections to 4 for a pre-field save", () => {
+    const held = garrison(0, { growth: 3, appliedTier: 0 });
+    const board = makeBoard({
+      playerStar: 2,
+      edges: [[0, 1]],
+      stars: [star(held), star(garrison(0)), star(null, { visited: true })],
+    });
+    const ctx = makeCtx();
+    delete ctx.cfg.maxConnections;
+    engine.planPhase(board, ctx);
+    assert.equal(held.refreshedAt, 1);
   });
 
   it("does not count the jump toward the boss's tier", () => {
@@ -941,6 +1125,9 @@ describe("tier refresh", () => {
     // The boss owns only the garrison it left behind, matching appliedTier.
     assert.equal(board.stars[0].ai, theBoss);
     assert.equal(theBoss.refreshedAt, undefined);
+    // The garrison's one neighbour is the jumped star, which stays the
+    // player's, so no growth accrues either.
+    assert.equal(board.stars[1].ai.growth, 0);
     assert.equal(stepsOf(result, "refresh").length, 0);
   });
 
@@ -995,11 +1182,13 @@ describe("determinism", () => {
   });
 });
 
-describe("tierFor", () => {
-  it("halves held turns, floored and capped", () => {
-    assert.equal(engine.tierFor(1, 1, 8), 0);
-    assert.equal(engine.tierFor(1, 4, 8), 1);
-    assert.equal(engine.tierFor(1, 9, 8), 4);
-    assert.equal(engine.tierFor(1, 30, 8), 8);
+describe("growthTier", () => {
+  it("floors accumulated growth over maxConnections, capped at maxDist", () => {
+    assert.equal(engine.growthTier(0, 4, 8), 0);
+    assert.equal(engine.growthTier(3, 4, 8), 0);
+    assert.equal(engine.growthTier(4, 4, 8), 1);
+    assert.equal(engine.growthTier(100, 4, 8), 8);
+    // Integer accumulation keeps a non-power-of-2 divisor exact.
+    assert.equal(engine.growthTier(5, 3, 8), 1);
   });
 });
