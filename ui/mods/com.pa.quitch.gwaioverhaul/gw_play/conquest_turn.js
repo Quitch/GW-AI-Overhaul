@@ -1,14 +1,15 @@
-// The Galactic Conquest turn driver: runs the AI phase after every player
-// move, blocks input while it does, and carries the loss and elimination rules
-// a Conquest war changes. A factory in victory.js's style so the logic stays
-// measurable; gw_play/conquest.js instantiates it with the live scene objects.
+// The Galactic Conquest turn driver: runs the AI phase once the player's
+// turn is resolved - after the fight and/or explore the move demands, and
+// never before - blocks input while it does, and carries the loss and
+// elimination rules a Conquest war changes. A factory in victory.js's style
+// so the logic stays measurable; gw_play/conquest.js instantiates it with
+// the live scene objects.
 //
 // The phase runs on the host and on every co-op viewer alike: a viewer's
-// applyCampaignAction('move_to_star') calls model.move() itself, so the wrap
-// below fires there too and the deterministic planner reproduces the host's
-// phase locally. Only the host's save persists. It must not consult
-// gwCampaignReplayingAction, which is cleared before async work completes.
-// See docs/conquest.md.
+// applyCampaignAction calls the same wrapped verbs, so the deterministic
+// planner reproduces the host's phase locally. Only the host's save
+// persists. It must not consult gwCampaignReplayingAction, which is cleared
+// before async work completes. See docs/conquest.md.
 define([], function () {
   var factory = function (params) {
     var game = params.game;
@@ -76,16 +77,33 @@ define([], function () {
 
     var phaseRunning = false;
 
-    // Runs the phase exactly once per turn: the marker persists with the save,
-    // so a battle's scene teardown or a crash mid-phase re-runs it from
-    // identical state - the planner is deterministic, so with an identical
-    // outcome. Doubles as the no-op path when move() rejected the click.
+    // The turn resolves once the player's star demands nothing: any AI but
+    // the Guardians must be fought (an occupied star cannot be explored, so
+    // the fight alone settles it), and an unexplored star must be explored.
+    // The Guardians never trap the player - retreat from the treasure star
+    // stays legal - and never carry a stacked boss (actTeam's treasure-star
+    // exemption), so the foes check is belt and braces.
+    var turnResolved = function () {
+      var star = game.galaxy().stars()[game.currentStar()];
+      var ai = star.ai();
+      if (ai) {
+        return !!ai.mirrorMode && !_.some(ai.foes || [], "boss");
+      }
+      return !!star.explored();
+    };
+
+    // Runs the phase exactly once per turn, and only after the turn is
+    // resolved: the marker persists with the save, so a battle's scene
+    // teardown or a crash mid-phase re-runs it from identical state - the
+    // planner is deterministic, so with an identical outcome. Doubles as the
+    // no-op path when move() rejected the click.
     var runPhaseIfDue = function () {
       var turns = game.stats().turns();
       if (
         phaseRunning ||
         cfg.lastAiPhaseTurn >= turns ||
-        game.gameState() !== "active"
+        game.gameState() !== "active" ||
+        !turnResolved()
       ) {
         return undefined;
       }
@@ -108,6 +126,12 @@ define([], function () {
           cfg: cfg,
         });
         applySteps(result.steps, function () {
+          // An ambushing boss landed after the turn resolved: canFight needs
+          // 'begin' and the resolved lock withholds the jump, so reopen the
+          // turn. Before the save - the saved state must be fightable too.
+          if (currentStarAi()) {
+            game.turnState("begin");
+          }
           cfg.lastAiPhaseTurn = turns;
           $.when(params.save(game, true)).always(function () {
             announce(_.map(result.events, "team"));
@@ -122,9 +146,10 @@ define([], function () {
       return finished;
     };
 
-    // After every completed player move - and, on a viewer, after every
-    // replayed one. The original promise is extended, not replaced, so the
-    // co-op action queue orders on the phase completing everywhere.
+    // Covers the move that lands on an already-resolved star - and, on a
+    // viewer, the replayed one. The original promise is extended, not
+    // replaced, so the co-op action queue orders on the phase completing
+    // everywhere.
     var baseMove = model.move;
     model.move = function () {
       var moved = baseMove.apply(model, arguments);
@@ -135,21 +160,25 @@ define([], function () {
         });
     };
 
-    // A faction boss that has moved onto the player's star has to be fought;
-    // the Guardians and garrisons keep the stock freedom to jump away.
-    var bossInPlayerSystem = function () {
-      var ai = currentStarAi();
-      if (!ai) {
-        return false;
-      }
-      return (!!ai.boss && !ai.mirrorMode) || _.some(ai.foes || [], "boss");
+    // The in-scene resolutions: the explore pick and a viewer's replayed
+    // battle win. The host's own battle results land before scene mods load;
+    // the install-time defer covers those. Extended, not replaced, as above.
+    var baseWinTurn = game.winTurn;
+    game.winTurn = function () {
+      var won = baseWinTurn.apply(game, arguments);
+      return $.when(won).then(function (result) {
+        return $.when(runPhaseIfDue()).then(function () {
+          return result;
+        });
+      });
     };
 
-    // One hop per turn: a longer path costs the game several turns in one
-    // click, which Conquest's you-then-them rhythm cannot allow.
+    // One hop per turn - a longer path costs the game several turns in one
+    // click, which Conquest's you-then-them rhythm cannot allow - and none
+    // at all until the destination is resolved.
     var baseCanMove = model.canMove;
     model.canMove = ko.computed(function () {
-      if (params.aiPhase() || bossInPlayerSystem()) {
+      if (params.aiPhase() || !turnResolved()) {
         return false;
       }
       var path = baseCanMove();
@@ -177,6 +206,9 @@ define([], function () {
       if (facedFactionBoss) {
         game.gameState("lost");
       }
+      // A retreat rewinds to a star that was resolved to be left, so the
+      // consumed turn's phase runs now; a lost war skips it via the guard.
+      runPhaseIfDue();
       return result;
     };
 

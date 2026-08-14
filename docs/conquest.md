@@ -2,9 +2,10 @@
 
 A war mode selected in the lobby's **Mode** dropdown ("Galactic War" is the
 default and is unchanged). In Conquest the galaxy starts almost empty: each
-enemy faction holds a single system, and after every player move each faction's
-boss takes one adjacent system. The player and the AIs alternate, so the player
-can only ever move one system at a time.
+enemy faction holds a single system, and once the player has resolved a move -
+fought and explored where they landed - each faction's boss takes one adjacent
+system. The player and the AIs alternate, so the player can only ever move one
+system at a time.
 
 ## Module map
 
@@ -13,7 +14,7 @@ can only ever move one system at a time.
 | `gw_start/conquest_setup.js`     | Measured: Guardians placement candidates and identity, the `gwaio.conquest` snapshot             |
 | `gw_play/conquest_engine.js`     | Measured: plans one full AI phase from a plain-object board and returns ordered steps and events |
 | `gw_play/conquest_ai_builder.js` | Measured: builds and re-scales garrisons, foes and allies; rolls capture-time game modifiers     |
-| `gw_play/conquest_turn.js`       | Measured: the driver - wraps `model.move`, blocks input, applies steps, saves, announces         |
+| `gw_play/conquest_turn.js`       | Measured: the driver - wraps the turn verbs, runs the phase once the turn resolves, saves        |
 | `gw_play/conquest.js`            | Scene shell: instantiates the driver when the save carries `gwaio.conquest`. Coverage-excluded   |
 | `gw_play/conquest_sprite.js`     | Boss-move animation, a copy of the stock transit visuals. Coverage-excluded                      |
 
@@ -40,13 +41,17 @@ can only ever move one system at a time.
 
 ## The turn engine
 
-`conquest_turn.js` wraps `model.move`; after the move's own promise resolves it
-snapshots the board (cloned - the planner never mutates live state), runs
-`conquest_engine.planPhase`, applies the returned steps in order, saves once
-with `gwoSave(game, true)`, and announces any eliminations with the stock
-popup. `model.gwoConquestAiPhase` blocks Move/Fight/Explore while it runs, and
-`canMove` only passes single-hop paths, and none at all while a faction boss
-stands in the player's system.
+`conquest_turn.js` runs the AI phase once the player's turn is resolved: any
+AI on their star but the Guardians fought, an unexplored star explored. A
+move onto an already-resolved system runs it at once; otherwise it follows
+the fight and/or explore that resolves the turn - through the wrapped
+`winTurn` and `loseTurn`, or the install-time defer for the host's own
+battle returns. The phase snapshots the board (cloned - the planner never
+mutates live state), runs `conquest_engine.planPhase`, applies the returned
+steps in order, saves once with `gwoSave(game, true)`, and announces any
+eliminations with the stock popup. `model.gwoConquestAiPhase` blocks
+Move/Fight/Explore while it runs, and `canMove` only passes single-hop
+paths, and none at all until the turn is resolved.
 
 Each faction, in team order:
 
@@ -84,9 +89,11 @@ Rules the engine carries:
   duplicated per faction), and an allied commander at
   `alliedCommanderChance x bordering player systems` percent, suppressed by
   the same ally-breaking loadouts as setup.
-- **A faction boss in the player's system has to be fought**: the jump button
-  is withheld while one stands there, stacked bosses included. The Guardians
-  and garrisons keep the stock freedom to leave.
+- **The turn must be resolved before the next jump**: any AI in the player's
+  system has to be fought, stacked bosses included, and an unexplored system
+  explored - the jump button is withheld until then. The Guardians alone
+  keep the stock freedom to leave. A boss that lands on the player during
+  the phase reopens the turn (`begin`) so the fight is offered.
 - **Losing to a faction boss loses the war**, hardcore or not; the Guardians
   and garrisons keep the stock retreat.
 - **defeatTeam** (Conquest variant, installed by the driver) clears a beaten
@@ -103,8 +110,9 @@ Everything the phase does is a pure function of (war seed, saved state, turn):
 every draw comes from the `conquest_*` streams in `gw_play/gwo_streams.js`.
 `cfg.lastAiPhaseTurn`, persisted with the save, marks the last turn whose
 phase completed - a battle's scene teardown or a crash mid-phase re-runs the
-phase from identical saved state with an identical outcome, and a move that
-changed nothing runs no phase at all.
+phase from identical saved state with an identical outcome, a rejected click
+runs no phase at all, and an unresolved turn holds the phase until the fight
+or explore that resolves it.
 
 The base game applies a battle's result and saves before scene mods load, so
 no wrap in the driver ever sees the host's own fight resolve. `game.fight`

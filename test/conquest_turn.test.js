@@ -49,7 +49,8 @@ function setup(overrides) {
       lastAiPhaseTurn: 1,
       gameState: "active",
       currentStar: 0,
-      stars: [makeStar(), makeStar()],
+      // The current star is resolved by default: the phase only runs then.
+      stars: [makeStar(undefined, { explored: true }), makeStar()],
       engineResult: { steps: [], events: [] },
       canMovePath: [0, 1],
       moveResult: "moved",
@@ -66,6 +67,7 @@ function setup(overrides) {
     baseMoves: 0,
     baseLoses: 0,
     baseFights: 0,
+    baseWins: 0,
   };
 
   const game = {
@@ -81,8 +83,20 @@ function setup(overrides) {
       calls.baseFights += 1;
       return options.fightResult !== false;
     },
+    winTurn: () => {
+      calls.baseWins += 1;
+      if (options.winTurnEffect) {
+        options.winTurnEffect(game);
+      }
+      return Promise.resolve(
+        options.winResult !== undefined ? options.winResult : true
+      );
+    },
     loseTurn: () => {
       calls.baseLoses += 1;
+      if (options.loseTurnEffect) {
+        options.loseTurnEffect(game);
+      }
       return true;
     },
     defeatTeam: () => {},
@@ -156,6 +170,9 @@ function setup(overrides) {
     aiPhase: trackedAiPhase,
     save: (savedGame, force) => {
       calls.saves.push([savedGame, force]);
+      if (options.onSave) {
+        options.onSave(savedGame);
+      }
       return Promise.resolve();
     },
     announce: (teams) => calls.announced.push(teams),
@@ -194,20 +211,80 @@ describe("the move wrap", () => {
     await model.move();
     assert.equal(t.calls.engineBoards.length, 0);
   });
+
+  it("defers the phase while the destination demands a fight", async () => {
+    const t = setup({ stars: [makeStar({ team: 0 }), makeStar()] });
+    await model.move();
+    assert.equal(t.calls.engineBoards.length, 0);
+    assert.equal(t.cfg.lastAiPhaseTurn, 1);
+  });
+
+  it("defers the phase while the destination is unexplored", async () => {
+    const t = setup({ stars: [makeStar(), makeStar()] });
+    await model.move();
+    assert.equal(t.calls.engineBoards.length, 0);
+  });
+
+  it("runs the phase on arrival at the Guardians' star", async () => {
+    const t = setup({
+      stars: [makeStar({ boss: true, mirrorMode: true }), makeStar()],
+    });
+    await model.move();
+    assert.equal(t.calls.engineBoards.length, 1);
+  });
+});
+
+describe("the winTurn wrap", () => {
+  it("runs the phase once the explore resolves the turn and hands the result back", async () => {
+    const stars = [makeStar(), makeStar()];
+    const t = setup({
+      stars,
+      winTurnEffect: () => stars[0].explored(true),
+    });
+    const result = await t.game.winTurn(-1);
+    assert.equal(result, true);
+    assert.equal(t.calls.baseWins, 1);
+    assert.equal(t.calls.engineBoards.length, 1);
+    assert.equal(t.cfg.lastAiPhaseTurn, 2);
+  });
+
+  it("runs the phase after a fight win with nothing left to explore", async () => {
+    const stars = [makeStar({ team: 0 }, { explored: true }), makeStar()];
+    const t = setup({
+      stars,
+      winTurnEffect: () => stars[0].ai(undefined),
+    });
+    await t.game.winTurn();
+    assert.equal(t.calls.engineBoards.length, 1);
+  });
+
+  it("still waits when the fight win leaves the star unexplored", async () => {
+    const stars = [makeStar({ team: 0 }), makeStar()];
+    const t = setup({
+      stars,
+      winTurnEffect: () => stars[0].ai(undefined),
+    });
+    await t.game.winTurn();
+    assert.equal(t.calls.engineBoards.length, 0);
+  });
 });
 
 describe("the phase run", () => {
   it("hands the engine a cloned board", async () => {
     const ai = { team: 0, boss: true };
     const t = setup({
-      stars: [makeStar(ai, { history: [{}] }), makeStar()],
+      stars: [
+        makeStar(undefined, { explored: true }),
+        makeStar(ai, { history: [{}] }),
+      ],
     });
     await t.driver.runPhaseIfDue();
     const board = t.calls.engineBoards[0];
-    assert.deepEqual(board.stars[0].ai, ai);
-    assert.notEqual(board.stars[0].ai, ai);
-    assert.equal(board.stars[0].visited, true);
-    assert.equal(board.stars[1].ai, null);
+    assert.deepEqual(board.stars[1].ai, ai);
+    assert.notEqual(board.stars[1].ai, ai);
+    assert.equal(board.stars[1].visited, true);
+    assert.equal(board.stars[0].ai, null);
+    assert.equal(board.stars[0].explored, true);
     assert.equal(board.turns, 2);
     assert.equal(board.playerStar, 0);
     assert.equal(board.treasureStar, 7);
@@ -217,7 +294,10 @@ describe("the phase run", () => {
   it("applies writes and card clears in step order", async () => {
     const newAi = { team: 1 };
     const t = setup({
-      stars: [makeStar(), makeStar({ team: 0 }, { cards: ["gwc_x"] })],
+      stars: [
+        makeStar(undefined, { explored: true }),
+        makeStar({ team: 0 }, { cards: ["gwc_x"] }),
+      ],
       engineResult: {
         steps: [
           { kind: "move", writes: [{ star: 0, ai: newAi }] },
@@ -300,6 +380,34 @@ describe("the phase run", () => {
     await t.driver.runPhaseIfDue();
     assert.equal(t.calls.engineBoards.length, 1);
   });
+
+  it("never runs twice for one turn across triggers", async () => {
+    const stars = [makeStar(), makeStar()];
+    const t = setup({
+      stars,
+      winTurnEffect: () => stars[0].explored(true),
+    });
+    await t.game.winTurn(-1);
+    await model.move();
+    assert.equal(t.calls.engineBoards.length, 1);
+  });
+
+  it("reopens the turn when a boss lands on the player's star", async () => {
+    const savedTurnStates = [];
+    const t = setup({
+      engineResult: {
+        steps: [
+          { kind: "move", writes: [{ star: 0, ai: { boss: true, team: 0 } }] },
+        ],
+        events: [],
+      },
+      onSave: (savedGame) => savedTurnStates.push(savedGame.turnState()),
+    });
+    await t.driver.runPhaseIfDue();
+    assert.equal(t.game.turnState(), "begin");
+    // The reopened state must be in the save, or a reload would softlock.
+    assert.deepEqual(savedTurnStates, ["begin"]);
+  });
 });
 
 describe("input rules", () => {
@@ -329,13 +437,20 @@ describe("input rules", () => {
     assert.equal(model.canMove(), false);
   });
 
-  it("still allows a jump away from the Guardians or a garrison", () => {
-    setup({ stars: [makeStar({ boss: true, mirrorMode: true }), makeStar()] });
-    assert.deepEqual(model.canMove(), [0, 1]);
-
+  it("refuses to jump away from a garrison", () => {
     setup({
       stars: [makeStar({ team: 0, foes: [{ faction: 2 }] }), makeStar()],
     });
+    assert.equal(model.canMove(), false);
+  });
+
+  it("withholds the jump from an unexplored system", () => {
+    setup({ stars: [makeStar(), makeStar()] });
+    assert.equal(model.canMove(), false);
+  });
+
+  it("still allows a jump away from the Guardians", () => {
+    setup({ stars: [makeStar({ boss: true, mirrorMode: true }), makeStar()] });
     assert.deepEqual(model.canMove(), [0, 1]);
   });
 
@@ -374,6 +489,29 @@ describe("losing to a boss", () => {
     });
     t.game.loseTurn();
     assert.equal(t.game.gameState(), "active");
+  });
+
+  it("runs the consumed turn's phase after a retreat", () => {
+    const t = setup({
+      stars: [makeStar({ team: 0 }), makeStar(undefined, { explored: true })],
+      loseTurnEffect: (game) => game.currentStar(1),
+    });
+    t.game.loseTurn();
+    assert.equal(t.calls.engineBoards.length, 1);
+    assert.equal(t.calls.engineBoards[0].playerStar, 1);
+  });
+
+  it("runs no phase after a lost war", () => {
+    const t = setup({
+      stars: [
+        makeStar({ boss: true, team: 0 }),
+        makeStar(undefined, { explored: true }),
+      ],
+      loseTurnEffect: (game) => game.currentStar(1),
+    });
+    t.game.loseTurn();
+    assert.equal(t.game.gameState(), "lost");
+    assert.equal(t.calls.engineBoards.length, 0);
   });
 });
 
