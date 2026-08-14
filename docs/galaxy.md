@@ -105,6 +105,7 @@ first. Two consequences worth relying on:
 | ↳↳ `planet.<i>`                                                       | that planet's biome and generator values                                                          |
 | `teams`                                                               | faction scaling, the AI faction shuffle, `gwoTeams.getTeam`                                       |
 | `breeder`                                                             | which star each faction spawns on, and the spawn order                                            |
+| `conquest_spawns`                                                     | Conquest only: tie-breaks in `spawnStars`' maximin placement                                      |
 | `boss.<team>`                                                         | the seed handed to `gwoTeams.makeBoss`                                                            |
 | `workers`                                                             | `makeWorker`'s picks — ordered, see below                                                         |
 | `ai.<team>` → `boss` / `worker.<n>` → `minion.<n>`, `foe.<n>`, `ally` | that AI's buffs, econ, game modes, minions, foes, ally, penchant                                  |

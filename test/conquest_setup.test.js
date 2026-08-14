@@ -10,9 +10,37 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const conquestSetup = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/conquest_setup.js"
 );
+const gwoRng = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+);
 
 function star(ai) {
   return { ai: () => ai };
+}
+
+// A line of `count` stars, 0 - 1 - 2 - ... so distances are unambiguous.
+function chainGates(count) {
+  const gates = [];
+  for (let i = 0; i + 1 < count; i++) {
+    gates.push([i, i + 1]);
+  }
+  return gates;
+}
+
+function cycleGates(count) {
+  const gates = chainGates(count);
+  gates.push([count - 1, 0]);
+  return gates;
+}
+
+function spawnStars(gates, starCount, aiCount, seed) {
+  return conquestSetup.spawnStars({
+    gates: gates,
+    starCount: starCount,
+    originIndex: 0,
+    aiCount: aiCount,
+    rng: gwoRng.create(seed),
+  });
 }
 
 describe("guardiansCandidates", () => {
@@ -24,6 +52,67 @@ describe("guardiansCandidates", () => {
   it("returns nothing when every star is owned or the origin", () => {
     const stars = [star(null), star({ team: 0 })];
     assert.deepEqual(conquestSetup.guardiansCandidates(stars, 0), []);
+  });
+});
+
+describe("spawnStars", () => {
+  it("returns the same placement for one seed", () => {
+    const a = spawnStars(cycleGates(12), 12, 3, "spawn-1");
+    const b = spawnStars(cycleGates(12), 12, 3, "spawn-1");
+    assert.deepEqual(a, b);
+  });
+
+  it("never spawns two bosses on one star, nor on the origin", () => {
+    for (let i = 0; i < 12; i++) {
+      const spawns = spawnStars(cycleGates(12), 12, 3, "distinct-" + i);
+      assert.equal(spawns.length, 3);
+      assert.equal(new Set(spawns).size, 3, "duplicate spawn star");
+      assert.ok(!spawns.includes(0), "spawned on the origin");
+    }
+  });
+
+  // The case the breeder's greedy pick gets wrong: on a 12-star ring it
+  // spawns at {6, 3-or-9}, spacing [3,3,6]; the even split {4,8} gives
+  // [4,4,4] and is the unique lexicographic-maximin optimum.
+  it("finds the even split greedy misses", () => {
+    for (let i = 0; i < 12; i++) {
+      const spawns = spawnStars(cycleGates(12), 12, 2, "ring-" + i);
+      assert.deepEqual(spawns.slice().sort(), [4, 8]);
+    }
+  });
+
+  it("keeps the far end while widening the gaps on a chain", () => {
+    for (let i = 0; i < 12; i++) {
+      const spawns = spawnStars(chainGates(12), 12, 2, "chain-" + i);
+      assert.ok(spawns.includes(11), "farthest star unused");
+      const other = spawns.find((star) => star !== 11);
+      assert.ok(other >= 5, "spacing below 5: " + spawns);
+      assert.ok(11 - other >= 5, "spacing below 5: " + spawns);
+    }
+  });
+
+  it("sends a lone boss to the farthest star", () => {
+    assert.deepEqual(spawnStars(chainGates(12), 12, 1, "lone"), [11]);
+  });
+
+  it("clamps to the available stars when outnumbered", () => {
+    const spawns = spawnStars(chainGates(3), 3, 5, "clamp");
+    assert.deepEqual(spawns.slice().sort(), [1, 2]);
+  });
+
+  it("never places a boss on a star unreachable from the origin", () => {
+    for (let i = 0; i < 12; i++) {
+      const spawns = spawnStars(
+        [
+          [0, 1],
+          [1, 2],
+        ],
+        4,
+        3,
+        "island-" + i
+      );
+      assert.deepEqual(spawns.slice().sort(), [1, 2]);
+    }
   });
 });
 

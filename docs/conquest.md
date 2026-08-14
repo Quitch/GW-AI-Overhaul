@@ -11,7 +11,7 @@ system at a time.
 
 | File                             | Role                                                                                             |
 | -------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `gw_start/conquest_setup.js`     | Measured: Guardians placement candidates and identity, the `gwaio.conquest` snapshot             |
+| `gw_start/conquest_setup.js`     | Measured: boss spawn placement, Guardians placement and identity, the `gwaio.conquest` snapshot  |
 | `gw_play/conquest_engine.js`     | Measured: plans one full AI phase from a plain-object board and returns ordered steps and events |
 | `gw_play/conquest_ai_builder.js` | Measured: builds and re-scales garrisons, foes and allies; rolls capture-time game modifiers     |
 | `gw_play/conquest_turn.js`       | Measured: the driver - wraps the turn verbs, runs the phase once the turn resolves, saves        |
@@ -22,6 +22,14 @@ system at a time.
 
 `gw_start/setup.js` branches on `gwoDifficultySettings.warMode()`:
 
+- Spawn stars come from `conquest_setup.spawnStars`, not the breeder's greedy
+  farthest-point pick: lexicographic maximin over the pairwise gate-hop
+  distances among the player's origin and every boss, so everyone starts as
+  far apart - and as evenly spaced - as the galaxy allows. The greedy pick
+  seeds a swap-based local search; a stall escalates to pair swaps once,
+  which is exhaustive for two bosses and escapes symmetric plateaus for
+  more. The result is handed to the breeder as `params.spawns`, which skips
+  its own pick but still shuffles factions over the stars.
 - The breeder runs with `canSpread` refusing everything, which leaves each
   faction exactly its spawn star, still boss-marked (pinned in
   `test/gwo_breeder.test.js`).

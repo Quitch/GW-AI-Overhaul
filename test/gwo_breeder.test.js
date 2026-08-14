@@ -158,6 +158,35 @@ describe("gwo_breeder populate", () => {
     assert.equal(placed.length, 3);
   });
 
+  // The other Conquest contract: a caller-supplied placement is used as-is
+  // (stock greedy on this chain would pick {11, 5-or-6}), with the factions
+  // still shuffled over it and every spawn boss-marked.
+  it("boss-marks exactly the preset spawns when params.spawns is given", () => {
+    const galaxy = chain(12);
+    const bossed = [];
+    gwoBreeder.populate({
+      galaxy: galaxy,
+      teams: [{ color: 0 }, { color: 1 }],
+      neutralStars: 1,
+      orderedSpawn: false,
+      rng: gwoRng.create("preset-1"),
+      spawns: [3, 7],
+      spawn: function () {},
+      canSpread: () => false,
+      spread: function () {},
+      boss: function (star, ai) {
+        bossed.push(galaxy.stars().indexOf(star));
+        assert.equal(ai.boss, true);
+      },
+    });
+    assert.deepEqual(bossed.slice().sort(), [3, 7]);
+    const owned = galaxy
+      .stars()
+      .map((star, i) => (star.ai() ? i : undefined))
+      .filter((i) => i !== undefined);
+    assert.deepEqual(owned, [3, 7]);
+  });
+
   // The contract Conquest generation rests on: refusing every spread must
   // still terminate, leave exactly the spawn stars owned, and boss-mark them.
   it("leaves only boss-marked spawn stars when canSpread always refuses", () => {

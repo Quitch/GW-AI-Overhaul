@@ -675,6 +675,19 @@ function gwoSetup() {
               return teamInfo;
             };
 
+            // Conquest bosses keep their spawn star all war, so their spacing
+            // from the player and each other is optimised rather than greedy.
+            var conquestSpawns;
+            if (conquestMode) {
+              conquestSpawns = gwoConquestSetup.spawnStars({
+                gates: game.galaxy().gates(),
+                starCount: game.galaxy().stars().length,
+                originIndex: game.galaxy().origin(),
+                aiCount: teams.length,
+                rng: warRng.stream("conquest_spawns"),
+              });
+            }
+
             return gwoBreeder
               .populate({
                 galaxy: game.galaxy(),
@@ -683,6 +696,7 @@ function gwoSetup() {
                 orderedSpawn: false,
                 // Picks each faction's spawn star and shuffles the spawn order.
                 rng: warRng.stream("breeder"),
+                spawns: conquestSpawns,
                 spawn: function () {},
                 // Refusing every spread leaves each faction its spawn star
                 // only; the breeder still drains its queues and still marks
