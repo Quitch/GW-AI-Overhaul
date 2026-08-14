@@ -207,7 +207,7 @@ describe("boss movement", () => {
     assert.equal(board.stars[0].ai, guardians);
   });
 
-  it("marches one hop through friendly territory toward the frontier", () => {
+  it("captures across its friendly territory in one move", () => {
     const theBoss = boss(0);
     const midGarrison = garrison(0);
     const board = makeBoard({
@@ -219,28 +219,59 @@ describe("boss movement", () => {
       stars: [star(), star(theBoss), star(midGarrison), star(), star()],
     });
     const result = engine.planPhase(board, makeCtx());
-    assert.equal(stepsOf(result, "move")[0].to, 2);
-    assert.equal(board.stars[2].ai, theBoss);
-    // The displaced garrison rides along until the boss moves on.
-    assert.equal(theBoss.conquestDisplaced, midGarrison);
+    const move = stepsOf(result, "move")[0];
+    assert.deepEqual({ from: move.from, to: move.to }, { from: 1, to: 3 });
+    assert.equal(board.stars[3].ai, theBoss);
+    // The garrison it crossed stays put; a fresh one covers the origin.
+    assert.equal(board.stars[2].ai, midGarrison);
     assert.equal(board.stars[1].ai.garrison, true);
   });
 
-  it("restores the displaced garrison when the boss moves on", () => {
-    const midGarrison = garrison(0);
-    const theBoss = boss(0, { conquestDisplaced: midGarrison });
+  it("jumps the player from anywhere in its territory when strong enough", () => {
+    const theBoss = boss(0);
     const board = makeBoard({
-      playerStar: 4,
+      playerStar: 0,
       edges: [
+        [0, 1],
         [1, 2],
         [2, 3],
       ],
-      stars: [star(), star(garrison(0)), star(theBoss), star(), star()],
+      stars: [
+        star(null, { visited: true }),
+        star(garrison(0)),
+        star(garrison(0)),
+        star(theBoss),
+      ],
     });
-    engine.planPhase(board, makeCtx());
-    assert.equal(board.stars[2].ai, midGarrison);
-    assert.equal(board.stars[3].ai, theBoss);
-    assert.equal(theBoss.conquestDisplaced, undefined);
+    const result = engine.planPhase(board, makeCtx());
+    const move = stepsOf(result, "move")[0];
+    assert.deepEqual({ from: move.from, to: move.to }, { from: 3, to: 0 });
+    assert.equal(board.stars[0].ai, theBoss);
+    assert.equal(theBoss.conquestJumped, true);
+  });
+
+  it("expands instead of engaging a player too strong to beat", () => {
+    // The player holds three explored systems to the boss's one, so the
+    // 50%-more gate withholds the jump and the boss captures instead.
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [
+        [0, 1],
+        [1, 2],
+      ],
+      stars: [
+        star(null, { visited: true, explored: true }),
+        star(boss(0)),
+        star(),
+        star(null, { explored: true }),
+        star(null, { explored: true }),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    const moves = stepsOf(result, "move");
+    assert.equal(moves.length, 1);
+    assert.equal(moves[0].to, 2);
+    assert.equal(board.stars[0].ai, null);
   });
 
   it("holds when boxed in with no frontier", () => {
@@ -429,7 +460,8 @@ describe("boss versus boss", () => {
   });
 
   it("lets a cornered attacker win a tie", () => {
-    // The boss star is the attacker's only neighbour, so the gate is bypassed.
+    // The boss star is the only option and the tie is winnable - the
+    // collision rule favours the attacker - so the cornered path attacks.
     const board = makeBoard({
       edges: [[1, 2]],
       stars: [star(null, { visited: true }), star(boss(0)), star(boss(1))],
@@ -441,7 +473,7 @@ describe("boss versus boss", () => {
     assert.equal(board.stars[2].ai.team, 0);
   });
 
-  it("eliminates a cornered attacker when the defender owns more", () => {
+  it("holds rather than die attacking, and the stronger boss finishes it", () => {
     const board = makeBoard({
       edges: [
         [1, 2],
@@ -455,17 +487,17 @@ describe("boss versus boss", () => {
       ],
     });
     const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+    // The weaker boss would lose the collision, so it holds its ground...
+    assert.equal(stepsOf(result, "hold")[0].team, 0);
+    assert.ok(stepsOf(result, "move").every((move) => move.team !== 0));
+    // ...and the stronger faction, free to act next, takes the fight to it.
     assert.equal(result.events[0].team, 0);
     assert.equal(result.events[0].byTeam, 1);
-    // The attacker dies in place, so no move step carries its team.
-    assert.ok(stepsOf(result, "move").every((move) => move.team !== 0));
-    // The attacker's holdings are gone; the defender survives (and is free to
-    // expand later in the same phase).
     const owners = board.stars
       .map((s) => s.ai && s.ai.team)
       .filter((team) => team !== null && team !== undefined);
-    assert.ok(!owners.includes(0), "the attacker still owns a star");
-    assert.ok(owners.includes(1), "the defender was wrongly eliminated");
+    assert.ok(!owners.includes(0), "the loser still owns a star");
+    assert.ok(owners.includes(1), "the victor was wrongly eliminated");
   });
 });
 
@@ -498,8 +530,8 @@ describe("boss attack gate", () => {
     return makeBoard({ edges, stars });
   }
 
-  it("attacks with strictly more systems when the boss star is the only capturable neighbour", () => {
-    // 4-vs-3 fails the 50% branch, so only the sole-neighbour branch passes.
+  it("attacks with strictly more systems when the boss star is the only option", () => {
+    // 4-vs-3 fails the 50% gate, but the cornered would-win path attacks.
     const board = gateBoard();
     const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
     assert.deepEqual(result.events, [
@@ -547,7 +579,7 @@ describe("boss attack gate", () => {
     assert.equal(board.stars[5].ai.team, 0);
   });
 
-  it("marches toward another frontier when the boss star is gated", () => {
+  it("captures the far frontier instead when the boss star is gated", () => {
     const theBoss = boss(0);
     const midGarrison = garrison(0);
     const board = makeBoard({
@@ -569,12 +601,13 @@ describe("boss attack gate", () => {
     });
     const result = engine.planPhase(board, makeCtx());
     assert.deepEqual(result.events, []);
-    assert.equal(stepsOf(result, "move")[0].to, 2);
-    assert.equal(board.stars[2].ai, theBoss);
-    assert.equal(theBoss.conquestDisplaced, midGarrison);
+    assert.equal(stepsOf(result, "move")[0].to, 3);
+    assert.equal(board.stars[3].ai, theBoss);
+    assert.equal(board.stars[2].ai, midGarrison);
   });
 
-  it("holds rather than march toward a gated boss star", () => {
+  it("attacks a gated boss star it would beat when cornered", () => {
+    // 2-vs-2 fails the 50% gate, but the collision favours the attacker.
     const board = makeBoard({
       edges: [
         [1, 2],
@@ -592,6 +625,33 @@ describe("boss attack gate", () => {
       ],
     });
     const result = engine.planPhase(board, makeCtx());
+    assert.deepEqual(result.events, [
+      { type: "eliminated", team: 1, byTeam: 0 },
+    ]);
+    assert.equal(board.stars[5].ai.team, 0);
+  });
+
+  it("holds when the only option is a boss it would lose to", () => {
+    const board = makeBoard({
+      edges: [
+        [1, 2],
+        [2, 5],
+        [5, 6],
+        [6, 7],
+      ],
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0)),
+        star(garrison(0)),
+        star(),
+        star(),
+        star(boss(1)),
+        star(garrison(1)),
+        star(garrison(1)),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.deepEqual(result.events, []);
     assert.equal(stepsOf(result, "hold").length, 1);
     assert.equal(stepsOf(result, "move").length, 0);
   });

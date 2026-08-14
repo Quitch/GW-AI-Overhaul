@@ -19,14 +19,10 @@ define([
     return !!ai && !!ai.boss && !isGuardians(ai) && ai.team === team;
   };
 
-  // A star's persistent owner: a boss standing on its own garrison carries the
-  // displaced garrison until it moves on, and a boss that jumped the player
+  // A star's persistent owner: a boss that jumped the player
   // (ai.conquestJumped) holds nothing - the star stays the player's.
   var ownerAi = function (ai) {
-    if (!ai || ai.conquestJumped) {
-      return null;
-    }
-    return ai.conquestDisplaced ? ai.conquestDisplaced : ai;
+    return !ai || ai.conquestJumped ? null : ai;
   };
 
   var planPhase = function (board, ctx) {
@@ -103,9 +99,9 @@ define([
     };
 
     // A boss star is attackable only from strength: half again the defender's
-    // owned systems, or strictly more when it is the sole capturable neighbour
-    // of fromStar. See docs/conquest.md; the cornered exception is actTeam's.
-    var isTargetable = function (starIndex, team, fromStar) {
+    // owned systems. See docs/conquest.md; the cornered would-win exception
+    // is actTeam's.
+    var isTargetable = function (starIndex, team) {
       if (!isCapturable(starIndex, team)) {
         return false;
       }
@@ -113,17 +109,7 @@ define([
       if (!ai || !ai.boss) {
         return true;
       }
-      var attackerOwned = ownedCount(team);
-      var defenderOwned = ownedCount(ai.team);
-      if (attackerOwned * 2 >= defenderOwned * 3) {
-        return true;
-      }
-      return (
-        attackerOwned > defenderOwned &&
-        !_.some(neighborsOf(fromStar), function (neighbor) {
-          return neighbor !== starIndex && isCapturable(neighbor, team);
-        })
-      );
+      return ownedCount(team) * 2 >= ownedCount(ai.team) * 3;
     };
 
     var isFriendly = function (starIndex, team) {
@@ -198,41 +184,43 @@ define([
       return pool.length === 1 ? pool[0] : moveRng.pick(pool);
     };
 
-    // One hop toward the nearest friendly star that borders something
-    // targetable or the player's star, walked through friendly territory only.
-    var marchStep = function (fromStar, team) {
-      var isFrontier = function (starIndex) {
-        return _.some(neighborsOf(starIndex), function (neighbor) {
-          return (
-            isTargetable(neighbor, team, starIndex) ||
-            neighbor === board.playerStar
-          );
-        });
-      };
-      var parent = [];
-      var seen = [];
-      seen[fromStar] = true;
-      var work = [fromStar];
+    // Every system adjacent to the connected friendly region holding atStar:
+    // a boss moves like the player, so one move reaches any of them. Sorted
+    // so the pick ladder sees a stable order whatever the BFS met first.
+    var regionFrontier = function (atStar, team) {
+      var inRegion = [];
+      inRegion[atStar] = true;
+      var onFrontier = [];
+      var frontier = [];
+      var work = [atStar];
       var relax = function (from) {
         _.forEach(neighborsOf(from), function (next) {
-          if (!seen[next] && isFriendly(next, team)) {
-            seen[next] = true;
-            parent[next] = from;
+          if (inRegion[next] || onFrontier[next]) {
+            return;
+          }
+          if (isFriendly(next, team)) {
+            inRegion[next] = true;
             work.push(next);
+          } else {
+            onFrontier[next] = true;
+            frontier.push(next);
           }
         });
       };
       while (work.length) {
-        var node = work.shift();
-        if (node !== fromStar && isFrontier(node)) {
-          while (parent[node] !== fromStar) {
-            node = parent[node];
-          }
-          return node;
-        }
-        relax(node);
+        relax(work.shift());
       }
-      return undefined;
+      return frontier.sort(function (a, b) {
+        return a - b;
+      });
+    };
+
+    // The player's systems: explored and held by no AI. A jumped boss's star
+    // is still the player's, as in game.fight's owners map.
+    var playerOwnedCount = function () {
+      return _.filter(board.stars, function (star) {
+        return star.explored && !ownerAi(star.ai);
+      }).length;
     };
 
     var eliminate = function (team, byTeam) {
@@ -274,29 +262,20 @@ define([
       events.push({ type: "eliminated", team: team, byTeam: byTeam });
     };
 
-    // The garrison (or restored garrison) left behind when a boss departs.
+    // The garrison left behind when a boss departs.
     var departureAi = function (boss, fromStar) {
-      var left;
-      if (boss.conquestDisplaced) {
-        left = boss.conquestDisplaced;
-        delete boss.conquestDisplaced;
-      } else {
-        left = builder.buildGarrison({
-          rng: streams.conquestGarrisonRng(warRng, fromStar, boss.capturedTurn),
-          team: boss.team,
-          faction: boss.faction,
-          color: boss.color,
-          tier: tierFor(boss.capturedTurn, board.turns, board.maxDist),
-        });
-        if (left) {
-          left.capturedTurn = boss.capturedTurn;
-          left.appliedTier = tierFor(
-            boss.capturedTurn,
-            board.turns,
-            board.maxDist
-          );
-          builder.copyGameModifiers(boss, left);
-        }
+      var tier = tierFor(boss.capturedTurn, board.turns, board.maxDist);
+      var left = builder.buildGarrison({
+        rng: streams.conquestGarrisonRng(warRng, fromStar, boss.capturedTurn),
+        team: boss.team,
+        faction: boss.faction,
+        color: boss.color,
+        tier: tier,
+      });
+      if (left) {
+        left.capturedTurn = boss.capturedTurn;
+        left.appliedTier = tier;
+        builder.copyGameModifiers(boss, left);
       }
       // Foes and allies belong to the star, not the departing piece.
       if (left) {
@@ -387,15 +366,11 @@ define([
       }
 
       writes = liftBoss(bossInfo);
-      if (isFriendly(toStar, team) && target) {
-        boss.conquestDisplaced = target;
-      } else {
-        capture(boss, toStar);
-        // The player's star is attacked, not captured: ownership stays with
-        // the player until the boss wins. See docs/conquest.md.
-        if (toStar === board.playerStar) {
-          boss.conquestJumped = true;
-        }
+      capture(boss, toStar);
+      // The player's star is attacked, not captured: ownership stays with
+      // the player until the boss wins. See docs/conquest.md.
+      if (toStar === board.playerStar) {
+        boss.conquestJumped = true;
       }
       writes.push(write(toStar, boss));
       record({
@@ -413,56 +388,49 @@ define([
         return;
       }
 
-      var atStar = bossInfo.star;
-      var playerAdjacent = _.includes(neighborsOf(atStar), board.playerStar);
-
       // Waiting on the player, either as the occupier or stacked.
-      if (atStar === board.playerStar) {
+      if (bossInfo.star === board.playerStar) {
         record({ kind: "hold", team: team, writes: [] });
         return;
       }
 
+      var frontier = regionFrontier(bossInfo.star, team);
+      var moveRng = function () {
+        return streams.conquestMoveRng(warRng, team, board.turns);
+      };
+
       // The player at the treasure star is out of reach: attacking there
-      // would mean taking the Guardians' star.
-      if (playerAdjacent && board.playerStar !== board.treasureStar) {
+      // would mean taking the Guardians' star. Engaging the player takes the
+      // same strength as attacking a boss - the region-wide reach would
+      // otherwise land on the player every single turn.
+      if (
+        _.includes(frontier, board.playerStar) &&
+        board.playerStar !== board.treasureStar &&
+        ownedCount(team) * 2 >= playerOwnedCount() * 3
+      ) {
         moveBoss(team, bossInfo, board.playerStar);
         return;
       }
 
-      var candidates = _.filter(neighborsOf(atStar), function (neighbor) {
-        return isCapturable(neighbor, team);
+      var candidates = _.filter(frontier, function (starIndex) {
+        return isCapturable(starIndex, team);
       });
-      var targetable = _.filter(candidates, function (neighbor) {
-        return isTargetable(neighbor, team, atStar);
+      var targetable = _.filter(candidates, function (starIndex) {
+        return isTargetable(starIndex, team);
       });
       if (targetable.length) {
-        var target = pickTarget(
-          targetable,
-          team,
-          streams.conquestMoveRng(warRng, team, board.turns)
-        );
-        moveBoss(team, bossInfo, target);
+        moveBoss(team, bossInfo, pickTarget(targetable, team, moveRng()));
         return;
       }
 
-      var towards = marchStep(atStar, team);
-      if (towards !== undefined) {
-        moveBoss(team, bossInfo, towards);
-        return;
-      }
-
-      // Cornered: every capturable neighbour is a gated boss star and no march
-      // exists, so attack anyway and let the collision in moveBoss decide.
-      if (candidates.length) {
-        moveBoss(
-          team,
-          bossInfo,
-          pickTarget(
-            candidates,
-            team,
-            streams.conquestMoveRng(warRng, team, board.turns)
-          )
-        );
+      // Cornered: every capturable frontier star is a gated boss star.
+      // Attack only what the collision in moveBoss would let this faction
+      // win - otherwise hold, as the player now can.
+      var winnable = _.filter(candidates, function (starIndex) {
+        return ownedCount(team) >= ownedCount(board.stars[starIndex].ai.team);
+      });
+      if (winnable.length) {
+        moveBoss(team, bossInfo, pickTarget(winnable, team, moveRng()));
         return;
       }
 
@@ -602,9 +570,6 @@ define([
           });
         };
         refreshOwner(ai);
-        if (ai.conquestDisplaced) {
-          refreshOwner(ai.conquestDisplaced);
-        }
         if (changed) {
           record({
             kind: "refresh",

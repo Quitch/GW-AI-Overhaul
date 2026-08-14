@@ -82,48 +82,50 @@ destination - inside the hop's own call, before its save - and a jump nets
 exactly one turn on every save a crash could leave behind. A transit
 interrupted mid-route resumes as a fresh jump from the star it reached.
 
-Each faction, in team order:
+Each faction, in team order, moves its boss like the player: one move
+reaches any system on the frontier of the connected friendly territory
+holding its star, however deep in that territory it stands.
 
-1. A boss adjacent to the player moves onto the player's star and waits to be
-   fought - unless the player is at the treasure star, which would mean taking
-   the Guardians' system. The jump is an attack, not a capture (see the engine
-   rules below).
-2. Otherwise it captures one adjacent system by the priority ladder: never the
-   Guardians; prefer unexplored; prefer a candidate bordering at least one
-   non-friendly system, else the candidate closest to the player; then most
-   friendly neighbours; then most non-friendly neighbours; remaining ties fall
-   to the seeded `conquest_move` stream. Movement itself draws nothing else.
-   Another boss's star is only a candidate when the attack gate passes (see
-   the boss-versus-boss rule below).
-3. With nothing targetable it marches one hop through friendly territory
-   toward the frontier - a frontier star must border something targetable, so
-   a gated boss star draws no march. Cornered - nothing to capture, nowhere to
-   march, a gated boss star adjacent - it attacks that star regardless.
-   Otherwise it holds.
+1. A boss whose frontier holds the player's star moves onto it and waits to
+   be fought - but only past the same strength gate as a boss attack,
+   measured against the player's systems, and never at the treasure star,
+   which would mean taking the Guardians' system. The jump is an attack, not
+   a capture (see the engine rules below); a boss below the gate expands
+   instead.
+2. Otherwise it captures one frontier system by the priority ladder: never
+   the Guardians; prefer unexplored; prefer a candidate bordering at least
+   one non-friendly system, else the candidate closest to the player; then
+   most friendly neighbours; then most non-friendly neighbours; remaining
+   ties fall to the seeded `conquest_move` stream. Movement itself draws
+   nothing else. Another boss's star is only a candidate when the attack
+   gate passes (see the boss-versus-boss rule below).
+3. Cornered - every capturable frontier star a gated boss star - it attacks
+   one the collision rule would let it beat, and otherwise holds, as the
+   player now can.
 
 Rules the engine carries:
 
 - **Captures** roll the game modifiers (land anywhere, sudden death, bounty,
   eradication) from `conquest_modes.<star>.turn.<captured>`, exactly as setup
-  rolls them. When the boss moves on it leaves a garrison built at the system's
-  tier, inheriting those capture-time rolls; a boss crossing its own territory
-  instead carries the displaced garrison (`ai.conquestDisplaced`) and restores
-  it on departure.
+  rolls them. When the boss moves on it leaves a garrison built at the
+  system's tier, inheriting those capture-time rolls. A boss never enters its
+  own territory - the frontier is always one move away.
 - **The player's star is attacked, not captured**: a jump stamps
   `ai.conquestJumped` and the system stays under the player's control - it is
   not counted, painted or rolled as the boss's, and the player's neighbours
   still see a player system. The boss must beat the player to take it, and as
   that loss ends the war the transfer is never recorded. The battle itself is
-  unchanged: the jump still rolls the capture-time game modifiers.
+  unchanged: the jump still rolls the capture-time game modifiers. The jump
+  itself takes the boss-attack strength gate, with the player's count being
+  their explored systems no AI holds (a jumped boss's star included).
 - **Boss versus boss**: a boss only attacks another boss's star with at least
-  half again that faction's systems, or with strictly more when the star is
-  its only capturable neighbour; a cornered boss (nothing to capture, nowhere
-  to march) attacks regardless. When the attack lands, the faction with more
-  systems wins; the attacker wins ties; the loser is eliminated and its
-  systems become unowned. On the player's star bosses stack instead - the
-  arrival becomes a boss-flagged entry in the occupier's `foes`, every boss
-  present joins the one battle, and a stacked star is not capturable by
-  anyone else.
+  half again that faction's systems - or, cornered with nothing else
+  capturable, when the collision rule favours it. When the attack lands, the
+  faction with more systems wins; the attacker wins ties; the loser is
+  eliminated and its systems become unowned. On the player's star bosses
+  stack instead - the arrival becomes a boss-flagged entry in the occupier's
+  `foes`, every boss present joins the one battle, and a stacked star is not
+  capturable by anyone else.
 - **Tiers**: garrison and foe presence scales with
   `min(floor(heldTurns / 2), maxDist)` fed to the same scaling arithmetic as
   war generation (`shared/ai_scaling.js`); garrisons key on their system's
@@ -213,5 +215,3 @@ card view model snapshots its icon at load.
 - A boss stacked into another's `foes` fights with its commander slots but
   without its own minions - the referee treats every `foes` entry as a single
   FFA army.
-- A boss standing on friendly territory suppresses that garrison (and its
-  foes) for any battle fought there while it visits.
