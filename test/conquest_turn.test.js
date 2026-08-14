@@ -65,16 +65,22 @@ function setup(overrides) {
     engineBoards: [],
     baseMoves: 0,
     baseLoses: 0,
+    baseFights: 0,
   };
 
   const game = {
     stats: () => ({ turns: () => options.turns }),
     gameState: observable(options.gameState),
-    currentStar: () => options.currentStar,
+    turnState: observable(options.turnState || "end"),
+    currentStar: observable(options.currentStar),
     galaxy: () => ({
       stars: () => options.stars,
       neighborsMap: () => options.neighbors || { 0: [1], 1: [0] },
     }),
+    fight: () => {
+      calls.baseFights += 1;
+      return options.fightResult !== false;
+    },
     loseTurn: () => {
       calls.baseLoses += 1;
       return true;
@@ -114,6 +120,9 @@ function setup(overrides) {
     factions: [0, 1],
     difficulty: {},
   };
+  if (options.pendingFight) {
+    cfg.pendingFight = options.pendingFight;
+  }
 
   const engine = {
     planPhase: (board) => {
@@ -365,6 +374,170 @@ describe("losing to a boss", () => {
     });
     t.game.loseTurn();
     assert.equal(t.game.gameState(), "active");
+  });
+});
+
+describe("the pending fight stamp", () => {
+  it("stamps the fought star when a fight launches", () => {
+    const ai = { boss: true, team: 0, foes: [{ boss: true, team: 1 }] };
+    const t = setup({
+      stars: [
+        makeStar(ai),
+        makeStar({ team: 1 }),
+        makeStar({ boss: true, mirrorMode: true }),
+      ],
+    });
+
+    assert.equal(t.game.fight(), true);
+
+    assert.equal(t.calls.baseFights, 1);
+    const pending = t.cfg.pendingFight;
+    assert.equal(pending.star, 0);
+    assert.equal(pending.turn, 2);
+    assert.deepEqual(pending.ai, ai);
+    assert.notEqual(pending.ai, ai);
+    assert.deepEqual(pending.owners, [0, 1, null]);
+  });
+
+  it("leaves no stamp when the fight was refused", () => {
+    const t = setup({
+      fightResult: false,
+      stars: [makeStar({ team: 0 }), makeStar()],
+    });
+    assert.equal(t.game.fight(), false);
+    assert.equal(t.cfg.pendingFight, undefined);
+  });
+
+  it("is cleared by an in-scene defeatTeam", () => {
+    const t = setup({
+      turnState: "fight",
+      pendingFight: {
+        star: 0,
+        turn: 2,
+        ai: { boss: true, team: 0 },
+        owners: [0, null],
+      },
+      stars: [makeStar({ boss: true, team: 0 }), makeStar()],
+    });
+    assert.ok(t.cfg.pendingFight);
+    t.game.defeatTeam(0);
+    assert.equal(t.cfg.pendingFight, undefined);
+  });
+});
+
+// The base game applies lastBattleResult before scene mods load, so the
+// host's own battle outcomes reach the driver only through the stamp.
+describe("battle reconciliation at install", () => {
+  it("keeps the stamp while the battle stands abandoned", () => {
+    const t = setup({
+      turnState: "fight",
+      pendingFight: { star: 0, turn: 2, ai: { team: 0 }, owners: [0, null] },
+      stars: [makeStar({ team: 0 }), makeStar()],
+    });
+    assert.ok(t.cfg.pendingFight);
+    assert.equal(t.calls.saves.length, 0);
+  });
+
+  it("loses the war when the stock path applied a boss defeat", () => {
+    const t = setup({
+      currentStar: 0,
+      pendingFight: {
+        star: 1,
+        turn: 2,
+        ai: { boss: true, team: 0 },
+        owners: [null, 0],
+      },
+      stars: [makeStar(), makeStar({ boss: true, team: 0 })],
+    });
+    assert.equal(t.game.gameState(), "lost");
+    assert.equal(t.cfg.pendingFight, undefined);
+    assert.deepEqual(t.calls.saves, [[t.game, true]]);
+  });
+
+  it("keeps the stock retreat when the lost fight was a garrison", () => {
+    const t = setup({
+      currentStar: 0,
+      pendingFight: { star: 1, turn: 2, ai: { team: 0 }, owners: [null, 0] },
+      stars: [makeStar(), makeStar({ team: 0 })],
+    });
+    assert.equal(t.game.gameState(), "active");
+    assert.equal(t.cfg.pendingFight, undefined);
+    assert.equal(t.calls.saves.length, 1);
+  });
+
+  it("replays the Conquest elimination for a boss win the stock path resolved", () => {
+    const t = setup({
+      currentStar: 0,
+      pendingFight: {
+        star: 0,
+        turn: 2,
+        ai: { boss: true, team: 0, foes: [{ boss: true, team: 1 }] },
+        owners: [0, 0, 1, null],
+      },
+      stars: [
+        makeStar(undefined, { cards: ["gwc_a"] }),
+        makeStar(undefined, { cards: ["gwc_b"] }),
+        makeStar({ team: 1 }, { cards: ["gwc_c"] }),
+        makeStar({ boss: true, mirrorMode: true }, { cards: ["loadout"] }),
+      ],
+    });
+
+    assert.deepEqual(t.options.stars[0].cardList(), []);
+    assert.deepEqual(t.options.stars[1].cardList(), []);
+    assert.equal(t.options.stars[2].ai(), undefined);
+    assert.deepEqual(t.options.stars[2].cardList(), []);
+    assert.deepEqual(t.options.stars[3].cardList(), ["loadout"]);
+    assert.equal(t.game.gameState(), "active");
+    assert.deepEqual(t.calls.announced, [[0, 1]]);
+    assert.deepEqual(t.calls.stats, ["gw_eliminate_faction"]);
+    assert.equal(t.cfg.pendingFight, undefined);
+    assert.deepEqual(t.calls.saves, [[t.game, true]]);
+  });
+
+  it("wins the war when the reconciled boss was the last", () => {
+    const t = setup({
+      currentStar: 0,
+      pendingFight: {
+        star: 0,
+        turn: 2,
+        ai: { boss: true, team: 0 },
+        owners: [0, null],
+      },
+      stars: [makeStar(undefined, { cards: ["gwc_a"] }), makeStar()],
+    });
+    assert.equal(t.game.gameState(), "won");
+  });
+
+  it("reconciles a Guardians win, keeping the loadout offer", () => {
+    const t = setup({
+      currentStar: 0,
+      pendingFight: {
+        star: 0,
+        turn: 2,
+        ai: { boss: true, mirrorMode: true },
+        owners: [null, 0],
+      },
+      stars: [
+        makeStar(undefined, { cards: ["loadout"] }),
+        makeStar({ boss: true, team: 0 }),
+      ],
+    });
+    assert.deepEqual(t.options.stars[0].cardList(), ["loadout"]);
+    assert.equal(t.game.gameState(), "active");
+    assert.deepEqual(t.calls.announced, []);
+  });
+
+  it("clears the stamp after a garrison win without replaying anything", () => {
+    const t = setup({
+      currentStar: 0,
+      pendingFight: { star: 0, turn: 2, ai: { team: 0 }, owners: [0, null] },
+      stars: [makeStar(undefined, { cards: ["gwc_a"] }), makeStar()],
+    });
+    assert.deepEqual(t.calls.stats, []);
+    assert.deepEqual(t.calls.announced, []);
+    assert.deepEqual(t.options.stars[0].cardList(), ["gwc_a"]);
+    assert.equal(t.cfg.pendingFight, undefined);
+    assert.equal(t.calls.saves.length, 1);
   });
 });
 

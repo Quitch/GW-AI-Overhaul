@@ -183,21 +183,52 @@ define([], function () {
     // Conquest elimination: no foe inheritance (a foe carrying the dead
     // ai.team would corrupt ownership tracking), and every boss stacked on
     // the fought star died in the same battle, so their teams fall too.
-    game.defeatTeam = function (defeatedTeam) {
+    // owners maps stars to the teams holding them when the fight launched:
+    // reconciliation needs it because stock defeatTeam has already wiped
+    // the dead team's ai but left its cards.
+    var eliminate = function (foughtAi, defeatedTeam, owners) {
       api.tally.incStatInt("gw_eliminate_faction");
 
-      var currentAi = currentStarAi();
       var defeated = [defeatedTeam];
-      _.forEach((currentAi && currentAi.foes) || [], function (foe) {
+      _.forEach((foughtAi && foughtAi.foes) || [], function (foe) {
         if (foe.boss && !_.includes(defeated, foe.team)) {
           defeated.push(foe.team);
         }
       });
 
+      var ownedByDefeated = function (index) {
+        return (
+          owners &&
+          _.isNumber(owners[index]) &&
+          _.includes(defeated, owners[index])
+        );
+      };
+
+      var stripDefeatedBossFoes = function (star, ai) {
+        if (!ai.foes) {
+          return;
+        }
+        var survivors = _.filter(ai.foes, function (foe) {
+          return !(foe.boss && _.includes(defeated, foe.team));
+        });
+        if (survivors.length === ai.foes.length) {
+          return;
+        }
+        if (survivors.length) {
+          ai.foes = survivors;
+        } else {
+          delete ai.foes;
+        }
+        star.ai(ai);
+      };
+
       var remainingBosses = 0;
-      _.forEach(game.galaxy().stars(), function (star) {
+      _.forEach(game.galaxy().stars(), function (star, index) {
         var ai = star.ai();
         if (!ai) {
+          if (ownedByDefeated(index)) {
+            star.cardList([]);
+          }
           return;
         }
         var guardians = !!ai.mirrorMode;
@@ -210,19 +241,7 @@ define([], function () {
           }
           return;
         }
-        if (ai.foes) {
-          var survivors = _.filter(ai.foes, function (foe) {
-            return !(foe.boss && _.includes(defeated, foe.team));
-          });
-          if (survivors.length !== ai.foes.length) {
-            if (survivors.length) {
-              ai.foes = survivors;
-            } else {
-              delete ai.foes;
-            }
-            star.ai(ai);
-          }
-        }
+        stripDefeatedBossFoes(star, ai);
         ai = star.ai();
         if (ai && ai.boss) {
           ++remainingBosses;
@@ -241,6 +260,68 @@ define([], function () {
         game.gameState("won");
       }
     };
+
+    game.defeatTeam = function (defeatedTeam) {
+      eliminate(currentStarAi(), defeatedTeam);
+      // Resolved in-scene, so the next install must not reconcile it again.
+      delete cfg.pendingFight;
+    };
+
+    // gw_play.js applies lastBattleResult before scene mods load, so on the
+    // host no wrap here ever sees a real battle's outcome. The launch stamp
+    // records what was fought - self.fight saves right after game.fight() -
+    // and the next install reconciles the result below.
+    var baseFight = game.fight;
+    game.fight = function () {
+      var result = baseFight.apply(game, arguments);
+      if (result) {
+        cfg.pendingFight = {
+          star: game.currentStar(),
+          turn: game.stats().turns(),
+          ai: _.cloneDeep(currentStarAi()),
+          owners: _.map(game.galaxy().stars(), function (star) {
+            var ai = star.ai();
+            return ai && _.isNumber(ai.team) ? ai.team : null;
+          }),
+        };
+      }
+      return result;
+    };
+
+    // Replays the Conquest rules the stock battle-result path skipped: a
+    // loss to a faction boss loses the war, a boss win runs the Conquest
+    // elimination. Runs before the phase defer so the planner and the
+    // gameState guard see the reconciled board.
+    var reconcilePendingFight = function () {
+      var pending = cfg.pendingFight;
+      if (!pending) {
+        return;
+      }
+      var foughtStarAi = game.galaxy().stars()[pending.star].ai();
+      var abandoned =
+        game.currentStar() === pending.star &&
+        game.turnState() === "fight" &&
+        !!foughtStarAi;
+      if (abandoned) {
+        return;
+      }
+      delete cfg.pendingFight;
+      var facedFactionBoss =
+        (!!pending.ai.boss && !pending.ai.mirrorMode) ||
+        _.some(pending.ai.foes || [], "boss");
+      if (game.currentStar() !== pending.star) {
+        // Stock loseTurn rewound the player.
+        if (facedFactionBoss && game.gameState() === "active") {
+          game.gameState("lost");
+        }
+      } else if (!foughtStarAi && pending.ai.boss) {
+        // Stock winTurn cleared the star through stock defeatTeam.
+        eliminate(pending.ai, pending.ai.team, pending.owners);
+      }
+      params.save(game, true);
+    };
+
+    reconcilePendingFight();
 
     // Covers scene entry after a battle or a crash mid-phase.
     _.defer(runPhaseIfDue);

@@ -106,6 +106,16 @@ phase completed - a battle's scene teardown or a crash mid-phase re-runs the
 phase from identical saved state with an identical outcome, and a move that
 changed nothing runs no phase at all.
 
+The base game applies a battle's result and saves before scene mods load, so
+no wrap in the driver ever sees the host's own fight resolve. `game.fight`
+therefore stamps `cfg.pendingFight` - the fought star, the turn, a clone of
+its ai and a map of every star's owning team - which the fight-launch save
+persists, and the next driver install reconciles: a loss against a faction
+boss loses the war, a boss win replays the Conquest elimination from the
+stamp (the owner map recovers the ownership stock `defeatTeam` wiped), and an
+abandoned battle keeps the stamp. Viewers replay battle results as campaign
+actions after the driver installs, so their outcomes route through the wraps.
+
 Co-op needs no protocol of its own: a viewer's
 `applyCampaignAction('move_to_star')` calls `model.move()` itself, so the same
 wrap runs the same deterministic phase on every client; only the host's save
