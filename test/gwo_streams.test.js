@@ -89,6 +89,9 @@ describe("gwo_streams fallback contract", () => {
     assert.equal(streams.conquestAllyRng(undefined, 1, 2), undefined);
     assert.equal(streams.conquestScaleRng(undefined, 1, 0), undefined);
     assert.equal(streams.conquestBossScaleRng(undefined, 0, 1), undefined);
+    assert.equal(streams.conquestArmyRng(undefined, 1, 2), undefined);
+    assert.equal(streams.conquestArmyMoveRng(undefined, 0, 1, 2), undefined);
+    assert.equal(streams.conquestPlayerArmyMoveRng(undefined, 1, 2), undefined);
   });
 });
 
@@ -111,6 +114,9 @@ describe("gwo_streams determinism", () => {
         conquestAlly: draws(streams.conquestAllyRng(war, 3, 5)),
         conquestScale: draws(streams.conquestScaleRng(war, 3, 2)),
         conquestBoss: draws(streams.conquestBossScaleRng(war, 1, 4)),
+        conquestArmy: draws(streams.conquestArmyRng(war, 3, 5)),
+        conquestArmyMove: draws(streams.conquestArmyMoveRng(war, 1, 2, 5)),
+        conquestPlayerMove: draws(streams.conquestPlayerArmyMoveRng(war, 2, 5)),
       };
     };
     assert.deepEqual(build(), build());
@@ -270,6 +276,10 @@ describe("gwo_streams key collisions", () => {
           `conquestScale:${star}:${turns}`,
           streams.conquestScaleRng(war, star, turns)
         );
+        add(
+          `conquestArmy:${star}:${turns}`,
+          streams.conquestArmyRng(war, star, turns)
+        );
         for (const reroll of [0, 1, 2]) {
           add(
             `explore:${star}:${turns}:${reroll}`,
@@ -288,6 +298,21 @@ describe("gwo_streams key collisions", () => {
         add(
           `conquestBoss:${team}:${turns}`,
           streams.conquestBossScaleRng(war, team, turns)
+        );
+        for (const seq of [0, 1, 2]) {
+          add(
+            `conquestArmyMove:${team}:${seq}:${turns}`,
+            streams.conquestArmyMoveRng(war, team, seq, turns)
+          );
+        }
+      }
+    }
+
+    for (const seq of [0, 1, 2]) {
+      for (const turns of [0, 1, 2]) {
+        add(
+          `conquestPlayerMove:${seq}:${turns}`,
+          streams.conquestPlayerArmyMoveRng(war, seq, turns)
         );
       }
     }

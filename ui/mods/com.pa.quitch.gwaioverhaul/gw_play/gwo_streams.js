@@ -182,6 +182,35 @@ define([
       );
     },
 
+    conquestArmyRng: function (warRng, starIndex, turns) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_army", index(starIndex))
+          .stream("turn", counter(turns))
+      );
+    },
+
+    // Sub-keyed per army so two armies of one team draw independently.
+    conquestArmyMoveRng: function (warRng, team, seq, turns) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_army_move", index(team))
+          .stream("army", counter(seq))
+          .stream("turn", counter(turns))
+      );
+    },
+
+    conquestPlayerArmyMoveRng: function (warRng, seq, turns) {
+      return (
+        warRng &&
+        warRng
+          .stream("conquest_player_move", counter(seq))
+          .stream("turn", counter(turns))
+      );
+    },
+
     iterationRng: function (dealRng, iteration) {
       return dealRng && dealRng.stream("iteration", index(iteration));
     },

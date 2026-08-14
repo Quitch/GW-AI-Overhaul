@@ -134,25 +134,28 @@ the root from the seed stamped on the save: `gwoRng.create(originSystem.gwaio.se
 Every key lives in `gw_play/gwo_streams.js`, so this table has one place to be checked
 against.
 
-| Stream                                            | Consumers                                          |
-| ------------------------------------------------- | -------------------------------------------------- |
-| `general_commander.<player>` → `minion.<n>`       | the General Commander loadout's two Sub Commanders |
-| `explore.<star>` → `turn.<n>` → `reroll.<n>`      | the host's own tech offer at that star             |
-| `ai_star.<star>` → `turn.<n>`                     | the card shown on a selectable AI star that turn   |
-| `coop_ai_star.<player>` → `star.<n>` → `turn.<n>` | that star's card for one co-op viewer              |
-| `treasure_loadout.<player>` → `star.<n>`          | that player's treasure-planet loadout offer        |
-| `coop_deal.<player>` → `deal.<index>`             | a co-op viewer's pending offer                     |
-| ↳ `reroll.<n>`                                    | that viewer's rerolled offer                       |
-| ↳ `iteration.<i>`                                 | the roll picking the i-th card of a hand           |
-| ↳↳ `<cardId>`                                     | that card's own draws inside `deal()`              |
-| `battle.<star>` → `turn.<n>` → `landing_*`        | each army's landing policy                         |
-| `conquest_move.<team>` → `turn.<n>`               | a Conquest boss's movement tie-break               |
-| `conquest_modes.<star>` → `turn.<captured>`       | game-modifier rolls when a star is captured        |
-| `conquest_worker.<star>` → `turn.<captured>`      | the garrison left when a boss vacates a star       |
-| `conquest_foe.<star>` → `turn.<n>`                | that star's border-foe chance roll and build       |
-| `conquest_ally.<star>` → `turn.<n>`               | that star's allied-commander chance roll and build |
-| `conquest_scale.<star>` → `tier.<t>`              | a garrison's or foe's re-scaling at tier t         |
-| `conquest_boss.<team>` → `owned.<k>`              | a boss's re-scaling at k owned stars               |
+| Stream                                                | Consumers                                          |
+| ----------------------------------------------------- | -------------------------------------------------- |
+| `general_commander.<player>` → `minion.<n>`           | the General Commander loadout's two Sub Commanders |
+| `explore.<star>` → `turn.<n>` → `reroll.<n>`          | the host's own tech offer at that star             |
+| `ai_star.<star>` → `turn.<n>`                         | the card shown on a selectable AI star that turn   |
+| `coop_ai_star.<player>` → `star.<n>` → `turn.<n>`     | that star's card for one co-op viewer              |
+| `treasure_loadout.<player>` → `star.<n>`              | that player's treasure-planet loadout offer        |
+| `coop_deal.<player>` → `deal.<index>`                 | a co-op viewer's pending offer                     |
+| ↳ `reroll.<n>`                                        | that viewer's rerolled offer                       |
+| ↳ `iteration.<i>`                                     | the roll picking the i-th card of a hand           |
+| ↳↳ `<cardId>`                                         | that card's own draws inside `deal()`              |
+| `battle.<star>` → `turn.<n>` → `landing_*`            | each army's landing policy                         |
+| `conquest_move.<team>` → `turn.<n>`                   | a Conquest boss's movement tie-break               |
+| `conquest_modes.<star>` → `turn.<captured>`           | game-modifier rolls when a star is captured        |
+| `conquest_worker.<star>` → `turn.<captured>`          | the garrison left when a boss vacates a star       |
+| `conquest_foe.<star>` → `turn.<n>`                    | that star's border-foe chance roll and build       |
+| `conquest_ally.<star>` → `turn.<n>`                   | that star's allied-commander chance roll and build |
+| `conquest_scale.<star>` → `tier.<t>`                  | a garrison's or foe's re-scaling at tier t         |
+| `conquest_boss.<team>` → `owned.<k>`                  | a boss's re-scaling at k owned stars               |
+| `conquest_army.<star>` → `turn.<n>`                   | the minion army a capped star spawns that turn     |
+| `conquest_army_move.<team>` → `army.<s>` → `turn.<n>` | one AI minion army's movement tie-break            |
+| `conquest_player_move.<s>` → `turn.<n>`               | one player minion army's movement tie-break        |
 
 The goal is a war that reproduces **only when it is played the same way**: same seed,
 visiting the same stars, in the same order, winning at the same speed, taking the same
