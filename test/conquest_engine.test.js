@@ -33,6 +33,7 @@ function makeStreams(rolls) {
     conquestBossScaleRng: () => rngFor("bossScale"),
     conquestArmyRng: () => rngFor("army"),
     conquestArmyMoveRng: () => rngFor("armyMove"),
+    conquestPlayerArmyMoveRng: () => rngFor("playerMove"),
   };
 }
 
@@ -99,6 +100,9 @@ function makeBoard(opts) {
     neighbors: neighbors,
     stars: opts.stars,
     armySeq: opts.armySeq,
+    playerHeld: opts.playerHeld,
+    playerGrowth: opts.playerGrowth,
+    playerArmies: opts.playerArmies,
   };
 }
 
@@ -1542,5 +1546,186 @@ describe("minion army movement", () => {
 
     assert.equal(stepsOf(result, "eliminate").length, 1);
     assert.equal(host.minionArmies, undefined);
+  });
+});
+
+describe("player minion armies", () => {
+  // maxDist 2 and four connections put the spawn threshold at growth 12.
+  it("accrues growth on player systems and spawns a token at the cap", () => {
+    const board = makeBoard({
+      maxDist: 2,
+      playerStar: 0,
+      edges: [
+        [0, 1],
+        [1, 2],
+        [0, 2],
+      ],
+      stars: [
+        star(null, { explored: true, visited: true }),
+        star(null, { explored: true }),
+        star(null, { explored: true }),
+      ],
+      playerGrowth: { 1: 10 },
+    });
+    const result = engine.planPhase(board, makeCtx());
+
+    const spawns = stepsOf(result, "spawn");
+    assert.equal(spawns.length, 1);
+    assert.equal(spawns[0].star, 1);
+    assert.equal(spawns[0].player, true);
+    assert.deepEqual(result.conquest.playerArmies, [
+      { seq: 0, colour: 0, star: 1 },
+    ]);
+    // Two player neighbours accrued, then the spawn debited one tier.
+    assert.deepEqual(result.conquest.playerGrowth, { 0: 2, 1: 8, 2: 2 });
+    assert.equal(result.conquest.armySeq.player, 1);
+    // The token musters this phase and first moves the next one.
+    assert.equal(stepsOf(result, "move").length, 0);
+  });
+
+  it("captures an unexplored star and leaves it explorable", () => {
+    const board = makeBoard({
+      maxDist: 2,
+      playerStar: 0,
+      edges: [
+        [0, 1],
+        [1, 2],
+      ],
+      stars: [
+        star(null, { explored: true, visited: true }),
+        star(null, { explored: true }),
+        star(),
+      ],
+      playerArmies: [{ seq: 0, colour: 0, star: 1 }],
+    });
+    const result = engine.planPhase(board, makeCtx());
+
+    const move = stepsOf(result, "move")[0];
+    assert.deepEqual(
+      { player: move.player, from: move.from, to: move.to },
+      { player: true, from: 1, to: 2 }
+    );
+    assert.equal(move.movedAi.conquestArmy.player, true);
+    assert.deepEqual(result.conquest.playerArmies, [
+      { seq: 0, colour: 0, star: 2 },
+    ]);
+    assert.deepEqual(result.conquest.playerHeld, { 2: true });
+    assert.equal(board.stars[2].ai, null);
+    result.steps.forEach((step) => {
+      assert.equal(step.clearCards, undefined);
+    });
+  });
+
+  it("captures a garrison star by razing its ai", () => {
+    const enemy = garrison(0);
+    const board = makeBoard({
+      maxDist: 2,
+      playerStar: 0,
+      edges: [
+        [0, 1],
+        [1, 2],
+      ],
+      stars: [
+        star(null, { explored: true, visited: true }),
+        star(null, { explored: true }),
+        star(enemy),
+      ],
+      playerArmies: [{ seq: 0, colour: 0, star: 1 }],
+    });
+    const result = engine.planPhase(board, makeCtx({ factions: [] }));
+
+    const occupies = stepsOf(result, "occupy");
+    assert.equal(occupies.length, 1);
+    assert.deepEqual(occupies[0].writes, [{ star: 2, ai: null }]);
+    assert.deepEqual(result.conquest.playerHeld, { 2: true });
+  });
+
+  it("annihilates both sides when a player token meets an AI army", () => {
+    const aiArmy = garrison(0, {
+      growth: 8,
+      appliedTier: 2,
+      conquestArmy: { seq: 0, colour: 0, origin: 9 },
+    });
+    const board = makeBoard({
+      maxDist: 2,
+      playerStar: 0,
+      edges: [
+        [0, 1],
+        [1, 2],
+      ],
+      stars: [
+        star(null, { explored: true, visited: true }),
+        star(null, { explored: true }),
+        star(aiArmy),
+      ],
+      playerArmies: [{ seq: 0, colour: 0, star: 1 }],
+    });
+    const result = engine.planPhase(board, makeCtx({ factions: [] }));
+
+    assert.equal(stepsOf(result, "clash").length, 1);
+    assert.deepEqual(result.conquest.playerArmies, []);
+    assert.equal(board.stars[2].ai, null);
+    assert.deepEqual(result.conquest.playerHeld, {});
+  });
+
+  it("loses its tokens and held stars to an AI capture", () => {
+    const board = makeBoard({
+      maxDist: 2,
+      playerStar: 0,
+      edges: [[1, 2]],
+      stars: [
+        star(null, { explored: true, visited: true }),
+        star(boss(0)),
+        star(),
+      ],
+      playerHeld: { 2: true },
+      playerArmies: [{ seq: 0, colour: 0, star: 2 }],
+    });
+    const result = engine.planPhase(board, makeCtx());
+
+    assert.equal(board.stars[2].ai.boss, true);
+    assert.deepEqual(result.conquest.playerHeld, {});
+    assert.deepEqual(result.conquest.playerArmies, []);
+  });
+
+  it("counts held stars in the boss attack gate", () => {
+    // Team 0 owns two stars; with the held star the player owns two as
+    // well, so 2:2 fails the 3:2 gate and the boss expands instead.
+    const board = makeBoard({
+      maxDist: 2,
+      playerStar: 0,
+      edges: [
+        [0, 1],
+        [1, 2],
+        [1, 3],
+      ],
+      stars: [
+        star(null, { explored: true, visited: true }),
+        star(boss(0)),
+        star(garrison(0)),
+        star(),
+      ],
+      playerHeld: { 3: true },
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.equal(stepsOf(result, "move")[0].to, 3);
+    assert.equal(board.stars[0].ai, null);
+  });
+
+  it("prunes the flag on explore and the growth on recapture", () => {
+    const board = makeBoard({
+      maxDist: 2,
+      playerStar: 0,
+      stars: [
+        star(null, { explored: true, visited: true }),
+        star(null, { explored: true }),
+        star(garrison(0)),
+      ],
+      playerHeld: { 1: true },
+      playerGrowth: { 2: 9 },
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.deepEqual(result.conquest.playerHeld, {});
+    assert.deepEqual(result.conquest.playerGrowth, {});
   });
 });

@@ -71,6 +71,16 @@ define([
       board.armySeq = {};
     }
     var armySeq = board.armySeq;
+    if (!board.playerHeld) {
+      board.playerHeld = {};
+    }
+    if (!board.playerGrowth) {
+      board.playerGrowth = {};
+    }
+    if (!board.playerArmies) {
+      board.playerArmies = [];
+    }
+    var playerFaction = ctx.playerFaction || 0;
 
     var tierFromGrowth = function (growth) {
       return growthTier(growth, maxConnections, board.maxDist);
@@ -159,16 +169,29 @@ define([
       return !!ai && !isGuardians(ai) && ai.team === team;
     };
 
-    var nonFriendlyNeighbours = function (starIndex, team) {
+    var teamFriendly = function (team) {
+      return function (starIndex) {
+        return isFriendly(starIndex, team);
+      };
+    };
+
+    // The player's side of the same test: explored or captured by a player
+    // army, and held by no AI.
+    var playerOwned = function (starIndex) {
+      var star = board.stars[starIndex];
+      return (
+        !ownerAi(star.ai) && (star.explored || !!board.playerHeld[starIndex])
+      );
+    };
+
+    var nonFriendlyNeighbours = function (starIndex, friendly) {
       return _.filter(neighborsOf(starIndex), function (neighbor) {
-        return !isFriendly(neighbor, team);
+        return !friendly(neighbor);
       }).length;
     };
 
-    var friendlyNeighbours = function (starIndex, team) {
-      return _.filter(neighborsOf(starIndex), function (neighbor) {
-        return isFriendly(neighbor, team);
-      }).length;
+    var friendlyNeighbours = function (starIndex, friendly) {
+      return _.filter(neighborsOf(starIndex), friendly).length;
     };
 
     // Persistent-owner adjacency (ownerAi: a jumped boss holds nothing) -
@@ -213,7 +236,7 @@ define([
 
     // The move-target priority ladder. Filters apply only while they leave
     // candidates; the seeded pick breaks whatever ties survive.
-    var pickTarget = function (candidates, team, moveRng) {
+    var pickTarget = function (candidates, friendly, moveRng) {
       var narrow = function (list, keep) {
         var kept = _.filter(list, keep);
         return kept.length ? kept : list;
@@ -229,7 +252,7 @@ define([
         return !board.stars[starIndex].explored;
       });
       var withHostileNeighbours = _.filter(pool, function (starIndex) {
-        return nonFriendlyNeighbours(starIndex, team) > 0;
+        return nonFriendlyNeighbours(starIndex, friendly) > 0;
       });
       pool = withHostileNeighbours.length
         ? withHostileNeighbours
@@ -240,10 +263,10 @@ define([
               : -distanceToPlayer[starIndex];
           });
       pool = best(pool, function (starIndex) {
-        return friendlyNeighbours(starIndex, team);
+        return friendlyNeighbours(starIndex, friendly);
       });
       pool = best(pool, function (starIndex) {
-        return nonFriendlyNeighbours(starIndex, team);
+        return nonFriendlyNeighbours(starIndex, friendly);
       });
       return pool.length === 1 ? pool[0] : moveRng.pick(pool);
     };
@@ -251,7 +274,7 @@ define([
     // Every system adjacent to the connected friendly region holding atStar:
     // a boss moves like the player, so one move reaches any of them. Sorted
     // so the pick ladder sees a stable order whatever the BFS met first.
-    var regionFrontier = function (atStar, team) {
+    var regionFrontier = function (atStar, friendly) {
       var inRegion = [];
       inRegion[atStar] = true;
       var onFrontier = [];
@@ -262,7 +285,7 @@ define([
           if (inRegion[next] || onFrontier[next]) {
             return;
           }
-          if (isFriendly(next, team)) {
+          if (friendly(next)) {
             inRegion[next] = true;
             work.push(next);
           } else {
@@ -282,9 +305,25 @@ define([
     // The player's systems: explored and held by no AI. A jumped boss's star
     // is still the player's, as in game.fight's owners map.
     var playerOwnedCount = function () {
-      return _.filter(board.stars, function (star) {
-        return star.explored && !ownerAi(star.ai);
+      return _.filter(board.stars, function (star, starIndex) {
+        return playerOwned(starIndex);
       }).length;
+    };
+
+    var playerArmiesAt = function (starIndex) {
+      return _.filter(board.playerArmies, function (token) {
+        return token.star === starIndex;
+      });
+    };
+
+    var removePlayerArmiesAt = function (starIndex) {
+      var present = playerArmiesAt(starIndex).length;
+      if (present) {
+        board.playerArmies = _.filter(board.playerArmies, function (token) {
+          return token.star !== starIndex;
+        });
+      }
+      return present;
     };
 
     var eliminate = function (team, byTeam) {
@@ -374,6 +413,10 @@ define([
     var capture = function (boss, toStar) {
       boss.capturedTurn = board.turns;
       boss.growth = 0;
+      // An AI arrival defeats any player minion armies standing there and
+      // ends the player's claim on the star.
+      removePlayerArmiesAt(toStar);
+      delete board.playerHeld[toStar];
       builder.rollGameModifiers(
         streams.conquestModesRng(warRng, toStar, board.turns),
         boss
@@ -409,6 +452,7 @@ define([
         (target.boss || hasStackedBoss(target))
       ) {
         writes = liftBoss(bossInfo);
+        removePlayerArmiesAt(toStar);
         target.foes = (target.foes || []).concat([boss]);
         writes.push(write(toStar, target));
         record({
@@ -474,7 +518,8 @@ define([
         return;
       }
 
-      var frontier = regionFrontier(bossInfo.star, team);
+      var friendly = teamFriendly(team);
+      var frontier = regionFrontier(bossInfo.star, friendly);
       var moveRng = function () {
         return streams.conquestMoveRng(warRng, team, board.turns);
       };
@@ -499,7 +544,7 @@ define([
         return isTargetable(starIndex, team);
       });
       if (targetable.length) {
-        moveBoss(team, bossInfo, pickTarget(targetable, team, moveRng()));
+        moveBoss(team, bossInfo, pickTarget(targetable, friendly, moveRng()));
         return;
       }
 
@@ -510,7 +555,7 @@ define([
         return ownedCount(team) >= ownedCount(board.stars[starIndex].ai.team);
       });
       if (winnable.length) {
-        moveBoss(team, bossInfo, pickTarget(winnable, team, moveRng()));
+        moveBoss(team, bossInfo, pickTarget(winnable, friendly, moveRng()));
         return;
       }
 
@@ -589,9 +634,12 @@ define([
         writes: writes,
       });
 
-      // Opposing minion armies annihilate each other and raze the system to
-      // neutral; an unexplored star keeps its card.
-      if (hasOpposingArmy(target, team)) {
+      // Opposing minion armies - the player's tokens included - annihilate
+      // each other and raze the system to neutral; an unexplored star keeps
+      // its card.
+      if (hasOpposingArmy(target, team) || playerArmiesAt(toStar).length) {
+        removePlayerArmiesAt(toStar);
+        delete board.playerHeld[toStar];
         record({
           kind: "clash",
           team: team,
@@ -613,11 +661,12 @@ define([
     // the player's star, no cornered fallback, and a boss star is never a
     // target.
     var actArmies = function (team) {
+      var friendly = teamFriendly(team);
       _.forEach(findArmies(team), function (info) {
         if (!armyAlive(info)) {
           return;
         }
-        var frontier = regionFrontier(info.star, team);
+        var frontier = regionFrontier(info.star, friendly);
         var candidates = _.filter(frontier, function (starIndex) {
           var ai = board.stars[starIndex].ai;
           return isCapturable(starIndex, team) && !(ai && ai.boss);
@@ -637,7 +686,80 @@ define([
           info.ai.conquestArmy.seq,
           board.turns
         );
-        moveArmy(team, info, pickTarget(candidates, team, rng));
+        moveArmy(team, info, pickTarget(candidates, friendly, rng));
+      });
+    };
+
+    var playerCapturable = function (starIndex) {
+      if (starIndex === board.treasureStar) {
+        return false;
+      }
+      var ai = board.stars[starIndex].ai;
+      if (!ai) {
+        return true;
+      }
+      return !isGuardians(ai) && !ai.boss && !hasStackedBoss(ai);
+    };
+
+    var movePlayerArmy = function (token, toStar) {
+      var target = board.stars[toStar].ai;
+      record({
+        kind: "move",
+        player: true,
+        from: token.star,
+        to: toStar,
+        movedAi: {
+          faction: playerFaction,
+          conquestArmy: { seq: token.seq, colour: token.colour, player: true },
+        },
+        writes: [],
+      });
+
+      // -1 matches no AI team, so any army presence there opposes.
+      if (hasOpposingArmy(target, -1)) {
+        board.playerArmies = _.without(board.playerArmies, token);
+        delete board.playerHeld[toStar];
+        record({
+          kind: "clash",
+          player: true,
+          star: toStar,
+          writes: [write(toStar, null)],
+        });
+        return;
+      }
+
+      token.star = toStar;
+      var writes = [];
+      if (target) {
+        writes.push(write(toStar, null));
+      }
+      // A captured unexplored star stays explorable; the flag is what marks
+      // it as the player's until they do.
+      if (!board.stars[toStar].explored) {
+        board.playerHeld[toStar] = true;
+      }
+      record({ kind: "occupy", player: true, writes: writes });
+    };
+
+    // Player armies act last, so every AI team's resolution stays identical
+    // to a war without them.
+    var actPlayerArmies = function () {
+      _.forEach(_.sortBy(board.playerArmies.slice(0), "seq"), function (token) {
+        if (!_.includes(board.playerArmies, token)) {
+          return;
+        }
+        var frontier = regionFrontier(token.star, playerOwned);
+        var candidates = _.filter(frontier, playerCapturable);
+        if (!candidates.length) {
+          record({ kind: "hold", player: true, army: token.seq, writes: [] });
+          return;
+        }
+        var rng = streams.conquestPlayerArmyMoveRng(
+          warRng,
+          token.seq,
+          board.turns
+        );
+        movePlayerArmy(token, pickTarget(candidates, playerOwned, rng));
       });
     };
 
@@ -880,6 +1002,36 @@ define([
         }
       });
 
+      // Player systems accrue the same growth and spawn the same armies; the
+      // counters live on cfg because their stars carry no ai to hold them.
+      _.forEach(board.stars, function (star, starIndex) {
+        if (board.playerHeld[starIndex] && star.explored) {
+          delete board.playerHeld[starIndex];
+        }
+        if (!playerOwned(starIndex)) {
+          // A recaptured system forfeits its accrued growth.
+          delete board.playerGrowth[starIndex];
+          return;
+        }
+        var count = friendlyNeighbours(starIndex, playerOwned);
+        var growth = (board.playerGrowth[starIndex] || 0) + count;
+        if (count > 0) {
+          board.playerGrowth[starIndex] = growth;
+        }
+        if (growth >= (board.maxDist + 1) * maxConnections) {
+          board.playerGrowth[starIndex] = growth - maxConnections;
+          board.playerArmies.push({
+            seq: nextArmySeq("player"),
+            colour: pickArmyColour(
+              _.map(board.playerArmies, "colour"),
+              paletteSizes[playerFaction]
+            ),
+            star: starIndex,
+          });
+          record({ kind: "spawn", star: starIndex, player: true, writes: [] });
+        }
+      });
+
       _.times(teams, function (team) {
         var bossInfo = findBoss(team);
         if (!bossInfo) {
@@ -913,6 +1065,7 @@ define([
       actTeam(team);
       actArmies(team);
     });
+    actPlayerArmies();
     if (board.turns % 2 === 0) {
       rollFoes();
       rollAllies();
@@ -922,7 +1075,12 @@ define([
     return {
       steps: steps,
       events: events,
-      conquest: { armySeq: armySeq },
+      conquest: {
+        armySeq: armySeq,
+        playerHeld: board.playerHeld,
+        playerGrowth: board.playerGrowth,
+        playerArmies: board.playerArmies,
+      },
     };
   };
 

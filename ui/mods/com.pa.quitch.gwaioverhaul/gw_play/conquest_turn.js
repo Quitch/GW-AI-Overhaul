@@ -25,6 +25,9 @@ define([], function () {
         maxDist: cfg.maxDist,
         neighbors: galaxy.neighborsMap(),
         armySeq: cfg.armySeq ? _.cloneDeep(cfg.armySeq) : {},
+        playerHeld: cfg.playerHeld ? _.cloneDeep(cfg.playerHeld) : {},
+        playerGrowth: cfg.playerGrowth ? _.cloneDeep(cfg.playerGrowth) : {},
+        playerArmies: cfg.playerArmies ? _.cloneDeep(cfg.playerArmies) : [],
         stars: _.map(galaxy.stars(), function (star) {
           return {
             // Cloned so the planner never mutates live state: a failed phase
@@ -128,6 +131,7 @@ define([], function () {
           alliesSuppressed: params.alliesSuppressed,
           cfg: cfg,
           paletteSizes: params.paletteSizes,
+          playerFaction: params.playerFaction,
         });
         applySteps(result.steps, function () {
           // An ambushing boss landed after the turn resolved: canFight needs
@@ -137,6 +141,9 @@ define([], function () {
             game.turnState("begin");
           }
           _.assign(cfg, result.conquest);
+          if (params.onPlayerState) {
+            params.onPlayerState();
+          }
           cfg.lastAiPhaseTurn = turns;
           $.when(params.save(game, true)).always(function () {
             announce(eliminationsOf(result.events));

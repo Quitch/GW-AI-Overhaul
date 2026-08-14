@@ -226,6 +226,7 @@ function setup(overrides) {
     },
     announce: (eliminations) => calls.announced.push(eliminations),
     animate: options.animate,
+    onPlayerState: options.onPlayerState,
   });
 
   return {
@@ -1164,5 +1165,45 @@ describe("army sequence plumbing", () => {
     await t.driver.runPhaseIfDue();
     assert.deepEqual(box.seqAtSave, { 0: 3 });
     assert.deepEqual(t.cfg.armySeq, { 0: 3 });
+  });
+});
+
+describe("player state plumbing", () => {
+  it("clones the player state onto the board", async () => {
+    const t = setup({});
+    t.cfg.playerHeld = { 2: true };
+    t.cfg.playerGrowth = { 2: 5 };
+    t.cfg.playerArmies = [{ seq: 0, colour: 0, star: 2 }];
+    await t.driver.runPhaseIfDue();
+    const board = t.calls.engineBoards[0];
+    assert.deepEqual(board.playerHeld, { 2: true });
+    assert.notEqual(board.playerHeld, t.cfg.playerHeld);
+    assert.deepEqual(board.playerGrowth, { 2: 5 });
+    assert.deepEqual(board.playerArmies, [{ seq: 0, colour: 0, star: 2 }]);
+    assert.notEqual(board.playerArmies, t.cfg.playerArmies);
+  });
+
+  it("publishes the player state after adopting the engine's", async () => {
+    const box = {};
+    const t = setup({
+      engineResult: {
+        steps: [],
+        events: [],
+        conquest: { playerHeld: { 3: true }, playerArmies: [] },
+      },
+      onPlayerState: () => {
+        box.heldAtPublish = box.read();
+      },
+    });
+    box.read = () => t.cfg.playerHeld;
+    await t.driver.runPhaseIfDue();
+    assert.deepEqual(box.heldAtPublish, { 3: true });
+  });
+
+  it("still demands explore on a player-held star", async () => {
+    const t = setup({ stars: [makeStar(), makeStar()] });
+    t.cfg.playerHeld = { 0: true };
+    await t.driver.runPhaseIfDue();
+    assert.equal(t.calls.engineBoards.length, 0);
   });
 });

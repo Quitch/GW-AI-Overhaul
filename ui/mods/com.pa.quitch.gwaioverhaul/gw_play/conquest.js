@@ -112,6 +112,13 @@ function gwoConquest() {
           return palette ? palette.length : 0;
         });
 
+        model.gwoConquestPlayerHeld = ko.observable(cfg.playerHeld || {});
+        model.gwoConquestPlayerArmies = ko.observable(cfg.playerArmies || []);
+        var publishPlayerState = function () {
+          model.gwoConquestPlayerHeld(cfg.playerHeld || {});
+          model.gwoConquestPlayerArmies(cfg.playerArmies || []);
+        };
+
         var builder = gwoBuilder.create({
           cfg: cfg,
           factions: GWFactions,
@@ -161,6 +168,8 @@ function gwoConquest() {
             warRng: warRng,
             save: gwoSave,
             paletteSizes: paletteSizes,
+            playerFaction: playerFaction,
+            onPlayerState: publishPlayerState,
             animate: gwoSpriteFactory({ game: game }),
             announce: announce,
             aiPhase: model.gwoConquestAiPhase,
