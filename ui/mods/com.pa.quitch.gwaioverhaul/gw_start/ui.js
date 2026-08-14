@@ -148,7 +148,7 @@ function gwoUI() {
     model.gwoFactionTooltip =
       "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
     model.gwoWarModeTooltip =
-      "!LOC:GALACTIC WAR: every system is enemy-held from the start.<br>GALACTIC CONQUEST: each enemy faction expands from a single system, one system per turn, and you may only move one system at a time.";
+      "!LOC:GALACTIC WAR: every system is enemy-held from the start and they get stronger the deeper into the galaxy you venture. Defeat all bosses to win.<br>GALACTIC CONQUEST: each enemy faction expands from a single system. The longer a system is held by the enemy the stronger it becomes. Systems may send commanders into adjacent enemy systems. Bosses become stronger the more systems they hold. Defeat all bosses to win, but losing to one loses you the game.";
 
     model.gwoGameOptionsDraft = {
       hardcore: ko.observable(false),
