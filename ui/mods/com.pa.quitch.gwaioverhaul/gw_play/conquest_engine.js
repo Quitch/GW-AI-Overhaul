@@ -316,6 +316,19 @@ define([
             writes.push(write(starIndex, ai));
           }
         }
+        if (ai.minionArmies) {
+          var liveArmies = _.filter(ai.minionArmies, function (army) {
+            return army.team !== team;
+          });
+          if (liveArmies.length !== ai.minionArmies.length) {
+            if (liveArmies.length) {
+              ai.minionArmies = liveArmies;
+            } else {
+              delete ai.minionArmies;
+            }
+            writes.push(write(starIndex, ai));
+          }
+        }
       });
       record({
         kind: "eliminate",
@@ -502,6 +515,130 @@ define([
       }
 
       record({ kind: "hold", team: team, writes: [] });
+    };
+
+    // Every live army of the team, spawn order first: settled on their own
+    // stars or still mustered on a host's stack.
+    var findArmies = function (team) {
+      var found = [];
+      _.forEach(board.stars, function (star, starIndex) {
+        var ai = star.ai;
+        if (!ai) {
+          return;
+        }
+        if (ai.conquestArmy && ai.team === team) {
+          found.push({ star: starIndex, ai: ai, host: undefined });
+        }
+        _.forEach(ai.minionArmies || [], function (army) {
+          if (army.team === team) {
+            found.push({ star: starIndex, ai: army, host: ai });
+          }
+        });
+      });
+      return _.sortBy(found, function (info) {
+        return info.ai.conquestArmy.seq;
+      });
+    };
+
+    var armyAlive = function (info) {
+      if (info.host) {
+        return (
+          board.stars[info.star].ai === info.host &&
+          _.includes(info.host.minionArmies || [], info.ai)
+        );
+      }
+      return board.stars[info.star].ai === info.ai;
+    };
+
+    // Moves an army off its star: a mustered army leaves its host garrison
+    // untouched, a settled army leaves a departure garrison like a boss.
+    var liftArmy = function (info) {
+      if (info.host) {
+        info.host.minionArmies = _.filter(
+          info.host.minionArmies,
+          function (army) {
+            return army !== info.ai;
+          }
+        );
+        if (!info.host.minionArmies.length) {
+          delete info.host.minionArmies;
+        }
+        return [write(info.star, info.host)];
+      }
+      return [write(info.star, departureAi(info.ai, info.star))];
+    };
+
+    var hasOpposingArmy = function (ai, team) {
+      if (!ai || ai.team === team) {
+        return false;
+      }
+      return !!ai.conquestArmy || !!(ai.minionArmies && ai.minionArmies.length);
+    };
+
+    var moveArmy = function (team, info, toStar) {
+      var army = info.ai;
+      var target = board.stars[toStar].ai;
+      var writes = liftArmy(info);
+
+      record({
+        kind: "move",
+        team: team,
+        from: info.star,
+        to: toStar,
+        movedAi: army,
+        writes: writes,
+      });
+
+      // Opposing minion armies annihilate each other and raze the system to
+      // neutral; an unexplored star keeps its card.
+      if (hasOpposingArmy(target, team)) {
+        record({
+          kind: "clash",
+          team: team,
+          star: toStar,
+          writes: [write(toStar, null)],
+        });
+        return;
+      }
+
+      capture(army, toStar);
+      record({
+        kind: "occupy",
+        team: team,
+        writes: [write(toStar, army)],
+      });
+    };
+
+    // Armies move like bosses shorn of the special branches: no attack on
+    // the player's star, no cornered fallback, and a boss star is never a
+    // target.
+    var actArmies = function (team) {
+      _.forEach(findArmies(team), function (info) {
+        if (!armyAlive(info)) {
+          return;
+        }
+        var frontier = regionFrontier(info.star, team);
+        var candidates = _.filter(frontier, function (starIndex) {
+          var ai = board.stars[starIndex].ai;
+          return isCapturable(starIndex, team) && !(ai && ai.boss);
+        });
+        if (!candidates.length) {
+          record({
+            kind: "hold",
+            team: team,
+            army: info.ai.conquestArmy.seq,
+            writes: [],
+          });
+          return;
+        }
+        var rng = streams.conquestArmyMoveRng(
+          warRng,
+          team,
+          info.ai.conquestArmy.seq,
+          board.turns
+        );
+        moveArmy(team, info, pickTarget(candidates, team, rng));
+      });
     };
 
     // Foe and ally rolls run every second turn.
@@ -772,7 +909,10 @@ define([
       });
     };
 
-    _.times(teams, actTeam);
+    _.times(teams, function (team) {
+      actTeam(team);
+      actArmies(team);
+    });
     if (board.turns % 2 === 0) {
       rollFoes();
       rollAllies();

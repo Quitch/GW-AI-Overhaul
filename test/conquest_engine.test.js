@@ -32,6 +32,7 @@ function makeStreams(rolls) {
     conquestScaleRng: () => rngFor("scale"),
     conquestBossScaleRng: () => rngFor("bossScale"),
     conquestArmyRng: () => rngFor("army"),
+    conquestArmyMoveRng: () => rngFor("armyMove"),
   };
 }
 
@@ -1353,5 +1354,193 @@ describe("pickArmyColour", () => {
   it("tolerates a missing palette", () => {
     assert.equal(engine.pickArmyColour([], 0), 0);
     assert.equal(engine.pickArmyColour([3], undefined), 0);
+  });
+});
+
+describe("minion army movement", () => {
+  const armyOf = (team, seq, extra) =>
+    garrison(
+      team,
+      Object.assign(
+        {
+          growth: 8,
+          appliedTier: 2,
+          conquestArmy: { seq: seq, colour: seq, origin: 9 },
+        },
+        extra
+      )
+    );
+
+  it("captures an adjacent star and leaves a departure garrison", () => {
+    const army = armyOf(0, 0);
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[1, 2]],
+      stars: [star(null, { visited: true }), star(army), star()],
+    });
+    const result = engine.planPhase(board, makeCtx());
+
+    const move = stepsOf(result, "move")[0];
+    assert.deepEqual(
+      { team: move.team, from: move.from, to: move.to },
+      { team: 0, from: 1, to: 2 }
+    );
+    assert.equal(move.movedAi, army);
+
+    const left = board.stars[1].ai;
+    assert.equal(left.garrison, true);
+    assert.equal(left.builtAtTier, 2);
+    assert.equal(left.modifiersCopied, true);
+
+    assert.equal(board.stars[2].ai, army);
+    assert.equal(army.capturedTurn, 3);
+    // Capture resets the counter; the garrison left behind then feeds it.
+    assert.equal(army.growth, 1);
+    assert.equal(army.appliedTier, 2);
+    assert.equal(army.modifiersRolled, 1);
+  });
+
+  it("leaves its host untouched when mustered", () => {
+    const army = armyOf(0, 0, { growth: 0 });
+    const host = garrison(0, { minionArmies: [army] });
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[1, 2]],
+      stars: [star(null, { visited: true }), star(host), star()],
+    });
+    engine.planPhase(board, makeCtx());
+
+    assert.equal(board.stars[1].ai, host);
+    assert.equal(host.garrison, undefined);
+    assert.equal(host.minionArmies, undefined);
+    assert.equal(board.stars[2].ai, army);
+  });
+
+  it("moves each army after its boss, in spawn order", () => {
+    const first = armyOf(0, 0, { growth: 0 });
+    const second = armyOf(0, 1, { growth: 0 });
+    const host = garrison(0, { minionArmies: [second, first] });
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [
+        [1, 2],
+        [2, 3],
+        [2, 4],
+        [2, 5],
+      ],
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0)),
+        star(host),
+        star(),
+        star(),
+        star(),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx());
+
+    const moves = stepsOf(result, "move");
+    assert.equal(moves.length, 3);
+    assert.equal(moves[0].movedAi, undefined);
+    assert.equal(moves[1].movedAi.conquestArmy.seq, 0);
+    assert.equal(moves[2].movedAi.conquestArmy.seq, 1);
+  });
+
+  it("never attacks a boss, which freely overwrites it", () => {
+    const army = armyOf(0, 0);
+    const enemyBoss = boss(1);
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[1, 2]],
+      stars: [star(null, { visited: true }), star(army), star(enemyBoss)],
+    });
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+
+    const holds = stepsOf(result, "hold");
+    assert.equal(holds.length, 1);
+    assert.deepEqual(
+      { team: holds[0].team, army: holds[0].army },
+      {
+        team: 0,
+        army: 0,
+      }
+    );
+    // Team 1 acted after the hold: the boss captured the army star outright.
+    assert.equal(board.stars[1].ai, enemyBoss);
+    assert.equal(stepsOf(result, "clash").length, 0);
+    assert.equal(stepsOf(result, "eliminate").length, 0);
+  });
+
+  it("never attacks the player's star", () => {
+    const army = armyOf(0, 0);
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[0, 1]],
+      stars: [star(null, { visited: true }), star(army)],
+    });
+    const result = engine.planPhase(board, makeCtx());
+    assert.equal(stepsOf(result, "hold").length, 1);
+    assert.equal(board.stars[0].ai, null);
+  });
+
+  it("annihilates both armies and razes the star on a clash", () => {
+    const attacker = armyOf(0, 0);
+    const defender = armyOf(1, 0);
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[1, 2]],
+      stars: [star(null, { visited: true }), star(attacker), star(defender)],
+    });
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+
+    const clashes = stepsOf(result, "clash");
+    assert.equal(clashes.length, 1);
+    assert.equal(clashes[0].star, 2);
+    assert.deepEqual(clashes[0].writes, [{ star: 2, ai: null }]);
+    assert.equal(clashes[0].clearCards, undefined);
+
+    assert.equal(board.stars[2].ai, null);
+    // The attacker died at the target; its departure garrison survives.
+    assert.equal(board.stars[1].ai.garrison, true);
+    assert.equal(stepsOf(result, "occupy").length, 0);
+  });
+
+  it("razes a garrison hosting mustered armies in a clash", () => {
+    const attacker = armyOf(0, 0);
+    const mustered = armyOf(1, 0, { growth: 0 });
+    const host = garrison(1, { minionArmies: [mustered] });
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[1, 2]],
+      stars: [star(null, { visited: true }), star(attacker), star(host)],
+    });
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+
+    assert.equal(stepsOf(result, "clash").length, 1);
+    assert.equal(board.stars[2].ai, null);
+    // The mustered defender died with its host and never acted.
+    assert.equal(stepsOf(result, "move").length, 1);
+  });
+
+  it("strips a dead team's mustered armies from surviving hosts", () => {
+    const stray = armyOf(1, 0, { growth: 0 });
+    const host = garrison(0, { minionArmies: [stray] });
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [
+        [1, 2],
+        [1, 3],
+      ],
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0)),
+        star(boss(1)),
+        star(host),
+      ],
+    });
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+
+    assert.equal(stepsOf(result, "eliminate").length, 1);
+    assert.equal(host.minionArmies, undefined);
   });
 });
