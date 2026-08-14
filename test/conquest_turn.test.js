@@ -64,6 +64,7 @@ function setup(overrides) {
     animated: [],
     stats: [],
     engineBoards: [],
+    gateWrites: [],
     baseMoves: 0,
     baseLoses: 0,
     baseFights: 0,
@@ -103,6 +104,18 @@ function setup(overrides) {
     defeatTeam: () => {},
   };
 
+  // Mirrors the scene: the gate starts resolved, which is what makes the
+  // ungated lost write navigate early. Records what gameState read at each
+  // replacement, so a test can pin gate-before-flip ordering.
+  const exitGate = observable(makeDeferred().resolve());
+  const trackedExitGate = function () {
+    if (arguments.length) {
+      calls.gateWrites.push({ stateAtWrite: game.gameState() });
+      return exitGate(arguments[0]);
+    }
+    return exitGate();
+  };
+
   stubs = createGlobalStubs();
   stubs.setGlobal("model", {
     move: () => {
@@ -112,6 +125,7 @@ function setup(overrides) {
     canMove: () => options.canMovePath,
     canFight: () => true,
     canExplore: () => true,
+    exitGate: trackedExitGate,
   });
   stubs.setGlobal("ko", {
     computed: (fn) => fn,
@@ -174,7 +188,9 @@ function setup(overrides) {
       if (options.onSave) {
         options.onSave(savedGame);
       }
-      return Promise.resolve();
+      return options.saveResult !== undefined
+        ? options.saveResult
+        : Promise.resolve();
     },
     announce: (eliminations) => calls.announced.push(eliminations),
     animate: options.animate,
@@ -476,6 +492,28 @@ describe("losing to a boss", () => {
     assert.equal(t.game.gameState(), "lost");
   });
 
+  // The gate must be swapped while the war still reads active: gw_play.js's
+  // gameOverCHeck otherwise navigates through the scene's initial resolved
+  // gate before the loss is saved.
+  it("holds the exit gate until the loss is saved", async () => {
+    const saveGate = makeDeferred();
+    const t = setup({
+      stars: [makeStar({ boss: true, team: 0 }), makeStar()],
+      saveResult: saveGate,
+    });
+    t.game.loseTurn();
+    assert.deepEqual(t.calls.gateWrites, [{ stateAtWrite: "active" }]);
+    assert.deepEqual(t.calls.saves, [[t.game, true]]);
+    let opened = false;
+    model.exitGate().then(() => {
+      opened = true;
+    });
+    await new Promise(setImmediate);
+    assert.equal(opened, false);
+    saveGate.resolve();
+    await model.exitGate();
+  });
+
   it("keeps the stock retreat against the Guardians", () => {
     const t = setup({
       stars: [makeStar({ boss: true, mirrorMode: true }), makeStar()],
@@ -607,6 +645,52 @@ describe("battle reconciliation at install", () => {
     assert.equal(t.game.gameState(), "lost");
     assert.equal(t.cfg.pendingFight, undefined);
     assert.deepEqual(t.calls.saves, [[t.game, true]]);
+  });
+
+  it("holds the exit gate until the reconciled loss is saved", async () => {
+    const saveGate = makeDeferred();
+    const t = setup({
+      currentStar: 0,
+      pendingFight: {
+        star: 1,
+        turn: 2,
+        ai: { boss: true, team: 0 },
+        owners: [null, 0],
+      },
+      stars: [makeStar(), makeStar({ boss: true, team: 0 })],
+      saveResult: saveGate,
+    });
+    assert.deepEqual(t.calls.gateWrites, [{ stateAtWrite: "active" }]);
+    assert.deepEqual(t.calls.saves, [[t.game, true]]);
+    let opened = false;
+    model.exitGate().then(() => {
+      opened = true;
+    });
+    await new Promise(setImmediate);
+    assert.equal(opened, false);
+    saveGate.resolve();
+    await model.exitGate();
+  });
+
+  it("leaves the exit gate alone when no loss ends the war", () => {
+    const garrison = setup({
+      currentStar: 0,
+      pendingFight: { star: 1, turn: 2, ai: { team: 0 }, owners: [null, 0] },
+      stars: [makeStar(), makeStar({ team: 0 })],
+    });
+    assert.equal(garrison.calls.gateWrites.length, 0);
+
+    const bossWin = setup({
+      currentStar: 0,
+      pendingFight: {
+        star: 0,
+        turn: 2,
+        ai: { boss: true, team: 0 },
+        owners: [0, null],
+      },
+      stars: [makeStar(), makeStar({ boss: true, team: 1 })],
+    });
+    assert.equal(bossWin.calls.gateWrites.length, 0);
   });
 
   it("keeps the stock retreat when the lost fight was a garrison", () => {

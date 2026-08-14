@@ -197,6 +197,20 @@ define([], function () {
       });
     });
 
+    // gw_play.js's gameOverCHeck navigates through exitGate the instant
+    // gameState turns lost, and the gate the scene opens with is already
+    // resolved - victory.js gates the won path against the same hazard.
+    // Resolves the captured gate, never the current one: that could be
+    // victory.js's.
+    var loseWar = function () {
+      var gate = $.Deferred();
+      model.exitGate(gate);
+      game.gameState("lost");
+      $.when(params.save(game, true)).always(function () {
+        gate.resolve();
+      });
+    };
+
     // Losing against a faction boss loses the war outright. Guardians and
     // garrisons keep the stock retreat. Read before the base call: loseTurn
     // rewinds currentStar and clears the star's history.
@@ -206,7 +220,7 @@ define([], function () {
       var facedFactionBoss = !!(ai && ai.boss && !ai.mirrorMode);
       var result = baseLoseTurn.apply(game, arguments);
       if (facedFactionBoss) {
-        game.gameState("lost");
+        loseWar();
       }
       // A retreat rewinds to a star that was resolved to be left, so the
       // consumed turn's phase runs now; a lost war skips it via the guard.
@@ -355,7 +369,8 @@ define([], function () {
       if (game.currentStar() !== pending.star) {
         // Stock loseTurn rewound the player.
         if (facedFactionBoss && game.gameState() === "active") {
-          game.gameState("lost");
+          loseWar();
+          return;
         }
       } else if (!foughtStarAi && pending.ai.boss) {
         // Stock winTurn cleared the star through stock defeatTeam.

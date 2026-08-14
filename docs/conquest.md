@@ -145,6 +145,11 @@ boss loses the war, a boss win replays the Conquest elimination from the
 stamp (the owner map recovers the ownership stock `defeatTeam` wiped), and an
 abandoned battle keeps the stamp. Viewers replay battle results as campaign
 actions after the driver installs, so their outcomes route through the wraps.
+Every path that loses the war holds `model.exitGate` - a fresh deferred
+before the state flip, resolved once the loss is saved - because gw_play.js's
+`gameOverCHeck` navigates to `gw_war_over` through the gate the instant
+`gameState` turns lost, and the gate the scene opens with is already
+resolved. `victory.js` documents the same hazard on the won path.
 
 Co-op needs no protocol of its own: a viewer's
 `applyCampaignAction('move_to_star')` calls `model.move()` itself, so the same
