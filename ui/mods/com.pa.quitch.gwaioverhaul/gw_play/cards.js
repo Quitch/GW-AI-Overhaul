@@ -19,7 +19,7 @@ function gwoCard() {
     locTree($("#hover-card"));
 
     // Used by cards checking for T2 access - global for modders,
-    // New-GW-Cards pushes here - see docs/tech-cards.md
+    // New-GW-Cards pushes here - see tech-cards.md
     model.gwoCardsGrantingAdvancedTech = _.isArray(
       model.gwoCardsGrantingAdvancedTech
     )

@@ -7,7 +7,7 @@
 // mis-set one would have `format:css` rewrite working CSS into dead CSS.
 //
 // Each expectation was verified against a running PA (Chrome/40.0.2214.28) over
-// the Coherent inspector. See docs/constraints.md.
+// the Coherent inspector. See constraints.md.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

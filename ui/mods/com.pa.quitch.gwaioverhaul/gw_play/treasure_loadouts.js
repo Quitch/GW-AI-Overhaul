@@ -1,5 +1,5 @@
 // A treasure planet's loadout offer, derived per player at exploration rather
-// than pre-dealt at war creation. See docs/coop.md, "Treasure loadouts".
+// than pre-dealt at war creation. See coop.md, "Treasure loadouts".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
@@ -271,7 +271,7 @@ define([
     });
 
     // A viewer's own claim, as opposed to the host's cards being applied to it -
-    // gw_inventory.js suspends banking for the latter. See docs/coop.md.
+    // gw_inventory.js suspends banking for the latter. See coop.md.
     return {
       bankOwnLoadout: function (card) {
         return bankStartCard({
