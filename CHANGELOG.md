@@ -2,9 +2,16 @@
 
 ## Unreleased
 
+This release adds Galactic Conquest, which is very beta and so all feedback is welcome. Is it too easy? Too hard? Too boring? Bring your thoughts. Right now it's just an experiment, I don't know what its future is, or whether it has one. I do recommend playing on a smaller galaxy than you normally would.
+
 ### Added
 
-- Galactic Conquest, a new war mode in the lobby's Mode dropdown. Each enemy faction starts with a single system and its boss conquers one system bordering its territory after every turn you take - bosses cross their space as freely as you jump through yours, while enemy systems block every route, and a turn ends once you have fought and explored where you landed, or passed in a friendly system; presence grows faster the more neighbouring systems its owner holds, bosses hunt you down once they outmatch you (losing to one loses the war) and fight each other for the galaxy, foes and allied commanders appear along contested borders, and a system you already explored offers no new tech when retaken. Systems that hit the strength cap muster minion armies - yours included - which roam, capture and garrison like bosses in their own minion colours but never grow stronger, annihilating each other where opposing armies meet; a system your armies capture unexplored stays yours to explore, its ring pulsing until you do, while everywhere they reach rolls back the fog and their captures extend where you can jump. The intelligence panel counts down the turns until a system musters its next army. Victory badges are tracked separately from Galactic War
+- Galactic Conquest, a new war mode in the lobby's Mode dropdown.
+  - Each enemy faction starts with a single system and its boss conquers one system bordering its territory after every turn you take
+  - Systems grow stronger over time based on the number of friendly neighbouring stars
+  - Systems will eventually spawn a minion army that will take territory for its faction
+  - Once a faction becomes strong enough it will begin eliminating other factions and go after you
+  - Losing a fight to a boss loses you the war
 
 ### Changed
 
