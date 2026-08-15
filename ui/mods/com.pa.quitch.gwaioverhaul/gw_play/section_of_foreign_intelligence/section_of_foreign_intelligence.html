@@ -36,9 +36,7 @@
       <loc>None. You have already explored this system.</loc>
     </div>
   </div>
-  <div
-    data-bind="visible: $root.gwoTurnsToReinforcements() || $root.gwoTurnsToArmy()"
-  >
+  <div data-bind="visible: $root.gwoTurnsToArmy">
     <h3>
       <loc>Reinforcements</loc
       ><span
@@ -47,16 +45,9 @@
         >?</span
       >
     </h3>
-    <div class="table gwo-reinforcements">
+    <div class="table">
       <div class="tablebody">
-        <div data-bind="visible: $root.gwoTurnsToReinforcements" class="tr">
-          <div class="td pad"><loc>Turns to reinforcements:</loc></div>
-          <div
-            class="data pad"
-            data-bind="text: $root.gwoTurnsToReinforcements"
-          ></div>
-        </div>
-        <div data-bind="visible: $root.gwoTurnsToArmy" class="tr">
+        <div class="tr">
           <div class="td pad"><loc>Turns to army:</loc></div>
           <div class="data pad" data-bind="text: $root.gwoTurnsToArmy"></div>
         </div>

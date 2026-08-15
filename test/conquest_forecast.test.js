@@ -3,7 +3,7 @@
 // Unit tests for gw_play/conquest_forecast.js, the read-only projection the
 // intelligence panel renders. The last suite is the important one: it runs the
 // planner the forecast claims to predict and asserts the phase it named is the
-// phase the tier actually moves on.
+// phase the army actually musters on.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -16,8 +16,7 @@ const engine = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_engine.js"
 );
 
-// maxDist 8 over four connections puts the tier step at every 4 of growth and
-// the muster threshold at 36.
+// maxDist 8 over four connections puts the muster threshold at 36.
 function makeView(opts) {
   return Object.assign(
     {
@@ -66,67 +65,67 @@ describe("turnsToGrowth", () => {
 });
 
 describe("forecast", () => {
-  it("projects both counters for a growing garrison", () => {
+  it("projects the muster of a growing garrison", () => {
     const result = forecast.forecast(
       makeView({
         ai: garrison(0, { growth: 2, appliedTier: 0 }),
         neighbours: [owned(0), owned(0)],
       })
     );
-    // Two per phase: tier 1 at growth 4 is one phase, the muster at 36 is 17.
-    assert.deepEqual(result, { reinforcements: 1, army: 17 });
+    // Two a phase, 34 to go.
+    assert.deepEqual(result, { army: 17 });
   });
 
-  it("drops the tier row for a garrison already at the cap", () => {
+  it("still musters from a garrison already at the tier cap", () => {
     const result = forecast.forecast(
       makeView({
         ai: garrison(0, { growth: 33, appliedTier: 8 }),
         neighbours: [owned(0)],
       })
     );
-    assert.deepEqual(result, { reinforcements: null, army: 3 });
+    assert.deepEqual(result, { army: 3 });
   });
 
-  it("drops both rows for an isolated garrison", () => {
+  it("reports nothing for an isolated garrison", () => {
     const result = forecast.forecast(
       makeView({ ai: garrison(0, { growth: 2 }) })
     );
-    assert.deepEqual(result, { reinforcements: null, army: null });
+    assert.deepEqual(result, { army: null });
   });
 
-  it("drops both rows for a boss, which scales by territory", () => {
+  it("reports nothing for a boss, which never musters", () => {
     const result = forecast.forecast(
       makeView({
         ai: garrison(0, { boss: true, growth: 2 }),
         neighbours: [owned(0), owned(0)],
       })
     );
-    assert.deepEqual(result, { reinforcements: null, army: null });
+    assert.deepEqual(result, { army: null });
   });
 
-  it("drops both rows for a minion army, which never re-scales", () => {
+  it("reports nothing for a minion army, which never musters", () => {
     const result = forecast.forecast(
       makeView({
         ai: garrison(0, { conquestArmy: { seq: 0, colour: 0, origin: 1 } }),
         neighbours: [owned(0), owned(0)],
       })
     );
-    assert.deepEqual(result, { reinforcements: null, army: null });
+    assert.deepEqual(result, { army: null });
   });
 
-  it("drops both rows for the Guardians, which the phase skips", () => {
+  it("reports nothing for the Guardians, which the phase skips", () => {
     const result = forecast.forecast(
       makeView({
         ai: garrison(0, { mirrorMode: true }),
         neighbours: [owned(0), owned(0)],
       })
     );
-    assert.deepEqual(result, { reinforcements: null, army: null });
+    assert.deepEqual(result, { army: null });
   });
 
-  it("drops both rows for a neutral star", () => {
+  it("reports nothing for a neutral star", () => {
     const result = forecast.forecast(makeView({ neighbours: [owned(0)] }));
-    assert.deepEqual(result, { reinforcements: null, army: null });
+    assert.deepEqual(result, { army: null });
   });
 
   it("reports the garrison's own counter, never a foe's", () => {
@@ -141,16 +140,16 @@ describe("forecast", () => {
       })
     );
     // One same-team neighbour: the two enemy ones feed the foe, not this.
-    assert.deepEqual(result, { reinforcements: 2, army: 34 });
+    assert.deepEqual(result, { army: 34 });
   });
 
-  it("still drops both rows on a boss star bearing foes", () => {
+  it("still reports nothing on a boss star bearing foes", () => {
     const bossAi = garrison(0, { boss: true, growth: 2 });
     bossAi.foes = [{ faction: 1, createdTurn: 2, growth: 3, appliedTier: 0 }];
     const result = forecast.forecast(
       makeView({ ai: bossAi, neighbours: [owned(1)] })
     );
-    assert.deepEqual(result, { reinforcements: null, army: null });
+    assert.deepEqual(result, { army: null });
   });
 
   it("seeds a counter a pre-growth save never wrote", () => {
@@ -159,8 +158,8 @@ describe("forecast", () => {
     const result = forecast.forecast(
       makeView({ ai: legacy, neighbours: [owned(0)] })
     );
-    // Seeded to 12, so tier 4 lands in 4 and the muster in 24.
-    assert.deepEqual(result, { reinforcements: 4, army: 24 });
+    // Seeded to 12, so the muster is 24 away at one a phase.
+    assert.deepEqual(result, { army: 24 });
   });
 
   it("falls back to four connections, as the planner does", () => {
@@ -171,7 +170,7 @@ describe("forecast", () => {
         neighbours: [owned(0), owned(0)],
       })
     );
-    assert.deepEqual(result, { reinforcements: 1, army: 17 });
+    assert.deepEqual(result, { army: 17 });
   });
 
   it("excludes Guardians and jumped bosses from the count", () => {
@@ -186,10 +185,10 @@ describe("forecast", () => {
       })
     );
     // Only the one real neighbour accrues.
-    assert.deepEqual(result, { reinforcements: 4, army: 36 });
+    assert.deepEqual(result, { army: 36 });
   });
 
-  it("musters from a player system but never re-tiers it", () => {
+  it("musters from a player system", () => {
     const result = forecast.forecast(
       makeView({
         explored: true,
@@ -198,7 +197,7 @@ describe("forecast", () => {
       })
     );
     // Two player neighbours; 30 to go at 2 a phase.
-    assert.deepEqual(result, { reinforcements: null, army: 15 });
+    assert.deepEqual(result, { army: 15 });
   });
 
   it("counts an unexplored star a player army holds", () => {
@@ -209,7 +208,7 @@ describe("forecast", () => {
         neighbours: [playerStar({ explored: false, held: true })],
       })
     );
-    assert.deepEqual(result, { reinforcements: null, army: 36 });
+    assert.deepEqual(result, { army: 36 });
   });
 
   it("keeps the player's star theirs under a jumped boss", () => {
@@ -221,7 +220,7 @@ describe("forecast", () => {
         neighbours: [playerStar(), playerStar(), playerStar()],
       })
     );
-    assert.deepEqual(result, { reinforcements: null, army: 8 });
+    assert.deepEqual(result, { army: 8 });
   });
 });
 
@@ -320,27 +319,6 @@ describe("agrees with the planner", () => {
       armySeq: {},
     };
   }
-
-  it("names the phase a garrison's tier actually rises on", () => {
-    const subject = garrison(0, { growth: 1, appliedTier: 0 });
-    const board = garrisonBoard(subject, 8);
-    const view = makeView({
-      ai: subject,
-      explored: true,
-      neighbours: [owned(0), owned(0)],
-    });
-    const predicted = forecast.forecast(view).reinforcements;
-    assert.equal(predicted, 2);
-
-    const tiers = [];
-    runPhases(board, predicted, (phase) => {
-      tiers.push({ phase: phase, tier: board.stars[1].ai.appliedTier });
-    });
-    assert.deepEqual(tiers, [
-      { phase: 1, tier: 0 },
-      { phase: 2, tier: 1 },
-    ]);
-  });
 
   it("names the phase a capped garrison actually musters on", () => {
     // maxDist 2 puts the muster threshold at 12.

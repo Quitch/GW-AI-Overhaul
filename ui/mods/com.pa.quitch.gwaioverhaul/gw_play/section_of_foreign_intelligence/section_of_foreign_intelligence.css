@@ -71,15 +71,3 @@
 .section-of-foreign-intelligence .pad {
   padding: 1px 0;
 }
-
-/* "Turns to reinforcements:" needs 178px, and the even split table-layout:
-   fixed gives two columns leaves it 117px, so it wraps where every other label
-   in the panel is one line. The full width and a 75/25 split give it 196px; the
-   values are one or two digits, so 66px is more than they need. */
-.section-of-foreign-intelligence .gwo-reinforcements {
-  width: 100%;
-}
-
-.section-of-foreign-intelligence .gwo-reinforcements .td.pad {
-  width: 75%;
-}

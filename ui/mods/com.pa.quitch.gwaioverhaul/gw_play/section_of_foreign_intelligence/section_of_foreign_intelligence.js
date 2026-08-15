@@ -406,10 +406,9 @@ function gwoIntelligence() {
         model.gwoGameModifiers = ko.observableArray([]);
         model.gwoAIBuffs = ko.observableArray([]);
         model.gwoAis = ko.observableArray([]);
-        // Strings, so a hypothetical zero is still truthy: each row hides on
-        // its own empty value and the section's header on both being empty. A
-        // Galactic War leaves them empty and never shows the section.
-        model.gwoTurnsToReinforcements = ko.observable("");
+        // A string, so a hypothetical zero is still truthy where the empty the
+        // section hides on is not. A Galactic War leaves it empty and never
+        // shows the section.
         model.gwoTurnsToArmy = ko.observable("");
 
         model.generateIntelligence = ko.computed(function () {
@@ -461,7 +460,6 @@ function gwoIntelligence() {
             var galaxy = model.game().galaxy();
             var stars = galaxy.stars();
             if (!stars[starIndex]) {
-              model.gwoTurnsToReinforcements("");
               model.gwoTurnsToArmy("");
               return;
             }
@@ -481,11 +479,7 @@ function gwoIntelligence() {
               }
             );
 
-            var forecast = gwoForecast.forecast(view);
-            model.gwoTurnsToReinforcements(
-              forecastText(forecast.reinforcements)
-            );
-            model.gwoTurnsToArmy(forecastText(forecast.army));
+            model.gwoTurnsToArmy(forecastText(gwoForecast.forecast(view).army));
           });
         }
       }
