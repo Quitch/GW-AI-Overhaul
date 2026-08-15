@@ -20,7 +20,7 @@ however far it goes, and where it lands is where the turn is played out.
 | `gw_play/conquest_sprite.js`     | Boss- and army-move animation, a copy of the stock transit visuals. Coverage-excluded                                      |
 | `gw_play/conquest_army_icons.js` | Minion-army icons on the galaxy map, the stock boss-icon layout in minion palette colours. Coverage-excluded               |
 | `gw_play/conquest_pulse.js`      | Measured: the looping pulse ring on player-held explorable systems                                                         |
-| `gw_play/conquest_forecast.js`   | Measured: projects a system's growth counter forward for the intelligence panel                                            |
+| `gw_play/conquest_forecast.js`   | Measured: counts the turns to a system's next muster for the intelligence panel                                            |
 
 ## Generation
 
@@ -183,13 +183,13 @@ Rules the engine carries:
   the referee and the intelligence panel read `star.ai()` unchanged; accrual
   without a tier change still writes the star, because the planner's board is
   a clone and only written stars reach the save. The panel's **Reinforcements**
-  section projects the counter forward at the system's current friendly
-  adjacency - a garrison's next tier and its muster, a player system's muster
-  from `cfg.playerGrowth`. A row it cannot project is not rendered, and a
-  system with neither row shows no section: a boss or minion-army star, the
-  Guardians, an isolated system, a capped garrison's tier row and every player
-  system's tier row. Foe counters are deliberately not reported, so the numbers
-  always describe the garrison itself. The arithmetic is
+  section counts the turns to the system's next muster (see "Minion armies")
+  at its current friendly adjacency, reading a garrison's own counter or a
+  player system's from `cfg.playerGrowth`. Nothing else is projected: tier
+  growth carries no countdown, and a system that never musters shows no
+  section - a boss or minion-army star, the Guardians, and any system with no
+  friendly neighbour to accrue from. Foe counters are not reported either, so
+  the number always describes the garrison itself. The arithmetic is
   `gw_play/conquest_forecast.js`, which imports the planner's own owner and
   adjacency predicates so the projection counts exactly what accrual counts.
 - **Foes and allies** roll every second turn: per AI system, a foe of a
