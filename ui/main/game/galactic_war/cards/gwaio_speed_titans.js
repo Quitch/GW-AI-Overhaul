@@ -13,7 +13,9 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
-        gwoCard.hasUnit(inventory.units(), gwoGroup.titans),
+        // Not gwoGroup.titans: the Ragnarok is immobile, so the engine buff
+        // cannot reach it.
+        gwoCard.hasUnit(inventory.units(), gwoGroup.titansMobile),
         70
       );
     },
