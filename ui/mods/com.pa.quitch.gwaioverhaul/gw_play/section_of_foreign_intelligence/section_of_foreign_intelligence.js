@@ -30,6 +30,8 @@ function gwoIntelligence() {
       "!LOC:BOUNTIES: earn an economic multiplier for every kill.<br>LAND ANYWHERE: players can start anywhere on viable starting planets.<br>SUDDEN DEATH: any commander death on a team kills the entire team.<br>ERADICATE: all units of specific types must be eradicated.";
     model.gwoAIBuffsTooltip =
       "!LOC:Applied to AI commanders and units preferred by the faction.";
+    model.gwoReinforcementsTooltip =
+      "!LOC:Projected from this system's current friendly neighbours.";
 
     var getNumberOfCommanders = function (commander) {
       return commander.bossCommanders || commander.commanderCount || 1;
@@ -212,8 +214,16 @@ function gwoIntelligence() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_forecast.js",
       ],
-      function (gwoColour, gwoCards, gwoAI, gwoRefereeCoop, gwoStarCardsView) {
+      function (
+        gwoColour,
+        gwoCards,
+        gwoAI,
+        gwoRefereeCoop,
+        gwoStarCardsView,
+        gwoForecast
+      ) {
         var starCardsView = gwoStarCardsView();
 
         var url =
@@ -380,11 +390,14 @@ function gwoIntelligence() {
           return commanders;
         };
 
-        var conquestWar = (function () {
+        // The Conquest snapshot, or null in a Galactic War. Read once: neither
+        // the mode nor the field can change mid-war.
+        var conquestCfg = (function () {
           var galaxy = model.game().galaxy();
           var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
-          return !!(gwoSettings && gwoSettings.conquest);
+          return (gwoSettings && gwoSettings.conquest) || null;
         })();
+        var conquestWar = !!conquestCfg;
 
         model.gwoSystemSurfaceArea = ko.observable(0);
         model.gwoSystemThreat = ko.observable(0);
@@ -393,6 +406,11 @@ function gwoIntelligence() {
         model.gwoGameModifiers = ko.observableArray([]);
         model.gwoAIBuffs = ko.observableArray([]);
         model.gwoAis = ko.observableArray([]);
+        // Strings, so a hypothetical zero is still truthy: each row hides on
+        // its own empty value and the section's header on both being empty. A
+        // Galactic War leaves them empty and never shows the section.
+        model.gwoTurnsToReinforcements = ko.observable("");
+        model.gwoTurnsToArmy = ko.observable("");
 
         model.generateIntelligence = ko.computed(function () {
           var inventory = model.game().inventory();
@@ -418,6 +436,58 @@ function gwoIntelligence() {
           model.gwoGameModifiers(convertGameModifiersToName(ai, inventory));
           model.gwoAis(createAIIntelligence(ai));
         });
+
+        var forecastText = function (turns) {
+          return turns === null || turns === undefined ? "" : String(turns);
+        };
+
+        var starView = function (stars, starIndex, held) {
+          var star = stars[starIndex];
+          return {
+            ai: star.ai(),
+            explored: !!star.explored(),
+            held: !!held[starIndex],
+          };
+        };
+
+        // Deliberately not folded into generateIntelligence, which returns
+        // early on a star with no ai - and a player-owned star is exactly
+        // that. Reading only the selected star and its neighbours also keeps a
+        // phase from recomputing threat, tech and the commander list every
+        // time any system in the galaxy changes hands.
+        if (conquestWar) {
+          model.gwoConquestForecast = ko.computed(function () {
+            var starIndex = model.selection.star();
+            var galaxy = model.game().galaxy();
+            var stars = galaxy.stars();
+            if (!stars[starIndex]) {
+              model.gwoTurnsToReinforcements("");
+              model.gwoTurnsToArmy("");
+              return;
+            }
+            // playerHeld is read plainly: every point that mutates it also
+            // publishes the growth map subscribed to on the line above, so
+            // this recomputes whenever either changes.
+            var growth = model.gwoConquestPlayerGrowth();
+            var held = conquestCfg.playerHeld || {};
+            var view = starView(stars, starIndex, held);
+            view.growth = growth[starIndex] || 0;
+            view.maxDist = conquestCfg.maxDist;
+            view.maxConnections = conquestCfg.maxConnections;
+            view.neighbours = _.map(
+              galaxy.neighborsMap()[starIndex] || [],
+              function (neighbor) {
+                return starView(stars, neighbor, held);
+              }
+            );
+
+            var forecast = gwoForecast.forecast(view);
+            model.gwoTurnsToReinforcements(
+              forecastText(forecast.reinforcements)
+            );
+            model.gwoTurnsToArmy(forecastText(forecast.army));
+          });
+        }
       }
     );
   } catch (e) {
