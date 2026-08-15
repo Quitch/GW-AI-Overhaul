@@ -318,11 +318,38 @@ function gwoSystemChanges() {
       );
     });
 
+    requireGW(
+      [
+        "shared/gw_common",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+      ],
+      function (GW, gwoVictory, gwoSave, gwoTreasure, gwoBank) {
+        gwoVictory({
+          game: game,
+          gwoSettings: gwoSettings,
+          save: gwoSave,
+          treasure: gwoTreasure,
+          stockBank: GW.bank,
+          gwoBank: gwoBank,
+        });
+      }
+    );
+
     requireGW(["shared/gw_factions"], function (GWFactions) {
       var normalizedColor = function (faction) {
         return _.map(faction.color[0], function (c) {
           return c / 255;
         });
+      };
+
+      var innerRingColour = function (ai) {
+        var occupant = ai && (ai.ally || _.first(ai.foes));
+        return occupant
+          ? normalizedColor(GWFactions[occupant.faction]).concat(7)
+          : undefined;
       };
 
       game.defeatTeam = function (defeatedTeam) {
@@ -366,23 +393,12 @@ function gwoSystemChanges() {
       };
 
       _.forEach(model.galaxy.systems(), function (system) {
-        var ai = system.star.ai();
-        if (!ai) {
-          return;
-        }
-
-        if (!ai.ally && !ai.foes) {
-          return;
-        }
-
-        var innerColour = ai.ally
-          ? normalizedColor(GWFactions[ai.ally.faction])
-          : normalizedColor(GWFactions[ai.foes[0].faction]);
-
+        // Every system gets a ring: Conquest rolls allies and foes turn by
+        // turn, and War's defeatTeam rewrites them, so load-time state is not final
         var innerRing = createBitmap({
           url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
           size: [240, 240],
-          color: innerColour.concat(7),
+          color: innerRingColour(system.star.ai()) || [1, 1, 1, 7],
           scale: 0.71,
           alpha: 0.8,
         });
@@ -394,8 +410,18 @@ function gwoSystemChanges() {
 
         innerRing.visible = false;
 
+        var ringColour = ko.computed(function () {
+          return innerRingColour(system.star.ai());
+        });
+        ringColour.subscribe(function (colour) {
+          if (colour) {
+            innerRing.color(colour);
+          }
+        });
+
         ko.computed(function () {
           innerRing.visible =
+            !!ringColour() &&
             (system.connected() || model.cheats.noFog()) &&
             !!system.ownerColor() &&
             system.ownerColor()[0] !== model.player.color()[0];

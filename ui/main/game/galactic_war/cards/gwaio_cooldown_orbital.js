@@ -1,8 +1,9 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "shared/gw_common",
-], function (gwoCard, gwoGroup, GW) {
+], function (gwoCard, gwoGroup, gwoUnit, GW) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -16,11 +17,14 @@ define([
       found: "/VO/Computer/gw/board_tech_available_orbital",
     }),
     getContext: gwoCard.getContext,
-    deal: function (system, context) {
+    deal: function (system, context, inventory) {
       var sizes = GW.balance.numberOfSystems;
-      return {
-        chance: gwoCard.travelledShort(system, context, sizes) ? 70 : 35,
-      };
+      // The Orbital Launcher has no factory_cooldown_time, so the Orbital Factory
+      // is the only one of the two the card can do anything for.
+      return gwoCard.conditionalDeal(
+        gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory),
+        gwoCard.travelledShort(system, context, sizes) ? 70 : 35
+      );
     },
     buff: function (inventory) {
       var mods = _.map(gwoGroup.orbitalFactories, function (unit) {

@@ -17,7 +17,9 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
-        gwoCard.hasUnit(inventory.units(), gwoGroup.titans),
+        // Not gwoGroup.titans: titansAmmo carries no Ragnarok entry, so owning
+        // only the Ragnarok gains nothing here.
+        gwoCard.hasUnit(inventory.units(), gwoGroup.titansMobile),
         70
       );
     },

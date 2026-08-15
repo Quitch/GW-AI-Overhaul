@@ -58,6 +58,11 @@ This is why 61 of the 237 cards cannot be shape-checked: they transitively depen
 on `shared/gw_common`. For sweeps where skipping them would mean testing nothing,
 `registerModuleStub` is an opt-in escape hatch — it does **not** weaken the default.
 
+`scripts/lib/card-probe.js` takes that hatch, and with `shared/gw_common` stubbed
+**236** of the 237 cards load. That sits oddly beside `validate:cards`'s 175 until
+you notice they answer different questions: the validator refuses the hatch on
+purpose, so its number is what can be checked with no stand-in at all.
+
 Because a bare `catch` around a load also swallows syntax errors and genuine
 breakage, the validators discriminate on the reason. A bare catch once reported
 real failures as "excluded" with the run still green.
@@ -143,6 +148,33 @@ a then property" rule warns about.
 `scripts/lib/global-stubs.js` saves and restores the engine globals that shipped
 code reads at call time. It is a factory, not a singleton, so two suites never
 share a restore stack.
+
+`scripts/lib/card-probe.js` runs a card's `deal()` and `buff()`, which is what
+`test/card_deal_unit_gate.test.js` needs and `validate:cards` deliberately refuses
+to do. Four decisions in it are load-bearing:
+
+- Its `numberOfSystems` is a **real nine-entry array**, not `createAutoStub()`.
+  `farForSize` walks `Math.min(numberOfSystems.length, thresholds.length) - 1`, and a
+  stub makes that `NaN`, so the tier loop never runs and every card scores at tier 0 —
+  the sweep stays green while testing almost nothing. Nine entries, not the base
+  game's five, because `shared/cards.js`'s own `distances` tables are cut for the four
+  sizes Bigger Galactic War adds as well.
+- It installs **no `model` global**, for the reason `amd-loader.js` gives for leaving
+  `api`/`model`/`ko` undefined: no card in scope reads one inside `deal()`, so a card
+  that starts to should throw rather than be weighted against a fake galaxy.
+- `makeInventory` is a plain object rather than an auto-stub, so a card reaching for
+  something unanticipated fails loudly instead of being scored against a Proxy that
+  says yes to everything. `lookupCard` answers `-1` — `gw_inventory`'s "absent"; `0`
+  means "the first card in the hand".
+- The starter unit set is **recorded from `gwc_start.buff()`**, never restated, so a
+  change to `gwoGroup.orbitalBasic` moves the baseline instead of silently
+  disagreeing with it.
+
+The test carries three coverage floors — `MIN_PROBED`, `MIN_DEALABLE` and the
+partition assertion that no card is unclassified. `MIN_DEALABLE` is the one with no
+analogue in `validate:cards`: without it, a broken `gw_common` stub that made every
+`deal()` return 0 would leave the card count intact and every assertion vacuously
+green. Raise them when coverage genuinely rises; never lower one to make a run pass.
 
 `scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
 wiring `referee_ai.js`'s file discovery needs, and returns its own restore

@@ -1,8 +1,5 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code
-in this repository.
-
 ## What this is
 
 GW-AI-Overhaul (GWO/GWAIO) is a client mod for Planetary Annihilation: TITANS that
@@ -31,17 +28,17 @@ the traps that have actually caused bugs here.
 | Chrome 40 / ES5 limits, available libraries, CSS and localisation rules | [`docs/constraints.md`](docs/constraints.md)   |
 | Tree layout, scenes, entry points, battle launch sequence               | [`docs/architecture.md`](docs/architecture.md) |
 | File shadowing, function hijacking, the full shadowed-file inventory    | [`docs/shadowing.md`](docs/shadowing.md)       |
-| Tech card contract, `buff`/`dull`, deal weighting, loadouts             | [`docs/tech-cards.md`](docs/tech-cards.md)     |
-| The third-party card mod API and what breaks downstream if it changes   | [`docs/tech-cards.md`](docs/tech-cards.md)     |
+| Tech cards, the card mod API, and what breaks downstream if it changes  | [`docs/tech-cards.md`](docs/tech-cards.md)     |
 | AI-mod descriptors, the `ops` table, `managerPath`, the tree cache      | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)   |
 | The five AI trees, source vs destination, scope tokens                  | [`docs/ai-paths.md`](docs/ai-paths.md)         |
 | Host/viewer, per-player tech, colour allocation                         | [`docs/coop.md`](docs/coop.md)                 |
 | Unit spec ops, path segments, spec caching                              | [`docs/specs.md`](docs/specs.md)               |
 | Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)             |
-| The Node AMD harness, the seven validators, coverage                    | [`docs/testing.md`](docs/testing.md)           |
+| Galactic Conquest: turn engine, tiers, badges                           | [`docs/conquest.md`](docs/conquest.md)         |
+| The Node AMD harness, the validators, coverage                          | [`docs/testing.md`](docs/testing.md)           |
 
-Six things are worth knowing before you touch anything, each covered in full by
-the doc named:
+These are worth knowing before you touch anything, each covered in full by the doc
+named:
 
 - **Shipped `ui/**` code must be ES5 / Chrome 40 safe.** No `let`, arrow functions,
   template literals or `class`. A parse error takes out the whole script, not just
@@ -70,128 +67,37 @@ the doc named:
   and update that repo in step. `test/modder_api.test.js` pins the whole surface.
   ([`tech-cards.md`](docs/tech-cards.md))
 
-## Commands
+## Verifying a change
 
-```bash
-npm ci                    # install pinned tooling (only needed once / after deps change)
-npm run verify            # everything CI checks: lint + format:check + validate + test
-npm run lint:js           # eslint .
-npm run lint:css          # stylelint "**/*.css"
-npm run format:css        # prettier --write + stylelint --fix, on *.css (see below)
-npm run lint:md           # markdownlint-cli2
-npm run format:md         # prettier --write + markdownlint --fix, on *.md (see below)
-npm run validate          # all validate:* checks below, in sequence
-npm run validate:json     # every .json file in the repo parses
-npm run validate:manifest # modinfo.json scenes reference files that actually exist
-npm run validate:cards    # every tech card exports the fixed contract shape
-npm run validate:ai-mods  # every card's buff()/dull() emits valid AI-mod descriptors
-npm run validate:schemas  # AI build-order JSON + difficulty/personality data
-npm run validate:refs     # cross-references: loadout ids, unit keys, AI builder roles
-npm run validate:sonar    # sonar-project.properties: no stale paths, files are UTF-8
-npm test                  # node --test (runs everything under test/)
-npm run test:coverage     # same tests + lcov to coverage/lcov.info
-npm run format:check      # prettier --check .
-npm run format:write      # prettier --write . (stage only your own files - see below)
-```
+`npm run verify` is the pre-submit gate - it runs everything CI checks. The
+individual scripts are in `package.json`, and what each validator catches is in
+[`docs/testing.md`](docs/testing.md), which also covers running a single test file
+or test.
 
-Run a single test file: `node --test test/specs.test.js`. Run a single test by name:
-`node --test --test-name-pattern="<pattern>" test/specs.test.js`.
-
-CI (`.github/workflows/ci.yml`) runs `lint:js`/`lint:css`/`lint:md`/`validate`/`test`
-as full-repo hard gates (clean today, so any new violation anywhere is a real
-regression), plus a separate Prettier check scoped only to files a PR/push actually
-changed. `npm run verify` mirrors the hard-gate job; run it before submitting a
-change. `.github/workflows/build.yml` additionally runs `test:coverage` and the
-SonarQube scan; `release.yml` re-runs the hard gates against a published release tag
-as a post-publish alarm. What each validator catches, and why the Sonar config needs
-its own guard, is in [`docs/testing.md`](docs/testing.md).
+After touching a `.md` or `.css` file, run `format:md` / `format:css` and then
+`lint:md` / `lint:css` - that order is the one that converges, for reasons
+CONTRIBUTING.md gives. Both are repo-wide, as is `format:write`, so stage only the
+files your change touches.
 
 ## Conventions
 
-See CONTRIBUTING.md for the full list. The ones that bite most often:
+See [CONTRIBUTING.md](CONTRIBUTING.md). The two that bite most often:
 
-- camelCase for JS, kebab-case for CSS, 2-space indent, HTML in its own file (never
-  inline in JS).
-- `CHANGELOG.md` additions always go under `## Unreleased`, as `### Added`,
-  `### Changed` or `### Bugfix`. A versioned heading describes a copy that has
-  shipped, so its entries are static - never add to one or amend it. While a feature
-  is still unreleased, later fixes to it are not changes anyone can have seen: the
-  entry says the feature exists, and does not grow to cover the work behind it.
-- PRs must only touch what the request needs - no drive-by cleanup/reformatting
-  (submit those separately). `format:write` is repo-wide (`prettier --write .`), so
-  run it and then stage only the files your change actually touches. The whole repo
-  passes `prettier --check .`, which `npm run verify` enforces.
-- Markdown and CSS are each policed by two tools, so after touching a `.md` or `.css`
-  file run `format:md` / `format:css`, then `lint:md` / `lint:css`. Both scripts run
-  Prettier before the linter's `--fix`, which is the order that converges: Prettier
-  first settles the layout the linters report but cannot repair themselves (an
-  unformatted single-line rule block trips stylelint's
-  `declaration-block-single-line-max-declarations`), and once it has, neither
-  linter's own fixes break `prettier --check` - markdownlint only reaches for `*`
-  bullets when Prettier has not already made them `-`. The linter still runs last
-  because `--fix` cannot repair every rule: markdownlint's MD025 and friends need a
-  manual edit, and the exit code is how you learn that.
-  `.vscode/settings.json` applies the same two fix passes on save. Like
-  `format:write`, both scripts are repo-wide: stage only your own files.
-- The whole `pa/**` data tree is excluded from Prettier (see `.prettierignore`).
-  Those JSON files are intentionally minified to a single line, matching the base
-  game's own convention - don't reformat them, and don't narrow the exclusion back
-  to an enumerated file list.
-- `stylelint.config.mjs` is the CSS counterpart of `eslint.config.mjs`: a Chrome 40
-  profile with one commented `// Chrome NN` entry per rule, backed by
-  `.browserslistrc` and `stylelint-no-unsupported-browser-features`. Every number in
-  it is verified against a running PA, and several contradict caniuse. Don't remove
-  an exclusion or "fix" the usage it covers as a drive-by - `format:css` runs
-  `stylelint --fix` repo-wide, and a mis-set rule there rewrites working CSS into CSS
-  the engine silently drops. ([`constraints.md`](docs/constraints.md))
+- A PR touches only what the request needs. Drive-by cleanup, reformatting and
+  comment fixes elsewhere are correct but belong in a separate PR.
+- `CHANGELOG.md` additions go under `## Unreleased`, as `### Added`, `### Changed`
+  or `### Bugfix`. A versioned heading describes a copy that has shipped, so its
+  entries are static - never add to one or amend it. While a feature is still
+  unreleased, later fixes to it are not changes anyone can have seen: the entry
+  says the feature exists, and does not grow to cover the work behind it.
 
 ### Comments
 
-The repo has been through repeated comment audits. These are the rules it is cleaned
-to, and they bind every line you add or touch - mod-owned code, shadowed base-game
-files and tech cards are held to the same bar. Write to them the first time and
-there is nothing left for the next audit to find.
-
-**The default is no comment.** Code should self-document; when in doubt, leave it
-out. The rules below are the narrow exceptions, not a licence to annotate.
-
-**One or two lines.** Three when the fact genuinely needs it, and that should be
-rare. Past that you are writing documentation, so put it in `docs/` instead - a
-comment is not the place to develop an argument.
-
-- **A comment earns its place only by saying what the code cannot**: base-game or
-  engine behaviour, a bug workaround, a dependency that lives outside the mod, or a
-  counter-intuitive ordering. Anything that restates the code goes.
-- **Check `docs/` before writing more than a line.** If the doc already covers it,
-  the comment is `See <doc>.md` (plus the section, where the doc is long) and
-  nothing more. If it doesn't and the fact is subsystem-level, add it to the doc and
-  point at it. Line-anchored facts stay in the code; a documented subsystem is not
-  licence to delete the comments inside it.
-- **If the comment exists because the code is unclear, fix the code.** Rename the
-  identifier, extract the helper, or hoist the magic number to a named constant -
-  the comment then has nothing left to say.
-- **Say it once, across files as well as within one.** A fact needed in five places
-  is one home plus four cross-references, or a name that carries it. Sibling modules
-  that share a shape are where this breaks: describe the shape in `docs/` and let
-  each file's header say only what is true of that file alone.
-- **Keep the rule, drop the story.** Rejected alternatives, tuning history and "this
-  used to live elsewhere" belong in `CHANGELOG.md`. If a sentence contains _used
-  to_, _previously_, _an earlier version_, _once_, or a measured timing, it is story.
-  State the rule that now holds and delete the rest.
-- **Layout is not a subject.** Why a helper sits at this nesting level, why it takes
-  explicit parameters, why it is a declaration rather than a const - the code
-  already shows all of it. Comment the hazard that forced the shape, if there is
-  one, not the shape.
-- **Don't record counts or measurements nothing enforces** - they are stale as soon
-  as a file is added. An enforced floor (`MIN_CHECKED` in
-  `scripts/validate/cards-contract.js`) is a different thing and stays.
-- **In tests, the test name carries the _what_.** A comment there is for the why:
-  why this case exists, why a fixture has an odd shape, what regression it pins.
-  Restating the module's own documentation in a test header is the common failure.
-- **Verify a comment against the code before writing it.** Every path, filename and
-  identifier it names must exist, and the claim must match the lines beside it. Past
-  audits found this the most common defect by far - including two in these very
-  rules. A confidently wrong comment is worse than none.
+The bar, and what belongs in a comment versus in `docs/`, is in
+[`docs/README.md`](docs/README.md). One rule beyond it: verify a comment against
+the code before writing it. Every path, filename and identifier it names must
+exist, and the claim must match the lines beside it - a confidently wrong comment
+is worse than none, and it is by far the most common defect found here.
 
 Never removed, because they are not prose:
 
@@ -210,11 +116,3 @@ Never removed, because they are not prose:
   that TODO; leave it.
 - The vendored-code attribution at the top of
   `gw_play/section_of_foreign_intelligence/`, which is a licence condition.
-
-Applying these to comments your change doesn't otherwise touch is drive-by cleanup:
-correct, but a separate PR.
-
-## Requirements
-
-- Apply a prettier pass to all new and edited files of support types, including test
-  scripts.

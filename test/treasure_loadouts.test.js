@@ -464,6 +464,71 @@ describe("pickTreasureLoadout", () => {
   });
 });
 
+// Whether the Guardians are still worth exploring is what decides between ending
+// a won war on the spot and keeping the base game's explore-then-win flow, so a
+// false positive here costs a player their unlock.
+describe("anyPlayerCanUnlockLoadout", () => {
+  const everyLoadout = () =>
+    treasure.treasureLoadoutPool().map((card) => card.id);
+
+  it("is true while the local player is missing one", () => {
+    assert.equal(
+      treasure.anyPlayerCanUnlockLoadout({
+        localUnlockedIds: everyLoadout().slice(1),
+      }),
+      true
+    );
+  });
+
+  it("is false once the local player holds them all", () => {
+    assert.equal(
+      treasure.anyPlayerCanUnlockLoadout({ localUnlockedIds: everyLoadout() }),
+      false
+    );
+  });
+
+  it("counts a co-op player's own unlocks under per-player tech", () => {
+    const records = [
+      { gwaioUnlockedStartCardIds: everyLoadout() },
+      { gwaioUnlockedStartCardIds: everyLoadout().slice(1) },
+    ];
+
+    assert.equal(
+      treasure.anyPlayerCanUnlockLoadout({
+        localUnlockedIds: everyLoadout(),
+        records: records,
+        perPlayerTech: true,
+      }),
+      true
+    );
+  });
+
+  // Sharing the host's tech means sharing the host's unlocks: a viewer never
+  // gets an offer of its own, so its record must not hold the war open.
+  it("ignores the records when tech cards are shared", () => {
+    assert.equal(
+      treasure.anyPlayerCanUnlockLoadout({
+        localUnlockedIds: everyLoadout(),
+        records: [{ gwaioUnlockedStartCardIds: [] }],
+        perPlayerTech: false,
+      }),
+      false
+    );
+  });
+
+  it("survives absent unlocks, absent records and an empty pool", () => {
+    assert.equal(treasure.anyPlayerCanUnlockLoadout({}), true);
+    assert.equal(
+      treasure.anyPlayerCanUnlockLoadout({
+        localUnlockedIds: everyLoadout(),
+        perPlayerTech: true,
+      }),
+      false
+    );
+    assert.equal(treasure.anyPlayerCanUnlockLoadout({ pool: [] }), false);
+  });
+});
+
 // The host has to know which loadouts a viewer already owns to offer them a
 // treasure planet they can use, and cannot learn the mod ones any other way:
 // the base game's own report drops every id outside the "gwc_start" prefix.

@@ -608,8 +608,6 @@ function gwoSetup() {
           var busyToken = {};
           model.makeGameBusy(busyToken);
 
-          console.log("War created using Galactic War Overhaul v" + gwoVersion);
-
           // Everything random about this war hangs off here. See galaxy.md.
           var warRng = gwoRng.create(model.newGameSeed());
           // Must precede every read of GWFactions: getTeam below shallow-copies a team,
@@ -1318,6 +1316,11 @@ function gwoSetup() {
             warGenerationAttempts = 0;
 
             saveDifficultySettings();
+
+            console.log(
+              "War created successfully using Galactic War Overhaul v" +
+                gwoVersion
+            );
 
             var save = GW.manifest.saveGame(model.newGame());
             model.activeGameId(model.newGame().id);

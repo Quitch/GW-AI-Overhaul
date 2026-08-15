@@ -1,5 +1,5 @@
 // Every seeded stream key the gw_play scene uses, in one file so the key layout
-// documented in docs/galaxy.md has a single place to be checked against.
+// documented in galaxy.md has a single place to be checked against.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
 ], function (gwoRng) {

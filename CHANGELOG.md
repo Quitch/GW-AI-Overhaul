@@ -1,6 +1,19 @@
 # CHANGELOG
 
-## v6.10.1
+## v6.10.2 - 2026-08-15
+
+### Changed
+
+- Victory is now immediate once the last boss is defeated, rather than waiting for the final system to be explored. The Guardians are the exception: their system is still explored first while a commander loadout remains to be won
+- Lore defaults to OFF
+
+### Bugfix
+
+- Eliminating a faction now updates the inner ring on the galaxy map for systems its commanders occupied
+- Super Weapon Fabrication Tech is no longer offered to players who own none of the super weapons it discounts
+- Orbital Cooldown Tech is no longer offered to players without an orbital factory. The Orbital Launcher has no cooldown for it to halve
+
+## v6.10.1 - 2026-08-11
 
 ### Bugfix
 
