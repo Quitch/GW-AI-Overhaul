@@ -28,6 +28,14 @@ function gwoConquest() {
     // The phase's own armies act inside it but are not the enemy, and theirs
     // are the only moves fog never hides, so the indicator names the stage.
     model.gwoConquestPlayerMoving = ko.observable(false);
+    // Created here rather than beside its playerHeld and playerArmies siblings
+    // below: the intelligence panel binds it from its own requireGW callback,
+    // and modinfo.json orders only this file's synchronous body ahead of that.
+    // Two requireGW callbacks race, and a panel that evaluated first would
+    // record no dependency and never see a later publish.
+    model.gwoConquestPlayerGrowth = ko.observable(
+      gwoSettings.conquest.playerGrowth || {}
+    );
 
     var conquestDriver;
     model.gwoDisplayConquestPass = ko.observable(false);
@@ -137,6 +145,7 @@ function gwoConquest() {
         var publishPlayerState = function () {
           model.gwoConquestPlayerHeld(cfg.playerHeld || {});
           model.gwoConquestPlayerArmies(cfg.playerArmies || []);
+          model.gwoConquestPlayerGrowth(cfg.playerGrowth || {});
         };
 
         // Nested so the outer callback keeps its parameter count; both
