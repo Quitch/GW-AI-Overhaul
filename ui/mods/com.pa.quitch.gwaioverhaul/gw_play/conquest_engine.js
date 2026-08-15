@@ -477,6 +477,7 @@ define([
             team: team,
             from: bossInfo.star,
             to: toStar,
+            movedAi: boss,
             writes: writes,
           });
           eliminate(target.team, team);
@@ -502,6 +503,7 @@ define([
         team: team,
         from: bossInfo.star,
         to: toStar,
+        movedAi: boss,
         writes: writes,
       });
     };

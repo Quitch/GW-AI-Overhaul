@@ -160,6 +160,8 @@ describe("boss movement", () => {
       { team: moves[0].team, from: moves[0].from, to: moves[0].to },
       { team: 0, from: 1, to: 2 }
     );
+    // The sprite animates only a move that names its ai.
+    assert.equal(moves[0].movedAi, theBoss);
     const left = board.stars[1].ai;
     assert.equal(left.garrison, true);
     // The boss's growth of 8 over four connections builds the garrison at
@@ -471,6 +473,8 @@ describe("boss versus boss", () => {
     ]);
     assert.equal(board.stars[3].ai.team, 0);
     assert.equal(board.stars[3].ai.boss, true);
+    // The winner's approach names its ai, so the sprite animates it.
+    assert.equal(stepsOf(result, "move")[0].movedAi, board.stars[3].ai);
     const cleared = stepsOf(result, "eliminate")[0];
     assert.deepEqual(cleared.clearCards, [3]);
   });
@@ -1445,7 +1449,7 @@ describe("minion army movement", () => {
 
     const moves = stepsOf(result, "move");
     assert.equal(moves.length, 3);
-    assert.equal(moves[0].movedAi, undefined);
+    assert.equal(moves[0].movedAi.boss, true);
     assert.equal(moves[1].movedAi.conquestArmy.seq, 0);
     assert.equal(moves[2].movedAi.conquestArmy.seq, 1);
   });
