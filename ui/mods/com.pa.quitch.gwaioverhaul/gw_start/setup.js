@@ -1130,7 +1130,7 @@ function gwoSetup() {
                     optionalLoreEntry += 1;
                   }
                 }
-              } else if (neutralLore[loreEntry]) {
+              } else if (!conquestMode && neutralLore[loreEntry]) {
                 system.name = neutralLore[loreEntry].name;
                 system.description = neutralLore[loreEntry].description;
                 loreEntry += 1;

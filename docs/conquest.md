@@ -38,6 +38,10 @@ however far it goes, and where it lands is where the turn is played out.
   `test/gwo_breeder.test.js`).
 - `makeBoss` receives the team without its `systemTemplate`, so the boss keeps
   its personality and card but its spawn star keeps its procedural system.
+- The `neutralSystems` lore sweep is skipped. Nothing spreads, so nearly every
+  star is unowned rather than the handful Galactic War leaves over, and the
+  eight entries would rename arbitrary capturable systems after factions already
+  on the board. Unowned stars keep their procedural name and empty description.
 - System Scaling and Easier Start do not apply. The rows are greyed out in the
   Game Options modal rather than cleared, so a player switching back to Galactic
   War keeps their choice; `gw_start/ui.js` exposes the gated values as
