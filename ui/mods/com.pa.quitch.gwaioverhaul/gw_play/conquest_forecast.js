@@ -2,7 +2,7 @@
 // friendly adjacency: how many phases until it musters an army. Read-only and
 // pure - the rules it mirrors are refreshScaling()'s in conquest_engine.js,
 // whose owner and adjacency predicates it imports rather than restates.
-// Rendered by gw_play/section_of_foreign_intelligence. See docs/conquest.md.
+// Rendered by gw_play/section_of_foreign_intelligence. See conquest.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_engine.js",
 ], function (gwoEngine) {

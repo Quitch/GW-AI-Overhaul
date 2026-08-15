@@ -3,7 +3,7 @@
 // ally rolls, tier re-scaling - and returns ordered steps for the scene glue
 // to apply and animate. Pure: it owns the board it is given (the driver hands
 // it clones), touches no observables, and draws only from the streams in ctx.
-// The rules are documented in docs/conquest.md.
+// The rules are documented in conquest.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_scaling.js",
 ], function (gwoScaling) {
@@ -183,7 +183,7 @@ define([
     };
 
     // A boss star is attackable only from strength: half again the defender's
-    // owned systems. See docs/conquest.md; the cornered would-win exception
+    // owned systems. See conquest.md; the cornered would-win exception
     // is actTeam's.
     var isTargetable = function (starIndex, team) {
       if (!isCapturable(starIndex, team)) {
@@ -538,7 +538,7 @@ define([
       });
       capture(boss, toStar);
       // The player's star is attacked, not captured: ownership stays with
-      // the player until the boss wins. See docs/conquest.md.
+      // the player until the boss wins. See conquest.md.
       if (toStar === board.playerStar) {
         boss.conquestJumped = true;
       }

@@ -6,7 +6,7 @@
 // instantiates it with the live scene objects.
 //
 // The phase runs identically on the host and every co-op viewer, and must
-// never consult gwCampaignReplayingAction. See docs/conquest.md.
+// never consult gwCampaignReplayingAction. See conquest.md.
 define([], function () {
   // A phase whose steps are all fogged or all holds costs no wall-clock, so the
   // busy flag would clear in the tick it was set and the Pass button reappear
@@ -133,9 +133,8 @@ define([], function () {
     };
 
     // Runs the phase exactly once per turn, and only after the turn is
-    // resolved (cfg.lastAiPhaseTurn persists with the save; see
-    // docs/conquest.md). Doubles as the no-op path when move() rejected the
-    // click.
+    // resolved (cfg.lastAiPhaseTurn persists with the save; see conquest.md).
+    // Doubles as the no-op path when move() rejected the click.
     var runPhaseIfDue = function () {
       var turns = game.stats().turns();
       if (
@@ -499,7 +498,7 @@ define([], function () {
     // The host's battle outcomes are applied before scene mods load, so the
     // launch stamps what was fought and clears galaxy.saved - gw_play.js's
     // save, the next statement after this call, then carries the stamp to
-    // disk for the next install to reconcile. See docs/conquest.md.
+    // disk for the next install to reconcile. See conquest.md.
     var baseFight = game.fight;
     game.fight = function () {
       var result = baseFight.apply(game, arguments);

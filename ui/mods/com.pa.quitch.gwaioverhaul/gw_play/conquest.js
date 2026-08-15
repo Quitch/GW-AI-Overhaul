@@ -1,8 +1,8 @@
 // The Galactic Conquest scene shell: no-ops unless the war carries a
 // gwaio.conquest snapshot, then instantiates the measured turn driver with the
 // live scene objects. Logic lives in conquest_turn.js, conquest_engine.js,
-// conquest_ai_builder.js and conquest_announce.js; this file only wires. See
-// docs/conquest.md.
+// conquest_ai_builder.js and conquest_announce.js; this file only wires.
+// See conquest.md.
 var gwoConquestLoaded;
 
 function gwoConquest() {

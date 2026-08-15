@@ -1,7 +1,7 @@
 // Formats the Conquest elimination popup: one "winner defeated loser" line
 // per elimination, with faction icons tinted via -webkit-mask. A factory in
 // victory.js's style so the formatting stays measurable; gw_play/conquest.js
-// instantiates it with the live faction table. See docs/conquest.md.
+// instantiates it with the live faction table. See conquest.md.
 define([], function () {
   var factory = function (params) {
     var sideOf = function (factionIndex) {

@@ -2,7 +2,7 @@
 // worker/boss blocks of gw_start/setup.js's onPopulated so a garrison, foe or
 // ally is shaped exactly like its war-generation counterpart. create() takes
 // every engine value as a dependency so the module loads under the Node
-// harness. See docs/conquest.md.
+// harness. See conquest.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_scaling.js",
 ], function (gwoScaling) {
