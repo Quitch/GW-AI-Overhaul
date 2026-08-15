@@ -9,7 +9,7 @@
 
 ### Bugfix
 
-- Eliminating a faction now updates the inner ring on the galaxy map for systems its commanders occupied, rather than keeping the defeated faction's colour until the map next reloaded
+- Eliminating a faction now updates the inner ring on the galaxy map for systems its commanders occupied
 - Super Weapon Fabrication Tech is no longer offered to players who own none of the super weapons it discounts
 - Orbital Cooldown Tech is no longer offered to players without an orbital factory. The Orbital Launcher has no cooldown for it to halve
 
