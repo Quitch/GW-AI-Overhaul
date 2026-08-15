@@ -17,7 +17,9 @@ however far it goes, and where it lands is where the turn is played out.
 | `gw_play/conquest_ai_builder.js` | Measured: builds and re-scales garrisons, foes and allies; rolls capture-time game modifiers                               |
 | `gw_play/conquest_turn.js`       | Measured: the driver - wraps the turn verbs, runs the phase once the turn resolves, saves                                  |
 | `gw_play/conquest.js`            | Scene shell: instantiates the driver and injects the Pass button when the save carries `gwaio.conquest`. Coverage-excluded |
-| `gw_play/conquest_sprite.js`     | Boss-move animation, a copy of the stock transit visuals. Coverage-excluded                                                |
+| `gw_play/conquest_sprite.js`     | Boss- and army-move animation, a copy of the stock transit visuals. Coverage-excluded                                      |
+| `gw_play/conquest_army_icons.js` | Minion-army icons on the galaxy map, the stock boss-icon layout in minion palette colours. Coverage-excluded               |
+| `gw_play/conquest_pulse.js`      | Measured: the looping pulse ring on player-held explorable systems                                                         |
 
 ## Generation
 
@@ -85,7 +87,9 @@ interrupted mid-route resumes as a fresh jump from the star it reached.
 
 Each faction, in team order, moves its boss like the player: one move
 reaches any system on the frontier of the connected friendly territory
-holding its star, however deep in that territory it stands.
+holding its star, however deep in that territory it stands. Its minion
+armies follow it in spawn order, and the player's own armies act after
+every faction (see "Minion armies" below).
 
 1. A boss whose frontier holds the player's star moves onto it and waits to
    be fought - but only past the same strength gate as a boss attack,
@@ -168,6 +172,56 @@ Rules the engine carries:
   (guarded in `cards.js` and the co-op deal path), and the intelligence panel
   says so.
 
+## Minion armies
+
+A garrison capped at `maxDist` converts further growth into mobile pieces:
+when accrual reaches a full tier past the cap
+(`(maxDist + 1) x maxConnections`), the system spawns a **minion army** - a
+garrison-shaped ai built at the cap tier - and the spawn debits one tier of
+growth, so a full tier must re-accrue before the next. The army musters on
+its origin star (`ai.minionArmies`, spawn order) and moves out the following
+phase. It never re-scales, though it accrues growth for the garrison it
+leaves on departure. Its marker is `ai.conquestArmy`: a persisted per-team
+spawn ordinal (`cfg.armySeq`), its origin, and a minion palette colour index -
+the lowest free among the team's live armies, else the least used, ties low,
+over `commander_colour.js`'s contrast order, which `paletteFor` exposes so
+map, transit and battle read one ordering.
+
+Armies act after their boss in spawn order, with the boss's frontier and
+target ladder minus its special branches: never the player's star, never a
+boss star, and no cornered attack - they hold instead. A settled army holds
+its star as `star.ai()`, so battles, intelligence, colour and team-keyed
+eliminations need nothing new, and it departs like a boss, leaving a
+departure garrison. Collisions:
+
+- A boss (or the player) taking an army-held star defeats the army with the
+  ordinary capture; AIs never battle each other.
+- Two opposing armies meeting - the player's included - annihilate each
+  other and raze the star to neutral: its ai nulled, any garrison and
+  mustered stack there included, cards kept, so an unexplored star stays
+  explorable.
+- An AI arrival deletes any player tokens standing on the star.
+
+The player's systems run the same arithmetic - counters in
+`cfg.playerGrowth`, because their stars carry no ai to hold them - and spawn
+**player armies**: pure tokens in `cfg.playerArmies`, never a `star.ai()`,
+so fight and explore gating, traversal and the stock colour computed stay
+untouched. They act last, after every faction, with `playerOwned` (explored
+or held, no AI owner) as their friendly predicate. A capture razes the
+target's ai; a captured unexplored star is flagged in `cfg.playerHeld` -
+counted as the player's in the boss attack gate, still explorable and
+dealing its card on explore, pulsing in the player's colour
+(`conquest_pulse.js`) and painted with the player ring through the
+ownerColor interceptor until explored, when the engine prunes the flag. A
+system recaptured by an AI forfeits its accrued player growth.
+
+`conquest_army_icons.js` shows the faction icon in the army's palette colour
+at army-held stars, mustered stacks and player tokens - the last through
+fog, being the player's own intelligence - and `conquest_sprite.js` tints a
+moving army the same way. The draws come from the `conquest_army` (spawn
+builds), `conquest_army_move` and `conquest_player_move` (target
+tie-breaks, sub-keyed per army) streams; colour picking draws nothing.
+
 ## Determinism, resume and co-op
 
 Everything the phase does is a pure function of (war seed, saved state, turn):
@@ -226,3 +280,9 @@ card view model snapshots its icon at load.
 - A boss stacked into another's `foes` fights with its commander slots but
   without its own minions - the referee treats every `foes` entry as a single
   FFA army.
+- A mustered minion army is not fielded when the player attacks its host
+  star, and stock `winTurn` clears the star's ai on a win, so it dies with
+  the garrison.
+- On an explored star "unowned" and "player-owned" are one state
+  (`explored` and no ai), so an army clash there returns the system to the
+  player - the same reading an eliminated faction's explored systems get.
