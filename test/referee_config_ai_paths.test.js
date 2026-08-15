@@ -181,6 +181,24 @@ describe("setupPrimaryAiAndMinions", () => {
     assert.equal(armies[2].personality.ai_path, primaryPath);
   });
 
+  // A settled Conquest minion army is the star's ai; the marker must not
+  // change how it fields.
+  it("fields a Conquest minion army exactly like a garrison", () => {
+    const fixture = buildGame({ aiInUse: "Titans", enemyType: "neither" });
+    restoreModel = installModel(fixture.game);
+
+    const ai = makeAiDescriptor({
+      conquestArmy: { seq: 0, colour: 1, origin: 3 },
+      minions: [makeAiDescriptor()],
+    });
+    const armies = [];
+    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], "Titans", armies);
+
+    assert.equal(armies.length, 2);
+    assert.equal(armies[0].personality.ai_path, "/pa/ai/");
+    assert.equal(armies[1].personality.ai_path, armies[0].personality.ai_path);
+  });
+
   it("routes a Cluster primary AI to the cluster path", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
     restoreModel = installModel(fixture.game);

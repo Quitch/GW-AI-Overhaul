@@ -119,6 +119,17 @@ function gwoConquest() {
           model.gwoConquestPlayerArmies(cfg.playerArmies || []);
         };
 
+        // Nested so the outer callback keeps its parameter count; the icons
+        // read the observables created above.
+        requireGW(
+          [
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_army_icons.js",
+          ],
+          function (gwoArmyIconsFactory) {
+            gwoArmyIconsFactory({ playerFaction: playerFaction });
+          }
+        );
+
         var builder = gwoBuilder.create({
           cfg: cfg,
           factions: GWFactions,

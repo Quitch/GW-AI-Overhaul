@@ -3,7 +3,11 @@
 // are closure-local there - createBitmap and the icon layout are copied, the
 // precedent being gw_play/systems.js's inner-ring overlay. Rendering only:
 // every decision the rules own happens in conquest_engine.js.
-define(["shared/gw_factions", "shared/vecmath"], function (GWFactions, VMath) {
+define([
+  "shared/gw_factions",
+  "shared/vecmath",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
+], function (GWFactions, VMath, gwoCommanderColour) {
   var createBitmap = function (params) {
     var result = new createjs.Bitmap(params.url);
     result.x = 0;
@@ -44,11 +48,22 @@ define(["shared/gw_factions", "shared/vecmath"], function (GWFactions, VMath) {
         "coui://ui/main/game/galactic_war/shared/img/icon_faction_" +
           (ai.faction || 0).toString() +
           ".png";
-      var color = ai.icon
-        ? [1, 1, 1]
-        : _.map(ai.color[0], function (c) {
-            return c / 255;
-          });
+      var color;
+      if (ai.conquestArmy) {
+        // A minion army transits in its palette colour, matching its map
+        // icon; a player token carries no ai.color at all.
+        var palette = gwoCommanderColour.paletteFor(ai.faction || 0) || [];
+        var paletteColour = palette[ai.conquestArmy.colour] || [255, 255, 255];
+        color = _.map(paletteColour, function (c) {
+          return c / 255;
+        });
+      } else if (ai.icon) {
+        color = [1, 1, 1];
+      } else {
+        color = _.map(ai.color[0], function (c) {
+          return c / 255;
+        });
+      }
       return { url: url, color: color };
     };
 
