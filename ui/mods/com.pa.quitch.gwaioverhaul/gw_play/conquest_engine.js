@@ -212,12 +212,6 @@ define([
       return isPlayerOwned(star.ai, star.explored, board.playerHeld[starIndex]);
     };
 
-    var nonFriendlyNeighbours = function (starIndex, friendly) {
-      return _.filter(neighborsOf(starIndex), function (neighbor) {
-        return !friendly(neighbor);
-      }).length;
-    };
-
     var friendlyNeighbours = function (starIndex, friendly) {
       return _.filter(neighborsOf(starIndex), friendly).length;
     };
@@ -262,9 +256,15 @@ define([
       }
     })();
 
-    // The move-target priority ladder. Filters apply only while they leave
-    // candidates; the seeded pick breaks whatever ties survive.
-    var pickTarget = function (candidates, friendly, moveRng) {
+    // The move-target priority ladder, in the mover's order of want: a boss
+    // it is allowed to attack, then a target it takes rather than razes,
+    // then the friendly adjacency that musters armies fastest, then a system
+    // somebody else owns, then ground nearer the player. Killing the player
+    // outright outranks all of it and is actTeam's branch, above this call.
+    // A rung applies only while it leaves candidates; the seeded pick breaks
+    // whatever ties survive. razes is optional: the candidates this mover
+    // would annihilate instead of capturing.
+    var pickTarget = function (candidates, friendly, moveRng, razes) {
       var narrow = function (list, keep) {
         var kept = _.filter(list, keep);
         return kept.length ? kept : list;
@@ -276,25 +276,30 @@ define([
         });
       };
 
+      // Every boss star here has already passed its strength gate: the
+      // caller filtered by isTargetable, or by the collision rule.
       var pool = narrow(candidates, function (starIndex) {
-        return !board.stars[starIndex].explored;
+        var ai = board.stars[starIndex].ai;
+        return !!ai && !!ai.boss;
       });
-      var withHostileNeighbours = _.filter(pool, function (starIndex) {
-        return nonFriendlyNeighbours(starIndex, friendly) > 0;
-      });
-      pool = withHostileNeighbours.length
-        ? withHostileNeighbours
-        : best(pool, function (starIndex) {
-            // A star the player cannot reach at all ranks last.
-            return distanceToPlayer[starIndex] === undefined
-              ? -Infinity
-              : -distanceToPlayer[starIndex];
-          });
+      if (razes) {
+        pool = narrow(pool, function (starIndex) {
+          return !razes(starIndex);
+        });
+      }
       pool = best(pool, function (starIndex) {
         return friendlyNeighbours(starIndex, friendly);
       });
+      // A system with an owner costs them one as it gains us one. An
+      // explored star no AI holds is the player's (isPlayerOwned).
+      pool = narrow(pool, function (starIndex) {
+        return !!ownerAi(board.stars[starIndex].ai) || playerOwned(starIndex);
+      });
       pool = best(pool, function (starIndex) {
-        return nonFriendlyNeighbours(starIndex, friendly);
+        // A star the player cannot reach at all ranks last.
+        return distanceToPlayer[starIndex] === undefined
+          ? -Infinity
+          : -distanceToPlayer[starIndex];
       });
       return pool.length === 1 ? pool[0] : moveRng.pick(pool);
     };
@@ -701,6 +706,14 @@ define([
     // target.
     var actArmies = function (team) {
       var friendly = teamFriendly(team);
+      // What moveArmy would raze rather than capture, so the ladder spends
+      // the army on a system it keeps while any is left.
+      var razes = function (starIndex) {
+        return (
+          hasOpposingArmy(board.stars[starIndex].ai, team) ||
+          !!playerArmiesAt(starIndex).length
+        );
+      };
       _.forEach(findArmies(team), function (info) {
         if (!armyAlive(info)) {
           return;
@@ -725,7 +738,7 @@ define([
           info.ai.conquestArmy.seq,
           board.turns
         );
-        moveArmy(team, info, pickTarget(candidates, friendly, rng));
+        moveArmy(team, info, pickTarget(candidates, friendly, rng, razes));
       });
     };
 
@@ -795,6 +808,11 @@ define([
     // Player armies act last, so every AI team's resolution stays identical
     // to a war without them.
     var actPlayerArmies = function () {
+      // -1 matches no AI team, so any army standing there opposes, as in
+      // movePlayerArmy.
+      var razes = function (starIndex) {
+        return hasOpposingArmy(board.stars[starIndex].ai, -1);
+      };
       _.forEach(_.sortBy(board.playerArmies.slice(0), "seq"), function (token) {
         if (!_.includes(board.playerArmies, token)) {
           return;
@@ -810,7 +828,7 @@ define([
           token.seq,
           board.turns
         );
-        movePlayerArmy(token, pickTarget(candidates, playerOwned, rng));
+        movePlayerArmy(token, pickTarget(candidates, playerOwned, rng, razes));
       });
     };
 

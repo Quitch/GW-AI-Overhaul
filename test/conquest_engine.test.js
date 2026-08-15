@@ -326,46 +326,55 @@ describe("boss movement", () => {
 });
 
 describe("target priorities", () => {
-  it("prefers a star the player has not explored", () => {
-    const board = makeBoard({
-      playerStar: 4,
-      edges: [
-        [1, 2],
-        [1, 3],
-        [2, 4],
-        [3, 4],
-      ],
-      stars: [
-        star(),
-        star(boss(0)),
-        star(null, { explored: true }),
-        star(),
-        star(null, { visited: true }),
-      ],
-    });
-    assert.equal(stepsOf(engine.planPhase(board, makeCtx()), "move")[0].to, 3);
-  });
-
-  it("falls back to the star closest to the player when no candidate borders an enemy", () => {
-    // Candidates 2 and 3 border only friendly stars; 2 is nearer the player.
+  it("prefers a boss star it is allowed to attack", () => {
+    // 4 is the better expansion - two friendly neighbours to the boss
+    // star's one - and the ladder takes the kill regardless.
     const board = makeBoard({
       playerStar: 0,
       edges: [
-        [0, 5],
-        [5, 2],
+        [1, 2],
+        [1, 3],
+        [1, 4],
+        [2, 4],
+      ],
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0)),
+        star(garrison(0)),
+        star(boss(1)),
+        star(),
+      ],
+    });
+    // Two systems to team 1's one clears the attack gate.
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+    assert.equal(stepsOf(result, "move")[0].to, 3);
+    assert.deepEqual(result.events, [
+      { type: "eliminated", team: 1, byTeam: 0 },
+    ]);
+  });
+
+  it("prefers a system it captures to one an army would raze", () => {
+    const army = garrison(0, {
+      conquestArmy: { seq: 0, colour: 0, origin: 9 },
+    });
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [
         [1, 2],
         [1, 3],
       ],
       stars: [
         star(null, { visited: true }),
-        star(boss(0)),
+        star(army),
         star(),
-        star(),
-        star(),
-        star(garrison(0)),
+        star(garrison(1, { conquestArmy: { seq: 0, colour: 0, origin: 9 } })),
       ],
     });
-    assert.equal(stepsOf(engine.planPhase(board, makeCtx()), "move")[0].to, 2);
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+    // 3 is the enemy's, but meeting its army would leave the star neutral
+    // and both armies dead, so the empty 2 is worth more.
+    assert.equal(stepsOf(result, "move")[0].to, 2);
+    assert.equal(stepsOf(result, "clash").length, 0);
   });
 
   it("prefers the candidate with the most friendly neighbours", () => {
@@ -374,7 +383,7 @@ describe("target priorities", () => {
       edges: [
         [1, 2],
         [1, 3],
-        [2, 5],
+        [3, 5],
         [2, 6],
         [3, 6],
       ],
@@ -388,35 +397,68 @@ describe("target priorities", () => {
         star(null, { visited: true }),
       ],
     });
-    // Both 2 and 3 border the non-friendly player star; 2 also borders the
-    // friendly garrison at 5.
-    assert.equal(stepsOf(engine.planPhase(board, makeCtx()), "move")[0].to, 2);
+    // Both 2 and 3 border the player's star; 3 also borders the friendly
+    // garrison at 5, so it musters armies the faster of the two.
+    assert.equal(stepsOf(engine.planPhase(board, makeCtx()), "move")[0].to, 3);
   });
 
-  it("tie-breaks on the most non-friendly neighbours", () => {
+  it("prefers a system another faction owns to an empty one", () => {
     const board = makeBoard({
-      playerStar: 7,
+      playerStar: 0,
       edges: [
         [1, 2],
         [1, 3],
-        [2, 4],
-        [3, 5],
-        [3, 6],
-        [4, 7],
-        [5, 7],
       ],
       stars: [
+        star(null, { visited: true }),
+        star(boss(0)),
         star(),
+        star(garrison(1)),
+      ],
+    });
+    // Both offer one friendly neighbour; only 3 costs a rival a system.
+    const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
+    assert.equal(stepsOf(result, "move")[0].to, 3);
+  });
+
+  it("counts a system the player has explored as one they own", () => {
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [
+        [1, 2],
+        [1, 3],
+      ],
+      stars: [
+        star(null, { visited: true }),
+        star(boss(0)),
+        star(),
+        star(null, { explored: true }),
+      ],
+    });
+    // An explored star no AI holds is the player's, so taking 3 costs them
+    // one - the unexplored 2 costs nobody anything.
+    assert.equal(stepsOf(engine.planPhase(board, makeCtx()), "move")[0].to, 3);
+  });
+
+  it("closes on the player once nothing else separates the candidates", () => {
+    // 2 and 3 each border one friendly star and belong to nobody; 3 is two
+    // hops from the player and 2 is four.
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [
+        [0, 4],
+        [4, 3],
+        [1, 2],
+        [1, 3],
+      ],
+      stars: [
+        star(null, { visited: true }),
         star(boss(0)),
         star(),
         star(),
         star(),
-        star(),
-        star(),
-        star(null, { visited: true }),
       ],
     });
-    // 2 provides one non-friendly neighbour (4); 3 provides two (5 and 6).
     assert.equal(stepsOf(engine.planPhase(board, makeCtx()), "move")[0].to, 3);
   });
 

@@ -130,13 +130,19 @@ every faction (see "Minion armies" below).
    which would mean taking the Guardians' system. The jump is an attack, not
    a capture (see the engine rules below); a boss below the gate expands
    instead.
-2. Otherwise it captures one frontier system by the priority ladder: never
-   the Guardians; prefer unexplored; prefer a candidate bordering at least
-   one non-friendly system, else the candidate closest to the player; then
-   most friendly neighbours; then most non-friendly neighbours; remaining
-   ties fall to the seeded `conquest_move` stream. Movement itself draws
-   nothing else. Another boss's star is only a candidate when the attack
-   gate passes (see the boss-versus-boss rule below).
+2. Otherwise it captures one frontier system by the priority ladder, which
+   ranks what the AI wants in the order it wants it: never the Guardians;
+   prefer a boss star (killing a rival, below the kill on the player at
+   step 1); prefer a system it takes over one it would only raze - a
+   distinction only its armies can draw, and the one place owning more
+   systems outranks leaving others fewer; then most friendly neighbours,
+   the adjacency that musters armies; then a system somebody already owns,
+   the player's explored systems included, since taking it costs them one;
+   then the candidate closest to the player, the ground the next kill is
+   fought from; remaining ties fall to the seeded `conquest_move` stream.
+   Each rung applies only while it leaves candidates, and movement itself
+   draws nothing else. Another boss's star is only a candidate when the
+   attack gate passes (see the boss-versus-boss rule below).
 3. Cornered - every capturable frontier star a gated boss star - it attacks
    one the collision rule would let it beat, and otherwise holds, as the
    player now can.
@@ -232,7 +238,9 @@ map, transit and battle read one ordering.
 
 Armies act after their boss in spawn order, with the boss's frontier and
 target ladder minus its special branches: never the player's star, never a
-boss star, and no cornered attack - they hold instead. A settled army holds
+boss star, and no cornered attack - they hold instead. They are the movers
+the ladder's raze rung is for: an army spends itself on a system it keeps
+while any is left to take. A settled army holds
 its star as `star.ai()`, so battles, intelligence, colour and team-keyed
 eliminations need nothing new, and it departs like a boss, leaving a
 departure garrison. Collisions:
