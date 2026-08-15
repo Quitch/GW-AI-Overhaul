@@ -1,4 +1,7 @@
-// Glue. The measured half is gw_play/per_player_tech.js - see testing.md.
+// Per-player tech in co-op. GWO extracts the validation to the measured
+// gw_play/per_player_tech.js (see testing.md), and continues viewers'
+// subcommanders along the player-faction colour sequence where stock leaves them
+// on colliding raw faction colours. Glue only. See shadowing.md.
 define([
   "shared/gw_common",
   "shared/gw_inventory",

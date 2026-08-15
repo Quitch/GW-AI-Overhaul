@@ -34,9 +34,9 @@
 }
 
 /* Inherited from the base game's players list. The prefixed properties are the ones
-   that do the work; PA's Chrome 40 has no unprefixed mask support, and the gw_play
+   that do the work: PA's Chrome 40 has no unprefixed mask support, and the gw_play
    scene has no <mask id="player-mask"> (the base game defines it only in live_game),
-   so the shorthand that used to sit here was inert twice over. */
+   so an unprefixed shorthand here would be inert twice over. */
 .player-masked {
   height: 16px;
   width: 16px;

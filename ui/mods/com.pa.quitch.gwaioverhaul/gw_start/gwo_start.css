@@ -185,7 +185,7 @@
   flex-shrink: 0;
 }
 
-/* boot.css's .btn_std_ix sets a 1px transparent border. Qualified so this border
+/* global.css's .btn_std_ix sets a 1px transparent border. Qualified so this border
    wins regardless of injection order. */
 .gwo-commander-picker-item.btn_std_ix {
   display: inline-block;

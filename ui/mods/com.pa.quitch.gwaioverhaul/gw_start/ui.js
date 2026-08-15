@@ -31,7 +31,7 @@ function gwoUI() {
 
     // gw_start uses ko.applyBindings(model)
     model.gwoDifficultySettings = {
-      // Name-keyed, but may be a legacy positional array on v6.20 and earlier saves.
+      // Name-keyed, but may be a legacy positional array on v6.2.0 and earlier saves.
       previousSettings: ko
         .observableArray()
         .extend({ local: "gwo_previous_settings" }),
@@ -72,7 +72,7 @@ function gwoUI() {
       factionTechHandicap: koNumeric(0, 1),
       alliedCommanderChance: koNumeric(0, 0),
       personalityTags: ko.observableArray(),
-      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain v6.20 and earlier previous settings integrity
+      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain v6.2.0 and earlier previous settings integrity
       eradicationModeChance: koNumeric(0, 0),
       aiAlly: ko.observable("Penchant"),
       staticTech: ko.observable(false),

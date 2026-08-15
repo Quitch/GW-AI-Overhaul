@@ -84,8 +84,7 @@
 
 /* The panel's .player-masked icons are styled by the unscoped .player-masked rule in
    section_of_foreign_intelligence.css, which the gw_play scene always loads alongside
-   this file. This used to carry a byte-identical copy at higher specificity, so an
-   edit to one silently did not reach the other. */
+   this file. */
 
 .gwo-info .commander-name {
   margin-left: 18px;
