@@ -204,10 +204,11 @@ define([
 
       var brackets = config.gwoSystemBrackets;
 
-      // GWO - size follows distance only when System Scaling is on, which is the
-      // default. The two passes below visit the stars in different orders, so the
-      // randomised branch keys its stream by star index rather than drawing in sequence;
-      // calling this twice for one star is therefore harmless. See galaxy.md.
+      // GWO - size follows distance only when System Scaling applies: on by
+      // default, and never in Conquest. The two passes below visit the stars in
+      // different orders, so the randomised branch keys its stream by star index
+      // rather than drawing in sequence; calling this twice for one star is
+      // therefore harmless. See galaxy.md.
       var systemSizeFor = function (star, index) {
         var systemSize;
         // A nudge towards a bigger fight, not a spawn count. One player is the
@@ -217,8 +218,8 @@ define([
           Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
         );
         if (
-          model.gwoDifficultySettings &&
-          model.gwoDifficultySettings.systemScaling()
+          model.gwoDifficultySettingsApplied &&
+          model.gwoDifficultySettingsApplied.systemScaling()
         ) {
           systemSize = star.distance() + coopSystemPlayerBonus;
         } else {

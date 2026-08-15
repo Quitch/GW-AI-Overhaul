@@ -215,4 +215,27 @@ describe("gwo_breeder populate", () => {
     assert.deepEqual(owned.sort(), bossed.sort());
     assert.equal(owned.length, 3);
   });
+
+  // Easier Start is ignored in Conquest, and this is why it can be: with every
+  // spread refused, neutralStars reaches no rng draw and no owned star.
+  it("gives the same conquest galaxy whatever neutralStars is", () => {
+    const run = (neutralStars) => {
+      const galaxy = chain(12);
+      gwoBreeder.populate({
+        galaxy: galaxy,
+        teams: [{ color: 0 }, { color: 1 }, { color: 2 }],
+        neutralStars: neutralStars,
+        orderedSpawn: false,
+        rng: gwoRng.create("conquest-neutral"),
+        spawn: function () {},
+        canSpread: () => false,
+        spread: function () {},
+        boss: function () {},
+      });
+      return galaxy.stars().map((star) => !!star.ai());
+    };
+    const two = run(2);
+    assert.deepEqual(two, run(4));
+    assert.equal(two.filter(Boolean).length, 3);
+  });
 });

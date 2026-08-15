@@ -82,6 +82,23 @@ function gwoUI() {
 
     var difficultySettings = model.gwoDifficultySettings;
 
+    model.gwoConquestMode = ko.computed(function () {
+      return difficultySettings.warMode() === "conquest";
+    });
+
+    // Conquest ignores these options rather than clearing them, so the stored
+    // choice survives a round trip through the Mode dropdown. See conquest.md.
+    var appliedInWarOnly = function (setting) {
+      return ko.computed(function () {
+        return setting() && !model.gwoConquestMode();
+      });
+    };
+
+    model.gwoDifficultySettingsApplied = {
+      systemScaling: appliedInWarOnly(difficultySettings.systemScaling),
+      easierStart: appliedInWarOnly(difficultySettings.easierStart),
+    };
+
     // duplicate settings we don't own in our view model
     model.newGameSizeIndex = difficultySettings.galaxySize;
     model.newGameHardcore = difficultySettings.hardcore;
@@ -159,6 +176,11 @@ function gwoUI() {
       easierStart: ko.observable(false),
       paLore: ko.observable(false),
       staticTech: ko.observable(false),
+    };
+
+    model.gwoGameOptionsDraftApplied = {
+      systemScaling: appliedInWarOnly(model.gwoGameOptionsDraft.systemScaling),
+      easierStart: appliedInWarOnly(model.gwoGameOptionsDraft.easierStart),
     };
 
     var syncGwoGameOptionsDraft = function () {

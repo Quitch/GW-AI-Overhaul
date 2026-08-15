@@ -605,7 +605,7 @@ function gwoSetup() {
             });
 
             var neutralStars = 2;
-            if (model.gwoDifficultySettings.easierStart()) {
+            if (model.gwoDifficultySettingsApplied.easierStart()) {
               neutralStars = 4;
             }
 
@@ -1159,13 +1159,13 @@ function gwoSetup() {
             originSystem.gwaio.factionScaling =
               model.gwoDifficultySettings.factionScaling();
             originSystem.gwaio.systemScaling =
-              model.gwoDifficultySettings.systemScaling();
+              model.gwoDifficultySettingsApplied.systemScaling();
             originSystem.gwaio.simpleSystems =
               model.gwoDifficultySettings.simpleSystems();
             originSystem.gwaio.largePlanets =
               model.gwoDifficultySettings.largePlanets();
             originSystem.gwaio.easierStart =
-              model.gwoDifficultySettings.easierStart();
+              model.gwoDifficultySettingsApplied.easierStart();
             if (model.devMode()) {
               originSystem.gwaio.cheatsUsed = true;
             }

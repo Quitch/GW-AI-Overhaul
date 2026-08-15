@@ -38,6 +38,13 @@ however far it goes, and where it lands is where the turn is played out.
   `test/gwo_breeder.test.js`).
 - `makeBoss` receives the team without its `systemTemplate`, so the boss keeps
   its personality and card but its spawn star keeps its procedural system.
+- System Scaling and Easier Start do not apply. The rows are greyed out in the
+  Game Options modal rather than cleared, so a player switching back to Galactic
+  War keeps their choice; `gw_start/ui.js` exposes the gated values as
+  `gwoDifficultySettingsApplied`, which the galaxy build, the neutral-star count
+  and the `gwaio` war record all read instead of the raw settings. Easier Start
+  would be inert here regardless - nothing spreads, so `neutralStars` reaches
+  neither an rng draw nor an owned star (pinned in `test/gwo_breeder.test.js`).
 - The boss is scaled to the fair-share tier for its one owned system rather
   than the galaxy rim, and stamped `capturedTurn: 1` / `appliedTier`.
 - No workers exist, so the setup-time foe and ally rolls never run.

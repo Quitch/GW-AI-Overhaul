@@ -246,7 +246,9 @@ the first attempt.
 ## System scaling
 
 Whether system size tracks distance from the start is a user-facing option,
-`gwoDifficultySettings.systemScaling()`, which defaults to **on** (`gw_start/ui.js`):
+`gwoDifficultySettings.systemScaling()`, which defaults to **on** (`gw_start/ui.js`).
+`systemSizeFor` reads `gwoDifficultySettingsApplied.systemScaling()`, the same option
+gated on the war mode:
 
 ```js
 systemSize = systemScaling
@@ -255,7 +257,8 @@ systemSize = systemScaling
 ```
 
 Turn it off and size is random — seeded, but not distance-based — so any statement that
-planets grow with distance describes the default only.
+planets grow with distance describes the default only. Galactic Conquest always takes
+the random branch, whatever the player chose; see [conquest.md](conquest.md).
 
 The `false` in `gw_start/ui.js`'s `gwoGameOptionsDraft` is not a second default: that is
 the options modal's draft, and `syncGwoGameOptionsDraft()` overwrites it from the live

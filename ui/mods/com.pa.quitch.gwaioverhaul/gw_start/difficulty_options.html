@@ -80,22 +80,26 @@
       <div
         class="gw-start-coop-switch-row gwo-game-option-row"
         id="system-scaling-row"
+        data-bind="css: { disabled: gwoConquestMode }"
       >
         <div class="gw-start-coop-switch-label" id="system-scaling">
           <loc>System Scaling</loc>
+          <!-- Bootstrap otherwise inserts the tooltip beside the ? span, inside
+               the row, where the disabled opacity dims it past reading. -->
           <span
             class="info_tip"
+            data-container="body"
             data-bind="tooltip: '!LOC:System size determined by distance into the galaxy.'"
             >?</span
           >
         </div>
         <div
           class="gw-start-square-switch"
-          data-bind="css: { on: gwoGameOptionsDraft.systemScaling }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.systemScaling); }, click_sound: 'default', rollover_sound: 'default'"
+          data-bind="css: { on: gwoGameOptionsDraftApplied.systemScaling, disabled: gwoConquestMode }, click: function () { if (!gwoConquestMode()) { toggleGwoBooleanSetting(gwoGameOptionsDraft.systemScaling); } }, click_sound: 'default', rollover_sound: 'default'"
         >
           <span
             class="gw-start-square-switch-label"
-            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.systemScaling)"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraftApplied.systemScaling)"
           ></span>
           <span class="gw-start-square-switch-thumb"></span>
         </div>
@@ -151,22 +155,24 @@
       <div
         class="gw-start-coop-switch-row gwo-game-option-row"
         id="easier-start-row"
+        data-bind="css: { disabled: gwoConquestMode }"
       >
         <div class="gw-start-coop-switch-label" id="easier-start">
           <loc>Easier Start</loc>
           <span
             class="info_tip"
+            data-container="body"
             data-bind="tooltip: '!LOC:More neutral systems with free technology.'"
             >?</span
           >
         </div>
         <div
           class="gw-start-square-switch"
-          data-bind="css: { on: gwoGameOptionsDraft.easierStart }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.easierStart); }, click_sound: 'default', rollover_sound: 'default'"
+          data-bind="css: { on: gwoGameOptionsDraftApplied.easierStart, disabled: gwoConquestMode }, click: function () { if (!gwoConquestMode()) { toggleGwoBooleanSetting(gwoGameOptionsDraft.easierStart); } }, click_sound: 'default', rollover_sound: 'default'"
         >
           <span
             class="gw-start-square-switch-label"
-            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.easierStart)"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraftApplied.easierStart)"
           ></span>
           <span class="gw-start-square-switch-thumb"></span>
         </div>
