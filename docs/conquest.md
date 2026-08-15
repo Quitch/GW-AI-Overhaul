@@ -78,10 +78,24 @@ still awaiting its Pass, fight or explore. The phase snapshots the board
 with `gwoSave(game, true)`, and announces any eliminations with the stock
 popup, naming victor and vanquished (`conquest_announce.js` formats the
 message). `model.gwoConquestAiPhase` blocks Move/Fight/Explore/Pass while it
-runs. A `move` step carries only its origin lift, applied before the transit
-sprite departs; the arrival is the following step (`occupy`, `stack` or
-`clash`), landing when the animation completes - so exactly one icon exists
-during a transit, as for the player's own commander.
+runs, and drives `conquest_phase.html`, a centre-screen indicator skinned as
+stock's own `#scanning`. The flag is held to a floor of two seconds, the length
+stock explore holds that spinner for: a phase whose steps are all fogged or all
+`hold` costs no wall-clock, so the Pass button would otherwise hide and return
+inside one tick with nothing on screen to show for it. A floor, not an added
+delay - a phase with visible transits already outruns it - and an elimination
+popup rides the release, landing as the indicator clears. In co-op the floor
+paces the campaign queue too, which orders on the promise the replayed pass
+returns. `model.gwoConquestPlayerMoving` names the stage within that wait: the
+player's own armies act inside the phase but are not the enemy, and theirs are
+the only moves fog never hides, so the label swaps while one of their transits
+animates. It is raised only by an animating `move`, so an invisible player
+`hold` never claims it, and cleared once every step has landed rather than per
+step - which holds it steady across consecutive army transits and returns the
+held tail to the enemy's label. A `move` step carries only its origin lift,
+applied before the transit sprite departs; the arrival is the following step
+(`occupy`, `stack` or `clash`), landing when the animation completes - so
+exactly one icon exists during a transit, as for the player's own commander.
 
 Movement itself is War's, narrowed to Conquest's ownership: `canMove` routes
 through `pathBetween` with a traversal predicate that crosses only systems

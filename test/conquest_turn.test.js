@@ -5,7 +5,7 @@
 // while it runs, the save landing once at phase end, and the changed loss and
 // elimination rules.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -39,6 +39,34 @@ function makeStar(ai, opts) {
   return star;
 }
 
+// The phase floor times itself from _.now(), so the clock is a value the tests
+// hold still and advance by hand - as coop_ping_marker.test.js does. lodash 3's
+// now() rejects a non-native Date.now and falls back to new Date().getTime(),
+// so the stand-in has to be constructible. setTimeout is left alone: the
+// install-time _.defer still needs the real one.
+let clock = 1000;
+let realLodash;
+
+function FakeDate() {
+  this.getTime = () => clock;
+}
+
+before(() => {
+  realLodash = global._;
+  global._ = realLodash.runInContext({ Date: FakeDate });
+});
+
+after(() => {
+  global._ = realLodash;
+});
+
+// The save resolves through two promise hops before the phase can release.
+async function drainSave() {
+  for (let turn = 0; turn < 4; turn++) {
+    await new Promise((resolve) => setImmediate(resolve));
+  }
+}
+
 let stubs;
 afterEach(() => stubs && stubs.restoreGlobals());
 
@@ -67,6 +95,8 @@ function setup(overrides) {
     gateWrites: [],
     sent: [],
     paths: [],
+    delays: [],
+    held: [],
     baseMoves: 0,
     baseLoses: 0,
     baseFights: 0,
@@ -205,6 +235,16 @@ function setup(overrides) {
     return aiPhase();
   };
 
+  const playerMoving = observable(false);
+  const playerMovingWrites = [];
+  const trackedPlayerMoving = function () {
+    if (arguments.length) {
+      playerMovingWrites.push(arguments[0]);
+      return playerMoving(arguments[0]);
+    }
+    return playerMoving();
+  };
+
   const driver = makeFactory({
     game: game,
     gwoSettings: { treasureStar: 7 },
@@ -215,6 +255,7 @@ function setup(overrides) {
     warRng: {},
     alliesSuppressed: false,
     aiPhase: trackedAiPhase,
+    playerMoving: trackedPlayerMoving,
     save: (savedGame, saveStars) => {
       calls.saves.push([savedGame, saveStars]);
       if (options.onSave) {
@@ -227,6 +268,17 @@ function setup(overrides) {
     announce: (eliminations) => calls.announced.push(eliminations),
     animate: options.animate,
     onPlayerState: options.onPlayerState,
+    // The minimum-duration hold. Fires at once by default, so every case that
+    // predates it keeps its synchronous completion; holdDelay queues instead,
+    // for the cases that pin the hold itself.
+    delay: (fn, wait) => {
+      calls.delays.push(wait);
+      if (options.holdDelay) {
+        calls.held.push(fn);
+        return undefined;
+      }
+      return fn();
+    },
   });
 
   return {
@@ -237,6 +289,13 @@ function setup(overrides) {
     driver,
     aiPhase: trackedAiPhase,
     aiPhaseWrites,
+    playerMoving: trackedPlayerMoving,
+    playerMovingWrites,
+    release: () => {
+      while (calls.held.length) {
+        calls.held.shift()();
+      }
+    },
   };
 }
 
@@ -526,6 +585,58 @@ describe("the phase run", () => {
     assert.deepEqual(t.aiPhaseWrites, [true, false]);
   });
 
+  // A phase whose steps are all fogged or all holds costs no wall-clock, so
+  // without the floor the button would hide and reappear inside one tick.
+  it("holds the block open for the minimum when the phase costs nothing", async () => {
+    const t = setup({ holdDelay: true });
+    const pending = t.driver.runPhaseIfDue();
+    await drainSave();
+    assert.equal(t.calls.delays.length, 1);
+    assert.ok(t.calls.delays[0] > 0);
+    assert.deepEqual(t.aiPhaseWrites, [true]);
+    t.release();
+    await pending;
+    assert.deepEqual(t.aiPhaseWrites, [true, false]);
+  });
+
+  it("releases at once when the phase already outran the floor", async () => {
+    const t = setup({ onSave: () => (clock += 60000) });
+    await t.driver.runPhaseIfDue();
+    assert.deepEqual(t.calls.delays, []);
+    assert.deepEqual(t.aiPhaseWrites, [true, false]);
+  });
+
+  it("announces on the release, not before it", async () => {
+    const t = setup({
+      holdDelay: true,
+      engineResult: {
+        steps: [],
+        events: [{ type: "eliminated", team: 1, byTeam: 0 }],
+      },
+    });
+    const pending = t.driver.runPhaseIfDue();
+    await drainSave();
+    assert.deepEqual(t.calls.announced, []);
+    t.release();
+    await pending;
+    assert.deepEqual(t.calls.announced, [[{ team: 1, byTeam: 0 }]]);
+  });
+
+  it("holds the floor when the planner throws", async () => {
+    const originalError = console.error;
+    console.error = () => {};
+    let t;
+    try {
+      t = setup({ holdDelay: true, engineThrows: true });
+      t.driver.runPhaseIfDue();
+      assert.equal(t.aiPhase(), true);
+      t.release();
+    } finally {
+      console.error = originalError;
+    }
+    assert.equal(t.aiPhase(), false);
+  });
+
   it("saves once, with saveStars set, after the steps land", async () => {
     const t = setup();
     await t.driver.runPhaseIfDue();
@@ -614,6 +725,58 @@ describe("the phase run", () => {
     assert.equal(t.game.turnState(), "begin");
     // The reopened state must be in the save, or a reload would softlock.
     assert.deepEqual(savedTurnStates, ["begin"]);
+  });
+});
+
+// The player's armies act inside the phase but are not the enemy, and theirs
+// are the only moves fog never hides - so the indicator names the stage.
+describe("the phase indicator's label", () => {
+  const move = (player) => ({ kind: "move", player: player, writes: [] });
+
+  it("names the player's armies while one of their transits animates", async () => {
+    const seen = [];
+    let t;
+    t = setup({
+      animate: (step, done) => {
+        seen.push(t.playerMoving());
+        done();
+      },
+      engineResult: { steps: [move(false), move(true)], events: [] },
+    });
+    await t.driver.runPhaseIfDue();
+    assert.deepEqual(seen, [false, true]);
+  });
+
+  it("holds the label across consecutive army transits", async () => {
+    const t = setup({
+      animate: (step, done) => done(),
+      engineResult: { steps: [move(true), move(true)], events: [] },
+    });
+    await t.driver.runPhaseIfDue();
+    // One raise, one clear: a per-step reset would flicker the label back to
+    // the enemy's between the two armies.
+    assert.deepEqual(t.playerMovingWrites, [false, true, true, false]);
+  });
+
+  it("clears the label once every step has landed", async () => {
+    const t = setup({
+      animate: (step, done) => done(),
+      engineResult: { steps: [move(true)], events: [] },
+    });
+    await t.driver.runPhaseIfDue();
+    assert.equal(t.playerMoving(), false);
+  });
+
+  it("leaves the label alone for a player step that draws nothing", async () => {
+    const t = setup({
+      animate: (step, done) => done(),
+      engineResult: {
+        steps: [{ kind: "hold", player: true, army: 1, writes: [] }],
+        events: [],
+      },
+    });
+    await t.driver.runPhaseIfDue();
+    assert.deepEqual(t.playerMovingWrites, [false, false]);
   });
 });
 

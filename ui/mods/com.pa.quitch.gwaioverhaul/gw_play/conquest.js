@@ -25,6 +25,9 @@ function gwoConquest() {
 
   try {
     model.gwoConquestAiPhase = ko.observable(false);
+    // The phase's own armies act inside it but are not the enemy, and theirs
+    // are the only moves fog never hides, so the indicator names the stage.
+    model.gwoConquestPlayerMoving = ko.observable(false);
 
     var conquestDriver;
     model.gwoDisplayConquestPass = ko.observable(false);
@@ -34,14 +37,22 @@ function gwoConquest() {
       }
     };
 
-    // A sibling of the stock action row, injected before gw_play.js's own
-    // ko.applyBindings, which is what binds it.
+    // Siblings of the stock action row and of #scanning respectively, injected
+    // before gw_play.js's own ko.applyBindings, which is what binds them.
+    // #body-center is flex-centred and already hides with the rest of the UI on
+    // a battle launch.
     $("#selected-system-anchor").append(
       loadHtml(
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_pass.html"
       )
     );
     locTree($(".gwo-conquest-actions"));
+    $("#body-center").append(
+      loadHtml(
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_phase.html"
+      )
+    );
+    locTree($(".gwo-conquest-phase"));
 
     // The stock owner computed paints a jumped boss's colour and reads
     // ownerColor back, so a counter-writing computed only triggers another
@@ -222,6 +233,7 @@ function gwoConquest() {
             animate: gwoSpriteFactory({ game: game }),
             announce: announce,
             aiPhase: model.gwoConquestAiPhase,
+            playerMoving: model.gwoConquestPlayerMoving,
             alliesSuppressed: gwoScaling.startCardBreaksAllies(
               game.inventory().cards()[0].id,
               model.gwoStarCardsWhichBreakAllies

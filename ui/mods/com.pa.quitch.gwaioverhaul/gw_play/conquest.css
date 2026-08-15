@@ -17,6 +17,27 @@
   transform: scale(1.25);
 }
 
+/* The AI-phase indicator, skinned as stock gw_play.css #scanning - the same
+   slot in #body-center, so the two turn-ending waits look alike. */
+.gwo-conquest-phase {
+  color: #88dbff;
+  text-shadow: 0 0 20px #88dbff;
+  font-size: 24px;
+  font-weight: bold;
+  background: rgba(11, 26, 31, 0.9);
+  box-shadow: 0 0 100px #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  padding: 8px;
+}
+
+.gwo-conquest-phase span {
+  margin: 4px 8px 0;
+}
+
 .gwo-conquest-elim {
   font-size: 30px;
   text-align: center;

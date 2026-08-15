@@ -8,9 +8,16 @@
 // The phase runs identically on the host and every co-op viewer, and must
 // never consult gwCampaignReplayingAction. See docs/conquest.md.
 define([], function () {
+  // A phase whose steps are all fogged or all holds costs no wall-clock, so the
+  // busy flag would clear in the tick it was set and the Pass button reappear
+  // unblinking. Stock explore holds its own spinner the same way and for the
+  // same length (gw_play.js, scanning).
+  var PHASE_MIN_MS = 2000;
+
   var factory = function (params) {
     var game = params.game;
     var cfg = params.cfg;
+    var delay = params.delay || _.delay;
 
     var currentStarAi = function () {
       return game.galaxy().stars()[game.currentStar()].ai();
@@ -68,9 +75,16 @@ define([], function () {
     // A move step carries only its origin lift, applied before the transit
     // sprite departs; the arrival lands with the following step when the
     // animation completes. One icon exists throughout, as for the player.
+    //
+    // The indicator's label follows whoever is animating, cleared once every
+    // step has landed so the phase's held tail reads as the enemy's again.
+    // Written only where something is drawn: an invisible player hold never
+    // claims the label, and clearing per list rather than per step keeps it
+    // steady across consecutive army transits.
     var applySteps = function (steps, done) {
       var next = function (index) {
         if (index >= steps.length) {
+          params.playerMoving(false);
           done();
           return;
         }
@@ -80,6 +94,7 @@ define([], function () {
           next(index + 1);
         };
         if (step.kind === "move" && params.animate) {
+          params.playerMoving(!!step.player);
           params.animate(step, proceed);
         } else {
           proceed();
@@ -133,12 +148,27 @@ define([], function () {
       }
       phaseRunning = true;
       params.aiPhase(true);
+      params.playerMoving(false);
+      var started = _.now();
       var finished = $.Deferred();
 
-      var finish = function () {
-        params.aiPhase(false);
-        phaseRunning = false;
-        finished.resolve();
+      // Held to PHASE_MIN_MS from the flag being raised, so the indicator and
+      // the input block are legible however little the phase had to do. Any
+      // announcement rides the release rather than preceding it, landing as the
+      // indicator clears instead of over it.
+      var finish = function (eliminations) {
+        var release = function () {
+          announce(eliminations || []);
+          params.aiPhase(false);
+          phaseRunning = false;
+          finished.resolve();
+        };
+        var remaining = PHASE_MIN_MS - (_.now() - started);
+        if (remaining > 0) {
+          delay(release, remaining);
+        } else {
+          release();
+        }
       };
 
       try {
@@ -164,8 +194,7 @@ define([], function () {
           }
           cfg.lastAiPhaseTurn = turns;
           $.when(params.save(game, true)).always(function () {
-            announce(eliminationsOf(result.events));
-            finish();
+            finish(eliminationsOf(result.events));
           });
         });
       } catch (error) {

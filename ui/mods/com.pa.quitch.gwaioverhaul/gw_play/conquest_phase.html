@@ -1,0 +1,13 @@
+<div
+  class="attendmouse gwo-conquest-phase"
+  data-bind="visible: gwoConquestAiPhase"
+  style="display: none"
+>
+  <img class="working std" src="coui://ui/main/shared/img/working.svg" />
+  <span data-bind="visible: !gwoConquestPlayerMoving()"
+    ><loc>Enemy Turn</loc></span
+  >
+  <span data-bind="visible: gwoConquestPlayerMoving" style="display: none"
+    ><loc>Your Armies</loc></span
+  >
+</div>
