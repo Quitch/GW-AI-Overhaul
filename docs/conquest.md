@@ -78,13 +78,20 @@ still awaiting its Pass, fight or explore. The phase snapshots the board
 with `gwoSave(game, true)`, and announces any eliminations with the stock
 popup, naming victor and vanquished (`conquest_announce.js` formats the
 message). `model.gwoConquestAiPhase` blocks Move/Fight/Explore/Pass while it
-runs.
+runs. A `move` step carries only its origin lift, applied before the transit
+sprite departs; the arrival is the following step (`occupy`, `stack` or
+`clash`), landing when the animation completes - so exactly one icon exists
+during a transit, as for the player's own commander.
 
 Movement itself is War's, narrowed to Conquest's ownership: `canMove` routes
 through `pathBetween` with a traversal predicate that crosses only systems
 no AI holds (a jumped boss holds nothing), so a jump detours around enemy
 territory or is refused outright; the destination itself may be enemy-held -
-the final hop is the predicate's one exemption. No move passes until the
+the final hop is the predicate's one exemption. The fog rule is widened the
+other way: the driver permanently wraps the instance's `pathBetween` to pass
+its optional `known` predicate, under which a `cfg.playerHeld` system counts
+as charted space while staying unexplored - so the base `canMove` and
+`canSelect` reads reach through and onto minion-captured territory too. No move passes until the
 turn is resolved, nor between the move and the Pass, fight or explore that
 ends it. The stock `moveStep` advances `stats.turns` and saves once per hop,
 so the driver's `game.move` wrap unwinds the tick on every hop short of the
@@ -221,6 +228,18 @@ dealing its card on explore, pulsing in the player's colour
 (`conquest_pulse.js`) and painted with the player ring through the
 ownerColor interceptor until explored, when the engine prunes the flag. A
 system recaptured by an AI forfeits its accrued player growth.
+
+Token state renders live, so it publishes per step: any step that changes
+`playerArmies` or `playerHeld` carries a cloned `playerState` snapshot -
+`record()` attaches it whenever a mutation helper flagged the change - which
+`applyWrites` lands on `cfg` and republishes through `onPlayerState`; a
+player move's own snapshot carries the token nowhere, lifted for the
+transit. A token's arrival also rolls back the fog: the step's `reveal`
+list pushes a synthetic `{ gwoConquestReveal: 1 }` entry into an empty
+`star.history()` (the co-op replay fallback's precedent), which connects
+the system on the map, persists with the save, and counts as visited on the
+next board - allied-commander rolls included - and the player's fatal
+clashes reveal like their captures.
 
 `conquest_army_icons.js` shows the faction icon in the army's palette colour
 at army-held stars, mustered stacks and player tokens - the last through

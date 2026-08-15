@@ -34,7 +34,7 @@ function makeStar(ai, opts) {
     ai: observable(ai || undefined),
     cardList: observable(options.cards || []),
     explored: observable(!!options.explored),
-    history: () => options.history || [],
+    history: observable(options.history || []),
   };
   return star;
 }
@@ -79,8 +79,8 @@ function setup(overrides) {
   const galaxy = {
     stars: () => options.stars,
     neighborsMap: () => options.neighbors || { 0: [1], 1: [0] },
-    pathBetween: (from, to, noFog, traversable) => {
-      calls.paths.push([from, to, noFog, traversable]);
+    pathBetween: (from, to, noFog, traversable, known) => {
+      calls.paths.push([from, to, noFog, traversable, known]);
       return options.conquestPath !== undefined
         ? options.conquestPath
         : options.canMovePath;
@@ -310,6 +310,8 @@ describe("moving", () => {
     assert.equal(typeof t.calls.paths[0][3], "function");
     t.game.galaxy().pathBetween(0, 1, false);
     assert.equal(t.calls.paths[1][3], undefined);
+    // The restore reinstates the permanent known wrapper, not the raw rule.
+    assert.equal(typeof t.calls.paths[1][4], "function");
   });
 });
 
@@ -543,20 +545,25 @@ describe("the phase run", () => {
     assert.deepEqual(t.calls.announced, [[{ team: 1, byTeam: 0 }]]);
   });
 
-  it("waits for each move animation before applying its writes", async () => {
-    const order = [];
-    const t = setup({
+  it("applies a move's origin lift before its animation and the arrival after", async () => {
+    const seen = [];
+    let t;
+    t = setup({
       animate: (step, done) => {
-        order.push("animate");
+        seen.push(t.game.galaxy().stars()[1].ai());
         done();
+        seen.push(t.game.galaxy().stars()[1].ai());
       },
       engineResult: {
-        steps: [{ kind: "move", writes: [] }],
+        steps: [
+          { kind: "move", writes: [{ star: 1, ai: { lifted: true } }] },
+          { kind: "occupy", writes: [{ star: 1, ai: { landed: true } }] },
+        ],
         events: [],
       },
     });
     await t.driver.runPhaseIfDue();
-    assert.deepEqual(order, ["animate"]);
+    assert.deepEqual(seen, [{ lifted: true }, { landed: true }]);
   });
 
   it("restores input and skips the save when the planner throws", async () => {
@@ -631,6 +638,17 @@ describe("input rules", () => {
     });
     assert.equal(model.canMove(), false);
     assert.equal(t.calls.paths.length, 1);
+  });
+
+  it("counts player-held systems as charted space for routing", () => {
+    const t = setup({ lastAiPhaseTurn: 2, canMovePath: [0, 1] });
+    t.cfg.playerHeld = { 1: true };
+    model.canMove();
+    const known = t.calls.paths[0][4];
+    assert.equal(known(0), true);
+    assert.equal(known(1), true);
+    t.cfg.playerHeld = {};
+    assert.equal(known(1), false);
   });
 
   it("narrows the route to systems no AI holds", () => {
@@ -1205,5 +1223,69 @@ describe("player state plumbing", () => {
     t.cfg.playerHeld = { 0: true };
     await t.driver.runPhaseIfDue();
     assert.equal(t.calls.engineBoards.length, 0);
+  });
+
+  it("publishes a step's player state as it lands, before the save", async () => {
+    const published = [];
+    let t;
+    t = setup({
+      engineResult: {
+        steps: [
+          {
+            kind: "occupy",
+            writes: [],
+            playerState: {
+              playerArmies: [{ seq: 0, colour: 0, star: 1 }],
+              playerHeld: { 1: true },
+            },
+          },
+        ],
+        events: [],
+        conquest: { playerHeld: {}, playerArmies: [] },
+      },
+      onPlayerState: () => {
+        published.push({
+          armies: t.cfg.playerArmies,
+          held: t.cfg.playerHeld,
+          saves: t.calls.saves.length,
+        });
+      },
+    });
+    await t.driver.runPhaseIfDue();
+    assert.deepEqual(published[0], {
+      armies: [{ seq: 0, colour: 0, star: 1 }],
+      held: { 1: true },
+      saves: 0,
+    });
+    // The engine's end-of-phase state remains the authoritative landing.
+    assert.deepEqual(t.cfg.playerArmies, []);
+    assert.deepEqual(t.cfg.playerHeld, {});
+    assert.equal(published.length, 2);
+  });
+
+  it("reveals a step's stars with a synthetic history entry, once", async () => {
+    const revealed = makeStar();
+    const visited = makeStar(undefined, { history: [{ turn: 1 }] });
+    const t = setup({
+      stars: [makeStar(undefined, { explored: true }), revealed, visited],
+      engineResult: {
+        steps: [{ kind: "occupy", writes: [], reveal: [1, 2] }],
+        events: [],
+      },
+    });
+    await t.driver.runPhaseIfDue();
+    assert.deepEqual(revealed.history(), [{ gwoConquestReveal: 1 }]);
+    assert.deepEqual(visited.history(), [{ turn: 1 }]);
+  });
+
+  it("counts a revealed star as visited on the next board", async () => {
+    const t = setup({
+      stars: [
+        makeStar(undefined, { explored: true }),
+        makeStar(undefined, { history: [{ gwoConquestReveal: 1 }] }),
+      ],
+    });
+    await t.driver.runPhaseIfDue();
+    assert.equal(t.calls.engineBoards[0].stars[1].visited, true);
   });
 });

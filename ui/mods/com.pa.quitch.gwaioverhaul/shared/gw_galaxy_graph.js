@@ -38,28 +38,35 @@ define(function () {
 
     // The optional traversable(star) predicate narrows intermediates only -
     // the final hop keeps the fog rule alone, so a route may end on a star
-    // the predicate refuses to cross.
-    self.pathBetween = function (from, to, noFog, traversable) {
+    // the predicate refuses to cross. The optional known(starIndex) predicate
+    // widens the fog rule itself: what counts as charted space, explored()
+    // when omitted.
+    self.pathBetween = function (from, to, noFog, traversable, known) {
       var stars = self.stars();
       var neighborsMap = self.neighborsMap();
-      var toExplored = stars[to].explored();
+      var isKnown =
+        known ||
+        function (starIndex) {
+          return stars[starIndex].explored();
+        };
+      var toKnown = isKnown(to);
       var crossable =
         traversable ||
         function () {
           return true;
         };
 
-      // Fog of war: the final hop is allowed if either endpoint is explored.
+      // Fog of war: the final hop is allowed if either endpoint is known.
       var canEnterTarget = function (node) {
-        return noFog || stars[node].explored() || toExplored;
+        return noFog || isKnown(node) || toKnown;
       };
 
-      // Fog of war: an intermediate is traversable once visited or explored,
+      // Fog of war: an intermediate is traversable once visited or known,
       // and past whatever rule the optional predicate adds.
       var canTraverse = function (neighbor) {
         var visible = noFog
           ? stars[neighbor].history().length > 0
-          : stars[neighbor].explored();
+          : isKnown(neighbor);
         return visible && crossable(stars[neighbor]);
       };
 

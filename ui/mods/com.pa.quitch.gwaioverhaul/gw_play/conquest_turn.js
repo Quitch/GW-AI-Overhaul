@@ -48,8 +48,26 @@ define([], function () {
       _.forEach(step.clearCards || [], function (starIndex) {
         stars[starIndex].cardList([]);
       });
+      // Rolls back the fog: visited() reads history, so a synthetic entry
+      // connects the system - the co-op replay fallback's precedent.
+      _.forEach(step.reveal || [], function (starIndex) {
+        var history = stars[starIndex].history() || [];
+        if (!history.length) {
+          stars[starIndex].history(history.concat([{ gwoConquestReveal: 1 }]));
+        }
+      });
+      if (step.playerState) {
+        cfg.playerArmies = step.playerState.playerArmies;
+        cfg.playerHeld = step.playerState.playerHeld;
+        if (params.onPlayerState) {
+          params.onPlayerState();
+        }
+      }
     };
 
+    // A move step carries only its origin lift, applied before the transit
+    // sprite departs; the arrival lands with the following step when the
+    // animation completes. One icon exists throughout, as for the player.
     var applySteps = function (steps, done) {
       var next = function (index) {
         if (index >= steps.length) {
@@ -57,8 +75,8 @@ define([], function () {
           return;
         }
         var step = steps[index];
+        applyWrites(step);
         var proceed = function () {
-          applyWrites(step);
           next(index + 1);
         };
         if (step.kind === "move" && params.animate) {
@@ -164,6 +182,28 @@ define([], function () {
     var conquestTraversable = function (star) {
       var ai = star.ai();
       return !ai || !!ai.conquestJumped;
+    };
+
+    // A system captured by the player's minion armies counts as charted
+    // space: routable through and onto while still unexplored. Installed on
+    // the instance so the base canMove/canSelect reads are widened too.
+    var conquestKnown = function (starIndex) {
+      return (
+        !!(cfg.playerHeld && cfg.playerHeld[starIndex]) ||
+        !!game.galaxy().stars()[starIndex].explored()
+      );
+    };
+    var pathGalaxy = game.galaxy();
+    var rawPathBetween = pathGalaxy.pathBetween;
+    pathGalaxy.pathBetween = function (from, to, noFog, traversable, known) {
+      return rawPathBetween.call(
+        pathGalaxy,
+        from,
+        to,
+        noFog,
+        traversable,
+        known || conquestKnown
+      );
     };
 
     // A jump is one turn however many systems it crosses. The stock moveStep

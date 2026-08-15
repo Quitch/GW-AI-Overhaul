@@ -90,7 +90,22 @@ define([
       return board.neighbors[starIndex] || [];
     };
 
+    // Player tokens and held flags render live, so any mutation flags the
+    // next recorded step to carry a snapshot the driver publishes when the
+    // step lands - mutate-then-record is the same invariant write() relies on.
+    var playerDirty = false;
+    var markPlayerState = function () {
+      playerDirty = true;
+    };
+
     var record = function (step) {
+      if (playerDirty) {
+        step.playerState = {
+          playerArmies: _.cloneDeep(board.playerArmies),
+          playerHeld: _.cloneDeep(board.playerHeld),
+        };
+        playerDirty = false;
+      }
       steps.push(step);
     };
 
@@ -322,8 +337,16 @@ define([
         board.playerArmies = _.filter(board.playerArmies, function (token) {
           return token.star !== starIndex;
         });
+        markPlayerState();
       }
       return present;
+    };
+
+    var releasePlayerHold = function (starIndex) {
+      if (board.playerHeld[starIndex]) {
+        delete board.playerHeld[starIndex];
+        markPlayerState();
+      }
     };
 
     var eliminate = function (team, byTeam) {
@@ -416,7 +439,7 @@ define([
       // An AI arrival defeats any player minion armies standing there and
       // ends the player's claim on the star.
       removePlayerArmiesAt(toStar);
-      delete board.playerHeld[toStar];
+      releasePlayerHold(toStar);
       builder.rollGameModifiers(
         streams.conquestModesRng(warRng, toStar, board.turns),
         boss
@@ -441,7 +464,6 @@ define([
     var moveBoss = function (team, bossInfo, toStar) {
       var boss = bossInfo.ai;
       var target = board.stars[toStar].ai;
-      var writes;
 
       // Stacking: a boss arriving on the player's star while another boss
       // holds it (or waits stacked on it) joins the pile rather than
@@ -451,17 +473,21 @@ define([
         target &&
         (target.boss || hasStackedBoss(target))
       ) {
-        writes = liftBoss(bossInfo);
-        removePlayerArmiesAt(toStar);
-        target.foes = (target.foes || []).concat([boss]);
-        writes.push(write(toStar, target));
         record({
           kind: "move",
           team: team,
           from: bossInfo.star,
           to: toStar,
           movedAi: boss,
-          writes: writes,
+          writes: liftBoss(bossInfo),
+        });
+        removePlayerArmiesAt(toStar);
+        target.foes = (target.foes || []).concat([boss]);
+        record({
+          kind: "stack",
+          team: team,
+          star: toStar,
+          writes: [write(toStar, target)],
         });
         return;
       }
@@ -471,14 +497,13 @@ define([
         var attackerOwned = ownedCount(team);
         var defenderOwned = ownedCount(target.team);
         if (attackerOwned >= defenderOwned) {
-          writes = liftBoss(bossInfo);
           record({
             kind: "move",
             team: team,
             from: bossInfo.star,
             to: toStar,
             movedAi: boss,
-            writes: writes,
+            writes: liftBoss(bossInfo),
           });
           eliminate(target.team, team);
           capture(boss, toStar);
@@ -490,22 +515,21 @@ define([
         return;
       }
 
-      writes = liftBoss(bossInfo);
-      capture(boss, toStar);
-      // The player's star is attacked, not captured: ownership stays with
-      // the player until the boss wins. See docs/conquest.md.
-      if (toStar === board.playerStar) {
-        boss.conquestJumped = true;
-      }
-      writes.push(write(toStar, boss));
       record({
         kind: "move",
         team: team,
         from: bossInfo.star,
         to: toStar,
         movedAi: boss,
-        writes: writes,
+        writes: liftBoss(bossInfo),
       });
+      capture(boss, toStar);
+      // The player's star is attacked, not captured: ownership stays with
+      // the player until the boss wins. See docs/conquest.md.
+      if (toStar === board.playerStar) {
+        boss.conquestJumped = true;
+      }
+      record({ kind: "occupy", team: team, writes: [write(toStar, boss)] });
     };
 
     var actTeam = function (team) {
@@ -641,7 +665,7 @@ define([
       // its card.
       if (hasOpposingArmy(target, team) || playerArmiesAt(toStar).length) {
         removePlayerArmiesAt(toStar);
-        delete board.playerHeld[toStar];
+        releasePlayerHold(toStar);
         record({
           kind: "clash",
           team: team,
@@ -705,10 +729,15 @@ define([
 
     var movePlayerArmy = function (token, toStar) {
       var target = board.stars[toStar].ai;
+      var fromStar = token.star;
+      // Lifted for the transit: the move step's snapshot carries no token at
+      // either end, and the arrival step below puts it back down (or not).
+      board.playerArmies = _.without(board.playerArmies, token);
+      markPlayerState();
       record({
         kind: "move",
         player: true,
-        from: token.star,
+        from: fromStar,
         to: toStar,
         movedAi: {
           faction: playerFaction,
@@ -719,18 +748,19 @@ define([
 
       // -1 matches no AI team, so any army presence there opposes.
       if (hasOpposingArmy(target, -1)) {
-        board.playerArmies = _.without(board.playerArmies, token);
-        delete board.playerHeld[toStar];
+        releasePlayerHold(toStar);
         record({
           kind: "clash",
           player: true,
           star: toStar,
+          reveal: [toStar],
           writes: [write(toStar, null)],
         });
         return;
       }
 
       token.star = toStar;
+      board.playerArmies = board.playerArmies.concat([token]);
       var writes = [];
       if (target) {
         writes.push(write(toStar, null));
@@ -740,7 +770,13 @@ define([
       if (!board.stars[toStar].explored) {
         board.playerHeld[toStar] = true;
       }
-      record({ kind: "occupy", player: true, writes: writes });
+      markPlayerState();
+      record({
+        kind: "occupy",
+        player: true,
+        reveal: [toStar],
+        writes: writes,
+      });
     };
 
     // Player armies act last, so every AI team's resolution stays identical
@@ -1030,6 +1066,7 @@ define([
             ),
             star: starIndex,
           });
+          markPlayerState();
           record({ kind: "spawn", star: starIndex, player: true, writes: [] });
         }
       });

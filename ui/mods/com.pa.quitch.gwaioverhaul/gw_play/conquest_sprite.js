@@ -67,9 +67,13 @@ define([
       return { url: url, color: color };
     };
 
+    // A player token is the player's own intelligence, drawn through fog
+    // like its map icon - without this a token moving inside fogged held
+    // territory would teleport.
     var moveIsVisible = function (step) {
       var systems = model.galaxy.systems();
       return (
+        !!step.player ||
         model.cheats.noFog() ||
         systems[step.from].connected() ||
         systems[step.to].connected()

@@ -191,6 +191,67 @@ describe("GWGalaxy.pathBetween", () => {
     assert.equal(galaxy.pathBetween(0, 2, false), null);
     assert.deepEqual(galaxy.pathBetween(0, 2, true), [0, 1, 2]);
   });
+
+  // Conquest widens fog with the known predicate: systems the player's minion
+  // armies captured route like explored ones while staying explorable.
+  describe("the known predicate", () => {
+    it("paths through an unexplored intermediate the predicate knows", () => {
+      const galaxy = makeGalaxy(
+        [
+          [0, 1],
+          [1, 2],
+        ],
+        [exploredStar(), unknownStar(), exploredStar()]
+      );
+      const known = (starIndex) =>
+        galaxy.stars()[starIndex].explored() || starIndex === 1;
+      assert.equal(galaxy.pathBetween(0, 2, false), null);
+      assert.deepEqual(
+        galaxy.pathBetween(0, 2, false, undefined, known),
+        [0, 1, 2]
+      );
+    });
+
+    it("allows the final hop from a known-but-unexplored star", () => {
+      const galaxy = makeGalaxy(
+        [
+          [0, 1],
+          [1, 2],
+        ],
+        [exploredStar(), unknownStar(), unknownStar()]
+      );
+      const known = (starIndex) =>
+        galaxy.stars()[starIndex].explored() || starIndex === 1;
+      assert.deepEqual(
+        galaxy.pathBetween(0, 2, false, undefined, known),
+        [0, 1, 2]
+      );
+    });
+
+    it("allows the final hop onto a known target", () => {
+      const galaxy = makeGalaxy([[0, 1]], [unknownStar(), unknownStar()]);
+      const known = (starIndex) => starIndex === 1;
+      assert.equal(galaxy.pathBetween(0, 1, false), null);
+      assert.deepEqual(
+        galaxy.pathBetween(0, 1, false, undefined, known),
+        [0, 1]
+      );
+    });
+
+    it("keeps the history rule for noFog traversal", () => {
+      const galaxy = makeGalaxy(
+        [
+          [0, 1],
+          [1, 2],
+        ],
+        [exploredStar(), unknownStar(), exploredStar()]
+      );
+      assert.equal(
+        galaxy.pathBetween(0, 2, true, undefined, () => true),
+        null
+      );
+    });
+  });
 });
 
 describe("GWGalaxy.areNeighbors", () => {

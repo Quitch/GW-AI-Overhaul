@@ -162,6 +162,19 @@ describe("boss movement", () => {
     );
     // The sprite animates only a move that names its ai.
     assert.equal(moves[0].movedAi, theBoss);
+    // The move carries only the origin lift; the arrival lands in its own
+    // occupy step, so one icon exists during the transit.
+    assert.deepEqual(
+      moves[0].writes.map((entry) => entry.star),
+      [1]
+    );
+    const occupies = stepsOf(result, "occupy");
+    assert.equal(occupies.length, 1);
+    assert.deepEqual(occupies[0].writes, [{ star: 2, ai: theBoss }]);
+    assert.equal(
+      result.steps.indexOf(occupies[0]),
+      result.steps.indexOf(moves[0]) + 1
+    );
     const left = board.stars[1].ai;
     assert.equal(left.garrison, true);
     // The boss's growth of 8 over four connections builds the garrison at
@@ -190,6 +203,15 @@ describe("boss movement", () => {
     });
     const result = engine.planPhase(board, makeCtx());
     assert.equal(stepsOf(result, "move")[0].to, 0);
+    // The jump write lands with the occupy step, not the move.
+    assert.deepEqual(
+      stepsOf(result, "move")[0].writes.map((e) => e.star),
+      [1]
+    );
+    assert.deepEqual(
+      stepsOf(result, "occupy")[0].writes.map((e) => e.star),
+      [0]
+    );
     const jumped = board.stars[0].ai;
     assert.equal(jumped.boss, true);
     // An attack, not a capture: the battle rolls stay, ownership does not.
@@ -475,6 +497,12 @@ describe("boss versus boss", () => {
     assert.equal(board.stars[3].ai.boss, true);
     // The winner's approach names its ai, so the sprite animates it.
     assert.equal(stepsOf(result, "move")[0].movedAi, board.stars[3].ai);
+    // The lift-only move: the defender's star is written by the eliminate
+    // and occupy steps that follow the transit.
+    assert.deepEqual(
+      stepsOf(result, "move")[0].writes.map((e) => e.star),
+      [1]
+    );
     const cleared = stepsOf(result, "eliminate")[0];
     assert.deepEqual(cleared.clearCards, [3]);
   });
@@ -689,6 +717,15 @@ describe("stacking on the player's star", () => {
     const result = engine.planPhase(board, makeCtx({ factions: [0, 1] }));
     assert.deepEqual(result.events, []);
     assert.equal(board.stars[0].ai, hostBoss);
+    // The move lifts the origin only; joining the pile is its own arrival
+    // step writing the host.
+    assert.deepEqual(
+      stepsOf(result, "move")[0].writes.map((e) => e.star),
+      [1]
+    );
+    const stacks = stepsOf(result, "stack");
+    assert.equal(stacks.length, 1);
+    assert.deepEqual(stacks[0].writes, [{ star: 0, ai: hostBoss }]);
     assert.deepEqual(hostBoss.foes, [arriving]);
     assert.equal(hostBoss.conquestJumped, true);
     assert.equal(arriving.conquestJumped, undefined);
@@ -1454,6 +1491,24 @@ describe("minion army movement", () => {
     assert.equal(moves[2].movedAi.conquestArmy.seq, 1);
   });
 
+  it("publishes a player token's death with the clash that kills it", () => {
+    const army = armyOf(0, 0);
+    const board = makeBoard({
+      playerStar: 0,
+      edges: [[1, 2]],
+      stars: [star(null, { visited: true }), star(army), star()],
+      playerArmies: [{ seq: 0, colour: 0, star: 2 }],
+    });
+    const result = engine.planPhase(board, makeCtx());
+
+    const clashes = stepsOf(result, "clash");
+    assert.equal(clashes.length, 1);
+    assert.deepEqual(clashes[0].playerState.playerArmies, []);
+    // An AI clash is not the player's move, so it reveals nothing.
+    assert.equal(clashes[0].reveal, undefined);
+    assert.deepEqual(result.conquest.playerArmies, []);
+  });
+
   it("never attacks a boss, which freely overwrites it", () => {
     const army = armyOf(0, 0);
     const enemyBoss = boss(1);
@@ -1577,6 +1632,10 @@ describe("player minion armies", () => {
     assert.equal(spawns.length, 1);
     assert.equal(spawns[0].star, 1);
     assert.equal(spawns[0].player, true);
+    // The snapshot publishes the new token the moment the step lands.
+    assert.deepEqual(spawns[0].playerState.playerArmies, [
+      { seq: 0, colour: 0, star: 1 },
+    ]);
     assert.deepEqual(result.conquest.playerArmies, [
       { seq: 0, colour: 0, star: 1 },
     ]);
@@ -1610,6 +1669,16 @@ describe("player minion armies", () => {
       { player: true, from: 1, to: 2 }
     );
     assert.equal(move.movedAi.conquestArmy.player, true);
+    // In transit the token is nowhere: the move's snapshot lifts it, the
+    // occupy's puts it down and takes the hold, revealing the destination.
+    assert.deepEqual(move.playerState.playerArmies, []);
+    assert.deepEqual(move.playerState.playerHeld, {});
+    const occupy = stepsOf(result, "occupy")[0];
+    assert.deepEqual(occupy.playerState.playerArmies, [
+      { seq: 0, colour: 0, star: 2 },
+    ]);
+    assert.deepEqual(occupy.playerState.playerHeld, { 2: true });
+    assert.deepEqual(occupy.reveal, [2]);
     assert.deepEqual(result.conquest.playerArmies, [
       { seq: 0, colour: 0, star: 2 },
     ]);
@@ -1641,6 +1710,7 @@ describe("player minion armies", () => {
     const occupies = stepsOf(result, "occupy");
     assert.equal(occupies.length, 1);
     assert.deepEqual(occupies[0].writes, [{ star: 2, ai: null }]);
+    assert.deepEqual(occupies[0].reveal, [2]);
     assert.deepEqual(result.conquest.playerHeld, { 2: true });
   });
 
@@ -1666,7 +1736,12 @@ describe("player minion armies", () => {
     });
     const result = engine.planPhase(board, makeCtx({ factions: [] }));
 
-    assert.equal(stepsOf(result, "clash").length, 1);
+    const clashes = stepsOf(result, "clash");
+    assert.equal(clashes.length, 1);
+    // A fatal move still reveals where the token died; its removal was
+    // already published by the move's own lift snapshot.
+    assert.deepEqual(clashes[0].reveal, [2]);
+    assert.deepEqual(stepsOf(result, "move")[0].playerState.playerArmies, []);
     assert.deepEqual(result.conquest.playerArmies, []);
     assert.equal(board.stars[2].ai, null);
     assert.deepEqual(result.conquest.playerHeld, {});
@@ -1688,6 +1763,10 @@ describe("player minion armies", () => {
     const result = engine.planPhase(board, makeCtx());
 
     assert.equal(board.stars[2].ai.boss, true);
+    // The boss's arrival publishes the deaths with the step that lands them.
+    const occupy = stepsOf(result, "occupy")[0];
+    assert.deepEqual(occupy.playerState.playerArmies, []);
+    assert.deepEqual(occupy.playerState.playerHeld, {});
     assert.deepEqual(result.conquest.playerHeld, {});
     assert.deepEqual(result.conquest.playerArmies, []);
   });
