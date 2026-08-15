@@ -1024,16 +1024,20 @@ describe("tier refresh", () => {
   });
 
   it("caps the tier at maxDist", () => {
-    const held = garrison(0, { growth: 100, appliedTier: 1 });
+    // Growth 15 is the last of the tier the cap sits in: maxDist 3 over four
+    // connections tops out at 12 and musters at 16, so this is as far as a
+    // garrison's counter ever runs (see "minion army spawning").
+    const held = garrison(0, { growth: 15, appliedTier: 1 });
     const board = makeBoard({
       playerStar: 1,
       maxDist: 3,
       edges: [[0, 1]],
       stars: [star(held), star(null, { visited: true })],
     });
-    engine.planPhase(board, makeCtx());
+    const result = engine.planPhase(board, makeCtx());
     assert.equal(held.refreshedAt, 3);
     assert.equal(held.appliedTier, 3);
+    assert.equal(stepsOf(result, "spawn").length, 0);
   });
 
   it("does not count a jumped boss's star as friendly territory", () => {
@@ -1333,9 +1337,11 @@ describe("minion army spawning", () => {
 
     const host = board.stars[1].ai;
     assert.equal(host.minionArmies.length, 1);
-    // The spawn consumed one tier of growth: 11 accrued to 12, debited to 8.
-    assert.equal(host.growth, 8);
-    assert.equal(host.appliedTier, 2);
+    // Mustering spent the counter: 11 accrued to 12, and the garrison left
+    // behind fell from the cap to base tier and was rebuilt there.
+    assert.equal(host.growth, 0);
+    assert.equal(host.appliedTier, 0);
+    assert.equal(host.refreshedAt, 0);
 
     const army = host.minionArmies[0];
     assert.equal(army.garrison, true);
@@ -1348,13 +1354,14 @@ describe("minion army spawning", () => {
     assert.deepEqual(result.conquest.armySeq, { 0: 1 });
   });
 
-  it("does not spawn again until a full tier re-accrues", () => {
+  it("does not spawn again until the counter climbs back past the cap", () => {
     const board = cappedBoard();
     engine.planPhase(board, makeCtx());
     const second = engine.planPhase(board, makeCtx());
 
-    // Growth 8 accrued to 9, short of the threshold.
+    // The spent counter accrued to 1, the whole climb short of the threshold.
     assert.equal(stepsOf(second, "spawn").length, 0);
+    assert.equal(board.stars[1].ai.growth, 1);
     assert.equal(board.stars[1].ai.minionArmies.length, 1);
 
     board.stars[1].ai.growth = 11;
@@ -1700,8 +1707,8 @@ describe("player minion armies", () => {
     assert.deepEqual(result.conquest.playerArmies, [
       { seq: 0, colour: 0, star: 1 },
     ]);
-    // Two player neighbours accrued, then the spawn debited one tier.
-    assert.deepEqual(result.conquest.playerGrowth, { 0: 2, 1: 8, 2: 2 });
+    // Two player neighbours accrued, then the spawn spent the counter.
+    assert.deepEqual(result.conquest.playerGrowth, { 0: 2, 2: 2 });
     assert.equal(result.conquest.armySeq.player, 1);
     // The token musters this phase and first moves the next one.
     assert.equal(stepsOf(result, "move").length, 0);

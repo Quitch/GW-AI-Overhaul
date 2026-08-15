@@ -927,9 +927,10 @@ define([
       return used;
     };
 
-    // A capped garrison converts each further full tier of growth into a
-    // minion army, mustered on its star until the next phase moves it out.
-    // The debit makes a full tier re-accrue before the next spawn.
+    // A capped garrison converts its growth into a minion army, mustered on
+    // its star until the next phase moves it out. Mustering spends the whole
+    // counter: the re-scale that follows this call drops the garrison left
+    // behind to base tier, and the climb to the cap begins again.
     var spawnArmy = function (starIndex, owner) {
       var army = builder.buildGarrison({
         rng: streams.conquestArmyRng(warRng, starIndex, board.turns),
@@ -941,7 +942,7 @@ define([
       if (!army) {
         return false;
       }
-      owner.growth -= maxConnections;
+      owner.growth = 0;
       army.capturedTurn = board.turns;
       army.growth = 0;
       army.appliedTier = board.maxDist;
@@ -1070,7 +1071,9 @@ define([
           board.playerGrowth[starIndex] = growth;
         }
         if (growth >= (board.maxDist + 1) * maxConnections) {
-          board.playerGrowth[starIndex] = growth - maxConnections;
+          // Spent outright, as a garrison's is. A player system carries no
+          // tier to drop, so the counter starting over is the whole cost.
+          delete board.playerGrowth[starIndex];
           board.playerArmies.push({
             seq: nextArmySeq("player"),
             colour: pickArmyColour(

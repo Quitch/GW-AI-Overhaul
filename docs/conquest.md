@@ -219,8 +219,9 @@ Rules the engine carries:
 A garrison capped at `maxDist` converts further growth into mobile pieces:
 when accrual reaches a full tier past the cap
 (`(maxDist + 1) x maxConnections`), the system spawns a **minion army** - a
-garrison-shaped ai built at the cap tier - and the spawn debits one tier of
-growth, so a full tier must re-accrue before the next. The army musters on
+garrison-shaped ai built at the cap tier - and mustering spends the counter
+outright, so the same phase's re-scale drops the garrison left behind to base
+tier and the whole climb repeats before the next. The army musters on
 its origin star (`ai.minionArmies`, spawn order) and moves out the following
 phase. It never re-scales, though it accrues growth for the garrison it
 leaves on departure. Its marker is `ai.conquestArmy`: a persisted per-team
