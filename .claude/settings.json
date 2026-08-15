@@ -14,6 +14,7 @@
       "Bash(npm run validate:ai-mods)",
       "Bash(npm run validate:schemas)",
       "Bash(npm run validate:refs)",
+      "Bash(npm run validate:sonar)",
       "Bash(npm run lint:js)",
       "Bash(npm run lint:css)",
       "Bash(npm run format:css)",
