@@ -1231,6 +1231,67 @@ describe("determinism", () => {
   });
 });
 
+describe("owningNeighbourCount", () => {
+  const keepAll = () => true;
+
+  it("counts only neighbours an AI persistently owns", () => {
+    assert.equal(
+      engine.owningNeighbourCount([{ team: 0 }, null, { team: 1 }], keepAll),
+      2
+    );
+  });
+
+  it("ignores a jumped boss, which holds nothing", () => {
+    assert.equal(
+      engine.owningNeighbourCount(
+        [{ team: 0, boss: true, conquestJumped: true }, { team: 0 }],
+        keepAll
+      ),
+      1
+    );
+  });
+
+  it("ignores the Guardians", () => {
+    assert.equal(
+      engine.owningNeighbourCount([{ mirrorMode: true }, { team: 0 }], keepAll),
+      1
+    );
+  });
+
+  it("applies keep to the owner", () => {
+    const neighbours = [{ team: 0 }, { team: 1 }, { team: 0 }];
+    assert.equal(
+      engine.owningNeighbourCount(neighbours, (owner) => owner.team === 0),
+      2
+    );
+  });
+});
+
+describe("isPlayerOwned", () => {
+  it("accepts an explored star no AI holds", () => {
+    assert.equal(engine.isPlayerOwned(null, true, false), true);
+  });
+
+  it("accepts an unexplored star a player army holds", () => {
+    assert.equal(engine.isPlayerOwned(null, false, true), true);
+  });
+
+  it("rejects an unexplored, unheld star", () => {
+    assert.equal(engine.isPlayerOwned(null, false, false), false);
+  });
+
+  it("rejects a held star an AI has retaken", () => {
+    assert.equal(engine.isPlayerOwned({ team: 0 }, true, true), false);
+  });
+
+  it("accepts the player's own star under a jumped boss", () => {
+    assert.equal(
+      engine.isPlayerOwned({ team: 0, boss: true, conquestJumped: true }, true),
+      true
+    );
+  });
+});
+
 describe("growthTier", () => {
   it("floors accumulated growth over maxConnections, capped at maxDist", () => {
     assert.equal(engine.growthTier(0, 4, 8), 0);

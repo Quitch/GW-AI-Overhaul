@@ -55,6 +55,23 @@ define([
     return !ai || ai.conquestJumped ? null : ai;
   };
 
+  // Persistent-owner adjacency: how many of the given neighbouring ais own
+  // their star and pass keep. This is the count that spawns foes and feeds
+  // growth. Top level and exported so conquest_forecast.js projects the
+  // counter forward by the same rule accrual advances it.
+  var owningNeighbourCount = function (neighbourAis, keep) {
+    return _.filter(neighbourAis, function (neighbourAi) {
+      var owner = ownerAi(neighbourAi);
+      return !!owner && !isGuardians(owner) && keep(owner);
+    }).length;
+  };
+
+  // The player's side of the same test: explored or captured by a player
+  // army, and held by no AI.
+  var isPlayerOwned = function (ai, explored, held) {
+    return !ownerAi(ai) && (!!explored || !!held);
+  };
+
   var planPhase = function (board, ctx) {
     var steps = [];
     var events = [];
@@ -190,13 +207,9 @@ define([
       };
     };
 
-    // The player's side of the same test: explored or captured by a player
-    // army, and held by no AI.
     var playerOwned = function (starIndex) {
       var star = board.stars[starIndex];
-      return (
-        !ownerAi(star.ai) && (star.explored || !!board.playerHeld[starIndex])
-      );
+      return isPlayerOwned(star.ai, star.explored, board.playerHeld[starIndex]);
     };
 
     var nonFriendlyNeighbours = function (starIndex, friendly) {
@@ -209,14 +222,14 @@ define([
       return _.filter(neighborsOf(starIndex), friendly).length;
     };
 
-    // Persistent-owner adjacency (ownerAi: a jumped boss holds nothing) -
-    // the count that spawns foes and feeds growth. isFriendly above is
-    // movement's looser test.
+    // isFriendly above is movement's looser test; this is the growth one.
     var owningNeighbours = function (starIndex, keep) {
-      return _.filter(neighborsOf(starIndex), function (neighbor) {
-        var owner = ownerAi(board.stars[neighbor].ai);
-        return !!owner && !isGuardians(owner) && keep(owner);
-      }).length;
+      return owningNeighbourCount(
+        _.map(neighborsOf(starIndex), function (neighbor) {
+          return board.stars[neighbor].ai;
+        }),
+        keep
+      );
     };
 
     var teamNeighbours = function (starIndex, team) {
@@ -1127,5 +1140,9 @@ define([
     planPhase: planPhase,
     growthTier: growthTier,
     pickArmyColour: pickArmyColour,
+    ownerAi: ownerAi,
+    isGuardians: isGuardians,
+    owningNeighbourCount: owningNeighbourCount,
+    isPlayerOwned: isPlayerOwned,
   };
 });
