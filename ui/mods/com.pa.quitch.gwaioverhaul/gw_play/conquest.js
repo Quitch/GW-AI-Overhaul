@@ -46,21 +46,30 @@ function gwoConquest() {
     // The stock owner computed paints a jumped boss's colour and reads
     // ownerColor back, so a counter-writing computed only triggers another
     // boss-coloured repaint. Intercept the write instead: while the boss
-    // waits to be fought the star is still the player's, whatever repaints.
-    _.forEach(model.galaxy.systems(), function (system) {
+    // waits to be fought the star is still the player's, whatever repaints -
+    // and a player-held unexplored star is the player's too, where the stock
+    // computed would paint no ring at all.
+    var playerHeldStar = function (starIndex, ai) {
+      var held = gwoSettings.conquest.playerHeld;
+      return !ai && !!(held && held[starIndex]);
+    };
+    _.forEach(model.galaxy.systems(), function (system, starIndex) {
       var baseOwnerColor = system.ownerColor;
       system.ownerColor = function (value) {
         if (arguments.length) {
           var ai = system.star.ai();
-          if (ai && ai.conquestJumped) {
+          if ((ai && ai.conquestJumped) || playerHeldStar(starIndex, ai)) {
             value = model.player.color().concat(3);
           }
           return baseOwnerColor(value);
         }
         return baseOwnerColor();
       };
-      var jumpedAi = system.star.ai();
-      if (jumpedAi && jumpedAi.conquestJumped) {
+      var installAi = system.star.ai();
+      if (
+        (installAi && installAi.conquestJumped) ||
+        playerHeldStar(starIndex, installAi)
+      ) {
         baseOwnerColor(model.player.color().concat(3));
       }
     });
@@ -119,14 +128,43 @@ function gwoConquest() {
           model.gwoConquestPlayerArmies(cfg.playerArmies || []);
         };
 
-        // Nested so the outer callback keeps its parameter count; the icons
-        // read the observables created above.
+        // Nested so the outer callback keeps its parameter count; both
+        // modules read the observables created above.
         requireGW(
           [
             "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_army_icons.js",
+            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/conquest_pulse.js",
           ],
-          function (gwoArmyIconsFactory) {
+          function (gwoArmyIconsFactory, gwoPulse) {
             gwoArmyIconsFactory({ playerFaction: playerFaction });
+
+            var playerRgb = _.map(model.player.color(), function (c) {
+              return Math.round(c * 255);
+            });
+            var pulseLayer = gwoPulse.createLayer({
+              systemFor: function (star) {
+                return model.galaxy.systems()[star];
+              },
+              colour: "rgba(" + playerRgb.join(",") + ",1)",
+            });
+
+            // Pulses every held star until it is explored, and paints the
+            // owner ring the stock computed skips for unexplored stars. The
+            // explored() reads make an explore drop both at once.
+            ko.computed(function () {
+              var held = model.gwoConquestPlayerHeld();
+              var stars = game.galaxy().stars();
+              var active = {};
+              _.forEach(held, function (value, key) {
+                if (value && stars[key] && !stars[key].explored()) {
+                  active[key] = true;
+                  model.galaxy
+                    .systems()
+                    [key].ownerColor(model.player.color().concat(3));
+                }
+              });
+              pulseLayer.sync(active);
+            });
           }
         );
 
