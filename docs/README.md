@@ -72,6 +72,14 @@ in the code — a doc cannot surface `// otherwise it won't display its icon` at
 moment you are editing that line. Expect both, and do not treat a documented
 subsystem as licence to delete the comments inside it.
 
+That split sets the length: past a line or two, a comment is documentation and
+belongs here instead. Where one of these docs already covers the fact, the comment
+is `See <doc>.md` (plus the section, where the doc is long) and nothing more; where
+it doesn't and the fact is subsystem-level, add it here and point at it.
+
+Rejected alternatives, tuning history and "this used to live elsewhere" belong in
+[CHANGELOG](../CHANGELOG.md). A comment states the rule that holds now.
+
 ## Verifying a change
 
 ```bash
