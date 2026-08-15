@@ -10,6 +10,7 @@
 ### Bugfix
 
 - Eliminating a faction now updates the inner ring on the galaxy map for systems its commanders occupied, rather than keeping the defeated faction's colour until the map next reloaded
+- Super Weapon Fabrication Tech is no longer offered to players who own none of the super weapons it discounts
 
 ## v6.10.1 - 2026-08-11
 
