@@ -19,7 +19,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.botFactoryAdvanced)
+        gwoCard.hasUnit(inventory.units(), gwoUnit.botFabberAdvanced)
       );
     },
     buff: function (inventory) {
