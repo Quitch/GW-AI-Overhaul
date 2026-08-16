@@ -45,10 +45,22 @@ mechanical pass rather than a judgement call:
    stock copies, and `npm run verify` green. `develop`'s _own_ files keep their
    own conventions; realigning those is drive-by.
 
-Merged to `develop`'s v6.10.3 (2026-08-16). The one behaviour change that
-needed aligning by hand rather than merging: `develop`'s new inner-ring colour
-helper in `gw_play/systems.js` uses `_.first`, which this branch had already
-replaced with `[0]`.
+Merged to `develop`'s v6.10.3 (2026-08-16): `npm run verify` green, rename
+rehearsal 1,080 occurrences and green in the rewritten copy.
+
+Three things that a bulk "take `develop`'s version" would have broken, and the
+reason step 1 above names files rather than a rule:
+
+- `shared/referee_coop.js` and `gw_play/gwo_panel.js` changed on both sides.
+  `develop` has neither `clientsInPlayerOrder` nor the deletion of
+  `gw_play/coop_colour.js` that moved it there, so its versions reintroduce a
+  module this branch removed. Both keep this branch's version with
+  `develop`'s guard removals applied by hand.
+- `develop`'s new inner-ring colour helper in `gw_play/systems.js` uses
+  `_.first`, already replaced here with `[0]`.
+- Re-running lebab reverts `gw_play/gwo_panel.js`'s top-level
+  `disposeGwoPanelLoader` to `const`, which the scene-scope rule rejects. It is
+  `var` deliberately, as are the scene entry flags.
 
 ## Evidence baseline
 
