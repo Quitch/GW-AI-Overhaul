@@ -5,7 +5,7 @@
 // installed changes nothing, and a mod that is installed cannot break the
 // loadout list by shipping a broken bank.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -15,7 +15,10 @@ const banksPath =
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js";
 
 const stubs = createGlobalStubs();
-afterEach(() => stubs.restoreGlobals());
+afterEach(() => {
+  stubs.restoreGlobals();
+  mock.restoreAll();
+});
 
 const banks = loadCouiModule(banksPath);
 
@@ -119,6 +122,17 @@ describe("resolve", () => {
 
     assert.deepEqual(banks.resolve([{ notABank: true }]), []);
   });
+
+  // Both halves of the published contract, not just the one read first: a bank
+  // that cannot record an unlock has to be refused here rather than throwing at
+  // award time, once the player has already beaten the treasure planet.
+  it("drops a bank that can answer hasStartCard but not addStartCard", () => {
+    const banks = loadBanks([{ prefix: "a_start_", path: "coui://a/bank.js" }]);
+    const readOnly = fakeBank(["a_start_one"]);
+    delete readOnly.addStartCard;
+
+    assert.deepEqual(banks.resolve([readOnly]), []);
+  });
 });
 
 describe("hasStartCard", () => {
@@ -137,6 +151,24 @@ describe("hasStartCard", () => {
 
     assert.equal(banks.hasStartCard({ id: "b_start_one" }), true);
     assert.equal(banks.hasStartCard({ id: "b_start_two" }), false);
+  });
+
+  // Readers include the gw_start loadout list and a ko.computed, so one mod's
+  // bank throwing must not empty the picker or break a binding.
+  it("skips a bank that throws and still consults the others", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const banks = loadBanks([
+      { prefix: "a_start_", path: "coui://a/bank.js" },
+      { prefix: "b_start_", path: "coui://b/bank.js" },
+    ]);
+    const thrower = fakeBank([]);
+    thrower.hasStartCard = () => {
+      throw new Error("bank exploded");
+    };
+    banks.resolve([thrower, fakeBank(["b_start_one"])]);
+
+    assert.equal(banks.hasStartCard({ id: "b_start_one" }), true);
+    assert.equal(errorMock.mock.callCount(), 1);
   });
 });
 

@@ -347,15 +347,30 @@ function gwoCard() {
           var dealOneCard = function (list, iteration) {
             var iterationRng = gwoStreams.iterationRng(dealStream, iteration);
             var fullHand = _.map(cards, function (card) {
+              // setupGwoDeck leaves a hole where a card failed to load.
+              if (!card) {
+                return undefined;
+              }
+
               var context = cardContexts[card.id];
-              var cardChance =
-                card.deal &&
-                card.deal(
-                  star,
-                  context,
-                  dealInventory,
-                  gwoStreams.cardRng(iterationRng, card.id)
-                );
+              var cardChance;
+              // A third-party card's deal() is arbitrary code, and this runs
+              // inside a deferred callback where a throw is swallowed rather
+              // than rejected - the hand would simply never arrive.
+              try {
+                cardChance =
+                  card.deal &&
+                  card.deal(
+                    star,
+                    context,
+                    dealInventory,
+                    gwoStreams.cardRng(iterationRng, card.id)
+                  );
+              } catch (e) {
+                console.error("Tech card deal() threw, skipping", card.id, e);
+                return undefined;
+              }
+
               var match = helpers.doNotDealCard(
                 dealInventory,
                 card,
@@ -365,7 +380,7 @@ function gwoCard() {
                 systemCards
               );
 
-              if (match) {
+              if (match && cardChance) {
                 cardChance.chance = 0;
               }
 
@@ -396,8 +411,19 @@ function gwoCard() {
           var result = $.Deferred();
           loaded.then(function () {
             _.forEach(cards, function (card) {
-              if (card.getContext && !cardContexts[card.id]) {
-                cardContexts[card.id] = card.getContext(galaxy, dealInventory);
+              if (card && card.getContext && !cardContexts[card.id]) {
+                try {
+                  cardContexts[card.id] = card.getContext(
+                    galaxy,
+                    dealInventory
+                  );
+                } catch (e) {
+                  console.error(
+                    "Tech card getContext() threw, skipping",
+                    card.id,
+                    e
+                  );
+                }
               }
             });
 

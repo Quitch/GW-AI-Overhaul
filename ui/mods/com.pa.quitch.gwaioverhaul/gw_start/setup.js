@@ -430,8 +430,15 @@ function gwoSetup() {
 
         _.forEach(loadouts.allCards, function (card) {
           requireGW(["cards/" + card.id], function (cardFile) {
-            cardFile.id = card.id;
-            processedStartCards[card.id] = cardFile;
+            // A third-party loadout whose module returns nothing still has to
+            // count towards the tally, or `loaded` never resolves and Go To War
+            // spins with no reseed - see selectMinion's note below.
+            if (cardFile) {
+              cardFile.id = card.id;
+              processedStartCards[card.id] = cardFile;
+            } else {
+              console.error("Start card loaded but returned nothing:", card.id);
+            }
             --loadCount;
             if (loadCount === 0) {
               loaded.resolve();
@@ -452,17 +459,31 @@ function gwoSetup() {
               result.reject("no matching start card ID: " + params.id);
               return;
             }
-            var context =
-              card.getContext &&
-              card.getContext(params.galaxy, params.inventory);
-            var deal = card.deal && card.deal(params.star, context);
             var product = { id: params.id };
-            var cardParams = deal && deal.params;
-            if (cardParams && _.isPlainObject(cardParams)) {
-              _.assign(product, cardParams);
+            var deal;
+            // Same reasoning as the missing-card branch above: a third-party
+            // loadout that throws must reject rather than escape the deferred.
+            try {
+              var context =
+                card.getContext &&
+                card.getContext(params.galaxy, params.inventory);
+              deal = card.deal && card.deal(params.star, context);
+              var cardParams = deal && deal.params;
+              if (cardParams && _.isPlainObject(cardParams)) {
+                _.assign(product, cardParams);
+              }
+              card.keep && card.keep(deal, context);
+              card.releaseContext && card.releaseContext(context);
+            } catch (e) {
+              console.error(
+                "Start card threw while being dealt:",
+                params.id,
+                e
+              );
+              warGenerationFailed = true;
+              result.reject("start card threw: " + params.id);
+              return;
             }
-            card.keep && card.keep(deal, context);
-            card.releaseContext && card.releaseContext(context);
             result.resolve(product, deal);
           };
 
@@ -562,7 +583,13 @@ function gwoSetup() {
               if (option) {
                 // load() caches per source. Its loading/selected observables
                 // drive Shared Systems' own spinner - leave them alone.
-                loading.push(option.load());
+                // It belongs to another mod, so a throw here would escape the
+                // deferred callback and leave Go To War waiting on `ready`.
+                try {
+                  loading.push(option.load());
+                } catch (e) {
+                  console.error("System source failed to load:", name, e);
+                }
               }
             });
             if (_.isEmpty(loading)) {

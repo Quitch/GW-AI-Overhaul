@@ -146,15 +146,16 @@ define([
           _.forEach(build.build_conditions, function (testArray) {
             testArray.push(value);
           });
-        } else {
+        } else if (_.isArray(build.build_conditions)) {
           build.build_conditions.push(value);
         }
       });
     },
     // template only
     squad: function (json, value, toBuild) {
-      if (json.platoon_templates[toBuild]) {
-        json.platoon_templates[toBuild].units.push(value);
+      var template = json.platoon_templates && json.platoon_templates[toBuild];
+      if (template && _.isArray(template.units)) {
+        template.units.push(value);
       }
     },
   };
@@ -165,15 +166,22 @@ define([
         console.error("Invalid AI mod operation:", mod);
         return;
       }
-      aiModOps[mod.op](
-        json,
-        mod.value,
-        mod.toBuild,
-        mod.idToMod,
-        mod.refId,
-        mod.refValue,
-        mod.matchAll
-      );
+      // Descriptors come from third-party cards, and this runs inside a
+      // deferred callback where a throw is swallowed rather than rejected, so
+      // one bad mod would hang the launch. Matches shared/specs.js.
+      try {
+        aiModOps[mod.op](
+          json,
+          mod.value,
+          mod.toBuild,
+          mod.idToMod,
+          mod.refId,
+          mod.refValue,
+          mod.matchAll
+        );
+      } catch (e) {
+        console.error("applyAiMods: op threw, skipping mod", mod, e);
+      }
     });
   };
 
@@ -249,7 +257,9 @@ define([
       case "template":
         return "platoon_templates/";
       default:
-        throw new Error("Invalid AI file type: " + type);
+        // Undefined rather than a throw: the only caller runs inside a deferred
+        // callback, where a throw is swallowed and hangs the battle launch.
+        return undefined;
     }
   };
 
@@ -270,7 +280,12 @@ define([
       });
 
       _.forEach(aiLoadMods, function (file) {
-        fileList.push("/pa/ai_tech/" + managerPath(file.type) + file.value);
+        var directory = managerPath(file.type);
+        if (_.isUndefined(directory)) {
+          console.error("Invalid AI file type in load mod:", file);
+          return;
+        }
+        fileList.push("/pa/ai_tech/" + directory + file.value);
       });
     }
   };

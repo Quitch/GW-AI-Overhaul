@@ -164,6 +164,25 @@ describe("dealCard", () => {
       { message: "GWO card not found: missing" }
     );
   });
+
+  // A throw inside the deferred callback neither rejects nor surfaces, so the
+  // caller would wait forever. Every hook the card contract exposes is covered.
+  for (const hook of ["getContext", "deal", "keep", "releaseContext"]) {
+    it(`rejects when a card's ${hook}() throws`, async () => {
+      setGlobal("$", createFakeJQuery());
+      const card = {
+        id: "c",
+        getContext: () => ({}),
+        deal: () => ({ params: {} }),
+      };
+      card[hook] = () => {
+        throw new Error("card exploded");
+      };
+      await assert.rejects(deal.dealCard({ id: "c" }, fakeLoaded(), [card]), {
+        message: "card exploded",
+      });
+    });
+  }
 });
 
 describe("setupGwoCards", () => {
@@ -287,5 +306,34 @@ describe("setupGwoDeck", () => {
     pending[2].callback({});
     pending[3].callback({});
     assert.equal(resolved, 1);
+  });
+
+  // A third-party id whose module returns nothing must not leave the tally
+  // outstanding: `loaded` would never resolve and every deal in the war would
+  // wait on it forever.
+  it("still resolves when a card module returns nothing", () => {
+    const { pending, requireGW } = deferredRequireGW();
+    setGlobal("model", { gwoCards: ids });
+    setGlobal("requireGW", requireGW);
+
+    const cards = [];
+    const deck = [];
+    let resolved = 0;
+    deal.setupGwoDeck(cards, deck, ids.length, {
+      resolve: () => {
+        resolved++;
+      },
+    });
+
+    pending[0].callback({});
+    pending[1].callback(undefined);
+    pending[2].callback({});
+    pending[3].callback({});
+
+    assert.equal(resolved, 1);
+    assert.equal(cards[1], undefined);
+    assert.equal(deck[1], undefined);
+    // The surviving cards keep their own indices, so the deck does not shift.
+    assert.equal(deck[2], "gwc_gamma");
   });
 });

@@ -49,6 +49,10 @@ full by the doc named:
   → [ai-paths.md](ai-paths.md)
 - **jQuery 2.x swallows a `throw` inside a deferred callback.** No rejection, no
   retry, caller hangs. → [constraints.md](constraints.md)
+- **A defensive check marks a trust boundary, and means nothing anywhere else.**
+  Where third-party code is _called_ rather than read, the check is mandatory —
+  that call sits in a deferred, so a throw is a hang, not an error.
+  → [constraints.md](constraints.md)
 - **Knockout `<!-- ko -->` blocks are executable markup, not comments.**
   → [constraints.md](constraints.md)
 - **An unrecognised AI `test_type` is not an error** — the condition simply never

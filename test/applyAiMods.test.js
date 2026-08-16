@@ -247,4 +247,50 @@ describe("applyAiMods - invalid input", () => {
     assert.equal(json.build_list[0].priority, 1);
     assert.equal(errorMock.mock.callCount(), 1);
   });
+
+  // The whole pass runs inside a deferred callback, so one card's bad descriptor
+  // would otherwise hang the battle launch rather than costing its own effect.
+  it("logs and skips a descriptor whose op throws, and still applies later mods", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    // A null build entry throws the moment any build op reads its to_build.
+    const json = {
+      build_list: [null],
+      platoon_templates: { Squad1: { units: [] } },
+    };
+
+    assert.doesNotThrow(() => {
+      applyAiMods(json, [
+        { op: "remove", toBuild: "Bot", value: 1 },
+        { op: "squad", toBuild: "Squad1", value: "Tank" },
+      ]);
+    });
+
+    assert.equal(errorMock.mock.callCount(), 1);
+    assert.deepEqual(
+      json.platoon_templates.Squad1.units,
+      ["Tank"],
+      "the descriptor after the throwing one still applied"
+    );
+  });
+
+  it("does not throw on a new op where the build entry has no build_conditions", () => {
+    const json = buildJson([{ to_build: "Bot" }]);
+    assert.doesNotThrow(() => {
+      applyAiMods(json, [{ op: "new", toBuild: "Bot", value: { a: 1 } }]);
+    });
+    assert.equal(json.build_list[0].build_conditions, undefined);
+  });
+
+  it("does not throw on a squad op where the template has no units array", () => {
+    const json = { platoon_templates: { Squad1: {} } };
+    assert.doesNotThrow(() => {
+      applyAiMods(json, [{ op: "squad", toBuild: "Squad1", value: "Tank" }]);
+    });
+  });
+
+  it("does not throw on a squad op where the file has no platoon_templates", () => {
+    assert.doesNotThrow(() => {
+      applyAiMods({}, [{ op: "squad", toBuild: "Squad1", value: "Tank" }]);
+    });
+  });
 });
