@@ -87,7 +87,12 @@ function gwoCardTooltips() {
           if (unitNamesIndexedCount !== gwoUnitToNames.units.length) {
             unitNamesByPath = {};
             _.forEach(gwoUnitToNames.units, (entry) => {
-              unitNamesByPath[entry.path] = entry.name;
+              // A mod pushes here, and this runs inside a ko subscription where
+              // a throw is uncaught - skip a malformed entry rather than lose
+              // the whole tooltip.
+              if (entry) {
+                unitNamesByPath[entry.path] = entry.name;
+              }
             });
             unitNamesIndexedCount = gwoUnitToNames.units.length;
           }

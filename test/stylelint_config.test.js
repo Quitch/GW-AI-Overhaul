@@ -7,8 +7,7 @@
 // one would have `format:css` rewrite working CSS into dead CSS.
 //
 // Expectations come from caniuse/MDN for Chromium 151; the live CEF probe pass
-// re-verifies the rendering claims when a build exists. See
-// docs/cef-migration.md.
+// re-verifies the rendering claims when a build exists. See cef-migration.md.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

@@ -40,14 +40,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], (
   // Order in equals order out, so a caller that cares which colour lands where
   // must pass clients host-first. See coop.md for what is excluded and why.
   const getOrderedSubcommanders = (inventory, game, connectedClients) => {
-    const hostCards = _.isFunction(inventory.cards) ? inventory.cards() : [];
-    let subcommanders = _.map(
-      _.isFunction(inventory.minions) ? inventory.minions() : [],
-      (minion) => ({
-        subcommander: minion,
-        cards: hostCards,
-      }),
-    );
+    // The host's own inventory is always the live GWInventory. Only the viewer
+    // records below arrive as plain objects, hence the Array.isArray tests there.
+    const hostCards = inventory.cards();
+    let subcommanders = _.map(inventory.minions(), (minion) => ({
+      subcommander: minion,
+      cards: hostCards,
+    }));
 
     const perPlayerTech =
       game &&

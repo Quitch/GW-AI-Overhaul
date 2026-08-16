@@ -12,29 +12,10 @@ const reroll = requireShippedModule(
 );
 
 describe("computeRerollDeal", () => {
-  it("spends the first reroll on a fresh 3-card offer", () => {
-    assert.deepEqual(reroll.computeRerollDeal(3, 3), {
-      rerollsUsed: 0,
-      nextRerollsUsed: 1,
-      cardCount: 2,
-      exhausted: false,
-    });
-  });
-
-  it("spends the second reroll, leaving one card", () => {
-    assert.deepEqual(reroll.computeRerollDeal(3, 2), {
-      rerollsUsed: 1,
-      nextRerollsUsed: 2,
-      cardCount: 1,
-      exhausted: false,
-    });
-  });
-
-  it("is exhausted when only one card remains of a 3-card offer", () => {
-    const state = reroll.computeRerollDeal(3, 1);
-    assert.equal(state.exhausted, true);
-    assert.equal(state.cardCount, 0);
-  });
+  // The ordinary 3-card progression - first reroll, second, then exhausted -
+  // is pinned against the stored hand and the viewer's reply in
+  // cards_coop_reroll_factory.test.js. What is left here is the two inputs
+  // that file's fixture cannot produce.
 
   it("gets an extra reroll from a bonus (4-card) offer", () => {
     assert.deepEqual(reroll.computeRerollDeal(4, 4), {
@@ -64,13 +45,6 @@ describe("pendingTechRerollValidationError", () => {
     );
   });
 
-  it("accepts a request that omits the optional star/deal_index guards", () => {
-    assert.equal(
-      reroll.pendingTechRerollValidationError({}, pending, false),
-      undefined,
-    );
-  });
-
   it("rejects pending cards with a non-numeric star or non-array cards", () => {
     assert.equal(
       reroll.pendingTechRerollValidationError(
@@ -90,13 +64,6 @@ describe("pendingTechRerollValidationError", () => {
     );
   });
 
-  it("rejects a stale star", () => {
-    assert.equal(
-      reroll.pendingTechRerollValidationError({ star: 3 }, pending, false),
-      "stale pending tech star",
-    );
-  });
-
   it("rejects a stale deal index", () => {
     assert.equal(
       reroll.pendingTechRerollValidationError(
@@ -108,12 +75,8 @@ describe("pendingTechRerollValidationError", () => {
     );
   });
 
-  it("rejects a reroll of loadout cards", () => {
-    assert.equal(
-      reroll.pendingTechRerollValidationError({ star: 2 }, pending, true),
-      "loadout cards cannot be rerolled",
-    );
-  });
+  // The stale-star and loadout refusals reach the viewer as a rejected
+  // operator in cards_coop_reroll_factory.test.js.
 });
 
 describe("pendingTechRerollRng", () => {

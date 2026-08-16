@@ -28,6 +28,9 @@ function gwoSystemChanges() {
       model.centerOnPlayer();
     });
 
+    // createBitmap and sortContainer are adapted from the base game's own
+    // gw_play.js - reformatted to this repo's style, otherwise unchanged. Their
+    // guards are stock's, not a GWO precaution, so leave them be.
     const createBitmap = (params) => {
       if (!params.url) {
         throw new Error("No URL specified");
@@ -323,6 +326,13 @@ function gwoSystemChanges() {
       const normalizedColor = (faction) =>
         _.map(faction.color[0], (c) => c / 255);
 
+      const innerRingColour = (ai) => {
+        const occupant = ai && (ai.ally || (ai.foes && ai.foes[0]));
+        return occupant
+          ? normalizedColor(GWFactions[occupant.faction]).concat(7)
+          : undefined;
+      };
+
       game.defeatTeam = (defeatedTeam) => {
         let remainingBosses = 0;
 
@@ -364,23 +374,12 @@ function gwoSystemChanges() {
       };
 
       _.forEach(model.galaxy.systems(), (system) => {
-        const ai = system.star.ai();
-        if (!ai) {
-          return;
-        }
-
-        if (!ai.ally && !ai.foes) {
-          return;
-        }
-
-        const innerColour = ai.ally
-          ? normalizedColor(GWFactions[ai.ally.faction])
-          : normalizedColor(GWFactions[ai.foes[0].faction]);
-
+        // Every system gets a ring: Conquest rolls allies and foes turn by
+        // turn, and War's defeatTeam rewrites them, so load-time state is not final
         const innerRing = createBitmap({
           url: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/inner_ring.png",
           size: [240, 240],
-          color: innerColour.concat(7),
+          color: innerRingColour(system.star.ai()) || [1, 1, 1, 7],
           scale: 0.71,
           alpha: 0.8,
         });
@@ -392,8 +391,16 @@ function gwoSystemChanges() {
 
         innerRing.visible = false;
 
+        const ringColour = ko.computed(() => innerRingColour(system.star.ai()));
+        ringColour.subscribe((colour) => {
+          if (colour) {
+            innerRing.color(colour);
+          }
+        });
+
         ko.computed(() => {
           innerRing.visible =
+            !!ringColour() &&
             (system.connected() || model.cheats.noFog()) &&
             !!system.ownerColor() &&
             system.ownerColor()[0] !== model.player.color()[0];

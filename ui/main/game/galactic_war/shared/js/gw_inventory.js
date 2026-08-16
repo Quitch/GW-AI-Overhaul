@@ -5,7 +5,7 @@
 // GWGamePatches.patch, which GWGame.load calls immediately beforehand with
 // perPlayerTechCards already set. gw_bank and gw_game_patches are both
 // dependency-free, so requiring them here cannot close the cycle that
-// shared/gw_common or shared/gw_game would. See docs/coop.md.
+// shared/gw_common or shared/gw_game would. See coop.md.
 define([
   "shared/gw_bank",
   "shared/gw_game_patches",

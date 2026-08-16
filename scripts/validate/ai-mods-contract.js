@@ -40,7 +40,8 @@ const REQUIRED_FIELDS_BY_OP = {
 };
 
 // Which `type` each op can legally target. A mismatched pair passes the field
-// shape check and then throws at runtime. `load` routes through managerPath()
+// shape check and is then dropped at runtime, silently for a shipped card -
+// which is why it is caught here instead. `load` routes through managerPath()
 // instead of the ops table, and accepts every type.
 const VALID_TYPES_BY_OP = {
   load: VALID_TYPES,

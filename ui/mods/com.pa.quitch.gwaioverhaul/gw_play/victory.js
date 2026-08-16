@@ -23,11 +23,7 @@ define(() => {
       return treasure.findTreasureStar(game.galaxy().stars()) === star;
     };
 
-    const perPlayerTech = () =>
-      !!(
-        _.isFunction(model.gwCampaignPerPlayerTechCards) &&
-        model.gwCampaignPerPlayerTechCards()
-      );
+    const perPlayerTech = () => !!model.gwCampaignPerPlayerTechCards();
 
     const guardiansStillOweALoadout = () =>
       onTreasureStar() &&
@@ -75,16 +71,11 @@ define(() => {
         return;
       }
 
-      if (_.isFunction(model.sendCampaignHostOperator)) {
-        model.sendCampaignHostOperator(warEndOperator, {});
-      }
-
+      model.sendCampaignHostOperator(warEndOperator, {});
       endWar();
     };
 
-    if (_.isFunction(model.registerCampaignHostOperatorHandler)) {
-      model.registerCampaignHostOperatorHandler(warEndOperator, endWar);
-    }
+    model.registerCampaignHostOperatorHandler(warEndOperator, endWar);
 
     game.gameState.subscribe(() => {
       // defeatTeam wins the war from inside winTurn, which sets the turn back to

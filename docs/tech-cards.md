@@ -42,7 +42,9 @@ not typos.
 it does not call `deal`/`buff`/`dull`. Of the 237 cards it shape-checks 175; 61 are
 excluded as `NOT_SHIPPED` (they depend on base-game modules absent from this repo)
 and 1 as `KNOWN_UNLOADABLE`. The run prints the live tally, and `MIN_CHECKED` is an
-enforced floor that must never be lowered to make a run pass.
+enforced floor that must never be lowered to make a run pass. The other 61 are
+reached by `test/card_deal_unit_gate.test.js`, which stubs `shared/gw_common` and so
+loads all but one — see [`testing.md`](testing.md).
 
 ## `buff` and `dull`
 
@@ -126,6 +128,33 @@ adding or removing a draw inside one card cannot move any other card's result. S
 `upgradeDeal` tests `chance` for `undefined` rather than for falsiness, so a caller
 that computes a weight of 0 legitimately (as `navalWeight` can) gets the 0 it asked
 for instead of the 60 default.
+
+### A card must be worth something to whoever is offered it
+
+A card offered to a player who owns none of the units it affects is invisible waste:
+the dealer spends a hand slot and a system's reward on it, the tooltip greys out
+every unit it names, and nothing in-game reports the problem. So **a card is dealable
+only if the player can own at least one of the units it affects** — by one of three
+routes:
+
+1. Every affected unit is in the guaranteed set `gwc_start.js` grants, which is why
+   the naval, radar, teleporter and basic-defence cards need no gate at all.
+2. `deal()` gates on ownership — `gwoCard.hasUnit(inventory.units(), …)` through
+   `conditionalDeal`/`upgradeDeal`, or an early `missingAllUnits` returning
+   `chance: 0`.
+3. The card's own `buff()` grants them. This is what exempts the `gwc_enable_*`
+   unlock cards, whose whole purpose is being offered to a player who has none.
+
+Gate on the same units the card's `card_units.js` entry declares — the list the
+tooltip shows. Where the two differ, one of them is wrong. `gwaio_cooldown_orbital`
+is the cautionary case: it halves a cooldown across both orbital factories, but the
+Orbital Launcher has no such field, so the card did nothing at all without the
+advanced factory that only its `card_units.js` entry named.
+
+`test/card_deal_unit_gate.test.js` enforces this, in both directions: a card must not
+be dealable to a player owning none of its units, and must be dealable to one owning
+all of them. A new card with no `card_units.js` entry fails it unless it is a loadout
+or listed in `gwoCardsWithoutTooltip`.
 
 `commanderWeight` scales because these cards mod `base_commander`, the spec every
 Sub Commander inherits — one card buffs your whole retinue, so retinue size rather

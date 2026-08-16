@@ -106,14 +106,15 @@ describe("AI landing policy", () => {
     assert.ok(seen.size > 1, "every turn gave the same landing policies");
   });
 
-  it("gives each commander of a multi-commander AI a policy in turn", () => {
+  // The multi-commander case is "cycles the shuffled policies for an AI with
+  // more commanders than policies" below; this fixture is a single commander.
+  it("draws the primary AI's policy from the shuffled list", () => {
     const result = primary({ minions: [] });
-    for (const policy of result[0]) {
-      assert.ok(
-        LANDING_POLICIES.includes(policy),
-        `unexpected landing policy ${policy}`,
-      );
-    }
+    assert.equal(result[0].length, 1);
+    assert.ok(
+      LANDING_POLICIES.includes(result[0][0]),
+      `unexpected landing policy ${result[0][0]}`,
+    );
   });
 
   // Per-army sub-streams: an extra minion must not move the primary AI's own

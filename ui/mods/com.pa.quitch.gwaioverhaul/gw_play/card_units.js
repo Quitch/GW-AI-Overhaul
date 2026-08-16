@@ -56,8 +56,10 @@ define([
       { id: "gwc_cost_orbital", units: gwoGroup.orbitalMobile },
       { id: "gwc_cost_sea", units: gwoGroup.navalMobile },
       {
+        // The silo's own cost is untouched, but the missile it fires is one of
+        // the discounts, so its owner is affected.
         id: "gwc_cost_super_weapons",
-        units: _.without(gwoGroup.structuresSuperWeapons, gwoUnit.nukeLauncher),
+        units: gwoGroup.structuresSuperWeapons,
       },
       { id: "gwc_cost_titans", units: gwoGroup.titans },
       { id: "gwc_cost_vehicles", units: gwoGroup.vehiclesMobile },

@@ -1,16 +1,18 @@
 "use strict";
 
-// The pure halves of a co-op ping: what a host will accept, how often it will
-// accept it, and the frame maths the marker animates on. The handlers built
-// around them are covered by coop_ping_factory.test.js.
+// The pure halves of gw_play/coop_ping_operators.js: what a host will accept
+// and how often it will accept it. The handlers built around them are covered
+// by coop_ping_factory.test.js, and the marker's frame maths - which lives in
+// coop_ping_marker.js - by coop_ping_marker.test.js.
+//
+// Note that gw_play/coop_ping.js, the scene bootstrap, has no test of its own:
+// it injects the button's HTML and calls requireGW, so there is nothing in it
+// the Node harness can reach. See docs/testing.md.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 
-const {
-  loadCouiModule,
-  requireShippedModule,
-} = require("../scripts/lib/amd-loader.js");
+const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
 
 const {
   clientKey,
@@ -23,13 +25,6 @@ const {
 } = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js",
 );
-
-const { pulseFrame } = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_marker.js",
-);
-
-const PULSE_MS = 900;
-const LIFETIME_MS = 2700;
 
 const ping = (extra) => Object.assign({ star: 1, ping_id: "p1" }, extra);
 
@@ -204,58 +199,5 @@ describe("ping cooldown", () => {
     assert.equal(cooldown.allow("__proto__", 1100), false);
     assert.equal(cooldown.allow("constructor", 1000), true);
     assert.equal(cooldown.allow("constructor", 1100), false);
-  });
-});
-
-describe("marker pulse", () => {
-  it("starts small, opaque and fully lit", () => {
-    const frame = pulseFrame(0);
-    assert.equal(frame.ringScale, 0.35);
-    assert.equal(frame.ringAlpha, 1);
-    assert.equal(frame.iconAlpha, 1);
-    assert.equal(frame.done, false);
-  });
-
-  it("expands the ring as it fades, within a pulse", () => {
-    let previous = pulseFrame(0);
-    for (let elapsed = 50; elapsed < PULSE_MS; elapsed += 50) {
-      const frame = pulseFrame(elapsed);
-      assert.ok(frame.ringScale > previous.ringScale, String(elapsed));
-      assert.ok(frame.ringAlpha < previous.ringAlpha, String(elapsed));
-      previous = frame;
-    }
-  });
-
-  it("snaps back at each pulse boundary", () => {
-    for (const boundary of [PULSE_MS, PULSE_MS * 2]) {
-      assert.ok(
-        pulseFrame(boundary).ringScale < pulseFrame(boundary - 1).ringScale,
-        String(boundary),
-      );
-      assert.equal(pulseFrame(boundary).ringScale, pulseFrame(0).ringScale);
-    }
-  });
-
-  it("holds the icon lit before fading it out at the end", () => {
-    assert.equal(pulseFrame(LIFETIME_MS * 0.75).iconAlpha, 1);
-    const late = pulseFrame(LIFETIME_MS - 100).iconAlpha;
-    assert.ok(late > 0, String(late));
-    assert.ok(late < 1, String(late));
-  });
-
-  it("is done at the end of the last pulse and stays done", () => {
-    assert.equal(pulseFrame(LIFETIME_MS - 1).done, false);
-    assert.equal(pulseFrame(LIFETIME_MS).done, true);
-    assert.equal(pulseFrame(LIFETIME_MS * 100).done, true);
-    assert.equal(pulseFrame(LIFETIME_MS).iconAlpha, 0);
-  });
-
-  // A clock that jumped backwards must not restart the pulse or make the ring
-  // scale negative.
-  it("clamps a negative or unusable elapsed time to the start", () => {
-    const start = pulseFrame(0);
-    for (const elapsed of [-1, -LIFETIME_MS, NaN, undefined, null, "500"]) {
-      assert.deepEqual(pulseFrame(elapsed), start, String(elapsed));
-    }
   });
 });

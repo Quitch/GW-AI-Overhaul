@@ -62,6 +62,11 @@ This is why 61 of the 237 cards cannot be shape-checked: they transitively depen
 on `shared/gw_common`. For sweeps where skipping them would mean testing nothing,
 `registerModuleStub` is an opt-in escape hatch — it does **not** weaken the default.
 
+`scripts/lib/card-probe.js` takes that hatch, and with `shared/gw_common` stubbed
+**236** of the 237 cards load. That sits oddly beside `validate:cards`'s 175 until
+you notice they answer different questions: the validator refuses the hatch on
+purpose, so its number is what can be checked with no stand-in at all.
+
 Because a bare `catch` around a load also swallows syntax errors and genuine
 breakage, the validators discriminate on the reason. A bare catch once reported
 real failures as "excluded" with the run still green.
@@ -96,6 +101,15 @@ entry silently never fires. That is how `HasEcoForAdvanced` (the real test is
 `HaveEcoForAdvanced`) went unnoticed. CI has no base install, so this list has to be
 committed — **re-harvest it after a PA patch adds tests.** `UnitCountonPlanet` is a
 base-game spelling variant, kept because the engine accepts what its own data ships.
+
+**`validate:schemas` checks whatever files it finds, which is why
+`test/ai_source_files.test.js` exists alongside it.** The walk covers `pa/ai`,
+`pa/ai_penchant` and `pa/ai_tech`, so a build list renamed or deleted out from
+under the code leaves the run green - it simply has one fewer file to check.
+That test is the existence half, and deliberately asserts nothing about shape:
+duplicating the schema checks there would be strictly weaker than the validator
+and drift from it. Verified by renaming a build list, which reports
+`schemas: 0 problems` and one failed test.
 
 **`validate:sonar` exists because that config is live but unreferenced.**
 `sonar-project.properties` is genuinely read by the scanner, so its exclusions and
@@ -151,6 +165,33 @@ a then property" rule warns about.
 code reads at call time. It is a factory, not a singleton, so two suites never
 share a restore stack.
 
+`scripts/lib/card-probe.js` runs a card's `deal()` and `buff()`, which is what
+`test/card_deal_unit_gate.test.js` needs and `validate:cards` deliberately refuses
+to do. Four decisions in it are load-bearing:
+
+- Its `numberOfSystems` is a **real nine-entry array**, not `createAutoStub()`.
+  `farForSize` walks `Math.min(numberOfSystems.length, thresholds.length) - 1`, and a
+  stub makes that `NaN`, so the tier loop never runs and every card scores at tier 0 —
+  the sweep stays green while testing almost nothing. Nine entries, not the base
+  game's five, because `shared/cards.js`'s own `distances` tables are cut for the four
+  sizes Bigger Galactic War adds as well.
+- It installs **no `model` global**, for the reason `amd-loader.js` gives for leaving
+  `api`/`model`/`ko` undefined: no card in scope reads one inside `deal()`, so a card
+  that starts to should throw rather than be weighted against a fake galaxy.
+- `makeInventory` is a plain object rather than an auto-stub, so a card reaching for
+  something unanticipated fails loudly instead of being scored against a Proxy that
+  says yes to everything. `lookupCard` answers `-1` — `gw_inventory`'s "absent"; `0`
+  means "the first card in the hand".
+- The starter unit set is **recorded from `gwc_start.buff()`**, never restated, so a
+  change to `gwoGroup.orbitalBasic` moves the baseline instead of silently
+  disagreeing with it.
+
+The test carries three coverage floors — `MIN_PROBED`, `MIN_DEALABLE` and the
+partition assertion that no card is unclassified. `MIN_DEALABLE` is the one with no
+analogue in `validate:cards`: without it, a broken `gw_common` stub that made every
+`deal()` return 0 would leave the card count intact and every assertion vacuously
+green. Raise them when coverage genuinely rises; never lower one to make a run pass.
+
 `scripts/lib/referee-fakes.js` installs the `fetch`/`api` wiring
 `referee_ai.js`'s file discovery needs, and returns its own restore
 function. It records every `api.file.list` and fetched-URL call unconditionally,
@@ -195,6 +236,15 @@ runtime, so the branch is dead in production and exists purely for the test
 suite. It is deliberately absent from these files' configured globals, which is
 why each occurrence carries an `eslint-disable-next-line no-undef`. The same hook
 appears in `gw_play/referee_ai.js`.
+
+**A test file is named for the module it loads, not the feature it belongs to.**
+Once the pure logic is extracted, the bootstrap that is left — `gw_play/coop_ping.js`
+injects a button and calls `requireGW`, and nothing else — has nothing the harness
+can reach, and no test. That is expected, but it only stays visible if the tests
+around it are named honestly: `coop_ping_operators.test.js` and
+`coop_ping_marker.test.js` say which module each covers, and by saying it they
+leave `coop_ping.js` conspicuously unclaimed. A `coop_ping.test.js` covering the
+operators would read as though the bootstrap were tested.
 
 `test/version.test.js` deliberately covers the one-line version bump: the SonarCloud
 new-code baseline is the previous version, so a bump always lands inside the

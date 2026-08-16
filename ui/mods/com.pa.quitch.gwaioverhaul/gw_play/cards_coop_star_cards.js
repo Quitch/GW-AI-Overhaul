@@ -1,6 +1,6 @@
 // Host-side per-viewer pre-dealt star cards. Each viewer gets their own card on
 // every selectable AI star, stored on their co-op inventory record so it rides
-// the campaign snapshot. See docs/coop.md, "Per-player pre-dealt cards".
+// the campaign snapshot. See coop.md, "Per-player pre-dealt cards".
 define(() => {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.
@@ -49,7 +49,7 @@ define(() => {
   // Whether the host may re-deal now. Every connected viewer must be level with
   // the host's deal counter, which is the server's own catch-up predicate - a
   // viewer part-way through catching up would otherwise trigger one full refresh
-  // per outstanding deal. See docs/coop.md.
+  // per outstanding deal. See coop.md.
   const viewersReadyForStarRefresh = (params) => {
     if (params.setupBlocked || params.turnState === "explore") {
       return false;

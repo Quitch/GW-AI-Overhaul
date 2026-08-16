@@ -100,6 +100,52 @@ and the polyfill no-ops. (Under Chrome 40 the polyfill was live and silently
 ignored the position argument, which is why older code here reaches for
 `_.startsWith`/`_.endsWith`.)
 
+`requireGW` is configured `waitSeconds: 0`, so a module that never arrives never
+errors either — the callback simply never fires. A tally that counts callbacks
+must count failures too, or the promise it gates is never settled at all.
+
+## Where a defensive check belongs
+
+A guard marks a **trust boundary**, so its presence should tell a reader that the
+data came from somewhere GWO does not control. Adding one anywhere else costs
+that signal, and buys nothing: a check on a value GWO itself built moments
+earlier cannot prevent a crisis, only hide one that has already happened, turning
+a stack trace into a war that silently plays wrong.
+
+Guard when the data is:
+
+- **Third-party** — a card object and its methods, `addMods`/`addAIMods`
+  descriptors, `model.gwo*` entries, a registered loadout bank, a system
+  template. The validators cover shipped cards only ([`tech-cards.md`](tech-cards.md)).
+- **Remote** — an operator payload from another peer ([`coop.md`](coop.md)).
+- **Persisted** — an older GWO's save, or user-writable `localStorage`. Name the
+  version the field appeared in, as `shared/deal.js` does.
+- **Scene- or mod-conditional** — a symbol genuinely absent from a scene the
+  module also loads into, or a base path another mod may own.
+- **Optional by contract** — `rng` on `deal()`, `keep`/`discard`.
+
+Do not guard a hard invariant, re-check what a named gate upstream already
+validated, or write a half-guard — `card.deal && card.deal(…)` followed by an
+unguarded read of the result is worse than neither, because it advertises a
+safety it does not provide.
+
+`gw_play/gwo_panel.js` is the calibration: it walks
+`model.game() → galaxy() → stars()[origin()].system()` unguarded, then checks
+`_.isPlainObject(originSystem.gwaio)` — base game trusted, the field an old save
+may lack checked.
+
+The two shapes that satisfy this rather than scattering checks are a **named
+pre-flight gate** that refuses the whole operation with a diagnostic
+(`gw_play/per_player_tech.js`), and a **per-item `try`/`catch`** so one bad entry
+in a batch is skipped rather than aborting the rest (`shared/specs.js`).
+
+That second shape is not optional where third-party code is _called_ rather than
+read. In the deliberately-still-jQuery deal/cards subsystem the reason is the
+deferred trap above — a throw is not an error but a permanent hang. In the
+converted native pipelines a throw rejects instead, which surfaces, but still
+aborts the whole launch over one bad entry; the per-item `try`/`catch` keeps it
+to a skip either way.
+
 ## CSS
 
 An unsupported CSS declaration is not a parse error, it is **silently

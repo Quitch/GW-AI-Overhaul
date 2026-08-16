@@ -8,16 +8,11 @@ define(() => {
       army.slots.some((slot) => slot && slot.ai)
     );
 
+  // 0 is reported by validateRefereeState's own playerCount branch, which owns
+  // the diagnostic - logging it here too would print it twice per failure.
   const getConnectedPlayerCount = (options) => {
     const connectedClients = options && options.connectedClients;
-    if (Array.isArray(connectedClients) && connectedClients.length) {
-      return connectedClients.length;
-    }
-
-    console.error(
-      "[GW COOP] Per-player tech referee has no connected players.",
-    );
-    return 0;
+    return Array.isArray(connectedClients) ? connectedClients.length : 0;
   };
 
   const collectHumanArmies = (config) => {

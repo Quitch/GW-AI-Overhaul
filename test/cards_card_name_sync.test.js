@@ -1,10 +1,15 @@
 "use strict";
 
-// Unit tests for the pure helpers of gw_play/cards_card_name_sync.js. The factory it
-// returns registers a co-op operator handler and leans on requireGW/$/model, so it is
-// exercised in-game; the dependency-light naming helpers are reached here through the
-// module's dead-in-production `typeof module` export hook (the referee_ai.js pattern),
-// via requireShippedModule.
+// Unit tests for the pure helpers of gw_play/cards_card_name_sync.js, reached
+// through the module's dead-in-production `typeof module` export hook (the
+// referee_ai.js pattern), via requireShippedModule.
+//
+// Only what the operator handler cannot reach lives here. Payload validation
+// and the both-graphs and neither-graph outcomes are driven end to end in
+// cards_card_name_sync_factory.test.js, whose malformed-payload loop is a
+// superset of the cases this file used to restate. What is left is the two
+// ai() guards, which the handler's fixture never trips, and the absent
+// model.galaxy branch, which its setup() always installs past.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -39,58 +44,7 @@ describe("setAiCardName", () => {
   });
 });
 
-describe("isValidSyncedStarCardNamePayload", () => {
-  it("accepts a numeric star index with a non-empty card id", () => {
-    assert.equal(
-      sync.isValidSyncedStarCardNamePayload({ star: 3, card_id: "gwc_x" }),
-      true,
-    );
-  });
-
-  it("rejects a non-numeric or NaN star index", () => {
-    assert.equal(
-      sync.isValidSyncedStarCardNamePayload({ star: "3", card_id: "gwc_x" }),
-      false,
-    );
-    assert.equal(
-      sync.isValidSyncedStarCardNamePayload({ star: NaN, card_id: "gwc_x" }),
-      false,
-    );
-  });
-
-  it("rejects a missing or empty card id", () => {
-    assert.equal(
-      sync.isValidSyncedStarCardNamePayload({ star: 3, card_id: "" }),
-      false,
-    );
-    assert.equal(sync.isValidSyncedStarCardNamePayload({ star: 3 }), false);
-  });
-});
-
 describe("applyCardNameToStarIndex", () => {
-  it("names the star in both the live board and the game galaxy", () => {
-    const boardAi = {};
-    const gameAi = {};
-    setGlobal("model", {
-      galaxy: {
-        systems: () => [undefined, { star: starWithAi(boardAi) }],
-      },
-    });
-    const game = {
-      galaxy: () => ({ stars: () => [undefined, starWithAi(gameAi)] }),
-    };
-
-    assert.equal(sync.applyCardNameToStarIndex(game, 1, "Vanguard"), true);
-    assert.equal(boardAi.cardName, "Vanguard");
-    assert.equal(gameAi.cardName, "Vanguard");
-  });
-
-  it("returns false when neither graph has the star", () => {
-    setGlobal("model", { galaxy: { systems: () => [] } });
-    const game = { galaxy: () => ({ stars: () => [] }) };
-    assert.equal(sync.applyCardNameToStarIndex(game, 0, "Vanguard"), false);
-  });
-
   it("still applies to the game galaxy when model.galaxy is absent", () => {
     const gameAi = {};
     setGlobal("model", {});

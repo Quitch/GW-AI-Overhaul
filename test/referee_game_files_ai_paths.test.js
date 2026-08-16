@@ -100,7 +100,16 @@ describe("clusterArmyIndex", () => {
 
   it("returns 0 when the primary AI's own faction is Cluster", () => {
     const ai = { faction: 4 };
-    assert.equal(refereeGameFiles.clusterArmyIndex(ai, isClusterFalse), 0);
+    assert.equal(refereeGameFiles.clusterArmyIndex(ai, gwoAI.isCluster), 0);
+  });
+
+  // A war saved before v5.44.0 stores faction as ["4"]. gwoAI.isCluster has
+  // always understood both forms; clusterArmyIndex used to test === 4 itself
+  // and so disagreed with it, sending the unit map to the non-Cluster path
+  // while setAIPath sent the build orders to /pa/ai_cluster/.
+  it("returns 0 for a pre-v5.44.0 war whose faction is the legacy array", () => {
+    const ai = { faction: ["4"] };
+    assert.equal(refereeGameFiles.clusterArmyIndex(ai, gwoAI.isCluster), 0);
   });
 
   it("returns index+1 for a specific FFA foe that is Cluster (not first/last)", () => {
@@ -135,10 +144,28 @@ describe("resolveAiUnitMapPaths", () => {
       0,
       normalPaths,
       clusterPaths,
-      isClusterFalse,
+      gwoAI.isCluster,
     );
     assert.deepEqual(resolved, clusterPaths);
   });
+
+  // The invariant the deleted ai_path_unit_map_consistency.test.js was written
+  // for, in the one form that can actually fail: unit-map routing and
+  // gwoAI.isCluster - which is what setAIPath routes the build orders on -
+  // must agree for every faction form a saved war can hold.
+  for (const faction of [4, ["4"], 1]) {
+    it(`agrees with gwoAI.isCluster for faction ${JSON.stringify(faction)}`, () => {
+      const ai = { faction: faction, foes: [{ faction: 1 }] };
+      const resolved = refereeGameFiles.resolveAiUnitMapPaths(
+        ai,
+        0,
+        normalPaths,
+        clusterPaths,
+        gwoAI.isCluster,
+      );
+      assert.equal(resolved === clusterPaths, gwoAI.isCluster(ai));
+    });
+  }
 
   it("returns the normal path pair when clusterArmyIndex does not match currentCount", () => {
     const ai = { faction: 1 };
@@ -175,6 +202,56 @@ describe("buildPlayerFiles", () => {
 
     assert.ok("/pa/ai_cluster/unit_maps/ai_unit_map.json.player" in files);
     assert.ok("/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player" in files);
+  });
+
+  it("Cluster player off Titans writes no x1 unit map", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      subcommanderType: "cluster",
+    });
+    restoreModel = installModel(fixture.game);
+
+    const files = refereeGameFiles.buildPlayerFiles(
+      {
+        playerAIUnitMap: { unit_map: {} },
+        playerX1AIUnitMap: { unit_map: {} },
+        playerSpecFiles: {},
+        inventory: fixture.inventory,
+        titans: false,
+      },
+      gwoAI,
+      gwoSpecs,
+    );
+
+    assert.ok("/pa/ai_cluster/unit_maps/ai_unit_map.json.player" in files);
+    for (const key of Object.keys(files)) {
+      assert.ok(!key.includes("_x1"));
+    }
+  });
+
+  it("non-Cluster player on Titans writes the x1 unit map under that same path", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      subcommanderType: "notCluster",
+      aiMods: [{ op: "load" }],
+    });
+    restoreModel = installModel(fixture.game);
+
+    const files = refereeGameFiles.buildPlayerFiles(
+      {
+        playerAIUnitMap: { unit_map: {} },
+        playerX1AIUnitMap: { unit_map: {} },
+        playerSpecFiles: {},
+        inventory: fixture.inventory,
+        titans: true,
+      },
+      gwoAI,
+      gwoSpecs,
+    );
+
+    const expectedPath = gwoAI.getAIPathDestination("subcommander");
+    assert.ok(expectedPath + "unit_maps/ai_unit_map.json.player" in files);
+    assert.ok(expectedPath + "unit_maps/ai_unit_map_x1.json.player" in files);
   });
 
   it("non-Cluster player writes ai_unit_map under the subcommander destination path", () => {

@@ -44,36 +44,9 @@ describe("collectPendingTechTargets", () => {
     assert.equal(result.targets[0].startLoadoutCard, undefined);
   });
 
-  it("errors when a viewer has no inventory record at all", () => {
-    const result = collect({ viewers: [viewer("alice")], records: {} });
-    assert.match(result.validationError, /Missing inventory data/);
-    assert.deepEqual(result.targets, []);
-  });
-
-  it("errors when the record has no saved inventory", () => {
-    const result = collect({
-      viewers: [viewer("alice")],
-      records: { alice: {} },
-    });
-    assert.match(result.validationError, /Missing saved inventory/);
-  });
-
-  it("errors when the viewer already holds pending tech cards", () => {
-    const result = collect({
-      viewers: [viewer("alice")],
-      records: { alice: { inventory: {}, pendingTechCards: { cards: [] } } },
-    });
-    assert.match(result.validationError, /already has pending tech cards/);
-  });
-
-  it("short-circuits: a later valid viewer is not collected after an error", () => {
-    const result = collect({
-      viewers: [viewer("missing"), viewer("bob")],
-      records: { bob: readyRecord },
-    });
-    assert.match(result.validationError, /Missing inventory data/);
-    assert.deepEqual(result.targets, []);
-  });
+  // The three validation refusals and the short-circuit that follows one are
+  // driven through the real async deal, error messages and all, in
+  // cards_coop_deal_factory.test.js's "validation" describe.
 
   it("skips (without error) a viewer whose deal count has caught up to dealIndex", () => {
     const result = collect({
@@ -168,18 +141,10 @@ describe("collectPendingTechTargets", () => {
 
 describe("dealCountForHand", () => {
   // cards_coop_reroll.js reads the spent rerolls back out of the stored hand's
-  // length, so concatenating the pre-dealt card must not lengthen it.
-  it("leaves the hand cardsOffered long however it is made up", () => {
-    for (const cardsOffered of [3, 4, 5]) {
-      for (const preDealt of [0, 1]) {
-        assert.equal(
-          coopDeal.dealCountForHand(cardsOffered, preDealt) + preDealt,
-          cardsOffered,
-        );
-      }
-    }
-  });
-
+  // length, so concatenating the pre-dealt card must not lengthen it. The
+  // counts that holds for are pinned concretely in
+  // cards_coop_deal_factory.test.js; the floor below is the one input where
+  // the subtraction alone would give the wrong answer.
   it("still deals a card if the offer were ever sized down to nothing", () => {
     assert.equal(coopDeal.dealCountForHand(1, 1), 1);
   });

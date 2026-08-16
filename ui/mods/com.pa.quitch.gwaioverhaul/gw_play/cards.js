@@ -19,7 +19,7 @@ function gwoCard() {
     locTree($("#hover-card"));
 
     // Used by cards checking for T2 access - global for modders,
-    // New-GW-Cards pushes here - see docs/tech-cards.md
+    // New-GW-Cards pushes here - see tech-cards.md
     model.gwoCardsGrantingAdvancedTech = Array.isArray(
       model.gwoCardsGrantingAdvancedTech,
     )
@@ -341,15 +341,30 @@ function gwoCard() {
           const dealOneCard = (list, iteration) => {
             const iterationRng = gwoStreams.iterationRng(dealStream, iteration);
             const fullHand = _.map(cards, (card) => {
+              // setupGwoDeck leaves a hole where a card failed to load.
+              if (!card) {
+                return undefined;
+              }
+
               const context = cardContexts[card.id];
-              const cardChance =
-                card.deal &&
-                card.deal(
-                  star,
-                  context,
-                  dealInventory,
-                  gwoStreams.cardRng(iterationRng, card.id),
-                );
+              let cardChance;
+              // A third-party card's deal() is arbitrary code, and this runs
+              // inside a deferred callback where a throw is swallowed rather
+              // than rejected - the hand would simply never arrive.
+              try {
+                cardChance =
+                  card.deal &&
+                  card.deal(
+                    star,
+                    context,
+                    dealInventory,
+                    gwoStreams.cardRng(iterationRng, card.id),
+                  );
+              } catch (e) {
+                console.error("Tech card deal() threw, skipping", card.id, e);
+                return undefined;
+              }
+
               const match = helpers.doNotDealCard(
                 dealInventory,
                 card,
@@ -359,7 +374,7 @@ function gwoCard() {
                 systemCards,
               );
 
-              if (match) {
+              if (match && cardChance) {
                 cardChance.chance = 0;
               }
 
@@ -390,8 +405,19 @@ function gwoCard() {
           const result = $.Deferred();
           loaded.then(() => {
             _.forEach(cards, (card) => {
-              if (card.getContext && !cardContexts[card.id]) {
-                cardContexts[card.id] = card.getContext(galaxy, dealInventory);
+              if (card && card.getContext && !cardContexts[card.id]) {
+                try {
+                  cardContexts[card.id] = card.getContext(
+                    galaxy,
+                    dealInventory,
+                  );
+                } catch (e) {
+                  console.error(
+                    "Tech card getContext() threw, skipping",
+                    card.id,
+                    e,
+                  );
+                }
               }
             });
 
@@ -493,10 +519,7 @@ function gwoCard() {
                     count: 1,
                     star: system.star,
                     addSlot: false,
-                    systemCards:
-                      system.star && _.isFunction(system.star.cardList)
-                        ? system.star.cardList()
-                        : [],
+                    systemCards: system.star.cardList(),
                     // Every selectable AI star is re-dealt each turn, so the
                     // turn count is what stops a star repeating its own card.
                     rng: gwoStreams.aiStarDealRng(
@@ -637,7 +660,6 @@ function gwoCard() {
           // it through sync_star_cards instead.
           if (
             !model.gwCampaignReplayingAction &&
-            star &&
             gwoTreasure.isTreasureStar(gwoSettings, starIndex)
           ) {
             const treasureLoadout = gwoTreasure.pickTreasureLoadout({
@@ -648,7 +670,7 @@ function gwoCard() {
           }
 
           const startLoadoutCards = helpers.filterStartLoadoutCards(
-            star && _.isFunction(star.cardList) ? star.cardList() : [],
+            star.cardList(),
           );
 
           const dealStarCards = chooseCards({
@@ -708,9 +730,7 @@ function gwoCard() {
               explorationLive &&
               force !== true &&
               (ok || startLoadoutCards.length) &&
-              Array.isArray(star.cardList()) &&
               star.cardList().length &&
-              game &&
               _.isFunction(game.recordHostTechCardDeal)
             ) {
               dealEntry = game.recordHostTechCardDeal(starIndex, {
@@ -723,7 +743,7 @@ function gwoCard() {
             }
 
             return model.dealCoopPlayerPendingTechCards(starIndex, star, {
-              dealIndex: dealEntry && dealEntry.dealIndex,
+              dealIndex: dealEntry.dealIndex,
               startLoadoutCards,
             });
           });

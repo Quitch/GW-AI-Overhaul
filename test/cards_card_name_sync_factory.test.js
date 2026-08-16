@@ -27,10 +27,6 @@ function setup(overrides = {}) {
       cards: { gwc_combat_bots: { summarize: () => "Combat Bots" } },
       boardAi: {},
       gameAi: {},
-      hasHostOperator: true,
-      hasIsCampaignHost: true,
-      hasConnected: true,
-      canRegister: true,
     },
     overrides,
   );
@@ -53,22 +49,12 @@ function setup(overrides = {}) {
       systems: () => [undefined, { star: starWithAi(options.boardAi) }],
     },
   };
-  if (options.canRegister) {
-    model.registerCampaignHostOperatorHandler = (name, fn) => {
-      handlers[name] = fn;
-    };
-  }
-  if (options.hasHostOperator) {
-    model.sendCampaignHostOperator = function (name, payload) {
-      calls.sent.push([name, payload, arguments[2]]);
-    };
-  }
-  if (options.hasIsCampaignHost) {
-    model.isCampaignHost = () => true;
-  }
-  if (options.hasConnected) {
-    model.gwCampaignConnected = () => true;
-  }
+  model.registerCampaignHostOperatorHandler = (name, fn) => {
+    handlers[name] = fn;
+  };
+  model.sendCampaignHostOperator = function (name, payload) {
+    calls.sent.push([name, payload, arguments[2]]);
+  };
   stubs.setGlobal("model", model);
 
   const sync = makeFactory({
@@ -166,30 +152,9 @@ describe("card name sync - naming a star the host explored", () => {
   });
 });
 
-// A single-player war, or a host whose campaign channel is not up yet, must not
-// try to broadcast - and must still name its own star.
+// The star index reaches the operator payload, so it is validated before any
+// broadcast - and the star is still named locally either way.
 describe("card name sync - when the broadcast is skipped", () => {
-  const namesButDoesNotSend = async (overrides) => {
-    const { sync, calls, options } = build(overrides);
-    const system = { star: starWithAi(options.boardAi) };
-
-    await sync.setCardName(system, [{ id: "gwc_combat_bots" }], 1);
-
-    assert.equal(options.boardAi.cardName, "Combat Bots");
-    assert.deepEqual(calls.sent, []);
-  };
-
-  it("skips a client with no host operator channel", async () => {
-    await namesButDoesNotSend({ hasHostOperator: false });
-  });
-
-  it("skips a client whose campaign hooks are absent", async () => {
-    await namesButDoesNotSend({ hasIsCampaignHost: false });
-    active.restore();
-    active = undefined;
-    await namesButDoesNotSend({ hasConnected: false });
-  });
-
   it("skips a star with no usable index", async () => {
     for (const starIndex of [undefined, "1", NaN]) {
       const { sync, calls, options } = build();
@@ -201,11 +166,6 @@ describe("card name sync - when the broadcast is skipped", () => {
       active.restore();
       active = undefined;
     }
-  });
-
-  it("installs no handler on a client that cannot register one", () => {
-    const { handlers } = build({ canRegister: false });
-    assert.deepEqual(Object.keys(handlers), []);
   });
 });
 

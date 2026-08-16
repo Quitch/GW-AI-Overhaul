@@ -1,7 +1,7 @@
 // Third-party card mods record their loadout unlocks in their own localStorage
 // key, so GWO has to be told where to look. They push { prefix, path } onto
 // model.gwoLoadoutBanks - the New-GW-Cards template's start_cards.js does this.
-// See docs/tech-cards.md, "Third-party loadout banks".
+// See tech-cards.md, "Third-party loadout banks".
 //
 // The entry carries the bank's path rather than the loaded module because scene
 // scripts run synchronously at scene load while every requireGW callback resolves
@@ -30,13 +30,22 @@ define(() => {
     // modules are what requireGW(paths()) handed back, in the same order. A path
     // that failed to load arrives undefined and is dropped rather than throwing:
     // one broken mod must not take out the loadout list.
+    //
+    // Both halves of the documented contract are required, not just the one read
+    // first: a bank that can answer hasStartCard but not record an addStartCard
+    // would otherwise pass here and throw at award time, after the player had
+    // already beaten the treasure planet. See tech-cards.md.
     resolve: function (modules) {
       const byPath = _.zipObject(paths(), modules || []);
 
       resolved = _.filter(
         _.map(entries(), (entry) => {
           const bank = entry && byPath[entry.path];
-          if (!bank || !_.isFunction(bank.hasStartCard)) {
+          if (
+            !bank ||
+            !_.isFunction(bank.hasStartCard) ||
+            !_.isFunction(bank.addStartCard)
+          ) {
             return undefined;
           }
           return { prefix: entry.prefix, bank };
@@ -50,8 +59,18 @@ define(() => {
       return resolved;
     },
 
+    // Readers include the gw_start loadout list and a ko.computed, so a mod's
+    // bank throwing here would empty the picker or break a binding. Same rule as
+    // resolve(): the broken mod loses its own unlocks, nothing more.
     hasStartCard: function (card) {
-      return _.some(resolved, (entry) => entry.bank.hasStartCard(card));
+      return _.some(resolved, (entry) => {
+        try {
+          return entry.bank.hasStartCard(card);
+        } catch (e) {
+          console.error("Loadout bank hasStartCard() threw:", entry.prefix, e);
+          return false;
+        }
+      });
     },
 
     // Which mod owns this id, by the prefix it registered. Used to write an
@@ -70,9 +89,17 @@ define(() => {
 
     startCards: function () {
       return _.flatten(
-        _.map(resolved, (entry) =>
-          _.isFunction(entry.bank.startCards) ? entry.bank.startCards() : [],
-        ),
+        _.map(resolved, (entry) => {
+          if (!_.isFunction(entry.bank.startCards)) {
+            return [];
+          }
+          try {
+            return entry.bank.startCards();
+          } catch (e) {
+            console.error("Loadout bank startCards() threw:", entry.prefix, e);
+            return [];
+          }
+        }),
       );
     },
   };

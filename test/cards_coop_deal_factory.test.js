@@ -272,6 +272,9 @@ describe("dealCoopPlayerPendingTechCards - validation", () => {
     assert.match(await rejection(deal(1)), /already has pending tech cards/);
   });
 
+  // Both orderings, because they fail differently: a viewer already collected
+  // has to be discarded, and a viewer after the failure has to be skipped
+  // rather than validated a second time against a half-built target list.
   it("deals to nobody when one viewer fails validation", async () => {
     const { calls } = build({
       viewers: [viewer("alice"), viewer("bob")],
@@ -280,6 +283,16 @@ describe("dealCoopPlayerPendingTechCards - validation", () => {
 
     await rejection(deal(1));
 
+    assert.deepEqual(calls.deals, []);
+  });
+
+  it("stops at the first failure rather than going on to later viewers", async () => {
+    const { calls } = build({
+      viewers: [viewer("alice"), viewer("bob")],
+      records: { bob: record("bob") },
+    });
+
+    assert.match(await rejection(deal(1)), /Missing inventory data/);
     assert.deepEqual(calls.deals, []);
   });
 });

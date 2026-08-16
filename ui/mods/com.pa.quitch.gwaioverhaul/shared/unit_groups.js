@@ -1,7 +1,7 @@
 // The returned key names are a published API - third-party cards written from
 // the New-GW-Cards template name them directly, so renaming one breaks them
 // silently. What a group contains is not: change the membership freely as the
-// roster changes. See docs/tech-cards.md.
+// roster changes. See tech-cards.md.
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   gwoUnit,
 ) => {

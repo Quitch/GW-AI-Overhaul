@@ -57,10 +57,7 @@ define(() => {
         !_.isNumber(starIndex) ||
         _.isNaN(starIndex) ||
         !_.isString(cardId) ||
-        !cardId.length ||
-        !model.sendCampaignHostOperator ||
-        !_.isFunction(model.isCampaignHost) ||
-        !_.isFunction(model.gwCampaignConnected)
+        !cardId.length
       ) {
         return;
       }
@@ -80,26 +77,53 @@ define(() => {
         return result.promise();
       }
 
-      requireGW([`cards/${payload.card_id}`], (data) => {
-        if (!data || !_.isFunction(data.summarize)) {
-          console.error(
-            `[GW COOP] card summarize unavailable for synced card name id=${payload.card_id}`,
-          );
-          result.reject(`Card summarize unavailable for ${payload.card_id}`);
-          return;
-        }
+      // card_id is the host's, so it can name a card mod this viewer does not
+      // have. This promise gates gwCampaignStateApplyTail, so it must settle:
+      // the errback covers a module that fails to load. requireGW is configured
+      // waitSeconds: 0, so one that never resolves at all cannot be detected.
+      const onCardUnavailable = (reason) => {
+        console.error(
+          `[GW COOP] card summarize unavailable for synced card name id=${payload.card_id}`,
+        );
+        result.reject(reason);
+      };
 
-        const cardName = loc(data.summarize());
-        if (!applyCardNameToStarIndex(game, payload.star, cardName)) {
-          console.warn(
-            `[GW COOP] unable to apply synced star card name for star=${payload.star}`,
-          );
-          result.reject(`Unable to apply card name to star ${payload.star}`);
-          return;
-        }
+      requireGW(
+        [`cards/${payload.card_id}`],
+        (data) => {
+          if (!data || !_.isFunction(data.summarize)) {
+            onCardUnavailable(
+              `Card summarize unavailable for ${payload.card_id}`,
+            );
+            return;
+          }
 
-        result.resolve();
-      });
+          let cardName;
+          try {
+            cardName = loc(data.summarize());
+          } catch (e) {
+            console.error(
+              `[GW COOP] card summarize() threw for id=${payload.card_id}`,
+              e,
+            );
+            result.reject(`Card summarize threw for ${payload.card_id}`);
+            return;
+          }
+
+          if (!applyCardNameToStarIndex(game, payload.star, cardName)) {
+            console.warn(
+              `[GW COOP] unable to apply synced star card name for star=${payload.star}`,
+            );
+            result.reject(`Unable to apply card name to star ${payload.star}`);
+            return;
+          }
+
+          result.resolve();
+        },
+        () => {
+          onCardUnavailable(`Card failed to load: ${payload.card_id}`);
+        },
+      );
 
       return result.promise();
     };
@@ -123,12 +147,10 @@ define(() => {
       return deferred.promise();
     };
 
-    if (model.registerCampaignHostOperatorHandler) {
-      model.registerCampaignHostOperatorHandler(
-        setCardNameSyncOperator,
-        applySyncedStarCardName,
-      );
-    }
+    model.registerCampaignHostOperatorHandler(
+      setCardNameSyncOperator,
+      applySyncedStarCardName,
+    );
 
     return {
       setCardName,

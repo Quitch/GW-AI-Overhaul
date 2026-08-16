@@ -17,8 +17,18 @@ define([
       found: "/VO/Computer/gw/board_tech_available_cost_reduction",
     }),
     getContext: gwoCard.getContext,
-    deal: function (system, context) {
+    deal: function (system, context, inventory) {
       var sizes = GW.balance.numberOfSystems;
+      // The nuclear missile is one of the discounts, so a player holding only the
+      // silo still gains from the card.
+      if (
+        gwoCard.missingAllUnits(
+          inventory.units(),
+          gwoGroup.structuresSuperWeapons,
+        )
+      ) {
+        return { chance: 0 };
+      }
       if (gwoCard.travelledFar(system, context, sizes)) {
         return { chance: 60 };
       }

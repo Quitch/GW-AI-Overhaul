@@ -1,4 +1,7 @@
-// Glue. The measured half is gw_play/per_player_tech.js - see testing.md.
+// Per-player tech in co-op. GWO extracts the validation to the measured
+// gw_play/per_player_tech.js (see testing.md), and continues viewers'
+// subcommanders along the player-faction colour sequence where stock leaves them
+// on colliding raw faction colours. Glue only. See shadowing.md.
 define([
   "shared/gw_common",
   "shared/gw_inventory",
@@ -30,7 +33,7 @@ define([
   var validatePerPlayerTechInputs = perPlayerTech.validatePerPlayerTechInputs;
 
   // Files not assigned by default that we wish to mod - global for modder
-  // compatibility, New-GW-Cards pushes here - see docs/tech-cards.md
+  // compatibility, New-GW-Cards pushes here - see tech-cards.md
   model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
   model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);
 

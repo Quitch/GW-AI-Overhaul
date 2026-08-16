@@ -53,6 +53,10 @@ full by the doc named:
   → [ai-paths.md](ai-paths.md)
 - **jQuery 2.x swallows a `throw` inside a deferred callback.** No rejection, no
   retry, caller hangs. → [constraints.md](constraints.md)
+- **A defensive check marks a trust boundary, and means nothing anywhere else.**
+  Where third-party code is _called_ rather than read, the check is mandatory —
+  that call sits in a deferred, so a throw is a hang, not an error.
+  → [constraints.md](constraints.md)
 - **Knockout `<!-- ko -->` blocks are executable markup, not comments.**
   → [constraints.md](constraints.md)
 - **An unrecognised AI `test_type` is not an error** — the condition simply never
@@ -72,6 +76,14 @@ These docs cover **system-level** knowledge. Line-anchored facts deliberately st
 in the code — a doc cannot surface `// otherwise it won't display its icon` at the
 moment you are editing that line. Expect both, and do not treat a documented
 subsystem as licence to delete the comments inside it.
+
+That split sets the length: past a line or two, a comment is documentation and
+belongs here instead. Where one of these docs already covers the fact, the comment
+is `See <doc>.md` (plus the section, where the doc is long) and nothing more; where
+it doesn't and the fact is subsystem-level, add it here and point at it.
+
+Rejected alternatives, tuning history and "this used to live elsewhere" belong in
+[CHANGELOG](../CHANGELOG.md). A comment states the rule that holds now.
 
 ## Verifying a change
 

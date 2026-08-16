@@ -114,10 +114,10 @@ describe("armyRange - the landing zone cap", () => {
   it("gives a capped system the same range as the same system undeclared", () => {
     const declared = sys("boading", { players: [2, 10], zoneCount: 2 });
     const undeclared = sys("abyss", { zoneCount: 2 });
-    assert.deepEqual(
-      brackets.armyRange(declared),
-      brackets.armyRange(undeclared),
-    );
+    const range = brackets.armyRange(declared);
+    assert.deepEqual(range, brackets.armyRange(undeclared));
+    // Anchored, so the equivalence cannot hold by both sides being nothing.
+    assert.deepEqual(range, [2, 2]);
   });
 
   it("pulls the minimum down with the maximum rather than inverting", () => {

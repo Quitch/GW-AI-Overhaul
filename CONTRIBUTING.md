@@ -11,6 +11,8 @@ Before submitting a change, run:
 - `npm run verify` - everything CI checks in one command: lint, formatting, structural/data validation, and unit tests.
 - `npm run format:write` - runs Prettier across the whole repo (`prettier --write .`), not just the files you touched. Stage only the files your change actually touches, per the "only modify what's necessary" rule below.
 
+Markdown and CSS are each policed by two tools, so after touching a `.md` or `.css` file run `format:md` / `format:css` and then `lint:md` / `lint:css`. Both scripts run Prettier before the linter's `--fix`, which is the order that converges: Prettier first settles the layout the linters report but cannot repair themselves (an unformatted single-line rule block trips stylelint's `declaration-block-single-line-max-declarations`), and once it has, neither linter's own fixes break `prettier --check` - markdownlint only reaches for `*` bullets when Prettier has not already made them `-`. The linter still runs last because `--fix` cannot repair every rule: markdownlint's MD025 and friends need a manual edit, and the exit code is how you learn that. `.vscode/settings.json` applies the same two passes on save. Both scripts are repo-wide, so stage only your own files.
+
 GitHub Actions runs the same checks automatically on every push, pull request, and release. `stylelint.config.mjs` is a Chromium 151 profile: `.browserslistrc` plus `stylelint-no-unsupported-browser-features` checks each declaration against caniuse, guarding against features newer than the engine, and hand-written rules ban the syntax no Blink release ever shipped, which caniuse cannot flag. Don't remove an entry or "fix" the usage it covers as a drive-by: `format:css` runs `stylelint --fix` across the repo, so a mis-set rule there produces CSS the engine silently drops.
 
 SonarLint remains useful as an editor extension for local feedback beyond what the above covers.
@@ -32,7 +34,7 @@ Any submissions should follow the requirements below:
 - File shadowing must not be used unless unavoidable.
 - Camel case must be used for JavaScript.
 - Kebab case or snake case, lower case only, must be used for CSS class and id names. You do not need to memorise what Chromium 151 supports in CSS: `stylelint.config.mjs` checks every declaration against caniuse and bans the never-shipped syntax by hand, and the lint will tell you either way.
-- Code must be formatted using prettier.
+- Code must be formatted using prettier. The one exception is the `pa/**` data tree, excluded in `.prettierignore` because those JSON files are intentionally minified to a single line, matching the base game's own convention - don't reformat them, and don't narrow the exclusion back to an enumerated file list.
 - Commit summaries must be informative but concise, with any required detail in the body.
 - `CHANGELOG.md` additions always go under an `## Unreleased` heading, as `### Added`, `### Changed` or `### Bugfix`. A versioned heading describes a copy that has shipped, so its entries are static - never add to one or amend it. While a feature is still unreleased, later fixes and refinements to it are not changes anyone can have seen: the entry says the feature exists, and is not extended to describe the work that went into it.
 

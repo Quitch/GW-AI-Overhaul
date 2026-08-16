@@ -148,15 +148,17 @@ define([
           _.forEach(build.build_conditions, (testArray) => {
             testArray.push(value);
           });
-        } else {
+        } else if (Array.isArray(build.build_conditions)) {
           build.build_conditions.push(value);
         }
       });
     },
     // template only
     squad: function (json, value, toBuild) {
-      if (json.platoon_templates[toBuild]) {
-        json.platoon_templates[toBuild].units.push(value);
+      const template =
+        json.platoon_templates && json.platoon_templates[toBuild];
+      if (template && Array.isArray(template.units)) {
+        template.units.push(value);
       }
     },
   };
@@ -167,29 +169,25 @@ define([
         console.error("Invalid AI mod operation:", mod);
         return;
       }
-      aiModOps[mod.op](
-        json,
-        mod.value,
-        mod.toBuild,
-        mod.idToMod,
-        mod.refId,
-        mod.refValue,
-        mod.matchAll,
-      );
+      // Descriptors come from third-party cards, so one bad mod must skip,
+      // not reject the whole launch. Matches shared/specs.js.
+      try {
+        aiModOps[mod.op](
+          json,
+          mod.value,
+          mod.toBuild,
+          mod.idToMod,
+          mod.refId,
+          mod.refValue,
+          mod.matchAll,
+        );
+      } catch (e) {
+        console.error("applyAiMods: op threw, skipping mod", mod, e);
+      }
     });
   };
 
-  const getRefereeInventoryAiMods = (inventory) => {
-    if (!inventory) {
-      return [];
-    }
-
-    if (_.isFunction(inventory.aiMods)) {
-      return inventory.aiMods();
-    }
-
-    return inventory.aiMods || [];
-  };
+  const getRefereeInventoryAiMods = gwoAI.getInventoryAiMods;
 
   const getConnectedClientAiMods = (game, connectedClients) => {
     let connectedClientAiMods = [];
@@ -251,7 +249,9 @@ define([
       case "template":
         return "platoon_templates/";
       default:
-        throw new Error(`Invalid AI file type: ${type}`);
+        // Undefined rather than a throw: a third-party card's bad type must
+        // not reject the whole battle launch.
+        return undefined;
     }
   };
 
@@ -272,7 +272,12 @@ define([
       });
 
       _.forEach(aiLoadMods, (file) => {
-        fileList.push(`/pa/ai_tech/${managerPath(file.type)}${file.value}`);
+        const directory = managerPath(file.type);
+        if (_.isUndefined(directory)) {
+          console.error("Invalid AI file type in load mod:", file);
+          return;
+        }
+        fileList.push(`/pa/ai_tech/${directory}${file.value}`);
       });
     }
   };
@@ -330,7 +335,7 @@ define([
 
     const clusterAIModsInScopeOfFile = () => {
       if (!filePathIncludes("/factory_builds/")) {
-        return;
+        return [];
       }
 
       const clusterCommanders = ["SupportPlatform", "SupportCommander"];
@@ -347,7 +352,7 @@ define([
 
     // built on the assumption that the Guardians are never Cluster
     const processClusterJson = (json, pathLength) => {
-      const clusterOps = clusterAIModsInScopeOfFile() || [];
+      const clusterOps = clusterAIModsInScopeOfFile();
       const clusterJson = _.cloneDeep(json);
       const clusterFilePath = changeFilePath(
         refereeAIPaths.getAIPathDestination(

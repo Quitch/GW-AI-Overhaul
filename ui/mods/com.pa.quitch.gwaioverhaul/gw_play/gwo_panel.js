@@ -20,9 +20,7 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwoDeck = deckName(model.gwoSettings.techCardDeck);
     // Wars created before seeds were recorded have none.
     model.gwoSeed = model.gwoSettings.seed || loc("!LOC:Unknown");
-    const coopPlayerScalingCount =
-      model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
-    const playerCount = coopPlayerScalingCount || 1;
+    const playerCount = model.gwoSettings.coopPlayerScalingCount || 1;
     // i18n lookups are case sensitive, and these two casings have the widest
     // locale coverage. gwo_panel.html cases the word back down afterwards.
     const playerOrPlayers =
@@ -37,8 +35,6 @@ function gwoWarInfoPanel(gwoSettings) {
       if (
         // A latch - without it the save is rewritten on every join and leave.
         !gwoSettings.tooManyPlayers &&
-        model.gwCampaignConnectedClients &&
-        _.isFunction(model.gwCampaignConnectedClients) &&
         playerScaling &&
         model.gwCampaignConnectedClients().length > playerScaling
       ) {
@@ -61,16 +57,12 @@ function gwoWarInfoPanel(gwoSettings) {
       if (gwoViewerIdentityWarned) {
         return;
       }
-      if (!_.isFunction(model.isCampaignViewer) || !model.isCampaignViewer()) {
+      if (!model.isCampaignViewer()) {
         return;
       }
 
-      const uberId = _.isFunction(model.uberId) ? model.uberId() : undefined;
-      const displayName = _.isFunction(model.displayName)
-        ? model.displayName()
-        : undefined;
-
-      if (uberId && displayName) {
+      // Present but empty is the case being reported - see the comment above.
+      if (model.uberId() && model.displayName()) {
         return;
       }
 
@@ -84,15 +76,13 @@ function gwoWarInfoPanel(gwoSettings) {
     };
 
     warnIfViewerIdentityMissing();
-    if (_.isFunction(model.gwCampaignConnected)) {
-      model.gwCampaignConnected.subscribe(warnIfViewerIdentityMissing);
-    }
+    model.gwCampaignConnected.subscribe(warnIfViewerIdentityMissing);
 
     const cheatsDetected = () => {
       if (!model.devMode()) {
         return;
       }
-      if (_.isFunction(model.isCampaignViewer) && model.isCampaignViewer()) {
+      if (model.isCampaignViewer()) {
         return;
       }
 

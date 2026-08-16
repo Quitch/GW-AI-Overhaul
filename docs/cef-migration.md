@@ -19,6 +19,37 @@ The work is staged:
    Chromium 151, then modernise syntax in the mod namespace.
 3. **Can** — reduce reliance on jQuery/lodash where native JS now suffices.
 
+## Keeping up with `develop`
+
+All three stages are complete, so `develop` is merged in periodically rather
+than the branch being rebased. Everything `develop` adds arrives in Chrome-40
+idiom and has to be brought over the same boundary the stages drew, which is a
+mechanical pass rather than a judgement call:
+
+1. Resolve in favour of `develop` for anything whose conflict is only the ES5
+   vs modern spelling of the same logic — its version is the newer behaviour.
+   Keep this branch's version only where the file _is_ CEF work
+   (`referee_ai.js`, `referee_game_file_paths.js`, `per_player_tech.js`,
+   `stylelint.config.mjs` and its test), and hand-apply `develop`'s behaviour
+   changes onto it.
+2. Re-run the modernisation over every file taken from `develop`: `npx lebab
+--replace <file> --transform let,arrow,arrow-return,template,obj-shorthand`,
+   then `_.isArray` → `Array.isArray`, `_.assign({},` → `Object.assign({},`,
+   the lodash-3-only names in the table below, and `_.constant(<primitive>)` →
+   an arrow in mod-authored cards. Scene entry flags stay `var` — the
+   scene-scope rule in [constraints.md](constraints.md).
+3. Re-apply the dynamic-URL routing by hand: a new `window.location.href`,
+   `$.get`/`$.ajax` or `"coui:/" + path` site from `develop` must go through
+   `shared/gwo_url.js`, and new fetching through `shared/gwo_fetch.js`.
+4. Sweep before committing — no ES5 idiom left in the mod namespace outside the
+   stock copies, and `npm run verify` green. `develop`'s _own_ files keep their
+   own conventions; realigning those is drive-by.
+
+Merged to `develop`'s v6.10.3 (2026-08-16). The one behaviour change that
+needed aligning by hand rather than merging: `develop`'s new inner-ring colour
+helper in `gw_play/systems.js` uses `_.first`, which this branch had already
+replaced with `[0]`.
+
 ## Evidence baseline
 
 A test against a CEF **v149** PA dev build (relayed 2026-08-12) drove

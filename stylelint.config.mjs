@@ -6,8 +6,7 @@
 // Two nets catch that. The plugin below checks every declaration against
 // caniuse for .browserslistrc's `chrome 151`, which guards against features
 // newer than the engine. The hand-written lists are down to what caniuse
-// cannot express: syntax no Blink release ever shipped. See
-// docs/constraints.md.
+// cannot express: syntax no Blink release ever shipped. See constraints.md.
 //
 // All CSS in this repo is shipped to the engine, so there is no `overrides`
 // block; Node-side CSS, if it ever appears, would need one.
