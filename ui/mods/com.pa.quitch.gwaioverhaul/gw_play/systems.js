@@ -28,6 +28,9 @@ function gwoSystemChanges() {
       model.centerOnPlayer();
     });
 
+    // createBitmap and sortContainer are adapted from the base game's own
+    // gw_play.js - reformatted to this repo's style, otherwise unchanged. Their
+    // guards are stock's, not a GWO precaution, so leave them be.
     var createBitmap = function (params) {
       if (!params.url) {
         throw new Error("No URL specified");

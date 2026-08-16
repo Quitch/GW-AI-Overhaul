@@ -1,8 +1,10 @@
 "use strict";
 
-// The CreateJS half of a ping marker: what it attaches to a star, how it takes
-// itself back off, and the two ways it can be told the map is not ticking.
-// pulseFrame itself is pinned in coop_ping.test.js.
+// gw_play/coop_ping_marker.js, both halves: pulseFrame, the pure frame maths,
+// and the CreateJS layer built on it - what it attaches to a star, how it
+// takes itself back off, and the two ways it can be told the map is not
+// ticking. The layer tests assert the ring is wired to pulseFrame's output;
+// the values it should be wired to are the "marker pulse" describe at the end.
 
 const {
   describe,
@@ -17,10 +19,11 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
-const { createLayer } = loadCouiModule(
+const { createLayer, pulseFrame } = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_marker.js"
 );
 
+const PULSE_MS = 900;
 const LIFETIME_MS = 2700;
 const BACKSTOP_MS = LIFETIME_MS + 2000;
 
@@ -253,5 +256,58 @@ describe("animating and removing a marker", () => {
     layer.remove(7);
 
     assert.deepEqual(system.systemDisplay.children, []);
+  });
+});
+
+describe("marker pulse", () => {
+  it("starts small, opaque and fully lit", () => {
+    const frame = pulseFrame(0);
+    assert.equal(frame.ringScale, 0.35);
+    assert.equal(frame.ringAlpha, 1);
+    assert.equal(frame.iconAlpha, 1);
+    assert.equal(frame.done, false);
+  });
+
+  it("expands the ring as it fades, within a pulse", () => {
+    let previous = pulseFrame(0);
+    for (let elapsed = 50; elapsed < PULSE_MS; elapsed += 50) {
+      const frame = pulseFrame(elapsed);
+      assert.ok(frame.ringScale > previous.ringScale, String(elapsed));
+      assert.ok(frame.ringAlpha < previous.ringAlpha, String(elapsed));
+      previous = frame;
+    }
+  });
+
+  it("snaps back at each pulse boundary", () => {
+    for (const boundary of [PULSE_MS, PULSE_MS * 2]) {
+      assert.ok(
+        pulseFrame(boundary).ringScale < pulseFrame(boundary - 1).ringScale,
+        String(boundary)
+      );
+      assert.equal(pulseFrame(boundary).ringScale, pulseFrame(0).ringScale);
+    }
+  });
+
+  it("holds the icon lit before fading it out at the end", () => {
+    assert.equal(pulseFrame(LIFETIME_MS * 0.75).iconAlpha, 1);
+    const late = pulseFrame(LIFETIME_MS - 100).iconAlpha;
+    assert.ok(late > 0, String(late));
+    assert.ok(late < 1, String(late));
+  });
+
+  it("is done at the end of the last pulse and stays done", () => {
+    assert.equal(pulseFrame(LIFETIME_MS - 1).done, false);
+    assert.equal(pulseFrame(LIFETIME_MS).done, true);
+    assert.equal(pulseFrame(LIFETIME_MS * 100).done, true);
+    assert.equal(pulseFrame(LIFETIME_MS).iconAlpha, 0);
+  });
+
+  // A clock that jumped backwards must not restart the pulse or make the ring
+  // scale negative.
+  it("clamps a negative or unusable elapsed time to the start", () => {
+    const start = pulseFrame(0);
+    for (const elapsed of [-1, -LIFETIME_MS, NaN, undefined, null, "500"]) {
+      assert.deepEqual(pulseFrame(elapsed), start, String(elapsed));
+    }
   });
 });

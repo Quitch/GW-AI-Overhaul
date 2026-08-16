@@ -24,10 +24,7 @@ define(function () {
     };
 
     var perPlayerTech = function () {
-      return !!(
-        _.isFunction(model.gwCampaignPerPlayerTechCards) &&
-        model.gwCampaignPerPlayerTechCards()
-      );
+      return !!model.gwCampaignPerPlayerTechCards();
     };
 
     var guardiansStillOweALoadout = function () {
@@ -80,16 +77,11 @@ define(function () {
         return;
       }
 
-      if (_.isFunction(model.sendCampaignHostOperator)) {
-        model.sendCampaignHostOperator(warEndOperator, {});
-      }
-
+      model.sendCampaignHostOperator(warEndOperator, {});
       endWar();
     };
 
-    if (_.isFunction(model.registerCampaignHostOperatorHandler)) {
-      model.registerCampaignHostOperatorHandler(warEndOperator, endWar);
-    }
+    model.registerCampaignHostOperatorHandler(warEndOperator, endWar);
 
     game.gameState.subscribe(function () {
       // defeatTeam wins the war from inside winTurn, which sets the turn back to

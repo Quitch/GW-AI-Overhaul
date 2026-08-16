@@ -240,9 +240,16 @@ define([
     setupGwoDeck: function (cards, deck, cardsRemaining, promise) {
       _.forEach(model.gwoCards, function (cardId, index) {
         requireGW(["cards/" + cardId], function (card) {
-          card.id = cardId;
-          cards[index] = card;
-          deck[index] = cardId;
+          // A third-party id whose module is missing or returns nothing must
+          // still count towards the tally: leaving it outstanding would hang
+          // every deal in the war rather than costing one card.
+          if (card) {
+            card.id = cardId;
+            cards[index] = card;
+            deck[index] = cardId;
+          } else {
+            console.error("GWO card loaded but returned nothing:", cardId);
+          }
           --cardsRemaining;
           if (cardsRemaining === 0) {
             promise.resolve();
@@ -261,19 +268,29 @@ define([
           return result;
         }
 
-        var context =
-          card.getContext && card.getContext(params.galaxy, params.inventory);
-
-        var deal =
-          card.deal &&
-          card.deal(params.star, context, params.inventory, params.rng);
         var product = { id: params.id };
-        var cardParams = deal && deal.params;
-        if (cardParams && _.isPlainObject(cardParams)) {
-          _.assign(product, cardParams);
+
+        // The card is arbitrary third-party code and this is a jQuery deferred
+        // callback, where a throw neither rejects nor surfaces - it would leave
+        // the caller waiting forever. Reject instead, and let it be handled.
+        try {
+          var context =
+            card.getContext && card.getContext(params.galaxy, params.inventory);
+
+          var deal =
+            card.deal &&
+            card.deal(params.star, context, params.inventory, params.rng);
+          var cardParams = deal && deal.params;
+          if (cardParams && _.isPlainObject(cardParams)) {
+            _.assign(product, cardParams);
+          }
+          card.keep && card.keep(deal, context);
+          card.releaseContext && card.releaseContext(context);
+        } catch (e) {
+          console.error("GWO card threw while being dealt:", params.id, e);
+          result.reject(e);
+          return;
         }
-        card.keep && card.keep(deal, context);
-        card.releaseContext && card.releaseContext(context);
 
         result.resolve(product);
       });

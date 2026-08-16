@@ -19,11 +19,14 @@ define(function () {
     return aiPath + "unit_maps/ai_unit_map" + append;
   };
 
+  // The primary AI is tested through isClusterFn, as its foes already are: a
+  // war saved before v5.44.0 holds faction as ["4"], which a bare === 4 misses,
+  // routing the unit map away from the ai_path setAIPath assigned it.
   var clusterArmyIndex = function (ai, isClusterFn) {
     var guardians = ai.mirrorMode;
     if (guardians) {
       return -1;
-    } else if (ai.faction === 4) {
+    } else if (isClusterFn(ai)) {
       return 0;
     } else if (ai.foes) {
       var index = _.findIndex(ai.foes, function (foe) {

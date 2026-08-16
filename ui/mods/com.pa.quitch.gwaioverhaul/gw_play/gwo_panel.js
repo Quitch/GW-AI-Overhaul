@@ -20,9 +20,7 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwoDeck = deckName(model.gwoSettings.techCardDeck);
     // Wars created before seeds were recorded have none.
     model.gwoSeed = model.gwoSettings.seed || loc("!LOC:Unknown");
-    var coopPlayerScalingCount =
-      model.gwoSettings && model.gwoSettings.coopPlayerScalingCount;
-    var playerCount = coopPlayerScalingCount || 1;
+    var playerCount = model.gwoSettings.coopPlayerScalingCount || 1;
     // i18n lookups are case sensitive, and these two casings have the widest
     // locale coverage. gwo_panel.html cases the word back down afterwards.
     var playerOrPlayers =
@@ -38,8 +36,6 @@ function gwoWarInfoPanel(gwoSettings) {
       if (
         // A latch - without it the save is rewritten on every join and leave.
         !gwoSettings.tooManyPlayers &&
-        model.gwCampaignConnectedClients &&
-        _.isFunction(model.gwCampaignConnectedClients) &&
         playerScaling &&
         model.gwCampaignConnectedClients().length > playerScaling
       ) {
@@ -62,16 +58,12 @@ function gwoWarInfoPanel(gwoSettings) {
       if (gwoViewerIdentityWarned) {
         return;
       }
-      if (!_.isFunction(model.isCampaignViewer) || !model.isCampaignViewer()) {
+      if (!model.isCampaignViewer()) {
         return;
       }
 
-      var uberId = _.isFunction(model.uberId) ? model.uberId() : undefined;
-      var displayName = _.isFunction(model.displayName)
-        ? model.displayName()
-        : undefined;
-
-      if (uberId && displayName) {
+      // Present but empty is the case being reported - see the comment above.
+      if (model.uberId() && model.displayName()) {
         return;
       }
 
@@ -85,15 +77,13 @@ function gwoWarInfoPanel(gwoSettings) {
     };
 
     warnIfViewerIdentityMissing();
-    if (_.isFunction(model.gwCampaignConnected)) {
-      model.gwCampaignConnected.subscribe(warnIfViewerIdentityMissing);
-    }
+    model.gwCampaignConnected.subscribe(warnIfViewerIdentityMissing);
 
     var cheatsDetected = function () {
       if (!model.devMode()) {
         return;
       }
-      if (_.isFunction(model.isCampaignViewer) && model.isCampaignViewer()) {
+      if (model.isCampaignViewer()) {
         return;
       }
 
@@ -342,9 +332,7 @@ function gwoWarInfoPanel(gwoSettings) {
               character: model.gwoLoadout,
             },
           ];
-          var connectedClients = _.isFunction(model.gwCampaignConnectedClients)
-            ? model.gwCampaignConnectedClients()
-            : [];
+          var connectedClients = model.gwCampaignConnectedClients();
           var activeCommanderKeys = {};
 
           if (coopCampaign) {

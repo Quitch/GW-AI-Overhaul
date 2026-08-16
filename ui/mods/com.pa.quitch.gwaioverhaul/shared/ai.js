@@ -3,6 +3,9 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
 ], function (refereeAIPaths, gwoDifficulty, subcommanderTech) {
+  // The host's inventory is the live GWInventory, where aiMods is an observable;
+  // a co-op viewer's arrives deserialised from the war record, where it is a
+  // plain array. Both reach the referee, so both shapes are read here.
   var getInventoryAiMods = function (inventory) {
     if (!inventory) {
       return [];
@@ -49,6 +52,7 @@ define([
 
   return {
     aiInUse: aiInUse,
+    getInventoryAiMods: getInventoryAiMods,
 
     getAIPathSource: function (type) {
       var currentAiInUse = aiInUse(type);

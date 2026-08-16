@@ -91,10 +91,6 @@ define([
       requestId,
       payload
     ) {
-      if (!model.sendCampaignHostOperator) {
-        return;
-      }
-
       model.sendCampaignHostOperator(setupGeneralCommanderResult, payload, {
         target_client_id: clientId,
         request_id: requestId,
@@ -127,11 +123,7 @@ define([
         return;
       }
 
-      if (
-        payload.changed &&
-        model.prepareCoopPlayerInventories &&
-        _.isFunction(model.prepareCoopPlayerInventories)
-      ) {
+      if (payload.changed && _.isFunction(model.prepareCoopPlayerInventories)) {
         return model.prepareCoopPlayerInventories();
       }
     };
@@ -306,19 +298,15 @@ define([
       return result.promise();
     };
 
-    if (model.registerCampaignViewerOperatorHandler) {
-      model.registerCampaignViewerOperatorHandler(
-        setupGeneralCommanderRequest,
-        setupGeneralCommanderForCoopPlayer
-      );
-    }
+    model.registerCampaignViewerOperatorHandler(
+      setupGeneralCommanderRequest,
+      setupGeneralCommanderForCoopPlayer
+    );
 
-    if (model.registerCampaignHostOperatorHandler) {
-      model.registerCampaignHostOperatorHandler(
-        setupGeneralCommanderResult,
-        applyGeneralCommanderSetupResult
-      );
-    }
+    model.registerCampaignHostOperatorHandler(
+      setupGeneralCommanderResult,
+      applyGeneralCommanderSetupResult
+    );
 
     return function setupGeneralCommander() {
       var cards;

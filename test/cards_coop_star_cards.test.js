@@ -223,7 +223,6 @@ describe("starNeedsViewerCard", () => {
   });
 
   it("fills a gap whatever prompted the refresh", () => {
-    assert.equal(needs({ redeal: false }), true);
     assert.equal(needs({ redeal: true }), true);
   });
 

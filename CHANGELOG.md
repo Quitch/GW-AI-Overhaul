@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## v6.10.3 - 2026-08-16
+
+### Bugfix
+
+- A faulty card from a third-party card mod no longer hangs the game. Whether it fails while being offered, while its loadout is dealt, or while its AI tech is applied at battle launch, the card is now skipped and the war carries on
+- A card a mod registers but does not ship no longer leaves Go To War, or every tech offer for the rest of the war, waiting forever
+- A card mod that records loadout unlocks but cannot write them back is now refused up front, rather than failing once you had already beaten the treasure planet
+- Joining a co-op host who is running a card mod you do not have no longer stops campaign updates reaching you
+- A system source from another mod that fails to load no longer hangs Go To War
+- Cluster now gets its own unit map in a war saved before v5.44.0. Those saves record the faction in an older format, which sent the unit map to the standard AI path while Cluster's build orders were read from its own
+
 ## v6.10.2 - 2026-08-15
 
 ### Changed

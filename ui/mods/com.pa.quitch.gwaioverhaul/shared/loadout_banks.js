@@ -31,13 +31,22 @@ define(function () {
     // modules are what requireGW(paths()) handed back, in the same order. A path
     // that failed to load arrives undefined and is dropped rather than throwing:
     // one broken mod must not take out the loadout list.
+    //
+    // Both halves of the documented contract are required, not just the one read
+    // first: a bank that can answer hasStartCard but not record an addStartCard
+    // would otherwise pass here and throw at award time, after the player had
+    // already beaten the treasure planet. See tech-cards.md.
     resolve: function (modules) {
       var byPath = _.zipObject(paths(), modules || []);
 
       resolved = _.filter(
         _.map(entries(), function (entry) {
           var bank = entry && byPath[entry.path];
-          if (!bank || !_.isFunction(bank.hasStartCard)) {
+          if (
+            !bank ||
+            !_.isFunction(bank.hasStartCard) ||
+            !_.isFunction(bank.addStartCard)
+          ) {
             return undefined;
           }
           return { prefix: entry.prefix, bank: bank };
@@ -51,9 +60,17 @@ define(function () {
       return resolved;
     },
 
+    // Readers include the gw_start loadout list and a ko.computed, so a mod's
+    // bank throwing here would empty the picker or break a binding. Same rule as
+    // resolve(): the broken mod loses its own unlocks, nothing more.
     hasStartCard: function (card) {
       return _.some(resolved, function (entry) {
-        return entry.bank.hasStartCard(card);
+        try {
+          return entry.bank.hasStartCard(card);
+        } catch (e) {
+          console.error("Loadout bank hasStartCard() threw:", entry.prefix, e);
+          return false;
+        }
       });
     },
 
@@ -74,9 +91,15 @@ define(function () {
     startCards: function () {
       return _.flatten(
         _.map(resolved, function (entry) {
-          return _.isFunction(entry.bank.startCards)
-            ? entry.bank.startCards()
-            : [];
+          if (!_.isFunction(entry.bank.startCards)) {
+            return [];
+          }
+          try {
+            return entry.bank.startCards();
+          } catch (e) {
+            console.error("Loadout bank startCards() threw:", entry.prefix, e);
+            return [];
+          }
         })
       );
     },

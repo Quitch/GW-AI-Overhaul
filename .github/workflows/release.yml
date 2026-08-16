@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 # This runs *after* the GitHub Release already exists, so it's a loud post-publish
 # alarm for "something's inconsistent," not a gate that can stop a bad release from
 # going out. Real prevention has to happen before a maintainer clicks "Publish
