@@ -204,6 +204,56 @@ describe("buildPlayerFiles", () => {
     assert.ok("/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player" in files);
   });
 
+  it("Cluster player off Titans writes no x1 unit map", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      subcommanderType: "cluster",
+    });
+    restoreModel = installModel(fixture.game);
+
+    const files = refereeGameFiles.buildPlayerFiles(
+      {
+        playerAIUnitMap: { unit_map: {} },
+        playerX1AIUnitMap: { unit_map: {} },
+        playerSpecFiles: {},
+        inventory: fixture.inventory,
+        titans: false,
+      },
+      gwoAI,
+      gwoSpecs
+    );
+
+    assert.ok("/pa/ai_cluster/unit_maps/ai_unit_map.json.player" in files);
+    for (const key of Object.keys(files)) {
+      assert.ok(!key.includes("_x1"));
+    }
+  });
+
+  it("non-Cluster player on Titans writes the x1 unit map under that same path", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      subcommanderType: "notCluster",
+      aiMods: [{ op: "load" }],
+    });
+    restoreModel = installModel(fixture.game);
+
+    const files = refereeGameFiles.buildPlayerFiles(
+      {
+        playerAIUnitMap: { unit_map: {} },
+        playerX1AIUnitMap: { unit_map: {} },
+        playerSpecFiles: {},
+        inventory: fixture.inventory,
+        titans: true,
+      },
+      gwoAI,
+      gwoSpecs
+    );
+
+    const expectedPath = gwoAI.getAIPathDestination("subcommander");
+    assert.ok(expectedPath + "unit_maps/ai_unit_map.json.player" in files);
+    assert.ok(expectedPath + "unit_maps/ai_unit_map_x1.json.player" in files);
+  });
+
   it("non-Cluster player writes ai_unit_map under the subcommander destination path", () => {
     const fixture = buildGame({
       aiInUse: "Titans",
