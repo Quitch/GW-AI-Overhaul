@@ -230,6 +230,15 @@ suite. It is deliberately absent from these files' configured globals, which is
 why each occurrence carries an `eslint-disable-next-line no-undef`. The same hook
 appears in `gw_play/referee_ai.js`.
 
+**A test file is named for the module it loads, not the feature it belongs to.**
+Once the pure logic is extracted, the bootstrap that is left — `gw_play/coop_ping.js`
+injects a button and calls `requireGW`, and nothing else — has nothing the harness
+can reach, and no test. That is expected, but it only stays visible if the tests
+around it are named honestly: `coop_ping_operators.test.js` and
+`coop_ping_marker.test.js` say which module each covers, and by saying it they
+leave `coop_ping.js` conspicuously unclaimed. A `coop_ping.test.js` covering the
+operators would read as though the bootstrap were tested.
+
 `test/version.test.js` deliberately covers the one-line version bump: the SonarCloud
 new-code baseline is the previous version, so a bump always lands inside the
 new-code period and an uncovered one drags "Coverage on New Code" to 0% by itself.
