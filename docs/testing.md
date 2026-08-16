@@ -98,6 +98,15 @@ entry silently never fires. That is how `HasEcoForAdvanced` (the real test is
 committed — **re-harvest it after a PA patch adds tests.** `UnitCountonPlanet` is a
 base-game spelling variant, kept because the engine accepts what its own data ships.
 
+**`validate:schemas` checks whatever files it finds, which is why
+`test/ai_source_files.test.js` exists alongside it.** The walk covers `pa/ai`,
+`pa/ai_penchant` and `pa/ai_tech`, so a build list renamed or deleted out from
+under the code leaves the run green - it simply has one fewer file to check.
+That test is the existence half, and deliberately asserts nothing about shape:
+duplicating the schema checks there would be strictly weaker than the validator
+and drift from it. Verified by renaming a build list, which reports
+`schemas: 0 problems` and one failed test.
+
 **`validate:sonar` exists because that config is live but unreferenced.**
 `sonar-project.properties` is genuinely read by the scanner, so its exclusions and
 coverage settings are real config — but nothing else reads it, so its paths drift
