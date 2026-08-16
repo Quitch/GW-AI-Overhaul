@@ -5,16 +5,11 @@ define(function () {
     return !!(army && _.isArray(army.slots) && _.any(army.slots, "ai"));
   };
 
+  // 0 is reported by validateRefereeState's own playerCount branch, which owns
+  // the diagnostic - logging it here too would print it twice per failure.
   var getConnectedPlayerCount = function (options) {
     var connectedClients = options && options.connectedClients;
-    if (_.isArray(connectedClients) && connectedClients.length) {
-      return connectedClients.length;
-    }
-
-    console.error(
-      "[GW COOP] Per-player tech referee has no connected players."
-    );
-    return 0;
+    return _.isArray(connectedClients) ? connectedClients.length : 0;
   };
 
   var collectHumanArmies = function (config) {

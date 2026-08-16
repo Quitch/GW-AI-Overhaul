@@ -525,10 +525,7 @@ function gwoCard() {
                     count: 1,
                     star: system.star,
                     addSlot: false,
-                    systemCards:
-                      system.star && _.isFunction(system.star.cardList)
-                        ? system.star.cardList()
-                        : [],
+                    systemCards: system.star.cardList(),
                     // Every selectable AI star is re-dealt each turn, so the
                     // turn count is what stops a star repeating its own card.
                     rng: gwoStreams.aiStarDealRng(
@@ -672,7 +669,6 @@ function gwoCard() {
           // it through sync_star_cards instead.
           if (
             !model.gwCampaignReplayingAction &&
-            star &&
             gwoTreasure.isTreasureStar(gwoSettings, starIndex)
           ) {
             var treasureLoadout = gwoTreasure.pickTreasureLoadout({
@@ -683,7 +679,7 @@ function gwoCard() {
           }
 
           var startLoadoutCards = helpers.filterStartLoadoutCards(
-            star && _.isFunction(star.cardList) ? star.cardList() : []
+            star.cardList()
           );
 
           var dealStarCards = chooseCards({
@@ -746,9 +742,7 @@ function gwoCard() {
               explorationLive &&
               force !== true &&
               (ok || startLoadoutCards.length) &&
-              _.isArray(star.cardList()) &&
               star.cardList().length &&
-              game &&
               _.isFunction(game.recordHostTechCardDeal)
             ) {
               dealEntry = game.recordHostTechCardDeal(starIndex, {
@@ -761,7 +755,7 @@ function gwoCard() {
             }
 
             return model.dealCoopPlayerPendingTechCards(starIndex, star, {
-              dealIndex: dealEntry && dealEntry.dealIndex,
+              dealIndex: dealEntry.dealIndex,
               startLoadoutCards: startLoadoutCards,
             });
           });

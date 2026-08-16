@@ -214,12 +214,6 @@ describe("referee_coop.getOrderedSubcommanders", () => {
     );
   });
 
-  it("tolerates an inventory that exposes neither minions nor cards", () => {
-    const game = makeGame({ perPlayerTechCards: false });
-
-    assert.deepEqual(refereeCoop.getOrderedSubcommanders({}, game, [HOST]), []);
-  });
-
   // The star ally is numbered after this list, so in a solo war it still lands on
   // the palette entry it has always had: one past the player's own subcommanders.
   it("leaves the solo ally colour index unchanged", () => {

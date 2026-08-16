@@ -185,17 +185,7 @@ define([
     });
   };
 
-  var getRefereeInventoryAiMods = function (inventory) {
-    if (!inventory) {
-      return [];
-    }
-
-    if (_.isFunction(inventory.aiMods)) {
-      return inventory.aiMods();
-    }
-
-    return inventory.aiMods || [];
-  };
+  var getRefereeInventoryAiMods = gwoAI.getInventoryAiMods;
 
   var getConnectedClientAiMods = function (game, connectedClients) {
     var connectedClientAiMods = [];
@@ -348,7 +338,7 @@ define([
 
     var clusterAIModsInScopeOfFile = function () {
       if (!filePathIncludes("/factory_builds/")) {
-        return;
+        return [];
       }
 
       var clusterCommanders = ["SupportPlatform", "SupportCommander"];
@@ -367,7 +357,7 @@ define([
 
     // built on the assumption that the Guardians are never Cluster
     var processClusterJson = function (json, pathLength) {
-      var clusterOps = clusterAIModsInScopeOfFile() || [];
+      var clusterOps = clusterAIModsInScopeOfFile();
       var clusterJson = _.cloneDeep(json);
       var clusterFilePath = changeFilePath(
         refereeAIPaths.getAIPathDestination(

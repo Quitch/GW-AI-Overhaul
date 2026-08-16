@@ -60,10 +60,7 @@ define(function () {
         !_.isNumber(starIndex) ||
         _.isNaN(starIndex) ||
         !_.isString(cardId) ||
-        !cardId.length ||
-        !model.sendCampaignHostOperator ||
-        !_.isFunction(model.isCampaignHost) ||
-        !_.isFunction(model.gwCampaignConnected)
+        !cardId.length
       ) {
         return;
       }
@@ -155,12 +152,10 @@ define(function () {
       return deferred.promise();
     };
 
-    if (model.registerCampaignHostOperatorHandler) {
-      model.registerCampaignHostOperatorHandler(
-        setCardNameSyncOperator,
-        applySyncedStarCardName
-      );
-    }
+    model.registerCampaignHostOperatorHandler(
+      setCardNameSyncOperator,
+      applySyncedStarCardName
+    );
 
     return {
       setCardName: setCardName,
