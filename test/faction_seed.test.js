@@ -155,7 +155,11 @@ describe("faction_seed reseedFaction", () => {
     built.gwaioRandomSpec.randoms[0].from = [];
     const before = randomMinion(built);
     factionSeed.reseedFaction(built, gwoRng.create("empty"));
-    assert.deepEqual(randomMinion(built), before);
+    // Identity, not deep equality: reseeding rebuilds the slot through
+    // _.merge, and with no source personality to merge the rebuilt object is
+    // deep-equal to the one it replaced. Only the reference tells them apart,
+    // so deepEqual here would pass with the empty-pool guard deleted.
+    assert.equal(randomMinion(built), before);
   });
 });
 

@@ -391,12 +391,10 @@ describe("buildGeneralCommanderMinions", () => {
 
   const names = (minions) => minions.map((m) => m.minion.name);
 
-  it("returns nothing for an empty pool", () => {
+  it("returns nothing for an empty or absent pool", () => {
     assert.deepEqual(build({ pool: [], seed: "s" }), []);
-    assert.deepEqual(
-      build({ pool: undefined, seed: "s" }),
-      build({ seed: "s" })
-    );
+    // The params.minionPool || [] guard: a caller that never set a pool at all.
+    assert.deepEqual(build({ pool: null, seed: "s" }), []);
   });
 
   it("grants two Sub Commander cards", () => {
