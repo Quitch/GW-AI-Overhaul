@@ -91,6 +91,7 @@ Changes to card descriptions are made to English only. Translated copies will us
 ### Added
 
 - The Seed Value field is now shown when creating a war, and a war's seed is displayed in its Galactic War Overhaul panel
+- Co-op players are given colours drawn from their faction's own palette, Cluster included, rather than the generic lobby colours (PA 124670)
 
 ### Changed
 
