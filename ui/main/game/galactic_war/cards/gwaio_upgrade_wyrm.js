@@ -50,7 +50,7 @@ define([
           file: gwoUnit.wyrm,
           path: "navigation.aggressive_behavior",
           op: "replace",
-          value: "circle", // loiter at range instead of a bombing run
+          value: "circle",
         },
       ]);
     },
