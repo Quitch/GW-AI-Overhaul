@@ -153,6 +153,14 @@ define([
   return {
     name: factionName,
     color: factionColour,
+    coopPlayerColors: [
+      factionColour[0],
+      [0, 255, 255],
+      [25, 144, 160],
+      [168, 177, 255],
+      [193, 249, 241],
+      [116, 179, 206],
+    ],
     teams: [
       {
         name: factionName,

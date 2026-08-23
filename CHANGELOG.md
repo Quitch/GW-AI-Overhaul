@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v6.11.0 - 2026-08-23
+
+### Added
+
+- Co-op players are given colours drawn from their faction's own palette, Cluster included, rather than the generic lobby colours (PA 124670)
+
 ## v6.10.3 - 2026-08-16
 
 ### Bugfix
