@@ -141,7 +141,8 @@ function gwoIntelligence() {
     };
 
     var eradicatorModeNameBuilder = function (ai) {
-      var modes = [];
+      var commander = loc("!LOC:Commander");
+      var modes = [commander];
       if (ai.eradicationModeSubCommanders) {
         modes.push(loc("!LOC:Colonel"));
       }

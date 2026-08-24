@@ -6,6 +6,10 @@
 
 - Battles now display their win-condition modifiers
 
+### Changed
+
+- Eradication mode will show Commander in its list as a reminder
+
 ### Bugfix
 
 - Don't show Eradication mode in the panel if Sudden Death is active as the latter overrides the former
