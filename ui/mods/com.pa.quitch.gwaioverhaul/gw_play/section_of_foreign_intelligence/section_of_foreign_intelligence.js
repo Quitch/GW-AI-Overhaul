@@ -245,8 +245,7 @@ function gwoIntelligence() {
             gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_suddendeath")
           ) {
             gameModifiers.push(loc("!LOC:Sudden Death"));
-          }
-          if (
+          } else if (
             ai.eradicationMode ||
             gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication")
           ) {

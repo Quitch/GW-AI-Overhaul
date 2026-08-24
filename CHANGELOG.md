@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Don't show Eradication mode in the panel if Sudden Death is active as the latter overrides the former
+
 ## v6.11.0 - 2026-08-23
 
 ### Added
