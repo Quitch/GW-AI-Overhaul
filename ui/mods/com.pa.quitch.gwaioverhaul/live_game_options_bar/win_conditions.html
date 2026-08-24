@@ -1,7 +1,7 @@
 <div
   class="gwo-win-conditions ignoreMouse"
   style="display: none"
-  data-bind="visible: gwoGameModifiersText().length && !pip()"
+  data-bind="visible: gwoGameModifiersText().length, style: { visibility: pip() ? 'hidden' : 'visible' }"
 >
   <div class="div_ingame_info_bar gwo-game-modifiers">
     <div
