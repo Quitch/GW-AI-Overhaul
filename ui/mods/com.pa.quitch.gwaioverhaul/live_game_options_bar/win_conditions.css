@@ -1,0 +1,18 @@
+.body_panel .body-dock {
+  height: auto;
+  min-height: 100px;
+}
+
+.gwo-win-conditions {
+  overflow: hidden;
+  margin-bottom: -13px;
+}
+
+.gwo-win-conditions .gwo-game-modifiers {
+  margin: 0 -40px 0 0;
+  align-items: center;
+}
+
+.gwo-win-conditions .gwo-game-modifiers-text {
+  margin-top: -6px;
+}

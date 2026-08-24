@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Battles now display their win-condition modifiers
+
 ### Bugfix
 
 - Don't show Eradication mode in the panel if Sudden Death is active as the latter overrides the former
