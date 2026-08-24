@@ -8,8 +8,12 @@ function gwoLiveGameModifiers() {
   gwoLiveGameModifiersLoaded = true;
 
   try {
+    var buildText = ko.observable();
+
     model.gwoGameOptions = ko.observable();
 
+    // game_options arrive via server_state after mod scripts run, and stock's
+    // updateGameOptions keeps only a whitelist of keys - capture the rest here.
     var stockUpdateGameOptions = model.updateGameOptions;
     model.updateGameOptions = function (options) {
       stockUpdateGameOptions.apply(model, arguments);
@@ -19,42 +23,27 @@ function gwoLiveGameModifiers() {
     };
 
     model.gwoGameModifiersText = ko.computed(function () {
-      var options = model.gwoGameOptions();
-      if (!options || options.game_type !== "Galactic War") {
-        return "";
-      }
-
-      var modifiers = [];
-      if (options.sudden_death_mode) {
-        modifiers.push(loc("!LOC:Sudden Death"));
-      } else if (options.eradication_mode) {
-        var targets = [loc("!LOC:Commander")];
-        if (options.eradication_mode_sub_commanders) {
-          targets.push(loc("!LOC:Colonel"));
-        }
-        if (options.eradication_mode_factories) {
-          targets.push(loc("!LOC:Factory"));
-        }
-        if (options.eradication_mode_fabricators) {
-          targets.push(loc("!LOC:Fabber"));
-        }
-        modifiers.push(loc("!LOC:Eradicate") + ": " + targets.join(", "));
-      }
-      if (options.bounty_mode) {
-        var bounty = loc("!LOC:Bounties");
-        if (_.isNumber(options.bounty_value)) {
-          bounty += " x" + options.bounty_value;
-        }
-        modifiers.push(bounty);
-      }
-      return modifiers.join(" | ");
+      var build = buildText();
+      return build ? build(model.gwoGameOptions(), loc) : "";
     });
 
+    // This document's own pixels are never composited to the screen - only
+    // panel views render - so the bar lives in the options bar panel, which
+    // also pulls this computed via panel.invoke in case it loads after us.
     model.gwoGameModifiersText.subscribe(function (text) {
       if (api.panels.options_bar) {
         api.panels.options_bar.message("gwo_game_modifiers", text);
       }
     });
+
+    requireGW(
+      [
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/win_conditions_text.js",
+      ],
+      function (winConditionsText) {
+        buildText(winConditionsText);
+      }
+    );
   } catch (e) {
     console.error(
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
