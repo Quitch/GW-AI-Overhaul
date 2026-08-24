@@ -20,7 +20,7 @@ function gwoOptionsBarModifiers() {
 
     $(
       loadHtml(
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/options_bar_modifiers.html"
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game_options_bar/win_conditions.html"
       )
     ).insertBefore($(".wrapper_ingame_options_bar"));
 
