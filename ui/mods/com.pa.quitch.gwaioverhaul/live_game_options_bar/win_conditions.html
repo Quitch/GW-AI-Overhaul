@@ -1,10 +1,12 @@
 <div
-  class="div_ingame_info_bar ignoreMouse gwo-game-modifiers"
+  class="gwo-win-conditions ignoreMouse"
   style="display: none"
   data-bind="visible: gwoGameModifiersText().length && !pip()"
 >
-  <div
-    class="div_ingame_stats gwo-game-modifiers-text"
-    data-bind="text: gwoGameModifiersText"
-  ></div>
+  <div class="div_ingame_info_bar gwo-game-modifiers">
+    <div
+      class="div_ingame_stats gwo-game-modifiers-text"
+      data-bind="text: gwoGameModifiersText"
+    ></div>
+  </div>
 </div>
