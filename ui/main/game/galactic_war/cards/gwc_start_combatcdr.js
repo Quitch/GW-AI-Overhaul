@@ -30,8 +30,6 @@ define([
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
-          // One data bank, as the description says: gwc_start grants
-          // initialCardSlots + 1, and the loadout card holds one of what is left.
           inventory.maxCards(inventory.maxCards() - 3);
           var navigationAttributes = [
             "navigation.move_speed",

@@ -19,8 +19,6 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var sizes = GW.balance.numberOfSystems;
-      // The nuclear missile is one of the discounts, so a player holding only the
-      // silo still gains from the card.
       if (
         gwoCard.missingAllUnits(
           inventory.units(),
@@ -37,7 +35,6 @@ define([
       };
     },
     buff: function (inventory) {
-      // The card discounts the missile, not the silo that fires it.
       var units = _.without(
         gwoGroup.structuresSuperWeapons,
         gwoUnit.nukeLauncher

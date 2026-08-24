@@ -13,7 +13,6 @@ define([
         : [];
     var minionCount = 0;
     _.forEach(coopPlayerInventoryData, function (playerData) {
-      // One malformed co-op record must contribute nothing, not abort the deal.
       if (
         playerData &&
         playerData.inventory &&

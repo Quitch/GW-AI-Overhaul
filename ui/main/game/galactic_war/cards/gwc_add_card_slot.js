@@ -5,7 +5,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   var FULL_HAND_CHANCE = 100000;
 
   return {
-    visible: _.constant(false), // Can't discard this card
+    visible: _.constant(false),
     describe: _.constant("!LOC:Adds a new slot for another technology."),
     summarize: _.constant("!LOC:Additional Data Bank"),
     icon: _.constant(
@@ -14,8 +14,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     audio: _.constant({ found: "/VO/Computer/gw/board_slot_increased" }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory, rng) {
-      // Surfaces as the hand fills: 300 with one slot left, tapering by 100 per
-      // additional empty slot. A full hand keeps its guaranteed chance.
       var emptySlots = inventory.maxCards() - inventory.cards().length;
       var chance = inventory.handIsFull()
         ? FULL_HAND_CHANCE
@@ -29,7 +27,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       };
     },
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 2); // one for card and one slot
+      inventory.maxCards(inventory.maxCards() + 2);
     },
     dull: function () {},
   };

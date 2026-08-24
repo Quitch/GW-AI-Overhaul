@@ -141,7 +141,8 @@ function gwoIntelligence() {
     };
 
     var eradicatorModeNameBuilder = function (ai) {
-      var modes = [];
+      var commander = loc("!LOC:Commander");
+      var modes = [commander];
       if (ai.eradicationModeSubCommanders) {
         modes.push(loc("!LOC:Colonel"));
       }
@@ -245,8 +246,7 @@ function gwoIntelligence() {
             gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_suddendeath")
           ) {
             gameModifiers.push(loc("!LOC:Sudden Death"));
-          }
-          if (
+          } else if (
             ai.eradicationMode ||
             gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication")
           ) {
@@ -411,7 +411,6 @@ function gwoIntelligence() {
       }
     );
   } catch (e) {
-    console.error(e);
     console.error(
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );

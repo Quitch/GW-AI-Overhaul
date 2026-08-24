@@ -445,7 +445,6 @@ function gwoSystemChanges() {
       });
     });
   } catch (e) {
-    console.error(e);
     console.error(
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );

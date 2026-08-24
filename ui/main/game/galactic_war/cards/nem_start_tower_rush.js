@@ -50,8 +50,6 @@ define([
               }
             );
           });
-          // The Wall is 90% cheaper below instead. The mine keeps its spacing:
-          // packing a minefield tighter is not something the loadout offers.
           var costUnits = _.filter(
             gwoGroup.structuresDefences,
             function (defence) {

@@ -40,8 +40,6 @@ define([
       }
     },
     dull: function (inventory) {
-      // Not the whole defence group: removeUnits strips every copy, which would
-      // take the land mine other cards grant. This restricts basic defences only.
       var mineGranted = _.some(
         [
           "gwaio_upgrade_bumblebee",
