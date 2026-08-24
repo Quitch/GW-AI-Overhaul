@@ -50,7 +50,12 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
     ],
     "live_game": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/win_conditions.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"
+    ],
+    "live_game_options_bar": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game_options_bar/win_conditions.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game_options_bar/win_conditions.js"
     ],
     "shared_build": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared_build/planetary_radar.js"

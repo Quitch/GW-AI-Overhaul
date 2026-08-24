@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Battles now display their win-condition modifiers above the options bar at the bottom-right of the screen: the eradication kill list (Commander plus any Colonel, Factory or Fabber requirement), Sudden Death, and Bounties with their multiplier
+
 ## v6.11.0 - 2026-08-23
 
 ### Added

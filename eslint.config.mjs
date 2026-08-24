@@ -22,6 +22,7 @@ export default defineConfig([
         ...globals.amd,
         api: "readonly",
         model: "writable",
+        handlers: "writable",
         _: "readonly",
         loc: "readonly",
         ko: "readonly",

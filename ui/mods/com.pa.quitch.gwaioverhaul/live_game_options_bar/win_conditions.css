@@ -1,0 +1,13 @@
+.body-dock {
+  height: auto;
+  min-height: 100px;
+}
+
+.gwo-game-modifiers {
+  margin: 0 -40px -13px 0;
+  align-items: center;
+}
+
+.gwo-game-modifiers-text {
+  margin-top: -6px;
+}
