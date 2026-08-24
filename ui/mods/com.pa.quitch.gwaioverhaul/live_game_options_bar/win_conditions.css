@@ -8,11 +8,11 @@
   margin-bottom: -13px;
 }
 
-.gwo-game-modifiers {
+.gwo-win-conditions .gwo-game-modifiers {
   margin: 0 -40px 0 0;
   align-items: center;
 }
 
-.gwo-game-modifiers-text {
+.gwo-win-conditions .gwo-game-modifiers-text {
   margin-top: -6px;
 }
