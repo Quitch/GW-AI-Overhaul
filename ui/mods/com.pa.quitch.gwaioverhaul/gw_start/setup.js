@@ -904,6 +904,19 @@ function gwoSetup() {
 
             var startCardBreaksAllies = startCardAllyCompatibility(game);
 
+            // A Cluster AI's inventory starts from its subcommander mods; every
+            // AI then draws the faction tech its buffs grant.
+            var equipAI = function (ai, buffs) {
+              var inventory =
+                ai.isCluster === true ? gwoCluster.clusterCommanderMods : [];
+              ai.inventory = aiTech(
+                buffs,
+                inventory,
+                ai.faction,
+                gwoTech.factionTechs
+              );
+            };
+
             _.forEach(teamInfo, function (info, teamIndex) {
               var boss = info.boss;
               // Keyed, so an AI's rolls do not depend on what earlier AIs drew.
@@ -970,12 +983,6 @@ function gwoSetup() {
               var bossCommanders = bossCommanderCount(difficulty, playerCount);
               boss.bossCommanders = bossCommanders;
 
-              boss.inventory = [];
-
-              if (boss.isCluster === true) {
-                boss.inventory = gwoCluster.clusterCommanderMods;
-              }
-
               var factionTechHandicap = Number.parseFloat(
                 difficulty.factionTechHandicap()
               );
@@ -985,12 +992,7 @@ function gwoSetup() {
                 factionTechHandicap
               );
               boss.typeOfBuffs = bossBuffs; // for intelligence reports
-              boss.inventory = aiTech(
-                bossBuffs,
-                boss.inventory,
-                boss.faction,
-                gwoTech.factionTechs
-              );
+              equipAI(boss, bossBuffs);
 
               var mandatoryMinions =
                 difficulty.mandatoryMinions() * playerCount;
@@ -1044,24 +1046,13 @@ function gwoSetup() {
                 setAIPersonality(aiRng, ai, difficulty, ai.faction);
                 ai.econ_rate = aiEconRate(aiRng, dist, playerCount);
 
-                ai.inventory = [];
-
-                if (ai.isCluster === true) {
-                  ai.inventory = gwoCluster.clusterCommanderMods;
-                }
-
                 var workerBuffs = setupAIBuffs(
                   aiRng,
                   dist,
                   factionTechHandicap
                 );
                 ai.typeOfBuffs = workerBuffs; // for intelligence reports
-                ai.inventory = aiTech(
-                  workerBuffs,
-                  ai.inventory,
-                  ai.faction,
-                  gwoTech.factionTechs
-                );
+                equipAI(ai, workerBuffs);
 
                 if (numMinions > 0) {
                   ai.minions = [];
@@ -1129,17 +1120,7 @@ function gwoSetup() {
                     }
                     foeCommander.commanderCount = numFoes;
 
-                    foeCommander.inventory = [];
-                    if (foeCommander.isCluster === true) {
-                      foeCommander.inventory = gwoCluster.clusterCommanderMods;
-                    }
-
-                    foeCommander.inventory = aiTech(
-                      workerBuffs,
-                      foeCommander.inventory,
-                      foeCommander.faction,
-                      gwoTech.factionTechs
-                    );
+                    equipAI(foeCommander, workerBuffs);
 
                     ai.foes.push(foeCommander);
                   }
