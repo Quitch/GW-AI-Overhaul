@@ -75,8 +75,8 @@ define(function () {
     return mods;
   };
 
-  // api.file.zip.catalog's shape is undocumented; accept a bare path list, a list
-  // of entry objects, or an object wrapping either.
+  // api.file.zip.catalog returns [{name, crc32, size}] (observed, PA 124673);
+  // a bare path list and a wrapping object are accepted in case that changes.
   var catalogEntries = function (catalog) {
     var list = catalog;
 

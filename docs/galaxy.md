@@ -311,6 +311,13 @@ A mod that cannot be mounted or fully read at launch is dropped from both, and
 `referee_config.js` then treats its biomes as unservable and switches those planets to
 `earth`. The same path covers a war saved before the stamp existed.
 
+Verified live (PA 124673, 2026-08-25): a "Rolling Hills 2v2 NS" battle on tetctree's
+`mountain` biome reached `live_game` in 18 seconds with the server log showing
+`Mounted zip file /download/uk.pa.tetctree.server.zip as /server_mods/uk.pa.tetctree.server/`
+and the client reporting the planet as `mountain`; with that zip removed, the same star
+logged the two warnings above, launched on `earth`, and loaded in the same time.
+`api.file.zip.catalog` returns `[{name, crc32, size}]`.
+
 The quantity is armies, not humans. Map makers use `players` to count humans and humans
 share an army, so a declared `[2,10]` on two landing zones is two armies of five; the
 zone count caps the declared maximum, and the minimum follows it down rather than
