@@ -6,12 +6,15 @@
 
 const path = require("node:path");
 const { loadCouiModule, registerModuleStub } = require("./amd-loader.js");
-const { createAutoStub } = require("./auto-stub.js");
 const {
   CARDS_DIR,
   classifyLoadFailure,
   listCardFiles,
 } = require("./card-files.js");
+const {
+  createCapturingInventory,
+  recordInto,
+} = require("./capturing-inventory.js");
 
 // A real array, not createAutoStub(): farForSize walks
 // `Math.min(numberOfSystems.length, thresholds.length) - 1`, and a stub makes that
@@ -102,16 +105,9 @@ function cardIdFromFile(file) {
 // this fixture updated. The three answers given explicitly are the ones that steer
 // what it grants: a non-Cluster player, holding the base commander.
 function recordGrantedUnits(buff, gwoUnit, hasCard) {
-  let granted = [];
-  const inventory = new Proxy(
-    {
-      addUnits: function (units) {
-        granted = granted.concat(units);
-        return createAutoStub();
-      },
-      addMods: () => createAutoStub(),
-      addAIMods: () => createAutoStub(),
-      removeUnits: () => createAutoStub(),
+  const granted = [];
+  const inventory = createCapturingInventory({
+    answers: {
       maxCards: () => 0,
       lookupCard: () => 0,
       hasCard: () => hasCard,
@@ -124,14 +120,9 @@ function recordGrantedUnits(buff, gwoUnit, hasCard) {
         }
         return def;
       },
-      setTag: () => createAutoStub(),
     },
-    {
-      get(target, prop) {
-        return prop in target ? target[prop] : createAutoStub();
-      },
-    }
-  );
+    capture: { addUnits: recordInto(granted) },
+  });
 
   buff(inventory);
   return granted.filter((unit) => typeof unit === "string");

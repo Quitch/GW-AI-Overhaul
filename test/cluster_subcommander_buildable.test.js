@@ -26,6 +26,10 @@ const {
   classifyLoadFailure,
   listCardFiles,
 } = require("../scripts/lib/card-files.js");
+const {
+  createCapturingInventory,
+  recordInto,
+} = require("../scripts/lib/capturing-inventory.js");
 
 // Every loadout card - which is where the replacements live - depends on the
 // unshipped shared/gw_common, so without a stand-in the sweep tests nothing. Only
@@ -124,17 +128,8 @@ function clusterBuildableTypes(file) {
 // mods rather than just widening the hand.
 function collectMods(card, hasCard) {
   const captured = [];
-  const inventory = new Proxy(
-    {
-      addMods: function (mods) {
-        // addMods concats, so it takes a bare descriptor as readily as an array.
-        if (Array.isArray(mods)) {
-          captured.push(...mods);
-        } else if (mods) {
-          captured.push(mods);
-        }
-        return createAutoStub();
-      },
+  const inventory = createCapturingInventory({
+    answers: {
       getTag: function (context, name, def) {
         if (context === "global" && name === "playerFaction") {
           return CLUSTER_FACTION;
@@ -148,12 +143,8 @@ function collectMods(card, hasCard) {
         return hasCard;
       },
     },
-    {
-      get(target, prop) {
-        return prop in target ? target[prop] : createAutoStub();
-      },
-    }
-  );
+    capture: { addMods: recordInto(captured) },
+  });
 
   for (const method of ["buff", "dull"]) {
     if (typeof card[method] === "function") {

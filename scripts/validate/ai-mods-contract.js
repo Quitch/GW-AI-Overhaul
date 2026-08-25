@@ -12,12 +12,15 @@
 
 const path = require("node:path");
 const { loadCouiModule } = require("../lib/amd-loader.js");
-const { createAutoStub } = require("../lib/auto-stub.js");
 const {
   CARDS_DIR,
   classifyLoadFailure,
   listCardFiles,
 } = require("../lib/card-files.js");
+const {
+  createCapturingInventory,
+  recordInto,
+} = require("../lib/capturing-inventory.js");
 const { reportFailures } = require("../lib/report-failures.js");
 
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
@@ -49,25 +52,9 @@ const VALID_TYPES_BY_OP = {
 
 function collectAiMods(card) {
   const captured = [];
-  const inventory = new Proxy(
-    {
-      addAIMods: function (mods) {
-        // addAIMods concats, so it takes a bare descriptor as readily as an
-        // array. push.apply on a non-array captures nothing.
-        if (Array.isArray(mods)) {
-          captured.push.apply(captured, mods);
-        } else if (mods) {
-          captured.push(mods);
-        }
-        return createAutoStub();
-      },
-    },
-    {
-      get(target, prop) {
-        return prop in target ? target[prop] : createAutoStub();
-      },
-    }
-  );
+  const inventory = createCapturingInventory({
+    capture: { addAIMods: recordInto(captured) },
+  });
 
   for (const method of ["buff", "dull"]) {
     if (typeof card[method] !== "function") {

@@ -185,6 +185,13 @@ analogue in `validate:cards`: without it, a broken `gw_common` stub that made ev
 `deal()` return 0 would leave the card count intact and every assertion vacuously
 green. Raise them when coverage genuinely rises; never lower one to make a run pass.
 
+`scripts/lib/capturing-inventory.js` is the inventory every card sweep hands to
+`buff()`/`dull()`: the caller's explicit answers steer a card down the branch
+under test, a recorder captures the calls the sweep is collecting, and everything
+else is auto-stubbed so a new call a card makes needs no fixture update.
+`recordInto` is the recorder for `addMods`/`addAIMods`/`addUnits`, which concat
+and so take a bare descriptor as readily as an array.
+
 `scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
 wiring `referee_ai.js`'s file discovery needs, and returns its own restore
 function. It records every `api.file.list` and `$.getJSON` call unconditionally,
