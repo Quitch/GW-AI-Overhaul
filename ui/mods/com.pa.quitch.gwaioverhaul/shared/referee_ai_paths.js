@@ -51,10 +51,6 @@ define(function () {
     return basePath + "player_" + scopeToken + "/";
   };
 
-  var getPlayerScopedPath = function (basePath, identity, fallbackToken) {
-    return appendScope(basePath, getScopeToken(identity, fallbackToken));
-  };
-
   var getQuellerPath = function (type, smartSubcommanders) {
     if (type === "all") {
       return quellerPath;
@@ -122,20 +118,6 @@ define(function () {
         smartSubcommanders: smartSubcommanders,
         scopeToken: playerTag === ".player" ? undefined : playerTag,
       });
-    },
-
-    getPlayerScopedUnitMapPath: function (
-      basePath,
-      identity,
-      fallbackToken,
-      titans
-    ) {
-      var append = titans ? "_x1.json" : ".json";
-      return (
-        getPlayerScopedPath(basePath, identity, fallbackToken) +
-        "unit_maps/ai_unit_map" +
-        append
-      );
     },
   };
 });

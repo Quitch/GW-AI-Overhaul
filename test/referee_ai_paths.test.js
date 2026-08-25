@@ -235,35 +235,9 @@ describe("scopeToken sanitization asymmetry", () => {
       aiMods: [{ op: "load" }],
       scopeToken: ".player0",
     });
-    // The leading dot is not stripped here, unlike getPlayerScopedUnitMapPath.
+    // The leading dot is not stripped here, unlike getScopeToken.
     // "Fixing" that would silently change shipped mount paths.
     assert.equal(path, "/pa/ai_subcommander/player_.player0/");
-  });
-
-  it("getPlayerScopedUnitMapPath sanitizes the identity/fallback token first", () => {
-    const path = refereeAIPaths.getPlayerScopedUnitMapPath(
-      "/pa/ai_subcommander/",
-      ".player0",
-      "fallback",
-      false
-    );
-    assert.equal(
-      path,
-      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map.json"
-    );
-  });
-
-  it("getPlayerScopedUnitMapPath appends _x1.json when titans is true", () => {
-    const path = refereeAIPaths.getPlayerScopedUnitMapPath(
-      "/pa/ai_subcommander/",
-      ".player0",
-      "fallback",
-      true
-    );
-    assert.equal(
-      path,
-      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map_x1.json"
-    );
   });
 });
 
