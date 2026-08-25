@@ -38,76 +38,36 @@ define([
             gwoUnit.vehicleFactory,
           ]);
 
-          inventory.addMods([
-            {
-              file: gwoUnit.nukeLauncher,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.17361,
-            },
-            {
-              file: gwoUnit.nukeLauncher,
-              path: "unit_types",
-              op: "push",
-              value: "UNITTYPE_FabBuild",
-            },
-            {
-              file: gwoUnit.nukeLauncher,
-              path: "description",
-              op: "replace",
-              value:
-                "!LOC:Tactical Nuke Launcher - Constructs low-cost/low-yield interplanetary tactical nukes.",
-            },
-            {
-              file: gwoUnit.nukeLauncherBuildArm,
-              path: "construction_demand.metal",
-              op: "multiply",
-              value: 0.167,
-            },
-            {
-              file: gwoUnit.nukeLauncherBuildArm,
-              path: "construction_demand.energy",
-              op: "multiply",
-              value: 0.375,
-            },
-            {
-              file: gwoUnit.nukeLauncherAmmo,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.01,
-            },
-            {
-              file: gwoUnit.nukeLauncherAmmo,
-              path: "damage",
-              op: "multiply",
-              value: 0.022727,
-            },
-            {
-              file: gwoUnit.nukeLauncherAmmo,
-              path: "splash_damage",
-              op: "multiply",
-              value: 0.022727,
-            },
-            {
-              file: gwoUnit.nukeLauncherAmmo,
-              path: "full_damage_splash_radius",
-              op: "multiply",
-              value: 0.4,
-            },
-            {
-              file: gwoUnit.nukeLauncherAmmo,
-              path: "splash_radius",
-              op: "multiply",
-              value: 0.33,
-            },
-            {
-              file: gwoUnit.nukeLauncherAmmo,
-              path: "description",
-              op: "replace",
-              value:
-                "!LOC:Tactical Nuke - Small nuke with low damage and small blast radius.",
-            },
-          ]);
+          inventory.addMods(
+            gwoCard
+              .mods(gwoUnit.nukeLauncher, "multiply", {
+                build_metal_cost: 0.17361,
+              })
+              .concat(
+                gwoCard.mods(gwoUnit.nukeLauncher, "push", {
+                  unit_types: "UNITTYPE_FabBuild",
+                }),
+                gwoCard.mods(gwoUnit.nukeLauncher, "replace", {
+                  description:
+                    "!LOC:Tactical Nuke Launcher - Constructs low-cost/low-yield interplanetary tactical nukes.",
+                }),
+                gwoCard.mods(gwoUnit.nukeLauncherBuildArm, "multiply", {
+                  "construction_demand.metal": 0.167,
+                  "construction_demand.energy": 0.375,
+                }),
+                gwoCard.mods(gwoUnit.nukeLauncherAmmo, "multiply", {
+                  build_metal_cost: 0.01,
+                  damage: 0.022727,
+                  splash_damage: 0.022727,
+                  full_damage_splash_radius: 0.4,
+                  splash_radius: 0.33,
+                }),
+                gwoCard.mods(gwoUnit.nukeLauncherAmmo, "replace", {
+                  description:
+                    "!LOC:Tactical Nuke - Small nuke with low damage and small blast radius.",
+                })
+              )
+          );
 
           inventory.addAIMods([
             {

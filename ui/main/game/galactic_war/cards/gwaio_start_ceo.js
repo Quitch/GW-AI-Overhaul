@@ -36,61 +36,40 @@ define([
 
           inventory.addUnits(colonel);
 
-          var mods = [
-            {
-              file: gwoUnit.commander,
-              path: "buildable_types",
-              op: "add",
-              value: " | SupportCommander & Custom58",
-            },
-            {
-              file: colonel,
-              path: "tools",
-              op: "push",
-              value: {
-                spec_id: gwoUnit.commanderSecondary,
-                aim_bone: "bone_turret",
-                muzzle_bone: "socket_rightMuzzle",
-                secondary_weapon: true,
-              },
-            },
-            {
-              file: colonel,
-              path: "tools.2.spec_id",
-              op: "tag",
-            },
-            {
-              file: colonel,
-              path: "command_caps",
-              op: "push",
-              value: "ORDER_FireSecondaryWeapon",
-            },
-            {
-              file: colonel,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.5,
-            },
-          ];
+          var mods = gwoCard
+            .mods(gwoUnit.commander, "add", {
+              buildable_types: " | SupportCommander & Custom58",
+            })
+            .concat(
+              gwoCard.mods(colonel, "push", {
+                tools: {
+                  spec_id: gwoUnit.commanderSecondary,
+                  aim_bone: "bone_turret",
+                  muzzle_bone: "socket_rightMuzzle",
+                  secondary_weapon: true,
+                },
+              }),
+              [{ file: colonel, path: "tools.2.spec_id", op: "tag" }],
+              gwoCard.mods(colonel, "push", {
+                command_caps: "ORDER_FireSecondaryWeapon",
+              }),
+              gwoCard.mods(colonel, "multiply", { build_metal_cost: 0.5 })
+            );
           if (playerIsCluster) {
-            mods.push(
-              {
-                file: gwoUnit.colonel,
-                op: "clone",
-                value: gwoUnit.clusterCeoColonel,
-              },
-              {
-                file: colonel,
-                path: "unit_types",
-                op: "pull",
-                value: "UNITTYPE_FactoryBuild",
-              },
-              {
-                file: colonel,
-                path: "si_name",
-                op: "replace",
-                value: "bot_support_commander",
-              }
+            mods = mods.concat(
+              [
+                {
+                  file: gwoUnit.colonel,
+                  op: "clone",
+                  value: gwoUnit.clusterCeoColonel,
+                },
+              ],
+              gwoCard.mods(colonel, "pull", {
+                unit_types: "UNITTYPE_FactoryBuild",
+              }),
+              gwoCard.mods(colonel, "replace", {
+                si_name: "bot_support_commander",
+              })
             );
           }
           inventory.addMods(mods);

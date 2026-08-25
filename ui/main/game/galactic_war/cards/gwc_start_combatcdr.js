@@ -31,57 +31,30 @@ define([
         } else {
           GWCStart.buff(inventory);
           inventory.maxCards(inventory.maxCards() - 3);
-          var navigationAttributes = [
-            "navigation.move_speed",
-            "navigation.brake",
-            "navigation.acceleration",
-            "navigation.turn_speed",
-          ];
-          var mods = _.map(
-            navigationAttributes,
-            function (navigationAttribute) {
-              return {
-                file: gwoUnit.commander,
-                path: navigationAttribute,
-                op: "multiply",
-                value: 5,
-              };
-            }
-          );
           var weapons = [
             gwoUnit.commanderSecondary,
             gwoUnit.commanderWeaponBullet,
             gwoUnit.commanderWeaponLaser,
             gwoUnit.commanderWeaponMissile,
           ];
-          var ammoAttributes = [
-            "ammo_capacity",
-            "ammo_demand",
-            "ammo_per_shot",
-          ];
-          _.forEach(ammoAttributes, function (ammoAttribute) {
-            mods.push({
-              file: gwoUnit.commanderSecondary,
-              path: ammoAttribute,
-              op: "multiply",
-              value: 0.25,
-            });
-          });
-          _.forEach(weapons, function (weapon) {
-            mods.push({
-              file: weapon,
-              path: "rate_of_fire",
-              op: "multiply",
-              value: 2,
-            });
-          });
-          mods.push({
-            file: gwoUnit.commander,
-            path: "max_health",
-            op: "multiply",
-            value: 3,
-          });
-          inventory.addMods(mods);
+          inventory.addMods(
+            gwoCard
+              .mods(gwoUnit.commander, "multiply", {
+                "navigation.move_speed": 5,
+                "navigation.brake": 5,
+                "navigation.acceleration": 5,
+                "navigation.turn_speed": 5,
+              })
+              .concat(
+                gwoCard.mods(gwoUnit.commanderSecondary, "multiply", {
+                  ammo_capacity: 0.25,
+                  ammo_demand: 0.25,
+                  ammo_per_shot: 0.25,
+                }),
+                gwoCard.flatMapMods(weapons, "multiply", { rate_of_fire: 2 }),
+                gwoCard.mods(gwoUnit.commander, "multiply", { max_health: 3 })
+              )
+          );
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

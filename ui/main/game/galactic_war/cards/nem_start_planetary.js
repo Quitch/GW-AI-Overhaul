@@ -33,43 +33,26 @@ define([
           var units = [gwoUnit.metalExtractorAdvanced, gwoUnit.metalExtractor];
           var mods = _.flatten(
             _.map(units, function (unit) {
-              return [
-                {
-                  file: unit,
-                  path: "build_metal_cost",
-                  op: "multiply",
-                  value: 1.5,
-                },
-                {
-                  file: unit,
-                  path: "production.metal",
-                  op: "multiply",
-                  value: 0.5,
-                },
-                {
-                  file: unit,
-                  path: "feature_requirements",
-                  op: "replace",
-                  value: "none",
-                },
-              ];
+              return gwoCard
+                .mods(unit, "multiply", {
+                  build_metal_cost: 1.5,
+                  "production.metal": 0.5,
+                })
+                .concat(
+                  gwoCard.mods(unit, "replace", {
+                    feature_requirements: "none",
+                  })
+                );
             })
-          );
-          mods.push(
-            {
-              file: gwoUnit.metalExtractor,
-              path: "description",
-              op: "replace",
-              value:
+          ).concat(
+            gwoCard.mods(gwoUnit.metalExtractor, "replace", {
+              description:
                 "!LOC:Basic Manufacturing - This modified version of the Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the Advanced Metal Extractor. Produces metal.",
-            },
-            {
-              file: gwoUnit.metalExtractorAdvanced,
-              path: "description",
-              op: "replace",
-              value:
+            }),
+            gwoCard.mods(gwoUnit.metalExtractorAdvanced, "replace", {
+              description:
                 "!LOC:Advanced Manufacturing - This modified version of the Advanced Metal Extractor can be placed anywhere, but costs more and produces at a decreased rate. Cannot stack with the basic Metal Extractor. Produces metal.",
-            }
+            })
           );
           inventory.addMods(mods);
 

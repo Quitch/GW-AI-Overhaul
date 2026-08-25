@@ -42,28 +42,25 @@ define([
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
-          inventory.addMods([
-            {
-              file: gwoUnit.commander,
-              path: "command_caps",
-              op: "push",
-              value: "ORDER_MassTeleport",
-            },
-            {
-              file: gwoUnit.commander,
-              path: "mass_teleporter",
-              op: "replace",
-              value: {
-                radius: 100,
-                phasing_duration: 30,
-                phasing_health_frac: 0.01,
-                energy_drain: 60000,
-                energy_cost: 600000,
-                unit_cap: 1000,
-                target_types: "Mobile",
-              },
-            },
-          ]);
+          inventory.addMods(
+            gwoCard
+              .mods(gwoUnit.commander, "push", {
+                command_caps: "ORDER_MassTeleport",
+              })
+              .concat(
+                gwoCard.mods(gwoUnit.commander, "replace", {
+                  mass_teleporter: {
+                    radius: 100,
+                    phasing_duration: 30,
+                    phasing_health_frac: 0.01,
+                    energy_drain: 60000,
+                    energy_cost: 600000,
+                    unit_cap: 1000,
+                    target_types: "Mobile",
+                  },
+                })
+              )
+          );
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

@@ -29,80 +29,27 @@ define([
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.vehiclesBasic);
 
-          var mods = [];
-          _.forEach(gwoGroup.mobile, function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "navigation.move_speed",
-                op: "multiply",
-                value: 0.75,
-              },
-              {
-                file: unit,
-                path: "navigation.brake",
-                op: "multiply",
-                value: 0.75,
-              },
-              {
-                file: unit,
-                path: "navigation.acceleration",
-                op: "multiply",
-                value: 0.75,
-              },
-              {
-                file: unit,
-                path: "navigation.turn_speed",
-                op: "multiply",
-                value: 0.75,
-              },
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "multiply",
-                value: 1.3,
-              },
-              {
-                file: unit,
-                path: "max_health",
-                op: "multiply",
-                value: 1.3,
-              }
-            );
-          });
-          _.forEach(gwoGroup.ammo, function (ammo) {
-            mods.push(
-              {
-                file: ammo,
-                path: "damage",
-                op: "multiply",
-                value: 1.3,
-              },
-              {
-                file: ammo,
-                path: "splash_damage",
-                op: "multiply",
-                value: 1.3,
-              }
-            );
-          });
-          _.forEach(gwoGroup.immobile, function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "multiply",
-                value: 1.3,
-              },
-              {
-                file: unit,
-                path: "max_health",
-                op: "multiply",
-                value: 1.3,
-              }
-            );
-          });
-          inventory.addMods(mods);
+          inventory.addMods(
+            gwoCard
+              .flatMapMods(gwoGroup.mobile, "multiply", {
+                "navigation.move_speed": 0.75,
+                "navigation.brake": 0.75,
+                "navigation.acceleration": 0.75,
+                "navigation.turn_speed": 0.75,
+                build_metal_cost: 1.3,
+                max_health: 1.3,
+              })
+              .concat(
+                gwoCard.flatMapMods(gwoGroup.ammo, "multiply", {
+                  damage: 1.3,
+                  splash_damage: 1.3,
+                }),
+                gwoCard.flatMapMods(gwoGroup.immobile, "multiply", {
+                  build_metal_cost: 1.3,
+                  max_health: 1.3,
+                })
+              )
+          );
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

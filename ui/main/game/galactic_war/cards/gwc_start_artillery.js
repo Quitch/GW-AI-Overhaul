@@ -30,31 +30,22 @@ define([
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.structuresArtillery.concat(gwoUnit.dox));
 
-          var mods = [];
           var units = [
             gwoUnit.pelter,
             gwoUnit.lob,
             gwoUnit.laserDefenseTower,
             gwoUnit.radar,
           ];
-          _.forEach(units, function (unit) {
-            mods.push({
-              file: unit,
-              path: "unit_types",
-              op: "push",
-              value: "UNITTYPE_CmdBuild",
-            });
-          });
           var costUnits = [gwoUnit.holkins, gwoUnit.pelter, gwoUnit.lob];
-          _.forEach(costUnits, function (unit) {
-            mods.push({
-              file: unit,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.25,
-            });
-          });
-          inventory.addMods(mods);
+          inventory.addMods(
+            gwoCard
+              .flatMapMods(units, "push", { unit_types: "UNITTYPE_CmdBuild" })
+              .concat(
+                gwoCard.flatMapMods(costUnits, "multiply", {
+                  build_metal_cost: 0.25,
+                })
+              )
+          );
 
           var structures = ["BasicRadar", "BasicLandDefense", "BasicArtillery"];
           var aiMods = _.map(structures, function (structure) {

@@ -29,66 +29,25 @@ define([
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.botsBasic);
 
-          var mods = [];
-          _.forEach(gwoGroup.mobile, function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "navigation.move_speed",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "navigation.brake",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "navigation.acceleration",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "navigation.turn_speed",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "build_metal_cost",
-                op: "multiply",
-                value: 0.7,
-              }
-            );
-          });
-          _.forEach(gwoGroup.ammo, function (ammo) {
-            mods.push(
-              {
-                file: ammo,
-                path: "damage",
-                op: "multiply",
-                value: 0.5,
-              },
-              {
-                file: ammo,
-                path: "splash_damage",
-                op: "multiply",
-                value: 0.5,
-              }
-            );
-          });
-          _.forEach(gwoGroup.immobile, function (unit) {
-            mods.push({
-              file: unit,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.7,
-            });
-          });
-          inventory.addMods(mods);
+          inventory.addMods(
+            gwoCard
+              .flatMapMods(gwoGroup.mobile, "multiply", {
+                "navigation.move_speed": 2,
+                "navigation.brake": 2,
+                "navigation.acceleration": 2,
+                "navigation.turn_speed": 2,
+                build_metal_cost: 0.7,
+              })
+              .concat(
+                gwoCard.flatMapMods(gwoGroup.ammo, "multiply", {
+                  damage: 0.5,
+                  splash_damage: 0.5,
+                }),
+                gwoCard.flatMapMods(gwoGroup.immobile, "multiply", {
+                  build_metal_cost: 0.7,
+                })
+              )
+          );
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

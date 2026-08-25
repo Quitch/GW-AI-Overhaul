@@ -33,87 +33,40 @@ define([
           var units = gwoGroup.structuresDefencesAdvanced.concat(
             gwoUnit.laserDefenseTower
           );
-          var mods = [];
-          _.forEach(units, function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "unit_types",
-                op: "push",
-                value: "UNITTYPE_CmdBuild",
-              },
-              {
-                file: unit,
-                path: "unit_types",
-                op: "push",
-                value: "UNITTYPE_FabBuild",
-              }
-            );
-          });
           var costUnits = _.without(gwoGroup.structuresDefences, gwoUnit.wall);
-          _.forEach(costUnits, function (unit) {
-            mods.push({
-              file: unit,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.5,
-            });
-          });
           var separationUnits = _.without(costUnits, gwoUnit.landMine);
-          _.forEach(separationUnits, function (unit) {
-            mods.push({
-              file: unit,
-              path: "area_build_separation",
-              op: "multiply",
-              value: 0.2,
-            });
-          });
-          mods.push(
-            {
-              file: gwoUnit.wall,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.1,
-            },
-            {
-              file: gwoUnit.wall,
-              path: "max_health",
-              op: "multiply",
-              value: 2,
-            }
-          );
           var weapons = _.without(
             gwoGroup.structuresDefencesWeapons,
             gwoUnit.landMineWeapon
           );
-          _.forEach(weapons, function (unit) {
-            mods.push(
-              {
-                file: unit,
-                path: "rate_of_fire",
-                op: "multiply",
-                value: 1.25,
-              },
-              {
-                file: unit,
-                path: "max_range",
-                op: "multiply",
-                value: 1.5,
-              },
-              {
-                file: unit,
-                path: "yaw_rate",
-                op: "multiply",
-                value: 4,
-              },
-              {
-                file: unit,
-                path: "pitch_rate",
-                op: "multiply",
-                value: 4,
-              }
-            );
-          });
+          var mods = _.flatten(
+            _.map(units, function (unit) {
+              return gwoCard
+                .mods(unit, "push", { unit_types: "UNITTYPE_CmdBuild" })
+                .concat(
+                  gwoCard.mods(unit, "push", {
+                    unit_types: "UNITTYPE_FabBuild",
+                  })
+                );
+            })
+          ).concat(
+            gwoCard.flatMapMods(costUnits, "multiply", {
+              build_metal_cost: 0.5,
+            }),
+            gwoCard.flatMapMods(separationUnits, "multiply", {
+              area_build_separation: 0.2,
+            }),
+            gwoCard.mods(gwoUnit.wall, "multiply", {
+              build_metal_cost: 0.1,
+              max_health: 2,
+            }),
+            gwoCard.flatMapMods(weapons, "multiply", {
+              rate_of_fire: 1.25,
+              max_range: 1.5,
+              yaw_rate: 4,
+              pitch_rate: 4,
+            })
+          );
           inventory.addMods(mods);
 
           var structures = [

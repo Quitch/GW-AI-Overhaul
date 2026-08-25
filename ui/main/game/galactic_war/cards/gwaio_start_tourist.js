@@ -30,14 +30,11 @@ define([
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
-          inventory.addMods([
-            {
-              file: gwoUnit.commander,
-              path: "storage.metal",
-              op: "multiply",
-              value: 200,
-            },
-          ]);
+          inventory.addMods(
+            gwoCard.mods(gwoUnit.commander, "multiply", {
+              "storage.metal": 200,
+            })
+          );
           inventory.addAIMods([
             {
               type: "fabber",

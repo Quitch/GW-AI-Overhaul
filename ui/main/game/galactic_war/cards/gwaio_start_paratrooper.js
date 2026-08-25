@@ -53,53 +53,24 @@ define([
           );
           var mods = _.flatten(
             _.map(unitCannons, function (unit) {
-              return [
-                {
-                  file: unit,
-                  path: "unit_types",
-                  op: "push",
-                  value: "UNITTYPE_CmdBuild",
-                },
-                {
-                  file: unit,
-                  path: "build_metal_cost",
-                  op: "multiply",
-                  value: 0.5,
-                },
-              ];
+              return gwoCard
+                .mods(unit, "push", { unit_types: "UNITTYPE_CmdBuild" })
+                .concat(
+                  gwoCard.mods(unit, "multiply", { build_metal_cost: 0.5 })
+                );
             })
-          );
-          _.forEach(landUnitsNotInUnitCannon, function (unit) {
-            mods.push({
-              file: unit,
-              path: "unit_types",
-              op: "push",
-              value: "UNITTYPE_CannonBuildable",
-            });
-          });
-          mods.push(
-            {
-              file: gwoUnit.manhattan,
-              path: "transportable.size",
-              op: "replace",
-              value: 1,
-            },
-            {
-              file: gwoUnit.manhattan,
-              path: "attachable.offsets",
-              op: "replace",
-              value: {
-                root: [0, 0, 0],
-                head: [0, 0, 7],
-              },
-            },
+          ).concat(
+            gwoCard.flatMapMods(landUnitsNotInUnitCannon, "push", {
+              unit_types: "UNITTYPE_CannonBuildable",
+            }),
+            gwoCard.mods(gwoUnit.manhattan, "replace", {
+              "transportable.size": 1,
+              "attachable.offsets": { root: [0, 0, 0], head: [0, 0, 7] },
+            }),
             // Don't let the Pelican carry the Manhattan
-            {
-              file: gwoUnit.pelican,
-              path: "transporter.transportable_unit_types",
-              op: "add",
-              value: " - Important",
-            }
+            gwoCard.mods(gwoUnit.pelican, "add", {
+              "transporter.transportable_unit_types": " - Important",
+            })
           );
           inventory.addMods(mods);
 

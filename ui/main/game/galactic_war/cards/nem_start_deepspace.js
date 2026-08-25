@@ -31,63 +31,29 @@ define([
           GWCStart.buff(inventory);
           inventory.addUnits(gwoGroup.orbitalAdvanced);
 
-          inventory.addMods([
-            {
-              file: gwoUnit.jig,
-              path: "build_metal_cost",
-              op: "multiply",
-              value: 0.25,
-            },
-            {
-              file: gwoUnit.jig,
-              path: "area_build_separation",
-              op: "replace",
-              value: 12,
-            },
-            {
-              file: gwoUnit.jig,
-              path: "production.energy",
-              op: "multiply",
-              value: 0.7,
-            },
-            {
-              file: gwoUnit.jig,
-              path: "production.metal",
-              op: "multiply",
-              value: 0.7,
-            },
-            {
-              file: gwoUnit.jig,
-              path: "build_restrictions",
-              op: "replace",
-              value: "none",
-            },
-            {
-              file: gwoUnit.jig,
-              path: "description",
-              op: "replace",
-              value:
-                "!LOC:Orbital Mining Platform - This modified platform can extract metal from solid-state crust, but at a decreased rate.",
-            },
-            {
-              file: gwoUnit.jig,
-              path: "model.animations",
-              op: "replace",
-              value: {},
-            },
-            {
-              file: gwoUnit.jigDeath,
-              path: "damage",
-              op: "multiply",
-              value: 0.1,
-            },
-            {
-              file: gwoUnit.orbitalFabber,
-              path: "buildable_types",
-              op: "add",
-              value: " | FabBuild & Custom58",
-            },
-          ]);
+          inventory.addMods(
+            gwoCard
+              .mods(gwoUnit.jig, "multiply", { build_metal_cost: 0.25 })
+              .concat(
+                gwoCard.mods(gwoUnit.jig, "replace", {
+                  area_build_separation: 12,
+                }),
+                gwoCard.mods(gwoUnit.jig, "multiply", {
+                  "production.energy": 0.7,
+                  "production.metal": 0.7,
+                }),
+                gwoCard.mods(gwoUnit.jig, "replace", {
+                  build_restrictions: "none",
+                  description:
+                    "!LOC:Orbital Mining Platform - This modified platform can extract metal from solid-state crust, but at a decreased rate.",
+                  "model.animations": {},
+                }),
+                gwoCard.mods(gwoUnit.jigDeath, "multiply", { damage: 0.1 }),
+                gwoCard.mods(gwoUnit.orbitalFabber, "add", {
+                  buildable_types: " | FabBuild & Custom58",
+                })
+              )
+          );
 
           var structures = [
             "BasicAirDefense",
