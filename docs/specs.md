@@ -18,6 +18,17 @@ and op applied to several paths:
 gwoCard.mods(gwoUnit.dox, "replace", { max_health: 100, max_speed: 12 });
 ```
 
+and `flatMapMods(files, op, props)` for the same props over a list of files (a
+single path is accepted too). It emits one file's entries before the next's, in
+`props` key order, which matters where a later descriptor overrides an earlier one:
+
+```js
+gwoCard.flatMapMods(gwoGroup.botsAmmo, "multiply", {
+  damage: 1.25,
+  splash_damage: 1.25,
+});
+```
+
 ## The op table
 
 | Op                 | Behaviour                                                                                        |

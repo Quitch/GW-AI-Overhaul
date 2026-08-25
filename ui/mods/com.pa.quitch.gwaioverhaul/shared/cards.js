@@ -92,6 +92,12 @@ define(function () {
     });
   };
 
+  var mods = function (file, op, props) {
+    return _.map(_.keys(props), function (path) {
+      return { file: file, path: path, op: op, value: props[path] };
+    });
+  };
+
   return {
     getConnectedClients: getConnectedClients,
 
@@ -292,10 +298,15 @@ define(function () {
     },
 
     // e.g. mods(gwoUnit.x, "replace", { max_health: 100 })
-    mods: function (file, op, props) {
-      return _.map(_.keys(props), function (path) {
-        return { file: file, path: path, op: op, value: props[path] };
-      });
+    mods: mods,
+
+    // mods() over every file, flattened: one file's entries before the next's.
+    flatMapMods: function (files, op, props) {
+      return _.flatten(
+        _.map(_.isString(files) ? [files] : files, function (file) {
+          return mods(file, op, props);
+        })
+      );
     },
 
     // The gwaio_anti_* shape: zero against its counter card, half once any other

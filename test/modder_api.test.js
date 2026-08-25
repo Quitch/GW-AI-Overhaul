@@ -122,6 +122,7 @@ const CARD_HELPERS = [
   "commanderWeight",
   "conditionalDeal",
   "farForSize",
+  "flatMapMods",
   "getAllConnectedPlayerCards",
   "getContext",
   "hasAllUnits",

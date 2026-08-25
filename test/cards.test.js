@@ -418,6 +418,31 @@ describe("mods", () => {
   });
 });
 
+describe("flatMapMods", () => {
+  it("emits every prop for one file before moving to the next", () => {
+    assert.deepEqual(
+      cards.flatMapMods(["a.json", "b.json"], "multiply", { x: 1, y: 2 }),
+      [
+        { file: "a.json", path: "x", op: "multiply", value: 1 },
+        { file: "a.json", path: "y", op: "multiply", value: 2 },
+        { file: "b.json", path: "x", op: "multiply", value: 1 },
+        { file: "b.json", path: "y", op: "multiply", value: 2 },
+      ]
+    );
+  });
+
+  it("treats a single file string as a one-file list", () => {
+    assert.deepEqual(
+      cards.flatMapMods("a.json", "replace", { x: 1 }),
+      cards.mods("a.json", "replace", { x: 1 })
+    );
+  });
+
+  it("returns an empty array for no files", () => {
+    assert.deepEqual(cards.flatMapMods([], "replace", { x: 1 }), []);
+  });
+});
+
 describe("isEnglish", () => {
   function detecting(language) {
     setGlobal("i18n", { detectLanguage: () => language });
