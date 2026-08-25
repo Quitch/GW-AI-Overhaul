@@ -3,31 +3,15 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoCard, gwoUnit, gwoGroup) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Orbital Launcher Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_orbital",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        !inventory.hasCard("gwaio_start_rapid") &&
-          gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalLauncher)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Orbital Launcher Upgrade Tech",
+    description:
+      "!LOC:Orbital Launcher Upgrade Tech enables the building of advanced units by basic orbital manufacturing.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_orbital",
+    requires: gwoUnit.orbitalLauncher,
+    unless: "gwaio_start_rapid",
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.orbitalAdvanced);
 
       inventory.addMods(
@@ -67,6 +51,5 @@ define([
       );
       inventory.addAIMods(aiMods);
     },
-    dull: function () {},
-  };
+  });
 });

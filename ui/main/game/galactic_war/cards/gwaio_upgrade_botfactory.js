@@ -5,30 +5,15 @@ define([
 ], function (gwoCard, gwoUnit, gwoGroup) {
   var ADVANCED_BOT_FACTORY_ONLY = ["AdvancedBotFactory"];
 
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Bot Factory Upgrade Tech enables the building of advanced units by basic bot manufacturing."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Bot Factory Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_factory_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_bot" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        !inventory.hasCard("gwaio_start_rapid") &&
-          gwoCard.hasUnit(inventory.units(), gwoUnit.botFactory)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Bot Factory Upgrade Tech",
+    description:
+      "!LOC:Bot Factory Upgrade Tech enables the building of advanced units by basic bot manufacturing.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_factory_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_bot",
+    requires: gwoUnit.botFactory,
+    unless: "gwaio_start_rapid",
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-
       var advancedBotFabbers = [
         gwoUnit.colonel,
         gwoUnit.mend,
@@ -86,6 +71,5 @@ define([
       );
       inventory.addAIMods(aiMods);
     },
-    dull: function () {},
-  };
+  });
 });

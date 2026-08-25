@@ -3,32 +3,15 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoCard, gwoUnit, gwoGroup) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Vehicle Factory Upgrade Tech enables the building of advanced units by basic vehicle manufacturing."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Vehicle Factory Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_factory_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_vehicle",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        !inventory.hasCard("gwaio_start_rapid") &&
-          gwoCard.hasUnit(inventory.units(), gwoUnit.vehicleFactory)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Vehicle Factory Upgrade Tech",
+    description:
+      "!LOC:Vehicle Factory Upgrade Tech enables the building of advanced units by basic vehicle manufacturing.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_factory_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_vehicle",
+    requires: gwoUnit.vehicleFactory,
+    unless: "gwaio_start_rapid",
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-
       var advancedVehiclesExcludingFabber = _.without(
         gwoGroup.vehiclesAdvancedMobile,
         gwoUnit.vehicleFabberAdvanced
@@ -74,6 +57,5 @@ define([
       );
       inventory.addAIMods(aiMods);
     },
-    dull: function () {},
-  };
+  });
 });

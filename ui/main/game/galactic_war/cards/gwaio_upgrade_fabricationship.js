@@ -4,29 +4,17 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoAI, gwoCard, gwoUnit, gwoGroup) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Fabrication Ship Upgrade Tech enables the building of advanced structures by the basic naval fabricator."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Fabrication Ship Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_metal_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_sea" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.navalFabber),
-        gwoCard.navalWeight(inventory, 30)
-      );
+  return gwoCard.upgradeCard({
+    name: "!LOC:Fabrication Ship Upgrade Tech",
+    description:
+      "!LOC:Fabrication Ship Upgrade Tech enables the building of advanced structures by the basic naval fabricator.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_metal_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_sea",
+    requires: gwoUnit.navalFabber,
+    chance: function (inventory) {
+      return gwoCard.navalWeight(inventory, 30);
     },
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.starterUnitsAdvanced);
 
       inventory.addMods(
@@ -43,6 +31,5 @@ define([
         gwoAI.builderAppendMods("fabber", units, "BasicNavalFabber")
       );
     },
-    dull: function () {},
-  };
+  });
 });

@@ -3,30 +3,18 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoCard, gwoUnit, gwoGroup) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Naval Factory Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_naval_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_sea" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        !inventory.hasCard("gwaio_start_rapid") &&
-          gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactory),
-        gwoCard.navalWeight(inventory, 30)
-      );
+  return gwoCard.upgradeCard({
+    name: "!LOC:Naval Factory Upgrade Tech",
+    description:
+      "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_naval_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_sea",
+    requires: gwoUnit.navalFactory,
+    unless: "gwaio_start_rapid",
+    chance: function (inventory) {
+      return gwoCard.navalWeight(inventory, 30);
     },
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoGroup.navalAdvancedCombat);
 
       var units = [
@@ -66,6 +54,5 @@ define([
       );
       inventory.addAIMods(aiMods);
     },
-    dull: function () {},
-  };
+  });
 });
