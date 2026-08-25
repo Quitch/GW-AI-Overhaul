@@ -100,6 +100,28 @@ define(function () {
       return product;
     };
 
+    // The per-card fix-up a real deal does in model.win: a minion product
+    // needs a Sub Commander, a slot product its overflow flag.
+    var prepareProduct = function (product, inventory, testing) {
+      if (product.id === "gwc_minion") {
+        if (testing) {
+          testMinions(product, inventory);
+        }
+        return dealSubCommander(product);
+      }
+      if (product.id === "gwc_add_card_slot") {
+        return setupNewCardSlot(product);
+      }
+      return product;
+    };
+
+    var finishCheat = function (snapshotName) {
+      return dealCardToSelectableAI(false).then(function () {
+        model.sendCampaignSnapshot(snapshotName, true);
+        gwoSave(game, true);
+      });
+    };
+
     var expandInventorySize = function (galaxy, inventory, star, maxCards) {
       var sizeDifference = inventory.cards().length - maxCards;
       var deferredQueue = [];
@@ -152,12 +174,7 @@ define(function () {
               cards
             )
             .then(function (product) {
-              if (product.id === "gwc_minion") {
-                testMinions(product, inventory);
-                product = dealSubCommander(product);
-              } else if (product.id === "gwc_add_card_slot") {
-                product = setupNewCardSlot(product);
-              }
+              product = prepareProduct(product, inventory, true);
               applyCheatCards(product, inventory);
               if (!product.unique) {
                 testCardForMatches(inventory, product);
@@ -170,10 +187,7 @@ define(function () {
       );
 
       $.when.apply($, deferredQueue).then(function () {
-        dealCardToSelectableAI(false).then(function () {
-          model.sendCampaignSnapshot("gwo_cheat_test_cards", true);
-          gwoSave(game, true);
-        });
+        finishCheat("gwo_cheat_test_cards");
       });
     };
 
@@ -203,17 +217,8 @@ define(function () {
             cards
           )
           .then(function (product) {
-            if (product.id === "gwc_minion") {
-              product = dealSubCommander(product);
-            } else if (product.id === "gwc_add_card_slot") {
-              product = setupNewCardSlot(product);
-            }
-            inventory.cards.push(product);
-            inventory.applyCards();
-            dealCardToSelectableAI(false).then(function () {
-              model.sendCampaignSnapshot("gwo_cheat_give_card", true);
-              gwoSave(game, true);
-            });
+            applyCheatCards(prepareProduct(product, inventory), inventory);
+            finishCheat("gwo_cheat_give_card");
           });
       } else {
         console.error(
