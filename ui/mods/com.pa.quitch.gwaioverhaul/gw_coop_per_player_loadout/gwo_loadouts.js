@@ -162,10 +162,9 @@ function gwoLoadouts() {
             var dealInventory = new GWInventory();
             var globalTags = buildGlobalTags(commander, playerFaction);
 
-            dealInventory.setTag("global", "commander", commander);
-            if (_.isNumber(playerFaction)) {
-              dealInventory.setTag("global", "playerFaction", playerFaction);
-            }
+            _.forEach(globalTags, function (value, name) {
+              dealInventory.setTag("global", name, value);
+            });
 
             dealStartingCard(
               gwoDeal,
