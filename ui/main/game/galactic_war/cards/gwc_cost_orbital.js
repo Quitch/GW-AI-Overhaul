@@ -24,11 +24,9 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        _.flatten(
-          _.map(gwoGroup.orbitalMobile, function (unit) {
-            return gwoCard.mods(unit, "multiply", { build_metal_cost: 0.75 });
-          })
-        )
+        gwoCard.flatMapMods(gwoGroup.orbitalMobile, "multiply", {
+          build_metal_cost: 0.75,
+        })
       );
     },
     dull: function () {},

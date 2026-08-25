@@ -30,14 +30,10 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        _.flatten(
-          _.map(buildArms, function (buildArm) {
-            return gwoCard.mods(buildArm, "multiply", {
-              "construction_demand.energy": 0.5,
-              "construction_demand.metal": 1.5,
-            });
-          })
-        )
+        gwoCard.flatMapMods(buildArms, "multiply", {
+          "construction_demand.energy": 0.5,
+          "construction_demand.metal": 1.5,
+        })
       );
     },
     dull: function () {},

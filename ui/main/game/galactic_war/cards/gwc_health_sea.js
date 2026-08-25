@@ -21,11 +21,9 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        _.flatten(
-          _.map(gwoGroup.navalMobile, function (unit) {
-            return gwoCard.mods(unit, "multiply", { max_health: 1.5 });
-          })
-        )
+        gwoCard.flatMapMods(gwoGroup.navalMobile, "multiply", {
+          max_health: 1.5,
+        })
       );
     },
     dull: function () {},
