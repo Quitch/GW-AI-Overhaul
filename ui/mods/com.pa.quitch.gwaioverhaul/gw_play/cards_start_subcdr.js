@@ -216,12 +216,10 @@ define([
       playerInventory.load(recordInventory);
 
       finish = function () {
-        var nextRecord = _.assign({}, _.cloneDeep(record), {
+        var nextRecord = coopHost.upsertRecord(game, record, {
           inventory: playerInventory.save(),
-          updatedAt: _.now(),
         });
-
-        if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
+        if (!nextRecord) {
           failSetup("failed to store co-op player inventory");
           return;
         }

@@ -114,12 +114,11 @@ define([
         return;
       }
 
-      var nextRecord = _.assign({}, _.cloneDeep(record), {
+      var stored = coopHost.upsertRecord(game, record, {
         pendingTechCards: pendingTechCards,
         updatedAt: payload.updated_at || _.now(),
       });
-
-      if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
+      if (!stored) {
         console.error("[GW COOP] failed to apply pending tech reroll result");
         model.scanning(false);
         return;
@@ -241,12 +240,11 @@ define([
             rerollsUsed: nextRerollsUsed,
             updatedAt: updatedAt,
           };
-          var nextRecord = _.assign({}, _.cloneDeep(record), {
+          var stored = coopHost.upsertRecord(game, record, {
             pendingTechCards: nextPendingTechCards,
             updatedAt: updatedAt,
           });
-
-          if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
+          if (!stored) {
             failReroll("failed to store rerolled pending tech");
             return;
           }

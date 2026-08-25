@@ -1,7 +1,9 @@
 // Host-side per-viewer pre-dealt star cards. Each viewer gets their own card on
 // every selectable AI star, stored on their co-op inventory record so it rides
 // the campaign snapshot. See coop.md, "Per-player pre-dealt cards".
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
+], function (coopHost) {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.
   var starCardForRecord = function (record, starIndex) {
@@ -237,12 +239,7 @@ define(function () {
             return false;
           }
 
-          return game.upsertCoopPlayerInventoryData(
-            _.assign({}, _.cloneDeep(fresh), {
-              gwaioStarCards: next,
-              updatedAt: _.now(),
-            })
-          );
+          return !!coopHost.upsertRecord(game, fresh, { gwaioStarCards: next });
         });
     };
 

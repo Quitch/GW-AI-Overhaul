@@ -4,7 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
-], function (gwoLoadoutIds, helpers, gwoLoadoutBanks) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
+], function (gwoLoadoutIds, helpers, gwoLoadoutBanks, coopHost) {
   var cardId = function (card) {
     if (_.isString(card)) {
       return card;
@@ -213,12 +214,9 @@ define([
       return;
     }
 
-    var stored = game.upsertCoopPlayerInventoryData(
-      _.assign({}, _.cloneDeep(record), {
-        gwaioUnlockedStartCardIds: ids,
-        updatedAt: _.now(),
-      })
-    );
+    var stored = coopHost.upsertRecord(game, record, {
+      gwaioUnlockedStartCardIds: ids,
+    });
     if (!stored) {
       console.error("[GW COOP] failed to store reported loadout unlocks");
       return;
