@@ -200,9 +200,7 @@ define(function () {
       }
 
       var id = model.cheats.giveCardId();
-      var cardId = _.find(model.gwoCards, function (card) {
-        return card === id;
-      });
+      var cardId = _.includes(model.gwoCards, id) ? id : undefined;
 
       if (cardId) {
         gwoDeal

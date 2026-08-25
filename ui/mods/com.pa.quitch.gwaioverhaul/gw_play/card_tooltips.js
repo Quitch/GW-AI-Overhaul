@@ -126,12 +126,7 @@ function gwoCardTooltips() {
           }
 
           var cardId = card.id();
-          var noTooltip = _.some(
-            model.gwoCardsWithoutTooltip,
-            function (cardWithoutTooltip) {
-              return cardWithoutTooltip === cardId;
-            }
-          );
+          var noTooltip = _.includes(model.gwoCardsWithoutTooltip, cardId);
 
           if (noTooltip) {
             return;

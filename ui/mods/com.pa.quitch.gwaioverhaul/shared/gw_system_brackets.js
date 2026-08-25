@@ -238,14 +238,7 @@ define([
   // withoutBrokenSystems' in-place backfill has to go on the copy instead.
   var copyOf = function (system, providers) {
     var copy = JSON.parse(JSON.stringify(system));
-    var started = false;
-
-    for (var planet of copy.planets) {
-      if (planet.starting_planet) {
-        started = true;
-      }
-    }
-    if (!started) {
+    if (!_.some(copy.planets, "starting_planet")) {
       copy.planets[0].starting_planet = true;
     }
 

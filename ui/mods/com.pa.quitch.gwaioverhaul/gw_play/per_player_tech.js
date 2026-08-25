@@ -33,16 +33,12 @@ define(function () {
     }
   };
 
-  var stringEndsWith = function (value, suffix) {
-    return _.isString(value) && value.slice(-suffix.length) === suffix;
-  };
-
   var stripKnownSpecTag = function (value) {
     if (!_.isString(value)) {
       return value;
     }
 
-    if (stringEndsWith(value, ".player")) {
+    if (_.endsWith(value, ".player")) {
       return value.slice(0, -".player".length);
     }
 
