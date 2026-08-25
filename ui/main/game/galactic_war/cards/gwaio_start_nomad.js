@@ -309,11 +309,9 @@ define([
           var defensiveStructures = gwoGroup.structuresArtillery.concat(
             gwoGroup.structuresDefences
           );
-          var offensiveStructures = _.filter(
+          var offensiveStructures = _.without(
             defensiveStructures,
-            function (structure) {
-              return structure !== gwoUnit.wall;
-            }
+            gwoUnit.wall
           );
           _.forEach(offensiveStructures, function (unit) {
             mods.push({

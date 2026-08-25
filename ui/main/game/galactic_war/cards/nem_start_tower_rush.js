@@ -50,12 +50,7 @@ define([
               }
             );
           });
-          var costUnits = _.filter(
-            gwoGroup.structuresDefences,
-            function (defence) {
-              return defence !== gwoUnit.wall;
-            }
-          );
+          var costUnits = _.without(gwoGroup.structuresDefences, gwoUnit.wall);
           _.forEach(costUnits, function (unit) {
             mods.push({
               file: unit,
@@ -64,9 +59,7 @@ define([
               value: 0.5,
             });
           });
-          var separationUnits = _.filter(costUnits, function (defence) {
-            return defence !== gwoUnit.landMine;
-          });
+          var separationUnits = _.without(costUnits, gwoUnit.landMine);
           _.forEach(separationUnits, function (unit) {
             mods.push({
               file: unit,
@@ -89,11 +82,9 @@ define([
               value: 2,
             }
           );
-          var weapons = _.filter(
+          var weapons = _.without(
             gwoGroup.structuresDefencesWeapons,
-            function (defence) {
-              return defence !== gwoUnit.landMineWeapon;
-            }
+            gwoUnit.landMineWeapon
           );
           _.forEach(weapons, function (unit) {
             mods.push(

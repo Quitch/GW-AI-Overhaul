@@ -56,9 +56,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
   var airAmmo = airBasicAmmo.concat(airAdvancedAmmo);
   var airWeapons = airBasicWeapons.concat(airAdvancedWeapons);
   var airMobile = airBasicMobile.concat(airAdvancedMobile);
-  var airMobileNoCluster = _.filter(airMobile, function (unit) {
-    return unit !== gwoUnit.angel;
-  });
+  var airMobileNoCluster = _.without(airMobile, gwoUnit.angel);
   var airCombat = airBasicCombat.concat(airAdvancedCombat);
   var air = airBasic.concat(airAdvanced);
 
