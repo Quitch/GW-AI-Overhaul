@@ -5,7 +5,9 @@
 // window and never looks at spawn points, so size stops tracking how many
 // commanders a map was built for. These brackets restore that from the landing
 // zones. A measured sibling of the shadowed gw_galaxy.js - see testing.md.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
+], function (gwoBiomes) {
   // What system_editor.js's customLandingZones defaults an absent or zero rule bound to.
   var MIN_ARMIES = 2;
   var MAX_ARMIES = 32;
@@ -135,12 +137,24 @@ define(function () {
     ].join("|");
   };
 
-  var bracketsFrom = function (systems) {
+  // `providers` names the modded biomes a battle can be given; see galaxy.md.
+  var bracketsFrom = function (systems, providers) {
     var pool = _.sortBy(systems || [], poolOrder);
     var byRange = {};
     var brackets = [];
 
     for (var system of pool) {
+      var biome = gwoBiomes.unservableBiome(system, providers);
+      if (biome) {
+        console.warn(
+          "gwoSystemBrackets: '" +
+            ((system && system.name) || "unnamed system") +
+            "' uses biome '" +
+            biome +
+            "', which the Galactic War server cannot load; dropping it from the galaxy pool"
+        );
+        continue;
+      }
       var range = armyRange(system);
       if (!range) {
         console.warn(

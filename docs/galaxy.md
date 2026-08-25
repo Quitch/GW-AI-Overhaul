@@ -268,6 +268,17 @@ nothing real to scale, which is why it used to be removed from the DOM.
 declared `players`, else a capacity scan of `landing_zones.rules`, else `numArmies`,
 else dropped with a warning — and systems sharing a range become one bracket.
 
+A system is also dropped, with a warning naming the biome, when any planet's
+`generator.biome` is not one the Galactic War server can load. Map packs carry biomes
+from server mods (`oasis` from _multiple Biomes for System Designers_, for one), and GW
+never gives its local server server mods: Community Mods' `api.net.startGame` wrapper
+mounts them for a skirmish and skips that step for any `gw` mode. The server's
+`sim_utils.js` `validatePlanet` then `file.load`s `/pa/terrain/<biome>.json` behind a
+deferred that only settles on success, so the battle hangs at loading with no error.
+`shared/gwo_biomes.js` holds the stock list; `referee_config.js` re-checks at launch and
+switches such a planet to `earth`, which is what repairs a war saved before this screen
+existed.
+
 The quantity is armies, not humans. Map makers use `players` to count humans and humans
 share an army, so a declared `[2,10]` on two landing zones is two armies of five; the
 zone count caps the declared maximum, and the minimum follows it down rather than
@@ -294,8 +305,9 @@ Because the shuffle keys above are assigned in pool order, without the sort the 
 would place different systems whenever more than one source was selected.
 
 This path bypasses wondible's `withoutBrokenSystems`, so its name and `_.matches`
-blocklists no longer apply; the `starting_planet` backfill is reproduced on the returned
-copy, and the pool is never mutated because My Systems is a live IndexedDB row.
+blocklists no longer apply and its stock-biome whitelist is replaced by the screen above;
+the `starting_planet` backfill is reproduced on the returned copy, and the pool is never
+mutated because My Systems is a live IndexedDB row.
 
 ## Factions
 
