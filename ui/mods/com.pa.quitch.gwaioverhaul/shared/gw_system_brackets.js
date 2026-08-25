@@ -5,7 +5,9 @@
 // window and never looks at spawn points, so size stops tracking how many
 // commanders a map was built for. These brackets restore that from the landing
 // zones. A measured sibling of the shadowed gw_galaxy.js - see testing.md.
-define(() => {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js"], (
+  gwoBiomes,
+) => {
   // What system_editor.js's customLandingZones defaults an absent or zero rule bound to.
   const MIN_ARMIES = 2;
   const MAX_ARMIES = 32;
@@ -133,12 +135,20 @@ define(() => {
     ].join("|");
   };
 
-  const bracketsFrom = (systems) => {
+  // `providers` names the modded biomes a battle can be given; see galaxy.md.
+  const bracketsFrom = (systems, providers) => {
     const pool = _.sortBy(systems || [], poolOrder);
     const byRange = {};
     const brackets = [];
 
     for (const system of pool) {
+      const biome = gwoBiomes.unservableBiome(system, providers);
+      if (biome) {
+        console.warn(
+          `gwoSystemBrackets: '${(system && system.name) || "unnamed system"}' uses biome '${biome}', which the Galactic War server cannot load; dropping it from the galaxy pool`,
+        );
+        continue;
+      }
       const range = armyRange(system);
       if (!range) {
         console.warn(
@@ -218,7 +228,7 @@ define(() => {
 
   // The pool holds live references - My Systems is a bound IndexedDB row - so
   // withoutBrokenSystems' in-place backfill has to go on the copy instead.
-  const copyOf = (system) => {
+  const copyOf = (system, providers) => {
     const copy = JSON.parse(JSON.stringify(system));
     let started = false;
 
@@ -231,12 +241,17 @@ define(() => {
       copy.planets[0].starting_planet = true;
     }
 
+    const mods = gwoBiomes.modsFor(copy, providers);
+    if (mods.length) {
+      copy.gwoBiomeMods = mods;
+    }
+
     return copy;
   };
 
   // Hands each star the smallest unplaced system that fits. `random` is consumed
   // only while ordering - take() must stay deterministic.
-  const selectorFor = (brackets, random) => {
+  const selectorFor = (brackets, random, providers) => {
     const list = brackets || [];
     const highest = highestMax(list);
     const ordered = [];
@@ -288,7 +303,7 @@ define(() => {
         }
         if (!entry.taken) {
           entry.taken = true;
-          return copyOf(entry.system);
+          return copyOf(entry.system, providers);
         }
         placed.push(entry);
       }
@@ -297,7 +312,7 @@ define(() => {
       if (!placed.length) {
         return null;
       }
-      return copyOf(placed[reused++ % placed.length].system);
+      return copyOf(placed[reused++ % placed.length].system, providers);
     };
 
     return {

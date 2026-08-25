@@ -4,11 +4,11 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, gwoCard, gwoUnit) {
-  var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+], (module, GW, GWCStart, gwoCard, gwoUnit) => {
+  const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:Bionic Augmentation Commander Of Neutralizing"),
+    visible: () => false,
+    summarize: () => "!LOC:Bionic Augmentation Commander Of Neutralizing",
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
     },
@@ -25,43 +25,36 @@ define([
     deal: gwoCard.startCard,
     buff: function (inventory) {
       if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
+        let buffCount = inventory.getTag("", "buffCount", 0);
         if (buffCount) {
           inventory.maxCards(inventory.maxCards() + 1);
         } else {
           GWCStart.buff(inventory);
-          // One data bank, as the description says: gwc_start grants
-          // initialCardSlots + 1, and the loadout card holds one of what is left.
           inventory.maxCards(inventory.maxCards() - 3);
-          var navigationAttributes = [
+          const navigationAttributes = [
             "navigation.move_speed",
             "navigation.brake",
             "navigation.acceleration",
             "navigation.turn_speed",
           ];
-          var mods = _.map(
-            navigationAttributes,
-            function (navigationAttribute) {
-              return {
-                file: gwoUnit.commander,
-                path: navigationAttribute,
-                op: "multiply",
-                value: 5,
-              };
-            },
-          );
-          var weapons = [
+          const mods = _.map(navigationAttributes, (navigationAttribute) => ({
+            file: gwoUnit.commander,
+            path: navigationAttribute,
+            op: "multiply",
+            value: 5,
+          }));
+          const weapons = [
             gwoUnit.commanderSecondary,
             gwoUnit.commanderWeaponBullet,
             gwoUnit.commanderWeaponLaser,
             gwoUnit.commanderWeaponMissile,
           ];
-          var ammoAttributes = [
+          const ammoAttributes = [
             "ammo_capacity",
             "ammo_demand",
             "ammo_per_shot",
           ];
-          _.forEach(ammoAttributes, function (ammoAttribute) {
+          _.forEach(ammoAttributes, (ammoAttribute) => {
             mods.push({
               file: gwoUnit.commanderSecondary,
               path: ammoAttribute,
@@ -69,7 +62,7 @@ define([
               value: 0.25,
             });
           });
-          _.forEach(weapons, function (weapon) {
+          _.forEach(weapons, (weapon) => {
             mods.push({
               file: weapon,
               path: "rate_of_fire",

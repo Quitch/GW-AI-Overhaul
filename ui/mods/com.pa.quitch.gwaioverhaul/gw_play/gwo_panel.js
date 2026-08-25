@@ -326,11 +326,7 @@ function gwoWarInfoPanel(gwoSettings) {
               character: model.gwoLoadout,
             },
           ];
-          const connectedClients = _.isFunction(
-            model.gwCampaignConnectedClients,
-          )
-            ? model.gwCampaignConnectedClients()
-            : [];
+          const connectedClients = model.gwCampaignConnectedClients();
           const activeCommanderKeys = {};
 
           if (coopCampaign) {
@@ -372,7 +368,6 @@ function gwoWarInfoPanel(gwoSettings) {
       },
     );
   } catch (e) {
-    console.error(e);
     console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }

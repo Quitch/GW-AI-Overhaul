@@ -312,6 +312,86 @@ describe("bracketsFrom", () => {
   });
 });
 
+describe("bracketsFrom - biomes the server cannot load", () => {
+  function modded(name, biome) {
+    const system = sys(name, { zoneCount: 2 });
+    system.planets[0].generator.biome = biome;
+    return system;
+  }
+
+  it("drops a system on a modded biome, naming both in the warning", () => {
+    const run = withoutWarnings(() =>
+      brackets.bracketsFrom([
+        sys("keep", { zoneCount: 2 }),
+        modded("oasis-map", "oasis"),
+      ]),
+    );
+    assert.equal(run.warnings.length, 1);
+    assert.match(run.warnings[0], /oasis-map/);
+    assert.match(run.warnings[0], /'oasis'/);
+    assert.deepEqual(names(run.result[0].systems), ["keep"]);
+  });
+
+  it("drops a system when any planet, not just the first, is modded", () => {
+    const system = sys("later", { zoneCount: 2 });
+    system.planets.push({ generator: { biome: "arctic" } });
+    const run = withoutWarnings(() => brackets.bracketsFrom([system]));
+    assert.deepEqual(run.result, []);
+  });
+
+  it("reads the pre-fixupPlanetConfig planet key", () => {
+    const shape = (biome) => ({
+      name: biome,
+      planets: [{ planet: { biome: biome, numArmies: 4 } }],
+    });
+    const run = withoutWarnings(() =>
+      brackets.bracketsFrom([shape("earth"), shape("oasis")]),
+    );
+    assert.deepEqual(names(run.result[0].systems), ["earth"]);
+  });
+
+  it("keeps a modded biome that a provider serves", () => {
+    const run = withoutWarnings(() =>
+      brackets.bracketsFrom([modded("oasis-map", "oasis")], {
+        oasis: { identifier: "uk.pa.tetctree.server" },
+      }),
+    );
+    assert.deepEqual(run.warnings, []);
+    assert.deepEqual(names(run.result[0].systems), ["oasis-map"]);
+  });
+
+  it("returns no brackets when nothing in the pool can be served", () => {
+    const run = withoutWarnings(() =>
+      brackets.bracketsFrom([modded("a", "oasis"), modded("b", "arctic")]),
+    );
+    assert.deepEqual(run.result, []);
+  });
+
+  it("leaves the dropped system untouched", () => {
+    const pooled = modded("a", "oasis");
+    withoutWarnings(() => brackets.bracketsFrom([pooled]));
+    assert.equal(pooled.planets[0].generator.biome, "oasis");
+  });
+
+  it("stamps the providing mods on the placed copy only", () => {
+    const providers = { oasis: { identifier: "uk.pa.tetctree.server" } };
+    const pooled = modded("oasis-map", "oasis");
+    const built = brackets.bracketsFrom([pooled], providers);
+    const taken = brackets.selectorFor(built, () => 0.5, providers).take(2);
+
+    assert.deepEqual(taken.gwoBiomeMods, [providers.oasis]);
+    assert.equal(pooled.gwoBiomeMods, undefined);
+  });
+
+  it("does not stamp a system that needs no mod", () => {
+    const built = brackets.bracketsFrom([sys("stock", { zoneCount: 2 })], {
+      oasis: { identifier: "uk.pa.tetctree.server" },
+    });
+    const taken = brackets.selectorFor(built, () => 0.5).take(2);
+    assert.equal("gwoBiomeMods" in taken, false);
+  });
+});
+
 describe("candidatesFor", () => {
   const built = [ranged(0, 2, ["small"]), ranged(2, 4, ["mid"])].concat([
     ranged(2, 10, ["large"]),

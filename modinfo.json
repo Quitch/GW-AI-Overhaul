@@ -4,9 +4,9 @@
   "display_name": "Galactic War Overhaul DEV",
   "description": "Make Galactic War more exciting, more replayable, and if desired, more challenging. Featuring more systems, more tech cards, more factions, more game modes, more AI personalities, more difficulty levels, more unlocks, more strategy, and more AI brains. Start a new war to enjoy all the new features. Check out the new war tooltips for more information and difficulty recommendations. Recommended accompanying mods: Shared Systems for galactic war, AI Chat, and Show AI Personality Names.",
   "author": "Quitch",
-  "version": "6.10.3",
-  "build": "124667",
-  "date": "2026-08-16",
+  "version": "6.12.0",
+  "build": "124673",
+  "date": "2026-08-24",
   "signature": " ",
   "forum": "https://steamcommunity.com/app/386070/discussions/0/133259956005401439/",
   "category": [
@@ -50,7 +50,12 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
     ],
     "live_game": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/win_conditions.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"
+    ],
+    "live_game_options_bar": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game_options_bar/win_conditions.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game_options_bar/win_conditions.js"
     ],
     "shared_build": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared_build/planetary_radar.js"

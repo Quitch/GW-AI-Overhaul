@@ -51,7 +51,6 @@ define([
       "TML",
       "UnitCannon",
     ];
-    // Titan Tech is the only card that puts a Ragnarok in the army.
     if (inventory.hasCard("gwc_enable_titans")) {
       units.push("PlanetSplitter");
     }

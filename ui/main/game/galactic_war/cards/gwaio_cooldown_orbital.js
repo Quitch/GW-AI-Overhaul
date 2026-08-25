@@ -22,8 +22,7 @@ define([
 
   deal: function (system, context, inventory) {
     const sizes = GW.balance.numberOfSystems;
-    // The Orbital Launcher has no factory_cooldown_time, so the Orbital Factory
-    // is the only one of the two the card can do anything for.
+    // The Orbital Launcher has no factory_cooldown_time
     return gwoCard.conditionalDeal(
       gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory),
       gwoCard.travelledShort(system, context, sizes) ? 70 : 35,

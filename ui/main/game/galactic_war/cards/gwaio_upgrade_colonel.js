@@ -34,8 +34,6 @@ define([
 
   buff: function (inventory) {
     inventory.maxCards(inventory.maxCards() + 1);
-    // Cluster's CEO Commander fields its own copy of the Colonel, and only
-    // that combination has one, so anything else would mod a missing spec.
     const colonel =
       inventory.getTag("global", "playerFaction") === 4 &&
       inventory.hasCard("gwaio_start_ceo")

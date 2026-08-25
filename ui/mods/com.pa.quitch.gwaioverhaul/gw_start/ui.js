@@ -440,7 +440,6 @@ function gwoUI() {
       () => model.mode() || loc("!LOC:Galactic War Overhaul"),
     );
   } catch (e) {
-    console.error(e);
     console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }

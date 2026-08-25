@@ -1,0 +1,42 @@
+var gwoOptionsBarModifiersLoaded;
+
+function gwoOptionsBarModifiers() {
+  if (gwoOptionsBarModifiersLoaded) {
+    return;
+  }
+
+  gwoOptionsBarModifiersLoaded = true;
+
+  try {
+    model.gwoGameModifiersText = ko.observable("");
+    model.gwoGameModifiersText.subscribe(() => {
+      api.Panel.onBodyResize();
+      _.delay(api.Panel.onBodyResize);
+    });
+
+    handlers.gwo_game_modifiers = (payload) => {
+      model.gwoGameModifiersText(payload || "");
+    };
+
+    $(
+      loadHtml(
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game_options_bar/win_conditions.html",
+      ),
+    ).insertBefore($(".wrapper_ingame_options_bar"));
+
+    const stockSetup = model.setup;
+    model.setup = () => {
+      stockSetup();
+      api.Panel.query(api.Panel.parentId, "panel.invoke", [
+        "gwoGameModifiersText",
+      ]).then((text) => {
+        if (text) {
+          model.gwoGameModifiersText(text);
+        }
+      });
+    };
+  } catch (e) {
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
+  }
+}
+gwoOptionsBarModifiers();

@@ -38,11 +38,6 @@ define([
               value: 200,
             },
           ]);
-
-          // The loaded file is a single always-firing GiveUp entry, so this AI
-          // builds nothing. JSON takes no comments, so: "always true" is spelled
-          // HasPersonalityTag boolean:false against a tag nothing sets. Keep that
-          // tag name reserved - a real tag inverts the sentinel.
           inventory.addAIMods([
             {
               type: "fabber",

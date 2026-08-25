@@ -64,7 +64,9 @@ full by the doc named:
 - **A top-level `let`/`const`/`class` can kill someone else's scene.** Scene
   scripts share one scope, and a duplicate lexical declaration across mods is a
   `SyntaxError` for whichever script loads second.
-  → [constraints.md](constraints.md)
+- **The GW server never sees mods, and `file.load` on a missing biome never
+  settles.** A planet whose `generator.biome` is not a stock `/pa/terrain/*.json`
+  hangs every player at loading with no error. → [galaxy.md](galaxy.md)
 
 ## On comments in this codebase
 

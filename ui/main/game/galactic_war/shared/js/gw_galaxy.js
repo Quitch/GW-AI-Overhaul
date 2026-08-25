@@ -274,6 +274,7 @@ define([
         var selector = gwoSystemBrackets.selectorFor(
           brackets,
           rng.stream("brackets"),
+          config.gwoBiomeProviders,
         );
         var byDistance = _.sortBy(
           _.map(self.stars(), function (star, index) {

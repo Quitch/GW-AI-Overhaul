@@ -27,10 +27,6 @@ define([
         } else {
           GWCStart.buff(inventory);
 
-          // Cluster fields Colonels as Sub Commanders and replaces their
-          // unit_types with a list carrying neither SupportCommander nor
-          // FactoryBuild, so nothing can build one. This loadout gets a copy
-          // taken before that runs, leaving Cluster's own Colonels alone.
           const playerIsCluster =
             inventory.getTag("global", "playerFaction") === 4;
           const colonel = playerIsCluster
@@ -38,6 +34,7 @@ define([
             : gwoUnit.colonel;
 
           inventory.addUnits(colonel);
+
           const mods = [
             {
               file: gwoUnit.commander,
@@ -81,16 +78,12 @@ define([
                 op: "clone",
                 value: gwoUnit.clusterCeoColonel,
               },
-              // Only your Commander builds it - the advanced bot factory asks
-              // for FactoryBuild.
               {
                 file: colonel,
                 path: "unit_types",
                 op: "pull",
                 value: "UNITTYPE_FactoryBuild",
               },
-              // The strategic icon is named after the spec file, and this one
-              // has no file of its own.
               {
                 file: colonel,
                 path: "si_name",

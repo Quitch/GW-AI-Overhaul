@@ -88,7 +88,6 @@ define([
           value: "UNITTYPE_Construction",
         },
       ];
-      // Reinstate the Nomad Commander loadout's structure movement
       if (inventory.hasCard("gwaio_start_nomad")) {
         mods.push({
           file: gwoUnit.singleLaserDefenseTower,
@@ -141,7 +140,7 @@ define([
           op: "replace",
           toBuild: "BasicLandDefenseSingle",
           idToMod: "priority",
-          value: 0, // priority 0 = never build
+          value: 0,
           refId: "name",
           refValue: "Single Laser Defense Tower - Snipe",
         },

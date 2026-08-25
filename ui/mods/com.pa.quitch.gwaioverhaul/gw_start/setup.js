@@ -379,6 +379,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js",
         "main/game/galactic_war/shared/js/systems/template-loader",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
       ],
       (
@@ -403,6 +404,7 @@ function gwoSetup() {
         gwoRng,
         gwoFactionSeed,
         chooseStarSystemTemplates,
+        gwoBiomeMods,
         gwoUrl,
       ) => {
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
@@ -565,10 +567,13 @@ function gwoSetup() {
 
           const onSystemsLoaded = function () {
             // $.when hands back one array per source.
-            const built = gwoSystemBrackets.bracketsFrom(
-              _.flatten(_.toArray(arguments)),
-            );
-            ready.resolve(built.length ? built : undefined);
+            const systems = _.flatten(_.toArray(arguments));
+            gwoBiomeMods.providers().then((providers) => {
+              const built = gwoSystemBrackets.bracketsFrom(systems, providers);
+              ready.resolve(
+                built.length ? { brackets: built, providers } : undefined,
+              );
+            });
           };
 
           const onOptionsLoaded = (options) => {
@@ -689,8 +694,9 @@ function gwoSetup() {
             .setTag("global", "playerFaction", playerFactionIndex());
           game.inventory().setTag("global", "playerColor", model.playerColor());
 
-          const buildGalaxy = loadSystemBrackets().then((systemBrackets) =>
-            game.galaxy().build({
+          const buildGalaxy = loadSystemBrackets().then((systemBrackets) => {
+            systemBrackets = systemBrackets || {};
+            return game.galaxy().build({
               seed: model.newGameSeed(),
               gwoRng: warRng.stream("galaxy"),
               size,
@@ -703,9 +709,10 @@ function gwoSetup() {
               maxConnections: 4,
               minimumDistanceBonus: 8, // this is inert
               largePlanets,
-              gwoSystemBrackets: systemBrackets,
-            }),
-          );
+              gwoSystemBrackets: systemBrackets.brackets,
+              gwoBiomeProviders: systemBrackets.providers,
+            });
+          });
 
           const onStartCardDealt = (startCardProduct) => {
             game
@@ -1351,7 +1358,6 @@ function gwoSetup() {
       },
     );
   } catch (e) {
-    console.error(e);
     console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
 }

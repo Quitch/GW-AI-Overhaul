@@ -268,6 +268,65 @@ nothing real to scale, which is why it used to be removed from the DOM.
 declared `players`, else a capacity scan of `landing_zones.rules`, else `numArmies`,
 else dropped with a warning — and systems sharing a range become one bracket.
 
+A system is also dropped, with a warning naming the biome, when any planet's
+`generator.biome` is not one the Galactic War server can load. Map packs carry biomes
+from server mods (`oasis` from _multiple Biomes for System Designers_, for one), and GW
+never gives its local server server mods: Community Mods' `api.net.startGame` wrapper
+mounts them for a skirmish and skips that step for any `gw` mode. The server's
+`sim_utils.js` `validatePlanet` then `file.load`s `/pa/terrain/<biome>.json` behind a
+deferred that only settles on success, so the battle hangs at loading with no error.
+`shared/gwo_biomes.js` holds the stock list; `referee_config.js` re-checks at launch and
+switches such a planet to `earth`, which is what repairs a war saved before this screen
+existed.
+
+A modded biome is kept when an enabled server mod that ships **only JSON** provides it.
+`shared/gwo_biome_mods.js` catalogs each enabled server zip mod once, at war creation -
+through the Community Mods manager where the scene loads it, and through the manager's
+own IndexedDB store in `gw_start`, which does not - and a mod carrying anything else
+under `pa/` (`.papa` meshes, textures) is not a provider, because only text can be
+handed to the server. `selectorFor` stamps the providing mods onto the placed copy as
+`gwoBiomeMods`, so battle launch reads that stamp instead of resolving again.
+
+### Biome mods in a GW battle
+
+Two channels carry a stamped mod into the battle, because the server needs it before
+the clients do.
+
+The server validates `config.system` **before** it mounts `config.files`
+(`server-script/states/gw_lobby.js`, `set_config`), so a biome cooked into the files
+alone would arrive too late. What a skirmish does instead is `api.file.zip.mount` each
+server mod at `/server_mods/<id>/` before `localserver.startGame`; per
+`api/file.js`, zip mounts are memory files and are inherited by the local server it
+spawns. `referee.js`'s `mountFiles` does the same for the stamped mods, after the
+`unmountAllMemoryFiles` there (which Community Mods turns into a client-mod remount)
+and before `gw_play` navigates to `connect_to_game`.
+
+Clients get the same files through `config.files`: `gwoGenerateBiomes` mounts the
+stamped mods, reads every `pa/**/*.json` they ship through `spec:` (the only scheme that
+resolves a `/server_mods/` mount client-side) and adds the text to `self.files()`, which
+the host mounts and the `gw_config` payload hands to every joiner. That is why only
+text-only mods qualify: a `.papa` has no way through either channel.
+
+A mod that cannot be mounted or fully read at launch is dropped from both, and
+`referee_config.js` then treats its biomes as unservable and switches those planets to
+`earth`.
+
+A war saved before the stamp existed has none, so a system there with a modded biome
+resolves providers at launch instead (`stampedMods` in `referee.js`) and writes the
+result onto the star's system, which the save then carries - still one resolution per
+system, just deferred. Only a biome no enabled text-only mod provides falls to `earth`,
+and such a system is re-checked each launch so installing the mod later is enough.
+
+Verified live (PA 124673, 2026-08-25): a "Rolling Hills 2v2 NS" battle on tetctree's
+`mountain` biome reached `live_game` in 18 seconds with the server log showing
+`Mounted zip file /download/uk.pa.tetctree.server.zip as /server_mods/uk.pa.tetctree.server/`
+and the client reporting the planet as `mountain`; with that zip removed, the same star
+logged the two warnings above, launched on `earth`, and loaded in the same time. A co-op
+viewer with no biome mod installed at all (`gwo_viewer`: GWO and no_gw_video only) joined
+that battle, reported `arePlanetsReady` true and the planet as `mountain`, and could fetch
+`coui://pa/terrain/mountain.json` — the cooked copy from `gw_config`.
+`api.file.zip.catalog` returns `[{name, crc32, size}]`.
+
 The quantity is armies, not humans. Map makers use `players` to count humans and humans
 share an army, so a declared `[2,10]` on two landing zones is two armies of five; the
 zone count caps the declared maximum, and the minimum follows it down rather than
@@ -294,8 +353,9 @@ Because the shuffle keys above are assigned in pool order, without the sort the 
 would place different systems whenever more than one source was selected.
 
 This path bypasses wondible's `withoutBrokenSystems`, so its name and `_.matches`
-blocklists no longer apply; the `starting_planet` backfill is reproduced on the returned
-copy, and the pool is never mutated because My Systems is a live IndexedDB row.
+blocklists no longer apply and its stock-biome whitelist is replaced by the screen above;
+the `starting_planet` backfill is reproduced on the returned copy, and the pool is never
+mutated because My Systems is a live IndexedDB row.
 
 ## Factions
 
@@ -404,7 +464,9 @@ what keeps a seed's enemies reproducible.
   `shared/cards.js` have nine entries to cover them.
 - **Shared Systems for Galactic War** — GWO removes Easy Systems when this is loaded,
   and changes how it watches `model.ready()` so the mod's lobby is not broken. System
-  Scaling and Large Planets both stay, served by the brackets above.
+  Scaling and Large Planets both stay, served by the brackets above. Map-pack systems
+  whose biome comes from a server mod are kept only when that mod ships JSON alone;
+  otherwise they are screened out, because the GW server never mounts server mods.
 - **New-GW-Cards** — the template third-party card mods are written from, rather than
   a mod itself. It is the reason the `model.gwo*` globals are additive and the
   `shared/cards.js` helper names are fixed; see

@@ -3,7 +3,6 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], (gwoCard, gwoUnit, gwoGroup) => {
-  // Narrowed so the mod does not also hit Unit Cannon builds.
   const ADVANCED_BOT_FACTORY_ONLY = ["AdvancedBotFactory"];
 
   return {
@@ -56,7 +55,6 @@ define([
         refId: "builders",
         refValue: ADVANCED_BOT_FACTORY_ONLY,
       }));
-      // Applied to all combat units, so T2 factories handle the unaffected too.
       const advancedCombatBots = [
         "AdvancedArtilleryBot",
         "AdvancedAssaultBot",

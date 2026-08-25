@@ -6,10 +6,31 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
-], (gwoAI, gwoCards, refereeCoop, configSetup, gwoStreams) => {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
+], (gwoAI, gwoCards, refereeCoop, configSetup, gwoStreams, gwoBiomes) => {
   const setupAlliedCommanders = configSetup.setupAlliedCommanders;
   const setupPrimaryAiAndMinions = configSetup.setupPrimaryAiAndMinions;
   const setupFfaAis = configSetup.setupFfaAis;
+
+  // The system came from another mod, so this is a trust boundary: a biome the
+  // server cannot load hangs every player at loading. See galaxy.md.
+  const loadablePlanets = (planets, systemName, served) => {
+    _.forEach(planets, (planet) => {
+      const generator = planet.generator || planet.planet;
+      const biome = gwoBiomes.planetBiome(planet);
+      if (
+        generator &&
+        !gwoBiomes.isStockBiome(biome) &&
+        !_.has(served || {}, biome)
+      ) {
+        console.warn(
+          `gwoRefereeConfig: '${systemName}' uses biome '${biome}', which the Galactic War server cannot load; using '${gwoBiomes.FALLBACK_BIOME}' instead`,
+        );
+        generator.biome = gwoBiomes.FALLBACK_BIOME;
+      }
+    });
+    return planets;
+  };
 
   const glassPlanets = (planets) => {
     const unglassableBiome = ["moon", "asteroid", "gas", "metal"];
@@ -43,7 +64,7 @@ define([
     return aiTag;
   };
 
-  const modifyPlanets = (inventory, planets, game) => {
+  const modifyPlanets = (inventory, planets, game, systemName, served) => {
     const canGlassPlanets = gwoCards.anyPlayerHasCard(
       inventory,
       "gwaio_enable_orbitalbombardment",
@@ -53,6 +74,7 @@ define([
       gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_tsunami", game) ||
       gwoCards.anyPlayerHasCard(inventory, "gwaio_start_naval", game);
 
+    planets = loadablePlanets(planets, systemName, served);
     if (canGlassPlanets) {
       planets = glassPlanets(planets);
     }
@@ -132,7 +154,13 @@ define([
       battleRng,
     );
     setupFfaAis(ai.foes, aiTag, aiInUse, armies, battleRng);
-    system.planets = modifyPlanets(inventory, system.planets, game);
+    system.planets = modifyPlanets(
+      inventory,
+      system.planets,
+      game,
+      system.name,
+      self.biomeServed,
+    );
 
     const config = {
       files: self.files(),

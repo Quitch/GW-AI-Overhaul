@@ -104,9 +104,6 @@ define([
               value:
                 "(Orbital & Fabber & Basic & Mobile) & FactoryBuild & Custom58",
             },
-            // CannonBuildable is stock's roster for the Unit Cannon. Narrowed to
-            // Fabber it leaves the same four the other factories build, the
-            // combat fabbers carrying no Fabber tag.
             {
               file: gwoUnit.unitCannon,
               path: "buildable_types",
@@ -194,8 +191,6 @@ define([
               value: "WL_Orbital",
             },
           ];
-          // Cluster's Colonels are Sub Commanders, not fabbers. This replacement
-          // would overwrite the commander build list cluster_setup.js gives them.
           if (!playerIsCluster) {
             mods.push({
               file: gwoUnit.colonel,
@@ -204,9 +199,6 @@ define([
               value: advancedBotFabberBuilds,
             });
           }
-          // hasCard, not hasUnit - buff() cannot see other cards' units. Complete
-          // Orbital Tech is the only route: the alternative is never offered to
-          // Rapid holders. See tech-cards.md.
           if (inventory.hasCard("gwc_enable_orbital_all")) {
             mods.push({
               file: gwoUnit.orbitalFabber,

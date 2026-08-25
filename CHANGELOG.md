@@ -6,6 +6,30 @@
 
 - Prepared the mod for PA's move from Coherent UI to the Chrome Embedded Framework: engine URL handling is centralised behind a scheme adapter and a one-command rewrite tool, the toolchain and mod-owned code target Chromium 151 (modern JavaScript and CSS), and the migration assumptions and test plan are documented in `docs/cef-migration.md`
 
+### Bugfix
+
+- A system from a Shared Systems source whose planets use a biome from another mod no longer leaves every player stuck loading when its battle starts. Biome mods that ship only JSON (such as _multiple Biomes for System Designers_ and _Simple Biomes_) are now given to the Galactic War server and sent to every player, so those maps play as designed; a system whose biome needs a mod the server cannot be given is left out of the galaxy, and a war already carrying one has the planet switched to an earth biome at launch. Wars saved before this change get the same treatment when their battles start
+
+## v6.12.0 - 2026-08-24
+
+### Added
+
+- Battles now display their win-condition modifiers
+
+### Changed
+
+- Eradication mode will show Commander in its list as a reminder
+
+### Bugfix
+
+- Don't show Eradication mode in the panel if Sudden Death is active as the latter overrides the former
+
+## v6.11.0 - 2026-08-23
+
+### Added
+
+- Co-op players are given colours drawn from their faction's own palette, Cluster included, rather than the generic lobby colours (PA 124670)
+
 ## v6.10.3 - 2026-08-16
 
 ### Bugfix
@@ -97,7 +121,6 @@ Changes to card descriptions are made to English only. Translated copies will us
 ### Added
 
 - The Seed Value field is now shown when creating a war, and a war's seed is displayed in its Galactic War Overhaul panel
-- Co-op players are given colours drawn from their faction's own palette, Cluster included, rather than the generic lobby colours (PA 124670)
 
 ### Changed
 
