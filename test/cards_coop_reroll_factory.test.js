@@ -12,7 +12,10 @@ const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 const {
   installFakeLodashTimers,
@@ -186,19 +189,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, release } = trackActive(setup);
 
 const operator = (extra) =>
   Object.assign(
@@ -243,8 +234,7 @@ describe("host reroll handler - refusals", () => {
         /not campaign host or per-player tech disabled/
       );
       assert.deepEqual(calls.hostOperators, []);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 
@@ -361,8 +351,7 @@ describe("host reroll handler - refusals", () => {
         [{ target_client_id: "alice", request_id: "req-1" }],
         name
       );
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 });
@@ -603,8 +592,7 @@ describe("viewer reroll result handler", () => {
       assert.deepEqual(calls.scanning, [false], JSON.stringify(payload));
       assert.deepEqual(calls.upserts, []);
       assert.match(errors[0], /invalid pending tech reroll result/);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 

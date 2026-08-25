@@ -15,7 +15,10 @@ const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
@@ -120,19 +123,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, current } = trackActive(setup);
 
 // Neither cheat returns anything, so the chain is drained rather than awaited.
 async function flush() {
@@ -174,7 +165,7 @@ describe("cheats testCards", () => {
     assert.deepEqual(dealtIds(calls), ["gwc_combat_bots", "gwc_orbital"]);
     // The star the player is standing on, not the first in the galaxy.
     assert.deepEqual(calls.dealt[0].star, { id: 2 });
-    assert.equal(calls.dealt[0].inventory, active.inventory);
+    assert.equal(calls.dealt[0].inventory, current().inventory);
   });
 
   it("applies each dealt card to the inventory", async () => {

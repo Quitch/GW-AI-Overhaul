@@ -6,18 +6,14 @@
 // ticking. The layer tests assert the ring is wired to pulseFrame's output;
 // the values it should be wired to are the "marker pulse" describe at the end.
 
-const {
-  describe,
-  it,
-  before,
-  after,
-  beforeEach,
-  afterEach,
-} = require("node:test");
+const { describe, it, before, after, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
@@ -84,9 +80,7 @@ before(() => {
 
 after(() => timers.restore());
 
-let active;
-
-function build(overrides = {}) {
+function setup(overrides = {}) {
   const options = Object.assign({ hasThrottleHook: true }, overrides);
 
   const calls = { interactiveFrames: [] };
@@ -100,7 +94,7 @@ function build(overrides = {}) {
       : undefined,
   });
 
-  active = {
+  return {
     calls,
     system,
     layer: createLayer({
@@ -108,19 +102,13 @@ function build(overrides = {}) {
     }),
     restore: () => stubs.restoreGlobals(),
   };
-  return active;
 }
+
+const { build } = trackActive(setup);
 
 beforeEach(() => {
   clock = 1000;
   timers.delayed.length = 0;
-});
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
 });
 
 const tickOf = (system) => system.systemDisplay.children[0].listeners[0][1];

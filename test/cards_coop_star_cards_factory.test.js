@@ -13,7 +13,10 @@ const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 const { inventoryClass, viewer } = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
@@ -148,19 +151,7 @@ const starsDealt = (calls) =>
 
 const cardIndexes = (record) => Object.keys(record.gwaioStarCards.cards);
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, release } = trackActive(setup);
 
 // Collects everything console.error emits, so the factory's swallow-and-log
 // error path can be asserted rather than just not crashing.
@@ -185,8 +176,7 @@ describe("coop star cards refresh - when it runs at all", () => {
       await coopStarCards.refresh();
       assert.deepEqual(calls.deals, [], JSON.stringify(off));
       assert.deepEqual(calls.upserts, []);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 

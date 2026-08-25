@@ -159,7 +159,9 @@ puts a callable `$` carrying the lot behind a suite's global stubs.
 
 `scripts/lib/global-stubs.js` saves and restores the engine globals that shipped
 code reads at call time. It is a factory, not a singleton, so two suites never
-share a restore stack.
+share a restore stack. `trackActive(setup)` is the factory-test scaffold built on
+it: `build()` runs the suite's setup and keeps the result so the `afterEach` the
+helper registers can call its `restore()`.
 
 `scripts/lib/card-probe.js` runs a card's `deal()` and `buff()`, which is what
 `test/card_deal_unit_gate.test.js` needs and `validate:cards` deliberately refuses

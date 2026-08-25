@@ -4,11 +4,14 @@
 // pin the two properties that makes possible: it depends only on the player and
 // the star, and it sees mod loadouts the base game's unlock record cannot hold.
 
-const { describe, it, afterEach, mock } = require("node:test");
+const { describe, it, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 
 const treasure = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js"
@@ -617,19 +620,7 @@ function install(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = install(overrides);
-  return active;
-}
+const { build, release } = trackActive(install);
 
 describe("localUnlockedLoadoutIds", () => {
   it("merges both banks into one list of loadout ids", () => {
@@ -706,8 +697,7 @@ describe("treasure loadouts install - reporting a viewer's unlocks", () => {
     ]) {
       const { calls } = build(off);
       assert.deepEqual(calls.reported, [], JSON.stringify(off));
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 

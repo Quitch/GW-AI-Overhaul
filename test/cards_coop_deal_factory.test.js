@@ -9,12 +9,15 @@
 // collectPendingTechTargets and dealCountForHand are pinned on their own in
 // cards_coop_deal.test.js; what this file covers is the deal they drive.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const _ = require("lodash");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 const {
   inventoryClass,
@@ -138,19 +141,7 @@ function setup(overrides = {}) {
   return { calls, options, restore: () => stubs.restoreGlobals() };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, release } = trackActive(setup);
 
 const deal = (starIndex, star, options) =>
   global.model.dealCoopPlayerPendingTechCards(
@@ -169,8 +160,7 @@ describe("dealCoopPlayerPendingTechCards - when it deals", () => {
       const { calls } = build(off);
       assert.deepEqual(await deal(1), [], JSON.stringify(off));
       assert.deepEqual(calls.deals, []);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 

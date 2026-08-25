@@ -10,7 +10,10 @@ const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 const { rejection } = require("../scripts/lib/coop-fixtures.js");
 
@@ -73,19 +76,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, release } = trackActive(setup);
 
 afterEach(() => {
   mock.restoreAll();
@@ -151,8 +142,7 @@ describe("card name sync - when the broadcast is skipped", () => {
       await sync.setCardName(system, [{ id: "gwc_combat_bots" }], starIndex);
 
       assert.deepEqual(calls.sent, [], String(starIndex));
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 });
@@ -194,8 +184,7 @@ describe("card name sync - applying a name a viewer received", () => {
       });
       assert.deepEqual(calls.requested, [], JSON.stringify(payload));
       assert.equal(errors.length, 1);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 

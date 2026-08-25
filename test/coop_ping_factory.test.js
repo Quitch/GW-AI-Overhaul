@@ -12,7 +12,10 @@ const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
@@ -126,19 +129,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, release } = trackActive(setup);
 
 const request = (extra) =>
   Object.assign(
@@ -190,8 +181,7 @@ describe("ping relay - refusals", () => {
       handlers[REQUEST](request());
       assert.deepEqual(calls.hostOperators, [], JSON.stringify(off));
       assert.deepEqual(calls.raised, []);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 
@@ -208,8 +198,7 @@ describe("ping relay - refusals", () => {
       assert.deepEqual(calls.raised, []);
       assert.equal(logs.length, 1);
       assert.match(logs[0], /dropped ping/);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 
@@ -336,8 +325,7 @@ describe("what can be pinged", () => {
     for (const turnState of ["explore", "fight"]) {
       const { api } = build({ turnState });
       assert.equal(api.canPing(1), false, turnState);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 
@@ -382,8 +370,7 @@ describe("what can be pinged", () => {
     ]) {
       const { api } = build(off);
       assert.equal(api.canPing(1), false, JSON.stringify(off));
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 });

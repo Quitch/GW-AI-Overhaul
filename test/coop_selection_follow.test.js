@@ -5,14 +5,17 @@
 // reads it from there, so the only place to put a viewer's own choice back is
 // after the replayed action settles.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
   loadCouiModule,
   requireShippedModule,
 } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
 const {
   makeObservable: observable,
@@ -70,19 +73,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build } = trackActive(setup);
 
 describe("following the host", () => {
   it("counts no selection, and the host's own star, as following", () => {
