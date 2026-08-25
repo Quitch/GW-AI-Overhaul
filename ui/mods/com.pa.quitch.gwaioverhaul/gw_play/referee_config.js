@@ -109,7 +109,7 @@ define([
     // reshuffles - loseTurn does not advance the turn, so the retry needs
     // another move. See galaxy.md, "Play-scene streams".
     var battleRng = gwoStreams.battleRng(
-      gwoStreams.warRng(galaxy.stars()[galaxy.origin()].system().gwaio),
+      gwoStreams.warRng(gwoAI.originSettings(game)),
       game.currentStar(),
       game.stats().turns()
     );

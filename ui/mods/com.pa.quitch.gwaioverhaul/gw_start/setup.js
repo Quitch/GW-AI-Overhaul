@@ -1261,8 +1261,7 @@ function gwoSetup() {
             }
 
             // Hacky way to store war information for the gw_play scene
-            var galaxy = game.galaxy();
-            var originSystem = galaxy.stars()[galaxy.origin()].system();
+            var originSystem = gwoAI.originSystem(game);
             originSystem.gwaio = {};
             originSystem.gwaio.version = gwoVersion;
             // Re-entering this in the lobby rebuilds this war.

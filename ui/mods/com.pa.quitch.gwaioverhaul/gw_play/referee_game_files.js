@@ -120,7 +120,7 @@ define([
       var titans = api.content.usingTitans();
 
       var game = self.game();
-      var ai = game.galaxy().stars()[game.currentStar()].ai();
+      var ai = gwoAI.currentStarAi(game);
       var aiTag = gwoAI.aiTags(ai);
       var aiFactionCount = aiTag.length;
       var aiFactions = _.map(aiTag, function () {

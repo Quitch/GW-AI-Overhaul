@@ -1,6 +1,7 @@
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
-  gwoCard
-) {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+], function (gwoCard, gwoAI) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -15,8 +16,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     }),
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
-      var galaxy = model.game().galaxy();
-      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      var gwoSettings = gwoAI.originSettings(model.game());
       if (gwoSettings && gwoSettings.aiAlly === "Queller") {
         return { chance: 0 };
       }

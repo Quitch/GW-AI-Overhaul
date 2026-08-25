@@ -238,8 +238,7 @@ define([
   };
 
   var whichAIsAreBeingModified = function (clusterPresence, inventory) {
-    var game = model.game();
-    var ai = game.galaxy().stars()[game.currentStar()].ai();
+    var ai = gwoAI.currentStarAi(model.game());
     var guardians = ai.mirrorMode;
 
     if (
@@ -614,7 +613,7 @@ define([
   var whoIsCluster = function () {
     var game = model.game();
     var inventory = game.inventory();
-    var ai = game.galaxy().stars()[game.currentStar()].ai();
+    var ai = gwoAI.currentStarAi(game);
     var alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
@@ -660,7 +659,7 @@ define([
       : [aiPaths.enemySource, aiPaths.subCommanderSource];
     var clusterPresence = whoIsCluster();
     var game = model.game();
-    var ai = game.galaxy().stars()[game.currentStar()].ai();
+    var ai = gwoAI.currentStarAi(game);
     var guardians = ai.mirrorMode;
     var connectedClients = refereeCoop.getConnectedViewers();
     var playerAiModInventory = guardians

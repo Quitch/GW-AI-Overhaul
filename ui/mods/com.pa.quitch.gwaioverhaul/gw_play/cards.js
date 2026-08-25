@@ -312,7 +312,7 @@ function gwoCard() {
         var inventory = game.inventory();
         var playerFaction = inventory.getTag("global", "playerFaction");
         var galaxy = game.galaxy();
-        var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+        var gwoSettings = gwoAI.originSettings(game);
         var warRng = gwoStreams.warRng(gwoSettings);
 
         // Also registers the gwo_sync_star_card_name host handler.

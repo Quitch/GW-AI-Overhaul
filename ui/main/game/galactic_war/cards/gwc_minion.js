@@ -77,8 +77,7 @@ define([
         chance = chance / (totalMinions + 1);
       }
 
-      var galaxy = model.game().galaxy();
-      var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+      var gwoSettings = gwoAI.originSettings(model.game());
       var minionPool = GWFactions[context.faction].minions;
       if (gwoSettings && gwoSettings.aiAlly === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
