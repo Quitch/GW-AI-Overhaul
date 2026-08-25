@@ -8,7 +8,11 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { buildGame, useModel } = require("../scripts/lib/ai-path-fixtures.js");
+const {
+  buildGame,
+  SCENARIO_AXES,
+  useModel,
+} = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeGameFiles = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js"
@@ -52,7 +56,7 @@ describe("getAIUnitMapPath", () => {
   });
 
   it("titans=false never produces an _x1.json path", () => {
-    for (const aiInUse of ["Titans", "Queller", "Penchant"]) {
+    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
       assert.ok(
         !refereeGameFiles.getAIUnitMapPath(false, aiInUse).includes("_x1")
       );

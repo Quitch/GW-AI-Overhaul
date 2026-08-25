@@ -6,6 +6,7 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { SCENARIO_AXES } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeAIPaths = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"
@@ -79,7 +80,7 @@ describe("getScopeToken", () => {
 
 describe("getAIPathDestination - cluster type", () => {
   it("always resolves to /pa/ai_cluster/ regardless of aiInUse/guardians/aiMods", () => {
-    for (const aiInUse of ["Titans", "Queller", "Penchant"]) {
+    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
       const path = refereeAIPaths.getAIPathDestination("cluster", aiInUse, {
         guardians: true,
         aiMods: [{ op: "load" }],
