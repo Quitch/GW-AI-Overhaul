@@ -26,15 +26,11 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.orbitalFactories, function (unit) {
-        return {
-          file: unit,
-          path: "factory_cooldown_time",
-          op: "multiply",
-          value: 0.5,
-        };
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard.flatMapMods(gwoGroup.orbitalFactories, "multiply", {
+          factory_cooldown_time: 0.5,
+        })
+      );
     },
     dull: function () {},
   };

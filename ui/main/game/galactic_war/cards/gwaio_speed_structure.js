@@ -20,37 +20,14 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = _.flatten(
-        _.map(gwoGroup.nomadStructures, function (unit) {
-          return [
-            {
-              file: unit,
-              path: "navigation.move_speed",
-              op: "multiply",
-              value: 1.5,
-            },
-            {
-              file: unit,
-              path: "navigation.brake",
-              op: "multiply",
-              value: 1.5,
-            },
-            {
-              file: unit,
-              path: "navigation.acceleration",
-              op: "multiply",
-              value: 1.5,
-            },
-            {
-              file: unit,
-              path: "navigation.turn_speed",
-              op: "multiply",
-              value: 1.5,
-            },
-          ];
+      inventory.addMods(
+        gwoCard.flatMapMods(gwoGroup.nomadStructures, "multiply", {
+          "navigation.move_speed": 1.5,
+          "navigation.brake": 1.5,
+          "navigation.acceleration": 1.5,
+          "navigation.turn_speed": 1.5,
         })
       );
-      inventory.addMods(mods);
     },
     dull: function () {},
   };
