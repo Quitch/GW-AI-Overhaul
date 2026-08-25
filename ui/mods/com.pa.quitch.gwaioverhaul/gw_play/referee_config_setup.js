@@ -275,6 +275,7 @@ define([
   };
 
   return {
+    getAIPersonalityName: getAIPersonalityName,
     setAIPath: setAIPath,
     setupAlliedCommanders: setupAlliedCommanders,
     setupPrimaryAiAndMinions: setupPrimaryAiAndMinions,

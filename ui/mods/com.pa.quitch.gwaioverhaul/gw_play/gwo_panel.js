@@ -133,11 +133,18 @@ function gwoWarInfoPanel(gwoSettings) {
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
       ],
-      function (gwoColour, gwoRefereeCoop, gwoSubcommanderTech, gwoVersion) {
+      function (
+        gwoColour,
+        gwoConfigSetup,
+        gwoRefereeCoop,
+        gwoSubcommanderTech,
+        gwoVersion
+      ) {
         model.gwoVersion = ko.observable(gwoVersion);
 
         var coopText = function (setting) {
@@ -232,12 +239,6 @@ function gwoWarInfoPanel(gwoSettings) {
 
         var intelligence = function (subcommanderData, index) {
           var subcommander = subcommanderData.subcommander;
-          var personality = subcommander.character
-            ? loc(subcommander.character)
-            : loc("!LOC:None");
-          if (subcommander.penchant) {
-            personality = personality + " " + loc(subcommander.penchant);
-          }
           // avoid modifying the original name to prevent duplication of addendum
           var subcommanderName = subcommander.name;
           if (
@@ -256,7 +257,7 @@ function gwoWarInfoPanel(gwoSettings) {
                 gwoRefereeCoop.alliedColourIndex(index)
               )
             ),
-            character: personality,
+            character: gwoConfigSetup.getAIPersonalityName(subcommander),
           };
         };
 
