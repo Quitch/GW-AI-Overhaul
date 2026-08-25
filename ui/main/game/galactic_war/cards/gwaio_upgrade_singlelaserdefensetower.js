@@ -6,30 +6,14 @@ define([
   var QUELLER_BASIC_DEFENCE =
     "Structure & (SurfaceDefense | Tactical) - Shield";
 
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabrication arm which repairs units and reclaims wreckage within range."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Single Laser Defense Tower Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_turret_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.singleLaserDefenseTower)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Single Laser Defense Tower Upgrade Tech",
+    description:
+      "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabrication arm which repairs units and reclaims wreckage within range.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_turret_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.singleLaserDefenseTower,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       var mods = gwoCard
         .mods(gwoUnit.singleLaserDefenseTower, "replace", {
           tools: [{ spec_id: gwoUnit.mendBuildArm, aim_bone: "bone_pitch" }],
@@ -127,6 +111,5 @@ define([
         },
       ]);
     },
-    dull: function () {},
-  };
+  });
 });
