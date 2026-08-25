@@ -9,11 +9,7 @@ define(function () {
     var token = String(value || "");
     token = token.replace(/^\.+/, "");
     token = token.replace(/[^A-Za-z0-9_-]+/g, "_");
-    token = token.replace(/^_+/, "");
-    while (token.length && _.endsWith(token, "_")) {
-      token = token.slice(0, -1);
-    }
-    return token;
+    return _.trim(token, "_");
   };
 
   var getScopeToken = function (identity, fallbackToken) {

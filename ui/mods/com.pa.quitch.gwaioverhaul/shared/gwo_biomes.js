@@ -37,16 +37,11 @@ define(function () {
   };
 
   var systemBiomes = function (system) {
-    var planets = (system && system.planets) || [];
-    var biomes = [];
-
-    for (var planet of planets) {
-      var biome = String(planetBiome(planet));
-      if (!_.includes(biomes, biome)) {
-        biomes.push(biome);
-      }
-    }
-    return biomes;
+    return _.uniq(
+      _.map((system && system.planets) || [], function (planet) {
+        return String(planetBiome(planet));
+      })
+    );
   };
 
   var unservableBiome = function (system, providers) {
@@ -103,7 +98,7 @@ define(function () {
 
   var underPa = function (entries) {
     return _.filter(entries, function (entry) {
-      return isFile(entry) && entry.slice(0, 3) === "pa/";
+      return isFile(entry) && _.startsWith(entry, "pa/");
     });
   };
 
