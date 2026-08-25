@@ -923,6 +923,41 @@ function gwoSetup() {
               var difficulty = model.gwoDifficultySettings;
               var workerPool = info.workers;
               var minionPool = GWFactions[info.faction].minions;
+
+              // One minion per stream index off the parent's rng. A Cluster AI
+              // takes one minion carrying commanderCount commanders instead.
+              var addMinions = function (
+                parent,
+                parentRng,
+                count,
+                dist,
+                commanderCount
+              ) {
+                parent.minions = [];
+                _.times(count, function (minionIndex) {
+                  var minionRng = parentRng.stream("minion", minionIndex);
+                  var minion = selectMinion(
+                    minionRng,
+                    minionPool,
+                    parent.faction,
+                    clusterType
+                  );
+                  if (!minion) {
+                    return;
+                  }
+                  setAIPersonality(
+                    minionRng,
+                    minion,
+                    difficulty,
+                    parent.faction
+                  );
+                  minion.econ_rate = aiEconRate(minionRng, dist, playerCount);
+                  if (parent.isCluster === true) {
+                    minion.commanderCount = commanderCount;
+                  }
+                  parent.minions.push(minion);
+                });
+              };
               if (difficulty.ai() === "Queller") {
                 // A no-op for the built-in factions, which the pre-filter above
                 // covers. Catches a modded faction populating team.workers.
@@ -970,35 +1005,11 @@ function gwoSetup() {
               var totalMinions = numMinions;
 
               if (numMinions > 0) {
-                boss.minions = [];
-
                 if (boss.isCluster === true) {
                   clusterType = "Security";
                   totalMinions = 1;
                 }
-
-                _.times(totalMinions, function (minionIndex) {
-                  var minionRng = bossRng.stream("minion", minionIndex);
-                  var minion = selectMinion(
-                    minionRng,
-                    minionPool,
-                    boss.faction,
-                    clusterType
-                  );
-                  if (!minion) {
-                    return;
-                  }
-                  setAIPersonality(minionRng, minion, difficulty, boss.faction);
-                  minion.econ_rate = aiEconRate(
-                    minionRng,
-                    maxDist,
-                    playerCount
-                  );
-                  if (boss.isCluster === true) {
-                    minion.commanderCount = numMinions;
-                  }
-                  boss.minions.push(minion);
-                });
+                addMinions(boss, bossRng, totalMinions, maxDist, numMinions);
               }
 
               _.forEach(workerPool, function (worker, workerIndex) {
@@ -1070,33 +1081,7 @@ function gwoSetup() {
                   if (ai.name === "Worker") {
                     ai.commanderCount = Math.max(clusterWorkers, 2);
                   } else {
-                    _.times(totalMinions, function (minionIndex) {
-                      var minionRng = aiRng.stream("minion", minionIndex);
-                      var minion = selectMinion(
-                        minionRng,
-                        minionPool,
-                        ai.faction,
-                        clusterType
-                      );
-                      if (!minion) {
-                        return;
-                      }
-                      setAIPersonality(
-                        minionRng,
-                        minion,
-                        difficulty,
-                        ai.faction
-                      );
-                      minion.econ_rate = aiEconRate(
-                        minionRng,
-                        dist,
-                        playerCount
-                      );
-                      if (ai.isCluster === true) {
-                        minion.commanderCount = clusterWorkers;
-                      }
-                      ai.minions.push(minion);
-                    });
+                    addMinions(ai, aiRng, totalMinions, dist, clusterWorkers);
                   }
                 }
 
