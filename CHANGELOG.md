@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- A system from a Shared Systems source whose planets use a biome from another mod no longer leaves every player stuck loading when its battle starts. The Galactic War server cannot load such biomes, so the planet is switched to an earth biome at launch
+
 ## v6.12.0 - 2026-08-24
 
 ### Added
