@@ -6,7 +6,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
-], (GW, gwoAI, gwoSpecs, refereeCoop, gwoSpecCache, gameFilePaths) => {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
+], (GW, gwoAI, gwoSpecs, refereeCoop, gwoSpecCache, gameFilePaths, gwoUrl) => {
   const getAIUnitMapPath = gameFilePaths.getAIUnitMapPath;
   const getAIUnitMapDestinationPath = gameFilePaths.getAIUnitMapDestinationPath;
   const resolveAiUnitMapPaths = gameFilePaths.resolveAiUnitMapPaths;
@@ -145,9 +146,9 @@ define([
       );
 
       const unitsLoad = $.get("spec://pa/units/unit_list.json");
-      const aiMapLoad = $.get(`spec:/${aiUnitMapSourcePath}`);
+      const aiMapLoad = $.get(gwoUrl.specFile(aiUnitMapSourcePath));
       const aiX1MapLoad = titans
-        ? $.get(`spec:/${aiUnitMapTitansSourcePath}`)
+        ? $.get(gwoUrl.specFile(aiUnitMapTitansSourcePath))
         : {};
       $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
         (unitsGet, aiMapGet, aiX1MapGet) => {

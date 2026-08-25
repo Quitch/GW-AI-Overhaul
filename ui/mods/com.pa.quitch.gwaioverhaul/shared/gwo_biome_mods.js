@@ -1,8 +1,9 @@
 // Engine glue for shared/gwo_biomes.js: the enabled server mods whose biomes a
 // Galactic War battle can be given. See galaxy.md, "Biome mods in a GW battle".
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js"], (
-  gwoBiomes,
-) => {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
+], (gwoBiomes, gwoUrl) => {
   const serverModsRoot = "/server_mods/";
 
   const modRecord = (mod) => ({
@@ -123,7 +124,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js"], (
   // copy is byte-for-byte what the mod ships.
   const readEntry = (mod, entry) =>
     settled(
-      $.ajax({ url: `spec:/${mod.mountPath}${entry}`, dataType: "text" }),
+      $.ajax({ url: gwoUrl.specFile(mod.mountPath + entry), dataType: "text" }),
       () => undefined,
     ).then((text) => ({
       entry,

@@ -9,15 +9,16 @@ const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { UI_SCHEME } = require("../scripts/lib/scheme.js");
+const { UI_SCHEME, SPEC_SCHEME } = require("../scripts/lib/scheme.js");
 
 const gwoUrl = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
 );
 
 describe("gwo_url", () => {
-  it("matches the Node-side scheme constant", () => {
+  it("matches the Node-side scheme constants", () => {
     assert.equal(gwoUrl.uiScheme, UI_SCHEME);
+    assert.equal(gwoUrl.specScheme, SPEC_SCHEME);
   });
 
   it("builds a ui URL from a scheme-relative path", () => {
@@ -31,6 +32,13 @@ describe("gwo_url", () => {
     assert.equal(
       gwoUrl.gameFile("/pa/ai/unit_maps/ai_unit_map.json"),
       "coui://pa/ai/unit_maps/ai_unit_map.json",
+    );
+  });
+
+  it("builds a spec URL from an absolute game-data path", () => {
+    assert.equal(
+      gwoUrl.specFile("/pa/ai/unit_maps/ai_unit_map.json"),
+      "spec://pa/ai/unit_maps/ai_unit_map.json",
     );
   });
 });

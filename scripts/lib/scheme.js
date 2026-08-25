@@ -5,5 +5,6 @@
 // asserts the two match. See cef-migration.md.
 
 const UI_SCHEME = "coui://";
+const SPEC_SCHEME = "spec://";
 
-module.exports = { UI_SCHEME: UI_SCHEME };
+module.exports = { UI_SCHEME: UI_SCHEME, SPEC_SCHEME: SPEC_SCHEME };

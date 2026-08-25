@@ -73,7 +73,10 @@ test 135) and green in the rewritten copy, 98.5% lines under
 
 - `develop`'s new `shared/gwo_biome_mods.js` reads a mounted server mod with
   `$.ajax` on a `` `spec:/${mountPath}${entry}` `` URL — a `spec:/` + path form
-  the rewriter's `spec://` pattern does not match. See "The scheme strategy".
+  the rewriter's `spec://` pattern does not match, and which
+  `referee_game_files.js` had been building the same way since stage 3.
+  `gwo_url.js` gained `specFile` (and `scripts/lib/scheme.js` `SPEC_SCHEME`)
+  and both sites route through it. See "The scheme strategy".
 - Its `_.zipObject(pairs)` is the pairs overload lodash 4 moved to
   `_.fromPairs`; `Object.fromEntries` now, and the table above gained the row.
 - `gw_play/systems.js` came back with `_.first`/`_.rest` on the inner-ring
@@ -205,14 +208,12 @@ Scheme handling has three tiers:
    keeps it and `gwo_url.js` in lockstep — the ui module cannot import a Node
    module, so the script enforces the pairing instead.
 
-**Known gap.** Two mod-namespace sites build a `spec:` URL by concatenating
-onto the single-slash form — `gw_play/referee_game_files.js`
-(`` `spec:/${aiUnitMapSourcePath}` ``) and `shared/gwo_biome_mods.js`
-(`` `spec:/${mod.mountPath}${entry}` ``). The engine normalises `spec:/` +
-`/pa/...` to `spec://pa/...` (A11), but the rewriter searches for `spec://`
-and so leaves these untouched; a refuted A2 would need them edited by hand,
-or a `specFile` builder added to `gwo_url.js` alongside `gameFile` first.
-The rehearsal count above does not include them.
+`gwoUrl.specFile` is `gameFile`'s twin for the `spec:` scheme, and is the
+only place a `spec:/` + path form is spelled: `gw_play/referee_game_files.js`
+(the AI unit-map reads) and `shared/gwo_biome_mods.js` (reading a mounted
+server mod) both build through it. A single-slash template such as
+`` `spec:/${path}` `` is not something the rewriter's `spec://` pattern
+matches, which is why those sites do not concatenate it themselves.
 
 Shadowed base-game files and the two deliberate line-for-line stock copies
 keep their literal scheme strings even at dynamic call sites — they follow
