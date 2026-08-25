@@ -904,6 +904,14 @@ function gwoSetup() {
 
             var startCardBreaksAllies = startCardAllyCompatibility(game);
 
+            // Queller has no build orders for some minions, so a pool drawn
+            // from under that brain is filtered first.
+            var quellerPool = function (pool, brain) {
+              return brain === "Queller"
+                ? gwoAI.quellerCompatibleMinions(pool)
+                : pool;
+            };
+
             // A Cluster AI's inventory starts from its subcommander mods; every
             // AI then draws the faction tech its buffs grant.
             var equipAI = function (ai, buffs) {
@@ -934,8 +942,13 @@ function gwoSetup() {
               }
 
               var difficulty = model.gwoDifficultySettings;
-              var workerPool = info.workers;
-              var minionPool = GWFactions[info.faction].minions;
+              // The team pre-filter above covers the built-in factions; this
+              // catches a modded faction populating team.workers.
+              var workerPool = quellerPool(info.workers, difficulty.ai());
+              var minionPool = quellerPool(
+                GWFactions[info.faction].minions,
+                difficulty.ai()
+              );
 
               // One minion per stream index off the parent's rng. A Cluster AI
               // takes one minion carrying commanderCount commanders instead.
@@ -971,13 +984,6 @@ function gwoSetup() {
                   parent.minions.push(minion);
                 });
               };
-              if (difficulty.ai() === "Queller") {
-                // A no-op for the built-in factions, which the pre-filter above
-                // covers. Catches a modded faction populating team.workers.
-                workerPool = gwoAI.quellerCompatibleMinions(workerPool);
-                minionPool = gwoAI.quellerCompatibleMinions(minionPool);
-              }
-
               setAIPersonality(bossRng, boss, difficulty, boss.faction);
               boss.econ_rate = aiEconRate(bossRng, maxDist);
               var bossCommanders = bossCommanderCount(difficulty, playerCount);
@@ -1086,10 +1092,10 @@ function gwoSetup() {
 
                     availableFactions = foeRng.shuffle(availableFactions);
                     var foeFaction = availableFactions.shift();
-                    var foeMinions = GWFactions[foeFaction].minions;
-                    if (difficulty.ai() === "Queller") {
-                      foeMinions = gwoAI.quellerCompatibleMinions(foeMinions);
-                    }
+                    var foeMinions = quellerPool(
+                      GWFactions[foeFaction].minions,
+                      difficulty.ai()
+                    );
                     var foeCommander = selectMinion(
                       foeRng,
                       foeMinions,
@@ -1132,10 +1138,10 @@ function gwoSetup() {
                   gameModeEnabled(allyRng, difficulty.alliedCommanderChance())
                 ) {
                   var playerFaction = playerFactionIndex();
-                  var allyMinions = GWFactions[playerFaction].minions;
-                  if (difficulty.aiAlly() === "Queller") {
-                    allyMinions = gwoAI.quellerCompatibleMinions(allyMinions);
-                  }
+                  var allyMinions = quellerPool(
+                    GWFactions[playerFaction].minions,
+                    difficulty.aiAlly()
+                  );
                   var allyCommander = selectMinion(
                     allyRng,
                     allyMinions,
