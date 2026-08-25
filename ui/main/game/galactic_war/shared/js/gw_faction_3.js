@@ -2,7 +2,8 @@
 // faction/faction_seed.js - see galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
-], function (personalities) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_builder.js",
+], function (personalities, factionBuilder) {
   var factionName = "Revenants";
   var factionColour = [
     [236, 34, 35],
@@ -124,21 +125,14 @@ define([
       commander: "/pa/units/commanders/tank_sadiga/tank_sadiga.json",
     },
   ];
-  // GWO - the Random commander's pool, captured before randomAI joins it so it can
-  // never draw its own personality. The one below is a default; see galaxy.md.
-  var randomFrom = minions.slice();
-  var randomPersonality = minions[0].personality;
-
   var randomAI = {
     name: "Enderstryke71",
     character: "!LOC:Random",
-    personality: randomPersonality,
+    personality: minions[0].personality,
     commander:
       "/pa/units/commanders/raptor_enderstryke71/raptor_enderstryke71.json",
   };
-  minions.push(randomAI);
-
-  // GWO - was sampled inline in the team literal below; see randomFrom above.
+  // GWO - was sampled inline in the team literal; see faction_builder.js.
   var systemDescriptions = [
     "!LOC:Osiris has always lead a solitary existence. He was always more interested in the parts of his fellow commanders than the commanders themselves. With every battle won he would take the best pieces left of the broken adversary and integrate them into his form. Osiris is considered one of the most dangerous forces in the galaxy.",
     "!LOC:As Osiris replaced pieces of himself with those of fallen foes, he would store older parts for replacements and repairs. Eventually, Osiris acquired enough spare parts to construct an entirely new commander. This would be the birth of the first Seeker.",
@@ -147,9 +141,9 @@ define([
     "!LOC:Osiris often considered the most dangerous commander in all the galaxy for the amount of annihilations he is credited with. A force of war equal to any army, high command of any faction takes his movements into consideration when deploying forces.",
   ];
 
-  return {
+  return factionBuilder.build({
     name: factionName,
-    color: factionColour,
+    colour: factionColour,
     coopPlayerColors: [
       factionColour[0],
       [205, 92, 92],
@@ -158,92 +152,76 @@ define([
       [165, 42, 42],
       [255, 0, 0],
     ],
-    teams: [
+    baseline: baselinePersonality,
+    boss: boss,
+    minions: minions,
+    randomAI: randomAI,
+    descriptions: systemDescriptions,
+    planets: [
       {
-        name: factionName,
-        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
-        systemDescription: systemDescriptions[0],
-        systemTemplate: {
-          name: factionName,
-          Planets: [
-            {
-              name: "Alenquer",
-              starting_planet: true,
-              mass: 50000,
-              Thrust: [0, 0],
-              Radius: [600, 800],
-              Height: [20, 25],
-              Water: [0, 10],
-              Temp: [0, 100],
-              MetalDensity: [100, 100],
-              MetalClusters: [24, 49],
-              BiomeScale: [100, 100],
-              Position: [40000, 0],
-              Velocity: [0, 111.803],
-              Biomes: ["metal"],
-            },
-            {
-              name: "Xianyao",
-              starting_planet: true,
-              mass: 5000,
-              Thrust: [0, 0],
-              Radius: [225, 225],
-              Height: [0, 10],
-              Water: [0, 10],
-              Temp: [0, 100],
-              MetalDensity: [100, 100],
-              MetalClusters: [100, 100],
-              BiomeScale: [100, 100],
-              Position: [40000, -5000],
-              Velocity: [-223.6067, 111.80299],
-              Biomes: ["moon"],
-            },
-            {
-              name: "Epiphany",
-              starting_planet: true,
-              mass: 5000,
-              Thrust: [0, 0],
-              Radius: [225, 225],
-              Height: [0, 10],
-              Water: [0, 10],
-              Temp: [0, 100],
-              MetalDensity: [100, 100],
-              MetalClusters: [100, 100],
-              BiomeScale: [100, 100],
-              Position: [35700, 2500],
-              Velocity: [112.683, 305.6186],
-              Biomes: ["moon"],
-            },
-            {
-              name: "Varthema",
-              starting_planet: true,
-              mass: 5000,
-              Thrust: [0, 0],
-              Radius: [225, 225],
-              Height: [0, 10],
-              Water: [0, 10],
-              Temp: [0, 100],
-              MetalDensity: [100, 100],
-              MetalClusters: [100, 100],
-              BiomeScale: [100, 100],
-              Position: [44300, 2500],
-              Velocity: [112.683, -82.0126],
-              Biomes: ["moon"],
-            },
-          ],
-        },
+        name: "Alenquer",
+        starting_planet: true,
+        mass: 50000,
+        Thrust: [0, 0],
+        Radius: [600, 800],
+        Height: [20, 25],
+        Water: [0, 10],
+        Temp: [0, 100],
+        MetalDensity: [100, 100],
+        MetalClusters: [24, 49],
+        BiomeScale: [100, 100],
+        Position: [40000, 0],
+        Velocity: [0, 111.803],
+        Biomes: ["metal"],
+      },
+      {
+        name: "Xianyao",
+        starting_planet: true,
+        mass: 5000,
+        Thrust: [0, 0],
+        Radius: [225, 225],
+        Height: [0, 10],
+        Water: [0, 10],
+        Temp: [0, 100],
+        MetalDensity: [100, 100],
+        MetalClusters: [100, 100],
+        BiomeScale: [100, 100],
+        Position: [40000, -5000],
+        Velocity: [-223.6067, 111.80299],
+        Biomes: ["moon"],
+      },
+      {
+        name: "Epiphany",
+        starting_planet: true,
+        mass: 5000,
+        Thrust: [0, 0],
+        Radius: [225, 225],
+        Height: [0, 10],
+        Water: [0, 10],
+        Temp: [0, 100],
+        MetalDensity: [100, 100],
+        MetalClusters: [100, 100],
+        BiomeScale: [100, 100],
+        Position: [35700, 2500],
+        Velocity: [112.683, 305.6186],
+        Biomes: ["moon"],
+      },
+      {
+        name: "Varthema",
+        starting_planet: true,
+        mass: 5000,
+        Thrust: [0, 0],
+        Radius: [225, 225],
+        Height: [0, 10],
+        Water: [0, 10],
+        Temp: [0, 100],
+        MetalDensity: [100, 100],
+        MetalClusters: [100, 100],
+        BiomeScale: [100, 100],
+        Position: [44300, 2500],
+        Velocity: [112.683, -82.0126],
+        Biomes: ["moon"],
       },
     ],
-    minions: _.map(minions, function (personalityModifiers) {
-      return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
-    }),
-    // GWO - minions.length - 1 is randomAI, pushed above.
-    gwaioRandomSpec: {
-      baseline: baselinePersonality,
-      descriptions: systemDescriptions,
-      randoms: [
-        { index: minions.length - 1, template: randomAI, from: randomFrom },
-      ],
-    },
-  };
+  });
 });

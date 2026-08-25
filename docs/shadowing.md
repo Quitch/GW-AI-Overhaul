@@ -186,7 +186,7 @@ module** in the mod's own namespace, which the shadowed file then requires:
 | ------------------------------- | ------------------------------------------------------------------------------------------ |
 | `gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js`                                                               |
 | `gw_galaxy.js`                  | `shared/gw_galaxy_graph.js`, `shared/gw_galaxy_connect.js`, `shared/gw_system_brackets.js` |
-| `gw_faction_*.js`               | `faction/faction_seed.js`                                                                  |
+| `gw_faction_*.js`               | `faction/faction_builder.js`, `faction/faction_seed.js`                                    |
 | `gw_play/referee_game_files.js` | `gw_play/referee_game_file_paths.js`                                                       |
 | `gw_play/referee_config.js`     | `gw_play/referee_config_setup.js`                                                          |
 
