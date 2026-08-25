@@ -24,58 +24,22 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = [];
-      _.forEach(gwoGroup.airMobile, function (unit) {
-        mods.push(
-          {
-            file: unit,
-            path: "navigation.move_speed",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: unit,
-            path: "navigation.brake",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: unit,
-            path: "navigation.acceleration",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: unit,
-            path: "navigation.turn_speed",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: unit,
-            path: "max_health",
-            op: "multiply",
-            value: 1.5,
-          }
-        );
-      });
-      _.forEach(gwoGroup.airAmmo, function (ammo) {
-        mods.push(
-          {
-            file: ammo,
-            path: "damage",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: ammo,
-            path: "splash_damage",
-            op: "multiply",
-            value: 1.25,
-          }
-        );
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard
+          .flatMapMods(gwoGroup.airMobile, "multiply", {
+            "navigation.move_speed": 1.25,
+            "navigation.brake": 1.25,
+            "navigation.acceleration": 1.25,
+            "navigation.turn_speed": 1.25,
+            max_health: 1.5,
+          })
+          .concat(
+            gwoCard.flatMapMods(gwoGroup.airAmmo, "multiply", {
+              damage: 1.25,
+              splash_damage: 1.25,
+            })
+          )
+      );
     },
     dull: function () {},
   };

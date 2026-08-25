@@ -45,33 +45,17 @@ define([
         })
       );
 
-      _.forEach(gwoGroup.orbitalMobile, function (unit) {
-        mods.push({
-          file: unit,
-          path: "max_health",
-          op: "multiply",
-          value: 1.5,
-        });
-      });
-
-      _.forEach(gwoGroup.orbitalAmmo, function (ammo) {
-        mods.push(
-          {
-            file: ammo,
-            path: "damage",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: ammo,
-            path: "splash_damage",
-            op: "multiply",
-            value: 1.25,
-          }
-        );
-      });
-
-      inventory.addMods(mods);
+      inventory.addMods(
+        mods.concat(
+          gwoCard.flatMapMods(gwoGroup.orbitalMobile, "multiply", {
+            max_health: 1.5,
+          }),
+          gwoCard.flatMapMods(gwoGroup.orbitalAmmo, "multiply", {
+            damage: 1.25,
+            splash_damage: 1.25,
+          })
+        )
+      );
     },
     dull: function () {},
   };

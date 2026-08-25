@@ -20,15 +20,11 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.titans, function (unit) {
-        return {
-          file: unit,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 0.5,
-        };
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard.flatMapMods(gwoGroup.titans, "multiply", {
+          build_metal_cost: 0.5,
+        })
+      );
     },
     dull: function () {},
   };
