@@ -33,9 +33,9 @@ define([
   var validatePerPlayerTechInputs = perPlayerTech.validatePerPlayerTechInputs;
 
   // Files not assigned by default that we wish to mod - global for modder
-  // compatibility, New-GW-Cards pushes here - see tech-cards.md
+  // compatibility, New-GW-Cards pushes here - see tech-cards.md. Seeded with
+  // GWO's own list by gw_play/referee_game_files.js, which loads first.
   model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
-  model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);
 
   var loadInventoryFromRecord = function (record) {
     var inventory = new GWInventory();
