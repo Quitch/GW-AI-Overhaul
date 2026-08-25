@@ -179,9 +179,18 @@ const UNIT_IDS = [
 
 const GROUP_IDS = [
   "botsBasicMobile",
+  "commanderPrimaryWeapons",
+  "deathAmmo",
   "factoriesAdvanced",
+  "landFactoriesBasic",
   "navalMobile",
+  "nomadStructuresLarge",
+  "nomadStructuresMedium",
+  "nomadStructuresOrbital",
+  "nomadStructuresSmall",
   "structuresDefencesAdvanced",
+  "vehiclesAdvancedCombat",
+  "vehiclesBasicCombat",
 ];
 
 describe("the unit and group ids cards are written against", () => {
@@ -198,6 +207,21 @@ describe("the unit and group ids cards are written against", () => {
       assert.ok(gwoGroup[name].length > 0);
     });
   }
+
+  it("keeps the plural vehicle combat keys equal to the singular ones", () => {
+    assert.deepEqual(gwoGroup.vehiclesBasicCombat, gwoGroup.vehicleBasicCombat);
+    assert.deepEqual(
+      gwoGroup.vehiclesAdvancedCombat,
+      gwoGroup.vehicleAdvancedCombat
+    );
+  });
+
+  it("lists the Commander's primary weapons as its weapons less the AA", () => {
+    assert.deepEqual(
+      gwoGroup.commanderPrimaryWeapons,
+      gwoGroup.commanderWeapons.filter((w) => w !== gwoUnit.commanderAA)
+    );
+  });
 });
 
 describe("the deal signature", () => {

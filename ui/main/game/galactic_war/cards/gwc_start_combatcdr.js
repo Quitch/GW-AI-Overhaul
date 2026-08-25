@@ -4,7 +4,8 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, gwoCard, gwoUnit) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GW, GWCStart, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
     visible: _.constant(false),
@@ -31,12 +32,6 @@ define([
         } else {
           GWCStart.buff(inventory);
           inventory.maxCards(inventory.maxCards() - 3);
-          var weapons = [
-            gwoUnit.commanderSecondary,
-            gwoUnit.commanderWeaponBullet,
-            gwoUnit.commanderWeaponLaser,
-            gwoUnit.commanderWeaponMissile,
-          ];
           inventory.addMods(
             gwoCard
               .mods(
@@ -50,7 +45,11 @@ define([
                   "multiply",
                   gwoCard.eachPath(gwoCard.paths.energyWeapon, 0.25)
                 ),
-                gwoCard.flatMapMods(weapons, "multiply", { rate_of_fire: 2 }),
+                gwoCard.flatMapMods(
+                  gwoGroup.commanderPrimaryWeapons,
+                  "multiply",
+                  { rate_of_fire: 2 }
+                ),
                 gwoCard.mods(gwoUnit.commander, "multiply", { max_health: 3 })
               )
           );

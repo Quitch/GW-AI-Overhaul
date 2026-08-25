@@ -32,46 +32,13 @@ define([
         } else {
           GWCStart.buff(inventory);
 
-          var smallStructures = [
-            gwoUnit.energyPlant,
-            gwoUnit.energyStorage,
-            gwoUnit.galata,
-            gwoUnit.landMine,
-            gwoUnit.laserDefenseTower,
-            gwoUnit.lob,
-            gwoUnit.metalStorage,
-            gwoUnit.pelter,
-            gwoUnit.radar,
-            gwoUnit.singleLaserDefenseTower,
-            gwoUnit.torpedoLauncher,
-            gwoUnit.umbrella,
-            gwoUnit.wall,
-          ];
-          var mediumStructures = [
-            gwoUnit.catapult,
-            gwoUnit.energyPlantAdvanced,
-            gwoUnit.flak,
-            gwoUnit.laserDefenseTowerAdvanced,
-            gwoUnit.radarJammingStation,
-            gwoUnit.torpedoLauncherAdvanced,
-          ];
-          var largeStructures = [
-            gwoUnit.anchor,
-            gwoUnit.deepSpaceOrbitalRadar,
-            gwoUnit.holkins,
-            gwoUnit.jig,
-            gwoUnit.kessler,
-            gwoUnit.radarAdvanced,
-          ];
+          var smallStructures = gwoGroup.nomadStructuresSmall;
+          var mediumStructures = gwoGroup.nomadStructuresMedium;
           var allStructures = smallStructures.concat(
             mediumStructures,
-            largeStructures
+            gwoGroup.nomadStructuresLarge
           );
-          var orbitalStructures = [
-            gwoUnit.anchor,
-            gwoUnit.jig,
-            gwoUnit.kessler,
-          ];
+          var orbitalStructures = gwoGroup.nomadStructuresOrbital;
           var groundStructures = _.difference(allStructures, orbitalStructures);
           var teleportableStructures = smallStructures.concat(mediumStructures);
           var defensiveStructures = gwoGroup.structuresArtillery.concat(

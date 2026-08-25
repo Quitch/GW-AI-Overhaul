@@ -1,9 +1,9 @@
 define([
   "shared/gw_factions",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-], function (GWFactions, gwoCard, gwoUnit, gwoAI) {
+], function (GWFactions, gwoCard, gwoGroup, gwoAI) {
   var coopMinionCount = function () {
     var game = model.game();
     // Counts minions of absent players too, in case one rejoins.
@@ -58,14 +58,11 @@ define([
     },
     deal: function (system, context, inventory, rng) {
       var chance = 80;
-      var aiOpeningFactories = [
-        gwoUnit.vehicleFactory,
-        gwoUnit.botFactory,
-        gwoUnit.airFactory,
-      ];
-
       if (
-        gwoCard.missingAllUnits(inventory.units(), aiOpeningFactories) ||
+        gwoCard.missingAllUnits(
+          inventory.units(),
+          gwoGroup.landFactoriesBasic
+        ) ||
         inventory.hasCard("nem_start_deepspace") ||
         inventory.hasCard("gwaio_start_tourist")
       ) {

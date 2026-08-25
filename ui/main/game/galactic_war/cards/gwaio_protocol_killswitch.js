@@ -16,20 +16,7 @@ define([
       return { chance: 50 };
     },
     buff: function (inventory) {
-      var deathAmmo = [
-        gwoUnit.wyrmDeath,
-        gwoUnit.zeusDeath,
-        gwoUnit.commanderDeath,
-        gwoUnit.manhattanDeath,
-        gwoUnit.atlasDeath,
-        gwoUnit.aresDeath,
-        gwoUnit.jigDeath,
-        gwoUnit.kesslerAmmo,
-        gwoUnit.landMineAmmo,
-        gwoUnit.boomAmmo,
-        gwoUnit.heliosDeath,
-      ];
-      var deathAmmoMods = gwoCard.flatMapMods(deathAmmo, "replace", {
+      var deathAmmoMods = gwoCard.flatMapMods(gwoGroup.deathAmmo, "replace", {
         splash_damages_allies: true,
       });
 
