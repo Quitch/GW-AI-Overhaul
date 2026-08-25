@@ -117,6 +117,33 @@ define(function () {
     }
   };
 
+  // Every card that grants a slot says so as its own paragraph. Kept here so the
+  // wording stays one translatable string rather than over a hundred copies of it.
+  var withSlot = function (description) {
+    return (
+      description +
+      "<br> <br>" +
+      loc("!LOC:Adds a new slot for another technology.")
+    );
+  };
+
+  var getContext = function (galaxy) {
+    return {
+      totalSize: galaxy.stars().length,
+    };
+  };
+
+  // Tested for undefined, not falsiness: a computed weight of 0 is legitimate.
+  var upgradeDeal = function (available, chance) {
+    var weight = _.isUndefined(chance) ? 60 : chance;
+    return {
+      params: {
+        allowOverflow: true,
+      },
+      chance: available ? weight : 0,
+    };
+  };
+
   var mods = function (file, op, props) {
     return _.map(_.keys(props), function (path) {
       return { file: file, path: path, op: op, value: props[path] };
@@ -147,15 +174,7 @@ define(function () {
       return !language || _.includes(language, "en");
     },
 
-    // Every card that grants a slot says so as its own paragraph. Kept here so the
-    // wording stays one translatable string rather than over a hundred copies of it.
-    withSlot: function (description) {
-      return (
-        description +
-        "<br> <br>" +
-        loc("!LOC:Adds a new slot for another technology.")
-      );
-    },
+    withSlot: withSlot,
 
     loadoutIcon: function (loadoutId) {
       var raw = window.localStorage["gwaio_victory_" + loadoutId];
@@ -268,11 +287,7 @@ define(function () {
       });
     },
 
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: getContext,
 
     startCard: function () {
       return {
@@ -289,14 +304,49 @@ define(function () {
       return rng ? 1 + rng() : Math.random();
     },
 
-    // Tested for undefined, not falsiness: a computed weight of 0 is legitimate.
-    upgradeDeal: function (available, chance) {
-      var weight = _.isUndefined(chance) ? 60 : chance;
+    upgradeDeal: upgradeDeal,
+
+    // The whole of an upgrade card: visible, one slot, dealt through
+    // upgradeDeal once `requires` is held (and `unless` is not), `description`
+    // wrapped by withSlot. `describe`, `available`, `deal` and `chance` (a
+    // weight or a function of the inventory) override those parts; `slot:
+    // false` skips the slot. See tech-cards.md.
+    upgradeCard: function (options) {
+      var available =
+        options.available ||
+        function (inventory) {
+          return (
+            (!options.unless || !inventory.hasCard(options.unless)) &&
+            hasUnit(inventory.units(), options.requires)
+          );
+        };
       return {
-        params: {
-          allowOverflow: true,
+        visible: _.constant(true),
+        describe:
+          options.describe || _.constant(withSlot(loc(options.description))),
+        summarize: _.constant(options.name),
+        icon: _.constant(options.icon),
+        audio: _.constant({ found: options.audio }),
+        getContext: getContext,
+        deal:
+          options.deal ||
+          function (system, context, inventory) {
+            return upgradeDeal(
+              available(inventory),
+              _.isFunction(options.chance)
+                ? options.chance(inventory)
+                : options.chance
+            );
+          },
+        buff: function (inventory) {
+          if (options.slot !== false) {
+            inventory.maxCards(inventory.maxCards() + 1);
+          }
+          if (options.buff) {
+            options.buff(inventory);
+          }
         },
-        chance: available ? weight : 0,
+        dull: function () {},
       };
     },
 

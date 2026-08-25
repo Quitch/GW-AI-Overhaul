@@ -131,6 +131,31 @@ adding or removing a draw inside one card cannot move any other card's result. S
 that computes a weight of 0 legitimately (as `navalWeight` can) gets the 0 it asked
 for instead of the 60 default.
 
+An upgrade card is the whole contract built from a handful of values, and
+`gwoCard.upgradeCard(options)` returns it:
+
+```js
+return gwoCard.upgradeCard({
+  name: "!LOC:Ant Upgrade Tech",
+  description: "!LOC:Ant Upgrade Tech adds splash damage to the light tank.",
+  icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png",
+  audio: "/VO/Computer/gw/board_tech_available_ammunition",
+  requires: gwoUnit.ant,
+  buff: function (inventory) {
+    inventory.addMods(
+      gwoCard.mods(gwoUnit.antAmmo, "replace", { splash_damage: 63 })
+    );
+  },
+});
+```
+
+That is visible, dealt through `upgradeDeal` once `requires` is held, described
+through `withSlot`, and buffed with the extra slot before `buff` runs. `unless`
+names a card that withholds it, `chance` is a weight or a function of the
+inventory, `available(inventory)` or `deal(...)` replace the test or the whole
+deal, `describe` replaces the description, and `slot: false` drops the slot for
+a card the referee applies.
+
 ### A card must be worth something to whoever is offered it
 
 A card offered to a player who owns none of the units it affects is invisible waste:

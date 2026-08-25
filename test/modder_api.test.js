@@ -145,6 +145,7 @@ const CARD_HELPERS = [
   "travelledModerate",
   "travelledShort",
   "uniqueValue",
+  "upgradeCard",
   "upgradeDeal",
   "withSlot",
 ];

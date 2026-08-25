@@ -555,6 +555,126 @@ describe("loadout", () => {
   });
 });
 
+describe("upgradeCard", () => {
+  const base = {
+    name: "!LOC:Ant Upgrade Tech",
+    description: "!LOC:Adds splash.",
+    icon: "icon.png",
+    audio: "/VO/found",
+    requires: "ant.json",
+  };
+
+  function inventory(units, cards, maxCards) {
+    const calls = [];
+    return {
+      calls,
+      units: () => units,
+      hasCard: (id) => (cards || []).includes(id),
+      maxCards: (value) => {
+        if (value !== undefined) {
+          calls.push(["maxCards", value]);
+        }
+        return maxCards || 4;
+      },
+      addUnits: (u) => calls.push(["addUnits", u]),
+    };
+  }
+
+  it("returns the full card contract", () => {
+    setGlobal("loc", (s) => s);
+    const card = cards.upgradeCard(base);
+    assert.deepEqual(Object.keys(card).sort(), [
+      "audio",
+      "buff",
+      "deal",
+      "describe",
+      "dull",
+      "getContext",
+      "icon",
+      "summarize",
+      "visible",
+    ]);
+    assert.equal(card.visible(), true);
+    assert.equal(card.summarize(), "!LOC:Ant Upgrade Tech");
+    assert.equal(card.icon(), "icon.png");
+    assert.deepEqual(card.audio(), { found: "/VO/found" });
+    assert.equal(card.getContext, cards.getContext);
+    assert.equal(card.describe(), cards.withSlot("!LOC:Adds splash."));
+    assert.equal(card.dull(), undefined);
+  });
+
+  it("deals at the default weight once the required unit is held", () => {
+    setGlobal("loc", (s) => s);
+    const card = cards.upgradeCard(base);
+    assert.deepEqual(card.deal({}, {}, inventory(["ant.json"])), {
+      params: { allowOverflow: true },
+      chance: 60,
+    });
+    assert.equal(card.deal({}, {}, inventory([])).chance, 0);
+  });
+
+  it("takes a weight, or a function of the inventory, as chance", () => {
+    setGlobal("loc", (s) => s);
+    const fixed = cards.upgradeCard(Object.assign({ chance: 30 }, base));
+    assert.equal(fixed.deal({}, {}, inventory(["ant.json"])).chance, 30);
+    const computed = cards.upgradeCard(
+      Object.assign({ chance: (inv) => inv.units().length }, base)
+    );
+    assert.equal(computed.deal({}, {}, inventory(["ant.json"])).chance, 1);
+  });
+
+  it("withholds the card while the unless card is held", () => {
+    setGlobal("loc", (s) => s);
+    const card = cards.upgradeCard(
+      Object.assign({ unless: "mym_start_x" }, base)
+    );
+    assert.equal(card.deal({}, {}, inventory(["ant.json"])).chance, 60);
+    assert.equal(
+      card.deal({}, {}, inventory(["ant.json"], ["mym_start_x"])).chance,
+      0
+    );
+  });
+
+  it("lets available or deal replace the ownership test outright", () => {
+    setGlobal("loc", (s) => s);
+    const byAvailable = cards.upgradeCard(
+      Object.assign({ available: (inv) => inv.hasCard("gate") }, base)
+    );
+    assert.equal(byAvailable.deal({}, {}, inventory([], ["gate"])).chance, 60);
+    const byDeal = cards.upgradeCard(
+      Object.assign({ deal: () => ({ chance: 7 }) }, base)
+    );
+    assert.deepEqual(byDeal.deal({}, {}, inventory([])), { chance: 7 });
+  });
+
+  it("adds the slot and then runs the buff body", () => {
+    setGlobal("loc", (s) => s);
+    const inv = inventory([]);
+    cards
+      .upgradeCard(Object.assign({ buff: (i) => i.addUnits("x") }, base))
+      .buff(inv);
+    assert.deepEqual(inv.calls, [
+      ["maxCards", 5],
+      ["addUnits", "x"],
+    ]);
+  });
+
+  it("skips the slot, and copes with no body, when slot is false", () => {
+    setGlobal("loc", (s) => s);
+    const inv = inventory([]);
+    cards.upgradeCard(Object.assign({ slot: false }, base)).buff(inv);
+    assert.deepEqual(inv.calls, []);
+  });
+
+  it("uses a describe override verbatim", () => {
+    setGlobal("loc", (s) => s);
+    const card = cards.upgradeCard(
+      Object.assign({ describe: () => "custom" }, base)
+    );
+    assert.equal(card.describe(), "custom");
+  });
+});
+
 describe("lockedHint", () => {
   it("pairs the locked-commander icon with the given description", () => {
     const hint = cards.lockedHint("!LOC:Nomad Commander");
