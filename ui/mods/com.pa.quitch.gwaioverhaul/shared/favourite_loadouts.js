@@ -20,16 +20,11 @@ define(function () {
   // stable. A falsy getId(card) means never-favouritable, and lands in `rest`.
   var sortCardsByFavourite = function (cards, favouriteIds, getId) {
     var ids = normalizeIds(favouriteIds);
-    var rest = [];
-    var cardsById = {};
-
-    _.forEach(cards, function (card) {
-      var id = getId(card);
-      if (id && _.includes(ids, id)) {
-        cardsById[id] = card;
-      } else {
-        rest.push(card);
-      }
+    var split = _.partition(cards, function (card) {
+      return isFavourite(ids, getId(card));
+    });
+    var cardsById = _.indexBy(split[0], function (card) {
+      return getId(card);
     });
 
     var favourites = _.compact(
@@ -38,7 +33,7 @@ define(function () {
       })
     );
 
-    return favourites.concat(rest);
+    return favourites.concat(split[1]);
   };
 
   return {
