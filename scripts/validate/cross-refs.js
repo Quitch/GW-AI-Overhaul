@@ -13,7 +13,7 @@ const path = require("node:path");
 const { REPO_ROOT, loadCouiModule } = require("../lib/amd-loader.js");
 const { CARDS_DIR } = require("../lib/card-files.js");
 const { reportProblems } = require("../lib/report-failures.js");
-const { walkFiles } = require("../lib/walk.js");
+const { aiDataFiles } = require("../lib/walk.js");
 
 const LOADOUT_IDS_COUI =
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js";
@@ -150,12 +150,7 @@ function checkBuilderRoles() {
   const unitMap = JSON.parse(fs.readFileSync(UNIT_MAP_PATH, "utf8")).unit_map;
   const roleKeys = new Set(Object.keys(unitMap));
 
-  const aiDirs = ["ai", "ai_penchant", "ai_tech"].map((d) =>
-    path.join(REPO_ROOT, "pa", d)
-  );
-  const files = aiDirs.flatMap((dir) =>
-    fs.existsSync(dir) ? walkFiles(dir, (name) => name.endsWith(".json")) : []
-  );
+  const files = aiDataFiles();
 
   let checked = 0;
   for (const file of files) {

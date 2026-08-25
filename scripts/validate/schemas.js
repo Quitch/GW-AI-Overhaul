@@ -17,7 +17,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
 const { reportProblems } = require("../lib/report-failures.js");
-const { walkFiles } = require("../lib/walk.js");
+const { aiDataFiles } = require("../lib/walk.js");
 
 // Every `test_type` the engine implements, harvested from media/pa/ai/ and
 // media/pa_ex1/ai_queller/. Re-harvest after a PA patch adds tests. An entry with
@@ -277,12 +277,7 @@ function checkAiConfigFile(where, data) {
 }
 
 function checkAiJsonFiles() {
-  const aiDirs = ["ai", "ai_penchant", "ai_tech"].map((d) =>
-    path.join(REPO_ROOT, "pa", d)
-  );
-  const files = aiDirs.flatMap((dir) =>
-    fs.existsSync(dir) ? walkFiles(dir, (name) => name.endsWith(".json")) : []
-  );
+  const files = aiDataFiles();
 
   let checked = 0;
   for (const file of files) {
