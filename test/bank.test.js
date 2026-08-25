@@ -17,31 +17,9 @@ const {
   installGlobals,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { makeObservableArray } = require("../scripts/lib/fake-knockout.js");
 
 const LS_KEY = "gwaio_bank";
-
-// Enough knockout for a list the module reads, writes, pushes to and subscribes
-// to. push replaces the array rather than mutating it, which is all the module
-// can observe.
-function observableArray(initial) {
-  let value = initial || [];
-  const subscribers = [];
-  const notify = () => subscribers.forEach((fn) => fn(value));
-
-  const observable = function (next) {
-    if (arguments.length) {
-      value = next;
-      notify();
-    }
-    return value;
-  };
-  observable.subscribe = (fn) => subscribers.push(fn);
-  observable.push = (item) => {
-    value = value.concat([item]);
-    notify();
-  };
-  return observable;
-}
 
 const tally = { stats: {}, reads: [], writes: [] };
 const storage = {
@@ -53,7 +31,7 @@ const storage = {
 installGlobals();
 const stubs = createGlobalStubs();
 stubs.setGlobal("ko", {
-  observableArray,
+  observableArray: makeObservableArray,
   // ko.toJSON unwraps observables; the bank only ever holds startCards.
   toJSON: (target) =>
     JSON.stringify(

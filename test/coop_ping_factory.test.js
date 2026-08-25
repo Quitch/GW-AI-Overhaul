@@ -13,6 +13,9 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  makeObservable: observable,
+} = require("../scripts/lib/fake-knockout.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js"
@@ -20,17 +23,6 @@ const makeFactory = loadCouiModule(
 
 const REQUEST = "gwo_ping_star";
 const BROADCAST = "gwo_ping_star_broadcast";
-
-function observable(initial) {
-  let value = initial;
-  return function () {
-    if (arguments.length) {
-      value = arguments[0];
-      return undefined;
-    }
-    return value;
-  };
-}
 
 function setup(overrides = {}) {
   const options = Object.assign(

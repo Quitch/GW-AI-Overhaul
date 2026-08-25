@@ -10,27 +10,15 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const {
+  makeObservable: observable,
+} = require("../scripts/lib/fake-knockout.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory.js"
 );
 
 const WAR_END = "gwo_war_end";
-
-function observable(initial) {
-  const subscribers = [];
-  const accessor = function () {
-    if (arguments.length) {
-      accessor.value = arguments[0];
-      subscribers.forEach((fn) => fn(accessor.value));
-      return undefined;
-    }
-    return accessor.value;
-  };
-  accessor.value = initial;
-  accessor.subscribe = (fn) => subscribers.push(fn);
-  return accessor;
-}
 
 let stubs;
 

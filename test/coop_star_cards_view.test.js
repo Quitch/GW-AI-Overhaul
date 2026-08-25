@@ -12,6 +12,9 @@ const {
   requireShippedModule,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  makeObservable: observable,
+} = require("../scripts/lib/fake-knockout.js");
 
 const view = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js"
@@ -61,18 +64,6 @@ describe("shouldUseViewerStarCard", () => {
     assert.equal(makeFactory.shouldUseViewerStarCard(true, true), true);
   });
 });
-
-// Just enough knockout for the name cache: a writable observable, with no
-// dependency tracking - the factory only reads and replaces the whole map.
-function observable(initial) {
-  let value = initial;
-  return function (next) {
-    if (arguments.length) {
-      value = next;
-    }
-    return value;
-  };
-}
 
 function setup(overrides = {}) {
   const options = Object.assign(

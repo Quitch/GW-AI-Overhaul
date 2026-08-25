@@ -30,6 +30,10 @@ const {
   createCapturingInventory,
   recordInto,
 } = require("../scripts/lib/capturing-inventory.js");
+const {
+  installFakeKnockout,
+  makeInertObservable,
+} = require("../scripts/lib/fake-knockout.js");
 
 // Every loadout card - which is where the replacements live - depends on the
 // unshipped shared/gw_common, so without a stand-in the sweep tests nothing. Only
@@ -38,25 +42,10 @@ registerModuleStub("shared/gw_common", createAutoStub());
 
 // shared/bank.js constructs itself at define time, so it reads ko and localStorage
 // before any test runs. A subscription that never fires is correct here.
-function makeObservable(initial) {
-  let value = initial;
-  const observable = function () {
-    if (arguments.length) {
-      value = arguments[0];
-      return;
-    }
-    return value;
-  };
-  observable.subscribe = () => ({ dispose: () => {} });
-  observable.extend = () => observable;
-  return observable;
-}
-
-global.ko = {
-  observable: makeObservable,
-  observableArray: makeObservable,
-  computed: (fn) => fn,
-};
+installFakeKnockout({
+  observable: makeInertObservable,
+  observableArray: makeInertObservable,
+});
 global.localStorage = {};
 
 const CLUSTER_FACTION = 4;

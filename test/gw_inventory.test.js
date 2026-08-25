@@ -22,6 +22,10 @@ const {
   registerModuleStub,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  makeObservable,
+  makeObservableArray,
+} = require("../scripts/lib/fake-knockout.js");
 
 installGlobals();
 
@@ -46,33 +50,13 @@ registerModuleStub("coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js", {
   resumeUnlocks: () => bank.push("resume"),
 });
 
-// Enough knockout for the observables the prototype reads, writes and marks
-// mutated. remove() drops every equal item, which is what GWO's removeUnits
-// relies on to clear multiple copies of a unit.
-function observable(initial) {
-  let value = initial;
-  const self = function (next) {
-    if (arguments.length) {
-      value = next;
-    }
-    return value;
-  };
-  self.valueHasMutated = () => mutations.push(value);
-  return self;
-}
-
-function observableArray(initial) {
-  const self = observable(initial || []);
-  self.remove = (item) => self(self().filter((entry) => entry !== item));
-  return self;
-}
-
 const mutations = [];
+const hooks = { onMutate: (value) => mutations.push(value) };
 
 const stubs = createGlobalStubs();
 stubs.setGlobal("ko", {
-  observable,
-  observableArray,
+  observable: (initial) => makeObservable(initial, hooks),
+  observableArray: (initial) => makeObservableArray(initial, hooks),
   // Own properties only, which is exactly the observables the constructor sets.
   toJS: (target) =>
     Object.keys(target).reduce((out, key) => {

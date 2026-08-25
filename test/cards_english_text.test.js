@@ -16,29 +16,18 @@ const {
 const { CARDS_DIR } = require("../scripts/lib/card-files.js");
 const { createAutoStub } = require("../scripts/lib/auto-stub.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  installFakeKnockout,
+  makeInertObservable,
+} = require("../scripts/lib/fake-knockout.js");
 
 // Loadout cards reach for these at define time, before any test runs.
 registerModuleStub("shared/gw_common", createAutoStub());
 
-function makeObservable(initial) {
-  let value = initial;
-  const observable = function () {
-    if (arguments.length) {
-      value = arguments[0];
-      return;
-    }
-    return value;
-  };
-  observable.subscribe = () => ({ dispose: () => {} });
-  observable.extend = () => observable;
-  return observable;
-}
-
-global.ko = {
-  observable: makeObservable,
-  observableArray: makeObservable,
-  computed: (fn) => fn,
-};
+installFakeKnockout({
+  observable: makeInertObservable,
+  observableArray: makeInertObservable,
+});
 global.localStorage = {};
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();

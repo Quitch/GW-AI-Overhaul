@@ -15,6 +15,10 @@ const {
   createCapturingInventory,
   recordInto,
 } = require("./capturing-inventory.js");
+const {
+  installFakeKnockout,
+  makeInertObservable,
+} = require("./fake-knockout.js");
 
 // A real array, not createAutoStub(): farForSize walks
 // `Math.min(numberOfSystems.length, thresholds.length) - 1`, and a stub makes that
@@ -42,20 +46,6 @@ const MAX_DISTANCE = 15;
 // shared/bank.js builds itself at define time, so the loadout cards read ko and
 // localStorage before anything is probed. Same stand-ins as
 // cluster_subcommander_buildable.test.js.
-function makeObservable(initial) {
-  let value = initial;
-  const observable = function () {
-    if (arguments.length) {
-      value = arguments[0];
-      return;
-    }
-    return value;
-  };
-  observable.subscribe = () => ({ dispose: () => {} });
-  observable.extend = () => observable;
-  return observable;
-}
-
 let harnessInstalled = false;
 
 function installCardHarness() {
@@ -63,11 +53,10 @@ function installCardHarness() {
     return;
   }
   registerModuleStub("shared/gw_common", GW_COMMON_STUB);
-  global.ko = {
-    observable: makeObservable,
-    observableArray: makeObservable,
-    computed: (fn) => fn,
-  };
+  installFakeKnockout({
+    observable: makeInertObservable,
+    observableArray: makeInertObservable,
+  });
   global.localStorage = {};
   harnessInstalled = true;
 }

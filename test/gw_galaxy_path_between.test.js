@@ -9,22 +9,7 @@ const assert = require("node:assert/strict");
 // The constructor calls ko at construction time, so this must be installed before
 // the module loads. A computed re-evaluates on every read, so neighborsMap always
 // reflects the current gates().
-global.ko = {
-  observable: makeObservable,
-  observableArray: makeObservable,
-  computed: (fn) => fn,
-};
-
-function makeObservable(initial) {
-  let value = initial;
-  return function () {
-    if (arguments.length) {
-      value = arguments[0];
-      return;
-    }
-    return value;
-  };
-}
+require("../scripts/lib/fake-knockout.js").installFakeKnockout();
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const GWGalaxy = loadCouiModule(
