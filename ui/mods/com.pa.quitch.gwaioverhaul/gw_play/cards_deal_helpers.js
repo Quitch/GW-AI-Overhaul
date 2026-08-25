@@ -101,6 +101,11 @@ define(function () {
       return undefined;
     },
 
+    // A reroll spends one offered card, and the last card is never rerolled.
+    rerollsRemain: function (rerollsUsed, cardsOffered) {
+      return rerollsUsed < cardsOffered - 1;
+    },
+
     isStartLoadoutCardId: isStartLoadoutCardId,
 
     filterStartLoadoutCards: function (cards) {

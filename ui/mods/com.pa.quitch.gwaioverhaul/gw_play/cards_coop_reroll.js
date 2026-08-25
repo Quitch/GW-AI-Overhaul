@@ -1,7 +1,9 @@
 // Co-op pending-tech reroll. A viewer asks the host (gwo_reroll_pending_tech) to
 // reroll its pending offer; the host deals a smaller hand, stores it, and returns
 // it (gwo_reroll_pending_tech_result) for the viewer to apply. See coop.md.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+], function (dealHelpers) {
   // A reroll spends one more of the viewer's offered cards.
   var computeRerollDeal = function (cardsOffered, currentCardCount) {
     var rerollsUsed = Math.max(0, cardsOffered - currentCardCount);
@@ -10,6 +12,8 @@ define(function () {
       rerollsUsed: rerollsUsed,
       nextRerollsUsed: nextRerollsUsed,
       cardCount: cardsOffered - nextRerollsUsed,
+      // Not rerollsRemain: the last reroll still deals one card, and only
+      // the offer after it is withheld.
       exhausted: nextRerollsUsed > cardsOffered - 1,
     };
   };
@@ -274,7 +278,10 @@ define(function () {
             client_name: operator.client_name,
             pendingTechCards: nextPendingTechCards,
             rerolls_used: nextRerollsUsed,
-            offer_rerolls: nextRerollsUsed < cardsOffered - 1,
+            offer_rerolls: dealHelpers.rerollsRemain(
+              nextRerollsUsed,
+              cardsOffered
+            ),
             updated_at: updatedAt,
           });
           gwoSave(game, false).then(resolveResult, rejectResult);
