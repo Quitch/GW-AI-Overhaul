@@ -89,13 +89,12 @@ Rejected alternatives, tuning history and "this used to live elsewhere" belong i
 ## Verifying a change
 
 ```bash
-npm run verify    # CI's hard gates, plus Prettier over the whole repo
+npm run verify    # exactly what CI runs
 ```
 
-CI runs `lint:js`/`lint:css`/`lint:md`/`validate`/`test` as full-repo hard gates
-and checks Prettier only over the files a PR changed. `verify` runs those same
-gates and widens the Prettier check to `prettier --check .`, which the repo
-passes today — so a clean `verify` means a clean CI, but not the reverse.
+CI and the release workflow both run `npm run verify` and nothing else:
+`lint:js`/`lint:css`/`lint:md`/`format:check`/`validate`/`test`, every one a
+full-repo hard gate. A clean `verify` is a clean CI, and the reverse.
 
 Nothing here starts PA. Anything that can only fail at runtime — a renamed
 identifier in shipped `ui/**`, a CSS class rename spanning HTML and CSS, a

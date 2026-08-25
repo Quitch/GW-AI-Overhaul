@@ -7,7 +7,7 @@ shipped AMD modules under plain Node and asserting against them.
 npm test                  # node --test, everything under test/
 npm run test:coverage     # same, plus lcov for the Sonar job
 npm run validate          # all seven validate:* checks in sequence
-npm run verify            # CI's hard gates + repo-wide format:check
+npm run verify            # exactly what CI runs
 ```
 
 Run one file with `node --test test/specs.test.js`, or one test with
