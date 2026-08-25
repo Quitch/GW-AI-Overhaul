@@ -34,7 +34,7 @@ define([
         gwoUnit.mend,
         gwoUnit.botFabberAdvanced,
       ];
-      var advancedBotsWithoutFabbers = _.xor(
+      var advancedBotsWithoutFabbers = _.difference(
         gwoGroup.botsAdvancedMobile,
         advancedBotFabbers
       );

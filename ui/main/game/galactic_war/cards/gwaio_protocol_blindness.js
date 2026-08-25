@@ -37,32 +37,24 @@ define([
       });
 
       // Radar is excluded: its vision slots are ordered differently.
-      var unitsExcludingRadarScoutsCommanders = _.reject(
-        gwoGroup.units,
-        function (unit) {
-          return _.includes(
-            [
-              gwoUnit.antiNukeLauncher,
-              gwoUnit.arkyd,
-              gwoUnit.commander,
-              gwoUnit.firefly,
-              gwoUnit.hermes,
-              gwoUnit.manhattan,
-              gwoUnit.nyx,
-              // gwoUnit.planetaryRadar - uses slot 3+ for radar vision
-              gwoUnit.radar,
-              gwoUnit.radarAdvanced,
-              gwoUnit.radarSatelliteAdvanced,
-              gwoUnit.skitter,
-              // gwoUnit.stingray - uses slot 2+ for radar vision
-              gwoUnit.torpedoLauncher,
-              gwoUnit.torpedoLauncherAdvanced,
-              gwoUnit.ward,
-            ],
-            unit
-          );
-        }
-      );
+      var unitsExcludingRadarScoutsCommanders = _.difference(gwoGroup.units, [
+        gwoUnit.antiNukeLauncher,
+        gwoUnit.arkyd,
+        gwoUnit.commander,
+        gwoUnit.firefly,
+        gwoUnit.hermes,
+        gwoUnit.manhattan,
+        gwoUnit.nyx,
+        // gwoUnit.planetaryRadar - uses slot 3+ for radar vision
+        gwoUnit.radar,
+        gwoUnit.radarAdvanced,
+        gwoUnit.radarSatelliteAdvanced,
+        gwoUnit.skitter,
+        // gwoUnit.stingray - uses slot 2+ for radar vision
+        gwoUnit.torpedoLauncher,
+        gwoUnit.torpedoLauncherAdvanced,
+        gwoUnit.ward,
+      ]);
       var radarsWithRadarVisionInSlot0 = [
         gwoUnit.arkyd,
         gwoUnit.radarSatelliteAdvanced,

@@ -33,21 +33,16 @@ define([
         return gwoCard.mods(ammo, "replace", { splash_damages_allies: true });
       });
 
-      var unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
-        return _.includes(
-          [
-            gwoUnit.wyrm,
-            gwoUnit.zeus,
-            gwoUnit.commander,
-            gwoUnit.manhattan,
-            gwoUnit.atlas,
-            gwoUnit.ares,
-            gwoUnit.jig,
-            gwoUnit.helios,
-          ],
-          unit
-        );
-      });
+      var unitsWithoutADeathWeapon = _.difference(gwoGroup.units, [
+        gwoUnit.wyrm,
+        gwoUnit.zeus,
+        gwoUnit.commander,
+        gwoUnit.manhattan,
+        gwoUnit.atlas,
+        gwoUnit.ares,
+        gwoUnit.jig,
+        gwoUnit.helios,
+      ]);
       var deathWeaponMods = _.map(unitsWithoutADeathWeapon, function (unit) {
         return gwoCard
           .mods(unit, "replace", {

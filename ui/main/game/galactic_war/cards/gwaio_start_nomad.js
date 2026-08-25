@@ -73,9 +73,7 @@ define([
             gwoUnit.jig,
             gwoUnit.kessler,
           ];
-          var groundStructures = _.reject(allStructures, function (structure) {
-            return _.includes(orbitalStructures, structure);
-          });
+          var groundStructures = _.difference(allStructures, orbitalStructures);
           _.forEach(groundStructures, function (unit) {
             mods.push(
               {

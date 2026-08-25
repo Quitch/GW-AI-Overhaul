@@ -47,11 +47,9 @@ define([
           var mobileLandUnits = gwoGroup.botsMobile.concat(
             gwoGroup.vehiclesMobile
           );
-          var landUnitsNotInUnitCannon = _.filter(
+          var landUnitsNotInUnitCannon = _.difference(
             mobileLandUnits,
-            function (unit) {
-              return !_.includes(gwoGroup.unitCannonMobile, unit);
-            }
+            gwoGroup.unitCannonMobile
           );
           var mods = _.flatten(
             _.map(unitCannons, function (unit) {
