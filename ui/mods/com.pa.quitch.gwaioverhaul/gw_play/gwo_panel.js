@@ -271,8 +271,7 @@ function gwoWarInfoPanel(gwoSettings) {
         var coopCommanderCache = {};
 
         var updateCoopCommander = function (client, human) {
-          var cacheKey =
-            String(client.id || "") + "::" + String(client.name || "");
+          var cacheKey = gwoRefereeCoop.clientKey(client.id, client.name);
           var commander = coopCommanderCache[cacheKey];
           var record;
           var loadoutCardId;
@@ -332,8 +331,7 @@ function gwoWarInfoPanel(gwoSettings) {
 
           if (coopCampaign) {
             commanders = _.map(connectedClients, function (client) {
-              var cacheKey =
-                String(client.id || "") + "::" + String(client.name || "");
+              var cacheKey = gwoRefereeCoop.clientKey(client.id, client.name);
               activeCommanderKeys[cacheKey] = true;
               return updateCoopCommander(client, human);
             });

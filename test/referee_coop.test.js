@@ -252,3 +252,11 @@ describe("refereeCoop.clientsInPlayerOrder", () => {
     assert.deepEqual(refereeCoop.clientsInPlayerOrder([null]), [null]);
   });
 });
+
+describe("referee_coop.clientKey", () => {
+  it("keys a client by id and name together, tolerating either being empty", () => {
+    assert.equal(refereeCoop.clientKey("abc", "Alice"), "abc::Alice");
+    assert.equal(refereeCoop.clientKey(undefined, "Alice"), "::Alice");
+    assert.equal(refereeCoop.clientKey("abc", undefined), "abc::");
+  });
+});
