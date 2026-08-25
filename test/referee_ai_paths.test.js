@@ -275,3 +275,33 @@ describe("getAIPathDestination - no scope token", () => {
     );
   });
 });
+
+describe("getViewerSubcommanderPath", () => {
+  it("scopes a non-host tag raw, under the brain-and-tech tree", () => {
+    assert.equal(
+      refereeAIPaths.getViewerSubcommanderPath(
+        "Titans",
+        [{ op: "load" }],
+        false,
+        ".player0"
+      ),
+      "/pa/ai_subcommander/player_.player0/"
+    );
+    assert.equal(
+      refereeAIPaths.getViewerSubcommanderPath("Queller", [], true, ".player1"),
+      "/pa/ai_queller/q_silver/player_.player1/"
+    );
+  });
+
+  it("never scopes the host tag", () => {
+    assert.equal(
+      refereeAIPaths.getViewerSubcommanderPath(
+        "Titans",
+        [{ op: "load" }],
+        false,
+        ".player"
+      ),
+      "/pa/ai_subcommander/"
+    );
+  });
+});

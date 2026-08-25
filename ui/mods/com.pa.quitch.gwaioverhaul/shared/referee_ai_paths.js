@@ -66,6 +66,29 @@ define(function () {
     return quellerPath + "q_bronze/";
   };
 
+  var getAIPathDestination = function (type, aiInUse, options) {
+    var settings = options || {};
+    var isGuardians = !!settings.guardians;
+    var aiMods = settings.aiMods || [];
+    var scopeToken = settings.scopeToken;
+    var smartSubcommanders = !!settings.smartSubcommanders;
+    var basePath;
+
+    if (type === "cluster") {
+      basePath = clusterPath;
+    } else if (aiInUse === "Queller") {
+      basePath = getQuellerPath(type, smartSubcommanders);
+    } else if (type === "subcommander" && !isGuardians && !_.isEmpty(aiMods)) {
+      basePath = subCommanderPath;
+    } else if (aiInUse === "Penchant") {
+      basePath = penchantPath;
+    } else {
+      basePath = titansAiPath;
+    }
+
+    return appendScope(basePath, scopeToken);
+  };
+
   return {
     sanitizeToken: sanitizeToken,
 
@@ -82,31 +105,23 @@ define(function () {
       }
     },
 
-    getAIPathDestination: function (type, aiInUse, options) {
-      var settings = options || {};
-      var isGuardians = !!settings.guardians;
-      var aiMods = settings.aiMods || [];
-      var scopeToken = settings.scopeToken;
-      var smartSubcommanders = !!settings.smartSubcommanders;
-      var basePath;
+    getAIPathDestination: getAIPathDestination,
 
-      if (type === "cluster") {
-        basePath = clusterPath;
-      } else if (aiInUse === "Queller") {
-        basePath = getQuellerPath(type, smartSubcommanders);
-      } else if (
-        type === "subcommander" &&
-        !isGuardians &&
-        !_.isEmpty(aiMods)
-      ) {
-        basePath = subCommanderPath;
-      } else if (aiInUse === "Penchant") {
-        basePath = penchantPath;
-      } else {
-        basePath = titansAiPath;
-      }
-
-      return appendScope(basePath, scopeToken);
+    // A co-op viewer's subcommander tree. The hardcoded guardians:false, the raw
+    // (unsanitised) player tag and the absence of any Cluster routing are all
+    // deliberate - see ai-paths.md.
+    getViewerSubcommanderPath: function (
+      aiInUse,
+      aiMods,
+      smartSubcommanders,
+      playerTag
+    ) {
+      return getAIPathDestination("subcommander", aiInUse, {
+        guardians: false,
+        aiMods: aiMods,
+        smartSubcommanders: smartSubcommanders,
+        scopeToken: playerTag === ".player" ? undefined : playerTag,
+      });
     },
 
     getPlayerScopedUnitMapPath: function (

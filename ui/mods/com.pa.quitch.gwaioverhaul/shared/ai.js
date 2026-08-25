@@ -83,17 +83,11 @@ define([
     },
 
     getSubcommanderPathForViewer: function (inventory, playerTag) {
-      var currentAiInUse = aiInUse("subcommander");
-      var scopeToken = playerTag === ".player" ? undefined : playerTag;
-      return refereeAIPaths.getAIPathDestination(
-        "subcommander",
-        currentAiInUse,
-        {
-          guardians: false,
-          aiMods: getInventoryAiMods(inventory),
-          smartSubcommanders: subcommanderTech.hasSmartSubcommanders(inventory),
-          scopeToken: scopeToken,
-        }
+      return refereeAIPaths.getViewerSubcommanderPath(
+        aiInUse("subcommander"),
+        getInventoryAiMods(inventory),
+        subcommanderTech.hasSmartSubcommanders(inventory),
+        playerTag
       );
     },
 
