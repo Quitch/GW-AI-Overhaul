@@ -33,6 +33,28 @@ define(function () {
     });
   };
 
+  // The saved inventories of every connected co-op player bar the host, whose
+  // own is the live GWInventory.
+  var connectedPlayerInventories = function (game) {
+    var activeGame = game || model.game();
+    var connectedClients = getConnectedClients();
+    var records =
+      activeGame && _.isFunction(activeGame.coopPlayerInventoryData)
+        ? activeGame.coopPlayerInventoryData()
+        : [];
+
+    return _.filter(
+      _.map(records, function (data) {
+        return isConnectedPlayerInventory(data, connectedClients)
+          ? data.inventory
+          : undefined;
+      }),
+      function (inventory) {
+        return inventory && _.isArray(inventory.cards);
+      }
+    );
+  };
+
   // Indexed by GW.balance.numberOfSystems tier - see tech-cards.md. Small shares a
   // short/moderate threshold because star distance is integer and it spans ~8 values.
   var distances = {
@@ -295,52 +317,29 @@ define(function () {
     },
 
     getAllConnectedPlayerCards: function (hostInventory, game) {
-      var activeGame = game || model.game();
-      var connectedClients = getConnectedClients();
-      var coopPlayerInventoryData =
-        activeGame && _.isFunction(activeGame.coopPlayerInventoryData)
-          ? activeGame.coopPlayerInventoryData()
-          : [];
-      var allCards =
+      var hostCards =
         hostInventory && _.isFunction(hostInventory.cards)
           ? hostInventory.cards().slice(0)
           : [];
 
-      _.forEach(coopPlayerInventoryData, function (data) {
-        if (!isConnectedPlayerInventory(data, connectedClients)) {
-          return;
-        }
-
-        if (data.inventory && _.isArray(data.inventory.cards)) {
-          allCards = allCards.concat(data.inventory.cards);
-        }
-      });
-
-      return allCards;
+      return _.reduce(
+        connectedPlayerInventories(game),
+        function (allCards, inventory) {
+          return allCards.concat(inventory.cards);
+        },
+        hostCards
+      );
     },
 
+    // The host's own check honours card.unique (gw_inventory.hasCard); a
+    // viewer's saved cards are matched by id alone.
     anyPlayerHasCard: function (hostInventory, cardId, game) {
-      var activeGame = game || model.game();
-      var coopPlayerInventoryData =
-        activeGame && _.isFunction(activeGame.coopPlayerInventoryData)
-          ? activeGame.coopPlayerInventoryData()
-          : [];
-      var connectedClients = getConnectedClients();
-
       return (
         (hostInventory &&
           _.isFunction(hostInventory.hasCard) &&
           hostInventory.hasCard(cardId)) ||
-        _.some(coopPlayerInventoryData, function (data) {
-          if (!isConnectedPlayerInventory(data, connectedClients)) {
-            return false;
-          }
-
-          return (
-            data.inventory &&
-            _.isArray(data.inventory.cards) &&
-            _.some(data.inventory.cards, { id: cardId })
-          );
+        _.some(connectedPlayerInventories(game), function (inventory) {
+          return _.some(inventory.cards, { id: cardId });
         })
       );
     },
