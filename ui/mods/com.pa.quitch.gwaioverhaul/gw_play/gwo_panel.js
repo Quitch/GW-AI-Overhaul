@@ -130,19 +130,14 @@ function gwoWarInfoPanel(gwoSettings) {
       options(model.gwoOptions, element[0], element[1]);
     }
 
-    var gwoHasDuplicatedSubcommanders = function (playerCards) {
-      return _.some(playerCards, {
-        id: "gwaio_upgrade_subcommander_duplication",
-      });
-    };
-
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
       ],
-      function (gwoColour, gwoRefereeCoop, gwoVersion) {
+      function (gwoColour, gwoRefereeCoop, gwoSubcommanderTech, gwoVersion) {
         model.gwoVersion = ko.observable(gwoVersion);
 
         var coopText = function (setting) {
@@ -245,7 +240,11 @@ function gwoWarInfoPanel(gwoSettings) {
           }
           // avoid modifying the original name to prevent duplication of addendum
           var subcommanderName = subcommander.name;
-          if (gwoHasDuplicatedSubcommanders(subcommanderData.cards)) {
+          if (
+            gwoSubcommanderTech.hasDuplicatedSubcommanders(
+              subcommanderData.cards
+            )
+          ) {
             subcommanderName += " x2";
           }
           return {
