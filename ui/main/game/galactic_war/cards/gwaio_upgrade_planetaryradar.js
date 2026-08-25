@@ -33,26 +33,13 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 33.33,
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: 33.33,
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "recon.observer.items.2.radius",
-          op: "multiply",
-          value: 8.3325,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.deepSpaceOrbitalRadar, "multiply", {
+          "recon.observer.items.0.radius": 33.33,
+          "recon.observer.items.1.radius": 33.33,
+          "recon.observer.items.2.radius": 8.3325,
+        })
+      );
     },
     dull: function () {},
   };

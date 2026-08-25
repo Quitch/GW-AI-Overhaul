@@ -26,14 +26,9 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.icarus,
-          path: "production.metal",
-          op: "replace",
-          value: 2,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.icarus, "replace", { "production.metal": 2 })
+      );
 
       inventory.addAIMods([
         {

@@ -26,20 +26,12 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.nukeLauncherAmmo,
-          path: "armor_damage_map.AT_Commander",
-          op: "multiply",
-          value: 3,
-        },
-        {
-          file: gwoUnit.nukeLauncherAmmo,
-          path: "armor_damage_map.AT_Orbital",
-          op: "multiply",
-          value: 3,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.nukeLauncherAmmo, "multiply", {
+          "armor_damage_map.AT_Commander": 3,
+          "armor_damage_map.AT_Orbital": 3,
+        })
+      );
     },
     dull: function () {},
   };

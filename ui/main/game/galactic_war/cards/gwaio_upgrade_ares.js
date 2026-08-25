@@ -26,38 +26,22 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.aresWeapon,
-          path: "max_range",
-          op: "multiply",
-          value: 1.25,
-        },
-        {
-          file: gwoUnit.aresWeapon,
-          path: "pitch_range",
-          op: "replace",
-          value: 89,
-        },
-        {
-          file: gwoUnit.aresWeapon,
-          path: "arc_type",
-          op: "replace",
-          value: "ARC_high",
-        },
-        {
-          file: gwoUnit.aresSecondary,
-          path: "max_range",
-          op: "multiply",
-          value: 1.25,
-        },
-        {
-          file: gwoUnit.aresSecondaryAmmo,
-          path: "max_velocity",
-          op: "replace",
-          value: 200,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.aresWeapon, "multiply", { max_range: 1.25 })
+          .concat(
+            gwoCard.mods(gwoUnit.aresWeapon, "replace", {
+              pitch_range: 89,
+              arc_type: "ARC_high",
+            }),
+            gwoCard.mods(gwoUnit.aresSecondary, "multiply", {
+              max_range: 1.25,
+            }),
+            gwoCard.mods(gwoUnit.aresSecondaryAmmo, "replace", {
+              max_velocity: 200,
+            })
+          )
+      );
     },
     dull: function () {},
   };

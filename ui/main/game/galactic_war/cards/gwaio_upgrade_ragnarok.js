@@ -26,86 +26,23 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "damage",
-          op: "replace",
-          value: 99999,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "full_damage_splash_radius",
-          op: "replace",
-          value: 99999,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "splash_damage",
-          op: "replace",
-          value: 99999,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "splash_damages_allies",
-          op: "replace",
-          value: true,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "splash_radius",
-          op: "replace",
-          value: 99999,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "damage_volume.burnable_remove_radius",
-          op: "replace",
-          value: 100,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "damage_volume.delay",
-          op: "replace",
-          value: 1.5,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "damage_volume.initial_radius",
-          op: "replace",
-          value: 20,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "damage_volume.radius_accel",
-          op: "replace",
-          value: -40,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "damage_volume.radius_velocity",
-          op: "replace",
-          value: 500,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "burn_damage",
-          op: "replace",
-          value: 200,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "burn_radius",
-          op: "replace",
-          value: 99999,
-        },
-        {
-          file: gwoUnit.ragnarokPbaoe,
-          path: "planet_impact_spec.delay_time",
-          op: "replace",
-          value: 99999, // never resolves, so the planet survives the blast
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.ragnarokPbaoe, "replace", {
+          damage: 99999,
+          full_damage_splash_radius: 99999,
+          splash_damage: 99999,
+          splash_damages_allies: true,
+          splash_radius: 99999,
+          "damage_volume.burnable_remove_radius": 100,
+          "damage_volume.delay": 1.5,
+          "damage_volume.initial_radius": 20,
+          "damage_volume.radius_accel": -40,
+          "damage_volume.radius_velocity": 500,
+          burn_damage: 200,
+          burn_radius: 99999,
+          "planet_impact_spec.delay_time": 99999, // never resolves, so the planet survives the blast
+        })
+      );
     },
     dull: function () {},
   };

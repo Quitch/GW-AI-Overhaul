@@ -26,67 +26,34 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.skitter,
-          path: "tools",
-          op: "replace",
-          value: [
-            {
-              spec_id: gwoUnit.skitterWeapon,
-              aim_bone: "bone_root",
-              muzzle_bone: "bone_root",
-            },
-          ],
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "tools.0.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "command_caps",
-          op: "push",
-          value: "ORDER_Attack",
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "recon.observer.items.2.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitterAmmo,
-          path: "initial_velocity",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitterAmmo,
-          path: "max_velocity",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitterAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 2,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.skitter, "replace", {
+            tools: [
+              {
+                spec_id: gwoUnit.skitterWeapon,
+                aim_bone: "bone_root",
+                muzzle_bone: "bone_root",
+              },
+            ],
+          })
+          .concat(
+            [{ file: gwoUnit.skitter, path: "tools.0.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.skitter, "push", {
+              command_caps: "ORDER_Attack",
+            }),
+            gwoCard.mods(gwoUnit.skitter, "multiply", {
+              "recon.observer.items.0.radius": 2,
+              "recon.observer.items.1.radius": 2,
+              "recon.observer.items.2.radius": 2,
+            }),
+            gwoCard.mods(gwoUnit.skitterAmmo, "multiply", {
+              initial_velocity: 2,
+              max_velocity: 2,
+              damage: 2,
+            })
+          )
+      );
     },
     dull: function () {},
   };

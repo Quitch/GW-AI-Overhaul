@@ -26,44 +26,16 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.manhattanDeath,
-          path: "splash_radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.manhattanDeath,
-          path: "full_damage_splash_radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.manhattanDeath,
-          path: "burn_radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.manhattanDeath,
-          path: "damage_volume.initial_radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.manhattanDeath,
-          path: "damage_volume.radius_velocity",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.manhattanDeath,
-          path: "damage_volume.burnable_remove_radius",
-          op: "multiply",
-          value: 2,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.manhattanDeath, "multiply", {
+          splash_radius: 2,
+          full_damage_splash_radius: 2,
+          burn_radius: 2,
+          "damage_volume.initial_radius": 2,
+          "damage_volume.radius_velocity": 2,
+          "damage_volume.burnable_remove_radius": 2,
+        })
+      );
     },
     dull: function () {},
   };

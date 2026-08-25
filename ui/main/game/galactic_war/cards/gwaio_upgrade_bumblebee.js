@@ -28,49 +28,28 @@ define([
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoUnit.landMine);
 
-      inventory.addMods([
-        {
-          file: gwoUnit.bumblebeeAmmo,
-          path: "damage",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.bumblebeeAmmo,
-          path: "splash_damage",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.bumblebeeAmmo,
-          path: "splash_radius",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.bumblebeeAmmo,
-          path: "full_damage_splash_radius",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.bumblebeeAmmo,
-          path: "spawn_unit_on_death",
-          op: "replace",
-          value: gwoUnit.landMine,
-        },
-        {
-          file: gwoUnit.bumblebeeAmmo,
-          path: "spawn_unit_on_death",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.bumblebeeWeapon,
-          path: "ammo_per_shot",
-          op: "replace",
-          value: 425,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.bumblebeeAmmo, "replace", {
+            damage: 0,
+            splash_damage: 0,
+            splash_radius: 0,
+            full_damage_splash_radius: 0,
+            spawn_unit_on_death: gwoUnit.landMine,
+          })
+          .concat(
+            [
+              {
+                file: gwoUnit.bumblebeeAmmo,
+                path: "spawn_unit_on_death",
+                op: "tag",
+              },
+            ],
+            gwoCard.mods(gwoUnit.bumblebeeWeapon, "replace", {
+              ammo_per_shot: 425,
+            })
+          )
+      );
     },
     dull: function () {},
   };

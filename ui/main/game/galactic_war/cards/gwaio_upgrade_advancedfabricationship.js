@@ -25,20 +25,17 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.navalFabberAdvanced,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_Hover",
-        },
-        {
-          file: gwoUnit.navalFabberAdvanced,
-          path: "navigation.type",
-          op: "replace",
-          value: "hover",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.navalFabberAdvanced, "push", {
+            unit_types: "UNITTYPE_Hover",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.navalFabberAdvanced, "replace", {
+              "navigation.type": "hover",
+            })
+          )
+      );
     },
     dull: function () {},
   };

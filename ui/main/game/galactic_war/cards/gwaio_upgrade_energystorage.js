@@ -26,14 +26,9 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.energyStorage,
-          path: "storage.energy",
-          op: "multiply",
-          value: 4,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.energyStorage, "multiply", { "storage.energy": 4 })
+      );
     },
     dull: function () {},
   };

@@ -26,29 +26,22 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.stryker,
-          path: "tools",
-          op: "prepend",
-          value: {
-            spec_id: gwoUnit.boomWeapon,
-            aim_bone: "bone_root",
-            muzzle_bone: "bone_root",
-          },
-        },
-        {
-          file: gwoUnit.stryker,
-          path: "tools.0.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.stryker,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_SelfDestruct",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.stryker, "prepend", {
+            tools: {
+              spec_id: gwoUnit.boomWeapon,
+              aim_bone: "bone_root",
+              muzzle_bone: "bone_root",
+            },
+          })
+          .concat(
+            [{ file: gwoUnit.stryker, path: "tools.0.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.stryker, "push", {
+              unit_types: "UNITTYPE_SelfDestruct",
+            })
+          )
+      );
     },
     dull: function () {},
   };

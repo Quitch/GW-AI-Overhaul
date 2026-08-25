@@ -26,43 +26,35 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.unitCannon,
-          path: "factory.spawn_points",
-          op: "push",
-          value: [
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-            "socket_build",
-          ],
-        },
-        {
-          file: gwoUnit.unitCannon,
-          path: "factory_cooldown_time",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.unitCannon,
-          path: "wait_to_rolloff_time",
-          op: "replace",
-          value: 0,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.unitCannon, "push", {
+            "factory.spawn_points": [
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+              "socket_build",
+            ],
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.unitCannon, "replace", {
+              factory_cooldown_time: 0,
+              wait_to_rolloff_time: 0,
+            })
+          )
+      );
     },
     dull: function () {},
   };

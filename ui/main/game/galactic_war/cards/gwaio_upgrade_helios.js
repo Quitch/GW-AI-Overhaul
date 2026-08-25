@@ -24,20 +24,13 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.helios,
-          path: "planetary_arrival_cooldown_time",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.helios,
-          path: "max_health",
-          op: "multiply",
-          value: 1.5,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.helios, "replace", {
+            planetary_arrival_cooldown_time: 0,
+          })
+          .concat(gwoCard.mods(gwoUnit.helios, "multiply", { max_health: 1.5 }))
+      );
     },
     dull: function () {},
   };

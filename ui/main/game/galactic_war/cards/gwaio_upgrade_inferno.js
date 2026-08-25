@@ -24,54 +24,39 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.inferno,
-          path: "tools",
-          op: "push",
-          value: {
-            spec_id: gwoUnit.stitchBuildArm,
-            aim_bone: "bone_turret",
-            muzzle_bone: "socket_muzzle",
-          },
-        },
-        {
-          file: gwoUnit.inferno,
-          path: "tools.1.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.inferno,
-          path: "command_caps",
-          op: "push",
-          value: ["ORDER_Repair"],
-        },
-        {
-          file: gwoUnit.inferno,
-          path: "audio.loops.build",
-          op: "replace",
-          value: {
-            cue: "/SE/Construction/Fab_contruction_beam_loop",
-            flag: "build_target_changed",
-            should_start_func: "has_build_target",
-            should_stop_func: "no_build_target",
-          },
-        },
-        {
-          file: gwoUnit.inferno,
-          path: "fx_offsets",
-          op: "replace",
-          value: [
-            {
-              type: "build",
-              filename: "/pa/effects/specs/fab_combat_spray.pfx",
-              bone: "socket_muzzle",
-              offset: [0, 0, 0],
-              orientation: [0, 0, 0],
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.inferno, "push", {
+            tools: {
+              spec_id: gwoUnit.stitchBuildArm,
+              aim_bone: "bone_turret",
+              muzzle_bone: "socket_muzzle",
             },
-          ],
-        },
-      ]);
+          })
+          .concat(
+            [{ file: gwoUnit.inferno, path: "tools.1.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.inferno, "push", {
+              command_caps: ["ORDER_Repair"],
+            }),
+            gwoCard.mods(gwoUnit.inferno, "replace", {
+              "audio.loops.build": {
+                cue: "/SE/Construction/Fab_contruction_beam_loop",
+                flag: "build_target_changed",
+                should_start_func: "has_build_target",
+                should_stop_func: "no_build_target",
+              },
+              fx_offsets: [
+                {
+                  type: "build",
+                  filename: "/pa/effects/specs/fab_combat_spray.pfx",
+                  bone: "socket_muzzle",
+                  offset: [0, 0, 0],
+                  orientation: [0, 0, 0],
+                },
+              ],
+            })
+          )
+      );
     },
     dull: function () {},
   };

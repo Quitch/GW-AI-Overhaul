@@ -25,108 +25,72 @@ define([
     buff: function (inventory) {
       inventory.addUnits(gwoUnit.deepSpaceOrbitalRadar);
 
-      inventory.addMods([
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "unit_name",
-          op: "replace",
-          value: "Planetary Radar",
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "display_name",
-          op: "replace",
-          value: "!LOC:Planetary Radar",
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "description",
-          op: "replace",
-          value:
-            "!LOC:Planetary Radar - Detects enemy land, sea, and air units across the planet.",
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "unit_types",
-          op: "replace",
-          value: [
-            "UNITTYPE_Land",
-            "UNITTYPE_Structure",
-            "UNITTYPE_Advanced",
-            "UNITTYPE_Recon",
-            "UNITTYPE_FabAdvBuild",
-            "UNITTYPE_Radar",
-            "UNITTYPE_Important",
-            "UNITTYPE_Custom58",
-          ],
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "max_health",
-          op: "multiply",
-          value: 3,
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 8,
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "consumption.energy",
-          op: "multiply",
-          value: 50,
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "recon.observer.items",
-          op: "replace",
-          value: [
-            {
-              layer: "surface_and_air",
-              channel: "sight",
-              shape: "capsule",
-              radius: 300,
-              uses_energy: true,
-            },
-            {
-              layer: "underwater",
-              channel: "sight",
-              shape: "capsule",
-              radius: 300,
-              uses_energy: true,
-            },
-            {
-              layer: "orbital",
-              channel: "sight",
-              shape: "capsule",
-              radius: 1200,
-              uses_energy: true,
-            },
-            {
-              layer: "surface_and_air",
-              channel: "radar",
-              shape: "capsule",
-              radius: 9999,
-              uses_energy: true,
-            },
-            {
-              layer: "underwater",
-              channel: "radar",
-              shape: "capsule",
-              radius: 9999,
-              uses_energy: true,
-            },
-          ],
-        },
-        {
-          file: gwoUnit.deepSpaceOrbitalRadar,
-          path: "selection_icon.diameter",
-          op: "replace",
-          value: 55,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.deepSpaceOrbitalRadar, "replace", {
+            unit_name: "Planetary Radar",
+            display_name: "!LOC:Planetary Radar",
+            description:
+              "!LOC:Planetary Radar - Detects enemy land, sea, and air units across the planet.",
+            unit_types: [
+              "UNITTYPE_Land",
+              "UNITTYPE_Structure",
+              "UNITTYPE_Advanced",
+              "UNITTYPE_Recon",
+              "UNITTYPE_FabAdvBuild",
+              "UNITTYPE_Radar",
+              "UNITTYPE_Important",
+              "UNITTYPE_Custom58",
+            ],
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.deepSpaceOrbitalRadar, "multiply", {
+              max_health: 3,
+              build_metal_cost: 8,
+              "consumption.energy": 50,
+            }),
+            gwoCard.mods(gwoUnit.deepSpaceOrbitalRadar, "replace", {
+              "recon.observer.items": [
+                {
+                  layer: "surface_and_air",
+                  channel: "sight",
+                  shape: "capsule",
+                  radius: 300,
+                  uses_energy: true,
+                },
+                {
+                  layer: "underwater",
+                  channel: "sight",
+                  shape: "capsule",
+                  radius: 300,
+                  uses_energy: true,
+                },
+                {
+                  layer: "orbital",
+                  channel: "sight",
+                  shape: "capsule",
+                  radius: 1200,
+                  uses_energy: true,
+                },
+                {
+                  layer: "surface_and_air",
+                  channel: "radar",
+                  shape: "capsule",
+                  radius: 9999,
+                  uses_energy: true,
+                },
+                {
+                  layer: "underwater",
+                  channel: "radar",
+                  shape: "capsule",
+                  radius: 9999,
+                  uses_energy: true,
+                },
+              ],
+              "selection_icon.diameter": 55,
+            })
+          )
+      );
 
       inventory.addAIMods([
         {

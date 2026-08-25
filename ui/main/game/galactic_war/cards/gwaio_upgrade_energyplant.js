@@ -26,20 +26,12 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.energyPlant,
-          path: "production.energy",
-          op: "multiply",
-          value: 1.25,
-        },
-        {
-          file: gwoUnit.energyPlant,
-          path: "max_health",
-          op: "multiply",
-          value: 0.5,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.energyPlant, "multiply", {
+          "production.energy": 1.25,
+          max_health: 0.5,
+        })
+      );
     },
     dull: function () {},
   };

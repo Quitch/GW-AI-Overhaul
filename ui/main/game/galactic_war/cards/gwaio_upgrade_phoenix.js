@@ -24,32 +24,23 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.phoenixWeapon,
-          path: "target_layers",
-          op: "replace",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
-        },
-        {
-          file: gwoUnit.phoenix,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_Gunship",
-        },
-        {
-          file: gwoUnit.phoenixAmmo,
-          path: "armor_damage_map.AT_Structure",
-          op: "replace",
-          value: 1,
-        },
-        {
-          file: gwoUnit.phoenix,
-          path: "guard_layer",
-          op: "replace",
-          value: "WL_AnySurface",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.phoenixWeapon, "replace", {
+            target_layers: ["WL_LandHorizontal", "WL_WaterSurface"],
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.phoenix, "push", {
+              unit_types: "UNITTYPE_Gunship",
+            }),
+            gwoCard.mods(gwoUnit.phoenixAmmo, "replace", {
+              "armor_damage_map.AT_Structure": 1,
+            }),
+            gwoCard.mods(gwoUnit.phoenix, "replace", {
+              guard_layer: "WL_AnySurface",
+            })
+          )
+      );
 
       inventory.addAIMods([
         {

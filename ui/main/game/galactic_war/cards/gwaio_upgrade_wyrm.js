@@ -28,31 +28,19 @@ define([
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoUnit.squall);
 
-      inventory.addMods([
-        {
-          file: gwoUnit.wyrm,
-          path: "tools.0.spec_id",
-          op: "replace",
-          value: gwoUnit.typhoonWeapon,
-        },
-        {
-          file: gwoUnit.wyrm,
-          path: "tools.0.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.wyrm,
-          path: "navigation.aggressive_distance",
-          op: "replace",
-          value: 250, // matches the Typhoon's drone launcher range
-        },
-        {
-          file: gwoUnit.wyrm,
-          path: "navigation.aggressive_behavior",
-          op: "replace",
-          value: "circle",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.wyrm, "replace", {
+            "tools.0.spec_id": gwoUnit.typhoonWeapon,
+          })
+          .concat(
+            [{ file: gwoUnit.wyrm, path: "tools.0.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.wyrm, "replace", {
+              "navigation.aggressive_distance": 250, // matches the Typhoon's drone launcher range
+              "navigation.aggressive_behavior": "circle",
+            })
+          )
+      );
     },
     dull: function () {},
   };

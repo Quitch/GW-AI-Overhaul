@@ -24,32 +24,19 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.hummingbird,
-          path: "system_velocity_multiplier",
-          op: "replace",
-          value: 30,
-        },
-        {
-          file: gwoUnit.hummingbird,
-          path: "gravwell_velocity_multiplier",
-          op: "replace",
-          value: 10,
-        },
-        {
-          file: gwoUnit.hummingbird,
-          path: "navigation.inter_planetary_type",
-          op: "replace",
-          value: "system",
-        },
-        {
-          file: gwoUnit.hummingbird,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_Interplanetary",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.hummingbird, "replace", {
+            system_velocity_multiplier: 30,
+            gravwell_velocity_multiplier: 10,
+            "navigation.inter_planetary_type": "system",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.hummingbird, "push", {
+              unit_types: "UNITTYPE_Interplanetary",
+            })
+          )
+      );
     },
     dull: function () {},
   };

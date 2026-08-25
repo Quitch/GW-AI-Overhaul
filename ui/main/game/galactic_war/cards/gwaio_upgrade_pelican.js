@@ -26,20 +26,17 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.pelican,
-          path: "transporter.transportable_unit_types",
-          op: "wipe",
-          value: " - Commander",
-        },
-        {
-          file: gwoUnit.pelican,
-          path: "transporter.fire_while_loaded.unit_types",
-          op: "replace",
-          value: "Land & Mobile",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.pelican, "wipe", {
+            "transporter.transportable_unit_types": " - Commander",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.pelican, "replace", {
+              "transporter.fire_while_loaded.unit_types": "Land & Mobile",
+            })
+          )
+      );
     },
     dull: function () {},
   };

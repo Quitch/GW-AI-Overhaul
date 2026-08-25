@@ -30,35 +30,19 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      var mods = _.map(gwoGroup.fabberBuildArms, function (fabberBuildArm) {
-        return {
-          file: fabberBuildArm,
-          path: "reclaim_types",
-          op: "push",
-          value: "Friendly_Commander",
-        };
-      });
-      mods.push(
-        {
-          file: gwoUnit.commanderSecondaryAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 4,
-        },
-        {
-          file: gwoUnit.commanderSecondaryAmmo,
-          path: "splash_damage",
-          op: "multiply",
-          value: 4,
-        },
-        {
-          file: gwoUnit.commanderSecondaryAmmo,
-          path: "burn_damage",
-          op: "multiply",
-          value: 4,
-        }
+      inventory.addMods(
+        gwoCard
+          .flatMapMods(gwoGroup.fabberBuildArms, "push", {
+            reclaim_types: "Friendly_Commander",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.commanderSecondaryAmmo, "multiply", {
+              damage: 4,
+              splash_damage: 4,
+              burn_damage: 4,
+            })
+          )
       );
-      inventory.addMods(mods);
     },
     dull: function () {},
   };

@@ -25,21 +25,17 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      var mods = _.map(gwoGroup.airAdvancedMobile, function (unit) {
-        return {
-          file: unit,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 0.75,
-        };
-      });
-      mods.push({
-        file: gwoUnit.airFactoryAdvanced,
-        path: "max_health",
-        op: "multiply",
-        value: 0.5,
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard
+          .flatMapMods(gwoGroup.airAdvancedMobile, "multiply", {
+            build_metal_cost: 0.75,
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.airFactoryAdvanced, "multiply", {
+              max_health: 0.5,
+            })
+          )
+      );
     },
     dull: function () {},
   };

@@ -24,26 +24,13 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.astraeus,
-          path: "system_velocity_multiplier",
-          op: "multiply",
-          value: 3,
-        },
-        {
-          file: gwoUnit.astraeus,
-          path: "gravwell_velocity_multiplier",
-          op: "multiply",
-          value: 3,
-        },
-        {
-          file: gwoUnit.astraeus,
-          path: "transporter.capacity",
-          op: "multiply",
-          value: 12,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.astraeus, "multiply", {
+          system_velocity_multiplier: 3,
+          gravwell_velocity_multiplier: 3,
+          "transporter.capacity": 12,
+        })
+      );
     },
     dull: function () {},
   };

@@ -26,39 +26,21 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.dox,
-          path: "events.fired.effect_spec",
-          op: "replace",
-          value:
-            "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_rightMuzzle /pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_leftMuzzle",
-        },
-        {
-          file: gwoUnit.doxWeapon,
-          path: "max_range",
-          op: "multiply",
-          value: 0.27,
-        },
-        {
-          file: gwoUnit.doxWeapon,
-          path: "spread_fire",
-          op: "replace",
-          value: true,
-        },
-        {
-          file: gwoUnit.doxAmmo,
-          path: "ammo_type",
-          op: "replace",
-          value: "AMMO_Beam",
-        },
-        {
-          file: gwoUnit.doxAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 10,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.dox, "replace", {
+            "events.fired.effect_spec":
+              "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_rightMuzzle /pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_leftMuzzle",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.doxWeapon, "multiply", { max_range: 0.27 }),
+            gwoCard.mods(gwoUnit.doxWeapon, "replace", { spread_fire: true }),
+            gwoCard.mods(gwoUnit.doxAmmo, "replace", {
+              ammo_type: "AMMO_Beam",
+            }),
+            gwoCard.mods(gwoUnit.doxAmmo, "multiply", { damage: 10 })
+          )
+      );
     },
     dull: function () {},
   };

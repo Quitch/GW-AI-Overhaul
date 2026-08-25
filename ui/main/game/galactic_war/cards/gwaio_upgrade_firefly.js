@@ -26,49 +26,29 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.firefly,
-          path: "tools",
-          op: "replace",
-          value: [
-            {
-              spec_id: gwoUnit.fireflyWeapon,
-              aim_bone: "bone_root",
-              muzzle_bone: "bone_root",
-            },
-          ],
-        },
-        {
-          file: gwoUnit.firefly,
-          path: "tools.0.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.firefly,
-          path: "command_caps",
-          op: "push",
-          value: "ORDER_Attack",
-        },
-        {
-          file: gwoUnit.firefly,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.firefly,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.fireflyAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 3.34,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.firefly, "replace", {
+            tools: [
+              {
+                spec_id: gwoUnit.fireflyWeapon,
+                aim_bone: "bone_root",
+                muzzle_bone: "bone_root",
+              },
+            ],
+          })
+          .concat(
+            [{ file: gwoUnit.firefly, path: "tools.0.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.firefly, "push", {
+              command_caps: "ORDER_Attack",
+            }),
+            gwoCard.mods(gwoUnit.firefly, "multiply", {
+              "recon.observer.items.0.radius": 2,
+              "recon.observer.items.1.radius": 2,
+            }),
+            gwoCard.mods(gwoUnit.fireflyAmmo, "multiply", { damage: 3.34 })
+          )
+      );
     },
     dull: function () {},
   };

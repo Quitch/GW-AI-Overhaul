@@ -28,31 +28,17 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.omega,
-          path: "tools.4.spec_id",
-          op: "replace",
-          value: gwoUnit.sxxWeapon,
-        },
-        {
-          file: gwoUnit.omega,
-          path: "tools.4.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.omega,
-          path: "attack_range_frac",
-          op: "replace",
-          value: 0.3,
-        },
-        {
-          file: gwoUnit.omegaWeapon,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 2,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.omega, "replace", {
+            "tools.4.spec_id": gwoUnit.sxxWeapon,
+          })
+          .concat(
+            [{ file: gwoUnit.omega, path: "tools.4.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.omega, "replace", { attack_range_frac: 0.3 }),
+            gwoCard.mods(gwoUnit.omegaWeapon, "multiply", { rate_of_fire: 2 })
+          )
+      );
     },
     dull: function () {},
   };

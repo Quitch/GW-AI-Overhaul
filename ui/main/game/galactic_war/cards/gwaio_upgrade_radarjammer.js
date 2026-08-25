@@ -26,14 +26,11 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.radarJammingStation,
-          path: "recon.observer.items.2.radius",
-          op: "multiply",
-          value: 2,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.radarJammingStation, "multiply", {
+          "recon.observer.items.2.radius": 2,
+        })
+      );
     },
     dull: function () {},
   };

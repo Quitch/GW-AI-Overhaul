@@ -26,26 +26,20 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.artemisWeapon,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal", "WL_WaterSurface", "WL_Air"],
-        },
-        {
-          file: gwoUnit.artemisAmmo,
-          path: "collision_check",
-          op: "replace",
-          value: "target",
-        },
-        {
-          file: gwoUnit.artemis,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_Heavy",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.artemisWeapon, "push", {
+            target_layers: ["WL_LandHorizontal", "WL_WaterSurface", "WL_Air"],
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.artemisAmmo, "replace", {
+              collision_check: "target",
+            }),
+            gwoCard.mods(gwoUnit.artemis, "push", {
+              unit_types: "UNITTYPE_Heavy",
+            })
+          )
+      );
     },
     dull: function () {},
   };

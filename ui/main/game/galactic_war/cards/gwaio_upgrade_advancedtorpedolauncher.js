@@ -27,68 +27,31 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWeapon,
-          path: "spawn_layers",
-          op: "replace",
-          value: "WL_Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWeapon,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal"],
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWeapon,
-          path: "exclude_unit_types",
-          op: "replace",
-          value: "",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedLandAmmo,
-          path: "flight_layer",
-          op: "replace",
-          value: "Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedLandAmmo,
-          path: "spawn_layers",
-          op: "replace",
-          value: "WL_Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedLandAmmo,
-          path: "cruise_height",
-          op: "replace",
-          value: 75,
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWaterAmmo,
-          path: "flight_layer",
-          op: "replace",
-          value: "Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWaterAmmo,
-          path: "spawn_layers",
-          op: "replace",
-          value: "WL_Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWaterAmmo,
-          path: "cruise_height",
-          op: "replace",
-          value: 75,
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWaterAmmo,
-          path: "initial_velocity",
-          op: "replace",
-          value: 100,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.torpedoLauncherAdvancedWeapon, "replace", {
+            spawn_layers: "WL_Air",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.torpedoLauncherAdvancedWeapon, "push", {
+              target_layers: ["WL_LandHorizontal"],
+            }),
+            gwoCard.mods(gwoUnit.torpedoLauncherAdvancedWeapon, "replace", {
+              exclude_unit_types: "",
+            }),
+            gwoCard.mods(gwoUnit.torpedoLauncherAdvancedLandAmmo, "replace", {
+              flight_layer: "Air",
+              spawn_layers: "WL_Air",
+              cruise_height: 75,
+            }),
+            gwoCard.mods(gwoUnit.torpedoLauncherAdvancedWaterAmmo, "replace", {
+              flight_layer: "Air",
+              spawn_layers: "WL_Air",
+              cruise_height: 75,
+              initial_velocity: 100,
+            })
+          )
+      );
     },
     dull: function () {},
   };

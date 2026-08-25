@@ -24,50 +24,26 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.slammer,
-          path: "tools.1.show_range",
-          op: "replace",
-          value: true,
-        },
-        {
-          file: gwoUnit.slammerTorpedo,
-          path: "spawn_layers",
-          op: "replace",
-          value: "WL_Air",
-        },
-        {
-          file: gwoUnit.slammerTorpedo,
-          path: "target_layers",
-          op: "push",
-          value: "WL_LandHorizontal",
-        },
-        {
-          file: gwoUnit.slammerTorpedo,
-          path: "target_priorities",
-          op: "replace",
-          value: ["Mobile", "Structure - Wall", "Wall"],
-        },
-        {
-          file: gwoUnit.slammerTorpedoLandAmmo,
-          path: "flight_layer",
-          op: "replace",
-          value: "Air",
-        },
-        {
-          file: gwoUnit.slammerTorpedoLandAmmo,
-          path: "spawn_layers",
-          op: "replace",
-          value: "WL_Air",
-        },
-        {
-          file: gwoUnit.slammerTorpedoLandAmmo,
-          path: "cruise_height",
-          op: "replace",
-          value: 200,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.slammer, "replace", { "tools.1.show_range": true })
+          .concat(
+            gwoCard.mods(gwoUnit.slammerTorpedo, "replace", {
+              spawn_layers: "WL_Air",
+            }),
+            gwoCard.mods(gwoUnit.slammerTorpedo, "push", {
+              target_layers: "WL_LandHorizontal",
+            }),
+            gwoCard.mods(gwoUnit.slammerTorpedo, "replace", {
+              target_priorities: ["Mobile", "Structure - Wall", "Wall"],
+            }),
+            gwoCard.mods(gwoUnit.slammerTorpedoLandAmmo, "replace", {
+              flight_layer: "Air",
+              spawn_layers: "WL_Air",
+              cruise_height: 200,
+            })
+          )
+      );
     },
     dull: function () {},
   };

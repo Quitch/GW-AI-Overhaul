@@ -28,55 +28,29 @@ define([
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addUnits(gwoUnit.landMine);
 
-      inventory.addMods([
-        {
-          file: gwoUnit.grenadier,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 3,
-        },
-        {
-          file: gwoUnit.grenadierWeapon,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 0.25,
-        },
-        {
-          file: gwoUnit.grenadierAmmo,
-          path: "damage",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.grenadierAmmo,
-          path: "splash_damage",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.grenadierAmmo,
-          path: "splash_radius",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.grenadierAmmo,
-          path: "full_damage_splash_radius",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.grenadierAmmo,
-          path: "spawn_unit_on_death",
-          op: "replace",
-          value: gwoUnit.landMine,
-        },
-        {
-          file: gwoUnit.grenadierAmmo,
-          path: "spawn_unit_on_death",
-          op: "tag",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.grenadier, "multiply", { build_metal_cost: 3 })
+          .concat(
+            gwoCard.mods(gwoUnit.grenadierWeapon, "multiply", {
+              rate_of_fire: 0.25,
+            }),
+            gwoCard.mods(gwoUnit.grenadierAmmo, "replace", {
+              damage: 0,
+              splash_damage: 0,
+              splash_radius: 0,
+              full_damage_splash_radius: 0,
+              spawn_unit_on_death: gwoUnit.landMine,
+            }),
+            [
+              {
+                file: gwoUnit.grenadierAmmo,
+                path: "spawn_unit_on_death",
+                op: "tag",
+              },
+            ]
+          )
+      );
     },
     dull: function () {},
   };

@@ -26,20 +26,13 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.anchorWeaponAG,
-          path: "max_range",
-          op: "multiply",
-          value: 1.25,
-        },
-        {
-          file: gwoUnit.anchorWeaponAO,
-          path: "max_range",
-          op: "multiply",
-          value: 1.25,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.flatMapMods(
+          [gwoUnit.anchorWeaponAG, gwoUnit.anchorWeaponAO],
+          "multiply",
+          { max_range: 1.25 }
+        )
+      );
     },
     dull: function () {},
   };

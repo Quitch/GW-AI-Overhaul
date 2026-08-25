@@ -28,12 +28,9 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        [
-          {
-            file: gwoUnit.stingray,
-            path: "tools",
-            op: "push",
-            value: {
+        gwoCard
+          .mods(gwoUnit.stingray, "push", {
+            tools: {
               spec_id: gwoUnit.gilEBeam,
               aim_bone: "socket_missile_muzzle01",
               record_index: 0,
@@ -42,22 +39,18 @@ define([
                 "socket_missile_muzzle02",
               ],
             },
-          },
-          {
-            file: gwoUnit.stingray,
-            path: "tools.3.spec_id",
-            op: "tag",
-          },
-        ].concat(
-          _.times(4, function (i) {
-            return {
-              file: gwoUnit.stingray,
-              path: "recon.observer.items." + i + ".radius",
-              op: "multiply",
-              value: 1.5,
-            };
           })
-        )
+          .concat(
+            [{ file: gwoUnit.stingray, path: "tools.3.spec_id", op: "tag" }],
+            _.times(4, function (i) {
+              return {
+                file: gwoUnit.stingray,
+                path: "recon.observer.items." + i + ".radius",
+                op: "multiply",
+                value: 1.5,
+              };
+            })
+          )
       );
     },
     dull: function () {},

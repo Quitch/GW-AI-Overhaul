@@ -26,26 +26,18 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.umbrella,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_SurfaceDefense",
-        },
-        {
-          file: gwoUnit.umbrellaWeapon,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
-        },
-        {
-          file: gwoUnit.umbrellaAmmo,
-          path: "turn_rate",
-          op: "replace",
-          value: 1000,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.umbrella, "push", {
+            unit_types: "UNITTYPE_SurfaceDefense",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.umbrellaWeapon, "push", {
+              target_layers: ["WL_LandHorizontal", "WL_WaterSurface"],
+            }),
+            gwoCard.mods(gwoUnit.umbrellaAmmo, "replace", { turn_rate: 1000 })
+          )
+      );
     },
     dull: function () {},
   };

@@ -26,26 +26,22 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.pelter,
-          path: "tools.0.projectiles_per_fire",
-          op: "replace",
-          value: 3,
-        },
-        {
-          file: gwoUnit.pelter,
-          path: "tools.0.muzzle_bone",
-          op: "replace",
-          value: ["socket_muzzle", "socket_muzzle", "socket_muzzle"],
-        },
-        {
-          file: gwoUnit.pelterWeapon,
-          path: "firing_standard_deviation",
-          op: "multiply",
-          value: 3,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.pelter, "replace", {
+            "tools.0.projectiles_per_fire": 3,
+            "tools.0.muzzle_bone": [
+              "socket_muzzle",
+              "socket_muzzle",
+              "socket_muzzle",
+            ],
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.pelterWeapon, "multiply", {
+              firing_standard_deviation: 3,
+            })
+          )
+      );
     },
     dull: function () {},
   };

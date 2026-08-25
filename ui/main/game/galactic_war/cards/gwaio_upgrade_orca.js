@@ -25,26 +25,16 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.orca,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_WaterHover",
-        },
-        {
-          file: gwoUnit.orca,
-          path: "navigation.type",
-          op: "replace",
-          value: "water-hover",
-        },
-        {
-          file: gwoUnit.orcaWeapon,
-          path: "max_range",
-          op: "multiply",
-          value: 1.5,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.orca, "push", { unit_types: "UNITTYPE_WaterHover" })
+          .concat(
+            gwoCard.mods(gwoUnit.orca, "replace", {
+              "navigation.type": "water-hover",
+            }),
+            gwoCard.mods(gwoUnit.orcaWeapon, "multiply", { max_range: 1.5 })
+          )
+      );
     },
     dull: function () {},
   };

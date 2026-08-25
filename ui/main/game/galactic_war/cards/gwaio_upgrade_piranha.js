@@ -25,20 +25,15 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.piranha,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_Hover",
-        },
-        {
-          file: gwoUnit.piranha,
-          path: "navigation.type",
-          op: "replace",
-          value: "hover",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.piranha, "push", { unit_types: "UNITTYPE_Hover" })
+          .concat(
+            gwoCard.mods(gwoUnit.piranha, "replace", {
+              "navigation.type": "hover",
+            })
+          )
+      );
     },
     dull: function () {},
   };

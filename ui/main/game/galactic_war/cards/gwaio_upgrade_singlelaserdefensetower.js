@@ -30,72 +30,52 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      var mods = [
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "tools",
-          op: "replace",
-          value: [
+      var mods = gwoCard
+        .mods(gwoUnit.singleLaserDefenseTower, "replace", {
+          tools: [{ spec_id: gwoUnit.mendBuildArm, aim_bone: "bone_pitch" }],
+        })
+        .concat(
+          [
             {
-              spec_id: gwoUnit.mendBuildArm,
-              aim_bone: "bone_pitch",
+              file: gwoUnit.singleLaserDefenseTower,
+              path: "tools.0.spec_id",
+              op: "tag",
             },
           ],
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "tools.0.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "command_caps",
-          op: "replace",
-          value: ["ORDER_Reclaim", "ORDER_Repair"],
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "fx_offsets",
-          op: "replace",
-          value: [
-            {
-              type: "build",
-              filename: "/pa/effects/specs/fab_combat_spray.pfx",
-              bone: "socket_muzzle",
-              offset: [0, 0, 0],
-              orientation: [0, 0, 0],
-            },
-          ],
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "audio",
-          op: "merge",
-          value: {
-            loops: {
-              build: {
-                cue: "/SE/Construction/Fab_contruction_beam_loop",
-                flag: "build_target_changed",
-                should_start_func: "has_build_target",
-                should_stop_func: "no_build_target",
+          gwoCard.mods(gwoUnit.singleLaserDefenseTower, "replace", {
+            command_caps: ["ORDER_Reclaim", "ORDER_Repair"],
+            fx_offsets: [
+              {
+                type: "build",
+                filename: "/pa/effects/specs/fab_combat_spray.pfx",
+                bone: "socket_muzzle",
+                offset: [0, 0, 0],
+                orientation: [0, 0, 0],
+              },
+            ],
+          }),
+          gwoCard.mods(gwoUnit.singleLaserDefenseTower, "merge", {
+            audio: {
+              loops: {
+                build: {
+                  cue: "/SE/Construction/Fab_contruction_beam_loop",
+                  flag: "build_target_changed",
+                  should_start_func: "has_build_target",
+                  should_stop_func: "no_build_target",
+                },
               },
             },
-          },
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_Construction",
-        },
-      ];
+          }),
+          gwoCard.mods(gwoUnit.singleLaserDefenseTower, "push", {
+            unit_types: "UNITTYPE_Construction",
+          })
+        );
       if (inventory.hasCard("gwaio_start_nomad")) {
-        mods.push({
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "command_caps",
-          op: "push",
-          value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
-        });
+        mods = mods.concat(
+          gwoCard.mods(gwoUnit.singleLaserDefenseTower, "push", {
+            command_caps: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
+          })
+        );
       }
       inventory.addMods(mods);
 

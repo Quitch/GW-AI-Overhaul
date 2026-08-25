@@ -26,39 +26,25 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.kestrel,
-          path: "events.fired.effect_spec",
-          op: "replace",
-          value:
-            "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_rightMuzzle /pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_leftMuzzle",
-        },
-        {
-          file: gwoUnit.kestrelWeapon,
-          path: "max_range",
-          op: "multiply",
-          value: 0.33,
-        },
-        {
-          file: gwoUnit.kestrelWeapon,
-          path: "spread_fire",
-          op: "replace",
-          value: true,
-        },
-        {
-          file: gwoUnit.kestrelAmmo,
-          path: "ammo_type",
-          op: "replace",
-          value: "AMMO_Beam",
-        },
-        {
-          file: gwoUnit.kestrelAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 5,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.kestrel, "replace", {
+            "events.fired.effect_spec":
+              "/pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_rightMuzzle /pa/units/land/tank_armor/tank_armor_muzzle_flame.pfx socket_leftMuzzle",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.kestrelWeapon, "multiply", {
+              max_range: 0.33,
+            }),
+            gwoCard.mods(gwoUnit.kestrelWeapon, "replace", {
+              spread_fire: true,
+            }),
+            gwoCard.mods(gwoUnit.kestrelAmmo, "replace", {
+              ammo_type: "AMMO_Beam",
+            }),
+            gwoCard.mods(gwoUnit.kestrelAmmo, "multiply", { damage: 5 })
+          )
+      );
     },
     dull: function () {},
   };

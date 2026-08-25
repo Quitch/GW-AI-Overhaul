@@ -26,56 +26,23 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 4,
-        },
-        {
-          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
-          path: "ammo_source",
-          op: "replace",
-          value: "energy",
-        },
-        {
-          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
-          path: "ammo_capacity",
-          op: "replace",
-          value: 1200,
-        },
-        {
-          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
-          path: "ammo_demand",
-          op: "replace",
-          value: 300,
-        },
-        {
-          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
-          path: "ammo_per_shot",
-          op: "replace",
-          value: 100,
-        },
-        {
-          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
-          path: "spread_fire",
-          op: "replace",
-          value: true,
-        },
-        {
-          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
-          path: "carpet_fire",
-          op: "replace",
-          value: true,
-        },
-        {
-          file: gwoUnit.laserDefenseTowerAdvancedWeapon,
-          path: "carpet_wait_for_full_ammo",
-          op: "replace",
-          value: true,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.laserDefenseTowerAdvancedWeapon, "multiply", {
+            rate_of_fire: 4,
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.laserDefenseTowerAdvancedWeapon, "replace", {
+              ammo_source: "energy",
+              ammo_capacity: 1200,
+              ammo_demand: 300,
+              ammo_per_shot: 100,
+              spread_fire: true,
+              carpet_fire: true,
+              carpet_wait_for_full_ammo: true,
+            })
+          )
+      );
     },
     dull: function () {},
   };

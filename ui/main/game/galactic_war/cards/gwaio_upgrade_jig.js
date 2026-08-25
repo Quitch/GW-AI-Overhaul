@@ -26,26 +26,16 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.jig,
-          path: "production.energy",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.jig,
-          path: "storage.energy",
-          op: "add",
-          value: 50000,
-        },
-        {
-          file: gwoUnit.jig,
-          path: "storage.metal",
-          op: "add",
-          value: 10000,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.jig, "multiply", { "production.energy": 2 })
+          .concat(
+            gwoCard.mods(gwoUnit.jig, "add", {
+              "storage.energy": 50000,
+              "storage.metal": 10000,
+            })
+          )
+      );
     },
     dull: function () {},
   };

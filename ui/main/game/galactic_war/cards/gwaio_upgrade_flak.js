@@ -26,26 +26,18 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.flakWeapon,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
-        },
-        {
-          file: gwoUnit.flakWeapon,
-          path: "target_priorities",
-          op: "push",
-          value: ["Mobile & (Land | Naval)"],
-        },
-        {
-          file: gwoUnit.flak,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_SurfaceDefense",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.flakWeapon, "push", {
+            target_layers: ["WL_LandHorizontal", "WL_WaterSurface"],
+            target_priorities: ["Mobile & (Land | Naval)"],
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.flak, "push", {
+              unit_types: "UNITTYPE_SurfaceDefense",
+            })
+          )
+      );
     },
     dull: function () {},
   };

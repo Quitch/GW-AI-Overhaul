@@ -26,56 +26,29 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.angel,
-          path: "command_caps",
-          op: "push",
-          value: ["ORDER_Attack"],
-        },
-        {
-          file: gwoUnit.angel,
-          path: "unit_types",
-          op: "push",
-          value: ["UNITTYPE_Gunship", "UNITTYPE_Offense"],
-        },
-        {
-          file: gwoUnit.angelBeam,
-          path: "target_layers",
-          op: "pull",
-          value: ["WL_Orbital"],
-        },
-        {
-          file: gwoUnit.angelBeam,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
-        },
-        {
-          file: gwoUnit.angelBeam,
-          path: "auto_task_type",
-          op: "replace",
-          value: null,
-        },
-        {
-          file: gwoUnit.angelBeam,
-          path: "manual_fire",
-          op: "replace",
-          value: false,
-        },
-        {
-          file: gwoUnit.angelAmmo,
-          path: "collision_check",
-          op: "replace",
-          value: "enemies",
-        },
-        {
-          file: gwoUnit.angelAmmo,
-          path: "collision_response",
-          op: "replace",
-          value: "impact",
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.angel, "push", {
+            command_caps: ["ORDER_Attack"],
+            unit_types: ["UNITTYPE_Gunship", "UNITTYPE_Offense"],
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.angelBeam, "pull", {
+              target_layers: ["WL_Orbital"],
+            }),
+            gwoCard.mods(gwoUnit.angelBeam, "push", {
+              target_layers: ["WL_LandHorizontal", "WL_WaterSurface"],
+            }),
+            gwoCard.mods(gwoUnit.angelBeam, "replace", {
+              auto_task_type: null,
+              manual_fire: false,
+            }),
+            gwoCard.mods(gwoUnit.angelAmmo, "replace", {
+              collision_check: "enemies",
+              collision_response: "impact",
+            })
+          )
+      );
     },
     dull: function () {},
   };

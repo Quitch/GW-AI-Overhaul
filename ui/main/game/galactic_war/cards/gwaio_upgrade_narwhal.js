@@ -27,26 +27,13 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.narwhalWeapon,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.narwhalAA,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.narwhalTorpedo,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 2,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.flatMapMods(
+          [gwoUnit.narwhalWeapon, gwoUnit.narwhalAA, gwoUnit.narwhalTorpedo],
+          "multiply",
+          { rate_of_fire: 2 }
+        )
+      );
     },
     dull: function () {},
   };

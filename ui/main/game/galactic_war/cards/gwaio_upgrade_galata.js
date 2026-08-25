@@ -26,32 +26,21 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.galata,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_SurfaceDefense",
-        },
-        {
-          file: gwoUnit.galataWeapon,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
-        },
-        {
-          file: gwoUnit.galataWeapon,
-          path: "target_priorities",
-          op: "push",
-          value: ["Mobile & (Land | Naval)"],
-        },
-        {
-          file: gwoUnit.galataAmmo,
-          path: "armor_damage_map",
-          op: "replace",
-          value: {},
-        },
-      ]);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.galata, "push", {
+            unit_types: "UNITTYPE_SurfaceDefense",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.galataWeapon, "push", {
+              target_layers: ["WL_LandHorizontal", "WL_WaterSurface"],
+              target_priorities: ["Mobile & (Land | Naval)"],
+            }),
+            gwoCard.mods(gwoUnit.galataAmmo, "replace", {
+              armor_damage_map: {},
+            })
+          )
+      );
     },
     dull: function () {},
   };

@@ -26,26 +26,13 @@ define([
     },
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.teleporter,
-          path: "energy_efficiency_requirement",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.teleporter,
-          path: "teleporter.energy_demand",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.teleporter,
-          path: "recon.observable.ignore_radar",
-          op: "replace",
-          value: true,
-        },
-      ]);
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.teleporter, "replace", {
+          energy_efficiency_requirement: 0,
+          "teleporter.energy_demand": 0,
+          "recon.observable.ignore_radar": true,
+        })
+      );
     },
     dull: function () {},
   };
