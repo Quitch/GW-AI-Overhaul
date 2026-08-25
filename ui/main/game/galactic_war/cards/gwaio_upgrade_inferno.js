@@ -2,28 +2,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Inferno Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_armor_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_armor" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.inferno)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Inferno Upgrade Tech",
+    description:
+      "!LOC:Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_armor_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_armor",
+    requires: gwoUnit.inferno,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
         gwoCard
           .mods(gwoUnit.inferno, "push", {
@@ -58,6 +44,5 @@ define([
           )
       );
     },
-    dull: function () {},
-  };
+  });
 });

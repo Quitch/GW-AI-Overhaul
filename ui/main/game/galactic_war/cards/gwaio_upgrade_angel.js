@@ -2,30 +2,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Angel Upgrade Tech enables the targeting of enemy units and structures by the support platform's interception beam."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Angel Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_combat_air_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.angel)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Angel Upgrade Tech",
+    description:
+      "!LOC:Angel Upgrade Tech enables the targeting of enemy units and structures by the support platform's interception beam.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_combat_air_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.angel,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
         gwoCard
           .mods(gwoUnit.angel, "push", {
@@ -50,6 +34,5 @@ define([
           )
       );
     },
-    dull: function () {},
-  };
+  });
 });

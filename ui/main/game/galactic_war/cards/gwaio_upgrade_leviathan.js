@@ -2,29 +2,15 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Leviathan Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_naval_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_combat" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.leviathan),
-        30
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Leviathan Upgrade Tech",
+    description:
+      "!LOC:Leviathan Upgrade Tech replaces the battleship's cannons with Holkins advanced artillery.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_naval_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_combat",
+    requires: gwoUnit.leviathan,
+    chance: 30,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
         gwoCard
           .mods(gwoUnit.leviathan, "replace", {
@@ -48,6 +34,5 @@ define([
           )
       );
     },
-    dull: function () {},
-  };
+  });
 });

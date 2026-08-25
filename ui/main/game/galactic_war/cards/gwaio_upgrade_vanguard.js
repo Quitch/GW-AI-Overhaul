@@ -2,28 +2,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Vanguard Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.vanguard)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Vanguard Upgrade Tech",
+    description:
+      "!LOC:Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_speed",
+    requires: gwoUnit.vanguard,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
         gwoCard
           .mods(gwoUnit.vanguard, "push", {
@@ -58,6 +44,5 @@ define([
           )
       );
     },
-    dull: function () {},
-  };
+  });
 });

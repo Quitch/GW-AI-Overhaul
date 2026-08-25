@@ -2,28 +2,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Hummingbird Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_air_engine_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.hummingbird)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Hummingbird Upgrade Tech",
+    description:
+      "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_air_engine_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_speed",
+    requires: gwoUnit.hummingbird,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
         gwoCard
           .mods(gwoUnit.hummingbird, "replace", {
@@ -38,6 +24,5 @@ define([
           )
       );
     },
-    dull: function () {},
-  };
+  });
 });
