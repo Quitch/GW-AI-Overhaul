@@ -1,6 +1,10 @@
 // The measured half of gw_play/cards.js. Nothing here may touch model/$/ko/game
 // at define time - see testing.md, "Coverage".
 define(function () {
+  var isStartLoadoutCardId = function (cardId) {
+    return _.isString(cardId) && _.includes(cardId, "_start_");
+  };
+
   return {
     // The base count, plus one for a full hand and one for the Lucky start card.
     // A falsy inventory yields the base count.
@@ -97,14 +101,11 @@ define(function () {
       return undefined;
     },
 
-    isStartLoadoutCardId: function (cardId) {
-      return _.isString(cardId) && _.includes(cardId, "_start_");
-    },
+    isStartLoadoutCardId: isStartLoadoutCardId,
 
     filterStartLoadoutCards: function (cards) {
-      var self = this;
       return _.filter(cards || [], function (card) {
-        return self.isStartLoadoutCardId(card.id);
+        return isStartLoadoutCardId(card.id);
       });
     },
 
@@ -112,7 +113,7 @@ define(function () {
       var result = _.isString(card) ? { id: card } : _.cloneDeep(card);
       if (
         result &&
-        this.isStartLoadoutCardId(result.id) &&
+        isStartLoadoutCardId(result.id) &&
         _.isUndefined(result.allowOverflow)
       ) {
         result.allowOverflow = true;
@@ -126,7 +127,7 @@ define(function () {
         pendingTechCards &&
         _.isArray(pendingTechCards.cards) &&
         pendingTechCards.cards.length &&
-        _.includes(pendingTechCards.cards[0].id, "_start_")
+        isStartLoadoutCardId(pendingTechCards.cards[0].id)
       );
     },
 
