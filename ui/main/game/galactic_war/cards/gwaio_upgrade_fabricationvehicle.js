@@ -1,8 +1,9 @@
 define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoUnit, gwoGroup) {
+], function (gwoAI, gwoCard, gwoUnit, gwoGroup) {
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -36,33 +37,12 @@ define([
         })
       );
 
-      var units = [
-        "AdvancedAirDefense",
-        "AdvancedLandDefense",
-        "AdvancedNavalDefense",
-        "AdvancedRadar",
-        "AntiNukeSilo",
-        "ControlModule",
-        "LongRangeArtillery",
-        "NukeSilo",
-        "PlanetEngine",
-        "TML",
-        "UnitCannon",
-      ];
-      if (inventory.hasCard("gwc_enable_titans")) {
-        units.push("PlanetSplitter");
-      }
-      var aiMods = _.map(units, function (unit) {
-        return {
-          type: "fabber",
-          op: "append",
-          toBuild: unit,
-          idToMod: "builders",
-          value: "BasicVehicleFabber",
-          matchAll: true,
-        };
-      });
-      inventory.addAIMods(aiMods);
+      var units = gwoAI.advancedStructureBuilds.concat(
+        inventory.hasCard("gwc_enable_titans") ? ["PlanetSplitter"] : []
+      );
+      inventory.addAIMods(
+        gwoAI.builderAppendMods("fabber", units, "BasicVehicleFabber")
+      );
     },
     dull: function () {},
   };

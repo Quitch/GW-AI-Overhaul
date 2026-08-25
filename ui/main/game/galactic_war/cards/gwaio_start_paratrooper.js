@@ -1,11 +1,12 @@
 define([
   "module",
   "cards/gwc_start",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
+], function (module, GWCStart, gwoAI, gwoBank, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
     visible: _.constant(false),
@@ -96,16 +97,6 @@ define([
             },
           ];
           var factoryArtillery = ["UnitCannon", "MiniUnitCannon"];
-          _.forEach(factoryArtillery, function (structure) {
-            aiMods.push({
-              type: "fabber",
-              op: "append",
-              toBuild: structure,
-              idToMod: "builders",
-              value: "Commander",
-              matchAll: true,
-            });
-          });
           var mobileLand = [
             "SupportCommander",
             "AdvancedArtilleryBot",
@@ -117,17 +108,12 @@ define([
             "AdvancedArtilleryVehicle",
             "NukeTank",
           ];
-          _.forEach(mobileLand, function (unit) {
-            aiMods.push({
-              type: "factory",
-              op: "append",
-              toBuild: unit,
-              idToMod: "builders",
-              value: "UnitCannon",
-              matchAll: true,
-            });
-          });
-          inventory.addAIMods(aiMods);
+          inventory.addAIMods(
+            aiMods.concat(
+              gwoAI.builderAppendMods("fabber", factoryArtillery, "Commander"),
+              gwoAI.builderAppendMods("factory", mobileLand, "UnitCannon")
+            )
+          );
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

@@ -149,6 +149,45 @@ describe("getSubcommanderPathForViewer", () => {
   });
 });
 
+describe("builderAppendMods", () => {
+  it("appends the builder to every named build, matching all lists", () => {
+    assert.deepEqual(
+      gwoAI.builderAppendMods("fabber", ["TML", "Wall"], "Commander"),
+      [
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "TML",
+          idToMod: "builders",
+          value: "Commander",
+          matchAll: true,
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "Wall",
+          idToMod: "builders",
+          value: "Commander",
+          matchAll: true,
+        },
+      ]
+    );
+  });
+
+  it("returns nothing for no builds", () => {
+    assert.deepEqual(gwoAI.builderAppendMods("factory", [], "UnitCannon"), []);
+  });
+
+  it("publishes the advanced structure list the fabber upgrades share", () => {
+    assert.ok(gwoAI.advancedStructureBuilds.includes("NukeSilo"));
+    assert.ok(gwoAI.advancedStructureBuilds.includes("UnitCannon"));
+    assert.equal(
+      new Set(gwoAI.advancedStructureBuilds).size,
+      gwoAI.advancedStructureBuilds.length
+    );
+  });
+});
+
 describe("isCluster", () => {
   it("returns false for guardians even when faction is 4", () => {
     assert.equal(gwoAI.isCluster({ mirrorMode: true, faction: 4 }), false);

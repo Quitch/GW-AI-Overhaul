@@ -2,10 +2,11 @@ define([
   "module",
   "shared/gw_common",
   "cards/gwc_start",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GW, GWCStart, gwoCard, gwoUnit, gwoGroup) {
+], function (module, GW, GWCStart, gwoAI, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   return {
     visible: _.constant(false),
@@ -48,17 +49,9 @@ define([
           );
 
           var structures = ["BasicRadar", "BasicLandDefense", "BasicArtillery"];
-          var aiMods = _.map(structures, function (structure) {
-            return {
-              type: "fabber",
-              op: "append",
-              toBuild: structure,
-              idToMod: "builders",
-              value: "Commander",
-              matchAll: true,
-            };
-          });
-          inventory.addAIMods(aiMods);
+          inventory.addAIMods(
+            gwoAI.builderAppendMods("fabber", structures, "Commander")
+          );
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

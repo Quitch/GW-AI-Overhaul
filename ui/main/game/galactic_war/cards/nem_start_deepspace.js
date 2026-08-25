@@ -1,11 +1,12 @@
 define([
   "module",
   "cards/gwc_start",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) {
+], function (module, GWCStart, gwoAI, gwoBank, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
 
   return {
@@ -70,17 +71,9 @@ define([
             "Umbrella",
             "Wall",
           ];
-          var aiMods = _.map(structures, function (structure) {
-            return {
-              type: "fabber",
-              op: "append",
-              toBuild: structure,
-              idToMod: "builders",
-              value: "OrbitalFabber",
-              matchAll: true,
-            };
-          });
-          inventory.addAIMods(aiMods);
+          inventory.addAIMods(
+            gwoAI.builderAppendMods("fabber", structures, "OrbitalFabber")
+          );
         }
         ++buffCount;
         inventory.setTag("", "buffCount", buffCount);

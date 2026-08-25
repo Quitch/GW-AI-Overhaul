@@ -71,6 +71,36 @@ define([
     originSettings: originSettings,
     originSystem: originSystem,
 
+    // The advanced structures a basic fabber's upgrade card lets it build.
+    advancedStructureBuilds: [
+      "AdvancedAirDefense",
+      "AdvancedLandDefense",
+      "AdvancedNavalDefense",
+      "AdvancedRadar",
+      "AntiNukeSilo",
+      "ControlModule",
+      "LongRangeArtillery",
+      "NukeSilo",
+      "PlanetEngine",
+      "TML",
+      "UnitCannon",
+    ],
+
+    // Adds `builder` to the builders of every build named, in every list
+    // that carries it. See ai-pipeline.md.
+    builderAppendMods: function (type, names, builder) {
+      return _.map(names, function (name) {
+        return {
+          type: type,
+          op: "append",
+          toBuild: name,
+          idToMod: "builders",
+          value: builder,
+          matchAll: true,
+        };
+      });
+    },
+
     // One spec tag per enemy faction in a battle: the star's AI, then its foes.
     aiTags: function (ai) {
       return _.times(ai.foes ? 1 + ai.foes.length : 1, function (n) {
