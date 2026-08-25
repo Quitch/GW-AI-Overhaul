@@ -42,14 +42,11 @@ define([
           })
           .concat(
             [{ file: gwoUnit.stingray, path: "tools.3.spec_id", op: "tag" }],
-            _.times(4, function (i) {
-              return {
-                file: gwoUnit.stingray,
-                path: "recon.observer.items." + i + ".radius",
-                op: "multiply",
-                value: 1.5,
-              };
-            })
+            gwoCard.mods(
+              gwoUnit.stingray,
+              "multiply",
+              gwoCard.eachPath(gwoCard.observerPaths(4, "radius"), 1.5)
+            )
           )
       );
     },

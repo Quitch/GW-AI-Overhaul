@@ -27,14 +27,11 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        _.times(3, function (i) {
-          return {
-            file: gwoUnit.hermes,
-            path: "recon.observer.items." + i + ".radius",
-            op: "multiply",
-            value: 1.5,
-          };
-        })
+        gwoCard.mods(
+          gwoUnit.hermes,
+          "multiply",
+          gwoCard.eachPath(gwoCard.observerPaths(3, "radius"), 1.5)
+        )
       );
     },
     dull: function () {},

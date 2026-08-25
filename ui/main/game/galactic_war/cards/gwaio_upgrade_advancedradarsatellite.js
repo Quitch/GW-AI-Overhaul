@@ -27,14 +27,11 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
-        _.times(5, function (i) {
-          return {
-            file: gwoUnit.radarSatelliteAdvanced,
-            path: "recon.observer.items." + i + ".radius",
-            op: "multiply",
-            value: 1.5,
-          };
-        })
+        gwoCard.mods(
+          gwoUnit.radarSatelliteAdvanced,
+          "multiply",
+          gwoCard.eachPath(gwoCard.observerPaths(5, "radius"), 1.5)
+        )
       );
     },
     dull: function () {},

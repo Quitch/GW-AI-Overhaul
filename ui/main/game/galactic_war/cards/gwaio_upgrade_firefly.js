@@ -42,10 +42,11 @@ define([
             gwoCard.mods(gwoUnit.firefly, "push", {
               command_caps: "ORDER_Attack",
             }),
-            gwoCard.mods(gwoUnit.firefly, "multiply", {
-              "recon.observer.items.0.radius": 2,
-              "recon.observer.items.1.radius": 2,
-            }),
+            gwoCard.mods(
+              gwoUnit.firefly,
+              "multiply",
+              gwoCard.eachPath(gwoCard.observerPaths(2, "radius"), 2)
+            ),
             gwoCard.mods(gwoUnit.fireflyAmmo, "multiply", { damage: 3.34 })
           )
       );

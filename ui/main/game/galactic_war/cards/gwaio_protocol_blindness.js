@@ -70,10 +70,7 @@ define([
       var blindMods = gwoCard.flatMapMods(
         unitsExcludingRadarScoutsCommanders,
         "multiply",
-        {
-          "recon.observer.items.0.radius": 0,
-          "recon.observer.items.1.radius": 0,
-        }
+        gwoCard.eachPath(gwoCard.observerPaths(2, "radius"), 0)
       );
       var radarsWithRadarVisionInSlot1Mods = gwoCard.flatMapMods(
         radarsWithRadarVisionInSlot1,

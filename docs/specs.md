@@ -42,6 +42,18 @@ gwoCard.flatMapMods(
 );
 ```
 
+Vision and radar radii live in a unit's `recon.observer.items` array, one slot per
+layer and channel, so a radar card scales the first few slots at once.
+`observerPaths(count, field)` names that field on the first `count` slots:
+
+```js
+gwoCard.mods(
+  gwoUnit.radar,
+  "multiply",
+  gwoCard.eachPath(gwoCard.observerPaths(5, "radius"), 1.5)
+);
+```
+
 ## The op table
 
 | Op                 | Behaviour                                                                                        |

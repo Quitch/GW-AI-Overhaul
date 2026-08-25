@@ -42,11 +42,11 @@ define([
             gwoCard.mods(gwoUnit.skitter, "push", {
               command_caps: "ORDER_Attack",
             }),
-            gwoCard.mods(gwoUnit.skitter, "multiply", {
-              "recon.observer.items.0.radius": 2,
-              "recon.observer.items.1.radius": 2,
-              "recon.observer.items.2.radius": 2,
-            }),
+            gwoCard.mods(
+              gwoUnit.skitter,
+              "multiply",
+              gwoCard.eachPath(gwoCard.observerPaths(3, "radius"), 2)
+            ),
             gwoCard.mods(gwoUnit.skitterAmmo, "multiply", {
               initial_velocity: 2,
               max_velocity: 2,

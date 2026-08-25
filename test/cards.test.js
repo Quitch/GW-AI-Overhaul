@@ -438,6 +438,20 @@ describe("paths", () => {
   });
 });
 
+describe("observerPaths", () => {
+  it("names the given field of the first count observer slots", () => {
+    assert.deepEqual(cards.observerPaths(3, "radius"), [
+      "recon.observer.items.0.radius",
+      "recon.observer.items.1.radius",
+      "recon.observer.items.2.radius",
+    ]);
+  });
+
+  it("returns nothing for a count of 0", () => {
+    assert.deepEqual(cards.observerPaths(0, "radius"), []);
+  });
+});
+
 describe("eachPath", () => {
   it("gives every path the same value, in path order", () => {
     const props = cards.eachPath(["a", "b.c"], 1.5);

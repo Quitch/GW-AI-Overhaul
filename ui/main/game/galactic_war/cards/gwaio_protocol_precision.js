@@ -25,10 +25,11 @@ define([
         "multiply",
         gwoCard.eachPath(gwoCard.paths.navigation, percentageReduction)
       );
-      var sightMods = gwoCard.flatMapMods(gwoGroup.combatMobile, "multiply", {
-        "recon.observer.items.0.radius": percentageIncrease,
-        "recon.observer.items.1.radius": percentageIncrease,
-      });
+      var sightMods = gwoCard.flatMapMods(
+        gwoGroup.combatMobile,
+        "multiply",
+        gwoCard.eachPath(gwoCard.observerPaths(2, "radius"), percentageIncrease)
+      );
       var rangeMods = gwoCard.flatMapMods(
         gwoGroup.combatMobileWeapons,
         "multiply",

@@ -134,6 +134,7 @@ const CARD_HELPERS = [
   "missingUnit",
   "mods",
   "navalWeight",
+  "observerPaths",
   "startCard",
   "subcommanderWeight",
   "travelledFar",

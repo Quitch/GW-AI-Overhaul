@@ -312,6 +312,13 @@ define(function () {
       energyWeapon: ["ammo_capacity", "ammo_demand", "ammo_per_shot"],
     },
 
+    // The first `count` recon.observer slots' `field`, for eachPath().
+    observerPaths: function (count, field) {
+      return _.times(count, function (i) {
+        return "recon.observer.items." + i + "." + field;
+      });
+    },
+
     // { path: value } for every path, for mods() and flatMapMods().
     eachPath: function (paths, value) {
       return _.zipObject(paths, _.times(paths.length, _.constant(value)));
