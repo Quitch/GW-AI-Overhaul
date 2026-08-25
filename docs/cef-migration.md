@@ -36,8 +36,11 @@ mechanical pass rather than a judgement call:
 --replace <file> --transform let,arrow,arrow-return,template,obj-shorthand`,
    then `_.isArray` → `Array.isArray`, `_.assign({},` → `Object.assign({},`,
    the lodash-3-only names in the table below, and `_.constant(<primitive>)` →
-   an arrow in mod-authored cards. Scene entry flags stay `var` — the
-   scene-scope rule in [constraints.md](constraints.md).
+   an arrow in mod-authored cards. lebab also turns every file-top-level `var`
+   into `let`/`const`; put those back to `var` — the scene entry flags,
+   `gwo_panel.js`'s `disposeGwoPanelLoader`, `section_of_foreign_intelligence.js`'s
+   `gwoBuffType` — under the scene-scope rule in
+   [constraints.md](constraints.md). `eslint` catches any that slip.
 3. Re-apply the dynamic-URL routing by hand: a new `window.location.href`,
    `$.get`/`$.ajax` or `"coui:/" + path` site from `develop` must go through
    `shared/gwo_url.js`, and new fetching through `shared/gwo_fetch.js`.
@@ -45,10 +48,50 @@ mechanical pass rather than a judgement call:
    stock copies, and `npm run verify` green. `develop`'s _own_ files keep their
    own conventions; realigning those is drive-by.
 
+| lodash 3 call              | Native form                    | Why it cannot stay                                     |
+| -------------------------- | ------------------------------ | ------------------------------------------------------ |
+| `_.first(a)` / `_.last(a)` | `a[0]` / `a[a.length - 1]`     | `_.first` is `_.head` in 4; `_.last` survives, aliased |
+| `_.rest(a)`                | `a.slice(1)`                   | `_.rest` in 4 is a function wrapper, not `_.tail`      |
+| `_.contains(a, x)`         | `a.includes(x)`                | removed in 4 (`_.includes`)                            |
+| `_.any` / `_.all`          | `a.some` / `a.every`           | removed in 4 (`_.some` / `_.every`)                    |
+| `_.pluck(a, "k")`          | `a.map((o) => o.k)`            | removed in 4 (`_.map` with a string)                   |
+| `_.sum(a)`                 | `a.reduce((t, n) => t + n, 0)` | 4's `_.sum` drops the iteratee                         |
+| `_.zipObject(pairs)`       | `Object.fromEntries(pairs)`    | 4 takes `(keys, values)` only; pairs is `_.fromPairs`  |
+| `_.isArray(a)`             | `Array.isArray(a)`             | drop-in; spelled once                                  |
+| `_.assign({}, ...)`        | `Object.assign({}, ...)`       | drop-in; spelled once                                  |
+
+`_.zipObject(keys, values)`, `_.map`, `_.filter`, `_.forEach`, `_.partial`,
+`_.compact` and the rest of the shared 3/4 surface stay.
+
 Merged to `develop`'s v6.10.3 (2026-08-16): `npm run verify` green, rename
 rehearsal 1,080 occurrences and green in the rewritten copy.
 
-Three things that a bulk "take `develop`'s version" would have broken, and the
+Merged to `develop`'s v6.12.0 (2026-08-25): `npm run verify` green, rename
+rehearsal 1,093 occurrences (modinfo.json 26, ui 924 in 297 files, scripts 8,
+test 135) and green in the rewritten copy, 98.5% lines under
+`npm run test:coverage`. What the pass had to do beyond the mechanical steps:
+
+- `develop`'s new `shared/gwo_biome_mods.js` reads a mounted server mod with
+  `$.ajax` on a `` `spec:/${mountPath}${entry}` `` URL — a `spec:/` + path form
+  the rewriter's `spec://` pattern does not match. See "The scheme strategy".
+- Its `_.zipObject(pairs)` is the pairs overload lodash 4 moved to
+  `_.fromPairs`; `Object.fromEntries` now, and the table above gained the row.
+- `gw_play/systems.js` came back with `_.first`/`_.rest` on the inner-ring
+  helper — the same two the previous merge replaced, since `develop`'s copy
+  still has them. Expect that every merge until the branch lands.
+- `gw_play/referee.js` keeps this branch's class and native `hire` chain;
+  `develop`'s biome step (`stampedMods` and `gwoGenerateBiomes`, both on
+  `$.Deferred`) is slotted into that chain, which assimilates the jQuery
+  promise, and its `mountFiles` remount of the biome mods is applied inside
+  the class method.
+- `develop` added `eslint-plugin-es-x` to enforce ES5 in the mod namespace.
+  This branch's `eslint.config.mjs` does not use it — the Chromium 151
+  toolchain is the point of stage 2 — so the devDependency is dropped again
+  and `package-lock.json` regenerated.
+- `docs/README.md`'s trap list keeps `develop`'s new biome entry and not its
+  Chrome-40 CSS ones (`filter`, `space-evenly`), which stage 2 retired.
+
+Things that a bulk "take `develop`'s version" would have broken, and the
 reason step 1 above names files rather than a rule:
 
 - `shared/referee_coop.js` and `gw_play/gwo_panel.js` changed on both sides.
@@ -61,6 +104,8 @@ reason step 1 above names files rather than a rule:
 - Re-running lebab reverts `gw_play/gwo_panel.js`'s top-level
   `disposeGwoPanelLoader` to `const`, which the scene-scope rule rejects. It is
   `var` deliberately, as are the scene entry flags.
+- `develop` dropped the belt-and-braces `console.error(e)` before the
+  prefixed one in every scene entry's `catch`; take that, it is not CEF work.
 
 ## Evidence baseline
 
@@ -160,6 +205,15 @@ Scheme handling has three tiers:
    keeps it and `gwo_url.js` in lockstep — the ui module cannot import a Node
    module, so the script enforces the pairing instead.
 
+**Known gap.** Two mod-namespace sites build a `spec:` URL by concatenating
+onto the single-slash form — `gw_play/referee_game_files.js`
+(`` `spec:/${aiUnitMapSourcePath}` ``) and `shared/gwo_biome_mods.js`
+(`` `spec:/${mod.mountPath}${entry}` ``). The engine normalises `spec:/` +
+`/pa/...` to `spec://pa/...` (A11), but the rewriter searches for `spec://`
+and so leaves these untouched; a refuted A2 would need them edited by hand,
+or a `specFile` builder added to `gwo_url.js` alongside `gameFile` first.
+The rehearsal count above does not include them.
+
 Shadowed base-game files and the two deliberate line-for-line stock copies
 keep their literal scheme strings even at dynamic call sites — they follow
 stock's form, whatever that turns out to be, and the rewriter covers them the
@@ -244,6 +298,12 @@ so a partial conversion breaks it and a full one cannot be runtime-verified
 until a CEF build exists. Converting it is a follow-up for after the live CEF
 test plan has run, with the boundary rule in
 [constraints.md](constraints.md) as the guide.
+
+`shared/gwo_biome_mods.js` (from `develop` v6.12.0) is in the same position:
+it wraps the engine's `api.file.zip.*` promises in `$.Deferred` so `$.when`
+can collect them, and the referee's biome step is built on it. It sits inside
+the native `hire` chain, which assimilates a jQuery promise, so it works as
+shipped and converts with the rest.
 
 ## Live CEF test plan
 
