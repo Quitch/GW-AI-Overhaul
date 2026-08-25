@@ -2,30 +2,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Hermes Upgrade Tech increases the vision of the space probe by 50%."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Hermes Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_fighter_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.hermes)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Hermes Upgrade Tech",
+    description:
+      "!LOC:Hermes Upgrade Tech increases the vision of the space probe by 50%.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_fighter_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.hermes,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
         gwoCard.mods(
           gwoUnit.hermes,
@@ -34,6 +18,5 @@ define([
         )
       );
     },
-    dull: function () {},
-  };
+  });
 });

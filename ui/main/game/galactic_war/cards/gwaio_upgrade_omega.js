@@ -2,8 +2,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
+  return gwoCard.upgradeCard({
+    name: "!LOC:Omega Upgrade Tech",
     describe: _.constant(
       gwoCard.withSlot(
         loc(
@@ -13,21 +13,10 @@ define([
           loc("!LOC:Doubles the rate of fire of the other weapons.")
       )
     ),
-    summarize: _.constant("!LOC:Omega Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_fighter_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.omega)
-      );
-    },
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_fighter_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.omega,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
         gwoCard
           .mods(gwoUnit.omega, "replace", {
@@ -40,6 +29,5 @@ define([
           )
       );
     },
-    dull: function () {},
-  };
+  });
 });

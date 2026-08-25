@@ -2,30 +2,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Advanced Radar Satellite Upgrade Tech increases the vision and radar of the advanced orbital radar by 50%."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Advanced Radar Satellite Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_intelligence_fabrication_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_efficiency",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.radarSatelliteAdvanced)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Advanced Radar Satellite Upgrade Tech",
+    description:
+      "!LOC:Advanced Radar Satellite Upgrade Tech increases the vision and radar of the advanced orbital radar by 50%.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_intelligence_fabrication_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_efficiency",
+    requires: gwoUnit.radarSatelliteAdvanced,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
         gwoCard.mods(
           gwoUnit.radarSatelliteAdvanced,
@@ -34,6 +18,5 @@ define([
         )
       );
     },
-    dull: function () {},
-  };
+  });
 });
