@@ -6,7 +6,7 @@
 // for. The three naming helpers underneath are pinned in
 // cards_card_name_sync.test.js.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -87,16 +87,14 @@ function build(overrides) {
   return active;
 }
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 async function capture(stream, run) {
-  const messages = [];
-  const prior = console[stream];
-  console[stream] = (message) => messages.push(message);
-  try {
-    await run();
-  } finally {
-    console[stream] = prior;
-  }
-  return messages;
+  const mocked = mock.method(console, stream, () => {});
+  await run();
+  return mocked.mock.calls.map((call) => call.arguments[0]);
 }
 
 describe("card name sync - naming a star the host explored", () => {

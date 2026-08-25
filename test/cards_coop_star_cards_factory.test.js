@@ -9,7 +9,7 @@
 // scripts/lib/ai-path-fixtures.js does. The pure predicates the factory delegates
 // to are pinned separately in cards_coop_star_cards.test.js.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -164,16 +164,14 @@ function build(overrides) {
 
 // Collects everything console.error emits, so the factory's swallow-and-log
 // error path can be asserted rather than just not crashing.
+afterEach(() => {
+  mock.restoreAll();
+});
+
 async function captureErrors(run) {
-  const errors = [];
-  const priorError = console.error;
-  console.error = (message) => errors.push(message);
-  try {
-    await run();
-  } finally {
-    console.error = priorError;
-  }
-  return errors;
+  const errorMock = mock.method(console, "error", () => {});
+  await run();
+  return errorMock.mock.calls.map((call) => call.arguments[0]);
 }
 
 describe("coop star cards refresh - when it runs at all", () => {

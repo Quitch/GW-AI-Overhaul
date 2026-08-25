@@ -13,7 +13,7 @@
 // The flag is module-private and node --test gives one process per file, not
 // per test, so every test either consumes it or clears it in afterEach.
 
-const { describe, it, before, after, afterEach } = require("node:test");
+const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
@@ -140,6 +140,10 @@ afterEach(() => {
   role = "host";
 });
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 describe("gw_inventory - the patch hijack", () => {
   it("still calls the stock patch through, with its game and its answer", () => {
     const game = perPlayerTechGame(true);
@@ -232,18 +236,11 @@ describe("gw_inventory - holding the bank for another player's cards", () => {
 
   it("resumes even when a card fails to load", () => {
     raise("viewer");
-    const errors = [];
-    const priorError = console.error;
-    console.error = (message) => errors.push(message);
-
-    try {
-      inventoryHolding([{ id: "gwc_missing" }]).applyCards();
-    } finally {
-      console.error = priorError;
-    }
+    const errorMock = mock.method(console, "error", () => {});
+    inventoryHolding([{ id: "gwc_missing" }]).applyCards();
 
     // Once for the buff pass and once for the dull pass.
-    assert.equal(errors.length, 2);
+    assert.equal(errorMock.mock.callCount(), 2);
     assert.deepEqual(bank, [["suspend", stockBank], "resume"]);
   });
 });

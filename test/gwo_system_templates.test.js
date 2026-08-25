@@ -4,7 +4,7 @@
 // dispatch, since shadowing this path once broke Shared Systems' own panel; and the
 // per-planet streams, drained in both resolution orders to require the same system.
 
-const { describe, it, before, after } = require("node:test");
+const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
@@ -315,6 +315,10 @@ function shape(system) {
   return JSON.stringify({ name: system.name, planets: system.planets });
 }
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 describe("gwo_system_templates chooseFor", () => {
   // Shared Systems for Galactic War marks its template-loader with loadOptions. Taking
   // it over is what broke that mod's Systems panel when GWO shadowed the base path.
@@ -381,20 +385,14 @@ describe("gwo_system_templates generate", () => {
 
   // The one hole that produced a plausible-looking unseeded war in silence.
   it("warns when a caller supplies no seed, and not when the seed is 0", async () => {
-    const warnings = [];
-    const priorWarn = console.warn;
-    console.warn = (message) => warnings.push(message);
-    try {
-      await generate(loader(), { players: 2 });
-      assert.equal(warnings.length, 1);
-      assert.match(warnings[0], /no seed/);
+    const warnMock = mock.method(console, "warn", () => {});
+    await generate(loader(), { players: 2 });
+    assert.equal(warnMock.mock.callCount(), 1);
+    assert.match(warnMock.mock.calls[0].arguments[0], /no seed/);
 
-      warnings.length = 0;
-      await generate(loader(), { players: 2, seed: 0 });
-      assert.deepEqual(warnings, []);
-    } finally {
-      console.warn = priorWarn;
-    }
+    warnMock.mock.resetCalls();
+    await generate(loader(), { players: 2, seed: 0 });
+    assert.equal(warnMock.mock.callCount(), 0);
   });
 
   // Each planet draws from its own stream, so a planet's biome cannot depend on

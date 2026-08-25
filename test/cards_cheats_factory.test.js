@@ -11,7 +11,7 @@
 // gwc_minion out of testCards for that reason; giveCard reaches the same
 // sub-commander draw without going through it.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -146,16 +146,14 @@ const giveCard = () => global.model.cheats.giveCard();
 
 const dealtIds = (calls) => calls.dealt.map((request) => request.id);
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 async function capture(stream, run) {
-  const messages = [];
-  const prior = console[stream];
-  console[stream] = (...args) => messages.push(args.join(" "));
-  try {
-    await run();
-  } finally {
-    console[stream] = prior;
-  }
-  return messages;
+  const mocked = mock.method(console, stream, () => {});
+  await run();
+  return mocked.mock.calls.map((call) => call.arguments.join(" "));
 }
 
 describe("cheats install", () => {

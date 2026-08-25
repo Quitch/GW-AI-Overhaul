@@ -8,7 +8,7 @@
 // The validation, cooldown and labelling helpers are pinned as pure functions
 // in coop_ping.test.js.
 
-const { describe, it, before, after, afterEach } = require("node:test");
+const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -157,16 +157,14 @@ const broadcast = (extra) => ({
   ),
 });
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 function captureLogs(run) {
-  const logs = [];
-  const priorLog = console.log;
-  console.log = (message) => logs.push(message);
-  try {
-    run();
-  } finally {
-    console.log = priorLog;
-  }
-  return logs;
+  const logMock = mock.method(console, "log", () => {});
+  run();
+  return logMock.mock.calls.map((call) => call.arguments[0]);
 }
 
 describe("ping relay - refusals", () => {

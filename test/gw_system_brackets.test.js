@@ -3,7 +3,7 @@
 // Tests for shared/gw_system_brackets.js, which derives how many armies a real .pas
 // system seats and groups a Shared Systems pool into brackets.
 
-const { describe, it } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -45,15 +45,17 @@ function sys(name, options) {
   return system;
 }
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 function withoutWarnings(run) {
-  const original = console.warn;
-  const messages = [];
-  console.warn = (message) => messages.push(message);
-  try {
-    return { result: run(), warnings: messages };
-  } finally {
-    console.warn = original;
-  }
+  const warnMock = mock.method(console, "warn", () => {});
+  const result = run();
+  return {
+    result,
+    warnings: warnMock.mock.calls.map((call) => call.arguments[0]),
+  };
 }
 
 function ranged(min, max, names) {

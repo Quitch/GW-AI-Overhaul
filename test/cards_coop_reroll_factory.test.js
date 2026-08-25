@@ -8,7 +8,7 @@
 // computeRerollDeal and pendingTechRerollValidationError are pinned as pure
 // functions in cards_coop_reroll.test.js; this covers the handlers around them.
 
-const { describe, it, before, after, afterEach } = require("node:test");
+const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -211,16 +211,14 @@ const operator = (extra) =>
     extra
   );
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 async function captureErrors(run) {
-  const errors = [];
-  const priorError = console.error;
-  console.error = (message) => errors.push(message);
-  try {
-    await run();
-  } finally {
-    console.error = priorError;
-  }
-  return errors;
+  const errorMock = mock.method(console, "error", () => {});
+  await run();
+  return errorMock.mock.calls.map((call) => call.arguments[0]);
 }
 
 const errorsSentBack = (calls) =>
