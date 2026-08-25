@@ -315,7 +315,10 @@ Verified live (PA 124673, 2026-08-25): a "Rolling Hills 2v2 NS" battle on tetctr
 `mountain` biome reached `live_game` in 18 seconds with the server log showing
 `Mounted zip file /download/uk.pa.tetctree.server.zip as /server_mods/uk.pa.tetctree.server/`
 and the client reporting the planet as `mountain`; with that zip removed, the same star
-logged the two warnings above, launched on `earth`, and loaded in the same time.
+logged the two warnings above, launched on `earth`, and loaded in the same time. A co-op
+viewer with no biome mod installed at all (`gwo_viewer`: GWO and no_gw_video only) joined
+that battle, reported `arePlanetsReady` true and the planet as `mountain`, and could fetch
+`coui://pa/terrain/mountain.json` — the cooked copy from `gw_config`.
 `api.file.zip.catalog` returns `[{name, crc32, size}]`.
 
 The quantity is armies, not humans. Map makers use `players` to count humans and humans
