@@ -165,7 +165,7 @@ define([
       system.planets,
       game,
       system.name,
-      {}
+      self.biomeServed
     );
 
     var config = {

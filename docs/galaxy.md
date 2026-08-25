@@ -287,6 +287,30 @@ under `pa/` (`.papa` meshes, textures) is not a provider, because only text can 
 handed to the server. `selectorFor` stamps the providing mods onto the placed copy as
 `gwoBiomeMods`, so battle launch reads that stamp instead of resolving again.
 
+### Biome mods in a GW battle
+
+Two channels carry a stamped mod into the battle, because the server needs it before
+the clients do.
+
+The server validates `config.system` **before** it mounts `config.files`
+(`server-script/states/gw_lobby.js`, `set_config`), so a biome cooked into the files
+alone would arrive too late. What a skirmish does instead is `api.file.zip.mount` each
+server mod at `/server_mods/<id>/` before `localserver.startGame`; per
+`api/file.js`, zip mounts are memory files and are inherited by the local server it
+spawns. `referee.js`'s `mountFiles` does the same for the stamped mods, after the
+`unmountAllMemoryFiles` there (which Community Mods turns into a client-mod remount)
+and before `gw_play` navigates to `connect_to_game`.
+
+Clients get the same files through `config.files`: `gwoGenerateBiomes` mounts the
+stamped mods, reads every `pa/**/*.json` they ship through `spec:` (the only scheme that
+resolves a `/server_mods/` mount client-side) and adds the text to `self.files()`, which
+the host mounts and the `gw_config` payload hands to every joiner. That is why only
+text-only mods qualify: a `.papa` has no way through either channel.
+
+A mod that cannot be mounted or fully read at launch is dropped from both, and
+`referee_config.js` then treats its biomes as unservable and switches those planets to
+`earth`. The same path covers a war saved before the stamp existed.
+
 The quantity is armies, not humans. Map makers use `players` to count humans and humans
 share an army, so a declared `[2,10]` on two landing zones is two armies of five; the
 zone count caps the declared maximum, and the minimum follows it down rather than
@@ -424,7 +448,9 @@ what keeps a seed's enemies reproducible.
   `shared/cards.js` have nine entries to cover them.
 - **Shared Systems for Galactic War** — GWO removes Easy Systems when this is loaded,
   and changes how it watches `model.ready()` so the mod's lobby is not broken. System
-  Scaling and Large Planets both stay, served by the brackets above.
+  Scaling and Large Planets both stay, served by the brackets above. Map-pack systems
+  whose biome comes from a server mod are kept only when that mod ships JSON alone;
+  otherwise they are screened out, because the GW server never mounts server mods.
 - **New-GW-Cards** — the template third-party card mods are written from, rather than
   a mod itself. It is the reason the `model.gwo*` globals are additive and the
   `shared/cards.js` helper names are fixed; see

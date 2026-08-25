@@ -117,6 +117,7 @@ define(function () {
     }
     return {
       mod: mod,
+      files: files,
       pureText: _.every(files, function (file) {
         return _.endsWith(file, ".json");
       }),
