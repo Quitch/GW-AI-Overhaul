@@ -6,6 +6,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GW, GWCStart, gwoCard, gwoGroup) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+  var loadout = gwoCard.loadout(CARD, {
+    bank: GW.bank,
+    start: GWCStart,
+    apply: function (inventory) {
+      inventory.addUnits(gwoGroup.airBasic);
+    },
+  });
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Air Commander"),
@@ -16,24 +23,7 @@ define([
       "!LOC:The Air Commander loadout contains basic air factories."
     ),
     deal: gwoCard.startCard,
-    buff: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.maxCards(inventory.maxCards() + 1);
-        } else {
-          GWCStart.buff(inventory);
-          inventory.addUnits(gwoGroup.airBasic);
-        }
-        ++buffCount;
-        inventory.setTag("", "buffCount", buffCount);
-      } else {
-        inventory.maxCards(inventory.maxCards() + 1);
-        GW.bank.addStartCard(CARD);
-      }
-    },
-    dull: function (inventory) {
-      gwoCard.applyDulls(CARD, inventory);
-    },
+    buff: loadout.buff,
+    dull: loadout.dull,
   };
 });

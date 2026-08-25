@@ -6,6 +6,31 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+  var loadout = gwoCard.loadout(CARD, {
+    bank: gwoBank,
+    start: GWCStart,
+    apply: function (inventory) {
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.commander, "push", {
+            command_caps: "ORDER_MassTeleport",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.commander, "replace", {
+              mass_teleporter: {
+                radius: 100,
+                phasing_duration: 30,
+                phasing_health_frac: 0.01,
+                energy_drain: 60000,
+                energy_cost: 600000,
+                unit_cap: 1000,
+                target_types: "Mobile",
+              },
+            })
+          )
+      );
+    },
+  });
   return {
     visible: _.constant(false),
     summarize: function () {
@@ -35,42 +60,7 @@ define([
       };
     },
     deal: gwoCard.startCard,
-    buff: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.maxCards(inventory.maxCards() + 1);
-        } else {
-          GWCStart.buff(inventory);
-          inventory.addMods(
-            gwoCard
-              .mods(gwoUnit.commander, "push", {
-                command_caps: "ORDER_MassTeleport",
-              })
-              .concat(
-                gwoCard.mods(gwoUnit.commander, "replace", {
-                  mass_teleporter: {
-                    radius: 100,
-                    phasing_duration: 30,
-                    phasing_health_frac: 0.01,
-                    energy_drain: 60000,
-                    energy_cost: 600000,
-                    unit_cap: 1000,
-                    target_types: "Mobile",
-                  },
-                })
-              )
-          );
-        }
-        ++buffCount;
-        inventory.setTag("", "buffCount", buffCount);
-      } else {
-        inventory.maxCards(inventory.maxCards() + 1);
-        gwoBank.addStartCard(CARD);
-      }
-    },
-    dull: function (inventory) {
-      gwoCard.applyDulls(CARD, inventory);
-    },
+    buff: loadout.buff,
+    dull: loadout.dull,
   };
 });

@@ -6,6 +6,32 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (module, GW, GWCStart, gwoCard, gwoUnit) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+  var loadout = gwoCard.loadout(CARD, {
+    bank: GW.bank,
+    start: GWCStart,
+    repeatSlot: false,
+    apply: function (inventory) {
+      inventory.addUnits([
+        gwoUnit.ant,
+        gwoUnit.skitter,
+        gwoUnit.vehicleFabber,
+        gwoUnit.vehicleFactory,
+      ]);
+    },
+    // Support for GWO v4.2.2 and earlier
+    always: function (inventory, context) {
+      if (
+        inventory.cards()[0].id === "gwc_start_subcdr" &&
+        inventory.cards()[0].minions
+      ) {
+        _.forEach(context.minions, function (minion) {
+          inventory.minions.push(minion);
+        });
+        var minionSpecs = _.compact(_.pluck(context.minions, "commander"));
+        inventory.addUnits(minionSpecs);
+      }
+    },
+  });
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:General Commander"),
@@ -15,48 +41,14 @@ define([
     describe: _.constant(
       "!LOC:The General Commander loadout contains very limited mobile forces and only two data banks. However, the loadout comes with two Sub Commanders that accompany you into each battle."
     ),
-    hint: _.constant({
-      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-      description: "!LOC:General Commander",
-    }),
+    hint: gwoCard.lockedHint("!LOC:General Commander"),
     getContext: function (galaxy, inventory) {
       return {
         faction: inventory.getTag("global", "playerFaction") || 0,
       };
     },
     deal: gwoCard.startCard,
-    buff: function (inventory, context) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (!buffCount) {
-          GWCStart.buff(inventory);
-          inventory.addUnits([
-            gwoUnit.ant,
-            gwoUnit.skitter,
-            gwoUnit.vehicleFabber,
-            gwoUnit.vehicleFactory,
-          ]);
-        }
-        // Support for GWO v4.2.2 and earlier
-        if (
-          inventory.cards()[0].id === "gwc_start_subcdr" &&
-          inventory.cards()[0].minions
-        ) {
-          _.forEach(context.minions, function (minion) {
-            inventory.minions.push(minion);
-          });
-          var minionSpecs = _.compact(_.pluck(context.minions, "commander"));
-          inventory.addUnits(minionSpecs);
-        }
-        ++buffCount;
-        inventory.setTag("", "buffCount", buffCount);
-      } else {
-        inventory.maxCards(inventory.maxCards() + 1);
-        GW.bank.addStartCard(CARD);
-      }
-    },
-    dull: function (inventory) {
-      gwoCard.applyDulls(CARD, inventory);
-    },
+    buff: loadout.buff,
+    dull: loadout.dull,
   };
 });

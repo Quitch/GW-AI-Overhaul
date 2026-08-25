@@ -7,39 +7,15 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GW, GWCStart, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
-  return {
-    visible: _.constant(false),
-    summarize: _.constant("!LOC:Assault Commander"),
-    icon: function () {
-      return gwoCard.loadoutIcon(CARD.id);
+  var loadout = gwoCard.loadout(CARD, {
+    bank: GW.bank,
+    start: GWCStart,
+    apply: function (inventory) {
+      inventory.addUnits(
+        gwoGroup.airBasic.concat(gwoGroup.botsBasic, gwoGroup.vehiclesBasic)
+      );
     },
-    describe: _.constant(
-      "!LOC:The Assault Commander loadout contains all basic factories and units but no basic defenses."
-    ),
-    hint: _.constant({
-      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-      description: "!LOC:Assault Commander",
-    }),
-    deal: gwoCard.startCard,
-    buff: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.maxCards(inventory.maxCards() + 1);
-        } else {
-          GWCStart.buff(inventory);
-          inventory.addUnits(
-            gwoGroup.airBasic.concat(gwoGroup.botsBasic, gwoGroup.vehiclesBasic)
-          );
-        }
-        ++buffCount;
-        inventory.setTag("", "buffCount", buffCount);
-      } else {
-        inventory.maxCards(inventory.maxCards() + 1);
-        GW.bank.addStartCard(CARD);
-      }
-    },
-    dull: function (inventory) {
+    dulls: function (inventory) {
       var mineGranted = _.some(
         [
           "gwaio_upgrade_bumblebee",
@@ -53,7 +29,21 @@ define([
       var restricted = mineGranted
         ? _.without(gwoGroup.structuresDefencesBasic, gwoUnit.landMine)
         : gwoGroup.structuresDefencesBasic;
-      gwoCard.applyDulls(CARD, inventory, restricted);
+      return restricted;
     },
+  });
+  return {
+    visible: _.constant(false),
+    summarize: _.constant("!LOC:Assault Commander"),
+    icon: function () {
+      return gwoCard.loadoutIcon(CARD.id);
+    },
+    describe: _.constant(
+      "!LOC:The Assault Commander loadout contains all basic factories and units but no basic defenses."
+    ),
+    hint: gwoCard.lockedHint("!LOC:Assault Commander"),
+    deal: gwoCard.startCard,
+    buff: loadout.buff,
+    dull: loadout.dull,
   };
 });
