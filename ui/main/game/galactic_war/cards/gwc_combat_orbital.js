@@ -26,23 +26,10 @@ define([
       };
     },
     buff: function (inventory) {
-      var paths = [
-        "navigation.move_speed",
-        "navigation.brake",
-        "navigation.acceleration",
-        "navigation.turn_speed",
-      ];
-      var mods = _.flatten(
-        _.map(gwoGroup.orbitalMobile, function (unit) {
-          return _.map(paths, function (path) {
-            return {
-              file: unit,
-              path: path,
-              op: "multiply",
-              value: 1.5,
-            };
-          });
-        })
+      var mods = gwoCard.flatMapMods(
+        gwoGroup.orbitalMobile,
+        "multiply",
+        gwoCard.eachPath(gwoCard.paths.navigation, 1.5)
       );
 
       inventory.addMods(
@@ -50,10 +37,11 @@ define([
           gwoCard.flatMapMods(gwoGroup.orbitalMobile, "multiply", {
             max_health: 1.5,
           }),
-          gwoCard.flatMapMods(gwoGroup.orbitalAmmo, "multiply", {
-            damage: 1.25,
-            splash_damage: 1.25,
-          })
+          gwoCard.flatMapMods(
+            gwoGroup.orbitalAmmo,
+            "multiply",
+            gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+          )
         )
       );
     },

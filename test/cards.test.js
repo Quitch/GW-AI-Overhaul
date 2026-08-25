@@ -418,6 +418,48 @@ describe("mods", () => {
   });
 });
 
+describe("paths", () => {
+  it("lists the navigation set in the order the speed cards emit it", () => {
+    assert.deepEqual(cards.paths.navigation, [
+      "navigation.move_speed",
+      "navigation.brake",
+      "navigation.acceleration",
+      "navigation.turn_speed",
+    ]);
+  });
+
+  it("lists the damage pair and the energy-weapon triple", () => {
+    assert.deepEqual(cards.paths.damage, ["damage", "splash_damage"]);
+    assert.deepEqual(cards.paths.energyWeapon, [
+      "ammo_capacity",
+      "ammo_demand",
+      "ammo_per_shot",
+    ]);
+  });
+});
+
+describe("eachPath", () => {
+  it("gives every path the same value, in path order", () => {
+    const props = cards.eachPath(["a", "b.c"], 1.5);
+    assert.deepEqual(props, { a: 1.5, "b.c": 1.5 });
+    assert.deepEqual(Object.keys(props), ["a", "b.c"]);
+  });
+
+  it("feeds mods() the same descriptors a literal would", () => {
+    assert.deepEqual(
+      cards.mods("u.json", "multiply", cards.eachPath(cards.paths.damage, 2)),
+      [
+        { file: "u.json", path: "damage", op: "multiply", value: 2 },
+        { file: "u.json", path: "splash_damage", op: "multiply", value: 2 },
+      ]
+    );
+  });
+
+  it("returns an empty object for no paths", () => {
+    assert.deepEqual(cards.eachPath([], 1), {});
+  });
+});
+
 describe("flatMapMods", () => {
   it("emits every prop for one file before moving to the next", () => {
     assert.deepEqual(

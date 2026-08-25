@@ -21,12 +21,11 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        gwoCard.flatMapMods(gwoGroup.airMobile, "multiply", {
-          "navigation.move_speed": 1.25,
-          "navigation.brake": 1.25,
-          "navigation.acceleration": 1.25,
-          "navigation.turn_speed": 1.25,
-        })
+        gwoCard.flatMapMods(
+          gwoGroup.airMobile,
+          "multiply",
+          gwoCard.eachPath(gwoCard.paths.navigation, 1.25)
+        )
       );
     },
     dull: function () {},

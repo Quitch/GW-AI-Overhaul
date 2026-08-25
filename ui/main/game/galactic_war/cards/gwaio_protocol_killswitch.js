@@ -29,8 +29,8 @@ define([
         gwoUnit.boomAmmo,
         gwoUnit.heliosDeath,
       ];
-      var deathAmmoMods = _.map(deathAmmo, function (ammo) {
-        return gwoCard.mods(ammo, "replace", { splash_damages_allies: true });
+      var deathAmmoMods = gwoCard.flatMapMods(deathAmmo, "replace", {
+        splash_damages_allies: true,
       });
 
       var unitsWithoutADeathWeapon = _.difference(gwoGroup.units, [

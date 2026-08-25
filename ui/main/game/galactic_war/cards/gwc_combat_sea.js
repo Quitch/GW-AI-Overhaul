@@ -29,18 +29,19 @@ define([
     buff: function (inventory) {
       inventory.addMods(
         gwoCard
-          .flatMapMods(gwoGroup.navalMobile, "multiply", {
-            "navigation.move_speed": 1.5,
-            "navigation.brake": 1.5,
-            "navigation.acceleration": 1.5,
-            "navigation.turn_speed": 1.5,
-            max_health: 1.5,
-          })
-          .concat(
-            gwoCard.flatMapMods(gwoGroup.navalAmmo, "multiply", {
-              damage: 1.25,
-              splash_damage: 1.25,
+          .flatMapMods(
+            gwoGroup.navalMobile,
+            "multiply",
+            _.assign(gwoCard.eachPath(gwoCard.paths.navigation, 1.5), {
+              max_health: 1.5,
             })
+          )
+          .concat(
+            gwoCard.flatMapMods(
+              gwoGroup.navalAmmo,
+              "multiply",
+              gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+            )
           )
       );
     },

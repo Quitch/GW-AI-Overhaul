@@ -20,36 +20,33 @@ define([
       var percentageReduction = 0.85;
       var percentageIncrease = 1.15;
 
-      var speedMods = _.map(gwoGroup.combatMobile, function (unit) {
-        return gwoCard.mods(unit, "multiply", {
-          "navigation.move_speed": percentageReduction,
-          "navigation.brake": percentageReduction,
-          "navigation.acceleration": percentageReduction,
-          "navigation.turn_speed": percentageReduction,
-        });
+      var speedMods = gwoCard.flatMapMods(
+        gwoGroup.combatMobile,
+        "multiply",
+        gwoCard.eachPath(gwoCard.paths.navigation, percentageReduction)
+      );
+      var sightMods = gwoCard.flatMapMods(gwoGroup.combatMobile, "multiply", {
+        "recon.observer.items.0.radius": percentageIncrease,
+        "recon.observer.items.1.radius": percentageIncrease,
       });
-      var sightMods = _.map(gwoGroup.combatMobile, function (unit) {
-        return gwoCard.mods(unit, "multiply", {
-          "recon.observer.items.0.radius": percentageIncrease,
-          "recon.observer.items.1.radius": percentageIncrease,
-        });
-      });
-      var rangeMods = _.map(gwoGroup.combatMobileWeapons, function (weapon) {
-        return gwoCard.mods(weapon, "multiply", {
+      var rangeMods = gwoCard.flatMapMods(
+        gwoGroup.combatMobileWeapons,
+        "multiply",
+        {
           max_range: percentageIncrease,
-        });
-      });
+        }
+      );
       // Try to make sure that units can use their full range
-      var ammoMods = _.map(gwoGroup.combatMobileAmmo, function (ammo) {
-        return gwoCard.mods(ammo, "multiply", {
+      var ammoMods = gwoCard.flatMapMods(
+        gwoGroup.combatMobileAmmo,
+        "multiply",
+        {
           lifetime: percentageIncrease,
           max_velocity: percentageIncrease,
-        });
-      });
-
-      inventory.addMods(
-        _.flatten(speedMods.concat(sightMods, rangeMods, ammoMods))
+        }
       );
+
+      inventory.addMods(speedMods.concat(sightMods, rangeMods, ammoMods));
     },
     dull: function () {},
   };

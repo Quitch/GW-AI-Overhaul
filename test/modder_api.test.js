@@ -121,6 +121,7 @@ const CARD_HELPERS = [
   "applyDulls",
   "commanderWeight",
   "conditionalDeal",
+  "eachPath",
   "farForSize",
   "flatMapMods",
   "getAllConnectedPlayerCards",
@@ -151,6 +152,13 @@ describe("shared/cards.js publishes the documented helpers", () => {
         "function",
         `New-GW-Cards documents gwoCard.${name}`
       );
+    });
+  }
+
+  for (const name of ["navigation", "damage", "energyWeapon"]) {
+    it(`gwoCard.paths.${name} is a list of spec paths`, () => {
+      assert.ok(Array.isArray(gwoCard.paths[name]));
+      assert.ok(gwoCard.paths[name].length > 0);
     });
   }
 });

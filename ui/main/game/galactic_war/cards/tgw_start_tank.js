@@ -31,19 +31,20 @@ define([
 
           inventory.addMods(
             gwoCard
-              .flatMapMods(gwoGroup.mobile, "multiply", {
-                "navigation.move_speed": 0.75,
-                "navigation.brake": 0.75,
-                "navigation.acceleration": 0.75,
-                "navigation.turn_speed": 0.75,
-                build_metal_cost: 1.3,
-                max_health: 1.3,
-              })
+              .flatMapMods(
+                gwoGroup.mobile,
+                "multiply",
+                _.assign(gwoCard.eachPath(gwoCard.paths.navigation, 0.75), {
+                  build_metal_cost: 1.3,
+                  max_health: 1.3,
+                })
+              )
               .concat(
-                gwoCard.flatMapMods(gwoGroup.ammo, "multiply", {
-                  damage: 1.3,
-                  splash_damage: 1.3,
-                }),
+                gwoCard.flatMapMods(
+                  gwoGroup.ammo,
+                  "multiply",
+                  gwoCard.eachPath(gwoCard.paths.damage, 1.3)
+                ),
                 gwoCard.flatMapMods(gwoGroup.immobile, "multiply", {
                   build_metal_cost: 1.3,
                   max_health: 1.3,

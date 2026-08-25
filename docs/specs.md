@@ -29,6 +29,19 @@ gwoCard.flatMapMods(gwoGroup.botsAmmo, "multiply", {
 });
 ```
 
+The attribute sets cards scale together are published as `gwoCard.paths` -
+`navigation` (the four movement stats), `damage` (`damage` and `splash_damage`)
+and `energyWeapon` (the ammo triple) - and `eachPath(paths, value)` turns one
+into the props object above, so the example is also:
+
+```js
+gwoCard.flatMapMods(
+  gwoGroup.botsAmmo,
+  "multiply",
+  gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+);
+```
+
 ## The op table
 
 | Op                 | Behaviour                                                                                        |

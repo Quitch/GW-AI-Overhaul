@@ -27,10 +27,11 @@ define([
         gwoCard
           .flatMapMods(gwoGroup.structures, "multiply", { max_health: 1.5 })
           .concat(
-            gwoCard.flatMapMods(gwoGroup.structuresDefencesAmmo, "multiply", {
-              damage: 1.25,
-              splash_damage: 1.25,
-            })
+            gwoCard.flatMapMods(
+              gwoGroup.structuresDefencesAmmo,
+              "multiply",
+              gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+            )
           )
       );
     },

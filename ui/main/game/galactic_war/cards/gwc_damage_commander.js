@@ -20,10 +20,11 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        gwoCard.flatMapMods(gwoGroup.commanderAmmo, "multiply", {
-          damage: 1.25,
-          splash_damage: 1.25,
-        })
+        gwoCard.flatMapMods(
+          gwoGroup.commanderAmmo,
+          "multiply",
+          gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+        )
       );
     },
     dull: function () {},

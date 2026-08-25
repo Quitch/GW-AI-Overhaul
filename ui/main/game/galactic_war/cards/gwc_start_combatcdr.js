@@ -39,18 +39,17 @@ define([
           ];
           inventory.addMods(
             gwoCard
-              .mods(gwoUnit.commander, "multiply", {
-                "navigation.move_speed": 5,
-                "navigation.brake": 5,
-                "navigation.acceleration": 5,
-                "navigation.turn_speed": 5,
-              })
+              .mods(
+                gwoUnit.commander,
+                "multiply",
+                gwoCard.eachPath(gwoCard.paths.navigation, 5)
+              )
               .concat(
-                gwoCard.mods(gwoUnit.commanderSecondary, "multiply", {
-                  ammo_capacity: 0.25,
-                  ammo_demand: 0.25,
-                  ammo_per_shot: 0.25,
-                }),
+                gwoCard.mods(
+                  gwoUnit.commanderSecondary,
+                  "multiply",
+                  gwoCard.eachPath(gwoCard.paths.energyWeapon, 0.25)
+                ),
                 gwoCard.flatMapMods(weapons, "multiply", { rate_of_fire: 2 }),
                 gwoCard.mods(gwoUnit.commander, "multiply", { max_health: 3 })
               )

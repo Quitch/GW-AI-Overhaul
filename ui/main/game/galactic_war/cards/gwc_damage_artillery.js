@@ -29,10 +29,11 @@ define([
     buff: function (inventory) {
       inventory.addMods(
         gwoCard
-          .flatMapMods(gwoGroup.structuresArtilleryAmmo, "multiply", {
-            damage: 1.25,
-            splash_damage: 1.25,
-          })
+          .flatMapMods(
+            gwoGroup.structuresArtilleryAmmo,
+            "multiply",
+            gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+          )
           .concat(
             gwoCard.flatMapMods(
               gwoGroup.structuresArtilleryWeapons,

@@ -24,16 +24,16 @@ define([
         gwoCard
           .flatMapMods(gwoGroup.titans, "multiply", { max_health: 1.5 })
           .concat(
-            gwoCard.flatMapMods(gwoGroup.titansMobile, "multiply", {
-              "navigation.move_speed": 1.2,
-              "navigation.brake": 1.2,
-              "navigation.acceleration": 1.2,
-              "navigation.turn_speed": 1.2,
-            }),
-            gwoCard.flatMapMods(gwoGroup.titansAmmo, "multiply", {
-              damage: 1.25,
-              splash_damage: 1.25,
-            })
+            gwoCard.flatMapMods(
+              gwoGroup.titansMobile,
+              "multiply",
+              gwoCard.eachPath(gwoCard.paths.navigation, 1.2)
+            ),
+            gwoCard.flatMapMods(
+              gwoGroup.titansAmmo,
+              "multiply",
+              gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+            )
           )
       );
     },

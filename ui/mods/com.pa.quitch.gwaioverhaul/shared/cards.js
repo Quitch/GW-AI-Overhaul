@@ -300,6 +300,23 @@ define(function () {
     // e.g. mods(gwoUnit.x, "replace", { max_health: 100 })
     mods: mods,
 
+    // The attribute sets cards multiply as one, in the order they emit them.
+    paths: {
+      navigation: [
+        "navigation.move_speed",
+        "navigation.brake",
+        "navigation.acceleration",
+        "navigation.turn_speed",
+      ],
+      damage: ["damage", "splash_damage"],
+      energyWeapon: ["ammo_capacity", "ammo_demand", "ammo_per_shot"],
+    },
+
+    // { path: value } for every path, for mods() and flatMapMods().
+    eachPath: function (paths, value) {
+      return _.zipObject(paths, _.times(paths.length, _.constant(value)));
+    },
+
     // mods() over every file, flattened: one file's entries before the next's.
     flatMapMods: function (files, op, props) {
       return _.flatten(
