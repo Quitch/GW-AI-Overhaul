@@ -16,6 +16,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
+const { reportProblems } = require("../lib/report-failures.js");
 const { walkFiles } = require("../lib/walk.js");
 
 // Every `test_type` the engine implements, harvested from media/pa/ai/ and
@@ -367,11 +368,7 @@ function main() {
   checkPersonalities();
 
   console.log("schemas: " + failures.length + " problems.");
-  if (failures.length) {
-    console.error("");
-    failures.forEach((f) => console.error("  - " + f));
-    process.exitCode = 1;
-  }
+  reportProblems(failures);
 }
 
 main();

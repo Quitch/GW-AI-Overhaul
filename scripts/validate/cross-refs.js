@@ -12,6 +12,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { REPO_ROOT, loadCouiModule } = require("../lib/amd-loader.js");
 const { CARDS_DIR } = require("../lib/card-files.js");
+const { reportProblems } = require("../lib/report-failures.js");
 const { walkFiles } = require("../lib/walk.js");
 
 const LOADOUT_IDS_COUI =
@@ -193,11 +194,7 @@ function main() {
   checkBuilderRoles();
 
   console.log("cross-refs: " + failures.length + " problems.");
-  if (failures.length) {
-    console.error("");
-    failures.forEach((f) => console.error("  - " + f));
-    process.exitCode = 1;
-  }
+  reportProblems(failures);
 }
 
 main();

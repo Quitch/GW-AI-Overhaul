@@ -6,6 +6,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { REPO_ROOT } = require("../lib/amd-loader.js");
+const { reportProblems } = require("../lib/report-failures.js");
 
 const MODINFO_PATH = path.join(REPO_ROOT, "modinfo.json");
 const REQUIRED_TOP_LEVEL_FIELDS = [
@@ -80,11 +81,7 @@ function main() {
       " problems."
   );
 
-  if (failures.length) {
-    console.error("");
-    failures.forEach((f) => console.error("  - " + f));
-    process.exitCode = 1;
-  }
+  reportProblems(failures);
 }
 
 main();

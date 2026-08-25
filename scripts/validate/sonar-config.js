@@ -15,6 +15,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { execFileSync } = require("node:child_process");
 const { REPO_ROOT } = require("../lib/amd-loader.js");
+const { reportProblems } = require("../lib/report-failures.js");
 
 const CONFIG_PATH = path.join(REPO_ROOT, "sonar-project.properties");
 const PATTERN_KEYS = ["sonar.exclusions", "sonar.coverage.exclusions"];
@@ -182,11 +183,7 @@ function main() {
       " problems."
   );
 
-  if (failures.length) {
-    console.error("");
-    failures.forEach((f) => console.error("  - " + f));
-    process.exitCode = 1;
-  }
+  reportProblems(failures);
 }
 
 main();
