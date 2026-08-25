@@ -10,12 +10,14 @@
 //   - Every other op carries `value` and `toBuild`; append/prepend/replace also
 //     need `idToMod`, whose absence silently makes the mod a no-op.
 
-const fs = require("node:fs");
 const path = require("node:path");
 const { loadCouiModule } = require("../lib/amd-loader.js");
-const { CARDS_DIR } = require("../lib/card-probe.js");
 const { createAutoStub } = require("../lib/auto-stub.js");
-const { KNOWN_UNLOADABLE } = require("../lib/known-unloadable-cards.js");
+const {
+  CARDS_DIR,
+  classifyLoadFailure,
+  listCardFiles,
+} = require("../lib/card-files.js");
 const { reportFailures } = require("../lib/report-failures.js");
 
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
@@ -147,10 +149,7 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    if (
-      e.code === "NOT_SHIPPED" ||
-      Object.prototype.hasOwnProperty.call(KNOWN_UNLOADABLE, file)
-    ) {
+    if (classifyLoadFailure(e, file)) {
       return { excluded: true };
     }
     return { error: "failed to load: " + e.message };
@@ -188,10 +187,7 @@ function checkFile(file) {
 }
 
 function main() {
-  const files = fs
-    .readdirSync(CARDS_DIR)
-    .filter((f) => f.endsWith(".js"))
-    .sort();
+  const files = listCardFiles();
 
   let cardsChecked = 0;
   let modsChecked = 0;

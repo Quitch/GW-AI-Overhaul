@@ -4,24 +4,14 @@
 // would be offered at and what it grants. Contrast cards-contract.js, which only
 // shape-checks what define() returns. See testing.md.
 
-const fs = require("node:fs");
 const path = require("node:path");
-const {
-  loadCouiModule,
-  registerModuleStub,
-  REPO_ROOT,
-} = require("./amd-loader.js");
+const { loadCouiModule, registerModuleStub } = require("./amd-loader.js");
 const { createAutoStub } = require("./auto-stub.js");
-const { KNOWN_UNLOADABLE_FILES } = require("./known-unloadable-cards.js");
-
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards"
-);
+const {
+  CARDS_DIR,
+  classifyLoadFailure,
+  listCardFiles,
+} = require("./card-files.js");
 
 // A real array, not createAutoStub(): farForSize walks
 // `Math.min(numberOfSystems.length, thresholds.length) - 1`, and a stub makes that
@@ -89,14 +79,11 @@ function loadAllCards() {
   const byFile = new Map();
   const unloadable = [];
 
-  for (const file of fs
-    .readdirSync(CARDS_DIR)
-    .filter((f) => f.endsWith(".js"))
-    .sort()) {
+  for (const file of listCardFiles()) {
     try {
       byFile.set(file, loadCouiModule(path.join(CARDS_DIR, file)));
     } catch (e) {
-      if (e.code === "NOT_SHIPPED" || KNOWN_UNLOADABLE_FILES.has(file)) {
+      if (classifyLoadFailure(e, file)) {
         unloadable.push(file);
         continue;
       }

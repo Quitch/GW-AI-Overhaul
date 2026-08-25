@@ -13,7 +13,7 @@ const {
   loadCouiModule,
   registerModuleStub,
 } = require("../scripts/lib/amd-loader.js");
-const { CARDS_DIR } = require("../scripts/lib/card-probe.js");
+const { CARDS_DIR } = require("../scripts/lib/card-files.js");
 const { createAutoStub } = require("../scripts/lib/auto-stub.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 

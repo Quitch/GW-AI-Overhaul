@@ -14,18 +14,18 @@
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const fs = require("node:fs");
 const path = require("node:path");
 const {
   loadCouiModule,
   registerModuleStub,
 } = require("../scripts/lib/amd-loader.js");
-const { CARDS_DIR } = require("../scripts/lib/card-probe.js");
 const { createAutoStub } = require("../scripts/lib/auto-stub.js");
 const { matches } = require("../scripts/lib/build-types.js");
 const {
-  KNOWN_UNLOADABLE_FILES,
-} = require("../scripts/lib/known-unloadable-cards.js");
+  CARDS_DIR,
+  classifyLoadFailure,
+  listCardFiles,
+} = require("../scripts/lib/card-files.js");
 
 // Every loadout card - which is where the replacements live - depends on the
 // unshipped shared/gw_common, so without a stand-in the sweep tests nothing. Only
@@ -167,7 +167,7 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    if (e.code === "NOT_SHIPPED" || KNOWN_UNLOADABLE_FILES.has(file)) {
+    if (classifyLoadFailure(e, file)) {
       return { excluded: true };
     }
     throw e;
@@ -180,9 +180,7 @@ function collectAllCardMods() {
   const mods = [];
   const cards = [];
 
-  for (const file of fs
-    .readdirSync(CARDS_DIR)
-    .filter((f) => f.endsWith(".js"))) {
+  for (const file of listCardFiles()) {
     const loaded = loadCard(file);
     if (loaded.excluded) {
       continue;

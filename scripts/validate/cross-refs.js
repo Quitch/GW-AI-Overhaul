@@ -11,7 +11,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { REPO_ROOT, loadCouiModule } = require("../lib/amd-loader.js");
-const { CARDS_DIR } = require("../lib/card-probe.js");
+const { CARDS_DIR } = require("../lib/card-files.js");
 const { walkFiles } = require("../lib/walk.js");
 
 const LOADOUT_IDS_COUI =
