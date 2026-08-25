@@ -4,7 +4,6 @@
 
 ### Changed
 
-- Internal: duplicated code paths across the referee, co-op operators, war generation and factions have been merged into shared helpers. No gameplay change
 - Tech cards build their spec mods and card frames through shared `gwoCard` helpers (`flatMapMods`, `loadout`, `upgradeCard`, ...); card behaviour unchanged. New helpers are documented for card modders
 
 ### Bugfix
