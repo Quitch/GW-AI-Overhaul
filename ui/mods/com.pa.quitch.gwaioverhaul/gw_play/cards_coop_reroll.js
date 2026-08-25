@@ -3,7 +3,8 @@
 // it (gwo_reroll_pending_tech_result) for the viewer to apply. See coop.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
-], function (dealHelpers) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
+], function (dealHelpers, coopHost) {
   // A reroll spends one more of the viewer's offered cards.
   var computeRerollDeal = function (cardsOffered, currentCardCount) {
     var rerollsUsed = Math.max(0, cardsOffered - currentCardCount);
@@ -80,30 +81,6 @@ define([
     var rerollPendingTechRequest = "gwo_reroll_pending_tech";
     var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
 
-    var sendPendingTechRerollResult = function (clientId, requestId, payload) {
-      if (!model.sendCampaignHostOperator) {
-        return;
-      }
-
-      model.sendCampaignHostOperator(rerollPendingTechResult, payload, {
-        target_client_id: clientId,
-        request_id: requestId,
-      });
-    };
-
-    var failPendingTechReroll = function (operator, reason) {
-      console.error("[GW COOP] failed to reroll pending tech: " + reason);
-      if (_.isUndefined(operator.client_id)) {
-        return;
-      }
-
-      sendPendingTechRerollResult(operator.client_id, operator.request_id, {
-        client_id: operator.client_id,
-        client_name: operator.client_name,
-        error: reason,
-      });
-    };
-
     var applyPendingTechRerollResult = function (operator) {
       var payload = (operator && operator.payload) || {};
       model.gwoRerollPending(false);
@@ -175,7 +152,12 @@ define([
       // Rejects as well as notifying the viewer, so the campaign queue can
       // order this handler's async work.
       var failReroll = function (reason) {
-        failPendingTechReroll(operator, reason);
+        coopHost.fail(
+          rerollPendingTechResult,
+          operator,
+          "reroll pending tech",
+          reason
+        );
         result.reject(reason);
       };
 
@@ -193,10 +175,7 @@ define([
       }
 
       var payload = (operator && operator.payload) || {};
-      var record = game.findCoopPlayerInventoryData({
-        id: operator.client_id,
-        name: operator.client_name,
-      });
+      var record = coopHost.recordFor(game, operator);
 
       if (!record || !record.inventory || !record.pendingTechCards) {
         failReroll("missing pending tech cards");
@@ -273,9 +252,7 @@ define([
           }
 
           model.sendCampaignSnapshot("gwo_reroll_pending_tech", true);
-          sendPendingTechRerollResult(operator.client_id, operator.request_id, {
-            client_id: operator.client_id,
-            client_name: operator.client_name,
+          coopHost.reply(rerollPendingTechResult, operator, {
             pendingTechCards: nextPendingTechCards,
             rerolls_used: nextRerollsUsed,
             offer_rerolls: dealHelpers.rerollsRemain(
