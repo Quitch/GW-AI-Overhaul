@@ -16,6 +16,12 @@ const _ = require("lodash");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const {
+  inventoryClass,
+  record,
+  rejection,
+  viewer,
+} = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js"
@@ -26,11 +32,6 @@ const makeFactory = loadCouiModule(
 const realHelpers = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js"
 );
-
-const viewer = (id) => ({ id, name: id, role: "viewer" });
-
-const record = (id, extra) =>
-  Object.assign({ id, inventory: { cards: [] } }, extra);
 
 // Hung off the game stub as a trap. model.game().inventory() is always the
 // host's, so a per-player deal that reached for it would weight every viewer's
@@ -43,21 +44,6 @@ const hostInventory = () => ({
   handIsFull: () => true,
   hasCard: (id) => HOST_CARDS.some((card) => card.id === id),
 });
-
-function inventoryClass() {
-  return function GWInventory() {
-    let loaded = [];
-    let limit = 0;
-    this.load = (data) => {
-      loaded = (data && data.cards) || [];
-      limit = (data && data.maxCards) || 0;
-    };
-    this.cards = () => loaded;
-    this.handIsFull = () => loaded.length >= limit;
-    this.hasCard = (id) => loaded.some((card) => card.id === id);
-    this.applyCards = (done) => done();
-  };
-}
 
 function setup(overrides = {}) {
   const options = Object.assign(
@@ -116,7 +102,7 @@ function setup(overrides = {}) {
         startLoadout: true,
       }),
     },
-    GWInventory: inventoryClass(),
+    GWInventory: inventoryClass({ withHand: true }),
     numCardsToOffer: 3,
     gwoStreams: {
       coopDealRng: (warRng, playerKey, dealIndex) => ({ playerKey, dealIndex }),
@@ -172,17 +158,6 @@ const deal = (starIndex, star, options) =>
     star || { id: "star" },
     options
   );
-
-// The deferred rejects with a plain string, which `assert.rejects` will not take
-// as an error, so the reason is captured instead.
-async function rejection(promise) {
-  try {
-    await promise;
-  } catch (reason) {
-    return reason;
-  }
-  return undefined;
-}
 
 describe("dealCoopPlayerPendingTechCards - when it deals", () => {
   it("resolves empty outside an active co-op campaign", async () => {

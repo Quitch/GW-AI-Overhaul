@@ -14,13 +14,11 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { inventoryClass, viewer } = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"
 );
-
-const viewer = (id, extra) =>
-  Object.assign({ id, name: id, role: "viewer" }, extra);
 
 // Hung off the game stub as a trap. model.game().inventory() is always the
 // host's, so a per-player deal that reached for it would weight every viewer's
@@ -39,24 +37,6 @@ function galaxyFor(stars) {
     });
   }
   return stars.systems;
-}
-
-// A minimal stand-in for the base game's GWInventory: the factory only loads a
-// record's saved cards, counts them, and applies them.
-function inventoryClass(onApply) {
-  return function GWInventory() {
-    let loaded = [];
-    this.load = (data) => {
-      loaded = (data && data.cards) || [];
-    };
-    this.cards = () => loaded;
-    this.applyCards = (done) => {
-      if (onApply) {
-        onApply(this);
-      }
-      done();
-    };
-  };
 }
 
 // Everything the factory reads, defaulting to "one viewer, one selectable AI
@@ -124,7 +104,7 @@ function setup(overrides = {}) {
       }
       return Promise.resolve([{ id: "card_for_" + request.rng.starIndex }]);
     },
-    GWInventory: inventoryClass(options.onApply),
+    GWInventory: inventoryClass({ onApply: options.onApply }),
     gwoStreams: {
       coopStarDealRng: (warRng, playerKey, starIndex, turn) => ({
         playerKey,

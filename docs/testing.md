@@ -202,6 +202,13 @@ whose subscriptions never fire, which the card sweeps need because
 `shared/bank.js` subscribes to its own `startCards` at define time and the
 callback reaches `api.tally`.
 
+`scripts/lib/coop-fixtures.js` holds what the co-op card factory tests share: a
+connected `viewer`, its inventory `record`, the `inventoryClass` stand-in for the
+base game's `GWInventory` (which only loads a record's saved cards, counts them
+and applies them), and `rejection`, because those host handlers reject with a
+plain string that `assert.rejects` will not take as an error. The `HOST_CARDS`
+trap stays in each file: it is hung off that test's own game stub.
+
 `scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
 wiring `referee_ai.js`'s file discovery needs, and returns its own restore
 function. It records every `api.file.list` and `$.getJSON` call unconditionally,

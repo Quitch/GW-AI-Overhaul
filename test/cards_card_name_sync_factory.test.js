@@ -12,6 +12,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const { rejection } = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js"
@@ -84,15 +85,6 @@ afterEach(() => {
 function build(overrides) {
   active = setup(overrides);
   return active;
-}
-
-async function rejection(promise) {
-  try {
-    await promise;
-  } catch (reason) {
-    return reason;
-  }
-  return undefined;
 }
 
 async function capture(stream, run) {

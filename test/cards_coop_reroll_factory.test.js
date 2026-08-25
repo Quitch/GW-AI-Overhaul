@@ -14,6 +14,10 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const {
+  inventoryClass,
+  rejection,
+} = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js"
@@ -21,17 +25,6 @@ const makeFactory = loadCouiModule(
 
 const REQUEST = "gwo_reroll_pending_tech";
 const RESULT = "gwo_reroll_pending_tech_result";
-
-function inventoryClass() {
-  return function GWInventory() {
-    let loaded = [];
-    this.load = (data) => {
-      loaded = (data && data.cards) || [];
-    };
-    this.cards = () => loaded;
-    this.applyCards = (done) => done();
-  };
-}
 
 // Hung off the game stub as a trap. model.game().inventory() is always the
 // host's, so a reroll that reached for it would deal the viewer a replacement
@@ -214,16 +207,6 @@ const operator = (extra) =>
     },
     extra
   );
-
-// The host handler rejects with a plain string, not an Error.
-async function rejection(promise) {
-  try {
-    await promise;
-  } catch (reason) {
-    return reason;
-  }
-  return undefined;
-}
 
 async function captureErrors(run) {
   const errors = [];
