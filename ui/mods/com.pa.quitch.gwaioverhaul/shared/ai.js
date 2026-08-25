@@ -54,6 +54,13 @@ define([
     aiInUse: aiInUse,
     getInventoryAiMods: getInventoryAiMods,
 
+    // One spec tag per enemy faction in a battle: the star's AI, then its foes.
+    aiTags: function (ai) {
+      return _.times(ai.foes ? 1 + ai.foes.length : 1, function (n) {
+        return ".ai" + n;
+      });
+    },
+
     getAIPathSource: function (type) {
       var currentAiInUse = aiInUse(type);
       return refereeAIPaths.getAIPathSource(type, currentAiInUse);

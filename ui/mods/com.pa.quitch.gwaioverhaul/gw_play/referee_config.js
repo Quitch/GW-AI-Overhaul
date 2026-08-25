@@ -59,17 +59,6 @@ define([
     return planets;
   };
 
-  var setupAiTags = function (ai) {
-    var aiTag = [];
-    var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
-    _.times(aiFactionCount, function (n) {
-      var aiNewTag = ".ai" + n.toString();
-      aiTag.push(aiNewTag);
-    });
-
-    return aiTag;
-  };
-
   var modifyPlanets = function (inventory, planets, game, systemName, served) {
     var canGlassPlanets = gwoCards.anyPlayerHasCard(
       inventory,
@@ -125,7 +114,7 @@ define([
       game.stats().turns()
     );
     var aiInUse = gwoAI.aiInUse("enemy");
-    var aiTag = setupAiTags(ai);
+    var aiTag = gwoAI.aiTags(ai);
 
     setupAlliedCommanders(
       inventory.minions(),

@@ -121,13 +121,10 @@ define([
 
       var game = self.game();
       var ai = game.galaxy().stars()[game.currentStar()].ai();
-      var aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
-      var aiTag = [];
-      var aiFactions = [];
-      _.times(aiFactionCount, function (n) {
-        var aiNewTag = ".ai" + n;
-        aiTag.push(aiNewTag);
-        aiFactions.push($.Deferred());
+      var aiTag = gwoAI.aiTags(ai);
+      var aiFactionCount = aiTag.length;
+      var aiFactions = _.map(aiTag, function () {
+        return $.Deferred();
       });
 
       var playerFileGen = $.Deferred();
