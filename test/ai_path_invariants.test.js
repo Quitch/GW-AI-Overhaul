@@ -222,32 +222,9 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
   });
 });
 
+// The pairwise-distinct and guardians-unaware cases for a single viewer live in
+// gw_per_player_tech_referee_ai_paths.test.js; only the wrap-around sweep is here.
 describe("invariant: per-player-tech viewer paths are pairwise distinct", () => {
-  it("4 viewers with varying tech/brain never collide, even when base paths would", () => {
-    const players = [
-      { tag: ".player0", aiInUse: "Titans", aiMods: [] }, // base path /pa/ai/
-      { tag: ".player1", aiInUse: "Titans", aiMods: [] }, // same base path as above absent scoping
-      { tag: ".player2", aiInUse: "Titans", aiMods: [{ op: "load" }] },
-      { tag: ".player3", aiInUse: "Queller", aiMods: [] },
-    ];
-
-    const paths = players.map((player) =>
-      perPlayerTechHook.getViewerSubcommanderAiPath(
-        refereeAIPaths,
-        subcommanderTech,
-        player.aiInUse,
-        { aiMods: () => player.aiMods, cards: () => [] },
-        player.tag
-      )
-    );
-
-    assert.equal(
-      new Set(paths).size,
-      paths.length,
-      `expected all distinct, got: ${paths}`
-    );
-  });
-
   it("a large player count (8) does not wrap around or collide", () => {
     const paths = [];
     for (let i = 0; i < 8; i++) {
@@ -266,21 +243,6 @@ describe("invariant: per-player-tech viewer paths are pairwise distinct", () => 
 });
 
 describe("documented behavior: guardians is ignored by per-player-tech viewer scoping", () => {
-  it("a per-player-tech viewer's path is identical whether or not the fight is Guardians", () => {
-    const inventory = { aiMods: () => [{ op: "load" }], cards: () => [] };
-
-    // Pins the documented guardians asymmetry - see ai-paths.md.
-    const path = perPlayerTechHook.getViewerSubcommanderAiPath(
-      refereeAIPaths,
-      subcommanderTech,
-      "Titans",
-      inventory,
-      ".player0"
-    );
-
-    assert.equal(path, "/pa/ai_subcommander/player_.player0/");
-  });
-
   it("contrast: the shared-tech ally path DOES react to guardians (falls back to the vanilla brain path)", () => {
     const fixture = buildGame({
       aiInUse: "Titans",
