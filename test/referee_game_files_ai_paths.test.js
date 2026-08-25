@@ -8,6 +8,7 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
   buildGame,
   SCENARIO_AXES,
@@ -282,18 +283,9 @@ describe("specFetch", () => {
   // can pin its parse-on-success, parse-fallback, and reject-on-error behaviour without
   // a real network/game runtime.
   function withAjax(handler, run) {
-    const had = Object.prototype.hasOwnProperty.call(global, "$");
-    const previous = global.$;
-    global.$ = { ajax: handler };
-    return Promise.resolve()
-      .then(run)
-      .finally(() => {
-        if (had) {
-          global.$ = previous;
-        } else {
-          delete global.$;
-        }
-      });
+    const stubs = createGlobalStubs();
+    stubs.setGlobal("$", { ajax: handler });
+    return Promise.resolve().then(run).finally(stubs.restoreGlobals);
   }
 
   it("parses a JSON response body and resolves the object", () => {
