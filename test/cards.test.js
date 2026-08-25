@@ -439,6 +439,133 @@ describe("antiTechDeal", () => {
   });
 });
 
+describe("loadout", () => {
+  const CARD = { id: "mym_start_one" };
+
+  function harness(state) {
+    const calls = [];
+    const inventory = {
+      lookupCard: () => state.lookupCard,
+      getTag: (context, name, fallback) =>
+        name === "buffCount" ? state.buffCount : fallback,
+      setTag: (context, name, value) => {
+        if (name === "buffCount") {
+          state.buffCount = value;
+        }
+        calls.push(["setTag", name, value]);
+      },
+      maxCards: (value) => {
+        if (value !== undefined) {
+          state.maxCards = value;
+          calls.push(["maxCards", value]);
+        }
+        return state.maxCards;
+      },
+      removeUnits: (units) => calls.push(["removeUnits", units]),
+    };
+    const options = {
+      bank: { addStartCard: (card) => calls.push(["bank", card.id]) },
+      start: { buff: () => calls.push(["start"]) },
+      apply: () => calls.push(["apply"]),
+    };
+    return { calls, inventory, options };
+  }
+
+  it("runs the default start and apply on the first buff, then counts it", () => {
+    const h = harness({ lookupCard: 0, buffCount: 0, maxCards: 4 });
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["start"],
+      ["apply"],
+      ["setTag", "buffCount", 1],
+    ]);
+  });
+
+  it("only adds a slot on a later buff of the start card", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["maxCards", 5],
+      ["setTag", "buffCount", 2],
+    ]);
+  });
+
+  it("skips that slot when repeatSlot is false", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    h.options.repeatSlot = false;
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [["setTag", "buffCount", 2]]);
+  });
+
+  it("runs always on every buff of the start card, with the context", () => {
+    const h = harness({ lookupCard: 0, buffCount: 0, maxCards: 4 });
+    h.options.always = (inventory, context) =>
+      h.calls.push(["always", context]);
+    const frame = cards.loadout(CARD, h.options);
+    frame.buff(h.inventory, "first");
+    h.calls.length = 0;
+    cards.loadout(CARD, h.options).buff(h.inventory, "again");
+    assert.deepEqual(h.calls, [
+      ["maxCards", 5],
+      ["always", "again"],
+      ["setTag", "buffCount", 2],
+    ]);
+  });
+
+  it("banks a copy dealt later in the war and adds its slot", () => {
+    const h = harness({ lookupCard: -1, buffCount: 0, maxCards: 4 });
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["maxCards", 5],
+      ["bank", "mym_start_one"],
+    ]);
+  });
+
+  it("works without an apply body", () => {
+    const h = harness({ lookupCard: 0, buffCount: 0, maxCards: 4 });
+    delete h.options.apply;
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [["start"], ["setTag", "buffCount", 1]]);
+  });
+
+  it("dulls the listed units through applyDulls", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    h.options.dulls = ["a.json"];
+    cards.loadout(CARD, h.options).dull(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["removeUnits", ["a.json"]],
+      ["setTag", "buffCount", undefined],
+    ]);
+  });
+
+  it("lets dulls be computed from the inventory", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    h.options.dulls = (inventory) => [inventory.lookupCard()];
+    cards.loadout(CARD, h.options).dull(h.inventory);
+    assert.deepEqual(h.calls[0], ["removeUnits", [0]]);
+  });
+
+  it("dulls nothing, but still clears the count, without a dulls option", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    cards.loadout(CARD, h.options).dull(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["removeUnits", undefined],
+      ["setTag", "buffCount", undefined],
+    ]);
+  });
+});
+
+describe("lockedHint", () => {
+  it("pairs the locked-commander icon with the given description", () => {
+    const hint = cards.lockedHint("!LOC:Nomad Commander");
+    assert.equal(typeof hint, "function");
+    assert.deepEqual(hint(), {
+      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+      description: "!LOC:Nomad Commander",
+    });
+  });
+});
+
 describe("mods", () => {
   it("builds one addMods entry per prop, sharing the given file and op", () => {
     assert.deepEqual(cards.mods("unit.json", "replace", { a: 1, b: 2 }), [

@@ -205,6 +205,27 @@ A treasure planet's loadout is drawn from those same unlockable ids, but at
 exploration rather than at war creation, and from the acting player's own locked
 pool — see [`coop.md`](coop.md), "Treasure loadouts".
 
+Every loadout's `buff` and `dull` are the same frame, and `gwoCard.loadout(CARD,
+options)` returns the pair:
+
+```js
+var loadout = gwoCard.loadout(CARD, {
+  bank: gwoBank, // GW.bank for a base-game loadout, a mod's own bank otherwise
+  start: GWCStart, // cards/gwc_start, buffed first
+  apply: function (inventory) {
+    inventory.addUnits(gwoGroup.airBasic);
+  },
+  dulls: [gwoUnit.inferno], // or a function of the inventory; optional
+});
+```
+
+The first buff of the war runs `start.buff` and then `apply`; every later buff of
+the start card only adds the card slot (`repeatSlot: false` drops that), and a
+copy dealt later in the war adds its slot and goes to `bank`. `always(inventory,
+context)` runs on every buff of the start card, for work that must repeat.
+`dull` is `applyDulls` over `dulls`. `gwoCard.lockedHint(description)` is the
+`hint` a locked loadout shows.
+
 Unlocks and victory badges live in `localStorage` under `gwaio_`-prefixed keys.
 Badge indices run from **-1 (Beginner)** so that Casual is 0 — see the
 `loadoutIcon` switch in `shared/cards.js`, and `gw_war_over/stats.js`, which reads

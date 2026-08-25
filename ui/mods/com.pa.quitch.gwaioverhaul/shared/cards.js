@@ -104,6 +104,19 @@ define(function () {
     return inventory.getTag("global", "playerFaction") === 4;
   };
 
+  // Must run inside inventory.applyCards()'s dull phase: relies on
+  // getTag/setTag's "" context resolving to the current card, and on
+  // buff() having already run for every card this cycle.
+  var applyDulls = function (card, inventory, units) {
+    if (inventory.lookupCard(card) === 0) {
+      var buffCount = inventory.getTag("", "buffCount", 0);
+      if (buffCount) {
+        inventory.removeUnits(units);
+        inventory.setTag("", "buffCount", undefined);
+      }
+    }
+  };
+
   var mods = function (file, op, props) {
     return _.map(_.keys(props), function (path) {
       return { file: file, path: path, op: op, value: props[path] };
@@ -206,17 +219,53 @@ define(function () {
       }
     },
 
-    // Must run inside inventory.applyCards()'s dull phase: relies on
-    // getTag/setTag's "" context resolving to the current card, and on
-    // buff() having already run for every card this cycle.
-    applyDulls: function (card, inventory, units) {
-      if (inventory.lookupCard(card) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.removeUnits(units);
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
+    applyDulls: applyDulls,
+
+    // The buff/dull pair every loadout shares. The first buff of the war
+    // runs the default start and `apply`; a later one only adds the slot
+    // (unless `repeatSlot` is false); a copy dealt after the start goes to
+    // `bank`. `always` runs on every buff of the start card. See tech-cards.md.
+    loadout: function (card, options) {
+      return {
+        buff: function (inventory, context) {
+          if (inventory.lookupCard(card) === 0) {
+            var buffCount = inventory.getTag("", "buffCount", 0);
+            if (!buffCount) {
+              options.start.buff(inventory);
+              if (options.apply) {
+                options.apply(inventory);
+              }
+            } else if (options.repeatSlot !== false) {
+              inventory.maxCards(inventory.maxCards() + 1);
+            }
+            if (options.always) {
+              options.always(inventory, context);
+            }
+            ++buffCount;
+            inventory.setTag("", "buffCount", buffCount);
+          } else {
+            inventory.maxCards(inventory.maxCards() + 1);
+            options.bank.addStartCard(card);
+          }
+        },
+        dull: function (inventory) {
+          applyDulls(
+            card,
+            inventory,
+            _.isFunction(options.dulls)
+              ? options.dulls(inventory)
+              : options.dulls
+          );
+        },
+      };
+    },
+
+    // A locked loadout's `hint`: the red commander and the loadout's name.
+    lockedHint: function (description) {
+      return _.constant({
+        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+        description: description,
+      });
     },
 
     getContext: function (galaxy) {
