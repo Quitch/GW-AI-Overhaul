@@ -192,6 +192,40 @@ describe("subcommanderWeight", () => {
   });
 });
 
+describe("floodsPlanets", () => {
+  function holding(...ids) {
+    return { hasCard: (id) => ids.includes(id) };
+  }
+
+  it("is true for a naval start", () => {
+    assert.equal(cards.floodsPlanets(holding("gwaio_start_naval")), true);
+  });
+
+  it("is true for Tsunami tech", () => {
+    assert.equal(cards.floodsPlanets(holding("gwaio_enable_tsunami")), true);
+  });
+
+  it("is false otherwise", () => {
+    assert.equal(cards.floodsPlanets(holding("gwc_start_air")), false);
+  });
+});
+
+describe("playerIsCluster", () => {
+  function faction(value) {
+    return {
+      getTag: (context, name) =>
+        context === "global" && name === "playerFaction" ? value : undefined,
+    };
+  }
+
+  it("is true only for the Cluster faction index", () => {
+    assert.equal(cards.playerIsCluster(faction(4)), true);
+    assert.equal(cards.playerIsCluster(faction(0)), false);
+    assert.equal(cards.playerIsCluster(faction("4")), false);
+    assert.equal(cards.playerIsCluster(faction(undefined)), false);
+  });
+});
+
 describe("navalWeight", () => {
   // Full weight is reserved for the two states that flood every planet fought on;
   // anywhere else naval is a gamble on the map and the card is offered less rather

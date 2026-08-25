@@ -44,8 +44,7 @@ define([
         } else {
           GWCStart.buff(inventory);
 
-          var playerIsCluster =
-            inventory.getTag("global", "playerFaction") === 4;
+          var playerIsCluster = gwoCard.playerIsCluster(inventory);
           var mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
           var mods = gwoCard
             .flatMapMods(

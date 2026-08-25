@@ -122,6 +122,8 @@ adding or removing a draw inside one card cannot move any other card's result. S
 | `commanderWeight(inventory, chance)`              | Scales with retinue size, capped at `chance * 2`.                         |
 | `subcommanderWeight(inventory, chance)`           | 0 until you field one, then full base weight, capped at 90.               |
 | `navalWeight(inventory, chance, dryChance)`       | Full weight only when planets flood.                                      |
+| `floodsPlanets(inventory)`                        | The flooding test `navalWeight` uses, for a card that gates on it.        |
+| `playerIsCluster(inventory)`                      | The player picked Cluster. Read the passed inventory, not the host's.     |
 | `antiTechDeal(inventory, base, excludedId)`       | The `gwaio_anti_*` counter-tech shape.                                    |
 | `travelledShort/Moderate/Far(system, context, n)` | Distance-gated availability.                                              |
 

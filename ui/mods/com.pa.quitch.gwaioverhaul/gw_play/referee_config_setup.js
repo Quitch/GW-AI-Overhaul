@@ -6,9 +6,10 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
-], function (gwoColour, gwoAI, refereeCoop, subcommanderTech) {
+], function (gwoColour, gwoAI, gwoCard, refereeCoop, subcommanderTech) {
   var applySubcommanderTacticsTech =
     subcommanderTech.applySubcommanderTacticsTech;
   var applySubcommanderFabberTech =
@@ -184,7 +185,7 @@ define([
     battleRng
   ) {
     var playerFaction = inventory.getTag("global", "playerFaction");
-    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    var playerIsCluster = gwoCard.playerIsCluster(inventory);
     var firstPosition = startPosition || 0;
 
     _.forEach(allies, function (liveAlly, index) {

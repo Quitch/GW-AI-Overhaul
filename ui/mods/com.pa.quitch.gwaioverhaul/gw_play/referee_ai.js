@@ -1,8 +1,9 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
-], function (gwoAI, refereeAIPaths, refereeCoop) {
+], function (gwoAI, gwoCard, refereeAIPaths, refereeCoop) {
   // The walk append, prepend and replace share. A build entry for toBuild that
   // carries idToMod (and refId/refValue, when given) is the target; otherwise
   // every test in its build_conditions that refId/refValue or matchAll selects
@@ -618,7 +619,7 @@ define([
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
     var numberOfAllies = alliedCommanders.length;
-    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    var playerIsCluster = gwoCard.playerIsCluster(inventory);
     var enemyIsCluster =
       gwoAI.isCluster(ai) ||
       _.some(ai.foes, function (foe) {

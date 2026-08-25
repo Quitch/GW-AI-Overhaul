@@ -30,7 +30,7 @@ define([
     buff: function (inventory) {
       inventory.maxCards(inventory.maxCards() + 1);
       var colonel =
-        inventory.getTag("global", "playerFaction") === 4 &&
+        gwoCard.playerIsCluster(inventory) &&
         inventory.hasCard("gwaio_start_ceo")
           ? gwoUnit.clusterCeoColonel
           : gwoUnit.colonel;

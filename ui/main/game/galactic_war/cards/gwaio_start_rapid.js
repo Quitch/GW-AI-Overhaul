@@ -28,8 +28,7 @@ define([
         } else {
           GWCStart.buff(inventory);
 
-          var playerIsCluster =
-            inventory.getTag("global", "playerFaction") === 4;
+          var playerIsCluster = gwoCard.playerIsCluster(inventory);
 
           // These run after cluster_setup.js tags Cluster's Sub Commanders
           // NoBuild, so a bare `Mobile & <layer>` clause would match one and

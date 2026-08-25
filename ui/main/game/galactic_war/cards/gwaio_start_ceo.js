@@ -28,8 +28,7 @@ define([
         } else {
           GWCStart.buff(inventory);
 
-          var playerIsCluster =
-            inventory.getTag("global", "playerFaction") === 4;
+          var playerIsCluster = gwoCard.playerIsCluster(inventory);
           var colonel = playerIsCluster
             ? gwoUnit.clusterCeoColonel
             : gwoUnit.colonel;

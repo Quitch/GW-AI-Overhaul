@@ -92,6 +92,18 @@ define(function () {
     });
   };
 
+  // The two states that flood every planet fought on. See tech-cards.md.
+  var floodsPlanets = function (inventory) {
+    return (
+      inventory.hasCard("gwaio_start_naval") ||
+      inventory.hasCard("gwaio_enable_tsunami")
+    );
+  };
+
+  var playerIsCluster = function (inventory) {
+    return inventory.getTag("global", "playerFaction") === 4;
+  };
+
   var mods = function (file, op, props) {
     return _.map(_.keys(props), function (path) {
       return { file: file, path: path, op: op, value: props[path] };
@@ -247,8 +259,7 @@ define(function () {
     // subcommanders are not commanders. See tech-cards.md.
     commanderWeight: function (inventory, chance) {
       var commanders = inventory.minions().length;
-      var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
-      var finalChance = playerIsCluster
+      var finalChance = playerIsCluster(inventory)
         ? chance
         : Math.min(chance + Math.round(chance / 3) * commanders, chance * 2);
       return finalChance;
@@ -271,14 +282,15 @@ define(function () {
     // dryChance is for a card whose value collapses without water, not merely
     // dips (see gwaio_anti_sea). See tech-cards.md.
     navalWeight: function (inventory, chance, dryChance) {
-      var floodsPlanets =
-        inventory.hasCard("gwaio_start_naval") ||
-        inventory.hasCard("gwaio_enable_tsunami");
-      if (floodsPlanets) {
+      if (floodsPlanets(inventory)) {
         return chance;
       }
       return _.isUndefined(dryChance) ? Math.round(chance * 0.4) : dryChance;
     },
+
+    floodsPlanets: floodsPlanets,
+
+    playerIsCluster: playerIsCluster,
 
     // Prefer the wrappers below, which keep the tables private. numberOfSystems
     // is a parameter, not an import: this module must stay dependency-free, as
