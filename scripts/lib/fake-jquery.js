@@ -1,6 +1,7 @@
 "use strict";
 
-// Covers exactly the $/api subset referee_ai.js uses - not a general polyfill.
+// Covers exactly the $/api subset the shipped referee and co-op code uses - not a
+// general polyfill.
 
 // The Promise itself, augmented, rather than a wrapper - so `.then` stays the
 // inherited Promise.prototype.then rather than a hand-rolled look-alike.
@@ -31,6 +32,16 @@ function makeDeferred() {
   return deferred;
 }
 
+// jQuery 2's $.when: waits on anything thenable and passes everything else
+// through. One argument resolves to that value; several to the array of them.
+function when() {
+  var args = Array.prototype.slice.call(arguments);
+  var settled = args.map(function (arg) {
+    return arg && typeof arg.then === "function" ? arg : Promise.resolve(arg);
+  });
+  return args.length === 1 ? settled[0] : Promise.all(settled);
+}
+
 // Requesting a URL with no configured resolver rejects, so a test's fixtures can't
 // silently drift from what the code under test actually asks for.
 function createFakeJQuery(options) {
@@ -38,6 +49,7 @@ function createFakeJQuery(options) {
 
   return {
     Deferred: makeDeferred,
+    when: when,
     getJSON: function (url) {
       return Promise.resolve()
         .then(function () {
@@ -53,6 +65,15 @@ function createFakeJQuery(options) {
         });
     },
   };
+}
+
+// A callable `$` carrying the fake's members, installed through the stubs so
+// the suite's own restore puts the previous global back.
+function installFakeJQuery(stubs, options) {
+  var $ = function () {};
+  Object.assign($, createFakeJQuery(options));
+  stubs.setGlobal("$", $);
+  return $;
 }
 
 function createFakeApi(overrides) {
@@ -72,4 +93,6 @@ module.exports = {
   makeDeferred: makeDeferred,
   createFakeJQuery: createFakeJQuery,
   createFakeApi: createFakeApi,
+  installFakeJQuery: installFakeJQuery,
+  when: when,
 };

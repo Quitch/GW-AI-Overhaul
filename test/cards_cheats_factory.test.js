@@ -16,6 +16,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js"
@@ -70,11 +71,7 @@ function setup(overrides = {}) {
   ];
 
   const stubs = createGlobalStubs();
-  const $ = function () {};
-  $.when = function () {
-    return Promise.all(Array.prototype.slice.call(arguments));
-  };
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs);
   stubs.setGlobal("model", {
     cheats: { giveCardId: () => options.giveCardId },
     isCampaignViewer: () => options.isViewer,

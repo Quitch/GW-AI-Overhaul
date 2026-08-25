@@ -152,7 +152,9 @@ uses. Requesting a URL with no configured resolver rejects, so a test's fixtures
 cannot silently drift from what the code actually asks for. It returns the Promise
 itself rather than an object with a `then` property, keeping `.then` the real
 inherited `Promise.prototype.then` — the shape SonarLint's "objects should not have
-a then property" rule warns about.
+a then property" rule warns about. Its `when` keeps jQuery 2's shape — one
+argument resolves to that value, several to the array — and `installFakeJQuery`
+puts a callable `$` carrying the lot behind a suite's global stubs.
 
 `scripts/lib/global-stubs.js` saves and restores the engine globals that shipped
 code reads at call time. It is a factory, not a singleton, so two suites never

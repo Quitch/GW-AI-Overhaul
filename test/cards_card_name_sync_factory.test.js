@@ -11,7 +11,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js"
@@ -35,9 +35,7 @@ function setup(overrides = {}) {
   const handlers = {};
 
   const stubs = createGlobalStubs();
-  const $ = function () {};
-  $.Deferred = makeDeferred;
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs);
   stubs.setGlobal("requireGW", (ids, done) => {
     const cardId = ids[0].slice("cards/".length);
     calls.requested.push(cardId);

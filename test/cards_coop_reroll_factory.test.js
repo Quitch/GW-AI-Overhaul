@@ -13,7 +13,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js"
@@ -21,15 +21,6 @@ const makeFactory = loadCouiModule(
 
 const REQUEST = "gwo_reroll_pending_tech";
 const RESULT = "gwo_reroll_pending_tech_result";
-
-function fakeWhen() {
-  const args = Array.prototype.slice.call(arguments);
-  return Promise.all(
-    args.map((arg) =>
-      arg && typeof arg.then === "function" ? arg : Promise.resolve(arg)
-    )
-  );
-}
 
 function inventoryClass() {
   return function GWInventory() {
@@ -103,10 +94,7 @@ function setup(overrides = {}) {
   const handlers = {};
 
   const stubs = createGlobalStubs();
-  const $ = function () {};
-  $.Deferred = makeDeferred;
-  $.when = fakeWhen;
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs);
   stubs.setGlobal("model", {
     isCampaignHost: () => options.isHost,
     gwCampaignPerPlayerTechCards: () => options.perPlayerTech,

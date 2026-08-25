@@ -15,7 +15,7 @@ const _ = require("lodash");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js"
@@ -43,17 +43,6 @@ const hostInventory = () => ({
   handIsFull: () => true,
   hasCard: (id) => HOST_CARDS.some((card) => card.id === id),
 });
-
-// jQuery 2's $.when: waits on anything thenable and passes everything else
-// through. The factory only ever hands it its own deferreds.
-function fakeWhen() {
-  const args = Array.prototype.slice.call(arguments);
-  return Promise.all(
-    args.map((arg) =>
-      arg && typeof arg.then === "function" ? arg : Promise.resolve(arg)
-    )
-  );
-}
 
 function inventoryClass() {
   return function GWInventory() {
@@ -91,10 +80,7 @@ function setup(overrides = {}) {
   const calls = { deals: [], sent: [], actions: [], bank: [], offerCounts: [] };
 
   const stubs = createGlobalStubs();
-  const $ = function () {};
-  $.Deferred = makeDeferred;
-  $.when = fakeWhen;
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs);
   stubs.setGlobal("model", {
     gwCampaignActive: () => options.campaignActive,
     isCampaignHost: () => options.isHost,
