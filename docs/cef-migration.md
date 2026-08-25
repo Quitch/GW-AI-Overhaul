@@ -67,8 +67,8 @@ Merged to `develop`'s v6.10.3 (2026-08-16): `npm run verify` green, rename
 rehearsal 1,080 occurrences and green in the rewritten copy.
 
 Merged to `develop`'s v6.12.0 (2026-08-25): `npm run verify` green, rename
-rehearsal 1,093 occurrences (modinfo.json 26, ui 924 in 297 files, scripts 8,
-test 135) and green in the rewritten copy, 98.5% lines under
+rehearsal 1,098 occurrences (modinfo.json 26, ui 927 in 297 files, scripts 9,
+test 136) and green in the rewritten copy, 98.5% lines under
 `npm run test:coverage`. What the pass had to do beyond the mechanical steps:
 
 - `develop`'s new `shared/gwo_biome_mods.js` reads a mounted server mod with
