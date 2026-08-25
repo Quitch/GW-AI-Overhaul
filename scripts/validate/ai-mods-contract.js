@@ -12,19 +12,11 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
+const { loadCouiModule } = require("../lib/amd-loader.js");
+const { CARDS_DIR } = require("../lib/card-probe.js");
 const { createAutoStub } = require("../lib/auto-stub.js");
 const { KNOWN_UNLOADABLE } = require("../lib/known-unloadable-cards.js");
 const { reportFailures } = require("../lib/report-failures.js");
-
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards"
-);
 
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
 const BUILD_LIST_TYPES = new Set(["fabber", "factory", "platoon"]);

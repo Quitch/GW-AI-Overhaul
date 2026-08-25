@@ -11,16 +11,9 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { REPO_ROOT, loadCouiModule } = require("../lib/amd-loader.js");
+const { CARDS_DIR } = require("../lib/card-probe.js");
 const { walkFiles } = require("../lib/walk.js");
 
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards"
-);
 const LOADOUT_IDS_COUI =
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js";
 const UNITS_COUI = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js";

@@ -12,8 +12,8 @@ const path = require("node:path");
 const {
   loadCouiModule,
   registerModuleStub,
-  REPO_ROOT,
 } = require("../scripts/lib/amd-loader.js");
+const { CARDS_DIR } = require("../scripts/lib/card-probe.js");
 const { createAutoStub } = require("../scripts/lib/auto-stub.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
@@ -40,15 +40,6 @@ global.ko = {
   computed: (fn) => fn,
 };
 global.localStorage = {};
-
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards"
-);
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);
