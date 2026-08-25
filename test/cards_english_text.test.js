@@ -9,26 +9,14 @@
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const path = require("node:path");
-const {
-  loadCouiModule,
-  registerModuleStub,
-} = require("../scripts/lib/amd-loader.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { CARDS_DIR } = require("../scripts/lib/card-files.js");
-const { createAutoStub } = require("../scripts/lib/auto-stub.js");
+const { installCardHarness } = require("../scripts/lib/card-probe.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-const {
-  installFakeKnockout,
-  makeInertObservable,
-} = require("../scripts/lib/fake-knockout.js");
 
-// Loadout cards reach for these at define time, before any test runs.
-registerModuleStub("shared/gw_common", createAutoStub());
-
-installFakeKnockout({
-  observable: makeInertObservable,
-  observableArray: makeInertObservable,
-});
-global.localStorage = {};
+// Loadout cards reach for gw_common, ko and localStorage at define time, before
+// any test runs.
+installCardHarness();
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);

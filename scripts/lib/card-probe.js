@@ -44,8 +44,7 @@ const TOTAL_SIZES = [1, 19, 25, 37, 55, 79, 109, 145, 187, 235];
 const MAX_DISTANCE = 15;
 
 // shared/bank.js builds itself at define time, so the loadout cards read ko and
-// localStorage before anything is probed. Same stand-ins as
-// cluster_subcommander_buildable.test.js.
+// localStorage before anything is probed.
 let harnessInstalled = false;
 
 function installCardHarness() {

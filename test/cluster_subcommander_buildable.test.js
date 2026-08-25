@@ -15,11 +15,7 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const path = require("node:path");
-const {
-  loadCouiModule,
-  registerModuleStub,
-} = require("../scripts/lib/amd-loader.js");
-const { createAutoStub } = require("../scripts/lib/auto-stub.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { matches } = require("../scripts/lib/build-types.js");
 const {
   CARDS_DIR,
@@ -30,23 +26,13 @@ const {
   createCapturingInventory,
   recordInto,
 } = require("../scripts/lib/capturing-inventory.js");
-const {
-  installFakeKnockout,
-  makeInertObservable,
-} = require("../scripts/lib/fake-knockout.js");
+const { installCardHarness } = require("../scripts/lib/card-probe.js");
 
 // Every loadout card - which is where the replacements live - depends on the
 // unshipped shared/gw_common, so without a stand-in the sweep tests nothing. Only
-// balance constants are read off it, and nothing here asserts on those.
-registerModuleStub("shared/gw_common", createAutoStub());
-
-// shared/bank.js constructs itself at define time, so it reads ko and localStorage
-// before any test runs. A subscription that never fires is correct here.
-installFakeKnockout({
-  observable: makeInertObservable,
-  observableArray: makeInertObservable,
-});
-global.localStorage = {};
+// balance constants are read off it, and nothing here asserts on those. The same
+// harness stands in for the ko and localStorage shared/bank.js reads at define time.
+installCardHarness();
 
 const CLUSTER_FACTION = 4;
 const UNIT_TYPE_PREFIX = "UNITTYPE_";
