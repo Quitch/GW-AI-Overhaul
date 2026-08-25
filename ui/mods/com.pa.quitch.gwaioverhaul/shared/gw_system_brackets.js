@@ -239,7 +239,7 @@ define([
 
   // The pool holds live references - My Systems is a bound IndexedDB row - so
   // withoutBrokenSystems' in-place backfill has to go on the copy instead.
-  var copyOf = function (system) {
+  var copyOf = function (system, providers) {
     var copy = JSON.parse(JSON.stringify(system));
     var started = false;
 
@@ -252,12 +252,17 @@ define([
       copy.planets[0].starting_planet = true;
     }
 
+    var mods = gwoBiomes.modsFor(copy, providers);
+    if (mods.length) {
+      copy.gwoBiomeMods = mods;
+    }
+
     return copy;
   };
 
   // Hands each star the smallest unplaced system that fits. `random` is consumed
   // only while ordering - take() must stay deterministic.
-  var selectorFor = function (brackets, random) {
+  var selectorFor = function (brackets, random, providers) {
     var list = brackets || [];
     var highest = highestMax(list);
     var ordered = [];
@@ -311,7 +316,7 @@ define([
         }
         if (!entry.taken) {
           entry.taken = true;
-          return copyOf(entry.system);
+          return copyOf(entry.system, providers);
         }
         placed.push(entry);
       }
@@ -320,7 +325,7 @@ define([
       if (!placed.length) {
         return null;
       }
-      return copyOf(placed[reused++ % placed.length].system);
+      return copyOf(placed[reused++ % placed.length].system, providers);
     };
 
     return {

@@ -386,6 +386,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js",
         "main/game/galactic_war/shared/js/systems/template-loader",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
       ],
       function (
         GW,
@@ -407,7 +408,8 @@ function gwoSetup() {
         gwoSystemBrackets,
         gwoRng,
         gwoFactionSeed,
-        chooseStarSystemTemplates
+        chooseStarSystemTemplates,
+        gwoBiomeMods
       ) {
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
         gwoFavourites = favouritesModule;
@@ -570,10 +572,15 @@ function gwoSetup() {
 
           var onSystemsLoaded = function () {
             // $.when hands back one array per source.
-            var built = gwoSystemBrackets.bracketsFrom(
-              _.flatten(_.toArray(arguments))
-            );
-            ready.resolve(built.length ? built : undefined);
+            var systems = _.flatten(_.toArray(arguments));
+            gwoBiomeMods.providers().then(function (providers) {
+              var built = gwoSystemBrackets.bracketsFrom(systems, providers);
+              ready.resolve(
+                built.length
+                  ? { brackets: built, providers: providers }
+                  : undefined
+              );
+            });
           };
 
           var onOptionsLoaded = function (options) {
@@ -696,6 +703,7 @@ function gwoSetup() {
 
           var buildGalaxy = loadSystemBrackets().then(
             function (systemBrackets) {
+              systemBrackets = systemBrackets || {};
               return game.galaxy().build({
                 seed: model.newGameSeed(),
                 gwoRng: warRng.stream("galaxy"),
@@ -709,7 +717,8 @@ function gwoSetup() {
                 maxConnections: 4,
                 minimumDistanceBonus: 8, // this is inert
                 largePlanets: largePlanets,
-                gwoSystemBrackets: systemBrackets,
+                gwoSystemBrackets: systemBrackets.brackets,
+                gwoBiomeProviders: systemBrackets.providers,
               });
             }
           );

@@ -279,6 +279,14 @@ deferred that only settles on success, so the battle hangs at loading with no er
 switches such a planet to `earth`, which is what repairs a war saved before this screen
 existed.
 
+A modded biome is kept when an enabled server mod that ships **only JSON** provides it.
+`shared/gwo_biome_mods.js` catalogs each enabled server zip mod once, at war creation -
+through the Community Mods manager where the scene loads it, and through the manager's
+own IndexedDB store in `gw_start`, which does not - and a mod carrying anything else
+under `pa/` (`.papa` meshes, textures) is not a provider, because only text can be
+handed to the server. `selectorFor` stamps the providing mods onto the placed copy as
+`gwoBiomeMods`, so battle launch reads that stamp instead of resolving again.
+
 The quantity is armies, not humans. Map makers use `players` to count humans and humans
 share an army, so a declared `[2,10]` on two landing zones is two armies of five; the
 zone count caps the declared maximum, and the minimum follows it down rather than

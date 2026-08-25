@@ -372,6 +372,24 @@ describe("bracketsFrom - biomes the server cannot load", () => {
     withoutWarnings(() => brackets.bracketsFrom([pooled]));
     assert.equal(pooled.planets[0].generator.biome, "oasis");
   });
+
+  it("stamps the providing mods on the placed copy only", () => {
+    const providers = { oasis: { identifier: "uk.pa.tetctree.server" } };
+    const pooled = modded("oasis-map", "oasis");
+    const built = brackets.bracketsFrom([pooled], providers);
+    const taken = brackets.selectorFor(built, () => 0.5, providers).take(2);
+
+    assert.deepEqual(taken.gwoBiomeMods, [providers.oasis]);
+    assert.equal(pooled.gwoBiomeMods, undefined);
+  });
+
+  it("does not stamp a system that needs no mod", () => {
+    const built = brackets.bracketsFrom([sys("stock", { zoneCount: 2 })], {
+      oasis: { identifier: "uk.pa.tetctree.server" },
+    });
+    const taken = brackets.selectorFor(built, () => 0.5).take(2);
+    assert.equal("gwoBiomeMods" in taken, false);
+  });
 });
 
 describe("candidatesFor", () => {
