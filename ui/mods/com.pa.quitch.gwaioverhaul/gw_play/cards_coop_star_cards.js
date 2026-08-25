@@ -179,25 +179,14 @@ define([
       }
 
       var playerKey = gwoStreams.coopPlayerKey(record, client);
-      var inventory = new GWInventory();
-      inventory.load(_.cloneDeep(record.inventory));
-
+      var inventory;
       var applied = new Promise(function (resolve) {
-        if (!inventory.cards().length) {
-          resolve();
-          return;
-        }
-
-        gwoBank.suspendUnlocks(stockBank);
-        try {
-          inventory.applyCards(function () {
-            gwoBank.resumeUnlocks();
-            resolve();
-          });
-        } catch (e) {
-          gwoBank.resumeUnlocks();
-          throw e;
-        }
+        inventory = gwoBank.applyRecordInventory(
+          GWInventory,
+          record,
+          stockBank,
+          resolve
+        );
       });
 
       return applied

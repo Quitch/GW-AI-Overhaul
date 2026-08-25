@@ -20,6 +20,7 @@ const {
 } = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 const {
+  fakeBank,
   inventoryClass,
   record,
   rejection,
@@ -117,10 +118,7 @@ function setup(overrides = {}) {
       }),
     },
     warRng: { seed: "war" },
-    gwoBank: {
-      suspendUnlocks: () => calls.bank.push("suspend"),
-      resumeUnlocks: () => calls.bank.push("resume"),
-    },
+    gwoBank: fakeBank(calls),
     stockBank: {},
     gwoTreasure: {
       isTreasureStar: (settings, starIndex) =>

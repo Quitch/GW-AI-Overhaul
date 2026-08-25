@@ -198,10 +198,7 @@ define([
         return result.promise();
       }
 
-      var playerInventory = new GWInventory();
-      playerInventory.load(_.cloneDeep(record.inventory));
-
-      var dealCards = function () {
+      var dealCards = function (playerInventory) {
         var cardsOffered = helpers.cardsOfferedCount(
           numCardsToOffer,
           playerInventory
@@ -263,17 +260,7 @@ define([
         });
       };
 
-      if (playerInventory.cards().length) {
-        // Their loadout card's buff() would otherwise bank into the host's own
-        // unlocks, as in cards_coop_deal.js.
-        gwoBank.suspendUnlocks(stockBank);
-        playerInventory.applyCards(function () {
-          gwoBank.resumeUnlocks();
-          dealCards();
-        });
-      } else {
-        dealCards();
-      }
+      gwoBank.applyRecordInventory(GWInventory, record, stockBank, dealCards);
 
       return result.promise();
     };

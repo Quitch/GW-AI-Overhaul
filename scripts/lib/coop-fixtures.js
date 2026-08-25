@@ -1,5 +1,8 @@
 "use strict";
 
+const { loadCouiModule } = require("./amd-loader.js");
+const { installFakeKnockout } = require("./fake-knockout.js");
+
 // Shared stand-ins for the co-op card factories: a connected viewer, its
 // inventory record, the GWInventory the factories load a record's saved cards
 // into, and the rejection reader their host handlers need.
@@ -39,6 +42,25 @@ function inventoryClass(options) {
   };
 }
 
+// The gwoBank a factory is handed. Suspend and resume are recorded; a record
+// is applied through the shipped shared/bank.js helper, so the suspension
+// around applyCards under test is the real one.
+let realBank;
+function fakeBank(calls) {
+  if (!realBank) {
+    installFakeKnockout();
+    global.localStorage = global.localStorage || {};
+    realBank = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"
+    );
+  }
+  return {
+    suspendUnlocks: () => calls.bank.push("suspend"),
+    resumeUnlocks: () => calls.bank.push("resume"),
+    applyRecordInventory: realBank.applyRecordInventory,
+  };
+}
+
 // The host handlers and deferreds reject with a plain string, which
 // `assert.rejects` will not take as an error, so the reason is captured instead.
 async function rejection(promise) {
@@ -50,4 +72,4 @@ async function rejection(promise) {
   return undefined;
 }
 
-module.exports = { inventoryClass, record, rejection, viewer };
+module.exports = { fakeBank, inventoryClass, record, rejection, viewer };

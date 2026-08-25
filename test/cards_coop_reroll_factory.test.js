@@ -21,6 +21,7 @@ const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
 const {
+  fakeBank,
   inventoryClass,
   rejection,
 } = require("../scripts/lib/coop-fixtures.js");
@@ -173,10 +174,7 @@ function setup(overrides = {}) {
       coopPlayerKey: (rec, client) => client.id,
     },
     warRng: { seed: "war" },
-    gwoBank: {
-      suspendUnlocks: () => calls.bank.push("suspend"),
-      resumeUnlocks: () => calls.bank.push("resume"),
-    },
+    gwoBank: fakeBank(calls),
     stockBank: {},
   });
 

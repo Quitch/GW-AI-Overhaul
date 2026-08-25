@@ -231,20 +231,14 @@ define(function () {
           return;
         }
 
-        var inventory = new GWInventory();
-        inventory.load(_.cloneDeep(record.inventory));
-
-        if (inventory.cards().length) {
-          // Applying a viewer's cards runs their loadout card's buff(), which
-          // would otherwise unlock that loadout into the host's own banks.
-          gwoBank.suspendUnlocks(stockBank);
-          inventory.applyCards(function () {
-            gwoBank.resumeUnlocks();
+        gwoBank.applyRecordInventory(
+          GWInventory,
+          record,
+          stockBank,
+          function (inventory) {
             dealCardsForTarget(target, job, inventory);
-          });
-        } else {
-          dealCardsForTarget(target, job, inventory);
-        }
+          }
+        );
       });
 
       $.when.apply($, jobs).then(function () {

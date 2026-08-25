@@ -17,7 +17,11 @@ const {
   createGlobalStubs,
   trackActive,
 } = require("../scripts/lib/global-stubs.js");
-const { inventoryClass, viewer } = require("../scripts/lib/coop-fixtures.js");
+const {
+  fakeBank,
+  inventoryClass,
+  viewer,
+} = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"
@@ -117,10 +121,7 @@ function setup(overrides = {}) {
       coopPlayerKey: (record, client) => client.id,
     },
     warRng: { seed: "war" },
-    gwoBank: {
-      suspendUnlocks: () => calls.bank.push("suspend"),
-      resumeUnlocks: () => calls.bank.push("resume"),
-    },
+    gwoBank: fakeBank(calls),
     stockBank: {},
     gwoSettings: {
       treasureStar: options.treasureStar,
