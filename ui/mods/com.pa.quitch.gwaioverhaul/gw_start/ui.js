@@ -98,8 +98,7 @@ function gwoUI() {
         return settings;
       }
 
-      var settingNames = _.keys(settings);
-      _.pull(settingNames, "previousSettings");
+      var settingNames = _.without(_.keys(settings), "previousSettings");
 
       if (_.isArray(previousSettings)) {
         if (previousSettings.length !== settingNames.length) {

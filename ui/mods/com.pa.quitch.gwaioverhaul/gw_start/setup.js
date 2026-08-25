@@ -300,8 +300,7 @@ function gwoSetup() {
         settings.personalityTags(pickedTags);
       }
 
-      var settingNames = _.keys(settings);
-      _.pull(settingNames, "previousSettings");
+      var settingNames = _.without(_.keys(settings), "previousSettings");
       var snapshot = {};
       _.forEach(settingNames, function (name) {
         snapshot[name] = settings[name]();
