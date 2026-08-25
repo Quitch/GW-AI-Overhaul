@@ -53,6 +53,22 @@ function makeInventory(overrides) {
   };
 }
 
+// One AI descriptor as gw_start's generator writes it, with the fields the
+// referee reads when it builds a battle config.
+function makeAiDescriptor(overrides) {
+  return Object.assign(
+    {
+      name: "Test AI",
+      commander: "test_commander",
+      econ_rate: 1,
+      color: [[10, 10, 10]],
+      faction: 1,
+      personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
+    },
+    overrides || {}
+  );
+}
+
 // -> { game, star, ai, inventory }. The non-obvious options:
 //   subcommanderType drives inventory's global:playerFaction tag
 //   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
@@ -167,6 +183,7 @@ module.exports = {
   CLUSTER_FACTION: CLUSTER_FACTION,
   DEFAULT_FACTION: DEFAULT_FACTION,
   makeInventory: makeInventory,
+  makeAiDescriptor: makeAiDescriptor,
   buildGame: buildGame,
   installModel: installModel,
 };

@@ -9,6 +9,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
   installModel,
+  makeAiDescriptor,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeConfig = loadCouiModule(
@@ -25,20 +26,6 @@ afterEach(() => {
 });
 
 // Fields setupAIArmy needs to avoid crashing. None are asserted on.
-function makeAiDescriptor(overrides) {
-  return Object.assign(
-    {
-      name: "Test AI",
-      commander: "test_commander",
-      econ_rate: 1,
-      color: [[10, 10, 10]],
-      faction: 1,
-      personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
-    },
-    overrides || {}
-  );
-}
-
 describe("setAIPath", () => {
   it("cluster path is the same regardless of isPlayer - only one side can be Cluster", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
