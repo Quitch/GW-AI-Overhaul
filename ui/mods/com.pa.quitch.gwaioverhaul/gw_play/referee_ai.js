@@ -3,6 +3,46 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
 ], function (gwoAI, refereeAIPaths, refereeCoop) {
+  // The walk append, prepend and replace share. A build entry for toBuild that
+  // carries idToMod (and refId/refValue, when given) is the target; otherwise
+  // every test in its build_conditions that refId/refValue or matchAll selects
+  // is. onBuild(build) and onTest(test) do the write.
+  var forEachMatchingTarget = function (
+    json,
+    toBuild,
+    idToMod,
+    refId,
+    refValue,
+    matchAll,
+    onBuild,
+    onTest
+  ) {
+    _.forEach(json.build_list, function (build) {
+      if (build.to_build !== toBuild) {
+        return;
+      }
+
+      var validMatch =
+        (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+        Object.prototype.hasOwnProperty.call(build, idToMod);
+
+      if (validMatch) {
+        onBuild(build);
+        return;
+      }
+
+      _.forEach(build.build_conditions, function (testArray) {
+        _.forEach(testArray, function (test) {
+          var testMatches =
+            matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
+          if (testMatches) {
+            onTest(test);
+          }
+        });
+      });
+    });
+  };
+
   // `json` is a parameter, not a closure capture, so this table is built once
   // at module load rather than per applyAiMods call.
   var aiModOps = {
@@ -15,35 +55,28 @@ define([
       refValue,
       matchAll
     ) {
-      _.forEach(json.build_list, function (build) {
-        if (build.to_build !== toBuild) {
-          return;
+      forEachMatchingTarget(
+        json,
+        toBuild,
+        idToMod,
+        refId,
+        refValue,
+        matchAll,
+        function (build) {
+          if (_.isArray(build[idToMod])) {
+            build[idToMod] = build[idToMod].concat(value);
+          } else {
+            build[idToMod] += value;
+          }
+        },
+        function (test) {
+          if (_.isArray(test[idToMod])) {
+            test[idToMod] = test[idToMod].concat(value);
+          } else if (test[idToMod]) {
+            test[idToMod] += value;
+          }
         }
-
-        var validMatch =
-          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-          Object.prototype.hasOwnProperty.call(build, idToMod);
-
-        if (validMatch && _.isArray(build[idToMod])) {
-          build[idToMod] = build[idToMod].concat(value);
-        } else if (validMatch) {
-          build[idToMod] += value;
-        } else {
-          _.forEach(build.build_conditions, function (testArray) {
-            _.forEach(testArray, function (test) {
-              var testMatches =
-                matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
-              if (testMatches) {
-                if (_.isArray(test[idToMod])) {
-                  test[idToMod] = test[idToMod].concat(value);
-                } else if (test[idToMod]) {
-                  test[idToMod] += value;
-                }
-              }
-            });
-          });
-        }
-      });
+      );
     },
     prepend: function (
       json,
@@ -58,35 +91,28 @@ define([
       // targets, so coercing the parameter in place corrupts the later ones.
       var arrayValue = _.isArray(value) ? value : [value];
 
-      _.forEach(json.build_list, function (build) {
-        if (build.to_build !== toBuild) {
-          return;
+      forEachMatchingTarget(
+        json,
+        toBuild,
+        idToMod,
+        refId,
+        refValue,
+        matchAll,
+        function (build) {
+          if (_.isArray(build[idToMod])) {
+            build[idToMod] = arrayValue.concat(build[idToMod]);
+          } else {
+            build[idToMod] = value + build[idToMod];
+          }
+        },
+        function (test) {
+          if (_.isArray(test[idToMod])) {
+            test[idToMod] = arrayValue.concat(test[idToMod]);
+          } else if (test[idToMod]) {
+            test[idToMod] = value + test[idToMod];
+          }
         }
-
-        var validMatch =
-          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-          Object.prototype.hasOwnProperty.call(build, idToMod);
-
-        if (validMatch && _.isArray(build[idToMod])) {
-          build[idToMod] = arrayValue.concat(build[idToMod]);
-        } else if (validMatch) {
-          build[idToMod] = value + build[idToMod];
-        } else {
-          _.forEach(build.build_conditions, function (testArray) {
-            _.forEach(testArray, function (test) {
-              var testMatches =
-                matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
-              if (testMatches) {
-                if (_.isArray(test[idToMod])) {
-                  test[idToMod] = arrayValue.concat(test[idToMod]);
-                } else if (test[idToMod]) {
-                  test[idToMod] = value + test[idToMod];
-                }
-              }
-            });
-          });
-        }
-      });
+      );
     },
     replace: function (
       json,
@@ -97,29 +123,22 @@ define([
       refValue,
       matchAll
     ) {
-      _.forEach(json.build_list, function (build) {
-        if (build.to_build !== toBuild) {
-          return;
-        }
-
-        var validMatch =
-          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-          Object.prototype.hasOwnProperty.call(build, idToMod);
-
-        if (validMatch) {
+      forEachMatchingTarget(
+        json,
+        toBuild,
+        idToMod,
+        refId,
+        refValue,
+        matchAll,
+        function (build) {
           build[idToMod] = value;
-        } else {
-          _.forEach(build.build_conditions, function (testArray) {
-            _.forEach(testArray, function (test) {
-              var testMatches =
-                matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
-              if (testMatches && test[idToMod]) {
-                test[idToMod] = value;
-              }
-            });
-          });
+        },
+        function (test) {
+          if (test[idToMod]) {
+            test[idToMod] = value;
+          }
         }
-      });
+      );
     },
     remove: function (json, value, toBuild) {
       _.forEach(json.build_list, function (build) {
