@@ -309,7 +309,13 @@ text-only mods qualify: a `.papa` has no way through either channel.
 
 A mod that cannot be mounted or fully read at launch is dropped from both, and
 `referee_config.js` then treats its biomes as unservable and switches those planets to
-`earth`. The same path covers a war saved before the stamp existed.
+`earth`.
+
+A war saved before the stamp existed has none, so a system there with a modded biome
+resolves providers at launch instead (`stampedMods` in `referee.js`) and writes the
+result onto the star's system, which the save then carries - still one resolution per
+system, just deferred. Only a biome no enabled text-only mod provides falls to `earth`,
+and such a system is re-checked each launch so installing the mod later is enough.
 
 Verified live (PA 124673, 2026-08-25): a "Rolling Hills 2v2 NS" battle on tetctree's
 `mountain` biome reached `live_game` in 18 seconds with the server log showing

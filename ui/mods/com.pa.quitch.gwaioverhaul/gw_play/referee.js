@@ -25,6 +25,7 @@ function gwoRefereeChanges() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
       ],
       function (
         GW,
@@ -32,29 +33,53 @@ function gwoRefereeChanges() {
         gwoGenerateGameFiles,
         gwoGenerateAI,
         gwoGenerateConfig,
-        gwoBiomeMods
+        gwoBiomeMods,
+        gwoBiomes
       ) {
-        // The star's gwoBiomeMods stamp was resolved at war creation; here it is
-        // only mounted to read from and cooked into the files every client gets.
-        // The server-facing mount happens in mountFiles, after the unmount there.
+        // A war saved before the stamp existed resolves it here instead, once,
+        // and writes it onto the star's system so later launches read it.
+        var stampedMods = function (system) {
+          var done = $.Deferred();
+
+          if (!system) {
+            return done.resolve([]).promise();
+          }
+          if (system.gwoBiomeMods || !gwoBiomes.unservableBiome(system)) {
+            return done.resolve(system.gwoBiomeMods || []).promise();
+          }
+          gwoBiomeMods.providers().then(function (providers) {
+            var mods = gwoBiomes.modsFor(system, providers);
+            if (mods.length) {
+              system.gwoBiomeMods = mods;
+            }
+            done.resolve(mods);
+          });
+          return done.promise();
+        };
+
+        // The stamp is only mounted to read from and cooked into the files every
+        // client gets. The server-facing mount happens in mountFiles, after the
+        // unmount there.
         var gwoGenerateBiomes = function () {
           var self = this;
           var done = $.Deferred();
           var game = self.game();
           var system = game.galaxy().stars()[game.currentStar()].system();
-          var mods = (system && system.gwoBiomeMods) || [];
 
           self.biomeMods = [];
           self.biomeServed = {};
-          if (!mods.length) {
-            return done.resolve().promise();
-          }
-          gwoBiomeMods.mount(mods).always(function () {
-            gwoBiomeMods.cook(mods).then(function (result) {
-              self.files(_.assign({}, self.files(), result.files));
-              self.biomeMods = result.mods;
-              self.biomeServed = result.served;
+          stampedMods(system).then(function (mods) {
+            if (!mods.length) {
               done.resolve();
+              return;
+            }
+            gwoBiomeMods.mount(mods).always(function () {
+              gwoBiomeMods.cook(mods).then(function (result) {
+                self.files(_.assign({}, self.files(), result.files));
+                self.biomeMods = result.mods;
+                self.biomeServed = result.served;
+                done.resolve();
+              });
             });
           });
           return done.promise();
