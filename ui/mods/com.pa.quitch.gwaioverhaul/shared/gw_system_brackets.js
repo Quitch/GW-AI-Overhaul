@@ -81,15 +81,12 @@ define([
     return [Math.max(MIN_ARMIES, min), Math.max(MIN_ARMIES, max)];
   };
 
-  // Every pooled system has been through UberUtility.fixupPlanetConfig, which
-  // renames planet.planet to planet.generator. Both forms are read, so this also
-  // works against default_systems.json straight off disk.
   var generatedArmies = function (system) {
     var planets = (system && system.planets) || [];
     var total = 0;
 
     for (var planet of planets) {
-      var generator = planet.generator || planet.planet;
+      var generator = gwoBiomes.generatorOf(planet);
       if (generator && generator.numArmies) {
         total += generator.numArmies;
       }

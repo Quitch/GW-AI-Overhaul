@@ -225,3 +225,12 @@ describe("jsonEntries", () => {
     );
   });
 });
+
+describe("generatorOf", () => {
+  it("reads the post-fixup generator, or the pre-fixup planet key", () => {
+    assert.equal(biomes.generatorOf({ generator: { biome: "a" } }).biome, "a");
+    assert.equal(biomes.generatorOf({ planet: { biome: "b" } }).biome, "b");
+    assert.equal(biomes.generatorOf({}), undefined);
+    assert.equal(biomes.generatorOf(undefined), undefined);
+  });
+});

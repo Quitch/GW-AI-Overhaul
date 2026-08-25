@@ -16,7 +16,7 @@ define([
   // server cannot load hangs every player at loading. See galaxy.md.
   var loadablePlanets = function (planets, systemName, served) {
     _.forEach(planets, function (planet) {
-      var generator = planet.generator || planet.planet;
+      var generator = gwoBiomes.generatorOf(planet);
       var biome = gwoBiomes.planetBiome(planet);
       if (
         generator &&

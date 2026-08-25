@@ -25,11 +25,15 @@ define(function () {
     return _.includes(STOCK_BIOMES, biome);
   };
 
-  // Pooled systems have been through fixupPlanetConfig; default_systems.json and
-  // the server's validatePlanet still read the pre-fixup `planet` key.
+  // Pooled systems have been through fixupPlanetConfig, which renames
+  // planet.planet to planet.generator; default_systems.json and the server's
+  // validatePlanet still read the pre-fixup `planet` key.
+  var generatorOf = function (planet) {
+    return planet && (planet.generator || planet.planet);
+  };
+
   var planetBiome = function (planet) {
-    var generator = (planet && (planet.generator || planet.planet)) || {};
-    return generator.biome;
+    return (generatorOf(planet) || {}).biome;
   };
 
   var systemBiomes = function (system) {
@@ -152,6 +156,7 @@ define(function () {
     STOCK_BIOMES: STOCK_BIOMES,
     FALLBACK_BIOME: FALLBACK_BIOME,
     isStockBiome: isStockBiome,
+    generatorOf: generatorOf,
     planetBiome: planetBiome,
     systemBiomes: systemBiomes,
     unservableBiome: unservableBiome,
