@@ -52,45 +52,37 @@ define(function () {
     return system.distance() > thresholds[tier];
   };
 
+  var hasUnit = function (inventoryUnits, units) {
+    if (_.isString(units)) {
+      return _.includes(inventoryUnits, units);
+    }
+    return _.some(units, function (unit) {
+      return _.includes(inventoryUnits, unit);
+    });
+  };
+
+  var hasAllUnits = function (inventoryUnits, units) {
+    if (_.isString(units)) {
+      return _.includes(inventoryUnits, units);
+    }
+    return _.every(units, function (unit) {
+      return _.includes(inventoryUnits, unit);
+    });
+  };
+
   return {
     getConnectedClients: getConnectedClients,
 
-    hasUnit: function (inventoryUnits, units) {
-      if (_.isString(units)) {
-        return _.includes(inventoryUnits, units);
-      }
-      return _.some(units, function (unit) {
-        return _.includes(inventoryUnits, unit);
-      });
-    },
+    hasUnit: hasUnit,
 
-    hasAllUnits: function (inventoryUnits, units) {
-      if (_.isString(units)) {
-        return _.includes(inventoryUnits, units);
-      }
-
-      return _.every(units, function (unit) {
-        return _.includes(inventoryUnits, unit);
-      });
-    },
+    hasAllUnits: hasAllUnits,
 
     missingUnit: function (inventoryUnits, units) {
-      if (_.isString(units)) {
-        return !_.includes(inventoryUnits, units);
-      }
-      return _.some(units, function (unit) {
-        return !_.includes(inventoryUnits, unit);
-      });
+      return !hasAllUnits(inventoryUnits, units);
     },
 
     missingAllUnits: function (inventoryUnits, units) {
-      if (_.isString(units)) {
-        return !_.includes(inventoryUnits, units);
-      }
-
-      return _.every(units, function (unit) {
-        return !_.includes(inventoryUnits, unit);
-      });
+      return !hasUnit(inventoryUnits, units);
     },
 
     // Substring rather than a prefix test because the shipped English locales are "en"
