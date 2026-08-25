@@ -23,6 +23,9 @@ const {
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
+const {
   makeObservable,
   makeObservableArray,
 } = require("../scripts/lib/fake-knockout.js");
@@ -92,21 +95,15 @@ const defineSessionStorage = (value) =>
 
 defineSessionStorage({ getItem: () => JSON.stringify(role) });
 
-// _.delay carries the dirty re-run. node:test's timer mocks cannot reach it -
-// lodash 3 binds context.setTimeout once, at load - so it is captured by
-// swapping the global lodash for one bound to a recording setTimeout.
-const delayed = [];
-let realLodash;
+// _.delay carries the dirty re-run.
+let timers;
 
 before(() => {
-  realLodash = global._;
-  global._ = realLodash.runInContext({
-    setTimeout: (fn, wait) => delayed.push({ fn, wait }),
-  });
+  timers = installFakeLodashTimers();
 });
 
 after(() => {
-  global._ = realLodash;
+  timers.restore();
   stubs.restoreGlobals();
   delete global.sessionStorage;
 });
@@ -137,7 +134,7 @@ afterEach(() => {
   patch(perPlayerTechGame(true));
   bank.length = 0;
   patched.length = 0;
-  delayed.length = 0;
+  timers.delayed.length = 0;
   mutations.length = 0;
   cardModules = {};
   role = "host";
@@ -227,8 +224,8 @@ describe("gw_inventory - holding the bank for another player's cards", () => {
     inventory = inventoryHolding([{ id: "gwc_start_orbital" }]);
 
     inventory.applyCards();
-    assert.equal(delayed.length, 1, "the dirty re-run was scheduled");
-    delayed.shift().fn();
+    assert.equal(timers.delayed.length, 1, "the dirty re-run was scheduled");
+    timers.delayed.shift().fn();
 
     assert.deepEqual(bank, [["suspend", stockBank], "resume"]);
   });

@@ -209,6 +209,12 @@ and applies them), and `rejection`, because those host handlers reject with a
 plain string that `assert.rejects` will not take as an error. The `HOST_CARDS`
 trap stays in each file: it is hung off that test's own game stub.
 
+`scripts/lib/fake-lodash-timers.js` captures `_.delay` and `_.debounce`.
+`node:test`'s timer mocks cannot reach them — lodash 3 binds
+`context.setTimeout` once, at load — so it swaps the global lodash for a context
+bound to a recording `setTimeout`, with an optional driven clock behind `_.now()`,
+and hands back the recorded calls and a restore.
+
 `scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
 wiring `referee_ai.js`'s file discovery needs, and returns its own restore
 function. It records every `api.file.list` and `$.getJSON` call unconditionally,

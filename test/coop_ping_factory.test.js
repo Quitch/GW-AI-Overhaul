@@ -14,6 +14,9 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
+const {
   makeObservable: observable,
 } = require("../scripts/lib/fake-knockout.js");
 
@@ -388,26 +391,17 @@ describe("what can be pinged", () => {
 });
 
 describe("sending a ping", () => {
-  // The cooldown is cleared on a _.delay. node:test's timer mocks cannot reach
-  // it - lodash 3 binds context.setTimeout once, at load - so the delay is
-  // captured by swapping the global lodash for one bound to a recording
-  // setTimeout, as cards_coop_reroll_factory.test.js does.
-  const delayed = [];
-  let realLodash;
+  // The cooldown is cleared on a _.delay.
+  let timers;
 
   before(() => {
-    realLodash = global._;
-    global._ = realLodash.runInContext({
-      setTimeout: (fn, wait) => delayed.push({ fn, wait }),
-    });
+    timers = installFakeLodashTimers();
   });
 
-  after(() => {
-    global._ = realLodash;
-  });
+  after(() => timers.restore());
 
   afterEach(() => {
-    delayed.length = 0;
+    timers.delayed.length = 0;
   });
 
   it("asks the host, then shows the ping without waiting for the answer", () => {
@@ -449,9 +443,9 @@ describe("sending a ping", () => {
     api.pingStar();
     assert.deepEqual(calls.cooldown, [true]);
 
-    assert.equal(delayed.length, 1);
-    assert.equal(delayed[0].wait, 3000);
-    delayed[0].fn();
+    assert.equal(timers.delayed.length, 1);
+    assert.equal(timers.delayed[0].wait, 3000);
+    timers.delayed[0].fn();
     assert.deepEqual(calls.cooldown, [true, false]);
   });
 
@@ -494,6 +488,6 @@ describe("sending a ping", () => {
     assert.equal(calls.viewerOperators.length, 1);
     assert.deepEqual(calls.raised, []);
     assert.deepEqual(calls.cooldown, []);
-    assert.equal(delayed.length, 0);
+    assert.equal(timers.delayed.length, 0);
   });
 });

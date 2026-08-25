@@ -15,6 +15,9 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
+const {
   inventoryClass,
   rejection,
 } = require("../scripts/lib/coop-fixtures.js");
@@ -503,26 +506,17 @@ describe("host reroll handler - the reroll", () => {
 
 describe("viewer reroll result handler", () => {
   // The success path drops the scanning overlay on a 2s cosmetic beat via
-  // _.delay. node:test's timer mocks cannot reach it - lodash 3 binds
-  // context.setTimeout once, at load - so the beat is captured by swapping the
-  // global lodash for one bound to a recording setTimeout. Left real, every
-  // success test would leave a live timer firing into a torn-down model stub.
-  const delayed = [];
-  let realLodash;
+  // _.delay, captured rather than left to fire into a torn-down model stub.
+  let timers;
 
   before(() => {
-    realLodash = global._;
-    global._ = realLodash.runInContext({
-      setTimeout: (fn, wait) => delayed.push({ fn, wait }),
-    });
+    timers = installFakeLodashTimers();
   });
 
-  after(() => {
-    global._ = realLodash;
-  });
+  after(() => timers.restore());
 
   afterEach(() => {
-    delayed.length = 0;
+    timers.delayed.length = 0;
   });
 
   const result = (payload) => ({
@@ -551,9 +545,9 @@ describe("viewer reroll result handler", () => {
     await handlers[RESULT](result());
     assert.deepEqual(calls.scanning, [], "the overlay must outlast the deal");
 
-    assert.equal(delayed.length, 1);
-    assert.equal(delayed[0].wait, 2000);
-    delayed[0].fn();
+    assert.equal(timers.delayed.length, 1);
+    assert.equal(timers.delayed[0].wait, 2000);
+    timers.delayed[0].fn();
     assert.deepEqual(calls.scanning, [false]);
   });
 
