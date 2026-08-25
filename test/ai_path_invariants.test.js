@@ -14,7 +14,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
-  installModel,
+  useModel,
   makeInventory,
   SCENARIO_AXES,
 } = require("../scripts/lib/ai-path-fixtures.js");
@@ -42,14 +42,10 @@ const refereeAi = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
 );
 
-let restoreModel;
+const installModel = useModel();
 let restoreFakes;
 
 afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
   if (restoreFakes) {
     restoreFakes();
     restoreFakes = undefined;
@@ -171,7 +167,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
             enemyType: enemyType,
             aiMods: techState === "active" ? [{ op: "load" }] : [],
           });
-          restoreModel = installModel(fixture.game);
+          installModel(fixture.game);
 
           const enemyIsCluster = gwoAI.isCluster(fixture.ai);
           const enemyPath = refereeConfig.setAIPath(enemyIsCluster, false);
@@ -190,7 +186,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
       enemyType: "neither",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       refereeConfig.setAIPath(false, false),
       refereeConfig.setAIPath(false, true)
@@ -204,7 +200,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
       enemyType: "neither",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       refereeConfig.setAIPath(false, false),
       refereeConfig.setAIPath(false, true)
@@ -218,7 +214,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
       enemyType: "neither",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.notEqual(
       refereeConfig.setAIPath(false, false),
       refereeConfig.setAIPath(false, true)
@@ -291,7 +287,7 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
       enemyType: "guardians",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(refereeConfig.setAIPath(false, true), "/pa/ai/");
   });
 });
@@ -314,7 +310,7 @@ describe("invariant: mixed-brain fights (aiAlly differs from ai) never collide",
               enemyType: enemyType,
               aiMods: techState === "active" ? [{ op: "load" }] : [],
             });
-            restoreModel = installModel(fixture.game);
+            installModel(fixture.game);
 
             const enemyIsCluster = gwoAI.isCluster(fixture.ai);
             const enemyPath = refereeConfig.setAIPath(enemyIsCluster, false);
@@ -346,7 +342,7 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
         },
       ],
     });
-    restoreModel = installModel(fixture.game, []);
+    installModel(fixture.game, []);
     installAiProcessingFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
       getJSON: () => ({ build_list: [{ to_build: "Bot", builders: [] }] }),
@@ -412,7 +408,7 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
       { id: "v1", name: "Viewer1", role: "viewer" },
       { id: "v2", name: "Viewer2", role: "viewer" },
     ];
-    restoreModel = installModel(fixture.game, connectedClients);
+    installModel(fixture.game, connectedClients);
     installAiProcessingFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
       getJSON: () => ({ build_list: [{ to_build: "Bot", builders: [] }] }),
@@ -489,7 +485,7 @@ describe("invariant: no ai_path root sits inside another ai_path's scanned direc
     });
     fixture.game.findCoopPlayerInventoryData = (client) =>
       client.id === "v1" ? { inventory: viewerInventory } : undefined;
-    restoreModel = installModel(fixture.game, [
+    installModel(fixture.game, [
       { id: "host", name: "Host", role: "host" },
       { id: "v1", name: "Viewer1", role: "viewer" },
     ]);

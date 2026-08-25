@@ -3,12 +3,12 @@
 // The AI landing policy referee_config_setup.js assigns each commander, keyed on
 // the war seed, the star and the turn.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
-  installModel,
+  useModel,
   makeAiDescriptor: ai,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
@@ -25,14 +25,7 @@ const LANDING_POLICIES = [
   "no_restriction",
 ];
 
-let restoreModel;
-
-afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
-});
+const installModel = useModel();
 
 function battleRng(star, turns) {
   return streams.battleRng(
@@ -50,7 +43,7 @@ function policies(armies) {
 function primary(opts) {
   const options = opts || {};
   const fixture = buildGame({ aiInUse: "Titans", difficultyName: "!LOC:Uber" });
-  restoreModel = installModel(fixture.game);
+  installModel(fixture.game);
 
   const armies = [];
   refereeConfig.setupPrimaryAiAndMinions(
@@ -62,8 +55,7 @@ function primary(opts) {
     options.rng === null ? undefined : options.rng || battleRng(3, 5)
   );
   const result = policies(armies);
-  restoreModel();
-  restoreModel = undefined;
+  installModel.restore();
   return result;
 }
 
@@ -129,7 +121,7 @@ describe("AI landing policy", () => {
       aiInUse: "Titans",
       difficultyName: "!LOC:Uber",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const armies = [];
     refereeConfig.setupPrimaryAiAndMinions(
@@ -155,7 +147,7 @@ describe("FFA foe landing policy", () => {
       aiInUse: "Titans",
       difficultyName: "!LOC:Uber",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const armies = [];
     refereeConfig.setupFfaAis(
@@ -168,8 +160,7 @@ describe("FFA foe landing policy", () => {
       rng
     );
     const result = policies(armies);
-    restoreModel();
-    restoreModel = undefined;
+    installModel.restore();
     return result;
   }
 

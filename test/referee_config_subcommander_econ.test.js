@@ -5,12 +5,12 @@
 // setupAlliedCommanders, which must fix the rate rather than apply the enemy AI's
 // difficulty floor.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
-  installModel,
+  useModel,
   makeAiDescriptor: makeDescriptor,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
@@ -24,14 +24,7 @@ const gwoDifficulty = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js"
 );
 
-let restoreModel;
-
-afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
-});
+const installModel = useModel();
 
 function makeAiDescriptor(overrides) {
   return makeDescriptor(
@@ -41,7 +34,7 @@ function makeAiDescriptor(overrides) {
 
 function setUpSubcommander(difficultyName, descriptor) {
   const fixture = buildGame({ aiInUse: "Titans", difficultyName });
-  restoreModel = installModel(fixture.game);
+  installModel(fixture.game);
 
   const armies = [];
   refereeConfig.setupAlliedCommanders(
@@ -63,8 +56,7 @@ describe("subcommander econ_rate", () => {
         gwoAI.subcommanderEconRate,
         difficulty.difficultyName
       );
-      restoreModel();
-      restoreModel = undefined;
+      installModel.restore();
     }
   });
 
@@ -96,7 +88,7 @@ describe("subcommander econ_rate", () => {
       aiInUse: "Titans",
       difficultyName: "!LOC:Uber",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const armies = [];
     refereeConfig.setupAlliedCommanders(
@@ -116,7 +108,7 @@ describe("subcommander econ_rate", () => {
       difficultyName: "!LOC:Uber",
       enemyType: "neither",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const ai = makeAiDescriptor({ minions: [makeAiDescriptor()] });
     const armies = [];

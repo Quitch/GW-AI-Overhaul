@@ -5,13 +5,10 @@
 // depends on the unshipped shared/gw_common and cannot load here, so this loads the
 // extracted module.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const {
-  buildGame,
-  installModel,
-} = require("../scripts/lib/ai-path-fixtures.js");
+const { buildGame, useModel } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeGameFiles = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js"
@@ -23,14 +20,7 @@ const gwoSpecs = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js"
 );
 
-let restoreModel;
-
-afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
-});
+const installModel = useModel();
 
 const isClusterTrue = () => true;
 const isClusterFalse = () => false;
@@ -186,7 +176,7 @@ describe("buildPlayerFiles", () => {
       aiInUse: "Titans",
       subcommanderType: "cluster",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const files = refereeGameFiles.buildPlayerFiles(
       {
@@ -209,7 +199,7 @@ describe("buildPlayerFiles", () => {
       aiInUse: "Titans",
       subcommanderType: "cluster",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const files = refereeGameFiles.buildPlayerFiles(
       {
@@ -235,7 +225,7 @@ describe("buildPlayerFiles", () => {
       subcommanderType: "notCluster",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const files = refereeGameFiles.buildPlayerFiles(
       {
@@ -260,7 +250,7 @@ describe("buildPlayerFiles", () => {
       subcommanderType: "notCluster",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const files = refereeGameFiles.buildPlayerFiles(
       {

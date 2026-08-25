@@ -145,7 +145,8 @@ file does not reinvent its own list. Two things about it are load-bearing:
   call, matching production code, which calls `model.game()`/`game.galaxy()`
   repeatedly rather than caching a snapshot.
 - Connected clients are passed separately to `installModel(game, connectedClients)`,
-  **not** through `buildGame`'s options.
+  **not** through `buildGame`'s options. `useModel()` is the same installer with
+  the `afterEach` restore built in, so a suite does not track the restore itself.
 
 `scripts/lib/fake-jquery.js` covers exactly the `$`/`api` subset `referee_ai.js`
 uses. Requesting a URL with no configured resolver rejects, so a test's fixtures

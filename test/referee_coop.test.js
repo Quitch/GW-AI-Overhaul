@@ -6,12 +6,12 @@
 // referee, gwo_panel.js and the intelligence panel), and all four are coverage-excluded
 // glue, so this is where that arithmetic is actually pinned down.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   makeInventory,
-  installModel,
+  useModel,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeCoop = loadCouiModule(
@@ -48,14 +48,7 @@ function names(subcommanders) {
   return subcommanders.map((entry) => entry.subcommander.name);
 }
 
-let restoreModel;
-
-afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
-});
+const installModel = useModel();
 
 describe("referee_coop.alliedColourIndex", () => {
   it("reserves palette index 0 for the player", () => {
@@ -206,7 +199,7 @@ describe("referee_coop.getOrderedSubcommanders", () => {
         "view-2": makeRecord(["Delta"]),
       },
     });
-    restoreModel = installModel(game, [HOST, VIEWER_ONE]);
+    installModel(game, [HOST, VIEWER_ONE]);
 
     assert.deepEqual(
       names(refereeCoop.getOrderedSubcommanders(hostInventory, game)),

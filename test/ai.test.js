@@ -3,12 +3,12 @@
 // shared/ai.js, which derives the ai_path settings from model.game() and hands them
 // to referee_ai_paths.js. That layer is covered on its own.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
-  installModel,
+  useModel,
   makeInventory,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
@@ -19,33 +19,26 @@ const gwoRng = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
 );
 
-let restoreModel;
-
-afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
-});
+const installModel = useModel();
 
 describe("aiInUse", () => {
   it("defaults to Titans when the star has no gwaio system data", () => {
     const fixture = buildGame({ aiInUse: undefined });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiInUse("enemy"), "Titans");
     assert.equal(gwoAI.aiInUse("subcommander"), "Titans");
   });
 
   it("uses gwaio.ai for both enemy and subcommander when no aiAlly override is set", () => {
     const fixture = buildGame({ aiInUse: "Queller" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiInUse("enemy"), "Queller");
     assert.equal(gwoAI.aiInUse("subcommander"), "Queller");
   });
 
   it("uses gwaio.aiAlly for subcommander independent of the enemy's brain", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiAllyInUse: "Queller" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiInUse("enemy"), "Titans");
     assert.equal(gwoAI.aiInUse("subcommander"), "Queller");
   });
@@ -54,13 +47,13 @@ describe("aiInUse", () => {
 describe("getAIPathSource / getAIPathDestination", () => {
   it("getAIPathSource routes through aiInUse for the given type", () => {
     const fixture = buildGame({ aiInUse: "Penchant" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.getAIPathSource("enemy"), "/pa/ai_penchant/");
   });
 
   it("auto-scopes enemy destination to 'guardians' only for enemy+mirrorMode", () => {
     const fixture = buildGame({ aiInUse: "Titans", enemyType: "guardians" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       gwoAI.getAIPathDestination("enemy"),
       "/pa/ai/player_guardians/"
@@ -73,7 +66,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
       enemyType: "guardians",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     // guardians:true is derived and passed through to referee_ai_paths, which blocks
     // the dedicated subcommander branch regardless of aiMods - see
     // referee_ai_paths.test.js's "guardians blocks..." case.
@@ -82,7 +75,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
 
   it("passes an explicit scopeToken option through untouched", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       gwoAI.getAIPathDestination("subcommander", { scopeToken: ".player0" }),
       "/pa/ai_subcommander/player_.player0/"
@@ -94,7 +87,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
       aiInUse: "Titans",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       gwoAI.getAIPathDestination("subcommander"),
       "/pa/ai_subcommander/"
@@ -105,7 +98,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
 describe("getSubcommanderPathForViewer", () => {
   it("the host tag (.player) never gets a scoped path", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(inventory, ".player"),
@@ -115,7 +108,7 @@ describe("getSubcommanderPathForViewer", () => {
 
   it("a non-host tag gets scoped by that raw tag", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(inventory, ".player0"),
@@ -129,7 +122,7 @@ describe("getSubcommanderPathForViewer", () => {
       enemyType: "guardians",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(inventory, ".player0"),
@@ -139,7 +132,7 @@ describe("getSubcommanderPathForViewer", () => {
 
   it("derives smartSubcommanders from the given viewer's own inventory, not the current player's", () => {
     const fixture = buildGame({ aiInUse: "Queller" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     const smartInventory = makeInventory({
       cardsList: [{ id: "gwaio_upgrade_subcommander_tactics" }],
     });
@@ -178,7 +171,7 @@ describe("isCluster", () => {
 describe("aiEconRateWithFloor", () => {
   it("floors below the difficulty's econ base + econRatePerDist", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Beginner" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     // Beginner: econBase 0.35 + econRatePerDist 0.05 = 0.4 floor (floating-point
     // addition, so compare with a tolerance rather than strict equality).
     assert.ok(Math.abs(gwoAI.aiEconRateWithFloor(0.1) - 0.4) < 1e-9);
@@ -186,13 +179,13 @@ describe("aiEconRateWithFloor", () => {
 
   it("leaves a rate above the floor untouched", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Beginner" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiEconRateWithFloor(5), 5);
   });
 
   it("falls back to a floor of 1 for an unrecognized difficulty name", () => {
     const fixture = buildGame({ difficultyName: "!LOC:NotARealDifficulty" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiEconRateWithFloor(0.1), 1);
   });
 
@@ -200,13 +193,13 @@ describe("aiEconRateWithFloor", () => {
   // the case above fails. Without a field check that yields NaN, not a floor.
   it("falls back to a floor of 1 for the Custom tier, which has no econ fields", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Custom" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiEconRateWithFloor(0.1), 1);
   });
 
   it("leaves a rate above the Custom floor untouched rather than returning NaN", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Custom" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiEconRateWithFloor(5), 5);
   });
 });

@@ -9,7 +9,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
-  installModel,
+  useModel,
   makeInventory,
 } = require("../scripts/lib/ai-path-fixtures.js");
 const {
@@ -21,14 +21,10 @@ const refereeAi = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
 );
 
-let restoreModel;
+const installModel = useModel();
 let restoreFakes;
 
 afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
   if (restoreFakes) {
     restoreFakes();
     restoreFakes = undefined;
@@ -52,7 +48,7 @@ describe("aisShareAPath", () => {
       enemyType: "neither",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game, []);
+    installModel(fixture.game, []);
     const { listCalls } = installFakes({});
 
     const filesObj = {};
@@ -67,7 +63,7 @@ describe("aisShareAPath", () => {
       enemyType: "neither",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game, []);
+    installModel(fixture.game, []);
     const { listCalls } = installFakes({});
 
     const filesObj = {};
@@ -87,7 +83,7 @@ describe("file filtering", () => {
       enemyType: "neither",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game, []);
+    installModel(fixture.game, []);
     const { getJSONCalls } = installFakes({
       fileListByPath: {
         "/pa/ai/": [
@@ -112,7 +108,7 @@ describe("Guardians scoped destination", () => {
       enemyType: "guardians",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game, []);
+    installModel(fixture.game, []);
     installFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
       getJSON: () => ({ build_list: [{ to_build: "Bot", priority: 1 }] }),
@@ -137,7 +133,7 @@ describe("Guardians scoped destination", () => {
       enemyType: "guardians",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game, []);
+    installModel(fixture.game, []);
     installFakes({
       fileListByPath: {
         "/pa/ai/": ["/pa/ai/unit_maps/ai_unit_map.json"],
@@ -176,7 +172,7 @@ describe("per-player-tech viewer processing", () => {
       { id: "v1", name: "Viewer1", role: "viewer" },
       { id: "v2", name: "Viewer2", role: "viewer" },
     ];
-    restoreModel = installModel(fixture.game, connectedClients);
+    installModel(fixture.game, connectedClients);
     installFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
     });
@@ -210,7 +206,7 @@ describe("per-player-tech viewer processing", () => {
       { id: "v1", name: "Viewer1", role: "viewer" },
       { id: "v2", name: "Viewer2", role: "viewer" },
     ];
-    restoreModel = installModel(fixture.game, connectedClients);
+    installModel(fixture.game, connectedClients);
     const { listCalls, getJSONCalls } = installFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
     });
@@ -242,7 +238,7 @@ describe("per-player-tech viewer processing", () => {
     });
     fixture.game.findCoopPlayerInventoryData = (client) =>
       client.id === "v1" ? { inventory: viewerInventory } : undefined;
-    restoreModel = installModel(fixture.game, [
+    installModel(fixture.game, [
       { id: "host", name: "Host", role: "host" },
       { id: "v1", name: "Viewer1", role: "viewer" },
     ]);
