@@ -103,7 +103,7 @@ define(function () {
     },
 
     // Every card that grants a slot says so as its own paragraph. Kept here so the
-    // wording stays one translatable string rather than 114 copies of it.
+    // wording stays one translatable string rather than over a hundred copies of it.
     withSlot: function (description) {
       return (
         description +
