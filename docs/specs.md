@@ -99,24 +99,34 @@ whatever code they like anyway, so the risk is not meaningful.
 
 ### Creating an attribute that doesn't exist
 
-Not every op writes to a path the stock spec never had. `replace` always does — it
-returns the value regardless of what was there — and the path walker builds any
-missing intermediate containers on the way to the leaf, so a path several levels
-deeper than the stock spec goes still lands. Reach for `replace` unless the value
-depends on what is already there.
+No op ever learns whether the attribute was there. The path walker creates the leaf
+key _before_ calling the op — as `undefined`, or as an empty container for `push`,
+`pull` and `merge` — so what an op branches on is the value it was handed, and a
+missing attribute and one explicitly holding `null` reach it looking the same. That
+distinction only surfaces in one place, noted under the table.
 
-| Op                 | Target absent                                         |
-| ------------------ | ----------------------------------------------------- |
-| `replace`          | Writes the value.                                     |
-| `multiplyOrCreate` | Writes the value; multiplies it only if one is there. |
-| `add`              | Writes the value (nullish target).                    |
-| `push`, `prepend`  | Creates the array.                                    |
-| `multiply`         | **Warns and leaves it absent.**                       |
-| `merge`            | **Warns and leaves it absent.**                       |
+Missing intermediate segments are created too, so a path that goes several levels
+deeper than the stock spec still lands. `replace` writes whatever it is given
+regardless, so it is the op to reach for unless the new value has to be derived from
+the old one.
 
-The last two are the traps. `multiply` deliberately does not create (see above), and
-`merge` needs a plain object to `_.assign` into — an absent target is not one, so
-seeding a new object means `replace` first, or `replace` alone.
+| Op                        | Attribute missing                              | Attribute present, holding `null` |
+| ------------------------- | ---------------------------------------------- | --------------------------------- |
+| `replace`                 | Writes the value.                              | Writes the value.                 |
+| `multiplyOrCreate`        | Writes the value.                              | Writes the value.                 |
+| `add`                     | Writes the value.                              | Writes the value.                 |
+| `push`, `prepend`, `pull` | Creates the array.                             | Creates the array.                |
+| `wipe`                    | Creates the string.                            | Creates the string.               |
+| `multiply`                | **Warns, writes nothing.**                     | **Warns, writes nothing.**        |
+| `merge`                   | Creates the object — the walker seeds it `{}`. | **Warns, writes nothing.**        |
+
+`multiply` is the one to watch: it deliberately does not create (see above), and a
+card that wants creation asks for `multiplyOrCreate` by name.
+
+`merge` is the exception to attribute-missing and value-`null` behaving alike. It
+needs a plain object to `_.assign` into, which a `null` is not, so the two cases
+diverge: seeding over an explicit `null` takes a `replace` first, or a `replace`
+alone.
 
 ### Writing a spec reference
 
