@@ -46,6 +46,27 @@ enforced floor that must never be lowered to make a run pass. The other 61 are
 reached by `test/card_deal_unit_gate.test.js`, which stubs `shared/gw_common` and so
 loads all but one — see [`testing.md`](testing.md).
 
+## Which shape to write a card in
+
+Three shapes, and the card's family decides which:
+
+| Family                            | Shape                       | Count |
+| --------------------------------- | --------------------------- | ----- |
+| Unit upgrades (`gwaio_upgrade_*`) | `gwoCard.upgradeCard({})`   | 117   |
+| Loadouts (`*_start_*`)            | `gwoCard.loadout(CARD, {})` | 26    |
+| Everything else                   | The object literal above    | 94    |
+
+The first two families each have a rigid frame every member repeats - a slot and a
+`requires` gate for an upgrade, the `buffCount` bank dance for a loadout - so the
+factory carries the frame and the card supplies only what differs. **Write a new
+card of either family through its factory**; a card that cannot fit stays a literal,
+and several do (see the factory's options, and the notes at the end of this file).
+
+Everything else is a literal because there is no shared frame to lift: those cards'
+`deal` weighting is where their variety lives, and a factory for them would need an
+override for nearly every field. That is the test to apply to a fourth family if one
+appears - a factory is worth it when the members differ in _data_, not in _logic_.
+
 ## `buff` and `dull`
 
 `buff(inventory)` applies the card's effect; `dull(inventory)` reverses it. Two
