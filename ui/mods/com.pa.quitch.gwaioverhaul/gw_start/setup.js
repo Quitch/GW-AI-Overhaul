@@ -386,6 +386,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js",
         "main/game/galactic_war/shared/js/systems/template-loader",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_build.js",
       ],
       function (
         GW,
@@ -408,8 +409,11 @@ function gwoSetup() {
         gwoRng,
         gwoFactionSeed,
         chooseStarSystemTemplates,
-        gwoBiomeMods
+        gwoBiomeMods,
+        gwoGalaxyBuild
       ) {
+        // Replaces GWGalaxy.prototype.build, which navToNewGame below calls.
+        gwoGalaxyBuild.install();
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
         gwoFavourites = favouritesModule;
 
