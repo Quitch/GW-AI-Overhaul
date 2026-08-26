@@ -27,7 +27,8 @@ define([
         gwoCard.flatMapMods(
           gwoGroup.orbitalAmmo,
           "multiply",
-          gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+          gwoCard.paths.damage,
+          1.25
         )
       );
     },

@@ -734,24 +734,36 @@ describe("observerPaths", () => {
 });
 
 describe("eachPath", () => {
-  it("gives every path the same value, in path order", () => {
-    const props = cards.eachPath(["a", "b.c"], 1.5);
-    assert.deepEqual(props, { a: 1.5, "b.c": 1.5 });
-    assert.deepEqual(Object.keys(props), ["a", "b.c"]);
-  });
-
-  it("feeds mods() the same descriptors a literal would", () => {
+  it("builds a props map so other keys can be merged in", () => {
     assert.deepEqual(
-      cards.mods("u.json", "multiply", cards.eachPath(cards.paths.damage, 2)),
-      [
-        { file: "u.json", path: "damage", op: "multiply", value: 2 },
-        { file: "u.json", path: "splash_damage", op: "multiply", value: 2 },
-      ]
+      _.assign(cards.eachPath(cards.paths.damage, 2), { max_health: 1.5 }),
+      { damage: 2, splash_damage: 2, max_health: 1.5 }
     );
   });
 
-  it("returns an empty object for no paths", () => {
-    assert.deepEqual(cards.eachPath([], 1), {});
+  it("leaves the shared paths constant alone", () => {
+    cards.eachPath(cards.paths.damage, 2);
+    assert.deepEqual(cards.paths.damage, ["damage", "splash_damage"]);
+  });
+});
+
+describe("mods over a list of paths", () => {
+  it("gives every path the same value, in list order", () => {
+    assert.deepEqual(cards.mods("u.json", "multiply", cards.paths.damage, 2), [
+      { file: "u.json", path: "damage", op: "multiply", value: 2 },
+      { file: "u.json", path: "splash_damage", op: "multiply", value: 2 },
+    ]);
+  });
+
+  it("matches what the same paths written as a map produce", () => {
+    assert.deepEqual(
+      cards.mods("u.json", "multiply", cards.paths.damage, 2),
+      cards.mods("u.json", "multiply", { damage: 2, splash_damage: 2 })
+    );
+  });
+
+  it("emits nothing for no paths", () => {
+    assert.deepEqual(cards.mods("u.json", "multiply", [], 1), []);
   });
 });
 

@@ -29,7 +29,8 @@ define([
             gwoCard.mods(
               gwoUnit.firefly,
               "multiply",
-              gwoCard.eachPath(gwoCard.observerPaths(2, "radius"), 2)
+              gwoCard.observerPaths(2, "radius"),
+              2
             ),
             gwoCard.mods(gwoUnit.fireflyAmmo, "multiply", { damage: 3.34 })
           )

@@ -29,7 +29,8 @@ define([
             gwoCard.mods(
               gwoUnit.skitter,
               "multiply",
-              gwoCard.eachPath(gwoCard.observerPaths(3, "radius"), 2)
+              gwoCard.observerPaths(3, "radius"),
+              2
             ),
             gwoCard.mods(gwoUnit.skitterAmmo, "multiply", {
               initial_velocity: 2,

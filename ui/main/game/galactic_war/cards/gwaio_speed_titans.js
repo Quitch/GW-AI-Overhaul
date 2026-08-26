@@ -22,7 +22,8 @@ define([
         gwoCard.flatMapMods(
           gwoGroup.titansMobile,
           "multiply",
-          gwoCard.eachPath(gwoCard.paths.navigation, 1.2)
+          gwoCard.paths.navigation,
+          1.2
         )
       );
     },

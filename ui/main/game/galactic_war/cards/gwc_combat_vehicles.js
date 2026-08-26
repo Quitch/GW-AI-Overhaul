@@ -37,7 +37,8 @@ define([
             gwoCard.flatMapMods(
               gwoGroup.vehiclesAmmo,
               "multiply",
-              gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+              gwoCard.paths.damage,
+              1.25
             )
           )
       );

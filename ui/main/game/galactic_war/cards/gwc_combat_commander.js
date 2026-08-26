@@ -28,11 +28,7 @@ define([
 
       _.forEach(gwoGroup.commanderAmmo, function (ammo) {
         mods = mods.concat(
-          gwoCard.mods(
-            ammo,
-            "multiply",
-            gwoCard.eachPath(gwoCard.paths.damage, 1.25)
-          )
+          gwoCard.mods(ammo, "multiply", gwoCard.paths.damage, 1.25)
         );
       });
 

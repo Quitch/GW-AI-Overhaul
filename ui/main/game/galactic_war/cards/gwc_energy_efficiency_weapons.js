@@ -30,7 +30,8 @@ define([
         gwoCard.flatMapMods(
           gwoGroup.energyWeapons,
           "multiply",
-          gwoCard.eachPath(gwoCard.paths.energyWeapon, 0.25)
+          gwoCard.paths.energyWeapon,
+          0.25
         )
       );
     },

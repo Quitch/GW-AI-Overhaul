@@ -18,11 +18,7 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        gwoCard.mods(
-          gwoUnit.commander,
-          "multiply",
-          gwoCard.eachPath(gwoCard.paths.navigation, 2)
-        )
+        gwoCard.mods(gwoUnit.commander, "multiply", gwoCard.paths.navigation, 2)
       );
     },
     dull: function () {},

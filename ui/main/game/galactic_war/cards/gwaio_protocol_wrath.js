@@ -23,15 +23,15 @@ define([
       var sightMods = gwoCard.flatMapMods(
         gwoGroup.combatMobile,
         "multiply",
-        gwoCard.eachPath(
-          gwoCard.observerPaths(2, "radius"),
-          percentageReduction
-        )
+
+        gwoCard.observerPaths(2, "radius"),
+        percentageReduction
       );
       var speedMods = gwoCard.flatMapMods(
         gwoGroup.combatMobile,
         "multiply",
-        gwoCard.eachPath(gwoCard.paths.navigation, percentageIncrease)
+        gwoCard.paths.navigation,
+        percentageIncrease
       );
       var rangeMods = gwoCard.flatMapMods(
         gwoGroup.combatMobileWeapons,

@@ -144,9 +144,14 @@ define(function () {
     };
   };
 
-  var mods = function (file, op, props) {
-    return _.map(_.keys(props), function (path) {
-      return { file: file, path: path, op: op, value: props[path] };
+  // props is either a path -> value map, or a list of paths that all take the
+  // same `value`. Emitted in the order the map's keys or the list give.
+  var mods = function (file, op, props, value) {
+    var byPath = _.isArray(props)
+      ? _.zipObject(props, _.times(props.length, _.constant(value)))
+      : props;
+    return _.map(_.keys(byPath), function (path) {
+      return { file: file, path: path, op: op, value: byPath[path] };
     });
   };
 
@@ -409,6 +414,7 @@ define(function () {
     },
 
     // e.g. mods(gwoUnit.x, "replace", { max_health: 100 })
+    //      mods(gwoUnit.x, "multiply", gwoCard.paths.navigation, 1.25)
     mods: mods,
 
     // The attribute sets cards multiply as one, in the order they emit them.
@@ -423,7 +429,13 @@ define(function () {
       energyWeapon: ["ammo_capacity", "ammo_demand", "ammo_per_shot"],
     },
 
-    // The first `count` recon.observer slots' `field`, for eachPath().
+    // One value across several paths, as a props map - for merging with other
+    // keys. Passing the paths straight to mods()/flatMapMods() needs no map.
+    eachPath: function (paths, value) {
+      return _.zipObject(paths, _.times(paths.length, _.constant(value)));
+    },
+
+    // The first `count` recon.observer slots' `field`.
     observerPaths: function (count, field) {
       return _.times(count, function (i) {
         return "recon.observer.items." + i + "." + field;
@@ -431,15 +443,12 @@ define(function () {
     },
 
     // { path: value } for every path, for mods() and flatMapMods().
-    eachPath: function (paths, value) {
-      return _.zipObject(paths, _.times(paths.length, _.constant(value)));
-    },
 
     // mods() over every file, flattened: one file's entries before the next's.
-    flatMapMods: function (files, op, props) {
+    flatMapMods: function (files, op, props, value) {
       return _.flatten(
         _.map(_.isString(files) ? [files] : files, function (file) {
-          return mods(file, op, props);
+          return mods(file, op, props, value);
         })
       );
     },

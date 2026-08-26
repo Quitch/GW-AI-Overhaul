@@ -29,7 +29,8 @@ define([
       var mods = gwoCard.flatMapMods(
         gwoGroup.orbitalMobile,
         "multiply",
-        gwoCard.eachPath(gwoCard.paths.navigation, 1.5)
+        gwoCard.paths.navigation,
+        1.5
       );
 
       inventory.addMods(
@@ -40,7 +41,8 @@ define([
           gwoCard.flatMapMods(
             gwoGroup.orbitalAmmo,
             "multiply",
-            gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+            gwoCard.paths.damage,
+            1.25
           )
         )
       );

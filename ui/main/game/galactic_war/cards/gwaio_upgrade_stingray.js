@@ -29,7 +29,8 @@ define([
             gwoCard.mods(
               gwoUnit.stingray,
               "multiply",
-              gwoCard.eachPath(gwoCard.observerPaths(4, "radius"), 1.5)
+              gwoCard.observerPaths(4, "radius"),
+              1.5
             )
           )
       );

@@ -19,7 +19,7 @@ gwoCard.mods(gwoUnit.dox, "replace", { max_health: 100, max_speed: 12 });
 ```
 
 and `flatMapMods(files, op, props)` for the same props over a list of files (a
-single path is accepted too). It emits one file's entries before the next's, in
+single file is accepted too). It emits one file's entries before the next's, in
 `props` key order, which matters where a later descriptor overrides an earlier one:
 
 ```js
@@ -29,16 +29,26 @@ gwoCard.flatMapMods(gwoGroup.botsAmmo, "multiply", {
 });
 ```
 
-The attribute sets cards scale together are published as `gwoCard.paths` -
-`navigation` (the four movement stats), `damage` (`damage` and `splash_damage`)
-and `energyWeapon` (the ammo triple) - and `eachPath(paths, value)` turns one
-into the props object above, so the example is also:
+Where every path takes the **same** value, pass them as a list and give the value
+last instead of repeating it per key. The attribute sets cards scale together are
+published as `gwoCard.paths` - `navigation` (the four movement stats), `damage`
+(`damage` and `splash_damage`) and `energyWeapon` (the ammo triple) - so the
+example is also:
+
+```js
+gwoCard.flatMapMods(gwoGroup.botsAmmo, "multiply", gwoCard.paths.damage, 1.25);
+```
+
+To scale one of those sets **and** something else in the same pass, build the map
+with `eachPath(paths, value)` and merge the rest in. Two `flatMapMods` calls
+concatenated would emit every unit's navigation entries before any unit's health,
+where this keeps each unit's together:
 
 ```js
 gwoCard.flatMapMods(
-  gwoGroup.botsAmmo,
+  gwoGroup.botsMobile,
   "multiply",
-  gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+  _.assign(gwoCard.eachPath(gwoCard.paths.navigation, 1.5), { max_health: 1.5 })
 );
 ```
 
@@ -50,7 +60,8 @@ layer and channel, so a radar card scales the first few slots at once.
 gwoCard.mods(
   gwoUnit.radar,
   "multiply",
-  gwoCard.eachPath(gwoCard.observerPaths(5, "radius"), 1.5)
+  gwoCard.observerPaths(5, "radius"),
+  1.5
 );
 ```
 

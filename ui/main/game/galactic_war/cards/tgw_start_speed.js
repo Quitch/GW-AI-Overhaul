@@ -25,7 +25,8 @@ define([
             gwoCard.flatMapMods(
               gwoGroup.ammo,
               "multiply",
-              gwoCard.eachPath(gwoCard.paths.damage, 0.5)
+              gwoCard.paths.damage,
+              0.5
             ),
             gwoCard.flatMapMods(gwoGroup.immobile, "multiply", {
               build_metal_cost: 0.7,

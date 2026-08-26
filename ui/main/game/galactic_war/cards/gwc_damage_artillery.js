@@ -32,7 +32,8 @@ define([
           .flatMapMods(
             gwoGroup.structuresArtilleryAmmo,
             "multiply",
-            gwoCard.eachPath(gwoCard.paths.damage, 1.25)
+            gwoCard.paths.damage,
+            1.25
           )
           .concat(
             gwoCard.flatMapMods(

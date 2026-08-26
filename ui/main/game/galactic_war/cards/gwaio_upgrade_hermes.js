@@ -14,7 +14,8 @@ define([
         gwoCard.mods(
           gwoUnit.hermes,
           "multiply",
-          gwoCard.eachPath(gwoCard.observerPaths(3, "radius"), 1.5)
+          gwoCard.observerPaths(3, "radius"),
+          1.5
         )
       );
     },

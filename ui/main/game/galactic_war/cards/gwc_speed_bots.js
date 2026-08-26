@@ -24,7 +24,8 @@ define([
         gwoCard.flatMapMods(
           gwoGroup.botsMobile,
           "multiply",
-          gwoCard.eachPath(gwoCard.paths.navigation, 1.5)
+          gwoCard.paths.navigation,
+          1.5
         )
       );
     },

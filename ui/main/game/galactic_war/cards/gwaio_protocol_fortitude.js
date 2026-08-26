@@ -23,7 +23,8 @@ define([
       var speedMods = gwoCard.flatMapMods(
         gwoGroup.combatMobile,
         "multiply",
-        gwoCard.eachPath(gwoCard.paths.navigation, percentageReduction)
+        gwoCard.paths.navigation,
+        percentageReduction
       );
       var healthMods = gwoCard.flatMapMods(gwoGroup.combat, "multiply", {
         max_health: percentageIncrease,

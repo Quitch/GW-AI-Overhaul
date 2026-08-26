@@ -14,16 +14,13 @@ define([
       inventory.maxCards(inventory.maxCards() - 3);
       inventory.addMods(
         gwoCard
-          .mods(
-            gwoUnit.commander,
-            "multiply",
-            gwoCard.eachPath(gwoCard.paths.navigation, 5)
-          )
+          .mods(gwoUnit.commander, "multiply", gwoCard.paths.navigation, 5)
           .concat(
             gwoCard.mods(
               gwoUnit.commanderSecondary,
               "multiply",
-              gwoCard.eachPath(gwoCard.paths.energyWeapon, 0.25)
+              gwoCard.paths.energyWeapon,
+              0.25
             ),
             gwoCard.flatMapMods(gwoGroup.commanderPrimaryWeapons, "multiply", {
               rate_of_fire: 2,
