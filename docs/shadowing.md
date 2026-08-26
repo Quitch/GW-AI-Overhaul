@@ -207,6 +207,15 @@ tested** — `shared/gw_galaxy` cannot load under the Node harness, so there is 
 to load directly. `shared/gw_galaxy_connect.js` and `shared/gw_system_brackets.js`
 remain measured and tested; they are called from `build`, not from the constructor.
 
+Measured on a live client rather than reasoned about: one seed built the same galaxy
+before and after the swap — same gate count, same origin, same distance for all 18
+stars — and `model.game().galaxy().pathBetween.toString()` flips from GWO's body to
+stock's across it. Routing still works on stock's: `canSelect` returns the same paths
+`neighborsMap` implies, `move()` walks them, and `noFog` widens the reachable set.
+**A file appearing or disappearing needs a PA restart** — only edits to files that
+already existed at launch are picked up live, so measuring this without one reads the
+shadow as absent when it is on disk.
+
 If a future PA patch changes `pathBetween` again, the fog-of-war rules to check it
 against are: the last hop is allowed when either endpoint is explored, or under
 `noFog`; an intermediate star is traversable when explored, or when visited at all
