@@ -184,7 +184,7 @@ and would make a hand depend on the order cards were acquired in.
 
 | Where                                                                    | Was                                                                                                                                                                                                                                                                                                                                |
 | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GalaxyBuilder.buildGraph`                                               | `reduceConnections(max)` with no seed → `Math.seedrandom(undefined)` → autoseeded from `crypto`. Gate topology re-rolled every build, and with it every star's `distance()`. Hijacked on the prototype from `gw_galaxy.js`; see [`shadowing.md`](shadowing.md).                                                                    |
+| `GalaxyBuilder.buildGraph`                                               | `reduceConnections(max)` with no seed → `Math.seedrandom(undefined)` → autoseeded from `crypto`. Gate topology re-rolled every build, and with it every star's `distance()`. Hijacked on the prototype from `gw_start/galaxy_build.js`; see [`shadowing.md`](shadowing.md).                                                        |
 | `template-loader.js`                                                     | System name and biome were `_.sample`. Worse, each planet's eight generator values were drawn from a shared stream _inside_ `$.when(biomeGet, nameGet).then(...)`, so a seeded stream was consumed in an unseeded order. Now keyed per planet, taken synchronously — in `shared/gwo_system_templates.js`, not a shadow; see below. |
 | `gw_breeder.js`, `gw_teams.js`                                           | Spawn placement, team pick, and a `makeBoss` that generated its system with no seed at all. Copied into `gw_start/gwo_breeder.js` and `gw_start/gwo_teams.js` rather than shadowed; see below.                                                                                                                                     |
 | `gw_faction_*.js`, `cluster_faction.js`, `cluster_planets.js`, `lore.js` | Sampled at `define()` time, so they re-rolled on every entry into `gw_start` rather than following the seed.                                                                                                                                                                                                                       |
@@ -253,7 +253,7 @@ galaxies depending on whether that mod is mounted.
 
 `coopSystemPlayerBonus` is `coopPlayers - 1`, so a solo war contributes nothing and the
 scale starts at 0. It reads like an off-by-one and is not one; the reasoning is at its
-declaration in `gw_galaxy.js`.
+declaration in `gw_start/galaxy_build.js`.
 
 ### System brackets, under Shared Systems for Galactic War
 
