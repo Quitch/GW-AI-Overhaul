@@ -50,11 +50,11 @@ loads all but one — see [`testing.md`](testing.md).
 
 Three shapes, and the card's family decides which:
 
-| Family                            | Shape                       | Count |
-| --------------------------------- | --------------------------- | ----- |
-| Unit upgrades (`gwaio_upgrade_*`) | `gwoCard.upgradeCard({})`   | 117   |
-| Loadouts (`*_start_*`)            | `gwoCard.loadout(CARD, {})` | 26    |
-| Everything else                   | The object literal above    | 94    |
+| Family                            | Shape                       |
+| --------------------------------- | --------------------------- |
+| Unit upgrades (`gwaio_upgrade_*`) | `gwoCard.upgradeCard({})`   |
+| Loadouts (`*_start_*`)            | `gwoCard.loadout(CARD, {})` |
+| Everything else                   | The object literal above    |
 
 The first two families each have a rigid frame every member repeats - a slot and a
 `requires` gate for an upgrade, the `buffCount` bank dance for a loadout - so the
