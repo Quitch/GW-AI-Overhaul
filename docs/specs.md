@@ -97,6 +97,27 @@ stat, and it is why `multiplyOrCreate` runs before `multiply` in the op ordering
 `eval` is theoretically unsafe. It is also pointless to worry about: mods can run
 whatever code they like anyway, so the risk is not meaningful.
 
+### Creating an attribute that doesn't exist
+
+Not every op writes to a path the stock spec never had. `replace` always does — it
+returns the value regardless of what was there — and the path walker builds any
+missing intermediate containers on the way to the leaf, so a path several levels
+deeper than the stock spec goes still lands. Reach for `replace` unless the value
+depends on what is already there.
+
+| Op                 | Target absent                                         |
+| ------------------ | ----------------------------------------------------- |
+| `replace`          | Writes the value.                                     |
+| `multiplyOrCreate` | Writes the value; multiplies it only if one is there. |
+| `add`              | Writes the value (nullish target).                    |
+| `push`, `prepend`  | Creates the array.                                    |
+| `multiply`         | **Warns and leaves it absent.**                       |
+| `merge`            | **Warns and leaves it absent.**                       |
+
+The last two are the traps. `multiply` deliberately does not create (see above), and
+`merge` needs a plain object to `_.assign` into — an absent target is not one, so
+seeding a new object means `replace` first, or `replace` alone.
+
 ### Writing a spec reference
 
 Mods run **after** `genUnitSpecs` has tagged the army's specs, so a `.json` path
