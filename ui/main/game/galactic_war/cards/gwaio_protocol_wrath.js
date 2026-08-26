@@ -23,7 +23,6 @@ define([
       var sightMods = gwoCard.flatMapMods(
         gwoGroup.combatMobile,
         "multiply",
-
         gwoCard.observerPaths(2, "radius"),
         percentageReduction
       );
