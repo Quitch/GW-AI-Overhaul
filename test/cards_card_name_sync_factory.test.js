@@ -6,12 +6,16 @@
 // for. The three naming helpers underneath are pinned in
 // cards_card_name_sync.test.js.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const { rejection } = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js"
@@ -35,9 +39,7 @@ function setup(overrides = {}) {
   const handlers = {};
 
   const stubs = createGlobalStubs();
-  const $ = function () {};
-  $.Deferred = makeDeferred;
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs);
   stubs.setGlobal("requireGW", (ids, done) => {
     const cardId = ids[0].slice("cards/".length);
     calls.requested.push(cardId);
@@ -74,39 +76,16 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
+const { build, release } = trackActive(setup);
 
 afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
+  mock.restoreAll();
 });
 
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
-
-async function rejection(promise) {
-  try {
-    await promise;
-  } catch (reason) {
-    return reason;
-  }
-  return undefined;
-}
-
 async function capture(stream, run) {
-  const messages = [];
-  const prior = console[stream];
-  console[stream] = (message) => messages.push(message);
-  try {
-    await run();
-  } finally {
-    console[stream] = prior;
-  }
-  return messages;
+  const mocked = mock.method(console, stream, () => {});
+  await run();
+  return mocked.mock.calls.map((call) => call.arguments[0]);
 }
 
 describe("card name sync - naming a star the host explored", () => {
@@ -163,8 +142,7 @@ describe("card name sync - when the broadcast is skipped", () => {
       await sync.setCardName(system, [{ id: "gwc_combat_bots" }], starIndex);
 
       assert.deepEqual(calls.sent, [], String(starIndex));
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 });
@@ -206,8 +184,7 @@ describe("card name sync - applying a name a viewer received", () => {
       });
       assert.deepEqual(calls.requested, [], JSON.stringify(payload));
       assert.equal(errors.length, 1);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 

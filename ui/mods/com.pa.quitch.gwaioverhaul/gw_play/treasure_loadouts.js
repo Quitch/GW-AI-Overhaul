@@ -4,12 +4,22 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
-], function (gwoLoadoutIds, helpers, gwoLoadoutBanks) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
+], function (gwoLoadoutIds, helpers, gwoLoadoutBanks, coopHost) {
   var cardId = function (card) {
     if (_.isString(card)) {
       return card;
     }
     return card && _.isString(card.id) ? card.id : undefined;
+  };
+
+  // The distinct loadout ids in a list of cards or ids.
+  var loadoutIdsOf = function (cards) {
+    return _.uniq(
+      _.filter(_.map(cards, cardId), function (id) {
+        return helpers.isStartLoadoutCardId(id);
+      })
+    );
   };
 
   // The base game records only ids beginning "gwc_start", so every mod loadout a
@@ -22,14 +32,7 @@ define([
       ? record.gwaioUnlockedStartCardIds
       : [];
 
-    return _.uniq(
-      _.filter(
-        _.map(base.concat(gwaio, [record && record.loadoutCardId]), cardId),
-        function (id) {
-          return helpers.isStartLoadoutCardId(id);
-        }
-      )
-    );
+    return loadoutIdsOf(base.concat(gwaio, [record && record.loadoutCardId]));
   };
 
   // gw_game.js's winTurn passes the Guardians' ai.team to defeatTeam, and
@@ -100,13 +103,9 @@ define([
   // is a fresh page, so this holds only what the mod's own gw_play loader pushed -
   // shared/loadouts.js, which adds GWO's unlockable list, runs in gw_start.
   var modLoadoutIds = function () {
-    var registered = _.isArray(model.gwoNewStartCards)
-      ? model.gwoNewStartCards
-      : [];
-
-    return _.filter(_.map(registered, cardId), function (id) {
-      return helpers.isStartLoadoutCardId(id);
-    });
+    return loadoutIdsOf(
+      _.isArray(model.gwoNewStartCards) ? model.gwoNewStartCards : []
+    );
   };
 
   var treasureLoadoutPool = function () {
@@ -181,14 +180,10 @@ define([
   // every mod loadout, so a registered bank's holdings have to come along here or
   // the host will keep offering the viewer loadouts they already own.
   var localUnlockedLoadoutIds = function (stockBank, gwoBank) {
-    var held = stockBank
-      .startCards()
-      .concat(gwoBank.startCards(), gwoLoadoutBanks.startCards());
-
-    return _.uniq(
-      _.filter(_.map(held, cardId), function (id) {
-        return helpers.isStartLoadoutCardId(id);
-      })
+    return loadoutIdsOf(
+      stockBank
+        .startCards()
+        .concat(gwoBank.startCards(), gwoLoadoutBanks.startCards())
     );
   };
 
@@ -219,12 +214,9 @@ define([
       return;
     }
 
-    var stored = game.upsertCoopPlayerInventoryData(
-      _.assign({}, _.cloneDeep(record), {
-        gwaioUnlockedStartCardIds: ids,
-        updatedAt: _.now(),
-      })
-    );
+    var stored = coopHost.upsertRecord(game, record, {
+      gwaioUnlockedStartCardIds: ids,
+    });
     if (!stored) {
       console.error("[GW COOP] failed to store reported loadout unlocks");
       return;

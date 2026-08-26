@@ -36,15 +36,9 @@ define([
         gwoUnit.barnacle,
         gwoUnit.teleporter
       );
-      var mods = _.map(units, function (unit) {
-        return {
-          file: unit,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 0.5,
-        };
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard.flatMapMods(units, "multiply", { build_metal_cost: 0.5 })
+      );
     },
     dull: function () {},
   };

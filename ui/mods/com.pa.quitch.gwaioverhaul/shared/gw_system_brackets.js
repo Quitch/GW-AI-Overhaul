@@ -5,7 +5,9 @@
 // window and never looks at spawn points, so size stops tracking how many
 // commanders a map was built for. These brackets restore that from the landing
 // zones. A measured sibling of the shadowed gw_galaxy.js - see testing.md.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
+], function (gwoBiomes) {
   // What system_editor.js's customLandingZones defaults an absent or zero rule bound to.
   var MIN_ARMIES = 2;
   var MAX_ARMIES = 32;
@@ -79,15 +81,12 @@ define(function () {
     return [Math.max(MIN_ARMIES, min), Math.max(MIN_ARMIES, max)];
   };
 
-  // Every pooled system has been through UberUtility.fixupPlanetConfig, which
-  // renames planet.planet to planet.generator. Both forms are read, so this also
-  // works against default_systems.json straight off disk.
   var generatedArmies = function (system) {
     var planets = (system && system.planets) || [];
     var total = 0;
 
     for (var planet of planets) {
-      var generator = planet.generator || planet.planet;
+      var generator = gwoBiomes.generatorOf(planet);
       if (generator && generator.numArmies) {
         total += generator.numArmies;
       }
@@ -135,12 +134,24 @@ define(function () {
     ].join("|");
   };
 
-  var bracketsFrom = function (systems) {
+  // `providers` names the modded biomes a battle can be given; see galaxy.md.
+  var bracketsFrom = function (systems, providers) {
     var pool = _.sortBy(systems || [], poolOrder);
     var byRange = {};
     var brackets = [];
 
     for (var system of pool) {
+      var biome = gwoBiomes.unservableBiome(system, providers);
+      if (biome) {
+        console.warn(
+          "gwoSystemBrackets: '" +
+            ((system && system.name) || "unnamed system") +
+            "' uses biome '" +
+            biome +
+            "', which the Galactic War server cannot load; dropping it from the galaxy pool"
+        );
+        continue;
+      }
       var range = armyRange(system);
       if (!range) {
         console.warn(
@@ -225,17 +236,15 @@ define(function () {
 
   // The pool holds live references - My Systems is a bound IndexedDB row - so
   // withoutBrokenSystems' in-place backfill has to go on the copy instead.
-  var copyOf = function (system) {
+  var copyOf = function (system, providers) {
     var copy = JSON.parse(JSON.stringify(system));
-    var started = false;
-
-    for (var planet of copy.planets) {
-      if (planet.starting_planet) {
-        started = true;
-      }
-    }
-    if (!started) {
+    if (!_.some(copy.planets, "starting_planet")) {
       copy.planets[0].starting_planet = true;
+    }
+
+    var mods = gwoBiomes.modsFor(copy, providers);
+    if (mods.length) {
+      copy.gwoBiomeMods = mods;
     }
 
     return copy;
@@ -243,7 +252,7 @@ define(function () {
 
   // Hands each star the smallest unplaced system that fits. `random` is consumed
   // only while ordering - take() must stay deterministic.
-  var selectorFor = function (brackets, random) {
+  var selectorFor = function (brackets, random, providers) {
     var list = brackets || [];
     var highest = highestMax(list);
     var ordered = [];
@@ -297,7 +306,7 @@ define(function () {
         }
         if (!entry.taken) {
           entry.taken = true;
-          return copyOf(entry.system);
+          return copyOf(entry.system, providers);
         }
         placed.push(entry);
       }
@@ -306,7 +315,7 @@ define(function () {
       if (!placed.length) {
         return null;
       }
-      return copyOf(placed[reused++ % placed.length].system);
+      return copyOf(placed[reused++ % placed.length].system, providers);
     };
 
     return {

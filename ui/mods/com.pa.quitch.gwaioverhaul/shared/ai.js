@@ -18,14 +18,28 @@ define([
     return inventory.aiMods || [];
   };
 
+  // The origin star's system carries the war's GWO settings as `gwaio` - see
+  // gw_start/setup.js. A stock war has no such field.
+  var originSystem = function (game) {
+    var galaxy = game.galaxy();
+    return galaxy.stars()[galaxy.origin()].system();
+  };
+
+  var originSettings = function (game) {
+    return originSystem(game).gwaio;
+  };
+
+  var currentStarAi = function (game) {
+    return game.galaxy().stars()[game.currentStar()].ai();
+  };
+
   var aiInUse = function (alignment) {
-    var galaxy = model.game().galaxy();
-    var originSystem = galaxy.stars()[galaxy.origin()].system();
-    if (originSystem.gwaio) {
-      if (alignment === "subcommander" && originSystem.gwaio.aiAlly) {
-        return originSystem.gwaio.aiAlly;
+    var gwoSettings = originSettings(model.game());
+    if (gwoSettings) {
+      if (alignment === "subcommander" && gwoSettings.aiAlly) {
+        return gwoSettings.aiAlly;
       }
-      return originSystem.gwaio.ai;
+      return gwoSettings.ai;
     }
     return "Titans";
   };
@@ -52,7 +66,47 @@ define([
 
   return {
     aiInUse: aiInUse,
+    currentStarAi: currentStarAi,
     getInventoryAiMods: getInventoryAiMods,
+    originSettings: originSettings,
+    originSystem: originSystem,
+
+    // The advanced structures a basic fabber's upgrade card lets it build.
+    advancedStructureBuilds: [
+      "AdvancedAirDefense",
+      "AdvancedLandDefense",
+      "AdvancedNavalDefense",
+      "AdvancedRadar",
+      "AntiNukeSilo",
+      "ControlModule",
+      "LongRangeArtillery",
+      "NukeSilo",
+      "PlanetEngine",
+      "TML",
+      "UnitCannon",
+    ],
+
+    // Adds `builder` to the builders of every build named, in every list
+    // that carries it. See ai-pipeline.md.
+    builderAppendMods: function (type, names, builder) {
+      return _.map(names, function (name) {
+        return {
+          type: type,
+          op: "append",
+          toBuild: name,
+          idToMod: "builders",
+          value: builder,
+          matchAll: true,
+        };
+      });
+    },
+
+    // One spec tag per enemy faction in a battle: the star's AI, then its foes.
+    aiTags: function (ai) {
+      return _.times(ai.foes ? 1 + ai.foes.length : 1, function (n) {
+        return ".ai" + n;
+      });
+    },
 
     getAIPathSource: function (type) {
       var currentAiInUse = aiInUse(type);
@@ -61,7 +115,7 @@ define([
 
     getAIPathDestination: function (type, options) {
       var game = model.game();
-      var ai = game.galaxy().stars()[game.currentStar()].ai();
+      var ai = currentStarAi(game);
       var inventory = game.inventory();
       var currentAiInUse = aiInUse(type);
       var settings = _.assign(
@@ -83,17 +137,11 @@ define([
     },
 
     getSubcommanderPathForViewer: function (inventory, playerTag) {
-      var currentAiInUse = aiInUse("subcommander");
-      var scopeToken = playerTag === ".player" ? undefined : playerTag;
-      return refereeAIPaths.getAIPathDestination(
-        "subcommander",
-        currentAiInUse,
-        {
-          guardians: false,
-          aiMods: getInventoryAiMods(inventory),
-          smartSubcommanders: subcommanderTech.hasSmartSubcommanders(inventory),
-          scopeToken: scopeToken,
-        }
+      return refereeAIPaths.getViewerSubcommanderPath(
+        aiInUse("subcommander"),
+        getInventoryAiMods(inventory),
+        subcommanderTech.hasSmartSubcommanders(inventory),
+        playerTag
       );
     },
 
@@ -231,10 +279,7 @@ define([
     // Older co-op wars could save a negative eco, so a saved econ_rate needs
     // the floor rather than being used directly.
     aiEconRateWithFloor: function (aiEconRate) {
-      var game = model.game();
-      var galaxy = game.galaxy();
-      var originSystem = galaxy.stars()[galaxy.origin()].system();
-      var gwoSettings = originSystem.gwaio ? originSystem.gwaio : {};
+      var gwoSettings = originSettings(model.game()) || {};
       var difficultyName = gwoSettings.difficulty || "!LOC:Beginner";
 
       return Math.max(aiEconRate, getAIEconFloor(difficultyName));

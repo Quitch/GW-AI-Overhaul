@@ -2,77 +2,47 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Vanguard Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.vanguard)
+  return gwoCard.upgradeCard({
+    name: "!LOC:Vanguard Upgrade Tech",
+    description:
+      "!LOC:Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_speed",
+    requires: gwoUnit.vanguard,
+    buff: function (inventory) {
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.vanguard, "push", {
+            tools: {
+              spec_id: gwoUnit.mendBuildArm,
+              aim_bone: "bone_turret",
+              muzzle_bone: "socket_muzzle",
+            },
+          })
+          .concat(
+            [{ file: gwoUnit.vanguard, path: "tools.1.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.vanguard, "push", {
+              command_caps: ["ORDER_Repair"],
+            }),
+            gwoCard.mods(gwoUnit.vanguard, "replace", {
+              "audio.loops.build": {
+                cue: "/SE/Construction/Fab_contruction_beam_loop",
+                flag: "build_target_changed",
+                should_start_func: "has_build_target",
+                should_stop_func: "no_build_target",
+              },
+              fx_offsets: [
+                {
+                  type: "build",
+                  filename: "/pa/effects/specs/fab_combat_spray.pfx",
+                  bone: "socket_muzzle",
+                  offset: [0, 0, 0],
+                  orientation: [0, 0, 0],
+                },
+              ],
+            })
+          )
       );
     },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.vanguard,
-          path: "tools",
-          op: "push",
-          value: {
-            spec_id: gwoUnit.mendBuildArm,
-            aim_bone: "bone_turret",
-            muzzle_bone: "socket_muzzle",
-          },
-        },
-        {
-          file: gwoUnit.vanguard,
-          path: "tools.1.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.vanguard,
-          path: "command_caps",
-          op: "push",
-          value: ["ORDER_Repair"],
-        },
-        {
-          file: gwoUnit.vanguard,
-          path: "audio.loops.build",
-          op: "replace",
-          value: {
-            cue: "/SE/Construction/Fab_contruction_beam_loop",
-            flag: "build_target_changed",
-            should_start_func: "has_build_target",
-            should_stop_func: "no_build_target",
-          },
-        },
-        {
-          file: gwoUnit.vanguard,
-          path: "fx_offsets",
-          op: "replace",
-          value: [
-            {
-              type: "build",
-              filename: "/pa/effects/specs/fab_combat_spray.pfx",
-              bone: "socket_muzzle",
-              offset: [0, 0, 0],
-              orientation: [0, 0, 0],
-            },
-          ],
-        },
-      ]);
-    },
-    dull: function () {},
-  };
+  });
 });

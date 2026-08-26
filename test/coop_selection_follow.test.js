@@ -5,36 +5,27 @@
 // reads it from there, so the only place to put a viewer's own choice back is
 // after the replayed action settles.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
   loadCouiModule,
   requireShippedModule,
 } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const {
+  makeObservable: observable,
+} = require("../scripts/lib/fake-knockout.js");
 
 const ENTRY =
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_selection_follow.js";
 
 const makeFactory = loadCouiModule(ENTRY);
 const { followsHost } = requireShippedModule(ENTRY);
-
-function observable(initial) {
-  const subscribers = [];
-  const accessor = function () {
-    if (arguments.length) {
-      accessor.value = arguments[0];
-      subscribers.forEach((fn) => fn(accessor.value));
-      return undefined;
-    }
-    return accessor.value;
-  };
-  accessor.value = initial;
-  accessor.subscribe = (fn) => subscribers.push(fn);
-  return accessor;
-}
 
 function setup(overrides = {}) {
   const options = Object.assign({ hostStar: 0, selected: 0 }, overrides);
@@ -82,19 +73,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build } = trackActive(setup);
 
 describe("following the host", () => {
   it("counts no selection, and the host's own star, as following", () => {

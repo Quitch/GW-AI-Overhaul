@@ -2,8 +2,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
+  return gwoCard.upgradeCard({
+    name: "!LOC:Omega Upgrade Tech",
     describe: _.constant(
       gwoCard.withSlot(
         loc(
@@ -13,47 +13,21 @@ define([
           loc("!LOC:Doubles the rate of fire of the other weapons.")
       )
     ),
-    summarize: _.constant("!LOC:Omega Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_fighter_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.omega)
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_fighter_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.omega,
+    buff: function (inventory) {
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.omega, "replace", {
+            "tools.4.spec_id": gwoUnit.sxxWeapon,
+          })
+          .concat(
+            [{ file: gwoUnit.omega, path: "tools.4.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.omega, "replace", { attack_range_frac: 0.3 }),
+            gwoCard.mods(gwoUnit.omegaWeapon, "multiply", { rate_of_fire: 2 })
+          )
       );
     },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.omega,
-          path: "tools.4.spec_id",
-          op: "replace",
-          value: gwoUnit.sxxWeapon,
-        },
-        {
-          file: gwoUnit.omega,
-          path: "tools.4.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.omega,
-          path: "attack_range_frac",
-          op: "replace",
-          value: 0.3,
-        },
-        {
-          file: gwoUnit.omegaWeapon,
-          path: "rate_of_fire",
-          op: "multiply",
-          value: 2,
-        },
-      ]);
-    },
-    dull: function () {},
-  };
+  });
 });

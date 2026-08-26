@@ -23,24 +23,10 @@ define([
       inventory.addUnits(gwoGroup.structuresEcoStorage);
       var units = gwoGroup.structuresEcoStorage.concat(gwoUnit.commander);
       inventory.addMods(
-        _.flatten(
-          _.map(units, function (unit) {
-            return [
-              {
-                file: unit,
-                path: "storage.energy",
-                op: "multiply",
-                value: 4,
-              },
-              {
-                file: unit,
-                path: "storage.metal",
-                op: "multiply",
-                value: 4,
-              },
-            ];
-          })
-        )
+        gwoCard.flatMapMods(units, "multiply", {
+          "storage.energy": 4,
+          "storage.metal": 4,
+        })
       );
     },
     dull: function () {},

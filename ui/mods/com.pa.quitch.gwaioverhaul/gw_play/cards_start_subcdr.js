@@ -6,6 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
 ], function (
   GWFactions,
   gwoAI,
@@ -13,7 +14,8 @@ define([
   GWInventory,
   helpers,
   gwoStreams,
-  gwoCard
+  gwoCard,
+  coopHost
 ) {
   return function (params) {
     var game = params.game;
@@ -84,30 +86,6 @@ define([
       });
 
       return true;
-    };
-
-    var sendGeneralCommanderSetupResult = function (
-      clientId,
-      requestId,
-      payload
-    ) {
-      model.sendCampaignHostOperator(setupGeneralCommanderResult, payload, {
-        target_client_id: clientId,
-        request_id: requestId,
-      });
-    };
-
-    var failGeneralCommanderSetup = function (operator, reason) {
-      console.error("[GW COOP] failed to setup general commander: " + reason);
-      if (_.isUndefined(operator.client_id)) {
-        return;
-      }
-
-      sendGeneralCommanderSetupResult(operator.client_id, operator.request_id, {
-        client_id: operator.client_id,
-        client_name: operator.client_name,
-        error: reason,
-      });
     };
 
     var applyGeneralCommanderSetupResult = function (operator) {
@@ -184,8 +162,21 @@ define([
       // Rejects as well as notifying the viewer, so the campaign queue can
       // order this handler's async work.
       var failSetup = function (reason) {
-        failGeneralCommanderSetup(operator, reason);
+        coopHost.fail(
+          setupGeneralCommanderResult,
+          operator,
+          "setup general commander",
+          reason
+        );
         result.reject(reason);
+      };
+
+      var replyUnchanged = function () {
+        coopHost.reply(setupGeneralCommanderResult, operator, {
+          changed: false,
+        });
+        result.resolve();
+        return result.promise();
       };
 
       if (
@@ -197,10 +188,7 @@ define([
         return result.promise();
       }
 
-      record = game.findCoopPlayerInventoryData({
-        id: operator.client_id,
-        name: operator.client_name,
-      });
+      record = coopHost.recordFor(game, operator);
 
       if (!record || !record.inventory) {
         failSetup("missing co-op player inventory");
@@ -215,17 +203,7 @@ define([
       }
 
       if (!inventoryNeedsGeneralCommanderSetup(cards)) {
-        sendGeneralCommanderSetupResult(
-          operator.client_id,
-          operator.request_id,
-          {
-            client_id: operator.client_id,
-            client_name: operator.client_name,
-            changed: false,
-          }
-        );
-        result.resolve();
-        return result.promise();
+        return replyUnchanged();
       }
 
       recordFaction =
@@ -238,27 +216,19 @@ define([
       playerInventory.load(recordInventory);
 
       finish = function () {
-        var nextRecord = _.assign({}, _.cloneDeep(record), {
+        var nextRecord = coopHost.upsertRecord(game, record, {
           inventory: playerInventory.save(),
-          updatedAt: _.now(),
         });
-
-        if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
+        if (!nextRecord) {
           failSetup("failed to store co-op player inventory");
           return;
         }
 
         model.sendCampaignSnapshot("gwo_setup_general_commander", true);
-        sendGeneralCommanderSetupResult(
-          operator.client_id,
-          operator.request_id,
-          {
-            client_id: operator.client_id,
-            client_name: operator.client_name,
-            changed: true,
-            updated_at: nextRecord.updatedAt,
-          }
-        );
+        coopHost.reply(setupGeneralCommanderResult, operator, {
+          changed: true,
+          updated_at: nextRecord.updatedAt,
+        });
         gwoSave(game, false).then(
           function () {
             result.resolve();
@@ -280,17 +250,7 @@ define([
           })
         )
       ) {
-        sendGeneralCommanderSetupResult(
-          operator.client_id,
-          operator.request_id,
-          {
-            client_id: operator.client_id,
-            client_name: operator.client_name,
-            changed: false,
-          }
-        );
-        result.resolve();
-        return result.promise();
+        return replyUnchanged();
       }
 
       playerInventory.applyCards(finish);

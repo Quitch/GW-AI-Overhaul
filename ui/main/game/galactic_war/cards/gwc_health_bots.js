@@ -20,15 +20,11 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.botsMobile, function (unit) {
-        return {
-          file: unit,
-          path: "max_health",
-          op: "multiply",
-          value: 1.5,
-        };
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard.flatMapMods(gwoGroup.botsMobile, "multiply", {
+          max_health: 1.5,
+        })
+      );
     },
     dull: function () {},
   };

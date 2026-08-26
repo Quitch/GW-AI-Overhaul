@@ -2,8 +2,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
+  return gwoCard.upgradeCard({
+    name: "!LOC:Lob Upgrade Tech",
     describe: _.constant(
       gwoCard.withSlot(
         loc("!LOC:Lob Upgrade Tech increases the range of the Lob by 150%.") +
@@ -13,60 +13,25 @@ define([
           )
       )
     ),
-    summarize: _.constant("!LOC:Lob Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_artillery_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.lob)
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_artillery_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.lob,
+    buff: function (inventory) {
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.lobWeapon, "multiply", {
+            max_range: 2.5,
+            max_firing_velocity: 2.5,
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.lobWeapon, "replace", {
+              ammo_source: "time",
+              ammo_capacity: 17,
+              ammo_demand: 0,
+              ammo_per_shot: 2,
+            })
+          )
       );
     },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.lobWeapon,
-          path: "max_range",
-          op: "multiply",
-          value: 2.5,
-        },
-        {
-          file: gwoUnit.lobWeapon,
-          path: "max_firing_velocity",
-          op: "multiply",
-          value: 2.5,
-        },
-        {
-          file: gwoUnit.lobWeapon,
-          path: "ammo_source",
-          op: "replace",
-          value: "time",
-        },
-        {
-          file: gwoUnit.lobWeapon,
-          path: "ammo_capacity",
-          op: "replace",
-          value: 17,
-        },
-        {
-          file: gwoUnit.lobWeapon,
-          path: "ammo_demand",
-          op: "replace",
-          value: 0,
-        },
-        {
-          file: gwoUnit.lobWeapon,
-          path: "ammo_per_shot",
-          op: "replace",
-          value: 2,
-        },
-      ]);
-    },
-    dull: function () {},
-  };
+  });
 });

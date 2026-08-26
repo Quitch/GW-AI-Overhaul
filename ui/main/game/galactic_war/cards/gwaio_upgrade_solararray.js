@@ -2,28 +2,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Solar Array Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_fighter_upgrade.png"
-    ),
-    audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.solarArray)
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Solar Array Upgrade Tech",
+    description:
+      "!LOC:Solar Array Upgrade Tech enables interception of tactical missiles and drop pods by the Solar Array.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_orbital_fighter_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_speed",
+    requires: gwoUnit.solarArray,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
       inventory.addMods(
         gwoCard
           .mods(gwoUnit.solarArray, "push", {
@@ -55,6 +41,5 @@ define([
           )
       );
     },
-    dull: function () {},
-  };
+  });
 });

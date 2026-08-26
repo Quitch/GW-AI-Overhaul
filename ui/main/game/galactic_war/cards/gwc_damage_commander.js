@@ -14,34 +14,19 @@ define([
     audio: _.constant({
       found: "/VO/Computer/gw/board_tech_available_ammunition",
     }),
-    getContext: function (galaxy) {
-      return {
-        totalSize: galaxy.stars().length,
-      };
-    },
+    getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return { chance: gwoCard.commanderWeight(inventory, 70) };
     },
     buff: function (inventory) {
-      var ammos = gwoGroup.commanderAmmo;
-      var mods = [];
-      _.forEach(ammos, function (ammo) {
-        mods.push(
-          {
-            file: ammo,
-            path: "damage",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: ammo,
-            path: "splash_damage",
-            op: "multiply",
-            value: 1.25,
-          }
-        );
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard.flatMapMods(
+          gwoGroup.commanderAmmo,
+          "multiply",
+          gwoCard.paths.damage,
+          1.25
+        )
+      );
     },
     dull: function () {},
   };

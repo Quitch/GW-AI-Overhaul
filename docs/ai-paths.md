@@ -125,12 +125,8 @@ token, and the two live call sites differ:
 
 Both are internally consistent (the same code generates and consumes them), so
 this is not a live bug, but it is a real inconsistency and the tests pin it
-deliberately. `getPlayerScopedUnitMapPath` sanitises; `getAIPathDestination` does
-not. A refactor that "fixes" the asymmetry silently changes shipped mount paths.
-
-`getPlayerScopedUnitMapPath(basePath, identity, fallbackToken, titans)` appends
-`unit_maps/ai_unit_map.json`, or `ai_unit_map_x1.json` when `titans` is set —
-the `_x1` suffix being the base game's own convention for TITANS content.
+deliberately. `getScopeToken` sanitises; `getAIPathDestination` does not. A
+refactor that "fixes" the asymmetry silently changes shipped mount paths.
 
 ## Why scoped trees can nest safely
 

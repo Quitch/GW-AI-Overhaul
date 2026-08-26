@@ -2,7 +2,8 @@
 // faction/faction_seed.js - see galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
-], function (personalities) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_builder.js",
+], function (personalities, factionBuilder) {
   var factionName = "Foundation";
   var factionColour = [
     [145, 87, 199],
@@ -127,20 +128,13 @@ define([
       commander: "/pa/units/commanders/quad_commandonut/quad_commandonut.json",
     },
   ];
-  // GWO - the Random commander's pool, captured before randomAI joins it so it can
-  // never draw its own personality. The one below is a default; see galaxy.md.
-  var randomFrom = minions.slice();
-  var randomPersonality = minions[0].personality;
-
   var randomAI = {
     name: "Stelarch",
     character: "!LOC:Random",
-    personality: randomPersonality,
+    personality: minions[0].personality,
     commander: "/pa/units/commanders/imperial_stelarch/imperial_stelarch.json",
   };
-  minions.push(randomAI);
-
-  // GWO - was sampled inline in the team literal below; see randomFrom above.
+  // GWO - was sampled inline in the team literal; see faction_builder.js.
   var systemDescriptions = [
     "!LOC:Nemicus was the first commander to ever reactivate, and had plenty of time for introspection before encountering others. This soon prompted Nemicus to begin wondering why he existed in the first place.",
     "!LOC:Though he doesn't talk about it, Nemicus reactivated many of the first commanders himself, feeling it his duty and longing for companionship. However, often these commanders would refuse the offer to seek their true purpose, since it was already known--to annihilate. Nemicus would argue otherwise, but ultimately leave them to their own devices.",
@@ -149,9 +143,9 @@ define([
     "!LOC:The prevailing belief among The Foundation is that The Great Machine still 'lives' through data buried deep in the first directives given to the commanders. Because of this, Acolytes will often seek direction from The Great Machine by searching within their data banks in a form of meditation.",
   ];
 
-  return {
+  return factionBuilder.build({
     name: factionName,
-    color: factionColour,
+    colour: factionColour,
     coopPlayerColors: [
       factionColour[0],
       [186, 85, 211],
@@ -160,92 +154,76 @@ define([
       [108, 23, 186],
       [205, 136, 153],
     ],
-    teams: [
+    baseline: baselinePersonality,
+    boss: boss,
+    minions: minions,
+    randomAI: randomAI,
+    descriptions: systemDescriptions,
+    planets: [
       {
-        name: factionName,
-        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
-        systemDescription: systemDescriptions[0],
-        systemTemplate: {
-          name: factionName,
-          Planets: [
-            {
-              name: "Atlas",
-              starting_planet: true,
-              mass: 50000,
-              Thrust: [0, 0],
-              Radius: [550, 650],
-              Height: [20, 25],
-              Water: [40, 50],
-              Temp: [0, 100],
-              MetalDensity: [25, 75],
-              MetalClusters: [25, 50],
-              BiomeScale: [100, 100],
-              Position: [100000, 0],
-              Velocity: [-0.00000309086, 70.7107],
-              Biomes: ["ice_boss"],
-            },
-            {
-              name: "Xylcor",
-              starting_planet: true,
-              mass: 5000,
-              Thrust: [1, 3],
-              Radius: [300, 400],
-              Height: [20, 25],
-              Water: [45, 60],
-              Temp: [0, 100],
-              MetalDensity: [0, 25],
-              MetalClusters: [0, 25],
-              BiomeScale: [100, 100],
-              Position: [100000, -10000],
-              Velocity: [158.1139, 70.7106],
-              Biomes: ["tropical"],
-            },
-            {
-              name: "Blogar's Fist",
-              starting_planet: false,
-              mass: 5000,
-              Thrust: [0, 0],
-              Radius: [1500, 1500],
-              Height: [0, 0],
-              Water: [0, 0],
-              Temp: [0, 100],
-              MetalDensity: [0, 0],
-              MetalClusters: [0, 0],
-              BiomeScale: [0, 0],
-              Position: [110000, 0],
-              Velocity: [0, 228.8246],
-              Biomes: ["gas"],
-            },
-            {
-              name: "Zeta Draconis",
-              starting_planet: false,
-              mass: 5000,
-              Thrust: [0, 0],
-              Radius: [1500, 1500],
-              Height: [0, 0],
-              Water: [0, 0],
-              Temp: [0, 100],
-              MetalDensity: [0, 0],
-              MetalClusters: [0, 0],
-              BiomeScale: [0, 0],
-              Position: [90000, 0],
-              Velocity: [0, -87.4032],
-              Biomes: ["gas"],
-            },
-          ],
-        },
+        name: "Atlas",
+        starting_planet: true,
+        mass: 50000,
+        Thrust: [0, 0],
+        Radius: [550, 650],
+        Height: [20, 25],
+        Water: [40, 50],
+        Temp: [0, 100],
+        MetalDensity: [25, 75],
+        MetalClusters: [25, 50],
+        BiomeScale: [100, 100],
+        Position: [100000, 0],
+        Velocity: [-0.00000309086, 70.7107],
+        Biomes: ["ice_boss"],
+      },
+      {
+        name: "Xylcor",
+        starting_planet: true,
+        mass: 5000,
+        Thrust: [1, 3],
+        Radius: [300, 400],
+        Height: [20, 25],
+        Water: [45, 60],
+        Temp: [0, 100],
+        MetalDensity: [0, 25],
+        MetalClusters: [0, 25],
+        BiomeScale: [100, 100],
+        Position: [100000, -10000],
+        Velocity: [158.1139, 70.7106],
+        Biomes: ["tropical"],
+      },
+      {
+        name: "Blogar's Fist",
+        starting_planet: false,
+        mass: 5000,
+        Thrust: [0, 0],
+        Radius: [1500, 1500],
+        Height: [0, 0],
+        Water: [0, 0],
+        Temp: [0, 100],
+        MetalDensity: [0, 0],
+        MetalClusters: [0, 0],
+        BiomeScale: [0, 0],
+        Position: [110000, 0],
+        Velocity: [0, 228.8246],
+        Biomes: ["gas"],
+      },
+      {
+        name: "Zeta Draconis",
+        starting_planet: false,
+        mass: 5000,
+        Thrust: [0, 0],
+        Radius: [1500, 1500],
+        Height: [0, 0],
+        Water: [0, 0],
+        Temp: [0, 100],
+        MetalDensity: [0, 0],
+        MetalClusters: [0, 0],
+        BiomeScale: [0, 0],
+        Position: [90000, 0],
+        Velocity: [0, -87.4032],
+        Biomes: ["gas"],
       },
     ],
-    minions: _.map(minions, function (personalityModifiers) {
-      return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
-    }),
-    // GWO - minions.length - 1 is randomAI, pushed above.
-    gwaioRandomSpec: {
-      baseline: baselinePersonality,
-      descriptions: systemDescriptions,
-      randoms: [
-        { index: minions.length - 1, template: randomAI, from: randomFrom },
-      ],
-    },
-  };
+  });
 });

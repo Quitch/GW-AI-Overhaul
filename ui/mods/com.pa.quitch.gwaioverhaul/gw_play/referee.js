@@ -24,14 +24,67 @@ function gwoRefereeChanges() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_files.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
       ],
       function (
         GW,
         GWReferee,
         gwoGenerateGameFiles,
         gwoGenerateAI,
-        gwoGenerateConfig
+        gwoGenerateConfig,
+        gwoBiomeMods,
+        gwoBiomes
       ) {
+        // A war saved before the stamp existed resolves it here instead, once,
+        // and writes it onto the star's system so later launches read it.
+        var stampedMods = function (system) {
+          var done = $.Deferred();
+
+          if (!system) {
+            return done.resolve([]).promise();
+          }
+          if (system.gwoBiomeMods || !gwoBiomes.unservableBiome(system)) {
+            return done.resolve(system.gwoBiomeMods || []).promise();
+          }
+          gwoBiomeMods.providers().then(function (providers) {
+            var mods = gwoBiomes.modsFor(system, providers);
+            if (mods.length) {
+              system.gwoBiomeMods = mods;
+            }
+            done.resolve(mods);
+          });
+          return done.promise();
+        };
+
+        // The stamp is only mounted to read from and cooked into the files every
+        // client gets. The server-facing mount happens in mountFiles, after the
+        // unmount there.
+        var gwoGenerateBiomes = function () {
+          var self = this;
+          var done = $.Deferred();
+          var game = self.game();
+          var system = game.galaxy().stars()[game.currentStar()].system();
+
+          self.biomeMods = [];
+          self.biomeServed = {};
+          stampedMods(system).then(function (mods) {
+            if (!mods.length) {
+              done.resolve();
+              return;
+            }
+            gwoBiomeMods.mount(mods).always(function () {
+              gwoBiomeMods.cook(mods).then(function (result) {
+                self.files(_.assign({}, self.files(), result.files));
+                self.biomeMods = result.mods;
+                self.biomeServed = result.served;
+                done.resolve();
+              });
+            });
+          });
+          return done.promise();
+        };
+
         gwoReferee.prototype.stripSystems = function () {
           var self = this;
 
@@ -82,7 +135,9 @@ function gwoRefereeChanges() {
           // community mods will hook unmountAllMemoryFiles to remount client mods
           api.file.unmountAllMemoryFiles().always(function () {
             api.file.mountMemoryFiles(cookedFiles).then(function () {
-              deferred.resolve();
+              gwoBiomeMods.mount(self.biomeMods).always(function () {
+                deferred.resolve();
+              });
             });
           });
 
@@ -97,6 +152,7 @@ function gwoRefereeChanges() {
           var ref = new gwoReferee(game);
           return _.bind(gwoGenerateGameFiles, ref)()
             .then(_.bind(gwoGenerateAI, ref))
+            .then(_.bind(gwoGenerateBiomes, ref))
             .then(_.bind(gwoGenerateConfig, ref))
             .then(function () {
               return ref;

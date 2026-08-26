@@ -20,27 +20,27 @@ define([
       var percentageReduction = 0.9;
       var percentageIncrease = 1.2;
 
-      var sightMods = _.map(gwoGroup.combatMobile, function (unit) {
-        return gwoCard.mods(unit, "multiply", {
-          "recon.observer.items.0.radius": percentageReduction,
-          "recon.observer.items.1.radius": percentageReduction,
-        });
-      });
-      var speedMods = _.map(gwoGroup.combatMobile, function (unit) {
-        return gwoCard.mods(unit, "multiply", {
-          "navigation.move_speed": percentageIncrease,
-          "navigation.brake": percentageIncrease,
-          "navigation.acceleration": percentageIncrease,
-          "navigation.turn_speed": percentageIncrease,
-        });
-      });
-      var rangeMods = _.map(gwoGroup.combatMobileWeapons, function (weapon) {
-        return gwoCard.mods(weapon, "multiply", {
+      var sightMods = gwoCard.flatMapMods(
+        gwoGroup.combatMobile,
+        "multiply",
+        gwoCard.observerPaths(2, "radius"),
+        percentageReduction
+      );
+      var speedMods = gwoCard.flatMapMods(
+        gwoGroup.combatMobile,
+        "multiply",
+        gwoCard.paths.navigation,
+        percentageIncrease
+      );
+      var rangeMods = gwoCard.flatMapMods(
+        gwoGroup.combatMobileWeapons,
+        "multiply",
+        {
           max_range: percentageReduction,
-        });
-      });
+        }
+      );
 
-      inventory.addMods(_.flatten(sightMods.concat(speedMods, rangeMods)));
+      inventory.addMods(sightMods.concat(speedMods, rangeMods));
     },
     dull: function () {},
   };

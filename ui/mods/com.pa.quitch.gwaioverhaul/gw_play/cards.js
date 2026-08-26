@@ -93,7 +93,7 @@ function gwoCard() {
       );
       var star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
-      if (model.gwoRerollsUsed() >= cardsOffered - 1) {
+      if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
         model.gwoOfferRerolls(false);
       }
       star.cardList([]);
@@ -158,7 +158,7 @@ function gwoCard() {
         model.gwoRerollsUsed(rerollsUsed);
         model.gwoOfferRerolls(
           !helpers.pendingCardsContainLoadout(pendingTechCards) &&
-            rerollsUsed < cardsOffered - 1
+            helpers.rerollsRemain(rerollsUsed, cardsOffered)
         );
         model.gwoRerollPending(false);
       });
@@ -186,7 +186,7 @@ function gwoCard() {
         game.inventory()
       );
       model.gwoRerollsUsed(cardsOffered - star.cardList().length);
-      if (model.gwoRerollsUsed() >= cardsOffered - 1) {
+      if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
         model.gwoOfferRerolls(false);
       }
     };
@@ -312,7 +312,7 @@ function gwoCard() {
         var inventory = game.inventory();
         var playerFaction = inventory.getTag("global", "playerFaction");
         var galaxy = game.galaxy();
-        var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+        var gwoSettings = gwoAI.originSettings(game);
         var warRng = gwoStreams.warRng(gwoSettings);
 
         // Also registers the gwo_sync_star_card_name host handler.

@@ -21,15 +21,11 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        _.flatten(
-          _.map(gwoGroup.navalMobile, function (unit) {
-            return gwoCard.mods(unit, "multiply", {
-              "navigation.move_speed": 1.5,
-              "navigation.brake": 1.5,
-              "navigation.acceleration": 1.5,
-              "navigation.turn_speed": 1.5,
-            });
-          })
+        gwoCard.flatMapMods(
+          gwoGroup.navalMobile,
+          "multiply",
+          gwoCard.paths.navigation,
+          1.5
         )
       );
     },

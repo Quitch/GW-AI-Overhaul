@@ -192,6 +192,40 @@ describe("subcommanderWeight", () => {
   });
 });
 
+describe("floodsPlanets", () => {
+  function holding(...ids) {
+    return { hasCard: (id) => ids.includes(id) };
+  }
+
+  it("is true for a naval start", () => {
+    assert.equal(cards.floodsPlanets(holding("gwaio_start_naval")), true);
+  });
+
+  it("is true for Tsunami tech", () => {
+    assert.equal(cards.floodsPlanets(holding("gwaio_enable_tsunami")), true);
+  });
+
+  it("is false otherwise", () => {
+    assert.equal(cards.floodsPlanets(holding("gwc_start_air")), false);
+  });
+});
+
+describe("playerIsCluster", () => {
+  function faction(value) {
+    return {
+      getTag: (context, name) =>
+        context === "global" && name === "playerFaction" ? value : undefined,
+    };
+  }
+
+  it("is true only for the Cluster faction index", () => {
+    assert.equal(cards.playerIsCluster(faction(4)), true);
+    assert.equal(cards.playerIsCluster(faction(0)), false);
+    assert.equal(cards.playerIsCluster(faction("4")), false);
+    assert.equal(cards.playerIsCluster(faction(undefined)), false);
+  });
+});
+
 describe("navalWeight", () => {
   // Full weight is reserved for the two states that flood every planet fought on;
   // anywhere else naval is a gamble on the map and the card is offered less rather
@@ -405,6 +439,253 @@ describe("antiTechDeal", () => {
   });
 });
 
+describe("loadout", () => {
+  const CARD = { id: "mym_start_one" };
+
+  function harness(state) {
+    const calls = [];
+    const inventory = {
+      lookupCard: () => state.lookupCard,
+      getTag: (context, name, fallback) =>
+        name === "buffCount" ? state.buffCount : fallback,
+      setTag: (context, name, value) => {
+        if (name === "buffCount") {
+          state.buffCount = value;
+        }
+        calls.push(["setTag", name, value]);
+      },
+      maxCards: (value) => {
+        if (value !== undefined) {
+          state.maxCards = value;
+          calls.push(["maxCards", value]);
+        }
+        return state.maxCards;
+      },
+      removeUnits: (units) => calls.push(["removeUnits", units]),
+    };
+    const options = {
+      bank: { addStartCard: (card) => calls.push(["bank", card.id]) },
+      start: { buff: () => calls.push(["start"]) },
+      apply: () => calls.push(["apply"]),
+    };
+    return { calls, inventory, options };
+  }
+
+  it("runs the default start and apply on the first buff, then counts it", () => {
+    const h = harness({ lookupCard: 0, buffCount: 0, maxCards: 4 });
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["start"],
+      ["apply"],
+      ["setTag", "buffCount", 1],
+    ]);
+  });
+
+  it("only adds a slot on a later buff of the start card", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["maxCards", 5],
+      ["setTag", "buffCount", 2],
+    ]);
+  });
+
+  it("skips that slot when repeatSlot is false", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    h.options.repeatSlot = false;
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [["setTag", "buffCount", 2]]);
+  });
+
+  it("runs always on every buff of the start card, with the context", () => {
+    const h = harness({ lookupCard: 0, buffCount: 0, maxCards: 4 });
+    h.options.always = (inventory, context) =>
+      h.calls.push(["always", context]);
+    const frame = cards.loadout(CARD, h.options);
+    frame.buff(h.inventory, "first");
+    h.calls.length = 0;
+    cards.loadout(CARD, h.options).buff(h.inventory, "again");
+    assert.deepEqual(h.calls, [
+      ["maxCards", 5],
+      ["always", "again"],
+      ["setTag", "buffCount", 2],
+    ]);
+  });
+
+  it("banks a copy dealt later in the war and adds its slot", () => {
+    const h = harness({ lookupCard: -1, buffCount: 0, maxCards: 4 });
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["maxCards", 5],
+      ["bank", "mym_start_one"],
+    ]);
+  });
+
+  it("works without an apply body", () => {
+    const h = harness({ lookupCard: 0, buffCount: 0, maxCards: 4 });
+    delete h.options.apply;
+    cards.loadout(CARD, h.options).buff(h.inventory);
+    assert.deepEqual(h.calls, [["start"], ["setTag", "buffCount", 1]]);
+  });
+
+  it("dulls the listed units through applyDulls", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    h.options.dulls = ["a.json"];
+    cards.loadout(CARD, h.options).dull(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["removeUnits", ["a.json"]],
+      ["setTag", "buffCount", undefined],
+    ]);
+  });
+
+  it("lets dulls be computed from the inventory", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    h.options.dulls = (inventory) => [inventory.lookupCard()];
+    cards.loadout(CARD, h.options).dull(h.inventory);
+    assert.deepEqual(h.calls[0], ["removeUnits", [0]]);
+  });
+
+  it("dulls nothing, but still clears the count, without a dulls option", () => {
+    const h = harness({ lookupCard: 0, buffCount: 1, maxCards: 4 });
+    cards.loadout(CARD, h.options).dull(h.inventory);
+    assert.deepEqual(h.calls, [
+      ["removeUnits", undefined],
+      ["setTag", "buffCount", undefined],
+    ]);
+  });
+});
+
+describe("upgradeCard", () => {
+  const base = {
+    name: "!LOC:Ant Upgrade Tech",
+    description: "!LOC:Adds splash.",
+    icon: "icon.png",
+    audio: "/VO/found",
+    requires: "ant.json",
+  };
+
+  function inventory(units, cards, maxCards) {
+    const calls = [];
+    return {
+      calls,
+      units: () => units,
+      hasCard: (id) => (cards || []).includes(id),
+      maxCards: (value) => {
+        if (value !== undefined) {
+          calls.push(["maxCards", value]);
+        }
+        return maxCards || 4;
+      },
+      addUnits: (u) => calls.push(["addUnits", u]),
+    };
+  }
+
+  it("returns the full card contract", () => {
+    setGlobal("loc", (s) => s);
+    const card = cards.upgradeCard(base);
+    assert.deepEqual(Object.keys(card).sort(), [
+      "audio",
+      "buff",
+      "deal",
+      "describe",
+      "dull",
+      "getContext",
+      "icon",
+      "summarize",
+      "visible",
+    ]);
+    assert.equal(card.visible(), true);
+    assert.equal(card.summarize(), "!LOC:Ant Upgrade Tech");
+    assert.equal(card.icon(), "icon.png");
+    assert.deepEqual(card.audio(), { found: "/VO/found" });
+    assert.equal(card.getContext, cards.getContext);
+    assert.equal(card.describe(), cards.withSlot("!LOC:Adds splash."));
+    assert.equal(card.dull(), undefined);
+  });
+
+  it("deals at the default weight once the required unit is held", () => {
+    setGlobal("loc", (s) => s);
+    const card = cards.upgradeCard(base);
+    assert.deepEqual(card.deal({}, {}, inventory(["ant.json"])), {
+      params: { allowOverflow: true },
+      chance: 60,
+    });
+    assert.equal(card.deal({}, {}, inventory([])).chance, 0);
+  });
+
+  it("takes a weight, or a function of the inventory, as chance", () => {
+    setGlobal("loc", (s) => s);
+    const fixed = cards.upgradeCard(Object.assign({ chance: 30 }, base));
+    assert.equal(fixed.deal({}, {}, inventory(["ant.json"])).chance, 30);
+    const computed = cards.upgradeCard(
+      Object.assign({ chance: (inv) => inv.units().length }, base)
+    );
+    assert.equal(computed.deal({}, {}, inventory(["ant.json"])).chance, 1);
+  });
+
+  it("withholds the card while the unless card is held", () => {
+    setGlobal("loc", (s) => s);
+    const card = cards.upgradeCard(
+      Object.assign({ unless: "mym_start_x" }, base)
+    );
+    assert.equal(card.deal({}, {}, inventory(["ant.json"])).chance, 60);
+    assert.equal(
+      card.deal({}, {}, inventory(["ant.json"], ["mym_start_x"])).chance,
+      0
+    );
+  });
+
+  it("lets available or deal replace the ownership test outright", () => {
+    setGlobal("loc", (s) => s);
+    const byAvailable = cards.upgradeCard(
+      Object.assign({ available: (inv) => inv.hasCard("gate") }, base)
+    );
+    assert.equal(byAvailable.deal({}, {}, inventory([], ["gate"])).chance, 60);
+    const byDeal = cards.upgradeCard(
+      Object.assign({ deal: () => ({ chance: 7 }) }, base)
+    );
+    assert.deepEqual(byDeal.deal({}, {}, inventory([])), { chance: 7 });
+  });
+
+  it("adds the slot and then runs the buff body", () => {
+    setGlobal("loc", (s) => s);
+    const inv = inventory([]);
+    cards
+      .upgradeCard(Object.assign({ buff: (i) => i.addUnits("x") }, base))
+      .buff(inv);
+    assert.deepEqual(inv.calls, [
+      ["maxCards", 5],
+      ["addUnits", "x"],
+    ]);
+  });
+
+  it("skips the slot, and copes with no body, when slot is false", () => {
+    setGlobal("loc", (s) => s);
+    const inv = inventory([]);
+    cards.upgradeCard(Object.assign({ slot: false }, base)).buff(inv);
+    assert.deepEqual(inv.calls, []);
+  });
+
+  it("uses a describe override verbatim", () => {
+    setGlobal("loc", (s) => s);
+    const card = cards.upgradeCard(
+      Object.assign({ describe: () => "custom" }, base)
+    );
+    assert.equal(card.describe(), "custom");
+  });
+});
+
+describe("lockedHint", () => {
+  it("pairs the locked-commander icon with the given description", () => {
+    const hint = cards.lockedHint("!LOC:Nomad Commander");
+    assert.equal(typeof hint, "function");
+    assert.deepEqual(hint(), {
+      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+      description: "!LOC:Nomad Commander",
+    });
+  });
+});
+
 describe("mods", () => {
   it("builds one addMods entry per prop, sharing the given file and op", () => {
     assert.deepEqual(cards.mods("unit.json", "replace", { a: 1, b: 2 }), [
@@ -415,6 +696,99 @@ describe("mods", () => {
 
   it("returns an empty array for an empty props object", () => {
     assert.deepEqual(cards.mods("unit.json", "replace", {}), []);
+  });
+});
+
+describe("paths", () => {
+  it("lists the navigation set in the order the speed cards emit it", () => {
+    assert.deepEqual(cards.paths.navigation, [
+      "navigation.move_speed",
+      "navigation.brake",
+      "navigation.acceleration",
+      "navigation.turn_speed",
+    ]);
+  });
+
+  it("lists the damage pair and the energy-weapon triple", () => {
+    assert.deepEqual(cards.paths.damage, ["damage", "splash_damage"]);
+    assert.deepEqual(cards.paths.energyWeapon, [
+      "ammo_capacity",
+      "ammo_demand",
+      "ammo_per_shot",
+    ]);
+  });
+});
+
+describe("observerPaths", () => {
+  it("names the given field of the first count observer slots", () => {
+    assert.deepEqual(cards.observerPaths(3, "radius"), [
+      "recon.observer.items.0.radius",
+      "recon.observer.items.1.radius",
+      "recon.observer.items.2.radius",
+    ]);
+  });
+
+  it("returns nothing for a count of 0", () => {
+    assert.deepEqual(cards.observerPaths(0, "radius"), []);
+  });
+});
+
+describe("eachPath", () => {
+  it("builds a props map so other keys can be merged in", () => {
+    assert.deepEqual(
+      _.assign(cards.eachPath(cards.paths.damage, 2), { max_health: 1.5 }),
+      { damage: 2, splash_damage: 2, max_health: 1.5 }
+    );
+  });
+
+  it("leaves the shared paths constant alone", () => {
+    cards.eachPath(cards.paths.damage, 2);
+    assert.deepEqual(cards.paths.damage, ["damage", "splash_damage"]);
+  });
+});
+
+describe("mods over a list of paths", () => {
+  it("gives every path the same value, in list order", () => {
+    assert.deepEqual(cards.mods("u.json", "multiply", cards.paths.damage, 2), [
+      { file: "u.json", path: "damage", op: "multiply", value: 2 },
+      { file: "u.json", path: "splash_damage", op: "multiply", value: 2 },
+    ]);
+  });
+
+  it("matches what the same paths written as a map produce", () => {
+    assert.deepEqual(
+      cards.mods("u.json", "multiply", cards.paths.damage, 2),
+      cards.mods("u.json", "multiply", { damage: 2, splash_damage: 2 })
+    );
+  });
+
+  it("emits nothing for no paths", () => {
+    assert.deepEqual(cards.mods("u.json", "multiply", [], 1), []);
+  });
+});
+
+describe("flatMapMods", () => {
+  it("emits every prop for one file before moving to the next", () => {
+    assert.deepEqual(
+      cards.flatMapMods(["a.json", "b.json"], "multiply", { x: 1, y: 2 }),
+      [
+        { file: "a.json", path: "x", op: "multiply", value: 1 },
+        { file: "a.json", path: "y", op: "multiply", value: 2 },
+        { file: "b.json", path: "x", op: "multiply", value: 1 },
+        { file: "b.json", path: "y", op: "multiply", value: 2 },
+      ]
+    );
+  });
+
+  it("treats a single file string as a one-file list", () => {
+    assert.deepEqual(
+      cards.flatMapMods("a.json", "replace", { x: 1 }),
+      cards.mods("a.json", "replace", { x: 1 })
+    );
+  });
+
+  it("returns an empty array for no files", () => {
+    assert.deepEqual(cards.flatMapMods([], "replace", { x: 1 }), []);
   });
 });
 

@@ -30,11 +30,9 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        _.flatten(
-          _.map(gwoGroup.structuresEco, function (unit) {
-            return gwoCard.mods(unit, "multiply", { build_metal_cost: 0.5 });
-          })
-        )
+        gwoCard.flatMapMods(gwoGroup.structuresEco, "multiply", {
+          build_metal_cost: 0.5,
+        })
       );
     },
     dull: function () {},

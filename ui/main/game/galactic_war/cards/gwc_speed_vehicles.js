@@ -20,37 +20,14 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = _.flatten(
-        _.map(gwoGroup.vehiclesMobile, function (unit) {
-          return [
-            {
-              file: unit,
-              path: "navigation.move_speed",
-              op: "multiply",
-              value: 1.5,
-            },
-            {
-              file: unit,
-              path: "navigation.brake",
-              op: "multiply",
-              value: 1.5,
-            },
-            {
-              file: unit,
-              path: "navigation.acceleration",
-              op: "multiply",
-              value: 1.5,
-            },
-            {
-              file: unit,
-              path: "navigation.turn_speed",
-              op: "multiply",
-              value: 1.5,
-            },
-          ];
-        })
+      inventory.addMods(
+        gwoCard.flatMapMods(
+          gwoGroup.vehiclesMobile,
+          "multiply",
+          gwoCard.paths.navigation,
+          1.5
+        )
       );
-      inventory.addMods(mods);
     },
     dull: function () {},
   };

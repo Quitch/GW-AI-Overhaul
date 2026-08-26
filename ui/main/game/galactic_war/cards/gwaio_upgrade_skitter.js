@@ -2,92 +2,43 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout and increases its vision by 100%."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Skitter Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.skitter)
+  return gwoCard.upgradeCard({
+    name: "!LOC:Skitter Upgrade Tech",
+    description:
+      "!LOC:Skitter Upgrade Tech adds a low powered laser to the land scout and increases its vision by 100%.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.skitter,
+    buff: function (inventory) {
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.skitter, "replace", {
+            tools: [
+              {
+                spec_id: gwoUnit.skitterWeapon,
+                aim_bone: "bone_root",
+                muzzle_bone: "bone_root",
+              },
+            ],
+          })
+          .concat(
+            [{ file: gwoUnit.skitter, path: "tools.0.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.skitter, "push", {
+              command_caps: "ORDER_Attack",
+            }),
+            gwoCard.mods(
+              gwoUnit.skitter,
+              "multiply",
+              gwoCard.observerPaths(3, "radius"),
+              2
+            ),
+            gwoCard.mods(gwoUnit.skitterAmmo, "multiply", {
+              initial_velocity: 2,
+              max_velocity: 2,
+              damage: 2,
+            })
+          )
       );
     },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.skitter,
-          path: "tools",
-          op: "replace",
-          value: [
-            {
-              spec_id: gwoUnit.skitterWeapon,
-              aim_bone: "bone_root",
-              muzzle_bone: "bone_root",
-            },
-          ],
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "tools.0.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "command_caps",
-          op: "push",
-          value: "ORDER_Attack",
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "recon.observer.items.0.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "recon.observer.items.1.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitter,
-          path: "recon.observer.items.2.radius",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitterAmmo,
-          path: "initial_velocity",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitterAmmo,
-          path: "max_velocity",
-          op: "multiply",
-          value: 2,
-        },
-        {
-          file: gwoUnit.skitterAmmo,
-          path: "damage",
-          op: "multiply",
-          value: 2,
-        },
-      ]);
-    },
-    dull: function () {},
-  };
+  });
 });

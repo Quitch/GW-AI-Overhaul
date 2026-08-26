@@ -26,31 +26,14 @@ define([
       };
     },
     buff: function (inventory) {
-      var mods = _.flatten(
-        _.map(gwoGroup.energyWeapons, function (weapon) {
-          return [
-            {
-              file: weapon,
-              path: "ammo_capacity",
-              op: "multiply",
-              value: 0.25,
-            },
-            {
-              file: weapon,
-              path: "ammo_demand",
-              op: "multiply",
-              value: 0.25,
-            },
-            {
-              file: weapon,
-              path: "ammo_per_shot",
-              op: "multiply",
-              value: 0.25,
-            },
-          ];
-        })
+      inventory.addMods(
+        gwoCard.flatMapMods(
+          gwoGroup.energyWeapons,
+          "multiply",
+          gwoCard.paths.energyWeapon,
+          0.25
+        )
       );
-      inventory.addMods(mods);
     },
     dull: function () {},
   };

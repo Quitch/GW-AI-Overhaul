@@ -2,81 +2,37 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Angel Upgrade Tech enables the targeting of enemy units and structures by the support platform's interception beam."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Angel Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_combat_air_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.angel)
+  return gwoCard.upgradeCard({
+    name: "!LOC:Angel Upgrade Tech",
+    description:
+      "!LOC:Angel Upgrade Tech enables the targeting of enemy units and structures by the support platform's interception beam.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_combat_air_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.angel,
+    buff: function (inventory) {
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.angel, "push", {
+            command_caps: ["ORDER_Attack"],
+            unit_types: ["UNITTYPE_Gunship", "UNITTYPE_Offense"],
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.angelBeam, "pull", {
+              target_layers: ["WL_Orbital"],
+            }),
+            gwoCard.mods(gwoUnit.angelBeam, "push", {
+              target_layers: ["WL_LandHorizontal", "WL_WaterSurface"],
+            }),
+            gwoCard.mods(gwoUnit.angelBeam, "replace", {
+              auto_task_type: null,
+              manual_fire: false,
+            }),
+            gwoCard.mods(gwoUnit.angelAmmo, "replace", {
+              collision_check: "enemies",
+              collision_response: "impact",
+            })
+          )
       );
     },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.angel,
-          path: "command_caps",
-          op: "push",
-          value: ["ORDER_Attack"],
-        },
-        {
-          file: gwoUnit.angel,
-          path: "unit_types",
-          op: "push",
-          value: ["UNITTYPE_Gunship", "UNITTYPE_Offense"],
-        },
-        {
-          file: gwoUnit.angelBeam,
-          path: "target_layers",
-          op: "pull",
-          value: ["WL_Orbital"],
-        },
-        {
-          file: gwoUnit.angelBeam,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal", "WL_WaterSurface"],
-        },
-        {
-          file: gwoUnit.angelBeam,
-          path: "auto_task_type",
-          op: "replace",
-          value: null,
-        },
-        {
-          file: gwoUnit.angelBeam,
-          path: "manual_fire",
-          op: "replace",
-          value: false,
-        },
-        {
-          file: gwoUnit.angelAmmo,
-          path: "collision_check",
-          op: "replace",
-          value: "enemies",
-        },
-        {
-          file: gwoUnit.angelAmmo,
-          path: "collision_response",
-          op: "replace",
-          value: "impact",
-        },
-      ]);
-    },
-    dull: function () {},
-  };
+  });
 });

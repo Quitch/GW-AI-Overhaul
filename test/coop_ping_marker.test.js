@@ -6,18 +6,17 @@
 // ticking. The layer tests assert the ring is wired to pulseFrame's output;
 // the values it should be wired to are the "marker pulse" describe at the end.
 
-const {
-  describe,
-  it,
-  before,
-  after,
-  beforeEach,
-  afterEach,
-} = require("node:test");
+const { describe, it, before, after, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
+const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
 
 const { createLayer, pulseFrame } = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_marker.js"
@@ -71,32 +70,17 @@ function fakeCreatejs() {
 }
 
 // The marker times itself from _.now() and cleans up on a _.delay, so both are
-// swapped for a clock the test drives - as cards_coop_reroll_factory.test.js
-// does for _.delay alone. lodash 3's now() rejects a non-native Date.now and
-// falls back to `new Date().getTime()`, so the stand-in has to be constructible.
+// swapped for a clock the test drives.
 let clock = 1000;
-const delayed = [];
-let realLodash;
-
-function FakeDate() {
-  this.getTime = () => clock;
-}
+let timers;
 
 before(() => {
-  realLodash = global._;
-  global._ = realLodash.runInContext({
-    Date: FakeDate,
-    setTimeout: (fn, wait) => delayed.push({ fn, wait }),
-  });
+  timers = installFakeLodashTimers({ now: () => clock });
 });
 
-after(() => {
-  global._ = realLodash;
-});
+after(() => timers.restore());
 
-let active;
-
-function build(overrides = {}) {
+function setup(overrides = {}) {
   const options = Object.assign({ hasThrottleHook: true }, overrides);
 
   const calls = { interactiveFrames: [] };
@@ -110,7 +94,7 @@ function build(overrides = {}) {
       : undefined,
   });
 
-  active = {
+  return {
     calls,
     system,
     layer: createLayer({
@@ -118,19 +102,13 @@ function build(overrides = {}) {
     }),
     restore: () => stubs.restoreGlobals(),
   };
-  return active;
 }
+
+const { build } = trackActive(setup);
 
 beforeEach(() => {
   clock = 1000;
-  delayed.length = 0;
-});
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
+  timers.delayed.length = 0;
 });
 
 const tickOf = (system) => system.systemDisplay.children[0].listeners[0][1];
@@ -170,7 +148,7 @@ describe("raising a marker", () => {
     const { layer, system } = build();
     layer.raise(7);
     assert.equal(system.systemDisplay.children.length, 0);
-    assert.equal(delayed.length, 0);
+    assert.equal(timers.delayed.length, 0);
   });
 
   // Re-pinging a live star restarts it rather than stacking a second marker.
@@ -230,9 +208,9 @@ describe("animating and removing a marker", () => {
 
     layer.raise(0);
 
-    assert.equal(delayed.length, 1);
-    assert.equal(delayed[0].wait, BACKSTOP_MS);
-    delayed[0].fn();
+    assert.equal(timers.delayed.length, 1);
+    assert.equal(timers.delayed[0].wait, BACKSTOP_MS);
+    timers.delayed[0].fn();
 
     assert.deepEqual(system.systemDisplay.children, []);
   });
@@ -244,7 +222,7 @@ describe("animating and removing a marker", () => {
     clock += 1000;
     layer.raise(0);
 
-    assert.equal(delayed.length, 2);
+    assert.equal(timers.delayed.length, 2);
   });
 
   it("removes a marker once however often it is asked", () => {

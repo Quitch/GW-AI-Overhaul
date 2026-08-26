@@ -4,24 +4,21 @@
 // would be offered at and what it grants. Contrast cards-contract.js, which only
 // shape-checks what define() returns. See testing.md.
 
-const fs = require("node:fs");
 const path = require("node:path");
+const { loadCouiModule, registerModuleStub } = require("./amd-loader.js");
 const {
-  loadCouiModule,
-  registerModuleStub,
-  REPO_ROOT,
-} = require("./amd-loader.js");
-const { createAutoStub } = require("./auto-stub.js");
-const { KNOWN_UNLOADABLE_FILES } = require("./known-unloadable-cards.js");
-
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards"
-);
+  CARDS_DIR,
+  classifyLoadFailure,
+  listCardFiles,
+} = require("./card-files.js");
+const {
+  createCapturingInventory,
+  recordInto,
+} = require("./capturing-inventory.js");
+const {
+  installFakeKnockout,
+  makeInertObservable,
+} = require("./fake-knockout.js");
 
 // A real array, not createAutoStub(): farForSize walks
 // `Math.min(numberOfSystems.length, thresholds.length) - 1`, and a stub makes that
@@ -47,22 +44,7 @@ const TOTAL_SIZES = [1, 19, 25, 37, 55, 79, 109, 145, 187, 235];
 const MAX_DISTANCE = 15;
 
 // shared/bank.js builds itself at define time, so the loadout cards read ko and
-// localStorage before anything is probed. Same stand-ins as
-// cluster_subcommander_buildable.test.js.
-function makeObservable(initial) {
-  let value = initial;
-  const observable = function () {
-    if (arguments.length) {
-      value = arguments[0];
-      return;
-    }
-    return value;
-  };
-  observable.subscribe = () => ({ dispose: () => {} });
-  observable.extend = () => observable;
-  return observable;
-}
-
+// localStorage before anything is probed.
 let harnessInstalled = false;
 
 function installCardHarness() {
@@ -70,11 +52,10 @@ function installCardHarness() {
     return;
   }
   registerModuleStub("shared/gw_common", GW_COMMON_STUB);
-  global.ko = {
-    observable: makeObservable,
-    observableArray: makeObservable,
-    computed: (fn) => fn,
-  };
+  installFakeKnockout({
+    observable: makeInertObservable,
+    observableArray: makeInertObservable,
+  });
   global.localStorage = {};
   harnessInstalled = true;
 }
@@ -89,14 +70,11 @@ function loadAllCards() {
   const byFile = new Map();
   const unloadable = [];
 
-  for (const file of fs
-    .readdirSync(CARDS_DIR)
-    .filter((f) => f.endsWith(".js"))
-    .sort()) {
+  for (const file of listCardFiles()) {
     try {
       byFile.set(file, loadCouiModule(path.join(CARDS_DIR, file)));
     } catch (e) {
-      if (e.code === "NOT_SHIPPED" || KNOWN_UNLOADABLE_FILES.has(file)) {
+      if (classifyLoadFailure(e, file)) {
         unloadable.push(file);
         continue;
       }
@@ -115,16 +93,9 @@ function cardIdFromFile(file) {
 // this fixture updated. The three answers given explicitly are the ones that steer
 // what it grants: a non-Cluster player, holding the base commander.
 function recordGrantedUnits(buff, gwoUnit, hasCard) {
-  let granted = [];
-  const inventory = new Proxy(
-    {
-      addUnits: function (units) {
-        granted = granted.concat(units);
-        return createAutoStub();
-      },
-      addMods: () => createAutoStub(),
-      addAIMods: () => createAutoStub(),
-      removeUnits: () => createAutoStub(),
+  const granted = [];
+  const inventory = createCapturingInventory({
+    answers: {
       maxCards: () => 0,
       lookupCard: () => 0,
       hasCard: () => hasCard,
@@ -137,14 +108,9 @@ function recordGrantedUnits(buff, gwoUnit, hasCard) {
         }
         return def;
       },
-      setTag: () => createAutoStub(),
     },
-    {
-      get(target, prop) {
-        return prop in target ? target[prop] : createAutoStub();
-      },
-    }
-  );
+    capture: { addUnits: recordInto(granted) },
+  });
 
   buff(inventory);
   return granted.filter((unit) => typeof unit === "string");

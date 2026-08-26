@@ -22,15 +22,11 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = _.map(gwoGroup.airMobile, function (unit) {
-        return {
-          file: unit,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 0.75,
-        };
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard.flatMapMods(gwoGroup.airMobile, "multiply", {
+          build_metal_cost: 0.75,
+        })
+      );
     },
     dull: function () {},
   };

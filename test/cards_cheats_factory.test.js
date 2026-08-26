@@ -11,11 +11,15 @@
 // gwc_minion out of testCards for that reason; giveCard reaches the same
 // sub-commander draw without going through it.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js"
@@ -70,11 +74,7 @@ function setup(overrides = {}) {
   ];
 
   const stubs = createGlobalStubs();
-  const $ = function () {};
-  $.when = function () {
-    return Promise.all(Array.prototype.slice.call(arguments));
-  };
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs);
   stubs.setGlobal("model", {
     cheats: { giveCardId: () => options.giveCardId },
     isCampaignViewer: () => options.isViewer,
@@ -123,19 +123,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, current } = trackActive(setup);
 
 // Neither cheat returns anything, so the chain is drained rather than awaited.
 async function flush() {
@@ -149,16 +137,14 @@ const giveCard = () => global.model.cheats.giveCard();
 
 const dealtIds = (calls) => calls.dealt.map((request) => request.id);
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 async function capture(stream, run) {
-  const messages = [];
-  const prior = console[stream];
-  console[stream] = (...args) => messages.push(args.join(" "));
-  try {
-    await run();
-  } finally {
-    console[stream] = prior;
-  }
-  return messages;
+  const mocked = mock.method(console, stream, () => {});
+  await run();
+  return mocked.mock.calls.map((call) => call.arguments.join(" "));
 }
 
 describe("cheats install", () => {
@@ -179,7 +165,7 @@ describe("cheats testCards", () => {
     assert.deepEqual(dealtIds(calls), ["gwc_combat_bots", "gwc_orbital"]);
     // The star the player is standing on, not the first in the galaxy.
     assert.deepEqual(calls.dealt[0].star, { id: 2 });
-    assert.equal(calls.dealt[0].inventory, active.inventory);
+    assert.equal(calls.dealt[0].inventory, current().inventory);
   });
 
   it("applies each dealt card to the inventory", async () => {

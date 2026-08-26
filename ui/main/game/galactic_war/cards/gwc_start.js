@@ -1,9 +1,10 @@
 define([
   "shared/gw_common",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
-], function (GW, gwoUnit, gwoGroup, gwoCluster) {
+], function (GW, gwoCard, gwoUnit, gwoGroup, gwoCluster) {
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Default Commander"),
@@ -17,8 +18,7 @@ define([
         inventory.maxCards() + GW.balance.initialCardSlots + 1
       );
 
-      var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
-      if (playerIsCluster) {
+      if (gwoCard.playerIsCluster(inventory)) {
         inventory.addMods(gwoCluster.clusterCommanderMods);
       }
 

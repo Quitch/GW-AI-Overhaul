@@ -98,8 +98,7 @@ function gwoUI() {
         return settings;
       }
 
-      var settingNames = _.keys(settings);
-      _.pull(settingNames, "previousSettings");
+      var settingNames = _.without(_.keys(settings), "previousSettings");
 
       if (_.isArray(previousSettings)) {
         if (previousSettings.length !== settingNames.length) {
@@ -356,87 +355,19 @@ function gwoUI() {
             $(customDifficultySelects).attr("disabled", true);
             $(customDifficultySelects).selectpicker("refresh");
             difficultySettings.customDifficulty(false);
-            difficultySettings.goForKill(
-              difficulties[selectedDifficulty].goForKill
-            );
-            difficultySettings.microType(
-              difficulties[selectedDifficulty].microType
-            );
-            difficultySettings.mandatoryMinions(
-              difficulties[selectedDifficulty].mandatoryMinions
-            );
-            difficultySettings.minionMod(
-              difficulties[selectedDifficulty].minionMod
-            );
-            difficultySettings.priorityScoutMetalSpots(
-              difficulties[selectedDifficulty].priority_scout_metal_spots
-            );
-            difficultySettings.factoryBuildDelayMin(
-              difficulties[selectedDifficulty].factory_build_delay_min
-            );
-            difficultySettings.factoryBuildDelayMax(
-              difficulties[selectedDifficulty].factory_build_delay_max
-            );
-            difficultySettings.unableToExpandDelay(
-              difficulties[selectedDifficulty].unable_to_expand_delay
-            );
-            difficultySettings.enableCommanderDangerResponses(
-              difficulties[selectedDifficulty].enable_commander_danger_responses
-            );
-            difficultySettings.perExpansionDelay(
-              difficulties[selectedDifficulty].per_expansion_delay
-            );
-            difficultySettings.econBase(
-              difficulties[selectedDifficulty].econBase
-            );
-            difficultySettings.econRatePerDist(
-              difficulties[selectedDifficulty].econRatePerDist
-            );
-            difficultySettings.maxBasicFabbers(
-              difficulties[selectedDifficulty].max_basic_fabbers
-            );
-            difficultySettings.maxAdvancedFabbers(
-              difficulties[selectedDifficulty].max_advanced_fabbers
-            );
-            difficultySettings.ffaChance(
-              difficulties[selectedDifficulty].ffa_chance
-            );
-            difficultySettings.bossCommanders(
-              difficulties[selectedDifficulty].bossCommanders
-            );
-            difficultySettings.startingLocationEvaluationRadius(
-              difficulties[selectedDifficulty]
-                .starting_location_evaluation_radius
-            );
-            difficultySettings.landAnywhereChance(
-              difficulties[selectedDifficulty].landAnywhereChance
-            );
-            difficultySettings.suddenDeathChance(
-              difficulties[selectedDifficulty].suddenDeathChance
-            );
-            difficultySettings.bountyModeChance(
-              difficulties[selectedDifficulty].bountyModeChance
-            );
-            difficultySettings.bountyModeValue(
-              difficulties[selectedDifficulty].bountyModeValue
-            );
-            difficultySettings.factionTechHandicap(
-              difficulties[selectedDifficulty].factionTechHandicap
-            );
-            difficultySettings.alliedCommanderChance(
-              difficulties[selectedDifficulty].alliedCommanderChance
-            );
-            // From the difficulty data, not by reading personalityTags back -
-            // that makes this computed a dependency of the observable it writes.
-            var personalityTags =
-              difficulties[selectedDifficulty].personality_tags;
-            difficultySettings.personalityTags(personalityTags);
-            $("#gwo-personality-picker")
-              .selectpicker("val", personalityTags)
-              .trigger("change");
-            difficultySettings.eradicationModeChance(
-              difficulties[selectedDifficulty].eradicationModeChance
-            );
+            var tier = difficulties[selectedDifficulty];
+            _.forEach(gwoDifficulty.tierSettings, function (setting) {
+              var value = tier[setting.key];
+              difficultySettings[setting.name](value);
+              if (setting.name === "personalityTags") {
+                // From the difficulty data, not by reading personalityTags
+                // back - that makes this computed a dependency of the
+                // observable it writes.
+                $("#gwo-personality-picker")
+                  .selectpicker("val", value)
+                  .trigger("change");
+              }
+            });
           }
         });
       }

@@ -88,3 +88,16 @@ describe("applySubcommanderDuplicationTech", () => {
     );
   });
 });
+
+describe("hasDuplicatedSubcommanders", () => {
+  it("is true only when the duplication card is held", () => {
+    assert.equal(
+      subcommanderTech.hasDuplicatedSubcommanders([DUPLICATION_CARD]),
+      true
+    );
+    assert.equal(
+      subcommanderTech.hasDuplicatedSubcommanders([TACTICS_CARD]),
+      false
+    );
+  });
+});

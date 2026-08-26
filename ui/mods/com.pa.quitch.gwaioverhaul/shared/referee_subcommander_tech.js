@@ -23,15 +23,12 @@ define(function () {
     return personality;
   };
 
+  var hasDuplicatedSubcommanders = function (cards) {
+    return _.some(cards, { id: "gwaio_upgrade_subcommander_duplication" });
+  };
+
   var applySubcommanderDuplicationTech = function (cards) {
-    if (
-      _.some(cards, {
-        id: "gwaio_upgrade_subcommander_duplication",
-      })
-    ) {
-      return 2;
-    }
-    return 1;
+    return hasDuplicatedSubcommanders(cards) ? 2 : 1;
   };
 
   var hasSmartSubcommanders = function (inventory) {
@@ -47,6 +44,7 @@ define(function () {
     applySubcommanderTacticsTech: applySubcommanderTacticsTech,
     applySubcommanderFabberTech: applySubcommanderFabberTech,
     applySubcommanderDuplicationTech: applySubcommanderDuplicationTech,
+    hasDuplicatedSubcommanders: hasDuplicatedSubcommanders,
     hasSmartSubcommanders: hasSmartSubcommanders,
   };
 });

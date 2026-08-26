@@ -20,19 +20,15 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        _.flatten(
-          _.map(gwoGroup.ammo, function (ammo) {
-            return gwoCard.mods(ammo, "multiplyOrCreate", {
-              "armor_damage_map.AT_Structure": 2,
-              "armor_damage_map.AT_Air": 0.5,
-              "armor_damage_map.AT_Bot": 0.5,
-              "armor_damage_map.AT_Hover": 0.5,
-              "armor_damage_map.AT_Orbital": 0.5,
-              "armor_damage_map.AT_Naval": 0.5,
-              "armor_damage_map.AT_Vehicle": 0.5,
-            });
-          })
-        )
+        gwoCard.flatMapMods(gwoGroup.ammo, "multiplyOrCreate", {
+          "armor_damage_map.AT_Structure": 2,
+          "armor_damage_map.AT_Air": 0.5,
+          "armor_damage_map.AT_Bot": 0.5,
+          "armor_damage_map.AT_Hover": 0.5,
+          "armor_damage_map.AT_Orbital": 0.5,
+          "armor_damage_map.AT_Naval": 0.5,
+          "armor_damage_map.AT_Vehicle": 0.5,
+        })
       );
     },
     dull: function () {},

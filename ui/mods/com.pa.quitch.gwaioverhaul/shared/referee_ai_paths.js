@@ -9,11 +9,7 @@ define(function () {
     var token = String(value || "");
     token = token.replace(/^\.+/, "");
     token = token.replace(/[^A-Za-z0-9_-]+/g, "_");
-    token = token.replace(/^_+/, "");
-    while (token.length && _.endsWith(token, "_")) {
-      token = token.slice(0, -1);
-    }
-    return token;
+    return _.trim(token, "_");
   };
 
   var getScopeToken = function (identity, fallbackToken) {
@@ -51,10 +47,6 @@ define(function () {
     return basePath + "player_" + scopeToken + "/";
   };
 
-  var getPlayerScopedPath = function (basePath, identity, fallbackToken) {
-    return appendScope(basePath, getScopeToken(identity, fallbackToken));
-  };
-
   var getQuellerPath = function (type, smartSubcommanders) {
     if (type === "all") {
       return quellerPath;
@@ -64,6 +56,29 @@ define(function () {
       return quellerPath + "q_silver/";
     }
     return quellerPath + "q_bronze/";
+  };
+
+  var getAIPathDestination = function (type, aiInUse, options) {
+    var settings = options || {};
+    var isGuardians = !!settings.guardians;
+    var aiMods = settings.aiMods || [];
+    var scopeToken = settings.scopeToken;
+    var smartSubcommanders = !!settings.smartSubcommanders;
+    var basePath;
+
+    if (type === "cluster") {
+      basePath = clusterPath;
+    } else if (aiInUse === "Queller") {
+      basePath = getQuellerPath(type, smartSubcommanders);
+    } else if (type === "subcommander" && !isGuardians && !_.isEmpty(aiMods)) {
+      basePath = subCommanderPath;
+    } else if (aiInUse === "Penchant") {
+      basePath = penchantPath;
+    } else {
+      basePath = titansAiPath;
+    }
+
+    return appendScope(basePath, scopeToken);
   };
 
   return {
@@ -82,45 +97,23 @@ define(function () {
       }
     },
 
-    getAIPathDestination: function (type, aiInUse, options) {
-      var settings = options || {};
-      var isGuardians = !!settings.guardians;
-      var aiMods = settings.aiMods || [];
-      var scopeToken = settings.scopeToken;
-      var smartSubcommanders = !!settings.smartSubcommanders;
-      var basePath;
+    getAIPathDestination: getAIPathDestination,
 
-      if (type === "cluster") {
-        basePath = clusterPath;
-      } else if (aiInUse === "Queller") {
-        basePath = getQuellerPath(type, smartSubcommanders);
-      } else if (
-        type === "subcommander" &&
-        !isGuardians &&
-        !_.isEmpty(aiMods)
-      ) {
-        basePath = subCommanderPath;
-      } else if (aiInUse === "Penchant") {
-        basePath = penchantPath;
-      } else {
-        basePath = titansAiPath;
-      }
-
-      return appendScope(basePath, scopeToken);
-    },
-
-    getPlayerScopedUnitMapPath: function (
-      basePath,
-      identity,
-      fallbackToken,
-      titans
+    // A co-op viewer's subcommander tree. The hardcoded guardians:false, the raw
+    // (unsanitised) player tag and the absence of any Cluster routing are all
+    // deliberate - see ai-paths.md.
+    getViewerSubcommanderPath: function (
+      aiInUse,
+      aiMods,
+      smartSubcommanders,
+      playerTag
     ) {
-      var append = titans ? "_x1.json" : ".json";
-      return (
-        getPlayerScopedPath(basePath, identity, fallbackToken) +
-        "unit_maps/ai_unit_map" +
-        append
-      );
+      return getAIPathDestination("subcommander", aiInUse, {
+        guardians: false,
+        aiMods: aiMods,
+        smartSubcommanders: smartSubcommanders,
+        scopeToken: playerTag === ".player" ? undefined : playerTag,
+      });
     },
   };
 });

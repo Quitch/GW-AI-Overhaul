@@ -18,6 +18,53 @@ and op applied to several paths:
 gwoCard.mods(gwoUnit.dox, "replace", { max_health: 100, max_speed: 12 });
 ```
 
+and `flatMapMods(files, op, props)` for the same props over a list of files (a
+single file is accepted too). It emits one file's entries before the next's, in
+`props` key order, which matters where a later descriptor overrides an earlier one:
+
+```js
+gwoCard.flatMapMods(gwoGroup.botsAmmo, "multiply", {
+  damage: 1.25,
+  splash_damage: 1.25,
+});
+```
+
+Where every path takes the **same** value, pass them as a list and give the value
+last instead of repeating it per key. The attribute sets cards scale together are
+published as `gwoCard.paths` - `navigation` (the four movement stats), `damage`
+(`damage` and `splash_damage`) and `energyWeapon` (the ammo triple) - so the
+example is also:
+
+```js
+gwoCard.flatMapMods(gwoGroup.botsAmmo, "multiply", gwoCard.paths.damage, 1.25);
+```
+
+To scale one of those sets **and** something else in the same pass, build the map
+with `eachPath(paths, value)` and merge the rest in. Two `flatMapMods` calls
+concatenated would emit every unit's navigation entries before any unit's health,
+where this keeps each unit's together:
+
+```js
+gwoCard.flatMapMods(
+  gwoGroup.botsMobile,
+  "multiply",
+  _.assign(gwoCard.eachPath(gwoCard.paths.navigation, 1.5), { max_health: 1.5 })
+);
+```
+
+Vision and radar radii live in a unit's `recon.observer.items` array, one slot per
+layer and channel, so a radar card scales the first few slots at once.
+`observerPaths(count, field)` names that field on the first `count` slots:
+
+```js
+gwoCard.mods(
+  gwoUnit.radar,
+  "multiply",
+  gwoCard.observerPaths(5, "radius"),
+  1.5
+);
+```
+
 ## The op table
 
 | Op                 | Behaviour                                                                                        |
@@ -49,6 +96,37 @@ stat, and it is why `multiplyOrCreate` runs before `multiply` in the op ordering
 
 `eval` is theoretically unsafe. It is also pointless to worry about: mods can run
 whatever code they like anyway, so the risk is not meaningful.
+
+### Creating an attribute that doesn't exist
+
+No op ever learns whether the attribute was there. The path walker creates the leaf
+key _before_ calling the op — as `undefined`, or as an empty container for `push`,
+`pull` and `merge` — so what an op branches on is the value it was handed, and a
+missing attribute and one explicitly holding `null` reach it looking the same. That
+distinction only surfaces in one place, noted under the table.
+
+Missing intermediate segments are created too, so a path that goes several levels
+deeper than the stock spec still lands. `replace` writes whatever it is given
+regardless, so it is the op to reach for unless the new value has to be derived from
+the old one.
+
+| Op                        | Attribute missing                              | Attribute present, holding `null` |
+| ------------------------- | ---------------------------------------------- | --------------------------------- |
+| `replace`                 | Writes the value.                              | Writes the value.                 |
+| `multiplyOrCreate`        | Writes the value.                              | Writes the value.                 |
+| `add`                     | Writes the value.                              | Writes the value.                 |
+| `push`, `prepend`, `pull` | Creates the array.                             | Creates the array.                |
+| `wipe`                    | Creates the string.                            | Creates the string.               |
+| `multiply`                | **Warns, writes nothing.**                     | **Warns, writes nothing.**        |
+| `merge`                   | Creates the object — the walker seeds it `{}`. | **Warns, writes nothing.**        |
+
+`multiply` is the one to watch: it deliberately does not create (see above), and a
+card that wants creation asks for `multiplyOrCreate` by name.
+
+`merge` is the exception to attribute-missing and value-`null` behaving alike. It
+needs a plain object to `_.assign` into, which a `null` is not, so the two cases
+diverge: seeding over an explicit `null` takes a `replace` first, or a `replace`
+alone.
 
 ### Writing a spec reference
 

@@ -2,7 +2,8 @@
 // faction/faction_seed.js - see galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
-], function (personalities) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_builder.js",
+], function (personalities, factionBuilder) {
   var factionName = "Synchronous";
   var factionColour = [
     [126, 226, 101],
@@ -124,20 +125,13 @@ define([
       commander: "/pa/units/commanders/raptor_raizell/raptor_raizell.json",
     },
   ];
-  // GWO - the Random commander's pool, captured before randomAI joins it so it can
-  // never draw its own personality. The one below is a default; see galaxy.md.
-  var randomFrom = minions.slice();
-  var randomPersonality = minions[0].personality;
-
   var randomAI = {
     name: "Shadowdaemon",
     character: "!LOC:Random",
-    personality: randomPersonality,
+    personality: minions[0].personality,
     commander: "/pa/units/commanders/quad_shadowdaemon/quad_shadowdaemon.json",
   };
-  minions.push(randomAI);
-
-  // GWO - was sampled inline in the team literal below; see randomFrom above.
+  // GWO - was sampled inline in the team literal; see faction_builder.js.
   var systemDescriptions = [
     "!LOC:All commanders were originally designed to be autonomous, but The Synchronous see this state as inefficient, instead opting for a distributed neural network. To battle against one Servant is to battle against both an individual and the Whole of the The Synchronous itself.",
     "!LOC:What occurs during the process of Synchronization is unknown, as those subjected to it do not remember it. Its results, however, are obvious: The individual commander and its identity are subsumed for the most part into the Whole, and in return the commander gains an unprecedented ability to coordinate and communicate with fellow Servants, as they are all quite literally of one mind.",
@@ -146,9 +140,9 @@ define([
     "!LOC:A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
   ];
 
-  return {
+  return factionBuilder.build({
     name: factionName,
-    color: factionColour,
+    colour: factionColour,
     coopPlayerColors: [
       factionColour[0],
       [218, 165, 32],
@@ -157,92 +151,76 @@ define([
       [255, 229, 180],
       [205, 133, 63],
     ],
-    teams: [
+    baseline: baselinePersonality,
+    boss: boss,
+    minions: minions,
+    randomAI: randomAI,
+    descriptions: systemDescriptions,
+    planets: [
       {
-        name: factionName,
-        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
-        systemDescription: systemDescriptions[0],
-        systemTemplate: {
-          name: factionName,
-          Planets: [
-            {
-              name: "Cupru",
-              starting_planet: true,
-              mass: 50000,
-              Thrust: [0, 0],
-              Radius: [500, 500],
-              Height: [10, 20],
-              Water: [0, 0],
-              Temp: [0, 0],
-              MetalDensity: [75, 90],
-              MetalClusters: [24, 49],
-              BiomeScale: [100, 100],
-              Position: [-25000, 0],
-              Velocity: [0, -141.4213],
-              Biomes: ["earth"],
-            },
-            {
-              name: "Platina",
-              starting_planet: true,
-              mass: 5000,
-              Thrust: [0, 0],
-              Radius: [250, 250],
-              Height: [10, 20],
-              Water: [0, 0],
-              Temp: [0, 100],
-              MetalDensity: [100, 100],
-              MetalClusters: [100, 100],
-              BiomeScale: [100, 100],
-              Position: [-21500, 0],
-              Velocity: [0, -260.944213],
-              Biomes: ["metal_boss"],
-            },
-            {
-              name: "Fier",
-              starting_planet: false,
-              mass: 35000,
-              Thrust: [3, 3],
-              Radius: [499, 499],
-              Height: [0, 0],
-              Water: [0, 0],
-              Temp: [0, 100],
-              MetalDensity: [50, 50],
-              MetalClusters: [25, 49],
-              BiomeScale: [100, 100],
-              Position: [-75000, 1000],
-              Velocity: [1.08851337, 81.6387787],
-              Biomes: ["metal_boss"],
-            },
-            {
-              name: "Safir",
-              starting_planet: false,
-              mass: 35000,
-              Thrust: [0, 0],
-              Radius: [500, 500],
-              Height: [0, 0],
-              Water: [0, 0],
-              Temp: [0, 100],
-              MetalDensity: [50, 50],
-              MetalClusters: [25, 49],
-              BiomeScale: [100, 100],
-              Position: [-75000, -1000],
-              Velocity: [1.08851337, -81.6387787],
-              Biomes: ["metal"],
-            },
-          ],
-        },
+        name: "Cupru",
+        starting_planet: true,
+        mass: 50000,
+        Thrust: [0, 0],
+        Radius: [500, 500],
+        Height: [10, 20],
+        Water: [0, 0],
+        Temp: [0, 0],
+        MetalDensity: [75, 90],
+        MetalClusters: [24, 49],
+        BiomeScale: [100, 100],
+        Position: [-25000, 0],
+        Velocity: [0, -141.4213],
+        Biomes: ["earth"],
+      },
+      {
+        name: "Platina",
+        starting_planet: true,
+        mass: 5000,
+        Thrust: [0, 0],
+        Radius: [250, 250],
+        Height: [10, 20],
+        Water: [0, 0],
+        Temp: [0, 100],
+        MetalDensity: [100, 100],
+        MetalClusters: [100, 100],
+        BiomeScale: [100, 100],
+        Position: [-21500, 0],
+        Velocity: [0, -260.944213],
+        Biomes: ["metal_boss"],
+      },
+      {
+        name: "Fier",
+        starting_planet: false,
+        mass: 35000,
+        Thrust: [3, 3],
+        Radius: [499, 499],
+        Height: [0, 0],
+        Water: [0, 0],
+        Temp: [0, 100],
+        MetalDensity: [50, 50],
+        MetalClusters: [25, 49],
+        BiomeScale: [100, 100],
+        Position: [-75000, 1000],
+        Velocity: [1.08851337, 81.6387787],
+        Biomes: ["metal_boss"],
+      },
+      {
+        name: "Safir",
+        starting_planet: false,
+        mass: 35000,
+        Thrust: [0, 0],
+        Radius: [500, 500],
+        Height: [0, 0],
+        Water: [0, 0],
+        Temp: [0, 100],
+        MetalDensity: [50, 50],
+        MetalClusters: [25, 49],
+        BiomeScale: [100, 100],
+        Position: [-75000, -1000],
+        Velocity: [1.08851337, -81.6387787],
+        Biomes: ["metal"],
       },
     ],
-    minions: _.map(minions, function (personalityModifiers) {
-      return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
-    }),
-    // GWO - minions.length - 1 is randomAI, pushed above.
-    gwaioRandomSpec: {
-      baseline: baselinePersonality,
-      descriptions: systemDescriptions,
-      randoms: [
-        { index: minions.length - 1, template: randomAI, from: randomFrom },
-      ],
-    },
-  };
+  });
 });

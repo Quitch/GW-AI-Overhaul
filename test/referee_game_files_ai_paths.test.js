@@ -5,12 +5,14 @@
 // depends on the unshipped shared/gw_common and cannot load here, so this loads the
 // extracted module.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
   buildGame,
-  installModel,
+  SCENARIO_AXES,
+  useModel,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeGameFiles = loadCouiModule(
@@ -23,14 +25,7 @@ const gwoSpecs = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js"
 );
 
-let restoreModel;
-
-afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
-});
+const installModel = useModel();
 
 const isClusterTrue = () => true;
 const isClusterFalse = () => false;
@@ -62,7 +57,7 @@ describe("getAIUnitMapPath", () => {
   });
 
   it("titans=false never produces an _x1.json path", () => {
-    for (const aiInUse of ["Titans", "Queller", "Penchant"]) {
+    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
       assert.ok(
         !refereeGameFiles.getAIUnitMapPath(false, aiInUse).includes("_x1")
       );
@@ -186,7 +181,7 @@ describe("buildPlayerFiles", () => {
       aiInUse: "Titans",
       subcommanderType: "cluster",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const files = refereeGameFiles.buildPlayerFiles(
       {
@@ -209,7 +204,7 @@ describe("buildPlayerFiles", () => {
       aiInUse: "Titans",
       subcommanderType: "cluster",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const files = refereeGameFiles.buildPlayerFiles(
       {
@@ -235,7 +230,7 @@ describe("buildPlayerFiles", () => {
       subcommanderType: "notCluster",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const files = refereeGameFiles.buildPlayerFiles(
       {
@@ -260,7 +255,7 @@ describe("buildPlayerFiles", () => {
       subcommanderType: "notCluster",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const files = refereeGameFiles.buildPlayerFiles(
       {
@@ -288,18 +283,9 @@ describe("specFetch", () => {
   // can pin its parse-on-success, parse-fallback, and reject-on-error behaviour without
   // a real network/game runtime.
   function withAjax(handler, run) {
-    const had = Object.prototype.hasOwnProperty.call(global, "$");
-    const previous = global.$;
-    global.$ = { ajax: handler };
-    return Promise.resolve()
-      .then(run)
-      .finally(() => {
-        if (had) {
-          global.$ = previous;
-        } else {
-          delete global.$;
-        }
-      });
+    const stubs = createGlobalStubs();
+    stubs.setGlobal("$", { ajax: handler });
+    return Promise.resolve().then(run).finally(stubs.restoreGlobals);
   }
 
   it("parses a JSON response body and resolves the object", () => {

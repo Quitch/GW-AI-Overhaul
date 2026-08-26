@@ -7,7 +7,7 @@ shipped AMD modules under plain Node and asserting against them.
 npm test                  # node --test, everything under test/
 npm run test:coverage     # same, plus lcov for the Sonar job
 npm run validate          # all seven validate:* checks in sequence
-npm run verify            # CI's hard gates + repo-wide format:check
+npm run verify            # exactly what CI runs
 ```
 
 Run one file with `node --test test/specs.test.js`, or one test with
@@ -145,18 +145,23 @@ file does not reinvent its own list. Two things about it are load-bearing:
   call, matching production code, which calls `model.game()`/`game.galaxy()`
   repeatedly rather than caching a snapshot.
 - Connected clients are passed separately to `installModel(game, connectedClients)`,
-  **not** through `buildGame`'s options.
+  **not** through `buildGame`'s options. `useModel()` is the same installer with
+  the `afterEach` restore built in, so a suite does not track the restore itself.
 
 `scripts/lib/fake-jquery.js` covers exactly the `$`/`api` subset `referee_ai.js`
 uses. Requesting a URL with no configured resolver rejects, so a test's fixtures
 cannot silently drift from what the code actually asks for. It returns the Promise
 itself rather than an object with a `then` property, keeping `.then` the real
 inherited `Promise.prototype.then` — the shape SonarLint's "objects should not have
-a then property" rule warns about.
+a then property" rule warns about. Its `when` keeps jQuery 2's shape — one
+argument resolves to that value, several to the array — and `installFakeJQuery`
+puts a callable `$` carrying the lot behind a suite's global stubs.
 
 `scripts/lib/global-stubs.js` saves and restores the engine globals that shipped
 code reads at call time. It is a factory, not a singleton, so two suites never
-share a restore stack.
+share a restore stack. `trackActive(setup)` is the factory-test scaffold built on
+it: `build()` runs the suite's setup and keeps the result so the `afterEach` the
+helper registers can call its `restore()`.
 
 `scripts/lib/card-probe.js` runs a card's `deal()` and `buff()`, which is what
 `test/card_deal_unit_gate.test.js` needs and `validate:cards` deliberately refuses
@@ -184,6 +189,34 @@ partition assertion that no card is unclassified. `MIN_DEALABLE` is the one with
 analogue in `validate:cards`: without it, a broken `gw_common` stub that made every
 `deal()` return 0 would leave the card count intact and every assertion vacuously
 green. Raise them when coverage genuinely rises; never lower one to make a run pass.
+
+`scripts/lib/capturing-inventory.js` is the inventory every card sweep hands to
+`buff()`/`dull()`: the caller's explicit answers steer a card down the branch
+under test, a recorder captures the calls the sweep is collecting, and everything
+else is auto-stubbed so a new call a card makes needs no fixture update.
+`recordInto` is the recorder for `addMods`/`addAIMods`/`addUnits`, which concat
+and so take a bare descriptor as readily as an array.
+
+`scripts/lib/fake-knockout.js` is enough knockout for what shipped code does with
+an observable: read, write, subscribe, `push`/`remove`, `valueHasMutated`, and a
+`computed` that is just its function. Its `hooks` let a test watch writes and
+mutations without a subscription of its own. `makeInertObservable` is the one
+whose subscriptions never fire, which the card sweeps need because
+`shared/bank.js` subscribes to its own `startCards` at define time and the
+callback reaches `api.tally`.
+
+`scripts/lib/coop-fixtures.js` holds what the co-op card factory tests share: a
+connected `viewer`, its inventory `record`, the `inventoryClass` stand-in for the
+base game's `GWInventory` (which only loads a record's saved cards, counts them
+and applies them), and `rejection`, because those host handlers reject with a
+plain string that `assert.rejects` will not take as an error. The `HOST_CARDS`
+trap stays in each file: it is hung off that test's own game stub.
+
+`scripts/lib/fake-lodash-timers.js` captures `_.delay` and `_.debounce`.
+`node:test`'s timer mocks cannot reach them — lodash 3 binds
+`context.setTimeout` once, at load — so it swaps the global lodash for a context
+bound to a recording `setTimeout`, with an optional driven clock behind `_.now()`,
+and hands back the recorded calls and a restore.
 
 `scripts/lib/referee-fakes.js` builds on `fake-jquery.js` to install the `$`/`api`
 wiring `referee_ai.js`'s file discovery needs, and returns its own restore

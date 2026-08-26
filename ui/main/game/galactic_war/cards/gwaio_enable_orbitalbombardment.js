@@ -15,10 +15,7 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       var sizes = GW.balance.numberOfSystems;
-      if (
-        inventory.hasCard("gwaio_start_naval") ||
-        inventory.hasCard("gwaio_enable_tsunami")
-      ) {
+      if (gwoCard.floodsPlanets(inventory)) {
         return { chance: 0 };
       }
       if (context.totalSize <= sizes[0] || context.totalSize <= sizes[1]) {

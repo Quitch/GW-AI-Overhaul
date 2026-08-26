@@ -4,8 +4,32 @@ define([
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GW, GWCStart, gwoCard, gwoUnit) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (module, GW, GWCStart, gwoCard, gwoUnit, gwoGroup) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+  var loadout = gwoCard.loadout(CARD, {
+    bank: GW.bank,
+    start: GWCStart,
+    apply: function (inventory) {
+      inventory.maxCards(inventory.maxCards() - 3);
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.commander, "multiply", gwoCard.paths.navigation, 5)
+          .concat(
+            gwoCard.mods(
+              gwoUnit.commanderSecondary,
+              "multiply",
+              gwoCard.paths.energyWeapon,
+              0.25
+            ),
+            gwoCard.flatMapMods(gwoGroup.commanderPrimaryWeapons, "multiply", {
+              rate_of_fire: 2,
+            }),
+            gwoCard.mods(gwoUnit.commander, "multiply", { max_health: 3 })
+          )
+      );
+    },
+  });
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Bionic Augmentation Commander Of Neutralizing"),
@@ -18,80 +42,11 @@ define([
       }
       return "!LOC:The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 650%.";
     },
-    hint: _.constant({
-      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-      description: "!LOC:Bionic Augmentation Commander Of Neutralizing",
-    }),
+    hint: gwoCard.lockedHint(
+      "!LOC:Bionic Augmentation Commander Of Neutralizing"
+    ),
     deal: gwoCard.startCard,
-    buff: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.maxCards(inventory.maxCards() + 1);
-        } else {
-          GWCStart.buff(inventory);
-          inventory.maxCards(inventory.maxCards() - 3);
-          var navigationAttributes = [
-            "navigation.move_speed",
-            "navigation.brake",
-            "navigation.acceleration",
-            "navigation.turn_speed",
-          ];
-          var mods = _.map(
-            navigationAttributes,
-            function (navigationAttribute) {
-              return {
-                file: gwoUnit.commander,
-                path: navigationAttribute,
-                op: "multiply",
-                value: 5,
-              };
-            }
-          );
-          var weapons = [
-            gwoUnit.commanderSecondary,
-            gwoUnit.commanderWeaponBullet,
-            gwoUnit.commanderWeaponLaser,
-            gwoUnit.commanderWeaponMissile,
-          ];
-          var ammoAttributes = [
-            "ammo_capacity",
-            "ammo_demand",
-            "ammo_per_shot",
-          ];
-          _.forEach(ammoAttributes, function (ammoAttribute) {
-            mods.push({
-              file: gwoUnit.commanderSecondary,
-              path: ammoAttribute,
-              op: "multiply",
-              value: 0.25,
-            });
-          });
-          _.forEach(weapons, function (weapon) {
-            mods.push({
-              file: weapon,
-              path: "rate_of_fire",
-              op: "multiply",
-              value: 2,
-            });
-          });
-          mods.push({
-            file: gwoUnit.commander,
-            path: "max_health",
-            op: "multiply",
-            value: 3,
-          });
-          inventory.addMods(mods);
-        }
-        ++buffCount;
-        inventory.setTag("", "buffCount", buffCount);
-      } else {
-        inventory.maxCards(inventory.maxCards() + 1);
-        GW.bank.addStartCard(CARD);
-      }
-    },
-    dull: function (inventory) {
-      gwoCard.applyDulls(CARD, inventory);
-    },
+    buff: loadout.buff,
+    dull: loadout.dull,
   };
 });

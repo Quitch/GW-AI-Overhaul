@@ -9,18 +9,23 @@
 // scripts/lib/ai-path-fixtures.js does. The pure predicates the factory delegates
 // to are pinned separately in cards_coop_star_cards.test.js.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
+const {
+  fakeBank,
+  inventoryClass,
+  viewer,
+} = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"
 );
-
-const viewer = (id, extra) =>
-  Object.assign({ id, name: id, role: "viewer" }, extra);
 
 // Hung off the game stub as a trap. model.game().inventory() is always the
 // host's, so a per-player deal that reached for it would weight every viewer's
@@ -39,24 +44,6 @@ function galaxyFor(stars) {
     });
   }
   return stars.systems;
-}
-
-// A minimal stand-in for the base game's GWInventory: the factory only loads a
-// record's saved cards, counts them, and applies them.
-function inventoryClass(onApply) {
-  return function GWInventory() {
-    let loaded = [];
-    this.load = (data) => {
-      loaded = (data && data.cards) || [];
-    };
-    this.cards = () => loaded;
-    this.applyCards = (done) => {
-      if (onApply) {
-        onApply(this);
-      }
-      done();
-    };
-  };
 }
 
 // Everything the factory reads, defaulting to "one viewer, one selectable AI
@@ -124,7 +111,7 @@ function setup(overrides = {}) {
       }
       return Promise.resolve([{ id: "card_for_" + request.rng.starIndex }]);
     },
-    GWInventory: inventoryClass(options.onApply),
+    GWInventory: inventoryClass({ onApply: options.onApply }),
     gwoStreams: {
       coopStarDealRng: (warRng, playerKey, starIndex, turn) => ({
         playerKey,
@@ -134,10 +121,7 @@ function setup(overrides = {}) {
       coopPlayerKey: (record, client) => client.id,
     },
     warRng: { seed: "war" },
-    gwoBank: {
-      suspendUnlocks: () => calls.bank.push("suspend"),
-      resumeUnlocks: () => calls.bank.push("resume"),
-    },
+    gwoBank: fakeBank(calls),
     stockBank: {},
     gwoSettings: {
       treasureStar: options.treasureStar,
@@ -168,32 +152,18 @@ const starsDealt = (calls) =>
 
 const cardIndexes = (record) => Object.keys(record.gwaioStarCards.cards);
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, release } = trackActive(setup);
 
 // Collects everything console.error emits, so the factory's swallow-and-log
 // error path can be asserted rather than just not crashing.
+afterEach(() => {
+  mock.restoreAll();
+});
+
 async function captureErrors(run) {
-  const errors = [];
-  const priorError = console.error;
-  console.error = (message) => errors.push(message);
-  try {
-    await run();
-  } finally {
-    console.error = priorError;
-  }
-  return errors;
+  const errorMock = mock.method(console, "error", () => {});
+  await run();
+  return errorMock.mock.calls.map((call) => call.arguments[0]);
 }
 
 describe("coop star cards refresh - when it runs at all", () => {
@@ -207,8 +177,7 @@ describe("coop star cards refresh - when it runs at all", () => {
       await coopStarCards.refresh();
       assert.deepEqual(calls.deals, [], JSON.stringify(off));
       assert.deepEqual(calls.upserts, []);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 

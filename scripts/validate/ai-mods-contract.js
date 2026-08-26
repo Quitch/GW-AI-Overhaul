@@ -10,21 +10,18 @@
 //   - Every other op carries `value` and `toBuild`; append/prepend/replace also
 //     need `idToMod`, whose absence silently makes the mod a no-op.
 
-const fs = require("node:fs");
 const path = require("node:path");
-const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
-const { createAutoStub } = require("../lib/auto-stub.js");
-const { KNOWN_UNLOADABLE } = require("../lib/known-unloadable-cards.js");
+const { loadCouiModule } = require("../lib/amd-loader.js");
+const {
+  CARDS_DIR,
+  classifyLoadFailure,
+  listCardFiles,
+} = require("../lib/card-files.js");
+const {
+  createCapturingInventory,
+  recordInto,
+} = require("../lib/capturing-inventory.js");
 const { reportFailures } = require("../lib/report-failures.js");
-
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards"
-);
 
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
 const BUILD_LIST_TYPES = new Set(["fabber", "factory", "platoon"]);
@@ -55,25 +52,9 @@ const VALID_TYPES_BY_OP = {
 
 function collectAiMods(card) {
   const captured = [];
-  const inventory = new Proxy(
-    {
-      addAIMods: function (mods) {
-        // addAIMods concats, so it takes a bare descriptor as readily as an
-        // array. push.apply on a non-array captures nothing.
-        if (Array.isArray(mods)) {
-          captured.push.apply(captured, mods);
-        } else if (mods) {
-          captured.push(mods);
-        }
-        return createAutoStub();
-      },
-    },
-    {
-      get(target, prop) {
-        return prop in target ? target[prop] : createAutoStub();
-      },
-    }
-  );
+  const inventory = createCapturingInventory({
+    capture: { addAIMods: recordInto(captured) },
+  });
 
   for (const method of ["buff", "dull"]) {
     if (typeof card[method] !== "function") {
@@ -155,10 +136,7 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    if (
-      e.code === "NOT_SHIPPED" ||
-      Object.prototype.hasOwnProperty.call(KNOWN_UNLOADABLE, file)
-    ) {
+    if (classifyLoadFailure(e, file)) {
       return { excluded: true };
     }
     return { error: "failed to load: " + e.message };
@@ -196,10 +174,7 @@ function checkFile(file) {
 }
 
 function main() {
-  const files = fs
-    .readdirSync(CARDS_DIR)
-    .filter((f) => f.endsWith(".js"))
-    .sort();
+  const files = listCardFiles();
 
   let cardsChecked = 0;
   let modsChecked = 0;

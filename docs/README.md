@@ -57,6 +57,9 @@ full by the doc named:
   → [constraints.md](constraints.md)
 - **An unrecognised AI `test_type` is not an error** — the condition simply never
   validates and the build entry silently never fires. → [testing.md](testing.md)
+- **The GW server never sees mods, and `file.load` on a missing biome never
+  settles.** A planet whose `generator.biome` is not a stock `/pa/terrain/*.json`
+  hangs every player at loading with no error. → [galaxy.md](galaxy.md)
 - **`filter` is Chrome 53.** Only `-webkit-filter` does anything. So is `animation`
   and `@keyframes` (Chrome 43), and `mask-*` (Chrome 120) — the base game ships
   inert declarations of all three. → [constraints.md](constraints.md)
@@ -86,13 +89,12 @@ Rejected alternatives, tuning history and "this used to live elsewhere" belong i
 ## Verifying a change
 
 ```bash
-npm run verify    # CI's hard gates, plus Prettier over the whole repo
+npm run verify    # exactly what CI runs
 ```
 
-CI runs `lint:js`/`lint:css`/`lint:md`/`validate`/`test` as full-repo hard gates
-and checks Prettier only over the files a PR changed. `verify` runs those same
-gates and widens the Prettier check to `prettier --check .`, which the repo
-passes today — so a clean `verify` means a clean CI, but not the reverse.
+CI and the release workflow both run `npm run verify` and nothing else:
+`lint:js`/`lint:css`/`lint:md`/`format:check`/`validate`/`test`, every one a
+full-repo hard gate. A clean `verify` is a clean CI, and the reverse.
 
 Nothing here starts PA. Anything that can only fail at runtime — a renamed
 identifier in shipped `ui/**`, a CSS class rename spanning HTML and CSS, a

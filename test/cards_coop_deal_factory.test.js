@@ -9,13 +9,23 @@
 // collectPendingTechTargets and dealCountForHand are pinned on their own in
 // cards_coop_deal.test.js; what this file covers is the deal they drive.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const _ = require("lodash");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const {
+  fakeBank,
+  inventoryClass,
+  record,
+  rejection,
+  viewer,
+} = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js"
@@ -26,11 +36,6 @@ const makeFactory = loadCouiModule(
 const realHelpers = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js"
 );
-
-const viewer = (id) => ({ id, name: id, role: "viewer" });
-
-const record = (id, extra) =>
-  Object.assign({ id, inventory: { cards: [] } }, extra);
 
 // Hung off the game stub as a trap. model.game().inventory() is always the
 // host's, so a per-player deal that reached for it would weight every viewer's
@@ -43,32 +48,6 @@ const hostInventory = () => ({
   handIsFull: () => true,
   hasCard: (id) => HOST_CARDS.some((card) => card.id === id),
 });
-
-// jQuery 2's $.when: waits on anything thenable and passes everything else
-// through. The factory only ever hands it its own deferreds.
-function fakeWhen() {
-  const args = Array.prototype.slice.call(arguments);
-  return Promise.all(
-    args.map((arg) =>
-      arg && typeof arg.then === "function" ? arg : Promise.resolve(arg)
-    )
-  );
-}
-
-function inventoryClass() {
-  return function GWInventory() {
-    let loaded = [];
-    let limit = 0;
-    this.load = (data) => {
-      loaded = (data && data.cards) || [];
-      limit = (data && data.maxCards) || 0;
-    };
-    this.cards = () => loaded;
-    this.handIsFull = () => loaded.length >= limit;
-    this.hasCard = (id) => loaded.some((card) => card.id === id);
-    this.applyCards = (done) => done();
-  };
-}
 
 function setup(overrides = {}) {
   const options = Object.assign(
@@ -91,10 +70,7 @@ function setup(overrides = {}) {
   const calls = { deals: [], sent: [], actions: [], bank: [], offerCounts: [] };
 
   const stubs = createGlobalStubs();
-  const $ = function () {};
-  $.Deferred = makeDeferred;
-  $.when = fakeWhen;
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs);
   stubs.setGlobal("model", {
     gwCampaignActive: () => options.campaignActive,
     isCampaignHost: () => options.isHost,
@@ -130,7 +106,7 @@ function setup(overrides = {}) {
         startLoadout: true,
       }),
     },
-    GWInventory: inventoryClass(),
+    GWInventory: inventoryClass({ withHand: true }),
     numCardsToOffer: 3,
     gwoStreams: {
       coopDealRng: (warRng, playerKey, dealIndex) => ({ playerKey, dealIndex }),
@@ -142,10 +118,7 @@ function setup(overrides = {}) {
       }),
     },
     warRng: { seed: "war" },
-    gwoBank: {
-      suspendUnlocks: () => calls.bank.push("suspend"),
-      resumeUnlocks: () => calls.bank.push("resume"),
-    },
+    gwoBank: fakeBank(calls),
     stockBank: {},
     gwoTreasure: {
       isTreasureStar: (settings, starIndex) =>
@@ -166,19 +139,7 @@ function setup(overrides = {}) {
   return { calls, options, restore: () => stubs.restoreGlobals() };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, release } = trackActive(setup);
 
 const deal = (starIndex, star, options) =>
   global.model.dealCoopPlayerPendingTechCards(
@@ -186,17 +147,6 @@ const deal = (starIndex, star, options) =>
     star || { id: "star" },
     options
   );
-
-// The deferred rejects with a plain string, which `assert.rejects` will not take
-// as an error, so the reason is captured instead.
-async function rejection(promise) {
-  try {
-    await promise;
-  } catch (reason) {
-    return reason;
-  }
-  return undefined;
-}
 
 describe("dealCoopPlayerPendingTechCards - when it deals", () => {
   it("resolves empty outside an active co-op campaign", async () => {
@@ -208,8 +158,7 @@ describe("dealCoopPlayerPendingTechCards - when it deals", () => {
       const { calls } = build(off);
       assert.deepEqual(await deal(1), [], JSON.stringify(off));
       assert.deepEqual(calls.deals, []);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 

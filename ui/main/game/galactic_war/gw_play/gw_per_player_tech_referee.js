@@ -33,9 +33,9 @@ define([
   var validatePerPlayerTechInputs = perPlayerTech.validatePerPlayerTechInputs;
 
   // Files not assigned by default that we wish to mod - global for modder
-  // compatibility, New-GW-Cards pushes here - see tech-cards.md
+  // compatibility, New-GW-Cards pushes here - see tech-cards.md. Seeded with
+  // GWO's own list by gw_play/referee_game_files.js, which loads first.
   model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
-  model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);
 
   var loadInventoryFromRecord = function (record) {
     var inventory = new GWInventory();
@@ -63,32 +63,24 @@ define([
       GW.specs
         .genUnitSpecs(playerSpecs, playerTag)
         .then(function (playerSpecFiles) {
+          // Only viewers reach here - apply() generates from index 1 - so the
+          // host's .player files are never built by this path.
+          var playerScopedPath = getViewerSubcommanderAiPath(
+            refereeAIPaths,
+            subcommanderTech,
+            gwoAI.aiInUse("subcommander"),
+            inventory,
+            playerTag
+          );
           var playerFilesClassic = {};
           var playerFilesX1 = {};
-          if (playerTag === ".player") {
-            playerFilesClassic["/pa/ai/unit_maps/ai_unit_map.json.player"] =
-              playerAIUnitMap;
-            if (titans) {
-              playerFilesX1["/pa/ai/unit_maps/ai_unit_map_x1.json.player"] =
-                playerX1AIUnitMap;
-            }
-          } else {
-            var playerScopedPath = getViewerSubcommanderAiPath(
-              refereeAIPaths,
-              subcommanderTech,
-              gwoAI.aiInUse("subcommander"),
-              inventory,
-              playerTag
-            );
-
-            playerFilesClassic[
-              playerScopedPath + "unit_maps/ai_unit_map.json" + playerTag
-            ] = playerAIUnitMap;
-            if (titans) {
-              playerFilesX1[
-                playerScopedPath + "unit_maps/ai_unit_map_x1.json" + playerTag
-              ] = playerX1AIUnitMap;
-            }
+          playerFilesClassic[
+            playerScopedPath + "unit_maps/ai_unit_map.json" + playerTag
+          ] = playerAIUnitMap;
+          if (titans) {
+            playerFilesX1[
+              playerScopedPath + "unit_maps/ai_unit_map_x1.json" + playerTag
+            ] = playerX1AIUnitMap;
           }
 
           var playerFiles = _.assign(

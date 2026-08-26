@@ -46,6 +46,27 @@ enforced floor that must never be lowered to make a run pass. The other 61 are
 reached by `test/card_deal_unit_gate.test.js`, which stubs `shared/gw_common` and so
 loads all but one — see [`testing.md`](testing.md).
 
+## Which shape to write a card in
+
+Three shapes, and the card's family decides which:
+
+| Family                            | Shape                       |
+| --------------------------------- | --------------------------- |
+| Unit upgrades (`gwaio_upgrade_*`) | `gwoCard.upgradeCard({})`   |
+| Loadouts (`*_start_*`)            | `gwoCard.loadout(CARD, {})` |
+| Everything else                   | The object literal above    |
+
+The first two families each have a rigid frame every member repeats - a slot and a
+`requires` gate for an upgrade, the `buffCount` bank dance for a loadout - so the
+factory carries the frame and the card supplies only what differs. **Write a new
+card of either family through its factory**; a card that cannot fit stays a literal,
+and several do (see the factory's options, and the notes at the end of this file).
+
+Everything else is a literal because there is no shared frame to lift: those cards'
+`deal` weighting is where their variety lives, and a factory for them would need an
+override for nearly every field. That is the test to apply to a fourth family if one
+appears - a factory is worth it when the members differ in _data_, not in _logic_.
+
 ## `buff` and `dull`
 
 `buff(inventory)` applies the card's effect; `dull(inventory)` reverses it. Two
@@ -122,12 +143,39 @@ adding or removing a draw inside one card cannot move any other card's result. S
 | `commanderWeight(inventory, chance)`              | Scales with retinue size, capped at `chance * 2`.                         |
 | `subcommanderWeight(inventory, chance)`           | 0 until you field one, then full base weight, capped at 90.               |
 | `navalWeight(inventory, chance, dryChance)`       | Full weight only when planets flood.                                      |
+| `floodsPlanets(inventory)`                        | The flooding test `navalWeight` uses, for a card that gates on it.        |
+| `playerIsCluster(inventory)`                      | The player picked Cluster. Read the passed inventory, not the host's.     |
 | `antiTechDeal(inventory, base, excludedId)`       | The `gwaio_anti_*` counter-tech shape.                                    |
 | `travelledShort/Moderate/Far(system, context, n)` | Distance-gated availability.                                              |
 
 `upgradeDeal` tests `chance` for `undefined` rather than for falsiness, so a caller
 that computes a weight of 0 legitimately (as `navalWeight` can) gets the 0 it asked
 for instead of the 60 default.
+
+An upgrade card is the whole contract built from a handful of values, and
+`gwoCard.upgradeCard(options)` returns it:
+
+```js
+return gwoCard.upgradeCard({
+  name: "!LOC:Ant Upgrade Tech",
+  description: "!LOC:Ant Upgrade Tech adds splash damage to the light tank.",
+  icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_vehicle_upgrade.png",
+  audio: "/VO/Computer/gw/board_tech_available_ammunition",
+  requires: gwoUnit.ant,
+  buff: function (inventory) {
+    inventory.addMods(
+      gwoCard.mods(gwoUnit.antAmmo, "replace", { splash_damage: 63 })
+    );
+  },
+});
+```
+
+That is visible, dealt through `upgradeDeal` once `requires` is held, described
+through `withSlot`, and buffed with the extra slot before `buff` runs. `unless`
+names a card that withholds it, `chance` is a weight or a function of the
+inventory, `available(inventory)` or `deal(...)` replace the test or the whole
+deal, `describe` replaces the description, and `slot: false` drops the slot for
+a card the referee applies.
 
 ### A card must be worth something to whoever is offered it
 
@@ -202,6 +250,27 @@ loadouts unlocked by winning a war, and GWO-added loadouts unlocked the same way
 A treasure planet's loadout is drawn from those same unlockable ids, but at
 exploration rather than at war creation, and from the acting player's own locked
 pool — see [`coop.md`](coop.md), "Treasure loadouts".
+
+Every loadout's `buff` and `dull` are the same frame, and `gwoCard.loadout(CARD,
+options)` returns the pair:
+
+```js
+var loadout = gwoCard.loadout(CARD, {
+  bank: gwoBank, // GW.bank for a base-game loadout, a mod's own bank otherwise
+  start: GWCStart, // cards/gwc_start, buffed first
+  apply: function (inventory) {
+    inventory.addUnits(gwoGroup.airBasic);
+  },
+  dulls: [gwoUnit.inferno], // or a function of the inventory; optional
+});
+```
+
+The first buff of the war runs `start.buff` and then `apply`; every later buff of
+the start card only adds the card slot (`repeatSlot: false` drops that), and a
+copy dealt later in the war adds its slot and goes to `bank`. `always(inventory,
+context)` runs on every buff of the start card, for work that must repeat.
+`dull` is `applyDulls` over `dulls`. `gwoCard.lockedHint(description)` is the
+`hint` a locked loadout shows.
 
 Unlocks and victory badges live in `localStorage` under `gwaio_`-prefixed keys.
 Badge indices run from **-1 (Beginner)** so that Casual is 0 — see the

@@ -6,6 +6,13 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (module, GW, GWCStart, gwoCard, gwoGroup) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+  var loadout = gwoCard.loadout(CARD, {
+    bank: GW.bank,
+    start: GWCStart,
+    apply: function (inventory) {
+      inventory.addUnits(gwoGroup.orbital);
+    },
+  });
   return {
     visible: _.constant(false),
     summarize: _.constant("!LOC:Orbital Commander"),
@@ -16,24 +23,7 @@ define([
       "!LOC:The Orbital Commander loadout contains all orbital units and factories."
     ),
     deal: gwoCard.startCard,
-    buff: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.maxCards(inventory.maxCards() + 1);
-        } else {
-          GWCStart.buff(inventory);
-          inventory.addUnits(gwoGroup.orbital);
-        }
-        ++buffCount;
-        inventory.setTag("", "buffCount", buffCount);
-      } else {
-        inventory.maxCards(inventory.maxCards() + 1);
-        GW.bank.addStartCard(CARD);
-      }
-    },
-    dull: function (inventory) {
-      gwoCard.applyDulls(CARD, inventory);
-    },
+    buff: loadout.buff,
+    dull: loadout.dull,
   };
 });

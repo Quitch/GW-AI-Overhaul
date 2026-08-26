@@ -130,19 +130,21 @@ function gwoWarInfoPanel(gwoSettings) {
       options(model.gwoOptions, element[0], element[1]);
     }
 
-    var gwoHasDuplicatedSubcommanders = function (playerCards) {
-      return _.some(playerCards, {
-        id: "gwaio_upgrade_subcommander_duplication",
-      });
-    };
-
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
       ],
-      function (gwoColour, gwoRefereeCoop, gwoVersion) {
+      function (
+        gwoColour,
+        gwoConfigSetup,
+        gwoRefereeCoop,
+        gwoSubcommanderTech,
+        gwoVersion
+      ) {
         model.gwoVersion = ko.observable(gwoVersion);
 
         var coopText = function (setting) {
@@ -237,15 +239,13 @@ function gwoWarInfoPanel(gwoSettings) {
 
         var intelligence = function (subcommanderData, index) {
           var subcommander = subcommanderData.subcommander;
-          var personality = subcommander.character
-            ? loc(subcommander.character)
-            : loc("!LOC:None");
-          if (subcommander.penchant) {
-            personality = personality + " " + loc(subcommander.penchant);
-          }
           // avoid modifying the original name to prevent duplication of addendum
           var subcommanderName = subcommander.name;
-          if (gwoHasDuplicatedSubcommanders(subcommanderData.cards)) {
+          if (
+            gwoSubcommanderTech.hasDuplicatedSubcommanders(
+              subcommanderData.cards
+            )
+          ) {
             subcommanderName += " x2";
           }
           return {
@@ -257,7 +257,7 @@ function gwoWarInfoPanel(gwoSettings) {
                 gwoRefereeCoop.alliedColourIndex(index)
               )
             ),
-            character: personality,
+            character: gwoConfigSetup.getAIPersonalityName(subcommander),
           };
         };
 
@@ -271,8 +271,7 @@ function gwoWarInfoPanel(gwoSettings) {
         var coopCommanderCache = {};
 
         var updateCoopCommander = function (client, human) {
-          var cacheKey =
-            String(client.id || "") + "::" + String(client.name || "");
+          var cacheKey = gwoRefereeCoop.clientKey(client.id, client.name);
           var commander = coopCommanderCache[cacheKey];
           var record;
           var loadoutCardId;
@@ -332,8 +331,7 @@ function gwoWarInfoPanel(gwoSettings) {
 
           if (coopCampaign) {
             commanders = _.map(connectedClients, function (client) {
-              var cacheKey =
-                String(client.id || "") + "::" + String(client.name || "");
+              var cacheKey = gwoRefereeCoop.clientKey(client.id, client.name);
               activeCommanderKeys[cacheKey] = true;
               return updateCoopCommander(client, human);
             });

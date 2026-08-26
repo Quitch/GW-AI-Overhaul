@@ -3,46 +3,26 @@
 // The battle-config referee's ai_path assignment, which lives in the measured
 // gw_play/referee_config_setup.js.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
-  installModel,
+  useModel,
+  makeAiDescriptor,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeConfig = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js"
 );
 
-let restoreModel;
-
-afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
-});
+const installModel = useModel();
 
 // Fields setupAIArmy needs to avoid crashing. None are asserted on.
-function makeAiDescriptor(overrides) {
-  return Object.assign(
-    {
-      name: "Test AI",
-      commander: "test_commander",
-      econ_rate: 1,
-      color: [[10, 10, 10]],
-      faction: 1,
-      personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
-    },
-    overrides || {}
-  );
-}
-
 describe("setAIPath", () => {
   it("cluster path is the same regardless of isPlayer - only one side can be Cluster", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       refereeConfig.setAIPath(true, true),
       refereeConfig.setAIPath(true, false)
@@ -52,13 +32,13 @@ describe("setAIPath", () => {
 
   it("routes isPlayer through to the subcommander destination", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(refereeConfig.setAIPath(false, true), "/pa/ai_subcommander/");
   });
 
   it("routes non-player, non-cluster through to the enemy destination", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(refereeConfig.setAIPath(false, false), "/pa/ai/");
   });
 });
@@ -66,7 +46,7 @@ describe("setAIPath", () => {
 describe("setupAlliedCommanders", () => {
   it("assigns the same ai_path to every allied subcommander", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const allies = [
       makeAiDescriptor({
@@ -99,7 +79,7 @@ describe("setupAlliedCommanders", () => {
       aiInUse: "Titans",
       subcommanderType: "cluster",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const allies = [makeAiDescriptor()];
     const armies = [];
@@ -117,7 +97,7 @@ describe("setupAlliedCommanders", () => {
   // commander_colour.js's palettes.
   it("startPosition shifts the palette entry an ally is given", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const setUp = (startPosition) => {
       const armies = [];
@@ -138,7 +118,7 @@ describe("setupAlliedCommanders", () => {
 
   it("numbers consecutive allies consecutively from startPosition", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const fromZero = [];
     refereeConfig.setupAlliedCommanders(
@@ -166,7 +146,7 @@ describe("setupAlliedCommanders", () => {
 describe("setupPrimaryAiAndMinions", () => {
   it("assigns the same ai_path to the primary AI and every one of its minions", () => {
     const fixture = buildGame({ aiInUse: "Titans", enemyType: "neither" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const ai = makeAiDescriptor({
       minions: [makeAiDescriptor(), makeAiDescriptor()],
@@ -183,7 +163,7 @@ describe("setupPrimaryAiAndMinions", () => {
 
   it("routes a Cluster primary AI to the cluster path", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const ai = makeAiDescriptor({ faction: 4, minions: [] });
     const armies = [];
@@ -195,7 +175,7 @@ describe("setupPrimaryAiAndMinions", () => {
   // each unit-type share becomes a percent_*, and under Queller also a tag.
   it("derives a Queller guardian's personality percentages and tag from the player's cards", () => {
     const fixture = buildGame({ aiInUse: "Queller" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const ai = makeAiDescriptor({
       mirrorMode: true,
@@ -241,7 +221,7 @@ describe("setupPrimaryAiAndMinions", () => {
 describe("setupFfaAis", () => {
   it("gives a Cluster foe a different path than its non-Cluster siblings, who share one", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     // Placed mid-list to catch an off-by-one in downstream index logic.
     const normalFoeA = makeAiDescriptor();
@@ -303,7 +283,7 @@ describe("the setup functions never mutate the war objects they are given", () =
 
   it("applies subcommander tech to the army, not to the inventory's minion", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const minions = [makeMutationBait()];
     const untouched = snapshot(minions);
@@ -345,7 +325,7 @@ describe("the setup functions never mutate the war objects they are given", () =
 
   it("does not compound the primary AI's or its minions' eco mods across hires", () => {
     const fixture = buildGame({ aiInUse: "Titans", enemyType: "neither" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const ai = makeMutationBait({ minions: [makeMutationBait()] });
     const untouched = snapshot(ai);
@@ -380,7 +360,7 @@ describe("the setup functions never mutate the war objects they are given", () =
 
   it("does not compound an FFA foe's eco mod across hires", () => {
     const fixture = buildGame({ aiInUse: "Titans" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const foes = [makeMutationBait()];
     const untouched = snapshot(foes);

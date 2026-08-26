@@ -8,12 +8,23 @@
 // computeRerollDeal and pendingTechRerollValidationError are pinned as pure
 // functions in cards_coop_reroll.test.js; this covers the handlers around them.
 
-const { describe, it, before, after, afterEach } = require("node:test");
+const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
+const {
+  fakeBank,
+  inventoryClass,
+  rejection,
+} = require("../scripts/lib/coop-fixtures.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js"
@@ -21,26 +32,6 @@ const makeFactory = loadCouiModule(
 
 const REQUEST = "gwo_reroll_pending_tech";
 const RESULT = "gwo_reroll_pending_tech_result";
-
-function fakeWhen() {
-  const args = Array.prototype.slice.call(arguments);
-  return Promise.all(
-    args.map((arg) =>
-      arg && typeof arg.then === "function" ? arg : Promise.resolve(arg)
-    )
-  );
-}
-
-function inventoryClass() {
-  return function GWInventory() {
-    let loaded = [];
-    this.load = (data) => {
-      loaded = (data && data.cards) || [];
-    };
-    this.cards = () => loaded;
-    this.applyCards = (done) => done();
-  };
-}
 
 // Hung off the game stub as a trap. model.game().inventory() is always the
 // host's, so a reroll that reached for it would deal the viewer a replacement
@@ -103,10 +94,7 @@ function setup(overrides = {}) {
   const handlers = {};
 
   const stubs = createGlobalStubs();
-  const $ = function () {};
-  $.Deferred = makeDeferred;
-  $.when = fakeWhen;
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs);
   stubs.setGlobal("model", {
     isCampaignHost: () => options.isHost,
     gwCampaignPerPlayerTechCards: () => options.perPlayerTech,
@@ -186,10 +174,7 @@ function setup(overrides = {}) {
       coopPlayerKey: (rec, client) => client.id,
     },
     warRng: { seed: "war" },
-    gwoBank: {
-      suspendUnlocks: () => calls.bank.push("suspend"),
-      resumeUnlocks: () => calls.bank.push("resume"),
-    },
+    gwoBank: fakeBank(calls),
     stockBank: {},
   });
 
@@ -202,19 +187,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, release } = trackActive(setup);
 
 const operator = (extra) =>
   Object.assign(
@@ -227,26 +200,14 @@ const operator = (extra) =>
     extra
   );
 
-// The host handler rejects with a plain string, not an Error.
-async function rejection(promise) {
-  try {
-    await promise;
-  } catch (reason) {
-    return reason;
-  }
-  return undefined;
-}
+afterEach(() => {
+  mock.restoreAll();
+});
 
 async function captureErrors(run) {
-  const errors = [];
-  const priorError = console.error;
-  console.error = (message) => errors.push(message);
-  try {
-    await run();
-  } finally {
-    console.error = priorError;
-  }
-  return errors;
+  const errorMock = mock.method(console, "error", () => {});
+  await run();
+  return errorMock.mock.calls.map((call) => call.arguments[0]);
 }
 
 const errorsSentBack = (calls) =>
@@ -271,8 +232,7 @@ describe("host reroll handler - refusals", () => {
         /not campaign host or per-player tech disabled/
       );
       assert.deepEqual(calls.hostOperators, []);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 
@@ -389,8 +349,7 @@ describe("host reroll handler - refusals", () => {
         [{ target_client_id: "alice", request_id: "req-1" }],
         name
       );
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 });
@@ -532,26 +491,17 @@ describe("host reroll handler - the reroll", () => {
 
 describe("viewer reroll result handler", () => {
   // The success path drops the scanning overlay on a 2s cosmetic beat via
-  // _.delay. node:test's timer mocks cannot reach it - lodash 3 binds
-  // context.setTimeout once, at load - so the beat is captured by swapping the
-  // global lodash for one bound to a recording setTimeout. Left real, every
-  // success test would leave a live timer firing into a torn-down model stub.
-  const delayed = [];
-  let realLodash;
+  // _.delay, captured rather than left to fire into a torn-down model stub.
+  let timers;
 
   before(() => {
-    realLodash = global._;
-    global._ = realLodash.runInContext({
-      setTimeout: (fn, wait) => delayed.push({ fn, wait }),
-    });
+    timers = installFakeLodashTimers();
   });
 
-  after(() => {
-    global._ = realLodash;
-  });
+  after(() => timers.restore());
 
   afterEach(() => {
-    delayed.length = 0;
+    timers.delayed.length = 0;
   });
 
   const result = (payload) => ({
@@ -580,9 +530,9 @@ describe("viewer reroll result handler", () => {
     await handlers[RESULT](result());
     assert.deepEqual(calls.scanning, [], "the overlay must outlast the deal");
 
-    assert.equal(delayed.length, 1);
-    assert.equal(delayed[0].wait, 2000);
-    delayed[0].fn();
+    assert.equal(timers.delayed.length, 1);
+    assert.equal(timers.delayed[0].wait, 2000);
+    timers.delayed[0].fn();
     assert.deepEqual(calls.scanning, [false]);
   });
 
@@ -640,8 +590,7 @@ describe("viewer reroll result handler", () => {
       assert.deepEqual(calls.scanning, [false], JSON.stringify(payload));
       assert.deepEqual(calls.upserts, []);
       assert.match(errors[0], /invalid pending tech reroll result/);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 

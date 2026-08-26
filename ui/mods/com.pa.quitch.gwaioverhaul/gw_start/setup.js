@@ -300,8 +300,7 @@ function gwoSetup() {
         settings.personalityTags(pickedTags);
       }
 
-      var settingNames = _.keys(settings);
-      _.pull(settingNames, "previousSettings");
+      var settingNames = _.without(_.keys(settings), "previousSettings");
       var snapshot = {};
       _.forEach(settingNames, function (name) {
         snapshot[name] = settings[name]();
@@ -386,6 +385,8 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js",
         "main/game/galactic_war/shared/js/systems/template-loader",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_build.js",
       ],
       function (
         GW,
@@ -407,8 +408,12 @@ function gwoSetup() {
         gwoSystemBrackets,
         gwoRng,
         gwoFactionSeed,
-        chooseStarSystemTemplates
+        chooseStarSystemTemplates,
+        gwoBiomeMods,
+        gwoGalaxyBuild
       ) {
+        // Replaces GWGalaxy.prototype.build, which navToNewGame below calls.
+        gwoGalaxyBuild.install();
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
         gwoFavourites = favouritesModule;
 
@@ -570,10 +575,15 @@ function gwoSetup() {
 
           var onSystemsLoaded = function () {
             // $.when hands back one array per source.
-            var built = gwoSystemBrackets.bracketsFrom(
-              _.flatten(_.toArray(arguments))
-            );
-            ready.resolve(built.length ? built : undefined);
+            var systems = _.flatten(_.toArray(arguments));
+            gwoBiomeMods.providers().then(function (providers) {
+              var built = gwoSystemBrackets.bracketsFrom(systems, providers);
+              ready.resolve(
+                built.length
+                  ? { brackets: built, providers: providers }
+                  : undefined
+              );
+            });
           };
 
           var onOptionsLoaded = function (options) {
@@ -696,6 +706,7 @@ function gwoSetup() {
 
           var buildGalaxy = loadSystemBrackets().then(
             function (systemBrackets) {
+              systemBrackets = systemBrackets || {};
               return game.galaxy().build({
                 seed: model.newGameSeed(),
                 gwoRng: warRng.stream("galaxy"),
@@ -709,7 +720,8 @@ function gwoSetup() {
                 maxConnections: 4,
                 minimumDistanceBonus: 8, // this is inert
                 largePlanets: largePlanets,
-                gwoSystemBrackets: systemBrackets,
+                gwoSystemBrackets: systemBrackets.brackets,
+                gwoBiomeProviders: systemBrackets.providers,
               });
             }
           );
@@ -895,6 +907,27 @@ function gwoSetup() {
 
             var startCardBreaksAllies = startCardAllyCompatibility(game);
 
+            // Queller has no build orders for some minions, so a pool drawn
+            // from under that brain is filtered first.
+            var quellerPool = function (pool, brain) {
+              return brain === "Queller"
+                ? gwoAI.quellerCompatibleMinions(pool)
+                : pool;
+            };
+
+            // A Cluster AI's inventory starts from its subcommander mods; every
+            // AI then draws the faction tech its buffs grant.
+            var equipAI = function (ai, buffs) {
+              var inventory =
+                ai.isCluster === true ? gwoCluster.clusterCommanderMods : [];
+              ai.inventory = aiTech(
+                buffs,
+                inventory,
+                ai.faction,
+                gwoTech.factionTechs
+              );
+            };
+
             _.forEach(teamInfo, function (info, teamIndex) {
               var boss = info.boss;
               // Keyed, so an AI's rolls do not depend on what earlier AIs drew.
@@ -912,25 +945,52 @@ function gwoSetup() {
               }
 
               var difficulty = model.gwoDifficultySettings;
-              var workerPool = info.workers;
-              var minionPool = GWFactions[info.faction].minions;
-              if (difficulty.ai() === "Queller") {
-                // A no-op for the built-in factions, which the pre-filter above
-                // covers. Catches a modded faction populating team.workers.
-                workerPool = gwoAI.quellerCompatibleMinions(workerPool);
-                minionPool = gwoAI.quellerCompatibleMinions(minionPool);
-              }
+              // The team pre-filter above covers the built-in factions; this
+              // catches a modded faction populating team.workers.
+              var workerPool = quellerPool(info.workers, difficulty.ai());
+              var minionPool = quellerPool(
+                GWFactions[info.faction].minions,
+                difficulty.ai()
+              );
 
+              // One minion per stream index off the parent's rng. A Cluster AI
+              // takes one minion carrying commanderCount commanders instead.
+              var addMinions = function (
+                parent,
+                parentRng,
+                count,
+                dist,
+                commanderCount
+              ) {
+                parent.minions = [];
+                _.times(count, function (minionIndex) {
+                  var minionRng = parentRng.stream("minion", minionIndex);
+                  var minion = selectMinion(
+                    minionRng,
+                    minionPool,
+                    parent.faction,
+                    clusterType
+                  );
+                  if (!minion) {
+                    return;
+                  }
+                  setAIPersonality(
+                    minionRng,
+                    minion,
+                    difficulty,
+                    parent.faction
+                  );
+                  minion.econ_rate = aiEconRate(minionRng, dist, playerCount);
+                  if (parent.isCluster === true) {
+                    minion.commanderCount = commanderCount;
+                  }
+                  parent.minions.push(minion);
+                });
+              };
               setAIPersonality(bossRng, boss, difficulty, boss.faction);
               boss.econ_rate = aiEconRate(bossRng, maxDist);
               var bossCommanders = bossCommanderCount(difficulty, playerCount);
               boss.bossCommanders = bossCommanders;
-
-              boss.inventory = [];
-
-              if (boss.isCluster === true) {
-                boss.inventory = gwoCluster.clusterCommanderMods;
-              }
 
               var factionTechHandicap = Number.parseFloat(
                 difficulty.factionTechHandicap()
@@ -941,12 +1001,7 @@ function gwoSetup() {
                 factionTechHandicap
               );
               boss.typeOfBuffs = bossBuffs; // for intelligence reports
-              boss.inventory = aiTech(
-                bossBuffs,
-                boss.inventory,
-                boss.faction,
-                gwoTech.factionTechs
-              );
+              equipAI(boss, bossBuffs);
 
               var mandatoryMinions =
                 difficulty.mandatoryMinions() * playerCount;
@@ -961,35 +1016,11 @@ function gwoSetup() {
               var totalMinions = numMinions;
 
               if (numMinions > 0) {
-                boss.minions = [];
-
                 if (boss.isCluster === true) {
                   clusterType = "Security";
                   totalMinions = 1;
                 }
-
-                _.times(totalMinions, function (minionIndex) {
-                  var minionRng = bossRng.stream("minion", minionIndex);
-                  var minion = selectMinion(
-                    minionRng,
-                    minionPool,
-                    boss.faction,
-                    clusterType
-                  );
-                  if (!minion) {
-                    return;
-                  }
-                  setAIPersonality(minionRng, minion, difficulty, boss.faction);
-                  minion.econ_rate = aiEconRate(
-                    minionRng,
-                    maxDist,
-                    playerCount
-                  );
-                  if (boss.isCluster === true) {
-                    minion.commanderCount = numMinions;
-                  }
-                  boss.minions.push(minion);
-                });
+                addMinions(boss, bossRng, totalMinions, maxDist, numMinions);
               }
 
               _.forEach(workerPool, function (worker, workerIndex) {
@@ -1024,24 +1055,13 @@ function gwoSetup() {
                 setAIPersonality(aiRng, ai, difficulty, ai.faction);
                 ai.econ_rate = aiEconRate(aiRng, dist, playerCount);
 
-                ai.inventory = [];
-
-                if (ai.isCluster === true) {
-                  ai.inventory = gwoCluster.clusterCommanderMods;
-                }
-
                 var workerBuffs = setupAIBuffs(
                   aiRng,
                   dist,
                   factionTechHandicap
                 );
                 ai.typeOfBuffs = workerBuffs; // for intelligence reports
-                ai.inventory = aiTech(
-                  workerBuffs,
-                  ai.inventory,
-                  ai.faction,
-                  gwoTech.factionTechs
-                );
+                equipAI(ai, workerBuffs);
 
                 if (numMinions > 0) {
                   ai.minions = [];
@@ -1061,33 +1081,7 @@ function gwoSetup() {
                   if (ai.name === "Worker") {
                     ai.commanderCount = Math.max(clusterWorkers, 2);
                   } else {
-                    _.times(totalMinions, function (minionIndex) {
-                      var minionRng = aiRng.stream("minion", minionIndex);
-                      var minion = selectMinion(
-                        minionRng,
-                        minionPool,
-                        ai.faction,
-                        clusterType
-                      );
-                      if (!minion) {
-                        return;
-                      }
-                      setAIPersonality(
-                        minionRng,
-                        minion,
-                        difficulty,
-                        ai.faction
-                      );
-                      minion.econ_rate = aiEconRate(
-                        minionRng,
-                        dist,
-                        playerCount
-                      );
-                      if (ai.isCluster === true) {
-                        minion.commanderCount = clusterWorkers;
-                      }
-                      ai.minions.push(minion);
-                    });
+                    addMinions(ai, aiRng, totalMinions, dist, clusterWorkers);
                   }
                 }
 
@@ -1101,10 +1095,10 @@ function gwoSetup() {
 
                     availableFactions = foeRng.shuffle(availableFactions);
                     var foeFaction = availableFactions.shift();
-                    var foeMinions = GWFactions[foeFaction].minions;
-                    if (difficulty.ai() === "Queller") {
-                      foeMinions = gwoAI.quellerCompatibleMinions(foeMinions);
-                    }
+                    var foeMinions = quellerPool(
+                      GWFactions[foeFaction].minions,
+                      difficulty.ai()
+                    );
                     var foeCommander = selectMinion(
                       foeRng,
                       foeMinions,
@@ -1135,17 +1129,7 @@ function gwoSetup() {
                     }
                     foeCommander.commanderCount = numFoes;
 
-                    foeCommander.inventory = [];
-                    if (foeCommander.isCluster === true) {
-                      foeCommander.inventory = gwoCluster.clusterCommanderMods;
-                    }
-
-                    foeCommander.inventory = aiTech(
-                      workerBuffs,
-                      foeCommander.inventory,
-                      foeCommander.faction,
-                      gwoTech.factionTechs
-                    );
+                    equipAI(foeCommander, workerBuffs);
 
                     ai.foes.push(foeCommander);
                   }
@@ -1157,10 +1141,10 @@ function gwoSetup() {
                   gameModeEnabled(allyRng, difficulty.alliedCommanderChance())
                 ) {
                   var playerFaction = playerFactionIndex();
-                  var allyMinions = GWFactions[playerFaction].minions;
-                  if (difficulty.aiAlly() === "Queller") {
-                    allyMinions = gwoAI.quellerCompatibleMinions(allyMinions);
-                  }
+                  var allyMinions = quellerPool(
+                    GWFactions[playerFaction].minions,
+                    difficulty.aiAlly()
+                  );
                   var allyCommander = selectMinion(
                     allyRng,
                     allyMinions,
@@ -1252,8 +1236,7 @@ function gwoSetup() {
             }
 
             // Hacky way to store war information for the gw_play scene
-            var galaxy = game.galaxy();
-            var originSystem = galaxy.stars()[galaxy.origin()].system();
+            var originSystem = gwoAI.originSystem(game);
             originSystem.gwaio = {};
             originSystem.gwaio.version = gwoVersion;
             // Re-entering this in the lobby rebuilds this war.

@@ -61,6 +61,22 @@ by `addApplicableAiLoadModsToFileList`, which appends
 file joins the walk. Passing `load` to `applyAiMods` would log
 `"Invalid AI mod operation"` and do nothing.
 
+The commonest descriptor lets one more builder build a list of things - a
+fabber upgrade handing the basic fabber the advanced structures, a loadout letting
+the Commander build defences. `shared/ai.js` builds that list:
+
+```js
+gwoAI.builderAppendMods(
+  "fabber",
+  ["BasicRadar", "BasicArtillery"],
+  "Commander"
+);
+```
+
+is one `append` to `builders` per name, with `matchAll` set so every list carrying
+the build takes it. `gwoAI.advancedStructureBuilds` is the structure list the four
+basic-fabber upgrades share.
+
 ### How a build op matches
 
 Each of the five build ops walks `json.build_list` and skips any entry whose

@@ -6,20 +6,14 @@
 // keep/discard are on no card today, but gw_inventory.js still calls them when
 // present, so one may reintroduce them.
 
-const fs = require("node:fs");
 const path = require("node:path");
-const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
-const { KNOWN_UNLOADABLE } = require("../lib/known-unloadable-cards.js");
+const { loadCouiModule } = require("../lib/amd-loader.js");
+const {
+  CARDS_DIR,
+  classifyLoadFailure,
+  listCardFiles,
+} = require("../lib/card-files.js");
 const { reportFailures } = require("../lib/report-failures.js");
-
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards"
-);
 
 const REQUIRED_FIELDS = [
   "visible",
@@ -83,21 +77,13 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    if (e.code === "NOT_SHIPPED") {
-      return { skip: "notShipped" };
-    }
-    if (Object.prototype.hasOwnProperty.call(KNOWN_UNLOADABLE, file)) {
-      return { skip: "knownUnloadable" };
-    }
-    return { error: "failed to load: " + e.message };
+    const skip = classifyLoadFailure(e, file);
+    return skip ? { skip } : { error: "failed to load: " + e.message };
   }
 }
 
 function main() {
-  const files = fs
-    .readdirSync(CARDS_DIR)
-    .filter((f) => f.endsWith(".js"))
-    .sort();
+  const files = listCardFiles();
 
   let checked = 0;
   const skipped = { notShipped: 0, knownUnloadable: 0 };

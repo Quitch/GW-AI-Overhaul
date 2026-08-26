@@ -23,11 +23,9 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        _.flatten(
-          _.map(gwoGroup.navalMobile, function (unit) {
-            return gwoCard.mods(unit, "multiply", { build_metal_cost: 0.75 });
-          })
-        )
+        gwoCard.flatMapMods(gwoGroup.navalMobile, "multiply", {
+          build_metal_cost: 0.75,
+        })
       );
     },
     dull: function () {},

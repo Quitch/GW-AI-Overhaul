@@ -20,14 +20,10 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        _.flatten(
-          _.map(gwoGroup.ammo, function (ammo) {
-            return gwoCard.mods(ammo, "multiplyOrCreate", {
-              "armor_damage_map.AT_Vehicle": 0.5,
-              "armor_damage_map.AT_Bot": 2,
-            });
-          })
-        )
+        gwoCard.flatMapMods(gwoGroup.ammo, "multiplyOrCreate", {
+          "armor_damage_map.AT_Vehicle": 0.5,
+          "armor_damage_map.AT_Bot": 2,
+        })
       );
     },
     dull: function () {},

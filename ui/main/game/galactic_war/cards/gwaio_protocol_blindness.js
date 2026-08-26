@@ -20,49 +20,37 @@ define([
     buff: function (inventory) {
       var rangePercentageIncrease = 1.5;
 
-      var healthMods = _.map(gwoGroup.units, function (unit) {
-        return gwoCard.mods(unit, "multiply", { max_health: 1.3 });
+      var healthMods = gwoCard.flatMapMods(gwoGroup.units, "multiply", {
+        max_health: 1.3,
       });
-      var rangeMods = _.map(gwoGroup.weapons, function (weapon) {
-        return gwoCard.mods(weapon, "multiply", {
-          max_range: rangePercentageIncrease,
-        });
+      var rangeMods = gwoCard.flatMapMods(gwoGroup.weapons, "multiply", {
+        max_range: rangePercentageIncrease,
       });
       // Try to make sure that units can use their full range
-      var ammoMods = _.map(gwoGroup.ammo, function (ammo) {
-        return gwoCard.mods(ammo, "multiply", {
-          lifetime: rangePercentageIncrease,
-          max_velocity: rangePercentageIncrease,
-        });
+      var ammoMods = gwoCard.flatMapMods(gwoGroup.ammo, "multiply", {
+        lifetime: rangePercentageIncrease,
+        max_velocity: rangePercentageIncrease,
       });
 
       // Radar is excluded: its vision slots are ordered differently.
-      var unitsExcludingRadarScoutsCommanders = _.reject(
-        gwoGroup.units,
-        function (unit) {
-          return _.includes(
-            [
-              gwoUnit.antiNukeLauncher,
-              gwoUnit.arkyd,
-              gwoUnit.commander,
-              gwoUnit.firefly,
-              gwoUnit.hermes,
-              gwoUnit.manhattan,
-              gwoUnit.nyx,
-              // gwoUnit.planetaryRadar - uses slot 3+ for radar vision
-              gwoUnit.radar,
-              gwoUnit.radarAdvanced,
-              gwoUnit.radarSatelliteAdvanced,
-              gwoUnit.skitter,
-              // gwoUnit.stingray - uses slot 2+ for radar vision
-              gwoUnit.torpedoLauncher,
-              gwoUnit.torpedoLauncherAdvanced,
-              gwoUnit.ward,
-            ],
-            unit
-          );
-        }
-      );
+      var unitsExcludingRadarScoutsCommanders = _.difference(gwoGroup.units, [
+        gwoUnit.antiNukeLauncher,
+        gwoUnit.arkyd,
+        gwoUnit.commander,
+        gwoUnit.firefly,
+        gwoUnit.hermes,
+        gwoUnit.manhattan,
+        gwoUnit.nyx,
+        // gwoUnit.planetaryRadar - uses slot 3+ for radar vision
+        gwoUnit.radar,
+        gwoUnit.radarAdvanced,
+        gwoUnit.radarSatelliteAdvanced,
+        gwoUnit.skitter,
+        // gwoUnit.stingray - uses slot 2+ for radar vision
+        gwoUnit.torpedoLauncher,
+        gwoUnit.torpedoLauncherAdvanced,
+        gwoUnit.ward,
+      ]);
       var radarsWithRadarVisionInSlot0 = [
         gwoUnit.arkyd,
         gwoUnit.radarSatelliteAdvanced,
@@ -78,30 +66,25 @@ define([
         gwoUnit.ward,
       ];
 
-      var blindMods = _.map(
+      // can't use replace due to Planetary Radar using it - multiply runs later
+      var blindMods = gwoCard.flatMapMods(
         unitsExcludingRadarScoutsCommanders,
-        function (unit) {
-          // can't use replace due to Planetary Radar using it - multiply runs later
-          return gwoCard.mods(unit, "multiply", {
-            "recon.observer.items.0.radius": 0,
-            "recon.observer.items.1.radius": 0,
-          });
-        }
+        "multiply",
+        gwoCard.observerPaths(2, "radius"),
+        0
       );
-      var radarsWithRadarVisionInSlot1Mods = _.map(
+      var radarsWithRadarVisionInSlot1Mods = gwoCard.flatMapMods(
         radarsWithRadarVisionInSlot1,
-        function (unit) {
-          return gwoCard.mods(unit, "replace", {
-            "recon.observer.items.0.radius": 0,
-          });
+        "replace",
+        {
+          "recon.observer.items.0.radius": 0,
         }
       );
-      var radarsWithRadarVisionInSlot0Mods = _.map(
+      var radarsWithRadarVisionInSlot0Mods = gwoCard.flatMapMods(
         radarsWithRadarVisionInSlot0,
-        function (unit) {
-          return gwoCard.mods(unit, "replace", {
-            "recon.observer.items.1.radius": 0,
-          });
+        "replace",
+        {
+          "recon.observer.items.1.radius": 0,
         }
       );
 
@@ -112,15 +95,13 @@ define([
       });
 
       inventory.addMods(
-        _.flatten(
-          healthMods.concat(
-            rangeMods,
-            ammoMods,
-            blindMods,
-            radarsWithRadarVisionInSlot1Mods,
-            radarsWithRadarVisionInSlot0Mods,
-            aresFixMods
-          )
+        healthMods.concat(
+          rangeMods,
+          ammoMods,
+          blindMods,
+          radarsWithRadarVisionInSlot1Mods,
+          radarsWithRadarVisionInSlot0Mods,
+          aresFixMods
         )
       );
     },

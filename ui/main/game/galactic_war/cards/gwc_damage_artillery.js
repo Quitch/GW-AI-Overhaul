@@ -27,46 +27,22 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = [];
-      _.forEach(gwoGroup.structuresArtilleryAmmo, function (ammo) {
-        mods.push(
-          {
-            file: ammo,
-            path: "damage",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: ammo,
-            path: "splash_damage",
-            op: "multiply",
-            value: 1.25,
-          }
-        );
-      });
-      _.forEach(gwoGroup.structuresArtilleryWeapons, function (weapon) {
-        mods.push(
-          {
-            file: weapon,
-            path: "ammo_capacity",
-            op: "multiply",
-            value: 0.1,
-          },
-          {
-            file: weapon,
-            path: "ammo_demand",
-            op: "multiply",
-            value: 0.1,
-          },
-          {
-            file: weapon,
-            path: "ammo_per_shot",
-            op: "multiply",
-            value: 0.1,
-          }
-        );
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard
+          .flatMapMods(
+            gwoGroup.structuresArtilleryAmmo,
+            "multiply",
+            gwoCard.paths.damage,
+            1.25
+          )
+          .concat(
+            gwoCard.flatMapMods(
+              gwoGroup.structuresArtilleryWeapons,
+              "multiply",
+              { ammo_capacity: 0.1, ammo_demand: 0.1, ammo_per_shot: 0.1 }
+            )
+          )
+      );
     },
     dull: function () {},
   };

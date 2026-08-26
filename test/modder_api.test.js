@@ -122,22 +122,30 @@ const CARD_HELPERS = [
   "commanderWeight",
   "conditionalDeal",
   "farForSize",
+  "flatMapMods",
+  "floodsPlanets",
   "getAllConnectedPlayerCards",
   "getContext",
   "hasAllUnits",
   "hasT2Access",
   "hasUnit",
+  "loadout",
   "loadoutIcon",
+  "lockedHint",
   "missingAllUnits",
   "missingUnit",
   "mods",
   "navalWeight",
+  "eachPath",
+  "observerPaths",
+  "playerIsCluster",
   "startCard",
   "subcommanderWeight",
   "travelledFar",
   "travelledModerate",
   "travelledShort",
   "uniqueValue",
+  "upgradeCard",
   "upgradeDeal",
   "withSlot",
 ];
@@ -150,6 +158,13 @@ describe("shared/cards.js publishes the documented helpers", () => {
         "function",
         `New-GW-Cards documents gwoCard.${name}`
       );
+    });
+  }
+
+  for (const name of ["navigation", "damage", "energyWeapon"]) {
+    it(`gwoCard.paths.${name} is a list of spec paths`, () => {
+      assert.ok(Array.isArray(gwoCard.paths[name]));
+      assert.ok(gwoCard.paths[name].length > 0);
     });
   }
 });
@@ -169,9 +184,18 @@ const UNIT_IDS = [
 
 const GROUP_IDS = [
   "botsBasicMobile",
+  "commanderPrimaryWeapons",
+  "deathAmmo",
   "factoriesAdvanced",
+  "landFactoriesBasic",
   "navalMobile",
+  "nomadStructuresLarge",
+  "nomadStructuresMedium",
+  "nomadStructuresOrbital",
+  "nomadStructuresSmall",
   "structuresDefencesAdvanced",
+  "vehiclesAdvancedCombat",
+  "vehiclesBasicCombat",
 ];
 
 describe("the unit and group ids cards are written against", () => {
@@ -188,6 +212,21 @@ describe("the unit and group ids cards are written against", () => {
       assert.ok(gwoGroup[name].length > 0);
     });
   }
+
+  it("keeps the plural vehicle combat keys equal to the singular ones", () => {
+    assert.deepEqual(gwoGroup.vehiclesBasicCombat, gwoGroup.vehicleBasicCombat);
+    assert.deepEqual(
+      gwoGroup.vehiclesAdvancedCombat,
+      gwoGroup.vehicleAdvancedCombat
+    );
+  });
+
+  it("lists the Commander's primary weapons as its weapons less the AA", () => {
+    assert.deepEqual(
+      gwoGroup.commanderPrimaryWeapons,
+      gwoGroup.commanderWeapons.filter((w) => w !== gwoUnit.commanderAA)
+    );
+  });
 });
 
 describe("the deal signature", () => {

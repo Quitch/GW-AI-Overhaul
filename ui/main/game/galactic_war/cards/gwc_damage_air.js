@@ -22,25 +22,14 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = _.flatten(
-        _.map(gwoGroup.airAmmo, function (ammo) {
-          return [
-            {
-              file: ammo,
-              path: "damage",
-              op: "multiply",
-              value: 1.25,
-            },
-            {
-              file: ammo,
-              path: "splash_damage",
-              op: "multiply",
-              value: 1.25,
-            },
-          ];
-        })
+      inventory.addMods(
+        gwoCard.flatMapMods(
+          gwoGroup.airAmmo,
+          "multiply",
+          gwoCard.paths.damage,
+          1.25
+        )
       );
-      inventory.addMods(mods);
     },
     dull: function () {},
   };

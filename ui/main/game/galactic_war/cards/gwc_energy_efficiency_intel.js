@@ -29,24 +29,17 @@ define([
       };
     },
     buff: function (inventory) {
-      var mods = [];
-      _.forEach(gwoGroup.energyIntel, function (unit) {
-        mods.push({
-          file: unit,
-          path: "consumption.energy",
-          op: "multiply",
-          value: 0.25,
-        });
-      });
-      _.forEach(gwoGroup.teleporters, function (unit) {
-        mods.push({
-          file: unit,
-          path: "teleporter.energy_demand",
-          op: "multiply",
-          value: 0.25,
-        });
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard
+          .flatMapMods(gwoGroup.energyIntel, "multiply", {
+            "consumption.energy": 0.25,
+          })
+          .concat(
+            gwoCard.flatMapMods(gwoGroup.teleporters, "multiply", {
+              "teleporter.energy_demand": 0.25,
+            })
+          )
+      );
     },
     dull: function () {},
   };

@@ -4,11 +4,14 @@
 // pin the two properties that makes possible: it depends only on the player and
 // the star, and it sees mod loadouts the base game's unlock record cannot hold.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
 
 const treasure = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js"
@@ -617,19 +620,7 @@ function install(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = install(overrides);
-  return active;
-}
+const { build, release } = trackActive(install);
 
 describe("localUnlockedLoadoutIds", () => {
   it("merges both banks into one list of loadout ids", () => {
@@ -706,8 +697,7 @@ describe("treasure loadouts install - reporting a viewer's unlocks", () => {
     ]) {
       const { calls } = build(off);
       assert.deepEqual(calls.reported, [], JSON.stringify(off));
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 
@@ -788,32 +778,26 @@ describe("treasure loadouts install - storing a reported list", () => {
 
   it("warns and stores nothing for a client with no record", () => {
     const { handlers, calls } = build({ records: {} });
-    const warnings = [];
-    const priorWarn = console.warn;
-    console.warn = (message) => warnings.push(message);
-    try {
-      handlers[REPORT](operator(["gwaio_start_ceo"]));
-    } finally {
-      console.warn = priorWarn;
-    }
+    const warnMock = mock.method(console, "warn", () => {});
+    handlers[REPORT](operator(["gwaio_start_ceo"]));
 
     assert.deepEqual(calls.upserts, []);
-    assert.match(warnings[0], /no record for reported loadout unlocks/);
+    assert.match(
+      warnMock.mock.calls[0].arguments[0],
+      /no record for reported loadout unlocks/
+    );
   });
 
   it("does not broadcast a list it failed to store", () => {
     const { handlers, calls } = build({ upsertOk: false });
-    const errors = [];
-    const priorError = console.error;
-    console.error = (message) => errors.push(message);
-    try {
-      handlers[REPORT](operator(["gwaio_start_ceo"]));
-    } finally {
-      console.error = priorError;
-    }
+    const errorMock = mock.method(console, "error", () => {});
+    handlers[REPORT](operator(["gwaio_start_ceo"]));
 
     assert.deepEqual(calls.snapshots, []);
-    assert.match(errors[0], /failed to store reported loadout unlocks/);
+    assert.match(
+      errorMock.mock.calls[0].arguments[0],
+      /failed to store reported loadout unlocks/
+    );
   });
 });
 

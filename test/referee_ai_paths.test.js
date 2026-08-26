@@ -6,6 +6,7 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { SCENARIO_AXES } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeAIPaths = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js"
@@ -79,7 +80,7 @@ describe("getScopeToken", () => {
 
 describe("getAIPathDestination - cluster type", () => {
   it("always resolves to /pa/ai_cluster/ regardless of aiInUse/guardians/aiMods", () => {
-    for (const aiInUse of ["Titans", "Queller", "Penchant"]) {
+    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
       const path = refereeAIPaths.getAIPathDestination("cluster", aiInUse, {
         guardians: true,
         aiMods: [{ op: "load" }],
@@ -234,35 +235,9 @@ describe("scopeToken sanitization asymmetry", () => {
       aiMods: [{ op: "load" }],
       scopeToken: ".player0",
     });
-    // The leading dot is not stripped here, unlike getPlayerScopedUnitMapPath.
+    // The leading dot is not stripped here, unlike getScopeToken.
     // "Fixing" that would silently change shipped mount paths.
     assert.equal(path, "/pa/ai_subcommander/player_.player0/");
-  });
-
-  it("getPlayerScopedUnitMapPath sanitizes the identity/fallback token first", () => {
-    const path = refereeAIPaths.getPlayerScopedUnitMapPath(
-      "/pa/ai_subcommander/",
-      ".player0",
-      "fallback",
-      false
-    );
-    assert.equal(
-      path,
-      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map.json"
-    );
-  });
-
-  it("getPlayerScopedUnitMapPath appends _x1.json when titans is true", () => {
-    const path = refereeAIPaths.getPlayerScopedUnitMapPath(
-      "/pa/ai_subcommander/",
-      ".player0",
-      "fallback",
-      true
-    );
-    assert.equal(
-      path,
-      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map_x1.json"
-    );
   });
 });
 
@@ -271,6 +246,36 @@ describe("getAIPathDestination - no scope token", () => {
     assert.equal(
       refereeAIPaths.getAIPathDestination("enemy", "Titans", {}),
       "/pa/ai/"
+    );
+  });
+});
+
+describe("getViewerSubcommanderPath", () => {
+  it("scopes a non-host tag raw, under the brain-and-tech tree", () => {
+    assert.equal(
+      refereeAIPaths.getViewerSubcommanderPath(
+        "Titans",
+        [{ op: "load" }],
+        false,
+        ".player0"
+      ),
+      "/pa/ai_subcommander/player_.player0/"
+    );
+    assert.equal(
+      refereeAIPaths.getViewerSubcommanderPath("Queller", [], true, ".player1"),
+      "/pa/ai_queller/q_silver/player_.player1/"
+    );
+  });
+
+  it("never scopes the host tag", () => {
+    assert.equal(
+      refereeAIPaths.getViewerSubcommanderPath(
+        "Titans",
+        [{ op: "load" }],
+        false,
+        ".player"
+      ),
+      "/pa/ai_subcommander/"
     );
   });
 });

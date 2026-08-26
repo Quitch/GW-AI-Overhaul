@@ -27,15 +27,9 @@ define([
       var artillery = gwoGroup.structuresArtillery.concat(
         gwoGroup.artilleryMobile
       );
-      var mods = _.map(artillery, function (unit) {
-        return {
-          file: unit,
-          path: "build_metal_cost",
-          op: "multiply",
-          value: 0.25,
-        };
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard.flatMapMods(artillery, "multiply", { build_metal_cost: 0.25 })
+      );
     },
     dull: function () {},
   };

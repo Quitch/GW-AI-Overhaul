@@ -23,26 +23,14 @@ define([
       };
     },
     buff: function (inventory) {
-      var paths = [
-        "navigation.move_speed",
-        "navigation.brake",
-        "navigation.acceleration",
-        "navigation.turn_speed",
-      ];
-      var mods = _.flatten(
-        _.map(gwoGroup.orbitalMobile, function (unit) {
-          return _.map(paths, function (path) {
-            return {
-              file: unit,
-              path: path,
-              op: "multiply",
-              value: 1.5,
-            };
-          });
-        })
+      inventory.addMods(
+        gwoCard.flatMapMods(
+          gwoGroup.orbitalMobile,
+          "multiply",
+          gwoCard.paths.navigation,
+          1.5
+        )
       );
-
-      inventory.addMods(mods);
     },
     dull: function () {},
   };

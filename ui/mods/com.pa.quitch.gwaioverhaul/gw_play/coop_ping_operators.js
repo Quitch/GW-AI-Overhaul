@@ -1,7 +1,9 @@
 // Co-op star pings. A viewer asks the host (gwo_ping_star) to raise a marker on a
 // star; the host validates it and relays it to every viewer
 // (gwo_ping_star_broadcast). See coop.md.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+], function (refereeCoop) {
   var PING_REQUEST = "gwo_ping_star";
   var PING_BROADCAST = "gwo_ping_star_broadcast";
   var PING_CUE = "/SE/UI/UI_ping";
@@ -16,11 +18,7 @@ define(function () {
   var MAX_PING_ID_LENGTH = 64;
   var OWN_PING_MEMORY = 8;
 
-  // An unauthenticated viewer can have an empty client_id, so the key is the
-  // composite gwo_panel.js uses.
-  var clientKey = function (clientId, clientName) {
-    return String(clientId || "") + "::" + String(clientName || "");
-  };
+  var clientKey = refereeCoop.clientKey;
 
   var starValidationError = function (star, starCount) {
     if (!_.isFinite(star) || star !== Math.floor(star)) {

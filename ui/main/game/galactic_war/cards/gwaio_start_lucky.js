@@ -6,6 +6,10 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
 ], function (module, GW, GWCStart, gwoBank, gwoCard) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+  var loadout = gwoCard.loadout(CARD, {
+    bank: gwoBank,
+    start: GWCStart,
+  });
   return {
     visible: _.constant(false),
     summarize: function () {
@@ -35,23 +39,7 @@ define([
       };
     },
     deal: gwoCard.startCard,
-    buff: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        var buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.maxCards(inventory.maxCards() + 1);
-        } else {
-          GWCStart.buff(inventory);
-        }
-        ++buffCount;
-        inventory.setTag("", "buffCount", buffCount);
-      } else {
-        inventory.maxCards(inventory.maxCards() + 1);
-        gwoBank.addStartCard(CARD);
-      }
-    },
-    dull: function (inventory) {
-      gwoCard.applyDulls(CARD, inventory);
-    },
+    buff: loadout.buff,
+    dull: loadout.dull,
   };
 });

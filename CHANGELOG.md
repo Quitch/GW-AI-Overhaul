@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v6.13.0 - 2026-08-26
+
+### Changed
+
+- Tech cards build their spec mods and card frames through shared `gwoCard` helpers (`flatMapMods`, `loadout`, `upgradeCard`, ...); card behaviour unchanged. New helpers are documented for card modders
+
+### Bugfix
+
+- A system from a Shared Systems source whose planets use a biome from another mod no longer leaves every player stuck loading when its battle starts. Biome mods that ship only JSON (such as _multiple Biomes for System Designers_ and _Simple Biomes_) are now given to the Galactic War server and sent to every player, so those maps play as designed; a system whose biome needs a mod the server cannot be given is left out of the galaxy, and a war already carrying one has the planet switched to an earth biome at launch. Wars saved before this change get the same treatment when their battles start
+
 ## v6.12.0 - 2026-08-24
 
 ### Added

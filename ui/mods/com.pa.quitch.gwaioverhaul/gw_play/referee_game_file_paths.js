@@ -1,6 +1,8 @@
 // The measured half of gw_play/referee_game_files.js. Nothing here may touch an
 // engine global at define time - see testing.md, "Coverage".
-define(function () {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
+  gwoCard
+) {
   var getAIUnitMapPath = function (titans, aiInUse) {
     var append = titans ? "_x1.json" : ".json";
 
@@ -60,7 +62,7 @@ define(function () {
     var inventory = params.inventory;
     var titans = params.titans;
 
-    var playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    var playerIsCluster = gwoCard.playerIsCluster(inventory);
     var hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander");
     var playerFilesClassic;
     var playerFilesX1;

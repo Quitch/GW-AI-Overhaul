@@ -8,11 +8,20 @@
 // The validation, cooldown and labelling helpers are pinned as pure functions
 // in coop_ping.test.js.
 
-const { describe, it, before, after, afterEach } = require("node:test");
+const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
+const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
+const {
+  makeObservable: observable,
+} = require("../scripts/lib/fake-knockout.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping_operators.js"
@@ -20,17 +29,6 @@ const makeFactory = loadCouiModule(
 
 const REQUEST = "gwo_ping_star";
 const BROADCAST = "gwo_ping_star_broadcast";
-
-function observable(initial) {
-  let value = initial;
-  return function () {
-    if (arguments.length) {
-      value = arguments[0];
-      return undefined;
-    }
-    return value;
-  };
-}
 
 function setup(overrides = {}) {
   const options = Object.assign(
@@ -131,19 +129,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, release } = trackActive(setup);
 
 const request = (extra) =>
   Object.assign(
@@ -162,16 +148,14 @@ const broadcast = (extra) => ({
   ),
 });
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 function captureLogs(run) {
-  const logs = [];
-  const priorLog = console.log;
-  console.log = (message) => logs.push(message);
-  try {
-    run();
-  } finally {
-    console.log = priorLog;
-  }
-  return logs;
+  const logMock = mock.method(console, "log", () => {});
+  run();
+  return logMock.mock.calls.map((call) => call.arguments[0]);
 }
 
 describe("ping relay - refusals", () => {
@@ -197,8 +181,7 @@ describe("ping relay - refusals", () => {
       handlers[REQUEST](request());
       assert.deepEqual(calls.hostOperators, [], JSON.stringify(off));
       assert.deepEqual(calls.raised, []);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 
@@ -215,8 +198,7 @@ describe("ping relay - refusals", () => {
       assert.deepEqual(calls.raised, []);
       assert.equal(logs.length, 1);
       assert.match(logs[0], /dropped ping/);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 
@@ -343,8 +325,7 @@ describe("what can be pinged", () => {
     for (const turnState of ["explore", "fight"]) {
       const { api } = build({ turnState });
       assert.equal(api.canPing(1), false, turnState);
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 
@@ -389,33 +370,23 @@ describe("what can be pinged", () => {
     ]) {
       const { api } = build(off);
       assert.equal(api.canPing(1), false, JSON.stringify(off));
-      active.restore();
-      active = undefined;
+      release();
     }
   });
 });
 
 describe("sending a ping", () => {
-  // The cooldown is cleared on a _.delay. node:test's timer mocks cannot reach
-  // it - lodash 3 binds context.setTimeout once, at load - so the delay is
-  // captured by swapping the global lodash for one bound to a recording
-  // setTimeout, as cards_coop_reroll_factory.test.js does.
-  const delayed = [];
-  let realLodash;
+  // The cooldown is cleared on a _.delay.
+  let timers;
 
   before(() => {
-    realLodash = global._;
-    global._ = realLodash.runInContext({
-      setTimeout: (fn, wait) => delayed.push({ fn, wait }),
-    });
+    timers = installFakeLodashTimers();
   });
 
-  after(() => {
-    global._ = realLodash;
-  });
+  after(() => timers.restore());
 
   afterEach(() => {
-    delayed.length = 0;
+    timers.delayed.length = 0;
   });
 
   it("asks the host, then shows the ping without waiting for the answer", () => {
@@ -457,9 +428,9 @@ describe("sending a ping", () => {
     api.pingStar();
     assert.deepEqual(calls.cooldown, [true]);
 
-    assert.equal(delayed.length, 1);
-    assert.equal(delayed[0].wait, 3000);
-    delayed[0].fn();
+    assert.equal(timers.delayed.length, 1);
+    assert.equal(timers.delayed[0].wait, 3000);
+    timers.delayed[0].fn();
     assert.deepEqual(calls.cooldown, [true, false]);
   });
 
@@ -502,6 +473,6 @@ describe("sending a ping", () => {
     assert.equal(calls.viewerOperators.length, 1);
     assert.deepEqual(calls.raised, []);
     assert.deepEqual(calls.cooldown, []);
-    assert.equal(delayed.length, 0);
+    assert.equal(timers.delayed.length, 0);
   });
 });

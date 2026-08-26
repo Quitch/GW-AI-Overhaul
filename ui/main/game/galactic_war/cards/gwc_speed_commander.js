@@ -18,12 +18,7 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        gwoCard.mods(gwoUnit.commander, "multiply", {
-          "navigation.move_speed": 2,
-          "navigation.brake": 2,
-          "navigation.acceleration": 2,
-          "navigation.turn_speed": 2,
-        })
+        gwoCard.mods(gwoUnit.commander, "multiply", gwoCard.paths.navigation, 2)
       );
     },
     dull: function () {},

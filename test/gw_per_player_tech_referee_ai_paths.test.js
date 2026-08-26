@@ -21,17 +21,6 @@ const subcommanderTech = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
 );
 
-function makePlayerInventory(overrides) {
-  const data = Object.assign(
-    { aiModsList: [], cardsList: [] },
-    overrides || {}
-  );
-  return {
-    aiMods: () => data.aiModsList,
-    cards: () => data.cardsList,
-  };
-}
-
 describe("getPlayerTagGivenIndex", () => {
   it("index 0 is the host tag .player", () => {
     assert.equal(hook.getPlayerTagGivenIndex(0), ".player");
@@ -71,7 +60,7 @@ describe("stripKnownSpecTag", () => {
 
 describe("getViewerSubcommanderAiPath", () => {
   it("the host tag (.player) never gets a scoped path, even with active tech", () => {
-    const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
+    const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
@@ -83,7 +72,7 @@ describe("getViewerSubcommanderAiPath", () => {
   });
 
   it("a non-host tag with active tech gets scoped by that raw tag", () => {
-    const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
+    const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
@@ -97,7 +86,7 @@ describe("getViewerSubcommanderAiPath", () => {
   });
 
   it("a non-host tag with no active tech still gets scoped onto the vanilla brain path", () => {
-    const inventory = makePlayerInventory({ aiModsList: [] });
+    const inventory = makeInventory({ aiModsList: [] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
@@ -112,7 +101,7 @@ describe("getViewerSubcommanderAiPath", () => {
 
   it("is guardians-unaware by construction: always passes guardians:false", () => {
     // Pins the documented guardians asymmetry - see ai-paths.md.
-    const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
+    const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
@@ -132,10 +121,10 @@ describe("getViewerSubcommanderAiPath", () => {
   });
 
   it("smartSubcommanders toggles Queller q_silver/ vs q_bronze/ via the tactics card", () => {
-    const smartInventory = makePlayerInventory({
+    const smartInventory = makeInventory({
       cardsList: [{ id: "gwaio_upgrade_subcommander_tactics" }],
     });
-    const plainInventory = makePlayerInventory({ cardsList: [] });
+    const plainInventory = makeInventory({ cardsList: [] });
 
     assert.equal(
       hook.getViewerSubcommanderAiPath(

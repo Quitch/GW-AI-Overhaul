@@ -16,38 +16,20 @@ define([
       return { chance: 50 };
     },
     buff: function (inventory) {
-      var deathAmmo = [
-        gwoUnit.wyrmDeath,
-        gwoUnit.zeusDeath,
-        gwoUnit.commanderDeath,
-        gwoUnit.manhattanDeath,
-        gwoUnit.atlasDeath,
-        gwoUnit.aresDeath,
-        gwoUnit.jigDeath,
-        gwoUnit.kesslerAmmo,
-        gwoUnit.landMineAmmo,
-        gwoUnit.boomAmmo,
-        gwoUnit.heliosDeath,
-      ];
-      var deathAmmoMods = _.map(deathAmmo, function (ammo) {
-        return gwoCard.mods(ammo, "replace", { splash_damages_allies: true });
+      var deathAmmoMods = gwoCard.flatMapMods(gwoGroup.deathAmmo, "replace", {
+        splash_damages_allies: true,
       });
 
-      var unitsWithoutADeathWeapon = _.reject(gwoGroup.units, function (unit) {
-        return _.includes(
-          [
-            gwoUnit.wyrm,
-            gwoUnit.zeus,
-            gwoUnit.commander,
-            gwoUnit.manhattan,
-            gwoUnit.atlas,
-            gwoUnit.ares,
-            gwoUnit.jig,
-            gwoUnit.helios,
-          ],
-          unit
-        );
-      });
+      var unitsWithoutADeathWeapon = _.difference(gwoGroup.units, [
+        gwoUnit.wyrm,
+        gwoUnit.zeus,
+        gwoUnit.commander,
+        gwoUnit.manhattan,
+        gwoUnit.atlas,
+        gwoUnit.ares,
+        gwoUnit.jig,
+        gwoUnit.helios,
+      ]);
       var deathWeaponMods = _.map(unitsWithoutADeathWeapon, function (unit) {
         return gwoCard
           .mods(unit, "replace", {

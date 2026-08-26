@@ -9,46 +9,14 @@
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const path = require("node:path");
-const {
-  loadCouiModule,
-  registerModuleStub,
-  REPO_ROOT,
-} = require("../scripts/lib/amd-loader.js");
-const { createAutoStub } = require("../scripts/lib/auto-stub.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { CARDS_DIR } = require("../scripts/lib/card-files.js");
+const { installCardHarness } = require("../scripts/lib/card-probe.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
-// Loadout cards reach for these at define time, before any test runs.
-registerModuleStub("shared/gw_common", createAutoStub());
-
-function makeObservable(initial) {
-  let value = initial;
-  const observable = function () {
-    if (arguments.length) {
-      value = arguments[0];
-      return;
-    }
-    return value;
-  };
-  observable.subscribe = () => ({ dispose: () => {} });
-  observable.extend = () => observable;
-  return observable;
-}
-
-global.ko = {
-  observable: makeObservable,
-  observableArray: makeObservable,
-  computed: (fn) => fn,
-};
-global.localStorage = {};
-
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards"
-);
+// Loadout cards reach for gw_common, ko and localStorage at define time, before
+// any test runs.
+installCardHarness();
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 afterEach(restoreGlobals);

@@ -21,16 +21,13 @@ define([
     buff: function (inventory) {
       inventory.addUnits(gwoGroup.structuresEcoStorage);
       inventory.addMods(
-        _.flatten(
-          _.map(
-            gwoGroup.structuresEcoBasic.concat(gwoGroup.structuresEcoAdvanced),
-            function (unit) {
-              return gwoCard.mods(unit, "multiply", {
-                "production.energy": 1.25,
-                "production.metal": 1.25,
-              });
-            }
-          )
+        gwoCard.flatMapMods(
+          gwoGroup.structuresEcoBasic.concat(gwoGroup.structuresEcoAdvanced),
+          "multiply",
+          {
+            "production.energy": 1.25,
+            "production.metal": 1.25,
+          }
         )
       );
     },

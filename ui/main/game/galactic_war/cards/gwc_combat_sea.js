@@ -27,58 +27,24 @@ define([
       );
     },
     buff: function (inventory) {
-      var mods = [];
-      _.forEach(gwoGroup.navalMobile, function (unit) {
-        mods.push(
-          {
-            file: unit,
-            path: "navigation.move_speed",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "navigation.brake",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "navigation.acceleration",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "navigation.turn_speed",
-            op: "multiply",
-            value: 1.5,
-          },
-          {
-            file: unit,
-            path: "max_health",
-            op: "multiply",
-            value: 1.5,
-          }
-        );
-      });
-      _.forEach(gwoGroup.navalAmmo, function (ammo) {
-        mods.push(
-          {
-            file: ammo,
-            path: "damage",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: ammo,
-            path: "splash_damage",
-            op: "multiply",
-            value: 1.25,
-          }
-        );
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard
+          .flatMapMods(
+            gwoGroup.navalMobile,
+            "multiply",
+            _.assign(gwoCard.eachPath(gwoCard.paths.navigation, 1.5), {
+              max_health: 1.5,
+            })
+          )
+          .concat(
+            gwoCard.flatMapMods(
+              gwoGroup.navalAmmo,
+              "multiply",
+              gwoCard.paths.damage,
+              1.25
+            )
+          )
+      );
     },
     dull: function () {},
   };

@@ -23,32 +23,18 @@ define([
       };
     },
     buff: function (inventory) {
-      var mods = [];
-      _.forEach(gwoGroup.structures, function (unit) {
-        mods.push({
-          file: unit,
-          path: "max_health",
-          op: "multiply",
-          value: 1.5,
-        });
-      });
-      _.forEach(gwoGroup.structuresDefencesAmmo, function (ammo) {
-        mods.push(
-          {
-            file: ammo,
-            path: "damage",
-            op: "multiply",
-            value: 1.25,
-          },
-          {
-            file: ammo,
-            path: "splash_damage",
-            op: "multiply",
-            value: 1.25,
-          }
-        );
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard
+          .flatMapMods(gwoGroup.structures, "multiply", { max_health: 1.5 })
+          .concat(
+            gwoCard.flatMapMods(
+              gwoGroup.structuresDefencesAmmo,
+              "multiply",
+              gwoCard.paths.damage,
+              1.25
+            )
+          )
+      );
     },
     dull: function () {},
   };

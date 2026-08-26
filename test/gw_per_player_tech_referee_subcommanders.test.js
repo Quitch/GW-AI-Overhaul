@@ -7,6 +7,7 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { makeInventory } = require("../scripts/lib/ai-path-fixtures.js");
 
 const hook = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js"
@@ -46,13 +47,6 @@ function makeMinion(overrides) {
   );
 }
 
-function makePlayerInventory(minionList, cardsList) {
-  return {
-    cards: () => cardsList || [],
-    minions: () => minionList || [],
-  };
-}
-
 function build(overrides) {
   return hook.buildViewerSubcommanderArmies(
     Object.assign(
@@ -84,7 +78,10 @@ describe("buildViewerSubcommanderArmies", () => {
     // into the saved war and outlive a discard of the card that granted it.
     const minions = [makeMinion()];
     const untouched = snapshot(minions);
-    const inventory = makePlayerInventory(minions, [TACTICS_CARD, FABBER_CARD]);
+    const inventory = makeInventory({
+      minionsList: minions,
+      cardsList: [TACTICS_CARD, FABBER_CARD],
+    });
 
     const firstBattle = build({ playerInventory: inventory });
     const secondBattle = build({ playerInventory: inventory });
@@ -111,7 +108,9 @@ describe("buildViewerSubcommanderArmies", () => {
     const minions = [makeMinion()];
     const untouched = snapshot(minions);
 
-    const result = build({ playerInventory: makePlayerInventory(minions, []) });
+    const result = build({
+      playerInventory: makeInventory({ minionsList: minions, cardsList: [] }),
+    });
 
     assert.deepEqual(snapshot(minions), untouched);
     assert.equal(result.armies[0].personality.max_basic_fabbers, 4);
@@ -131,7 +130,10 @@ describe("buildViewerSubcommanderArmies", () => {
     const untouched = snapshot(minions);
 
     const result = build({
-      playerInventory: makePlayerInventory(minions, [DUPLICATION_CARD]),
+      playerInventory: makeInventory({
+        minionsList: minions,
+        cardsList: [DUPLICATION_CARD],
+      }),
     });
 
     assert.deepEqual(snapshot(minions), untouched);
@@ -146,10 +148,10 @@ describe("buildViewerSubcommanderArmies", () => {
     // The main referee already added the host's minions - see referee_config.js.
     const result = build({
       playerTag: ".player",
-      playerInventory: makePlayerInventory(
-        [makeMinion(), makeMinion()],
-        [TACTICS_CARD]
-      ),
+      playerInventory: makeInventory({
+        minionsList: [makeMinion(), makeMinion()],
+        cardsList: [TACTICS_CARD],
+      }),
       colourPosition: 3,
     });
 
@@ -159,15 +161,18 @@ describe("buildViewerSubcommanderArmies", () => {
 
   it("advances the colour position per minion, so two viewers never collide", () => {
     const firstViewer = build({
-      playerInventory: makePlayerInventory(
-        [makeMinion(), makeMinion()],
-        [DUPLICATION_CARD]
-      ),
+      playerInventory: makeInventory({
+        minionsList: [makeMinion(), makeMinion()],
+        cardsList: [DUPLICATION_CARD],
+      }),
       colourPosition: 1,
     });
     const secondViewer = build({
       playerTag: ".player1",
-      playerInventory: makePlayerInventory([makeMinion()], []),
+      playerInventory: makeInventory({
+        minionsList: [makeMinion()],
+        cardsList: [],
+      }),
       colourPosition: firstViewer.colourPosition,
     });
 
@@ -182,7 +187,10 @@ describe("buildViewerSubcommanderArmies", () => {
 
   it("tags every slot and army with the viewer's spec tag", () => {
     const result = build({
-      playerInventory: makePlayerInventory([makeMinion()], []),
+      playerInventory: makeInventory({
+        minionsList: [makeMinion()],
+        cardsList: [],
+      }),
     });
 
     assert.equal(result.armies[0].spec_tag, ".player0");
@@ -199,7 +207,10 @@ describe("buildViewerSubcommanderArmies", () => {
     const bareMinion = { personality: { personality_tags: [] } };
 
     const result = build({
-      playerInventory: makePlayerInventory([bareMinion], []),
+      playerInventory: makeInventory({
+        minionsList: [bareMinion],
+        cardsList: [],
+      }),
     });
 
     assert.equal(result.armies[0].slots[0].name, "Helper");

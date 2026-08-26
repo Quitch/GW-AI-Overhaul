@@ -14,55 +14,25 @@
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const fs = require("node:fs");
 const path = require("node:path");
-const {
-  loadCouiModule,
-  registerModuleStub,
-  REPO_ROOT,
-} = require("../scripts/lib/amd-loader.js");
-const { createAutoStub } = require("../scripts/lib/auto-stub.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { matches } = require("../scripts/lib/build-types.js");
 const {
-  KNOWN_UNLOADABLE_FILES,
-} = require("../scripts/lib/known-unloadable-cards.js");
+  CARDS_DIR,
+  classifyLoadFailure,
+  listCardFiles,
+} = require("../scripts/lib/card-files.js");
+const {
+  createCapturingInventory,
+  recordInto,
+} = require("../scripts/lib/capturing-inventory.js");
+const { installCardHarness } = require("../scripts/lib/card-probe.js");
 
 // Every loadout card - which is where the replacements live - depends on the
 // unshipped shared/gw_common, so without a stand-in the sweep tests nothing. Only
-// balance constants are read off it, and nothing here asserts on those.
-registerModuleStub("shared/gw_common", createAutoStub());
-
-// shared/bank.js constructs itself at define time, so it reads ko and localStorage
-// before any test runs. A subscription that never fires is correct here.
-function makeObservable(initial) {
-  let value = initial;
-  const observable = function () {
-    if (arguments.length) {
-      value = arguments[0];
-      return;
-    }
-    return value;
-  };
-  observable.subscribe = () => ({ dispose: () => {} });
-  observable.extend = () => observable;
-  return observable;
-}
-
-global.ko = {
-  observable: makeObservable,
-  observableArray: makeObservable,
-  computed: (fn) => fn,
-};
-global.localStorage = {};
-
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards"
-);
+// balance constants are read off it, and nothing here asserts on those. The same
+// harness stands in for the ko and localStorage shared/bank.js reads at define time.
+installCardHarness();
 
 const CLUSTER_FACTION = 4;
 const UNIT_TYPE_PREFIX = "UNITTYPE_";
@@ -133,17 +103,8 @@ function clusterBuildableTypes(file) {
 // mods rather than just widening the hand.
 function collectMods(card, hasCard) {
   const captured = [];
-  const inventory = new Proxy(
-    {
-      addMods: function (mods) {
-        // addMods concats, so it takes a bare descriptor as readily as an array.
-        if (Array.isArray(mods)) {
-          captured.push(...mods);
-        } else if (mods) {
-          captured.push(mods);
-        }
-        return createAutoStub();
-      },
+  const inventory = createCapturingInventory({
+    answers: {
       getTag: function (context, name, def) {
         if (context === "global" && name === "playerFaction") {
           return CLUSTER_FACTION;
@@ -157,12 +118,8 @@ function collectMods(card, hasCard) {
         return hasCard;
       },
     },
-    {
-      get(target, prop) {
-        return prop in target ? target[prop] : createAutoStub();
-      },
-    }
-  );
+    capture: { addMods: recordInto(captured) },
+  });
 
   for (const method of ["buff", "dull"]) {
     if (typeof card[method] === "function") {
@@ -176,7 +133,7 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    if (e.code === "NOT_SHIPPED" || KNOWN_UNLOADABLE_FILES.has(file)) {
+    if (classifyLoadFailure(e, file)) {
       return { excluded: true };
     }
     throw e;
@@ -189,9 +146,7 @@ function collectAllCardMods() {
   const mods = [];
   const cards = [];
 
-  for (const file of fs
-    .readdirSync(CARDS_DIR)
-    .filter((f) => f.endsWith(".js"))) {
+  for (const file of listCardFiles()) {
     const loaded = loadCard(file);
     if (loaded.excluded) {
       continue;

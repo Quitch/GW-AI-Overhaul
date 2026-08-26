@@ -7,13 +7,11 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
+const { viewer } = require("../scripts/lib/coop-fixtures.js");
 
 const starCards = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"
 );
-
-const viewer = (id, extra) =>
-  Object.assign({ id, name: id, role: "viewer" }, extra);
 
 // Defaults to the "everything is level" case so each test overrides only what
 // it exercises.

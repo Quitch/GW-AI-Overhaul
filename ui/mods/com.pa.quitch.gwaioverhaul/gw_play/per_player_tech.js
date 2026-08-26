@@ -33,16 +33,12 @@ define(function () {
     }
   };
 
-  var stringEndsWith = function (value, suffix) {
-    return _.isString(value) && value.slice(-suffix.length) === suffix;
-  };
-
   var stripKnownSpecTag = function (value) {
     if (!_.isString(value)) {
       return value;
     }
 
-    if (stringEndsWith(value, ".player")) {
+    if (_.endsWith(value, ".player")) {
       return value.slice(0, -".player".length);
     }
 
@@ -54,8 +50,6 @@ define(function () {
     return value;
   };
 
-  // The hardcoded guardians:false, and the absence of any Cluster routing, are
-  // both deliberate - see ai-paths.md.
   var getViewerSubcommanderAiPath = function (
     refereeAIPaths,
     subcommanderTech,
@@ -63,13 +57,12 @@ define(function () {
     playerInventory,
     playerTag
   ) {
-    return refereeAIPaths.getAIPathDestination("subcommander", aiInUse, {
-      guardians: false,
-      aiMods: playerInventory.aiMods(),
-      smartSubcommanders:
-        subcommanderTech.hasSmartSubcommanders(playerInventory),
-      scopeToken: playerTag === ".player" ? undefined : playerTag,
-    });
+    return refereeAIPaths.getViewerSubcommanderPath(
+      aiInUse,
+      playerInventory.aiMods(),
+      subcommanderTech.hasSmartSubcommanders(playerInventory),
+      playerTag
+    );
   };
 
   // A viewer's subcommander armies, and the colour position the next viewer

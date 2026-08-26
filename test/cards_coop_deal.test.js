@@ -6,6 +6,7 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
+const { viewer } = require("../scripts/lib/coop-fixtures.js");
 
 const coopDeal = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js"
@@ -28,7 +29,6 @@ function collect(overrides) {
   });
 }
 
-const viewer = (id) => ({ id, name: id, role: "viewer" });
 const readyRecord = { inventory: { cards: [] } };
 
 describe("collectPendingTechTargets", () => {

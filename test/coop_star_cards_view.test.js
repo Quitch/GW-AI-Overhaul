@@ -5,13 +5,19 @@
 // module's test-only hook; the factory's name cache is driven against a minimal
 // ko.observable and requireGW below.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const {
   loadCouiModule,
   requireShippedModule,
 } = require("../scripts/lib/amd-loader.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  createGlobalStubs,
+  trackActive,
+} = require("../scripts/lib/global-stubs.js");
+const {
+  makeObservable: observable,
+} = require("../scripts/lib/fake-knockout.js");
 
 const view = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js"
@@ -62,18 +68,6 @@ describe("shouldUseViewerStarCard", () => {
   });
 });
 
-// Just enough knockout for the name cache: a writable observable, with no
-// dependency tracking - the factory only reads and replaces the whole map.
-function observable(initial) {
-  let value = initial;
-  return function (next) {
-    if (arguments.length) {
-      value = next;
-    }
-    return value;
-  };
-}
-
 function setup(overrides = {}) {
   const options = Object.assign(
     { record: undefined, cards: {}, autoResolve: true },
@@ -108,19 +102,7 @@ function setup(overrides = {}) {
   };
 }
 
-let active;
-
-afterEach(() => {
-  if (active) {
-    active.restore();
-    active = undefined;
-  }
-});
-
-function build(overrides) {
-  active = setup(overrides);
-  return active;
-}
+const { build, current } = trackActive(setup);
 
 describe("coop star cards view model - cardIdForStar", () => {
   it("reads this viewer's own card off the live inventory record", () => {
@@ -158,7 +140,7 @@ describe("coop star cards view model - cardName", () => {
     });
 
     assert.equal(viewModel.cardName("gwc_combat_bots"), "");
-    active.deliver();
+    current().deliver();
     assert.equal(viewModel.cardName("gwc_combat_bots"), "Combat Bots");
   });
 
@@ -170,7 +152,7 @@ describe("coop star cards view model - cardName", () => {
 
     viewModel.cardName("gwc_combat_bots");
     viewModel.cardName("gwc_combat_bots");
-    active.deliver();
+    current().deliver();
     viewModel.cardName("gwc_combat_bots");
 
     assert.deepEqual(calls.requested, ["gwc_combat_bots"]);

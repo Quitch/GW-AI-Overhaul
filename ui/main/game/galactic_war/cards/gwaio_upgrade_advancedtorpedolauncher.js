@@ -2,94 +2,40 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (gwoCard, gwoUnit) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Advanced Torpedo Launcher Upgrade Tech enables the targeting of all surface units by the Advanced Torpedo Launcher."
-        )
-      )
-    ),
-    summarize: _.constant("!LOC:Advanced Torpedo Launcher Upgrade Tech"),
-    icon: _.constant(
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_defense_upgrade.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.torpedoLauncherAdvanced),
-        30
+  return gwoCard.upgradeCard({
+    name: "!LOC:Advanced Torpedo Launcher Upgrade Tech",
+    description:
+      "!LOC:Advanced Torpedo Launcher Upgrade Tech enables the targeting of all surface units by the Advanced Torpedo Launcher.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_defense_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.torpedoLauncherAdvanced,
+    chance: 30,
+    buff: function (inventory) {
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.torpedoLauncherAdvancedWeapon, "replace", {
+            spawn_layers: "WL_Air",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.torpedoLauncherAdvancedWeapon, "push", {
+              target_layers: ["WL_LandHorizontal"],
+            }),
+            gwoCard.mods(gwoUnit.torpedoLauncherAdvancedWeapon, "replace", {
+              exclude_unit_types: "",
+            }),
+            gwoCard.mods(gwoUnit.torpedoLauncherAdvancedLandAmmo, "replace", {
+              flight_layer: "Air",
+              spawn_layers: "WL_Air",
+              cruise_height: 75,
+            }),
+            gwoCard.mods(gwoUnit.torpedoLauncherAdvancedWaterAmmo, "replace", {
+              flight_layer: "Air",
+              spawn_layers: "WL_Air",
+              cruise_height: 75,
+              initial_velocity: 100,
+            })
+          )
       );
     },
-    buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      inventory.addMods([
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWeapon,
-          path: "spawn_layers",
-          op: "replace",
-          value: "WL_Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWeapon,
-          path: "target_layers",
-          op: "push",
-          value: ["WL_LandHorizontal"],
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWeapon,
-          path: "exclude_unit_types",
-          op: "replace",
-          value: "",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedLandAmmo,
-          path: "flight_layer",
-          op: "replace",
-          value: "Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedLandAmmo,
-          path: "spawn_layers",
-          op: "replace",
-          value: "WL_Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedLandAmmo,
-          path: "cruise_height",
-          op: "replace",
-          value: 75,
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWaterAmmo,
-          path: "flight_layer",
-          op: "replace",
-          value: "Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWaterAmmo,
-          path: "spawn_layers",
-          op: "replace",
-          value: "WL_Air",
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWaterAmmo,
-          path: "cruise_height",
-          op: "replace",
-          value: 75,
-        },
-        {
-          file: gwoUnit.torpedoLauncherAdvancedWaterAmmo,
-          path: "initial_velocity",
-          op: "replace",
-          value: 100,
-        },
-      ]);
-    },
-    dull: function () {},
-  };
+  });
 });

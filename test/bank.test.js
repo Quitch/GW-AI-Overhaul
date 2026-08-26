@@ -9,7 +9,14 @@
 // That instance is a singleton, as in-game; each test reloads it from a seeded
 // localStorage instead of building its own.
 
-const { describe, it, beforeEach, after } = require("node:test");
+const {
+  describe,
+  it,
+  beforeEach,
+  afterEach,
+  after,
+  mock,
+} = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
@@ -17,31 +24,9 @@ const {
   installGlobals,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { makeObservableArray } = require("../scripts/lib/fake-knockout.js");
 
 const LS_KEY = "gwaio_bank";
-
-// Enough knockout for a list the module reads, writes, pushes to and subscribes
-// to. push replaces the array rather than mutating it, which is all the module
-// can observe.
-function observableArray(initial) {
-  let value = initial || [];
-  const subscribers = [];
-  const notify = () => subscribers.forEach((fn) => fn(value));
-
-  const observable = function (next) {
-    if (arguments.length) {
-      value = next;
-      notify();
-    }
-    return value;
-  };
-  observable.subscribe = (fn) => subscribers.push(fn);
-  observable.push = (item) => {
-    value = value.concat([item]);
-    notify();
-  };
-  return observable;
-}
 
 const tally = { stats: {}, reads: [], writes: [] };
 const storage = {
@@ -53,7 +38,7 @@ const storage = {
 installGlobals();
 const stubs = createGlobalStubs();
 stubs.setGlobal("ko", {
-  observableArray,
+  observableArray: makeObservableArray,
   // ko.toJSON unwraps observables; the bank only ever holds startCards.
   toJSON: (target) =>
     JSON.stringify(
@@ -115,6 +100,10 @@ const settle = () => Promise.resolve().then(() => Promise.resolve());
 
 beforeEach(() => reload(undefined));
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 describe("bank load", () => {
   it("starts empty for a player who has never unlocked anything", () => {
     assert.deepEqual(bank.startCards(), []);
@@ -129,17 +118,14 @@ describe("bank load", () => {
   // gw_start module that requires it. A corrupt list must cost the unlocks, not
   // the scene.
   it("degrades a corrupt record to an empty one rather than throwing", () => {
-    const warnings = [];
-    const priorWarn = console.warn;
-    console.warn = (message) => warnings.push(message);
-    try {
-      reload("{ this is not json");
-    } finally {
-      console.warn = priorWarn;
-    }
+    const warnMock = mock.method(console, "warn", () => {});
+    reload("{ this is not json");
 
     assert.deepEqual(bank.startCards(), []);
-    assert.match(warnings[0], /Ignoring unreadable loadout unlock record/);
+    assert.match(
+      warnMock.mock.calls[0].arguments[0],
+      /Ignoring unreadable loadout unlock record/
+    );
   });
 
   it("ignores a record whose card list is not one", () => {

@@ -6,6 +6,8 @@
 // buildGame()/installModel() return the same object references on every call,
 // matching production code, which re-reads rather than snapshotting.
 
+var afterEach = require("node:test").afterEach;
+
 var CLUSTER_FACTION = 4;
 var DEFAULT_FACTION = 1;
 
@@ -51,6 +53,22 @@ function makeInventory(overrides) {
       return data.tags[namespace + ":" + key];
     },
   };
+}
+
+// One AI descriptor as gw_start's generator writes it, with the fields the
+// referee reads when it builds a battle config.
+function makeAiDescriptor(overrides) {
+  return Object.assign(
+    {
+      name: "Test AI",
+      commander: "test_commander",
+      econ_rate: 1,
+      color: [[10, 10, 10]],
+      faction: 1,
+      personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
+    },
+    overrides || {}
+  );
 }
 
 // -> { game, star, ai, inventory }. The non-obvious options:
@@ -162,11 +180,34 @@ function installModel(game, connectedClients) {
   };
 }
 
+// installModel with the afterEach restore built in: call once per suite, then
+// install a game per test through the returned function. Its restore() hands
+// the global back early, for a test that installs more than one.
+function useModel() {
+  var restore;
+  var release = function () {
+    if (restore) {
+      restore();
+      restore = undefined;
+    }
+  };
+  afterEach(release);
+
+  var use = function (game, connectedClients) {
+    release();
+    restore = installModel(game, connectedClients);
+  };
+  use.restore = release;
+  return use;
+}
+
 module.exports = {
   SCENARIO_AXES: SCENARIO_AXES,
   CLUSTER_FACTION: CLUSTER_FACTION,
   DEFAULT_FACTION: DEFAULT_FACTION,
   makeInventory: makeInventory,
+  makeAiDescriptor: makeAiDescriptor,
   buildGame: buildGame,
   installModel: installModel,
+  useModel: useModel,
 };
