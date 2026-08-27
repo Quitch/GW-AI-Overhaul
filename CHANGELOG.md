@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Space Excavation Commander is now offered Sub Commanders
+
 ### Bugfix
 
 - Rapid Deployment Commander now silences the AI's stock factory builds under every AI brain
