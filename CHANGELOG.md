@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Rapid Deployment Commander now silences the AI's stock factory builds under every AI brain. Queller kept its own factory and orbital launcher builds alongside the loadout's, and the TITANS AI kept building orbital factories
+- Single Laser Defense Tower Upgrade Tech now teaches the Queller Uber AI to treat the upgraded turret as a fabricator rather than a defence, so it stops counting it towards its defensive needs
 
 ## v6.13.0 - 2026-08-26
 
