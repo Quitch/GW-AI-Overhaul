@@ -63,7 +63,6 @@ define([
           inventory.units(),
           gwoGroup.landFactoriesBasic
         ) ||
-        inventory.hasCard("nem_start_deepspace") ||
         inventory.hasCard("gwaio_start_tourist")
       ) {
         chance = 0;
