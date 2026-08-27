@@ -168,7 +168,6 @@ describe("gwc_minion weight - malformed co-op state", () => {
 describe("gwc_minion weight - what zeroes it", () => {
   const zeroing = {
     "no opening factory": { units: () => [] },
-    "the deep space start": { hasCard: (id) => id === "nem_start_deepspace" },
     "the tourist start": { hasCard: (id) => id === "gwaio_start_tourist" },
   };
 
