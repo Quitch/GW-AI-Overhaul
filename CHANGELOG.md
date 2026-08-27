@@ -4,11 +4,11 @@
 
 ### Bugfix
 
-- Rapid Deployment Commander now silences the AI's stock factory builds under every AI brain. Queller kept its own factory and orbital launcher builds alongside the loadout's, and the TITANS AI kept building orbital factories
-- Single Laser Defense Tower Upgrade Tech now teaches the Queller Uber AI to treat the upgraded turret as a fabricator rather than a defence, so it stops counting it towards its defensive needs
-- Planetary Excavation Commander no longer leaves the Queller AI unable to expand its metal income. Its area-drag extractor builds are now converted to ordinary builds rather than switched off, so an AI whose only extractor builds were area ones keeps them
-- Planetary Excavation Commander now correctly tells the AI it can place an extractor anywhere. The test was being added to the build list in a form the game ignores, so the AI still looked for metal spots it could no longer find
-- Smart Subcommanders now gives your allies Queller's Silver build orders. They were being handed Bronze's under a Silver name, so the tech changed only their personality
+- Rapid Deployment Commander now silences the AI's stock factory builds under every AI brain
+- Enemy Quellers handle Single Laser Defense Tower Upgrade Tech correctly
+- Planetary Excavation Commander no longer leaves the Queller AI unable to expand its metal income
+- Planetary Excavation Commander now correctly tells the AI it can place an extractor anywhere
+- Smart Subcommanders works with Queller again
 
 ## v6.13.0 - 2026-08-26
 
