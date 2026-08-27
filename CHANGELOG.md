@@ -12,6 +12,7 @@
 - Enemy Quellers handle Single Laser Defense Tower Upgrade Tech correctly
 - Space Excavation Commander no longer leaves the Queller AI unable to expand its metal income
 - Space Excavation Commander now correctly tells the AI it can place an extractor anywhere
+- The AI will properly go orbital for resources with Space Excavation Commander
 - Smart Subcommanders works with Queller again
 
 ## v6.13.0 - 2026-08-26
