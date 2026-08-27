@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v6.14.0 - 2026-08-27
+
+### Changed
+
+- Space Excavation Commander is now offered Sub Commanders
+
+### Bugfix
+
+- Rapid Deployment Commander now silences the AI's stock factory builds under every AI brain
+- Enemy Quellers handle Single Laser Defense Tower Upgrade Tech correctly
+- The AI will properly go orbital for resources with Space Excavation Commander
+- Planetary Excavation Commander no longer leaves the Queller AI unable to expand its metal income
+- Planetary Excavation Commander now correctly tells the AI it can place an extractor anywhere
+- Smart Subcommanders works with Queller again
+- Queller builder references that depended on a custom unit map are now loaded
+
 ## v6.13.0 - 2026-08-26
 
 ### Changed

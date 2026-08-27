@@ -5,6 +5,7 @@ define([
   var TITANS_BASIC_DEFENCE = "Structure & Basic & SurfaceDefense";
   var QUELLER_BASIC_DEFENCE =
     "Structure & (SurfaceDefense | Tactical) - Shield";
+  var QUELLER_UBER_BASIC_DEFENCE = "Structure & SurfaceDefense - Shield";
 
   return gwoCard.upgradeCard({
     name: "!LOC:Single Laser Defense Tower Upgrade Tech",
@@ -63,53 +64,47 @@ define([
       }
       inventory.addMods(mods);
 
-      inventory.addAIMods([
-        {
-          type: "fabber",
-          op: "replace",
-          toBuild: "BasicLandDefenseSingle",
-          idToMod: "value0",
-          value: 1,
-          refId: "unit_type_string0",
-          refValue: TITANS_BASIC_DEFENCE,
-        },
-        {
-          type: "fabber",
-          op: "replace",
-          toBuild: "BasicLandDefenseSingle",
-          idToMod: "unit_type_string0",
-          value: "Structure & Basic & Construction",
-          refId: "unit_type_string0",
-          refValue: TITANS_BASIC_DEFENCE,
-        },
-        {
-          type: "fabber",
-          op: "replace",
-          toBuild: "BasicLandDefenseSingle",
-          idToMod: "value0",
-          value: 1,
-          refId: "unit_type_string0",
-          refValue: QUELLER_BASIC_DEFENCE,
-        },
-        {
-          type: "fabber",
-          op: "replace",
-          toBuild: "BasicLandDefenseSingle",
-          idToMod: "unit_type_string0",
-          value: "Structure & Basic & Construction",
-          refId: "unit_type_string0",
-          refValue: QUELLER_BASIC_DEFENCE,
-        },
-        {
+      var basicDefences = [
+        TITANS_BASIC_DEFENCE,
+        QUELLER_BASIC_DEFENCE,
+        QUELLER_UBER_BASIC_DEFENCE,
+      ];
+      var aiMods = _.flatten(
+        _.map(basicDefences, function (basicDefence) {
+          return [
+            {
+              type: "fabber",
+              op: "replace",
+              toBuild: "BasicLandDefenseSingle",
+              idToMod: "value0",
+              value: 1,
+              refId: "unit_type_string0",
+              refValue: basicDefence,
+            },
+            {
+              type: "fabber",
+              op: "replace",
+              toBuild: "BasicLandDefenseSingle",
+              idToMod: "unit_type_string0",
+              value: "Structure & Basic & Construction",
+              refId: "unit_type_string0",
+              refValue: basicDefence,
+            },
+          ];
+        })
+      );
+
+      inventory.addAIMods(
+        aiMods.concat({
           type: "fabber",
           op: "replace",
           toBuild: "BasicLandDefenseSingle",
           idToMod: "priority",
           value: 0,
           refId: "name",
-          refValue: "Single Laser Defense Tower - Snipe",
-        },
-      ]);
+          refValue: "Single Laser Defense Tower - Snipe", // Queller Uber
+        })
+      );
     },
   });
 });

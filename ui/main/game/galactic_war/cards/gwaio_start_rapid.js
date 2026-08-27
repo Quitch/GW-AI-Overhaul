@@ -202,17 +202,6 @@ define([
           toBuild: "OrbitalLauncher",
           idToMod: "priority",
           value: 0,
-          refId: "priority",
-          refValue: 485,
-        },
-        {
-          type: "fabber",
-          op: "replace",
-          toBuild: "OrbitalLauncher",
-          idToMod: "priority",
-          value: 0,
-          refId: "priority",
-          refValue: 486,
         },
         {
           type: "fabber",
@@ -220,8 +209,6 @@ define([
           toBuild: "OrbitalFactory",
           idToMod: "priority",
           value: 0,
-          refId: "priority",
-          refValue: 477,
         },
       ];
       var types = ["fabber", "factory"];
@@ -232,61 +219,24 @@ define([
           value: CARD.id + ".json",
         });
       });
-      var factoriesBasic = [
+      var factories = [
         "BasicAirFactory",
         "BasicBotFactory",
         "BasicNavalFactory",
         "BasicVehicleFactory",
-      ];
-      _.forEach(factoriesBasic, function (factory) {
-        aiMods.push(
-          {
-            type: "fabber",
-            op: "replace",
-            toBuild: factory,
-            idToMod: "priority",
-            value: 0,
-            refId: "priority",
-            refValue: 376,
-          },
-          {
-            type: "fabber",
-            op: "replace",
-            toBuild: factory,
-            idToMod: "priority",
-            value: 0,
-            refId: "priority",
-            refValue: 515,
-          }
-        );
-      });
-      var factoriesAdvanced = [
         "AdvancedAirFactory",
         "AdvancedBotFactory",
         "AdvancedNavalFactory",
         "AdvancedVehicleFactory",
       ];
-      _.forEach(factoriesAdvanced, function (factory) {
-        aiMods.push(
-          {
-            type: "fabber",
-            op: "replace",
-            toBuild: factory,
-            idToMod: "priority",
-            value: 0,
-            refId: "priority",
-            refValue: 477,
-          },
-          {
-            type: "fabber",
-            op: "replace",
-            toBuild: factory,
-            idToMod: "priority",
-            value: 0,
-            refId: "priority",
-            refValue: 525,
-          }
-        );
+      _.forEach(factories, function (factory) {
+        aiMods.push({
+          type: "fabber",
+          op: "replace",
+          toBuild: factory,
+          idToMod: "priority",
+          value: 0,
+        });
       });
       inventory.addAIMods(aiMods);
     },

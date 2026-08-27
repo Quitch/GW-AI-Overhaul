@@ -215,9 +215,9 @@ describe("getAIPathSource", () => {
     );
   });
 
-  it("Queller enemy source is q_uber/, subcommander source is always q_bronze/", () => {
-    // The source tree never varies by smartSubcommanders - always q_bronze/, even
-    // when the destination copied to is q_silver/. See ai-paths.md.
+  it("Queller enemy source is q_uber/, subcommander source follows smartSubcommanders", () => {
+    // Source and destination take the same flag, so a Smart Subcommander reads
+    // the tier it writes to. See ai-paths.md.
     assert.equal(
       refereeAIPaths.getAIPathSource("enemy", "Queller"),
       "/pa/ai_queller/q_uber/"
@@ -225,6 +225,10 @@ describe("getAIPathSource", () => {
     assert.equal(
       refereeAIPaths.getAIPathSource("subcommander", "Queller"),
       "/pa/ai_queller/q_bronze/"
+    );
+    assert.equal(
+      refereeAIPaths.getAIPathSource("subcommander", "Queller", true),
+      "/pa/ai_queller/q_silver/"
     );
   });
 });

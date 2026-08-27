@@ -44,18 +44,20 @@ only to find the file on disk; never write it into code.
 These are resolved by two different functions with deliberately different rules,
 and conflating them is the most likely way to break this subsystem.
 
-**`getAIPathSource(type, aiInUse)`** — where build orders are _read from_:
+**`getAIPathSource(type, aiInUse, smartSubcommanders)`** — where build orders are
+_read from_:
 
 ```text
 Penchant -> /pa/ai_penchant/
-Queller  -> getQuellerPath(type, false)
+Queller  -> getQuellerPath(type, smartSubcommanders)
 otherwise-> /pa/ai/
 ```
 
-Note the hardcoded `false`. The source tree **never** varies by
-`smartSubcommanders`, so a subcommander's source is always `q_bronze/` even when
-the destination its build orders get copied _to_ is `q_silver/`. The source is
-also never scoped — no `player_…/` suffix is ever appended.
+Source and destination take the same `smartSubcommanders` flag, so a Smart
+Subcommander reads the tier it writes to. It used to pass a hardcoded `false`,
+which meant the tech copied `q_bronze/` into the `q_silver/` path and silver's own
+build data was never loaded at all. The source is never scoped, though — no
+`player_…/` suffix is ever appended.
 
 **`getAIPathDestination(type, aiInUse, options)`** — where the modified result is
 _written to_. First match wins:
@@ -169,6 +171,7 @@ makes mixed-brain fights possible (a Queller enemy against a Penchant ally). Wit
 no `gwaio` blob at all — a war created before GWO, or by another mod — it returns
 `"Titans"`.
 
+`getAIPathSource(type)` fills in `smartSubcommanders` from the tech cards held.
 `getAIPathDestination(type, options)` fills in the settings the pure module needs
 from live game state: `guardians` from `ai.mirrorMode`, `aiMods` from the
 inventory, `smartSubcommanders` from the tech cards held, and a `scopeToken` of

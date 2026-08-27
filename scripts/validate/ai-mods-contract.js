@@ -9,6 +9,8 @@
 //   - op "load" carries only `value`, a build-file filename.
 //   - Every other op carries `value` and `toBuild`; append/prepend/replace also
 //     need `idToMod`, whose absence silently makes the mod a no-op.
+//   - op "unset" is the exception: it deletes `idToMod` rather than writing it,
+//     so it carries `toBuild` and `idToMod` but no `value`.
 
 const path = require("node:path");
 const { loadCouiModule } = require("../lib/amd-loader.js");
@@ -31,6 +33,7 @@ const REQUIRED_FIELDS_BY_OP = {
   append: ["value", "toBuild", "idToMod"],
   prepend: ["value", "toBuild", "idToMod"],
   replace: ["value", "toBuild", "idToMod"],
+  unset: ["toBuild", "idToMod"],
   remove: ["value", "toBuild"],
   new: ["value", "toBuild"],
   squad: ["value", "toBuild"],
@@ -45,6 +48,7 @@ const VALID_TYPES_BY_OP = {
   append: BUILD_LIST_TYPES,
   prepend: BUILD_LIST_TYPES,
   replace: BUILD_LIST_TYPES,
+  unset: BUILD_LIST_TYPES,
   remove: BUILD_LIST_TYPES,
   new: BUILD_LIST_TYPES,
   squad: new Set(["template"]),
