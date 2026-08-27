@@ -14,6 +14,7 @@
 - Space Excavation Commander now correctly tells the AI it can place an extractor anywhere
 - The AI will properly go orbital for resources with Space Excavation Commander
 - Smart Subcommanders works with Queller again
+- Queller builder references that depended on a custom unit map are now loaded
 
 ## v6.13.0 - 2026-08-26
 
