@@ -109,8 +109,14 @@ define([
     },
 
     getAIPathSource: function (type) {
+      var inventory = model.game().inventory();
       var currentAiInUse = aiInUse(type);
-      return refereeAIPaths.getAIPathSource(type, currentAiInUse);
+
+      return refereeAIPaths.getAIPathSource(
+        type,
+        currentAiInUse,
+        subcommanderTech.hasSmartSubcommanders(inventory)
+      );
     },
 
     getAIPathDestination: function (type, options) {

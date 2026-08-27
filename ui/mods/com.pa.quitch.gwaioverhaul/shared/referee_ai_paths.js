@@ -86,12 +86,12 @@ define(function () {
 
     getScopeToken: getScopeToken,
 
-    getAIPathSource: function (type, aiInUse) {
+    getAIPathSource: function (type, aiInUse, smartSubcommanders) {
       switch (aiInUse) {
         case "Penchant":
           return penchantPath;
         case "Queller":
-          return getQuellerPath(type, false);
+          return getQuellerPath(type, !!smartSubcommanders);
         default:
           return titansAiPath;
       }

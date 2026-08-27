@@ -82,10 +82,11 @@ function everyResolvableAiPath() {
 
   for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
     for (const type of types) {
-      paths.add(refereeAIPaths.getAIPathSource(type, aiInUse));
-
       for (const guardians of [false, true]) {
         for (const smartSubcommanders of [false, true]) {
+          paths.add(
+            refereeAIPaths.getAIPathSource(type, aiInUse, smartSubcommanders)
+          );
           for (const aiMods of [[], [{ op: "load" }]]) {
             for (const scopeToken of scopeTokens) {
               paths.add(
