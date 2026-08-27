@@ -73,9 +73,18 @@ define([
               test_type: "UnitCount",
               unit_type_string0: "Orbital & Fabber",
               compare0: "<",
-              value0: 1,
+              value0: 2,
             },
           ],
+        },
+        {
+          type: "fabber",
+          op: "remove",
+          toBuild: "OrbitalExtractor",
+          value: {
+            test_type: "PlanetIsGasGiant",
+            boolean: true,
+          },
         }
       );
       inventory.addAIMods(aiMods);
