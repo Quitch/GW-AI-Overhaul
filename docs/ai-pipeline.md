@@ -46,15 +46,15 @@ Anything else throws. Note there is no `unit_map` type — unit maps are written
 Six ops work on `json.build_list` and are valid for `fabber`/`factory`/`platoon`
 only. One works on `json.platoon_templates` and is valid for `template` only.
 
-| Op        | Applies to        | Behaviour                                                                                                |
-| --------- | ----------------- | -------------------------------------------------------------------------------------------------------- |
-| `append`  | build lists       | Concatenates to an array field, or `+=` for a string/number.                                             |
-| `prepend` | build lists       | The mirror of `append`, value-first.                                                                     |
-| `replace` | build lists       | Overwrites the field outright.                                                                           |
-| `unset`   | build lists       | Deletes the field outright. Carries no `value`.                                                          |
-| `remove`  | build lists       | Removes deep-equal entries from each `build_conditions` test array.                                      |
-| `new`     | build lists       | Pushes a new entry — into each test array if `idToMod` is set, otherwise into `build_conditions` itself. |
-| `squad`   | platoon templates | Pushes a unit into `platoon_templates[toBuild].units`.                                                   |
+| Op        | Applies to        | Behaviour                                                                                                                                                                              |
+| --------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `append`  | build lists       | Concatenates to an array field, or `+=` for a string/number.                                                                                                                           |
+| `prepend` | build lists       | The mirror of `append`, value-first.                                                                                                                                                   |
+| `replace` | build lists       | Overwrites the field outright.                                                                                                                                                         |
+| `unset`   | build lists       | Deletes the field outright. Carries no `value`.                                                                                                                                        |
+| `remove`  | build lists       | Removes deep-equal entries from each `build_conditions` test array.                                                                                                                    |
+| `new`     | build lists       | Pushes a new entry — into each test array if `idToMod` is truthy, otherwise into `build_conditions` itself. `idToMod` is a flag here, not a field name; `""` reads as the second form. |
+| `squad`   | platoon templates | Pushes a unit into `platoon_templates[toBuild].units`.                                                                                                                                 |
 
 `load` is **not in this table**. It is not an op at all: it is handled separately
 by `addApplicableAiLoadModsToFileList`, which appends

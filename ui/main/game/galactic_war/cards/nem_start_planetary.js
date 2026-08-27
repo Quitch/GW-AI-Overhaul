@@ -74,7 +74,7 @@ define([
             type: "fabber",
             op: "new",
             toBuild: structure,
-            idToMod: "", // add to every test array
+            idToMod: true, // a flag here: add to every test array
             value: {
               test_type: "CanFindPlaceToBuild",
               string0: structure,
