@@ -43,7 +43,7 @@ Anything else throws. Note there is no `unit_map` type — unit maps are written
 
 ## The op table
 
-Five ops work on `json.build_list` and are valid for `fabber`/`factory`/`platoon`
+Six ops work on `json.build_list` and are valid for `fabber`/`factory`/`platoon`
 only. One works on `json.platoon_templates` and is valid for `template` only.
 
 | Op        | Applies to        | Behaviour                                                                                                |
@@ -51,6 +51,7 @@ only. One works on `json.platoon_templates` and is valid for `template` only.
 | `append`  | build lists       | Concatenates to an array field, or `+=` for a string/number.                                             |
 | `prepend` | build lists       | The mirror of `append`, value-first.                                                                     |
 | `replace` | build lists       | Overwrites the field outright.                                                                           |
+| `unset`   | build lists       | Deletes the field outright. Carries no `value`.                                                          |
 | `remove`  | build lists       | Removes deep-equal entries from each `build_conditions` test array.                                      |
 | `new`     | build lists       | Pushes a new entry — into each test array if `idToMod` is set, otherwise into `build_conditions` itself. |
 | `squad`   | platoon templates | Pushes a unit into `platoon_templates[toBuild].units`.                                                   |
@@ -79,7 +80,7 @@ basic-fabber upgrades share.
 
 ### How a build op matches
 
-Each of the five build ops walks `json.build_list` and skips any entry whose
+Each of the six build ops walks `json.build_list` and skips any entry whose
 `to_build` is not the descriptor's `toBuild`. Then:
 
 ```js

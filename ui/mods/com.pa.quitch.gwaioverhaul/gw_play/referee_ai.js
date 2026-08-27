@@ -141,6 +141,23 @@ define([
         }
       );
     },
+    // `value` is unused: this deletes the key rather than writing one.
+    unset: function (json, value, toBuild, idToMod, refId, refValue, matchAll) {
+      forEachMatchingTarget(
+        json,
+        toBuild,
+        idToMod,
+        refId,
+        refValue,
+        matchAll,
+        function (build) {
+          delete build[idToMod];
+        },
+        function (test) {
+          delete test[idToMod];
+        }
+      );
+    },
     remove: function (json, value, toBuild) {
       _.forEach(json.build_list, function (build) {
         if (build.to_build !== toBuild) {
