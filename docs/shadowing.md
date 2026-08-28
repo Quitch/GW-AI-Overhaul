@@ -12,8 +12,8 @@ Shadowing is the last resort, and this page is mostly about why.
 
 ## Why shadowing is expensive
 
-A shadowed file is a **full copy**, not a diff. Any future base-game update to the
-parts GWO did not touch is silently lost until somebody notices and manually
+A shadowed file is a **full copy**, not a diff. GWO silently loses any future
+base-game update to the parts it did not touch, until somebody notices and manually
 re-syncs. There is no base install in CI to diff against, so that drift is
 invisible until it surfaces as an in-game bug.
 

@@ -148,9 +148,9 @@ The shape is worth knowing before adding a fix to it:
   `atLeastVersion`, so a war created after a fix shipped never pays for the scan.
   A war with no recorded version compares as older than everything, which is the
   safe direction.
-- **The flags are set unconditionally after the sweep**, because "the thing this
-  fix targets does not exist in this war" and "it has been fixed" want the same
-  outcome — a war with no treasure planet should not re-scan forever.
+- **`applyFixes` sets the flags unconditionally after the sweep**, because "the
+  thing this fix targets does not exist in this war" and "it has been fixed" want
+  the same outcome — a war with no treasure planet should not re-scan forever.
 - It finishes by calling `gw_play/save.js`, so a repaired war is persisted rather
   than repaired again on the next visit.
 

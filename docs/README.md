@@ -38,8 +38,8 @@ Then whichever subsystem you are touching.
 A short list of the traps that have actually caused bugs here, each covered in
 full by the doc named:
 
-- **A shadowed file is a full copy, not a diff.** Base-game updates to the parts
-  GWO did not touch are silently lost. → [shadowing.md](shadowing.md)
+- **A shadowed file is a full copy, not a diff.** GWO silently loses base-game
+  updates to the parts it did not touch. → [shadowing.md](shadowing.md)
 - **`model.game().inventory()` is always the host's.** Under per-player tech in
   co-op, card code must use the inventory passed to it. → [coop.md](coop.md)
 - **`buff()` cannot see other cards' units.** `applyCards` has just refilled the

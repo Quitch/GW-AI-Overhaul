@@ -341,7 +341,7 @@ game instead adds the card and a free slot to cover it (`gwc_start_*.buff`'s
 "Don't clog up a slot" branch); GWO does not.
 
 The server already banks a viewer's loadout choice without touching the inventory —
-but only for ids passing `isBaseLoadoutCardId`, so every mod loadout is pushed into
+but only for ids passing `isBaseLoadoutCardId`, so it pushes every mod loadout into
 the viewer's war inventory instead. GWO therefore intercepts **every** loadout id on
 a viewer, banking locally and submitting `-1`; it cannot leave the base ids to the
 server, because banking is held shut on viewers for the reason below.

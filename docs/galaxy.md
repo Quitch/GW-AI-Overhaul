@@ -5,7 +5,7 @@ assigns personalities and minions, and stamps GWO's settings onto the save.
 
 ## Generation order
 
-`model.makeGame` is deliberately replaced with an empty function so that changing a
+GWO deliberately replaces `model.makeGame` with an empty function so that changing a
 setting does not regenerate the galaxy. Generation instead happens once, when the
 player clicks **Go To War**.
 
