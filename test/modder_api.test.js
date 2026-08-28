@@ -85,6 +85,36 @@ describe("the modder globals are adopted, not overwritten", () => {
   });
 });
 
+// The battle-preparation screen other mods report into. GW Server Mods calls
+// stage() by name, so the shape is pinned here as well as in its own test.
+describe("the launch progress API keeps its shape", () => {
+  it("launch_progress_state.js exposes begin, stage and end", () => {
+    const observable = (value) => () => value;
+    const progress = loadCouiModule(
+      "coui://" + MOD_ROOT + "/gw_play/launch_progress_state.js"
+    )({
+      visible: observable(false),
+      title: observable(""),
+      message: observable(""),
+      steps: observable([]),
+      labels: { title: "", message: "" },
+    });
+    for (const name of ["begin", "stage", "end"]) {
+      assert.equal(typeof progress[name], "function", name);
+    }
+    for (const name of ["visible", "title", "message", "steps"]) {
+      assert.equal(typeof progress[name], "function", name);
+    }
+  });
+
+  it("launch_progress.js seeds the observables before the module arrives", () => {
+    assert.match(
+      source(MOD_ROOT + "/gw_play/launch_progress.js"),
+      /model\.gwoLaunchProgress = \{\s*visible: ko\.observable/
+    );
+  });
+});
+
 describe("a mod's tech cards reach the deck", () => {
   it("setupGwoCards keeps ids a mod pushed onto model.gwoCards", () => {
     setGlobal("model", { gwoCards: ["mym_damage_bots"] });

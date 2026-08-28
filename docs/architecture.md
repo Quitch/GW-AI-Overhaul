@@ -93,6 +93,26 @@ The sequence that ties most of the above together:
 5. In co-op with per-player tech, `gw_per_player_tech_referee.js` runs afterwards
    and adds each viewer's own specs and subcommanders.
 
+Everything from the click to the hand-off to `connect_to_game` sits behind
+`gw_play/launch_progress.js`, which wraps `model.fight` and shows a loading
+panel driven by `model.gwoLaunchProgress`. That object is a public surface:
+
+- `visible`, `title`, `message`, `steps` are observables; `begin()`,
+  `stage(text)` and `end()` drive them. `begin()` is idempotent and `stage()` is
+  a no-op outside a launch, so a mod may report from work that also runs on
+  scene entry.
+- The referee reports its own stages through `gwoReferee.prototype.stage`; a
+  co-op host's two hires are labelled "Co-op shared setup" and "Co-op host
+  setup" so the repeat reads as intended.
+- Stock sets `launchingFight` only after the war is saved, so a mod that wraps
+  `model.fight` to do slow work first (GW Server Mods mounts server mods there)
+  is only covered from the click if GWO's wrapper is outside its own, which
+  means it must load before GWO - a lower `priority` than GWO's 200. Such a mod
+  resolves `model.gwoLaunchProgress` at call time, never at load, because it
+  does not exist yet when that mod runs. If a later-loading mod wraps
+  `model.fight` instead, the panel still appears, but only once
+  `launchingFight` turns true.
+
 A co-op host hires the referee **twice** per battle (the base game's
 `hireRefereesForLaunch` creates a clean shared referee plus a local one), and a
 failed launch can leave mutated in-memory state behind for a later save to

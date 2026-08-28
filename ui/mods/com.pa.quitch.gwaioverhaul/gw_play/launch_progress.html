@@ -1,0 +1,28 @@
+<div
+  class="gwo-launch-progress"
+  data-bind="visible: gwoLaunchProgress.visible"
+  style="display: none"
+>
+  <div class="div_panel_bar_background">
+    <div
+      class="div_panel_primary_msg transit"
+      data-bind="text: gwoLaunchProgress.title"
+    ></div>
+    <div class="div_options_bar">
+      <div data-bind="text: gwoLaunchProgress.message"></div>
+      <div>
+        <img
+          class="img_loading_animation working std"
+          src="coui://ui/main/shared/img/working.svg"
+        />
+      </div>
+      <div
+        class="gwo-launch-progress-steps"
+        data-bind="foreach: gwoLaunchProgress.steps"
+      >
+        <div data-bind="text: $data"></div>
+      </div>
+    </div>
+    <div class="div_bottom_margin_bar"></div>
+  </div>
+</div>

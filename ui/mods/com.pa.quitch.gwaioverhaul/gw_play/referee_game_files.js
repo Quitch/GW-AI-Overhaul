@@ -117,6 +117,7 @@ define([
 
     // community mods will hook unmountAllMemoryFiles to remount client mods
     api.file.unmountAllMemoryFiles().always(function () {
+      self.stage("!LOC:Processing tech cards");
       var titans = api.content.usingTitans();
 
       var game = self.game();

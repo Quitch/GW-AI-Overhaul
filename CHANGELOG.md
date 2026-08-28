@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+
+- Pressing Fight now shows a loading screen that reports each stage of battle preparation. Other mods can report their own stages through `model.gwoLaunchProgress`
+
 ## v6.14.0 - 2026-08-27
 
 ### Changed

@@ -15,6 +15,8 @@ function gwoRefereeChanges() {
       self.files = ko.observable();
       self.localFiles = ko.observable();
       self.config = ko.observable();
+      // Which hire of this launch built it: a co-op host hires twice.
+      self.pass = 0;
     };
 
     requireGW(
@@ -36,6 +38,35 @@ function gwoRefereeChanges() {
         gwoBiomeMods,
         gwoBiomes
       ) {
+        var hiresThisLaunch = 0;
+        // Set by stock fight before it hires, so this resets first.
+        model.launchingFight.subscribe(function (launching) {
+          if (launching) {
+            hiresThisLaunch = 0;
+          }
+        });
+
+        // A co-op host hires a clean shared referee and then its own, so each
+        // pass is labelled while it runs. See architecture.md.
+        gwoReferee.prototype.stage = function (key) {
+          var progress = model.gwoLaunchProgress;
+          if (!progress || !_.isFunction(progress.stage)) {
+            return;
+          }
+          var text = loc(key);
+          if (this.pass && model.gwCampaignActive() && model.isCampaignHost()) {
+            text =
+              loc(
+                this.pass === 1
+                  ? "!LOC:Co-op shared setup"
+                  : "!LOC:Co-op host setup"
+              ) +
+              ": " +
+              text;
+          }
+          progress.stage(text);
+        };
+
         // A war saved before the stamp existed resolves it here instead, once,
         // and writes it onto the star's system so later launches read it.
         var stampedMods = function (system) {
@@ -73,6 +104,7 @@ function gwoRefereeChanges() {
               done.resolve();
               return;
             }
+            self.stage("!LOC:Processing biome mods");
             gwoBiomeMods.mount(mods).always(function () {
               gwoBiomeMods.cook(mods).then(function (result) {
                 self.files(_.assign({}, self.files(), result.files));
@@ -134,6 +166,7 @@ function gwoRefereeChanges() {
 
           // community mods will hook unmountAllMemoryFiles to remount client mods
           api.file.unmountAllMemoryFiles().always(function () {
+            self.stage("!LOC:Mounting game files");
             api.file.mountMemoryFiles(cookedFiles).then(function () {
               gwoBiomeMods.mount(self.biomeMods).always(function () {
                 deferred.resolve();
@@ -150,11 +183,21 @@ function gwoRefereeChanges() {
 
         GWReferee.hire = function (game) {
           var ref = new gwoReferee(game);
+          hiresThisLaunch += 1;
+          ref.pass = hiresThisLaunch;
           return _.bind(gwoGenerateGameFiles, ref)()
+            .then(function () {
+              ref.stage("!LOC:Processing AI mods");
+            })
             .then(_.bind(gwoGenerateAI, ref))
             .then(_.bind(gwoGenerateBiomes, ref))
+            .then(function () {
+              ref.stage("!LOC:Processing game config");
+            })
             .then(_.bind(gwoGenerateConfig, ref))
             .then(function () {
+              // Later stages (mountFiles) belong to the launch, not a pass.
+              ref.pass = 0;
               return ref;
             });
         };
