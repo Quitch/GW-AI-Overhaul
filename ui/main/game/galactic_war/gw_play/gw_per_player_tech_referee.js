@@ -13,6 +13,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
 ], function (
   GW,
   GWInventory,
@@ -23,7 +25,9 @@ define([
   refereeAIPaths,
   gwoSpecs,
   gwoColour,
-  perPlayerTech
+  perPlayerTech,
+  gameFilePaths,
+  gwoRaces
 ) {
   var getPlayerTagGivenIndex = perPlayerTech.getPlayerTagGivenIndex;
   var stripKnownSpecTag = perPlayerTech.stripKnownSpecTag;
@@ -43,22 +47,46 @@ define([
     return inventory;
   };
 
+  // GWO - viewers share the host's race: their units and mods are translated
+  // the way the host's are, and their map is the race's merged one. See
+  // races.md and coop.md.
   var generateUnitSpecsForPlayer = function (inventory, playerTag) {
     var done = $.Deferred();
     var titans = api.content.usingTitans();
-    var aiMapLoad = $.get("spec://pa/ai/unit_maps/ai_unit_map.json");
-    var aiX1MapLoad = titans
-      ? $.get("spec://pa/ai/unit_maps/ai_unit_map_x1.json")
-      : {};
-    $.when(aiMapLoad, aiX1MapLoad).then(function (aiMapGet, aiX1MapGet) {
-      var aiUnitMap = parse(aiMapGet[0]);
-      var aiX1UnitMap = parse(aiX1MapGet[0]);
+    var race = gwoRaces.raceOf(model.game().inventory());
+    var brain = gwoAI.aiInUse("subcommander", race);
+    var mapPath = gwoRaces.isMla(race)
+      ? "/pa/ai/unit_maps/ai_unit_map"
+      : gameFilePaths.getAIUnitMapPath(false, brain).replace(/\.json$/, "");
+    var raceMaps = gwoRaces.unitMapsFor(
+      race,
+      brain,
+      gwoAI.getAIPathSource("subcommander", race)
+    );
+    var loadMap = function (path) {
+      return $.get("spec:/" + path).then(function (data) {
+        return parse(data);
+      });
+    };
+    var loads = [
+      loadMap(mapPath + ".json"),
+      titans ? loadMap(mapPath + "_x1.json") : {},
+    ].concat(_.map(raceMaps, loadMap));
+    $.when.apply($, loads).then(function () {
+      var maps = _.toArray(arguments);
+      var extra = maps.slice(2);
+      var aiUnitMap = gameFilePaths.mergeUnitMaps(maps[0], extra);
+      var aiX1UnitMap = titans
+        ? gameFilePaths.mergeUnitMaps(maps[1], extra)
+        : {};
 
       var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
       var playerX1AIUnitMap = titans
         ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
         : {};
-      var playerSpecs = inventory.units().concat(model.gwoSpecs);
+      var playerSpecs = gwoRaces
+        .translatePaths(race, inventory.units())
+        .concat(model.gwoSpecs);
 
       GW.specs
         .genUnitSpecs(playerSpecs, playerTag)
@@ -68,9 +96,10 @@ define([
           var playerScopedPath = getViewerSubcommanderAiPath(
             refereeAIPaths,
             subcommanderTech,
-            gwoAI.aiInUse("subcommander"),
+            brain,
             inventory,
-            playerTag
+            playerTag,
+            race
           );
           var playerFilesClassic = {};
           var playerFilesX1 = {};
@@ -89,7 +118,11 @@ define([
             playerFilesX1,
             playerSpecFiles
           );
-          gwoSpecs.mod(playerFiles, inventory.mods(), playerTag);
+          gwoSpecs.mod(
+            playerFiles,
+            gwoRaces.translateMods(race, inventory.mods()),
+            playerTag
+          );
           done.resolve(playerFiles);
         });
     });
@@ -238,12 +271,14 @@ define([
         });
 
         var thisPlayersInventory = playerInventories[index];
+        var viewerRace = gwoRaces.raceOf(inventory);
         var viewerAiPath = getViewerSubcommanderAiPath(
           refereeAIPaths,
           subcommanderTech,
-          gwoAI.aiInUse("subcommander"),
+          gwoAI.aiInUse("subcommander", viewerRace),
           thisPlayersInventory,
-          playerTags[index]
+          playerTags[index],
+          viewerRace
         );
         var viewerSubcommanders = buildViewerSubcommanderArmies({
           subcommanderTech: subcommanderTech,

@@ -136,6 +136,7 @@ function gwoWarInfoPanel(gwoSettings) {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
       ],
       function (
@@ -143,6 +144,7 @@ function gwoWarInfoPanel(gwoSettings) {
         gwoConfigSetup,
         gwoRefereeCoop,
         gwoSubcommanderTech,
+        gwoRaces,
         gwoVersion
       ) {
         model.gwoVersion = ko.observable(gwoVersion);
@@ -209,7 +211,19 @@ function gwoWarInfoPanel(gwoSettings) {
           "Cluster",
         ];
         var factionIndex = inventory.getTag("global", "playerFaction");
-        model.gwoFactionName = factions[factionIndex];
+        var playerRace = gwoRaces.raceOf(inventory);
+        model.gwoFactionName = gwoRaces.isMla(playerRace)
+          ? factions[factionIndex]
+          : factions[factionIndex] +
+            " / " +
+            loc(gwoRaces.byId(playerRace).name);
+        // Every commander's icon is its race's, so a Legion Sub Commander is
+        // told apart at a glance. See races.md.
+        var raceIcon = function (race) {
+          var descriptor = gwoRaces.byId(race) || gwoRaces.byId(playerRace);
+          return (descriptor && descriptor.playerIcon) || {};
+        };
+        model.gwoRaceWarning = ko.observable("");
         // The host's colour, written once at war creation and never changed.
         var playerColourPair = inventory.getTag("global", "playerColor");
         var playerColour = gwoColour.rgb(playerColourPair);
@@ -248,6 +262,9 @@ function gwoWarInfoPanel(gwoSettings) {
           ) {
             subcommanderName += " x2";
           }
+          var icon = raceIcon(
+            _.isUndefined(subcommander.race) ? playerRace : subcommander.race
+          );
           return {
             name: subcommanderName,
             color: gwoColour.rgb(
@@ -258,6 +275,8 @@ function gwoWarInfoPanel(gwoSettings) {
               )
             ),
             character: gwoConfigSetup.getAIPersonalityName(subcommander),
+            iconFill: icon.fill,
+            iconOutline: icon.outline,
           };
         };
 
@@ -283,6 +302,8 @@ function gwoWarInfoPanel(gwoSettings) {
           if (!commander) {
             commander = {
               name: client.name,
+              iconFill: raceIcon(playerRace).fill,
+              iconOutline: raceIcon(playerRace).outline,
               // Not fixed: it moves with army control, and with joins and leaves.
               color: ko.observable(),
               // findCoopPlayerInventoryData only tracks synced remote clients, so
@@ -324,6 +345,8 @@ function gwoWarInfoPanel(gwoSettings) {
               name: ko.observable().extend({ session: "displayName" }),
               color: playerColour,
               character: model.gwoLoadout,
+              iconFill: raceIcon(playerRace).fill,
+              iconOutline: raceIcon(playerRace).outline,
             },
           ];
           var connectedClients = model.gwCampaignConnectedClients();

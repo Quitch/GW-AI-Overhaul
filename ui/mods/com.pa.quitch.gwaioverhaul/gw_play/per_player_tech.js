@@ -55,13 +55,15 @@ define(function () {
     subcommanderTech,
     aiInUse,
     playerInventory,
-    playerTag
+    playerTag,
+    race
   ) {
     return refereeAIPaths.getViewerSubcommanderPath(
       aiInUse,
       playerInventory.aiMods(),
       subcommanderTech.hasSmartSubcommanders(playerInventory),
-      playerTag
+      playerTag,
+      race
     );
   };
 

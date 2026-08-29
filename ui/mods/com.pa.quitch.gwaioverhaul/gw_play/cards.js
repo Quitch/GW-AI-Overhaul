@@ -283,6 +283,7 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],
       function (
         GW,
@@ -300,7 +301,8 @@ function gwoCard() {
         cardsCheats,
         gwoStreams,
         gwoTreasure,
-        gwoLoadoutBanks
+        gwoLoadoutBanks,
+        gwoRaces
       ) {
         helpers = cardsDealHelpers;
         // Nothing reads the banks until the player explores, so resolving them
@@ -371,14 +373,21 @@ function gwoCard() {
                 return undefined;
               }
 
-              var match = helpers.doNotDealCard(
-                dealInventory,
-                card,
-                list,
-                dealAddSlot,
-                false,
-                systemCards
-              );
+              var match =
+                helpers.doNotDealCard(
+                  dealInventory,
+                  card,
+                  list,
+                  dealAddSlot,
+                  false,
+                  systemCards
+                ) ||
+                !helpers.raceCanDeal(
+                  gwoRaces,
+                  dealInventory,
+                  card.id,
+                  model.gwoCardsToUnits
+                );
 
               if (match && cardChance) {
                 cardChance.chance = 0;
@@ -616,6 +625,7 @@ function gwoCard() {
           loaded: loaded,
           dealCardToSelectableAI: dealCardToSelectableAI,
           helpers: helpers,
+          races: gwoRaces,
         });
 
         // Every bank: base game, GWO, and any a third-party card mod registered.

@@ -16,6 +16,7 @@ define(function () {
     var loaded = params.loaded;
     var dealCardToSelectableAI = params.dealCardToSelectableAI;
     var helpers = params.helpers;
+    var races = params.races;
 
     var testCardForMatches = function (inventory, card) {
       var cardsDealt = [card];
@@ -94,6 +95,11 @@ define(function () {
         _.sample(GWFactions[playerFaction].minions)
       );
       helpers.applyPenchantToSubcommander(subcommander, gwoSettings, gwoAI);
+      helpers.applyRaceToSubcommander(
+        subcommander,
+        races,
+        races ? races.raceOf(inventory) : undefined
+      );
       product.minion = subcommander;
       product.unique = Math.random();
 

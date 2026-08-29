@@ -58,6 +58,8 @@ const GLOBALS = [
     "ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js",
   ],
   ["gwoLoadoutBanks", MOD_ROOT + "/shared/loadout_banks.js"],
+  ["gwoRaces", MOD_ROOT + "/shared/race_mods.js"],
+  ["gwoRaces", MOD_ROOT + "/gw_play/races.js"],
 ];
 
 describe("the modder globals are adopted, not overwritten", () => {

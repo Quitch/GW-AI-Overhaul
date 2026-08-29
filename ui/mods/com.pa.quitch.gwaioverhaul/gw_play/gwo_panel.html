@@ -133,16 +133,20 @@
     </div>
     <!-- /ko -->
     <h3 data-bind="text: $root.gwoFactionName"></h3>
+    <div
+      class="gwo-race-warning"
+      data-bind="text: $root.gwoRaceWarning, visible: $root.gwoRaceWarning()"
+    ></div>
     <ul data-bind="foreach: $root.gwoPlayer">
       <li class="commander">
         <div class="div-player-icon">
           <div
             class="fill player-masked"
-            data-bind="style: { backgroundColor: color }"
+            data-bind="style: { backgroundColor: color, webkitMaskImage: iconFill ? 'url(' + iconFill + ')' : '' }"
           ></div>
           <div class="outline">
             <img
-              src="coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png"
+              data-bind="attr: { src: iconOutline || 'coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png' }"
             />
           </div>
         </div>

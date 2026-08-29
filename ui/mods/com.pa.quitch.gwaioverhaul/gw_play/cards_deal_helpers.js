@@ -179,6 +179,34 @@ define(function () {
         );
     },
 
+    // A card the player's race can own nothing of is not worth a hand slot.
+    // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes.
+    raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
+      if (!races) {
+        return true;
+      }
+      var race = races.raceOf(inventory);
+      if (races.isMla(race)) {
+        return true;
+      }
+      var entry = _.find(cardsToUnits || [], { id: cardId });
+      return !entry || races.cardUsable(race, entry.units);
+    },
+
+    // A Sub Commander fights as the player's race, with one of its commanders.
+    // Mutates the subcommander; a no-op for MLA.
+    applyRaceToSubcommander: function (subcommander, races, race, rng) {
+      if (!races || races.isMla(race)) {
+        return subcommander;
+      }
+      subcommander.race = race;
+      var commander = races.commanderFor(rng, race);
+      if (commander) {
+        subcommander.commander = commander;
+      }
+      return subcommander;
+    },
+
     // The two Sub Commanders the General Commander loadout grants. Each draws
     // from its own stream, so adding a draw to one cannot move the other.
     buildGeneralCommanderMinions: function (params) {
@@ -209,6 +237,12 @@ define(function () {
           gwoSettings,
           gwoAI,
           minionRng
+        );
+        self.applyRaceToSubcommander(
+          subcommander,
+          params.races,
+          params.race,
+          minionRng ? minionRng.stream("commander") : undefined
         );
         minions.push({
           id: "gwc_minion",

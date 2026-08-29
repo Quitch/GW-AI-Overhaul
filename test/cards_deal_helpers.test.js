@@ -519,3 +519,113 @@ describe("explorationStillLive", () => {
     assert.equal(helpers.explorationStillLive(live, 17, {}), false);
   });
 });
+
+describe("races", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+  );
+  const gwoUnit = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+  );
+  const {
+    FIXTURE_RACE,
+    predictableRng,
+  } = require("../scripts/lib/race-fixture.js");
+  const { afterEach, beforeEach } = require("node:test");
+  const inventoryOf = (race) => ({
+    getTag: (ns, key) =>
+      ns === "global" && key === "playerRace" ? race : undefined,
+  });
+  const cardsToUnits = [
+    { id: "tank_card", units: [gwoUnit.ant] },
+    { id: "bot_card", units: [gwoUnit.dox] },
+  ];
+
+  beforeEach(() => races.register(FIXTURE_RACE));
+  afterEach(() => races.reset());
+
+  it("raceCanDeal withholds only a card the race can own nothing of", () => {
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "tank_card",
+        cardsToUnits
+      ),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "bot_card",
+        cardsToUnits
+      ),
+      false
+    );
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "loadout",
+        cardsToUnits
+      ),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("mla"), "bot_card", cardsToUnits),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(undefined, inventoryOf("fixture"), "bot_card", []),
+      true
+    );
+  });
+
+  it("applyRaceToSubcommander gives a race Sub Commander the race and one of its commanders", () => {
+    const subcommander = {
+      name: "x",
+      commander: "/pa/units/commanders/v.json",
+    };
+
+    helpers.applyRaceToSubcommander(
+      subcommander,
+      races,
+      "fixture",
+      predictableRng()
+    );
+    assert.equal(subcommander.race, "fixture");
+    assert.equal(
+      subcommander.commander,
+      "/pa/units/commanders/fx_alpha/fx_alpha.json"
+    );
+
+    const mla = { name: "y", commander: "v" };
+    helpers.applyRaceToSubcommander(mla, races, "mla", predictableRng());
+    assert.deepEqual(mla, { name: "y", commander: "v" });
+  });
+
+  it("buildGeneralCommanderMinions passes the race through", () => {
+    const minions = helpers.buildGeneralCommanderMinions({
+      minionPool: [{ name: "m", commander: "v", personality: {} }],
+      gwoSettings: {},
+      gwoAI: {},
+      gwoCard: { uniqueValue: () => 1 },
+      races: races,
+      race: "fixture",
+      rng: {
+        stream: () => ({
+          pick: (list) => list[0],
+          stream: () => predictableRng(),
+        }),
+      },
+    });
+
+    assert.equal(minions.length, 2);
+    assert.equal(minions[0].minion.race, "fixture");
+    assert.equal(
+      minions[0].minion.commander,
+      "/pa/units/commanders/fx_alpha/fx_alpha.json"
+    );
+  });
+});

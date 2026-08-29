@@ -7,6 +7,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
 ], function (
   GWFactions,
   gwoAI,
@@ -15,7 +16,8 @@ define([
   helpers,
   gwoStreams,
   gwoCard,
-  coopHost
+  coopHost,
+  gwoRaces
 ) {
   return function (params) {
     var game = params.game;
@@ -62,6 +64,9 @@ define([
         gwoSettings: gwoSettings,
         gwoAI: gwoAI,
         gwoCard: gwoCard,
+        races: gwoRaces,
+        // Viewers share the host's race. See coop.md.
+        race: gwoRaces.raceOf(inventory),
         rng: gwoStreams.generalCommanderRng(warRng, playerKey),
       });
     };

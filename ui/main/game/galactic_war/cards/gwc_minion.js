@@ -3,7 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-], function (GWFactions, gwoCard, gwoGroup, gwoAI) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+], function (GWFactions, gwoCard, gwoGroup, gwoAI, gwoRaces) {
   var coopMinionCount = function () {
     var game = model.game();
     // Counts minions of absent players too, in case one rejoins.
@@ -81,6 +82,18 @@ define([
       var minion = _.cloneDeep(
         rng ? rng.pick(minionPool) : _.sample(minionPool)
       );
+      // GWO - a Sub Commander fights as the player's race. See races.md.
+      var race = gwoRaces.raceOf(inventory);
+      if (!gwoRaces.isMla(race)) {
+        minion.race = race;
+        var raceCommander = gwoRaces.commanderFor(
+          rng ? rng.stream("commander") : undefined,
+          race
+        );
+        if (raceCommander) {
+          minion.commander = raceCommander;
+        }
+      }
 
       if (gwoSettings) {
         var ai = gwoSettings.ai;

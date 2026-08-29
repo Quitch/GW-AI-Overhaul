@@ -107,6 +107,7 @@ function setup(overrides = {}) {
       doNotDealCard: () => options.duplicate,
       // The real one rewrites the sub-commander in place, which is what makes
       // the clone in dealSubCommander load-bearing.
+      applyRaceToSubcommander: (subcommander) => subcommander,
       applyPenchantToSubcommander: (subcommander, settings, ai) => {
         subcommander.penchant = settings.penchant;
         calls.penchants.push([subcommander, settings, ai]);

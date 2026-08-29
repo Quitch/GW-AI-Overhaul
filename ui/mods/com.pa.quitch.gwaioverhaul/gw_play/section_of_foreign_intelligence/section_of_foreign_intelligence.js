@@ -57,7 +57,7 @@ function gwoIntelligence() {
       return _.isUndefined(commander.faction) ? index + 1 : 0;
     };
 
-    var getFactionName = function (commander, currentFaction) {
+    var getFactionName = function (commander, currentFaction, raceName) {
       if (_.isUndefined(commander.faction)) {
         return {
           name: "",
@@ -87,6 +87,11 @@ function gwoIntelligence() {
       if (currentFaction === playerFaction) {
         faction.name += " (" + loc("!LOC:ALLY") + ")";
         faction.tooltip = "!LOC:Fights for you.";
+      }
+
+      // The race the commander fields, when it is not MLA. See races.md.
+      if (raceName) {
+        faction.name += " / " + raceName;
       }
 
       return {
@@ -213,8 +218,16 @@ function gwoIntelligence() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],
-      function (gwoColour, gwoCards, gwoAI, gwoRefereeCoop, gwoStarCardsView) {
+      function (
+        gwoColour,
+        gwoCards,
+        gwoAI,
+        gwoRefereeCoop,
+        gwoStarCardsView,
+        gwoRaces
+      ) {
         var starCardsView = gwoStarCardsView();
 
         var url =
@@ -275,12 +288,21 @@ function gwoIntelligence() {
             ? gwoAI.subcommanderEconRate
             : gwoAI.aiEconRateWithFloor(commander.econ_rate);
           var numCommanders = getNumberOfCommanders(commander);
-          var faction = getFactionName(commander, factionIndex);
+          var raceDescriptor = gwoRaces.byId(commander.race);
+          var faction = getFactionName(
+            commander,
+            factionIndex,
+            gwoRaces.isMla(commander.race)
+              ? undefined
+              : loc(raceDescriptor.name)
+          );
 
           if (numCommanders > 1) {
             name = name.concat(" x", numCommanders);
             eco = eco * ((numCommanders + 1) / 2);
           }
+
+          var icon = (raceDescriptor && raceDescriptor.playerIcon) || {};
 
           return {
             name: name,
@@ -291,6 +313,8 @@ function gwoIntelligence() {
             eco: eco,
             faction: faction.name,
             tooltip: faction.tooltip,
+            iconFill: icon.fill,
+            iconOutline: icon.outline,
           };
         };
 
