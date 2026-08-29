@@ -267,31 +267,35 @@ define([
             ? $.when({ classic: aiUnitMap, x1: aiX1UnitMap })
             : armyMaps("subcommander", playerRace);
 
-          $.when(playerMaps, genUnitSpecs(playerSpecs, playerTag)).then(
-            function (unitMaps, playerSpecFiles) {
-              playerFileGen.resolve(
-                buildPlayerFiles(
-                  {
-                    playerAIUnitMap: GW.specs.genAIUnitMap(
-                      unitMaps.classic,
-                      playerTag
-                    ),
-                    playerX1AIUnitMap: titans
-                      ? GW.specs.genAIUnitMap(unitMaps.x1, playerTag)
-                      : {},
-                    playerSpecFiles: playerSpecFiles,
-                    inventory: inventory,
-                    titans: titans,
-                    race: playerRace,
-                    extraMods: playerExtraMods,
-                  },
-                  gwoAI,
-                  gwoSpecs,
-                  gwoRaces
-                )
-              );
-            }
-          );
+          // Chained, not $.when'd: genUnitSpecs returns a native Promise,
+          // which $.when passes through as a plain value. See constraints.md.
+          playerMaps.then(function (unitMaps) {
+            genUnitSpecs(playerSpecs, playerTag).then(
+              function (playerSpecFiles) {
+                playerFileGen.resolve(
+                  buildPlayerFiles(
+                    {
+                      playerAIUnitMap: GW.specs.genAIUnitMap(
+                        unitMaps.classic,
+                        playerTag
+                      ),
+                      playerX1AIUnitMap: titans
+                        ? GW.specs.genAIUnitMap(unitMaps.x1, playerTag)
+                        : {},
+                      playerSpecFiles: playerSpecFiles,
+                      inventory: inventory,
+                      titans: titans,
+                      race: playerRace,
+                      extraMods: playerExtraMods,
+                    },
+                    gwoAI,
+                    gwoSpecs,
+                    gwoRaces
+                  )
+                );
+              }
+            );
+          });
         }
       );
 
