@@ -31,6 +31,7 @@ define(function () {
       return (
         onTreasureStar() &&
         treasure.anyPlayerCanUnlockLoadout({
+          race: params.race,
           localUnlockedIds: treasure.localUnlockedLoadoutIds(
             params.stockBank,
             params.gwoBank

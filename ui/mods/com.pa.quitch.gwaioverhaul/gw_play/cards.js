@@ -473,6 +473,7 @@ function gwoCard() {
           gwoTreasure: gwoTreasure,
           coopStarCards: coopStarCards,
           gwoSettings: gwoSettings,
+          race: gwoRaces.raceOf(inventory),
         });
 
         // Reports a viewer's loadout unlocks to the host, which needs the mod
@@ -682,6 +683,7 @@ function gwoCard() {
             gwoTreasure.isTreasureStar(gwoSettings, starIndex)
           ) {
             var treasureLoadout = gwoTreasure.pickTreasureLoadout({
+              race: gwoRaces.raceOf(inventory),
               isUnlocked: startCardUnlocked,
               rng: gwoStreams.treasureLoadoutRng(warRng, undefined, starIndex),
             });

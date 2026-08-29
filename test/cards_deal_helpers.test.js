@@ -529,6 +529,7 @@ describe("races", () => {
   );
   const {
     FIXTURE_RACE,
+    fixtureIndex,
     predictableRng,
   } = require("../scripts/lib/race-fixture.js");
   const { afterEach, beforeEach } = require("node:test");
@@ -541,7 +542,10 @@ describe("races", () => {
     { id: "bot_card", units: [gwoUnit.dox] },
   ];
 
-  beforeEach(() => races.register(FIXTURE_RACE));
+  beforeEach(() => {
+    races.register(FIXTURE_RACE);
+    races.setCells("fixture", fixtureIndex());
+  });
   afterEach(() => races.reset());
 
   it("raceCanDeal withholds only a card the race can own nothing of", () => {
@@ -590,6 +594,42 @@ describe("races", () => {
     );
     assert.equal(
       helpers.raceCanDeal(undefined, inventoryOf("fixture"), "bot_card", []),
+      true
+    );
+  });
+
+  it("withholds the MLA-only cards from a race, the commander upgrades excepted", () => {
+    for (const id of helpers.MLA_ONLY) {
+      assert.equal(helpers.mlaOnlyCard(id), true, id);
+      assert.equal(
+        helpers.raceCanDeal(races, inventoryOf("fixture"), id, []),
+        false
+      );
+      assert.equal(
+        helpers.raceCanDeal(races, inventoryOf("mla"), id, []),
+        true
+      );
+    }
+    assert.deepEqual(helpers.MLA_ONLY, [
+      "gwaio_start_paratrooper",
+      "gwaio_start_nomad",
+      "gwaio_protocol_killswitch",
+      "gwaio_enable_planetaryradar",
+    ]);
+    assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_ant"), true);
+    assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_subcommander_1"), false);
+    assert.equal(
+      helpers.mlaOnlyCard("gwaio_upgrade_ubercannon_structure"),
+      false
+    );
+    assert.equal(helpers.mlaOnlyCard("gwc_combat_bots"), false);
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "gwaio_upgrade_ubercannon_structure",
+        [{ id: "gwaio_upgrade_ubercannon_structure", units: [gwoUnit.ant] }]
+      ),
       true
     );
   });

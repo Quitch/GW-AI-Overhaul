@@ -174,6 +174,9 @@ function gwoRacePicker() {
         });
 
         settings.playerRace.subscribe(function () {
+          if (_.isFunction(model.gwoRebuildStartCards)) {
+            model.gwoRebuildStartCards();
+          }
           if (model.gwoRacesAvailable()) {
             mount();
           }

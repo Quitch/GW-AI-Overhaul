@@ -104,6 +104,8 @@ define(function () {
     var gwoBank = params.gwoBank;
     var stockBank = params.stockBank;
     var gwoTreasure = params.gwoTreasure;
+    // Viewers share the host's race. See races.md.
+    var race = params.race;
     var coopStarCards = params.coopStarCards;
     var gwoSettings = params.gwoSettings;
 
@@ -151,6 +153,7 @@ define(function () {
         },
         pickStartLoadoutCard: function (record, client) {
           return gwoTreasure.pickTreasureLoadout({
+            race: race,
             isUnlocked: function (card) {
               return gwoTreasure.recordHasUnlockedLoadout(record, card);
             },

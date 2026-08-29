@@ -90,6 +90,20 @@ describe("treasureLoadoutPool", () => {
     }
   });
 
+  it("keeps a loadout built for MLA alone from a race player", () => {
+    const forRace = treasure.treasureLoadoutPool("legion").map((c) => c.id);
+    const forMla = treasure.treasureLoadoutPool("mla").map((c) => c.id);
+
+    assert.ok(!forRace.includes("gwaio_start_paratrooper"));
+    assert.ok(!forRace.includes("gwaio_start_nomad"));
+    assert.ok(forRace.includes("gwaio_start_ceo"));
+    assert.deepEqual(
+      forMla,
+      treasure.treasureLoadoutPool().map((c) => c.id)
+    );
+    assert.ok(forMla.includes("gwaio_start_paratrooper"));
+  });
+
   it("offers a mod's locked loadout alongside GWO's", () => {
     const ids = withModLoadouts([{ id: "mym_start_one" }], () =>
       treasure.treasureLoadoutPool().map((card) => card.id)

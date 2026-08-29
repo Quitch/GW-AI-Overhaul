@@ -1,6 +1,26 @@
 // The measured half of gw_play/cards.js. Nothing here may touch model/$/ko/game
 // at define time - see testing.md, "Coverage".
 define(function () {
+  // Cards a race player is never offered: unit upgrades are tuned to the MLA
+  // unit they name (the commander's excepted - every race has one), these
+  // loadouts and protocols are built on hand-picked unit lists no cell reads,
+  // and the Deepspace Radar is a TITANS stub only its card brings back. A
+  // race gets its own. See races.md.
+  var MLA_ONLY = [
+    "gwaio_start_paratrooper",
+    "gwaio_start_nomad",
+    "gwaio_protocol_killswitch",
+    "gwaio_enable_planetaryradar",
+  ];
+  var RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
+
+  var mlaOnlyCard = function (cardId) {
+    if (_.contains(MLA_ONLY, cardId)) {
+      return true;
+    }
+    return /_upgrade_/.test(cardId) && !RACE_UPGRADES.test(cardId);
+  };
+
   var isStartLoadoutCardId = function (cardId) {
     return _.isString(cardId) && _.includes(cardId, "_start_");
   };
@@ -179,10 +199,12 @@ define(function () {
         );
     },
 
+    MLA_ONLY: MLA_ONLY,
+    mlaOnlyCard: mlaOnlyCard,
+
     // A card the player's race can own nothing of is not worth a hand slot.
     // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes.
-    // Unit upgrade cards are tuned to MLA units and stay MLA-only; a race gets
-    // its own. See races.md.
+    // See races.md.
     raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
       if (!races) {
         return true;
@@ -191,7 +213,7 @@ define(function () {
       if (races.isMla(race)) {
         return true;
       }
-      if (/_upgrade_/.test(cardId)) {
+      if (mlaOnlyCard(cardId)) {
         return false;
       }
       var entry = _.find(cardsToUnits || [], { id: cardId });

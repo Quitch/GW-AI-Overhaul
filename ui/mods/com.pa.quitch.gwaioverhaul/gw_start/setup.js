@@ -421,8 +421,11 @@ function gwoSetup() {
 
         // Resolved before the list is built so a mod loadout the player has
         // earned shows as unlocked rather than as a locked hint.
-        requireGW(gwoLoadoutBanks.paths(), function () {
-          gwoLoadoutBanks.resolve(_.toArray(arguments));
+        // Also re-run by the race picker: the list a race player sees is
+        // shorter. See races.md.
+        model.gwoRebuildStartCards = function () {
+          var activeCard = model.activeStartCard();
+          var activeId = activeCard && cardId(activeCard);
           model.startCards(
             gwoFavouriteLoadouts.sortCardsByFavourite(
               loadouts.startCards(),
@@ -430,6 +433,16 @@ function gwoSetup() {
               cardId
             )
           );
+          var index = _.findIndex(model.startCards(), function (c) {
+            return cardId(c) === activeId;
+          });
+          if (index === -1 && model.startCards().length) {
+            model.activeStartCardIndex(0);
+          }
+        };
+        requireGW(gwoLoadoutBanks.paths(), function () {
+          gwoLoadoutBanks.resolve(_.toArray(arguments));
+          model.gwoRebuildStartCards();
         });
         var processedStartCards = {};
         var loadCount = loadouts.allCards.length;
