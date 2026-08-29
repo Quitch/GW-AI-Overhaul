@@ -178,6 +178,31 @@ describe("translateMods", () => {
   });
 });
 
+describe("translateUnitMap", () => {
+  it("re-points mapped vanilla spec_ids, leaves the rest, and copies", () => {
+    const map = {
+      unit_map: {
+        Tank: { spec_id: gwoUnit.ant },
+        Bot: { spec_id: gwoUnit.dox },
+        Foreign: { spec_id: "/pa/units/x/x.json" },
+        Type: { unit_types: "Tank & Custom7" },
+      },
+    };
+
+    const translated = races.translateUnitMap("fixture", map);
+
+    assert.deepEqual(translated.unit_map, {
+      Tank: { spec_id: FX_TANK },
+      Bot: { spec_id: gwoUnit.dox },
+      Foreign: { spec_id: "/pa/units/x/x.json" },
+      Type: { unit_types: "Tank & Custom7" },
+    });
+    assert.equal(map.unit_map.Tank.spec_id, gwoUnit.ant);
+    assert.equal(races.translateUnitMap("mla", map), map);
+    assert.equal(races.translateUnitMap("fixture", undefined), undefined);
+  });
+});
+
 describe("cardUsable", () => {
   it("is true for MLA, for a card naming no units, and for a card the race can own", () => {
     assert.equal(races.cardUsable("mla", [gwoUnit.dox]), true);

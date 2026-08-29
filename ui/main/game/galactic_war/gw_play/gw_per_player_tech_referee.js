@@ -75,9 +75,15 @@ define([
     $.when.apply($, loads).then(function () {
       var maps = _.toArray(arguments);
       var extra = maps.slice(2);
-      var aiUnitMap = gameFilePaths.mergeUnitMaps(maps[0], extra);
+      var aiUnitMap = gwoRaces.translateUnitMap(
+        race,
+        gameFilePaths.mergeUnitMaps(maps[0], extra)
+      );
       var aiX1UnitMap = titans
-        ? gameFilePaths.mergeUnitMaps(maps[1], extra)
+        ? gwoRaces.translateUnitMap(
+            race,
+            gameFilePaths.mergeUnitMaps(maps[1], extra)
+          )
         : {};
 
       var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);

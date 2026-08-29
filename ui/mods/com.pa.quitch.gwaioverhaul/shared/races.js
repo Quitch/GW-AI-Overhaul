@@ -231,6 +231,36 @@ define([
     );
   };
 
+  // A unit map's spec_ids, the vanilla ones re-pointed at the race's units so
+  // a key the engine reads itself (the control module) resolves to something
+  // a race army can own. Unmapped vanilla ids stay: nothing the race fields
+  // reaches them. Returns a copy.
+  var translateUnitMap = function (raceId, map) {
+    var race = byId(raceId);
+
+    if (!race || race.id === MLA_ID || !map || !map.unit_map) {
+      return map;
+    }
+
+    var unitMap = {};
+
+    _.forEach(map.unit_map, function (entry, key) {
+      if (
+        entry &&
+        _.isString(entry.spec_id) &&
+        Object.prototype.hasOwnProperty.call(race.pathMap, entry.spec_id)
+      ) {
+        unitMap[key] = _.assign({}, entry, {
+          spec_id: race.pathMap[entry.spec_id],
+        });
+      } else {
+        unitMap[key] = entry;
+      }
+    });
+
+    return _.assign({}, map, { unit_map: unitMap });
+  };
+
   // A card is worth offering when the race can own something it affects.
   var cardUsable = function (raceId, cardUnits) {
     if (isMla(raceId) || _.isEmpty(cardUnits)) {
@@ -477,6 +507,7 @@ define([
     brainsFor: brainsFor,
     translatePaths: translatePaths,
     translateMods: translateMods,
+    translateUnitMap: translateUnitMap,
     cardUsable: cardUsable,
     raceOf: raceOf,
     aiRoot: aiRoot,

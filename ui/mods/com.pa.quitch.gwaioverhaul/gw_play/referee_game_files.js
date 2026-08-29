@@ -190,8 +190,13 @@ define([
           var maps = _.toArray(arguments);
           var extra = maps.slice(2);
           return {
-            classic: mergeUnitMaps(maps[0], extra),
-            x1: titans ? mergeUnitMaps(maps[1], extra) : {},
+            classic: gwoRaces.translateUnitMap(
+              race,
+              mergeUnitMaps(maps[0], extra)
+            ),
+            x1: titans
+              ? gwoRaces.translateUnitMap(race, mergeUnitMaps(maps[1], extra))
+              : {},
           };
         });
       };
