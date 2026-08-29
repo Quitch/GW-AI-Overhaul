@@ -13,7 +13,6 @@ function gwoRacePicker() {
   try {
     var settings = model.gwoDifficultySettings;
     var raceSelectId = "#gwo-race-select";
-    var enemyPickerId = "#gwo-enemy-races-picker";
     var brainSelectIds = [
       "#difficulty-ai-enemy-select",
       "#difficulty-ai-ally-select",
@@ -33,8 +32,6 @@ function gwoRacePicker() {
 
     model.gwoRaceTooltip =
       "!LOC:The units you and your Sub Commanders field. Only the TITANS AI knows every race; QUELLER also knows Legion. An AI that does not know a race in play cannot be chosen.";
-    model.gwoEnemyRacesTooltip =
-      "!LOC:The races enemy factions may field. Each faction draws one; none selected means any.";
     model.gwoUniqueRacesTooltip =
       "!LOC:No two enemy factions share a race until every race in play has been used.";
 
@@ -115,10 +112,6 @@ function gwoRacePicker() {
           }).join("");
         };
 
-        var readEnemyRaces = function () {
-          return $(enemyPickerId).val() || [];
-        };
-
         var mount = function () {
           model.gwoCommanderMounting(true);
           raceMods.mountRoot().always(function () {
@@ -154,9 +147,12 @@ function gwoRacePicker() {
         });
 
         // Only a brain that knows every race in play is offered; an unavailable
-        // choice falls back to Titans, which knows them all.
+        // choice falls back to Titans, which knows them all. Every installed
+        // race is in play: an enemy faction may draw any of them.
         ko.computed(function () {
-          var inPlay = [settings.playerRace()].concat(settings.enemyRaces());
+          var inPlay = [settings.playerRace()].concat(
+            _.pluck(model.gwoRaceInfo().races, "id")
+          );
           var allowed = races.brainsFor(inPlay);
 
           _.forEach(brainSelectIds, function (id) {
@@ -182,15 +178,8 @@ function gwoRacePicker() {
           }
         });
 
-        $(enemyPickerId).on("change", function () {
-          settings.enemyRaces(readEnemyRaces());
-        });
-
         raceMods.installedRaces().then(function (info) {
           var installed = _.pluck(info.races, "id");
-          var enemyChoices = _.filter(info.races, function (race) {
-            return race.id !== races.MLA_ID;
-          });
 
           model.gwoRaceInfo(info);
           model.gwoRaceOptions(
@@ -199,20 +188,12 @@ function gwoRacePicker() {
             })
           );
           $(raceSelectId).html(optionsHtml(info.races));
-          $(enemyPickerId).html(optionsHtml(enemyChoices));
 
           if (!_.contains(installed, settings.playerRace())) {
             settings.playerRace(races.MLA_ID);
           }
-          settings.enemyRaces(
-            _.filter(settings.enemyRaces(), function (id) {
-              return _.contains(installed, id);
-            })
-          );
           $(raceSelectId).selectpicker("val", settings.playerRace());
           $(raceSelectId).selectpicker("refresh");
-          $(enemyPickerId).selectpicker("val", settings.enemyRaces());
-          $(enemyPickerId).selectpicker("refresh");
 
           if (model.gwoRacesAvailable()) {
             mount();

@@ -77,9 +77,8 @@ function gwoUI() {
       aiAlly: ko.observable("Penchant"),
       staticTech: ko.observable(false),
       largePlanets: ko.observable(false),
-      // Race ids; see races.md. Empty enemyRaces means every installed race.
+      // Race id; see races.md.
       playerRace: ko.observable("mla"),
-      enemyRaces: ko.observableArray([]),
       uniqueRaces: ko.observable(false),
     };
 

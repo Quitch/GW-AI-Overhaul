@@ -178,8 +178,8 @@ descriptor data, not a different design.
 ## Assignment and persistence
 
 `gw_start/race_picker.js` offers the races GW Server Mods lists as active. The
-player picks one; the enemy pool is the chosen "Enemy Races" plus MLA, or every
-installed race when none is chosen. `races.assign` draws one race per faction
+player picks one; the enemy pool is every installed race plus MLA - to keep a
+race out of a war, disable its mod. `races.assign` draws one race per faction
 from the `teams` stream: independently by default, and under **Unique Races**
 without replacement until the pool is spent, then refilled.
 

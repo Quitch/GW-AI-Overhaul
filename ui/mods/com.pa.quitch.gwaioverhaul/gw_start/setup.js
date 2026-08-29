@@ -694,18 +694,9 @@ function gwoSetup() {
           )
             ? model.gwoDifficultySettings.playerRace()
             : gwoRaces.MLA_ID;
-          // Nothing chosen means every installed race. See galaxy.md.
-          var chosenEnemyRaces = _.filter(
-            model.gwoDifficultySettings.enemyRaces(),
-            function (id) {
-              return _.contains(installedRaces, id);
-            }
-          );
-          var enemyRacePool = _.uniq(
-            [gwoRaces.MLA_ID].concat(
-              chosenEnemyRaces.length ? chosenEnemyRaces : installedRaces
-            )
-          );
+          // Every installed race: to leave one out, disable its mod. See
+          // galaxy.md.
+          var enemyRacePool = _.uniq([gwoRaces.MLA_ID].concat(installedRaces));
           var raceByFaction = {};
           // Shuffled per war, not at module load. Consumed in order by onPopulated.
           var neutralLore = loreRng.shuffle(gwoLore.neutralSystems);
