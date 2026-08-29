@@ -36,44 +36,77 @@ A descriptor:
     queller: { unitMaps: [relative], exclude: [fragments] },
   },
   units: { shank: "/pa/units/land/l_tank_shank/l_tank_shank.json", … }, // race key -> race path
-  mla: { shank: "ant", omniSilo: ["metalStorage", "energyStorage"], … }, // race key -> units.js key(s)
   unitNames: { shank: "!LOC:Shank", … }, // race key -> display name
 }
 ```
 
 `units` is the race's own table in the shape of `shared/units.js`: every spec
 the race ships, under a key of the race's own naming, so a card written for
-that race alone can address them. `mla` binds a race key to the published
-`units.js` key(s) it stands in for; a race key with no binding is a unit MLA
-has no counterpart of, and a `units.js` key no binding names is one the race
-lacks. The vanilla-to-race path map the translation runs on is compiled from
-the two.
+that race alone can address them. Nothing else about the race's units is
+written by hand: what a race player fields follows from **capability cells**.
 
-## The inventory stays MLA
+## Capability cells
 
 Every card, `gw_start/ai_tech.js`, `shared/ai_inventory.js` and
 `gw_play/card_units.js` name vanilla units, and none of them changes. A race
-player's inventory holds vanilla paths; the translation happens once, at battle
-launch, in the referee:
+player's inventory holds vanilla paths; the conversion happens once, at battle
+launch, in the referee, by a rule rather than a table.
 
-| Rule                                                        | Result                   |
-| ----------------------------------------------------------- | ------------------------ |
-| A vanilla path the race maps (`units`)                      | the race's path          |
-| A vanilla path the race does not map                        | dropped, warned once     |
-| Anything `units.js` does not name (a race commander, a mod) | passed through untouched |
+`shared/unit_cells.js` (pure, measured) reads a unit's **cell** off its
+effective `unit_types` - the `base_spec` chain resolved, a child's array
+replacing its base's - as domain / tier / class:
 
-`races.translatePaths` does that to the player's unit list, and
-`races.translateMods` to the spec mods, dropping a mod whose file is dropped.
-The same happens to an AI's stat tech (`ai.inventory`) and to the Guardians'
-borrowed player mods. An empty `units` table therefore fields a commander and
-nothing else - a race descriptor is only complete once its table is.
+| Part   | Values, first match wins                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| domain | `Air`, `Orbital`, `Bot`, `Vehicle` (`Tank` or `Vehicle`), `Land`, `Naval`; `Land` by default                                                                                                                                                                                                                                                                                                                           |
+| tier   | `Advanced`, else `Basic`                                                                                                                                                                                                                                                                                                                                                                                               |
+| class  | `Titan`, `Commander` (`Commander`, `SupportCommander`), `Fabber` (mobile builder without `Offense`), `Combat` (any other `Mobile`), then for structures `Superweapon` (`Nuke`, `ControlModule`, `PlanetEngine`), `Defense` (`Defense`, `Wall`, `SurfaceDefense`, `AirDefense`), `Factory`, `Metal`, `Energy`, `Storage` (`Economy` with neither), `Intel` (`Recon`, `Radar`, `RadarJammer`), `Teleporter`, `Structure` |
 
-Two kinds of card are withheld from a race player's deals by
-`cards_deal_helpers.raceCanDeal`: every `_upgrade_` card, because those are
-tuned to the MLA unit they name and a race gets upgrade cards of its own; and
-any other card the race can own nothing of, judged from the same
-`card_units.js` entry the tooltip uses through `races.cardUsable`. A card with
-no entry - every loadout - passes.
+Faction bits (`Custom*`), build permissions (`CmdBuild`, `FabBuild`, …) and
+flavour (`Important`, `NoBuild`, …) are stripped first. `Orbital` outranks
+`Land` so the launcher stays orbital; `Land` outranks `Naval` so the vanilla
+mine, tagged both, shares a cell with a race's land-only mine. `Metal` and
+`Energy` are separate because a loadout that changes extractors must not reach
+power plants. `test/unit_groups_cells.test.js` checks the classifier against
+every domain/tier/class-named group in `shared/unit_groups.js`, over
+`test/fixtures/unit_types.json` (harvested by `scripts/harvest-unit-types.js`),
+with the deviations pinned - each one a balance choice of the group, such as
+the Anchor sitting in `structuresDefencesBasic` while typed Advanced.
+
+At launch `shared/race_cells.js` reads the merged unit list and every spec it
+reaches (through `spec_cache`, so `genUnitSpecs` fetches nothing twice) and
+builds two indexes, vanilla (`Custom58` or no faction bit) and the race
+(`UNITTYPE_<bit>`). Then:
+
+| Rule                                                                        | Result                                                                      |
+| --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| A held vanilla unit                                                         | every race unit of its cell (`raceUnitsFor`)                                |
+| A held path that is not a vanilla unit (race commander, a mod)              | passed through untouched                                                    |
+| A held vanilla `Commander`-class unit (the Colonel)                         | kept and retagged to the race's bit (`races.unitRetagMods`)                 |
+| A `Commander` cell                                                          | never granted; race commanders arrive as commanders do                      |
+| A spec mod on a vanilla unit                                                | one on each race unit of its cell (`expandMods`)                            |
+| A spec mod on a vanilla weapon, ammo, build arm or death ammo               | one on each race part of the same role under race units of the part's cells |
+| A mod on a file the army still holds (a retagged Pumpkin, `model.gwoSpecs`) | kept as well                                                                |
+| A unit-map `spec_id` the race maps left pointing at a vanilla unit          | the first race unit of its cell (`unitMapFallback`)                         |
+
+A group card names several vanilla files of one cell - `gwoGroup.botsAmmo` is
+eight - and must land once on a race ammo, not eight times. `expandMods`
+emits a race target set once per **pass**, and a pass ends when a vanilla
+source already seen recurs: one card is one pass, two copies stack. A mod
+whose `path` a race file lacks is the no-op it always was in `specs.mod`.
+
+A single-unit grant opens its whole cell (`gwc_start_subcdr`'s Ant brings
+every basic race tank) - accepted. What no cell can carry is a hand-picked
+list: `cards_deal_helpers.MLA_ONLY` names the cards a race player is never
+dealt or offered as a loadout - the Paratrooper and Nomad loadouts, the
+Killswitch protocol and the Deepspace Radar card - and every `_upgrade_` card
+but the commander's (`ubercannon`, `subcommander`), since those are tuned to
+the MLA unit they name. A race gets its own. `shared/loadouts.js` and
+`gw_play/treasure_loadouts.js` apply the same list to the loadouts a race
+player is shown. Any other card is dealt when `races.cardUsable` finds a race
+unit in a cell its `card_units.js` entry names; a card with no entry - every
+loadout - passes, and so does everything until the race's cells are built,
+which `gw_play/races.js` starts as the scene loads.
 
 ## Race trees
 
@@ -93,14 +126,17 @@ distinct (source, destination):
 
 The engine lists `unit_maps/` and loads each file it finds with the army's tag
 appended. The race's map is therefore never copied as a file: it is merged over
-the brain's map (`referee_game_file_paths.mergeUnitMaps`, race keys winning) and
-written as the army's tagged `ai_unit_map[_x1].json.<tag>`, and the brain's
-untagged map is copied so the engine has a name to derive the tagged one from.
-Measured live: with only the tagged file present the engine looked for
-`ai_unit_map.json.ai0.ai0` and found nothing.
+the brain's map (`referee_game_file_paths.mergeUnitMaps`, race keys winning),
+a vanilla `spec_id` the race map left falls back to a race unit of its cell,
+and the result is written as the army's tagged `ai_unit_map[_x1].json.<tag>`,
+with the brain's untagged map copied so the engine has a name to derive the
+tagged one from. Measured live: with only the tagged file present the engine
+looked for `ai_unit_map.json.ai0.ai0` and found nothing.
 
 No AI mod (`addAIMods`) is applied to a race tree in this pass: the descriptors
-name MLA build entries, which a race tree does not have.
+name MLA build entries, which a race tree does not have. An AI's stat tech
+(`ai.inventory`) expands onto the race's files the way a player's mods do, and
+so do the Guardians' borrowed player mods.
 
 ## Brains
 
@@ -124,7 +160,8 @@ the boss keeps its Pumpkin and the Guardians keep the Unicorn.
 replaces `buildable_types` with the race's, which is exactly the shape every
 real race commander has. `commanderModsFor` decides: nothing for one of the
 race's own, the retag for anything else, so a player who somehow fields a
-vanilla commander as a race gets the same treatment.
+vanilla commander as a race gets the same treatment. Commander cells receive
+mods like any other, so a card on the commander's weapon reaches the race's.
 
 Sub Commanders follow the player's race: `gwc_minion` and the General
 Commander's two draw a race commander, and `referee_config_setup.js` gives an
@@ -134,7 +171,7 @@ ally the player's race unless the war gave it one of its own.
 
 Cluster is MLA-only in this pass: the picker locks the race to MLA while
 Cluster is the faction, and `setup.js` never assigns a race to faction 4. That
-is enforced in those two places only - the path, translation and tree code know
+is enforced in those two places only - the path, cell and tree code know
 nothing of it - so a race that later ships its own Angels and Colonels needs
 descriptor data, not a different design.
 
@@ -168,21 +205,20 @@ Raptor, Quad and Tank, player icon from the client mod's own
 Queller every tier already carries a `legion/` side, so the tree is the tier
 minus `mla/` and `unit_maps/mla.json`.
 
-The table keys 375 Legion specs and binds 254 of them to 269 of GWO's 337
-unit keys. Whole units are matched by role (Ant → Shank, Dox → Peacekeeper,
-Bumblebee → Dauntless, …) and each unit's ammo, weapon and build-arm keys follow
-from its tool slots; a Legion unit with no MLA role (Nova, Comet, Rampart,
-Arsonist, Hive, Investigator, Sea Urchin) is keyed but unbound. Units Legion has no
-counterpart for stay unmapped - Lob, Skitter, Spinner, Manhattan, Ward, Kraken,
-Kessler, Icarus, Solar Array, Mend, Radar Jamming Station, Orbital and Deepspace
-Radar, and the Cluster-only Angel - so a Legion player never owns them, and the
-fifteen cards that touch only those are withheld (`test/race_legion.test.js`
-pins the list). Where Legion reuses a vanilla tool (the Iron Dome's anti-nuke
-weapon), the table maps the key to that vanilla file, which is a no-op.
+The table keys 375 Legion specs by their Legion names (Shank, Peacekeeper,
+Dauntless, …) for cards written for Legion alone. Under the cells Legion fills
+every cell GWO's cards open, so nothing beyond the MLA-only set is withheld
+(`test/race_legion.test.js` pins that). Where its types disagree with vanilla's
+the cells follow the types: the OmniSilo is typed Advanced, so it arrives with
+advanced economy rather than with a storage card; the nuke's projectile is a
+`Custom1` orbital "unit" and rides along with basic orbital; helper units
+(`l_vision`, the bombs, the spawners) sit in cells no vanilla unit occupies and
+are reached only through their parents, as vanilla's own spawned units are.
 
 ## Where to look next
 
 - [`ai-paths.md`](ai-paths.md) - the race roots beside the five trees.
 - [`galaxy.md`](galaxy.md) - where the race is drawn during war generation.
 - [`coop.md`](coop.md) - viewers under per-player tech.
-- `test/races.test.js` - the rules above, pinned.
+- `test/unit_cells.test.js`, `test/unit_groups_cells.test.js`,
+  `test/races.test.js` - the rules above, pinned.
