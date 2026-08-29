@@ -251,9 +251,12 @@ define([
           var additionalPlayerSpecs = _.isUndefined(ai.ally)
             ? model.gwoSpecs
             : model.gwoSpecs.concat(ai.ally.commander);
-          var playerSpecs = gwoRaces
-            .translatePaths(playerRace, inventory.units())
-            .concat(additionalPlayerSpecs);
+          // The extra specs cards mod are vanilla too, so they translate with
+          // the units; a race player never needs the ones its race lacks.
+          var playerSpecs = gwoRaces.translatePaths(
+            playerRace,
+            inventory.units().concat(additionalPlayerSpecs)
+          );
           var playerCommanders = [inventory.getTag("global", "commander")]
             .concat(_.pluck(inventory.minions(), "commander"))
             .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander]);
