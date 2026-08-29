@@ -109,7 +109,8 @@ function gwoRacePicker() {
           raceMods.mountRoot();
         };
 
-        // The commander list follows the race; a race's list is its own.
+        // The commander list follows the race; a race's list is its own, and
+        // so is the paint its preview art ships in.
         ko.computed(function () {
           var race = races.byId(settings.playerRace());
           var stock = model.commanders();
@@ -118,6 +119,9 @@ function gwoRacePicker() {
               ? _.pluck(race.commanders, "spec")
               : stock;
           model.gwoCommanderChoices(choices);
+          model.gwoCommanderArtHue(
+            races.commanderArtHue(settings.playerRace())
+          );
           if (
             choices.length &&
             !_.contains(choices, model.selectedCommander())

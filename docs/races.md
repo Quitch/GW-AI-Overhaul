@@ -30,6 +30,7 @@ A descriptor:
   unitTypeBit: "Custom1",
   commanderTypes: { unitType: "UNITTYPE_Custom1", buildable: "CmdBuild & Custom1" },
   commanders: [{ spec: "/pa/units/commanders/l_raptor/l_raptor.json" }, …],
+  commanderArtHue: 0, // the paint the preview art ships in; MLA's is 210 (blue)
   playerIcon: { fill: "coui://…/icon_player_fill_l.png", outline: "…" },
   ai: {
     titans: { unitMaps: [paths], sources: [{ dir, match }] },

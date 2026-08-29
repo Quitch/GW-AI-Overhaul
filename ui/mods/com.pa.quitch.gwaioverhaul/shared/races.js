@@ -17,6 +17,8 @@ define([
   };
 
   var VANILLA_UNIT_TYPE = "UNITTYPE_Custom58";
+  // The hue MLA's commander preview art ships in (blue team paint).
+  var MLA_ART_HUE = 210;
 
   var registry = {};
   var order = [];
@@ -327,6 +329,14 @@ define([
     });
   };
 
+  // The hue a race's commander preview art ships in, for the picker's tint.
+  var commanderArtHue = function (raceId) {
+    var race = byId(raceId);
+    var hue = race && race.commanderArtHue;
+
+    return _.isNumber(hue) ? hue : MLA_ART_HUE;
+  };
+
   var isRaceCommander = function (raceId, commanderPath) {
     var race = byId(raceId);
 
@@ -433,6 +443,7 @@ define([
     commanderRetagMods: commanderRetagMods,
     commanderModsFor: commanderModsFor,
     isRaceCommander: isRaceCommander,
+    commanderArtHue: commanderArtHue,
     commanderFor: commanderFor,
     treeFilter: treeFilter,
     unitMapsFor: unitMapsFor,

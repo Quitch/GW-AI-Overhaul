@@ -219,6 +219,15 @@ describe("commanderRetagMods", () => {
   });
 });
 
+describe("commanderArtHue", () => {
+  it("reads the race's art hue and defaults to MLA's blue", () => {
+    assert.equal(races.commanderArtHue("mla"), 210);
+    assert.equal(races.commanderArtHue("fixture"), 210);
+    races.register(Object.assign({}, FIXTURE_RACE, { commanderArtHue: 0 }));
+    assert.equal(races.commanderArtHue("fixture"), 0);
+  });
+});
+
 describe("commanderFor", () => {
   it("draws one of the race's commanders, and nothing for MLA", () => {
     assert.equal(

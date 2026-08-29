@@ -13,6 +13,8 @@ define(function () {
       "com.pa.legion-expansion-server-dev",
     ],
     unitTypeBit: "Custom1",
+    // The preview art ships in the red team paint.
+    commanderArtHue: 0,
     commanderTypes: {
       unitType: "UNITTYPE_Custom1",
       buildable: "CmdBuild & Custom1",

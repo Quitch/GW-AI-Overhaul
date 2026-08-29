@@ -223,9 +223,11 @@ function gwoUI() {
       model.updateCommander();
     });
 
-    // The art ships in the blue team paint. Rotating by the difference to the
-    // faction hue recolours it while keeping the model's shading.
-    var commanderArtHue = 210;
+    // MLA's art ships in the blue team paint; a race's may not (Legion's is
+    // red), so race_picker.js sets the hue its art ships in. Rotating by the
+    // difference to the faction hue recolours it while keeping the model's
+    // shading.
+    model.gwoCommanderArtHue = ko.observable(210);
 
     // Returns undefined for an achromatic colour, which has no hue to rotate to.
     var rgbHue = function (rgb) {
@@ -261,7 +263,9 @@ function gwoUI() {
         return "grayscale(1)";
       }
 
-      return "hue-rotate(" + Math.round(hue - commanderArtHue) + "deg)";
+      return (
+        "hue-rotate(" + Math.round(hue - model.gwoCommanderArtHue()) + "deg)"
+      );
     });
 
     model.gwoCommanderModalVisible = ko.observable(false);

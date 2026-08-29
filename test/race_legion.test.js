@@ -62,6 +62,7 @@ describe("the Legion descriptor", () => {
     assert.equal(race.id, "legion");
     assert.equal(race.commanders.length, 6);
     assert.equal(race.unitTypeBit, "Custom1");
+    assert.equal(race.commanderArtHue, 0);
     assert.equal(race.commanderTypes.buildable, "CmdBuild & Custom1");
     assert.ok(race.ai.titans.sources.length >= 4);
     assert.deepEqual(race.ai.queller.exclude, ["/mla/", "/unit_maps/mla.json"]);
