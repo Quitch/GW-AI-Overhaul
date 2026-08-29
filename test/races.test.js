@@ -59,16 +59,23 @@ describe("registry", () => {
     assert.equal(races.byId("fixture").name, "Again");
   });
 
-  it("warns about unit keys units.js does not have and keeps the rest", () => {
+  it("warns about keys units.js or the table lacks and keeps the rest", () => {
     races.register({
       id: "odd",
-      units: { ant: "/pa/units/x.json", noSuchKey: "/pa/units/y.json" },
+      units: { x: "/pa/units/x.json", y: "/pa/units/y.json" },
+      mla: { x: ["ant", "noSuchKey"], y: "dox", z: "boom" },
+      unitNames: { x: "Ex", z: "Zed" },
     });
 
-    assert.match(warnings[0], /odd names unit keys units.js lacks: noSuchKey/);
-    assert.deepEqual(races.translatePaths("odd", [gwoUnit.ant]), [
+    assert.match(
+      warnings[0],
+      /odd names unit keys units.js or its table lacks: noSuchKey, z/
+    );
+    assert.deepEqual(races.translatePaths("odd", [gwoUnit.ant, gwoUnit.dox]), [
       "/pa/units/x.json",
+      "/pa/units/y.json",
     ]);
+    assert.deepEqual(races.byId("odd").unitNames, { "/pa/units/x.json": "Ex" });
   });
 
   it("treats an unknown id as MLA", () => {

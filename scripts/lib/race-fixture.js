@@ -26,12 +26,18 @@ var FIXTURE_RACE = {
     },
   },
   units: {
-    ant: "/pa/units/land/fx_tank/fx_tank.json",
-    antAmmo: "/pa/units/land/fx_tank/fx_tank_ammo.json",
-    vehicleFactory: "/pa/units/land/fx_vehicle_factory/fx_vehicle_factory.json",
+    fxTank: "/pa/units/land/fx_tank/fx_tank.json",
+    fxTankAmmo: "/pa/units/land/fx_tank/fx_tank_ammo.json",
+    fxVehicleFactory:
+      "/pa/units/land/fx_vehicle_factory/fx_vehicle_factory.json",
+  },
+  mla: {
+    fxTank: "ant",
+    fxTankAmmo: "antAmmo",
+    fxVehicleFactory: "vehicleFactory",
   },
   unitNames: {
-    "/pa/units/land/fx_tank/fx_tank.json": "Fixture Tank",
+    fxTank: "Fixture Tank",
   },
 };
 

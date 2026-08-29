@@ -35,12 +35,19 @@ A descriptor:
     titans: { unitMaps: [paths], sources: [{ dir, match }] },
     queller: { unitMaps: [relative], exclude: [fragments] },
   },
-  units: { ant: "/pa/units/land/l_tank/l_tank.json", … }, // gwoUnit key -> race path
+  units: { shank: "/pa/units/land/l_tank_shank/l_tank_shank.json", … }, // race key -> race path
+  mla: { shank: "ant", omniSilo: ["metalStorage", "energyStorage"], … }, // race key -> units.js key(s)
+  unitNames: { shank: "!LOC:Shank", … }, // race key -> display name
 }
 ```
 
-`units` is keyed by the published `shared/units.js` names, so the key set is
-the same API third-party cards already build against.
+`units` is the race's own table in the shape of `shared/units.js`: every spec
+the race ships, under a key of the race's own naming, so a card written for
+that race alone can address them. `mla` binds a race key to the published
+`units.js` key(s) it stands in for; a race key with no binding is a unit MLA
+has no counterpart of, and a `units.js` key no binding names is one the race
+lacks. The vanilla-to-race path map the translation runs on is compiled from
+the two.
 
 ## The inventory stays MLA
 
@@ -158,9 +165,11 @@ Raptor, Quad and Tank, player icon from the client mod's own
 Queller every tier already carries a `legion/` side, so the tree is the tier
 minus `mla/` and `unit_maps/mla.json`.
 
-The unit table maps 262 of GWO's 337 unit keys. Whole units are matched by
-role (Ant → Shank, Dox → Peacekeeper, Bumblebee → Dauntless, …) and each unit's
-ammo, weapon and build-arm keys follow from its tool slots. Units Legion has no
+The table keys 375 Legion specs and binds 254 of them to 269 of GWO's 337
+unit keys. Whole units are matched by role (Ant → Shank, Dox → Peacekeeper,
+Bumblebee → Dauntless, …) and each unit's ammo, weapon and build-arm keys follow
+from its tool slots; a Legion unit with no MLA role (Nova, Comet, Rampart,
+Arsonist, Hive, Investigator, Sea Urchin) is keyed but unbound. Units Legion has no
 counterpart for stay unmapped - Lob, Skitter, Spinner, Manhattan, Ward, Kraken,
 Kessler, Icarus, Solar Array, Mend, Radar Jamming Station, Orbital and Deepspace
 Radar, and the Cluster-only Angel - so a Legion player never owns them, and the

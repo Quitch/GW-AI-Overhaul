@@ -63,22 +63,30 @@ describe("the Legion descriptor", () => {
     assert.ok(race.playerIcon.fill && race.playerIcon.outline);
   });
 
-  it("names only unit keys units.js has, each mapped to a /pa/units/ spec", () => {
+  it("keys every Legion spec, and binds only keys both tables have", () => {
     for (const [key, value] of Object.entries(legion.units)) {
-      assert.ok(
-        Object.prototype.hasOwnProperty.call(gwoUnit, key),
-        key + " is not a units.js key"
-      );
-      assert.match(value, /^\/pa\/units\/.*\.json$/, key);
+      assert.match(key, /^[a-z][A-Za-z0-9]*$/, key);
+      assert.match(value, /^\/pa\/(units|ammo|tools)\/.*\.json$/, key);
     }
-    assert.ok(Object.keys(legion.units).length >= 250);
+    for (const [key, mlaKeys] of Object.entries(legion.mla)) {
+      assert.ok(key in legion.units, key + " is bound but not in units");
+      for (const mlaKey of [].concat(mlaKeys)) {
+        assert.ok(
+          Object.prototype.hasOwnProperty.call(gwoUnit, mlaKey),
+          key + " -> " + mlaKey + " is not a units.js key"
+        );
+      }
+    }
+    assert.ok(Object.keys(legion.units).length >= 350);
+    assert.ok(Object.keys(legion.mla).length >= 250);
+    assert.equal(legion.units.shank, races.byId("legion").pathMap[gwoUnit.ant]);
   });
 
-  it("names every unit its unitNames cover", () => {
-    const values = new Set(Object.values(legion.units));
-    for (const spec of Object.keys(legion.unitNames)) {
-      assert.ok(values.has(spec), spec + " is named but not mapped");
+  it("names units by Legion key, each in the table", () => {
+    for (const key of Object.keys(legion.unitNames)) {
+      assert.ok(key in legion.units, key + " is named but not in units");
     }
+    assert.equal(legion.unitNames.shank, "!LOC:Shank");
   });
 
   it("keeps every card dealable except those touching units Legion lacks", () => {

@@ -34,15 +34,35 @@ define([
   // vanilla (and dropped for a race) rather than passed through as foreign.
   var vanillaPaths = _.invert(gwoUnit);
 
+  // `units` is the race's own table (race key -> race path); `mla` binds a
+  // race key to the units.js key(s) it stands in for. The vanilla -> race
+  // path map the translation runs on follows from the two.
   var compile = function (descriptor) {
+    var units = descriptor.units || {};
     var pathMap = {};
+    var unitNames = {};
     var missing = [];
 
-    _.forEach(descriptor.units || {}, function (racePath, key) {
-      if (Object.prototype.hasOwnProperty.call(gwoUnit, key)) {
-        pathMap[gwoUnit[key]] = racePath;
-      } else {
-        missing.push(key);
+    _.forEach(descriptor.mla || {}, function (mlaKeys, raceKey) {
+      var racePath = units[raceKey];
+
+      if (_.isUndefined(racePath)) {
+        missing.push(raceKey);
+        return;
+      }
+
+      _.forEach(_.isArray(mlaKeys) ? mlaKeys : [mlaKeys], function (key) {
+        if (Object.prototype.hasOwnProperty.call(gwoUnit, key)) {
+          pathMap[gwoUnit[key]] = racePath;
+        } else {
+          missing.push(key);
+        }
+      });
+    });
+
+    _.forEach(descriptor.unitNames || {}, function (name, raceKey) {
+      if (!_.isUndefined(units[raceKey])) {
+        unitNames[units[raceKey]] = name;
       }
     });
 
@@ -50,7 +70,7 @@ define([
       console.warn(
         "gwoRaces: " +
           descriptor.id +
-          " names unit keys units.js lacks: " +
+          " names unit keys units.js or its table lacks: " +
           missing.join(", ")
       );
     }
@@ -60,8 +80,9 @@ define([
       serverMods: _.map(descriptor.serverMods || [], normalizeIdentifier),
       commanders: descriptor.commanders || [],
       ai: descriptor.ai || {},
-      units: descriptor.units || {},
-      unitNames: descriptor.unitNames || {},
+      units: units,
+      mla: descriptor.mla || {},
+      unitNames: unitNames,
       pathMap: pathMap,
     });
   };
