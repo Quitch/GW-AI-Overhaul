@@ -148,6 +148,26 @@ each inventory (`races.raceOf` understands the live `getTag` and the serialised
 `tags` shape), so a per-viewer race later is a record and a picker, not a
 rewrite.
 
+## Legion Expansion
+
+`race/legion.js`. Server mod `com.pa.legion-expansion-server` (its `-dev` build
+counts), unit-type bit `Custom1`, commanders Overwatch, Cyclops, Cataphract,
+Raptor, Quad and Tank, player icon from the client mod's own
+`icon_player_{fill,outline}_l.png`. Under Titans its build orders are the flat
+`legion_*` files beside the stock ones plus `unit_maps/legion.json`; under
+Queller every tier already carries a `legion/` side, so the tree is the tier
+minus `mla/` and `unit_maps/mla.json`.
+
+The unit table maps 262 of GWO's 337 unit keys. Whole units are matched by
+role (Ant → Shank, Dox → Peacekeeper, Bumblebee → Dauntless, …) and each unit's
+ammo, weapon and build-arm keys follow from its tool slots. Units Legion has no
+counterpart for stay unmapped - Lob, Skitter, Spinner, Manhattan, Ward, Kraken,
+Kessler, Icarus, Solar Array, Mend, Radar Jamming Station, Orbital and Deepspace
+Radar, and the Cluster-only Angel - so a Legion player never owns them, and the
+fifteen cards that touch only those are withheld (`test/race_legion.test.js`
+pins the list). Where Legion reuses a vanilla tool (the Iron Dome's anti-nuke
+weapon), the table maps the key to that vanilla file, which is a no-op.
+
 ## Where to look next
 
 - [`ai-paths.md`](ai-paths.md) - the race roots beside the five trees.

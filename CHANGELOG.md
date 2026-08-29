@@ -6,6 +6,7 @@
 
 - Pressing Fight now shows a loading screen that reports each stage of battle preparation. Other mods can report their own stages through `model.gwoLaunchProgress`
 - Races: with GW Server Mods active, a war can be fought as a unit faction from a server mod, and every enemy faction fields one too. Choose your race in the war setup, pick which races the enemy may field, and turn on Unique Races so no two factions share one. Sub Commanders and enemy commanders come from the race; bosses and the Guardians keep their commanders. An AI that does not know a race in play cannot be chosen
+- Legion Expansion is the first race: with its server mod active, fight as the Legion or against it, with Legion Sub Commanders, tech cards applied to Legion units, and the Legion AI build orders under the TITANS and QUELLER brains
 
 ## v6.14.0 - 2026-08-27
 
