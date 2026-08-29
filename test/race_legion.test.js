@@ -15,9 +15,12 @@ const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cardUnits = loadCouiModule(MOD_ROOT + "/gw_play/card_units.js");
+const helpers = loadCouiModule(MOD_ROOT + "/gw_play/cards_deal_helpers.js");
 
-// Units Legion has no counterpart for, so the cards that only touch them are
-// withheld from a Legion player. A change here is a balance decision.
+// Units Legion has no counterpart for, so the non-upgrade cards that only
+// touch them are withheld from a Legion player; every _upgrade_ card is
+// withheld regardless (cards_deal_helpers.raceCanDeal). A change here is a
+// balance decision.
 const WITHHELD = [
   "gwaio_enable_planetaryradar",
   "gwaio_upgrade_angel",
@@ -96,6 +99,22 @@ describe("the Legion descriptor", () => {
       .sort();
 
     assert.deepEqual(withheld, WITHHELD);
+  });
+
+  it("deals no upgrade card to a Legion player", () => {
+    const inventory = { getTag: () => "legion" };
+    const dealt = cardUnits.cards
+      .filter((card) =>
+        helpers.raceCanDeal(races, inventory, card.id, cardUnits.cards)
+      )
+      .map((card) => card.id);
+
+    assert.equal(
+      dealt.some((id) => /_upgrade_/.test(id)),
+      false
+    );
+    assert.ok(dealt.includes("gwc_combat_bots"));
+    assert.ok(dealt.length >= 60);
   });
 
   it("maps to files the installed Legion zip ships (skipped without one)", (t) => {

@@ -577,6 +577,18 @@ describe("races", () => {
       true
     );
     assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("fixture"), "gwaio_upgrade_ant", [
+        { id: "gwaio_upgrade_ant", units: [gwoUnit.ant] },
+      ]),
+      false
+    );
+    assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("mla"), "gwaio_upgrade_ant", [
+        { id: "gwaio_upgrade_ant", units: [gwoUnit.ant] },
+      ]),
+      true
+    );
+    assert.equal(
       helpers.raceCanDeal(undefined, inventoryOf("fixture"), "bot_card", []),
       true
     );

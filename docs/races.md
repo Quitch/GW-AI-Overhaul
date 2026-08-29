@@ -68,9 +68,12 @@ The same happens to an AI's stat tech (`ai.inventory`) and to the Guardians'
 borrowed player mods. An empty `units` table therefore fields a commander and
 nothing else - a race descriptor is only complete once its table is.
 
-A card the race can own nothing of is withheld from its deals:
-`cards_deal_helpers.raceCanDeal` reads the same `card_units.js` entry the tooltip
-does and asks `races.cardUsable`. A card with no entry - every loadout - passes.
+Two kinds of card are withheld from a race player's deals by
+`cards_deal_helpers.raceCanDeal`: every `_upgrade_` card, because those are
+tuned to the MLA unit they name and a race gets upgrade cards of its own; and
+any other card the race can own nothing of, judged from the same
+`card_units.js` entry the tooltip uses through `races.cardUsable`. A card with
+no entry - every loadout - passes.
 
 ## Race trees
 

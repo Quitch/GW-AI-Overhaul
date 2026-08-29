@@ -181,6 +181,8 @@ define(function () {
 
     // A card the player's race can own nothing of is not worth a hand slot.
     // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes.
+    // Unit upgrade cards are tuned to MLA units and stay MLA-only; a race gets
+    // its own. See races.md.
     raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
       if (!races) {
         return true;
@@ -188,6 +190,9 @@ define(function () {
       var race = races.raceOf(inventory);
       if (races.isMla(race)) {
         return true;
+      }
+      if (/_upgrade_/.test(cardId)) {
+        return false;
       }
       var entry = _.find(cardsToUnits || [], { id: cardId });
       return !entry || races.cardUsable(race, entry.units);
