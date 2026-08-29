@@ -237,18 +237,3 @@
 .gwo-favourite-btn.on {
   background-image: url("coui://ui/main/game/leaderboard/img/slot_bground_uber.png");
 }
-
-/* The commander list is not readable until the race's server mods are mounted. */
-#gwo-commander-panel .coop-setup-configure.gwo-mounting {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-/* The race's commander specs are still being mounted: say so, not just dull. */
-#gwo-commander-panel .gwo-commander-loading {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin: 0 0 0 0.5em;
-  vertical-align: middle;
-}

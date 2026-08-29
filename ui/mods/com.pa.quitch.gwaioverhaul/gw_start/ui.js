@@ -265,8 +265,6 @@ function gwoUI() {
     });
 
     model.gwoCommanderModalVisible = ko.observable(false);
-    // Set by race_picker.js while a race's server mods are being mounted.
-    model.gwoCommanderMounting = ko.observable(false);
     model.gwoCommanderDraft = ko.observable(model.selectedCommander());
     model.gwoDraftCommanderName = ko.computed(function () {
       return CommanderUtility.bySpec.getName(model.gwoCommanderDraft());

@@ -74,14 +74,6 @@ function gwoRacePicker() {
       return model.gwoCommanderInfo(spec).profile || "";
     };
 
-    var baseOpenCommanderModal = model.openGwoCommanderModal;
-    model.openGwoCommanderModal = function () {
-      if (model.gwoCommanderMounting()) {
-        return;
-      }
-      baseOpenCommanderModal();
-    };
-
     $("#faction-select")
       .closest(".form-group")
       .after(
@@ -111,11 +103,10 @@ function gwoRacePicker() {
           }).join("");
         };
 
+        // Zip mounts only, no content remount: quick enough that nothing
+        // waits on it.
         var mount = function () {
-          model.gwoCommanderMounting(true);
-          raceMods.mountRoot().always(function () {
-            model.gwoCommanderMounting(false);
-          });
+          raceMods.mountRoot();
         };
 
         // The commander list follows the race; a race's list is its own.
