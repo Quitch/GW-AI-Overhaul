@@ -67,9 +67,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return _.assign({}, baseMap, { unit_map: merged });
   };
 
-  // params.race and gwoRaces are optional: without them the player is MLA and
-  // the mods land untranslated, as they always have.
-  var buildPlayerFiles = function (params, gwoAI, gwoSpecs, gwoRaces) {
+  // params.race is optional: without it the player is MLA. params.mods, when
+  // given, is the inventory's mods already expanded onto the race's files
+  // (unit_cells.expandMods); otherwise the mods land as they always have.
+  var buildPlayerFiles = function (params, gwoAI, gwoSpecs) {
     var playerAIUnitMap = params.playerAIUnitMap;
     var playerX1AIUnitMap = params.playerX1AIUnitMap;
     var playerSpecFiles = params.playerSpecFiles;
@@ -77,6 +78,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     var titans = params.titans;
     var race = params.race;
     var extraMods = params.extraMods || [];
+    var mods = params.mods || inventory.mods();
 
     var playerIsCluster = gwoCard.playerIsCluster(inventory);
     var hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander", {
@@ -115,9 +117,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     }
 
     var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
-    var mods = gwoRaces
-      ? gwoRaces.translateMods(race, inventory.mods())
-      : inventory.mods();
     gwoSpecs.mod(playerFiles, mods.concat(extraMods), ".player");
     return playerFiles;
   };

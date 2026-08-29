@@ -358,7 +358,7 @@ describe("races", () => {
     });
   });
 
-  it("buildPlayerFiles puts a race player's map at the race tree and translates the mods", () => {
+  it("buildPlayerFiles puts a race player's map at the race tree and applies the mods it is handed", () => {
     const fixture = buildGame({ aiInUse: "Titans", playerRace: "fixture" });
     installModel(fixture.game);
     const recorded = [];
@@ -380,11 +380,18 @@ describe("races", () => {
         inventory: inventory,
         titans: true,
         race: "fixture",
+        mods: [
+          {
+            file: "/pa/units/land/fx_tank/fx_tank.json",
+            path: "max_health",
+            op: "multiply",
+            value: 2,
+          },
+        ],
         extraMods: [{ file: "x", path: "y", op: "replace", value: 1 }],
       },
       gwoAI,
-      specs,
-      races
+      specs
     );
 
     assert.deepEqual(Object.keys(files), [
