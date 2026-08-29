@@ -199,6 +199,11 @@ is the cautionary case: it halves a cooldown across both orbital factories, but 
 Orbital Launcher has no such field, so the card did nothing at all without the
 advanced factory that only its `card_units.js` entry named.
 
+A race player narrows this further: a card whose `card_units.js` entry names
+nothing the race has an equivalent of is withheld from the deal
+(`cards_deal_helpers.raceCanDeal`). Cards keep naming vanilla units; the race's
+table in `shared/races.js` decides. See [`races.md`](races.md).
+
 `test/card_deal_unit_gate.test.js` enforces this, in both directions: a card must not
 be dealable to a player owning none of its units, and must be dealable to one owning
 all of them. A new card with no `card_units.js` entry fails it unless it is a loadout

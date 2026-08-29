@@ -23,15 +23,16 @@ Then whichever subsystem you are touching.
 
 ## Subsystems
 
-| Doc                              | Covers                                                     | Entry file                   |
-| -------------------------------- | ---------------------------------------------------------- | ---------------------------- |
-| [tech-cards.md](tech-cards.md)   | The card contract, `buff`/`dull`, deal weighting, loadouts | `shared/cards.js`            |
-| [ai-pipeline.md](ai-pipeline.md) | How a card changes what an AI builds                       | `gw_play/referee_ai.js`      |
-| [ai-paths.md](ai-paths.md)       | Which AI reads which directory                             | `shared/referee_ai_paths.js` |
-| [coop.md](coop.md)               | Host/viewer, per-player tech, colour allocation            | `shared/referee_coop.js`     |
-| [specs.md](specs.md)             | Unit spec modification and caching                         | `shared/specs.js`            |
-| [galaxy.md](galaxy.md)           | Galaxy generation, factions, difficulty tiers              | `gw_start/setup.js`          |
-| [testing.md](testing.md)         | The Node AMD harness and the seven validators              | `scripts/lib/amd-loader.js`  |
+| Doc                              | Covers                                                                  | Entry file                   |
+| -------------------------------- | ----------------------------------------------------------------------- | ---------------------------- |
+| [tech-cards.md](tech-cards.md)   | The card contract, `buff`/`dull`, deal weighting, loadouts              | `shared/cards.js`            |
+| [ai-pipeline.md](ai-pipeline.md) | How a card changes what an AI builds                                    | `gw_play/referee_ai.js`      |
+| [ai-paths.md](ai-paths.md)       | Which AI reads which directory                                          | `shared/referee_ai_paths.js` |
+| [coop.md](coop.md)               | Host/viewer, per-player tech, colour allocation                         | `shared/referee_coop.js`     |
+| [specs.md](specs.md)             | Unit spec modification and caching                                      | `shared/specs.js`            |
+| [galaxy.md](galaxy.md)           | Galaxy generation, factions, difficulty tiers                           | `gw_start/setup.js`          |
+| [races.md](races.md)             | Unit factions (Legion, Bugs, Exiles): registry, translation, race trees | `shared/races.js`            |
+| [testing.md](testing.md)         | The Node AMD harness and the seven validators                           | `scripts/lib/amd-loader.js`  |
 
 ## Things that surprise people
 

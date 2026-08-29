@@ -100,6 +100,8 @@ first. Two consequences worth relying on:
 | ↳ `size.<i>`, `star.<i>`                                              | that star's system size, and the seed handed to `generate()`                                      |
 | ↳↳ `planet.<i>`                                                       | that planet's biome and generator values                                                          |
 | `teams`                                                               | faction scaling, the AI faction shuffle, `gwoTeams.getTeam`                                       |
+| ↳ `races`                                                             | one race per faction (`races.assign`)                                                             |
+| `race.<faction>` → `worker.<n>`                                       | that AI's race commander; the boss stream draws none                                              |
 | `breeder`                                                             | which star each faction spawns on, and the spawn order                                            |
 | `boss.<team>`                                                         | the seed handed to `gwoTeams.makeBoss`                                                            |
 | `workers`                                                             | `makeWorker`'s picks — ordered, see below                                                         |
@@ -397,6 +399,16 @@ Consequences that surface elsewhere:
 `cluster_setup.js` also carries deliberate oddities worth not "fixing":
 `UNITTYPE_Land` on an air unit (without it the AI misbehaves), a cost of 25000
 (because repair/reclaim), and health matched to a Commander's.
+
+### Races
+
+A faction's race - the unit faction it fields - is drawn per faction from the
+`teams` stream's `races` child once the factions are shuffled, and stamped onto
+every AI that faction spawns (`ai.race`). Each non-boss AI takes one of the
+race's commanders from `warRng.stream("race", faction)`; the boss keeps its
+Pumpkin and the Guardians the Unicorn, retagged at launch. Cluster never draws a
+race. The player's race is `global:playerRace` on the inventory, and the whole
+choice is recorded as `originSystem.gwaio.races`. See [`races.md`](races.md).
 
 ## Difficulty
 

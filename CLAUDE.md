@@ -34,6 +34,7 @@ the traps that have actually caused bugs here.
 | Host/viewer, per-player tech, colour allocation                         | [`docs/coop.md`](docs/coop.md)                 |
 | Unit spec ops, path segments, spec caching                              | [`docs/specs.md`](docs/specs.md)               |
 | Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)             |
+| Races (Legion, Bugs, Exiles): registry, translation, race AI trees      | [`docs/races.md`](docs/races.md)               |
 | Galactic Conquest: turn engine, tiers, badges                           | [`docs/conquest.md`](docs/conquest.md)         |
 | The Node AMD harness, the validators, coverage                          | [`docs/testing.md`](docs/testing.md)           |
 

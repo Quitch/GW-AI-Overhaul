@@ -22,6 +22,11 @@ their own cards, and their own subcommanders. That changes several assumptions:
   half of `getOrderedSubcommanders` is gated on it.
 - A second referee runs. See below.
 
+Viewers share the host's race in this pass: the per-player referee translates
+each viewer's units and mods by the host's race and routes their subcommanders to
+the race tree. The race is read per inventory, so a per-viewer race later is a
+record field and a picker. See [`races.md`](races.md).
+
 ## The two referees
 
 A co-op host hires the referee **twice** per battle — the base game's
