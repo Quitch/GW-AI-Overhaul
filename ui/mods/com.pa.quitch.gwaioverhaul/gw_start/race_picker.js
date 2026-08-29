@@ -1,5 +1,5 @@
-// The race picker: the player's race, the races the enemy may field, the
-// brains that can run them, and the commander list for the chosen race. Only
+// The race picker: the player's race, the brains that can run the races in
+// play, and the commander list for the chosen race. Only
 // shown when GW Server Mods has a race's server mod active. See races.md.
 var gwoRacePickerLoaded;
 
@@ -90,7 +90,6 @@ function gwoRacePicker() {
         )
       );
     locTree($("#gwo-race-group"));
-    locTree($("#gwo-enemy-races-group"));
 
     requireGW(
       [
