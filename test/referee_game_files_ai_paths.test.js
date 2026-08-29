@@ -327,3 +327,79 @@ describe("specFetch", () => {
     );
   });
 });
+
+describe("races", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+  );
+  const gwoUnit = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+  );
+  const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+  const { afterEach, beforeEach } = require("node:test");
+
+  beforeEach(() => races.register(FIXTURE_RACE));
+  afterEach(() => races.reset());
+
+  it("mergeUnitMaps lays each race map over the brain's, race keys winning, without touching either", () => {
+    const base = {
+      unit_map: { Commander: { a: 1 }, Tank: { b: 1 } },
+      other: true,
+    };
+    const race = { unit_map: { RaceTank: { c: 1 }, Tank: { b: 2 } } };
+
+    assert.deepEqual(refereeGameFiles.mergeUnitMaps(base, [race, undefined]), {
+      unit_map: { Commander: { a: 1 }, Tank: { b: 2 }, RaceTank: { c: 1 } },
+      other: true,
+    });
+    assert.deepEqual(base.unit_map.Tank, { b: 1 });
+    assert.deepEqual(refereeGameFiles.mergeUnitMaps(undefined, []), {
+      unit_map: {},
+    });
+  });
+
+  it("buildPlayerFiles puts a race player's map at the race tree and translates the mods", () => {
+    const fixture = buildGame({ aiInUse: "Titans", playerRace: "fixture" });
+    installModel(fixture.game);
+    const recorded = [];
+    const specs = {
+      mod: (files, mods, tag) => recorded.push({ files, mods, tag }),
+    };
+    const inventory = Object.assign(fixture.inventory, {
+      mods: () => [
+        { file: gwoUnit.ant, path: "max_health", op: "multiply", value: 2 },
+        { file: gwoUnit.dox, path: "max_health", op: "multiply", value: 2 },
+      ],
+    });
+
+    const files = refereeGameFiles.buildPlayerFiles(
+      {
+        playerAIUnitMap: { unit_map: {} },
+        playerX1AIUnitMap: { unit_map: {} },
+        playerSpecFiles: {},
+        inventory: inventory,
+        titans: true,
+        race: "fixture",
+        extraMods: [{ file: "x", path: "y", op: "replace", value: 1 }],
+      },
+      gwoAI,
+      specs,
+      races
+    );
+
+    assert.deepEqual(Object.keys(files), [
+      "/pa/ai_race_fixture/unit_maps/ai_unit_map.json.player",
+      "/pa/ai_race_fixture/unit_maps/ai_unit_map_x1.json.player",
+    ]);
+    assert.deepEqual(recorded[0].mods, [
+      {
+        file: "/pa/units/land/fx_tank/fx_tank.json",
+        path: "max_health",
+        op: "multiply",
+        value: 2,
+      },
+      { file: "x", path: "y", op: "replace", value: 1 },
+    ]);
+    assert.equal(recorded[0].tag, ".player");
+  });
+});

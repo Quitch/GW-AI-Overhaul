@@ -379,3 +379,130 @@ describe("the setup functions never mutate the war objects they are given", () =
     assert.equal(secondHire[0].personality.adv_eco_mod, 2);
   });
 });
+
+describe("races", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+  );
+  const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+  const { afterEach, beforeEach } = require("node:test");
+  const personality = () => ({ adv_eco_mod: 1, adv_eco_mod_alone: 1 });
+  const tags = [".ai0", ".ai1", ".ai2"];
+
+  beforeEach(() => races.register(FIXTURE_RACE));
+  afterEach(() => races.reset());
+
+  it("setAIPath routes a race to its own tree, and MLA where it always went", () => {
+    const fixture = buildGame({ aiInUse: "Queller", aiMods: [{ op: "load" }] });
+    installModel(fixture.game);
+
+    assert.equal(
+      refereeConfig.setAIPath(false, false, "fixture"),
+      "/pa/ai_race_fixture/"
+    );
+    assert.equal(
+      refereeConfig.setAIPath(false, true, "fixture"),
+      "/pa/ai_subcommander_race_fixture/"
+    );
+    assert.equal(
+      refereeConfig.setAIPath(false, false, "mla"),
+      "/pa/ai_queller/q_uber/"
+    );
+    assert.equal(
+      refereeConfig.setAIPath(false, false),
+      "/pa/ai_queller/q_uber/"
+    );
+  });
+
+  it("a race enemy, its minions and a race foe get the race tree; the Guardians take the player's race", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyRace: "fixture",
+      playerRace: "fixture",
+      foes: [
+        makeAiDescriptor({ race: "fixture", personality: personality() }),
+        makeAiDescriptor({ personality: personality() }),
+      ],
+    });
+    Object.assign(fixture.ai, {
+      minions: [makeAiDescriptor({ personality: personality() })],
+      name: "Enemy",
+      commander: "c",
+      color: [[1, 1, 1]],
+    });
+    installModel(fixture.game);
+
+    const armies = [];
+    refereeConfig.setupPrimaryAiAndMinions(
+      fixture.ai,
+      [],
+      tags,
+      "Titans",
+      armies
+    );
+    refereeConfig.setupFfaAis(fixture.ai.foes, tags, "Titans", armies);
+
+    assert.deepEqual(
+      armies.map((army) => army.personality.ai_path),
+      [
+        "/pa/ai_race_fixture/",
+        "/pa/ai_race_fixture/",
+        "/pa/ai_race_fixture/",
+        "/pa/ai/",
+      ]
+    );
+    assert.equal(
+      armies[0].personality.display_name,
+      "!LOC:None / !LOC:Fixture"
+    );
+    assert.equal(armies[3].personality.display_name, "!LOC:None");
+
+    const guardians = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      playerRace: "fixture",
+    });
+    Object.assign(guardians.ai, {
+      name: "Guardians",
+      commander: "unicorn",
+      color: [[1, 1, 1]],
+    });
+    installModel(guardians.game);
+    const guardianArmies = [];
+    refereeConfig.setupPrimaryAiAndMinions(
+      guardians.ai,
+      [],
+      tags,
+      "Titans",
+      guardianArmies
+    );
+    assert.equal(
+      guardianArmies[0].personality.ai_path,
+      "/pa/ai_race_fixture/player_guardians/"
+    );
+  });
+
+  it("allies fight as the player's race unless the war gave them one", () => {
+    const fixture = buildGame({ aiInUse: "Titans", playerRace: "fixture" });
+    installModel(fixture.game);
+    const allies = [
+      makeAiDescriptor({ personality: personality() }),
+      makeAiDescriptor({ race: "mla", personality: personality() }),
+    ];
+    const armies = [];
+
+    refereeConfig.setupAlliedCommanders(
+      allies,
+      [],
+      armies,
+      fixture.inventory,
+      ".player"
+    );
+
+    assert.deepEqual(
+      armies.map((army) => army.personality.ai_path),
+      ["/pa/ai_race_fixture/", "/pa/ai/"]
+    );
+    assert.equal(allies[0].race, undefined);
+  });
+});

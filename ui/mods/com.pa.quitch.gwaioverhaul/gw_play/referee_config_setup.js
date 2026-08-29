@@ -9,7 +9,15 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
-], function (gwoColour, gwoAI, gwoCard, refereeCoop, subcommanderTech) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+], function (
+  gwoColour,
+  gwoAI,
+  gwoCard,
+  refereeCoop,
+  subcommanderTech,
+  gwoRaces
+) {
   var applySubcommanderTacticsTech =
     subcommanderTech.applySubcommanderTacticsTech;
   var applySubcommanderFabberTech =
@@ -30,6 +38,10 @@ define([
     var personalityName = ai.character ? loc(ai.character) : loc("!LOC:None");
     if (ai.penchantName) {
       personalityName = personalityName + " " + loc(ai.penchantName);
+    }
+    if (!gwoRaces.isMla(ai.race)) {
+      personalityName =
+        personalityName + " / " + loc(gwoRaces.byId(ai.race).name);
     }
     return personalityName;
   };
@@ -121,14 +133,16 @@ define([
   };
 
   // One unscoped path regardless of isPlayer: the player and the enemy are never
-  // simultaneously Cluster. See ai-paths.md, "Invariants".
-  var setAIPath = function (isCluster, isPlayer) {
+  // simultaneously Cluster. See ai-paths.md, "Invariants". A race moves the
+  // path to that race's own tree.
+  var setAIPath = function (isCluster, isPlayer, race) {
+    var options = { race: race };
     if (isCluster) {
-      return gwoAI.getAIPathDestination("cluster");
+      return gwoAI.getAIPathDestination("cluster", options);
     } else if (isPlayer) {
-      return gwoAI.getAIPathDestination("subcommander");
+      return gwoAI.getAIPathDestination("subcommander", options);
     }
-    return gwoAI.getAIPathDestination("enemy");
+    return gwoAI.getAIPathDestination("enemy", options);
   };
 
   var setupAIArmy = function (
@@ -185,12 +199,15 @@ define([
     battleRng
   ) {
     var playerFaction = inventory.getTag("global", "playerFaction");
+    var playerRace = gwoRaces.raceOf(inventory);
     var playerIsCluster = gwoCard.playerIsCluster(inventory);
     var firstPosition = startPosition || 0;
 
     _.forEach(allies, function (liveAlly, index) {
       var ally = _.cloneDeep(liveAlly);
-      ally.personality.ai_path = setAIPath(playerIsCluster, true); // Avoid breaking Sub Commanders from earlier versions
+      // An ally fights as the player's race unless the war gave it one.
+      ally.race = _.isUndefined(ally.race) ? playerRace : gwoRaces.raceOf(ally);
+      ally.personality.ai_path = setAIPath(playerIsCluster, true, ally.race); // Avoid breaking Sub Commanders from earlier versions
       ally.personality = applySubcommanderTacticsTech(ally.personality, cards);
       ally.personality = applySubcommanderFabberTech(ally.personality, cards);
       ally.commanderCount = applySubcommanderDuplicationTech(cards);
@@ -219,6 +236,10 @@ define([
     // Cloning the AI clones its minions with it, so the minion loop below is copying too.
     var ai = setAdvEcoMod(_.cloneDeep(liveStarAi), aiInUse);
     var guardians = ai.mirrorMode;
+    // The Guardians mirror the player, race included.
+    ai.race = guardians
+      ? gwoRaces.raceOf(model.game().inventory())
+      : gwoRaces.raceOf(ai);
 
     if (guardians) {
       ai.personality = setupGuardianPersonality(
@@ -237,13 +258,14 @@ define([
       battleRng && battleRng.stream("landing_enemy", 0)
     );
     armies.push(aiArmy);
-    var aiPath = setAIPath(gwoAI.isCluster(ai), false);
+    var aiPath = setAIPath(gwoAI.isCluster(ai), false, ai.race);
     ai.personality.ai_path = aiPath;
 
     _.forEach(ai.minions, function (minion, index) {
       minion = setAdvEcoMod(minion, aiInUse);
       minion.personality.ai_path = aiPath;
       minion.faction = ai.faction;
+      minion.race = ai.race;
       var colourIndex = index + 1; // primary AI has colour 0
       var aiArmy = setupAIArmy(
         minion,
@@ -260,7 +282,12 @@ define([
   var setupFfaAis = function (foes, aiTag, aiInUse, armies, battleRng) {
     _.forEach(foes, function (liveFoe, index) {
       var foe = setAdvEcoMod(_.cloneDeep(liveFoe), aiInUse);
-      foe.personality.ai_path = setAIPath(gwoAI.isCluster(foe), false);
+      foe.race = gwoRaces.raceOf(foe);
+      foe.personality.ai_path = setAIPath(
+        gwoAI.isCluster(foe),
+        false,
+        foe.race
+      );
       var foeTag = index + 1; // 0 taken by primary AI
       var foeAlliance = index + 3; // 1 & 2 taken by player and primary AI
       var aiArmy = setupAIArmy(
