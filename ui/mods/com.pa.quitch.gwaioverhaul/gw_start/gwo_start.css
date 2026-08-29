@@ -87,7 +87,9 @@
 #gwo-commander-response,
 #gwo-commander-response button,
 #gwo-personality,
-#gwo-personality button {
+#gwo-personality button,
+#gwo-race-group,
+#gwo-race-group button {
   text-transform: uppercase;
 }
 
