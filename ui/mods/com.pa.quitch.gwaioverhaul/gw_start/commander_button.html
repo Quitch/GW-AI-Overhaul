@@ -4,5 +4,11 @@
     data-bind="click: openGwoCommanderModal, css: { 'gwo-mounting': gwoCommanderMounting() }, click_sound: 'default', rollover_sound: 'default'"
   >
     <loc>Commander</loc>
+    <img
+      class="gwo-commander-loading"
+      src="coui://ui/main/shared/img/loading.gif"
+      data-bind="visible: gwoCommanderMounting()"
+      style="display: none"
+    />
   </div>
 </div>

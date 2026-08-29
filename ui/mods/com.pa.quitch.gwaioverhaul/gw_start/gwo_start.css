@@ -243,3 +243,10 @@
   opacity: 0.4;
   pointer-events: none;
 }
+
+/* The race's commander specs are still being mounted: say so, not just dull. */
+#gwo-commander-panel .gwo-commander-loading {
+  height: 1em;
+  margin-left: 0.5em;
+  vertical-align: middle;
+}
