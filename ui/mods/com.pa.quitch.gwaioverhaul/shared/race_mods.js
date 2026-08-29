@@ -70,7 +70,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   };
 
   // The server zips at the root, so a race's commander specs and portraits can
-  // be read before a war exists. gw_start has no battle to prepare.
+  // be read before a war exists. gw_start has no battle to prepare, and the
+  // UI reads them through coui:, so the renderer's content catalogue - the
+  // remount that freezes the scene for seconds - is left alone.
   var mountRoot = function () {
     var gwsm = window.GwServerMods;
 
@@ -78,7 +80,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       return $.Deferred().resolve(false).promise();
     }
 
-    return $.when(gwsm.mount.run({ rootOnly: true }));
+    return $.when(gwsm.mount.run({ rootOnly: true, remountContent: false }));
   };
 
   return {

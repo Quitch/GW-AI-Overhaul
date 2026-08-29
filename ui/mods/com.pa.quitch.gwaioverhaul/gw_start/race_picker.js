@@ -168,12 +168,11 @@ function gwoRacePicker() {
           }
         });
 
+        // One mount covers every race: the zips are the same set whichever
+        // race is picked.
         settings.playerRace.subscribe(function () {
           if (_.isFunction(model.gwoRebuildStartCards)) {
             model.gwoRebuildStartCards();
-          }
-          if (model.gwoRacesAvailable()) {
-            mount();
           }
         });
 
