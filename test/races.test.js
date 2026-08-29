@@ -1,13 +1,14 @@
 "use strict";
 
-// shared/races.js: the race registry and the pure translation, brain and
-// path rules every race-aware caller routes through. See races.md.
+// shared/races.js: the race registry and the pure brain, path and deal rules
+// every race-aware caller routes through. See races.md.
 
 const { describe, it, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   FIXTURE_RACE,
+  fixtureIndex,
   predictableRng,
 } = require("../scripts/lib/race-fixture.js");
 
@@ -15,21 +16,12 @@ const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 
-const FX_TANK = "/pa/units/land/fx_tank/fx_tank.json";
-
-let warnings;
-let previousWarn;
-
 beforeEach(() => {
   races.reset();
   races.register(FIXTURE_RACE);
-  warnings = [];
-  previousWarn = console.warn;
-  console.warn = (message) => warnings.push(String(message));
 });
 
 afterEach(() => {
-  console.warn = previousWarn;
   races.reset();
 });
 
@@ -59,23 +51,15 @@ describe("registry", () => {
     assert.equal(races.byId("fixture").name, "Again");
   });
 
-  it("warns about keys units.js or the table lacks and keeps the rest", () => {
+  it("compiles unit names by path and keeps the race table", () => {
     races.register({
       id: "odd",
       units: { x: "/pa/units/x.json", y: "/pa/units/y.json" },
-      mla: { x: ["ant", "noSuchKey"], y: "dox", z: "boom" },
       unitNames: { x: "Ex", z: "Zed" },
     });
 
-    assert.match(
-      warnings[0],
-      /odd names unit keys units.js or its table lacks: noSuchKey, z/
-    );
-    assert.deepEqual(races.translatePaths("odd", [gwoUnit.ant, gwoUnit.dox]), [
-      "/pa/units/x.json",
-      "/pa/units/y.json",
-    ]);
     assert.deepEqual(races.byId("odd").unitNames, { "/pa/units/x.json": "Ex" });
+    assert.equal(races.byId("odd").units.y, "/pa/units/y.json");
   });
 
   it("treats an unknown id as MLA", () => {
@@ -136,87 +120,25 @@ describe("brains", () => {
   });
 });
 
-describe("translatePaths", () => {
-  it("returns MLA paths untouched", () => {
-    const paths = [gwoUnit.ant, gwoUnit.dox];
-
-    assert.equal(races.translatePaths("mla", paths), paths);
-    assert.deepEqual(races.translatePaths(undefined, undefined), []);
-  });
-
-  it("maps vanilla paths, drops unmapped vanilla ones once with a warning, passes foreign ones through", () => {
-    const foreign = "/pa/units/commanders/fx_alpha/fx_alpha.json";
-
-    assert.deepEqual(
-      races.translatePaths("fixture", [
-        gwoUnit.ant,
-        gwoUnit.dox,
-        foreign,
-        gwoUnit.ant,
-        gwoUnit.dox,
-      ]),
-      [FX_TANK, foreign]
-    );
-    assert.deepEqual(warnings, [
-      "gwoRaces: fixture has no equivalent of " + gwoUnit.dox,
-    ]);
-  });
-});
-
-describe("translateMods", () => {
-  it("re-points a mod's file and drops mods on files the race lacks", () => {
-    const mods = [
-      { file: gwoUnit.antAmmo, path: "damage", op: "multiply", value: 2 },
-      { file: gwoUnit.doxAmmo, path: "damage", op: "multiply", value: 2 },
-      { path: "x", op: "eval", value: "1" },
-    ];
-
-    assert.deepEqual(races.translateMods("fixture", mods), [
-      {
-        file: "/pa/units/land/fx_tank/fx_tank_ammo.json",
-        path: "damage",
-        op: "multiply",
-        value: 2,
-      },
-      { path: "x", op: "eval", value: "1" },
-    ]);
-    assert.equal(mods[0].file, gwoUnit.antAmmo);
-    assert.equal(races.translateMods("mla", mods), mods);
-  });
-});
-
-describe("translateUnitMap", () => {
-  it("re-points mapped vanilla spec_ids, leaves the rest, and copies", () => {
-    const map = {
-      unit_map: {
-        Tank: { spec_id: gwoUnit.ant },
-        Bot: { spec_id: gwoUnit.dox },
-        Foreign: { spec_id: "/pa/units/x/x.json" },
-        Type: { unit_types: "Tank & Custom7" },
-      },
-    };
-
-    const translated = races.translateUnitMap("fixture", map);
-
-    assert.deepEqual(translated.unit_map, {
-      Tank: { spec_id: FX_TANK },
-      Bot: { spec_id: gwoUnit.dox },
-      Foreign: { spec_id: "/pa/units/x/x.json" },
-      Type: { unit_types: "Tank & Custom7" },
-    });
-    assert.equal(map.unit_map.Tank.spec_id, gwoUnit.ant);
-    assert.equal(races.translateUnitMap("mla", map), map);
-    assert.equal(races.translateUnitMap("fixture", undefined), undefined);
-  });
-});
-
 describe("cardUsable", () => {
-  it("is true for MLA, for a card naming no units, and for a card the race can own", () => {
+  it("is true for MLA, for a card naming no units, and until the race's cells are built", () => {
     assert.equal(races.cardUsable("mla", [gwoUnit.dox]), true);
     assert.equal(races.cardUsable("fixture", []), true);
     assert.equal(races.cardUsable("fixture", undefined), true);
+    assert.equal(races.cellsOf("fixture"), undefined);
+    assert.equal(races.cardUsable("fixture", [gwoUnit.dox]), true);
+  });
+
+  it("reads the race's cells once set: a card the race can own something of", () => {
+    const index = fixtureIndex();
+    races.setCells("Fixture", index);
+
+    assert.equal(races.cellsOf("fixture"), index);
     assert.equal(races.cardUsable("fixture", [gwoUnit.dox, gwoUnit.ant]), true);
     assert.equal(races.cardUsable("fixture", [gwoUnit.dox]), false);
+    assert.equal(races.cardUsable("fixture", [gwoUnit.vehicleFactory]), true);
+    races.reset();
+    assert.equal(races.cellsOf("fixture"), undefined);
   });
 });
 
@@ -256,6 +178,22 @@ describe("aiRoot", () => {
 describe("commanderRetagMods", () => {
   it("swaps the vanilla unit-type bit for the race's and replaces the build list", () => {
     const unicorn = "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+
+    assert.deepEqual(races.unitRetagMods("fixture", gwoUnit.colonel), [
+      {
+        file: gwoUnit.colonel,
+        path: "unit_types",
+        op: "pull",
+        value: ["UNITTYPE_Custom58"],
+      },
+      {
+        file: gwoUnit.colonel,
+        path: "unit_types",
+        op: "push",
+        value: ["UNITTYPE_Custom7"],
+      },
+    ]);
+    assert.deepEqual(races.unitRetagMods("mla", gwoUnit.colonel), []);
 
     assert.deepEqual(races.commanderRetagMods("fixture", unicorn), [
       {

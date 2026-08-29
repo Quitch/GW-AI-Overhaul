@@ -2,9 +2,9 @@
 // arithmetic every race-aware caller routes through. No engine globals, no
 // model - see races.md.
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races_shipped.js",
-], function (gwoUnit, shipped) {
+], function (unitCells, shipped) {
   var MLA_ID = "mla";
   var TITANS = "Titans";
 
@@ -20,7 +20,9 @@ define([
 
   var registry = {};
   var order = [];
-  var warned = {};
+  // Capability-cell indexes by race id, built by race_cells.js once the specs
+  // are read. See unit_cells.js.
+  var cellsById = {};
 
   var normalizeId = function (id) {
     return _.isString(id) ? id.trim().toLowerCase() : "";
@@ -30,35 +32,12 @@ define([
     return _.isString(identifier) ? identifier.trim().toLowerCase() : "";
   };
 
-  // Every vanilla path units.js names, so an unmapped one is recognised as
-  // vanilla (and dropped for a race) rather than passed through as foreign.
-  var vanillaPaths = _.invert(gwoUnit);
-
-  // `units` is the race's own table (race key -> race path); `mla` binds a
-  // race key to the units.js key(s) it stands in for. The vanilla -> race
-  // path map the translation runs on follows from the two.
+  // `units` is the race's own table (race key -> race path), for cards
+  // written for the race alone; `unitNames` names them by the same keys and
+  // is compiled to path -> name.
   var compile = function (descriptor) {
     var units = descriptor.units || {};
-    var pathMap = {};
     var unitNames = {};
-    var missing = [];
-
-    _.forEach(descriptor.mla || {}, function (mlaKeys, raceKey) {
-      var racePath = units[raceKey];
-
-      if (_.isUndefined(racePath)) {
-        missing.push(raceKey);
-        return;
-      }
-
-      _.forEach(_.isArray(mlaKeys) ? mlaKeys : [mlaKeys], function (key) {
-        if (Object.prototype.hasOwnProperty.call(gwoUnit, key)) {
-          pathMap[gwoUnit[key]] = racePath;
-        } else {
-          missing.push(key);
-        }
-      });
-    });
 
     _.forEach(descriptor.unitNames || {}, function (name, raceKey) {
       if (!_.isUndefined(units[raceKey])) {
@@ -66,24 +45,13 @@ define([
       }
     });
 
-    if (missing.length) {
-      console.warn(
-        "gwoRaces: " +
-          descriptor.id +
-          " names unit keys units.js or its table lacks: " +
-          missing.join(", ")
-      );
-    }
-
     return _.assign({}, descriptor, {
       id: normalizeId(descriptor.id),
       serverMods: _.map(descriptor.serverMods || [], normalizeIdentifier),
       commanders: descriptor.commanders || [],
       ai: descriptor.ai || {},
       units: units,
-      mla: descriptor.mla || {},
       unitNames: unitNames,
-      pathMap: pathMap,
     });
   };
 
@@ -183,112 +151,29 @@ define([
     });
   };
 
-  var warnOnce = function (raceId, path) {
-    var key = raceId + " " + path;
-
-    if (!warned[key]) {
-      warned[key] = true;
-      console.warn("gwoRaces: " + raceId + " has no equivalent of " + path);
-    }
+  var setCells = function (raceId, index) {
+    cellsById[normalizeId(raceId)] = index;
   };
 
-  // Vanilla paths become the race's; a vanilla path the race has no equivalent
-  // for is dropped; anything units.js does not name passes through untouched.
-  var translatePath = function (race, path) {
-    if (Object.prototype.hasOwnProperty.call(race.pathMap, path)) {
-      return race.pathMap[path];
-    }
-
-    if (Object.prototype.hasOwnProperty.call(vanillaPaths, path)) {
-      warnOnce(race.id, path);
-      return undefined;
-    }
-
-    return path;
+  var cellsOf = function (raceId) {
+    return cellsById[normalizeId(raceId)];
   };
 
-  var translatePaths = function (raceId, paths) {
-    var race = byId(raceId);
-
-    if (!race || race.id === MLA_ID) {
-      return paths || [];
-    }
-
-    return _.uniq(
-      _.filter(
-        _.map(paths || [], function (path) {
-          return translatePath(race, path);
-        }),
-        function (path) {
-          return !_.isUndefined(path);
-        }
-      )
-    );
-  };
-
-  // A spec mod whose file the race lacks is dropped with it.
-  var translateMods = function (raceId, mods) {
-    var race = byId(raceId);
-
-    if (!race || race.id === MLA_ID) {
-      return mods || [];
-    }
-
-    return _.filter(
-      _.map(mods || [], function (mod) {
-        if (!mod || !_.isString(mod.file)) {
-          return mod;
-        }
-
-        var file = translatePath(race, mod.file);
-
-        return _.isUndefined(file)
-          ? undefined
-          : _.assign({}, mod, { file: file });
-      }),
-      function (mod) {
-        return !_.isUndefined(mod);
-      }
-    );
-  };
-
-  // A unit map's spec_ids, the vanilla ones re-pointed at the race's units so
-  // a key the engine reads itself (the control module) resolves to something
-  // a race army can own. Unmapped vanilla ids stay: nothing the race fields
-  // reaches them. Returns a copy.
-  var translateUnitMap = function (raceId, map) {
-    var race = byId(raceId);
-
-    if (!race || race.id === MLA_ID || !map || !map.unit_map) {
-      return map;
-    }
-
-    var unitMap = {};
-
-    _.forEach(map.unit_map, function (entry, key) {
-      if (
-        entry &&
-        _.isString(entry.spec_id) &&
-        Object.prototype.hasOwnProperty.call(race.pathMap, entry.spec_id)
-      ) {
-        unitMap[key] = _.assign({}, entry, {
-          spec_id: race.pathMap[entry.spec_id],
-        });
-      } else {
-        unitMap[key] = entry;
-      }
-    });
-
-    return _.assign({}, map, { unit_map: unitMap });
-  };
-
-  // A card is worth offering when the race can own something it affects.
+  // A card is worth offering when the race owns something in a cell it names.
+  // Until the race's cells are built, everything is offered rather than
+  // nothing. See races.md.
   var cardUsable = function (raceId, cardUnits) {
     if (isMla(raceId) || _.isEmpty(cardUnits)) {
       return true;
     }
 
-    return translatePaths(raceId, cardUnits).length > 0;
+    var index = cellsOf(raceId);
+
+    return (
+      !index ||
+      !index.race.units.length ||
+      unitCells.cardUsable(cardUnits, index.vanilla, index.race)
+    );
   };
 
   // An AI descriptor carries `race`; an inventory carries the global tag,
@@ -328,9 +213,9 @@ define([
     );
   };
 
-  // A vanilla commander fielded by a race: the race's unit-type bit in place
-  // of the vanilla one, and the race's build list. See races.md.
-  var commanderRetagMods = function (raceId, commanderPath) {
+  // A vanilla unit a race army keeps (the Colonel): the race's unit-type bit
+  // in place of the vanilla one, so the race's builders may build it.
+  var unitRetagMods = function (raceId, unitPath) {
     var race = byId(raceId);
 
     if (!race || race.id === MLA_ID || !race.commanderTypes) {
@@ -339,24 +224,37 @@ define([
 
     return [
       {
-        file: commanderPath,
+        file: unitPath,
         path: "unit_types",
         op: "pull",
         value: [VANILLA_UNIT_TYPE],
       },
       {
-        file: commanderPath,
+        file: unitPath,
         path: "unit_types",
         op: "push",
         value: [race.commanderTypes.unitType],
       },
+    ];
+  };
+
+  // A vanilla commander fielded by a race: the retag plus the race's build
+  // list. See races.md.
+  var commanderRetagMods = function (raceId, commanderPath) {
+    var mods = unitRetagMods(raceId, commanderPath);
+
+    if (!mods.length) {
+      return mods;
+    }
+
+    return mods.concat([
       {
         file: commanderPath,
         path: "buildable_types",
         op: "replace",
-        value: race.commanderTypes.buildable,
+        value: byId(raceId).commanderTypes.buildable,
       },
-    ];
+    ]);
   };
 
   // Which files of a brain's source tree make up the race's own tree. Titans
@@ -526,12 +424,12 @@ define([
     supportedBy: supportedBy,
     brainFor: brainFor,
     brainsFor: brainsFor,
-    translatePaths: translatePaths,
-    translateMods: translateMods,
-    translateUnitMap: translateUnitMap,
+    setCells: setCells,
+    cellsOf: cellsOf,
     cardUsable: cardUsable,
     raceOf: raceOf,
     aiRoot: aiRoot,
+    unitRetagMods: unitRetagMods,
     commanderRetagMods: commanderRetagMods,
     commanderModsFor: commanderModsFor,
     isRaceCommander: isRaceCommander,
@@ -544,7 +442,7 @@ define([
     reset: function () {
       registry = {};
       order = [];
-      warned = {};
+      cellsById = {};
     },
     registerShipped: registerShipped,
   };
