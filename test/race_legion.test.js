@@ -1,10 +1,11 @@
 "use strict";
 
-// race/legion.js: the Legion Expansion descriptor and its unit table. The
-// table is checked against the mod's zip when one is installed locally, since
-// CI has no copy of Legion.
+// race/legion.js: the Legion Expansion descriptor, its unit table, and what
+// the capability cells make of Legion's units against GWO's cards. The cells
+// come from the harvested fixture (test/fixtures/unit_types.json), which
+// carries Legion's units when the mod's source tree was on disk at harvest.
 
-const { describe, it } = require("node:test");
+const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -12,32 +13,33 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
-const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
+const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const cardUnits = loadCouiModule(MOD_ROOT + "/gw_play/card_units.js");
 const helpers = loadCouiModule(MOD_ROOT + "/gw_play/cards_deal_helpers.js");
+const fixture = require("./fixtures/unit_types.json").units;
 
-// Units Legion has no counterpart for, so the non-upgrade cards that only
-// touch them are withheld from a Legion player; every _upgrade_ card is
-// withheld regardless (cards_deal_helpers.raceCanDeal). A change here is a
-// balance decision.
-const WITHHELD = [
-  "gwaio_enable_planetaryradar",
-  "gwaio_upgrade_angel",
-  "gwaio_upgrade_boom",
-  "gwaio_upgrade_icarus",
-  "gwaio_upgrade_kessler",
-  "gwaio_upgrade_kraken",
-  "gwaio_upgrade_lob",
-  "gwaio_upgrade_manhattan",
-  "gwaio_upgrade_mend",
-  "gwaio_upgrade_planetaryradar",
-  "gwaio_upgrade_radarjammer",
-  "gwaio_upgrade_skitter",
-  "gwaio_upgrade_solararray",
-  "gwaio_upgrade_spinner",
-  "gwaio_upgrade_ward",
-];
+// Cards a Legion player is never dealt beyond the MLA-only set every race
+// shares (cards_deal_helpers.MLA_ONLY and the unit upgrades): those naming
+// only units in cells Legion leaves empty. None today - Legion fills every
+// cell GWO's cards open. A change here is a balance decision.
+const WITHHELD_BY_CELLS = [];
+
+const legionUnits = Object.keys(fixture).filter((unit) =>
+  fixture[unit].includes("UNITTYPE_Custom1")
+);
+
+function legionIndex() {
+  const specs = {};
+  for (const [unit, types] of Object.entries(fixture)) {
+    specs[unit] = { unit_types: types };
+  }
+  const units = Object.keys(specs);
+  return {
+    vanilla: cells.buildIndex(units, specs, cells.vanillaMember),
+    race: cells.buildIndex(units, specs, cells.raceMember("Custom1")),
+  };
+}
 
 function legionZip() {
   const candidates = [
@@ -66,23 +68,13 @@ describe("the Legion descriptor", () => {
     assert.ok(race.playerIcon.fill && race.playerIcon.outline);
   });
 
-  it("keys every Legion spec, and binds only keys both tables have", () => {
+  it("keys every Legion spec by a Legion name", () => {
     for (const [key, value] of Object.entries(legion.units)) {
       assert.match(key, /^[a-z][A-Za-z0-9]*$/, key);
       assert.match(value, /^\/pa\/(units|ammo|tools)\/.*\.json$/, key);
     }
-    for (const [key, mlaKeys] of Object.entries(legion.mla)) {
-      assert.ok(key in legion.units, key + " is bound but not in units");
-      for (const mlaKey of [].concat(mlaKeys)) {
-        assert.ok(
-          Object.prototype.hasOwnProperty.call(gwoUnit, mlaKey),
-          key + " -> " + mlaKey + " is not a units.js key"
-        );
-      }
-    }
     assert.ok(Object.keys(legion.units).length >= 350);
-    assert.ok(Object.keys(legion.mla).length >= 250);
-    assert.equal(legion.units.shank, races.byId("legion").pathMap[gwoUnit.ant]);
+    assert.equal(legion.mla, undefined);
   });
 
   it("names units by Legion key, each in the table", () => {
@@ -90,31 +82,10 @@ describe("the Legion descriptor", () => {
       assert.ok(key in legion.units, key + " is named but not in units");
     }
     assert.equal(legion.unitNames.shank, "!LOC:Shank");
-  });
-
-  it("keeps every card dealable except those touching units Legion lacks", () => {
-    const withheld = cardUnits.cards
-      .filter((card) => !races.cardUsable("legion", card.units))
-      .map((card) => card.id)
-      .sort();
-
-    assert.deepEqual(withheld, WITHHELD);
-  });
-
-  it("deals no upgrade card to a Legion player", () => {
-    const inventory = { getTag: () => "legion" };
-    const dealt = cardUnits.cards
-      .filter((card) =>
-        helpers.raceCanDeal(races, inventory, card.id, cardUnits.cards)
-      )
-      .map((card) => card.id);
-
     assert.equal(
-      dealt.some((id) => /_upgrade_/.test(id)),
-      false
+      races.byId("legion").unitNames[legion.units.shank],
+      "!LOC:Shank"
     );
-    assert.ok(dealt.includes("gwc_combat_bots"));
-    assert.ok(dealt.length >= 60);
   });
 
   it("maps to files the installed Legion zip ships (skipped without one)", (t) => {
@@ -134,5 +105,74 @@ describe("the Legion descriptor", () => {
     for (const commander of legion.commanders) {
       assert.ok(bytes.includes(commander.spec.slice(1)), commander.spec);
     }
+  });
+});
+
+describe("Legion under capability cells", () => {
+  before(() => {
+    if (legionUnits.length) {
+      races.setCells("legion", legionIndex());
+    }
+  });
+  after(() => {
+    races.reset();
+    races.registerShipped();
+  });
+
+  it("has units in every cell the starter set and the gwc_ cards open (skipped without Legion in the fixture)", (t) => {
+    if (!legionUnits.length) {
+      t.skip("fixture harvested without Legion");
+      return;
+    }
+    const index = races.cellsOf("legion");
+    for (const cell of [
+      "Bot/Basic/Combat",
+      "Bot/Advanced/Combat",
+      "Vehicle/Basic/Combat",
+      "Vehicle/Advanced/Combat",
+      "Air/Basic/Combat",
+      "Air/Advanced/Combat",
+      "Naval/Basic/Combat",
+      "Orbital/Basic/Combat",
+      "Bot/Basic/Fabber",
+      "Vehicle/Basic/Factory",
+      "Land/Basic/Metal",
+      "Land/Basic/Energy",
+      "Land/Basic/Defense",
+      "Land/Advanced/Superweapon",
+      "Land/Basic/Intel",
+      "Land/Basic/Teleporter",
+      "Land/Basic/Commander",
+    ]) {
+      assert.ok(index.race.unitsByCell[cell], cell + " has no Legion unit");
+    }
+    assert.equal(index.race.cellOf[legion.units.shank], "Vehicle/Basic/Combat");
+    assert.equal(index.race.unitsByCell["Land/Basic/Storage"], undefined);
+    assert.equal(index.race.unitsByCell["Land/Basic/Commander"].length, 7);
+  });
+
+  it("withholds only the MLA-only cards and those naming cells Legion lacks", (t) => {
+    if (!legionUnits.length) {
+      t.skip("fixture harvested without Legion");
+      return;
+    }
+    const inventory = { getTag: () => "legion" };
+    const withheld = cardUnits.cards
+      .filter(
+        (card) =>
+          !helpers.raceCanDeal(races, inventory, card.id, cardUnits.cards)
+      )
+      .map((card) => card.id)
+      .sort();
+    const expected = cardUnits.cards
+      .map((card) => card.id)
+      .filter((id) => helpers.mlaOnlyCard(id) || WITHHELD_BY_CELLS.includes(id))
+      .sort();
+
+    assert.deepEqual(withheld, expected);
+    assert.ok(withheld.includes("gwaio_upgrade_ant"));
+    assert.ok(!withheld.includes("gwaio_upgrade_ubercannon_structure"));
+    assert.ok(!withheld.includes("gwc_combat_bots"));
+    assert.ok(!withheld.includes("gwc_storage_1"));
   });
 });

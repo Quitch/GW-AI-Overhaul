@@ -98,6 +98,14 @@ entry silently never fires. That is how `HasEcoForAdvanced` (the real test is
 committed — **re-harvest it after a PA patch adds tests.** `UnitCountonPlanet` is a
 base-game spelling variant, kept because the engine accepts what its own data ships.
 
+**`test/fixtures/unit_types.json` is harvested the same way.** It holds every
+listed unit's effective `unit_types` from the installed game (`pa_ex1` over `pa`)
+and any race source tree on disk, written by `scripts/harvest-unit-types.js`, so
+`test/unit_groups_cells.test.js` can check the cell classifier against
+`unit_groups.js` in CI and `test/race_legion.test.js` can see Legion's cells.
+With a PA install present the test asserts the fixture is fresh - **re-harvest
+it after a PA or race patch.**
+
 **`validate:schemas` checks whatever files it finds, which is why
 `test/ai_source_files.test.js` exists alongside it.** The walk covers `pa/ai`,
 `pa/ai_penchant` and `pa/ai_tech`, so a build list renamed or deleted out from
