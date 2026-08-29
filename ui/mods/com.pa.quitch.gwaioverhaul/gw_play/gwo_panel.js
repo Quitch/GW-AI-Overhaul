@@ -212,13 +212,9 @@ function gwoWarInfoPanel(gwoSettings) {
         ];
         var factionIndex = inventory.getTag("global", "playerFaction");
         var playerRace = gwoRaces.raceOf(inventory);
-        model.gwoFactionName = gwoRaces.isMla(playerRace)
-          ? factions[factionIndex]
-          : factions[factionIndex] +
-            " / " +
-            loc(gwoRaces.byId(playerRace).name);
-        // Every commander's icon is its race's, so a Legion Sub Commander is
-        // told apart at a glance. See races.md.
+        model.gwoFactionName = factions[factionIndex];
+        // Every commander's icon is its race's, which is how a race shows on
+        // the panel; the name stays the faction's. See races.md.
         var raceIcon = function (race) {
           var descriptor = gwoRaces.byId(race) || gwoRaces.byId(playerRace);
           return (descriptor && descriptor.playerIcon) || {};

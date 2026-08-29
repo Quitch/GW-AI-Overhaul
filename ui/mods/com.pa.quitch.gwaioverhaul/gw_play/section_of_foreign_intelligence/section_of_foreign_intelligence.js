@@ -57,7 +57,7 @@ function gwoIntelligence() {
       return _.isUndefined(commander.faction) ? index + 1 : 0;
     };
 
-    var getFactionName = function (commander, currentFaction, raceName) {
+    var getFactionName = function (commander, currentFaction) {
       if (_.isUndefined(commander.faction)) {
         return {
           name: "",
@@ -87,11 +87,6 @@ function gwoIntelligence() {
       if (currentFaction === playerFaction) {
         faction.name += " (" + loc("!LOC:ALLY") + ")";
         faction.tooltip = "!LOC:Fights for you.";
-      }
-
-      // The race the commander fields, when it is not MLA. See races.md.
-      if (raceName) {
-        faction.name += " / " + raceName;
       }
 
       return {
@@ -288,14 +283,9 @@ function gwoIntelligence() {
             ? gwoAI.subcommanderEconRate
             : gwoAI.aiEconRateWithFloor(commander.econ_rate);
           var numCommanders = getNumberOfCommanders(commander);
+          // The race shows through the icon, not the name. See races.md.
           var raceDescriptor = gwoRaces.byId(commander.race);
-          var faction = getFactionName(
-            commander,
-            factionIndex,
-            gwoRaces.isMla(commander.race)
-              ? undefined
-              : loc(raceDescriptor.name)
-          );
+          var faction = getFactionName(commander, factionIndex);
 
           if (numCommanders > 1) {
             name = name.concat(" x", numCommanders);
