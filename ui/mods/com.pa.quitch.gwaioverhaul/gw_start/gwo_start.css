@@ -246,7 +246,9 @@
 
 /* The race's commander specs are still being mounted: say so, not just dull. */
 #gwo-commander-panel .gwo-commander-loading {
+  display: inline-block;
+  width: 1em;
   height: 1em;
-  margin-left: 0.5em;
+  margin: 0 0 0 0.5em;
   vertical-align: middle;
 }
