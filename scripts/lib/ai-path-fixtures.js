@@ -18,6 +18,9 @@ var SCENARIO_AXES = {
   SUBCOMMANDER_TYPES: ["cluster", "notCluster"],
   SUBCOMMANDER_TECH_STATES: ["none", "active"],
   COOP_MODES: ["solo", "sharedTech", "perPlayerTech"],
+  // "fixture" is scripts/lib/race-fixture.js, registered by the test that
+  // sweeps it; an unregistered id reads as MLA.
+  RACES: ["mla", "fixture"],
 };
 
 function makeInventory(overrides) {
@@ -90,6 +93,10 @@ function buildGame(options) {
   var foes = opts.foes || [];
   var perPlayerTech = !!opts.perPlayerTech;
   var viewerInventoryData = opts.viewerInventoryData || {};
+  // Race ids from SCENARIO_AXES.RACES; absent means MLA, as in a war saved
+  // before races existed.
+  var playerRace = opts.playerRace;
+  var enemyRace = opts.enemyRace;
 
   var mirrorMode = enemyType === "guardians";
   var enemyFaction =
@@ -97,12 +104,17 @@ function buildGame(options) {
   var playerFaction =
     subcommanderType === "cluster" ? CLUSTER_FACTION : DEFAULT_FACTION;
 
+  var tags = { "global:playerFaction": playerFaction };
+  if (playerRace) {
+    tags["global:playerRace"] = playerRace;
+  }
+
   var inventory = makeInventory({
     aiModsList: aiMods,
     cardsList: smartSubcommanders
       ? [{ id: "gwaio_upgrade_subcommander_tactics" }]
       : [],
-    tags: { "global:playerFaction": playerFaction },
+    tags: tags,
   });
 
   var ai = {
@@ -112,6 +124,9 @@ function buildGame(options) {
     personality: {},
     foes: foes,
   };
+  if (enemyRace) {
+    ai.race = enemyRace;
+  }
 
   var system = {};
   if (aiInUse || aiAllyInUse) {

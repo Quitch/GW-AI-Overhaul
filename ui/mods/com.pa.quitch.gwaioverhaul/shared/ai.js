@@ -2,7 +2,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
-], function (refereeAIPaths, gwoDifficulty, subcommanderTech) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+], function (refereeAIPaths, gwoDifficulty, subcommanderTech, races) {
   // The host's inventory is the live GWInventory, where aiMods is an observable;
   // a co-op viewer's arrives deserialised from the war record, where it is a
   // plain array. Both reach the referee, so both shapes are read here.
@@ -33,7 +34,7 @@ define([
     return game.galaxy().stars()[game.currentStar()].ai();
   };
 
-  var aiInUse = function (alignment) {
+  var warBrain = function (alignment) {
     var gwoSettings = originSettings(model.game());
     if (gwoSettings) {
       if (alignment === "subcommander" && gwoSettings.aiAlly) {
@@ -42,6 +43,12 @@ define([
       return gwoSettings.ai;
     }
     return "Titans";
+  };
+
+  // The war's brain for that side, or Titans for a race the war's brain has
+  // no build orders for. See races.md.
+  var aiInUse = function (alignment, race) {
+    return races.brainFor(warBrain(alignment), race);
   };
 
   var getDifficultySettings = function (difficultyName) {
@@ -108,9 +115,11 @@ define([
       });
     },
 
-    getAIPathSource: function (type) {
+    raceOf: races.raceOf,
+
+    getAIPathSource: function (type, race) {
       var inventory = model.game().inventory();
-      var currentAiInUse = aiInUse(type);
+      var currentAiInUse = aiInUse(type, race);
 
       return refereeAIPaths.getAIPathSource(
         type,
@@ -119,11 +128,12 @@ define([
       );
     },
 
+    // options.race routes the path to that race's own tree; without it the
+    // path is the MLA one the AI-mod pipeline writes.
     getAIPathDestination: function (type, options) {
       var game = model.game();
       var ai = currentStarAi(game);
       var inventory = game.inventory();
-      var currentAiInUse = aiInUse(type);
       var settings = _.assign(
         {
           guardians: !!ai.mirrorMode,
@@ -134,6 +144,7 @@ define([
         },
         options || {}
       );
+      var currentAiInUse = aiInUse(type, settings.race);
 
       return refereeAIPaths.getAIPathDestination(
         type,
@@ -142,12 +153,13 @@ define([
       );
     },
 
-    getSubcommanderPathForViewer: function (inventory, playerTag) {
+    getSubcommanderPathForViewer: function (inventory, playerTag, race) {
       return refereeAIPaths.getViewerSubcommanderPath(
-        aiInUse("subcommander"),
+        aiInUse("subcommander", race),
         getInventoryAiMods(inventory),
         subcommanderTech.hasSmartSubcommanders(inventory),
-        playerTag
+        playerTag,
+        race
       );
     },
 

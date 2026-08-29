@@ -285,3 +285,66 @@ describe("penchants", () => {
     assert.equal(typeof result.penchantName, "string");
   });
 });
+
+describe("aiInUse with a race", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+  );
+  const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+
+  it("keeps the war's brain for a race it supports and falls back to Titans otherwise", () => {
+    races.register(FIXTURE_RACE);
+    races.register({ id: "legion" });
+    try {
+      const fixture = buildGame({
+        aiInUse: "Penchant",
+        aiAllyInUse: "Queller",
+      });
+      installModel(fixture.game);
+
+      assert.equal(gwoAI.aiInUse("enemy", "mla"), "Penchant");
+      assert.equal(gwoAI.aiInUse("enemy", "fixture"), "Titans");
+      assert.equal(gwoAI.aiInUse("subcommander", "legion"), "Queller");
+      assert.equal(gwoAI.aiInUse("subcommander", "fixture"), "Titans");
+      assert.equal(gwoAI.getAIPathSource("enemy", "fixture"), "/pa/ai/");
+      assert.equal(
+        gwoAI.getAIPathDestination("enemy", { race: "fixture" }),
+        "/pa/ai_race_fixture/"
+      );
+      assert.equal(
+        gwoAI.getAIPathDestination("subcommander", { race: "legion" }),
+        "/pa/ai_queller_race_legion/q_bronze/"
+      );
+      assert.equal(
+        gwoAI.getSubcommanderPathForViewer(
+          makeInventory({ aiModsList: [{ op: "load" }] }),
+          ".player0",
+          "fixture"
+        ),
+        "/pa/ai_subcommander_race_fixture/player_.player0/"
+      );
+    } finally {
+      races.reset();
+    }
+  });
+
+  it("reads a race off an AI, a live inventory and a serialised record", () => {
+    races.register(FIXTURE_RACE);
+    try {
+      assert.equal(gwoAI.raceOf({ race: "fixture" }), "fixture");
+      assert.equal(
+        gwoAI.raceOf(
+          makeInventory({ tags: { "global:playerRace": "fixture" } })
+        ),
+        "fixture"
+      );
+      assert.equal(
+        gwoAI.raceOf({ tags: { global: { playerRace: "Fixture" } } }),
+        "fixture"
+      );
+      assert.equal(gwoAI.raceOf({ tags: {} }), "mla");
+    } finally {
+      races.reset();
+    }
+  });
+});

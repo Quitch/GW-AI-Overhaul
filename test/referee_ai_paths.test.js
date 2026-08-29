@@ -283,3 +283,82 @@ describe("getViewerSubcommanderPath", () => {
     );
   });
 });
+
+describe("race option", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+  );
+  const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+
+  it("moves every destination to the race's own root, scope included", () => {
+    races.register(FIXTURE_RACE);
+    try {
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("enemy", "Titans", {
+          race: "fixture",
+        }),
+        "/pa/ai_race_fixture/"
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("enemy", "Titans", {
+          race: "fixture",
+          scopeToken: "guardians",
+        }),
+        "/pa/ai_race_fixture/player_guardians/"
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("enemy", "Queller", {
+          race: "fixture",
+        }),
+        "/pa/ai_queller_race_fixture/q_uber/"
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("subcommander", "Penchant", {
+          race: "fixture",
+          aiMods: [{ op: "load" }],
+        }),
+        "/pa/ai_subcommander_race_fixture/"
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("cluster", "Titans", {
+          race: "fixture",
+        }),
+        "/pa/ai_cluster_race_fixture/"
+      );
+      assert.equal(
+        refereeAIPaths.getViewerSubcommanderPath(
+          "Titans",
+          [{ op: "load" }],
+          false,
+          ".player0",
+          "fixture"
+        ),
+        "/pa/ai_subcommander_race_fixture/player_.player0/"
+      );
+    } finally {
+      races.reset();
+    }
+  });
+
+  it("leaves MLA, an absent race and an unregistered race on the brain's own root", () => {
+    for (const race of [undefined, "mla", "unregistered"]) {
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("enemy", "Titans", { race: race }),
+        "/pa/ai/"
+      );
+    }
+  });
+
+  it("never changes the source: the race tree is written from the brain's files", () => {
+    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
+      assert.equal(
+        refereeAIPaths.getAIPathSource("enemy", aiInUse, false),
+        refereeAIPaths.getAIPathSource("enemy", aiInUse, false)
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathSource("enemy", aiInUse, false).indexOf("race"),
+        -1
+      );
+    }
+  });
+});
