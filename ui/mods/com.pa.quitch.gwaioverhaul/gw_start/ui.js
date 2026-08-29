@@ -77,6 +77,10 @@ function gwoUI() {
       aiAlly: ko.observable("Penchant"),
       staticTech: ko.observable(false),
       largePlanets: ko.observable(false),
+      // Race ids; see races.md. Empty enemyRaces means every installed race.
+      playerRace: ko.observable("mla"),
+      enemyRaces: ko.observableArray([]),
+      uniqueRaces: ko.observable(false),
     };
 
     var difficultySettings = model.gwoDifficultySettings;
@@ -145,6 +149,15 @@ function gwoUI() {
       "!LOC:BASIC: base game tech cards<BR>GALACTIC WAR OVERHAUL: over 150 additional cards.";
     model.gwoFactionTooltip =
       "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
+    // The brain rule is appended to the shipped wording, so its translation
+    // is kept and only the addition is new. See races.md.
+    model.gwoAiTooltip =
+      loc(
+        "!LOC:TITANS: base game AI<br>QUELLER: greater challenge at the cost of performance<br>PENCHANT: increased personality"
+      ) +
+      loc(
+        "!LOC:<br>An AI that does not know a race in play cannot be chosen: TITANS knows every race, QUELLER knows Legion."
+      );
 
     model.gwoGameOptionsDraft = {
       hardcore: ko.observable(false),
@@ -155,6 +168,7 @@ function gwoUI() {
       easierStart: ko.observable(false),
       paLore: ko.observable(false),
       staticTech: ko.observable(false),
+      uniqueRaces: ko.observable(false),
     };
 
     var syncGwoGameOptionsDraft = function () {
@@ -167,6 +181,7 @@ function gwoUI() {
       draft.easierStart(difficultySettings.easierStart());
       draft.paLore(difficultySettings.paLore());
       draft.staticTech(difficultySettings.staticTech());
+      draft.uniqueRaces(difficultySettings.uniqueRaces());
     };
 
     model.gwoGameOptionsModalVisible = ko.observable(false);
@@ -188,6 +203,7 @@ function gwoUI() {
       difficultySettings.easierStart(draft.easierStart());
       difficultySettings.paLore(draft.paLore());
       difficultySettings.staticTech(draft.staticTech());
+      difficultySettings.uniqueRaces(draft.uniqueRaces());
       model.gwoGameOptionsModalVisible(false);
     };
     model.toggleGwoBooleanSetting = function (setting) {
@@ -250,6 +266,8 @@ function gwoUI() {
     });
 
     model.gwoCommanderModalVisible = ko.observable(false);
+    // Set by race_picker.js while a race's server mods are being mounted.
+    model.gwoCommanderMounting = ko.observable(false);
     model.gwoCommanderDraft = ko.observable(model.selectedCommander());
     model.gwoDraftCommanderName = ko.computed(function () {
       return CommanderUtility.bySpec.getName(model.gwoCommanderDraft());
@@ -294,6 +312,10 @@ function gwoUI() {
     addHtml.before("#faction-select", "faction_tooltip.html");
     addHtml.before("#game-size", "size_tooltip.html");
     addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");
+    $("#difficulty-ai-enemy .info_tip, #difficulty-ai-ally .info_tip").attr(
+      "data-bind",
+      "tooltip: $root.gwoAiTooltip"
+    );
     addHtml.before(gameDifficultyLabelId, "cards_dropdown.html");
     addHtml.append(gameDifficultyLabelId, "difficulty_levels_tooltip.html");
     addHtml.replace(gameDifficultyId, "difficulty_levels.html");

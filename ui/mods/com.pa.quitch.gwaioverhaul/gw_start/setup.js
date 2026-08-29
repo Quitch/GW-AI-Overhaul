@@ -387,6 +387,7 @@ function gwoSetup() {
         "main/game/galactic_war/shared/js/systems/template-loader",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_build.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],
       function (
         GW,
@@ -410,7 +411,8 @@ function gwoSetup() {
         gwoFactionSeed,
         chooseStarSystemTemplates,
         gwoBiomeMods,
-        gwoGalaxyBuild
+        gwoGalaxyBuild,
+        gwoRaces
       ) {
         // Replaces GWGalaxy.prototype.build, which navToNewGame below calls.
         gwoGalaxyBuild.install();
@@ -564,6 +566,22 @@ function gwoSetup() {
           return model.playerFactionIndex() % GWFactions.length;
         };
 
+        // Bosses keep their commander and are retagged at launch; every other AI
+        // of a race fields one of the race's own commanders. See races.md.
+        var giveRace = function (rng, ai, race, keepCommander) {
+          ai.race = gwoRaces.isMla(race) ? gwoRaces.MLA_ID : race;
+          if (!keepCommander && !gwoRaces.isMla(race)) {
+            var commander = gwoRaces.commanderFor(
+              rng.stream("commander"),
+              race
+            );
+            if (commander) {
+              ai.commander = commander;
+            }
+          }
+          return ai;
+        };
+
         // Never rejects - every failure resolves undefined. Rejecting would spend
         // warGenerationFailure's retries on a condition no reseed can change.
         var loadSystemBrackets = function () {
@@ -652,6 +670,30 @@ function gwoSetup() {
           gwoFactionSeed.reseed(GWFactions, warRng.stream("factions"));
           var teamsRng = warRng.stream("teams");
           var loreRng = warRng.stream("lore");
+          var raceInfo = (model.gwoRaceInfo && model.gwoRaceInfo()) || {
+            races: [],
+            mods: [],
+          };
+          var installedRaces = _.pluck(raceInfo.races, "id");
+          var playerRace = _.contains(
+            installedRaces,
+            model.gwoDifficultySettings.playerRace()
+          )
+            ? model.gwoDifficultySettings.playerRace()
+            : gwoRaces.MLA_ID;
+          // Nothing chosen means every installed race. See galaxy.md.
+          var chosenEnemyRaces = _.filter(
+            model.gwoDifficultySettings.enemyRaces(),
+            function (id) {
+              return _.contains(installedRaces, id);
+            }
+          );
+          var enemyRacePool = _.uniq(
+            [gwoRaces.MLA_ID].concat(
+              chosenEnemyRaces.length ? chosenEnemyRaces : installedRaces
+            )
+          );
+          var raceByFaction = {};
           // Shuffled per war, not at module load. Consumed in order by onPopulated.
           var neutralLore = loreRng.shuffle(gwoLore.neutralSystems);
           var aiLore = loreRng.shuffle(gwoLore.aiSystems);
@@ -703,6 +745,7 @@ function gwoSetup() {
             .inventory()
             .setTag("global", "playerFaction", playerFactionIndex());
           game.inventory().setTag("global", "playerColor", model.playerColor());
+          game.inventory().setTag("global", "playerRace", playerRace);
 
           var buildGalaxy = loadSystemBrackets().then(
             function (systemBrackets) {
@@ -766,6 +809,18 @@ function gwoSetup() {
             }
 
             aiFactions = teamsRng.shuffle(aiFactions);
+            // One race per faction, Cluster excepted. See races.md.
+            raceByFaction = gwoRaces.assign(
+              teamsRng.stream("races"),
+              aiFactions,
+              enemyRacePool,
+              { unique: model.gwoDifficultySettings.uniqueRaces() }
+            );
+            _.forEach(aiFactions, function (faction) {
+              if (faction === 4) {
+                raceByFaction[faction] = gwoRaces.MLA_ID;
+              }
+            });
             // Wrapped, not passed by reference: _.map would hand getTeam's rng
             // parameter the array index.
             var teams = _.map(aiFactions, function (faction) {
@@ -822,6 +877,16 @@ function gwoSetup() {
                 _.remove(team.workers, { name: ai.name });
               }
               ai.faction = teamInfo[ai.team].faction;
+              // Keyed per team by spawn order, which the synchronous spread
+              // keeps deterministic. See galaxy.md.
+              giveRace(
+                warRng
+                  .stream("race", ai.faction)
+                  .stream("worker", teamInfo[ai.team].workers.length),
+                ai,
+                raceByFaction[ai.faction],
+                false
+              );
               teamInfo[ai.team].workers.push({
                 ai: ai,
                 star: star,
@@ -830,6 +895,12 @@ function gwoSetup() {
 
             var onBossMade = function (ai) {
               ai.faction = teamInfo[ai.team].faction;
+              giveRace(
+                warRng.stream("race", ai.faction),
+                ai,
+                raceByFaction[ai.faction],
+                true
+              );
               teamInfo[ai.team].boss = ai;
             };
 
@@ -974,6 +1045,7 @@ function gwoSetup() {
                   if (!minion) {
                     return;
                   }
+                  giveRace(minionRng, minion, parent.race, false);
                   setAIPersonality(
                     minionRng,
                     minion,
@@ -1108,6 +1180,12 @@ function gwoSetup() {
                       return;
                     }
                     foeCommander.faction = foeFaction;
+                    giveRace(
+                      foeRng,
+                      foeCommander,
+                      raceByFaction[foeFaction],
+                      false
+                    );
                     setAIPersonality(
                       foeRng,
                       foeCommander,
@@ -1152,6 +1230,7 @@ function gwoSetup() {
                   );
                   if (allyCommander) {
                     allyCommander.faction = playerFaction;
+                    giveRace(allyRng, allyCommander, playerRace, false);
                     ai.ally = allyCommander;
                     if (difficulty.aiAlly() === "Penchant") {
                       setupPenchantAI(allyRng, ai.ally);
@@ -1211,6 +1290,8 @@ function gwoSetup() {
                     ];
                     ai.commander =
                       "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+                    // Mirrors the player, race included; keeps the Unicorn.
+                    giveRace(treasureRng, ai, playerRace, true);
                     // The loadout itself is derived per player at exploration -
                     // see gw_play/treasure_loadouts.js.
                     system.description =
@@ -1273,6 +1354,12 @@ function gwoSetup() {
             originSystem.gwaio.treasureLoadoutDerived = true;
             originSystem.gwaio.treasureStar = treasurePlanetStar;
             originSystem.gwaio.coopPlayerScalingCount = playerCount;
+            originSystem.gwaio.races = {
+              player: playerRace,
+              byFaction: raceByFaction,
+              unique: model.gwoDifficultySettings.uniqueRaces(),
+              mods: raceInfo.mods,
+            };
           };
 
           var warInfo = finishAis.then(onAisFinished);

@@ -16,29 +16,29 @@
     <div id="gwo-commander-preview-cont">
       <p
         id="gwo-commander-preview-name"
-        data-bind="text: gwoDraftCommanderName"
+        data-bind="text: gwoCommanderName(gwoCommanderDraft())"
       ></p>
       <p id="game-commander-preview">
         <img
           src=""
-          data-bind="attr: { src: CommanderUtility.bySpec.getImage(gwoCommanderDraft()) }, style: { webkitFilter: gwoCommanderTintFilter }"
+          data-bind="attr: { src: gwoCommanderImage(gwoCommanderDraft()) }, style: { webkitFilter: gwoCommanderTintFilter }"
         />
       </p>
     </div>
 
     <div class="gw-start-coop-settings-body gwo-commander-picker">
-      <!-- ko foreach: model.commanders -->
+      <!-- ko foreach: gwoCommanderChoices -->
       <div
         class="gwo-commander-picker-item btn_std_ix"
         data-bind="click: function () { $root.gwoCommanderDraft($data); }, css: { selected: $root.gwoCommanderDraft() === $data }, click_sound: 'default', rollover_sound: 'default'"
       >
         <img
           class="gwo-profile-commander"
-          data-bind="attr: { src: CommanderUtility.bySpec.getProfileImage($data) }"
+          data-bind="attr: { src: $root.gwoCommanderProfileImage($data) }"
         />
         <div
           class="gwo-profile-commander-name"
-          data-bind="text: CommanderUtility.bySpec.getName($data)"
+          data-bind="text: $root.gwoCommanderName($data)"
         ></div>
       </div>
       <!-- /ko -->
