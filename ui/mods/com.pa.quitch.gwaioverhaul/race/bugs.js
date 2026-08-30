@@ -13,6 +13,8 @@ define(function () {
     // (the Custom2 bit and build list); the bugs zip needs it either way.
     serverMods: ["com.pa.ferretmaster.bugs"],
     unitTypeBit: "Custom2",
+    // The preview art ships in the green team paint.
+    commanderArtHue: 120,
     commanderTypes: {
       unitType: "UNITTYPE_Custom2",
       buildable: "CmdBuild & Custom2",

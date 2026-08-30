@@ -226,7 +226,8 @@ are reached only through their parents, as vanilla's own spawned units are.
 
 `race/bugs.js`. Server mod `com.pa.ferretmaster.bugs` (its companion
 `commander-merge` supplies the commander's base spec), unit-type bit
-`Custom2`, one commander (the Bug Alpha Commander), player icon from the client
+`Custom2`, one commander (the Bug Alpha Commander, whose art ships in green
+paint, hue 120), player icon from the client
 mod - the same two files Exiles ships, under Exiles' name. Titans only: its
 build orders are the `bugs/` sub-directories under each build directory plus
 `unit_maps/bugs.json` and `platoon_templates/bugs.json`; Queller and Penchant

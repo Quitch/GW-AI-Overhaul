@@ -45,6 +45,7 @@ describe("the Bugs descriptor", () => {
     assert.deepEqual(race.serverMods, ["com.pa.ferretmaster.bugs"]);
     assert.equal(race.commanders.length, 1);
     assert.equal(race.unitTypeBit, "Custom2");
+    assert.equal(race.commanderArtHue, 120);
     assert.equal(race.commanderTypes.buildable, "CmdBuild & Custom2");
     assert.equal(race.ai.titans.sources.length, 4);
     assert.equal(race.ai.queller, undefined);
