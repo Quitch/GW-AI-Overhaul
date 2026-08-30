@@ -76,7 +76,6 @@ something new.
   faction colour.
 - **Player icon** is a 16px fill/outline pair the race's own mod ships,
   reached through GW Server Mods' root mount (`coui://ui/mods/<mod>/img/…`).
-  Bugs' client mod ships Exiles' files under Exiles' name.
 - **Brains.** Titans runs every race from the mod's own `/pa/ai/` files;
   Queller runs MLA and Legion; Penchant MLA. A brain that does not know a race
   in play is not offered, and `races.brainFor` falls back to Titans.

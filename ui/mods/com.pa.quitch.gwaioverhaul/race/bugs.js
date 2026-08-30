@@ -22,11 +22,11 @@ define(function () {
     commanders: [
       { spec: "/pa/units/commanders/bug_commander/bug_commander.json" },
     ],
-    // The client mod ships the same two files Exiles does, under Exiles'
-    // name; distinct art is the mod author's call.
+    // The client mod's own pair; it also ships mixed-army variants
+    // (bug_mla_*, bug_legion_*, bug_legion_mla_*) this pass does not use.
     playerIcon: {
-      fill: "coui://ui/mods/bugs_faction/img/exiles_icon_fill.png",
-      outline: "coui://ui/mods/bugs_faction/img/exiles_icon_outline.png",
+      fill: "coui://ui/mods/bugs_faction/img/bug_icon_fill.png",
+      outline: "coui://ui/mods/bugs_faction/img/bug_icon_outline.png",
     },
     ai: {
       // bugs/ sub-directories under each build directory, one unit map, one
