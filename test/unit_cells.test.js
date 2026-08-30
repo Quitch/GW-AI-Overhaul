@@ -335,6 +335,40 @@ describe("raceUnitsFor", () => {
     );
   });
 
+  it("grants a race unit in a cell vanilla never fills when something granted can build it", () => {
+    // Bugs' research: a factory (granted with the vanilla factory's cell)
+    // builds an unlock token that sits in a cell of its own.
+    const RESEARCH = "/pa/units/research/fx_research/fx_research.json";
+    const TOKEN = "/pa/units/research/fx_token/fx_token.json";
+    const TOKEN2 = "/pa/units/research/fx_token2/fx_token2.json";
+    const specs = Object.assign({}, SPECS, {
+      [RESEARCH]: {
+        unit_types: T("Basic Construction Factory Land Structure Tank Custom7"),
+        buildable_types: "(Custom7 & FactoryBuild & Basic & Tank) - Mobile",
+      },
+      [TOKEN]: {
+        unit_types: T("Basic Land Structure Tank FactoryBuild Custom7"),
+        buildable_types: "Custom7 & Token",
+      },
+      // Reached only through the first token, so a second pass is needed.
+      [TOKEN2]: { unit_types: T("Advanced Structure Token Custom7") },
+    });
+    const units = UNITS.concat([RESEARCH, TOKEN, TOKEN2]);
+    const v = cells.buildIndex(units, specs, cells.vanillaMember);
+    const r = cells.buildIndex(units, specs, cells.raceMember("Custom7"));
+
+    assert.equal(r.cellOf[TOKEN], "Vehicle/Basic/Structure");
+    assert.equal(v.unitsByCell["Vehicle/Basic/Structure"], undefined);
+    assert.deepEqual(cells.raceUnitsFor([FACTORY], v, r), [
+      FX_FACTORY,
+      RESEARCH,
+      TOKEN,
+      TOKEN2,
+    ]);
+    // Nothing granted can build the tokens: they stay out.
+    assert.deepEqual(cells.raceUnitsFor([ANT], v, r), [FX_TANK]);
+  });
+
   it("never grants a commander cell, keeping a held vanilla commander-class unit instead", () => {
     assert.deepEqual(cells.raceUnitsFor([COMMANDER, COLONEL], vanilla, race), [
       COMMANDER,

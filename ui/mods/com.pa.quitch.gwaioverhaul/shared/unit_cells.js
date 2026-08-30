@@ -2,7 +2,9 @@
 // so a race player owns the race's units in the cells the vanilla units held
 // occupy, and a mod on a vanilla file lands on the race files of the same
 // cell and role. Pure: no engine globals, no model. See races.md.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/build_types.js",
+], function (buildTypes) {
   var PREFIX = "UNITTYPE_";
   // Faction bits, build permissions and flavour say nothing about what a unit
   // is for.
@@ -187,6 +189,9 @@ define(function () {
       unitsByCell: {},
       partsByUnit: {},
       partIndex: {},
+      // Bare tags and buildable_types per unit, for the build rule below.
+      tagsOf: {},
+      buildableOf: {},
     };
 
     _.forEach(_.uniq(unitPaths || []), function (path) {
@@ -197,6 +202,11 @@ define(function () {
       var cell = classify(types).key;
       index.units.push(path);
       index.cellOf[path] = cell;
+      index.tagsOf[path] = _.map(types, bare);
+      var buildable = chainValue(path, specs, "buildable_types");
+      if (_.isString(buildable) && buildable.length) {
+        index.buildableOf[path] = buildable;
+      }
       index.unitsByCell[cell] = index.unitsByCell[cell] || [];
       index.unitsByCell[cell].push(path);
       var parts = partsOf(path, specs);
@@ -237,11 +247,48 @@ define(function () {
     return _.endsWith(cell || "", "/" + COMMANDER);
   };
 
+  // The race's units in cells no vanilla unit occupies that something already
+  // granted can build - Bugs' research unlock tokens, made by its research
+  // factories - until nothing more is reachable.
+  var buildableOrphans = function (granted, vanilla, race) {
+    var orphans = _.filter(race.units, function (unit) {
+      var cell = race.cellOf[unit];
+      return (
+        !isCommanderCell(cell) &&
+        _.isEmpty(vanilla.unitsByCell[cell]) &&
+        !_.contains(granted, unit)
+      );
+    });
+    var result = granted.slice();
+    var added = true;
+
+    while (added && orphans.length) {
+      added = false;
+      var builders = _.filter(result, function (unit) {
+        return !!race.buildableOf[unit];
+      });
+      orphans = _.filter(orphans, function (orphan) {
+        var tags = race.tagsOf[orphan] || [];
+        var reachable = _.some(builders, function (builder) {
+          return buildTypes.matches(race.buildableOf[builder], tags);
+        });
+        if (reachable) {
+          result.push(orphan);
+          added = true;
+        }
+        return !reachable;
+      });
+    }
+
+    return result;
+  };
+
   // What a race player fields for the vanilla units held: the race's units in
   // every held cell, plus whatever is neither a vanilla unit nor a vanilla
-  // part passed through (race commanders, foreign specs). A held vanilla
-  // commander-class unit is kept too - a race has no stand-in for the Colonel
-  // - and the caller retags it. Commander cells are never granted.
+  // part passed through (race commanders, foreign specs), plus what those can
+  // build in cells vanilla never fills. A held vanilla commander-class unit is
+  // kept too - a race has no stand-in for the Colonel - and the caller retags
+  // it. Commander cells are never granted.
   var raceUnitsFor = function (heldPaths, vanilla, race) {
     var kept = [];
     var cells = [];
@@ -259,7 +306,7 @@ define(function () {
       }
     });
 
-    return _.uniq(
+    var granted = _.uniq(
       kept.concat(
         _.flatten(
           _.map(cells, function (cell) {
@@ -268,6 +315,8 @@ define(function () {
         )
       )
     );
+
+    return buildableOrphans(granted, vanilla, race);
   };
 
   // The vanilla commander-class units among those held.
