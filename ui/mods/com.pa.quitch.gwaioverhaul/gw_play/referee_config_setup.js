@@ -39,10 +39,6 @@ define([
     if (ai.penchantName) {
       personalityName = personalityName + " " + loc(ai.penchantName);
     }
-    if (!gwoRaces.isMla(ai.race)) {
-      personalityName =
-        personalityName + " / " + loc(gwoRaces.byId(ai.race).name);
-    }
     return personalityName;
   };
 

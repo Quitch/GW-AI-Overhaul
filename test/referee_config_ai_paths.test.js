@@ -451,10 +451,7 @@ describe("races", () => {
         "/pa/ai/",
       ]
     );
-    assert.equal(
-      armies[0].personality.display_name,
-      "!LOC:None / !LOC:Fixture"
-    );
+    assert.equal(armies[0].personality.display_name, "!LOC:None");
     assert.equal(armies[3].personality.display_name, "!LOC:None");
 
     const guardians = buildGame({
