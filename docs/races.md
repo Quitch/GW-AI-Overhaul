@@ -77,9 +77,7 @@ the Anchor sitting in `structuresDefencesBasic` while typed Advanced.
 At launch `shared/race_cells.js` reads the merged unit list and every spec it
 reaches (through `spec_cache`, so `genUnitSpecs` fetches nothing twice) and
 builds two indexes, vanilla (`Custom58` or no faction bit) and the race
-(`UNITTYPE_<bit>`). A spec the race's own unit map names that its unit list
-leaves out (Bugs lists neither Evolution Chamber) joins the race's units - the
-map is what its AI builds from - and every army's spec set. Then:
+(`UNITTYPE_<bit>`). Then:
 
 | Rule                                                                        | Result                                                                      |
 | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |

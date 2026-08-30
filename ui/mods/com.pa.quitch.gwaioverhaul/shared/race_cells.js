@@ -86,35 +86,10 @@ define([
     });
   };
 
-  // The specs a race's own unit map names that its unit list leaves out
-  // (Bugs lists neither Evolution Chamber): the map is what the race's AI
-  // builds from, so they are units of the race all the same.
-  var mapUnitsFor = function (race) {
-    var maps = gwoRaces.unitMapsFor(race.id, "Titans", "/pa/ai/");
-    return Promise.all(
-      _.map(maps, function (mapPath) {
-        return specCache.fetchRaw(mapPath, deps).then(
-          function (map) {
-            return _.filter(
-              _.pluck(_.values((map && map.unit_map) || {}), "spec_id"),
-              _.isString
-            );
-          },
-          function () {
-            return [];
-          }
-        );
-      })
-    ).then(function (lists) {
-      return _.uniq(_.flatten(lists));
-    });
-  };
-
-  // Resolves to { vanilla, race, units, extraUnits } - the indexes, the unit
-  // list they were built from, and the map-named units that list lacked - one
-  // per race per unit list. An index with no race unit in it is a list read
-  // before the race's zip was mounted: it is handed back but neither kept nor
-  // published, so the deal gate keeps dealing and a later read tries again.
+  // Resolves to { vanilla, race } indexes, one per race per unit list. An
+  // index with no race unit in it is a list read before the race's zip was
+  // mounted: it is handed back but neither kept nor published, so the deal
+  // gate keeps dealing and a later read tries again.
   var indexFor = function (raceId, units) {
     var race = gwoRaces.byId(raceId);
     if (!race || gwoRaces.isMla(raceId)) {
@@ -122,47 +97,33 @@ define([
     }
     return load(units).then(function (loaded) {
       var key = race.id + "@" + signatureOf(loaded.units);
-      if (indexes[key]) {
-        return indexes[key];
-      }
-      return mapUnitsFor(race)
-        .then(function (mapUnits) {
-          var extraUnits = _.difference(mapUnits, loaded.units);
-          return loadSpecs(extraUnits).then(function (extraSpecs) {
-            var allUnits = loaded.units.concat(extraUnits);
-            var specs = _.assign({}, loaded.specs, extraSpecs);
-            return { units: allUnits, specs: specs, extraUnits: extraUnits };
-          });
-        })
-        .then(function (loaded) {
-          var index = {
-            units: loaded.units,
-            extraUnits: loaded.extraUnits,
-            vanilla: unitCells.buildIndex(
-              loaded.units,
-              loaded.specs,
-              unitCells.vanillaMember
-            ),
-            race: unitCells.buildIndex(
-              loaded.units,
-              loaded.specs,
-              unitCells.raceMember(race.unitTypeBit)
-            ),
-          };
-          if (!index.race.units.length) {
-            console.warn(
-              "gwoRaces: no " +
-                race.id +
-                " unit in the unit list read (" +
-                loaded.units.length +
-                " units) - not mounted yet?"
-            );
-            return index;
-          }
-          indexes[key] = index;
-          gwoRaces.setCells(race.id, index);
+      if (!indexes[key]) {
+        var index = {
+          vanilla: unitCells.buildIndex(
+            loaded.units,
+            loaded.specs,
+            unitCells.vanillaMember
+          ),
+          race: unitCells.buildIndex(
+            loaded.units,
+            loaded.specs,
+            unitCells.raceMember(race.unitTypeBit)
+          ),
+        };
+        if (!index.race.units.length) {
+          console.warn(
+            "gwoRaces: no " +
+              race.id +
+              " unit in the unit list read (" +
+              loaded.units.length +
+              " units) - not mounted yet?"
+          );
           return index;
-        });
+        }
+        indexes[key] = index;
+        gwoRaces.setCells(race.id, index);
+      }
+      return indexes[key];
     });
   };
 

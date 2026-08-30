@@ -256,10 +256,6 @@ define([
               var maps = gwoRaces.isMla(race)
                 ? $.when({ classic: aiUnitMap, x1: aiX1UnitMap })
                 : armyMaps("enemy", race, cells);
-              // Plus the units the race's map names that its list lacks.
-              var armySpecs = cells
-                ? _.union(aiSpecs, cells.extraUnits)
-                : aiSpecs;
 
               maps.then(function (unitMaps) {
                 buildAiFactionFiles({
@@ -273,7 +269,7 @@ define([
                   ),
                   aiUnitMap: unitMaps.classic,
                   aiX1UnitMap: unitMaps.x1,
-                  aiSpecs: armySpecs,
+                  aiSpecs: aiSpecs,
                   aiUnitMapDestinationPath: getAIUnitMapDestinationPath(
                     false,
                     destination
