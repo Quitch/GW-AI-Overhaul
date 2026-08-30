@@ -533,6 +533,41 @@ describe("expandMods", () => {
     );
   });
 
+  it("leaves an identity mod on its own unit: exact, or on a type/build/tool path", () => {
+    const identity = [
+      mod(ANT, "unit_types", ["UNITTYPE_Commander"], "replace"),
+      mod(ANT, "buildable_types", "CmdBuild & Custom58", "replace"),
+      mod(ANT, "tools.1.spec_id", "/pa/tools/x.json", "replace"),
+      { file: ANT, path: "tools.1.spec_id", op: "tag" },
+      mod(ANT, "command_caps", ["ORDER_Build"], "replace"),
+      mod(ANT, "transportable.size", 1, "replace"),
+      Object.assign(mod(ANT, "max_health", 5), { exact: true }),
+      Object.assign(mod(ANT, "build_metal_cost", 25000, "replace"), {
+        exact: true,
+      }),
+    ];
+    assert.deepEqual(cells.expandMods(identity, vanilla, race), identity);
+    // A stat mod on the same file travels on its own...
+    assert.deepEqual(
+      cells.expandMods([mod(ANT, "max_health", 2)], vanilla, race),
+      [mod(FX_TANK, "max_health", 2)]
+    );
+    // ...but not once the list remakes the unit: the cost and health of a
+    // conversion belong to it.
+    const conversion = [
+      mod(ANT, "max_health", 5),
+      mod(ANT, "unit_types", ["UNITTYPE_Commander"], "replace"),
+      mod(ANT, "build_metal_cost", 25000, "replace"),
+      mod(SKITTER, "max_health", 2),
+    ];
+    assert.deepEqual(cells.expandMods(conversion, vanilla, race), [
+      mod(ANT, "max_health", 5),
+      mod(ANT, "unit_types", ["UNITTYPE_Commander"], "replace"),
+      mod(ANT, "build_metal_cost", 25000, "replace"),
+      mod(FX_TANK, "max_health", 2),
+    ]);
+  });
+
   it("does not mutate the descriptors it is given", () => {
     const original = mod(ANT, "max_health", 2);
     cells.expandMods([original], vanilla, race);

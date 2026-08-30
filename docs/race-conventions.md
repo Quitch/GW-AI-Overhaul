@@ -61,6 +61,15 @@ something new.
   `shared/build_types.js`). That is how Bugs' research unlock tokens travel
   with its research factories; Legion's spawned helpers are reached through
   their parents and never granted.
+- **Identity mods never travel by cell.** A mod on `unit_types`,
+  `buildable_types`, `base_spec`, `tools`, `command_caps`, `si_name`, `model`,
+  `display_name`, `description`, `transportable`, `transporter` or `attachable`
+  stays on the unit it names, and so does any descriptor with `exact: true`
+  (the Cluster commander conversions in `faction/cluster_setup.js`) - and once a
+  list remakes a unit that way, every other mod on that unit in the list (its
+  new cost, health, storage) stays with it too. Found
+  the hard way: the Guardians of a Cluster war carry the Angel-to-commander
+  mods, and by cell they turned Exiles' Heron into a broken commander.
 - **Cards never change.** They name vanilla units; the race's units follow at
   launch. A card that cannot work by cell goes in
   `cards_deal_helpers.MLA_ONLY` (Paratrooper, Nomad, Killswitch, Deepspace
@@ -98,9 +107,7 @@ mod's author, kept outside the repo (the user's Desktop).
   Chambers) and `bug_turret_spray` - so its AI cannot research in GW until the
   mod lists them. Report upstream; the list stays authoritative.
 - Exiles' `/pa/units/base/flare/flare.json` tool `flare_sd_Weapon` does not
-  parse server-side (`CostStampSpec::parse failed`); its Heron
-  (`t_transport_adv.json`) fails to decode ("path must start with a slash");
-  and its unit map names two specs the zip does not ship (`adv_tank_hover`,
+  parse server-side (`CostStampSpec::parse failed`); and its unit map names two specs the zip does not ship (`adv_tank_hover`,
   `r_artillery`).
 - All three race mods keep their AI files under `/pa/ai/`, so every MLA
   Titans AI merges their build entries at equal priorities. Exiles goes

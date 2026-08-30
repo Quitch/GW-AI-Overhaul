@@ -2,8 +2,11 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], function (inventory, gwoUnit) {
+  // Every mod here turns one vanilla unit into a commander. That is about the
+  // unit, not its kind, so none of them may be re-aimed at a race's units of
+  // the same cell (`exact`) - see races.md, "Capability cells".
   var op = function (file, name, path, value) {
-    return { file: file, path: path, op: name, value: value };
+    return { file: file, path: path, op: name, value: value, exact: true };
   };
 
   // One replace per path, in the order given.
@@ -18,7 +21,7 @@ define([
   var commanderBuildArm = function (file, path) {
     return [
       op(file, "replace", path, gwoUnit.commanderBuildArm),
-      { file: file, path: path, op: "tag" },
+      { file: file, path: path, op: "tag", exact: true },
     ];
   };
 

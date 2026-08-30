@@ -79,17 +79,18 @@ reaches (through `spec_cache`, so `genUnitSpecs` fetches nothing twice) and
 builds two indexes, vanilla (`Custom58` or no faction bit) and the race
 (`UNITTYPE_<bit>`). Then:
 
-| Rule                                                                        | Result                                                                      |
-| --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| A held vanilla unit                                                         | every race unit of its cell (`raceUnitsFor`)                                |
-| A held path that is not a vanilla unit (race commander, a mod)              | passed through untouched                                                    |
-| A race unit in a cell no vanilla unit fills                                 | granted when something granted can build it (`build_types`)                 |
-| A held vanilla `Commander`-class unit (the Colonel)                         | kept and retagged to the race's bit (`races.unitRetagMods`)                 |
-| A `Commander` cell                                                          | never granted; race commanders arrive as commanders do                      |
-| A spec mod on a vanilla unit                                                | one on each race unit of its cell (`expandMods`)                            |
-| A spec mod on a vanilla weapon, ammo, build arm or death ammo               | one on each race part of the same role under race units of the part's cells |
-| A mod on a file the army still holds (a retagged Pumpkin, `model.gwoSpecs`) | kept as well                                                                |
-| A unit-map `spec_id` the race maps left pointing at a vanilla unit          | the first race unit of its cell (`unitMapFallback`)                         |
+| Rule                                                                                                                                                                                 | Result                                                                      |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| A held vanilla unit                                                                                                                                                                  | every race unit of its cell (`raceUnitsFor`)                                |
+| A held path that is not a vanilla unit (race commander, a mod)                                                                                                                       | passed through untouched                                                    |
+| A race unit in a cell no vanilla unit fills                                                                                                                                          | granted when something granted can build it (`build_types`)                 |
+| A held vanilla `Commander`-class unit (the Colonel)                                                                                                                                  | kept and retagged to the race's bit (`races.unitRetagMods`)                 |
+| A `Commander` cell                                                                                                                                                                   | never granted; race commanders arrive as commanders do                      |
+| A spec mod on a vanilla unit                                                                                                                                                         | one on each race unit of its cell (`expandMods`)                            |
+| A spec mod on a vanilla weapon, ammo, build arm or death ammo                                                                                                                        | one on each race part of the same role under race units of the part's cells |
+| A mod on a file the army still holds (a retagged Pumpkin, `model.gwoSpecs`)                                                                                                          | kept as well                                                                |
+| A mod that changes what a unit is (`unit_types`, `buildable_types`, `tools`, `command_caps`, `si_name`, …) or says `exact: true` - and every other mod on that unit in the same list | stays on its own unit, never travels by cell                                |
+| A unit-map `spec_id` the race maps left pointing at a vanilla unit                                                                                                                   | the first race unit of its cell (`unitMapFallback`)                         |
 
 The build rule is what carries Bugs' research: its research factories share
 the factories' cells, and the unlock tokens they build sit in cells of their

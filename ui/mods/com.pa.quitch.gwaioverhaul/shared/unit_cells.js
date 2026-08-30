@@ -361,12 +361,39 @@ define([
   // (path, op, value) once per pass, and a pass ends when a vanilla source
   // already seen recurs - two cards, two passes, and they stack. The original
   // stays when the army still holds its file (`has`).
+  // A mod that changes what a unit is rather than how well it does it - its
+  // type bits, build list, tools, orders, identity - is about that one unit
+  // and never travels by cell. A descriptor may say so itself with `exact`.
+  var IDENTITY_PATH =
+    /^(unit_types|buildable_types|base_spec|tools|command_caps|si_name|model|display_name|description|transportable|transporter|attachable)(\.|$)/;
+
+  var isIdentityMod = function (mod) {
+    return (
+      mod.exact === true ||
+      (_.isString(mod.path) && IDENTITY_PATH.test(mod.path))
+    );
+  };
+
+  // The files a mod list remakes: once one mod changes a unit's identity,
+  // every mod on that unit in the list is part of the same conversion (the
+  // Angel's commander cost, health and storage go with its new type bits).
+  var remadeFiles = function (mods) {
+    var files = {};
+    _.forEach(mods, function (mod) {
+      if (mod && _.isString(mod.file) && isIdentityMod(mod)) {
+        files[mod.file] = true;
+      }
+    });
+    return files;
+  };
+
   var expandMods = function (mods, vanilla, race, has) {
     var passes = {};
     var out = [];
+    var remade = remadeFiles(mods || []);
 
     _.forEach(mods || [], function (mod) {
-      if (!mod || !_.isString(mod.file)) {
+      if (!mod || !_.isString(mod.file) || remade[mod.file]) {
         out.push(mod);
         return;
       }
