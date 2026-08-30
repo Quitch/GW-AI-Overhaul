@@ -53,6 +53,9 @@ something new.
   domain or class the classifier does not know.
 - **A part belongs to the unit whose directory holds it** when units of
   several cells share it (the Dox's ammo also arms an advanced vehicle).
+- **`unit_list.json` is authoritative.** A race's units are the list's; a
+  spec its AI unit map names but its list lacks is a bug in the mod's AI data
+  (Bugs' Evolution Chambers), never patched around here.
 - **A race unit in a cell vanilla never fills is granted only when something
   granted can build it** (`buildable_types`, evaluated by
   `shared/build_types.js`). That is how Bugs' research unlock tokens travel
@@ -87,7 +90,11 @@ something new.
 ## Known mod-side issues
 
 - Bugs' `unit_list.json` lists `/pa/units/air/bug_siren/bug_siren.json`,
-  which the zip does not ship (`Failed to load unit spec … .ai0`).
+  which the zip does not ship (`Failed to load unit spec … .ai0`), and its
+  `unit_maps/bugs.json` builds three specs the list lacks -
+  `basic_research_station`, `advanced_research_station` (the Evolution
+  Chambers) and `bug_turret_spray` - so its AI cannot research in GW until the
+  mod lists them. Report upstream; the list stays authoritative.
 - Exiles' `/pa/units/base/flare/flare.json` tool `flare_sd_Weapon` does not
   parse server-side (`CostStampSpec::parse failed`).
 - All three race mods keep their AI files under `/pa/ai/`, so every MLA
