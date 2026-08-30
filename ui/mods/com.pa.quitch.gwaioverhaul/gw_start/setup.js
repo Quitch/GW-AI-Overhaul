@@ -813,18 +813,17 @@ function gwoSetup() {
             }
 
             aiFactions = teamsRng.shuffle(aiFactions);
-            // One race per faction, Cluster excepted. See races.md.
+            // One race per faction, Cluster excepted - and not drawn for, or
+            // it would use up a Unique Races slot. See races.md.
             raceByFaction = gwoRaces.assign(
               teamsRng.stream("races"),
-              aiFactions,
+              _.without(aiFactions, 4),
               enemyRacePool,
               { unique: model.gwoDifficultySettings.uniqueRaces() }
             );
-            _.forEach(aiFactions, function (faction) {
-              if (faction === 4) {
-                raceByFaction[faction] = gwoRaces.MLA_ID;
-              }
-            });
+            if (_.contains(aiFactions, 4)) {
+              raceByFaction[4] = gwoRaces.MLA_ID;
+            }
             // Wrapped, not passed by reference: _.map would hand getTeam's rng
             // parameter the array index.
             var teams = _.map(aiFactions, function (faction) {
