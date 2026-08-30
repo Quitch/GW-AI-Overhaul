@@ -98,7 +98,10 @@ mod's author, kept outside the repo (the user's Desktop).
   Chambers) and `bug_turret_spray` - so its AI cannot research in GW until the
   mod lists them. Report upstream; the list stays authoritative.
 - Exiles' `/pa/units/base/flare/flare.json` tool `flare_sd_Weapon` does not
-  parse server-side (`CostStampSpec::parse failed`).
+  parse server-side (`CostStampSpec::parse failed`); its Heron
+  (`t_transport_adv.json`) fails to decode ("path must start with a slash");
+  and its unit map names two specs the zip does not ship (`adv_tank_hover`,
+  `r_artillery`).
 - All three race mods keep their AI files under `/pa/ai/`, so every MLA
   Titans AI merges their build entries at equal priorities. Exiles goes
   further and ships `platoon_templates.json` and `platoon_land_builds.json`
