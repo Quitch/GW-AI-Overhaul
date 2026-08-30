@@ -30,13 +30,18 @@ function gwoLoadouts() {
       return true;
     };
 
-    var buildGlobalTags = function (commander, playerFaction) {
+    // Viewers share the host's race, and the deal gate reads it off each
+    // inventory, so the tag travels with the viewer's. See races.md.
+    var buildGlobalTags = function (commander, playerFaction, playerRace) {
       var globalTags = {
         commander: commander,
       };
 
       if (_.isNumber(playerFaction)) {
         globalTags.playerFaction = playerFaction;
+      }
+      if (_.isString(playerRace) && playerRace.length) {
+        globalTags.playerRace = playerRace;
       }
 
       return globalTags;
@@ -118,7 +123,8 @@ function gwoLoadouts() {
         gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
 
         // This scene's view model has no player faction, but Cluster start cards
-        // read global.playerFaction, so resolve it from the campaign game.
+        // read global.playerFaction, so resolve it from the campaign game -
+        // and the host's race with it.
         var resolvePlayerFaction = function () {
           var deferred = $.Deferred();
           var activeGameId = _.isFunction(model.activeGameId)
@@ -136,12 +142,16 @@ function gwoLoadouts() {
                 game && _.isFunction(game.inventory)
                   ? game.inventory()
                   : undefined;
-              var playerFaction =
-                gameInventory && _.isFunction(gameInventory.getTag)
-                  ? gameInventory.getTag("global", "playerFaction")
+              var tag = function (name) {
+                return gameInventory && _.isFunction(gameInventory.getTag)
+                  ? gameInventory.getTag("global", name)
                   : undefined;
+              };
 
-              deferred.resolve(playerFaction);
+              deferred.resolve({
+                faction: tag("playerFaction"),
+                race: tag("playerRace"),
+              });
             },
             function () {
               deferred.resolve(undefined);
@@ -158,9 +168,13 @@ function gwoLoadouts() {
           star
         ) {
           var result = $.Deferred();
-          resolvePlayerFaction().then(function (playerFaction) {
+          resolvePlayerFaction().then(function (host) {
             var dealInventory = new GWInventory();
-            var globalTags = buildGlobalTags(commander, playerFaction);
+            var globalTags = buildGlobalTags(
+              commander,
+              host && host.faction,
+              host && host.race
+            );
 
             _.forEach(globalTags, function (value, name) {
               dealInventory.setTag("global", name, value);

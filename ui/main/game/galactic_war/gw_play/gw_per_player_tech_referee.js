@@ -104,12 +104,27 @@ define([
       var playerSpecs = cells
         ? unitCells.raceUnitsFor(held, cells.vanilla, cells.race)
         : held;
+      // A viewer picks from the stock commander list, so a race viewer's
+      // vanilla commander (and its Sub Commanders') is retagged the way the
+      // Guardians' Unicorn is; a kept vanilla Commander-class unit likewise.
+      var viewerCommanders = [inventory.getTag("global", "commander")].concat(
+        _.pluck(inventory.minions ? inventory.minions() : [], "commander")
+      );
       var retagMods = _.flatten(
-        _.map(
-          cells ? unitCells.heldCommanderUnits(held, cells.vanilla) : [],
-          function (unit) {
-            return gwoRaces.unitRetagMods(race, unit);
-          }
+        _.map(viewerCommanders, function (commander) {
+          return gwoRaces.commanderModsFor(race, commander);
+        }).concat(
+          _.map(
+            cells
+              ? _.difference(
+                  unitCells.heldCommanderUnits(held, cells.vanilla),
+                  viewerCommanders
+                )
+              : [],
+            function (unit) {
+              return gwoRaces.unitRetagMods(race, unit);
+            }
+          )
         )
       );
 
