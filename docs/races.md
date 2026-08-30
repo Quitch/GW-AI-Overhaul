@@ -83,12 +83,18 @@ builds two indexes, vanilla (`Custom58` or no faction bit) and the race
 | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | A held vanilla unit                                                         | every race unit of its cell (`raceUnitsFor`)                                |
 | A held path that is not a vanilla unit (race commander, a mod)              | passed through untouched                                                    |
+| A race unit in a cell no vanilla unit fills                                 | granted when something granted can build it (`build_types`)                 |
 | A held vanilla `Commander`-class unit (the Colonel)                         | kept and retagged to the race's bit (`races.unitRetagMods`)                 |
 | A `Commander` cell                                                          | never granted; race commanders arrive as commanders do                      |
 | A spec mod on a vanilla unit                                                | one on each race unit of its cell (`expandMods`)                            |
 | A spec mod on a vanilla weapon, ammo, build arm or death ammo               | one on each race part of the same role under race units of the part's cells |
 | A mod on a file the army still holds (a retagged Pumpkin, `model.gwoSpecs`) | kept as well                                                                |
 | A unit-map `spec_id` the race maps left pointing at a vanilla unit          | the first race unit of its cell (`unitMapFallback`)                         |
+
+The build rule is what carries Bugs' research: its research factories share
+the factories' cells, and the unlock tokens they build sit in cells of their
+own, so a token is granted once its factory is. `shared/build_types.js`
+evaluates `buildable_types` for it, the ES5 twin of `scripts/lib/build-types.js`.
 
 A group card names several vanilla files of one cell - `gwoGroup.botsAmmo` is
 eight - and must land once on a race ammo, not eight times. `expandMods`
@@ -216,10 +222,32 @@ advanced economy rather than with a storage card; the nuke's projectile is a
 (`l_vision`, the bombs, the spawners) sit in cells no vanilla unit occupies and
 are reached only through their parents, as vanilla's own spawned units are.
 
+## Bug Faction
+
+`race/bugs.js`. Server mod `com.pa.ferretmaster.bugs` (its companion
+`commander-merge` supplies the commander's base spec), unit-type bit
+`Custom2`, one commander (the Bug Alpha Commander), player icon from the client
+mod - the same two files Exiles ships, under Exiles' name. Titans only: its
+build orders are the `bugs/` sub-directories under each build directory plus
+`unit_maps/bugs.json` and `platoon_templates/bugs.json`; Queller and Penchant
+fall back to Titans for it.
+
+Research is data: a research factory (`research_crusher`, typed like the
+factory it stands beside) builds an unlock token (`bug_crusher_unlock`) that
+GW Server Mods' `research.js` turns into an unlock in the battle. The
+factories arrive with the vanilla factories' cells and the tokens through the
+build rule above, so a Bugs player researches in Galactic War as in a
+skirmish. The table keys 252 Bugs specs (`crusher`, `crusherResearch`,
+`crusherUnlock`, ...). Nothing beyond the MLA-only set is withheld
+(`test/race_bugs.test.js`). See [`race-conventions.md`](race-conventions.md)
+for the checklist a race follows.
+
 ## Where to look next
 
 - [`ai-paths.md`](ai-paths.md) - the race roots beside the five trees.
 - [`galaxy.md`](galaxy.md) - where the race is drawn during war generation.
 - [`coop.md`](coop.md) - viewers under per-player tech.
+- [`race-conventions.md`](race-conventions.md) - the checklist and the rules
+  the race code relies on.
 - `test/unit_cells.test.js`, `test/unit_groups_cells.test.js`,
   `test/races.test.js` - the rules above, pinned.
