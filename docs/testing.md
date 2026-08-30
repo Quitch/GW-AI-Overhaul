@@ -100,7 +100,9 @@ base-game spelling variant, kept because the engine accepts what its own data sh
 
 **`test/fixtures/unit_types.json` is harvested the same way.** It holds every
 listed unit's effective `unit_types` from the installed game (`pa_ex1` over `pa`)
-and any race source tree on disk, written by `scripts/harvest-unit-types.js`, so
+and the race server mods on disk (a `download/` zip or a `server_mods/` folder,
+read in mount order) with their `buildable_types`, written by
+`scripts/harvest-unit-types.js`, so
 `test/unit_groups_cells.test.js` can check the cell classifier against
 `unit_groups.js` in CI and `test/race_legion.test.js` can see Legion's cells.
 With a PA install present the test asserts the fixture is fresh - **re-harvest
