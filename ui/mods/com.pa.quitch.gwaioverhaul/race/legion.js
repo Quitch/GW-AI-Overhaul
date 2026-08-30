@@ -8,10 +8,7 @@ define(function () {
   return {
     id: "legion",
     name: "!LOC:Legion",
-    serverMods: [
-      "com.pa.legion-expansion-server",
-      "com.pa.legion-expansion-server-dev",
-    ],
+    serverMods: ["com.pa.legion-expansion-server"],
     unitTypeBit: "Custom1",
     // The preview art ships in the red team paint.
     commanderArtHue: 0,
