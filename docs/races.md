@@ -255,13 +255,14 @@ the cells the orbital cards open stay empty and those cards are withheld
 (`test/race_exiles.test.js` pins the list). The table keys 287 Exiles specs.
 
 The mod also ships `platoon_templates.json` and `platoon_land_builds.json` at
-the **vanilla** paths: copies of the stock files with the raid and attack
-platoons tightened to exclude scouts, radars and anti-nukes. GW Server Mods
-mounts the zip at the root after the client mods, so while Exiles is active
-every MLA Titans AI reads those copies - GWO's own `platoon_templates.json`
-shadow (a Suicide squad on the two Transfer templates) is not seen. Accepted
-for this pass: the change is a tightening, not a break. See
-[`race-conventions.md`](race-conventions.md).
+the **vanilla** paths: copies of the TITANS files with the raid and attack
+platoons tightened to exclude scouts, radars and anti-nukes (the land-builds
+copy differs from `pa_ex1`'s only in the condition strings that follow). GW
+Server Mods mounts the zip at the root after the client mods, so while Exiles
+is active every MLA Titans AI reads those copies. The one thing that costs is
+GWO's own `platoon_templates.json` shadow - a Suicide squad on the two Transfer
+templates - which is not seen. Accepted for this pass: the change is a
+tightening, not a break. See [`race-conventions.md`](race-conventions.md).
 
 ## Where to look next
 

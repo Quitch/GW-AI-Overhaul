@@ -102,9 +102,10 @@ mod's author, kept outside the repo (the user's Desktop).
 - All three race mods keep their AI files under `/pa/ai/`, so every MLA
   Titans AI merges their build entries at equal priorities. Exiles goes
   further and ships `platoon_templates.json` and `platoon_land_builds.json`
-  at the vanilla paths, which shadow GWO's own `platoon_templates.json` while
-  the mod is active (GWO loses its Suicide squad on the two Transfer
-  templates). Accepted for this pass; an AI mod applied at launch would make
+  at the vanilla paths. The land builds differ from `pa_ex1`'s only in the
+  condition strings that follow the template change, so the conflict is the
+  template file: it shadows GWO's own `platoon_templates.json` while the mod
+  is active (GWO loses its Suicide squad on the two Transfer templates). Accepted for this pass; an AI mod applied at launch would make
   GWO's edit survive whichever file is underneath, if it ever matters.
 - Legion's GW theming stays off because stock leaves
   `model.player().commanders` as `[null]` in a GW battle.
