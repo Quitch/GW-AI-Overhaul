@@ -8,6 +8,7 @@
 - Races: with GW Server Mods active, a war can be fought as a unit faction from a server mod, and every enemy faction fields one too. Choose your race in the war setup - every installed race is in play for the enemy, so disable a race mod to keep it out - and turn on Unique Races so no two factions share one. Sub Commanders and enemy commanders come from the race; bosses and the Guardians keep their commanders. An AI that does not know a race in play cannot be chosen
 - Legion Expansion is the first race: with its server mod active, fight as the Legion or against it, with Legion Sub Commanders, tech cards applied to Legion units, and the Legion AI build orders under the TITANS and QUELLER brains
 - Bug Faction is the second race, under the TITANS brain, research included: its research factories arrive with the factories and unlock what they research
+- Exiles is the third race, under the TITANS brain. Exiles has no orbital units beyond the launcher, so the orbital tech cards are not dealt to an Exiles player
 
 ## v6.14.0 - 2026-08-27
 

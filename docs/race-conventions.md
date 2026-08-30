@@ -100,7 +100,11 @@ mod's author, kept outside the repo (the user's Desktop).
 - Exiles' `/pa/units/base/flare/flare.json` tool `flare_sd_Weapon` does not
   parse server-side (`CostStampSpec::parse failed`).
 - All three race mods keep their AI files under `/pa/ai/`, so every MLA
-  Titans AI merges their build entries at equal priorities - the Exiles
-  collision in the plan; not addressed yet.
+  Titans AI merges their build entries at equal priorities. Exiles goes
+  further and ships `platoon_templates.json` and `platoon_land_builds.json`
+  at the vanilla paths, which shadow GWO's own `platoon_templates.json` while
+  the mod is active (GWO loses its Suicide squad on the two Transfer
+  templates). Accepted for this pass; an AI mod applied at launch would make
+  GWO's edit survive whichever file is underneath, if it ever matters.
 - Legion's GW theming stays off because stock leaves
   `model.player().commanders` as `[null]` in a GW battle.

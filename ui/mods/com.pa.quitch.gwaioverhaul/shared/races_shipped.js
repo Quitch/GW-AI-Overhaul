@@ -3,6 +3,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/race/legion.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/race/bugs.js",
-], function (legion, bugs) {
-  return [legion, bugs];
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/race/exiles.js",
+], function (legion, bugs, exiles) {
+  return [legion, bugs, exiles];
 });

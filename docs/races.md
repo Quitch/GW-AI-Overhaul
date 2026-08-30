@@ -243,6 +243,26 @@ skirmish. The table keys 252 Bugs specs (`crusher`, `crusherResearch`,
 (`test/race_bugs.test.js`). See [`race-conventions.md`](race-conventions.md)
 for the checklist a race follows.
 
+## Exiles
+
+`race/exiles.js`. Server mod `com.pa.nik.exiles` (companions `commander-merge`
+and `build-bar-tabs`), unit-type bit `Custom6`, four commanders (Maxim,
+Taurus, Blueberry, Brainiac; art in blue paint, hue 200), player icon from the
+server mod's own `ui/mods/com.pa.nik.exiles/img/exiles_icon_{fill,outline}.png`.
+Titans only: `exiles/` sub-directories under each build directory plus
+`unit_maps/exiles.json`. Exiles fields no orbital unit beyond its launcher, so
+the cells the orbital cards open stay empty and those cards are withheld
+(`test/race_exiles.test.js` pins the list). The table keys 287 Exiles specs.
+
+The mod also ships `platoon_templates.json` and `platoon_land_builds.json` at
+the **vanilla** paths: copies of the stock files with the raid and attack
+platoons tightened to exclude scouts, radars and anti-nukes. GW Server Mods
+mounts the zip at the root after the client mods, so while Exiles is active
+every MLA Titans AI reads those copies - GWO's own `platoon_templates.json`
+shadow (a Suicide squad on the two Transfer templates) is not seen. Accepted
+for this pass: the change is a tightening, not a break. See
+[`race-conventions.md`](race-conventions.md).
+
 ## Where to look next
 
 - [`ai-paths.md`](ai-paths.md) - the race roots beside the five trees.
