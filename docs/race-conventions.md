@@ -89,6 +89,9 @@ something new.
 
 ## Known mod-side issues
 
+Each gets a bug report in Simplified Technical English (ASD-STE100) for the
+mod's author, kept outside the repo (the user's Desktop).
+
 - Bugs' `unit_list.json` lists `/pa/units/air/bug_siren/bug_siren.json`,
   which the zip does not ship (`Failed to load unit spec … .ai0`), and its
   `unit_maps/bugs.json` builds three specs the list lacks -
