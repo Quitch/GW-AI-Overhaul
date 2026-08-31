@@ -1,0 +1,23 @@
+<div
+  class="gw-start-coop-switch-row"
+  id="gwo-per-player-race-row"
+  data-bind="visible: gwoRacesAvailable(), css: { disabled: !draftNewGamePerPlayerTechCards() }"
+  style="display: none"
+>
+  <div class="gw-start-coop-switch-label">
+    <loc>Separate races</loc>
+    <span class="info_tip" data-bind="tooltip: $root.gwoPerPlayerRaceTooltip"
+      >?</span
+    >
+  </div>
+  <div
+    class="gw-start-square-switch"
+    data-bind="css: { on: gwoDraftPerPlayerRace() && draftNewGamePerPlayerTechCards(), disabled: !draftNewGamePerPlayerTechCards() }, click: toggleGwoDraftPerPlayerRace, click_sound: 'default', rollover_sound: 'default'"
+  >
+    <span
+      class="gw-start-square-switch-label"
+      data-bind="text: gwoPerPlayerRaceSwitchText"
+    ></span>
+    <span class="gw-start-square-switch-thumb"></span>
+  </div>
+</div>

@@ -1362,6 +1362,11 @@ function gwoSetup() {
               byFaction: raceByFaction,
               unique: model.gwoDifficultySettings.uniqueRaces(),
               mods: raceInfo.mods,
+              // Only the per-player tech referee reads a viewer's own race, so
+              // a war without it never claims one. See coop.md.
+              perPlayerRace:
+                model.gwoDifficultySettings.perPlayerRace() &&
+                !!model.newGamePerPlayerTechCards(),
             };
           };
 

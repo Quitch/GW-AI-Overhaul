@@ -80,6 +80,8 @@ function gwoUI() {
       // Race id; see races.md.
       playerRace: ko.observable("mla"),
       uniqueRaces: ko.observable(false),
+      // Co-op only, and only alongside per-player tech. See coop.md.
+      perPlayerRace: ko.observable(false),
     };
 
     var difficultySettings = model.gwoDifficultySettings;

@@ -35,6 +35,49 @@ function gwoRacePicker() {
     model.gwoCommanderChoices = ko.observableArray(model.commanders());
     model.gwoRaceSelectDisabled = ko.observable(false);
 
+    // Co-op: each viewer picks its own race at the loadout screen instead of
+    // inheriting the host's. Per-player tech is what makes the per-player
+    // referee run at all, so this cannot be on without it. See coop.md.
+    model.gwoDraftPerPlayerRace = ko.observable(false);
+    model.gwoPerPlayerRaceSwitchText = ko.computed(function () {
+      return model.gwoDraftPerPlayerRace() &&
+        model.draftNewGamePerPlayerTechCards()
+        ? loc("!LOC:ON")
+        : loc("!LOC:OFF");
+    });
+    model.toggleGwoDraftPerPlayerRace = function () {
+      if (!model.draftNewGamePerPlayerTechCards()) {
+        return;
+      }
+      model.gwoDraftPerPlayerRace(!model.gwoDraftPerPlayerRace());
+    };
+    model.draftNewGamePerPlayerTechCards.subscribe(function (value) {
+      if (!value) {
+        model.gwoDraftPerPlayerRace(false);
+      }
+    });
+
+    // The stock co-op modal owns the draft/apply cycle, so seed from and commit
+    // to the setting through its own two functions. See shadowing.md,
+    // "Function hijacking".
+    var openCoopSettingsModal = model.openCoopSettingsModal;
+    model.openCoopSettingsModal = function () {
+      openCoopSettingsModal.apply(this, arguments);
+      model.gwoDraftPerPlayerRace(
+        settings.perPlayerRace() && model.draftNewGamePerPlayerTechCards()
+      );
+    };
+    var applyCoopSettingsModal = model.applyCoopSettingsModal;
+    model.applyCoopSettingsModal = function () {
+      settings.perPlayerRace(
+        model.gwoDraftPerPlayerRace() &&
+          !!model.draftNewGamePerPlayerTechCards()
+      );
+      applyCoopSettingsModal.apply(this, arguments);
+    };
+
+    model.gwoPerPlayerRaceTooltip =
+      "!LOC:Each player picks their own race when they choose their loadout. Requires Separate loadout &amp; tech.";
     model.gwoRaceTooltip =
       "!LOC:The units you and your Sub Commanders field. Only the TITANS AI knows every race; QUELLER also knows Legion. An AI that does not know a race in play cannot be chosen.";
     model.gwoUniqueRacesTooltip =
@@ -87,6 +130,13 @@ function gwoRacePicker() {
         )
       );
     locTree($("#gwo-race-group"));
+
+    $("#gw-start-coop-settings-modal .gw-start-coop-settings-body").append(
+      loadHtml(
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/coop_race_row.html"
+      )
+    );
+    locTree($("#gwo-per-player-race-row"));
 
     requireGW(
       [
