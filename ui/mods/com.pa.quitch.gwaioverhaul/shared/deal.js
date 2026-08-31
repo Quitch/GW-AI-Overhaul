@@ -237,8 +237,17 @@ define([
 
     // By index, not push: requireGW resolves in load order, and the deal walks the
     // deck in array order, so load order would remap every roll. See galaxy.md.
-    setupGwoDeck: function (cards, deck, cardsRemaining, promise) {
-      _.forEach(model.gwoCards, function (cardId, index) {
+    setupGwoDeck: function (cards, deck, cardsRemaining, promise, cardIds) {
+      var ids = _.isArray(cardIds) ? cardIds : model.gwoCards;
+
+      // With nothing to load no requireGW callback ever fires, so the tally
+      // never reaches zero and the caller waits on the promise forever.
+      if (!ids || !ids.length) {
+        promise.resolve();
+        return;
+      }
+
+      _.forEach(ids, function (cardId, index) {
         requireGW(["cards/" + cardId], function (card) {
           // A third-party id whose module is missing or returns nothing must
           // still count towards the tally: leaving it outstanding would hang

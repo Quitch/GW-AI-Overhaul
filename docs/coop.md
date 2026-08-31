@@ -360,6 +360,16 @@ Two things about it are not obvious from the scene it sits in:
   game through `GW.manifest.loadGame(model.activeGameId())` purely to read that
   tag back out, and resolves `undefined` rather than rejecting when there is no
   active game — a loadout preview outside a war still has to render.
+- **The deck it deals from is the loadout list, not the tech deck.** The scene
+  deals exactly one card, the loadout, so it loads `loadouts.allCards` — the same
+  list the picker offers — rather than calling `setupGwoCards`. That deck holds
+  GWO's own loadout ids and third-party _tech_ ids, but never a third-party
+  _loadout_ id, which a card mod pushes onto `model.gwoStartingCards` or
+  `model.gwoNewStartCards` instead. Building the deck from `setupGwoCards` made
+  another mod's loadout selectable and then undealable, and the base scene's only
+  failure handler is a `console.error`, so Join appeared to do nothing.
+  `gw_start/setup.js` loads the host's start cards from `allCards` for the same
+  reason.
 - **`validateStartingInventory` refuses rather than proceeds.** It asserts the
   chosen card produced exactly one card, in first position, with `maxCards` a
   number leaving room beyond it. Anything else rejects the deferred, because a

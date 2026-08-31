@@ -108,14 +108,28 @@ function gwoLoadouts() {
           model.startCards(loadouts.startCards());
         });
 
-        model.gwoCards = gwoDeal.setupGwoCards();
+        // Dealt from the list the picker offers, or a loadout another card mod
+        // added is selectable and then cannot be dealt, and Join does nothing.
+        // The tech deck would not serve: this scene deals one card, the loadout.
+        // gw_start/setup.js loads the host's start cards from allCards for the
+        // same reason.
+        var loadoutIds = _.uniq(
+          _.map(loadouts.allCards, function (cardData) {
+            return cardData.id;
+          })
+        );
 
         var cards = [];
         var deck = [];
-        var numberOfCards = model.gwoCards.length;
         var loaded = $.Deferred();
 
-        gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
+        gwoDeal.setupGwoDeck(
+          cards,
+          deck,
+          loadoutIds.length,
+          loaded,
+          loadoutIds
+        );
 
         // This scene's view model has no player faction, but Cluster start cards
         // read global.playerFaction, so resolve it from the campaign game.
