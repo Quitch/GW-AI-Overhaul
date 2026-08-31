@@ -9,6 +9,7 @@
 - Legion Expansion is the first race: with its server mod active, fight as the Legion or against it, with Legion Sub Commanders, tech cards applied to Legion units, and the Legion AI build orders under the TITANS and QUELLER brains
 - Bug Faction is the second race, under the TITANS brain, research included: its research factories arrive with the factories and unlock what they research
 - Exiles is the third race, under the TITANS brain. Exiles has no orbital units beyond the launcher, so the orbital tech cards are not dealt to an Exiles player
+- Resuming a war whose race mods are gone now says so and stops you fighting it, rather than quietly taking your units away. Re-enable the mods and restart the game to carry on. A race mod that has only changed version still just leaves a note on the war panel
 
 ## v6.14.0 - 2026-08-27
 

@@ -193,10 +193,38 @@ without replacement until the pool is spent, then refilled.
 
 The war records `global:playerRace` on the inventory, `race` on every AI, and
 `originSystem.gwaio.races = { player, byFaction, unique, mods }`. `mods` is the
-identifier and version of each race server mod in play; `gw_play/races.js`
-compares it with what GW Server Mods lists on resume and shows a warning on the
-war panel when one is missing or has changed, since the war would otherwise lose
-units silently.
+identifier and version of each race server mod installed when the war was made -
+every installed race, not only the ones drawn, so it is not on its own the list
+of what the war needs.
+
+On resume `gw_play/races.js` asks `race_check.warRaces` what the war actually
+fields - `player`, the values of `byFaction`, and every star's `ai().race` - and
+hands that to `race_check.evaluate` along with what `race_mods.installedRaces`
+found. A race with no descriptor, or one whose server mod is not active, is
+**blocked**: the war says so in a dialog, lists the missing races on the war
+panel, and `model.fight` refuses, since the player would otherwise field vanilla
+units under a commander spec that does not exist. A race mod that has only
+changed version **warns** and nothing more - a point release must not lock a
+player out of a war in progress. A recorded mod for a race the war does not
+field is ignored.
+
+`installedRaces` reports `known`, and while it is false nothing that depends on
+the installed list is decided. False means GW Server Mods could list nothing at
+all - Community Mods absent and its IndexedDB fallback empty - which is "cannot
+tell", not "not installed". It also reports `gwsm`, and that being false is not
+the same thing: GW Server Mods is what mounts a race's files, so without it no
+race can be mounted whatever is installed. The war is blocked, and the reason
+says so - naming the race mod there would send the player to look at a mod that
+is already on. A missing descriptor is a client-side registry fact and blocks
+either way.
+
+The gate is `model.fight` and `model.restartFight`, wrapped: knockout reads a
+click binding's value accessor at click time, so the swap holds however late the
+scene script runs. `model.gwCampaignFightBlocked` and
+`model.gwCampaignFightTooltip` are swapped too, to grey the button and give it a
+reason, but those are bound once, so that half is installed ahead of
+`ko.applyBindings` (or immediately, if `model.gwCampaignPlayStarted` says the
+scene is already bound).
 
 Co-op viewers share the host's race in this pass. The referee reads a race off
 each inventory (`races.raceOf` understands the live `getTag` and the serialised
