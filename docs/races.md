@@ -191,6 +191,13 @@ race out of a war, disable its mod. `races.assign` draws one race per faction
 from the `teams` stream: independently by default, and under **Unique Races**
 without replacement until the pool is spent, then refilled.
 
+The picker opens on the race the last war was started with, and on MLA when that
+race's server mod is no longer active. The race rides the `gwoDifficultySettings`
+snapshot with every other start setting, but the restored value has to be read at
+script scope, before `ko.applyBindings`: until `installedRaces` resolves the
+select holds only its MLA placeholder, and Knockout rejects a model value no
+option can show, writing the placeholder back over it.
+
 The war records `global:playerRace` on the inventory, `race` on every AI, and
 `originSystem.gwaio.races = { player, byFaction, unique, mods }`. `mods` is the
 identifier and version of each race server mod installed when the war was made -

@@ -12,6 +12,11 @@ function gwoRacePicker() {
 
   try {
     var settings = model.gwoDifficultySettings;
+    // The race the last war was started with, read before the bindings run:
+    // the select holds only the MLA placeholder until installedRaces()
+    // resolves, and Knockout rejects a model value no option can show, writing
+    // the placeholder back over it. See races.md.
+    var savedRace = settings.playerRace();
     var raceSelectId = "#gwo-race-select";
     var brainSelectIds = [
       "#difficulty-ai-enemy-select",
@@ -182,9 +187,12 @@ function gwoRacePicker() {
           );
           $(raceSelectId).html(optionsHtml(info.races));
 
-          if (!_.contains(installed, settings.playerRace())) {
-            settings.playerRace(races.MLA_ID);
-          }
+          // Cluster's lock has already been applied by the time this
+          // resolves, and it outranks the remembered race.
+          var wanted = model.gwoRaceSelectDisabled() ? races.MLA_ID : savedRace;
+          settings.playerRace(
+            _.contains(installed, wanted) ? wanted : races.MLA_ID
+          );
           $(raceSelectId).selectpicker("val", settings.playerRace());
           $(raceSelectId).selectpicker("refresh");
 
