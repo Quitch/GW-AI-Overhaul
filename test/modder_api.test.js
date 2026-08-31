@@ -17,7 +17,11 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { loadCouiModule, REPO_ROOT } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  registerModuleStub,
+  REPO_ROOT,
+} = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { createFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
@@ -129,6 +133,48 @@ describe("a mod's tech cards reach the deck", () => {
     setGlobal("model", {});
 
     assert.ok(gwoDeal.setupGwoCards().length > 0);
+  });
+});
+
+// A loadout is not a tech card: it never reaches model.gwoCards, so the deck a
+// scene deals it from has to come from loadouts.allCards instead. When the co-op
+// loadout scene built its deck from setupGwoCards, a mod's loadout was offered in
+// the picker and then rejected on Join, and the base game only logged it.
+describe("a mod's loadouts reach the list scenes deal from", () => {
+  it("allCards keeps ids a mod pushed onto the loadout globals", () => {
+    setGlobal("model", {
+      gwoStartingCards: [{ id: "mym_start_unlocked" }],
+      gwoNewStartCards: [{ id: "mym_start_locked" }],
+    });
+    // loadouts.js only consults the banks inside startCards(), which this test
+    // never calls, so they are stubbed rather than stood up with a fake
+    // knockout and localStorage.
+    registerModuleStub("shared/gw_common", { bank: {} });
+    registerModuleStub("coui://" + MOD_ROOT + "/shared/bank.js", {});
+
+    const loadouts = loadCouiModule(
+      "coui://" + MOD_ROOT + "/shared/loadouts.js"
+    );
+    const ids = loadouts.allCards.map((cardData) => cardData.id);
+
+    assert.ok(
+      ids.includes("mym_start_unlocked"),
+      "the mod's loadout is undealable"
+    );
+    assert.ok(
+      ids.includes("mym_start_locked"),
+      "the mod's loadout is undealable"
+    );
+    assert.ok(ids.includes("gwc_start_air"), "GWO's own are still dealt");
+  });
+
+  it("the co-op loadout scene deals from allCards, not the tech deck", () => {
+    const scene = source(
+      MOD_ROOT + "/gw_coop_per_player_loadout/gwo_loadouts.js"
+    );
+
+    assert.match(scene, /loadouts\.allCards/);
+    assert.doesNotMatch(scene, /setupGwoCards/);
   });
 });
 

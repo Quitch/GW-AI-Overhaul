@@ -336,4 +336,65 @@ describe("setupGwoDeck", () => {
     // The surviving cards keep their own indices, so the deck does not shift.
     assert.equal(deck[2], "gwc_gamma");
   });
+
+  // The co-op loadout scene deals one loadout and never a tech card, so it
+  // passes the picker's loadout ids rather than the tech deck.
+  it("loads the ids it is given in preference to model.gwoCards", () => {
+    const { pending, requireGW } = deferredRequireGW();
+    setGlobal("model", { gwoCards: ids });
+    setGlobal("requireGW", requireGW);
+
+    const loadoutIds = ["gwc_start_air", "anc_start_bot"];
+    const cards = [];
+    const deck = [];
+    deal.setupGwoDeck(
+      cards,
+      deck,
+      loadoutIds.length,
+      { resolve: () => {} },
+      loadoutIds
+    );
+
+    assert.deepEqual(
+      pending.map((request) => request.id),
+      loadoutIds
+    );
+  });
+
+  it("falls back to model.gwoCards when no ids are given", () => {
+    const { pending, requireGW } = deferredRequireGW();
+    setGlobal("model", { gwoCards: ids });
+    setGlobal("requireGW", requireGW);
+
+    deal.setupGwoDeck([], [], ids.length, { resolve: () => {} });
+
+    assert.deepEqual(
+      pending.map((request) => request.id),
+      ids
+    );
+  });
+
+  // No requireGW callback fires for an empty list, so the tally never reaches
+  // zero and the caller would wait on the promise forever.
+  it("resolves immediately when there is nothing to load", () => {
+    setGlobal("model", { gwoCards: [] });
+    setGlobal("requireGW", () => {
+      assert.fail("nothing should be requested");
+    });
+
+    let resolved = 0;
+    deal.setupGwoDeck(
+      [],
+      [],
+      0,
+      {
+        resolve: () => {
+          resolved++;
+        },
+      },
+      []
+    );
+
+    assert.equal(resolved, 1);
+  });
 });
