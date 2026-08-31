@@ -53,7 +53,14 @@ define([
         : [];
     };
 
-    var buildGeneralCommanderMinions = function (factionIndex, playerKey) {
+    // raceInventory is whose race the minions are drawn for: the host's own
+    // inventory on the host's path, and the viewer's record inventory when the
+    // host is setting a viewer up under Separate races. See coop.md.
+    var buildGeneralCommanderMinions = function (
+      factionIndex,
+      playerKey,
+      raceInventory
+    ) {
       var minionPool = resolveFactionMinions(factionIndex);
       if (gwoSettings && gwoSettings.aiAlly === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
@@ -65,8 +72,7 @@ define([
         gwoAI: gwoAI,
         gwoCard: gwoCard,
         races: gwoRaces,
-        // Viewers share the host's race. See coop.md.
-        race: gwoRaces.raceOf(inventory),
+        race: gwoRaces.raceOf(raceInventory || inventory),
         rng: gwoStreams.generalCommanderRng(warRng, playerKey),
       });
     };
@@ -74,14 +80,19 @@ define([
     var appendGeneralCommanderMinions = function (
       cards,
       factionIndex,
-      playerKey
+      playerKey,
+      raceInventory
     ) {
       var minions;
       if (!inventoryNeedsGeneralCommanderSetup(cards)) {
         return false;
       }
 
-      minions = buildGeneralCommanderMinions(factionIndex, playerKey);
+      minions = buildGeneralCommanderMinions(
+        factionIndex,
+        playerKey,
+        raceInventory
+      );
       if (!minions.length) {
         return false;
       }
@@ -252,7 +263,8 @@ define([
           gwoStreams.coopPlayerKey(record, {
             id: operator.client_id,
             name: operator.client_name,
-          })
+          }),
+          playerInventory
         )
       ) {
         return replyUnchanged();

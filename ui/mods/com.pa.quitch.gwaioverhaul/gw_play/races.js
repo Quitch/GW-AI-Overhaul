@@ -120,21 +120,54 @@ function gwoPlayRaces() {
       function (raceMods, gwoAI, gwoRaces, raceCells, raceCheck) {
         raceMods.registerAll();
 
+        var settings = gwoAI.originSettings(model.game());
+        var recorded = settings && settings.races;
+
+        // Every race this client has to answer for. Normally the one race it
+        // plays - its own record's under Separate races, the war's otherwise.
+        // A host under Separate races deals and builds files for every viewer,
+        // and a viewer may have picked any race the war offers, so the host
+        // primes the lot. See coop.md.
+        var racesToPrime = function () {
+          var record =
+            _.isFunction(model.currentCoopPlayerInventoryData) &&
+            model.currentCoopPlayerInventoryData();
+          var own = gwoRaces.raceOf(
+            (record && record.inventory) || model.game().inventory()
+          );
+
+          if (
+            !(recorded && recorded.perPlayerRace) ||
+            !(_.isFunction(model.isCampaignHost) && model.isCampaignHost())
+          ) {
+            return [own];
+          }
+
+          return _.uniq(
+            [own].concat(
+              _.pluck(
+                gwoRaces.detect(_.pluck(recorded.mods, "identifier")),
+                "id"
+              )
+            )
+          );
+        };
+
         // Deals are synchronous and gate on the race's cells, so build them
         // now rather than at the first deal - once GW Server Mods has the race
         // zip mounted, or the unit list read has no race unit in it. See
         // races.md.
-        var playerRace = gwoRaces.raceOf(model.game().inventory());
-        if (!gwoRaces.isMla(playerRace)) {
+        var toPrime = _.reject(racesToPrime(), gwoRaces.isMla);
+        if (toPrime.length) {
           raceMods.mountRoot().always(function () {
-            raceCells.prime(playerRace);
+            _.forEach(toPrime, function (race) {
+              raceCells.prime(race);
+            });
           });
         }
 
         // A war resumed without the mods behind its races loses units with no
         // other warning, so say so and stop it being fought. See races.md.
-        var settings = gwoAI.originSettings(model.game());
-        var recorded = settings && settings.races;
         var ais = _.map(model.game().galaxy().stars(), function (star) {
           return star.ai();
         });

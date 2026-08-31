@@ -664,17 +664,20 @@ define([
         _.isUndefined(ai.ally.race) ? playerRace : gwoRaces.raceOf(ai.ally)
       );
     }
-    // Viewers share the host's race. See coop.md.
+    // Each viewer's own race: the host's under Separate races off, and whatever
+    // they picked under it on. A viewer's destination is its own either way -
+    // the race decides which brain's tree is filtered into it. See coop.md.
     _.forEach(
       refereeCoop.getConnectedViewerInventories(game, connectedClients),
       function (viewer, viewerIndex) {
+        var viewerRace = gwoRaces.raceOf(viewer.inventory);
         add(
           "subcommander",
-          playerRace,
+          viewerRace,
           gwoAI.getSubcommanderPathForViewer(
             viewer.inventory,
             ".player" + viewerIndex,
-            playerRace
+            viewerRace
           )
         );
       }
@@ -730,7 +733,7 @@ define([
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = { applyAiMods: applyAiMods };
+    module.exports = { applyAiMods: applyAiMods, raceTreeJobs: raceTreeJobs };
   }
 
   // parse AI files, apply AI mods, and load the results into self.files()

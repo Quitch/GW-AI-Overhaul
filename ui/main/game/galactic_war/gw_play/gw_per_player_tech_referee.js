@@ -51,13 +51,14 @@ define([
     return inventory;
   };
 
-  // GWO - viewers share the host's race: their units and mods follow the
-  // race's capability cells the way the host's do, and their map is the
-  // race's merged one. See races.md and coop.md.
+  // GWO - the race comes off the player's own inventory, which is the host's
+  // under Separate races off and the viewer's own under it on: their units and
+  // mods follow the race's capability cells the way the host's do, and their
+  // map is the race's merged one. See races.md and coop.md.
   var generateUnitSpecsForPlayer = function (inventory, playerTag) {
     var done = $.Deferred();
     var titans = api.content.usingTitans();
-    var race = gwoRaces.raceOf(model.game().inventory());
+    var race = gwoRaces.raceOf(inventory);
     var cellsLoad = gwoRaces.isMla(race)
       ? Promise.resolve(undefined)
       : gwoRaceCells.indexFor(race);
@@ -104,9 +105,10 @@ define([
       var playerSpecs = cells
         ? unitCells.raceUnitsFor(held, cells.vanilla, cells.race)
         : held;
-      // A viewer picks from the stock commander list, so a race viewer's
+      // A viewer that picked no race commander is on the stock list, so its
       // vanilla commander (and its Sub Commanders') is retagged the way the
       // Guardians' Unicorn is; a kept vanilla Commander-class unit likewise.
+      // commanderModsFor is a no-op for a commander already of the race.
       var viewerCommanders = [inventory.getTag("global", "commander")].concat(
         _.pluck(inventory.minions ? inventory.minions() : [], "commander")
       );
@@ -326,7 +328,7 @@ define([
         });
 
         var thisPlayersInventory = playerInventories[index];
-        var viewerRace = gwoRaces.raceOf(inventory);
+        var viewerRace = gwoRaces.raceOf(thisPlayersInventory);
         var viewerAiPath = getViewerSubcommanderAiPath(
           refereeAIPaths,
           subcommanderTech,

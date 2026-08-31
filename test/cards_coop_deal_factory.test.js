@@ -134,6 +134,12 @@ function setup(overrides = {}) {
         rec.gwaioStarCards && rec.gwaioStarCards.cards[String(starIndex)],
     },
     gwoSettings: { treasureStar: options.treasureStar },
+    gwoRaces: {
+      raceOf: (inventory) =>
+        (inventory && inventory.tags && inventory.tags.global
+          ? inventory.tags.global.playerRace
+          : undefined) || "mla",
+    },
   });
 
   return { calls, options, restore: () => stubs.restoreGlobals() };

@@ -323,7 +323,12 @@ describe("race trees", () => {
       aiMods: [{ op: "load" }],
       perPlayerTech: true,
       viewerInventoryData: {
-        v1: { inventory: makeInventory({ aiModsList: [{ op: "load" }] }) },
+        v1: {
+          inventory: makeInventory({
+            aiModsList: [{ op: "load" }],
+            tags: { "global:playerRace": "fixture" },
+          }),
+        },
       },
     });
     installModel(fixture.game, [
@@ -347,6 +352,37 @@ describe("race trees", () => {
       ]
     );
     assert.deepEqual(listCalls, ["/pa/ai/"]);
+  });
+
+  it("gives a viewer its own race, not the host's", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      playerRace: "fixture",
+      perPlayerTech: true,
+      viewerInventoryData: {
+        // No race tag: an MLA viewer in a race host's war reads as MLA and
+        // fights out of the brain root, not the host's race tree.
+        v1: { inventory: makeInventory({}) },
+      },
+    });
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    installFakes({
+      fileListByPath: { "/pa/ai/": TITANS_FILES },
+      getJSON: (url) => ({ from: url }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.equal(
+      filesObj[
+        "/pa/ai_subcommander_race_fixture/player_.player0/ai_config.json"
+      ],
+      undefined
+    );
   });
 
   it("warns when a race has no build orders under the source", async () => {

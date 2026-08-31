@@ -289,6 +289,7 @@ function gwoWarInfoPanel(gwoSettings) {
           var commander = coopCommanderCache[cacheKey];
           var record;
           var loadoutCardId;
+          var icon;
           var isHost = client.role === "host";
           var usesHostLoadout =
             isHost ||
@@ -297,8 +298,10 @@ function gwoWarInfoPanel(gwoSettings) {
           if (!commander) {
             commander = {
               name: client.name,
-              iconFill: raceIcon(playerRace).fill,
-              iconOutline: raceIcon(playerRace).outline,
+              // Observable, not fixed: under Separate races a viewer's own race
+              // is only known once their record has synced. See coop.md.
+              iconFill: ko.observable(raceIcon(playerRace).fill),
+              iconOutline: ko.observable(raceIcon(playerRace).outline),
               // Not fixed: it moves with army control, and with joins and leaves.
               color: ko.observable(),
               // findCoopPlayerInventoryData only tracks synced remote clients, so
@@ -307,13 +310,14 @@ function gwoWarInfoPanel(gwoSettings) {
                 ? model.gwoLoadout
                 : ko.observable(human),
               loadoutResolved: usesHostLoadout,
+              raceResolved: isHost,
             };
             coopCommanderCache[cacheKey] = commander;
           }
 
           commander.color(coopColour(client));
 
-          if (!commander.loadoutResolved) {
+          if (!commander.loadoutResolved || !commander.raceResolved) {
             record =
               game.findCoopPlayerInventoryData &&
               game.findCoopPlayerInventoryData({
@@ -322,11 +326,18 @@ function gwoWarInfoPanel(gwoSettings) {
               });
             loadoutCardId = record && record.loadoutCardId;
 
-            if (loadoutCardId) {
+            if (loadoutCardId && !commander.loadoutResolved) {
               commander.loadoutResolved = true;
               requireGW(["cards/" + loadoutCardId], function (card) {
                 commander.character(loc(card.summarize()));
               });
+            }
+
+            if (record && record.inventory) {
+              commander.raceResolved = true;
+              icon = raceIcon(gwoRaces.raceOf(record.inventory));
+              commander.iconFill(icon.fill);
+              commander.iconOutline(icon.outline);
             }
           }
 

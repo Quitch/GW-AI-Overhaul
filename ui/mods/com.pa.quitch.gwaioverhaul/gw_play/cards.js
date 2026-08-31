@@ -473,7 +473,7 @@ function gwoCard() {
           gwoTreasure: gwoTreasure,
           coopStarCards: coopStarCards,
           gwoSettings: gwoSettings,
-          race: gwoRaces.raceOf(inventory),
+          gwoRaces: gwoRaces,
         });
 
         // Reports a viewer's loadout unlocks to the host, which needs the mod

@@ -154,11 +154,11 @@
         <div class="div-player-icon">
           <div
             class="fill player-masked"
-            data-bind="style: { backgroundColor: color, webkitMaskImage: iconFill ? 'url(' + iconFill + ')' : '' }"
+            data-bind="style: { backgroundColor: color, webkitMaskImage: ko.unwrap(iconFill) ? 'url(' + ko.unwrap(iconFill) + ')' : '' }"
           ></div>
           <div class="outline">
             <img
-              data-bind="attr: { src: iconOutline || 'coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png' }"
+              data-bind="attr: { src: ko.unwrap(iconOutline) || 'coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png' }"
             />
           </div>
         </div>
