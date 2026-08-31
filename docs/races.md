@@ -212,11 +212,11 @@ field is ignored.
 the installed list is decided. False means GW Server Mods could list nothing at
 all - Community Mods absent and its IndexedDB fallback empty - which is "cannot
 tell", not "not installed". It also reports `gwsm`, and that being false is not
-the same thing: GW Server Mods is what mounts a race's files, so without it no
-race can be mounted whatever is installed. The war is blocked, and the reason
-says so - naming the race mod there would send the player to look at a mod that
-is already on. A missing descriptor is a client-side registry fact and blocks
-either way.
+the same thing: GW Server Mods is what mounts every race's files, so without it
+no race can be had whatever is installed. The war is blocked by a single
+race-neutral reason - the same sentence once per race would only repeat itself,
+and naming a race mod would send the player to look at a mod that is already on.
+A missing descriptor is a client-side registry fact and blocks either way.
 
 The gate is `model.fight` and `model.restartFight`, wrapped: knockout reads a
 click binding's value accessor at click time, so the swap holds however late the

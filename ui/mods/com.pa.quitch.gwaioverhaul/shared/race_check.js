@@ -44,12 +44,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     // fallback - is not "not installed". Nothing that depends on the installed
     // list is decided while it is false. See races.md.
     var known = !!(info && info.known);
-    // GW Server Mods is what mounts a race's files. Without it the race mod
-    // being enabled changes nothing, so say that rather than send the player
-    // to look at a mod that is already on.
+    // GW Server Mods is what mounts every race's files. Without it no race can
+    // be had, whatever is installed, so that is one thing to say about the war
+    // rather than the same sentence once per race - and naming a race mod
+    // would send the player to look at a mod that is already on.
     var gwsm = !info || info.gwsm !== false;
     var installed = _.pluck((info && info.races) || [], "id");
     var wanted = [];
+    var absent = [];
 
     _.forEach(ids, function (id) {
       var race = races.byId(id);
@@ -65,14 +67,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       wanted = wanted.concat(race.serverMods);
 
       if (known && !_.contains(installed, race.id)) {
+        absent.push(race);
+      }
+    });
+
+    if (absent.length && !gwsm) {
+      blocked.push({ reason: "gwServerMods" });
+    } else {
+      _.forEach(absent, function (race) {
         blocked.push({
-          reason: gwsm ? "serverMod" : "gwServerMods",
+          reason: "serverMod",
           race: race.id,
           name: race.name,
           mods: race.serverMods,
         });
-      }
-    });
+      });
+    }
 
     if (!known) {
       return { blocked: blocked, warnings: warnings };

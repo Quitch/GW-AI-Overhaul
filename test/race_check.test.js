@@ -111,9 +111,47 @@ describe("evaluate", () => {
       installed({ races: [races.byId("mla")], mods: [], gwsm: false })
     );
 
-    assert.equal(result.blocked.length, 1);
-    assert.equal(result.blocked[0].reason, "gwServerMods");
-    assert.equal(result.blocked[0].name, "!LOC:Fixture");
+    assert.deepEqual(result.blocked, [{ reason: "gwServerMods" }]);
+  });
+
+  it("says GW Server Mods once, however many races the war fields", () => {
+    races.register(
+      Object.assign({}, FIXTURE_RACE, {
+        id: "second",
+        name: "!LOC:Second",
+        serverMods: ["com.example.second-server"],
+      })
+    );
+
+    const result = raceCheck.evaluate(
+      recorded(),
+      ["fixture", "second"],
+      installed({ races: [races.byId("mla")], mods: [], gwsm: false })
+    );
+
+    assert.deepEqual(result.blocked, [{ reason: "gwServerMods" }]);
+  });
+
+  it("names each race when GW Server Mods is there but the mods are not", () => {
+    races.register(
+      Object.assign({}, FIXTURE_RACE, {
+        id: "second",
+        name: "!LOC:Second",
+        serverMods: ["com.example.second-server"],
+      })
+    );
+
+    const result = raceCheck.evaluate(
+      recorded(),
+      ["fixture", "second"],
+      installed({ races: [races.byId("mla")], mods: [] })
+    );
+
+    assert.deepEqual(_.pluck(result.blocked, "name"), [
+      "!LOC:Fixture",
+      "!LOC:Second",
+    ]);
+    assert.deepEqual(_.uniq(_.pluck(result.blocked, "reason")), ["serverMod"]);
   });
 
   it("blocks a race with no descriptor at all, whatever the mod list says", () => {

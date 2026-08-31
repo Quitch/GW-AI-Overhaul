@@ -151,12 +151,10 @@ function gwoPlayRaces() {
             );
           }
 
+          // Not a race's own line: without GW Server Mods no race at all can
+          // be mounted.
           if (entry.reason === "gwServerMods") {
-            return (
-              loc(entry.name) +
-              " - " +
-              loc("!LOC:GW Server Mods is not enabled")
-            );
+            return loc("!LOC:GW Server Mods is not enabled");
           }
 
           return (
