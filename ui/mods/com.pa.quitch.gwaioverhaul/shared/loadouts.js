@@ -36,12 +36,23 @@ define([
   // requireGW that may not have finished when this module's factory runs. Called
   // after gwoLoadoutBanks.resolve(), it sees every bank; called before, it falls
   // back to the two banks GWO ships and no mod loadout shows as unlocked.
-  // A race player is never offered a loadout built for MLA alone. See
-  // races.md.
-  var offeredCards = function () {
+  // A race player is never offered a loadout built for MLA alone. The race is
+  // gw_start's setting for the host and the picker's observable for a co-op
+  // viewer; neither scene has the other's. See races.md.
+  var raceInPlay = function () {
     var settings = model.gwoDifficultySettings;
-    var race =
-      settings && _.isFunction(settings.playerRace) && settings.playerRace();
+
+    if (settings && _.isFunction(settings.playerRace)) {
+      return settings.playerRace();
+    }
+
+    return _.isFunction(model.gwoViewerRace)
+      ? model.gwoViewerRace()
+      : undefined;
+  };
+
+  var offeredCards = function () {
+    var race = raceInPlay();
     if (!race || race === "mla") {
       return allCards;
     }

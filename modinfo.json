@@ -29,6 +29,7 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/race_picker.js"
     ],
     "gw_play": [
@@ -69,6 +70,8 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.css"
     ],
     "gw_coop_per_player_loadout": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/race_picker.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/gwo_loadouts.js"
     ]
   },

@@ -83,45 +83,6 @@ function gwoRacePicker() {
     model.gwoUniqueRacesTooltip =
       "!LOC:No two enemy factions share a race until every race in play has been used.";
 
-    // A race's commanders are not in the commander list CommanderUtility read
-    // at page load, so their name and portrait come from the spec itself.
-    var commanderInfo = {};
-    model.gwoCommanderInfo = function (spec) {
-      if (!commanderInfo[spec]) {
-        commanderInfo[spec] = ko.observable({
-          name: CommanderUtility.bySpec.getName(spec),
-          image: CommanderUtility.bySpec.getImage(spec),
-          profile: CommanderUtility.bySpec.getProfileImage(spec),
-        });
-        if (!commanderInfo[spec]().name) {
-          $.getJSON("coui:/" + spec)
-            .done(function (data) {
-              var ui = (data && data.client && data.client.ui) || {};
-              commanderInfo[spec]({
-                name: (data && data.display_name) || spec,
-                image: ui.image ? "coui:/" + ui.image : undefined,
-                profile: ui.profile_image
-                  ? "coui:/" + ui.profile_image
-                  : undefined,
-              });
-            })
-            .fail(function () {
-              commanderInfo[spec]({ name: spec });
-            });
-        }
-      }
-      return commanderInfo[spec]();
-    };
-    model.gwoCommanderName = function (spec) {
-      return model.gwoCommanderInfo(spec).name || "";
-    };
-    model.gwoCommanderImage = function (spec) {
-      return model.gwoCommanderInfo(spec).image || "";
-    };
-    model.gwoCommanderProfileImage = function (spec) {
-      return model.gwoCommanderInfo(spec).profile || "";
-    };
-
     $("#faction-select")
       .closest(".form-group")
       .after(
@@ -142,21 +103,10 @@ function gwoRacePicker() {
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_options.js",
       ],
-      function (raceMods, races) {
+      function (raceMods, races, pickerOptions) {
         raceMods.registerAll();
-
-        var optionsHtml = function (raceList) {
-          return _.map(raceList, function (race) {
-            return (
-              '<option value="' +
-              race.id +
-              '">' +
-              _.escape(loc(race.name)) +
-              "</option>"
-            );
-          }).join("");
-        };
 
         // Zip mounts only, no content remount: quick enough that nothing
         // waits on it.
@@ -168,11 +118,11 @@ function gwoRacePicker() {
         // so is the paint its preview art ships in.
         ko.computed(function () {
           var race = races.byId(settings.playerRace());
-          var stock = model.commanders();
-          var choices =
-            race && race.id !== races.MLA_ID && race.commanders.length
-              ? _.pluck(race.commanders, "spec")
-              : stock;
+          var choices = pickerOptions.commanderChoices(
+            race,
+            model.commanders(),
+            races.MLA_ID
+          );
           model.gwoCommanderChoices(choices);
           model.gwoCommanderArtHue(
             races.commanderArtHue(settings.playerRace())
@@ -235,7 +185,7 @@ function gwoRacePicker() {
               return { id: race.id, name: loc(race.name) };
             })
           );
-          $(raceSelectId).html(optionsHtml(info.races));
+          $(raceSelectId).html(pickerOptions.optionsHtml(info.races));
 
           // Cluster's lock has already been applied by the time this
           // resolves, and it outranks the remembered race.

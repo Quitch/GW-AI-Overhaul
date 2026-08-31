@@ -30,8 +30,9 @@ function gwoLoadouts() {
       return true;
     };
 
-    // Viewers share the host's race, and the deal gate reads it off each
-    // inventory, so the tag travels with the viewer's. See races.md.
+    // The deal gate reads the race off each inventory, so the tag travels with
+    // the viewer's: their own pick under Separate races, the host's otherwise.
+    // See races.md.
     var buildGlobalTags = function (commander, playerFaction, playerRace) {
       var globalTags = {
         commander: commander,
@@ -99,18 +100,29 @@ function gwoLoadouts() {
 
     requireGW(
       [
-        "shared/gw_common",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
         "shared/gw_inventory",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/host_war.js",
       ],
-      function (GW, loadouts, GWInventory, gwoDeal, gwoLoadoutBanks) {
+      function (loadouts, GWInventory, gwoDeal, gwoLoadoutBanks, hostWar) {
+        var banksResolved = false;
+
+        // Called again whenever the race changes: an MLA-only loadout is not
+        // offered to a race player. See races.md.
+        model.gwoRebuildStartCards = function () {
+          if (banksResolved) {
+            model.startCards(loadouts.startCards());
+          }
+        };
+
         // A viewer picking their own loadout must see the mod ones they have
         // unlocked, so the banks are resolved before the list is built.
         requireGW(gwoLoadoutBanks.paths(), function () {
           gwoLoadoutBanks.resolve(_.toArray(arguments));
-          model.startCards(loadouts.startCards());
+          banksResolved = true;
+          model.gwoRebuildStartCards();
         });
 
         model.gwoCards = gwoDeal.setupGwoCards();
@@ -122,45 +134,6 @@ function gwoLoadouts() {
 
         gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
 
-        // This scene's view model has no player faction, but Cluster start cards
-        // read global.playerFaction, so resolve it from the campaign game -
-        // and the host's race with it.
-        var resolvePlayerFaction = function () {
-          var deferred = $.Deferred();
-          var activeGameId = _.isFunction(model.activeGameId)
-            ? model.activeGameId()
-            : undefined;
-
-          if (!activeGameId) {
-            deferred.resolve(undefined);
-            return deferred.promise();
-          }
-
-          GW.manifest.loadGame(activeGameId).then(
-            function (game) {
-              var gameInventory =
-                game && _.isFunction(game.inventory)
-                  ? game.inventory()
-                  : undefined;
-              var tag = function (name) {
-                return gameInventory && _.isFunction(gameInventory.getTag)
-                  ? gameInventory.getTag("global", name)
-                  : undefined;
-              };
-
-              deferred.resolve({
-                faction: tag("playerFaction"),
-                race: tag("playerRace"),
-              });
-            },
-            function () {
-              deferred.resolve(undefined);
-            }
-          );
-
-          return deferred.promise();
-        };
-
         model.buildStartingInventory = function (
           loadoutCardId,
           commander,
@@ -168,12 +141,18 @@ function gwoLoadouts() {
           star
         ) {
           var result = $.Deferred();
-          resolvePlayerFaction().then(function (host) {
+          // This scene's view model has no player faction, but Cluster start
+          // cards read global.playerFaction, so it comes from the campaign
+          // game - and the race with it.
+          hostWar.load().then(function (host) {
             var dealInventory = new GWInventory();
+            var viewerRace = _.isFunction(model.gwoViewerRace)
+              ? model.gwoViewerRace()
+              : undefined;
             var globalTags = buildGlobalTags(
               commander,
               host && host.faction,
-              host && host.race
+              (host && host.perPlayerRace && viewerRace) || (host && host.race)
             );
 
             _.forEach(globalTags, function (value, name) {
