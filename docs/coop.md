@@ -22,13 +22,19 @@ their own cards, and their own subcommanders. That changes several assumptions:
   half of `getOrderedSubcommanders` is gated on it.
 - A second referee runs. See below.
 
-Viewers share the host's race in this pass: the loadout scene stamps the host's
-race onto the viewer's starting inventory so its deals gate by race, and the
-per-player referee expands each viewer's units and mods onto the race's files by
-capability cell, retags the stock commander the viewer picked (and its Sub
-Commanders') the way the Guardians' Unicorn is, and routes their subcommanders
-to the race tree. The race is read per inventory, so a per-viewer race later is a
-record field and a picker. See [`races.md`](races.md).
+The race is read per inventory, never off the host's: the loadout scene stamps a
+race onto the viewer's starting inventory, and the per-player referee expands
+each viewer's units and mods onto that race's files by capability cell, retags
+their commander (and its Sub Commanders') the way the Guardians' Unicorn is, and
+routes their subcommanders to that race's tree. **Separate races** decides which
+race is stamped — the host's for every viewer when it is off, each viewer's own
+pick when it is on. See [`races.md`](races.md).
+
+**Separate races** is a co-op setting in the war setup's co-op panel, off by
+default, and settable only alongside Separate loadout & tech: the per-player
+tech referee is the only thing that reads a race per army. The war records it as
+`originSystem.gwaio.races.perPlayerRace`, so a viewer joining knows whether to
+offer a picker, and a war saved before the setting existed reads as off.
 
 ## The two referees
 
@@ -356,18 +362,27 @@ server, because banking is held shut on viewers for the reason below.
 
 ## The per-player loadout scene
 
-`gw_coop_per_player_loadout` is its own scene, and
-`gw_coop_per_player_loadout/gwo_loadouts.js` is the only file GWO puts in it. It
-is where a viewer picks their war loadout, and it has to build that loadout's
-starting inventory itself rather than inheriting the host's.
+`gw_coop_per_player_loadout` is its own scene. It is where a viewer picks their
+war loadout — and, under Separate races, their race — and it has to build that
+loadout's starting inventory itself rather than inheriting the host's. GWO puts
+three files in it: `shared/race_picker_view.js`,
+`gw_coop_per_player_loadout/race_picker.js` and
+`gw_coop_per_player_loadout/gwo_loadouts.js`.
 
-Two things about it are not obvious from the scene it sits in:
+Three things about it are not obvious from the scene it sits in:
 
-- **The view model has no player faction**, but Cluster start cards read
-  `global.playerFaction`. `resolvePlayerFaction` therefore loads the campaign
-  game through `GW.manifest.loadGame(model.activeGameId())` purely to read that
-  tag back out, and resolves `undefined` rather than rejecting when there is no
-  active game — a loadout preview outside a war still has to render.
+- **The view model knows nothing about the war.** It has no player faction, but
+  Cluster start cards read `global.playerFaction`; it has no race, and no war
+  settings. `host_war.js` therefore loads the campaign game through
+  `GW.manifest.loadGame(model.activeGameId())` once, caches the promise for both
+  scene scripts, and resolves `{ faction, race, races, perPlayerRace }` — always,
+  never rejecting, because a loadout preview outside a war still has to render.
+- **The picker's markup is injected synchronously.** `ko.applyBindings` runs as
+  soon as the scene scripts return, so anything added after that is never bound.
+  The race control and the commander display go in at scene-script time and stay
+  hidden until `host_war.load()` says the war has races to offer. For the same
+  reason the commander name and portrait lookup is a scene script rather than a
+  module: the markup binds to it before any `requireGW` could resolve.
 - **`validateStartingInventory` refuses rather than proceeds.** It asserts the
   chosen card produced exactly one card, in first position, with `maxCards` a
   number leaving room beyond it. Anything else rejects the deferred, because a

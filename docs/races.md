@@ -233,10 +233,13 @@ reason, but those are bound once, so that half is installed ahead of
 `ko.applyBindings` (or immediately, if `model.gwCampaignPlayStarted` says the
 scene is already bound).
 
-Co-op viewers share the host's race in this pass. The referee reads a race off
-each inventory (`races.raceOf` understands the live `getTag` and the serialised
-`tags` shape), so a per-viewer race later is a record and a picker, not a
-rewrite.
+In co-op the war also records `perPlayerRace`, the **Separate races** setting.
+With it off every viewer's inventory is stamped with the host's race; with it on
+each viewer picks their own at the loadout screen, from the races the war
+recorded rather than the ones that client has installed. Either way the referee
+reads the race off each inventory (`races.raceOf` understands the live `getTag`
+and the serialised `tags` shape), so nothing downstream has to know which mode
+it is in. See [`coop.md`](coop.md).
 
 ## Legion Expansion
 

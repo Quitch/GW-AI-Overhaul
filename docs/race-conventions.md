@@ -76,10 +76,12 @@ something new.
   Radar) - every `_upgrade_` card is MLA-only except the commander's.
 - **The race tag travels with every inventory** (`global:playerRace`), the
   host's and each co-op viewer's, and every referee function takes the race
-  per army. Viewers share the host's race in this pass.
-- **Commanders.** The player and the AI draw from the descriptor's list. The
-  boss keeps its Pumpkin, the Guardians their Unicorn, a co-op viewer its stock
-  pick - all retagged. Commander cells receive mods but are never granted.
+  per army. Never read a race off `model.game().inventory()` when the thing
+  being built belongs to a viewer - that is the host's.
+- **Commanders.** The player and the AI draw from the descriptor's list, and so
+  does a co-op viewer under Separate races. The boss keeps its Pumpkin, the
+  Guardians their Unicorn, and a viewer that kept a stock commander keeps it -
+  all retagged. Commander cells receive mods but are never granted.
 - **Commander art hue.** `commanderArtHue` is the hue the preview art ships
   in (MLA 210 blue, Legion 0 red); the picker rotates from there to the
   faction colour.
