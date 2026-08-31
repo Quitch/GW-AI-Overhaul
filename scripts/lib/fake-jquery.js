@@ -34,12 +34,24 @@ function makeDeferred() {
 
 // jQuery 2's $.when: waits on anything thenable and passes everything else
 // through. One argument resolves to that value; several to the array of them.
+// The result carries `.always`, as jQuery's does - a caller that only wants to
+// know the wait is over uses it rather than .then. Always a fresh promise, so
+// attaching that never mutates what was passed in.
 function when() {
   var args = Array.prototype.slice.call(arguments);
   var settled = args.map(function (arg) {
     return arg && typeof arg.then === "function" ? arg : Promise.resolve(arg);
   });
-  return args.length === 1 ? settled[0] : Promise.all(settled);
+  var result = Promise.all(settled).then(function (values) {
+    return args.length === 1 ? values[0] : values;
+  });
+
+  result.always = function (fn) {
+    result.then(fn, fn);
+    return result;
+  };
+
+  return result;
 }
 
 // Requesting a URL with no configured resolver rejects, so a test's fixtures can't

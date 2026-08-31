@@ -34,18 +34,30 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     return registered;
   };
 
-  // Resolves { races, mods }: the races whose server mod is active, and the
-  // identifier and version of each such mod, for the war to record.
+  // Resolves { races, mods, known, gwsm }: the races whose server mod is
+  // active, the identifier, name and version of each such mod for the war to
+  // record, whether the installed mods could be read at all, and whether GW
+  // Server Mods is here to mount them. `known` false is "cannot tell" -
+  // Community Mods absent and nothing in the IndexedDB fallback - which a
+  // resume check must not mistake for "not installed". `gwsm` false is not
+  // that: no race can be mounted whatever is installed, so the answer is a
+  // definite none, and it is the thing to tell the player about. See races.md.
   var installedRaces = function () {
     var done = $.Deferred();
     var mfst = manifest();
 
     if (!mfst) {
-      done.resolve({ races: races.detect([]), mods: [] });
+      done.resolve({
+        races: races.detect([]),
+        mods: [],
+        known: true,
+        gwsm: false,
+      });
       return done.promise();
     }
 
     $.when(mfst.load()).always(function () {
+      var known = !_.isFunction(mfst.listed) || !!mfst.listed();
       var active = mfst.activeServerMods();
       var identifiers = _.map(active, function (mod) {
         return mod.identifier;
@@ -60,9 +72,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
             return _.contains(wanted, mod.identifier);
           }),
           function (mod) {
-            return { identifier: mod.identifier, version: mod.version };
+            return {
+              identifier: mod.identifier,
+              // GW Server Mods falls back to the identifier when a mod ships no
+              // display name, so this is always something to show a player.
+              displayName: mod.displayName || mod.identifier,
+              version: mod.version,
+            };
           }
         ),
+        known: known,
+        gwsm: true,
       });
     });
 
