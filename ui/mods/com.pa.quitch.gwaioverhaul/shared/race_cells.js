@@ -128,9 +128,11 @@ define([
   };
 
   // Deals are synchronous, so the player's index is built ahead of the first
-  // one; until it lands, races.cardUsable deals everything.
-  var prime = function (raceId) {
-    return indexFor(raceId).then(null, function (error) {
+  // one; until it lands, races.cardUsable deals everything. `units` is passed
+  // when several races are primed together, so they share one list read - see
+  // gw_play/races.js.
+  var prime = function (raceId, units) {
+    return indexFor(raceId, units).then(null, function (error) {
       console.error("gwoRaces: cells not built for " + raceId, error);
     });
   };

@@ -73,11 +73,9 @@ function gwoViewerRacePicker() {
             return;
           }
 
-          model.gwoViewerRace(
-            _.contains(_.pluck(host.races, "id"), host.race)
-              ? host.race
-              : races.MLA_ID
-          );
+          var startingRace = _.contains(_.pluck(host.races, "id"), host.race)
+            ? host.race
+            : races.MLA_ID;
 
           model.gwoViewerRaceOptions(
             _.map(host.races, function (race) {
@@ -85,36 +83,41 @@ function gwoViewerRacePicker() {
             })
           );
           $(raceSelectId).html(pickerOptions.optionsHtml(host.races));
-          $(raceSelectId).selectpicker("val", model.gwoViewerRace());
+          $(raceSelectId).selectpicker("val", startingRace);
           $(raceSelectId).selectpicker("refresh");
+          // After the refresh, not before: refreshing a select whose options
+          // were just replaced writes the control's own value back through the
+          // binding, which would undo a default set ahead of it.
+          model.gwoViewerRace(startingRace);
 
           // Zip mounts only, no content remount: the commander specs and
-          // portraits are read through coui:. See races.md.
-          raceMods.mountRoot();
+          // portraits are read through coui:. See races.md. Waited on - a
+          // commander read before its zip is mounted caches a failure, and the
+          // name never recovers.
+          raceMods.mountRoot().always(function () {
+            // Waiting for the stock list too, so the race's does not get
+            // overwritten a moment later.
+            CommanderUtility.afterCommandersLoaded(function () {
+              var stock = model.commanders();
 
-          // The commander list follows the race, and the loadouts with it: a
-          // race player is never offered one built for MLA alone. Waiting for
-          // the stock list keeps it from being overwritten a moment later.
-          CommanderUtility.afterCommandersLoaded(function () {
-            var stock = model.commanders();
+              ko.computed(function () {
+                var choices = pickerOptions.commanderChoices(
+                  races.byId(model.gwoViewerRace()),
+                  stock,
+                  races.MLA_ID
+                );
 
-            ko.computed(function () {
-              var choices = pickerOptions.commanderChoices(
-                races.byId(model.gwoViewerRace()),
-                stock,
-                races.MLA_ID
-              );
-
-              model.commanders(choices);
-              if (
-                choices.length &&
-                !_.contains(choices, model.selectedCommander())
-              ) {
-                model.selectedCommander(choices[0]);
-              }
-              if (_.isFunction(model.gwoRebuildStartCards)) {
-                model.gwoRebuildStartCards();
-              }
+                model.commanders(choices);
+                if (
+                  choices.length &&
+                  !_.contains(choices, model.selectedCommander())
+                ) {
+                  model.selectedCommander(choices[0]);
+                }
+                if (_.isFunction(model.gwoRebuildStartCards)) {
+                  model.gwoRebuildStartCards();
+                }
+              });
             });
           });
         });

@@ -157,12 +157,24 @@ function gwoPlayRaces() {
         // now rather than at the first deal - once GW Server Mods has the race
         // zip mounted, or the unit list read has no race unit in it. See
         // races.md.
+        //
+        // One unit list read for all of them: a read taken before the mount
+        // has no race unit and is discarded, and letting each race take its
+        // own means some land either side of the mount and only some races
+        // end up primed.
         var toPrime = _.reject(racesToPrime(), gwoRaces.isMla);
         if (toPrime.length) {
           raceMods.mountRoot().always(function () {
-            _.forEach(toPrime, function (race) {
-              raceCells.prime(race);
-            });
+            raceCells.load().then(
+              function (loaded) {
+                _.forEach(toPrime, function (race) {
+                  raceCells.prime(race, loaded.units);
+                });
+              },
+              function (error) {
+                console.error("gwoRaces: unit list not read", error);
+              }
+            );
           });
         }
 
