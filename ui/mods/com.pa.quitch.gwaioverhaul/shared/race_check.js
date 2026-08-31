@@ -1,0 +1,116 @@
+// Whether a saved war can still field the races it was built with. Pure: it is
+// handed what the war recorded and what shared/race_mods.js found installed,
+// and returns what to block on and what to merely mention. No engine globals,
+// no model, no text - the caller localises. See races.md.
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
+  races
+) {
+  var normalizeIdentifier = function (identifier) {
+    return _.isString(identifier) ? identifier.trim().toLowerCase() : "";
+  };
+
+  // The races a saved war actually fields: the player's, one per faction, and
+  // whatever every star's AI carries. `races.raceOf` is deliberately not used -
+  // it answers MLA for a race it cannot resolve, which is the very case this
+  // module exists to catch.
+  var warRaces = function (recorded, ais) {
+    var ids = [recorded && recorded.player]
+      .concat(_.values((recorded && recorded.byFaction) || {}))
+      .concat(
+        _.map(ais || [], function (ai) {
+          return ai && ai.race;
+        })
+      );
+
+    return _.uniq(
+      _.filter(_.map(ids, races.normalizeId), function (id) {
+        return id.length && id !== races.MLA_ID;
+      })
+    );
+  };
+
+  // { blocked, warnings }. `blocked` stops the war being fought; `warnings` are
+  // said out loud and nothing more. A race mod that has merely changed version
+  // warns, because a point release must not lock a player out of their war.
+  var evaluate = function (recorded, warRaceIds, info) {
+    var blocked = [];
+    var warnings = [];
+    var ids = _.uniq(
+      _.filter(_.map(warRaceIds || [], races.normalizeId), function (id) {
+        return id.length && id !== races.MLA_ID;
+      })
+    );
+    // "Cannot tell" - Community Mods absent and nothing in the IndexedDB
+    // fallback - is not "not installed". Nothing that depends on the installed
+    // list is decided while it is false. See races.md.
+    var known = !!(info && info.known);
+    // GW Server Mods is what mounts a race's files. Without it the race mod
+    // being enabled changes nothing, so say that rather than send the player
+    // to look at a mod that is already on.
+    var gwsm = !info || info.gwsm !== false;
+    var installed = _.pluck((info && info.races) || [], "id");
+    var wanted = [];
+
+    _.forEach(ids, function (id) {
+      var race = races.byId(id);
+
+      // No descriptor at all: the race's client mod is gone, or the mod that
+      // registered it no longer does. A registry fact, so it holds whether or
+      // not the installed server mods could be listed.
+      if (!race || race.id === races.MLA_ID) {
+        blocked.push({ reason: "descriptor", race: id, name: id });
+        return;
+      }
+
+      wanted = wanted.concat(race.serverMods);
+
+      if (known && !_.contains(installed, race.id)) {
+        blocked.push({
+          reason: gwsm ? "serverMod" : "gwServerMods",
+          race: race.id,
+          name: race.name,
+          mods: race.serverMods,
+        });
+      }
+    });
+
+    if (!known) {
+      return { blocked: blocked, warnings: warnings };
+    }
+
+    _.forEach((recorded && recorded.mods) || [], function (mod) {
+      var identifier = normalizeIdentifier(mod && mod.identifier);
+
+      // Recorded mods cover every race installed when the war was made, not
+      // the ones it fields. Disabling a race this war never used is not news.
+      if (!_.contains(wanted, identifier)) {
+        return;
+      }
+
+      var active = _.find(info.mods, function (candidate) {
+        return normalizeIdentifier(candidate.identifier) === identifier;
+      });
+
+      // Absent is either already blocked above, or the race is present under
+      // one of its other identifiers - a deliberate swap to a -dev build.
+      if (!active || active.version === mod.version) {
+        return;
+      }
+
+      warnings.push({
+        reason: "version",
+        identifier: identifier,
+        name: active.displayName || mod.displayName || identifier,
+        from: mod.version,
+        to: active.version,
+      });
+    });
+
+    return { blocked: blocked, warnings: warnings };
+  };
+
+  return {
+    warRaces: warRaces,
+    evaluate: evaluate,
+  };
+});

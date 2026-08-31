@@ -427,6 +427,7 @@ define([
     TITANS: TITANS,
     BRAINS: BRAINS,
     register: register,
+    normalizeId: normalizeId,
     byId: byId,
     all: all,
     isMla: isMla,
