@@ -388,6 +388,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_build.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
       ],
       function (
         GW,
@@ -412,7 +413,8 @@ function gwoSetup() {
         chooseStarSystemTemplates,
         gwoBiomeMods,
         gwoGalaxyBuild,
-        gwoRaces
+        gwoRaces,
+        gwoPromise
       ) {
         // Replaces GWGalaxy.prototype.build, which navToNewGame below calls.
         gwoGalaxyBuild.install();
@@ -640,7 +642,8 @@ function gwoSetup() {
             $.when.apply($, loading).then(onSystemsLoaded, withoutBrackets);
           };
 
-          $.when(modsMounted).always(function () {
+          // modsMounted is an engine promise, which $.when does not wait for.
+          gwoPromise.settled(modsMounted).then(function () {
             // Capability rather than the mod identifier: the identifier changes on a
             // dev build of Shared Systems, this does not.
             if (

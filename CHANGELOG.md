@@ -12,6 +12,10 @@
 - Separate races: a co-op war generated with this on lets every player pick their own race and commander when they choose their loadout, instead of all sharing the host's. Needs Separate loadout & tech, and offers the races the war was created with
 - Resuming a war whose race mods are gone now says so and stops you fighting it, rather than quietly taking your units away. Re-enable the mods and restart the game to carry on. A race mod that has only changed version still just leaves a note on the war panel
 
+### Bugfix
+
+- Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections
+
 ## v6.14.0 - 2026-08-27
 
 ### Changed
