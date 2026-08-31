@@ -219,7 +219,6 @@ function gwoWarInfoPanel(gwoSettings) {
           var descriptor = gwoRaces.byId(race) || gwoRaces.byId(playerRace);
           return (descriptor && descriptor.playerIcon) || {};
         };
-        model.gwoRaceWarning = ko.observable("");
         // The host's colour, written once at war creation and never changed.
         var playerColourPair = inventory.getTag("global", "playerColor");
         var playerColour = gwoColour.rgb(playerColourPair);

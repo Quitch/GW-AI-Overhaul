@@ -132,6 +132,18 @@
       </div>
     </div>
     <!-- /ko -->
+    <h3 id="missing-races" data-bind="visible: $root.gwoRaceBlock().length > 0">
+      <loc>Missing Races</loc>
+    </h3>
+    <!-- ko if: $root.gwoRaceBlock -->
+    <div class="table">
+      <div class="tablebody" data-bind="foreach: $root.gwoRaceBlock()">
+        <div class="tr">
+          <div class="data gwo-race-missing" data-bind="text: $data"></div>
+        </div>
+      </div>
+    </div>
+    <!-- /ko -->
     <h3 data-bind="text: $root.gwoFactionName"></h3>
     <div
       class="gwo-race-warning"

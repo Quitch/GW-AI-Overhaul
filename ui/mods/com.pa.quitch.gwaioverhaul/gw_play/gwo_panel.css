@@ -20,8 +20,22 @@
   color: white;
 }
 
-#incompatible-mods {
+#incompatible-mods,
+#missing-races {
   color: red;
+}
+
+/* A race mod that has merely changed version: worth reading, not worth alarm.
+   The missing-race rows below share the red of #incompatible-mods, since both
+   say the war will not play as it was built. */
+.gwo-info .gwo-race-warning {
+  color: #ffc14d;
+  padding: 2px 0;
+}
+
+.gwo-info .data.gwo-race-missing {
+  color: red;
+  width: auto;
 }
 
 /* These allow us to format text after it has been translated (which is case
