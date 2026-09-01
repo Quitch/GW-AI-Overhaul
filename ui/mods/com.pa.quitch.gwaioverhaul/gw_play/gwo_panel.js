@@ -14,6 +14,8 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwoSettings = gwoSettings;
     model.gwoDifficulty = loc(model.gwoSettings.difficulty);
     model.gwoSize = loc(model.gwoSettings.galaxySize);
+    // Refined per race in the requireGW callback below, before the panel's
+    // markup is fetched and bound.
     model.gwoAI = model.gwoSettings.ai || "Titans";
     model.gwoAIAlly =
       model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
@@ -138,6 +140,7 @@ function gwoWarInfoPanel(gwoSettings) {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
       ],
       function (
         gwoColour,
@@ -145,9 +148,56 @@ function gwoWarInfoPanel(gwoSettings) {
         gwoRefereeCoop,
         gwoSubcommanderTech,
         gwoRaces,
-        gwoVersion
+        gwoVersion,
+        gwoBrainTable
       ) {
         model.gwoVersion = ko.observable(gwoVersion);
+
+        // One name per side when every race the war recorded resolves to the
+        // same brain - every pre-table save, and any uniform table - else the
+        // per-race list. See races.md.
+        var recordedRaces = gwoSettings.races || {};
+        var warRaceIds = _.uniq(
+          _.filter(
+            _.map(
+              [gwoRaces.MLA_ID, recordedRaces.player].concat(
+                _.values(recordedRaces.byFaction || {})
+              ),
+              gwoRaces.normalizeId
+            ),
+            function (id) {
+              return id.length > 0;
+            }
+          )
+        );
+        var raceName = function (id) {
+          var descriptor = gwoRaces.byId(id);
+          return descriptor ? loc(descriptor.name) : id;
+        };
+        var brainSummary = function (side) {
+          var entries = _.map(warRaceIds, function (id) {
+            return {
+              id: id,
+              brain: gwoBrainTable.resolve(
+                gwoSettings.aiByRace,
+                gwoSettings.ai,
+                gwoSettings.aiAlly,
+                side,
+                id
+              ),
+            };
+          });
+          var brains = _.uniq(_.pluck(entries, "brain"));
+
+          if (brains.length === 1) {
+            return brains[0];
+          }
+          return _.map(entries, function (entry) {
+            return raceName(entry.id) + ": " + entry.brain;
+          }).join(", ");
+        };
+        model.gwoAI = brainSummary("enemy");
+        model.gwoAIAlly = brainSummary("ally");
 
         var coopText = function (setting) {
           if (setting) {

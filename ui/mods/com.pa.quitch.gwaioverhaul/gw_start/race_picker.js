@@ -1,6 +1,6 @@
-// The race picker: the player's race, the brains that can run the races in
-// play, and the commander list for the chosen race. Only
-// shown when GW Server Mods has a race's server mod active. See races.md.
+// The race picker: the player's race and the commander list for the chosen
+// race. Only shown when GW Server Mods has a race's server mod active. The
+// AI brains are per race, in ai_picker.js's modal. See races.md.
 var gwoRacePickerLoaded;
 
 function gwoRacePicker() {
@@ -18,10 +18,6 @@ function gwoRacePicker() {
     // the placeholder back over it. See races.md.
     var savedRace = settings.playerRace();
     var raceSelectId = "#gwo-race-select";
-    var brainSelectIds = [
-      "#difficulty-ai-enemy-select",
-      "#difficulty-ai-ally-select",
-    ];
 
     // Observables the markup binds to exist before the bindings are applied;
     // the modules that fill them arrive later, so each is written into rather
@@ -79,7 +75,7 @@ function gwoRacePicker() {
     model.gwoPerPlayerRaceTooltip =
       "!LOC:Each player picks their own race when they choose their loadout. Requires Separate loadout &amp; tech.";
     model.gwoRaceTooltip =
-      "!LOC:The units you and your Sub Commanders field. Only the TITANS AI knows every race; QUELLER also knows Legion. An AI that does not know a race in play cannot be chosen.";
+      "!LOC:The units you and your Sub Commanders field. Each race's AI is picked with the AI button.";
     model.gwoUniqueRacesTooltip =
       "!LOC:No two enemy factions share a race until every race in play has been used.";
 
@@ -143,29 +139,6 @@ function gwoRacePicker() {
             settings.playerRace(races.MLA_ID);
           }
           $(raceSelectId).prop("disabled", cluster).selectpicker("refresh");
-        });
-
-        // Only a brain that knows every race in play is offered; an unavailable
-        // choice falls back to Titans, which knows them all. Every installed
-        // race is in play: an enemy faction may draw any of them.
-        ko.computed(function () {
-          var inPlay = [settings.playerRace()].concat(
-            _.pluck(model.gwoRaceInfo().races, "id")
-          );
-          var allowed = races.brainsFor(inPlay);
-
-          _.forEach(brainSelectIds, function (id) {
-            $(id + " option").each(function () {
-              $(this).prop("disabled", !_.contains(allowed, $(this).val()));
-            });
-            $(id).selectpicker("refresh");
-          });
-          if (!_.contains(allowed, settings.ai())) {
-            settings.ai(races.TITANS);
-          }
-          if (!_.contains(allowed, settings.aiAlly())) {
-            settings.aiAlly(races.TITANS);
-          }
         });
 
         // One mount covers every race: the zips are the same set whichever

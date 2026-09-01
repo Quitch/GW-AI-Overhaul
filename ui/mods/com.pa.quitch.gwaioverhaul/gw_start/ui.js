@@ -154,15 +154,6 @@ function gwoUI() {
       "!LOC:BASIC: base game tech cards<BR>GALACTIC WAR OVERHAUL: over 150 additional cards.";
     model.gwoFactionTooltip =
       "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
-    // The brain rule is appended to the shipped wording, so its translation
-    // is kept and only the addition is new. See races.md.
-    model.gwoAiTooltip =
-      loc(
-        "!LOC:TITANS: base game AI<br>QUELLER: greater challenge at the cost of performance<br>PENCHANT: increased personality"
-      ) +
-      loc(
-        "!LOC:<br>An AI that does not know a race in play cannot be chosen: TITANS knows every race, QUELLER knows Legion."
-      );
 
     model.gwoGameOptionsDraft = {
       hardcore: ko.observable(false),
@@ -318,11 +309,6 @@ function gwoUI() {
     $("#gwo-game-options-modal").appendTo("body");
     addHtml.before("#faction-select", "faction_tooltip.html");
     addHtml.before("#game-size", "size_tooltip.html");
-    addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");
-    $("#difficulty-ai-enemy .info_tip, #difficulty-ai-ally .info_tip").attr(
-      "data-bind",
-      "tooltip: $root.gwoAiTooltip"
-    );
     addHtml.before(gameDifficultyLabelId, "cards_dropdown.html");
     addHtml.append(gameDifficultyLabelId, "difficulty_levels_tooltip.html");
     addHtml.replace(gameDifficultyId, "difficulty_levels.html");
@@ -345,8 +331,6 @@ function gwoUI() {
     // and so leaves that header's <loc> unreached.
     locTree($("#gwo-ai-settings"));
     locTree($("#difficulty-cards"));
-    locTree($("#difficulty-ai-enemy"));
-    locTree($("#difficulty-ai-ally"));
 
     if (api.content.usingTitans()) {
       model.gwoFactionTooltip =
@@ -354,13 +338,6 @@ function gwoUI() {
         loc(
           "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
         );
-    } else {
-      // bootstrap-select ignores a non-select receiver, so the refresh below
-      // must target the parent selects, not the options.
-      $("select option[value*='Queller']").prop("disabled", true);
-      $("#difficulty-ai-enemy-select, #difficulty-ai-ally-select").selectpicker(
-        "refresh"
-      );
     }
 
     // Track difficulty settings so AI Settings' fields display correct values
