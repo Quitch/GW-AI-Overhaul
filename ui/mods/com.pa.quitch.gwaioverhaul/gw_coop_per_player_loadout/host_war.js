@@ -9,31 +9,34 @@ define([
 ], function (GW, gwoAI, gwoRaces, raceCheck) {
   var loaded;
 
-  // What the host said it is running, captured into sessionStorage by GW
-  // Server Mods' connect gate on the way into the session. The host's active
-  // set, not this client's: the host mounts the server mods a battle fields,
-  // so race_mods.installedRaces - this client's own list, and on GW Server
-  // Mods builds without this scene in their modinfo, no answer at all - is
-  // the wrong thing to ask. The raw key read works on every such build. No
-  // stash - a host without GW Server Mods, or storage unreadable - is
-  // "cannot tell", and activeRaces then removes nothing. See races.md.
-  var HOST_MODS_KEY = "gw_server_mods_host_identifiers";
-
+  // What the host said it is running, captured by GW Server Mods' connect
+  // gate on the way into the session and served by its hostServerMods(). The
+  // host's active set, not this client's: the host mounts the server mods a
+  // battle fields, so race_mods.installedRaces - this client's own list - is
+  // the wrong thing to ask. No answer - a host without GW Server Mods, a
+  // build without the API in this scene, or the empty set the API returns
+  // when the host published nothing - is "cannot tell", and activeRaces then
+  // removes nothing. See races.md.
   var hostInstalledInfo = function () {
-    var stored;
+    var gwsm = window.GwServerMods;
+    var mods;
 
-    try {
-      stored = JSON.parse(sessionStorage.getItem(HOST_MODS_KEY) || "null");
-    } catch (e) {
-      stored = null;
+    if (!gwsm || !_.isFunction(gwsm.hostServerMods)) {
+      return { known: false };
     }
 
-    if (!stored || !_.isArray(stored.identifiers)) {
+    try {
+      mods = gwsm.hostServerMods();
+    } catch (e) {
+      return { known: false };
+    }
+
+    if (!_.isArray(mods) || !mods.length) {
       return { known: false };
     }
 
     return {
-      races: gwoRaces.detect(stored.identifiers),
+      races: gwoRaces.detect(_.pluck(mods, "identifier")),
       known: true,
     };
   };

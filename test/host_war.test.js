@@ -61,12 +61,11 @@ const installed = (overrides) =>
 
 const stubs = createGlobalStubs();
 
-// The stash GW Server Mods' connect gate leaves in sessionStorage.
-const stashHostMods = (value) => {
-  stubs.setGlobal("sessionStorage", {
-    getItem: (key) =>
-      key === "gw_server_mods_host_identifiers" ? value : null,
-  });
+// GW Server Mods' capability API, shaped as test/capability.test.js pins it:
+// hostServerMods() returns { identifier, displayName, version } rows, and an
+// empty array when the host published nothing.
+const stubHostServerMods = (hostServerMods) => {
+  stubs.setGlobal("window", { GwServerMods: { hostServerMods } });
 };
 
 beforeEach(() => {
@@ -158,10 +157,14 @@ describe("offeredRaces", () => {
 });
 
 describe("hostInstalledInfo", () => {
-  it("reads the host's active mods from the connect gate's stash", () => {
-    stashHostMods(
-      JSON.stringify({ identifiers: ["com.example.fixture-server"] })
-    );
+  it("reads the host's active mods from GW Server Mods' capability API", () => {
+    stubHostServerMods(() => [
+      {
+        identifier: "com.example.fixture-server",
+        displayName: "Fixture",
+        version: "1.2.0",
+      },
+    ]);
 
     const info = hostWar.hostInstalledInfo();
 
@@ -172,28 +175,29 @@ describe("hostInstalledInfo", () => {
     );
   });
 
-  it("answers cannot-tell when there is no stash", () => {
-    stashHostMods(null);
-
-    assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
-  });
-
-  it("answers cannot-tell when the stash is unreadable", () => {
-    stashHostMods("{not json");
+  it("answers cannot-tell without GW Server Mods or its API", () => {
+    stubs.setGlobal("window", {});
     assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
 
     stubs.restoreGlobals();
-    stashHostMods(JSON.stringify({ identifiers: "nope" }));
+    stubs.setGlobal("window", { GwServerMods: {} });
     assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
   });
 
-  it("answers cannot-tell when storage itself throws", () => {
-    stubs.setGlobal("sessionStorage", {
-      getItem: () => {
-        throw new Error("denied");
-      },
-    });
+  it("answers cannot-tell for the empty set a missing publish leaves", () => {
+    stubHostServerMods(() => []);
 
+    assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
+  });
+
+  it("answers cannot-tell when the API misbehaves", () => {
+    stubHostServerMods(() => {
+      throw new Error("denied");
+    });
+    assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
+
+    stubs.restoreGlobals();
+    stubHostServerMods(() => "nope");
     assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
   });
 });

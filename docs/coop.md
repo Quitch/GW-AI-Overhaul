@@ -378,11 +378,11 @@ Three things about it are not obvious from the scene it sits in:
   scene scripts, and resolves `{ faction, race, races, perPlayerRace }` — always,
   never rejecting, because a loadout preview outside a war still has to render.
   `races` is the war's recorded offer intersected, through
-  `race_check.activeRaces`, with the host's active server mods — read from the
-  sessionStorage stash GW Server Mods' connect gate leaves on the way in, not
-  from `race_mods.installedRaces`: that answers with this client's own list —
-  the host's set is the authority — and answers nothing at all on GW Server
-  Mods builds whose modinfo skips this scene. No stash removes nothing.
+  `race_check.activeRaces`, with the host's active server mods — asked of
+  `GwServerMods.hostServerMods()`, the capability API over what its connect
+  gate captured on the way in, not of `race_mods.installedRaces`: that answers
+  with this client's own list, and the host's set is the authority. No API, or
+  the empty set a missing publish leaves, removes nothing.
 - **The picker's markup is injected synchronously.** `ko.applyBindings` runs as
   soon as the scene scripts return, so anything added after that is never bound.
   The race control and the commander display go in at scene-script time and stay
