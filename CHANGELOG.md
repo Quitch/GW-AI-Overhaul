@@ -5,7 +5,8 @@
 ### Added
 
 - Pressing Fight now shows a loading screen that reports each stage of battle preparation. Other mods can report their own stages through `model.gwoLaunchProgress`
-- Races: with GW Server Mods active, a war can be fought as a unit faction from a server mod, and every enemy faction fields one too. Choose your race in the war setup - every installed race is in play for the enemy, so disable a race mod to keep it out - and turn on Unique Races so no two factions share one. Sub Commanders and enemy commanders come from the race; bosses and the Guardians keep their commanders. An AI that does not know a race in play cannot be chosen
+- Races: with GW Server Mods active, a war can be fought as a unit faction from a server mod, and every enemy faction fields one too. Choose your race in the war setup - every installed race is in play for the enemy, so disable a race mod to keep it out - and turn on Unique Races so no two factions share one. Sub Commanders and enemy commanders come from the race; bosses and the Guardians keep their commanders
+- The two AI dropdowns are now an AI button opening a table with one row per race and an Opponent and Ally AI per row, offering only the AIs that know each race. Installing a race no AI but TITANS knows no longer limits every army to TITANS - each army fights with the AI chosen for its race, in the same war and even the same battle. The war panel lists the AIs per race when they differ
 - Legion Expansion is the first race: with its server mod active, fight as the Legion or against it, with Legion Sub Commanders, tech cards applied to Legion units, and the Legion AI build orders under the TITANS and QUELLER brains
 - Bug Faction is the second race, under the TITANS brain, research included: its research factories arrive with the factories and unlock what they research
 - Exiles is the third race, under the TITANS brain. Exiles has no orbital units beyond the launcher, so the orbital tech cards are not dealt to an Exiles player
@@ -15,6 +16,7 @@
 ### Bugfix
 
 - Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections
+- Sub Commanders were dealt PENCHANT personalities when the Opponent AI was PENCHANT; they now follow the Ally AI, as their QUELLER compatibility filter always did
 
 ## v6.14.0 - 2026-08-27
 

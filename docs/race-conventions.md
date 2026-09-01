@@ -24,7 +24,8 @@ something new.
    file prefix for Legion's flat `legion_*`, a sub-directory for Bugs'
    `bugs/`). `ai.queller` only when the Queller mod ships the race
    (`unitMaps` relative to the tier, `exclude` the MLA side). Add the brain to
-   `BRAINS` in `shared/races.js` if a brain gains a race.
+   `BRAINS` in `shared/races.js` if a brain gains a race - the AI modal's
+   per-race cells (`shared/brain_table.js`) offer it from there automatically.
 4. **Fixture.** Add the server mod (and any companion that supplies base
    specs) to `RACE_MODS` in `scripts/harvest-unit-types.js`, in mount order,
    and re-run it so `test/fixtures/unit_types.json` carries the race's units

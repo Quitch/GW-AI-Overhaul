@@ -154,10 +154,21 @@ so do the Guardians' borrowed player mods.
 | Queller  | MLA and Legion - both ship in every tier, stock copy included |
 | Penchant | MLA                                                           |
 
-`races.brainFor(brain, race)` is the one seam: the war's brain when it supports
-the race, Titans otherwise. `gw_start` never offers a brain that cannot run a
-race in play - the picker disables it and falls back to Titans - so the
-fallback only fires for a save or a cheat that got past the picker.
+The brain is picked **per race and per side** in `gw_start`'s AI modal
+(`ai_picker.js` + `shared/brain_table.js`): one row per installed race, an
+Opponent and an Ally cell per row, each cell offering only `brainsFor([race])`
+(minus Queller on classic content). The MLA row is the war-wide
+`gwoDifficultySettings.ai`/`aiAlly` pair; the other rows live in
+`gwoDifficultySettings.aiByRace` and are recorded, coerced, as
+`gwaio.aiByRace` beside the strings. `shared/ai.js`'s
+`warBrain(alignment, race)` reads the race's row and falls back to the
+strings, so a war saved before the table behaves exactly as it always did.
+
+`races.brainFor(brain, race)` stays the safety net inside
+`aiInUse`/`brain_table.resolve`: since the modal only offers supported brains,
+the coercion fires only for a save or hand-edit that got past it - and for an
+old save whose war-wide brain never supported a race, where it reproduces the
+pre-table fallback.
 
 ## Commanders
 

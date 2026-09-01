@@ -172,12 +172,16 @@ unit cap.
 ## What `shared/ai.js` adds
 
 `aiInUse(alignment, race)` reads the origin system's `gwaio` blob — the settings
-piggy-backed onto the galaxy at war creation by `gw_start/setup.js`. For
-`alignment === "subcommander"` it prefers `gwaio.aiAlly` when set, which is what
-makes mixed-brain fights possible (a Queller enemy against a Penchant ally). With
-no `gwaio` blob at all — a war created before GWO, or by another mod — it returns
-`"Titans"`. With a `race` the brain has no build orders for it also returns
-`"Titans"` (`races.brainFor`), the only brain that knows every race.
+piggy-backed onto the galaxy at war creation by `gw_start/setup.js`. The brain is
+per race and per side (`shared/brain_table.js`): the race's `gwaio.aiByRace` row,
+`ally` for `alignment === "subcommander"` and `enemy` otherwise, falling back to
+the war-wide `gwaio.aiAlly`/`gwaio.ai` strings for MLA, for a race with no row,
+and for every war saved before the table existed — which is what makes
+mixed-brain fights possible (a Queller Legion enemy against a Penchant MLA foe
+in one battle). With no `gwaio` blob at all — a war created before GWO, or by
+another mod — it returns `"Titans"`. With a `race` the brain has no build orders
+for it also returns `"Titans"` (`races.brainFor`), the only brain that knows
+every race.
 
 `getAIPathSource(type)` fills in `smartSubcommanders` from the tech cards held.
 `getAIPathDestination(type, options)` fills in the settings the pure module needs
