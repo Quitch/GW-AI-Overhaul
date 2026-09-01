@@ -1,7 +1,7 @@
 "use strict";
 
-// shared/race_picker_options.js: the two decisions gw_start's race picker and
-// the co-op loadout scene's make the same way. See races.md.
+// shared/race_picker_options.js: the decisions gw_start's race picker and the
+// co-op loadout scene's make the same way. See races.md.
 
 const { describe, it, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -83,5 +83,39 @@ describe("commanderChoices", () => {
       ),
       stock
     );
+  });
+});
+
+describe("commanderTint", () => {
+  // The art ships in MLA's blue (hue 210); the filter rotates from there to
+  // the faction's hue.
+  it("rotates the art's hue to the faction's", () => {
+    assert.equal(
+      pickerOptions.commanderTint([255, 0, 0], 210),
+      "hue-rotate(-210deg)"
+    );
+    assert.equal(
+      pickerOptions.commanderTint([0, 176, 255], 210),
+      "hue-rotate(-11deg)"
+    );
+  });
+
+  it("rotates from a race's own art hue", () => {
+    assert.equal(
+      pickerOptions.commanderTint([0, 176, 255], 0),
+      "hue-rotate(199deg)"
+    );
+  });
+
+  it("drains the colour for an achromatic faction, which has no hue", () => {
+    assert.equal(
+      pickerOptions.commanderTint([128, 128, 128], 210),
+      "grayscale(1)"
+    );
+  });
+
+  it("applies no filter when the war has no colour", () => {
+    assert.equal(pickerOptions.commanderTint(undefined, 210), "");
+    assert.equal(pickerOptions.commanderTint([1, 2], 210), "");
   });
 });

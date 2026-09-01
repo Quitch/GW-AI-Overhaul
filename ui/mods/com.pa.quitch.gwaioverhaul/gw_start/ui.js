@@ -220,50 +220,9 @@ function gwoUI() {
       model.updateCommander();
     });
 
-    // MLA's art ships in the blue team paint; a race's may not (Legion's is
-    // red), so race_picker.js sets the hue its art ships in. Rotating by the
-    // difference to the faction hue recolours it while keeping the model's
-    // shading.
-    model.gwoCommanderArtHue = ko.observable(210);
-
-    // Returns undefined for an achromatic colour, which has no hue to rotate to.
-    var rgbHue = function (rgb) {
-      var red = rgb[0] / 255;
-      var green = rgb[1] / 255;
-      var blue = rgb[2] / 255;
-      var max = Math.max(red, green, blue);
-      var delta = max - Math.min(red, green, blue);
-
-      if (delta === 0) {
-        return undefined;
-      }
-
-      var hue;
-      if (max === red) {
-        hue = ((green - blue) / delta) % 6;
-      } else if (max === green) {
-        hue = (blue - red) / delta + 2;
-      } else {
-        hue = (red - green) / delta + 4;
-      }
-
-      hue = hue * 60;
-      return hue < 0 ? hue + 360 : hue;
-    };
-
-    model.gwoCommanderTintFilter = ko.computed(function () {
-      var hue = rgbHue(model.playerColor()[0]);
-
-      // Cluster's colour is a neutral grey, so drain the art's colour rather
-      // than rotating a hue it doesn't have.
-      if (hue === undefined) {
-        return "grayscale(1)";
-      }
-
-      return (
-        "hue-rotate(" + Math.round(hue - model.gwoCommanderArtHue()) + "deg)"
-      );
-    });
+    // The faction paint on the commander preview; race_picker.js fills it, once
+    // it knows the hue the race's art ships in.
+    model.gwoCommanderTintFilter = ko.observable("");
 
     model.gwoCommanderModalVisible = ko.observable(false);
     model.gwoCommanderDraft = ko.observable(model.selectedCommander());

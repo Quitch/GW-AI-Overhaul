@@ -120,8 +120,11 @@ function gwoRacePicker() {
             races.MLA_ID
           );
           model.gwoCommanderChoices(choices);
-          model.gwoCommanderArtHue(
-            races.commanderArtHue(settings.playerRace())
+          model.gwoCommanderTintFilter(
+            pickerOptions.commanderTint(
+              model.playerColor()[0],
+              races.commanderArtHue(settings.playerRace())
+            )
           );
           if (
             choices.length &&
