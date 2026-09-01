@@ -35,7 +35,6 @@ the traps that have actually caused bugs here.
 | Unit spec ops, path segments, spec caching                              | [`docs/specs.md`](docs/specs.md)               |
 | Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)             |
 | Races (Legion, Bugs, Exiles): registry, translation, race AI trees      | [`docs/races.md`](docs/races.md)               |
-| Galactic Conquest: turn engine, tiers, badges                           | [`docs/conquest.md`](docs/conquest.md)         |
 | The Node AMD harness, the validators, coverage                          | [`docs/testing.md`](docs/testing.md)           |
 
 These are worth knowing before you touch anything, each covered in full by the doc
