@@ -377,6 +377,8 @@ Three things about it are not obvious from the scene it sits in:
   `GW.manifest.loadGame(model.activeGameId())` once, caches the promise for both
   scene scripts, and resolves `{ faction, race, races, perPlayerRace }` — always,
   never rejecting, because a loadout preview outside a war still has to render.
+  `races` is the war's recorded offer intersected with what
+  `race_mods.installedRaces` found active, through `race_check.activeRaces`.
 - **The picker's markup is injected synchronously.** `ko.applyBindings` runs as
   soon as the scene scripts return, so anything added after that is never bound.
   The race control and the commander display go in at scene-script time and stay

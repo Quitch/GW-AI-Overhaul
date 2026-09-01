@@ -312,3 +312,59 @@ describe("evaluate", () => {
     });
   });
 });
+
+describe("activeRaces", () => {
+  const ids = (list) => list.map((race) => race.id);
+
+  it("keeps only the races whose server mod is active, and MLA", () => {
+    races.register(
+      Object.assign({}, FIXTURE_RACE, {
+        id: "second",
+        name: "!LOC:Second",
+        serverMods: ["com.example.second-server"],
+      })
+    );
+
+    const kept = raceCheck.activeRaces(
+      races.all(),
+      installed({ races: [races.byId("mla"), races.byId("fixture")] })
+    );
+
+    assert.deepEqual(ids(kept), ["mla", "fixture"]);
+  });
+
+  it("removes nothing when the mod list cannot be read", () => {
+    const kept = raceCheck.activeRaces(
+      races.all(),
+      installed({ known: false, races: [], mods: [] })
+    );
+
+    assert.deepEqual(ids(kept), ids(races.all()));
+  });
+
+  it("removes nothing with no installed info at all", () => {
+    assert.deepEqual(ids(raceCheck.activeRaces(races.all())), [
+      "mla",
+      "fixture",
+    ]);
+    assert.deepEqual(raceCheck.activeRaces(undefined, installed()), []);
+  });
+
+  it("keeps MLA even when the active list is empty", () => {
+    const kept = raceCheck.activeRaces(
+      races.all(),
+      installed({ races: [], mods: [], gwsm: false })
+    );
+
+    assert.deepEqual(ids(kept), ["mla"]);
+  });
+
+  it("tolerates a malformed active list", () => {
+    const kept = raceCheck.activeRaces(
+      races.all(),
+      installed({ races: [null, { id: "fixture" }] })
+    );
+
+    assert.deepEqual(ids(kept), ["mla", "fixture"]);
+  });
+});

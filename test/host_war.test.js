@@ -52,6 +52,12 @@ function makeGame(options) {
   };
 }
 
+const installed = (overrides) =>
+  Object.assign(
+    { races: races.all(), mods: [], known: true, gwsm: true },
+    overrides
+  );
+
 beforeEach(() => {
   races.reset();
   races.register(FIXTURE_RACE);
@@ -93,6 +99,50 @@ describe("offeredRaces", () => {
       ["mla"]
     );
   });
+
+  it("withholds a recorded race whose server mod is no longer active", () => {
+    const recorded = {
+      mods: [
+        { identifier: "com.example.fixture-server" },
+        { identifier: "com.example.other-server" },
+      ],
+    };
+
+    assert.deepEqual(
+      hostWar
+        .offeredRaces(
+          recorded,
+          installed({ races: [races.byId("mla"), races.byId("fixture")] })
+        )
+        .map((race) => race.id),
+      ["mla", "fixture"]
+    );
+  });
+
+  it("withholds nothing when the installed mods cannot be read", () => {
+    const recorded = { mods: [{ identifier: "com.example.fixture-server" }] };
+
+    assert.deepEqual(
+      hostWar
+        .offeredRaces(recorded, installed({ known: false, races: [] }))
+        .map((race) => race.id),
+      ["mla", "fixture"]
+    );
+  });
+
+  it("offers MLA alone without GW Server Mods, whatever the war recorded", () => {
+    const recorded = { mods: [{ identifier: "com.example.fixture-server" }] };
+
+    assert.deepEqual(
+      hostWar
+        .offeredRaces(
+          recorded,
+          installed({ races: [races.byId("mla")], gwsm: false })
+        )
+        .map((race) => race.id),
+      ["mla"]
+    );
+  });
 });
 
 describe("readGame", () => {
@@ -117,6 +167,30 @@ describe("readGame", () => {
       ["mla", "fixture"]
     );
     assert.equal(info.perPlayerRace, true);
+  });
+
+  it("hands the installed info through to the offer", () => {
+    const info = hostWar.readGame(
+      makeGame({
+        faction: 1,
+        race: "fixture",
+        gwaio: {
+          races: {
+            mods: [
+              { identifier: "com.example.fixture-server" },
+              { identifier: "com.example.other-server" },
+            ],
+            perPlayerRace: true,
+          },
+        },
+      }),
+      installed({ races: [races.byId("mla"), races.byId("fixture")] })
+    );
+
+    assert.deepEqual(
+      info.races.map((race) => race.id),
+      ["mla", "fixture"]
+    );
   });
 
   it("reads a war saved before the setting existed as off", () => {

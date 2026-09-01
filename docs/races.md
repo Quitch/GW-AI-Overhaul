@@ -237,7 +237,9 @@ scene is already bound).
 In co-op the war also records `perPlayerRace`, the **Separate races** setting.
 With it off every viewer's inventory is stamped with the host's race; with it on
 each viewer picks their own at the loadout screen, from the races the war
-recorded rather than the ones that client has installed. Either way the referee
+recorded that are still active - never that client's own installed list, and
+via `race_check.activeRaces`, so a mod list that cannot be read removes
+nothing. Either way the referee
 reads the race off each inventory (`races.raceOf` understands the live `getTag`
 and the serialised `tags` shape), so nothing downstream has to know which mode
 it is in. See [`coop.md`](coop.md).

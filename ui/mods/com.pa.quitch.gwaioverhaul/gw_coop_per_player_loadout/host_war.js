@@ -5,22 +5,26 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-], function (GW, gwoAI, gwoRaces) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_check.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
+], function (GW, gwoAI, gwoRaces, raceCheck, raceMods) {
   var loaded;
 
-  // The races a viewer may pick: the ones the host's war recorded, and MLA,
-  // which every war has. Deliberately not the viewer's own installed list - a
-  // race the host is not running has no units in the battle, and the war's
-  // brains were never checked against it. See races.md.
-  var offeredRaces = function (recorded) {
+  // The races a viewer may pick: the ones the host's war recorded that are
+  // still active, and MLA, which every war has. Deliberately not the viewer's
+  // own installed list - a race the host is not running has no units in the
+  // battle - and not the recorded list alone: a race disabled since the war
+  // was made has no units either, and the resume check does not block a race
+  // nobody fields. See races.md.
+  var offeredRaces = function (recorded, installed) {
     var identifiers = _.map((recorded && recorded.mods) || [], function (mod) {
       return mod && mod.identifier;
     });
 
-    return gwoRaces.detect(identifiers);
+    return raceCheck.activeRaces(gwoRaces.detect(identifiers), installed);
   };
 
-  var readGame = function (game) {
+  var readGame = function (game, installed) {
     var inventory =
       game && _.isFunction(game.inventory) ? game.inventory() : undefined;
     var tag = function (name) {
@@ -42,7 +46,7 @@ define([
     return {
       faction: tag("playerFaction"),
       race: tag("playerRace"),
-      races: offeredRaces(recorded),
+      races: offeredRaces(recorded, installed),
       perPlayerRace: !!(recorded && recorded.perPlayerRace),
     };
   };
@@ -75,9 +79,15 @@ define([
       return loaded;
     }
 
+    // In parallel with the game read; installedRaces always resolves, so
+    // chaining inside the success branch cannot hang the scene.
+    var installed = raceMods.installedRaces();
+
     GW.manifest.loadGame(activeGameId).then(
       function (game) {
-        deferred.resolve(readGame(game));
+        installed.then(function (info) {
+          deferred.resolve(readGame(game, info));
+        });
       },
       function () {
         deferred.resolve(empty());

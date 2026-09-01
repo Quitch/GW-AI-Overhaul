@@ -1,7 +1,8 @@
-// Whether a saved war can still field the races it was built with. Pure: it is
-// handed what the war recorded and what shared/race_mods.js found installed,
-// and returns what to block on and what to merely mention. No engine globals,
-// no model, no text - the caller localises. See races.md.
+// Whether a saved war can still field the races it was built with, and which
+// of its recorded races a client may still be offered. Pure: it is handed what
+// the war recorded and what shared/race_mods.js found installed, and returns
+// what to block on and what to merely mention. No engine globals, no model,
+// no text - the caller localises. See races.md.
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   races
 ) {
@@ -126,8 +127,26 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     return { blocked: blocked, warnings: warnings };
   };
 
+  // Which of the recorded races a client may still be offered: MLA always,
+  // and any race whose server mod race_mods.js found active. `known` false
+  // removes nothing - "cannot tell" is not "not installed". The viewer's
+  // picker and the host's cell priming both route through here, so the two
+  // sides cannot disagree. See races.md.
+  var activeRaces = function (detected, info) {
+    if (!info || !info.known) {
+      return detected || [];
+    }
+
+    var active = _.pluck(info.races || [], "id");
+
+    return _.filter(detected || [], function (race) {
+      return race.id === races.MLA_ID || _.contains(active, race.id);
+    });
+  };
+
   return {
     warRaces: warRaces,
     evaluate: evaluate,
+    activeRaces: activeRaces,
   };
 });
