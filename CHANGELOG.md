@@ -14,6 +14,10 @@
 - Resuming a war whose race mods are gone now says so and stops you fighting it, rather than quietly taking your units away. Re-enable the mods and restart the game to carry on. A race mod that has only changed version still just leaves a note on the war panel
 - Mods can now add whole decks to the Techs picker in the war setup, composed from the Basic and Galactic War Overhaul decks, other mods' decks, individual stock cards and their own cards. A war remembers its deck; resume one whose deck mod is gone and it deals the Galactic War Overhaul deck instead
 
+### Changed
+
+- In a co-op war, the loadout screen shows your commander in the war's faction colour, as the war setup's Commander picker does
+
 ### Bugfix
 
 - Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections

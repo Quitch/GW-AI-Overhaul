@@ -88,8 +88,8 @@ something new.
   Guardians their Unicorn, and a viewer that kept a stock commander keeps it -
   all retagged. Commander cells receive mods but are never granted.
 - **Commander art hue.** `commanderArtHue` is the hue the preview art ships
-  in (MLA 210 blue, Legion 0 red); the picker rotates from there to the
-  faction colour.
+  in (MLA 210 blue, Legion 0 red); the war setup's Commander picker and the
+  co-op loadout scene both rotate from there to the faction colour.
 - **Player icon** is a 16px fill/outline pair the race's own mod ships,
   reached through GW Server Mods' root mount (`coui://ui/mods/<mod>/img/…`).
 - **Brains.** Titans runs every race, the mod's own `/pa/ai/` files layered

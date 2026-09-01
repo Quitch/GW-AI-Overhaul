@@ -375,8 +375,12 @@ Three things about it are not obvious from the scene it sits in:
   Cluster start cards read `global.playerFaction`; it has no race, and no war
   settings. `host_war.js` therefore loads the campaign game through
   `GW.manifest.loadGame(model.activeGameId())` once, caches the promise for both
-  scene scripts, and resolves `{ faction, race, races, perPlayerRace }` — always,
-  never rejecting, because a loadout preview outside a war still has to render.
+  scene scripts, and resolves
+  `{ faction, colour, race, races, perPlayerRace, techCardDeck }` — always, never
+  rejecting, because a loadout preview outside a war still has to render.
+  `colour` is the war's `global.playerColor`, which paints the commander
+  preview the way the war setup's Commander picker does: the same
+  `race_picker_options.commanderTint` rotates the art's hue to the faction's.
   `races` is the war's recorded offer intersected, through
   `race_check.activeRaces`, with the host's active server mods — asked of
   `GwServerMods.hostServerMods()`, the capability API over what its connect

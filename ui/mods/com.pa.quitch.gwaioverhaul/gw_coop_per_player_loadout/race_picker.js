@@ -25,6 +25,9 @@ function gwoViewerRacePicker() {
     });
     model.gwoViewerRaceTooltip =
       "!LOC:The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.";
+    // The war's faction paint on the commander preview, filled once the war
+    // has been read.
+    model.gwoCommanderTintFilter = ko.observable("");
 
     // Stock's selectedCommander is a read-only computed over a private index,
     // which the race swap has to be able to set. The base value forwards
@@ -63,6 +66,19 @@ function gwoViewerRacePicker() {
         raceMods.registerAll();
 
         hostWar.load().then(function (host) {
+          // A viewer shares the host's faction, so its commander wears the
+          // war's colour. The art hue follows the race whose commanders are
+          // on show: the host's race is not swapped in below unless the
+          // picker is, and gwoViewerRace stays MLA with it off.
+          ko.computed(function () {
+            model.gwoCommanderTintFilter(
+              pickerOptions.commanderTint(
+                host.colour && host.colour[0],
+                races.commanderArtHue(model.gwoViewerRace())
+              )
+            );
+          });
+
           // Nothing at all unless the host asked for it: no control, no mount,
           // and gwo_loadouts.js goes on stamping the host's race.
           if (
