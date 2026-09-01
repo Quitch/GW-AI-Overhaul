@@ -77,6 +77,67 @@ describe("warRaces", () => {
   it("keeps an id no race is registered for, rather than reading it as MLA", () => {
     assert.deepEqual(raceCheck.warRaces({ player: "ghost" }, []), ["ghost"]);
   });
+
+  it("includes the race stamped on a co-op record's inventory", () => {
+    const found = raceCheck.warRaces(
+      { player: "mla" },
+      [],
+      [{ inventory: { tags: { global: { playerRace: "fixture" } } } }]
+    );
+
+    assert.deepEqual(found, ["fixture"]);
+  });
+
+  it("merges record races with the war's own", () => {
+    const found = raceCheck.warRaces(
+      { player: "fixture" },
+      [{ race: "other" }],
+      [{ inventory: { tags: { global: { playerRace: "FIXTURE" } } } }]
+    );
+
+    assert.deepEqual(found, ["fixture", "other"]);
+  });
+
+  it("tolerates records with no race to read", () => {
+    assert.deepEqual(
+      raceCheck.warRaces(
+        { player: "mla" },
+        [],
+        [
+          null,
+          {},
+          { inventory: {} },
+          { inventory: { tags: {} } },
+          { inventory: { tags: { global: {} } } },
+          { inventory: { tags: { global: { playerRace: 7 } } } },
+        ]
+      ),
+      []
+    );
+  });
+
+  it("passes over records stamped MLA - the shape Separate races off leaves", () => {
+    assert.deepEqual(
+      raceCheck.warRaces(
+        { player: "mla" },
+        [],
+        [
+          { inventory: { tags: { global: { playerRace: "mla" } } } },
+          { inventory: { tags: { global: { playerRace: "MLA " } } } },
+        ]
+      ),
+      []
+    );
+  });
+
+  it("keeps a record race no race is registered for, rather than reading it as MLA", () => {
+    assert.deepEqual(
+      raceCheck.warRaces(undefined, undefined, [
+        { inventory: { tags: { global: { playerRace: "ghost" } } } },
+      ]),
+      ["ghost"]
+    );
+  });
 });
 
 describe("evaluate", () => {

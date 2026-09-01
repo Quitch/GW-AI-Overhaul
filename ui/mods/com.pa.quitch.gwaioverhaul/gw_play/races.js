@@ -183,7 +183,12 @@ function gwoPlayRaces() {
         var ais = _.map(model.game().galaxy().stars(), function (star) {
           return star.ai();
         });
-        var warRaceIds = raceCheck.warRaces(recorded, ais);
+        // Under Separate races a viewer's race lives only on its co-op
+        // record - recorded.player and byFaction never see it. See coop.md.
+        var records =
+          _.isFunction(model.game().coopPlayerInventoryData) &&
+          model.game().coopPlayerInventoryData();
+        var warRaceIds = raceCheck.warRaces(recorded, ais, records || []);
 
         if (!warRaceIds.length) {
           return;

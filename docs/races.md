@@ -205,7 +205,8 @@ every installed race, not only the ones drawn, so it is not on its own the list
 of what the war needs.
 
 On resume `gw_play/races.js` asks `race_check.warRaces` what the war actually
-fields - `player`, the values of `byFaction`, and every star's `ai().race` - and
+fields - `player`, the values of `byFaction`, every star's `ai().race` and,
+under Separate races, the race stamped on each co-op player's record - and
 hands that to `race_check.evaluate` along with what `race_mods.installedRaces`
 found. A race with no descriptor, or one whose server mod is not active, is
 **blocked**: the war says so in a dialog, lists the missing races on the war

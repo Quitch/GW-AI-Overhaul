@@ -9,16 +9,23 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     return _.isString(identifier) ? identifier.trim().toLowerCase() : "";
   };
 
-  // The races a saved war actually fields: the player's, one per faction, and
-  // whatever every star's AI carries. `races.raceOf` is deliberately not used -
-  // it answers MLA for a race it cannot resolve, which is the very case this
-  // module exists to catch.
-  var warRaces = function (recorded, ais) {
+  // The races a saved war actually fields: the player's, one per faction,
+  // whatever every star's AI carries and, under Separate races, the race each
+  // co-op record's inventory was stamped with, which lives nowhere else.
+  // `races.raceOf` is deliberately not used - it answers MLA for a race it
+  // cannot resolve, which is the very case this module exists to catch.
+  var warRaces = function (recorded, ais, records) {
     var ids = [recorded && recorded.player]
       .concat(_.values((recorded && recorded.byFaction) || {}))
       .concat(
         _.map(ais || [], function (ai) {
           return ai && ai.race;
+        })
+      )
+      .concat(
+        _.map(records || [], function (record) {
+          var tags = record && record.inventory && record.inventory.tags;
+          return tags && tags.global && tags.global.playerRace;
         })
       );
 
