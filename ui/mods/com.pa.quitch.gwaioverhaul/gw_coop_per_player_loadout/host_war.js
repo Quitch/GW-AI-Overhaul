@@ -12,9 +12,10 @@ define([
   // What the host said it is running, captured into sessionStorage by GW
   // Server Mods' connect gate on the way into the session. The host's active
   // set, not this client's: the host mounts the server mods a battle fields,
-  // and race_mods.installedRaces cannot answer here - GW Server Mods loads no
-  // script in this scene, so it would read as absent however the mods are
-  // set. No stash - a host without GW Server Mods, or storage unreadable - is
+  // so race_mods.installedRaces - this client's own list, and on GW Server
+  // Mods builds without this scene in their modinfo, no answer at all - is
+  // the wrong thing to ask. The raw key read works on every such build. No
+  // stash - a host without GW Server Mods, or storage unreadable - is
   // "cannot tell", and activeRaces then removes nothing. See races.md.
   var HOST_MODS_KEY = "gw_server_mods_host_identifiers";
 
