@@ -129,13 +129,18 @@ function buildGame(options) {
   }
 
   var system = {};
-  if (aiInUse || aiAllyInUse) {
+  if (aiInUse || aiAllyInUse || opts.aiByRace) {
     system.gwaio = {};
     if (aiInUse) {
       system.gwaio.ai = aiInUse;
     }
     if (aiAllyInUse) {
       system.gwaio.aiAlly = aiAllyInUse;
+    }
+    // The per-race brain table as gw_start records it:
+    // { raceId: { enemy, ally } }. Absent means a war saved before it existed.
+    if (opts.aiByRace) {
+      system.gwaio.aiByRace = opts.aiByRace;
     }
     if (opts.difficultyName) {
       system.gwaio.difficulty = opts.difficultyName;
