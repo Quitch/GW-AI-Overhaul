@@ -259,39 +259,75 @@ define([
     ]);
   };
 
-  // Which files of a brain's source tree make up the race's own tree. Titans
-  // keeps only what the race mod ships (plus the brain's ai_config.json, which
-  // has no fallback); a brain that carries the race itself keeps everything but
-  // what it lists under `exclude`. The race's unit maps are never copied: they
-  // are merged into the army's tagged map instead. See ai-paths.md.
-  var treeFilter = function (raceId, brain, sourceRoot) {
+  var matchesSource = function (filePath, source) {
+    return (
+      _.startsWith(filePath, source.dir) &&
+      _.startsWith(filePath.slice(source.dir.length), source.match || "")
+    );
+  };
+
+  // Every registered race's layer for a brain: what the merged source listing
+  // carries beside the base files while those race mods are mounted.
+  var allSourcesFor = function (brainKey) {
+    return _.flatten(
+      _.map(all(), function (race) {
+        var config = (race.ai && race.ai[brainKey]) || {};
+
+        return config.sources || [];
+      })
+    );
+  };
+
+  // The parsed `ai` block a brain's tree filters read for a race, plus the
+  // path constants they share.
+  var treeConfig = function (raceId, brain, sourceRoot) {
     var race = byId(raceId);
     var brainKey = _.isString(brain) ? brain.toLowerCase() : "";
     var config = (race && race.ai && race.ai[brainKey]) || {};
-    var unitMaps = config.unitMaps || [];
-    var sources = config.sources || [];
-    var exclude = config.exclude || [];
-    var aiConfig = sourceRoot + "ai_config.json";
-    // The engine lists unit_maps/ and loads each file it finds plus the army's
-    // tag, so the tagged merged map is only read when its untagged namesake is
-    // there to be listed. The brain's own map files fill that role.
-    var baseMaps = [
-      sourceRoot + "unit_maps/ai_unit_map.json",
-      sourceRoot + "unit_maps/ai_unit_map_x1.json",
-    ];
+
+    return {
+      race: race,
+      brainKey: brainKey,
+      unitMaps: config.unitMaps || [],
+      sources: config.sources || [],
+      exclude: config.exclude || [],
+      aiConfig: sourceRoot + "ai_config.json",
+      mapsDir: sourceRoot + "unit_maps/",
+      // The engine lists unit_maps/ and loads each file it finds plus the
+      // army's tag, so the tagged merged map is only read when its untagged
+      // namesake is there to be listed. The brain's own map files fill that
+      // role.
+      baseMaps: [
+        sourceRoot + "unit_maps/ai_unit_map.json",
+        sourceRoot + "unit_maps/ai_unit_map_x1.json",
+      ],
+    };
+  };
+
+  // Which files of a brain's source tree make up the race's own tree. Titans
+  // layers the race mod's `sources` files over the brain's base tree - the
+  // source listing is the merged filesystem, so a race file shadowing a base
+  // path already reads as the race's - minus every registered race's layer
+  // and everything under unit_maps/ but the brain's own maps. A brain that
+  // carries the race itself keeps everything but what it lists under
+  // `exclude`. The race's unit maps are never copied: they are merged into
+  // the army's tagged map instead. See ai-paths.md.
+  var treeFilter = function (raceId, brain, sourceRoot) {
+    var c = treeConfig(raceId, brain, sourceRoot);
+    var everyRaceSources = allSourcesFor(c.brainKey);
 
     var isUnitMap = function (filePath) {
-      return _.some(unitMaps, function (map) {
+      return _.some(c.unitMaps, function (map) {
         return filePath === map || _.endsWith(filePath, "/" + map);
       });
     };
 
     return function (filePath) {
-      if (!race || race.id === MLA_ID || !_.endsWith(filePath, ".json")) {
+      if (!c.race || c.race.id === MLA_ID || !_.endsWith(filePath, ".json")) {
         return false;
       }
 
-      if (filePath === aiConfig || _.contains(baseMaps, filePath)) {
+      if (filePath === c.aiConfig || _.contains(c.baseMaps, filePath)) {
         return true;
       }
 
@@ -299,22 +335,66 @@ define([
         return false;
       }
 
-      if (sources.length) {
-        return _.some(sources, function (source) {
-          return (
-            _.startsWith(filePath, source.dir) &&
-            _.startsWith(filePath.slice(source.dir.length), source.match || "")
-          );
+      if (c.sources.length) {
+        if (
+          _.some(c.sources, function (source) {
+            return matchesSource(filePath, source);
+          })
+        ) {
+          return true;
+        }
+
+        // No untagged stray may reach unit_maps/ - the engine would load it
+        // with the army's tag appended.
+        if (_.startsWith(filePath, c.mapsDir)) {
+          return false;
+        }
+
+        // The base layer: whatever no registered race's layer claims.
+        return !_.some(everyRaceSources, function (source) {
+          return matchesSource(filePath, source);
         });
       }
 
-      if (!exclude.length) {
+      if (!c.exclude.length) {
         return false;
       }
 
-      return !_.some(exclude, function (fragment) {
+      return !_.some(c.exclude, function (fragment) {
         return _.includes(filePath, fragment);
       });
+    };
+  };
+
+  // Whether the race mod itself put this file in the tree - the base layer
+  // does not count. The referee warns when nothing matches: no race files in
+  // the merged listing means the race's server mod is not mounted.
+  var raceLayerFilter = function (raceId, brain, sourceRoot) {
+    var c = treeConfig(raceId, brain, sourceRoot);
+    var keep = treeFilter(raceId, brain, sourceRoot);
+
+    return function (filePath) {
+      if (!c.race || c.race.id === MLA_ID || !_.endsWith(filePath, ".json")) {
+        return false;
+      }
+
+      if (c.sources.length) {
+        return _.some(c.sources, function (source) {
+          return matchesSource(filePath, source);
+        });
+      }
+
+      if (!c.exclude.length) {
+        return false;
+      }
+
+      // A brain that carries the race itself: the tier's own data files, not
+      // the config and map boilerplate every tree keeps.
+      return (
+        keep(filePath) &&
+        filePath !== c.aiConfig &&
+        !_.contains(c.baseMaps, filePath)
+      );
     };
   };
 
@@ -447,6 +527,7 @@ define([
     commanderArtHue: commanderArtHue,
     commanderFor: commanderFor,
     treeFilter: treeFilter,
+    raceLayerFilter: raceLayerFilter,
     unitMapsFor: unitMapsFor,
     assign: assign,
     // Test-only: a registered race outlives the module, and the harness loads

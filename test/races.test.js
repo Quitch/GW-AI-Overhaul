@@ -265,19 +265,43 @@ describe("assign", () => {
 });
 
 describe("treeFilter", () => {
-  it("under Titans keeps the race mod's own files and the brain's ai_config.json, never its unit maps", () => {
+  const RIVAL_RACE = {
+    id: "rival",
+    ai: {
+      titans: {
+        unitMaps: ["/pa/ai/unit_maps/rival.json"],
+        sources: [
+          { dir: "/pa/ai/factory_builds/", match: "rival_" },
+          { dir: "/pa/ai/fabber_builds/", match: "rival/" },
+        ],
+      },
+    },
+  };
+
+  it("under Titans layers the race mod's files over the brain's base files, dropping other races' layers and stray unit maps", () => {
+    races.register(RIVAL_RACE);
     const keep = races.treeFilter("fixture", "Titans", "/pa/ai/");
 
     assert.equal(keep("/pa/ai/ai_config.json"), true);
+    // The race's own layer.
     assert.equal(keep("/pa/ai/fabber_builds/fixture/fabber_land.json"), true);
     assert.equal(keep("/pa/ai/factory_builds/fixture_air.json"), true);
-    assert.equal(keep("/pa/ai/factory_builds/fixtures_air.json"), false);
-    assert.equal(keep("/pa/ai/factory_builds/factory_air_builds.json"), false);
-    assert.equal(keep("/pa/ai/fabber_builds/fabber_land.json"), false);
-    assert.equal(keep("/pa/ai/unit_maps/fixture.json"), false);
+    // The base layer fills the race's gaps.
+    assert.equal(keep("/pa/ai/factory_builds/factory_air_builds.json"), true);
+    assert.equal(keep("/pa/ai/fabber_builds/fabber_land.json"), true);
+    // A near-miss of the race's own prefix falls to the base layer by design.
+    assert.equal(keep("/pa/ai/factory_builds/fixtures_air.json"), true);
+    // Another registered race's layer never rides along.
+    assert.equal(keep("/pa/ai/factory_builds/rival_air.json"), false);
+    assert.equal(keep("/pa/ai/fabber_builds/rival/fabber_land.json"), false);
     // Listed by the engine, so the tagged merged map beside it gets loaded.
     assert.equal(keep("/pa/ai/unit_maps/ai_unit_map.json"), true);
     assert.equal(keep("/pa/ai/unit_maps/ai_unit_map_x1.json"), true);
+    // No other untagged map may be listed: not the race's, not a rival's,
+    // not an unclaimed one.
+    assert.equal(keep("/pa/ai/unit_maps/fixture.json"), false);
+    assert.equal(keep("/pa/ai/unit_maps/rival.json"), false);
+    assert.equal(keep("/pa/ai/unit_maps/other.json"), false);
     assert.equal(keep("/pa/ai/fabber_builds/fixture/notes.txt"), false);
     assert.equal(keep("/pa/ai/neural_networks/fixture/x.json"), false);
   });
@@ -330,6 +354,75 @@ describe("treeFilter", () => {
     assert.equal(keep("/pa/ai_penchant/ai_config.json"), true);
     assert.equal(keep("/pa/ai_penchant/unit_maps/ai_unit_map.json"), true);
     assert.equal(keep("/pa/ai_penchant/fabber_builds/x.json"), false);
+  });
+});
+
+describe("raceLayerFilter", () => {
+  it("under Titans matches only the race mod's own files, never the base layer", () => {
+    const owned = races.raceLayerFilter("fixture", "Titans", "/pa/ai/");
+
+    assert.equal(owned("/pa/ai/fabber_builds/fixture/fabber_land.json"), true);
+    assert.equal(owned("/pa/ai/factory_builds/fixture_air.json"), true);
+    assert.equal(owned("/pa/ai/ai_config.json"), false);
+    assert.equal(owned("/pa/ai/factory_builds/factory_air_builds.json"), false);
+    assert.equal(owned("/pa/ai/unit_maps/ai_unit_map.json"), false);
+    assert.equal(owned("/pa/ai/fabber_builds/fixture/notes.txt"), false);
+  });
+
+  it("under a brain that carries the race matches the tier's data files, not the boilerplate every tree keeps", () => {
+    races.register(
+      Object.assign({}, FIXTURE_RACE, {
+        ai: {
+          queller: {
+            unitMaps: ["unit_maps/fixture.json"],
+            exclude: ["/mla/", "/unit_maps/mla.json"],
+          },
+        },
+      })
+    );
+    const owned = races.raceLayerFilter(
+      "fixture",
+      "Queller",
+      "/pa/ai_queller/q_uber/"
+    );
+
+    assert.equal(owned("/pa/ai_queller/q_uber/platoon_builds/land.json"), true);
+    assert.equal(owned("/pa/ai_queller/q_uber/ai_config.json"), false);
+    assert.equal(
+      owned("/pa/ai_queller/q_uber/unit_maps/ai_unit_map.json"),
+      false
+    );
+    assert.equal(
+      owned("/pa/ai_queller/q_uber/fabber_builds/mla/land.json"),
+      false
+    );
+  });
+
+  it("matches nothing for MLA, an unknown race, or a brain the race has no data for", () => {
+    assert.equal(
+      races.raceLayerFilter(
+        "mla",
+        "Titans",
+        "/pa/ai/"
+      )("/pa/ai/fabber_builds/x.json"),
+      false
+    );
+    assert.equal(
+      races.raceLayerFilter(
+        "nope",
+        "Titans",
+        "/pa/ai/"
+      )("/pa/ai/fabber_builds/x.json"),
+      false
+    );
+    assert.equal(
+      races.raceLayerFilter(
+        "fixture",
+        "Penchant",
+        "/pa/ai_penchant/"
+      )("/pa/ai_penchant/fabber_builds/x.json"),
+      false
+    );
   });
 });
 

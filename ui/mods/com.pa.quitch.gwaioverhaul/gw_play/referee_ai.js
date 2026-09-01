@@ -630,8 +630,8 @@ define([
   };
 
   // Every race tree a battle needs: one per distinct (source, destination),
-  // the brain's files filtered to the race's, written to the race's own root.
-  // AI mods are not applied to a race tree - see races.md.
+  // the race's files layered over the brain's base files, written to the
+  // race's own root. AI mods are not applied to a race tree - see races.md.
   var raceTreeJobs = function (game, connectedClients) {
     var inventory = game.inventory();
     var ai = gwoAI.currentStarAi(game);
@@ -650,6 +650,7 @@ define([
         source: source,
         destination: target,
         keep: gwoRaces.treeFilter(race, brain, source),
+        raceOwned: gwoRaces.raceLayerFilter(race, brain, source),
       };
     };
 
@@ -690,7 +691,7 @@ define([
     return treeCache.list(job.source).then(function (fileList) {
       var kept = _.filter(fileList, job.keep);
 
-      if (!kept.length) {
+      if (!_.some(fileList, job.raceOwned)) {
         console.warn("gwoRefereeAi: no race build orders under " + job.source);
       }
 

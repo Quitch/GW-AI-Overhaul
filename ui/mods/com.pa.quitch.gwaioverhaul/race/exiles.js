@@ -31,7 +31,8 @@ define(function () {
     ai: {
       // exiles/ sub-directories under each build directory, one unit map.
       // The mod also ships platoon_templates.json and platoon_land_builds.json
-      // at the vanilla paths; those are not the race tree's. See races.md.
+      // at the vanilla paths; those ride into every race tree's base layer
+      // with the merged content. See races.md.
       titans: {
         unitMaps: ["/pa/ai/unit_maps/exiles.json"],
         sources: [
