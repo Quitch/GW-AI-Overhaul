@@ -94,12 +94,15 @@ define(function () {
       var subcommander = _.cloneDeep(
         _.sample(GWFactions[playerFaction].minions)
       );
-      helpers.applyPenchantToSubcommander(subcommander, gwoSettings, gwoAI);
-      helpers.applyRaceToSubcommander(
+      var race = races ? races.raceOf(inventory) : undefined;
+      helpers.applyPenchantToSubcommander(
         subcommander,
-        races,
-        races ? races.raceOf(inventory) : undefined
+        gwoSettings,
+        gwoAI,
+        undefined,
+        race
       );
+      helpers.applyRaceToSubcommander(subcommander, races, race);
       product.minion = subcommander;
       product.unique = Math.random();
 

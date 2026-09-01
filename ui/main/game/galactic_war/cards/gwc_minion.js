@@ -74,16 +74,17 @@ define([
         chance = chance / (totalMinions + 1);
       }
 
-      var gwoSettings = gwoAI.originSettings(model.game());
+      // GWO - a Sub Commander fights as the player's race, and with it that
+      // race's ally brain. See races.md.
+      var race = gwoRaces.raceOf(inventory);
+      var allyBrain = gwoAI.aiInUse("subcommander", race);
       var minionPool = GWFactions[context.faction].minions;
-      if (gwoSettings && gwoSettings.aiAlly === "Queller") {
+      if (allyBrain === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
       var minion = _.cloneDeep(
         rng ? rng.pick(minionPool) : _.sample(minionPool)
       );
-      // GWO - a Sub Commander fights as the player's race. See races.md.
-      var race = gwoRaces.raceOf(inventory);
       if (!gwoRaces.isMla(race)) {
         minion.race = race;
         var raceCommander = gwoRaces.commanderFor(
@@ -95,17 +96,12 @@ define([
         }
       }
 
-      if (gwoSettings) {
-        var ai = gwoSettings.ai;
-        if (ai === "Penchant") {
-          var penchantValues = gwoAI.penchants(rng);
-          minion.character =
-            minion.character + (" " + loc(penchantValues.penchantName));
-          minion.personality.personality_tags =
-            minion.personality.personality_tags.concat(
-              penchantValues.penchants
-            );
-        }
+      if (allyBrain === "Penchant") {
+        var penchantValues = gwoAI.penchants(rng);
+        minion.character =
+          minion.character + (" " + loc(penchantValues.penchantName));
+        minion.personality.personality_tags =
+          minion.personality.personality_tags.concat(penchantValues.penchants);
       }
 
       return {

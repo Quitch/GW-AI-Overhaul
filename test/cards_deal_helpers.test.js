@@ -325,6 +325,42 @@ describe("applyPenchantToSubcommander", () => {
     assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
 
+  // Penchant is MLA-only, so a race the war-wide Penchant ally cannot run
+  // gets no penchant - its ally brain coerces to Titans.
+  it("withholds the penchant from a race Penchant does not know", () => {
+    const sub = subcommander();
+    helpers.applyPenchantToSubcommander(
+      sub,
+      { aiAlly: "Penchant" },
+      gwoAI,
+      undefined,
+      "legion"
+    );
+    assert.equal(sub.character, "Commander");
+    assert.deepEqual(sub.personality.personality_tags, ["base"]);
+  });
+
+  it("reads the MLA subcommander from the war-wide strings, not the table", () => {
+    const priorLoc = global.loc;
+    global.loc = (key) => key;
+    try {
+      const sub = subcommander();
+      helpers.applyPenchantToSubcommander(
+        sub,
+        {
+          aiAlly: "Penchant",
+          aiByRace: { legion: { enemy: "Titans", ally: "Titans" } },
+        },
+        gwoAI,
+        undefined,
+        "mla"
+      );
+      assert.equal(sub.character, "Commander !LOC:Reckless");
+    } finally {
+      global.loc = priorLoc;
+    }
+  });
+
   it("forwards its rng to gwoAI.penchants", () => {
     const priorLoc = global.loc;
     global.loc = (key) => key;

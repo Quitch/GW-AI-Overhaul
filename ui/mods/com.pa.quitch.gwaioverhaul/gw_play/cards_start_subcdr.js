@@ -62,7 +62,10 @@ define([
       raceInventory
     ) {
       var minionPool = resolveFactionMinions(factionIndex);
-      if (gwoSettings && gwoSettings.aiAlly === "Queller") {
+      // The minions fight as this player's race, so the pool follows that
+      // race's ally brain. See races.md.
+      var race = gwoRaces.raceOf(raceInventory || inventory);
+      if (gwoAI.aiInUse("subcommander", race) === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
 
@@ -72,7 +75,7 @@ define([
         gwoAI: gwoAI,
         gwoCard: gwoCard,
         races: gwoRaces,
-        race: gwoRaces.raceOf(raceInventory || inventory),
+        race: race,
         rng: gwoStreams.generalCommanderRng(warRng, playerKey),
       });
     };
