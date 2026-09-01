@@ -50,7 +50,6 @@ function primary(opts) {
     ai({ minions: options.minions || [] }),
     [],
     [".ai0", ".ai1"],
-    "Titans",
     armies,
     options.rng === null ? undefined : options.rng || battleRng(3, 5)
   );
@@ -128,7 +127,6 @@ describe("AI landing policy", () => {
       ai({ minions: [], bossCommanders: 4 }),
       [],
       [".ai0"],
-      "Titans",
       armies,
       battleRng(3, 5)
     );
@@ -155,7 +153,6 @@ describe("FFA foe landing policy", () => {
         ai({ name: "Foe" + i })
       ),
       [".ai0", ".ai1", ".ai2"],
-      "Titans",
       armies,
       rng
     );

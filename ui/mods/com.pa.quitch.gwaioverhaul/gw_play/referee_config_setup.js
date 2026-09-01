@@ -225,23 +225,25 @@ define([
     liveStarAi,
     connectedPlayerCards,
     aiTag,
-    aiInUse,
     armies,
     battleRng
   ) {
     // Cloning the AI clones its minions with it, so the minion loop below is copying too.
-    var ai = setAdvEcoMod(_.cloneDeep(liveStarAi), aiInUse);
+    var ai = _.cloneDeep(liveStarAi);
     var guardians = ai.mirrorMode;
     // The Guardians mirror the player, race included.
     ai.race = guardians
       ? gwoRaces.raceOf(model.game().inventory())
       : gwoRaces.raceOf(ai);
+    // The race decides the army's brain, so it is resolved first.
+    var brain = gwoAI.aiInUse("enemy", ai.race);
+    setAdvEcoMod(ai, brain);
 
     if (guardians) {
       ai.personality = setupGuardianPersonality(
         connectedPlayerCards,
         ai.personality,
-        aiInUse
+        brain
       );
     }
 
@@ -258,7 +260,8 @@ define([
     ai.personality.ai_path = aiPath;
 
     _.forEach(ai.minions, function (minion, index) {
-      minion = setAdvEcoMod(minion, aiInUse);
+      // Minions share the primary AI's race, and with it its brain.
+      minion = setAdvEcoMod(minion, brain);
       minion.personality.ai_path = aiPath;
       minion.faction = ai.faction;
       minion.race = ai.race;
@@ -275,10 +278,12 @@ define([
     });
   };
 
-  var setupFfaAis = function (foes, aiTag, aiInUse, armies, battleRng) {
+  var setupFfaAis = function (foes, aiTag, armies, battleRng) {
     _.forEach(foes, function (liveFoe, index) {
-      var foe = setAdvEcoMod(_.cloneDeep(liveFoe), aiInUse);
+      var foe = _.cloneDeep(liveFoe);
       foe.race = gwoRaces.raceOf(foe);
+      // Each foe's own race decides its brain.
+      setAdvEcoMod(foe, gwoAI.aiInUse("enemy", foe.race));
       foe.personality.ai_path = setAIPath(
         gwoAI.isCluster(foe),
         false,

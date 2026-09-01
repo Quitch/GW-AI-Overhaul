@@ -152,7 +152,7 @@ describe("setupPrimaryAiAndMinions", () => {
       minions: [makeAiDescriptor(), makeAiDescriptor()],
     });
     const armies = [];
-    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], "Titans", armies);
+    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], armies);
 
     // armies[0] is the primary AI, its minions follow in order.
     const primaryPath = armies[0].personality.ai_path;
@@ -167,7 +167,7 @@ describe("setupPrimaryAiAndMinions", () => {
 
     const ai = makeAiDescriptor({ faction: 4, minions: [] });
     const armies = [];
-    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], "Titans", armies);
+    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], armies);
     assert.equal(armies[0].personality.ai_path, "/pa/ai_cluster/");
   });
 
@@ -200,13 +200,7 @@ describe("setupPrimaryAiAndMinions", () => {
     ];
     const armies = [];
 
-    refereeConfig.setupPrimaryAiAndMinions(
-      ai,
-      cards,
-      [".ai0"],
-      "Queller",
-      armies
-    );
+    refereeConfig.setupPrimaryAiAndMinions(ai, cards, [".ai0"], armies);
 
     const guardianPersonality = armies[0].personality;
     assert.ok(Math.abs(guardianPersonality.percent_air - 2 / 3) < 1e-9);
@@ -230,12 +224,7 @@ describe("setupFfaAis", () => {
     const foes = [normalFoeA, clusterFoe, normalFoeB];
     const armies = [];
 
-    refereeConfig.setupFfaAis(
-      foes,
-      [".ai0", ".ai1", ".ai2", ".ai3"],
-      "Titans",
-      armies
-    );
+    refereeConfig.setupFfaAis(foes, [".ai0", ".ai1", ".ai2", ".ai3"], armies);
 
     // The armies are pushed in foe order.
     assert.equal(armies[1].personality.ai_path, "/pa/ai_cluster/");
@@ -332,20 +321,8 @@ describe("the setup functions never mutate the war objects they are given", () =
     const firstHire = [];
     const secondHire = [];
 
-    refereeConfig.setupPrimaryAiAndMinions(
-      ai,
-      [],
-      [".ai0"],
-      "Titans",
-      firstHire
-    );
-    refereeConfig.setupPrimaryAiAndMinions(
-      ai,
-      [],
-      [".ai0"],
-      "Titans",
-      secondHire
-    );
+    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], firstHire);
+    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], secondHire);
 
     assert.deepEqual(
       snapshot(ai),
@@ -367,8 +344,8 @@ describe("the setup functions never mutate the war objects they are given", () =
     const firstHire = [];
     const secondHire = [];
 
-    refereeConfig.setupFfaAis(foes, [".ai0", ".ai1"], "Titans", firstHire);
-    refereeConfig.setupFfaAis(foes, [".ai0", ".ai1"], "Titans", secondHire);
+    refereeConfig.setupFfaAis(foes, [".ai0", ".ai1"], firstHire);
+    refereeConfig.setupFfaAis(foes, [".ai0", ".ai1"], secondHire);
 
     assert.deepEqual(
       snapshot(foes),
@@ -433,14 +410,8 @@ describe("races", () => {
     installModel(fixture.game);
 
     const armies = [];
-    refereeConfig.setupPrimaryAiAndMinions(
-      fixture.ai,
-      [],
-      tags,
-      "Titans",
-      armies
-    );
-    refereeConfig.setupFfaAis(fixture.ai.foes, tags, "Titans", armies);
+    refereeConfig.setupPrimaryAiAndMinions(fixture.ai, [], tags, armies);
+    refereeConfig.setupFfaAis(fixture.ai.foes, tags, armies);
 
     assert.deepEqual(
       armies.map((army) => army.personality.ai_path),
@@ -470,13 +441,46 @@ describe("races", () => {
       guardians.ai,
       [],
       tags,
-      "Titans",
       guardianArmies
     );
     assert.equal(
       guardianArmies[0].personality.ai_path,
       "/pa/ai_race_fixture/player_guardians/"
     );
+  });
+
+  it("a per-race row gives each army its own brain: eco mod and path", () => {
+    races.register({ id: "legion" });
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      aiByRace: { legion: { enemy: "Queller", ally: "Titans" } },
+      enemyRace: "legion",
+      foes: [makeAiDescriptor({ econ_rate: 2, personality: personality() })],
+    });
+    Object.assign(fixture.ai, {
+      minions: [makeAiDescriptor({ econ_rate: 2, personality: personality() })],
+      name: "Enemy",
+      commander: "c",
+      color: [[1, 1, 1]],
+      econ_rate: 2,
+      personality: personality(),
+    });
+    installModel(fixture.game);
+
+    const armies = [];
+    refereeConfig.setupPrimaryAiAndMinions(fixture.ai, [], tags, armies);
+    refereeConfig.setupFfaAis(fixture.ai.foes, tags, armies);
+
+    // The Legion enemy runs its row's Queller: no eco boost, Queller race tree.
+    assert.equal(
+      armies[0].personality.ai_path,
+      "/pa/ai_queller_race_legion/q_uber/"
+    );
+    assert.equal(armies[0].personality.adv_eco_mod, 1);
+    assert.equal(armies[1].personality.adv_eco_mod, 1); // minion shares the race
+    // The MLA foe runs the war-wide Titans brain: boosted, vanilla tree.
+    assert.equal(armies[2].personality.ai_path, "/pa/ai/");
+    assert.equal(armies[2].personality.adv_eco_mod, 2);
   });
 
   it("allies fight as the player's race unless the war gave them one", () => {
