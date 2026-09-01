@@ -149,7 +149,7 @@ function gwoUI() {
       "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
     model.gwoBossCommandersTooltip =
       "!LOC:Number of Commanders in the boss's army.";
-    // Allow modders to append their deck names
+    // deck_picker.js appends a line per third-party deck
     model.gwoCardsTooltip =
       "!LOC:BASIC: base game tech cards<BR>GALACTIC WAR OVERHAUL: over 150 additional cards.";
     model.gwoFactionTooltip =
