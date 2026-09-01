@@ -272,19 +272,33 @@ describe("race trees", () => {
   );
   const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
   const { beforeEach } = require("node:test");
+  const RIVAL_RACE = {
+    id: "rival",
+    ai: {
+      titans: {
+        unitMaps: ["/pa/ai/unit_maps/rival.json"],
+        sources: [{ dir: "/pa/ai/factory_builds/", match: "rival_" }],
+      },
+    },
+  };
   const TITANS_FILES = [
     "/pa/ai/ai_config.json",
     "/pa/ai/fabber_builds/fabber_land.json",
     "/pa/ai/fabber_builds/fixture/fabber_land.json",
     "/pa/ai/factory_builds/fixture_air.json",
+    "/pa/ai/factory_builds/rival_air.json",
     "/pa/ai/unit_maps/fixture.json",
     "/pa/ai/unit_maps/ai_unit_map.json",
   ];
 
-  beforeEach(() => races.register(FIXTURE_RACE));
+  beforeEach(() => {
+    races.reset();
+    races.register(FIXTURE_RACE);
+    races.register(RIVAL_RACE);
+  });
   afterEach(() => races.reset());
 
-  it("writes a race enemy's files, and only those, to the race root, with the brain's ai_config.json", async () => {
+  it("layers a race enemy's files over the brain's base files at the race root, dropping other races' layers", async () => {
     const fixture = buildGame({
       aiInUse: "Titans",
       enemyRace: "fixture",
@@ -304,6 +318,10 @@ describe("race trees", () => {
     );
     assert.deepEqual(raceKeys.sort(), [
       "/pa/ai_race_fixture/ai_config.json",
+      // The base layer fills the race's gaps...
+      "/pa/ai_race_fixture/fabber_builds/fabber_land.json",
+      // ...under the race's own layer; rival_air.json and the untagged
+      // unit_maps/fixture.json never ride along.
       "/pa/ai_race_fixture/fabber_builds/fixture/fabber_land.json",
       "/pa/ai_race_fixture/factory_builds/fixture_air.json",
       "/pa/ai_race_fixture/unit_maps/ai_unit_map.json",
@@ -385,16 +403,20 @@ describe("race trees", () => {
     );
   });
 
-  it("warns when a race has no build orders under the source", async () => {
+  it("warns when the race mod itself has no build orders under the source, base layer or not", async () => {
     const fixture = buildGame({ aiInUse: "Titans", enemyRace: "fixture" });
     installModel(fixture.game, []);
-    installFakes({ fileListByPath: { "/pa/ai/": ["/pa/ai/x.json"] } });
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/x.json"] },
+      getJSON: (url) => ({ from: url }),
+    });
     const warnings = [];
     const previous = console.warn;
     console.warn = (message) => warnings.push(message);
 
+    const filesObj = {};
     try {
-      await run({});
+      await run(filesObj);
     } finally {
       console.warn = previous;
     }
@@ -402,6 +424,9 @@ describe("race trees", () => {
     assert.deepEqual(warnings, [
       "gwoRefereeAi: no race build orders under /pa/ai/",
     ]);
+    // The warning means the race contributed nothing - the base layer is
+    // still written.
+    assert.ok(filesObj["/pa/ai_race_fixture/x.json"]);
   });
 
   it("does nothing extra for an MLA battle", async () => {

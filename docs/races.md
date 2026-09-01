@@ -126,11 +126,25 @@ same scope rules as every other destination (`player_guardians/`,
 `player_.player0/`). `referee_ai.js`'s `raceTreeJobs` writes one tree per
 distinct (source, destination):
 
-- **Titans**: the files the descriptor's `sources` match (Legion's flat
-  `legion_*`, Bugs' `bugs/` sub-directories), plus the brain's `ai_config.json`,
-  which has no fallback, plus the brain's own `unit_maps/ai_unit_map*.json`.
+- **Titans**: the race's `sources` files (Legion's flat `legion_*`, Bugs'
+  `bugs/` sub-directories) layered over the brain's base files - no race mod
+  ships a complete AI, and the base files fill its gaps the way they do in a
+  skirmish. The source listing is the merged filesystem, so a race file
+  shadowing a base path already reads as the race's; subtracted from the base
+  layer are every registered race's `sources` (another race's files ride in
+  the same merged listing), everything under `unit_maps/` but the brain's own
+  `ai_unit_map*.json`, and `neural_networks/`. Files a race ships at vanilla
+  paths (Exiles' `platoon_templates.json` and `platoon_land_builds.json`,
+  Bugs' `platoon_builds/platoon_misc_builds.json`) are indistinguishable from
+  base files and enter every race tree's base layer with the merged content.
+  `scripts/validate-race-trees.js` checks the tree against a manual
+  mount-order merge of the real files on disk.
 - **A brain that carries the race** (Queller carries Legion): the tier minus
   the descriptor's `exclude` fragments - the MLA side.
+
+The referee's "no race build orders" warning fires when the race mod itself
+contributed nothing to the tree (`races.raceLayerFilter`) - with the base
+layer always present, an empty tree can no longer show that.
 
 The engine lists `unit_maps/` and loads each file it finds with the army's tag
 appended. The race's map is therefore never copied as a file: it is merged over
@@ -150,7 +164,7 @@ so do the Guardians' borrowed player mods.
 
 | Brain    | Races                                                         |
 | -------- | ------------------------------------------------------------- |
-| Titans   | every race, from the race mod's own `/pa/ai/` files           |
+| Titans   | every race, its `/pa/ai/` files layered over the base game's  |
 | Queller  | MLA and Legion - both ship in every tier, stock copy included |
 | Penchant | MLA                                                           |
 

@@ -26,7 +26,8 @@ parts that need a running game stay thin.
 
 A race adds a sixth kind of root, synthesised per battle: the brain's root with
 `_race_<id>` inserted - `/pa/ai_race_legion/`, `/pa/ai_queller_race_legion/q_uber/`,
-`/pa/ai_subcommander_race_legion/` - carrying only that race's build orders.
+`/pa/ai_subcommander_race_legion/` - carrying the race's build orders layered
+over the brain's base files.
 `races.aiRoot` applies it inside `getAIPathDestination` when `options.race` is
 set; sources never change, since the tree is written from the brain's files. See
 [`races.md`](races.md).

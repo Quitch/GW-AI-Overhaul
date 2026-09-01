@@ -22,7 +22,11 @@ something new.
 3. **AI layout** under `ai.titans`: `unitMaps` (the mod's own map file) and
    `sources` (`{ dir, match }` prefixes under the five build directories - a
    file prefix for Legion's flat `legion_*`, a sub-directory for Bugs'
-   `bugs/`). `ai.queller` only when the Queller mod ships the race
+   `bugs/`). A race need not ship a complete AI: its `sources` files are
+   layered over the brain's base files, which fill the gaps. `sources` serves
+   double duty - it selects the race's own layer _and_ is what every other
+   race's tree subtracts, so it must cover everything the mod ships under
+   race-specific names. `ai.queller` only when the Queller mod ships the race
    (`unitMaps` relative to the tier, `exclude` the MLA side). Add the brain to
    `BRAINS` in `shared/races.js` if a brain gains a race - the AI modal's
    per-race cells (`shared/brain_table.js`) offer it from there automatically.
@@ -88,7 +92,8 @@ something new.
   faction colour.
 - **Player icon** is a 16px fill/outline pair the race's own mod ships,
   reached through GW Server Mods' root mount (`coui://ui/mods/<mod>/img/…`).
-- **Brains.** Titans runs every race from the mod's own `/pa/ai/` files;
+- **Brains.** Titans runs every race, the mod's own `/pa/ai/` files layered
+  over the base game's;
   Queller runs MLA and Legion; Penchant MLA. A brain that does not know a race
   in play is not offered, and `races.brainFor` falls back to Titans.
 - **The enemy pool is every installed race plus MLA.** Keeping a race out of a
@@ -115,7 +120,9 @@ mod's author, kept outside the repo (the user's Desktop).
 - All three race mods keep their AI files under `/pa/ai/`, so every MLA
   Titans AI merges their build entries at equal priorities. Exiles goes
   further and ships `platoon_templates.json` and `platoon_land_builds.json`
-  at the vanilla paths. The land builds differ from `pa_ex1`'s only in the
+  at the vanilla paths - and a vanilla-path file is indistinguishable from a
+  base file in the merged listing, so it also enters every Titans race
+  tree's base layer with the merged content. The land builds differ from `pa_ex1`'s only in the
   condition strings that follow the template change, so the conflict is the
   template file: it shadows GWO's own `platoon_templates.json` while the mod
   is active (GWO loses its Suicide squad on the two Transfer templates). Accepted for this pass; an AI mod applied at launch would make

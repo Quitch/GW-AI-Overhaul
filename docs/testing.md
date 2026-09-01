@@ -108,6 +108,16 @@ read in mount order) with their `buildable_types`, written by
 With a PA install present the test asserts the fixture is fresh - **re-harvest
 it after a PA or race patch.**
 
+**`npm run validate:race-trees` is local-only for the same reason.** It runs
+the real `referee_ai.js` over the actual files on disk - the PA install
+(`pa_ex1` over `pa`), GWO's own shadows, and each race's server mod, merged in
+mount order - and requires the Titans race tree to match that merge exactly,
+then re-runs with every race mounted to prove no race's layer leaks into
+another's tree. CI has none of those files, so the unit tests pin the same
+contract on mocked listings (`test/races.test.js`,
+`test/referee_ai_file_processing.test.js`). Run it after a PA or race patch,
+and after touching `races.treeFilter` or `referee_ai.js`'s tree writing.
+
 **`validate:schemas` checks whatever files it finds, which is why
 `test/ai_source_files.test.js` exists alongside it.** The walk covers `pa/ai`,
 `pa/ai_penchant` and `pa/ai_tech`, so a build list renamed or deleted out from
