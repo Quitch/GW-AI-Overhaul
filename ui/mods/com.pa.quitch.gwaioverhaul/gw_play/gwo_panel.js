@@ -141,6 +141,8 @@ function gwoWarInfoPanel(gwoSettings) {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deck_mods.js",
       ],
       function (
         gwoColour,
@@ -149,9 +151,21 @@ function gwoWarInfoPanel(gwoSettings) {
         gwoSubcommanderTech,
         gwoRaces,
         gwoVersion,
-        gwoBrainTable
+        gwoBrainTable,
+        gwoDecks,
+        gwoDeckMods
       ) {
         model.gwoVersion = ko.observable(gwoVersion);
+
+        // A third-party deck's display name; the provisional deckName()
+        // assignment above already covers the built-ins and, as the fallback,
+        // a deck whose mod is gone. Bindings only apply later in this
+        // callback, so the refinement is seen.
+        gwoDeckMods.registerAll();
+        var warDeck = gwoDecks.byId(model.gwoSettings.techCardDeck);
+        if (warDeck) {
+          model.gwoDeck = loc(warDeck.name);
+        }
 
         // One name per side when every race the war recorded resolves to the
         // same brain - every pre-table save, and any uniform table - else the

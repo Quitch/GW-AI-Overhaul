@@ -258,6 +258,24 @@ describe("readGame", () => {
     assert.equal(info.perPlayerRace, false);
   });
 
+  // A viewer's deals must come from the deck the host's do, so the recorded
+  // techCardDeck travels with the rest of the war info.
+  it("surfaces the war's recorded tech card deck", () => {
+    const info = hostWar.readGame(
+      makeGame({ faction: 0, gwaio: { techCardDeck: "Basic" } })
+    );
+
+    assert.equal(info.techCardDeck, "Basic");
+  });
+
+  it("reads no deck from a war saved before decks, or one that did not hydrate", () => {
+    assert.equal(
+      hostWar.readGame(makeGame({ faction: 0, gwaio: {} })).techCardDeck,
+      undefined
+    );
+    assert.equal(hostWar.readGame({}).techCardDeck, undefined);
+  });
+
   it("reads a stock war, with no gwaio settings at all, as off with no races", () => {
     const info = hostWar.readGame(makeGame({ faction: 0 }));
 
