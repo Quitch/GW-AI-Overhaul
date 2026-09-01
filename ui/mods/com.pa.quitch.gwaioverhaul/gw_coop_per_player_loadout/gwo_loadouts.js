@@ -125,14 +125,21 @@ function gwoLoadouts() {
           model.gwoRebuildStartCards();
         });
 
-        model.gwoCards = gwoDeal.setupGwoCards();
-
         var cards = [];
         var deck = [];
-        var numberOfCards = model.gwoCards.length;
         var loaded = $.Deferred();
 
-        gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
+        // The war's own deck, not the full Expanded default: the host war
+        // records techCardDeck, and a viewer's deals must come from the same
+        // deck the host's do. An unreadable or non-GWO war has none, and
+        // setupGwoCards then deals Expanded as before.
+        hostWar.load().then(function (host) {
+          model.gwoCards = gwoDeal.setupGwoCards({
+            techCardDeck: host.techCardDeck,
+          });
+
+          gwoDeal.setupGwoDeck(cards, deck, model.gwoCards.length, loaded);
+        });
 
         model.buildStartingInventory = function (
           loadoutCardId,

@@ -79,6 +79,7 @@ define([
       race: tag("playerRace"),
       races: offeredRaces(recorded, installed),
       perPlayerRace: !!(recorded && recorded.perPlayerRace),
+      techCardDeck: settings && settings.techCardDeck,
     };
   };
 
@@ -88,11 +89,13 @@ define([
       race: undefined,
       races: gwoRaces.detect([]),
       perPlayerRace: false,
+      techCardDeck: undefined,
     };
   };
 
-  // Resolves to { faction, race, races, perPlayerRace }, always - a war that
-  // cannot be read is one with no races and no picker, not a failure.
+  // Resolves to { faction, race, races, perPlayerRace, techCardDeck }, always -
+  // a war that cannot be read is one with no races and no picker, not a
+  // failure.
   var load = function () {
     if (loaded) {
       return loaded;
