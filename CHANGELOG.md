@@ -12,11 +12,13 @@
 - Exiles is the third race, under the TITANS brain. Exiles has no orbital units beyond the launcher, so the orbital tech cards are not dealt to an Exiles player
 - Separate races: a co-op war generated with this on lets every player pick their own race and commander when they choose their loadout, instead of all sharing the host's. Needs Separate loadout & tech, and offers the races the war was created with that are still active
 - Resuming a war whose race mods are gone now says so and stops you fighting it, rather than quietly taking your units away. Re-enable the mods and restart the game to carry on. A race mod that has only changed version still just leaves a note on the war panel
+- Mods can now add whole decks to the Techs picker in the war setup, composed from the Basic and Galactic War Overhaul decks, other mods' decks, individual stock cards and their own cards. A war remembers its deck; resume one whose deck mod is gone and it deals the Galactic War Overhaul deck instead
 
 ### Bugfix
 
 - Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections
 - Sub Commanders were dealt PENCHANT personalities when the Opponent AI was PENCHANT; they now follow the Ally AI, as their QUELLER compatibility filter always did
+- In a co-op war with Separate loadout & tech, players choosing their loadout were dealt cards from the full Galactic War Overhaul deck even when the war was created with the Basic deck; they now draw from the war's own deck
 
 ## v6.14.0 - 2026-08-27
 

@@ -66,8 +66,9 @@ ship is a base-game module, and the test harness reports it distinctly; see
 
 Every mod gets **one shared JS scope per scene**. Stock UI code and mod scripts
 share a namespace, which is why several GWO values are deliberately globals
-(`model.gwoCards`, `model.gwoSpecs`, `model.gwoCardsGrantingAdvancedTech`) — other
-mods hook them, and that is a supported contract, not an accident.
+(`model.gwoCards`, `model.gwoDecks`, `model.gwoSpecs`,
+`model.gwoCardsGrantingAdvancedTech`) — other mods hook them, and that is a
+supported contract, not an accident.
 
 ## The major subsystems
 
