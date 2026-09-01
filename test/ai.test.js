@@ -328,6 +328,59 @@ describe("aiInUse with a race", () => {
     }
   });
 
+  it("answers from the war's aiByRace row for the race and side", () => {
+    races.register(FIXTURE_RACE);
+    races.register({ id: "legion" });
+    try {
+      const fixture = buildGame({
+        aiInUse: "Penchant",
+        aiAllyInUse: "Penchant",
+        aiByRace: {
+          legion: { enemy: "Queller", ally: "Titans" },
+          fixture: { enemy: "Queller", ally: "Penchant" },
+        },
+      });
+      installModel(fixture.game);
+
+      assert.equal(gwoAI.aiInUse("enemy", "legion"), "Queller");
+      assert.equal(gwoAI.aiInUse("subcommander", "legion"), "Titans");
+      // A recorded cell the race cannot run still coerces to Titans.
+      assert.equal(gwoAI.aiInUse("enemy", "fixture"), "Titans");
+      assert.equal(gwoAI.aiInUse("subcommander", "fixture"), "Titans");
+      // MLA reads the war-wide strings, never the table.
+      assert.equal(gwoAI.aiInUse("enemy", "mla"), "Penchant");
+      assert.equal(gwoAI.aiInUse("enemy"), "Penchant");
+      // The row routes the whole path family, not just the name.
+      assert.equal(
+        gwoAI.getAIPathDestination("enemy", { race: "legion" }),
+        "/pa/ai_queller_race_legion/q_uber/"
+      );
+      assert.equal(
+        gwoAI.getAIPathSource("enemy", "legion"),
+        "/pa/ai_queller/q_uber/"
+      );
+    } finally {
+      races.reset();
+    }
+  });
+
+  it("falls back to the war-wide strings for a race with no row", () => {
+    races.register({ id: "legion" });
+    try {
+      const fixture = buildGame({
+        aiInUse: "Queller",
+        aiAllyInUse: "Titans",
+        aiByRace: {},
+      });
+      installModel(fixture.game);
+
+      assert.equal(gwoAI.aiInUse("enemy", "legion"), "Queller");
+      assert.equal(gwoAI.aiInUse("subcommander", "legion"), "Titans");
+    } finally {
+      races.reset();
+    }
+  });
+
   it("reads a race off an AI, a live inventory and a serialised record", () => {
     races.register(FIXTURE_RACE);
     try {
