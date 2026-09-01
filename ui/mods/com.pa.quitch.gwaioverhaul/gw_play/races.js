@@ -126,9 +126,10 @@ function gwoPlayRaces() {
         // Every race this client has to answer for. Normally the one race it
         // plays - its own record's under Separate races, the war's otherwise.
         // A host under Separate races deals and builds files for every viewer,
-        // and a viewer may have picked any race the war offers, so the host
-        // primes the lot. See coop.md.
-        var racesToPrime = function () {
+        // and a viewer may have picked any race the picker still offers - the
+        // recorded races whose server mod is active - so the host primes
+        // exactly that offer. See coop.md.
+        var racesToPrime = function (info) {
           var record =
             _.isFunction(model.currentCoopPlayerInventoryData) &&
             model.currentCoopPlayerInventoryData();
@@ -146,7 +147,10 @@ function gwoPlayRaces() {
           return _.uniq(
             [own].concat(
               _.pluck(
-                gwoRaces.detect(_.pluck(recorded.mods, "identifier")),
+                raceCheck.activeRaces(
+                  gwoRaces.detect(_.pluck(recorded.mods, "identifier")),
+                  info
+                ),
                 "id"
               )
             )
@@ -154,16 +158,21 @@ function gwoPlayRaces() {
         };
 
         // Deals are synchronous and gate on the race's cells, so build them
-        // now rather than at the first deal - once GW Server Mods has the race
-        // zip mounted, or the unit list read has no race unit in it. See
+        // as soon as the installed list is read - once GW Server Mods has the
+        // race zip mounted, or the unit list read has no race unit in it. See
         // races.md.
         //
         // One unit list read for all of them: a read taken before the mount
         // has no race unit and is discarded, and letting each race take its
         // own means some land either side of the mount and only some races
         // end up primed.
-        var toPrime = _.reject(racesToPrime(), gwoRaces.isMla);
-        if (toPrime.length) {
+        var primeRaces = function (info) {
+          var toPrime = _.reject(racesToPrime(info), gwoRaces.isMla);
+
+          if (!toPrime.length) {
+            return;
+          }
+
           raceMods.mountRoot().always(function () {
             raceCells.load().then(
               function (loaded) {
@@ -176,7 +185,7 @@ function gwoPlayRaces() {
               }
             );
           });
-        }
+        };
 
         // A war resumed without the mods behind its races loses units with no
         // other warning, so say so and stop it being fought. See races.md.
@@ -189,10 +198,6 @@ function gwoPlayRaces() {
           _.isFunction(model.game().coopPlayerInventoryData) &&
           model.game().coopPlayerInventoryData();
         var warRaceIds = raceCheck.warRaces(recorded, ais, records || []);
-
-        if (!warRaceIds.length) {
-          return;
-        }
 
         var describe = function (entry) {
           if (entry.reason === "descriptor") {
@@ -217,6 +222,14 @@ function gwoPlayRaces() {
         };
 
         raceMods.installedRaces().then(function (info) {
+          // Priming is not behind the warRaceIds gate: an all-MLA war under
+          // Separate races still primes the offer for a viewer joining later.
+          primeRaces(info);
+
+          if (!warRaceIds.length) {
+            return;
+          }
+
           var result = raceCheck.evaluate(recorded, warRaceIds, info);
 
           var changed = _.map(result.warnings, function (warning) {
