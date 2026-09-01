@@ -1,7 +1,9 @@
 // The per-race AI brain table: a modal with one row per race and an Opponent
 // and Ally brain per row, replacing the two war-wide AI dropdowns. Each cell
 // offers only the brains that know its race, so no coercion is needed at
-// pick time. See races.md.
+// pick time. Cells are the scene's usual selectpicker dropdowns; the rows are
+// rebuilt wholesale on every change, so each select is initialised once with
+// its final option list and never needs a manual refresh. See races.md.
 var gwoAiPickerLoaded;
 
 function gwoAiPicker() {

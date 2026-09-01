@@ -47,16 +47,22 @@
         data-bind="css: { 'gwo-ai-table-stale': stale }"
       >
         <div class="gwo-ai-table-race" data-bind="text: name"></div>
+        <!-- options must precede selectPicker in each binding string: the
+             picker snapshots the select's option elements when it initialises.
+             data-width pins the button, since the picker measures inside a
+             modal that is still display: none when the rows render. -->
         <div class="gwo-ai-table-cell">
           <select
-            class="form-control gwo-ai-table-select"
-            data-bind="options: options, value: enemy, disable: stale"
+            class="form-control"
+            data-width="100%"
+            data-bind="options: options, disable: stale, selectPicker: enemy"
           ></select>
         </div>
         <div class="gwo-ai-table-cell">
           <select
-            class="form-control gwo-ai-table-select"
-            data-bind="options: options, value: ally, disable: stale"
+            class="form-control"
+            data-width="100%"
+            data-bind="options: options, disable: stale, selectPicker: ally"
           ></select>
         </div>
       </div>

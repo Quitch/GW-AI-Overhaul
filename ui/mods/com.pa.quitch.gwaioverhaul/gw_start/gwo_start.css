@@ -175,22 +175,19 @@
   margin-left: 8px;
 }
 
-/* Plain selects, not bootstrap-select: each row's option list is its own, and
-   selectpicker would need a manual rebuild-and-refresh per cell. Styled to sit
-   beside the scene's dropdowns. The brain names are proper nouns spelled as the
-   war record stores them, so the uppercase the panel shows is applied here. */
-.gwo-ai-table-select {
-  width: 100%;
-  padding: 4px;
-  border: 1px solid rgba(0, 179, 255, 0.5);
-  background: #0b1a1f;
-  color: #fff;
+/* The cells are the scene's own selectpicker dropdowns. The brain names are
+   proper nouns spelled as the war record stores them, so the uppercase the
+   panel shows is applied here - hung off the cell, as #difficulty-cards does,
+   because an <option> is no CSS hook once selectpicker rewrites the menu. */
+#gwo-ai-table .gwo-ai-table-cell,
+#gwo-ai-table button {
   text-transform: uppercase;
 }
 
-.gwo-ai-table-select option {
-  background: #0b1a1f;
-  color: #fff;
+/* global.css's .btn_std_ix border precedent: the commander picker's blue.
+   Qualified so it wins over the stock .btn border regardless of order. */
+#gwo-ai-table .btn.dropdown-toggle {
+  border: 1px solid rgba(0, 179, 255, 0.5);
 }
 
 .gwo-ai-table-stale {
