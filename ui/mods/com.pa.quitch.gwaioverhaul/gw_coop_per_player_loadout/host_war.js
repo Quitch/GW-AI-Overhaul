@@ -76,6 +76,7 @@ define([
 
     return {
       faction: tag("playerFaction"),
+      colour: tag("playerColor"),
       race: tag("playerRace"),
       races: offeredRaces(recorded, installed),
       perPlayerRace: !!(recorded && recorded.perPlayerRace),
@@ -86,6 +87,7 @@ define([
   var empty = function () {
     return {
       faction: undefined,
+      colour: undefined,
       race: undefined,
       races: gwoRaces.detect([]),
       perPlayerRace: false,
@@ -93,9 +95,9 @@ define([
     };
   };
 
-  // Resolves to { faction, race, races, perPlayerRace, techCardDeck }, always -
-  // a war that cannot be read is one with no races and no picker, not a
-  // failure.
+  // Resolves to { faction, colour, race, races, perPlayerRace, techCardDeck },
+  // always - a war that cannot be read is one with no races and no picker, not
+  // a failure.
   var load = function () {
     if (loaded) {
       return loaded;

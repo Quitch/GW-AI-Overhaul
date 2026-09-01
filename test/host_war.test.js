@@ -40,6 +40,9 @@ function makeGame(options) {
   if (opts.race) {
     tags.playerRace = opts.race;
   }
+  if (opts.colour) {
+    tags.playerColor = opts.colour;
+  }
 
   return {
     inventory: () => ({
@@ -203,10 +206,14 @@ describe("hostInstalledInfo", () => {
 });
 
 describe("readGame", () => {
-  it("reads the faction, the race, the offer and the setting", () => {
+  it("reads the faction, its colour, the race, the offer and the setting", () => {
     const info = hostWar.readGame(
       makeGame({
         faction: 2,
+        colour: [
+          [126, 226, 101],
+          [192, 192, 192],
+        ],
         race: "fixture",
         gwaio: {
           races: {
@@ -218,6 +225,10 @@ describe("readGame", () => {
     );
 
     assert.equal(info.faction, 2);
+    assert.deepEqual(info.colour, [
+      [126, 226, 101],
+      [192, 192, 192],
+    ]);
     assert.equal(info.race, "fixture");
     assert.deepEqual(
       info.races.map((race) => race.id),
@@ -290,6 +301,7 @@ describe("readGame", () => {
     const info = hostWar.readGame({});
 
     assert.equal(info.faction, undefined);
+    assert.equal(info.colour, undefined);
     assert.equal(info.perPlayerRace, false);
   });
 });
