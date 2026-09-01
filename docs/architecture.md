@@ -104,6 +104,11 @@ panel driven by `model.gwoLaunchProgress`. That object is a public surface:
 - The referee reports its own stages through `gwoReferee.prototype.stage`; a
   co-op host's two hires are labelled "Co-op shared setup" and "Co-op host
   setup" so the repeat reads as intended.
+- In co-op, the host mirrors `begin()`/`stage()`/`end()` to every viewer via
+  the `gwo_launch_progress` host operator, so viewers see the same panel and
+  stages during a launch. The mirroring wraps the methods themselves, so
+  stages reported by other mods (e.g. GW Server Mods) are covered too. Stage
+  text arrives already localised in the host's language.
 - Stock sets `launchingFight` only after the war is saved, so a mod that wraps
   `model.fight` to do slow work first (GW Server Mods mounts server mods there)
   is only covered from the click if GWO's wrapper is outside its own, which

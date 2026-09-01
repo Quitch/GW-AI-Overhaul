@@ -44,6 +44,62 @@ function gwoLaunchProgress() {
         });
         model.gwoLaunchProgress = progress;
 
+        // A co-op viewer's only stock signal is the page being replaced, so the
+        // host mirrors the panel to every viewer. Wrapping the methods rather
+        // than the callers covers stages reported by other mods too. The send
+        // helper no-ops off-host; the handler returns nothing, so it never
+        // joins the state apply tail.
+        var launchProgressOperator = "gwo_launch_progress";
+
+        var broadcast = function (action, text) {
+          model.sendCampaignHostOperator(launchProgressOperator, {
+            action: action,
+            message: text,
+          });
+        };
+
+        var localBegin = progress.begin;
+        progress.begin = function () {
+          localBegin();
+          broadcast("begin");
+        };
+
+        var localStage = progress.stage;
+        progress.stage = function (text) {
+          localStage(text);
+          // stage is a no-op outside a launch; mirror that.
+          if (progress.visible()) {
+            broadcast("stage", text);
+          }
+        };
+
+        var localEnd = progress.end;
+        progress.end = function () {
+          localEnd();
+          broadcast("end");
+        };
+
+        model.registerCampaignHostOperatorHandler(
+          launchProgressOperator,
+          function (operator) {
+            if (!model.isCampaignViewer()) {
+              return;
+            }
+            var payload = operator.payload || {};
+            if (payload.action === "begin") {
+              localBegin();
+            } else if (payload.action === "stage") {
+              localStage(payload.message);
+            } else if (payload.action === "end") {
+              localEnd();
+            }
+          }
+        );
+
+        // No disconnect dismissal: gwCampaignConnected is never written false,
+        // and both teardown paths navigate to transit, taking the panel with
+        // the page.
+
         // Outermost wrapper: mods that report to this screen load before GWO.
         // Stock restartFight delegates to model.fight, so one wrap covers both.
         var previousFight = model.fight;
