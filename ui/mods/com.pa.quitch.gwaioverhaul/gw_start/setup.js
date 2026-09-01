@@ -389,6 +389,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_build.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
       ],
       function (
         GW,
@@ -414,7 +415,8 @@ function gwoSetup() {
         gwoBiomeMods,
         gwoGalaxyBuild,
         gwoRaces,
-        gwoPromise
+        gwoPromise,
+        gwoBrainTable
       ) {
         // Replaces GWGalaxy.prototype.build, which navToNewGame below calls.
         gwoGalaxyBuild.install();
@@ -513,6 +515,19 @@ function gwoSetup() {
           return result;
         };
 
+        // The brain an AI of this race runs on that side: the per-race table
+        // with the war-wide dropdowns as its fallback. See races.md.
+        var brainForRace = function (race, side) {
+          var settings = model.gwoDifficultySettings;
+          return gwoBrainTable.resolve(
+            settings.aiByRace(),
+            settings.ai(),
+            settings.aiAlly(),
+            side,
+            race
+          );
+        };
+
         // titansAITags is optional: concat would otherwise append a literal undefined
         // to personality_tags, which the save round-trips back as null.
         var setupPenchantAI = function (rng, ai, titansAITags) {
@@ -555,8 +570,11 @@ function gwoSetup() {
           }
 
           var titansAITags = ["Default"];
+          // The AI's race is assigned before any personality, so the brain its
+          // race actually runs is known here.
+          var brain = brainForRace(ai.race, "enemy");
 
-          switch (difficulty.ai()) {
+          switch (brain) {
             case "Penchant":
               setupPenchantAI(rng, ai, titansAITags);
               break;
@@ -569,7 +587,7 @@ function gwoSetup() {
                 personality.personality_tags.concat(titansAITags);
               break;
             default:
-              console.error("Undefined AI type:", difficulty.ai());
+              console.error("Undefined AI type:", brain);
               warGenerationFailed = true;
           }
         };
@@ -832,18 +850,21 @@ function gwoSetup() {
             var teams = _.map(aiFactions, function (faction) {
               return gwoTeams.getTeam(faction, teamsRng);
             });
-            if (model.gwoDifficultySettings.ai() === "Queller") {
-              // Filter before anything is sampled, so an incompatible minion
-              // can never be spread onto the galaxy as a worker AI.
-              _.forEach(teams, function (team) {
-                team.remainingMinions = gwoAI.quellerCompatibleMinions(
-                  team.remainingMinions
-                );
-                team.faction = _.assign({}, team.faction, {
-                  minions: gwoAI.quellerCompatibleMinions(team.faction.minions),
-                });
+            // Filter before anything is sampled, so an incompatible minion
+            // can never be spread onto the galaxy as a worker AI. Keyed per
+            // team: each faction's race decides whether its AIs run Queller.
+            _.forEach(teams, function (team, teamIndex) {
+              var race = raceByFaction[aiFactions[teamIndex]];
+              if (brainForRace(race, "enemy") !== "Queller") {
+                return;
+              }
+              team.remainingMinions = gwoAI.quellerCompatibleMinions(
+                team.remainingMinions
+              );
+              team.faction = _.assign({}, team.faction, {
+                minions: gwoAI.quellerCompatibleMinions(team.faction.minions),
               });
-            }
+            });
             var teamInfo = _.map(teams, function (team, teamIndex) {
               return {
                 team: team,
@@ -1022,12 +1043,16 @@ function gwoSetup() {
               }
 
               var difficulty = model.gwoDifficultySettings;
+              var teamBrain = brainForRace(
+                raceByFaction[info.faction],
+                "enemy"
+              );
               // The team pre-filter above covers the built-in factions; this
               // catches a modded faction populating team.workers.
-              var workerPool = quellerPool(info.workers, difficulty.ai());
+              var workerPool = quellerPool(info.workers, teamBrain);
               var minionPool = quellerPool(
                 GWFactions[info.faction].minions,
-                difficulty.ai()
+                teamBrain
               );
 
               // One minion per stream index off the parent's rng. A Cluster AI
@@ -1175,7 +1200,7 @@ function gwoSetup() {
                     var foeFaction = availableFactions.shift();
                     var foeMinions = quellerPool(
                       GWFactions[foeFaction].minions,
-                      difficulty.ai()
+                      brainForRace(raceByFaction[foeFaction], "enemy")
                     );
                     var foeCommander = selectMinion(
                       foeRng,
@@ -1225,9 +1250,12 @@ function gwoSetup() {
                   gameModeEnabled(allyRng, difficulty.alliedCommanderChance())
                 ) {
                   var playerFaction = playerFactionIndex();
+                  // The ally fights as the player's race, so its brain is
+                  // that race's ally cell.
+                  var allyBrain = brainForRace(playerRace, "ally");
                   var allyMinions = quellerPool(
                     GWFactions[playerFaction].minions,
-                    difficulty.aiAlly()
+                    allyBrain
                   );
                   var allyCommander = selectMinion(
                     allyRng,
@@ -1238,17 +1266,27 @@ function gwoSetup() {
                     allyCommander.faction = playerFaction;
                     giveRace(allyRng, allyCommander, playerRace, false);
                     ai.ally = allyCommander;
-                    if (difficulty.aiAlly() === "Penchant") {
+                    if (allyBrain === "Penchant") {
                       setupPenchantAI(allyRng, ai.ally);
                     }
                   }
                 }
 
-                if (difficulty.ai() === "Queller" && ai.foes) {
-                  setupQuellerFFATag(ai);
-                  setupQuellerFFATag(ai.minions);
-                  setupQuellerFFATag(ai.foes);
-                  setupQuellerFFATag(ai.ally);
+                if (ai.foes) {
+                  // Tagged per entity: in a mixed-race FFA only the armies
+                  // actually running Queller take its FFA tags.
+                  var tagIfQueller = function (entities, brain) {
+                    if (brain === "Queller") {
+                      setupQuellerFFATag(entities);
+                    }
+                  };
+                  var workerBrain = brainForRace(ai.race, "enemy");
+                  tagIfQueller(ai, workerBrain);
+                  tagIfQueller(ai.minions, workerBrain);
+                  _.forEach(ai.foes, function (foe) {
+                    tagIfQueller(foe, brainForRace(foe.race, "enemy"));
+                  });
+                  tagIfQueller(ai.ally, brainForRace(playerRace, "ally"));
                 }
               });
             });
@@ -1347,6 +1385,14 @@ function gwoSetup() {
             }
             originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
             originSystem.gwaio.aiAlly = model.gwoDifficultySettings.aiAlly();
+            // One coerced row per installed race, so the save never carries a
+            // brain a race cannot run and co-op viewers read the same answers.
+            originSystem.gwaio.aiByRace = gwoBrainTable.recordFor(
+              model.gwoDifficultySettings.aiByRace(),
+              installedRaces,
+              model.gwoDifficultySettings.ai(),
+              model.gwoDifficultySettings.aiAlly()
+            );
             originSystem.gwaio.aiMods = [];
             originSystem.gwaio.techCardDeck =
               model.gwoDifficultySettings.techCardDeck();

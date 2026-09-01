@@ -82,6 +82,10 @@ function gwoUI() {
       uniqueRaces: ko.observable(false),
       // Co-op only, and only alongside per-player tech. See coop.md.
       perPlayerRace: ko.observable(false),
+      // { raceId: { enemy, ally } } for non-MLA races; ai/aiAlly above are
+      // the MLA row. Stale ids are kept so a reinstalled race remembers its
+      // brains. See races.md.
+      aiByRace: ko.observable({}),
     };
 
     var difficultySettings = model.gwoDifficultySettings;
