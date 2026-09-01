@@ -10,6 +10,7 @@ const {
   registerModuleStub,
   requireShippedModule,
 } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
 
 const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
@@ -58,6 +59,16 @@ const installed = (overrides) =>
     overrides
   );
 
+const stubs = createGlobalStubs();
+
+// The stash GW Server Mods' connect gate leaves in sessionStorage.
+const stashHostMods = (value) => {
+  stubs.setGlobal("sessionStorage", {
+    getItem: (key) =>
+      key === "gw_server_mods_host_identifiers" ? value : null,
+  });
+};
+
 beforeEach(() => {
   races.reset();
   races.register(FIXTURE_RACE);
@@ -65,6 +76,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  stubs.restoreGlobals();
   races.reset();
 });
 
@@ -142,6 +154,47 @@ describe("offeredRaces", () => {
         .map((race) => race.id),
       ["mla"]
     );
+  });
+});
+
+describe("hostInstalledInfo", () => {
+  it("reads the host's active mods from the connect gate's stash", () => {
+    stashHostMods(
+      JSON.stringify({ identifiers: ["com.example.fixture-server"] })
+    );
+
+    const info = hostWar.hostInstalledInfo();
+
+    assert.equal(info.known, true);
+    assert.deepEqual(
+      info.races.map((race) => race.id),
+      ["mla", "fixture"]
+    );
+  });
+
+  it("answers cannot-tell when there is no stash", () => {
+    stashHostMods(null);
+
+    assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
+  });
+
+  it("answers cannot-tell when the stash is unreadable", () => {
+    stashHostMods("{not json");
+    assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
+
+    stubs.restoreGlobals();
+    stashHostMods(JSON.stringify({ identifiers: "nope" }));
+    assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
+  });
+
+  it("answers cannot-tell when storage itself throws", () => {
+    stubs.setGlobal("sessionStorage", {
+      getItem: () => {
+        throw new Error("denied");
+      },
+    });
+
+    assert.deepEqual(hostWar.hostInstalledInfo(), { known: false });
   });
 });
 

@@ -6,9 +6,36 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_check.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
-], function (GW, gwoAI, gwoRaces, raceCheck, raceMods) {
+], function (GW, gwoAI, gwoRaces, raceCheck) {
   var loaded;
+
+  // What the host said it is running, captured into sessionStorage by GW
+  // Server Mods' connect gate on the way into the session. The host's active
+  // set, not this client's: the host mounts the server mods a battle fields,
+  // and race_mods.installedRaces cannot answer here - GW Server Mods loads no
+  // script in this scene, so it would read as absent however the mods are
+  // set. No stash - a host without GW Server Mods, or storage unreadable - is
+  // "cannot tell", and activeRaces then removes nothing. See races.md.
+  var HOST_MODS_KEY = "gw_server_mods_host_identifiers";
+
+  var hostInstalledInfo = function () {
+    var stored;
+
+    try {
+      stored = JSON.parse(sessionStorage.getItem(HOST_MODS_KEY) || "null");
+    } catch (e) {
+      stored = null;
+    }
+
+    if (!stored || !_.isArray(stored.identifiers)) {
+      return { known: false };
+    }
+
+    return {
+      races: gwoRaces.detect(stored.identifiers),
+      known: true,
+    };
+  };
 
   // The races a viewer may pick: the ones the host's war recorded that are
   // still active, and MLA, which every war has. Deliberately not the viewer's
@@ -79,15 +106,9 @@ define([
       return loaded;
     }
 
-    // In parallel with the game read; installedRaces always resolves, so
-    // chaining inside the success branch cannot hang the scene.
-    var installed = raceMods.installedRaces();
-
     GW.manifest.loadGame(activeGameId).then(
       function (game) {
-        installed.then(function (info) {
-          deferred.resolve(readGame(game, info));
-        });
+        deferred.resolve(readGame(game, hostInstalledInfo()));
       },
       function () {
         deferred.resolve(empty());
@@ -101,7 +122,11 @@ define([
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = { offeredRaces: offeredRaces, readGame: readGame };
+    module.exports = {
+      offeredRaces: offeredRaces,
+      readGame: readGame,
+      hostInstalledInfo: hostInstalledInfo,
+    };
   }
 
   return { load: load };

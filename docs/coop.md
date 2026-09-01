@@ -377,8 +377,11 @@ Three things about it are not obvious from the scene it sits in:
   `GW.manifest.loadGame(model.activeGameId())` once, caches the promise for both
   scene scripts, and resolves `{ faction, race, races, perPlayerRace }` — always,
   never rejecting, because a loadout preview outside a war still has to render.
-  `races` is the war's recorded offer intersected with what
-  `race_mods.installedRaces` found active, through `race_check.activeRaces`.
+  `races` is the war's recorded offer intersected, through
+  `race_check.activeRaces`, with the host's active server mods — read from the
+  sessionStorage stash GW Server Mods' connect gate leaves on the way in, not
+  from `race_mods.installedRaces`: GW Server Mods loads no script in this
+  scene, and the host's set is the authority anyway. No stash removes nothing.
 - **The picker's markup is injected synchronously.** `ko.applyBindings` runs as
   soon as the scene scripts return, so anything added after that is never bound.
   The race control and the commander display go in at scene-script time and stay
