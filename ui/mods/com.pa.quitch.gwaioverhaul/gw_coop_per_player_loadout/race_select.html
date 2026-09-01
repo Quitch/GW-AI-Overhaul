@@ -1,0 +1,21 @@
+<div
+  class="form-group"
+  id="gwo-viewer-race-group"
+  data-bind="visible: gwoViewerRacesAvailable()"
+  style="display: none"
+>
+  <label for="gwo-viewer-race-select"><loc>Race</loc></label>
+  <span
+    class="info_tip"
+    data-placement="right"
+    data-bind="tooltip: $root.gwoViewerRaceTooltip"
+    >?</span
+  >
+  <select
+    class="form-control"
+    id="gwo-viewer-race-select"
+    data-bind="selectPicker: gwoViewerRace"
+  >
+    <option value="mla">MLA</option>
+  </select>
+</div>

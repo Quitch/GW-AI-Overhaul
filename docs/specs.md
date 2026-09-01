@@ -240,7 +240,10 @@ parses each file at most once and reuses it across every tag.
 
 The invariant that makes it safe: **tag a clone, never the cached pristine copy.**
 A failed fetch is deliberately not cached, so a later tag can retry rather than
-inheriting a permanent failure.
+inheriting a permanent failure. `fetchRaw` hands a caller the pristine parsed
+spec through the same cache, and `references` lists a spec's untagged
+references without touching it; `shared/race_cells.js` uses both to read every
+spec ahead of the referee, which then fetches nothing twice.
 
 `tagSpec()` mirrors the base game's `gw_specs.js:tagSpec` and must be kept in sync
 with it — including the list of fields that count as spec references. Projectiles

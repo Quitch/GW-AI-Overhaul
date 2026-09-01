@@ -328,8 +328,9 @@ function gwoSystemChanges() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],
-      function (GW, gwoVictory, gwoSave, gwoTreasure, gwoBank) {
+      function (GW, gwoVictory, gwoSave, gwoTreasure, gwoBank, gwoRaces) {
         gwoVictory({
           game: game,
           gwoSettings: gwoSettings,
@@ -337,6 +338,7 @@ function gwoSystemChanges() {
           treasure: gwoTreasure,
           stockBank: GW.bank,
           gwoBank: gwoBank,
+          race: gwoRaces.raceOf(game.inventory()),
         });
       }
     );

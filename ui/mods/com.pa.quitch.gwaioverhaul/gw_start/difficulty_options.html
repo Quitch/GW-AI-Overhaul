@@ -196,6 +196,29 @@
       </div>
       <div
         class="gw-start-coop-switch-row gwo-game-option-row"
+        id="unique-races-row"
+        data-bind="visible: gwoRacesAvailable()"
+        style="display: none"
+      >
+        <div class="gw-start-coop-switch-label" id="unique-races">
+          <loc>Unique Races</loc>
+          <span class="info_tip" data-bind="tooltip: gwoUniqueRacesTooltip"
+            >?</span
+          >
+        </div>
+        <div
+          class="gw-start-square-switch"
+          data-bind="css: { on: gwoGameOptionsDraft.uniqueRaces }, click: function () { toggleGwoBooleanSetting(gwoGameOptionsDraft.uniqueRaces); }, click_sound: 'default', rollover_sound: 'default'"
+        >
+          <span
+            class="gw-start-square-switch-label"
+            data-bind="text: gwoBooleanSettingText(gwoGameOptionsDraft.uniqueRaces)"
+          ></span>
+          <span class="gw-start-square-switch-thumb"></span>
+        </div>
+      </div>
+      <div
+        class="gw-start-coop-switch-row gwo-game-option-row"
         id="static-tech-row"
       >
         <div class="gw-start-coop-switch-label" id="static-tech">

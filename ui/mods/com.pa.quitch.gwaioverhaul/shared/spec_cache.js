@@ -144,6 +144,17 @@ define(function () {
       });
     },
 
+    // The pristine parsed spec, through the same cache genUnitSpecs fills, so
+    // a caller reading specs ahead of it costs the launch no second fetch.
+    fetchRaw: function (item, deps) {
+      return getRaw(item, deps);
+    },
+
+    // The untagged references a spec makes, without touching it.
+    references: function (spec) {
+      return tagSpec(undefined, "", _.cloneDeep(spec));
+    },
+
     // Test-only: lets tests assert fetch counts in isolation.
     clearCache: function () {
       rawCache = {};

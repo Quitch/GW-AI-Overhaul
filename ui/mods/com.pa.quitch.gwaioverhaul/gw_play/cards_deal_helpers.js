@@ -1,6 +1,28 @@
 // The measured half of gw_play/cards.js. Nothing here may touch model/$/ko/game
 // at define time - see testing.md, "Coverage".
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
+], function (brainTable) {
+  // Cards a race player is never offered: unit upgrades are tuned to the MLA
+  // unit they name (the commander's excepted - every race has one), these
+  // loadouts and protocols are built on hand-picked unit lists no cell reads,
+  // and the Deepspace Radar is a TITANS stub only its card brings back. A
+  // race gets its own. See races.md.
+  var MLA_ONLY = [
+    "gwaio_start_paratrooper",
+    "gwaio_start_nomad",
+    "gwaio_protocol_killswitch",
+    "gwaio_enable_planetaryradar",
+  ];
+  var RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
+
+  var mlaOnlyCard = function (cardId) {
+    if (_.contains(MLA_ONLY, cardId)) {
+      return true;
+    }
+    return /_upgrade_/.test(cardId) && !RACE_UPGRADES.test(cardId);
+  };
+
   var isStartLoadoutCardId = function (cardId) {
     return _.isString(cardId) && _.includes(cardId, "_start_");
   };
@@ -159,14 +181,25 @@ define(function () {
       );
     },
 
-    // Mutates the subcommander. A no-op unless the ally is Penchant.
+    // Mutates the subcommander. A no-op unless the race's ally brain is
+    // Penchant - a Sub Commander fights as the player's race, so its brain
+    // comes from that race's row, not the war-wide string. See races.md.
     applyPenchantToSubcommander: function (
       subcommander,
       gwoSettings,
       gwoAI,
-      rng
+      rng,
+      race
     ) {
-      if (!gwoSettings || gwoSettings.aiAlly !== "Penchant") {
+      var settings = gwoSettings || {};
+      var allyBrain = brainTable.resolve(
+        settings.aiByRace,
+        settings.ai,
+        settings.aiAlly,
+        "ally",
+        race
+      );
+      if (allyBrain !== "Penchant") {
         return;
       }
 
@@ -177,6 +210,41 @@ define(function () {
         subcommander.personality.personality_tags.concat(
           penchantValues.penchants
         );
+    },
+
+    MLA_ONLY: MLA_ONLY,
+    mlaOnlyCard: mlaOnlyCard,
+
+    // A card the player's race can own nothing of is not worth a hand slot.
+    // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes.
+    // See races.md.
+    raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
+      if (!races) {
+        return true;
+      }
+      var race = races.raceOf(inventory);
+      if (races.isMla(race)) {
+        return true;
+      }
+      if (mlaOnlyCard(cardId)) {
+        return false;
+      }
+      var entry = _.find(cardsToUnits || [], { id: cardId });
+      return !entry || races.cardUsable(race, entry.units);
+    },
+
+    // A Sub Commander fights as the player's race, with one of its commanders.
+    // Mutates the subcommander; a no-op for MLA.
+    applyRaceToSubcommander: function (subcommander, races, race, rng) {
+      if (!races || races.isMla(race)) {
+        return subcommander;
+      }
+      subcommander.race = race;
+      var commander = races.commanderFor(rng, race);
+      if (commander) {
+        subcommander.commander = commander;
+      }
+      return subcommander;
     },
 
     // The two Sub Commanders the General Commander loadout grants. Each draws
@@ -208,7 +276,14 @@ define(function () {
           subcommander,
           gwoSettings,
           gwoAI,
-          minionRng
+          minionRng,
+          params.race
+        );
+        self.applyRaceToSubcommander(
+          subcommander,
+          params.races,
+          params.race,
+          minionRng ? minionRng.stream("commander") : undefined
         );
         minions.push({
           id: "gwc_minion",

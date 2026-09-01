@@ -15,9 +15,9 @@
     "ki",
     "ia",
     "si",
-    "ИИ",
-    "电脑",
-    "電腦",
+    "\u0418\u0418",
+    "\u7535\u8111",
+    "\u96fb\u8166",
     "gw",
     "gameplay",
     "gwaio",
@@ -28,9 +28,14 @@
     "gw_start": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/race_picker.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/deck_picker.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_picker.js"
     ],
     "gw_play": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/races.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/bugfixes.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_tooltips.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
@@ -67,6 +72,8 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.css"
     ],
     "gw_coop_per_player_loadout": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/race_picker.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/gwo_loadouts.js"
     ]
   },

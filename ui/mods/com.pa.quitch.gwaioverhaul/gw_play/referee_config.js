@@ -113,7 +113,6 @@ define([
       game.currentStar(),
       game.stats().turns()
     );
-    var aiInUse = gwoAI.aiInUse("enemy");
     var aiTag = gwoAI.aiTags(ai);
 
     setupAlliedCommanders(
@@ -144,11 +143,10 @@ define([
       ai,
       connectedPlayerCards,
       aiTag,
-      aiInUse,
       armies,
       battleRng
     );
-    setupFfaAis(ai.foes, aiTag, aiInUse, armies, battleRng);
+    setupFfaAis(ai.foes, aiTag, armies, battleRng);
     system.planets = modifyPlanets(
       inventory,
       system.planets,

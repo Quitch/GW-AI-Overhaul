@@ -33,6 +33,10 @@ const gwoGroup = loadCouiModule(
   "coui://" + MOD_ROOT + "/shared/unit_groups.js"
 );
 const gwoDeal = loadCouiModule("coui://" + MOD_ROOT + "/shared/deal.js");
+const gwoDecks = loadCouiModule("coui://" + MOD_ROOT + "/shared/decks.js");
+const gwoDeckMods = loadCouiModule(
+  "coui://" + MOD_ROOT + "/shared/deck_mods.js"
+);
 const helpers = loadCouiModule(
   "coui://" + MOD_ROOT + "/gw_play/cards_deal_helpers.js"
 );
@@ -62,6 +66,9 @@ const GLOBALS = [
     "ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js",
   ],
   ["gwoLoadoutBanks", MOD_ROOT + "/shared/loadout_banks.js"],
+  ["gwoRaces", MOD_ROOT + "/shared/race_mods.js"],
+  ["gwoRaces", MOD_ROOT + "/gw_play/races.js"],
+  ["gwoDecks", MOD_ROOT + "/shared/deck_mods.js"],
 ];
 
 describe("the modder globals are adopted, not overwritten", () => {
@@ -175,6 +182,33 @@ describe("a mod's loadouts reach the list scenes deal from", () => {
 
     assert.match(scene, /loadouts\.allCards/);
     assert.doesNotMatch(scene, /setupGwoCards/);
+  });
+});
+
+describe("a mod's decks reach the picker's deal", () => {
+  afterEach(() => {
+    gwoDecks.reset();
+    gwoDeckMods.reset();
+  });
+
+  // The two globals are independent registrations, so a deck mod and a card
+  // mod need no knowledge of each other's load order: setupGwoCards adopts
+  // both, whichever scene script pushed first.
+  it("setupGwoCards deals a model.gwoDecks deck and keeps model.gwoCards pushes", () => {
+    setGlobal("model", {
+      gwoCards: ["mym_damage_bots"],
+      gwoDecks: [
+        { id: "mym-nomad", name: "!LOC:Nomad", cards: ["mym_card_a"] },
+      ],
+    });
+
+    const deck = gwoDeal.setupGwoCards({ techCardDeck: "mym-nomad" });
+
+    assert.ok(deck.includes("mym_card_a"), "the deck's card is undealable");
+    assert.ok(
+      deck.includes("mym_damage_bots"),
+      "another mod's gwoCards push must reach a third-party deck too"
+    );
   });
 });
 

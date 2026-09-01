@@ -10,8 +10,11 @@ define([
     icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_commander_upgrade.png",
     audio: "/VO/Computer/gw/board_tech_available_subcommander",
     deal: function (system, context, inventory) {
-      var gwoSettings = gwoAI.originSettings(model.game());
-      if (gwoSettings && gwoSettings.aiAlly === "Queller") {
+      // Sub Commanders fight as the player's race, so Queller withholds this
+      // card only when that race's ally brain is Queller. See races.md.
+      if (
+        gwoAI.aiInUse("subcommander", gwoAI.raceOf(inventory)) === "Queller"
+      ) {
         return { chance: 0 };
       }
       return { chance: gwoCard.subcommanderWeight(inventory, 55) };

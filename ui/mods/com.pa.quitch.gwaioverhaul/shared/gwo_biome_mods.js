@@ -2,7 +2,8 @@
 // Galactic War battle can be given. See galaxy.md, "Biome mods in a GW battle".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
-], function (gwoBiomes) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+], function (gwoBiomes, gwoPromise) {
   var serverModsRoot = "/server_mods/";
 
   var modRecord = function (mod) {
@@ -19,20 +20,7 @@ define([
     });
   };
 
-  // Engine promises are not jQuery promises: $.when treats one as a plain value.
-  var settled = function (enginePromise, onFailure) {
-    var done = $.Deferred();
-
-    enginePromise.then(
-      function (result) {
-        done.resolve(result);
-      },
-      function () {
-        done.resolve(onFailure());
-      }
-    );
-    return done.promise();
-  };
+  var settled = gwoPromise.settled;
 
   // gw_play loads the Community Mods manager; gw_start does not, so there the
   // manager's own IndexedDB store is read through the stock `db` extender. The

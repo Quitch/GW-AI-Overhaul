@@ -24,6 +24,14 @@ parts that need a running game stay thin.
 | `/pa/ai_subcommander/` | No            | Runtime-synthesised only. No on-disk existence anywhere.                                                                                           |
 | `/pa/ai_cluster/`      | No            | Runtime-synthesised only. Same.                                                                                                                    |
 
+A race adds a sixth kind of root, synthesised per battle: the brain's root with
+`_race_<id>` inserted - `/pa/ai_race_legion/`, `/pa/ai_queller_race_legion/q_uber/`,
+`/pa/ai_subcommander_race_legion/` - carrying the race's build orders layered
+over the brain's base files.
+`races.aiRoot` applies it inside `getAIPathDestination` when `options.race` is
+set; sources never change, since the tree is written from the brain's files. See
+[`races.md`](races.md).
+
 `/pa/ai_tech/` is deliberately **not** in that table. It is never handed to an AI
 as an `ai_path`: it is a file source the pipeline pulls extra build files out of
 when a card's AI mod carries a `load`, and a place `referee_ai.js` writes
@@ -164,12 +172,17 @@ unit cap.
 
 ## What `shared/ai.js` adds
 
-`aiInUse(alignment)` reads the origin system's `gwaio` blob — the settings
-piggy-backed onto the galaxy at war creation by `gw_start/setup.js`. For
-`alignment === "subcommander"` it prefers `gwaio.aiAlly` when set, which is what
-makes mixed-brain fights possible (a Queller enemy against a Penchant ally). With
-no `gwaio` blob at all — a war created before GWO, or by another mod — it returns
-`"Titans"`.
+`aiInUse(alignment, race)` reads the origin system's `gwaio` blob — the settings
+piggy-backed onto the galaxy at war creation by `gw_start/setup.js`. The brain is
+per race and per side (`shared/brain_table.js`): the race's `gwaio.aiByRace` row,
+`ally` for `alignment === "subcommander"` and `enemy` otherwise, falling back to
+the war-wide `gwaio.aiAlly`/`gwaio.ai` strings for MLA, for a race with no row,
+and for every war saved before the table existed — which is what makes
+mixed-brain fights possible (a Queller Legion enemy against a Penchant MLA foe
+in one battle). With no `gwaio` blob at all — a war created before GWO, or by
+another mod — it returns `"Titans"`. With a `race` the brain has no build orders
+for it also returns `"Titans"` (`races.brainFor`), the only brain that knows
+every race.
 
 `getAIPathSource(type)` fills in `smartSubcommanders` from the tech cards held.
 `getAIPathDestination(type, options)` fills in the settings the pure module needs

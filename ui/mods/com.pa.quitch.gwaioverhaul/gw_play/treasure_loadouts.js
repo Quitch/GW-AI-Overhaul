@@ -108,18 +108,18 @@ define([
     );
   };
 
-  var treasureLoadoutPool = function () {
-    return _.map(
-      _.uniq(
-        gwoLoadoutIds.lockedBase.concat(
-          gwoLoadoutIds.unlockable,
-          modLoadoutIds()
-        )
-      ),
-      function (id) {
-        return { id: id };
-      }
+  // A race player is never offered a loadout built for MLA alone. See
+  // races.md.
+  var treasureLoadoutPool = function (race) {
+    var ids = _.uniq(
+      gwoLoadoutIds.lockedBase.concat(gwoLoadoutIds.unlockable, modLoadoutIds())
     );
+    if (race && race !== "mla") {
+      ids = _.reject(ids, helpers.mlaOnlyCard);
+    }
+    return _.map(ids, function (id) {
+      return { id: id };
+    });
   };
 
   var recordHasUnlockedLoadout = function (record, card) {
@@ -133,7 +133,7 @@ define([
 
   // The loadout this player is offered, or undefined once they hold them all.
   var pickTreasureLoadout = function (params) {
-    var pool = params.pool || treasureLoadoutPool();
+    var pool = params.pool || treasureLoadoutPool(params.race);
     var isUnlocked = params.isUnlocked;
     var rng = params.rng;
     var locked = _.filter(pool, function (card) {
@@ -154,7 +154,7 @@ define([
   // not filtered by connection, because a stale one only leaves the offer
   // standing.
   var anyPlayerCanUnlockLoadout = function (params) {
-    var pool = params.pool || treasureLoadoutPool();
+    var pool = params.pool || treasureLoadoutPool(params.race);
     var localIds = _.isArray(params.localUnlockedIds)
       ? params.localUnlockedIds
       : [];

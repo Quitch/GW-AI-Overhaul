@@ -7,6 +7,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
 ], function (
   GWFactions,
   gwoAI,
@@ -15,7 +16,8 @@ define([
   helpers,
   gwoStreams,
   gwoCard,
-  coopHost
+  coopHost,
+  gwoRaces
 ) {
   return function (params) {
     var game = params.game;
@@ -51,9 +53,19 @@ define([
         : [];
     };
 
-    var buildGeneralCommanderMinions = function (factionIndex, playerKey) {
+    // raceInventory is whose race the minions are drawn for: the host's own
+    // inventory on the host's path, and the viewer's record inventory when the
+    // host is setting a viewer up under Separate races. See coop.md.
+    var buildGeneralCommanderMinions = function (
+      factionIndex,
+      playerKey,
+      raceInventory
+    ) {
       var minionPool = resolveFactionMinions(factionIndex);
-      if (gwoSettings && gwoSettings.aiAlly === "Queller") {
+      // The minions fight as this player's race, so the pool follows that
+      // race's ally brain. See races.md.
+      var race = gwoRaces.raceOf(raceInventory || inventory);
+      if (gwoAI.aiInUse("subcommander", race) === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
 
@@ -62,6 +74,8 @@ define([
         gwoSettings: gwoSettings,
         gwoAI: gwoAI,
         gwoCard: gwoCard,
+        races: gwoRaces,
+        race: race,
         rng: gwoStreams.generalCommanderRng(warRng, playerKey),
       });
     };
@@ -69,14 +83,19 @@ define([
     var appendGeneralCommanderMinions = function (
       cards,
       factionIndex,
-      playerKey
+      playerKey,
+      raceInventory
     ) {
       var minions;
       if (!inventoryNeedsGeneralCommanderSetup(cards)) {
         return false;
       }
 
-      minions = buildGeneralCommanderMinions(factionIndex, playerKey);
+      minions = buildGeneralCommanderMinions(
+        factionIndex,
+        playerKey,
+        raceInventory
+      );
       if (!minions.length) {
         return false;
       }
@@ -247,7 +266,8 @@ define([
           gwoStreams.coopPlayerKey(record, {
             id: operator.client_id,
             name: operator.client_name,
-          })
+          }),
+          playerInventory
         )
       ) {
         return replyUnchanged();

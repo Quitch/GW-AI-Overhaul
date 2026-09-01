@@ -91,8 +91,15 @@ a `throw` inside a deferred callback into a rejection.** A `TypeError` there esc
 `.fail()` entirely — no retry, and the caller hangs. Callbacks that can fail must
 `reject` explicitly rather than throwing or falling through.
 
-Also: `$.when()` does not wait for a function that returns a native Promise, and
-`.then` on a jQuery promise returns a _new_ promise each time (which the AI tree
+Also: `$.when()` and `deferred.then` identify a promise by a `promise` **method**.
+Neither an engine promise — what every `api.*` call returns — nor a native one has
+got one, so both are read as plain values and neither is ever waited for, with no
+error and no log line. `shared/gwo_promise.js` adapts one into a jQuery promise, and
+`scripts/lib/fake-jquery.js` applies the same test, so a shipped file that skips the
+adapter fails a test rather than skipping the wait in a war. Audited 2026-08-31:
+every other `$.when` in the mod is handed a jQuery promise or a plain value.
+
+And `.then` on a jQuery promise returns a _new_ promise each time (which the AI tree
 cache depends on).
 
 `requireGW` is configured `waitSeconds: 0`, so a module that never arrives never

@@ -14,6 +14,8 @@ function gwoWarInfoPanel(gwoSettings) {
     model.gwoSettings = gwoSettings;
     model.gwoDifficulty = loc(model.gwoSettings.difficulty);
     model.gwoSize = loc(model.gwoSettings.galaxySize);
+    // Refined per race in the requireGW callback below, before the panel's
+    // markup is fetched and bound.
     model.gwoAI = model.gwoSettings.ai || "Titans";
     model.gwoAIAlly =
       model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
@@ -136,16 +138,80 @@ function gwoWarInfoPanel(gwoSettings) {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deck_mods.js",
       ],
       function (
         gwoColour,
         gwoConfigSetup,
         gwoRefereeCoop,
         gwoSubcommanderTech,
-        gwoVersion
+        gwoRaces,
+        gwoVersion,
+        gwoBrainTable,
+        gwoDecks,
+        gwoDeckMods
       ) {
         model.gwoVersion = ko.observable(gwoVersion);
+
+        // A third-party deck's display name; the provisional deckName()
+        // assignment above already covers the built-ins and, as the fallback,
+        // a deck whose mod is gone. Bindings only apply later in this
+        // callback, so the refinement is seen.
+        gwoDeckMods.registerAll();
+        var warDeck = gwoDecks.byId(model.gwoSettings.techCardDeck);
+        if (warDeck) {
+          model.gwoDeck = loc(warDeck.name);
+        }
+
+        // One name per side when every race the war recorded resolves to the
+        // same brain - every pre-table save, and any uniform table - else the
+        // per-race list. See races.md.
+        var recordedRaces = gwoSettings.races || {};
+        var warRaceIds = _.uniq(
+          _.filter(
+            _.map(
+              [gwoRaces.MLA_ID, recordedRaces.player].concat(
+                _.values(recordedRaces.byFaction || {})
+              ),
+              gwoRaces.normalizeId
+            ),
+            function (id) {
+              return id.length > 0;
+            }
+          )
+        );
+        var raceName = function (id) {
+          var descriptor = gwoRaces.byId(id);
+          return descriptor ? loc(descriptor.name) : id;
+        };
+        var brainSummary = function (side) {
+          var entries = _.map(warRaceIds, function (id) {
+            return {
+              id: id,
+              brain: gwoBrainTable.resolve(
+                gwoSettings.aiByRace,
+                gwoSettings.ai,
+                gwoSettings.aiAlly,
+                side,
+                id
+              ),
+            };
+          });
+          var brains = _.uniq(_.pluck(entries, "brain"));
+
+          if (brains.length === 1) {
+            return brains[0];
+          }
+          return _.map(entries, function (entry) {
+            return raceName(entry.id) + ": " + entry.brain;
+          }).join(", ");
+        };
+        model.gwoAI = brainSummary("enemy");
+        model.gwoAIAlly = brainSummary("ally");
 
         var coopText = function (setting) {
           if (setting) {
@@ -209,7 +275,14 @@ function gwoWarInfoPanel(gwoSettings) {
           "Cluster",
         ];
         var factionIndex = inventory.getTag("global", "playerFaction");
+        var playerRace = gwoRaces.raceOf(inventory);
         model.gwoFactionName = factions[factionIndex];
+        // Every commander's icon is its race's, which is how a race shows on
+        // the panel; the name stays the faction's. See races.md.
+        var raceIcon = function (race) {
+          var descriptor = gwoRaces.byId(race) || gwoRaces.byId(playerRace);
+          return (descriptor && descriptor.playerIcon) || {};
+        };
         // The host's colour, written once at war creation and never changed.
         var playerColourPair = inventory.getTag("global", "playerColor");
         var playerColour = gwoColour.rgb(playerColourPair);
@@ -248,6 +321,9 @@ function gwoWarInfoPanel(gwoSettings) {
           ) {
             subcommanderName += " x2";
           }
+          var icon = raceIcon(
+            _.isUndefined(subcommander.race) ? playerRace : subcommander.race
+          );
           return {
             name: subcommanderName,
             color: gwoColour.rgb(
@@ -258,6 +334,8 @@ function gwoWarInfoPanel(gwoSettings) {
               )
             ),
             character: gwoConfigSetup.getAIPersonalityName(subcommander),
+            iconFill: icon.fill,
+            iconOutline: icon.outline,
           };
         };
 
@@ -275,6 +353,7 @@ function gwoWarInfoPanel(gwoSettings) {
           var commander = coopCommanderCache[cacheKey];
           var record;
           var loadoutCardId;
+          var icon;
           var isHost = client.role === "host";
           var usesHostLoadout =
             isHost ||
@@ -283,6 +362,10 @@ function gwoWarInfoPanel(gwoSettings) {
           if (!commander) {
             commander = {
               name: client.name,
+              // Observable, not fixed: under Separate races a viewer's own race
+              // is only known once their record has synced. See coop.md.
+              iconFill: ko.observable(raceIcon(playerRace).fill),
+              iconOutline: ko.observable(raceIcon(playerRace).outline),
               // Not fixed: it moves with army control, and with joins and leaves.
               color: ko.observable(),
               // findCoopPlayerInventoryData only tracks synced remote clients, so
@@ -291,13 +374,14 @@ function gwoWarInfoPanel(gwoSettings) {
                 ? model.gwoLoadout
                 : ko.observable(human),
               loadoutResolved: usesHostLoadout,
+              raceResolved: isHost,
             };
             coopCommanderCache[cacheKey] = commander;
           }
 
           commander.color(coopColour(client));
 
-          if (!commander.loadoutResolved) {
+          if (!commander.loadoutResolved || !commander.raceResolved) {
             record =
               game.findCoopPlayerInventoryData &&
               game.findCoopPlayerInventoryData({
@@ -306,11 +390,18 @@ function gwoWarInfoPanel(gwoSettings) {
               });
             loadoutCardId = record && record.loadoutCardId;
 
-            if (loadoutCardId) {
+            if (loadoutCardId && !commander.loadoutResolved) {
               commander.loadoutResolved = true;
               requireGW(["cards/" + loadoutCardId], function (card) {
                 commander.character(loc(card.summarize()));
               });
+            }
+
+            if (record && record.inventory) {
+              commander.raceResolved = true;
+              icon = raceIcon(gwoRaces.raceOf(record.inventory));
+              commander.iconFill(icon.fill);
+              commander.iconOutline(icon.outline);
             }
           }
 
@@ -324,6 +415,8 @@ function gwoWarInfoPanel(gwoSettings) {
               name: ko.observable().extend({ session: "displayName" }),
               color: playerColour,
               character: model.gwoLoadout,
+              iconFill: raceIcon(playerRace).fill,
+              iconOutline: raceIcon(playerRace).outline,
             },
           ];
           var connectedClients = model.gwCampaignConnectedClients();

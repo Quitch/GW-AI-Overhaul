@@ -79,11 +79,11 @@
       <div class="div-player-icon">
         <div
           class="fill player-masked"
-          data-bind="style: { backgroundColor: color }"
+          data-bind="style: { backgroundColor: color, webkitMaskImage: iconFill ? 'url(' + iconFill + ')' : '' }"
         ></div>
         <div class="outline">
           <img
-            src="coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png"
+            data-bind="attr: { src: iconOutline || 'coui://ui/main/game/live_game/img/players_list_panel/icon_player_outline.png' }"
           />
         </div>
       </div>

@@ -1,4 +1,6 @@
-define(function () {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
+  races
+) {
   var titansAiPath = "/pa/ai/";
   var subCommanderPath = "/pa/ai_subcommander/";
   var clusterPath = "/pa/ai_cluster/";
@@ -64,6 +66,7 @@ define(function () {
     var aiMods = settings.aiMods || [];
     var scopeToken = settings.scopeToken;
     var smartSubcommanders = !!settings.smartSubcommanders;
+    var race = settings.race;
     var basePath;
 
     if (type === "cluster") {
@@ -78,7 +81,8 @@ define(function () {
       basePath = titansAiPath;
     }
 
-    return appendScope(basePath, scopeToken);
+    // A race's tree sits beside the brain's, under the same scope rules.
+    return appendScope(races.aiRoot(race, basePath), scopeToken);
   };
 
   return {
@@ -106,13 +110,15 @@ define(function () {
       aiInUse,
       aiMods,
       smartSubcommanders,
-      playerTag
+      playerTag,
+      race
     ) {
       return getAIPathDestination("subcommander", aiInUse, {
         guardians: false,
         aiMods: aiMods,
         smartSubcommanders: smartSubcommanders,
         scopeToken: playerTag === ".player" ? undefined : playerTag,
+        race: race,
       });
     },
   };

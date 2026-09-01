@@ -104,6 +104,9 @@ define(function () {
     var gwoBank = params.gwoBank;
     var stockBank = params.stockBank;
     var gwoTreasure = params.gwoTreasure;
+    // Read per target, not once: under Separate races each viewer has its own,
+    // and it rides their record's inventory. See races.md.
+    var gwoRaces = params.gwoRaces;
     var coopStarCards = params.coopStarCards;
     var gwoSettings = params.gwoSettings;
 
@@ -151,6 +154,7 @@ define(function () {
         },
         pickStartLoadoutCard: function (record, client) {
           return gwoTreasure.pickTreasureLoadout({
+            race: gwoRaces.raceOf(record.inventory),
             isUnlocked: function (card) {
               return gwoTreasure.recordHasUnlockedLoadout(record, card);
             },

@@ -213,8 +213,16 @@ function gwoIntelligence() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],
-      function (gwoColour, gwoCards, gwoAI, gwoRefereeCoop, gwoStarCardsView) {
+      function (
+        gwoColour,
+        gwoCards,
+        gwoAI,
+        gwoRefereeCoop,
+        gwoStarCardsView,
+        gwoRaces
+      ) {
         var starCardsView = gwoStarCardsView();
 
         var url =
@@ -275,12 +283,16 @@ function gwoIntelligence() {
             ? gwoAI.subcommanderEconRate
             : gwoAI.aiEconRateWithFloor(commander.econ_rate);
           var numCommanders = getNumberOfCommanders(commander);
+          // The race shows through the icon, not the name. See races.md.
+          var raceDescriptor = gwoRaces.byId(commander.race);
           var faction = getFactionName(commander, factionIndex);
 
           if (numCommanders > 1) {
             name = name.concat(" x", numCommanders);
             eco = eco * ((numCommanders + 1) / 2);
           }
+
+          var icon = (raceDescriptor && raceDescriptor.playerIcon) || {};
 
           return {
             name: name,
@@ -291,6 +303,8 @@ function gwoIntelligence() {
             eco: eco,
             faction: faction.name,
             tooltip: faction.tooltip,
+            iconFill: icon.fill,
+            iconOutline: icon.outline,
           };
         };
 

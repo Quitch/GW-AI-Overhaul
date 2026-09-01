@@ -3,7 +3,7 @@
 // Unit tests for shared/deal.js: dealCard's lifecycle, setupGwoCards' deck branch,
 // and setupGwoDeck's ordering, which the seeded deal depends on.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
@@ -12,9 +12,21 @@ const { createFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 const deal = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js"
 );
+const decks = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js"
+);
+const deckMods = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deck_mods.js"
+);
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
-afterEach(restoreGlobals);
+afterEach(() => {
+  restoreGlobals();
+  // setupGwoCards reaches module-level registry state through decks.js and
+  // deck_mods.js, and the harness loads each module once per process.
+  decks.reset();
+  deckMods.reset();
+});
 
 // jQuery's Deferred.then absorbs the rejection the not-found path returns; a native
 // promise surfaces it as an unhandledRejection. This swallows the callback's own
@@ -236,6 +248,45 @@ describe("setupGwoCards", () => {
       const result = deal.setupGwoCards({ techCardDeck: techCardDeck });
       assert.equal(new Set(result).size, result.length, techCardDeck);
     }
+  });
+
+  it("deals a third-party deck registered on model.gwoDecks", () => {
+    setGlobal("model", {
+      gwoDecks: [
+        { id: "mym-nomad", name: "!LOC:Nomad", cards: ["mym_card_a"] },
+      ],
+    });
+
+    const result = deal.setupGwoCards({ techCardDeck: "mym-nomad" });
+
+    assert.ok(result.includes("mym_card_a"));
+    // A standalone deck deals only its own cards plus the loadouts.
+    assert.ok(result.includes("gwaio_start_backpacker"));
+    assert.ok(!result.includes("gwc_minion"));
+    assert.ok(!result.includes("gwaio_upgrade_ant"));
+  });
+
+  it("still prepends model.gwoCards pushes when a third-party deck is dealt", () => {
+    setGlobal("model", {
+      gwoCards: ["other_mod_card"],
+      gwoDecks: [
+        { id: "mym-nomad", name: "!LOC:Nomad", cards: ["mym_card_a"] },
+      ],
+    });
+
+    const result = deal.setupGwoCards({ techCardDeck: "mym-nomad" });
+
+    assert.equal(result[0], "other_mod_card");
+    assert.ok(result.includes("mym_card_a"));
+  });
+
+  it("falls back to the Expanded deck when the saved deck is not registered", () => {
+    mock.method(console, "warn", () => {});
+    setGlobal("model", {});
+
+    const result = deal.setupGwoCards({ techCardDeck: "mym-uninstalled" });
+
+    assert.ok(result.includes("gwaio_upgrade_ant"));
   });
 });
 

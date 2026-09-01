@@ -1,0 +1,81 @@
+<div id="gwo-ai-panel" class="coop-setup-panel">
+  <div
+    class="coop-setup-configure"
+    data-bind="click: openGwoAiModal, click_sound: 'default', rollover_sound: 'default'"
+  >
+    <noloc>AI</noloc>
+  </div>
+</div>
+
+<div
+  id="gwo-ai-modal"
+  class="gw-start-coop-settings-modal attendmouse"
+  data-bind="visible: gwoAiModalVisible()"
+  style="display: none"
+>
+  <div class="gw-start-coop-settings-panel gwo-ai-modal-panel">
+    <div
+      class="gw-start-coop-settings-close"
+      data-bind="click: closeGwoAiModal, click_sound: 'default', rollover_sound: 'default'"
+    >
+      <noloc>X</noloc>
+    </div>
+    <div class="gw-start-coop-settings-title"><noloc>AI</noloc></div>
+
+    <div class="gw-start-coop-settings-intro">
+      <div
+        class="gw-start-coop-settings-intro-text"
+        data-bind="html: gwoAiModalIntro"
+      ></div>
+    </div>
+
+    <div
+      id="gwo-ai-table"
+      class="gw-start-coop-settings-body gwo-ai-modal-body"
+    >
+      <div class="gwo-ai-table-row gwo-ai-table-header">
+        <div class="gwo-ai-table-race"><loc>Race</loc></div>
+        <!-- loc ids are case sensitive, so each <loc> carries the casing the
+             game's own translation files use - Opponent from matchmaking, ALLY
+             from live_game - and the CSS uppercases them to suit this table. -->
+        <div class="gwo-ai-table-cell"><loc>Opponent</loc></div>
+        <div class="gwo-ai-table-cell"><loc>ALLY</loc></div>
+      </div>
+      <!-- ko foreach: gwoAiTableRows -->
+      <div
+        class="gwo-ai-table-row"
+        data-bind="css: { 'gwo-ai-table-stale': stale }"
+      >
+        <div class="gwo-ai-table-race" data-bind="text: name"></div>
+        <!-- options must precede selectPicker in each binding string: the
+             picker snapshots the select's option elements when it initialises.
+             data-width pins the button, since the picker measures inside a
+             modal that is still display: none when the rows render. -->
+        <div class="gwo-ai-table-cell">
+          <select
+            class="form-control"
+            data-width="100%"
+            data-bind="options: options, disable: stale, selectPicker: enemy"
+          ></select>
+        </div>
+        <div class="gwo-ai-table-cell">
+          <select
+            class="form-control"
+            data-width="100%"
+            data-bind="options: options, disable: stale, selectPicker: ally"
+          ></select>
+        </div>
+      </div>
+      <!-- /ko -->
+    </div>
+
+    <div
+      class="gw-start-coop-settings-apply btn_hero"
+      data-bind="click: applyGwoAiModal, click_sound: 'default', rollover_sound: 'default'"
+    >
+      <div class="btn_label" style="padding: 0px 40px">
+        <loc>Apply Settings</loc>
+      </div>
+    </div>
+  </div>
+</div>

@@ -98,6 +98,26 @@ entry silently never fires. That is how `HasEcoForAdvanced` (the real test is
 committed — **re-harvest it after a PA patch adds tests.** `UnitCountonPlanet` is a
 base-game spelling variant, kept because the engine accepts what its own data ships.
 
+**`test/fixtures/unit_types.json` is harvested the same way.** It holds every
+listed unit's effective `unit_types` from the installed game (`pa_ex1` over `pa`)
+and the race server mods on disk (a `download/` zip or a `server_mods/` folder,
+read in mount order) with their `buildable_types`, written by
+`scripts/harvest-unit-types.js`, so
+`test/unit_groups_cells.test.js` can check the cell classifier against
+`unit_groups.js` in CI and `test/race_legion.test.js` can see Legion's cells.
+With a PA install present the test asserts the fixture is fresh - **re-harvest
+it after a PA or race patch.**
+
+**`npm run validate:race-trees` is local-only for the same reason.** It runs
+the real `referee_ai.js` over the actual files on disk - the PA install
+(`pa_ex1` over `pa`), GWO's own shadows, and each race's server mod, merged in
+mount order - and requires the Titans race tree to match that merge exactly,
+then re-runs with every race mounted to prove no race's layer leaks into
+another's tree. CI has none of those files, so the unit tests pin the same
+contract on mocked listings (`test/races.test.js`,
+`test/referee_ai_file_processing.test.js`). Run it after a PA or race patch,
+and after touching `races.treeFilter` or `referee_ai.js`'s tree writing.
+
 **`validate:schemas` checks whatever files it finds, which is why
 `test/ai_source_files.test.js` exists alongside it.** The walk covers `pa/ai`,
 `pa/ai_penchant` and `pa/ai_tech`, so a build list renamed or deleted out from
@@ -153,9 +173,19 @@ uses. Requesting a URL with no configured resolver rejects, so a test's fixtures
 cannot silently drift from what the code actually asks for. It returns the Promise
 itself rather than an object with a `then` property, keeping `.then` the real
 inherited `Promise.prototype.then` — the shape SonarLint's "objects should not have
-a then property" rule warns about. Its `when` keeps jQuery 2's shape — one
-argument resolves to that value, several to the array — and `installFakeJQuery`
-puts a callable `$` carrying the lot behind a suite's global stubs.
+a then property" rule warns about — and what `.then` gives back carries
+`promise`/`done`/`fail`/`always` too, as jQuery's does. Its `when` keeps jQuery 2's
+shape — one argument resolves to that value, several to the array — and identifies a
+promise by a `promise` **method**, so an argument without one is passed straight
+through and never waited for, exactly as `constraints.md` describes. That is why it is
+hand-built rather than wrapped around `Promise.all`: resolving a native promise with a
+thenable adopts it, which would wait after all.
+
+`installFakeJQuery` puts a callable `$` carrying the lot behind a suite's global stubs.
+Also exported: `enginePromise()`, the `then`-and-nothing-else shape every `api.*` call
+returns — hold one pending to prove the code under test waits for it — and
+`resolved()`/`rejected()`, jQuery-shaped settled promises for a fixture standing in for
+stock code that returns one.
 
 `scripts/lib/global-stubs.js` saves and restores the engine globals that shipped
 code reads at call time. It is a factory, not a singleton, so two suites never

@@ -263,6 +263,7 @@ describe("the treasure star", () => {
 
     assert.deepEqual(calls.unlockQueries, [
       {
+        race: undefined,
         localUnlockedIds: ["gwaio_start_ceo"],
         records: options.records,
         perPlayerTech: true,

@@ -265,3 +265,181 @@ describe("per-player-tech viewer processing", () => {
     );
   });
 });
+
+describe("race trees", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+  );
+  const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+  const { beforeEach } = require("node:test");
+  const RIVAL_RACE = {
+    id: "rival",
+    ai: {
+      titans: {
+        unitMaps: ["/pa/ai/unit_maps/rival.json"],
+        sources: [{ dir: "/pa/ai/factory_builds/", match: "rival_" }],
+      },
+    },
+  };
+  const TITANS_FILES = [
+    "/pa/ai/ai_config.json",
+    "/pa/ai/fabber_builds/fabber_land.json",
+    "/pa/ai/fabber_builds/fixture/fabber_land.json",
+    "/pa/ai/factory_builds/fixture_air.json",
+    "/pa/ai/factory_builds/rival_air.json",
+    "/pa/ai/unit_maps/fixture.json",
+    "/pa/ai/unit_maps/ai_unit_map.json",
+  ];
+
+  beforeEach(() => {
+    races.reset();
+    races.register(FIXTURE_RACE);
+    races.register(RIVAL_RACE);
+  });
+  afterEach(() => races.reset());
+
+  it("layers a race enemy's files over the brain's base files at the race root, dropping other races' layers", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyRace: "fixture",
+      aiMods: [],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": TITANS_FILES },
+      getJSON: (url) => ({ from: url }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    const raceKeys = Object.keys(filesObj).filter((key) =>
+      key.startsWith("/pa/ai_race_fixture/")
+    );
+    assert.deepEqual(raceKeys.sort(), [
+      "/pa/ai_race_fixture/ai_config.json",
+      // The base layer fills the race's gaps...
+      "/pa/ai_race_fixture/fabber_builds/fabber_land.json",
+      // ...under the race's own layer; rival_air.json and the untagged
+      // unit_maps/fixture.json never ride along.
+      "/pa/ai_race_fixture/fabber_builds/fixture/fabber_land.json",
+      "/pa/ai_race_fixture/factory_builds/fixture_air.json",
+      "/pa/ai_race_fixture/unit_maps/ai_unit_map.json",
+    ]);
+    assert.deepEqual(filesObj["/pa/ai_race_fixture/ai_config.json"], {
+      from: "coui://pa/ai/ai_config.json",
+    });
+    // The MLA pipeline still writes the plain tree for the player's side.
+    assert.ok(filesObj["/pa/ai/fabber_builds/fabber_land.json"]);
+  });
+
+  it("writes one tree per distinct destination: guardians, a race player, its viewers", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      playerRace: "fixture",
+      aiMods: [{ op: "load" }],
+      perPlayerTech: true,
+      viewerInventoryData: {
+        v1: {
+          inventory: makeInventory({
+            aiModsList: [{ op: "load" }],
+            tags: { "global:playerRace": "fixture" },
+          }),
+        },
+      },
+    });
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    const { listCalls } = installFakes({
+      fileListByPath: { "/pa/ai/": TITANS_FILES },
+      getJSON: (url) => ({ from: url }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.ok(filesObj["/pa/ai_race_fixture/player_guardians/ai_config.json"]);
+    // Under Guardians the host subcommander shares the brain root, as for MLA.
+    assert.ok(filesObj["/pa/ai_race_fixture/ai_config.json"]);
+    assert.ok(
+      filesObj[
+        "/pa/ai_subcommander_race_fixture/player_.player0/ai_config.json"
+      ]
+    );
+    assert.deepEqual(listCalls, ["/pa/ai/"]);
+  });
+
+  it("gives a viewer its own race, not the host's", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      playerRace: "fixture",
+      perPlayerTech: true,
+      viewerInventoryData: {
+        // No race tag: an MLA viewer in a race host's war reads as MLA and
+        // fights out of the brain root, not the host's race tree.
+        v1: { inventory: makeInventory({}) },
+      },
+    });
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    installFakes({
+      fileListByPath: { "/pa/ai/": TITANS_FILES },
+      getJSON: (url) => ({ from: url }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.equal(
+      filesObj[
+        "/pa/ai_subcommander_race_fixture/player_.player0/ai_config.json"
+      ],
+      undefined
+    );
+  });
+
+  it("warns when the race mod itself has no build orders under the source, base layer or not", async () => {
+    const fixture = buildGame({ aiInUse: "Titans", enemyRace: "fixture" });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/x.json"] },
+      getJSON: (url) => ({ from: url }),
+    });
+    const warnings = [];
+    const previous = console.warn;
+    console.warn = (message) => warnings.push(message);
+
+    const filesObj = {};
+    try {
+      await run(filesObj);
+    } finally {
+      console.warn = previous;
+    }
+
+    assert.deepEqual(warnings, [
+      "gwoRefereeAi: no race build orders under /pa/ai/",
+    ]);
+    // The warning means the race contributed nothing - the base layer is
+    // still written.
+    assert.ok(filesObj["/pa/ai_race_fixture/x.json"]);
+  });
+
+  it("does nothing extra for an MLA battle", async () => {
+    const fixture = buildGame({ aiInUse: "Titans" });
+    installModel(fixture.game, []);
+    installFakes({ fileListByPath: { "/pa/ai/": TITANS_FILES } });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.equal(
+      Object.keys(filesObj).some((key) => key.includes("_race_")),
+      false
+    );
+  });
+});
