@@ -323,6 +323,12 @@ function gwoUI() {
             var tier = difficulties[selectedDifficulty];
             _.forEach(gwoDifficulty.tierSettings, function (setting) {
               var value = tier[setting.key];
+              // A tier without the key (Beginner and Casual have no landing
+              // evaluation radius) must not write undefined: the numeric
+              // extender reads it back as NaN.
+              if (_.isUndefined(value)) {
+                value = setting.name === "personalityTags" ? [] : 0;
+              }
               difficultySettings[setting.name](value);
               if (setting.name === "personalityTags") {
                 // From the difficulty data, not by reading personalityTags
