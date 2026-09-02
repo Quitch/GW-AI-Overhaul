@@ -786,6 +786,23 @@ function gwoCard() {
               _.delay(function () {
                 model.scanning(false);
               }, 2000);
+              if (
+                helpers.explorationDealtNothing(
+                  game,
+                  starIndex,
+                  star,
+                  model.gwCampaignReplayingAction
+                )
+              ) {
+                console.warn(
+                  "GWO: no tech card could be dealt at star " +
+                    starIndex +
+                    "; ending the exploration with nothing"
+                );
+                _.delay(function () {
+                  model.win(-1);
+                }, 2000);
+              }
               return gwoSave(game, false);
             },
             function (reason) {

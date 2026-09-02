@@ -717,3 +717,60 @@ describe("races", () => {
     );
   });
 });
+
+describe("explorationDealtNothing", () => {
+  const game = (turnState, currentStar) => ({
+    turnState: () => turnState,
+    currentStar: () => currentStar,
+  });
+  const star = (cards) => ({ cardList: () => cards });
+
+  it("is true when the live exploration at this star holds no card", () => {
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 4), 4, star([]), false),
+      true
+    );
+  });
+
+  it("is false once a card was dealt", () => {
+    assert.equal(
+      helpers.explorationDealtNothing(
+        game("explore", 4),
+        4,
+        star([{ id: "gwc_minion" }]),
+        false
+      ),
+      false
+    );
+  });
+
+  it("is false when the turn has moved on or to another star", () => {
+    assert.equal(
+      helpers.explorationDealtNothing(game("end", 4), 4, star([]), false),
+      false
+    );
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 5), 4, star([]), false),
+      false
+    );
+  });
+
+  it("is false while replaying a host action, and for bad inputs", () => {
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 4), 4, star([]), true),
+      false
+    );
+    assert.equal(
+      helpers.explorationDealtNothing(null, 4, star([]), false),
+      false
+    );
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 4), "4", star([]), false),
+      false
+    );
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 4), 4, {}, false),
+      false
+    );
+  });
+});
