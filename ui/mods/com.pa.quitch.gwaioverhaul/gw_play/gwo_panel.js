@@ -124,6 +124,10 @@ function gwoWarInfoPanel(gwoSettings) {
       [model.gwoSettings.largePlanets, "!LOC:Large Planets"],
       [model.gwoSettings.easierStart, "!LOC:Easier start"],
       [model.gwoSettings.staticTech, "!LOC:Static tech"],
+      [
+        model.gwoSettings.races && model.gwoSettings.races.unique,
+        "!LOC:Unique races",
+      ],
       [model.gwoSettings.cheatsUsed, "!LOC:dev mode"],
       [game.hardcore(), "!LOC:Hardcore mode"],
       [model.gwoSettings.tougherCommanders, "!LOC:Tougher commanders"], // deprecated - pre-v5.27.0 support only
