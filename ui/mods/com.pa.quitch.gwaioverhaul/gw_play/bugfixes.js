@@ -159,12 +159,10 @@ function gwoBugfixes() {
           fixTreasurePlanetCardList(star);
         }
 
-        if (
-          !gwoSettings.clusterFixed &&
-          ko.isObservable(star.ai) &&
-          star.ai().isCluster
-        ) {
-          fixClusterCommanderTypes(star.ai());
+        // A neutral star's ai() is undefined.
+        var ai = ko.isObservable(star.ai) ? star.ai() : undefined;
+        if (!gwoSettings.clusterFixed && ai && ai.isCluster) {
+          fixClusterCommanderTypes(ai);
         }
       }
 
