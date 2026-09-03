@@ -122,7 +122,6 @@ function gwoWarInfoPanel(gwoSettings) {
       [model.gwoSettings.systemScaling, "!LOC:System scaling"],
       [model.gwoSettings.simpleSystems, "!LOC:Easy Systems"],
       [model.gwoSettings.largePlanets, "!LOC:Large Planets"],
-      [model.gwoSettings.easierStart, "!LOC:Easier start"],
       [model.gwoSettings.staticTech, "!LOC:Static tech"],
       [
         model.gwoSettings.races && model.gwoSettings.races.unique,

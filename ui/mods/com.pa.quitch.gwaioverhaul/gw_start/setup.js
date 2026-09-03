@@ -873,11 +873,6 @@ function gwoSetup() {
               };
             });
 
-            var neutralStars = 2;
-            if (model.gwoDifficultySettings.easierStart()) {
-              neutralStars = 4;
-            }
-
             // Ordered rather than keyed: the spread loop is synchronous and the
             // _.remove below mutates remainingMinions, so order is load-bearing.
             var workersRng = warRng.stream("workers");
@@ -960,7 +955,7 @@ function gwoSetup() {
               .populate({
                 galaxy: game.galaxy(),
                 teams: teams,
-                neutralStars: neutralStars,
+                neutralStars: 4,
                 orderedSpawn: false,
                 // Picks each faction's spawn star and shuffles the spawn order.
                 rng: warRng.stream("breeder"),

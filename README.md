@@ -85,7 +85,6 @@ Chosen when you create a war, from the Game Options panel, and applied for its d
 - **System Scaling**: system size is determined by how far into the galaxy you are.
 - **Easy Systems**: use smaller, mostly single planet systems. Hidden when Shared Systems for Galactic War is active.
 - **Large Planets**: encounter large planets and systems much sooner.
-- **Easier Start**: four neutral systems to plunder at the start instead of the usual two.
 - **System Lore**: display the original pre-release Galactic War lore in the Planetary Intelligence panel.
 - **Static Tech**: the Available Tech in a system never changes.
 

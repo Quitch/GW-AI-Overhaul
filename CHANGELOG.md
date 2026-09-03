@@ -17,6 +17,7 @@
 ### Changed
 
 - In a co-op war, the loadout screen shows your commander in the war's faction colour, as the war setup's Commander picker does
+- Removed Easier Start - it's always on now
 
 ### Bugfix
 
