@@ -13,6 +13,7 @@ define([
     "gwaio_start_nomad",
     "gwaio_protocol_killswitch",
     "gwaio_enable_planetaryradar",
+    "gwaio_start_rapid", // loads AI files specific to MLA
   ];
   var RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
 
