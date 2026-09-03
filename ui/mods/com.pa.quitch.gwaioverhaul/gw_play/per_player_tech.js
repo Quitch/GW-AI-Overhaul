@@ -68,8 +68,8 @@ define(function () {
   };
 
   // A viewer's subcommander armies, and the colour position the next viewer
-  // starts from. subcommanderTech, gwoColour and refereeCoop are injected - see
-  // testing.md, "Coverage".
+  // starts from. subcommanderTech, gwoColour, refereeCoop and
+  // resolvePersonality are injected - see testing.md, "Coverage".
   var buildViewerSubcommanderArmies = function (params) {
     var subcommanderTech = params.subcommanderTech;
     var playerInventory = params.playerInventory;
@@ -87,10 +87,11 @@ define(function () {
     var minionCount = subcommanderTech.applySubcommanderDuplicationTech(cards);
 
     _.forEach(playerInventory.minions(), function (minion) {
-      // Cloned because the tech mutators write in place, and the minion here is
-      // the saved inventory one. Editing it would bake the bonus in past a
-      // discard of the card that granted it. See tech-cards.md.
-      var minionPersonality = _.cloneDeep(minion.personality);
+      // A fresh object, as the host's referee builds one: the tech mutators
+      // write in place, and the minion here is the saved inventory one.
+      // Editing it would bake the bonus in past a discard of the card that
+      // granted it. See tech-cards.md.
+      var minionPersonality = params.resolvePersonality(minion);
       subcommanderTech.applySubcommanderTacticsTech(minionPersonality, cards);
       subcommanderTech.applySubcommanderFabberTech(minionPersonality, cards);
       minionPersonality.ai_path = params.viewerAiPath;

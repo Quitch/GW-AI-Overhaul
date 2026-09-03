@@ -47,7 +47,14 @@ that:
 2. **The per-player-tech referee**
    (`ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js`, shadowed)
    runs afterwards, generating each viewer's unit specs and subcommanders and
-   adding them to that config.
+   adding them to that config. A viewer's Sub Commander personalities are built
+   the way the host's are, through `shared/ai_personality.js` from each
+   minion's recorded id and penchant.
+
+Only the host hires a referee. A viewer runs GWO's readers on the war snapshot
+the host broadcasts — the war panel and the intelligence panel derive what they
+show (commander counts, eco) from the snapshot's recorded fields on the viewer's
+own GWO version, but nothing a viewer derives reaches the battle.
 
 Because the setup runs more than once and a failed launch can leave mutated state
 behind, **none of it is idempotent** — eco mods and fabber caps multiply, tags get

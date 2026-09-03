@@ -135,7 +135,8 @@ define([
         inventory,
         playerTag,
         refereeCoop.getOrderedSubcommanders(inventory, game).length,
-        battleRng
+        battleRng,
+        { ffa: !_.isEmpty(ai.foes) }
       );
     }
 

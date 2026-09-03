@@ -492,6 +492,17 @@ as the fallback for an AI whose id no longer resolves. Only
 An ally and a dealt Sub Commander carry no `econ_rate` at all: every reader
 gives them the Sub Commander rate.
 
+**Launch resolves the same way.** `gw_play/referee_config_setup.js` builds every
+army's personality through the same `resolve()` from the record — id, tier by
+name, the brain the army's race runs, its penchant, and the FFA tags for a
+Queller army whose star has foes — so a change to `personalities.js`, a tier or
+a brain's tags reaches a war in progress on its next battle. The resolved
+object is what the army holds; the war's own record is never edited. An AI
+saved without an id (or whose id no longer ships) keeps its stored personality
+as the base and still takes the live tier's settings; its stored tags are kept
+as they are, FFA tags included. An ally resolves against the player's faction,
+since a Sub Commander record carries none.
+
 ## AI tech
 
 Distinct from the player's tech cards, and from `/pa/ai_tech/`: this is the AI's
