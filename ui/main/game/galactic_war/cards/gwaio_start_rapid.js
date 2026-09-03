@@ -195,6 +195,9 @@ define([
       }
       inventory.addMods(mods);
 
+      // Silence every brain's own factory and launcher builds; the loaded file
+      // re-supplies them. treeOnly keeps these off that file, or its copies
+      // would be zeroed too.
       var aiMods = [
         {
           type: "fabber",
@@ -202,6 +205,7 @@ define([
           toBuild: "OrbitalLauncher",
           idToMod: "priority",
           value: 0,
+          treeOnly: true,
         },
         {
           type: "fabber",
@@ -209,6 +213,7 @@ define([
           toBuild: "OrbitalFactory",
           idToMod: "priority",
           value: 0,
+          treeOnly: true,
         },
       ];
       var types = ["fabber", "factory"];
@@ -236,6 +241,7 @@ define([
           toBuild: factory,
           idToMod: "priority",
           value: 0,
+          treeOnly: true,
         });
       });
       inventory.addAIMods(aiMods);
