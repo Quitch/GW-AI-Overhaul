@@ -14,11 +14,12 @@ define(function () {
         return;
       }
       // Rebuilt through the faction file's own merge - writing .personality onto
-      // the existing minion would skip the baseline's faction-wide fields.
+      // the existing minion would skip the baseline's faction-wide fields. The
+      // drawn minion's id comes with its personality.
       faction.minions[random.index] = _.merge(
         _.cloneDeep(spec.baseline),
         random.template,
-        { personality: source.personality }
+        { personality: source.personality, personalityId: source.personalityId }
       );
     });
 

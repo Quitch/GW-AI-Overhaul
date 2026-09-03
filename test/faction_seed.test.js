@@ -23,9 +23,9 @@ const BASELINE = {
 };
 
 const POOL = [
-  { name: "Able", personality: { id: "armour" } },
+  { name: "Able", personality: { id: "armour" }, personalityId: "armour" },
   { name: "AceAI", personality: { id: "roboticist" } },
-  { name: "Alpha", personality: { id: "uber" } },
+  { name: "Alpha", personality: { id: "uber" }, personalityId: "uber" },
   { name: "Chronoblip", personality: { id: "fabber" } },
 ];
 
@@ -91,6 +91,22 @@ describe("faction_seed reseedFaction", () => {
     assert.equal(minion.econ_rate, 1);
     assert.equal(minion.name, "Aryst0krat");
     assert.equal(minion.character, "!LOC:Random");
+  });
+
+  it("carries the drawn minion's personalityId with its personality", () => {
+    const seen = new Set();
+    for (let seed = 0; seed < 40; seed++) {
+      const built = faction();
+      factionSeed.reseedFaction(built, gwoRng.create("id-" + seed));
+      const random = built.minions[POOL.length];
+      const source = POOL.find(
+        (m) => m.personality.id === random.personality.id
+      );
+      assert.equal(random.personalityId, source.personalityId);
+      seen.add(random.personalityId);
+    }
+    assert.ok(seen.has("armour") || seen.has("uber"));
+    assert.ok(seen.has(undefined));
   });
 
   it("never gives the Random minion its own personality", () => {

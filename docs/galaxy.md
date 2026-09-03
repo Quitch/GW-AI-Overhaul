@@ -463,6 +463,17 @@ rather than as nothing.
 Personality display names support the _Show AI Personality Names_ mod, a dependency
 that lives entirely outside this repo.
 
+**Every template carries a `personalityId`.** `faction/faction_builder.js`'s
+`fromBaseline()` looks the declaration's `personality` reference up in
+`personalities.js` by identity and records its key on the merged minion or boss
+(the Cluster faction builds through the same helper; `faction_seed.js` copies
+the id along with the personality it draws for a Random commander). Every AI
+record — workers, minions, foes, an `ai.ally`, the Guardians, a dealt Sub
+Commander — is a deep clone of a template, so the id reaches the save for free.
+`shared/ai_personality.js`'s `base(id, faction)` rebuilds the same object from
+the id, and `test/faction_personality_ids.test.js` pins that the two merges
+agree for every shipped template.
+
 ## AI tech
 
 Distinct from the player's tech cards, and from `/pa/ai_tech/`: this is the AI's

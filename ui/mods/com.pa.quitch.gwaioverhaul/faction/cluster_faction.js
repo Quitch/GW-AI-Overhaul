@@ -2,7 +2,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_planets.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
-], function (planets, gwoUnit, personalities) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_builder.js",
+], function (planets, gwoUnit, personalities, factionBuilder) {
   var factionName = "Cluster";
   var factionColour = [
     [128, 128, 128],
@@ -98,7 +99,7 @@ define([
     teams: [
       {
         name: factionName,
-        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
+        boss: factionBuilder.fromBaseline(baselinePersonality, boss),
         systemDescription: systemDescriptions[0],
         systemTemplate: {
           name: factionName,
@@ -114,7 +115,10 @@ define([
       },
     ],
     minions: _.map(minions, function (personalityModifiers) {
-      return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
+      return factionBuilder.fromBaseline(
+        baselinePersonality,
+        personalityModifiers
+      );
     }),
     // Read by faction/faction_seed.js. The concat above puts Cluster's one Random
     // commander per role in the last roles.length slots.
