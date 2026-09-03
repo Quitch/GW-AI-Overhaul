@@ -489,3 +489,74 @@ describe("race trees", () => {
     );
   });
 });
+
+// A `load` file joins the walk and takes every in-scope descriptor, the loading
+// card's own included. `treeOnly` is the opt-out: gwaio_start_rapid zeroes every
+// stock factory build and re-supplies them from its own file, which the zeroing
+// must not reach.
+describe("load files and treeOnly", () => {
+  const TREE_FILE = "/pa/ai/fabber_builds/land.json";
+  const zero = (extra) =>
+    Object.assign(
+      {
+        type: "fabber",
+        op: "replace",
+        toBuild: "BasicBotFactory",
+        idToMod: "priority",
+        value: 0,
+      },
+      extra
+    );
+
+  async function runWith(zeroDescriptor) {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [{ type: "fabber", op: "load", value: "x.json" }, zeroDescriptor],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": [TREE_FILE] },
+      getJSON: (url) => ({
+        build_list: [
+          {
+            to_build: "BasicBotFactory",
+            priority: url.includes("/ai_tech/") ? 377 : 376,
+          },
+        ],
+      }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+    return filesObj;
+  }
+
+  const priorityAt = (filesObj, path) => filesObj[path].build_list[0].priority;
+
+  it("with treeOnly, zeroes the tree's entry and leaves the loaded file's alone", async () => {
+    const filesObj = await runWith(zero({ treeOnly: true }));
+
+    assert.equal(
+      priorityAt(filesObj, "/pa/ai_subcommander/fabber_builds/land.json"),
+      0
+    );
+    assert.equal(
+      priorityAt(filesObj, "/pa/ai_subcommander/fabber_builds/x.json"),
+      377
+    );
+  });
+
+  it("without treeOnly, a descriptor reaches the loaded file too", async () => {
+    const filesObj = await runWith(zero({}));
+
+    assert.equal(
+      priorityAt(filesObj, "/pa/ai_subcommander/fabber_builds/land.json"),
+      0
+    );
+    assert.equal(
+      priorityAt(filesObj, "/pa/ai_subcommander/fabber_builds/x.json"),
+      0
+    );
+  });
+});

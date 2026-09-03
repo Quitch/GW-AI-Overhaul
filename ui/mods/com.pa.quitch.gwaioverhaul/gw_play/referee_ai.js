@@ -365,8 +365,15 @@ define([
           .find(function (key) {
             return filePathIncludes(key);
           }) || "";
+      // A file a `load` pulled in from /pa/ai_tech/ is walked like any other,
+      // so a card's own descriptors land on its own file unless it opts out.
+      var isTechFile = filePathStarts(aiTechPath);
 
-      return _.filter(nonLoadAiMods, { type: pathTypeMap[aiManager] });
+      return _.filter(nonLoadAiMods, function (mod) {
+        return (
+          mod.type === pathTypeMap[aiManager] && !(isTechFile && mod.treeOnly)
+        );
+      });
     };
 
     var changeFilePath = function (aiPath, pathLength) {

@@ -25,6 +25,7 @@ inventory.addAIMods([
     refId: "test_type", // optional: narrows the match
     refValue: "HaveEcoForAdvanced",
     matchAll: false, // optional: match every test, ignore refId/refValue
+    treeOnly: false, // optional: skip files a `load` pulled in from /pa/ai_tech/
   },
 ]);
 ```
@@ -61,6 +62,17 @@ by `addApplicableAiLoadModsToFileList`, which appends
 `/pa/ai_tech/<managerPath(type)>/<value>` to the file list so a whole extra build
 file joins the walk. Passing `load` to `applyAiMods` would log
 `"Invalid AI mod operation"` and do nothing.
+
+A loaded file is walked like any other, so every in-scope descriptor lands on it
+too - **including the loading card's own**. That is what a card usually wants (an
+upgrade held alongside it should reach its entries as well), and it is a trap for
+the "silence the stock builds, re-supply them from my file" pattern:
+`gwaio_start_rapid` zeroes every brain's factory `priority` and loads a file that
+carries the replacements, and until the descriptors opted out the zeroing reached
+the replacements as well, leaving the Sub Commanders and the Guardians with no
+factory they were allowed to build. `treeOnly: true` on a build-list descriptor
+keeps it to files read from the AI's tree; `aiModsInScopeOfFile` drops it for any
+file under `/pa/ai_tech/`. It is opt-in per descriptor, so nothing else changes.
 
 The commonest descriptor lets one more builder build a list of things - a
 fabber upgrade handing the basic fabber the advanced structures, a loadout letting
