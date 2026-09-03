@@ -1,6 +1,8 @@
 // Re-derives the random parts of a faction from the war seed. The measured
 // sibling of the shadowed gw_faction_*.js files - see galaxy.md and shadowing.md.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
+], function (gwoPersonality) {
   var reseedFaction = function (faction, rng) {
     var spec = faction && faction.gwaioRandomSpec;
     if (!spec || !rng) {
@@ -15,11 +17,18 @@ define(function () {
       }
       // Rebuilt through the faction file's own merge - writing .personality onto
       // the existing minion would skip the baseline's faction-wide fields. The
-      // drawn minion's id comes with its personality.
+      // template's own default personality is left out: the drawn one is
+      // sparse, and merging it over the default kept the default's keys. The
+      // pool holds the raw declarations, so the drawn personality's id is
+      // looked up the way faction_builder.js does.
       faction.minions[random.index] = _.merge(
         _.cloneDeep(spec.baseline),
-        random.template,
-        { personality: source.personality, personalityId: source.personalityId }
+        _.omit(random.template, "personality"),
+        {
+          personality: source.personality,
+          personalityId:
+            source.personalityId || gwoPersonality.idOf(source.personality),
+        }
       );
     });
 

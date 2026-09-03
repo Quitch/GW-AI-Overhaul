@@ -22,12 +22,22 @@ const BASELINE = {
   personality: { baseline: true },
 };
 
+const personalities = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js"
+);
+
+// Raw declarations, as gwaioRandomSpec.from holds them: two reference a real
+// personalities.js object, so their id is looked up; two do not.
 const POOL = [
-  { name: "Able", personality: { id: "armour" }, personalityId: "armour" },
+  { name: "Able", personality: personalities.armour },
   { name: "AceAI", personality: { id: "roboticist" } },
-  { name: "Alpha", personality: { id: "uber" }, personalityId: "uber" },
+  { name: "Alpha", personality: personalities.uber },
   { name: "Chronoblip", personality: { id: "fabber" } },
 ];
+const ID_OF = new Map([
+  [personalities.armour, "armour"],
+  [personalities.uber, "uber"],
+]);
 
 const DESCRIPTIONS = ["one", "two", "three", "four", "five"];
 
@@ -93,16 +103,20 @@ describe("faction_seed reseedFaction", () => {
     assert.equal(minion.character, "!LOC:Random");
   });
 
-  it("carries the drawn minion's personalityId with its personality", () => {
+  it("gives the Random minion the drawn personality's id", () => {
     const seen = new Set();
     for (let seed = 0; seed < 40; seed++) {
       const built = faction();
       factionSeed.reseedFaction(built, gwoRng.create("id-" + seed));
       const random = built.minions[POOL.length];
-      const source = POOL.find(
-        (m) => m.personality.id === random.personality.id
+      const source = POOL.find((m) =>
+        Object.keys(m.personality).every(
+          (key) =>
+            JSON.stringify(random.personality[key]) ===
+            JSON.stringify(m.personality[key])
+        )
       );
-      assert.equal(random.personalityId, source.personalityId);
+      assert.equal(random.personalityId, ID_OF.get(source.personality));
       seen.add(random.personalityId);
     }
     assert.ok(seen.has("armour") || seen.has("uber"));

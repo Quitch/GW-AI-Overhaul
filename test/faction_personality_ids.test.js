@@ -11,6 +11,12 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const gwoPersonality = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js"
 );
+const factionSeed = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js"
+);
+const gwoRng = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+);
 
 const FACTIONS = [0, 1, 2, 3].map((index) =>
   loadCouiModule(
@@ -46,6 +52,20 @@ describe("shipped faction personality ids", () => {
             record.name + " " + record.character
           );
         });
+      });
+    });
+  });
+
+  it("keeps every id valid after a war reseeds the Random commanders", () => {
+    factionSeed.reseed(FACTIONS, gwoRng.create("ids"));
+    FACTIONS.forEach((faction, index) => {
+      faction.minions.forEach((record) => {
+        assert.equal(typeof record.personalityId, "string", record.name);
+        assert.deepEqual(
+          gwoPersonality.base(record.personalityId, index),
+          record.personality,
+          faction.name + " " + record.name + " " + record.character
+        );
       });
     });
   });
