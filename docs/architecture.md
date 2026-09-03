@@ -93,7 +93,9 @@ The sequence that ties most of the above together:
    read from the save — see galaxy.md, "Difficulty".
 3. `gw_play/referee_ai.js` walks the AI build trees, applies AI-mod descriptors
    from every card held, and writes the results into the config.
-4. `gw_play/referee_game_files.js` generates unit specs per army tag.
+4. `gw_play/referee_game_files.js` generates unit specs per army tag, applying
+   the AI tech `gw_start/ai_tech.js` builds from the buffs the war recorded —
+   see galaxy.md, "AI tech".
 5. In co-op with per-player tech, `gw_per_player_tech_referee.js` runs afterwards
    and adds each viewer's own specs and subcommanders.
 
@@ -182,6 +184,10 @@ The shape is worth knowing before adding a fix to it:
   the same outcome — a war with no treasure planet should not re-scan forever.
 - It finishes by calling `gw_play/save.js`, so a repaired war is persisted rather
   than repaired again on the next visit.
+- **A repair edits only what the save still owns.** The Cluster commander repair
+  rewrites `ai.inventory` descriptors in place, and a war that records
+  `typeOfBuffs` has none — its descriptors are built at launch from the live
+  Cluster mods, so the repair returns early for it.
 
 `gw_play/save.js` is the shared save wrapper used here and by the card code. It
 drives `model.driveAccessInProgress` around the write, and **no-ops for campaign

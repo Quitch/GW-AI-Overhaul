@@ -151,13 +151,6 @@ function gwoSetup() {
       return selectAIBuffs(rng, numberBuffs);
     };
 
-    var aiTech = function (buffs, inventory, faction, tech) {
-      _.times(buffs.length, function (n) {
-        inventory = inventory.concat(tech[faction][buffs[n]]);
-      });
-      return inventory;
-    };
-
     var countMinions = function (minionBase, minionStep, distance) {
       return Math.floor(minionBase + distance * minionStep);
     };
@@ -375,8 +368,6 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_teams.js",
         "main/shared/js/star_system_templates",
         "main/game/galactic_war/shared/js/gw_easy_star_systems",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
@@ -402,8 +393,6 @@ function gwoSetup() {
         gwoTeams,
         normalSystemTemplates, // window.star_system_templates is set instead
         easySystemTemplates,
-        gwoCluster,
-        gwoTech,
         gwoLore,
         gwoDifficulty,
         gwoAI,
@@ -1028,19 +1017,6 @@ function gwoSetup() {
                 : pool;
             };
 
-            // A Cluster AI's inventory starts from its subcommander mods; every
-            // AI then draws the faction tech its buffs grant.
-            var equipAI = function (ai, buffs) {
-              var inventory =
-                ai.isCluster === true ? gwoCluster.clusterCommanderMods : [];
-              ai.inventory = aiTech(
-                buffs,
-                inventory,
-                ai.faction,
-                gwoTech.factionTechs
-              );
-            };
-
             _.forEach(teamInfo, function (info, teamIndex) {
               var boss = info.boss;
               // Keyed, so an AI's rolls do not depend on what earlier AIs drew.
@@ -1117,8 +1093,7 @@ function gwoSetup() {
                 maxDist,
                 factionTechHandicap
               );
-              boss.typeOfBuffs = bossBuffs; // for intelligence reports
-              equipAI(boss, bossBuffs);
+              boss.typeOfBuffs = bossBuffs;
 
               var mandatoryMinions =
                 difficulty.mandatoryMinions() * playerCount;
@@ -1174,8 +1149,7 @@ function gwoSetup() {
                   dist,
                   factionTechHandicap
                 );
-                ai.typeOfBuffs = workerBuffs; // for intelligence reports
-                equipAI(ai, workerBuffs);
+                ai.typeOfBuffs = workerBuffs;
 
                 if (numMinions > 0) {
                   ai.minions = [];
@@ -1249,7 +1223,9 @@ function gwoSetup() {
                     }
                     foeCommander.commanderCount = numFoes;
 
-                    equipAI(foeCommander, workerBuffs);
+                    // A foe fields its worker's tech. Recorded here; the
+                    // spec mods are built from it at launch.
+                    foeCommander.typeOfBuffs = workerBuffs;
 
                     ai.foes.push(foeCommander);
                   }

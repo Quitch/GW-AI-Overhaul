@@ -142,7 +142,21 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     });
   };
 
+  // The spec mods an army carries into the battle: derived from the buffs the
+  // war recorded, or the descriptors a war saved before that baked in.
+  var armyInventory = function (army, loadoutFor, factionIndexFn, isClusterFn) {
+    if (_.isArray(army.typeOfBuffs)) {
+      return loadoutFor(
+        factionIndexFn(army),
+        army.typeOfBuffs,
+        isClusterFn(army)
+      );
+    }
+    return army.inventory || [];
+  };
+
   return {
+    armyInventory: armyInventory,
     getAIUnitMapPath: getAIUnitMapPath,
     getAIUnitMapDestinationPath: getAIUnitMapDestinationPath,
     mergeUnitMaps: mergeUnitMaps,

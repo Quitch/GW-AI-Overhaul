@@ -466,8 +466,17 @@ that lives entirely outside this repo.
 ## AI tech
 
 Distinct from the player's tech cards, and from `/pa/ai_tech/`: this is the AI's
-own stat tech, drawn at war creation and applied as **unit-spec mods** on the
-AI's inventory. Two modules:
+own stat tech, drawn at war creation and applied as **unit-spec mods** when the
+battle is launched. The war records only the draw — `typeOfBuffs`, the buff
+indices, on every boss, worker and foe — and `gw_start/ai_tech.js`'s
+`loadoutFor()` builds the descriptors from the live tables at launch
+(`referee_game_file_paths.js`'s `armyInventory()`), so a rebalance reaches wars
+in progress. A war saved before this carries the built descriptors as
+`ai.inventory` and no `typeOfBuffs` on its foes; `armyInventory()` uses those
+as they are, and `gw_play/bugfixes.js`'s Cluster commander repair only ever
+touches such a baked inventory. The Guardians take the faction tech of the
+worker they replaced but never the Cluster commander mods — they field the
+Unicorn, which those mods do not name. Two modules:
 
 - `gw_start/ai_tech.js` returns `factionTechs[faction][tech]` — arrays of
   `addMods`-shaped descriptors, the same shape [`specs.md`](specs.md) documents.
