@@ -16,7 +16,8 @@ Roughly:
    sampled from it, so a Queller-incompatible minion can never be spread onto the
    galaxy as a worker AI.
 3. Place the boss system, then non-boss AI systems, FFA foes, allied commanders.
-4. Assign personalities, buffs and minions per AI.
+4. Build each AI's personality from its template's id and the war's tier, draw
+   its buffs, and add its minions.
 5. Stamp war settings onto `originSystem.gwaio` for the `gw_play` scene to read.
 
 Step 5 is a piggy-back channel rather than a real API — the origin system is simply
@@ -429,6 +430,26 @@ appearing with more than one `typeof` is almost certainly a typo.
 Custom also has no difficulty _rating_, so it is excluded from victory-badge
 recording — including it produced an index of -2, which no badge matches.
 
+**What the save records.** `originSystem.gwaio.difficulty` is the tier's
+`difficultyName` only. Every battle looks the tier up by that name through
+`shared/ai.js`'s `warTier()`, so a retune of a tier reaches wars in progress. A
+Custom war has no tier to look up, so generation also records
+`gwaio.customDifficulty`: the `tierSettings` values keyed by their
+`difficulty_levels.js` key names, in a named tier's shape — numbers as numbers,
+the three booleans as the `"true"`/`"false"` strings the tiers hold,
+`personality_tags` as an array. `warTier()` prefers that snapshot when present.
+A Custom war saved before snapshots existed resolves no tier and keeps the
+fallbacks each reader had before: an econ floor of 1, and the values baked into
+its AI records.
+
+Two per-AI numbers follow from the tier and are derived at launch rather than
+recorded: a boss's commander count (`tier.bossCommanders` per player in
+`gwaio.coopPlayerScalingCount`) and the bounty value, both through
+`shared/ai.js`'s `commanderCount()` and `bountyValue()`. An AI saved before
+this carries `bossCommanders` and `bountyModeValue`, which those read when the
+war resolves no tier. `galaxy.difficultyIndex` is no longer written; stock's
+`GWGalaxy.prototype.load` never restored it, so nothing ever read it back.
+
 ## AI personalities and penchants
 
 `shared/ai.js`'s `penchants()` samples one of 14 personality flavours (Artillery,
@@ -443,11 +464,66 @@ rather than as nothing.
 Personality display names support the _Show AI Personality Names_ mod, a dependency
 that lives entirely outside this repo.
 
+**Every template carries a `personalityId`.** `faction/faction_builder.js`'s
+`fromBaseline()` looks the declaration's `personality` reference up in
+`personalities.js` by identity and records its key on the merged minion or boss
+(the Cluster faction builds through the same helper; `faction_seed.js` copies
+the id along with the personality it draws for a Random commander). Every AI
+record — workers, minions, foes, an `ai.ally`, the Guardians, a dealt Sub
+Commander — is a deep clone of a template, so the id reaches the save for free.
+`shared/ai_personality.js`'s `base(id, faction)` rebuilds the same object from
+the id, and `test/faction_personality_ids.test.js` pins that the two merges
+agree for every shipped template.
+
+**Generation never edits a template.** The base game's own `makeGame` still runs
+once per `gw_start` load (it is kicked off before any mod script exists) and its
+difficulty ramp writes into the templates' shared `personality` objects, so the
+templates are dirty by the time GWO generates. `setAIPersonality` therefore
+assigns `ai.personality = gwoPersonality.resolve(ai, …)`, a fresh object: the
+template `personalityId` names, the tier's AI settings written over it
+(`applyTier()`), and `personality_tags` composed as the tier's tags followed by
+the brain's — `Default` for TITANS, the faction's arm plus `queller` for
+Queller, the drawn penchant's tags plus `Default` for Penchant. An `ai.ally`
+resolves as an ally: template tags plus its penchant, no tier. Queller's FFA
+tags are appended per entity afterwards, as before. The war records the id and
+the `penchantName`; the resolved object is written too, for stock readers and
+as the fallback for an AI whose id no longer resolves. Only
+`works_with_queller` is ever read from a template, and stock never writes it.
+A template declares no `econ_rate`: generation rolls one for every enemy, and
+an ally or a dealt Sub Commander carries none at all, since every reader gives
+them the Sub Commander rate. The clone paths still delete the field, because
+the base game's ramp writes one onto the template minions it samples. A dealt Sub Commander records its penchant
+as `penchantName` alone (`gw_play/cards_deal_helpers.js`, `gwc_minion.js`), as
+an enemy does; its `character` stays the template's, and the war panel, the
+minion card and the referee's display name show the penchant after it. A Sub
+Commander dealt before this carries the penchant's name inside `character` and
+its tags in its stored personality, which the resolver keeps as they are.
+
+**Launch resolves the same way.** `gw_play/referee_config_setup.js` builds every
+army's personality through the same `resolve()` from the record — id, tier by
+name, the brain the army's race runs, its penchant, and the FFA tags for a
+Queller army whose star has foes — so a change to `personalities.js`, a tier or
+a brain's tags reaches a war in progress on its next battle. The resolved
+object is what the army holds; the war's own record is never edited. An AI
+saved without an id (or whose id no longer ships) keeps its stored personality
+as the base and still takes the live tier's settings; its stored tags are kept
+as they are, FFA tags included. An ally resolves against the player's faction,
+since a Sub Commander record carries none.
+
 ## AI tech
 
 Distinct from the player's tech cards, and from `/pa/ai_tech/`: this is the AI's
-own stat tech, drawn at war creation and applied as **unit-spec mods** on the
-AI's inventory. Two modules:
+own stat tech, drawn at war creation and applied as **unit-spec mods** when the
+battle is launched. The war records only the draw — `typeOfBuffs`, the buff
+indices, on every boss, worker and foe — and `gw_start/ai_tech.js`'s
+`loadoutFor()` builds the descriptors from the live tables at launch
+(`referee_game_file_paths.js`'s `armyInventory()`), so a rebalance reaches wars
+in progress. A war saved before this carries the built descriptors as
+`ai.inventory` and no `typeOfBuffs` on its foes; `armyInventory()` uses those
+as they are, and `gw_play/bugfixes.js`'s Cluster commander repair only ever
+touches such a baked inventory. The Guardians take the faction tech of the
+worker they replaced but never the Cluster commander mods — they field the
+Unicorn, which those mods do not name. Two modules:
 
 - `gw_start/ai_tech.js` returns `factionTechs[faction][tech]` — arrays of
   `addMods`-shaped descriptors, the same shape [`specs.md`](specs.md) documents.

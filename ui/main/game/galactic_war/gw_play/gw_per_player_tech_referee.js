@@ -17,6 +17,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
 ], function (
   GW,
   GWInventory,
@@ -31,7 +32,8 @@ define([
   gameFilePaths,
   gwoRaces,
   gwoRaceCells,
-  unitCells
+  unitCells,
+  gwoPersonality
 ) {
   var getPlayerTagGivenIndex = perPlayerTech.getPlayerTagGivenIndex;
   var stripKnownSpecTag = perPlayerTech.stripKnownSpecTag;
@@ -349,6 +351,14 @@ define([
           viewerAiPath: viewerAiPath,
           subcommanderEconRate: gwoAI.subcommanderEconRate,
           colourPosition: colourPosition,
+          // As the host's referee resolves its own Sub Commanders.
+          resolvePersonality: function (minion) {
+            return gwoPersonality.resolve(minion, {
+              side: "ally",
+              faction: playerFaction,
+              penchantTags: gwoAI.penchantTags(minion.penchantName),
+            });
+          },
         });
         colourPosition = viewerSubcommanders.colourPosition;
         _.forEach(viewerSubcommanders.armies, function (subcommanderArmy) {

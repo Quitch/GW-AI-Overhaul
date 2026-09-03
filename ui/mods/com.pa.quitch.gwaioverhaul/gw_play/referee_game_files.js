@@ -9,6 +9,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js",
 ], function (
   GW,
   gwoAI,
@@ -18,7 +19,8 @@ define([
   gameFilePaths,
   gwoRaces,
   gwoRaceCells,
-  unitCells
+  unitCells,
+  gwoTech
 ) {
   var getAIUnitMapPath = gameFilePaths.getAIUnitMapPath;
   var getAIUnitMapDestinationPath = gameFilePaths.getAIUnitMapDestinationPath;
@@ -104,10 +106,12 @@ define([
           : {};
         var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
 
-        var aiInventory =
-          (currentCount === 0
-            ? ai.inventory
-            : ai.foes[currentCount - 1].inventory) || [];
+        var aiInventory = gameFilePaths.armyInventory(
+          currentCount === 0 ? ai : ai.foes[currentCount - 1],
+          gwoTech.loadoutFor,
+          gwoAI.factionIndex,
+          gwoAI.isCluster
+        );
         var guardians = ai.mirrorMode;
         if (guardians) {
           aiInventory = aiInventory.concat(

@@ -285,8 +285,6 @@ describe("pendingCardsContainLoadout", () => {
 });
 
 describe("applyPenchantToSubcommander", () => {
-  // The helper reads the runtime `loc` global; in-game it localises, here it just
-  // echoes the key so the appended name is assertable.
   const gwoAI = {
     penchants: () => ({ penchantName: "!LOC:Reckless", penchants: ["rush"] }),
   };
@@ -298,30 +296,26 @@ describe("applyPenchantToSubcommander", () => {
     };
   }
 
-  it("appends the penchant name and tags for a Penchant ally", () => {
-    const priorLoc = global.loc;
-    global.loc = (key) => key;
-    try {
-      const sub = subcommander();
-      helpers.applyPenchantToSubcommander(sub, { aiAlly: "Penchant" }, gwoAI);
-      assert.equal(sub.character, "Commander !LOC:Reckless");
-      assert.deepEqual(sub.personality.personality_tags, ["base", "rush"]);
-    } finally {
-      global.loc = priorLoc;
-    }
+  it("records the penchant's name for a Penchant ally, and nothing else", () => {
+    const sub = subcommander();
+    helpers.applyPenchantToSubcommander(sub, { aiAlly: "Penchant" }, gwoAI);
+    assert.equal(sub.penchantName, "!LOC:Reckless");
+    // The tags are built at launch from the name; the character stays clean.
+    assert.equal(sub.character, "Commander");
+    assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
 
   it("is a no-op for a non-Penchant ally", () => {
     const sub = subcommander();
     helpers.applyPenchantToSubcommander(sub, { aiAlly: "Queller" }, gwoAI);
-    assert.equal(sub.character, "Commander");
+    assert.ok(!("penchantName" in sub));
     assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
 
   it("is a no-op when gwoSettings is missing", () => {
     const sub = subcommander();
     helpers.applyPenchantToSubcommander(sub, undefined, gwoAI);
-    assert.equal(sub.character, "Commander");
+    assert.ok(!("penchantName" in sub));
     assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
 
@@ -336,53 +330,41 @@ describe("applyPenchantToSubcommander", () => {
       undefined,
       "legion"
     );
-    assert.equal(sub.character, "Commander");
+    assert.ok(!("penchantName" in sub));
     assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
 
   it("reads the MLA subcommander from the war-wide strings, not the table", () => {
-    const priorLoc = global.loc;
-    global.loc = (key) => key;
-    try {
-      const sub = subcommander();
-      helpers.applyPenchantToSubcommander(
-        sub,
-        {
-          aiAlly: "Penchant",
-          aiByRace: { legion: { enemy: "Titans", ally: "Titans" } },
-        },
-        gwoAI,
-        undefined,
-        "mla"
-      );
-      assert.equal(sub.character, "Commander !LOC:Reckless");
-    } finally {
-      global.loc = priorLoc;
-    }
+    const sub = subcommander();
+    helpers.applyPenchantToSubcommander(
+      sub,
+      {
+        aiAlly: "Penchant",
+        aiByRace: { legion: { enemy: "Titans", ally: "Titans" } },
+      },
+      gwoAI,
+      undefined,
+      "mla"
+    );
+    assert.equal(sub.penchantName, "!LOC:Reckless");
   });
 
   it("forwards its rng to gwoAI.penchants", () => {
-    const priorLoc = global.loc;
-    global.loc = (key) => key;
-    try {
-      const seen = [];
-      const spy = {
-        penchants: (rng) => {
-          seen.push(rng);
-          return { penchantName: "n", penchants: [] };
-        },
-      };
-      const rng = () => 0.5;
-      helpers.applyPenchantToSubcommander(
-        subcommander(),
-        { aiAlly: "Penchant" },
-        spy,
-        rng
-      );
-      assert.deepEqual(seen, [rng]);
-    } finally {
-      global.loc = priorLoc;
-    }
+    const seen = [];
+    const spy = {
+      penchants: (rng) => {
+        seen.push(rng);
+        return { penchantName: "n", penchants: [] };
+      },
+    };
+    const rng = () => 0.5;
+    helpers.applyPenchantToSubcommander(
+      subcommander(),
+      { aiAlly: "Penchant" },
+      spy,
+      rng
+    );
+    assert.deepEqual(seen, [rng]);
   });
 });
 

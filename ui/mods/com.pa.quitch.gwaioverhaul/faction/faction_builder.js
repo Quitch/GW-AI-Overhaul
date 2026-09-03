@@ -1,7 +1,20 @@
 // Assembles a base faction from its data. The four shadowed gw_faction_*.js
 // files differ only in what they pass here; the measured sibling of those
 // shadows alongside faction/faction_seed.js - see galaxy.md and shadowing.md.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
+], function (gwoPersonality) {
+  // The id is looked up on the declaration's reference: the merge below
+  // copies the personality, so nothing could identify it afterwards.
+  var fromBaseline = function (baseline, modifiers) {
+    var built = _.merge(_.cloneDeep(baseline), modifiers);
+    var personalityId = gwoPersonality.idOf(modifiers.personality);
+    if (personalityId) {
+      built.personalityId = personalityId;
+    }
+    return built;
+  };
+
   var build = function (data) {
     var baseline = data.baseline;
     // The Random commander's pool, captured before it joins so it can never
@@ -17,7 +30,7 @@ define(function () {
       teams: [
         {
           name: data.name,
-          boss: _.merge(_.cloneDeep(baseline), data.boss),
+          boss: fromBaseline(baseline, data.boss),
           systemDescription: data.descriptions[0],
           systemTemplate: {
             name: data.name,
@@ -26,7 +39,7 @@ define(function () {
         },
       ],
       minions: _.map(minions, function (personalityModifiers) {
-        return _.merge(_.cloneDeep(baseline), personalityModifiers);
+        return fromBaseline(baseline, personalityModifiers);
       }),
       gwaioRandomSpec: {
         baseline: baseline,
@@ -42,5 +55,5 @@ define(function () {
     };
   };
 
-  return { build: build };
+  return { build: build, fromBaseline: fromBaseline };
 });

@@ -13,7 +13,6 @@ define([
     name: "Baseline",
     character: "!LOC:Baseline",
     color: factionColour,
-    econ_rate: 1,
     personality: personalities.revenants,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };

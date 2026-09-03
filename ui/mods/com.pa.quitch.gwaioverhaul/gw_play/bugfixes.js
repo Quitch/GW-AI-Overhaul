@@ -67,6 +67,11 @@ function gwoBugfixes() {
     };
 
     var fixClusterCommanderTypes = function (ai) {
+      // A war that records typeOfBuffs builds its spec mods at launch from the
+      // live Cluster mods, so only a baked inventory needs repairing.
+      if (!_.isArray(ai.inventory)) {
+        return;
+      }
       var securityFix = false; // we have to fix `unit_types`
       var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
       var security =

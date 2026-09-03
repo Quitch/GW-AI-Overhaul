@@ -181,12 +181,12 @@ A shadowed file usually cannot load under the Node AMD harness, because its
 above all). The pattern is to extract the testable logic into a **measured sibling
 module** in the mod's own namespace, which the shadowed file then requires:
 
-| Shadowed file                   | Measured sibling                                        |
-| ------------------------------- | ------------------------------------------------------- |
-| `gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js`                            |
-| `gw_faction_*.js`               | `faction/faction_builder.js`, `faction/faction_seed.js` |
-| `gw_play/referee_game_files.js` | `gw_play/referee_game_file_paths.js`                    |
-| `gw_play/referee_config.js`     | `gw_play/referee_config_setup.js`                       |
+| Shadowed file                   | Measured sibling                                                                    |
+| ------------------------------- | ----------------------------------------------------------------------------------- |
+| `gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js`                                                        |
+| `gw_faction_*.js`               | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js` |
+| `gw_play/referee_game_files.js` | `gw_play/referee_game_file_paths.js`                                                |
+| `gw_play/referee_config.js`     | `gw_play/referee_config_setup.js`                                                   |
 
 The shadowed file keeps only the `model`/`ko`/`api` glue and is coverage-excluded;
 the sibling holds the logic and is unit-tested. Do **not** instead hoist helpers to

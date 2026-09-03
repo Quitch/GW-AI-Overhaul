@@ -19,10 +19,16 @@
 - In a co-op war, the loadout screen shows your commander in the war's faction colour, as the war setup's Commander picker does
 - Removed Easier Start - it's always on now
 - AI defaults to TITANS
+- Difficulty is applied when a battle starts rather than when a war is created, so a war in progress picks up balance changes to its difficulty tier. A Custom difficulty war keeps the settings it was created with
+- AI technology bonuses are built when a battle starts from the bonuses the war recorded, so a war in progress picks up balance changes to AI tech
+- AI personalities are built when a battle starts from the commander the war recorded, so a war in progress picks up balance changes to AI personalities
 
 ### Bugfix
 
 - Picking Beginner or Casual no longer leaves the Custom difficulty's landing evaluation radius blank
+- A Custom difficulty war now floors AI economy at its own economy settings instead of at 1.0
+- Enemy AIs no longer inherit the base game's Normal difficulty economy thresholds, fabber ratios and unit mix in place of their own personality's
+- A Random enemy commander no longer keeps the Armor personality's unit mix underneath the personality it drew
 - A war saved by a version before v5.52.2 is repaired again when resumed. The repair stopped at the first neutral system, so its Cluster commanders and treasure planet were never fixed and the check ran on every visit
 - Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections
 - Sub Commanders were dealt PENCHANT personalities when the Opponent AI was PENCHANT; they now follow the Ally AI, as their QUELLER compatibility filter always did

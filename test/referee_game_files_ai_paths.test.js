@@ -30,6 +30,61 @@ const installModel = useModel();
 const isClusterTrue = () => true;
 const isClusterFalse = () => false;
 
+describe("armyInventory", () => {
+  const loadoutFor = (faction, buffs, isCluster) => [
+    { faction, buffs, isCluster },
+  ];
+  const factionIndex = (army) => army.faction;
+
+  it("derives the inventory from a recorded typeOfBuffs", () => {
+    assert.deepEqual(
+      refereeGameFiles.armyInventory(
+        { faction: 2, typeOfBuffs: [0, 6], inventory: ["baked"] },
+        loadoutFor,
+        factionIndex,
+        isClusterFalse
+      ),
+      [{ faction: 2, buffs: [0, 6], isCluster: false }]
+    );
+  });
+
+  it("passes the cluster test's answer through", () => {
+    assert.deepEqual(
+      refereeGameFiles.armyInventory(
+        { faction: 4, typeOfBuffs: [] },
+        loadoutFor,
+        factionIndex,
+        isClusterTrue
+      ),
+      [{ faction: 4, buffs: [], isCluster: true }]
+    );
+  });
+
+  it("uses the baked inventory of a war saved without typeOfBuffs", () => {
+    assert.deepEqual(
+      refereeGameFiles.armyInventory(
+        { faction: 1, inventory: ["baked"] },
+        loadoutFor,
+        factionIndex,
+        isClusterFalse
+      ),
+      ["baked"]
+    );
+  });
+
+  it("carries nothing for an army with neither", () => {
+    assert.deepEqual(
+      refereeGameFiles.armyInventory(
+        { faction: 1 },
+        loadoutFor,
+        factionIndex,
+        isClusterFalse
+      ),
+      []
+    );
+  });
+});
+
 describe("getAIUnitMapPath", () => {
   it("Queller source is under q_uber/, regardless of titans", () => {
     assert.equal(

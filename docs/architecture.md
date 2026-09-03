@@ -87,10 +87,18 @@ The sequence that ties most of the above together:
 
 1. `gw_play/referee.js` hijacks the base referee and installs GWO's.
 2. `gw_play/referee_config.js` + `referee_config_setup.js` assemble the launch
-   config — armies, personalities, planets, game modes.
+   config — armies, personalities, planets, game modes. Every army's
+   personality is built here through `shared/ai_personality.js` from what the
+   war recorded (its `personalityId`, `penchantName`, faction and brain) and
+   the tier `shared/ai.js`'s `warTier()` resolves, as are the numbers that
+   follow from the tier (a boss's commander count, the bounty value) — none of
+   it is read from the save. See galaxy.md, "Difficulty" and "AI personalities
+   and penchants".
 3. `gw_play/referee_ai.js` walks the AI build trees, applies AI-mod descriptors
    from every card held, and writes the results into the config.
-4. `gw_play/referee_game_files.js` generates unit specs per army tag.
+4. `gw_play/referee_game_files.js` generates unit specs per army tag, applying
+   the AI tech `gw_start/ai_tech.js` builds from the buffs the war recorded —
+   see galaxy.md, "AI tech".
 5. In co-op with per-player tech, `gw_per_player_tech_referee.js` runs afterwards
    and adds each viewer's own specs and subcommanders.
 
@@ -179,6 +187,10 @@ The shape is worth knowing before adding a fix to it:
   the same outcome — a war with no treasure planet should not re-scan forever.
 - It finishes by calling `gw_play/save.js`, so a repaired war is persisted rather
   than repaired again on the next visit.
+- **A repair edits only what the save still owns.** The Cluster commander repair
+  rewrites `ai.inventory` descriptors in place, and a war that records
+  `typeOfBuffs` has none — its descriptors are built at launch from the live
+  Cluster mods, so the repair returns early for it.
 
 `gw_play/save.js` is the shared save wrapper used here and by the card code. It
 drives `model.driveAccessInProgress` around the write, and **no-ops for campaign
@@ -189,8 +201,10 @@ writing a war it does not own.
 
 - **The war save** — the campaign game object. GWO piggy-backs its own settings
   onto the origin star system as `originSystem.gwaio` (AI brain, difficulty,
-  scaling options). `shared/ai.js`'s `aiInUse()` reads it; a missing blob means a
-  non-GWO war and defaults to Titans.
+  scaling options, and for a Custom war the `customDifficulty` value snapshot
+  that `shared/ai.js`'s `warTier()` resolves — see galaxy.md, "Difficulty").
+  `shared/ai.js`'s `aiInUse()` reads it; a missing blob means a non-GWO war and
+  defaults to Titans.
 - **`localStorage`** — start-card unlocks, victory badges and favourited
   loadouts, under `gwaio_`-prefixed keys so that uninstalling GWO does not
   corrupt the base game's loadout list with 404s. See `shared/bank.js` and

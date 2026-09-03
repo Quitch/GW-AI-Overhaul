@@ -148,7 +148,6 @@ define([
       }
     });
 
-    self.difficultyIndex = config.difficultyIndex;
     // GWO - a seeded copy of the stock loader, unless Shared Systems for Galactic War
     // has replaced it; see shared/gwo_system_templates.js.
     var StarSystemTemplates = gwoSystemTemplates.chooseFor(

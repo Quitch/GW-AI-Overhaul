@@ -1,6 +1,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
-], function (inventory) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
+], function (inventory, gwoCluster) {
   var AMMUNITION_TECH = 1;
   var ARMOUR_TECH = 2;
   var COMBAT_TECH = 6;
@@ -195,7 +196,21 @@ define([
   setupAITech6CombatTech();
   setupAITech7CooldownTech();
 
+  // The spec mods an AI's recorded buffs grant: a Cluster AI's commander mods
+  // first, then the faction tech per buff index. Built per launch from the
+  // live tables, so a rebalance reaches wars in progress. An index with no
+  // tech (a v5.11.0 save can carry a 5) grants nothing. See galaxy.md.
+  var loadoutFor = function (faction, buffs, isCluster) {
+    var techs = factionTechs[faction] || [];
+    var loadout = isCluster ? gwoCluster.clusterCommanderMods.slice() : [];
+    _.forEach(buffs, function (buff) {
+      loadout = loadout.concat(techs[buff] || []);
+    });
+    return loadout;
+  };
+
   return {
     factionTechs: factionTechs,
+    loadoutFor: loadoutFor,
   };
 });

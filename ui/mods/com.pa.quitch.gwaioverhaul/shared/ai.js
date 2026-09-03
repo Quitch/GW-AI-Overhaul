@@ -71,19 +71,178 @@ define([
     });
   };
 
-  var getAIEconFloor = function (difficultyName) {
-    var difficultySettings = getDifficultySettings(difficultyName);
-    // Finding a tier is not enough: the Custom sentinel carries no econ fields,
-    // and the resulting NaN reaches every battle of that war.
-    var hasEconFields =
-      difficultySettings &&
-      _.isNumber(difficultySettings.econBase) &&
-      _.isNumber(difficultySettings.econRatePerDist);
+  var missingTiers = {};
 
-    return hasEconFields
-      ? difficultySettings.econBase + difficultySettings.econRatePerDist
-      : 1;
+  // The tier a war runs on: a Custom war's recorded snapshot, else the named
+  // tier looked up live so a retune reaches wars in progress. undefined for a
+  // Custom war saved before snapshots existed, or a name no longer shipped.
+  // See galaxy.md, "Difficulty".
+  var warTier = function (gwoSettings) {
+    var settings = gwoSettings || {};
+    if (_.isPlainObject(settings.customDifficulty)) {
+      return settings.customDifficulty;
+    }
+    var tier = getDifficultySettings(settings.difficulty);
+    if (tier && tier.customDifficulty !== true) {
+      return tier;
+    }
+    if (!tier && settings.difficulty && !missingTiers[settings.difficulty]) {
+      missingTiers[settings.difficulty] = true;
+      console.warn("GWO: no difficulty tier named " + settings.difficulty);
+    }
+    return undefined;
   };
+
+  // A Custom war without a snapshot resolves no tier, so its floor stays 1;
+  // the field check keeps a NaN out of every battle of that war.
+  var getAIEconFloor = function (tier) {
+    var hasEconFields =
+      tier && _.isNumber(tier.econBase) && _.isNumber(tier.econRatePerDist);
+
+    return hasEconFields ? tier.econBase + tier.econRatePerDist : 1;
+  };
+
+  // A war saved before v5.44.0 holds faction as ["4"].
+  var factionIndex = function (ai) {
+    return _.isArray(ai.faction) ? Number.parseInt(ai.faction[0]) : ai.faction;
+  };
+
+  // A boss fields tier.bossCommanders per player the war was generated for,
+  // derived at launch so a tier retune reaches wars in progress. An AI saved
+  // with a count, or a war that resolves no tier, keeps the recorded count.
+  // See galaxy.md, "Difficulty".
+  var bossCommanders = function (ai, gwoSettings) {
+    var settings = gwoSettings || {};
+    var tier = warTier(settings);
+    if (
+      ai.boss === true &&
+      tier &&
+      _.isNumber(tier.bossCommanders) &&
+      _.isNumber(settings.coopPlayerScalingCount)
+    ) {
+      return tier.bossCommanders * settings.coopPlayerScalingCount;
+    }
+    return ai.bossCommanders;
+  };
+
+  var commanderCount = function (ai) {
+    return (
+      bossCommanders(ai, originSettings(model.game())) ||
+      ai.commanderCount ||
+      // legacy GWO support
+      (ai.landing_policy && ai.landing_policy.length) ||
+      1
+    );
+  };
+
+  var bountyValue = function (ai) {
+    var tier = warTier(originSettings(model.game()));
+    return tier && _.isNumber(tier.bountyModeValue)
+      ? tier.bountyModeValue
+      : ai.bountyModeValue;
+  };
+
+  var PENCHANTS = [
+    // Vanilla. Must be an array like every other entry - the caller concats
+    // this onto personality_tags, and "" would concat as one empty tag.
+    { name: "", tags: [] },
+    { name: "!LOC:Artillery", tags: ["Artillery"] },
+    {
+      name: "!LOC:Fortress",
+      tags: ["Fortress", "Minelayer", "PenchantT1Defence", "PenchantT2Defence"],
+    },
+    {
+      name: "!LOC:All-terrain",
+      tags: [
+        "AllTerrain",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Naval",
+      ],
+    },
+    {
+      name: "!LOC:Assault",
+      tags: [
+        "Assault",
+        "PenchantT2Air",
+        "PenchantT1Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Vehicle",
+        "PenchantT1Naval",
+        "PenchantT2Naval",
+      ],
+    },
+    {
+      name: "!LOC:Boomer",
+      tags: ["Boomer", "PenchantT1Bot", "PenchantT2Bot"],
+    },
+    {
+      name: "!LOC:Heavy",
+      tags: [
+        "Heavy",
+        "NoPercentage",
+        "PenchantT2Air",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Vehicle",
+        "PenchantT1Naval",
+        "PenchantT2Naval",
+      ],
+    },
+    {
+      name: "!LOC:Infernodier",
+      tags: [
+        "Infernodier",
+        "NoPercentage",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Vehicle",
+      ],
+    },
+    {
+      name: "!LOC:Raider",
+      tags: [
+        "Raider",
+        "PenchantT2Air",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT1Naval",
+        "PenchantT2Naval",
+      ],
+    },
+    {
+      name: "!LOC:Sniper",
+      tags: [
+        "Sniper",
+        "NoPercentage",
+        "PenchantT2Air",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Vehicle",
+        "PenchantT1Naval",
+        "PenchantT2Naval",
+      ],
+    },
+    { name: "!LOC:Nuker", tags: ["Nuker"] },
+    {
+      name: "!LOC:Tactical",
+      tags: [
+        "Tactical",
+        "NoPercentage",
+        "PenchantT2Defence",
+        "PenchantT2Air",
+        "PenchantT2Bot",
+        "PenchantT2Naval",
+      ],
+    },
+    { name: "!LOC:Platoon", tags: ["Platoon", "PenchantPlatoon"] },
+    { name: "!LOC:Minelayer", tags: ["Minelayer"] },
+  ];
 
   return {
     aiInUse: aiInUse,
@@ -91,6 +250,10 @@ define([
     getInventoryAiMods: getInventoryAiMods,
     originSettings: originSettings,
     originSystem: originSystem,
+    warTier: warTier,
+    factionIndex: factionIndex,
+    commanderCount: commanderCount,
+    bountyValue: bountyValue,
 
     // The advanced structures a basic fabber's upgrade card lets it build.
     advancedStructureBuilds: [
@@ -182,126 +345,25 @@ define([
       if (guardians) {
         return false;
       }
-      return _.isArray(ai.faction) // was an array before v5.44.0
-        ? Number.parseInt(ai.faction[0]) === 4
-        : ai.faction === 4;
+      return factionIndex(ai) === 4;
     },
 
     // rng is optional. War creation passes the AI's own stream; the play-scene
     // callers are outside the seeded path and pass nothing.
     penchants: function (rng) {
-      var penchants = [
-        // Vanilla. Must be an array like every other entry - the caller concats
-        // this onto personality_tags, and "" would concat as one empty tag.
-        { name: "", tags: [] },
-        { name: "!LOC:Artillery", tags: ["Artillery"] },
-        {
-          name: "!LOC:Fortress",
-          tags: [
-            "Fortress",
-            "Minelayer",
-            "PenchantT1Defence",
-            "PenchantT2Defence",
-          ],
-        },
-        {
-          name: "!LOC:All-terrain",
-          tags: [
-            "AllTerrain",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Naval",
-          ],
-        },
-        {
-          name: "!LOC:Assault",
-          tags: [
-            "Assault",
-            "PenchantT2Air",
-            "PenchantT1Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Vehicle",
-            "PenchantT1Naval",
-            "PenchantT2Naval",
-          ],
-        },
-        {
-          name: "!LOC:Boomer",
-          tags: ["Boomer", "PenchantT1Bot", "PenchantT2Bot"],
-        },
-        {
-          name: "!LOC:Heavy",
-          tags: [
-            "Heavy",
-            "NoPercentage",
-            "PenchantT2Air",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Vehicle",
-            "PenchantT1Naval",
-            "PenchantT2Naval",
-          ],
-        },
-        {
-          name: "!LOC:Infernodier",
-          tags: [
-            "Infernodier",
-            "NoPercentage",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Vehicle",
-          ],
-        },
-        {
-          name: "!LOC:Raider",
-          tags: [
-            "Raider",
-            "PenchantT2Air",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT1Naval",
-            "PenchantT2Naval",
-          ],
-        },
-        {
-          name: "!LOC:Sniper",
-          tags: [
-            "Sniper",
-            "NoPercentage",
-            "PenchantT2Air",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Vehicle",
-            "PenchantT1Naval",
-            "PenchantT2Naval",
-          ],
-        },
-        { name: "!LOC:Nuker", tags: ["Nuker"] },
-        {
-          name: "!LOC:Tactical",
-          tags: [
-            "Tactical",
-            "NoPercentage",
-            "PenchantT2Defence",
-            "PenchantT2Air",
-            "PenchantT2Bot",
-            "PenchantT2Naval",
-          ],
-        },
-        { name: "!LOC:Platoon", tags: ["Platoon", "PenchantPlatoon"] },
-        { name: "!LOC:Minelayer", tags: ["Minelayer"] },
-      ];
-      var penchant = rng ? rng.pick(penchants) : _.sample(penchants);
+      var penchant = rng ? rng.pick(PENCHANTS) : _.sample(PENCHANTS);
 
       return {
         penchants: penchant.tags,
         penchantName: penchant.name,
       };
+    },
+
+    // The build-file tags a recorded penchant name stands for; none for the
+    // Vanilla entry or a name no longer shipped.
+    penchantTags: function (penchantName) {
+      var penchant = _.find(PENCHANTS, { name: penchantName });
+      return penchant ? penchant.tags.slice() : [];
     },
 
     // Kept out of aiEconRateWithFloor, whose floor rises above this on the
@@ -311,10 +373,12 @@ define([
     // Older co-op wars could save a negative eco, so a saved econ_rate needs
     // the floor rather than being used directly.
     aiEconRateWithFloor: function (aiEconRate) {
-      var gwoSettings = originSettings(model.game()) || {};
-      var difficultyName = gwoSettings.difficulty || "!LOC:Beginner";
+      // A war with no recorded difficulty is floored as Beginner.
+      var gwoSettings = _.defaults({}, originSettings(model.game()), {
+        difficulty: "!LOC:Beginner",
+      });
 
-      return Math.max(aiEconRate, getAIEconFloor(difficultyName));
+      return Math.max(aiEconRate, getAIEconFloor(warTier(gwoSettings)));
     },
 
     quellerCompatibleMinions: function (minions) {
