@@ -16,7 +16,8 @@ Roughly:
    sampled from it, so a Queller-incompatible minion can never be spread onto the
    galaxy as a worker AI.
 3. Place the boss system, then non-boss AI systems, FFA foes, allied commanders.
-4. Assign personalities, buffs and minions per AI.
+4. Build each AI's personality from its template's id and the war's tier, draw
+   its buffs, and add its minions.
 5. Stamp war settings onto `originSystem.gwaio` for the `gw_play` scene to read.
 
 Step 5 is a piggy-back channel rather than a real API — the origin system is simply
@@ -473,6 +474,23 @@ Commander — is a deep clone of a template, so the id reaches the save for free
 `shared/ai_personality.js`'s `base(id, faction)` rebuilds the same object from
 the id, and `test/faction_personality_ids.test.js` pins that the two merges
 agree for every shipped template.
+
+**Generation never edits a template.** The base game's own `makeGame` still runs
+once per `gw_start` load (it is kicked off before any mod script exists) and its
+difficulty ramp writes into the templates' shared `personality` objects, so the
+templates are dirty by the time GWO generates. `setAIPersonality` therefore
+assigns `ai.personality = gwoPersonality.resolve(ai, …)`, a fresh object: the
+template `personalityId` names, the tier's AI settings written over it
+(`applyTier()`), and `personality_tags` composed as the tier's tags followed by
+the brain's — `Default` for TITANS, the faction's arm plus `queller` for
+Queller, the drawn penchant's tags plus `Default` for Penchant. An `ai.ally`
+resolves as an ally: template tags plus its penchant, no tier. Queller's FFA
+tags are appended per entity afterwards, as before. The war records the id and
+the `penchantName`; the resolved object is written too, for stock readers and
+as the fallback for an AI whose id no longer resolves. Only
+`works_with_queller` is ever read from a template, and stock never writes it.
+An ally and a dealt Sub Commander carry no `econ_rate` at all: every reader
+gives them the Sub Commander rate.
 
 ## AI tech
 

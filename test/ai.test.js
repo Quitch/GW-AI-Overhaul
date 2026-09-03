@@ -388,6 +388,24 @@ describe("quellerCompatibleMinions", () => {
   });
 });
 
+describe("penchantTags", () => {
+  it("returns the tags a recorded penchant name stands for, as a copy", () => {
+    const tags = gwoAI.penchantTags("!LOC:Platoon");
+    assert.deepEqual(tags, ["Platoon", "PenchantPlatoon"]);
+    tags.push("marker");
+    assert.deepEqual(gwoAI.penchantTags("!LOC:Platoon"), [
+      "Platoon",
+      "PenchantPlatoon",
+    ]);
+  });
+
+  it("returns nothing for the Vanilla entry, no name, or a name no longer shipped", () => {
+    assert.deepEqual(gwoAI.penchantTags(""), []);
+    assert.deepEqual(gwoAI.penchantTags(undefined), []);
+    assert.deepEqual(gwoAI.penchantTags("!LOC:Retired"), []);
+  });
+});
+
 describe("penchants", () => {
   it("returns the same penchant for the same seed", () => {
     assert.deepEqual(

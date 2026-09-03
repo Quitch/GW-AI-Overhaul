@@ -85,6 +85,9 @@ define([
       var minion = _.cloneDeep(
         rng ? rng.pick(minionPool) : _.sample(minionPool)
       );
+      // Every reader gives a Sub Commander its own rate, so the card carries
+      // no rate the template may hold.
+      delete minion.econ_rate;
       if (!gwoRaces.isMla(race)) {
         minion.race = race;
         var raceCommander = gwoRaces.commanderFor(

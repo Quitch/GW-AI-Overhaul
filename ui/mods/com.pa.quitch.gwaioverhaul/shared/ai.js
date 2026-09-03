@@ -142,6 +142,108 @@ define([
       : ai.bountyModeValue;
   };
 
+  var PENCHANTS = [
+    // Vanilla. Must be an array like every other entry - the caller concats
+    // this onto personality_tags, and "" would concat as one empty tag.
+    { name: "", tags: [] },
+    { name: "!LOC:Artillery", tags: ["Artillery"] },
+    {
+      name: "!LOC:Fortress",
+      tags: ["Fortress", "Minelayer", "PenchantT1Defence", "PenchantT2Defence"],
+    },
+    {
+      name: "!LOC:All-terrain",
+      tags: [
+        "AllTerrain",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Naval",
+      ],
+    },
+    {
+      name: "!LOC:Assault",
+      tags: [
+        "Assault",
+        "PenchantT2Air",
+        "PenchantT1Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Vehicle",
+        "PenchantT1Naval",
+        "PenchantT2Naval",
+      ],
+    },
+    {
+      name: "!LOC:Boomer",
+      tags: ["Boomer", "PenchantT1Bot", "PenchantT2Bot"],
+    },
+    {
+      name: "!LOC:Heavy",
+      tags: [
+        "Heavy",
+        "NoPercentage",
+        "PenchantT2Air",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Vehicle",
+        "PenchantT1Naval",
+        "PenchantT2Naval",
+      ],
+    },
+    {
+      name: "!LOC:Infernodier",
+      tags: [
+        "Infernodier",
+        "NoPercentage",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Vehicle",
+      ],
+    },
+    {
+      name: "!LOC:Raider",
+      tags: [
+        "Raider",
+        "PenchantT2Air",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT1Naval",
+        "PenchantT2Naval",
+      ],
+    },
+    {
+      name: "!LOC:Sniper",
+      tags: [
+        "Sniper",
+        "NoPercentage",
+        "PenchantT2Air",
+        "PenchantT1Bot",
+        "PenchantT2Bot",
+        "PenchantT1Vehicle",
+        "PenchantT2Vehicle",
+        "PenchantT1Naval",
+        "PenchantT2Naval",
+      ],
+    },
+    { name: "!LOC:Nuker", tags: ["Nuker"] },
+    {
+      name: "!LOC:Tactical",
+      tags: [
+        "Tactical",
+        "NoPercentage",
+        "PenchantT2Defence",
+        "PenchantT2Air",
+        "PenchantT2Bot",
+        "PenchantT2Naval",
+      ],
+    },
+    { name: "!LOC:Platoon", tags: ["Platoon", "PenchantPlatoon"] },
+    { name: "!LOC:Minelayer", tags: ["Minelayer"] },
+  ];
+
   return {
     aiInUse: aiInUse,
     currentStarAi: currentStarAi,
@@ -249,118 +351,19 @@ define([
     // rng is optional. War creation passes the AI's own stream; the play-scene
     // callers are outside the seeded path and pass nothing.
     penchants: function (rng) {
-      var penchants = [
-        // Vanilla. Must be an array like every other entry - the caller concats
-        // this onto personality_tags, and "" would concat as one empty tag.
-        { name: "", tags: [] },
-        { name: "!LOC:Artillery", tags: ["Artillery"] },
-        {
-          name: "!LOC:Fortress",
-          tags: [
-            "Fortress",
-            "Minelayer",
-            "PenchantT1Defence",
-            "PenchantT2Defence",
-          ],
-        },
-        {
-          name: "!LOC:All-terrain",
-          tags: [
-            "AllTerrain",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Naval",
-          ],
-        },
-        {
-          name: "!LOC:Assault",
-          tags: [
-            "Assault",
-            "PenchantT2Air",
-            "PenchantT1Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Vehicle",
-            "PenchantT1Naval",
-            "PenchantT2Naval",
-          ],
-        },
-        {
-          name: "!LOC:Boomer",
-          tags: ["Boomer", "PenchantT1Bot", "PenchantT2Bot"],
-        },
-        {
-          name: "!LOC:Heavy",
-          tags: [
-            "Heavy",
-            "NoPercentage",
-            "PenchantT2Air",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Vehicle",
-            "PenchantT1Naval",
-            "PenchantT2Naval",
-          ],
-        },
-        {
-          name: "!LOC:Infernodier",
-          tags: [
-            "Infernodier",
-            "NoPercentage",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Vehicle",
-          ],
-        },
-        {
-          name: "!LOC:Raider",
-          tags: [
-            "Raider",
-            "PenchantT2Air",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT1Naval",
-            "PenchantT2Naval",
-          ],
-        },
-        {
-          name: "!LOC:Sniper",
-          tags: [
-            "Sniper",
-            "NoPercentage",
-            "PenchantT2Air",
-            "PenchantT1Bot",
-            "PenchantT2Bot",
-            "PenchantT1Vehicle",
-            "PenchantT2Vehicle",
-            "PenchantT1Naval",
-            "PenchantT2Naval",
-          ],
-        },
-        { name: "!LOC:Nuker", tags: ["Nuker"] },
-        {
-          name: "!LOC:Tactical",
-          tags: [
-            "Tactical",
-            "NoPercentage",
-            "PenchantT2Defence",
-            "PenchantT2Air",
-            "PenchantT2Bot",
-            "PenchantT2Naval",
-          ],
-        },
-        { name: "!LOC:Platoon", tags: ["Platoon", "PenchantPlatoon"] },
-        { name: "!LOC:Minelayer", tags: ["Minelayer"] },
-      ];
-      var penchant = rng ? rng.pick(penchants) : _.sample(penchants);
+      var penchant = rng ? rng.pick(PENCHANTS) : _.sample(PENCHANTS);
 
       return {
         penchants: penchant.tags,
         penchantName: penchant.name,
       };
+    },
+
+    // The build-file tags a recorded penchant name stands for; none for the
+    // Vanilla entry or a name no longer shipped.
+    penchantTags: function (penchantName) {
+      var penchant = _.find(PENCHANTS, { name: penchantName });
+      return penchant ? penchant.tags.slice() : [];
     },
 
     // Kept out of aiEconRateWithFloor, whose floor rises above this on the

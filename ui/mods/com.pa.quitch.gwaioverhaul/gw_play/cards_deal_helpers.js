@@ -296,6 +296,9 @@ define([
         }
 
         var subcommander = _.cloneDeep(baseSubcommander);
+        // Every reader gives a Sub Commander its own rate, so the card carries
+        // no rate the template may hold.
+        delete subcommander.econ_rate;
         self.applyPenchantToSubcommander(
           subcommander,
           gwoSettings,
