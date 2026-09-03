@@ -633,6 +633,7 @@ describe("races", () => {
       "gwaio_start_nomad",
       "gwaio_protocol_killswitch",
       "gwaio_enable_planetaryradar",
+      "gwaio_start_rapid",
     ]);
     assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_ant"), true);
     assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_subcommander_1"), false);
