@@ -9,10 +9,10 @@ define([
   // and the Deepspace Radar is a TITANS stub only its card brings back. A
   // race gets its own. See races.md.
   var MLA_ONLY = [
-    "gwaio_start_paratrooper",
+    "gwaio_start_paratrooper", // specific to Unit Cannon and Lob
     "gwaio_start_nomad",
-    "gwaio_protocol_killswitch",
-    "gwaio_enable_planetaryradar",
+    "gwaio_protocol_killswitch", // unit scoped - cannot be automatically translated
+    "gwaio_enable_planetaryradar", // MLA only unit
     "gwaio_start_rapid", // loads AI files specific to MLA
   ];
   var RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
