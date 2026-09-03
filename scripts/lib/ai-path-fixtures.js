@@ -149,6 +149,9 @@ function buildGame(options) {
     if (opts.customDifficulty) {
       system.gwaio.customDifficulty = opts.customDifficulty;
     }
+    if (opts.coopPlayerScalingCount) {
+      system.gwaio.coopPlayerScalingCount = opts.coopPlayerScalingCount;
+    }
   }
 
   var star = {

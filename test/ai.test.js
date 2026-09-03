@@ -258,6 +258,90 @@ describe("aiEconRateWithFloor", () => {
   });
 });
 
+describe("commanderCount", () => {
+  const goldBosses = gwoAI.warTier({ difficulty: "!LOC:Gold" }).bossCommanders;
+
+  it("derives a boss's count from the tier times the players generated for", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Gold",
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    assert.equal(
+      gwoAI.commanderCount({ boss: true, bossCommanders: 99 }),
+      goldBosses * 2
+    );
+  });
+
+  it("derives the Guardians' count the same way", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Gold",
+      coopPlayerScalingCount: 3,
+    });
+    installModel(fixture.game);
+    assert.equal(
+      gwoAI.commanderCount({ boss: true, mirrorMode: true }),
+      goldBosses * 3
+    );
+  });
+
+  it("reads a Custom war's count from its snapshot", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Custom",
+      customDifficulty: { bossCommanders: 4 },
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ boss: true }), 8);
+  });
+
+  it("keeps a boss's recorded count when the war resolves no tier", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Custom",
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ boss: true, bossCommanders: 3 }), 3);
+  });
+
+  it("keeps a boss's recorded count when the war has no player count", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Gold" });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ boss: true, bossCommanders: 3 }), 3);
+  });
+
+  it("reads a minion's or foe's recorded commanderCount", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Gold",
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ commanderCount: 2 }), 2);
+  });
+
+  it("falls back to the landing policy count of a legacy AI, then to 1", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Gold" });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ landing_policy: ["a", "b"] }), 2);
+    assert.equal(gwoAI.commanderCount({}), 1);
+  });
+});
+
+describe("bountyValue", () => {
+  it("reads the tier's bounty value, not the one the war recorded", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Gold" });
+    installModel(fixture.game);
+    const expected = gwoAI.warTier({ difficulty: "!LOC:Gold" }).bountyModeValue;
+    assert.equal(gwoAI.bountyValue({ bountyModeValue: 99 }), expected);
+  });
+
+  it("keeps the recorded value when the war resolves no tier", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Custom" });
+    installModel(fixture.game);
+    assert.equal(gwoAI.bountyValue({ bountyModeValue: 0.3 }), 0.3);
+  });
+});
+
 describe("warTier", () => {
   it("resolves a named tier live from difficulty_levels.js", () => {
     const tier = gwoAI.warTier({ difficulty: "!LOC:Gold" });

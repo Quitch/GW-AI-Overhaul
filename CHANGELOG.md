@@ -19,6 +19,7 @@
 - In a co-op war, the loadout screen shows your commander in the war's faction colour, as the war setup's Commander picker does
 - Removed Easier Start - it's always on now
 - AI defaults to TITANS
+- Difficulty is applied when a battle starts rather than when a war is created, so a war in progress picks up balance changes to its difficulty tier. A Custom difficulty war keeps the settings it was created with
 
 ### Bugfix
 

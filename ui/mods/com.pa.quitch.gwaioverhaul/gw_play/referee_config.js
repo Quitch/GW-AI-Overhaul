@@ -168,7 +168,7 @@ define([
       bounty_mode:
         ai.bountyMode ||
         gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_bounties", game),
-      bounty_value: ai.bountyModeValue,
+      bounty_value: gwoAI.bountyValue(ai),
       sudden_death_mode:
         ai.suddenDeath ||
         gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_suddendeath", game),

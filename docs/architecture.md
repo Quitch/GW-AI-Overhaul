@@ -87,7 +87,10 @@ The sequence that ties most of the above together:
 
 1. `gw_play/referee.js` hijacks the base referee and installs GWO's.
 2. `gw_play/referee_config.js` + `referee_config_setup.js` assemble the launch
-   config — armies, personalities, planets, game modes.
+   config — armies, personalities, planets, game modes. Numbers that follow
+   from the war's difficulty tier (a boss's commander count, the bounty value)
+   are derived here from the tier `shared/ai.js`'s `warTier()` resolves, not
+   read from the save — see galaxy.md, "Difficulty".
 3. `gw_play/referee_ai.js` walks the AI build trees, applies AI-mod descriptors
    from every card held, and writes the results into the config.
 4. `gw_play/referee_game_files.js` generates unit specs per army tag.

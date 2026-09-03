@@ -800,7 +800,6 @@ function gwoSetup() {
                 seed: model.newGameSeed(),
                 gwoRng: warRng.stream("galaxy"),
                 size: size,
-                difficultyIndex: selectedDifficulty,
                 systemTemplates: systemTemplates,
                 content: game.content(),
                 coopPlayersForSystemGeneration: playerCount,
@@ -1109,7 +1108,6 @@ function gwoSetup() {
               setAIPersonality(bossRng, boss, difficulty, boss.faction);
               boss.econ_rate = aiEconRate(bossRng, maxDist);
               var bossCommanders = bossCommanderCount(difficulty, playerCount);
-              boss.bossCommanders = bossCommanders;
 
               var factionTechHandicap = Number.parseFloat(
                 difficulty.factionTechHandicap()
@@ -1157,9 +1155,6 @@ function gwoSetup() {
                 ai.bountyMode = gameModeEnabled(
                   aiRng,
                   difficulty.bountyModeChance()
-                );
-                ai.bountyModeValue = Number.parseFloat(
-                  difficulty.bountyModeValue()
                 );
                 ai.eradicationMode = gameModeEnabled(
                   aiRng,
@@ -1320,7 +1315,7 @@ function gwoSetup() {
                   setupPlanetForAI.bind(null, ai)
                 );
 
-                if (!ai.bossCommanders) {
+                if (!ai.boss) {
                   var difficulty = model.gwoDifficultySettings;
 
                   if (treasurePlanetSetup === false) {
@@ -1338,10 +1333,6 @@ function gwoSetup() {
                     ai.mirrorMode = true;
                     ai.treasurePlanet = true;
                     ai.econ_rate = aiEconRate(treasureRng, maxDist);
-                    ai.bossCommanders = bossCommanderCount(
-                      difficulty,
-                      playerCount
-                    );
                     ai.name = "The Guardians";
                     ai.character = "!LOC:Unknown";
                     ai.color = [

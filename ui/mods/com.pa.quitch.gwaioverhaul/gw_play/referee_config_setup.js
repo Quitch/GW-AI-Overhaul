@@ -158,18 +158,11 @@ define([
     var aiLandingOptions = rng
       ? rng.shuffle(landingOptions)
       : _.shuffle(landingOptions);
-    _.times(
-      ai.bossCommanders ||
-        ai.commanderCount ||
-        // legacy GWO support
-        (ai.landing_policy && ai.landing_policy.length) ||
-        1,
-      function (count) {
-        slotsArray.push(
-          aiCommander(ai.name, ai.commander, aiLandingOptions, count)
-        );
-      }
-    );
+    _.times(gwoAI.commanderCount(ai), function (count) {
+      slotsArray.push(
+        aiCommander(ai.name, ai.commander, aiLandingOptions, count)
+      );
+    });
     ai.personality.display_name = getAIPersonalityName(ai); // support Show AI Personality Names mod
     return {
       slots: slotsArray,

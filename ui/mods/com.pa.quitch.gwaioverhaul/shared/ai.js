@@ -102,6 +102,46 @@ define([
     return hasEconFields ? tier.econBase + tier.econRatePerDist : 1;
   };
 
+  // A war saved before v5.44.0 holds faction as ["4"].
+  var factionIndex = function (ai) {
+    return _.isArray(ai.faction) ? Number.parseInt(ai.faction[0]) : ai.faction;
+  };
+
+  // A boss fields tier.bossCommanders per player the war was generated for,
+  // derived at launch so a tier retune reaches wars in progress. An AI saved
+  // with a count, or a war that resolves no tier, keeps the recorded count.
+  // See galaxy.md, "Difficulty".
+  var bossCommanders = function (ai, gwoSettings) {
+    var settings = gwoSettings || {};
+    var tier = warTier(settings);
+    if (
+      ai.boss === true &&
+      tier &&
+      _.isNumber(tier.bossCommanders) &&
+      _.isNumber(settings.coopPlayerScalingCount)
+    ) {
+      return tier.bossCommanders * settings.coopPlayerScalingCount;
+    }
+    return ai.bossCommanders;
+  };
+
+  var commanderCount = function (ai) {
+    return (
+      bossCommanders(ai, originSettings(model.game())) ||
+      ai.commanderCount ||
+      // legacy GWO support
+      (ai.landing_policy && ai.landing_policy.length) ||
+      1
+    );
+  };
+
+  var bountyValue = function (ai) {
+    var tier = warTier(originSettings(model.game()));
+    return tier && _.isNumber(tier.bountyModeValue)
+      ? tier.bountyModeValue
+      : ai.bountyModeValue;
+  };
+
   return {
     aiInUse: aiInUse,
     currentStarAi: currentStarAi,
@@ -109,6 +149,9 @@ define([
     originSettings: originSettings,
     originSystem: originSystem,
     warTier: warTier,
+    factionIndex: factionIndex,
+    commanderCount: commanderCount,
+    bountyValue: bountyValue,
 
     // The advanced structures a basic fabber's upgrade card lets it build.
     advancedStructureBuilds: [
@@ -200,9 +243,7 @@ define([
       if (guardians) {
         return false;
       }
-      return _.isArray(ai.faction) // was an array before v5.44.0
-        ? Number.parseInt(ai.faction[0]) === 4
-        : ai.faction === 4;
+      return factionIndex(ai) === 4;
     },
 
     // rng is optional. War creation passes the AI's own stream; the play-scene

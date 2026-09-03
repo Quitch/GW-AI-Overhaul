@@ -441,6 +441,14 @@ A Custom war saved before snapshots existed resolves no tier and keeps the
 fallbacks each reader had before: an econ floor of 1, and the values baked into
 its AI records.
 
+Two per-AI numbers follow from the tier and are derived at launch rather than
+recorded: a boss's commander count (`tier.bossCommanders` per player in
+`gwaio.coopPlayerScalingCount`) and the bounty value, both through
+`shared/ai.js`'s `commanderCount()` and `bountyValue()`. An AI saved before
+this carries `bossCommanders` and `bountyModeValue`, which those read when the
+war resolves no tier. `galaxy.difficultyIndex` is no longer written; stock's
+`GWGalaxy.prototype.load` never restored it, so nothing ever read it back.
+
 ## AI personalities and penchants
 
 `shared/ai.js`'s `penchants()` samples one of 14 personality flavours (Artillery,

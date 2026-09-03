@@ -31,10 +31,6 @@ function gwoIntelligence() {
     model.gwoAIBuffsTooltip =
       "!LOC:Applied to AI commanders and units preferred by the faction.";
 
-    var getNumberOfCommanders = function (commander) {
-      return commander.bossCommanders || commander.commanderCount || 1;
-    };
-
     var getCommanderCharacter = function (commander) {
       var character = commander.character
         ? loc(commander.character)
@@ -225,6 +221,10 @@ function gwoIntelligence() {
       ) {
         var starCardsView = gwoStarCardsView();
 
+        var getNumberOfCommanders = function (commander) {
+          return gwoAI.commanderCount(commander);
+        };
+
         var url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
         $.get(url, function (html) {
@@ -323,13 +323,7 @@ function gwoIntelligence() {
           if (ai.foes) {
             commanders = commanders.concat(_.map(ai.foes, intelligenceOf));
             _.forEach(ai.foes, function (army) {
-              var commanderCount = 1;
-              if (army.commanderCount) {
-                commanderCount = army.commanderCount;
-              } else if (army.landing_policy) {
-                // legacy GWO support
-                commanderCount = army.landing_policy.length;
-              }
+              var commanderCount = gwoAI.commanderCount(army);
               totalThreat +=
                 gwoAI.aiEconRateWithFloor(army.econ_rate) *
                 0.4 *
