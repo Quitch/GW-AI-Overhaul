@@ -102,6 +102,15 @@ function baseRoots() {
   ];
 }
 
+// Code-point order, what an argument-less sort gives strings: the report must
+// not depend on the machine's locale.
+function byCodePoint(a, b) {
+  if (a < b) {
+    return -1;
+  }
+  return a > b ? 1 : 0;
+}
+
 // The mount-order merge: every "ai/..." path any root holds, read from the
 // last root holding it.
 function mergeRoots(roots) {
@@ -112,7 +121,7 @@ function mergeRoots(roots) {
     }
   }
   return {
-    rels: [...byRel.keys()].sort(),
+    rels: [...byRel.keys()].sort(byCodePoint),
     read: (rel) => JSON.parse(byRel.get(rel).read(rel)),
   };
 }

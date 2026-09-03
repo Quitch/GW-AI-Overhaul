@@ -94,6 +94,15 @@ function readJson(specPath) {
   return undefined;
 }
 
+// Code-point order, what an argument-less sort gives strings: the committed
+// fixture must not churn with the machine's locale.
+function byCodePoint(a, b) {
+  if (a < b) {
+    return -1;
+  }
+  return a > b ? 1 : 0;
+}
+
 function unitList() {
   const units = new Set();
   for (const root of ROOTS) {
@@ -103,7 +112,7 @@ function unitList() {
       }
     }
   }
-  return [...units].sort();
+  return [...units].sort(byCodePoint);
 }
 
 // The first value of `field` up the base_spec chain; null when no spec on

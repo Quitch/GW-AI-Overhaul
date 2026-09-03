@@ -179,7 +179,9 @@ shape — one argument resolves to that value, several to the array — and iden
 promise by a `promise` **method**, so an argument without one is passed straight
 through and never waited for, exactly as `constraints.md` describes. That is why it is
 hand-built rather than wrapped around `Promise.all`: resolving a native promise with a
-thenable adopts it, which would wait after all.
+thenable adopts it, which would wait after all. Because modelling thenables is the
+file's whole job, `sonar-project.properties` scopes Sonar's `javascript:S7739` ("Do not
+add `then` to an object") out of this one file; it stays active everywhere else.
 
 `installFakeJQuery` puts a callable `$` carrying the lot behind a suite's global stubs.
 Also exported: `enginePromise()`, the `then`-and-nothing-else shape every `api.*` call
