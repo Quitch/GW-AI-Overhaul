@@ -127,6 +127,18 @@ panel driven by `model.gwoLaunchProgress`. That object is a public surface:
   `model.fight` instead, the panel still appears, but only once
   `launchingFight` turns true.
 
+A stage that fails must reject the hire, because stock waits on it with no fail
+handler: a hire that never settles leaves `launchingFight` true, the panel open
+on the last stage it reported and the Fight button dead, forever. So
+`referee_game_files.js` routes every path that can throw - the synchronous
+prelude and each nested spec-fetch chain - into one `fail` that rejects its
+deferred, and the hire's own fail handler in `referee.js` logs the error and
+clears `launchingFight`, which closes the panel. The throw itself is otherwise
+invisible: GW Server Mods remounts inside `unmountAllMemoryFiles` and resolves
+GWO's deferred from a native promise, so an exception in the callback surfaces
+only as a reason-less `Unhandled promise rejection` in the client log, one line
+after `[GW-SM] mounted server mods`. That is the signature to look for.
+
 A co-op host hires the referee **twice** per battle (the base game's
 `hireRefereesForLaunch` creates a clean shared referee plus a local one), and a
 failed launch can leave mutated in-memory state behind for a later save to

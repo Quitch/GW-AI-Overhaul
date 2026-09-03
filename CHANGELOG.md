@@ -33,6 +33,7 @@
 - Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections
 - Sub Commanders were dealt PENCHANT personalities when the Opponent AI was PENCHANT; they now follow the Ally AI, as their QUELLER compatibility filter always did
 - Joining a per player tech war with a loadout added by another card mod now works
+- A battle whose preparation fails no longer leaves Fight stuck launching forever; the error is logged and Fight can be pressed again
 
 ## v6.14.0 - 2026-08-27
 
