@@ -613,7 +613,8 @@ define([
       var promises = _.map(fileList, function (filePath) {
         if (
           !_.endsWith(filePath, ".json") ||
-          _.includes(filePath, "/neural_networks/") // AIs fall back to /pa/ai/neural_networks/
+          _.includes(filePath, "/neural_networks/") || // AIs fall back to /pa/ai/neural_networks/
+          gwoRaces.inAnyRaceLayer(filePath) // a race's files belong to its own tree - see races.md
         ) {
           return;
         }

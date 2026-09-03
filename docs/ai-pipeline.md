@@ -138,9 +138,11 @@ its foes is Cluster, else `"None"`.
 
 `processFilesInDirectory` resolves, per file, which destination path(s) the
 contents belong at and which descriptors are in scope, then `writeConfigFiles`
-applies and writes. Files are skipped unless they end in `.json`, and
+applies and writes. Files are skipped unless they end in `.json`;
 `/neural_networks/` is skipped entirely because AIs fall back to
-`/pa/ai/neural_networks/` regardless.
+`/pa/ai/neural_networks/` regardless; and a file a registered race's layer
+claims is skipped because it belongs to that race's own tree
+([`races.md`](races.md), "Race trees").
 
 Three behaviours here are worth knowing before editing:
 

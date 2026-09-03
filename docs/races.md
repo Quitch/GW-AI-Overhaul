@@ -138,7 +138,11 @@ distinct (source, destination):
   Bugs' `platoon_builds/platoon_misc_builds.json`) are indistinguishable from
   base files and enter every race tree's base layer with the merged content.
   `scripts/validate-race-trees.js` checks the tree against a manual
-  mount-order merge of the real files on disk.
+  mount-order merge of the real files on disk. The MLA tree `referee_ai.js`'s
+  sweep writes to a scoped destination (`/pa/ai/player_guardians/`, a viewer's
+  Sub Commanders) is the base layer by the same rule: every registered race's
+  `sources` and `unitMaps` are dropped (`races.inAnyRaceLayer`), so a race's
+  map is never listed in an MLA army's `unit_maps/`.
 - **A brain that carries the race** (Queller carries Legion): the tier minus
   the descriptor's `exclude` fragments - the MLA side.
 
