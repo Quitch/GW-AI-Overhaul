@@ -429,6 +429,18 @@ appearing with more than one `typeof` is almost certainly a typo.
 Custom also has no difficulty _rating_, so it is excluded from victory-badge
 recording — including it produced an index of -2, which no badge matches.
 
+**What the save records.** `originSystem.gwaio.difficulty` is the tier's
+`difficultyName` only. Every battle looks the tier up by that name through
+`shared/ai.js`'s `warTier()`, so a retune of a tier reaches wars in progress. A
+Custom war has no tier to look up, so generation also records
+`gwaio.customDifficulty`: the `tierSettings` values keyed by their
+`difficulty_levels.js` key names, in a named tier's shape — numbers as numbers,
+the three booleans as the `"true"`/`"false"` strings the tiers hold,
+`personality_tags` as an array. `warTier()` prefers that snapshot when present.
+A Custom war saved before snapshots existed resolves no tier and keeps the
+fallbacks each reader had before: an econ floor of 1, and the values baked into
+its AI records.
+
 ## AI personalities and penchants
 
 `shared/ai.js`'s `penchants()` samples one of 14 personality flavours (Artillery,

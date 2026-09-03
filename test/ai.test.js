@@ -241,6 +241,49 @@ describe("aiEconRateWithFloor", () => {
     installModel(fixture.game);
     assert.equal(gwoAI.aiEconRateWithFloor(5), 5);
   });
+
+  it("floors a Custom war at the econ fields of its recorded snapshot", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Custom",
+      customDifficulty: { econBase: 0.5, econRatePerDist: 0.25 },
+    });
+    installModel(fixture.game);
+    assert.equal(gwoAI.aiEconRateWithFloor(0.1), 0.75);
+  });
+
+  it("floors as Beginner when the war recorded no difficulty", () => {
+    const fixture = buildGame({});
+    installModel(fixture.game);
+    assert.ok(Math.abs(gwoAI.aiEconRateWithFloor(0.1) - 0.4) < 1e-9);
+  });
+});
+
+describe("warTier", () => {
+  it("resolves a named tier live from difficulty_levels.js", () => {
+    const tier = gwoAI.warTier({ difficulty: "!LOC:Gold" });
+    assert.equal(tier.difficultyName, "!LOC:Gold");
+    assert.equal(typeof tier.bossCommanders, "number");
+  });
+
+  it("prefers a Custom war's recorded snapshot over any lookup", () => {
+    const snapshot = { econBase: 2, econRatePerDist: 0.5 };
+    assert.equal(
+      gwoAI.warTier({ difficulty: "!LOC:Custom", customDifficulty: snapshot }),
+      snapshot
+    );
+  });
+
+  it("resolves nothing for a Custom war saved without a snapshot", () => {
+    assert.equal(gwoAI.warTier({ difficulty: "!LOC:Custom" }), undefined);
+  });
+
+  it("resolves nothing for a tier name that no longer ships", () => {
+    assert.equal(gwoAI.warTier({ difficulty: "!LOC:Retired" }), undefined);
+  });
+
+  it("resolves nothing without settings", () => {
+    assert.equal(gwoAI.warTier(undefined), undefined);
+  });
 });
 
 describe("quellerCompatibleMinions", () => {

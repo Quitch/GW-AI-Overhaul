@@ -189,8 +189,10 @@ writing a war it does not own.
 
 - **The war save** — the campaign game object. GWO piggy-backs its own settings
   onto the origin star system as `originSystem.gwaio` (AI brain, difficulty,
-  scaling options). `shared/ai.js`'s `aiInUse()` reads it; a missing blob means a
-  non-GWO war and defaults to Titans.
+  scaling options, and for a Custom war the `customDifficulty` value snapshot
+  that `shared/ai.js`'s `warTier()` resolves — see galaxy.md, "Difficulty").
+  `shared/ai.js`'s `aiInUse()` reads it; a missing blob means a non-GWO war and
+  defaults to Titans.
 - **`localStorage`** — start-card unlocks, victory badges and favourited
   loadouts, under `gwaio_`-prefixed keys so that uninstalling GWO does not
   corrupt the base game's loadout list with 404s. See `shared/bank.js` and

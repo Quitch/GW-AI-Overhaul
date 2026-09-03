@@ -71,18 +71,35 @@ define([
     });
   };
 
-  var getAIEconFloor = function (difficultyName) {
-    var difficultySettings = getDifficultySettings(difficultyName);
-    // Finding a tier is not enough: the Custom sentinel carries no econ fields,
-    // and the resulting NaN reaches every battle of that war.
-    var hasEconFields =
-      difficultySettings &&
-      _.isNumber(difficultySettings.econBase) &&
-      _.isNumber(difficultySettings.econRatePerDist);
+  var missingTiers = {};
 
-    return hasEconFields
-      ? difficultySettings.econBase + difficultySettings.econRatePerDist
-      : 1;
+  // The tier a war runs on: a Custom war's recorded snapshot, else the named
+  // tier looked up live so a retune reaches wars in progress. undefined for a
+  // Custom war saved before snapshots existed, or a name no longer shipped.
+  // See galaxy.md, "Difficulty".
+  var warTier = function (gwoSettings) {
+    var settings = gwoSettings || {};
+    if (_.isPlainObject(settings.customDifficulty)) {
+      return settings.customDifficulty;
+    }
+    var tier = getDifficultySettings(settings.difficulty);
+    if (tier && tier.customDifficulty !== true) {
+      return tier;
+    }
+    if (!tier && settings.difficulty && !missingTiers[settings.difficulty]) {
+      missingTiers[settings.difficulty] = true;
+      console.warn("GWO: no difficulty tier named " + settings.difficulty);
+    }
+    return undefined;
+  };
+
+  // A Custom war without a snapshot resolves no tier, so its floor stays 1;
+  // the field check keeps a NaN out of every battle of that war.
+  var getAIEconFloor = function (tier) {
+    var hasEconFields =
+      tier && _.isNumber(tier.econBase) && _.isNumber(tier.econRatePerDist);
+
+    return hasEconFields ? tier.econBase + tier.econRatePerDist : 1;
   };
 
   return {
@@ -91,6 +108,7 @@ define([
     getInventoryAiMods: getInventoryAiMods,
     originSettings: originSettings,
     originSystem: originSystem,
+    warTier: warTier,
 
     // The advanced structures a basic fabber's upgrade card lets it build.
     advancedStructureBuilds: [
@@ -311,10 +329,12 @@ define([
     // Older co-op wars could save a negative eco, so a saved econ_rate needs
     // the floor rather than being used directly.
     aiEconRateWithFloor: function (aiEconRate) {
-      var gwoSettings = originSettings(model.game()) || {};
-      var difficultyName = gwoSettings.difficulty || "!LOC:Beginner";
+      // A war with no recorded difficulty is floored as Beginner.
+      var gwoSettings = _.defaults({}, originSettings(model.game()), {
+        difficulty: "!LOC:Beginner",
+      });
 
-      return Math.max(aiEconRate, getAIEconFloor(difficultyName));
+      return Math.max(aiEconRate, getAIEconFloor(warTier(gwoSettings)));
     },
 
     quellerCompatibleMinions: function (minions) {

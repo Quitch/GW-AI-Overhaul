@@ -290,15 +290,19 @@ function gwoSetup() {
       }
     };
 
-    var saveDifficultySettings = function () {
+    // The personality picker has no data-bind, so its value only reaches the
+    // settings if pushed back here.
+    var syncPickedTags = function () {
       var settings = model.gwoDifficultySettings;
-
-      // The personality picker has no data-bind, so its value only reaches the
-      // snapshot if pushed back here. Write once at save time, not per AI.
       var pickedTags = $("#gwo-personality-picker").val() || [];
       if (!_.isEqual(pickedTags, settings.personalityTags())) {
         settings.personalityTags(pickedTags);
       }
+    };
+
+    var saveDifficultySettings = function () {
+      var settings = model.gwoDifficultySettings;
+      syncPickedTags();
 
       var settingNames = _.without(_.keys(settings), "previousSettings");
       var snapshot = {};
@@ -678,6 +682,23 @@ function gwoSetup() {
           });
 
           return ready.promise();
+        };
+
+        // The current settings in a named tier's shape, keyed as
+        // difficulty_levels.js keys them. A numeric select reads back as a string;
+        // the string booleans stay strings, as the tiers hold them. See galaxy.md.
+        var tierSnapshot = function () {
+          syncPickedTags();
+          var settings = model.gwoDifficultySettings;
+          var snapshot = {};
+          _.forEach(gwoDifficulty.tierSettings, function (setting) {
+            var value = settings[setting.name]();
+            snapshot[setting.key] =
+              _.isString(value) && value !== "" && !_.isNaN(Number(value))
+                ? Number(value)
+                : value;
+          });
+          return snapshot;
         };
 
         // replicates the functionality of model.makeGame() but
@@ -1363,6 +1384,13 @@ function gwoSetup() {
             originSystem.gwaio.seed = model.newGameSeed();
             originSystem.gwaio.difficulty =
               gwoDifficulty.difficulties[selectedDifficulty].difficultyName;
+            // A named tier is looked up live at launch; Custom's values live
+            // nowhere else, so the war records them.
+            if (
+              gwoDifficulty.difficulties[selectedDifficulty].customDifficulty
+            ) {
+              originSystem.gwaio.customDifficulty = tierSnapshot();
+            }
             originSystem.gwaio.galaxySize =
               galaxySizeNames[model.newGameSizeIndex()] || "!LOC:Unknown";
             originSystem.gwaio.factionScaling =

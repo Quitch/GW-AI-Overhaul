@@ -23,6 +23,7 @@
 ### Bugfix
 
 - Picking Beginner or Casual no longer leaves the Custom difficulty's landing evaluation radius blank
+- A Custom difficulty war now floors AI economy at its own economy settings instead of at 1.0
 - A war saved by a version before v5.52.2 is repaired again when resumed. The repair stopped at the first neutral system, so its Cluster commanders and treasure planet were never fixed and the check ran on every visit
 - Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections
 - Sub Commanders were dealt PENCHANT personalities when the Opponent AI was PENCHANT; they now follow the Ally AI, as their QUELLER compatibility filter always did

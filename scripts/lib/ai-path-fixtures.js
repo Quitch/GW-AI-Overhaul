@@ -145,6 +145,10 @@ function buildGame(options) {
     if (opts.difficultyName) {
       system.gwaio.difficulty = opts.difficultyName;
     }
+    // A Custom war's recorded tier values, as gw_start snapshots them.
+    if (opts.customDifficulty) {
+      system.gwaio.customDifficulty = opts.customDifficulty;
+    }
   }
 
   var star = {
