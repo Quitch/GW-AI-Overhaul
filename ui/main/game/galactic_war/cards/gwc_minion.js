@@ -38,8 +38,8 @@ define([
       );
       if (minion.character) {
         result.push("<br>", "!LOC:Personality:", " " + loc(minion.character));
-        if (minion.penchant) {
-          result.push(" " + loc(minion.penchant));
+        if (minion.penchantName) {
+          result.push(" " + loc(minion.penchantName));
         }
       }
       return result;
@@ -99,12 +99,9 @@ define([
         }
       }
 
+      // Only the name is recorded: its tags are built at launch. See galaxy.md.
       if (allyBrain === "Penchant") {
-        var penchantValues = gwoAI.penchants(rng);
-        minion.character =
-          minion.character + (" " + loc(penchantValues.penchantName));
-        minion.personality.personality_tags =
-          minion.personality.personality_tags.concat(penchantValues.penchants);
+        minion.penchantName = gwoAI.penchants(rng).penchantName;
       }
 
       return {

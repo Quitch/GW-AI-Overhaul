@@ -207,7 +207,9 @@ define([
 
     // Mutates the subcommander. A no-op unless the race's ally brain is
     // Penchant - a Sub Commander fights as the player's race, so its brain
-    // comes from that race's row, not the war-wide string. See races.md.
+    // comes from that race's row, not the war-wide string. See races.md. Only
+    // the name is recorded: its tags are built at launch, and the referee
+    // shows the name after the character. See galaxy.md.
     applyPenchantToSubcommander: function (
       subcommander,
       gwoSettings,
@@ -227,13 +229,7 @@ define([
         return;
       }
 
-      var penchantValues = gwoAI.penchants(rng);
-      subcommander.character =
-        subcommander.character + (" " + loc(penchantValues.penchantName));
-      subcommander.personality.personality_tags =
-        subcommander.personality.personality_tags.concat(
-          penchantValues.penchants
-        );
+      subcommander.penchantName = gwoAI.penchants(rng).penchantName;
     },
 
     MLA_ONLY: MLA_ONLY,
