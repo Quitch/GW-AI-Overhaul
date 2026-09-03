@@ -162,13 +162,23 @@ function gwoWarInfoPanel(gwoSettings) {
         model.gwoVersion = ko.observable(gwoVersion);
 
         // A third-party deck's display name; the provisional deckName()
-        // assignment above already covers the built-ins and, as the fallback,
-        // a deck whose mod is gone. Bindings only apply later in this
+        // assignment above already covers the built-ins. A deck whose mod is
+        // gone deals the Expanded deck (decks.cardsFor), so the panel names
+        // that and notes the missing id. Bindings only apply later in this
         // callback, so the refinement is seen.
         gwoDeckMods.registerAll();
-        var warDeck = gwoDecks.byId(model.gwoSettings.techCardDeck);
+        var warDeckId = model.gwoSettings.techCardDeck;
+        var warDeck = gwoDecks.byId(warDeckId);
         if (warDeck) {
           model.gwoDeck = loc(warDeck.name);
+        } else if (warDeckId) {
+          model.gwoDeck =
+            deckName("Expanded") +
+            " (" +
+            loc("!LOC:missing:") +
+            " " +
+            warDeckId +
+            ")";
         }
 
         // One name per side when every race the war recorded resolves to the
