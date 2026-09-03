@@ -398,6 +398,24 @@ define([
     };
   };
 
+  // Whether a registered race's layer claims this file: a race mod's own build
+  // files or unit map, under any brain, in the merged listing. An MLA tree is
+  // the brain's base files alone, so referee_ai.js's sweep drops these. A
+  // relative unit map names a file the brain ships itself, never a race mod's,
+  // and matches nothing here.
+  var inAnyRaceLayer = function (filePath) {
+    return _.some(all(), function (race) {
+      return _.some(race.ai || {}, function (config) {
+        return (
+          _.contains(config.unitMaps || [], filePath) ||
+          _.some(config.sources || [], function (source) {
+            return matchesSource(filePath, source);
+          })
+        );
+      });
+    });
+  };
+
   // The race's unit map files for a brain, absolute.
   var unitMapsFor = function (raceId, brain, sourceRoot) {
     var race = byId(raceId);
@@ -528,6 +546,7 @@ define([
     commanderFor: commanderFor,
     treeFilter: treeFilter,
     raceLayerFilter: raceLayerFilter,
+    inAnyRaceLayer: inAnyRaceLayer,
     unitMapsFor: unitMapsFor,
     assign: assign,
     // Test-only: a registered race outlives the module, and the harness loads

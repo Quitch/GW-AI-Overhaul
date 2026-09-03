@@ -426,6 +426,57 @@ describe("raceLayerFilter", () => {
   });
 });
 
+describe("inAnyRaceLayer", () => {
+  it("claims every registered race's Titans files and unit map, and nothing of the base tree", () => {
+    races.register({
+      id: "rival",
+      ai: {
+        titans: {
+          unitMaps: ["/pa/ai/unit_maps/rival.json"],
+          sources: [{ dir: "/pa/ai/factory_builds/", match: "rival_" }],
+        },
+      },
+    });
+    const claimed = races.inAnyRaceLayer;
+
+    assert.equal(claimed("/pa/ai/unit_maps/fixture.json"), true);
+    assert.equal(claimed("/pa/ai/factory_builds/fixture_air.json"), true);
+    assert.equal(
+      claimed("/pa/ai/fabber_builds/fixture/fabber_land.json"),
+      true
+    );
+    assert.equal(claimed("/pa/ai/unit_maps/rival.json"), true);
+    assert.equal(claimed("/pa/ai/factory_builds/rival_air.json"), true);
+    assert.equal(claimed("/pa/ai/ai_config.json"), false);
+    assert.equal(claimed("/pa/ai/unit_maps/ai_unit_map.json"), false);
+    assert.equal(
+      claimed("/pa/ai/factory_builds/factory_air_builds.json"),
+      false
+    );
+    // A near-miss of a race's prefix is a base file, as treeFilter reads it.
+    assert.equal(claimed("/pa/ai/factory_builds/fixtures_air.json"), false);
+  });
+
+  it("leaves a brain that carries the race its own files", () => {
+    races.register({
+      id: "carried",
+      ai: {
+        queller: { unitMaps: ["unit_maps/carried.json"], exclude: ["/mla/"] },
+      },
+    });
+    const claimed = races.inAnyRaceLayer;
+
+    assert.equal(
+      claimed("/pa/ai_queller/q_uber/unit_maps/carried.json"),
+      false
+    );
+    assert.equal(
+      claimed("/pa/ai_queller/q_uber/factory_builds/carried/x.json"),
+      false
+    );
+  });
+});
+
 describe("unitMapsFor", () => {
   it("resolves relative map paths against the source root and keeps absolute ones", () => {
     races.register(

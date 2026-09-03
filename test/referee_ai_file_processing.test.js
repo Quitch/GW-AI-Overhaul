@@ -151,6 +151,52 @@ describe("Guardians scoped destination", () => {
       { unit_map: { some_unit: "/pa/units/x/x.json" } }
     );
   });
+
+  // A race mod's files ride in the merged /pa/ai/ listing. The Guardians' MLA
+  // tree is the brain's base files alone; the race's go to its own race tree.
+  it("drops a registered race's build files and unit map from the guardians-scoped copy", async () => {
+    const races = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+    );
+    const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+    races.reset();
+    races.register(FIXTURE_RACE);
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      aiMods: [],
+    });
+    installModel(fixture.game, []);
+    const { getJSONCalls } = installFakes({
+      fileListByPath: {
+        "/pa/ai/": [
+          "/pa/ai/factory_builds/factory_air_builds.json",
+          "/pa/ai/factory_builds/fixture_air.json",
+          "/pa/ai/fabber_builds/fixture/fabber_land.json",
+          "/pa/ai/unit_maps/ai_unit_map.json",
+          "/pa/ai/unit_maps/fixture.json",
+        ],
+      },
+    });
+
+    const filesObj = {};
+    try {
+      await run(filesObj);
+    } finally {
+      races.reset();
+    }
+
+    assert.deepEqual(Object.keys(filesObj).sort(), [
+      "/pa/ai/factory_builds/factory_air_builds.json",
+      "/pa/ai/player_guardians/factory_builds/factory_air_builds.json",
+      "/pa/ai/player_guardians/unit_maps/ai_unit_map.json",
+      "/pa/ai/unit_maps/ai_unit_map.json",
+    ]);
+    assert.deepEqual(getJSONCalls, [
+      "coui://pa/ai/factory_builds/factory_air_builds.json",
+      "coui://pa/ai/unit_maps/ai_unit_map.json",
+    ]);
+  });
 });
 
 describe("per-player-tech viewer processing", () => {
