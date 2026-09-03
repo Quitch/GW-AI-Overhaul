@@ -199,6 +199,16 @@ function gwoRefereeChanges() {
               // Later stages (mountFiles) belong to the launch, not a pass.
               ref.pass = 0;
               return ref;
+            })
+            .then(null, function (error) {
+              // Stock waits on the hire with no fail handler, so a rejected
+              // one would leave launchingFight set and the Fight button dead.
+              console.error(
+                "Galactic War Overhaul (GWO): battle preparation failed: " +
+                  ((error && (error.stack || error.message)) || error)
+              );
+              model.launchingFight(false);
+              return $.Deferred().reject(error).promise();
             });
         };
       }
