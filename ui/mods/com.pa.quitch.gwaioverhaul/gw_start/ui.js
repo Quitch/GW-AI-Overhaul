@@ -44,7 +44,7 @@ function gwoUI() {
       systemScaling: ko.observable(true),
       simpleSystems: ko.observable(false),
       easierStart: ko.observable(true),
-      ai: ko.observable("Penchant"),
+      ai: ko.observable("Titans"),
       paLore: ko.observable(false),
       techCardDeck: ko.observable("Expanded"),
       customDifficulty: ko.observable(false),
@@ -74,7 +74,7 @@ function gwoUI() {
       personalityTags: ko.observableArray(),
       aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain v6.2.0 and earlier previous settings integrity
       eradicationModeChance: koNumeric(0, 0),
-      aiAlly: ko.observable("Penchant"),
+      aiAlly: ko.observable("Titans"),
       staticTech: ko.observable(false),
       largePlanets: ko.observable(false),
       // Race id; see races.md.
