@@ -14,7 +14,6 @@ define([
     character: "!LOC:Baseline",
     color: factionColour,
     isCluster: true,
-    econ_rate: 1,
     personality: personalities.cluster,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };

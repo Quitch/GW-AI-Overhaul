@@ -17,7 +17,6 @@ const factionSeed = loadCouiModule(
 const BASELINE = {
   name: "Baseline",
   character: "!LOC:Baseline",
-  econ_rate: 1,
   factionWide: "kept",
   personality: { baseline: true },
 };
@@ -98,7 +97,7 @@ describe("faction_seed reseedFaction", () => {
     factionSeed.reseedFaction(built, gwoRng.create("baseline"));
     const minion = randomMinion(built);
     assert.equal(minion.factionWide, "kept");
-    assert.equal(minion.econ_rate, 1);
+    assert.equal(minion.factionWide, "kept");
     assert.equal(minion.name, "Aryst0krat");
     assert.equal(minion.character, "!LOC:Random");
   });

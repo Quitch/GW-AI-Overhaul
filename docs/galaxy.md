@@ -489,8 +489,10 @@ tags are appended per entity afterwards, as before. The war records the id and
 the `penchantName`; the resolved object is written too, for stock readers and
 as the fallback for an AI whose id no longer resolves. Only
 `works_with_queller` is ever read from a template, and stock never writes it.
-An ally and a dealt Sub Commander carry no `econ_rate` at all: every reader
-gives them the Sub Commander rate. A dealt Sub Commander records its penchant
+A template declares no `econ_rate`: generation rolls one for every enemy, and
+an ally or a dealt Sub Commander carries none at all, since every reader gives
+them the Sub Commander rate. The clone paths still delete the field, because
+the base game's ramp writes one onto the template minions it samples. A dealt Sub Commander records its penchant
 as `penchantName` alone (`gw_play/cards_deal_helpers.js`, `gwc_minion.js`), as
 an enemy does; its `character` stays the template's, and the war panel, the
 minion card and the referee's display name show the penchant after it. A Sub

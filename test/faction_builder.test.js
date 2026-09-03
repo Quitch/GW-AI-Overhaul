@@ -16,7 +16,6 @@ const personalities = loadCouiModule(
 const BASELINE = {
   name: "Baseline",
   color: [[1, 2, 3]],
-  econ_rate: 1,
   personality: { faction: true },
   commander: "/pa/base.json",
 };
@@ -48,7 +47,6 @@ describe("faction_builder.build", () => {
     assert.deepEqual(faction.minions[0], {
       name: "Able",
       color: [[1, 2, 3]],
-      econ_rate: 1,
       personality: { faction: true, id: "armour" },
       commander: "/pa/base.json",
     });
