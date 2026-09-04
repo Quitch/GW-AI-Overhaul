@@ -24,6 +24,12 @@ define([
     return /_upgrade_/.test(cardId) && !RACE_UPGRADES.test(cardId);
   };
 
+  // Whether the loadout scenes show this loadout dimmed and unselectable for
+  // `race`. An MLA or unknown race locks nothing.
+  var raceLocksLoadout = function (race, cardId) {
+    return !!race && race !== "mla" && mlaOnlyCard(cardId);
+  };
+
   var isStartLoadoutCardId = function (cardId) {
     return _.isString(cardId) && _.includes(cardId, "_start_");
   };
@@ -229,6 +235,7 @@ define([
 
     MLA_ONLY: MLA_ONLY,
     mlaOnlyCard: mlaOnlyCard,
+    raceLocksLoadout: raceLocksLoadout,
 
     // A card the player's race can own nothing of is not worth a hand slot.
     // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes.
