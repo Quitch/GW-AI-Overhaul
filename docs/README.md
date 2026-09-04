@@ -101,6 +101,10 @@ every pull request, and
 (see CONTRIBUTING.md, "Releasing"). So a clean `verify` is a clean CI, but
 not yet a clean release.
 
+`validate:docs` (part of `validate`) checks the inventories these docs carry by
+hand - the scene table, the shadowed-file and `pa/` tables, the validator table -
+against the tree, so adding a file without its row fails `verify`.
+
 Nothing here starts PA. Anything that can only fail at runtime — a renamed
 identifier in shipped `ui/**`, a CSS class rename spanning HTML and CSS, a
 `modinfo.json` path, a localisation directive — needs the game loaded with the mod
