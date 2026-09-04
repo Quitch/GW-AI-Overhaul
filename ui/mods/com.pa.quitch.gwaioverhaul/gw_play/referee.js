@@ -88,11 +88,10 @@ function gwoRefereeChanges() {
           return done.promise();
         };
 
-        // A cooked stamp is mounted here only to read from, and cooked into
-        // the files every client gets; its server-facing mount happens in
-        // mountFiles, after the unmount there. A stamp GW Server Mods serves
-        // is neither: that mod is already mounted by the time the referee is
-        // hired, and only its biomes are collected, for referee_config.
+        // A cooked stamp is mounted here only to read from; its server-facing
+        // mount happens in mountFiles, after the unmount there. A stamp GW
+        // Server Mods serves is already mounted, and only its biomes are
+        // collected. See galaxy.md, "Biome mods in a GW battle".
         var gwoGenerateBiomes = function () {
           var self = this;
           var done = $.Deferred();
