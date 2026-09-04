@@ -21,11 +21,9 @@ define(function () {
     "tropical",
   ];
   var FALLBACK_BIOME = "earth";
-  // Who carries a provider into the battle. COOK: GWO mounts the zip itself and
-  // cooks its JSON into the config files, so a disabled mod only costs the
-  // planet its biome (earth instead). GWSM: GW Server Mods mounts the zip for
-  // the local server, the only way a .papa gets there, so the war depends on
-  // the mod and cannot be fought without it. See galaxy.md.
+  // Who carries a provider into the battle: GWO cooks its JSON into the config
+  // files, or GW Server Mods mounts the zip for the local server. See
+  // galaxy.md, "Biome mods in a GW battle".
   var SERVICE = { COOK: "cook", GWSM: "gwsm" };
 
   var isStockBiome = function (biome) {
@@ -93,10 +91,9 @@ define(function () {
   };
 
   // A provider record from a manifest row (GW Server Mods) or a Community Mods
-  // row. GW Server Mods lower-cases `identifier` and keeps the installed case
-  // as `rawIdentifier`; Community Mods mounts under the installed case and
-  // spec:/ reads are path-sensitive, so the mount path is built from the raw
-  // one.
+  // row. The mount path is built from `rawIdentifier`, the installed case,
+  // not the lower-cased `identifier`. See galaxy.md, "Biome mods in a GW
+  // battle".
   var recordFrom = function (mod) {
     var raw = mod.rawIdentifier || mod.identifier;
 

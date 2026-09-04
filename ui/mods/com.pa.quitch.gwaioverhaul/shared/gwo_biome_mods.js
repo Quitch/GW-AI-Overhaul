@@ -109,9 +109,9 @@ define([
 
   // What GW Server Mods will mount of the stamped mods it serves: `served` in
   // the providers() shape for those it lists as active, `missing` the
-  // identifiers of the rest, which referee_config then sends to earth. The
-  // stamp's installedPath is stale after a reinstall, so the live row is
-  // catalogued. Never rejects.
+  // identifiers of the rest, whose biomes referee_config then finds no
+  // provider for and sends to earth. The stamp's installedPath is stale after
+  // a reinstall, so the live row is catalogued. Never rejects.
   var serve = function (mods) {
     var done = $.Deferred();
     var mfst = manifest();
@@ -154,11 +154,10 @@ define([
     return done.promise();
   };
 
-  // Resolves { mods, known, gwsm } for the resume check: the identifier, name
-  // and version of every server zip mod GW Server Mods has active, whether
-  // that list could be read at all, and whether GW Server Mods is here to
-  // mount them - the same three answers race_mods.installedRaces gives, for
-  // the same reasons. See races.md.
+  // Resolves { mods, known, gwsm } for the resume check: every server zip mod
+  // GW Server Mods has active, whether that list could be read at all, and
+  // whether GW Server Mods is here to mount them - the answers
+  // race_mods.installedRaces gives, for the same reasons. See races.md.
   var installedBiomeMods = function () {
     var done = $.Deferred();
     var mfst = manifest();

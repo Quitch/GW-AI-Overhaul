@@ -36,11 +36,9 @@ define([
   // requireGW that may not have finished when this module's factory runs. Called
   // after gwoLoadoutBanks.resolve(), it sees every bank; called before, it falls
   // back to the two banks GWO ships and no mod loadout shows as unlocked.
-  // A loadout built for MLA alone is shown to a race player dimmed and
-  // unselectable, never hidden: the list keeps its order and the player's
-  // unlock state stays visible. The race is gw_start's setting for the host
-  // and the picker's observable for a co-op viewer; neither scene has the
-  // other's. See races.md.
+  // A loadout built for MLA alone is shown to a race player locked, never
+  // hidden. The race is gw_start's setting for the host and the picker's
+  // observable for a co-op viewer; neither scene has the other's. See races.md.
   var raceInPlay = function () {
     var settings = model.gwoDifficultySettings;
 

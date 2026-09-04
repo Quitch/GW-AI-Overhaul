@@ -134,11 +134,10 @@ function gwoLoadouts() {
       ) {
         var banksResolved = false;
 
-        // Called again whenever the race changes: a race player's MLA-only
-        // loadouts are locked, so a selection resting on one moves. See
-        // races.md. Peeked, not read: race_picker.js calls this from inside
-        // a ko.computed, and a read here would make that computed re-run,
-        // and rebuild the list, on every selection change.
+        // Called again whenever the race changes, so a selection resting on
+        // a newly locked loadout moves. See races.md. Peeked, not read:
+        // race_picker.js calls this from inside a ko.computed, and a read
+        // would make it rebuild the list on every selection change.
         model.gwoRebuildStartCards = function () {
           if (!banksResolved) {
             return;

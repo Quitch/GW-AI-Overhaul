@@ -88,11 +88,15 @@ function gwoRacePicker() {
       );
     locTree($("#gwo-race-group"));
 
-    $("#gw-start-coop-settings-modal .gw-start-coop-settings-body").append(
-      loadHtml(
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/coop_race_row.html"
-      )
-    );
+    $(
+      "#gw-start-coop-settings-modal .gw-start-square-switch[data-bind*='toggleDraftNewGamePerPlayerTechCards']"
+    )
+      .closest(".gw-start-coop-switch-row")
+      .after(
+        loadHtml(
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/coop_race_row.html"
+        )
+      );
     locTree($("#gwo-per-player-race-row"));
 
     requireGW(

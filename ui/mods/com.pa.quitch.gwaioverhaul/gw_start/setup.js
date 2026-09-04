@@ -1376,9 +1376,10 @@ function gwoSetup() {
                 model.gwoDifficultySettings.perPlayerRace() &&
                 !!model.newGamePerPlayerTechCards(),
             };
-            // The map packs GW Server Mods must mount for this war: the
-            // resume check reads the stars' own stamps and takes names and
-            // versions from here. See galaxy.md, "Biome mods in a GW battle".
+            // The map packs GW Server Mods must mount for this war. The
+            // resume check reads the stars' own stamps first; this stands in
+            // for a star whose system lost its stamp. See galaxy.md, "Biome
+            // mods in a GW battle".
             originSystem.gwaio.biomeMods = gwoBiomes.gwsmMods(
               _.map(game.galaxy().stars(), function (star) {
                 var system = star.system();

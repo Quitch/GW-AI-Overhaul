@@ -353,8 +353,8 @@ and adds their biomes to `biomeServed`; a stamped mod it no longer lists falls t
 `gw_start/setup.js` records the ones stamped on any placed star as
 `originSystem.gwaio.biomeMods = [{ identifier, displayName, version }]`, and on resume
 `gw_play/biomes.js` asks `shared/biome_check.js` what the stars are stamped with (the
-recorded list supplies names and versions, and stands in for a star whose system lost
-its stamp), compares that with `installedBiomeMods`, and blocks the war through the
+stamps carry names and versions; the recorded list stands in for a star whose system
+lost its stamp), compares that with `installedBiomeMods`, and blocks the war through the
 same gate `gw_play/races.js` built for races - the dialog, a "Missing Map Packs" list
 on the war panel, and `model.fight` refusing - with the same rules: without GW Server
 Mods a single mod-neutral line, an unreadable mod list decides nothing, and a version
