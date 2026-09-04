@@ -294,17 +294,30 @@ deferred that only settles on success, so the battle hangs at loading with no er
 switches such a planet to `earth`, which is what repairs a war saved before this screen
 existed.
 
-A modded biome is kept when an enabled server mod that ships **only JSON** provides it.
-`shared/gwo_biome_mods.js` catalogs each enabled server zip mod once, at war creation -
-through the Community Mods manager where the scene loads it, and through the manager's
-own IndexedDB store in `gw_start`, which does not - and a mod carrying anything else
-under `pa/` (`.papa` meshes, textures) is not a provider, because only text can be
-handed to the server. `selectorFor` stamps the providing mods onto the placed copy as
-`gwoBiomeMods`, so battle launch reads that stamp instead of resolving again.
+A modded biome is kept when an enabled server mod provides it and something can carry
+that mod to the server. `shared/gwo_biome_mods.js` catalogs each enabled server zip
+mod once, at war creation - through GW Server Mods' manifest when that mod is loaded,
+else through the Community Mods manager where the scene loads it, and through the
+manager's own IndexedDB store in `gw_start`, which does not. A mod that ships **only
+JSON** under `pa/` is always a provider, because GWO can hand text to the server
+itself. A mod carrying anything else there (`.papa` meshes, textures) is a provider
+only with GW Server Mods active, which mounts every active server mod for a GW battle;
+without it such a system is dropped as before. `selectorFor` stamps the providing mods
+onto the placed copy as `gwoBiomeMods`, so battle launch reads that stamp instead of
+resolving again.
 
 ### Biome mods in a GW battle
 
-Two channels carry a stamped mod into the battle, because the server needs it before
+Each stamped provider record carries `served`: `"cook"` when GWO carries the mod into
+the battle itself, `"gwsm"` when GW Server Mods does. That split is decided in one
+place, `gwo_biomes.js`'s `serviceFor` - text is always cooked; anything else is
+`"gwsm"` when GW Server Mods is present and no provider at all when it is not - so a
+later change of policy is a one-line change. A stamp written before `served` existed
+reads as `"cook"`. The record's `mountPath` is built from the manifest's
+`rawIdentifier`, not its lower-cased `identifier`: Community Mods mounts under the
+installed case and `spec:/` reads are path-sensitive.
+
+Two channels carry a **cooked** mod into the battle, because the server needs it before
 the clients do.
 
 The server validates `config.system` **before** it mounts `config.files`
@@ -320,11 +333,33 @@ Clients get the same files through `config.files`: `gwoGenerateBiomes` mounts th
 stamped mods, reads every `pa/**/*.json` they ship through `spec:` (the only scheme that
 resolves a `/server_mods/` mount client-side) and adds the text to `self.files()`, which
 the host mounts and the `gw_config` payload hands to every joiner. That is why only
-text-only mods qualify: a `.papa` has no way through either channel.
+text-only mods can be cooked: a `.papa` has no way through either channel.
 
-A mod that cannot be mounted or fully read at launch is dropped from both, and
+A cooked mod that cannot be mounted or fully read at launch is dropped from both, and
 `referee_config.js` then treats its biomes as unservable and switches those planets to
-`earth`.
+`earth`. The mod is not a dependency of the war: once its zip cannot be read, the
+planet falls to `earth` and nothing more. (Disabling alone does not do that - the
+stamp mounts the zip by path, so a disabled mod whose zip is still in `download/`
+keeps serving, verified 2026-09-04.)
+
+A **GW Server Mods-served** mod goes through neither channel. GW Server Mods mounts
+every active server mod at `/server_mods/<id>/` before the local server spawns, wrapping
+`model.fight` so the mount precedes the referee, and its connect gate keeps out a co-op
+viewer lacking any client-relevant server mod. `gwoGenerateBiomes` therefore only asks
+`gwo_biome_mods.js`'s `serve` which of the stamped mods GW Server Mods lists as active,
+catalogs the live manifest row (the stamp's `installedPath` is stale after a reinstall)
+and adds their biomes to `biomeServed`; a stamped mod it no longer lists falls to
+`earth` like an unreadable cooked one. Such a mod **is** a dependency of the war:
+`gw_start/setup.js` records the ones stamped on any placed star as
+`originSystem.gwaio.biomeMods = [{ identifier, displayName, version }]`, and on resume
+`gw_play/biomes.js` asks `shared/biome_check.js` what the stars are stamped with (the
+recorded list supplies names and versions, and stands in for a star whose system lost
+its stamp), compares that with `installedBiomeMods`, and blocks the war through the
+same gate `gw_play/races.js` built for races - the dialog, a "Missing Map Packs" list
+on the war panel, and `model.fight` refusing - with the same rules: without GW Server
+Mods a single mod-neutral line, an unreadable mod list decides nothing, and a version
+change only warns. A war saved before the record existed has neither stamp nor list, so
+nothing blocks.
 
 A war saved before the stamp existed has none, so a system there with a modded biome
 resolves providers at launch instead (`stampedMods` in `referee.js`) and writes the

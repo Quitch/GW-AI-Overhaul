@@ -86,9 +86,10 @@ the base referee and installs GWO's, whose hire runs these in order:
    see galaxy.md, "AI tech".
 2. `gw_play/referee_ai.js` walks the AI build trees, applies AI-mod descriptors
    from every card held, and writes the results into the config.
-3. `referee.js`'s own `gwoGenerateBiomes` mounts the server mods stamped on the
-   battle's system and cooks their JSON into the config's files — see
-   galaxy.md, "Biome mods in a GW battle".
+3. `referee.js`'s own `gwoGenerateBiomes` mounts the text-only server mods
+   stamped on the battle's system and cooks their JSON into the config's
+   files; a stamped mod GW Server Mods serves is already mounted, and only its
+   biomes are collected — see galaxy.md, "Biome mods in a GW battle".
 4. `gw_play/referee_config.js` + `referee_config_setup.js` assemble the launch
    config — armies, personalities, planets, game modes. Every army's
    personality is built here through `shared/ai_personality.js` from what the

@@ -385,6 +385,25 @@ describe("bracketsFrom - biomes the server cannot load", () => {
     assert.equal(pooled.gwoBiomeMods, undefined);
   });
 
+  it("carries the whole provider record in the stamp", () => {
+    const providers = {
+      alienred: {
+        identifier: "com.pa.alienworlds.server",
+        displayName: "Alien Worlds",
+        version: "2.0.0",
+        served: "gwsm",
+      },
+    };
+    const built = brackets.bracketsFrom(
+      [modded("alien-map", "alienred")],
+      providers
+    );
+    const taken = brackets.selectorFor(built, () => 0.5, providers).take(2);
+
+    assert.deepEqual(taken.gwoBiomeMods, [providers.alienred]);
+    assert.equal(taken.gwoBiomeMods[0].served, "gwsm");
+  });
+
   it("does not stamp a system that needs no mod", () => {
     const built = brackets.bracketsFrom([sys("stock", { zoneCount: 2 })], {
       oasis: { identifier: "uk.pa.tetctree.server" },

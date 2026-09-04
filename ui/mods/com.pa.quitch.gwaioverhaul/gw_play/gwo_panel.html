@@ -140,10 +140,29 @@
       </div>
     </div>
     <!-- /ko -->
+    <h3
+      id="missing-map-packs"
+      data-bind="visible: $root.gwoBiomeBlock().length > 0"
+    >
+      <loc>Missing Map Packs</loc>
+    </h3>
+    <!-- ko if: $root.gwoBiomeBlock -->
+    <div class="table">
+      <div class="tablebody" data-bind="foreach: $root.gwoBiomeBlock()">
+        <div class="tr">
+          <div class="data gwo-race-missing" data-bind="text: $data"></div>
+        </div>
+      </div>
+    </div>
+    <!-- /ko -->
     <h3 data-bind="text: $root.gwoFactionName"></h3>
     <div
       class="gwo-race-warning"
       data-bind="text: $root.gwoRaceWarning, visible: $root.gwoRaceWarning()"
+    ></div>
+    <div
+      class="gwo-race-warning"
+      data-bind="text: $root.gwoBiomeWarning, visible: $root.gwoBiomeWarning()"
     ></div>
     <ul data-bind="foreach: $root.gwoPlayer">
       <li class="commander">

@@ -1,6 +1,7 @@
-// The Galactic War local server mounts no mods, and server-script/sim_utils.js
-// validatePlanet waits forever on a /pa/terrain/<biome>.json it cannot load, so
-// any biome outside this list hangs every player at loading. See galaxy.md.
+// The Galactic War local server mounts no mods on its own, and
+// server-script/sim_utils.js validatePlanet waits forever on a
+// /pa/terrain/<biome>.json it cannot load, so any biome outside this list
+// hangs every player at loading unless a mod carries it in. See galaxy.md.
 define(function () {
   var STOCK_BIOMES = [
     "1v1test",
@@ -20,6 +21,12 @@ define(function () {
     "tropical",
   ];
   var FALLBACK_BIOME = "earth";
+  // Who carries a provider into the battle. COOK: GWO mounts the zip itself and
+  // cooks its JSON into the config files, so a disabled mod only costs the
+  // planet its biome (earth instead). GWSM: GW Server Mods mounts the zip for
+  // the local server, the only way a .papa gets there, so the war depends on
+  // the mod and cannot be fought without it. See galaxy.md.
+  var SERVICE = { COOK: "cook", GWSM: "gwsm" };
 
   var isStockBiome = function (biome) {
     return _.includes(STOCK_BIOMES, biome);
@@ -55,8 +62,19 @@ define(function () {
     return undefined;
   };
 
+  var normalizeIdentifier = function (identifier) {
+    return _.isString(identifier) ? identifier.trim().toLowerCase() : "";
+  };
+
+  var sameMod = function (a, b) {
+    return (
+      normalizeIdentifier(a.identifier) === normalizeIdentifier(b.identifier)
+    );
+  };
+
   // The providers a system needs, deduplicated - the value stamped on a placed
-  // system as gwoBiomeMods.
+  // system as gwoBiomeMods. GW Server Mods lower-cases identifiers and
+  // Community Mods does not, so the same mod is matched across case.
   var modsFor = function (system, providers) {
     var served = providers || {};
     var mods = [];
@@ -66,12 +84,30 @@ define(function () {
       if (
         !isStockBiome(biome) &&
         mod &&
-        !_.some(mods, { identifier: mod.identifier })
+        !_.some(mods, _.partial(sameMod, mod))
       ) {
         mods.push(mod);
       }
     }
     return mods;
+  };
+
+  // A provider record from a manifest row (GW Server Mods) or a Community Mods
+  // row. GW Server Mods lower-cases `identifier` and keeps the installed case
+  // as `rawIdentifier`; Community Mods mounts under the installed case and
+  // spec:/ reads are path-sensitive, so the mount path is built from the raw
+  // one.
+  var recordFrom = function (mod) {
+    var raw = mod.rawIdentifier || mod.identifier;
+
+    return {
+      identifier: mod.identifier,
+      rawIdentifier: raw,
+      installedPath: mod.installedPath,
+      mountPath: mod.mountPath || "/server_mods/" + raw + "/",
+      displayName: mod.displayName || mod.identifier,
+      version: mod.version,
+    };
   };
 
   // api.file.zip.catalog returns [{name, crc32, size}] (observed, PA 124673);
@@ -124,21 +160,61 @@ define(function () {
     };
   };
 
+  // The one rule: text is always cooked, anything else needs GW Server Mods
+  // (`gwsm`) to carry it, and without that it is no provider at all.
+  var serviceFor = function (info, gwsm) {
+    if (info.pureText) {
+      return SERVICE.COOK;
+    }
+    return gwsm ? SERVICE.GWSM : undefined;
+  };
+
+  // A stamp written before `served` existed was always cooked.
+  var serviceOf = function (record) {
+    return (record && record.served) || SERVICE.COOK;
+  };
+
+  var isGwsmServed = function (record) {
+    return serviceOf(record) === SERVICE.GWSM;
+  };
+
   // First provider wins, so pass infos in the order the mods are prioritised.
-  var providersFrom = function (infos) {
+  // The record stored is the mod plus `served`, which the stamp then carries.
+  var providersFrom = function (infos, gwsm) {
     var providers = {};
 
     for (var info of infos || []) {
-      if (!info || !info.pureText) {
+      var served = info && serviceFor(info, gwsm);
+      if (!served) {
         continue;
       }
+      var record = _.assign({}, info.mod, { served: served });
       for (var biome of info.biomes) {
         if (!_.has(providers, biome)) {
-          providers[biome] = info.mod;
+          providers[biome] = record;
         }
       }
     }
     return providers;
+  };
+
+  // The mods a war depends on: every GW Server Mods-served stamp across the
+  // given stamp lists, once each, in the shape gwaio.races.mods uses.
+  var gwsmMods = function (stampLists) {
+    var mods = [];
+
+    _.forEach(stampLists || [], function (stamps) {
+      _.forEach(stamps || [], function (record) {
+        if (isGwsmServed(record) && !_.some(mods, _.partial(sameMod, record))) {
+          mods.push({
+            identifier: record.identifier,
+            displayName: record.displayName || record.identifier,
+            version: record.version,
+          });
+        }
+      });
+    });
+    return mods;
   };
 
   var jsonEntries = function (entries) {
@@ -150,15 +226,21 @@ define(function () {
   return {
     STOCK_BIOMES: STOCK_BIOMES,
     FALLBACK_BIOME: FALLBACK_BIOME,
+    SERVICE: SERVICE,
     isStockBiome: isStockBiome,
     generatorOf: generatorOf,
     planetBiome: planetBiome,
     systemBiomes: systemBiomes,
     unservableBiome: unservableBiome,
     modsFor: modsFor,
+    recordFrom: recordFrom,
     catalogEntries: catalogEntries,
     catalogInfo: catalogInfo,
+    serviceFor: serviceFor,
+    serviceOf: serviceOf,
+    isGwsmServed: isGwsmServed,
     providersFrom: providersFrom,
+    gwsmMods: gwsmMods,
     jsonEntries: jsonEntries,
   };
 });

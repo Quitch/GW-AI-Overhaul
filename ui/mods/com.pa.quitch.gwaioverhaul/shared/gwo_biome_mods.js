@@ -4,14 +4,17 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
 ], function (gwoBiomes, gwoPromise) {
-  var serverModsRoot = "/server_mods/";
+  var modRecord = gwoBiomes.recordFrom;
 
-  var modRecord = function (mod) {
-    return {
-      identifier: mod.identifier,
-      installedPath: mod.installedPath,
-      mountPath: mod.mountPath || serverModsRoot + mod.identifier + "/",
-    };
+  var manifest = function () {
+    var gwsm = window.GwServerMods;
+    return gwsm && gwsm.manifest && _.isFunction(gwsm.manifest.load)
+      ? gwsm.manifest
+      : undefined;
+  };
+
+  var isZipMod = function (mod) {
+    return !!(mod && !mod.fileSystem && mod.installedPath);
   };
 
   var byPriority = function (mods) {
@@ -22,13 +25,25 @@ define([
 
   var settled = gwoPromise.settled;
 
-  // gw_play loads the Community Mods manager; gw_start does not, so there the
-  // manager's own IndexedDB store is read through the stock `db` extender. The
-  // extender writes back on change and creates the record when the key is
-  // missing, so the observable is never written and never created here.
+  // GW Server Mods' manifest lists what it will mount, in mount order, in
+  // every scene it is loaded in. Otherwise gw_play loads the Community Mods
+  // manager; gw_start does not, so there the manager's own IndexedDB store is
+  // read through the stock `db` extender. The extender writes back on change
+  // and creates the record when the key is missing, so the observable is
+  // never written and never created here.
   var enabledServerZipMods = function () {
     var manager = window.CommunityModsManager;
+    var mfst = manifest();
     var done = $.Deferred();
+
+    if (mfst) {
+      $.when(mfst.load()).always(function () {
+        done.resolve(
+          _.map(_.filter(mfst.activeServerMods(), isZipMod), modRecord)
+        );
+      });
+      return done.promise();
+    }
 
     if (manager && _.isFunction(manager.ready)) {
       manager.ready().always(function () {
@@ -75,8 +90,10 @@ define([
   };
 
   // Never rejects: with nothing readable the caller keeps the stock biomes.
+  // With GW Server Mods present a mod it must serve is a provider too.
   var providers = function () {
     var done = $.Deferred();
+    var gwsm = !!manifest();
 
     enabledServerZipMods().then(function (mods) {
       if (!mods.length) {
@@ -84,7 +101,88 @@ define([
         return;
       }
       $.when.apply($, _.map(mods, catalogOf)).then(function () {
-        done.resolve(gwoBiomes.providersFrom(_.toArray(arguments)));
+        done.resolve(gwoBiomes.providersFrom(_.toArray(arguments), gwsm));
+      });
+    });
+    return done.promise();
+  };
+
+  // What GW Server Mods will mount of the stamped mods it serves: `served` in
+  // the providers() shape for those it lists as active, `missing` the
+  // identifiers of the rest, which referee_config then sends to earth. The
+  // stamp's installedPath is stale after a reinstall, so the live row is
+  // catalogued. Never rejects.
+  var serve = function (mods) {
+    var done = $.Deferred();
+    var mfst = manifest();
+    var wanted = _.filter(mods || [], gwoBiomes.isGwsmServed);
+    var missing = [];
+    var live = [];
+
+    if (!wanted.length) {
+      return done.resolve({ served: {}, missing: [] }).promise();
+    }
+
+    $.when(mfst ? mfst.load() : undefined).always(function () {
+      _.forEach(wanted, function (mod) {
+        var row = mfst && mfst.serverModInfo(mod.identifier);
+
+        if (!isZipMod(row)) {
+          console.warn(
+            "gwoBiomeMods: " +
+              mod.identifier +
+              " is not active under GW Server Mods; its biomes fall back to " +
+              gwoBiomes.FALLBACK_BIOME
+          );
+          missing.push(mod.identifier);
+          return;
+        }
+        live.push(modRecord(row));
+      });
+
+      if (!live.length) {
+        done.resolve({ served: {}, missing: missing });
+        return;
+      }
+      $.when.apply($, _.map(live, catalogOf)).then(function () {
+        done.resolve({
+          served: gwoBiomes.providersFrom(_.toArray(arguments), true),
+          missing: missing,
+        });
+      });
+    });
+    return done.promise();
+  };
+
+  // Resolves { mods, known, gwsm } for the resume check: the identifier, name
+  // and version of every server zip mod GW Server Mods has active, whether
+  // that list could be read at all, and whether GW Server Mods is here to
+  // mount them - the same three answers race_mods.installedRaces gives, for
+  // the same reasons. See races.md.
+  var installedBiomeMods = function () {
+    var done = $.Deferred();
+    var mfst = manifest();
+
+    if (!mfst) {
+      return done.resolve({ mods: [], known: true, gwsm: false }).promise();
+    }
+
+    $.when(mfst.load()).always(function () {
+      var known = !_.isFunction(mfst.listed) || !!mfst.listed();
+
+      done.resolve({
+        mods: _.map(
+          _.filter(mfst.activeServerMods(), isZipMod),
+          function (mod) {
+            return {
+              identifier: mod.identifier,
+              displayName: mod.displayName || mod.identifier,
+              version: mod.version,
+            };
+          }
+        ),
+        known: known,
+        gwsm: true,
       });
     });
     return done.promise();
@@ -161,20 +259,22 @@ define([
     });
   };
 
-  // Resolves { files, mods, served } for the mods whose every file was read;
-  // `served` is what those mods provide, in the providers() shape. Never rejects.
+  // Resolves { files, mods, served } for the cooked mods whose every file was
+  // read; `served` is what those mods provide, in the providers() shape. A mod
+  // GW Server Mods serves is passed over - see serve(). Never rejects.
   var cook = function (mods) {
     var done = $.Deferred();
+    var cooked = _.reject(mods || [], gwoBiomes.isGwsmServed);
 
-    if (!mods || !mods.length) {
+    if (!cooked.length) {
       return done.resolve({ files: {}, mods: [], served: {} }).promise();
     }
-    $.when.apply($, _.map(mods, cookMod)).then(function () {
+    $.when.apply($, _.map(cooked, cookMod)).then(function () {
       var infos = _.compact(_.toArray(arguments));
       done.resolve({
         files: _.assign.apply(_, [{}].concat(_.map(infos, "cooked"))),
         mods: _.map(infos, "mod"),
-        served: gwoBiomes.providersFrom(infos),
+        served: gwoBiomes.providersFrom(infos, false),
       });
     });
     return done.promise();
@@ -183,6 +283,8 @@ define([
   return {
     enabledServerZipMods: enabledServerZipMods,
     providers: providers,
+    serve: serve,
+    installedBiomeMods: installedBiomeMods,
     mount: mount,
     cook: cook,
   };

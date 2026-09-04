@@ -88,9 +88,11 @@ function gwoRefereeChanges() {
           return done.promise();
         };
 
-        // The stamp is only mounted to read from and cooked into the files every
-        // client gets. The server-facing mount happens in mountFiles, after the
-        // unmount there.
+        // A cooked stamp is mounted here only to read from, and cooked into
+        // the files every client gets; its server-facing mount happens in
+        // mountFiles, after the unmount there. A stamp GW Server Mods serves
+        // is neither: that mod is already mounted by the time the referee is
+        // hired, and only its biomes are collected, for referee_config.
         var gwoGenerateBiomes = function () {
           var self = this;
           var done = $.Deferred();
@@ -104,13 +106,18 @@ function gwoRefereeChanges() {
               done.resolve();
               return;
             }
+            var split = _.partition(mods, gwoBiomes.isGwsmServed);
+            var cooked = split[1];
+
             self.stage("!LOC:Processing biome mods");
-            gwoBiomeMods.mount(mods).always(function () {
-              gwoBiomeMods.cook(mods).then(function (result) {
+            gwoBiomeMods.mount(cooked).always(function () {
+              gwoBiomeMods.cook(cooked).then(function (result) {
                 self.files(_.assign({}, self.files(), result.files));
                 self.biomeMods = result.mods;
-                self.biomeServed = result.served;
-                done.resolve();
+                gwoBiomeMods.serve(split[0]).then(function (served) {
+                  self.biomeServed = _.assign({}, result.served, served.served);
+                  done.resolve();
+                });
               });
             });
           });
