@@ -328,8 +328,45 @@ function gwoSystemChanges() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory_wait_state.js",
       ],
-      function (GW, gwoVictory, gwoSave, gwoTreasure, gwoBank, gwoRaces) {
+      function (
+        GW,
+        gwoVictory,
+        gwoSave,
+        gwoTreasure,
+        gwoBank,
+        gwoRaces,
+        createVictoryWait
+      ) {
+        var wait = model.gwoVictoryWait;
+        var playersReturned;
+
+        if (wait) {
+          playersReturned = createVictoryWait({
+            visible: wait.visible,
+            message: wait.message,
+            connectedClients: model.gwCampaignConnectedClients,
+            maxClients: model.gwCampaignMaxClients,
+            connected: model.gwCampaignConnected,
+            // Stock restores max_clients from this over an async round trip.
+            expectedFromBattle: function () {
+              var context = model.gwCampaignRestartContext();
+              return context && context.settings
+                ? context.settings.battle_launch_clients
+                : undefined;
+            },
+            labels: {
+              message: function (back, expected) {
+                return (
+                  loc("!LOC:Players returned") + ": " + back + " / " + expected
+                );
+              },
+            },
+          });
+          wait.state(playersReturned);
+        }
+
         gwoVictory({
           game: game,
           gwoSettings: gwoSettings,
@@ -338,6 +375,7 @@ function gwoSystemChanges() {
           stockBank: GW.bank,
           gwoBank: gwoBank,
           race: gwoRaces.raceOf(game.inventory()),
+          playersReturned: playersReturned,
         });
       }
     );
