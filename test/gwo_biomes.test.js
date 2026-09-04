@@ -123,6 +123,17 @@ describe("modsFor", () => {
     );
   });
 
+  it("treats identifiers differing only in case as one mod", () => {
+    const upper = { identifier: "uk.pa.TetcTree.server" };
+    assert.deepEqual(
+      biomes.modsFor(system(["oasis", "mountain"]), {
+        oasis: tetctree,
+        mountain: upper,
+      }),
+      [tetctree]
+    );
+  });
+
   it("is empty for stock or unprovided biomes", () => {
     assert.deepEqual(biomes.modsFor(system(["earth"]), providers), []);
     assert.deepEqual(biomes.modsFor(system(["arctic"]), providers), []);
@@ -188,16 +199,83 @@ describe("catalogInfo", () => {
   });
 });
 
+describe("serviceFor", () => {
+  it("cooks text whether or not GW Server Mods is here", () => {
+    assert.equal(biomes.serviceFor({ pureText: true }, false), "cook");
+    assert.equal(biomes.serviceFor({ pureText: true }, true), "cook");
+  });
+
+  it("hands anything else to GW Server Mods, and drops it otherwise", () => {
+    assert.equal(biomes.serviceFor({ pureText: false }, true), "gwsm");
+    assert.equal(biomes.serviceFor({ pureText: false }, false), undefined);
+    assert.equal(biomes.serviceFor({ pureText: false }), undefined);
+  });
+});
+
+describe("serviceOf", () => {
+  it("reads a stamp written before served existed as cooked", () => {
+    assert.equal(biomes.serviceOf({ identifier: "x" }), "cook");
+    assert.equal(biomes.serviceOf(undefined), "cook");
+    assert.equal(biomes.isGwsmServed({ identifier: "x" }), false);
+  });
+
+  it("reads the served flag", () => {
+    assert.equal(biomes.serviceOf({ served: "gwsm" }), "gwsm");
+    assert.equal(biomes.isGwsmServed({ served: "gwsm" }), true);
+    assert.equal(biomes.isGwsmServed({ served: "cook" }), false);
+  });
+});
+
+describe("recordFrom", () => {
+  it("builds the mount path from the installed-case identifier", () => {
+    const record = biomes.recordFrom({
+      identifier: "uk.pa.tetctree.server",
+      rawIdentifier: "uk.pa.TetcTree.server",
+      installedPath: "/download/x.zip",
+      displayName: "Tetctree",
+      version: "1.0.0",
+    });
+    assert.deepEqual(record, {
+      identifier: "uk.pa.tetctree.server",
+      rawIdentifier: "uk.pa.TetcTree.server",
+      installedPath: "/download/x.zip",
+      mountPath: "/server_mods/uk.pa.TetcTree.server/",
+      displayName: "Tetctree",
+      version: "1.0.0",
+    });
+  });
+
+  it("falls back to the identifier for the raw one and the display name", () => {
+    const record = biomes.recordFrom({
+      identifier: "a.b",
+      installedPath: "/x",
+    });
+    assert.equal(record.rawIdentifier, "a.b");
+    assert.equal(record.mountPath, "/server_mods/a.b/");
+    assert.equal(record.displayName, "a.b");
+    assert.equal(record.version, undefined);
+  });
+
+  it("keeps a mount path the row already carries", () => {
+    assert.equal(
+      biomes.recordFrom({ identifier: "a", mountPath: "/m/" }).mountPath,
+      "/m/"
+    );
+  });
+});
+
 describe("providersFrom", () => {
-  it("maps each biome to the first pure-text mod that ships it", () => {
+  const cooked = (mod) => Object.assign({}, mod, { served: "cook" });
+
+  it("maps each biome to the first pure-text mod that ships it, marked cooked", () => {
     const providers = biomes.providersFrom([
       { mod: tetctree, pureText: true, biomes: ["oasis", "grass"] },
       { mod: simple, pureText: true, biomes: ["grass", "arctic"] },
     ]);
     assert.deepEqual(providers, {
-      oasis: tetctree,
-      grass: tetctree,
-      arctic: simple,
+      oasis: cooked(tetctree),
+      grass: cooked(tetctree),
+      arctic: cooked(simple),
     });
   });
 
@@ -208,6 +286,66 @@ describe("providersFrom", () => {
     ]);
     assert.deepEqual(providers, {});
     assert.deepEqual(biomes.providersFrom(undefined), {});
+  });
+
+  it("keeps a mod that is not pure text when GW Server Mods can serve it", () => {
+    const alien = { identifier: "com.pa.alienworlds.server" };
+    const providers = biomes.providersFrom(
+      [
+        { mod: alien, pureText: false, biomes: ["alienred"] },
+        { mod: tetctree, pureText: true, biomes: ["oasis"] },
+      ],
+      true
+    );
+    assert.deepEqual(providers, {
+      alienred: Object.assign({}, alien, { served: "gwsm" }),
+      oasis: cooked(tetctree),
+    });
+  });
+
+  it("does not write served onto the mod it was given", () => {
+    const info = { mod: { identifier: "m" }, pureText: true, biomes: ["b"] };
+    biomes.providersFrom([info]);
+    assert.equal("served" in info.mod, false);
+  });
+});
+
+describe("gwsmMods", () => {
+  const alien = {
+    identifier: "com.pa.alienworlds.server",
+    installedPath: "/x",
+    mountPath: "/server_mods/com.pa.alienworlds.server/",
+    displayName: "Alien Worlds",
+    version: "2.0.0",
+    served: "gwsm",
+  };
+
+  it("lists each GW Server Mods-served stamp once, projected for the war record", () => {
+    const stamps = [
+      [alien, Object.assign({}, tetctree, { served: "cook" })],
+      undefined,
+      [Object.assign({}, alien, { identifier: "COM.pa.alienworlds.server" })],
+    ];
+    assert.deepEqual(biomes.gwsmMods(stamps), [
+      {
+        identifier: "com.pa.alienworlds.server",
+        displayName: "Alien Worlds",
+        version: "2.0.0",
+      },
+    ]);
+  });
+
+  it("ignores legacy stamps, and is empty with nothing stamped", () => {
+    assert.deepEqual(biomes.gwsmMods([[tetctree]]), []);
+    assert.deepEqual(biomes.gwsmMods([]), []);
+    assert.deepEqual(biomes.gwsmMods(undefined), []);
+  });
+
+  it("names a mod with no display name by its identifier", () => {
+    const bare = { identifier: "a.b", served: "gwsm" };
+    assert.deepEqual(biomes.gwsmMods([[bare]]), [
+      { identifier: "a.b", displayName: "a.b", version: undefined },
+    ]);
   });
 });
 
