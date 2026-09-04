@@ -113,7 +113,6 @@ define([
       game.currentStar(),
       game.stats().turns()
     );
-    var aiInUse = gwoAI.aiInUse("enemy");
     var aiTag = gwoAI.aiTags(ai);
 
     setupAlliedCommanders(
@@ -136,7 +135,8 @@ define([
         inventory,
         playerTag,
         refereeCoop.getOrderedSubcommanders(inventory, game).length,
-        battleRng
+        battleRng,
+        { ffa: !_.isEmpty(ai.foes) }
       );
     }
 
@@ -144,11 +144,10 @@ define([
       ai,
       connectedPlayerCards,
       aiTag,
-      aiInUse,
       armies,
       battleRng
     );
-    setupFfaAis(ai.foes, aiTag, aiInUse, armies, battleRng);
+    setupFfaAis(ai.foes, aiTag, armies, battleRng);
     system.planets = modifyPlanets(
       inventory,
       system.planets,
@@ -170,7 +169,7 @@ define([
       bounty_mode:
         ai.bountyMode ||
         gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_bounties", game),
-      bounty_value: ai.bountyModeValue,
+      bounty_value: gwoAI.bountyValue(ai),
       sudden_death_mode:
         ai.suddenDeath ||
         gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_suddendeath", game),

@@ -6,10 +6,10 @@
 //
 // Only what the operator handler cannot reach lives here. Payload validation
 // and the both-graphs and neither-graph outcomes are driven end to end in
-// cards_card_name_sync_factory.test.js, whose malformed-payload loop is a
-// superset of the cases this file used to restate. What is left is the two
-// ai() guards, which the handler's fixture never trips, and the absent
-// model.galaxy branch, which its setup() always installs past.
+// cards_card_name_sync_factory.test.js, whose malformed-payload loop covers
+// them. What is left is the two ai() guards, which the handler's fixture never
+// trips, and the absent model.galaxy branch, which its setup() always installs
+// past.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");

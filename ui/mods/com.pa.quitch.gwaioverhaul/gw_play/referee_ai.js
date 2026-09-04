@@ -3,7 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
-], function (gwoAI, gwoCard, refereeAIPaths, refereeCoop) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+], function (gwoAI, gwoCard, refereeAIPaths, refereeCoop, gwoRaces) {
   // The walk append, prepend and replace share. A build entry for toBuild that
   // carries idToMod (and refId/refValue, when given) is the target; otherwise
   // every test in its build_conditions that refId/refValue or matchAll selects
@@ -364,8 +365,15 @@ define([
           .find(function (key) {
             return filePathIncludes(key);
           }) || "";
+      // A file a `load` pulled in from /pa/ai_tech/ is walked like any other,
+      // so a card's own descriptors land on its own file unless it opts out.
+      var isTechFile = filePathStarts(aiTechPath);
 
-      return _.filter(nonLoadAiMods, { type: pathTypeMap[aiManager] });
+      return _.filter(nonLoadAiMods, function (mod) {
+        return (
+          mod.type === pathTypeMap[aiManager] && !(isTechFile && mod.treeOnly)
+        );
+      });
     };
 
     var changeFilePath = function (aiPath, pathLength) {
@@ -391,7 +399,8 @@ define([
       });
     };
 
-    // built on the assumption that the Guardians are never Cluster
+    // Relies on the Guardians never being Cluster. See ai-paths.md,
+    // "Invariants".
     var processClusterJson = function (json, pathLength) {
       var clusterOps = clusterAIModsInScopeOfFile();
       var clusterJson = _.cloneDeep(json);
@@ -612,7 +621,8 @@ define([
       var promises = _.map(fileList, function (filePath) {
         if (
           !_.endsWith(filePath, ".json") ||
-          _.includes(filePath, "/neural_networks/") // AIs fall back to /pa/ai/neural_networks/
+          _.includes(filePath, "/neural_networks/") || // AIs fall back to /pa/ai/neural_networks/
+          gwoRaces.inAnyRaceLayer(filePath) // a race's files belong to its own tree - see races.md
         ) {
           return;
         }
@@ -626,6 +636,83 @@ define([
     });
 
     return deferred.promise();
+  };
+
+  // Every race tree a battle needs: one per distinct (source, destination),
+  // the race's files layered over the brain's base files, written to the
+  // race's own root. AI mods are not applied to a race tree - see races.md.
+  var raceTreeJobs = function (game, connectedClients) {
+    var inventory = game.inventory();
+    var ai = gwoAI.currentStarAi(game);
+    var playerRace = gwoRaces.raceOf(inventory);
+    var jobs = {};
+
+    var add = function (type, race, destination) {
+      if (gwoRaces.isMla(race)) {
+        return;
+      }
+      var brain = gwoAI.aiInUse(type, race);
+      var source = gwoAI.getAIPathSource(type, race);
+      var target =
+        destination || gwoAI.getAIPathDestination(type, { race: race });
+      jobs[source + "|" + target] = {
+        source: source,
+        destination: target,
+        keep: gwoRaces.treeFilter(race, brain, source),
+        raceOwned: gwoRaces.raceLayerFilter(race, brain, source),
+      };
+    };
+
+    add("enemy", ai.mirrorMode ? playerRace : gwoRaces.raceOf(ai));
+    _.forEach(ai.foes, function (foe) {
+      add("enemy", gwoRaces.raceOf(foe));
+    });
+    add("subcommander", playerRace);
+    if (!_.isUndefined(ai.ally)) {
+      add(
+        "subcommander",
+        _.isUndefined(ai.ally.race) ? playerRace : gwoRaces.raceOf(ai.ally)
+      );
+    }
+    // Each viewer's own race: the host's under Separate races off, and whatever
+    // they picked under it on. A viewer's destination is its own either way -
+    // the race decides which brain's tree is filtered into it. See coop.md.
+    _.forEach(
+      refereeCoop.getConnectedViewerInventories(game, connectedClients),
+      function (viewer, viewerIndex) {
+        var viewerRace = gwoRaces.raceOf(viewer.inventory);
+        add(
+          "subcommander",
+          viewerRace,
+          gwoAI.getSubcommanderPathForViewer(
+            viewer.inventory,
+            ".player" + viewerIndex,
+            viewerRace
+          )
+        );
+      }
+    );
+
+    return _.values(jobs);
+  };
+
+  var writeRaceTree = function (job, treeCache, configFiles) {
+    return treeCache.list(job.source).then(function (fileList) {
+      var kept = _.filter(fileList, job.keep);
+
+      if (!_.some(fileList, job.raceOwned)) {
+        console.warn("gwoRefereeAi: no race build orders under " + job.source);
+      }
+
+      return Promise.all(
+        _.map(kept, function (filePath) {
+          return treeCache.getJSON(filePath).then(function (json) {
+            configFiles[job.destination + filePath.slice(job.source.length)] =
+              json;
+          });
+        })
+      );
+    });
   };
 
   var whoIsCluster = function () {
@@ -656,7 +743,7 @@ define([
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = { applyAiMods: applyAiMods };
+    module.exports = { applyAiMods: applyAiMods, raceTreeJobs: raceTreeJobs };
   }
 
   // parse AI files, apply AI mods, and load the results into self.files()
@@ -741,6 +828,10 @@ define([
         );
       }
     );
+
+    _.forEach(raceTreeJobs(game, connectedClients), function (job) {
+      promises.push(writeRaceTree(job, treeCache, configFiles));
+    });
 
     Promise.all(promises).then(function () {
       deferred.resolve();

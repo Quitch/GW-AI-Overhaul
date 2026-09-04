@@ -6,7 +6,7 @@
 // the factory, so the handlers are captured off the model stub.
 //
 // The validation, cooldown and labelling helpers are pinned as pure functions
-// in coop_ping.test.js.
+// in coop_ping_operators.test.js.
 
 const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");

@@ -20,9 +20,17 @@ parts that need a running game stay thin.
 | ---------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/pa/ai/`              | Partly        | The base game's stock Titans AI build data. This repo ships only the handful of files GWO shadows; the rest is base-game-owned and absent from CI. |
 | `/pa/ai_penchant/`     | In full       | GWO's own personality-driven build trees. `shared/ai.js`'s `penchants()` maps a personality to build-file tags drawn from here.                    |
-| `/pa/ai_queller/`      | No            | The base game's Queller AI data.                                                                                                                   |
+| `/pa/ai_queller/`      | Partly        | The base game's Queller AI data. This repo adds a unit map to each tier GWO selects; the build data is base-game-owned and absent from CI.         |
 | `/pa/ai_subcommander/` | No            | Runtime-synthesised only. No on-disk existence anywhere.                                                                                           |
 | `/pa/ai_cluster/`      | No            | Runtime-synthesised only. Same.                                                                                                                    |
+
+A race adds a sixth kind of root, synthesised per battle: the brain's root with
+`_race_<id>` inserted - `/pa/ai_race_legion/`, `/pa/ai_queller_race_legion/q_uber/`,
+`/pa/ai_subcommander_race_legion/` - carrying the race's build orders layered
+over the brain's base files.
+`races.aiRoot` applies it inside `getAIPathDestination` when `options.race` is
+set; sources never change, since the tree is written from the brain's files. See
+[`races.md`](races.md).
 
 `/pa/ai_tech/` is deliberately **not** in that table. It is never handed to an AI
 as an `ai_path`: it is a file source the pipeline pulls extra build files out of
@@ -123,7 +131,10 @@ token, and the two live call sites differ:
   `/pa/ai_cluster/player_player0/`.
 - `shared/ai.js`'s `getSubcommanderPathForViewer` passes the **raw** player tag
   through as `scopeToken`, so the same viewer's subcommander destination is
-  `/pa/ai_subcommander/player_.player0/` — with the dot.
+  `/pa/ai_subcommander/player_.player0/` — with the dot. The pure module's own
+  `getViewerSubcommanderPath` has one special case: the host's tag, `.player`,
+  yields no scope at all, because the host's subcommanders already own the
+  unscoped destination.
 
 Both are internally consistent (the same code generates and consumes them), so
 this is not a live bug, but it is a real inconsistency and the tests pin it
@@ -164,12 +175,17 @@ unit cap.
 
 ## What `shared/ai.js` adds
 
-`aiInUse(alignment)` reads the origin system's `gwaio` blob — the settings
-piggy-backed onto the galaxy at war creation by `gw_start/setup.js`. For
-`alignment === "subcommander"` it prefers `gwaio.aiAlly` when set, which is what
-makes mixed-brain fights possible (a Queller enemy against a Penchant ally). With
-no `gwaio` blob at all — a war created before GWO, or by another mod — it returns
-`"Titans"`.
+`aiInUse(alignment, race)` reads the origin system's `gwaio` blob — the settings
+piggy-backed onto the galaxy at war creation by `gw_start/setup.js`. The brain is
+per race and per side (`shared/brain_table.js`): the race's `gwaio.aiByRace` row,
+`ally` for `alignment === "subcommander"` and `enemy` otherwise, falling back to
+the war-wide `gwaio.aiAlly`/`gwaio.ai` strings for MLA, for a race with no row,
+and for every war saved before the table existed — which is what makes
+mixed-brain fights possible (a Queller Legion enemy against a Penchant MLA foe
+in one battle). With no `gwaio` blob at all — a war created before GWO, or by
+another mod — it returns `"Titans"`. With a `race` the brain has no build orders
+for it also returns `"Titans"` (`races.brainFor`), the only brain that knows
+every race.
 
 `getAIPathSource(type)` fills in `smartSubcommanders` from the tech cards held.
 `getAIPathDestination(type, options)` fills in the settings the pure module needs

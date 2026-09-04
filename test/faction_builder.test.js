@@ -9,11 +9,13 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const builder = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_builder.js"
 );
+const personalities = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js"
+);
 
 const BASELINE = {
   name: "Baseline",
   color: [[1, 2, 3]],
-  econ_rate: 1,
   personality: { faction: true },
   commander: "/pa/base.json",
 };
@@ -45,7 +47,6 @@ describe("faction_builder.build", () => {
     assert.deepEqual(faction.minions[0], {
       name: "Able",
       color: [[1, 2, 3]],
-      econ_rate: 1,
       personality: { faction: true, id: "armour" },
       commander: "/pa/base.json",
     });
@@ -70,6 +71,18 @@ describe("faction_builder.build", () => {
       input.minions.map((m) => m.name),
       ["Able", "Baker"]
     );
+  });
+
+  it("records the personalities.js key of a minion's or boss's personality", () => {
+    const input = data();
+    input.boss.personality = personalities.legonisMachinaBoss;
+    input.minions[0].personality = personalities.armour;
+    const faction = builder.build(input);
+
+    assert.equal(faction.teams[0].boss.personalityId, "legonisMachinaBoss");
+    assert.equal(faction.minions[0].personalityId, "armour");
+    // A personality that is not one of personalities.js's gets no id at all.
+    assert.ok(!("personalityId" in faction.minions[1]));
   });
 
   it("names the team after the faction and takes the first description", () => {

@@ -107,7 +107,6 @@ function gwoSystemChanges() {
       });
     };
 
-    // Add tooltips, starting planet, and thruster icons on planet intelligence icons
     $(".all-planets").replaceWith(
       loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html")
     );
@@ -328,8 +327,46 @@ function gwoSystemChanges() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory_wait_state.js",
       ],
-      function (GW, gwoVictory, gwoSave, gwoTreasure, gwoBank) {
+      function (
+        GW,
+        gwoVictory,
+        gwoSave,
+        gwoTreasure,
+        gwoBank,
+        gwoRaces,
+        createVictoryWait
+      ) {
+        var wait = model.gwoVictoryWait;
+        var playersReturned;
+
+        if (wait) {
+          playersReturned = createVictoryWait({
+            visible: wait.visible,
+            message: wait.message,
+            connectedClients: model.gwCampaignConnectedClients,
+            maxClients: model.gwCampaignMaxClients,
+            connected: model.gwCampaignConnected,
+            // Stock restores max_clients from this over an async round trip.
+            expectedFromBattle: function () {
+              var context = model.gwCampaignRestartContext();
+              return context && context.settings
+                ? context.settings.battle_launch_clients
+                : undefined;
+            },
+            labels: {
+              message: function (back, expected) {
+                return (
+                  loc("!LOC:Players returned") + ": " + back + " / " + expected
+                );
+              },
+            },
+          });
+          wait.state(playersReturned);
+        }
+
         gwoVictory({
           game: game,
           gwoSettings: gwoSettings,
@@ -337,6 +374,8 @@ function gwoSystemChanges() {
           treasure: gwoTreasure,
           stockBank: GW.bank,
           gwoBank: gwoBank,
+          race: gwoRaces.raceOf(game.inventory()),
+          playersReturned: playersReturned,
         });
       }
     );
@@ -355,6 +394,9 @@ function gwoSystemChanges() {
           : undefined;
       };
 
+      // Installed after gw_play.js has applied a battle result, so a real
+      // last-boss win runs stock's defeatTeam, not this. See architecture.md,
+      // "Returning from a battle".
       game.defeatTeam = function (defeatedTeam) {
         var remainingBosses = 0;
 
@@ -429,7 +471,8 @@ function gwoSystemChanges() {
             !!system.ownerColor() &&
             system.ownerColor()[0] !== model.player.color()[0];
 
-          // Fix Z axis issues
+          // Toggling hover makes stock's hover-ring computed re-sort the star's
+          // display list, which is what puts this ring at its z.
           if (innerRing.visible === true) {
             system.mouseOver(1);
             system.mouseOver(0);

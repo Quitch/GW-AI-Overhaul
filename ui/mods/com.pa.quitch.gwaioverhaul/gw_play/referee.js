@@ -15,6 +15,8 @@ function gwoRefereeChanges() {
       self.files = ko.observable();
       self.localFiles = ko.observable();
       self.config = ko.observable();
+      // Which hire of this launch built it: a co-op host hires twice.
+      self.pass = 0;
     };
 
     requireGW(
@@ -36,6 +38,35 @@ function gwoRefereeChanges() {
         gwoBiomeMods,
         gwoBiomes
       ) {
+        var hiresThisLaunch = 0;
+        // Set by stock fight before it hires, so this resets first.
+        model.launchingFight.subscribe(function (launching) {
+          if (launching) {
+            hiresThisLaunch = 0;
+          }
+        });
+
+        // A co-op host hires a clean shared referee and then its own, so each
+        // pass is labelled while it runs. See architecture.md.
+        gwoReferee.prototype.stage = function (key) {
+          var progress = model.gwoLaunchProgress;
+          if (!progress || !_.isFunction(progress.stage)) {
+            return;
+          }
+          var text = loc(key);
+          if (this.pass && model.gwCampaignActive() && model.isCampaignHost()) {
+            text =
+              loc(
+                this.pass === 1
+                  ? "!LOC:Co-op shared setup"
+                  : "!LOC:Co-op host setup"
+              ) +
+              ": " +
+              text;
+          }
+          progress.stage(text);
+        };
+
         // A war saved before the stamp existed resolves it here instead, once,
         // and writes it onto the star's system so later launches read it.
         var stampedMods = function (system) {
@@ -57,9 +88,10 @@ function gwoRefereeChanges() {
           return done.promise();
         };
 
-        // The stamp is only mounted to read from and cooked into the files every
-        // client gets. The server-facing mount happens in mountFiles, after the
-        // unmount there.
+        // A cooked stamp is mounted here only to read from; its server-facing
+        // mount happens in mountFiles, after the unmount there. A stamp GW
+        // Server Mods serves is already mounted, and only its biomes are
+        // collected. See galaxy.md, "Biome mods in a GW battle".
         var gwoGenerateBiomes = function () {
           var self = this;
           var done = $.Deferred();
@@ -73,12 +105,18 @@ function gwoRefereeChanges() {
               done.resolve();
               return;
             }
-            gwoBiomeMods.mount(mods).always(function () {
-              gwoBiomeMods.cook(mods).then(function (result) {
+            var split = _.partition(mods, gwoBiomes.isGwsmServed);
+            var cooked = split[1];
+
+            self.stage("!LOC:Processing biome mods");
+            gwoBiomeMods.mount(cooked).always(function () {
+              gwoBiomeMods.cook(cooked).then(function (result) {
                 self.files(_.assign({}, self.files(), result.files));
                 self.biomeMods = result.mods;
-                self.biomeServed = result.served;
-                done.resolve();
+                gwoBiomeMods.serve(split[0]).then(function (served) {
+                  self.biomeServed = _.assign({}, result.served, served.served);
+                  done.resolve();
+                });
               });
             });
           });
@@ -88,7 +126,9 @@ function gwoRefereeChanges() {
         gwoReferee.prototype.stripSystems = function () {
           var self = this;
 
-          // remove the systems from the galaxy
+          // saveSystems deletes each star's generated system from the config
+          // and returns them; the config is what the battle carries, so this
+          // is the strip, and the return value is not needed.
           var gw = self.config().gw;
           GW.Game.saveSystems(gw);
         };
@@ -134,6 +174,7 @@ function gwoRefereeChanges() {
 
           // community mods will hook unmountAllMemoryFiles to remount client mods
           api.file.unmountAllMemoryFiles().always(function () {
+            self.stage("!LOC:Mounting game files");
             api.file.mountMemoryFiles(cookedFiles).then(function () {
               gwoBiomeMods.mount(self.biomeMods).always(function () {
                 deferred.resolve();
@@ -150,12 +191,32 @@ function gwoRefereeChanges() {
 
         GWReferee.hire = function (game) {
           var ref = new gwoReferee(game);
+          hiresThisLaunch += 1;
+          ref.pass = hiresThisLaunch;
           return _.bind(gwoGenerateGameFiles, ref)()
+            .then(function () {
+              ref.stage("!LOC:Processing AI mods");
+            })
             .then(_.bind(gwoGenerateAI, ref))
             .then(_.bind(gwoGenerateBiomes, ref))
+            .then(function () {
+              ref.stage("!LOC:Processing game config");
+            })
             .then(_.bind(gwoGenerateConfig, ref))
             .then(function () {
+              // Later stages (mountFiles) belong to the launch, not a pass.
+              ref.pass = 0;
               return ref;
+            })
+            .then(null, function (error) {
+              // Stock waits on the hire with no fail handler, so a rejected
+              // one would leave launchingFight set and the Fight button dead.
+              console.error(
+                "Galactic War Overhaul (GWO): battle preparation failed: " +
+                  ((error && (error.stack || error.message)) || error)
+              );
+              model.launchingFight(false);
+              return $.Deferred().reject(error).promise();
             });
         };
       }

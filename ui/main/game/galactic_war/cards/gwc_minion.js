@@ -3,7 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-], function (GWFactions, gwoCard, gwoGroup, gwoAI) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+], function (GWFactions, gwoCard, gwoGroup, gwoAI, gwoRaces) {
   var coopMinionCount = function () {
     var game = model.game();
     // Counts minions of absent players too, in case one rejoins.
@@ -37,8 +38,8 @@ define([
       );
       if (minion.character) {
         result.push("<br>", "!LOC:Personality:", " " + loc(minion.character));
-        if (minion.penchant) {
-          result.push(" " + loc(minion.penchant));
+        if (minion.penchantName) {
+          result.push(" " + loc(minion.penchantName));
         }
       }
       return result;
@@ -73,26 +74,34 @@ define([
         chance = chance / (totalMinions + 1);
       }
 
-      var gwoSettings = gwoAI.originSettings(model.game());
+      // GWO - a Sub Commander fights as the player's race, and with it that
+      // race's ally brain. See races.md.
+      var race = gwoRaces.raceOf(inventory);
+      var allyBrain = gwoAI.aiInUse("subcommander", race);
       var minionPool = GWFactions[context.faction].minions;
-      if (gwoSettings && gwoSettings.aiAlly === "Queller") {
+      if (allyBrain === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
       var minion = _.cloneDeep(
         rng ? rng.pick(minionPool) : _.sample(minionPool)
       );
-
-      if (gwoSettings) {
-        var ai = gwoSettings.ai;
-        if (ai === "Penchant") {
-          var penchantValues = gwoAI.penchants(rng);
-          minion.character =
-            minion.character + (" " + loc(penchantValues.penchantName));
-          minion.personality.personality_tags =
-            minion.personality.personality_tags.concat(
-              penchantValues.penchants
-            );
+      // Every reader gives a Sub Commander its own rate, so the card carries
+      // no rate the template may hold.
+      delete minion.econ_rate;
+      if (!gwoRaces.isMla(race)) {
+        minion.race = race;
+        var raceCommander = gwoRaces.commanderFor(
+          rng ? rng.stream("commander") : undefined,
+          race
+        );
+        if (raceCommander) {
+          minion.commander = raceCommander;
         }
+      }
+
+      // Only the name is recorded: its tags are built at launch. See galaxy.md.
+      if (allyBrain === "Penchant") {
+        minion.penchantName = gwoAI.penchants(rng).penchantName;
       }
 
       return {

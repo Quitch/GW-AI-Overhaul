@@ -6,9 +6,25 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
-], function (GW, gwoAI, gwoSpecs, refereeCoop, gwoSpecCache, gameFilePaths) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js",
+], function (
+  GW,
+  gwoAI,
+  gwoSpecs,
+  refereeCoop,
+  gwoSpecCache,
+  gameFilePaths,
+  gwoRaces,
+  gwoRaceCells,
+  unitCells,
+  gwoTech
+) {
   var getAIUnitMapPath = gameFilePaths.getAIUnitMapPath;
   var getAIUnitMapDestinationPath = gameFilePaths.getAIUnitMapDestinationPath;
+  var mergeUnitMaps = gameFilePaths.mergeUnitMaps;
   var resolveAiUnitMapPaths = gameFilePaths.resolveAiUnitMapPaths;
   var buildPlayerFiles = gameFilePaths.buildPlayerFiles;
   var specFetch = gameFilePaths.specFetch;
@@ -50,6 +66,10 @@ define([
     var inventory = params.inventory;
     var aiFactionDeferred = params.aiFactionDeferred;
 
+    var race = params.race;
+    var cells = params.cells;
+    var commanders = params.commanders || [];
+
     var enemyAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, aiTag[currentCount]);
     var enemyX1AIUnitMap = GW.specs.genAIUnitMap(
       aiX1UnitMap,
@@ -86,17 +106,40 @@ define([
           : {};
         var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
 
-        if (ai.inventory) {
-          var aiInventory =
-            currentCount === 0
-              ? ai.inventory
-              : ai.foes[currentCount - 1].inventory;
-          var guardians = ai.mirrorMode;
-          if (guardians) {
-            aiInventory = aiInventory.concat(
-              guardianMods(game, inventory.mods())
-            );
-          }
+        var aiInventory = gameFilePaths.armyInventory(
+          currentCount === 0 ? ai : ai.foes[currentCount - 1],
+          gwoTech.loadoutFor,
+          gwoAI.factionIndex,
+          gwoAI.isCluster
+        );
+        var guardians = ai.mirrorMode;
+        if (guardians) {
+          aiInventory = aiInventory.concat(
+            guardianMods(game, inventory.mods())
+          );
+        }
+        // The AI's tech names vanilla files; a race army's land on the race
+        // files of the same cell too. Its spec set holds every listed unit,
+        // so the originals stay as well. See races.md.
+        if (cells) {
+          aiInventory = unitCells.expandMods(
+            aiInventory,
+            cells.vanilla,
+            cells.race,
+            function (file) {
+              return Object.prototype.hasOwnProperty.call(
+                aiSpecFiles,
+                file + aiTag[currentCount]
+              );
+            }
+          );
+        }
+        _.forEach(commanders, function (commander) {
+          aiInventory = aiInventory.concat(
+            gwoRaces.commanderModsFor(race, commander)
+          );
+        });
+        if (aiInventory.length) {
           gwoSpecs.mod(aiFiles, aiInventory, aiTag[currentCount]);
         }
         aiFactionDeferred.resolve(aiFiles);
@@ -112,110 +155,257 @@ define([
   return function () {
     var self = this;
 
-    // Game file generation cannot use previously mounted files.  That would be bad.
+    // The previous battle's cooked specs are still mounted; read as the base,
+    // they would be modded a second time.
     var done = $.Deferred();
+    // A throw inside a deferred callback is a hang, not a rejection (see
+    // constraints.md), so every path below that can fail rejects here instead.
+    var fail = function (error) {
+      done.reject(error);
+    };
 
     // community mods will hook unmountAllMemoryFiles to remount client mods
     api.file.unmountAllMemoryFiles().always(function () {
-      var titans = api.content.usingTitans();
+      try {
+        self.stage("!LOC:Processing tech cards");
+        var titans = api.content.usingTitans();
 
-      var game = self.game();
-      var ai = gwoAI.currentStarAi(game);
-      var aiTag = gwoAI.aiTags(ai);
-      var aiFactionCount = aiTag.length;
-      var aiFactions = _.map(aiTag, function () {
-        return $.Deferred();
-      });
+        var game = self.game();
+        var ai = gwoAI.currentStarAi(game);
+        var aiTag = gwoAI.aiTags(ai);
+        var aiFactionCount = aiTag.length;
+        var aiFactions = _.map(aiTag, function () {
+          return $.Deferred();
+        });
 
-      var playerFileGen = $.Deferred();
-      var filesToProcess = [playerFileGen];
+        var playerFileGen = $.Deferred();
+        var filesToProcess = [playerFileGen];
 
-      var enemyAI = gwoAI.aiInUse("enemy");
-      var aiUnitMapSourcePath = getAIUnitMapPath(false, enemyAI);
-      var aiUnitMapTitansSourcePath = getAIUnitMapPath(true, enemyAI);
-      var enemyDestinationPath = gwoAI.getAIPathDestination("enemy");
-      var aiUnitMapDestinationPath = getAIUnitMapDestinationPath(
-        false,
-        enemyDestinationPath
-      );
-      var aiUnitMapTitansDestinationPath = getAIUnitMapDestinationPath(
-        true,
-        enemyDestinationPath
-      );
+        var inventory = game.inventory();
+        var playerRace = gwoRaces.raceOf(inventory);
+        var enemyAI = gwoAI.aiInUse("enemy");
+        var aiUnitMapSourcePath = getAIUnitMapPath(false, enemyAI);
+        var aiUnitMapTitansSourcePath = getAIUnitMapPath(true, enemyAI);
 
-      var unitsLoad = $.get("spec://pa/units/unit_list.json");
-      var aiMapLoad = $.get("spec:/" + aiUnitMapSourcePath);
-      var aiX1MapLoad = titans
-        ? $.get("spec:/" + aiUnitMapTitansSourcePath)
-        : {};
-      $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
-        function (unitsGet, aiMapGet, aiX1MapGet) {
-          var inventory = game.inventory();
-
-          var units = parse(unitsGet[0]).units;
-          var aiUnitMap = parse(aiMapGet[0]);
-          var aiX1UnitMap = parse(aiX1MapGet[0]);
-          var clusterUnitMapPath = "/pa/ai_cluster/unit_maps/ai_unit_map.json";
-          var clusterUnitMapTitansPath =
-            "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
-          // Identical for every faction - build it once rather than per iteration.
-          var aiSpecs = units.concat(model.gwoSpecs);
-          _.times(aiFactionCount, function (n) {
-            buildAiFactionFiles({
-              currentCount: n,
-              ai: ai,
-              aiTag: aiTag,
-              aiUnitMap: aiUnitMap,
-              aiX1UnitMap: aiX1UnitMap,
-              aiSpecs: aiSpecs,
-              aiUnitMapDestinationPath: aiUnitMapDestinationPath,
-              aiUnitMapTitansDestinationPath: aiUnitMapTitansDestinationPath,
-              clusterUnitMapPath: clusterUnitMapPath,
-              clusterUnitMapTitansPath: clusterUnitMapTitansPath,
-              titans: titans,
-              game: game,
-              inventory: inventory,
-              aiFactionDeferred: aiFactions[n],
+        // Each map file once per launch, through spec:// like the unit list.
+        var mapCache = {};
+        var loadMap = function (path) {
+          if (!mapCache[path]) {
+            mapCache[path] = $.get("spec:/" + path).then(function (data) {
+              return parse(data);
             });
+          }
+          return mapCache[path];
+        };
+
+        // A race army reads the brain that carries its race (or Titans) from
+        // that brain's own map with the race's maps laid over it, at the race's
+        // tree; a vanilla spec_id the race maps left falls back to a race unit
+        // of its cell. Guardians mirror the player, race included. See races.md.
+        var armyOf = function (n) {
+          return n === 0 ? ai : ai.foes[n - 1];
+        };
+        var raceOfArmy = function (n) {
+          return ai.mirrorMode ? playerRace : gwoRaces.raceOf(armyOf(n));
+        };
+        var armyMaps = function (type, race, cells) {
+          var brain = gwoAI.aiInUse(type, race);
+          var source = gwoAI.getAIPathSource(type, race);
+          var raceMaps = gwoRaces.unitMapsFor(race, brain, source);
+          var loads = [
+            loadMap(getAIUnitMapPath(false, brain)),
+            titans ? loadMap(getAIUnitMapPath(true, brain)) : null,
+          ].concat(_.map(raceMaps, loadMap));
+          var merge = function (base, extra) {
+            var merged = mergeUnitMaps(base, extra);
+            return cells
+              ? unitCells.unitMapFallback(
+                  merged,
+                  extra,
+                  cells.vanilla,
+                  cells.race
+                )
+              : merged;
+          };
+
+          return $.when.apply($, loads).then(function () {
+            var maps = _.toArray(arguments);
+            var extra = maps.slice(2);
+            return {
+              classic: merge(maps[0], extra),
+              x1: titans ? merge(maps[1], extra) : {},
+            };
           });
+        };
 
-          var playerTag = ".player";
+        var unitsLoad = $.get("spec://pa/units/unit_list.json");
+        var aiMapLoad = loadMap(aiUnitMapSourcePath);
+        var aiX1MapLoad = titans ? loadMap(aiUnitMapTitansSourcePath) : {};
+        // Native from here on: a jQuery callback that throws hangs the launch,
+        // a native one rejects, and every chain below ends in fail. A jQuery
+        // promise adopted by a native one hands over its first argument only,
+        // so the three loads are gathered into one first.
+        var loads = $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
+          function (unitsGet, aiUnitMap, aiX1UnitMap) {
+            return [unitsGet, aiUnitMap, aiX1UnitMap];
+          }
+        );
+        Promise.resolve(loads)
+          .then(function (loaded) {
+            var units = parse(loaded[0][0]).units;
+            var aiUnitMap = loaded[1];
+            var aiX1UnitMap = loaded[2];
+            var clusterUnitMapPath =
+              "/pa/ai_cluster/unit_maps/ai_unit_map.json";
+            var clusterUnitMapTitansPath =
+              "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json";
+            // Identical for every faction - build it once rather than per iteration.
+            var aiSpecs = units.concat(model.gwoSpecs);
+            // A race's capability cells, from the same specs genUnitSpecs will
+            // fetch.
+            var cellsFor = function (race) {
+              return gwoRaces.isMla(race)
+                ? Promise.resolve(undefined)
+                : gwoRaceCells.indexFor(race, units);
+            };
+            _.times(aiFactionCount, function (n) {
+              var army = armyOf(n);
+              var race = raceOfArmy(n);
+              var destination = gwoAI.getAIPathDestination("enemy", {
+                race: race,
+              });
 
-          var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
-          var playerX1AIUnitMap = titans
-            ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
-            : {};
-          var additionalPlayerSpecs = _.isUndefined(ai.ally)
-            ? model.gwoSpecs
-            : model.gwoSpecs.concat(ai.ally.commander);
-          var playerSpecs = inventory.units().concat(additionalPlayerSpecs);
+              cellsFor(race)
+                .then(function (cells) {
+                  var maps = gwoRaces.isMla(race)
+                    ? { classic: aiUnitMap, x1: aiX1UnitMap }
+                    : armyMaps("enemy", race, cells);
 
-          genUnitSpecs(playerSpecs, playerTag).then(function (playerSpecFiles) {
-            playerFileGen.resolve(
-              buildPlayerFiles(
-                {
-                  playerAIUnitMap: playerAIUnitMap,
-                  playerX1AIUnitMap: playerX1AIUnitMap,
-                  playerSpecFiles: playerSpecFiles,
-                  inventory: inventory,
-                  titans: titans,
-                },
-                gwoAI,
-                gwoSpecs
-              )
-            );
-          });
-        }
-      );
+                  return Promise.resolve(maps).then(function (unitMaps) {
+                    return buildAiFactionFiles({
+                      currentCount: n,
+                      ai: ai,
+                      aiTag: aiTag,
+                      race: race,
+                      cells: cells,
+                      commanders: [army.commander].concat(
+                        n === 0 ? _.pluck(ai.minions || [], "commander") : []
+                      ),
+                      aiUnitMap: unitMaps.classic,
+                      aiX1UnitMap: unitMaps.x1,
+                      aiSpecs: aiSpecs,
+                      aiUnitMapDestinationPath: getAIUnitMapDestinationPath(
+                        false,
+                        destination
+                      ),
+                      aiUnitMapTitansDestinationPath:
+                        getAIUnitMapDestinationPath(true, destination),
+                      clusterUnitMapPath: clusterUnitMapPath,
+                      clusterUnitMapTitansPath: clusterUnitMapTitansPath,
+                      titans: titans,
+                      game: game,
+                      inventory: inventory,
+                      aiFactionDeferred: aiFactions[n],
+                    });
+                  });
+                })
+                .then(null, fail);
+            });
 
-      _.times(aiFactionCount, function (n) {
-        filesToProcess.push(aiFactions[n]);
-      });
+            var playerTag = ".player";
+            var additionalPlayerSpecs = _.isUndefined(ai.ally)
+              ? model.gwoSpecs
+              : model.gwoSpecs.concat(ai.ally.commander);
+            var held = inventory.units().concat(additionalPlayerSpecs);
+            var playerCommanders = [inventory.getTag("global", "commander")]
+              .concat(_.pluck(inventory.minions(), "commander"))
+              .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander]);
 
-      $.when.apply($, filesToProcess).always(function () {
-        self.files(_.assign.apply(_, arguments));
-        done.resolve();
-      });
+            cellsFor(playerRace)
+              .then(function (cells) {
+                // A race player fields the race's units of the cells the
+                // vanilla ones held occupy; a kept vanilla unit (the Colonel)
+                // is retagged so the race can build it. See races.md.
+                var playerSpecs = cells
+                  ? unitCells.raceUnitsFor(held, cells.vanilla, cells.race)
+                  : held;
+                var keptVanilla = cells
+                  ? _.difference(
+                      unitCells.heldCommanderUnits(held, cells.vanilla),
+                      playerCommanders
+                    )
+                  : [];
+                var playerExtraMods = _.flatten(
+                  _.map(playerCommanders, function (commander) {
+                    return gwoRaces.commanderModsFor(playerRace, commander);
+                  }).concat(
+                    _.map(keptVanilla, function (unit) {
+                      return gwoRaces.unitRetagMods(playerRace, unit);
+                    })
+                  )
+                );
+                // MLA keeps the enemy brain's map for the player, as it always has.
+                var playerMaps = gwoRaces.isMla(playerRace)
+                  ? { classic: aiUnitMap, x1: aiX1UnitMap }
+                  : armyMaps("subcommander", playerRace, cells);
+
+                return Promise.resolve(playerMaps).then(function (unitMaps) {
+                  return genUnitSpecs(playerSpecs, playerTag).then(
+                    function (playerSpecFiles) {
+                      var has = function (file) {
+                        return Object.prototype.hasOwnProperty.call(
+                          playerSpecFiles,
+                          file + playerTag
+                        );
+                      };
+                      var playerMods = cells
+                        ? unitCells.expandMods(
+                            inventory.mods(),
+                            cells.vanilla,
+                            cells.race,
+                            has
+                          )
+                        : inventory.mods();
+                      playerFileGen.resolve(
+                        buildPlayerFiles(
+                          {
+                            playerAIUnitMap: GW.specs.genAIUnitMap(
+                              unitMaps.classic,
+                              playerTag
+                            ),
+                            playerX1AIUnitMap: titans
+                              ? GW.specs.genAIUnitMap(unitMaps.x1, playerTag)
+                              : {},
+                            playerSpecFiles: playerSpecFiles,
+                            inventory: inventory,
+                            titans: titans,
+                            race: playerRace,
+                            mods: playerMods,
+                            extraMods: playerExtraMods,
+                          },
+                          gwoAI,
+                          gwoSpecs
+                        )
+                      );
+                    }
+                  );
+                });
+              })
+              .then(null, fail);
+          })
+          .then(null, fail);
+
+        _.times(aiFactionCount, function (n) {
+          filesToProcess.push(aiFactions[n]);
+        });
+
+        $.when.apply($, filesToProcess).then(function () {
+          self.files(_.assign.apply(_, arguments));
+          done.resolve();
+        }, fail);
+      } catch (error) {
+        fail(error);
+      }
     });
     return done.promise();
   };

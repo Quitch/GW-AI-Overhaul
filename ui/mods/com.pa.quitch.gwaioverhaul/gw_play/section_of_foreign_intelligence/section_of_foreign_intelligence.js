@@ -31,10 +31,6 @@ function gwoIntelligence() {
     model.gwoAIBuffsTooltip =
       "!LOC:Applied to AI commanders and units preferred by the faction.";
 
-    var getNumberOfCommanders = function (commander) {
-      return commander.bossCommanders || commander.commanderCount || 1;
-    };
-
     var getCommanderCharacter = function (commander) {
       var character = commander.character
         ? loc(commander.character)
@@ -213,9 +209,21 @@ function gwoIntelligence() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],
-      function (gwoColour, gwoCards, gwoAI, gwoRefereeCoop, gwoStarCardsView) {
+      function (
+        gwoColour,
+        gwoCards,
+        gwoAI,
+        gwoRefereeCoop,
+        gwoStarCardsView,
+        gwoRaces
+      ) {
         var starCardsView = gwoStarCardsView();
+
+        var getNumberOfCommanders = function (commander) {
+          return gwoAI.commanderCount(commander);
+        };
 
         var url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
@@ -275,12 +283,16 @@ function gwoIntelligence() {
             ? gwoAI.subcommanderEconRate
             : gwoAI.aiEconRateWithFloor(commander.econ_rate);
           var numCommanders = getNumberOfCommanders(commander);
+          // The race shows through the icon, not the name. See races.md.
+          var raceDescriptor = gwoRaces.byId(commander.race);
           var faction = getFactionName(commander, factionIndex);
 
           if (numCommanders > 1) {
             name = name.concat(" x", numCommanders);
             eco = eco * ((numCommanders + 1) / 2);
           }
+
+          var icon = (raceDescriptor && raceDescriptor.playerIcon) || {};
 
           return {
             name: name,
@@ -291,6 +303,8 @@ function gwoIntelligence() {
             eco: eco,
             faction: faction.name,
             tooltip: faction.tooltip,
+            iconFill: icon.fill,
+            iconOutline: icon.outline,
           };
         };
 
@@ -309,13 +323,7 @@ function gwoIntelligence() {
           if (ai.foes) {
             commanders = commanders.concat(_.map(ai.foes, intelligenceOf));
             _.forEach(ai.foes, function (army) {
-              var commanderCount = 1;
-              if (army.commanderCount) {
-                commanderCount = army.commanderCount;
-              } else if (army.landing_policy) {
-                // legacy GWO support
-                commanderCount = army.landing_policy.length;
-              }
+              var commanderCount = gwoAI.commanderCount(army);
               totalThreat +=
                 gwoAI.aiEconRateWithFloor(army.econ_rate) *
                 0.4 *

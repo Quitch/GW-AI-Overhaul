@@ -285,8 +285,6 @@ describe("pendingCardsContainLoadout", () => {
 });
 
 describe("applyPenchantToSubcommander", () => {
-  // The helper reads the runtime `loc` global; in-game it localises, here it just
-  // echoes the key so the appended name is assertable.
   const gwoAI = {
     penchants: () => ({ penchantName: "!LOC:Reckless", penchants: ["rush"] }),
   };
@@ -298,55 +296,75 @@ describe("applyPenchantToSubcommander", () => {
     };
   }
 
-  it("appends the penchant name and tags for a Penchant ally", () => {
-    const priorLoc = global.loc;
-    global.loc = (key) => key;
-    try {
-      const sub = subcommander();
-      helpers.applyPenchantToSubcommander(sub, { aiAlly: "Penchant" }, gwoAI);
-      assert.equal(sub.character, "Commander !LOC:Reckless");
-      assert.deepEqual(sub.personality.personality_tags, ["base", "rush"]);
-    } finally {
-      global.loc = priorLoc;
-    }
+  it("records the penchant's name for a Penchant ally, and nothing else", () => {
+    const sub = subcommander();
+    helpers.applyPenchantToSubcommander(sub, { aiAlly: "Penchant" }, gwoAI);
+    assert.equal(sub.penchantName, "!LOC:Reckless");
+    // The tags are built at launch from the name; the character stays clean.
+    assert.equal(sub.character, "Commander");
+    assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
 
   it("is a no-op for a non-Penchant ally", () => {
     const sub = subcommander();
     helpers.applyPenchantToSubcommander(sub, { aiAlly: "Queller" }, gwoAI);
-    assert.equal(sub.character, "Commander");
+    assert.ok(!("penchantName" in sub));
     assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
 
   it("is a no-op when gwoSettings is missing", () => {
     const sub = subcommander();
     helpers.applyPenchantToSubcommander(sub, undefined, gwoAI);
-    assert.equal(sub.character, "Commander");
+    assert.ok(!("penchantName" in sub));
     assert.deepEqual(sub.personality.personality_tags, ["base"]);
   });
 
+  // Penchant is MLA-only, so a race the war-wide Penchant ally cannot run
+  // gets no penchant - its ally brain coerces to Titans.
+  it("withholds the penchant from a race Penchant does not know", () => {
+    const sub = subcommander();
+    helpers.applyPenchantToSubcommander(
+      sub,
+      { aiAlly: "Penchant" },
+      gwoAI,
+      undefined,
+      "legion"
+    );
+    assert.ok(!("penchantName" in sub));
+    assert.deepEqual(sub.personality.personality_tags, ["base"]);
+  });
+
+  it("reads the MLA subcommander from the war-wide strings, not the table", () => {
+    const sub = subcommander();
+    helpers.applyPenchantToSubcommander(
+      sub,
+      {
+        aiAlly: "Penchant",
+        aiByRace: { legion: { enemy: "Titans", ally: "Titans" } },
+      },
+      gwoAI,
+      undefined,
+      "mla"
+    );
+    assert.equal(sub.penchantName, "!LOC:Reckless");
+  });
+
   it("forwards its rng to gwoAI.penchants", () => {
-    const priorLoc = global.loc;
-    global.loc = (key) => key;
-    try {
-      const seen = [];
-      const spy = {
-        penchants: (rng) => {
-          seen.push(rng);
-          return { penchantName: "n", penchants: [] };
-        },
-      };
-      const rng = () => 0.5;
-      helpers.applyPenchantToSubcommander(
-        subcommander(),
-        { aiAlly: "Penchant" },
-        spy,
-        rng
-      );
-      assert.deepEqual(seen, [rng]);
-    } finally {
-      global.loc = priorLoc;
-    }
+    const seen = [];
+    const spy = {
+      penchants: (rng) => {
+        seen.push(rng);
+        return { penchantName: "n", penchants: [] };
+      },
+    };
+    const rng = () => 0.5;
+    helpers.applyPenchantToSubcommander(
+      subcommander(),
+      { aiAlly: "Penchant" },
+      spy,
+      rng
+    );
+    assert.deepEqual(seen, [rng]);
   });
 });
 
@@ -517,5 +535,259 @@ describe("explorationStillLive", () => {
       false
     );
     assert.equal(helpers.explorationStillLive(live, 17, {}), false);
+  });
+});
+
+describe("races", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+  );
+  const gwoUnit = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+  );
+  const {
+    FIXTURE_RACE,
+    fixtureIndex,
+    predictableRng,
+  } = require("../scripts/lib/race-fixture.js");
+  const { afterEach, beforeEach } = require("node:test");
+  const inventoryOf = (race) => ({
+    getTag: (ns, key) =>
+      ns === "global" && key === "playerRace" ? race : undefined,
+  });
+  const cardsToUnits = [
+    { id: "tank_card", units: [gwoUnit.ant] },
+    { id: "bot_card", units: [gwoUnit.dox] },
+  ];
+
+  beforeEach(() => {
+    races.register(FIXTURE_RACE);
+    races.setCells("fixture", fixtureIndex());
+  });
+  afterEach(() => races.reset());
+
+  it("raceCanDeal withholds only a card the race can own nothing of", () => {
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "tank_card",
+        cardsToUnits
+      ),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "bot_card",
+        cardsToUnits
+      ),
+      false
+    );
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "loadout",
+        cardsToUnits
+      ),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("mla"), "bot_card", cardsToUnits),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("fixture"), "gwaio_upgrade_ant", [
+        { id: "gwaio_upgrade_ant", units: [gwoUnit.ant] },
+      ]),
+      false
+    );
+    assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("mla"), "gwaio_upgrade_ant", [
+        { id: "gwaio_upgrade_ant", units: [gwoUnit.ant] },
+      ]),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(undefined, inventoryOf("fixture"), "bot_card", []),
+      true
+    );
+  });
+
+  it("withholds the MLA-only cards from a race, the commander upgrades excepted", () => {
+    for (const id of helpers.MLA_ONLY) {
+      assert.equal(helpers.mlaOnlyCard(id), true, id);
+      assert.equal(
+        helpers.raceCanDeal(races, inventoryOf("fixture"), id, []),
+        false
+      );
+      assert.equal(
+        helpers.raceCanDeal(races, inventoryOf("mla"), id, []),
+        true
+      );
+    }
+    assert.deepEqual(helpers.MLA_ONLY, [
+      "gwaio_start_paratrooper",
+      "gwaio_start_nomad",
+      "gwaio_protocol_killswitch",
+      "gwaio_enable_planetaryradar",
+      "gwaio_start_rapid",
+    ]);
+    assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_ant"), true);
+    assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_subcommander_1"), false);
+    assert.equal(
+      helpers.mlaOnlyCard("gwaio_upgrade_ubercannon_structure"),
+      false
+    );
+    assert.equal(helpers.mlaOnlyCard("gwc_combat_bots"), false);
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "gwaio_upgrade_ubercannon_structure",
+        [{ id: "gwaio_upgrade_ubercannon_structure", units: [gwoUnit.ant] }]
+      ),
+      true
+    );
+  });
+
+  it("raceLocksLoadout locks nothing for MLA or an unknown race", () => {
+    for (const id of helpers.MLA_ONLY.concat(["gwaio_upgrade_ant"])) {
+      assert.equal(helpers.raceLocksLoadout("mla", id), false, id);
+      assert.equal(helpers.raceLocksLoadout(undefined, id), false, id);
+      assert.equal(helpers.raceLocksLoadout("", id), false, id);
+    }
+  });
+
+  it("raceLocksLoadout locks exactly the MLA-only cards for a race", () => {
+    for (const id of helpers.MLA_ONLY) {
+      assert.equal(helpers.raceLocksLoadout("fixture", id), true, id);
+    }
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwaio_upgrade_ant"),
+      true
+    );
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwaio_upgrade_subcommander_1"),
+      false
+    );
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwaio_upgrade_ubercannon_structure"),
+      false
+    );
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwc_start_subcdr"),
+      false
+    );
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwaio_start_lucky"),
+      false
+    );
+  });
+
+  it("applyRaceToSubcommander gives a race Sub Commander the race and one of its commanders", () => {
+    const subcommander = {
+      name: "x",
+      commander: "/pa/units/commanders/v.json",
+    };
+
+    helpers.applyRaceToSubcommander(
+      subcommander,
+      races,
+      "fixture",
+      predictableRng()
+    );
+    assert.equal(subcommander.race, "fixture");
+    assert.equal(
+      subcommander.commander,
+      "/pa/units/commanders/fx_alpha/fx_alpha.json"
+    );
+
+    const mla = { name: "y", commander: "v" };
+    helpers.applyRaceToSubcommander(mla, races, "mla", predictableRng());
+    assert.deepEqual(mla, { name: "y", commander: "v" });
+  });
+
+  it("buildGeneralCommanderMinions passes the race through", () => {
+    const minions = helpers.buildGeneralCommanderMinions({
+      minionPool: [{ name: "m", commander: "v", personality: {} }],
+      gwoSettings: {},
+      gwoAI: {},
+      gwoCard: { uniqueValue: () => 1 },
+      races: races,
+      race: "fixture",
+      rng: {
+        stream: () => ({
+          pick: (list) => list[0],
+          stream: () => predictableRng(),
+        }),
+      },
+    });
+
+    assert.equal(minions.length, 2);
+    assert.equal(minions[0].minion.race, "fixture");
+    assert.equal(
+      minions[0].minion.commander,
+      "/pa/units/commanders/fx_alpha/fx_alpha.json"
+    );
+  });
+});
+
+describe("explorationDealtNothing", () => {
+  const game = (turnState, currentStar) => ({
+    turnState: () => turnState,
+    currentStar: () => currentStar,
+  });
+  const star = (cards) => ({ cardList: () => cards });
+
+  it("is true when the live exploration at this star holds no card", () => {
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 4), 4, star([]), false),
+      true
+    );
+  });
+
+  it("is false once a card was dealt", () => {
+    assert.equal(
+      helpers.explorationDealtNothing(
+        game("explore", 4),
+        4,
+        star([{ id: "gwc_minion" }]),
+        false
+      ),
+      false
+    );
+  });
+
+  it("is false when the turn has moved on or to another star", () => {
+    assert.equal(
+      helpers.explorationDealtNothing(game("end", 4), 4, star([]), false),
+      false
+    );
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 5), 4, star([]), false),
+      false
+    );
+  });
+
+  it("is false while replaying a host action, and for bad inputs", () => {
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 4), 4, star([]), true),
+      false
+    );
+    assert.equal(
+      helpers.explorationDealtNothing(null, 4, star([]), false),
+      false
+    );
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 4), "4", star([]), false),
+      false
+    );
+    assert.equal(
+      helpers.explorationDealtNothing(game("explore", 4), 4, {}, false),
+      false
+    );
   });
 });

@@ -20,6 +20,10 @@ const refereeAIPaths = loadCouiModule(
 const subcommanderTech = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js"
 );
+const races = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+);
+const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
 
 describe("getPlayerTagGivenIndex", () => {
   it("index 0 is the host tag .player", () => {
@@ -146,6 +150,43 @@ describe("getViewerSubcommanderAiPath", () => {
       ),
       "/pa/ai_queller/q_bronze/player_.player0/"
     );
+  });
+
+  // aiRoot only knows a registered race, so the fixture one is registered for
+  // this case alone - see testing.md.
+  it("routes two viewers on two races to their own race trees", () => {
+    races.register(FIXTURE_RACE);
+    // Separate races: each viewer's race comes off their own inventory, so a
+    // race viewer and an MLA viewer in the same battle land in different roots.
+    const raceInventory = makeInventory({
+      aiModsList: [{ op: "load" }],
+      tags: { "global:playerRace": "fixture" },
+    });
+    const mlaInventory = makeInventory({ aiModsList: [{ op: "load" }] });
+
+    assert.equal(
+      hook.getViewerSubcommanderAiPath(
+        refereeAIPaths,
+        subcommanderTech,
+        "Titans",
+        raceInventory,
+        ".player0",
+        "fixture"
+      ),
+      "/pa/ai_subcommander_race_fixture/player_.player0/"
+    );
+    assert.equal(
+      hook.getViewerSubcommanderAiPath(
+        refereeAIPaths,
+        subcommanderTech,
+        "Titans",
+        mlaInventory,
+        ".player1",
+        "mla"
+      ),
+      "/pa/ai_subcommander/player_.player1/"
+    );
+    races.reset();
   });
 
   it("stays pairwise-distinct across a heterogeneous mix of brains and aiMods states, not just uniform Titans", () => {

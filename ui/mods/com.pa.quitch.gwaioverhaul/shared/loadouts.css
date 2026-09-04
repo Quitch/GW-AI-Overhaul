@@ -1,0 +1,7 @@
+/* A loadout the player's race cannot use: stock's disabled-switch values
+   (gw_start.css, .gw-start-square-switch.disabled). pointer-events: none also
+   drops the hover glow and makes the favourite button inert on the card. */
+#start-cards > .gwo-race-locked {
+  opacity: 0.45;
+  pointer-events: none;
+}

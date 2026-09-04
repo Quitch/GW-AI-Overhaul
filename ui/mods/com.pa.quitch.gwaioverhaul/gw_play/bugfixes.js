@@ -67,8 +67,13 @@ function gwoBugfixes() {
     };
 
     var fixClusterCommanderTypes = function (ai) {
-      var securityFix = false; // we have to fix `unit_types`
-      var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
+      // A war that records typeOfBuffs builds its spec mods at launch from the
+      // live Cluster mods, so only a baked inventory needs repairing.
+      if (!_.isArray(ai.inventory)) {
+        return;
+      }
+      var securityFix = false;
+      var workerFix = 0;
       var security =
         "/pa/units/land/bot_support_commander/bot_support_commander.json";
       var worker = "/pa/units/air/support_platform/support_platform.json";
@@ -159,12 +164,10 @@ function gwoBugfixes() {
           fixTreasurePlanetCardList(star);
         }
 
-        if (
-          !gwoSettings.clusterFixed &&
-          ko.isObservable(star.ai) &&
-          star.ai().isCluster
-        ) {
-          fixClusterCommanderTypes(star.ai());
+        // A neutral star's ai() is undefined.
+        var ai = ko.isObservable(star.ai) ? star.ai() : undefined;
+        if (!gwoSettings.clusterFixed && ai && ai.isCluster) {
+          fixClusterCommanderTypes(ai);
         }
       }
 

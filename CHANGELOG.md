@@ -1,5 +1,42 @@
 # CHANGELOG
 
+## v7.0.0 - 2026-09-04
+
+### Added
+
+- Pressing Fight now shows a loading screen that reports each stage of battle preparation. Other mods can report their own stages through `model.gwoLaunchProgress`
+- Support for Legion, Bugs, and Exiles when you are running GW Server Mods
+  - Both the player and AI can be any race
+  - Enable separate races in co-op war settings to allow multiple races on the player team
+  - Disable a race mod to exclude it from a war - GWO does not have a UI for this
+  - Enable Unique Races to avoid duplicates where possible given the number of races and galaxy size.
+  - AI can be set per-race for both allies and enemies - not all AIs support all races
+  - Resuming a war whose race mods are gone stops you fighting it
+- With GW Server Mods active, Shared Systems maps which require server components (i.e. models) will now be included in the war
+- Support for mods to add new decks to the Techs picker in the war setup - see the `New-GW-Cards` template
+
+### Changed
+
+- A viewer's loadout screen shows their commander in the host's faction colour
+- Removed Easier Start - it's always on now
+- AI defaults to TITANS again
+- Difficulty is applied when a battle starts rather than when a war is created, so a war in progress picks up balance changes to its difficulty tier. A Custom difficulty war keeps the settings it was created with
+- AI technology bonuses are built when a battle starts from the bonuses the war recorded, so a war in progress picks up balance changes to AI tech
+- AI personalities are built when a battle starts from the commander the war recorded, so a war in progress picks up balance changes to AI personalities
+
+### Bugfix
+
+- Picking Beginner or Casual no longer leaves the Custom difficulty's landing evaluation radius blank
+- A Custom difficulty war now floors AI economy at its own economy settings instead of at 1.0
+- Enemy AIs no longer inherit the base game's Normal difficulty economy thresholds, fabber ratios and unit mix in place of their own personality's
+- A Random enemy commander no longer keeps the Armor personality's unit mix underneath the personality it drew
+- A war saved by a version before v5.52.2 is repaired again when resumed
+- Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections
+- Sub Commanders were dealt Penchant personalities when the Opponent AI was Penchant; they now follow the Ally AI
+- Joining a per player tech war with a loadout added by another card mod now works
+- A battle whose preparation fails no longer leaves Fight stuck launching forever; the error is logged and Fight can be pressed again
+- Co-op players returning from the final battle after the host now see the victory screen: the host waits for everyone to reconnect, with a Cancel to end the war without them - only happens if the boss is the last enemy star
+
 ## v6.14.0 - 2026-08-27
 
 ### Changed

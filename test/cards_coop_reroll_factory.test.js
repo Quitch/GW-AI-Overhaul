@@ -16,7 +16,11 @@ const {
   createGlobalStubs,
   trackActive,
 } = require("../scripts/lib/global-stubs.js");
-const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const {
+  installFakeJQuery,
+  rejected,
+  resolved,
+} = require("../scripts/lib/fake-jquery.js");
 const {
   installFakeLodashTimers,
 } = require("../scripts/lib/fake-lodash-timers.js");
@@ -114,7 +118,7 @@ function setup(overrides = {}) {
     gwoOfferRerolls: (value) => calls.offerRerolls.push(value),
     prepareCoopPlayerInventories: () => {
       calls.prepared += 1;
-      return Promise.resolve();
+      return resolved();
     },
   });
 
@@ -136,7 +140,7 @@ function setup(overrides = {}) {
     galaxy: { stars: () => options.stars },
     chooseCards: (request) => {
       calls.deals.push(request);
-      return Promise.resolve(
+      return resolved(
         Array.from({ length: request.count }, (unused, n) => ({
           id: "reroll_" + n,
         }))
@@ -153,16 +157,14 @@ function setup(overrides = {}) {
     numCardsToOffer: 3,
     gwoSave: () => {
       calls.saves.push(true);
-      return options.saveFails
-        ? Promise.reject("save failed")
-        : Promise.resolve();
+      return options.saveFails ? rejected("save failed") : resolved();
     },
     GW: {
       manifest: {
         saveGame: () =>
           options.manifestFails
-            ? Promise.reject(new Error("manifest failed"))
-            : Promise.resolve(),
+            ? rejected(new Error("manifest failed"))
+            : resolved(),
       },
     },
     gwoStreams: {

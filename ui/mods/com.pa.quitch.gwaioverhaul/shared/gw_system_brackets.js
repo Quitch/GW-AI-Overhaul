@@ -1,10 +1,6 @@
-// Groups a pool of real star systems into army-count brackets, so Galactic War
-// can scale system size with distance from the origin.
-//
-// Shared Systems for Galactic War reads gw_galaxy.js's `players` as a surface-area
-// window and never looks at spawn points, so size stops tracking how many
-// commanders a map was built for. These brackets restore that from the landing
-// zones. A measured sibling of the shadowed gw_galaxy.js - see testing.md.
+// Groups a pool of real star systems into army-count brackets, so system size
+// can track distance from the origin under Shared Systems for Galactic War. See
+// galaxy.md, "System brackets, under Shared Systems for Galactic War".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
 ], function (gwoBiomes) {
@@ -235,7 +231,7 @@ define([
   };
 
   // The pool holds live references - My Systems is a bound IndexedDB row - so
-  // withoutBrokenSystems' in-place backfill has to go on the copy instead.
+  // the starting_planet backfill goes on the copy, never on the source.
   var copyOf = function (system, providers) {
     var copy = JSON.parse(JSON.stringify(system));
     if (!_.some(copy.planets, "starting_planet")) {

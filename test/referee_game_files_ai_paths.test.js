@@ -30,6 +30,61 @@ const installModel = useModel();
 const isClusterTrue = () => true;
 const isClusterFalse = () => false;
 
+describe("armyInventory", () => {
+  const loadoutFor = (faction, buffs, isCluster) => [
+    { faction, buffs, isCluster },
+  ];
+  const factionIndex = (army) => army.faction;
+
+  it("derives the inventory from a recorded typeOfBuffs", () => {
+    assert.deepEqual(
+      refereeGameFiles.armyInventory(
+        { faction: 2, typeOfBuffs: [0, 6], inventory: ["baked"] },
+        loadoutFor,
+        factionIndex,
+        isClusterFalse
+      ),
+      [{ faction: 2, buffs: [0, 6], isCluster: false }]
+    );
+  });
+
+  it("passes the cluster test's answer through", () => {
+    assert.deepEqual(
+      refereeGameFiles.armyInventory(
+        { faction: 4, typeOfBuffs: [] },
+        loadoutFor,
+        factionIndex,
+        isClusterTrue
+      ),
+      [{ faction: 4, buffs: [], isCluster: true }]
+    );
+  });
+
+  it("uses the baked inventory of a war saved without typeOfBuffs", () => {
+    assert.deepEqual(
+      refereeGameFiles.armyInventory(
+        { faction: 1, inventory: ["baked"] },
+        loadoutFor,
+        factionIndex,
+        isClusterFalse
+      ),
+      ["baked"]
+    );
+  });
+
+  it("carries nothing for an army with neither", () => {
+    assert.deepEqual(
+      refereeGameFiles.armyInventory(
+        { faction: 1 },
+        loadoutFor,
+        factionIndex,
+        isClusterFalse
+      ),
+      []
+    );
+  });
+});
+
 describe("getAIUnitMapPath", () => {
   it("Queller source is under q_uber/, regardless of titans", () => {
     assert.equal(
@@ -98,10 +153,9 @@ describe("clusterArmyIndex", () => {
     assert.equal(refereeGameFiles.clusterArmyIndex(ai, gwoAI.isCluster), 0);
   });
 
-  // A war saved before v5.44.0 stores faction as ["4"]. gwoAI.isCluster has
-  // always understood both forms; clusterArmyIndex used to test === 4 itself
-  // and so disagreed with it, sending the unit map to the non-Cluster path
-  // while setAIPath sent the build orders to /pa/ai_cluster/.
+  // A war saved before v5.44.0 stores faction as ["4"]. clusterArmyIndex must
+  // read it through gwoAI.isCluster, which understands both forms, or the unit
+  // map and the build orders land in different trees.
   it("returns 0 for a pre-v5.44.0 war whose faction is the legacy array", () => {
     const ai = { faction: ["4"] };
     assert.equal(refereeGameFiles.clusterArmyIndex(ai, gwoAI.isCluster), 0);
@@ -144,10 +198,9 @@ describe("resolveAiUnitMapPaths", () => {
     assert.deepEqual(resolved, clusterPaths);
   });
 
-  // The invariant the deleted ai_path_unit_map_consistency.test.js was written
-  // for, in the one form that can actually fail: unit-map routing and
-  // gwoAI.isCluster - which is what setAIPath routes the build orders on -
-  // must agree for every faction form a saved war can hold.
+  // Unit-map routing and gwoAI.isCluster - which is what setAIPath routes the
+  // build orders on - must agree for every faction form a saved war can hold,
+  // or the unit map and the build orders land in different trees.
   for (const faction of [4, ["4"], 1]) {
     it(`agrees with gwoAI.isCluster for faction ${JSON.stringify(faction)}`, () => {
       const ai = { faction: faction, foes: [{ faction: 1 }] };
@@ -325,5 +378,88 @@ describe("specFetch", () => {
           }
         )
     );
+  });
+});
+
+describe("races", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+  );
+  const gwoUnit = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+  );
+  const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+  const { afterEach, beforeEach } = require("node:test");
+
+  beforeEach(() => races.register(FIXTURE_RACE));
+  afterEach(() => races.reset());
+
+  it("mergeUnitMaps lays each race map over the brain's, race keys winning, without touching either", () => {
+    const base = {
+      unit_map: { Commander: { a: 1 }, Tank: { b: 1 } },
+      other: true,
+    };
+    const race = { unit_map: { RaceTank: { c: 1 }, Tank: { b: 2 } } };
+
+    assert.deepEqual(refereeGameFiles.mergeUnitMaps(base, [race, undefined]), {
+      unit_map: { Commander: { a: 1 }, Tank: { b: 2 }, RaceTank: { c: 1 } },
+      other: true,
+    });
+    assert.deepEqual(base.unit_map.Tank, { b: 1 });
+    assert.deepEqual(refereeGameFiles.mergeUnitMaps(undefined, []), {
+      unit_map: {},
+    });
+  });
+
+  it("buildPlayerFiles puts a race player's map at the race tree and applies the mods it is handed", () => {
+    const fixture = buildGame({ aiInUse: "Titans", playerRace: "fixture" });
+    installModel(fixture.game);
+    const recorded = [];
+    const specs = {
+      mod: (files, mods, tag) => recorded.push({ files, mods, tag }),
+    };
+    const inventory = Object.assign(fixture.inventory, {
+      mods: () => [
+        { file: gwoUnit.ant, path: "max_health", op: "multiply", value: 2 },
+        { file: gwoUnit.dox, path: "max_health", op: "multiply", value: 2 },
+      ],
+    });
+
+    const files = refereeGameFiles.buildPlayerFiles(
+      {
+        playerAIUnitMap: { unit_map: {} },
+        playerX1AIUnitMap: { unit_map: {} },
+        playerSpecFiles: {},
+        inventory: inventory,
+        titans: true,
+        race: "fixture",
+        mods: [
+          {
+            file: "/pa/units/land/fx_tank/fx_tank.json",
+            path: "max_health",
+            op: "multiply",
+            value: 2,
+          },
+        ],
+        extraMods: [{ file: "x", path: "y", op: "replace", value: 1 }],
+      },
+      gwoAI,
+      specs
+    );
+
+    assert.deepEqual(Object.keys(files), [
+      "/pa/ai_race_fixture/unit_maps/ai_unit_map.json.player",
+      "/pa/ai_race_fixture/unit_maps/ai_unit_map_x1.json.player",
+    ]);
+    assert.deepEqual(recorded[0].mods, [
+      {
+        file: "/pa/units/land/fx_tank/fx_tank.json",
+        path: "max_health",
+        op: "multiply",
+        value: 2,
+      },
+      { file: "x", path: "y", op: "replace", value: 1 },
+    ]);
+    assert.equal(recorded[0].tag, ".player");
   });
 });

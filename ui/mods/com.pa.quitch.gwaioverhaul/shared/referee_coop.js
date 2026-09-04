@@ -1,7 +1,7 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   gwoCard
 ) {
-  // Shared with shared/cards.js; the two copies had already drifted apart.
+  // One implementation, shared with shared/cards.js, so the two cannot drift.
   var getConnectedViewers = gwoCard.getConnectedClients;
 
   // An unauthenticated viewer can have an empty client id, so a client is keyed

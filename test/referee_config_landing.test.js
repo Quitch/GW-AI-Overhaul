@@ -18,6 +18,9 @@ const refereeConfig = loadCouiModule(
 const streams = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
 );
+const difficulty = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js"
+);
 
 const LANDING_POLICIES = [
   "off_player_planet",
@@ -50,7 +53,6 @@ function primary(opts) {
     ai({ minions: options.minions || [] }),
     [],
     [".ai0", ".ai1"],
-    "Titans",
     armies,
     options.rng === null ? undefined : options.rng || battleRng(3, 5)
   );
@@ -116,6 +118,29 @@ describe("AI landing policy", () => {
     assert.ok(LANDING_POLICIES.includes(result[0][0]));
   });
 
+  it("gives a boss the tier's commander count per player, not the recorded one", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      difficultyName: "!LOC:Uber",
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    const perPlayer = difficulty.difficulties.find(
+      (tier) => tier.difficultyName === "!LOC:Uber"
+    ).bossCommanders;
+
+    const armies = [];
+    refereeConfig.setupPrimaryAiAndMinions(
+      ai({ minions: [], boss: true, bossCommanders: 1 }),
+      [],
+      [".ai0"],
+      armies,
+      battleRng(3, 5)
+    );
+
+    assert.equal(armies[0].slots.length, perPlayer * 2);
+  });
+
   it("cycles the shuffled policies for an AI with more commanders than policies", () => {
     const fixture = buildGame({
       aiInUse: "Titans",
@@ -128,7 +153,6 @@ describe("AI landing policy", () => {
       ai({ minions: [], bossCommanders: 4 }),
       [],
       [".ai0"],
-      "Titans",
       armies,
       battleRng(3, 5)
     );
@@ -155,7 +179,6 @@ describe("FFA foe landing policy", () => {
         ai({ name: "Foe" + i })
       ),
       [".ai0", ".ai1", ".ai2"],
-      "Titans",
       armies,
       rng
     );

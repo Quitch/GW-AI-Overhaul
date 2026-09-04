@@ -55,15 +55,35 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return normalPaths;
   };
 
+  // The brain's map with each race map laid over it: a race key wins, so a
+  // race that re-defines a vanilla key gets its own meaning of it.
+  var mergeUnitMaps = function (baseMap, raceMaps) {
+    var merged = _.assign({}, baseMap && baseMap.unit_map);
+
+    _.forEach(raceMaps, function (raceMap) {
+      _.assign(merged, raceMap && raceMap.unit_map);
+    });
+
+    return _.assign({}, baseMap, { unit_map: merged });
+  };
+
+  // params.race is optional: without it the player is MLA. params.mods, when
+  // given, is the inventory's mods already expanded onto the race's files
+  // (unit_cells.expandMods); otherwise the mods land as they always have.
   var buildPlayerFiles = function (params, gwoAI, gwoSpecs) {
     var playerAIUnitMap = params.playerAIUnitMap;
     var playerX1AIUnitMap = params.playerX1AIUnitMap;
     var playerSpecFiles = params.playerSpecFiles;
     var inventory = params.inventory;
     var titans = params.titans;
+    var race = params.race;
+    var extraMods = params.extraMods || [];
+    var mods = params.mods || inventory.mods();
 
     var playerIsCluster = gwoCard.playerIsCluster(inventory);
-    var hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander");
+    var hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander", {
+      race: race,
+    });
     var playerFilesClassic;
     var playerFilesX1;
 
@@ -97,7 +117,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     }
 
     var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
-    gwoSpecs.mod(playerFiles, inventory.mods(), ".player");
+    gwoSpecs.mod(playerFiles, mods.concat(extraMods), ".player");
     return playerFiles;
   };
 
@@ -122,9 +142,24 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     });
   };
 
+  // The spec mods an army carries into the battle: derived from the buffs the
+  // war recorded, or the descriptors a war saved before that baked in.
+  var armyInventory = function (army, loadoutFor, factionIndexFn, isClusterFn) {
+    if (_.isArray(army.typeOfBuffs)) {
+      return loadoutFor(
+        factionIndexFn(army),
+        army.typeOfBuffs,
+        isClusterFn(army)
+      );
+    }
+    return army.inventory || [];
+  };
+
   return {
+    armyInventory: armyInventory,
     getAIUnitMapPath: getAIUnitMapPath,
     getAIUnitMapDestinationPath: getAIUnitMapDestinationPath,
+    mergeUnitMaps: mergeUnitMaps,
     clusterArmyIndex: clusterArmyIndex,
     resolveAiUnitMapPaths: resolveAiUnitMapPaths,
     buildPlayerFiles: buildPlayerFiles,

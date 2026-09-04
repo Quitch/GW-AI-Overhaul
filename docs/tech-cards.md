@@ -1,7 +1,7 @@
 # Tech cards
 
 Every file under `ui/main/game/galactic_war/cards/*.js` is a tech card: an AMD
-module returning an object with a fixed shape. 237 of them ship today.
+module returning an object with a fixed shape.
 
 ## The contract
 
@@ -39,12 +39,13 @@ contract validator continues to accept them. They are legitimate extension point
 not typos.
 
 `npm run validate:cards` enforces this shape. It checks what `define()` returns —
-it does not call `deal`/`buff`/`dull`. Of the 237 cards it shape-checks 175; 61 are
-excluded as `NOT_SHIPPED` (they depend on base-game modules absent from this repo)
-and 1 as `KNOWN_UNLOADABLE`. The run prints the live tally, and `MIN_CHECKED` is an
-enforced floor that must never be lowered to make a run pass. The other 61 are
-reached by `test/card_deal_unit_gate.test.js`, which stubs `shared/gw_common` and so
-loads all but one — see [`testing.md`](testing.md).
+it does not call `deal`/`buff`/`dull`. A card is skipped as `NOT_SHIPPED` when it
+depends on a base-game module absent from this repo, and one as
+`KNOWN_UNLOADABLE`. The run prints the live tally, and `MIN_CHECKED` is an
+enforced floor that must never be lowered to make a run pass. The skipped cards
+are reached by `test/card_deal_unit_gate.test.js`, which stubs `shared/gw_common`
+and so loads all but the `KNOWN_UNLOADABLE` one — see
+[`testing.md`](testing.md).
 
 ## Which shape to write a card in
 
@@ -199,6 +200,12 @@ is the cautionary case: it halves a cooldown across both orbital factories, but 
 Orbital Launcher has no such field, so the card did nothing at all without the
 advanced factory that only its `card_units.js` entry named.
 
+A race player narrows this further: a card whose `card_units.js` entry names
+no unit in a cell the race fills is withheld from the deal, and so is every
+card in `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards
+keep naming vanilla units; the unit's capability cell decides. See
+[`races.md`](races.md).
+
 `test/card_deal_unit_gate.test.js` enforces this, in both directions: a card must not
 be dealable to a player owning none of its units, and must be dealable to one owning
 all of them. A new card with no `card_units.js` entry fails it unless it is a loadout
@@ -218,6 +225,20 @@ weight.
 fought on — a naval start, or Tsunami tech. Owning ships is not the same as being
 able to use them, and most generated systems have little water, so elsewhere the
 card is offered proportionately less rather than withheld outright.
+
+### A deal that arrives late, or empty
+
+`chooseCards` is async, so by the time it resolves the exploration that started
+it may be over. A recorded deal is a standing obligation to every co-op viewer -
+a catch-up hand for an offer never made - so a stale one must not be recorded.
+`cards_deal_helpers.explorationStillLive` tests the three ways `gw_game.js` can
+end an exploration: `winTurn` (the turn state is no longer `explore`), `move`
+(the current star is no longer the one dealt to), and the star's own state
+(`hasCard` is false). A deal can also come up empty: every card in a small
+third-party deck may be held, withheld for the player's race, or refused by its
+own `deal()`. Stock offers no way out of `explore` but a win, so the acting
+client ends the turn itself when `explorationDealtNothing` says so - never on a
+replayed host action, whose own `win_choice` follows it.
 
 ### Distance thresholds
 
@@ -296,7 +317,7 @@ discards everything the mod registered.
 
 | Global                         | Scene                     | Read by                                         |
 | ------------------------------ | ------------------------- | ----------------------------------------------- |
-| `gwoCards`                     | play, coop loadout        | `shared/deal.js` `setupGwoCards`                |
+| `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                |
 | `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`                      |
 | `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                      |
 | `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                 |
@@ -305,6 +326,7 @@ discards everything the mod registered.
 | `gwoStartingCards`             | start, coop loadout       | `shared/loadouts.js`                            |
 | `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
+| `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |
 
 Beyond the globals: the helper names `shared/cards.js` returns, and the **key**
 names in `shared/units.js` and `shared/unit_groups.js`, are equally published. The
@@ -314,6 +336,46 @@ moves a file. So is `deal(system, context, inventory, rng)`'s signature.
 **Register in every scene the data is read in.** `model` is a fresh page per scene,
 so a mod that pushes its loadouts only in `gw_start` is missing from the treasure
 pool in `gw_play` and from the co-op per-player loadout picker.
+
+### Third-party decks
+
+A mod can offer a whole deck in the TECHS picker rather than adding cards to
+every deck. It pushes a descriptor onto `model.gwoDecks` in `gw_start` (the
+picker), `gw_play` (the deal) and `gw_coop_per_player_loadout` (viewer deals):
+
+```js
+model.gwoDecks.push({
+  id: "mym-nomad", // unique; persisted into the war save as techCardDeck
+  name: "!LOC:Nomad", // picker option and war panel; the UI already labels
+  // it "Deck", so don't put Deck in the name
+  tooltip: "!LOC:Nomad-only tech.", // optional TECHS tooltip line
+  include: ["Basic"], // optional: ids of other REGISTERED decks to compose
+  cards: ["mym_card_a", "gwc_minion"], // optional: individual card ids
+});
+```
+
+- `cards` takes **any** card id — the mod's own, or cherry-picked stock
+  `gwc_*`/`gwaio_*` ids — without naming a whole deck. A missing module costs
+  one card at deal time, never a hang.
+- `include` takes the id of any **already registered** deck: `Basic`,
+  `Expanded`, or another mod's. Registration order is mod `priority` order
+  (ascending), so a mod including another mod's deck declares that mod under
+  `dependencies` in its `modinfo.json` and uses a higher `priority` number.
+  An id not yet registered is refused. Includes resolve when the deal is
+  built, so a later re-registration of an included deck is honoured.
+- The resolved deck is deduplicated end to end: overlap between included
+  decks (Basic is a subset of Expanded), among `cards`, and between the two
+  collapses to one copy. Order is include expansions first, then own cards.
+- A deck must resolve to at least one card, must not claim a built-in id, and
+  a bad descriptor is logged and skipped. Two mods claiming one id: the later
+  registration wins, with a warning.
+- `model.gwoCards` pushes reach **every** deck, built-in or third-party, so a
+  card mod needs no knowledge of which deck mods are installed or of their
+  load order.
+- Fallback: a war save with no `techCardDeck` (non-GWO, pre-v5.36) deals
+  Expanded silently; one naming an unregistered deck (its mod uninstalled)
+  deals Expanded with one console warning, and the picker restores to the
+  full GWO deck.
 
 ### Third-party loadout banks
 

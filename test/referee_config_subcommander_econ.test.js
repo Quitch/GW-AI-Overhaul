@@ -112,7 +112,7 @@ describe("subcommander econ_rate", () => {
 
     const ai = makeAiDescriptor({ minions: [makeAiDescriptor()] });
     const armies = [];
-    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], "Titans", armies);
+    refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], armies);
 
     const flooredRate = gwoAI.aiEconRateWithFloor(gwoAI.subcommanderEconRate);
     assert.ok(

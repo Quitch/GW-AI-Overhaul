@@ -9,7 +9,17 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
-], function (gwoColour, gwoAI, gwoCard, refereeCoop, subcommanderTech) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
+], function (
+  gwoColour,
+  gwoAI,
+  gwoCard,
+  refereeCoop,
+  subcommanderTech,
+  gwoRaces,
+  gwoPersonality
+) {
   var applySubcommanderTacticsTech =
     subcommanderTech.applySubcommanderTacticsTech;
   var applySubcommanderFabberTech =
@@ -110,6 +120,22 @@ define([
     return personality;
   };
 
+  // The personality an army fights with, built from what the war recorded
+  // rather than read from it, so a balance change reaches a war in progress.
+  // Assigned once, before the army is built: setupAIArmy holds the object by
+  // reference and the ai_path written afterwards relies on that. See
+  // galaxy.md, "AI personalities and penchants".
+  var resolvePersonality = function (ai, side, brain, faction, ffa) {
+    return gwoPersonality.resolve(ai, {
+      side: side,
+      faction: faction,
+      tier: gwoAI.warTier(gwoAI.originSettings(model.game())),
+      brain: brain,
+      penchantTags: gwoAI.penchantTags(ai.penchantName),
+      ffa: ffa,
+    });
+  };
+
   var setAdvEcoMod = function (ai, brain) {
     if (brain !== "Queller") {
       ai.personality.adv_eco_mod *= gwoAI.aiEconRateWithFloor(ai.econ_rate);
@@ -121,14 +147,16 @@ define([
   };
 
   // One unscoped path regardless of isPlayer: the player and the enemy are never
-  // simultaneously Cluster. See ai-paths.md, "Invariants".
-  var setAIPath = function (isCluster, isPlayer) {
+  // simultaneously Cluster. See ai-paths.md, "Invariants". A race moves the
+  // path to that race's own tree.
+  var setAIPath = function (isCluster, isPlayer, race) {
+    var options = { race: race };
     if (isCluster) {
-      return gwoAI.getAIPathDestination("cluster");
+      return gwoAI.getAIPathDestination("cluster", options);
     } else if (isPlayer) {
-      return gwoAI.getAIPathDestination("subcommander");
+      return gwoAI.getAIPathDestination("subcommander", options);
     }
-    return gwoAI.getAIPathDestination("enemy");
+    return gwoAI.getAIPathDestination("enemy", options);
   };
 
   var setupAIArmy = function (
@@ -148,18 +176,11 @@ define([
     var aiLandingOptions = rng
       ? rng.shuffle(landingOptions)
       : _.shuffle(landingOptions);
-    _.times(
-      ai.bossCommanders ||
-        ai.commanderCount ||
-        // legacy GWO support
-        (ai.landing_policy && ai.landing_policy.length) ||
-        1,
-      function (count) {
-        slotsArray.push(
-          aiCommander(ai.name, ai.commander, aiLandingOptions, count)
-        );
-      }
-    );
+    _.times(gwoAI.commanderCount(ai), function (count) {
+      slotsArray.push(
+        aiCommander(ai.name, ai.commander, aiLandingOptions, count)
+      );
+    });
     ai.personality.display_name = getAIPersonalityName(ai); // support Show AI Personality Names mod
     return {
       slots: slotsArray,
@@ -175,6 +196,8 @@ define([
 
   // startPosition is a place in the player-faction colour sequence. It defaults
   // to 0, the subcommanders; a star's ai.ally is numbered after them. See coop.md.
+  // options.ffa asks for Queller's FFA tags: a star's ai.ally fights in its
+  // star's FFA, a Sub Commander never does.
   var setupAlliedCommanders = function (
     allies,
     cards,
@@ -182,19 +205,33 @@ define([
     inventory,
     playerTag,
     startPosition,
-    battleRng
+    battleRng,
+    options
   ) {
     var playerFaction = inventory.getTag("global", "playerFaction");
+    var playerRace = gwoRaces.raceOf(inventory);
     var playerIsCluster = gwoCard.playerIsCluster(inventory);
     var firstPosition = startPosition || 0;
+    var ffa = !!(options && options.ffa);
 
     _.forEach(allies, function (liveAlly, index) {
       var ally = _.cloneDeep(liveAlly);
-      ally.personality.ai_path = setAIPath(playerIsCluster, true); // Avoid breaking Sub Commanders from earlier versions
+      // An ally fights as the player's race unless the war gave it one.
+      ally.race = _.isUndefined(ally.race) ? playerRace : gwoRaces.raceOf(ally);
+      // A Sub Commander comes from the player's faction; the record carries
+      // none, so its personality resolves against that.
+      ally.faction = playerFaction;
+      ally.personality = resolvePersonality(
+        ally,
+        "ally",
+        gwoAI.aiInUse("subcommander", ally.race),
+        playerFaction,
+        ffa
+      );
+      ally.personality.ai_path = setAIPath(playerIsCluster, true, ally.race);
       ally.personality = applySubcommanderTacticsTech(ally.personality, cards);
       ally.personality = applySubcommanderFabberTech(ally.personality, cards);
       ally.commanderCount = applySubcommanderDuplicationTech(cards);
-      ally.faction = playerFaction;
       var allyIndex = refereeCoop.alliedColourIndex(firstPosition + index);
       var subcommanderArmy = setupAIArmy(
         ally,
@@ -212,19 +249,33 @@ define([
     liveStarAi,
     connectedPlayerCards,
     aiTag,
-    aiInUse,
     armies,
     battleRng
   ) {
     // Cloning the AI clones its minions with it, so the minion loop below is copying too.
-    var ai = setAdvEcoMod(_.cloneDeep(liveStarAi), aiInUse);
+    var ai = _.cloneDeep(liveStarAi);
     var guardians = ai.mirrorMode;
+    // The Guardians mirror the player, race included.
+    ai.race = guardians
+      ? gwoRaces.raceOf(model.game().inventory())
+      : gwoRaces.raceOf(ai);
+    // The race decides the army's brain, so it is resolved first.
+    var brain = gwoAI.aiInUse("enemy", ai.race);
+    var ffa = !_.isEmpty(ai.foes);
+    ai.personality = resolvePersonality(
+      ai,
+      "enemy",
+      brain,
+      gwoAI.factionIndex(ai),
+      ffa
+    );
+    setAdvEcoMod(ai, brain);
 
     if (guardians) {
       ai.personality = setupGuardianPersonality(
         connectedPlayerCards,
         ai.personality,
-        aiInUse
+        brain
       );
     }
 
@@ -237,13 +288,22 @@ define([
       battleRng && battleRng.stream("landing_enemy", 0)
     );
     armies.push(aiArmy);
-    var aiPath = setAIPath(gwoAI.isCluster(ai), false);
+    var aiPath = setAIPath(gwoAI.isCluster(ai), false, ai.race);
     ai.personality.ai_path = aiPath;
 
     _.forEach(ai.minions, function (minion, index) {
-      minion = setAdvEcoMod(minion, aiInUse);
+      // Minions share the primary AI's race, and with it its brain and faction.
+      minion.personality = resolvePersonality(
+        minion,
+        "enemy",
+        brain,
+        gwoAI.factionIndex(ai),
+        ffa
+      );
+      minion = setAdvEcoMod(minion, brain);
       minion.personality.ai_path = aiPath;
       minion.faction = ai.faction;
+      minion.race = ai.race;
       var colourIndex = index + 1; // primary AI has colour 0
       var aiArmy = setupAIArmy(
         minion,
@@ -257,10 +317,25 @@ define([
     });
   };
 
-  var setupFfaAis = function (foes, aiTag, aiInUse, armies, battleRng) {
+  var setupFfaAis = function (foes, aiTag, armies, battleRng) {
     _.forEach(foes, function (liveFoe, index) {
-      var foe = setAdvEcoMod(_.cloneDeep(liveFoe), aiInUse);
-      foe.personality.ai_path = setAIPath(gwoAI.isCluster(foe), false);
+      var foe = _.cloneDeep(liveFoe);
+      foe.race = gwoRaces.raceOf(foe);
+      // Each foe's own race decides its brain.
+      var brain = gwoAI.aiInUse("enemy", foe.race);
+      foe.personality = resolvePersonality(
+        foe,
+        "enemy",
+        brain,
+        gwoAI.factionIndex(foe),
+        true
+      );
+      setAdvEcoMod(foe, brain);
+      foe.personality.ai_path = setAIPath(
+        gwoAI.isCluster(foe),
+        false,
+        foe.race
+      );
       var foeTag = index + 1; // 0 taken by primary AI
       var foeAlliance = index + 3; // 1 & 2 taken by player and primary AI
       var aiArmy = setupAIArmy(

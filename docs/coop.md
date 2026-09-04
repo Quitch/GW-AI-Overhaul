@@ -22,6 +22,27 @@ their own cards, and their own subcommanders. That changes several assumptions:
   half of `getOrderedSubcommanders` is gated on it.
 - A second referee runs. See below.
 
+The race is read per inventory, never off the host's: the loadout scene stamps a
+race onto the viewer's starting inventory, and the per-player referee expands
+each viewer's units and mods onto that race's files by capability cell, retags
+their commander (and its Sub Commanders') the way the Guardians' Unicorn is, and
+routes their subcommanders to that race's tree. **Separate races** decides which
+race is stamped — the host's for every viewer when it is off, each viewer's own
+pick when it is on. See [`races.md`](races.md).
+
+**Separate races** is a co-op setting in the war setup's co-op panel, off by
+default, and settable only alongside Separate loadout & tech: the per-player
+tech referee is the only thing that reads a race per army. The war records it as
+`originSystem.gwaio.races.perPlayerRace`, so a viewer joining knows whether to
+offer a picker, and a war saved before the setting existed reads as off.
+
+Which races a client primes cells for follows from the same setting
+(`gw_play/races.js`). Normally it is the one race the client plays - its own
+record's under Separate races, the war's otherwise. A host under Separate races
+deals and builds files for every viewer, and a viewer may have picked any race
+the picker still offers - the recorded races whose server mod is active - so
+the host primes exactly that offer.
+
 ## The two referees
 
 A co-op host hires the referee **twice** per battle — the base game's
@@ -33,7 +54,14 @@ that:
 2. **The per-player-tech referee**
    (`ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js`, shadowed)
    runs afterwards, generating each viewer's unit specs and subcommanders and
-   adding them to that config.
+   adding them to that config. A viewer's Sub Commander personalities are built
+   the way the host's are, through `shared/ai_personality.js` from each
+   minion's recorded id and penchant.
+
+Only the host hires a referee. A viewer runs GWO's readers on the war snapshot
+the host broadcasts — the war panel and the intelligence panel derive what they
+show (commander counts, eco) from the snapshot's recorded fields on the viewer's
+own GWO version, but nothing a viewer derives reaches the battle.
 
 Because the setup runs more than once and a failed launch can leave mutated state
 behind, **none of it is idempotent** — eco mods and fabber caps multiply, tags get
@@ -152,7 +180,8 @@ the check would start rejecting a player's own results the moment they reconnect
 That is the same reason `gwo_streams.coopPlayerKey` prefers `record.playerId`.
 
 Every reply that concerns one player addresses itself, including the failure
-replies (`failPendingTechReroll`, `failGeneralCommanderSetup`) — an unaddressed
+replies (`cards_coop_reroll.js`'s `failReroll`, `cards_start_subcdr.js`'s
+`failSetup`) — an unaddressed
 error would put one viewer's refusal on every viewer's screen. The two host→viewer
 operators that carry **no** target are broadcasts by design: the ping, which
 self-identifies and deduplicates by `ping_id`, and the star-card name sync.
@@ -240,7 +269,7 @@ pinged again. Three things about it are not obvious:
 the war moves on cannot get past it. A star is pingable when this client is a
 connected viewer, the star index is one the galaxy has, and `star.explored()` is
 false — an explored star has been taken, and there is nothing left there to ask the
-host for. That observable travels in `syncViewerStarFromGame`'s copy list, so a
+host for. That observable travels in `syncViewerStarsFromGame`'s copy list, so a
 viewer's own is maintained rather than inferred.
 
 It also refuses while the turn state is `explore` or `fight`: where to go next stops
@@ -341,25 +370,51 @@ game instead adds the card and a free slot to cover it (`gwc_start_*.buff`'s
 "Don't clog up a slot" branch); GWO does not.
 
 The server already banks a viewer's loadout choice without touching the inventory —
-but only for ids passing `isBaseLoadoutCardId`, so every mod loadout is pushed into
+but only for ids passing `isBaseLoadoutCardId`, so it pushes every mod loadout into
 the viewer's war inventory instead. GWO therefore intercepts **every** loadout id on
 a viewer, banking locally and submitting `-1`; it cannot leave the base ids to the
 server, because banking is held shut on viewers for the reason below.
 
 ## The per-player loadout scene
 
-`gw_coop_per_player_loadout` is its own scene, and
-`gw_coop_per_player_loadout/gwo_loadouts.js` is the only file GWO puts in it. It
-is where a viewer picks their war loadout, and it has to build that loadout's
-starting inventory itself rather than inheriting the host's.
+`gw_coop_per_player_loadout` is its own scene. It is where a viewer picks their
+war loadout — and, under Separate races, their race — and it has to build that
+loadout's starting inventory itself rather than inheriting the host's. GWO puts
+three files in it: `shared/race_picker_view.js`,
+`gw_coop_per_player_loadout/race_picker.js` and
+`gw_coop_per_player_loadout/gwo_loadouts.js`.
 
-Two things about it are not obvious from the scene it sits in:
+Four things about it are not obvious from the scene it sits in:
 
-- **The view model has no player faction**, but Cluster start cards read
-  `global.playerFaction`. `resolvePlayerFaction` therefore loads the campaign
-  game through `GW.manifest.loadGame(model.activeGameId())` purely to read that
-  tag back out, and resolves `undefined` rather than rejecting when there is no
-  active game — a loadout preview outside a war still has to render.
+- **The view model knows nothing about the war.** It has no player faction, but
+  Cluster start cards read `global.playerFaction`; it has no race, and no war
+  settings. `host_war.js` therefore loads the campaign game through
+  `GW.manifest.loadGame(model.activeGameId())` once, caches the promise for both
+  scene scripts, and resolves
+  `{ faction, colour, race, races, perPlayerRace }` — always, never
+  rejecting, because a loadout preview outside a war still has to render.
+  `colour` is the war's `global.playerColor`, which paints the commander
+  preview the way the war setup's Commander picker does: the same
+  `race_picker_options.commanderTint` rotates the art's hue to the faction's.
+  `races` is the war's recorded offer intersected with the host's active
+  server mods — see [`races.md`](races.md), "Assignment and persistence", for
+  why the host's set and not this client's, and why no answer removes nothing.
+- **The deck it deals from is the loadout list, not the tech deck.** The scene
+  deals exactly one card, the loadout, so it loads `loadouts.allCards` — the same
+  list the picker offers — rather than calling `setupGwoCards`. That deck holds
+  GWO's own loadout ids and third-party _tech_ ids, but never a third-party
+  _loadout_ id, which a card mod pushes onto `model.gwoStartingCards` or
+  `model.gwoNewStartCards` instead. Building the deck from `setupGwoCards` made
+  another mod's loadout selectable and then undealable, and the base scene's only
+  failure handler is a `console.error`, so Join appeared to do nothing.
+  `gw_start/setup.js` loads the host's start cards from `allCards` for the same
+  reason.
+- **The picker's markup is injected synchronously.** `ko.applyBindings` runs as
+  soon as the scene scripts return, so anything added after that is never bound.
+  The race control and the commander display go in at scene-script time and stay
+  hidden until `host_war.load()` says the war has races to offer. For the same
+  reason the commander name and portrait lookup is a scene script rather than a
+  module: the markup binds to it before any `requireGW` could resolve.
 - **`validateStartingInventory` refuses rather than proceeds.** It asserts the
   chosen card produced exactly one card, in first position, with `maxCards` a
   number leaving room beyond it. Anything else rejects the deferred, because a
@@ -427,6 +482,48 @@ beginning `gwc_start`, so `record.unlockedStartCardIds` can never hold a
 report their own list over the `gwo_report_unlocked_loadouts` operator, and the host
 stores it as `gwaioUnlockedStartCardIds`; `recordHasUnlockedLoadout` reads both fields
 plus `loadoutCardId`.
+
+## War end
+
+`gw_play/victory.js` ends a won war the moment the host lands in `gw_play`, and
+tells the viewers to do the same over the `gwo_war_end` operator. After the
+final battle that operator would never arrive, because of three stock rules:
+
+- Returning from a battle in co-op restarts the campaign server process. The
+  host is back in `gw_play` a couple of seconds after shutdown; a viewer must
+  rediscover the new server, connect, and sync a snapshot first, and may pass
+  through the loadout scene on the way.
+- A host operator goes only to connected clients, is dropped for a client that
+  has not yet received its initial snapshot, and is never replayed.
+- Once the host is on `gw_war_over` there are no campaign handlers, so the viewer
+  can never be sent a fresh `turnState: "end"` either. It lands in a won war
+  with the turn on `"begin"` and never sees the victory screen.
+
+So in a co-op war the host holds the end behind `gw_play/victory_wait_state.js`,
+which shows the "Waiting for players" modal (`victory_wait.html`, injected by
+`victory_wait.js`) until every player from the battle is back, then runs the
+victory flow unchanged. Three details in how it decides:
+
+- **Who to wait for.** At launch the host writes the number of connected clients
+  into `gw_campaign_settings` as `battle_launch_clients`; the server carries it
+  into the restart-prepare payload and the host keeps it in
+  `model.gwCampaignRestartContext()` under `settings`. Stock later restores
+  `max_clients` from it, but over an async `modify_settings` round trip, so
+  `gwCampaignMaxClients()` can still read 1 when the victory code first runs.
+  The expected count is the larger of the two.
+- **What "returned" means.** A viewer reports `loading: false` only from
+  `markGwCampaignAuthoritativeStateReady`, after its snapshot is applied. A
+  connected client with `loading` false and no `requires_loadout` or
+  `picking_loadout` / `picking_tech_cards` status has therefore passed the
+  point at which operators are delivered. The test is the per-client half of
+  `viewersReadyForStarRefresh` in `cards_coop_star_cards.js`.
+- **Cancel.** The host may end the war without waiting. Players still away then
+  land in a won war with no victory screen, which is what happened every time
+  before the wait existed.
+
+The state is built in `gw_play/systems.js`, in the same `requireGW` as
+`victory.js`, so the two cannot race. Solo wars skip it entirely:
+`gwCampaignEnabled()` is known synchronously from the URL at scene construction.
 
 ## Where to look next
 

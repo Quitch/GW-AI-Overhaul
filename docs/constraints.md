@@ -71,7 +71,7 @@ engine ships.
 
 `Math.seedrandom` exists in the game but **not** in Node, so nothing on a testable path
 can use it — hence `shared/gwo_rng.js`, which carries its own PRNG. See
-[`galaxy.md`](galaxy.md).
+[`galaxy.md`](galaxy.md), "Why a bespoke PRNG".
 
 Lodash is the workaround for most missing builtins. Two of its behaviours are
 relied on deliberately:
@@ -91,8 +91,15 @@ a `throw` inside a deferred callback into a rejection.** A `TypeError` there esc
 `.fail()` entirely — no retry, and the caller hangs. Callbacks that can fail must
 `reject` explicitly rather than throwing or falling through.
 
-Also: `$.when()` does not wait for a function that returns a native Promise, and
-`.then` on a jQuery promise returns a _new_ promise each time (which the AI tree
+Also: `$.when()` and `deferred.then` identify a promise by a `promise` **method**.
+Neither an engine promise — what every `api.*` call returns — nor a native one has
+got one, so both are read as plain values and neither is ever waited for, with no
+error and no log line. `shared/gwo_promise.js` adapts one into a jQuery promise, and
+`scripts/lib/fake-jquery.js` applies the same test, so a shipped file that skips the
+adapter fails a test rather than skipping the wait in a war. Audited 2026-08-31:
+every other `$.when` in the mod is handed a jQuery promise or a plain value.
+
+And `.then` on a jQuery promise returns a _new_ promise each time (which the AI tree
 cache depends on).
 
 `requireGW` is configured `waitSeconds: 0`, so a module that never arrives never
@@ -255,6 +262,22 @@ inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has
 asked for in a shouty casing and then down-cased in CSS rather than being written
 naturally. `locTree` only rewrites an element's `innerHTML`, so attributes (and
 therefore CSS classes) survive translation — which is what makes the trick work.
+
+Three rules follow from that, and GWO's HTML applies each:
+
+- **A trailing colon sits outside the `<loc>`.** Keys are character-sensitive
+  too, and the game ships entries for the bare label (`ECONOMY`) but none for the
+  label plus colon (`ECONOMY:`). So `gw_start/ai_settings.html` writes
+  `<loc>ECONOMY</loc>:`.
+- **Where the entry's casing differs from what the panel displays**, the `<loc>`
+  spells the label the way the entry does and carries `.gwo-uppercase`;
+  `gw_start/gwo_start.css` restores the display casing after translation.
+- **`Mod:` in the war panel is deliberately left untranslatable**, as one
+  `<loc>Mod:</loc>` with no entry rather than `<loc>Mod</loc>:`, which would
+  resolve: the only `Mod` the game ships is the server browser's column, which
+  means something else there ("Modifizieren" in de, 模型 — "model" — in zh-CN),
+  and six more locales leave it as the English "Mod" anyway. Adopting it would
+  mislead more players than it would help (`gw_play/gwo_panel.html`).
 
 ## HTML
 

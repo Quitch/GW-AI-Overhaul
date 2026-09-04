@@ -72,7 +72,8 @@ function gwoSetup() {
     // We change how we monitor model.ready() to prevent
     // Shared Systems for Galactic War breaking our new lobby
     model.ready = ko.computed(function () {
-      return enableGoToWar() && !!model.activeStartCard();
+      var activeCard = model.activeStartCard();
+      return enableGoToWar() && !!activeCard && !activeCard.gwoRaceLocked;
     });
 
     var onSelectedNamesChanged = function (names) {
@@ -100,7 +101,8 @@ function gwoSetup() {
     var foundationFaction = 1;
 
     // Index into ai_tech.js's factionTechs[faction][n]. 5 is absent because that
-    // tech was removed; see the note by setupAITech5 there.
+    // tech was removed; see the note in ai_tech.js where the setupAITech*
+    // functions are called.
     var aiBuffType = {
       cost: 0,
       damage: 1,
@@ -109,34 +111,6 @@ function gwoSetup() {
       build: 4,
       combat: 6,
       cooldown: 7,
-    };
-
-    var getQuellerAITag = function (faction) {
-      var quellerTag = "queller";
-      var legonisMachinaTags = ["tank", quellerTag];
-      var foundationTags = ["air", quellerTag];
-      var synchronousTags = ["bot", quellerTag];
-      var revenantsTags = ["orbital", quellerTag];
-      var clusterTags = ["land", quellerTag];
-
-      switch (faction) {
-        case 0:
-          return legonisMachinaTags;
-        case 1:
-          return foundationTags;
-        case 2:
-          return synchronousTags;
-        case 3:
-          return revenantsTags;
-        case 4:
-          return clusterTags;
-        default:
-          console.error("Undefined faction:", faction);
-          warGenerationFailed = true;
-          // The caller concats this into personality_tags before the abort
-          // lands, so undefined would append a literal undefined tag.
-          return [];
-      }
     };
 
     // Drawing helpers take an rng parameter rather than closing over one: the
@@ -149,13 +123,6 @@ function gwoSetup() {
       // Negative near the origin once a tech handicap applies; rng.sample clamps to [].
       var numberBuffs = Math.floor(distance / 2 - buffDistanceDelay);
       return selectAIBuffs(rng, numberBuffs);
-    };
-
-    var aiTech = function (buffs, inventory, faction, tech) {
-      _.times(buffs.length, function (n) {
-        inventory = inventory.concat(tech[faction][buffs[n]]);
-      });
-      return inventory;
     };
 
     var countMinions = function (minionBase, minionStep, distance) {
@@ -290,15 +257,19 @@ function gwoSetup() {
       }
     };
 
-    var saveDifficultySettings = function () {
+    // The personality picker has no data-bind, so its value only reaches the
+    // settings if pushed back here.
+    var syncPickedTags = function () {
       var settings = model.gwoDifficultySettings;
-
-      // The personality picker has no data-bind, so its value only reaches the
-      // snapshot if pushed back here. Write once at save time, not per AI.
       var pickedTags = $("#gwo-personality-picker").val() || [];
       if (!_.isEqual(pickedTags, settings.personalityTags())) {
         settings.personalityTags(pickedTags);
       }
+    };
+
+    var saveDifficultySettings = function () {
+      var settings = model.gwoDifficultySettings;
+      syncPickedTags();
 
       var settingNames = _.without(_.keys(settings), "previousSettings");
       var snapshot = {};
@@ -371,14 +342,13 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_teams.js",
         "main/shared/js/star_system_templates",
         "main/game/galactic_war/shared/js/gw_easy_star_systems",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_selection.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourites.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_system_brackets.js",
@@ -386,7 +356,12 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js",
         "main/game/galactic_war/shared/js/systems/template-loader",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_build.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
       ],
       function (
         GW,
@@ -395,14 +370,13 @@ function gwoSetup() {
         gwoTeams,
         normalSystemTemplates, // window.star_system_templates is set instead
         easySystemTemplates,
-        gwoCluster,
-        gwoTech,
         gwoLore,
         gwoDifficulty,
         gwoAI,
         loadouts,
         gwoLoadoutBanks,
         favouriteLoadoutsModule,
+        loadoutSelection,
         favouritesModule,
         gwoVersion,
         gwoSystemBrackets,
@@ -410,7 +384,12 @@ function gwoSetup() {
         gwoFactionSeed,
         chooseStarSystemTemplates,
         gwoBiomeMods,
-        gwoGalaxyBuild
+        gwoBiomes,
+        gwoGalaxyBuild,
+        gwoRaces,
+        gwoPromise,
+        gwoBrainTable,
+        gwoPersonality
       ) {
         // Replaces GWGalaxy.prototype.build, which navToNewGame below calls.
         gwoGalaxyBuild.install();
@@ -419,8 +398,17 @@ function gwoSetup() {
 
         // Resolved before the list is built so a mod loadout the player has
         // earned shows as unlocked rather than as a locked hint.
-        requireGW(gwoLoadoutBanks.paths(), function () {
-          gwoLoadoutBanks.resolve(_.toArray(arguments));
+        // Also re-run by the race picker: a race player's MLA-only loadouts
+        // are locked, so a selection resting on one moves. See races.md.
+        // Peeked, not read, so a caller inside a ko.computed does not come
+        // to depend on the selection.
+        var isRaceLocked = function (card) {
+          return !!card.gwoRaceLocked;
+        };
+
+        model.gwoRebuildStartCards = function () {
+          var activeCard = model.activeStartCard.peek();
+          var activeId = activeCard && cardId(activeCard);
           model.startCards(
             gwoFavouriteLoadouts.sortCardsByFavourite(
               loadouts.startCards(),
@@ -428,6 +416,19 @@ function gwoSetup() {
               cardId
             )
           );
+          var index = loadoutSelection.selectableIndex(
+            model.startCards.peek(),
+            activeId,
+            cardId,
+            isRaceLocked
+          );
+          if (index !== -1) {
+            model.activeStartCardIndex(index);
+          }
+        };
+        requireGW(gwoLoadoutBanks.paths(), function () {
+          gwoLoadoutBanks.resolve(_.toArray(arguments));
+          model.gwoRebuildStartCards();
         });
         var processedStartCards = {};
         var loadCount = loadouts.allCards.length;
@@ -496,65 +497,43 @@ function gwoSetup() {
           return result;
         };
 
-        // titansAITags is optional: concat would otherwise append a literal undefined
-        // to personality_tags, which the save round-trips back as null.
-        var setupPenchantAI = function (rng, ai, titansAITags) {
-          var penchantValues = gwoAI.penchants(rng);
-          ai.personality.personality_tags =
-            ai.personality.personality_tags.concat(
-              penchantValues.penchants,
-              titansAITags || []
-            );
-          ai.penchantName = penchantValues.penchantName;
+        // The brain an AI of this race runs on that side: the per-race table
+        // with the war-wide dropdowns as its fallback. See races.md.
+        var brainForRace = function (race, side) {
+          var settings = model.gwoDifficultySettings;
+          return gwoBrainTable.resolve(
+            settings.aiByRace(),
+            settings.ai(),
+            settings.aiAlly(),
+            side,
+            race
+          );
         };
 
-        var setAIPersonality = function (rng, ai, difficulty, faction) {
-          var personalityId = "#gwo-personality-picker";
-          var personality = ai.personality;
-
-          personality.micro_type = difficulty.microType();
-          // .raw unwraps the stringBoolean extender, which reads back "true"/"false"
-          // for the dropdowns. The AI personality contract needs real booleans.
-          personality.go_for_the_kill = difficulty.goForKill.raw();
-          personality.priority_scout_metal_spots =
-            difficulty.priorityScoutMetalSpots.raw();
-          personality.factory_build_delay_min =
-            difficulty.factoryBuildDelayMin();
-          personality.factory_build_delay_max =
-            difficulty.factoryBuildDelayMax();
-          personality.unable_to_expand_delay = difficulty.unableToExpandDelay();
-          personality.enable_commander_danger_responses =
-            difficulty.enableCommanderDangerResponses.raw();
-          personality.per_expansion_delay = difficulty.perExpansionDelay();
-          personality.max_basic_fabbers = difficulty.maxBasicFabbers();
-          personality.max_advanced_fabbers = difficulty.maxAdvancedFabbers();
-          // Read only; saveDifficultySettings owns the write back.
-          personality.personality_tags =
-            $(personalityId).val() === null ? [] : $(personalityId).val();
-          // 0 means unset, leaving the AI to examine the spawn zone radius.
-          if (difficulty.startingLocationEvaluationRadius() > 0) {
-            personality.starting_location_evaluation_radius =
-              difficulty.startingLocationEvaluationRadius();
+        // The AI's race is assigned before any personality, so the brain its
+        // race actually runs is known here; a Penchant AI draws one penchant
+        // from its own stream. The personality is built fresh from the
+        // template's id, never edited on the template: stock's own makeGame
+        // writes into the templates. See galaxy.md.
+        var setAIPersonality = function (rng, ai, tier, faction) {
+          var brain = brainForRace(ai.race, "enemy");
+          if (brain === "Penchant") {
+            ai.penchantName = gwoAI.penchants(rng).penchantName;
+          } else if (brain !== "Queller" && brain !== "Titans") {
+            console.error("Undefined AI type:", brain);
+            warGenerationFailed = true;
           }
-
-          var titansAITags = ["Default"];
-
-          switch (difficulty.ai()) {
-            case "Penchant":
-              setupPenchantAI(rng, ai, titansAITags);
-              break;
-            case "Queller":
-              personality.personality_tags =
-                personality.personality_tags.concat(getQuellerAITag(faction));
-              break;
-            case "Titans":
-              personality.personality_tags =
-                personality.personality_tags.concat(titansAITags);
-              break;
-            default:
-              console.error("Undefined AI type:", difficulty.ai());
-              warGenerationFailed = true;
+          if (brain === "Queller" && !gwoPersonality.FACTION_IDS[faction]) {
+            console.error("Undefined faction:", faction);
+            warGenerationFailed = true;
           }
+          ai.personality = gwoPersonality.resolve(ai, {
+            side: "enemy",
+            faction: faction,
+            tier: tier,
+            brain: brain,
+            penchantTags: gwoAI.penchantTags(ai.penchantName),
+          });
         };
 
         // Must wrap, as stock's playerFaction computed does: gw_factions.js
@@ -562,6 +541,22 @@ function gwoSetup() {
         // restored into a session where it addresses nothing.
         var playerFactionIndex = function () {
           return model.playerFactionIndex() % GWFactions.length;
+        };
+
+        // Bosses keep their commander and are retagged at launch; every other AI
+        // of a race fields one of the race's own commanders. See races.md.
+        var giveRace = function (rng, ai, race, keepCommander) {
+          ai.race = gwoRaces.isMla(race) ? gwoRaces.MLA_ID : race;
+          if (!keepCommander && !gwoRaces.isMla(race)) {
+            var commander = gwoRaces.commanderFor(
+              rng.stream("commander"),
+              race
+            );
+            if (commander) {
+              ai.commander = commander;
+            }
+          }
+          return ai;
         };
 
         // Never rejects - every failure resolves undefined. Rejecting would spend
@@ -609,7 +604,8 @@ function gwoSetup() {
             $.when.apply($, loading).then(onSystemsLoaded, withoutBrackets);
           };
 
-          $.when(modsMounted).always(function () {
+          // modsMounted is an engine promise, which $.when does not wait for.
+          gwoPromise.settled(modsMounted).then(function () {
             // Capability rather than the mod identifier: the identifier changes on a
             // dev build of Shared Systems, this does not.
             if (
@@ -626,6 +622,23 @@ function gwoSetup() {
           });
 
           return ready.promise();
+        };
+
+        // The current settings in a named tier's shape, keyed as
+        // difficulty_levels.js keys them. A numeric select reads back as a string;
+        // the string booleans stay strings, as the tiers hold them. See galaxy.md.
+        var tierSnapshot = function () {
+          syncPickedTags();
+          var settings = model.gwoDifficultySettings;
+          var snapshot = {};
+          _.forEach(gwoDifficulty.tierSettings, function (setting) {
+            var value = settings[setting.name]();
+            snapshot[setting.key] =
+              _.isString(value) && value !== "" && !_.isNaN(Number(value))
+                ? Number(value)
+                : value;
+          });
+          return snapshot;
         };
 
         // replicates the functionality of model.makeGame() but
@@ -652,6 +665,21 @@ function gwoSetup() {
           gwoFactionSeed.reseed(GWFactions, warRng.stream("factions"));
           var teamsRng = warRng.stream("teams");
           var loreRng = warRng.stream("lore");
+          var raceInfo = (model.gwoRaceInfo && model.gwoRaceInfo()) || {
+            races: [],
+            mods: [],
+          };
+          var installedRaces = _.pluck(raceInfo.races, "id");
+          var playerRace = _.contains(
+            installedRaces,
+            model.gwoDifficultySettings.playerRace()
+          )
+            ? model.gwoDifficultySettings.playerRace()
+            : gwoRaces.MLA_ID;
+          // Every installed race: to leave one out, disable its mod. See
+          // galaxy.md.
+          var enemyRacePool = _.uniq([gwoRaces.MLA_ID].concat(installedRaces));
+          var raceByFaction = {};
           // Shuffled per war, not at module load. Consumed in order by onPopulated.
           var neutralLore = loreRng.shuffle(gwoLore.neutralSystems);
           var aiLore = loreRng.shuffle(gwoLore.aiSystems);
@@ -670,6 +698,12 @@ function gwoSetup() {
 
           var selectedDifficulty =
             model.gwoDifficultySettings.difficultyLevel();
+          // The tier every AI's personality is built from; Custom's is the
+          // snapshot the war records. See galaxy.md, "Difficulty".
+          var selectedTier = gwoDifficulty.difficulties[selectedDifficulty];
+          var warTierData = selectedTier.customDifficulty
+            ? tierSnapshot()
+            : selectedTier;
           var systemTemplates = model.gwoDifficultySettings.simpleSystems()
             ? easySystemTemplates
             : star_system_templates;
@@ -703,6 +737,7 @@ function gwoSetup() {
             .inventory()
             .setTag("global", "playerFaction", playerFactionIndex());
           game.inventory().setTag("global", "playerColor", model.playerColor());
+          game.inventory().setTag("global", "playerRace", playerRace);
 
           var buildGalaxy = loadSystemBrackets().then(
             function (systemBrackets) {
@@ -711,7 +746,6 @@ function gwoSetup() {
                 seed: model.newGameSeed(),
                 gwoRng: warRng.stream("galaxy"),
                 size: size,
-                difficultyIndex: selectedDifficulty,
                 systemTemplates: systemTemplates,
                 content: game.content(),
                 coopPlayersForSystemGeneration: playerCount,
@@ -766,23 +800,37 @@ function gwoSetup() {
             }
 
             aiFactions = teamsRng.shuffle(aiFactions);
+            // One race per faction, Cluster excepted - and not drawn for, or
+            // it would use up a Unique Races slot. See races.md.
+            raceByFaction = gwoRaces.assign(
+              teamsRng.stream("races"),
+              _.without(aiFactions, 4),
+              enemyRacePool,
+              { unique: model.gwoDifficultySettings.uniqueRaces() }
+            );
+            if (_.contains(aiFactions, 4)) {
+              raceByFaction[4] = gwoRaces.MLA_ID;
+            }
             // Wrapped, not passed by reference: _.map would hand getTeam's rng
             // parameter the array index.
             var teams = _.map(aiFactions, function (faction) {
               return gwoTeams.getTeam(faction, teamsRng);
             });
-            if (model.gwoDifficultySettings.ai() === "Queller") {
-              // Filter before anything is sampled, so an incompatible minion
-              // can never be spread onto the galaxy as a worker AI.
-              _.forEach(teams, function (team) {
-                team.remainingMinions = gwoAI.quellerCompatibleMinions(
-                  team.remainingMinions
-                );
-                team.faction = _.assign({}, team.faction, {
-                  minions: gwoAI.quellerCompatibleMinions(team.faction.minions),
-                });
+            // Filter before anything is sampled, so an incompatible minion
+            // can never be spread onto the galaxy as a worker AI. Keyed per
+            // team: each faction's race decides whether its AIs run Queller.
+            _.forEach(teams, function (team, teamIndex) {
+              var race = raceByFaction[aiFactions[teamIndex]];
+              if (brainForRace(race, "enemy") !== "Queller") {
+                return;
+              }
+              team.remainingMinions = gwoAI.quellerCompatibleMinions(
+                team.remainingMinions
+              );
+              team.faction = _.assign({}, team.faction, {
+                minions: gwoAI.quellerCompatibleMinions(team.faction.minions),
               });
-            }
+            });
             var teamInfo = _.map(teams, function (team, teamIndex) {
               return {
                 team: team,
@@ -790,11 +838,6 @@ function gwoSetup() {
                 faction: aiFactions[teamIndex],
               };
             });
-
-            var neutralStars = 2;
-            if (model.gwoDifficultySettings.easierStart()) {
-              neutralStars = 4;
-            }
 
             // Ordered rather than keyed: the spread loop is synchronous and the
             // _.remove below mutates remainingMinions, so order is load-bearing.
@@ -822,6 +865,16 @@ function gwoSetup() {
                 _.remove(team.workers, { name: ai.name });
               }
               ai.faction = teamInfo[ai.team].faction;
+              // Keyed per team by spawn order, which the synchronous spread
+              // keeps deterministic. See galaxy.md.
+              giveRace(
+                warRng
+                  .stream("race", ai.faction)
+                  .stream("worker", teamInfo[ai.team].workers.length),
+                ai,
+                raceByFaction[ai.faction],
+                false
+              );
               teamInfo[ai.team].workers.push({
                 ai: ai,
                 star: star,
@@ -830,6 +883,12 @@ function gwoSetup() {
 
             var onBossMade = function (ai) {
               ai.faction = teamInfo[ai.team].faction;
+              giveRace(
+                warRng.stream("race", ai.faction),
+                ai,
+                raceByFaction[ai.faction],
+                true
+              );
               teamInfo[ai.team].boss = ai;
             };
 
@@ -862,7 +921,7 @@ function gwoSetup() {
               .populate({
                 galaxy: game.galaxy(),
                 teams: teams,
-                neutralStars: neutralStars,
+                neutralStars: 4,
                 orderedSpawn: false,
                 // Picks each faction's spawn star and shuffles the spawn order.
                 rng: warRng.stream("breeder"),
@@ -915,19 +974,6 @@ function gwoSetup() {
                 : pool;
             };
 
-            // A Cluster AI's inventory starts from its subcommander mods; every
-            // AI then draws the faction tech its buffs grant.
-            var equipAI = function (ai, buffs) {
-              var inventory =
-                ai.isCluster === true ? gwoCluster.clusterCommanderMods : [];
-              ai.inventory = aiTech(
-                buffs,
-                inventory,
-                ai.faction,
-                gwoTech.factionTechs
-              );
-            };
-
             _.forEach(teamInfo, function (info, teamIndex) {
               var boss = info.boss;
               // Keyed, so an AI's rolls do not depend on what earlier AIs drew.
@@ -945,12 +991,16 @@ function gwoSetup() {
               }
 
               var difficulty = model.gwoDifficultySettings;
+              var teamBrain = brainForRace(
+                raceByFaction[info.faction],
+                "enemy"
+              );
               // The team pre-filter above covers the built-in factions; this
               // catches a modded faction populating team.workers.
-              var workerPool = quellerPool(info.workers, difficulty.ai());
+              var workerPool = quellerPool(info.workers, teamBrain);
               var minionPool = quellerPool(
                 GWFactions[info.faction].minions,
-                difficulty.ai()
+                teamBrain
               );
 
               // One minion per stream index off the parent's rng. A Cluster AI
@@ -974,10 +1024,11 @@ function gwoSetup() {
                   if (!minion) {
                     return;
                   }
+                  giveRace(minionRng, minion, parent.race, false);
                   setAIPersonality(
                     minionRng,
                     minion,
-                    difficulty,
+                    warTierData,
                     parent.faction
                   );
                   minion.econ_rate = aiEconRate(minionRng, dist, playerCount);
@@ -987,10 +1038,9 @@ function gwoSetup() {
                   parent.minions.push(minion);
                 });
               };
-              setAIPersonality(bossRng, boss, difficulty, boss.faction);
+              setAIPersonality(bossRng, boss, warTierData, boss.faction);
               boss.econ_rate = aiEconRate(bossRng, maxDist);
               var bossCommanders = bossCommanderCount(difficulty, playerCount);
-              boss.bossCommanders = bossCommanders;
 
               var factionTechHandicap = Number.parseFloat(
                 difficulty.factionTechHandicap()
@@ -1000,8 +1050,7 @@ function gwoSetup() {
                 maxDist,
                 factionTechHandicap
               );
-              boss.typeOfBuffs = bossBuffs; // for intelligence reports
-              equipAI(boss, bossBuffs);
+              boss.typeOfBuffs = bossBuffs;
 
               var mandatoryMinions =
                 difficulty.mandatoryMinions() * playerCount;
@@ -1039,9 +1088,6 @@ function gwoSetup() {
                   aiRng,
                   difficulty.bountyModeChance()
                 );
-                ai.bountyModeValue = Number.parseFloat(
-                  difficulty.bountyModeValue()
-                );
                 ai.eradicationMode = gameModeEnabled(
                   aiRng,
                   difficulty.eradicationModeChance()
@@ -1052,7 +1098,7 @@ function gwoSetup() {
 
                 numMinions = countMinions(mandatoryMinions, minionMod, dist);
 
-                setAIPersonality(aiRng, ai, difficulty, ai.faction);
+                setAIPersonality(aiRng, ai, warTierData, ai.faction);
                 ai.econ_rate = aiEconRate(aiRng, dist, playerCount);
 
                 var workerBuffs = setupAIBuffs(
@@ -1060,8 +1106,7 @@ function gwoSetup() {
                   dist,
                   factionTechHandicap
                 );
-                ai.typeOfBuffs = workerBuffs; // for intelligence reports
-                equipAI(ai, workerBuffs);
+                ai.typeOfBuffs = workerBuffs;
 
                 if (numMinions > 0) {
                   ai.minions = [];
@@ -1097,7 +1142,7 @@ function gwoSetup() {
                     var foeFaction = availableFactions.shift();
                     var foeMinions = quellerPool(
                       GWFactions[foeFaction].minions,
-                      difficulty.ai()
+                      brainForRace(raceByFaction[foeFaction], "enemy")
                     );
                     var foeCommander = selectMinion(
                       foeRng,
@@ -1108,10 +1153,16 @@ function gwoSetup() {
                       return;
                     }
                     foeCommander.faction = foeFaction;
+                    giveRace(
+                      foeRng,
+                      foeCommander,
+                      raceByFaction[foeFaction],
+                      false
+                    );
                     setAIPersonality(
                       foeRng,
                       foeCommander,
-                      difficulty,
+                      warTierData,
                       foeCommander.faction
                     );
                     foeCommander.econ_rate = aiEconRate(
@@ -1129,7 +1180,9 @@ function gwoSetup() {
                     }
                     foeCommander.commanderCount = numFoes;
 
-                    equipAI(foeCommander, workerBuffs);
+                    // A foe fields its worker's tech. Recorded here; the
+                    // spec mods are built from it at launch.
+                    foeCommander.typeOfBuffs = workerBuffs;
 
                     ai.foes.push(foeCommander);
                   }
@@ -1141,9 +1194,12 @@ function gwoSetup() {
                   gameModeEnabled(allyRng, difficulty.alliedCommanderChance())
                 ) {
                   var playerFaction = playerFactionIndex();
+                  // The ally fights as the player's race, so its brain is
+                  // that race's ally cell.
+                  var allyBrain = brainForRace(playerRace, "ally");
                   var allyMinions = quellerPool(
                     GWFactions[playerFaction].minions,
-                    difficulty.aiAlly()
+                    allyBrain
                   );
                   var allyCommander = selectMinion(
                     allyRng,
@@ -1152,18 +1208,43 @@ function gwoSetup() {
                   );
                   if (allyCommander) {
                     allyCommander.faction = playerFaction;
-                    ai.ally = allyCommander;
-                    if (difficulty.aiAlly() === "Penchant") {
-                      setupPenchantAI(allyRng, ai.ally);
+                    giveRace(allyRng, allyCommander, playerRace, false);
+                    // Every reader gives an ally the Sub Commander rate, so
+                    // the save carries no rate the template may hold.
+                    delete allyCommander.econ_rate;
+                    if (allyBrain === "Penchant") {
+                      allyCommander.penchantName =
+                        gwoAI.penchants(allyRng).penchantName;
                     }
+                    allyCommander.personality = gwoPersonality.resolve(
+                      allyCommander,
+                      {
+                        side: "ally",
+                        faction: playerFaction,
+                        penchantTags: gwoAI.penchantTags(
+                          allyCommander.penchantName
+                        ),
+                      }
+                    );
+                    ai.ally = allyCommander;
                   }
                 }
 
-                if (difficulty.ai() === "Queller" && ai.foes) {
-                  setupQuellerFFATag(ai);
-                  setupQuellerFFATag(ai.minions);
-                  setupQuellerFFATag(ai.foes);
-                  setupQuellerFFATag(ai.ally);
+                if (ai.foes) {
+                  // Tagged per entity: in a mixed-race FFA only the armies
+                  // actually running Queller take its FFA tags.
+                  var tagIfQueller = function (entities, brain) {
+                    if (brain === "Queller") {
+                      setupQuellerFFATag(entities);
+                    }
+                  };
+                  var workerBrain = brainForRace(ai.race, "enemy");
+                  tagIfQueller(ai, workerBrain);
+                  tagIfQueller(ai.minions, workerBrain);
+                  _.forEach(ai.foes, function (foe) {
+                    tagIfQueller(foe, brainForRace(foe.race, "enemy"));
+                  });
+                  tagIfQueller(ai.ally, brainForRace(playerRace, "ally"));
                 }
               });
             });
@@ -1181,7 +1262,7 @@ function gwoSetup() {
                   setupPlanetForAI.bind(null, ai)
                 );
 
-                if (!ai.bossCommanders) {
+                if (!ai.boss) {
                   var difficulty = model.gwoDifficultySettings;
 
                   if (treasurePlanetSetup === false) {
@@ -1199,10 +1280,6 @@ function gwoSetup() {
                     ai.mirrorMode = true;
                     ai.treasurePlanet = true;
                     ai.econ_rate = aiEconRate(treasureRng, maxDist);
-                    ai.bossCommanders = bossCommanderCount(
-                      difficulty,
-                      playerCount
-                    );
                     ai.name = "The Guardians";
                     ai.character = "!LOC:Unknown";
                     ai.color = [
@@ -1211,6 +1288,8 @@ function gwoSetup() {
                     ];
                     ai.commander =
                       "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+                    // Mirrors the player, race included; keeps the Unicorn.
+                    giveRace(treasureRng, ai, playerRace, true);
                     // The loadout itself is derived per player at exploration -
                     // see gw_play/treasure_loadouts.js.
                     system.description =
@@ -1243,6 +1322,11 @@ function gwoSetup() {
             originSystem.gwaio.seed = model.newGameSeed();
             originSystem.gwaio.difficulty =
               gwoDifficulty.difficulties[selectedDifficulty].difficultyName;
+            // A named tier is looked up live at launch; Custom's values live
+            // nowhere else, so the war records them.
+            if (selectedTier.customDifficulty) {
+              originSystem.gwaio.customDifficulty = warTierData;
+            }
             originSystem.gwaio.galaxySize =
               galaxySizeNames[model.newGameSizeIndex()] || "!LOC:Unknown";
             originSystem.gwaio.factionScaling =
@@ -1260,6 +1344,14 @@ function gwoSetup() {
             }
             originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
             originSystem.gwaio.aiAlly = model.gwoDifficultySettings.aiAlly();
+            // One coerced row per installed race, so the save never carries a
+            // brain a race cannot run and co-op viewers read the same answers.
+            originSystem.gwaio.aiByRace = gwoBrainTable.recordFor(
+              model.gwoDifficultySettings.aiByRace(),
+              installedRaces,
+              model.gwoDifficultySettings.ai(),
+              model.gwoDifficultySettings.aiAlly()
+            );
             originSystem.gwaio.aiMods = [];
             originSystem.gwaio.techCardDeck =
               model.gwoDifficultySettings.techCardDeck();
@@ -1273,6 +1365,27 @@ function gwoSetup() {
             originSystem.gwaio.treasureLoadoutDerived = true;
             originSystem.gwaio.treasureStar = treasurePlanetStar;
             originSystem.gwaio.coopPlayerScalingCount = playerCount;
+            originSystem.gwaio.races = {
+              player: playerRace,
+              byFaction: raceByFaction,
+              unique: model.gwoDifficultySettings.uniqueRaces(),
+              mods: raceInfo.mods,
+              // Only the per-player tech referee reads a viewer's own race, so
+              // a war without it never claims one. See coop.md.
+              perPlayerRace:
+                model.gwoDifficultySettings.perPlayerRace() &&
+                !!model.newGamePerPlayerTechCards(),
+            };
+            // The map packs GW Server Mods must mount for this war. The
+            // resume check reads the stars' own stamps first; this stands in
+            // for a star whose system lost its stamp. See galaxy.md, "Biome
+            // mods in a GW battle".
+            originSystem.gwaio.biomeMods = gwoBiomes.gwsmMods(
+              _.map(game.galaxy().stars(), function (star) {
+                var system = star.system();
+                return system && system.gwoBiomeMods;
+              })
+            );
           };
 
           var warInfo = finishAis.then(onAisFinished);

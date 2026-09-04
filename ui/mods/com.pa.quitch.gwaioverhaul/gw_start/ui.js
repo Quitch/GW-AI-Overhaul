@@ -38,13 +38,13 @@ function gwoUI() {
       playerFaction: koNumeric(model.playerFactionIndex(), 0),
       difficultyLevel: koNumeric(0, 0),
       galaxySize: koNumeric(model.newGameSizeIndex(), 0),
-      hardcore: ko.observable(model.newGameHardcore()), // boolean
+      hardcore: ko.observable(model.newGameHardcore()),
       chosenLoadout: koNumeric(model.activeStartCardIndex(), 0),
       factionScaling: ko.observable(true),
       systemScaling: ko.observable(true),
       simpleSystems: ko.observable(false),
       easierStart: ko.observable(true),
-      ai: ko.observable("Penchant"),
+      ai: ko.observable("Titans"),
       paLore: ko.observable(false),
       techCardDeck: ko.observable("Expanded"),
       customDifficulty: ko.observable(false),
@@ -74,9 +74,18 @@ function gwoUI() {
       personalityTags: ko.observableArray(),
       aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain v6.2.0 and earlier previous settings integrity
       eradicationModeChance: koNumeric(0, 0),
-      aiAlly: ko.observable("Penchant"),
+      aiAlly: ko.observable("Titans"),
       staticTech: ko.observable(false),
       largePlanets: ko.observable(false),
+      // Race id; see races.md.
+      playerRace: ko.observable("mla"),
+      uniqueRaces: ko.observable(false),
+      // Co-op only, and only alongside per-player tech. See coop.md.
+      perPlayerRace: ko.observable(false),
+      // { raceId: { enemy, ally } } for non-MLA races; ai/aiAlly above are
+      // the MLA row. Stale ids are kept so a reinstalled race remembers its
+      // brains. See races.md.
+      aiByRace: ko.observable({}),
     };
 
     var difficultySettings = model.gwoDifficultySettings;
@@ -140,7 +149,7 @@ function gwoUI() {
       "!LOC:The number of enemy factions is adjusted for the galaxy's size.";
     model.gwoBossCommandersTooltip =
       "!LOC:Number of Commanders in the boss's army.";
-    // Allow modders to append their deck names
+    // deck_picker.js appends a line per third-party deck
     model.gwoCardsTooltip =
       "!LOC:BASIC: base game tech cards<BR>GALACTIC WAR OVERHAUL: over 150 additional cards.";
     model.gwoFactionTooltip =
@@ -155,6 +164,7 @@ function gwoUI() {
       easierStart: ko.observable(false),
       paLore: ko.observable(false),
       staticTech: ko.observable(false),
+      uniqueRaces: ko.observable(false),
     };
 
     var syncGwoGameOptionsDraft = function () {
@@ -167,6 +177,7 @@ function gwoUI() {
       draft.easierStart(difficultySettings.easierStart());
       draft.paLore(difficultySettings.paLore());
       draft.staticTech(difficultySettings.staticTech());
+      draft.uniqueRaces(difficultySettings.uniqueRaces());
     };
 
     model.gwoGameOptionsModalVisible = ko.observable(false);
@@ -188,6 +199,7 @@ function gwoUI() {
       difficultySettings.easierStart(draft.easierStart());
       difficultySettings.paLore(draft.paLore());
       difficultySettings.staticTech(draft.staticTech());
+      difficultySettings.uniqueRaces(draft.uniqueRaces());
       model.gwoGameOptionsModalVisible(false);
     };
     model.toggleGwoBooleanSetting = function (setting) {
@@ -208,46 +220,9 @@ function gwoUI() {
       model.updateCommander();
     });
 
-    // The art ships in the blue team paint. Rotating by the difference to the
-    // faction hue recolours it while keeping the model's shading.
-    var commanderArtHue = 210;
-
-    // Returns undefined for an achromatic colour, which has no hue to rotate to.
-    var rgbHue = function (rgb) {
-      var red = rgb[0] / 255;
-      var green = rgb[1] / 255;
-      var blue = rgb[2] / 255;
-      var max = Math.max(red, green, blue);
-      var delta = max - Math.min(red, green, blue);
-
-      if (delta === 0) {
-        return undefined;
-      }
-
-      var hue;
-      if (max === red) {
-        hue = ((green - blue) / delta) % 6;
-      } else if (max === green) {
-        hue = (blue - red) / delta + 2;
-      } else {
-        hue = (red - green) / delta + 4;
-      }
-
-      hue = hue * 60;
-      return hue < 0 ? hue + 360 : hue;
-    };
-
-    model.gwoCommanderTintFilter = ko.computed(function () {
-      var hue = rgbHue(model.playerColor()[0]);
-
-      // Cluster's colour is a neutral grey, so drain the art's colour rather
-      // than rotating a hue it doesn't have.
-      if (hue === undefined) {
-        return "grayscale(1)";
-      }
-
-      return "hue-rotate(" + Math.round(hue - commanderArtHue) + "deg)";
-    });
+    // The faction paint on the commander preview; race_picker.js fills it, once
+    // it knows the hue the race's art ships in.
+    model.gwoCommanderTintFilter = ko.observable("");
 
     model.gwoCommanderModalVisible = ko.observable(false);
     model.gwoCommanderDraft = ko.observable(model.selectedCommander());
@@ -288,12 +263,10 @@ function gwoUI() {
     $("#game-settings-label")
       .closest(".form-group")
       .replaceWith(loadHtml(addHtml.path + "difficulty_options.html"));
-    // Same reason as the commander modal below, plus it keeps a hidden node out
-    // of the Setup column's scroll flow.
+    // Same reason as the commander modal below.
     $("#gwo-game-options-modal").appendTo("body");
     addHtml.before("#faction-select", "faction_tooltip.html");
     addHtml.before("#game-size", "size_tooltip.html");
-    addHtml.before(gameDifficultyLabelId, "ai_dropdown.html");
     addHtml.before(gameDifficultyLabelId, "cards_dropdown.html");
     addHtml.append(gameDifficultyLabelId, "difficulty_levels_tooltip.html");
     addHtml.replace(gameDifficultyId, "difficulty_levels.html");
@@ -316,8 +289,6 @@ function gwoUI() {
     // and so leaves that header's <loc> unreached.
     locTree($("#gwo-ai-settings"));
     locTree($("#difficulty-cards"));
-    locTree($("#difficulty-ai-enemy"));
-    locTree($("#difficulty-ai-ally"));
 
     if (api.content.usingTitans()) {
       model.gwoFactionTooltip =
@@ -325,13 +296,6 @@ function gwoUI() {
         loc(
           "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
         );
-    } else {
-      // bootstrap-select ignores a non-select receiver, so the refresh below
-      // must target the parent selects, not the options.
-      $("select option[value*='Queller']").prop("disabled", true);
-      $("#difficulty-ai-enemy-select, #difficulty-ai-ally-select").selectpicker(
-        "refresh"
-      );
     }
 
     // Track difficulty settings so AI Settings' fields display correct values
@@ -358,6 +322,12 @@ function gwoUI() {
             var tier = difficulties[selectedDifficulty];
             _.forEach(gwoDifficulty.tierSettings, function (setting) {
               var value = tier[setting.key];
+              // A tier without the key (Beginner and Casual have no landing
+              // evaluation radius) must not write undefined: the numeric
+              // extender reads it back as NaN.
+              if (_.isUndefined(value)) {
+                value = setting.name === "personalityTags" ? [] : 0;
+              }
               difficultySettings[setting.name](value);
               if (setting.name === "personalityTags") {
                 // From the difficulty data, not by reading personalityTags

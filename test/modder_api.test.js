@@ -10,14 +10,19 @@
 // deal(). None of them failed loudly, so none of them were caught.
 //
 // Changing anything asserted here means updating New-GW-Cards in step. See
-// CLAUDE.md, "The third-party card mod API".
+// docs/tech-cards.md, "Third-party card mods", and the public-API bullet under
+// "Architecture" in CLAUDE.md.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { loadCouiModule, REPO_ROOT } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  registerModuleStub,
+  REPO_ROOT,
+} = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { createFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
@@ -29,6 +34,10 @@ const gwoGroup = loadCouiModule(
   "coui://" + MOD_ROOT + "/shared/unit_groups.js"
 );
 const gwoDeal = loadCouiModule("coui://" + MOD_ROOT + "/shared/deal.js");
+const gwoDecks = loadCouiModule("coui://" + MOD_ROOT + "/shared/decks.js");
+const gwoDeckMods = loadCouiModule(
+  "coui://" + MOD_ROOT + "/shared/deck_mods.js"
+);
 const helpers = loadCouiModule(
   "coui://" + MOD_ROOT + "/gw_play/cards_deal_helpers.js"
 );
@@ -58,6 +67,9 @@ const GLOBALS = [
     "ui/main/game/galactic_war/gw_play/gw_per_player_tech_referee.js",
   ],
   ["gwoLoadoutBanks", MOD_ROOT + "/shared/loadout_banks.js"],
+  ["gwoRaces", MOD_ROOT + "/shared/race_mods.js"],
+  ["gwoRaces", MOD_ROOT + "/gw_play/races.js"],
+  ["gwoDecks", MOD_ROOT + "/shared/deck_mods.js"],
 ];
 
 describe("the modder globals are adopted, not overwritten", () => {
@@ -85,6 +97,36 @@ describe("the modder globals are adopted, not overwritten", () => {
   });
 });
 
+// The battle-preparation screen other mods report into. GW Server Mods calls
+// stage() by name, so the shape is pinned here as well as in its own test.
+describe("the launch progress API keeps its shape", () => {
+  it("launch_progress_state.js exposes begin, stage and end", () => {
+    const observable = (value) => () => value;
+    const progress = loadCouiModule(
+      "coui://" + MOD_ROOT + "/gw_play/launch_progress_state.js"
+    )({
+      visible: observable(false),
+      title: observable(""),
+      message: observable(""),
+      steps: observable([]),
+      labels: { title: "", message: "" },
+    });
+    for (const name of ["begin", "stage", "end"]) {
+      assert.equal(typeof progress[name], "function", name);
+    }
+    for (const name of ["visible", "title", "message", "steps"]) {
+      assert.equal(typeof progress[name], "function", name);
+    }
+  });
+
+  it("launch_progress.js seeds the observables before the module arrives", () => {
+    assert.match(
+      source(MOD_ROOT + "/gw_play/launch_progress.js"),
+      /model\.gwoLaunchProgress = \{\s*visible: ko\.observable/
+    );
+  });
+});
+
 describe("a mod's tech cards reach the deck", () => {
   it("setupGwoCards keeps ids a mod pushed onto model.gwoCards", () => {
     setGlobal("model", { gwoCards: ["mym_damage_bots"] });
@@ -99,6 +141,75 @@ describe("a mod's tech cards reach the deck", () => {
     setGlobal("model", {});
 
     assert.ok(gwoDeal.setupGwoCards().length > 0);
+  });
+});
+
+// A loadout is not a tech card: it never reaches model.gwoCards, so the deck a
+// scene deals it from has to come from loadouts.allCards instead. When the co-op
+// loadout scene built its deck from setupGwoCards, a mod's loadout was offered in
+// the picker and then rejected on Join, and the base game only logged it.
+describe("a mod's loadouts reach the list scenes deal from", () => {
+  it("allCards keeps ids a mod pushed onto the loadout globals", () => {
+    setGlobal("model", {
+      gwoStartingCards: [{ id: "mym_start_unlocked" }],
+      gwoNewStartCards: [{ id: "mym_start_locked" }],
+    });
+    // loadouts.js only consults the banks inside startCards(), which this test
+    // never calls, so they are stubbed rather than stood up with a fake
+    // knockout and localStorage.
+    registerModuleStub("shared/gw_common", { bank: {} });
+    registerModuleStub("coui://" + MOD_ROOT + "/shared/bank.js", {});
+
+    const loadouts = loadCouiModule(
+      "coui://" + MOD_ROOT + "/shared/loadouts.js"
+    );
+    const ids = loadouts.allCards.map((cardData) => cardData.id);
+
+    assert.ok(
+      ids.includes("mym_start_unlocked"),
+      "the mod's loadout is undealable"
+    );
+    assert.ok(
+      ids.includes("mym_start_locked"),
+      "the mod's loadout is undealable"
+    );
+    assert.ok(ids.includes("gwc_start_air"), "GWO's own are still dealt");
+  });
+
+  it("the co-op loadout scene deals from allCards, not the tech deck", () => {
+    const scene = source(
+      MOD_ROOT + "/gw_coop_per_player_loadout/gwo_loadouts.js"
+    );
+
+    assert.match(scene, /loadouts\.allCards/);
+    assert.doesNotMatch(scene, /setupGwoCards/);
+  });
+});
+
+describe("a mod's decks reach the picker's deal", () => {
+  afterEach(() => {
+    gwoDecks.reset();
+    gwoDeckMods.reset();
+  });
+
+  // The two globals are independent registrations, so a deck mod and a card
+  // mod need no knowledge of each other's load order: setupGwoCards adopts
+  // both, whichever scene script pushed first.
+  it("setupGwoCards deals a model.gwoDecks deck and keeps model.gwoCards pushes", () => {
+    setGlobal("model", {
+      gwoCards: ["mym_damage_bots"],
+      gwoDecks: [
+        { id: "mym-nomad", name: "!LOC:Nomad", cards: ["mym_card_a"] },
+      ],
+    });
+
+    const deck = gwoDeal.setupGwoCards({ techCardDeck: "mym-nomad" });
+
+    assert.ok(deck.includes("mym_card_a"), "the deck's card is undealable");
+    assert.ok(
+      deck.includes("mym_damage_bots"),
+      "another mod's gwoCards push must reach a third-party deck too"
+    );
   });
 });
 

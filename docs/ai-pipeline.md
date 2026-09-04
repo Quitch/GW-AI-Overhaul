@@ -25,6 +25,7 @@ inventory.addAIMods([
     refId: "test_type", // optional: narrows the match
     refValue: "HaveEcoForAdvanced",
     matchAll: false, // optional: match every test, ignore refId/refValue
+    treeOnly: false, // optional: skip files a `load` pulled in from /pa/ai_tech/
   },
 ]);
 ```
@@ -61,6 +62,17 @@ by `addApplicableAiLoadModsToFileList`, which appends
 `/pa/ai_tech/<managerPath(type)>/<value>` to the file list so a whole extra build
 file joins the walk. Passing `load` to `applyAiMods` would log
 `"Invalid AI mod operation"` and do nothing.
+
+A loaded file is walked like any other, so every in-scope descriptor lands on it
+too - **including the loading card's own**. That is what a card usually wants (an
+upgrade held alongside it should reach its entries as well), and it is a trap for
+the "silence the stock builds, re-supply them from my file" pattern:
+`gwaio_start_rapid` zeroes every brain's factory `priority` and loads a file that
+carries the replacements, and until the descriptors opted out the zeroing reached
+the replacements as well, leaving the Sub Commanders and the Guardians with no
+factory they were allowed to build. `treeOnly: true` on a build-list descriptor
+keeps it to files read from the AI's tree; `aiModsInScopeOfFile` drops it for any
+file under `/pa/ai_tech/`. It is opt-in per descriptor, so nothing else changes.
 
 The commonest descriptor lets one more builder build a list of things - a
 fabber upgrade handing the basic fabber the advanced structures, a loadout letting
@@ -138,9 +150,11 @@ its foes is Cluster, else `"None"`.
 
 `processFilesInDirectory` resolves, per file, which destination path(s) the
 contents belong at and which descriptors are in scope, then `writeConfigFiles`
-applies and writes. Files are skipped unless they end in `.json`, and
+applies and writes. Files are skipped unless they end in `.json`;
 `/neural_networks/` is skipped entirely because AIs fall back to
-`/pa/ai/neural_networks/` regardless.
+`/pa/ai/neural_networks/` regardless; and a file a registered race's layer
+claims is skipped because it belongs to that race's own tree
+([`races.md`](races.md), "Race trees").
 
 Three behaviours here are worth knowing before editing:
 
@@ -197,4 +211,5 @@ get at it with `requireShippedModule`, not `loadCouiModule`. See
 - [`ai-paths.md`](ai-paths.md) — how the source and destination paths are chosen.
 - [`tech-cards.md`](tech-cards.md) — where `addAIMods` gets called from.
 - `scripts/validate/ai-mods-contract.js` — the shape checker, which mirrors this
-  op table exactly and will fail if the two drift.
+  op table and will fail if the two drift. It also carries `load`, which is not
+  an op here but is a descriptor a card can emit, so its shape is checked too.

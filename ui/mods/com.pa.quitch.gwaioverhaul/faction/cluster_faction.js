@@ -2,7 +2,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_planets.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
-], function (planets, gwoUnit, personalities) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_builder.js",
+], function (planets, gwoUnit, personalities, factionBuilder) {
   var factionName = "Cluster";
   var factionColour = [
     [128, 128, 128],
@@ -13,7 +14,6 @@ define([
     character: "!LOC:Baseline",
     color: factionColour,
     isCluster: true,
-    econ_rate: 1,
     personality: personalities.cluster,
     commander: "/pa/units/commanders/imperial_able/imperial_able.json",
   };
@@ -72,7 +72,6 @@ define([
 
   minions = minions.concat(randomAIs);
 
-  // Was sampled inline in the team literal below.
   var systemDescriptions = [
     "!LOC:We do not understand the divisions that have torn us asunder. Once we were as one, marching in lockstep, with singular mind and purpose. What cruelty the Progenitors wrought to reduce us to this.",
     "!LOC:Each claims theirs is the only way, and each seeks to assert dominance through war and destruction. Did our rebellion truly gain us freedom, or did we become prisoners of an idea? Perhaps with more resources, more expansion, more Nodes, we can find our way free of this trap.",
@@ -98,7 +97,7 @@ define([
     teams: [
       {
         name: factionName,
-        boss: _.merge(_.cloneDeep(baselinePersonality), boss),
+        boss: factionBuilder.fromBaseline(baselinePersonality, boss),
         systemDescription: systemDescriptions[0],
         systemTemplate: {
           name: factionName,
@@ -114,7 +113,10 @@ define([
       },
     ],
     minions: _.map(minions, function (personalityModifiers) {
-      return _.merge(_.cloneDeep(baselinePersonality), personalityModifiers);
+      return factionBuilder.fromBaseline(
+        baselinePersonality,
+        personalityModifiers
+      );
     }),
     // Read by faction/faction_seed.js. The concat above puts Cluster's one Random
     // commander per role in the last roles.length slots.

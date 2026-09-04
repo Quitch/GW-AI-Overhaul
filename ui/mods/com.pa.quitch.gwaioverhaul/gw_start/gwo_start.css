@@ -59,14 +59,6 @@
   text-transform: uppercase;
 }
 
-/* The <loc> ids in ai_dropdown.html carry the casing of the game's own translation
-   entries, because i18n lookups are case sensitive, so the casing this panel wants
-   is applied after translation rather than written into the markup. */
-#difficulty-ai-enemy-label,
-#difficulty-ai-ally-label {
-  text-transform: uppercase;
-}
-
 /* Same reason, for the AI Settings labels: those <loc> ids spell the label the way the
    translation entry does, and the uppercase this panel displays is applied here. The
    class goes on the <loc> element itself - locTree only rewrites its innerHTML, so
@@ -87,7 +79,9 @@
 #gwo-commander-response,
 #gwo-commander-response button,
 #gwo-personality,
-#gwo-personality button {
+#gwo-personality button,
+#gwo-race-group,
+#gwo-race-group button {
   text-transform: uppercase;
 }
 
@@ -125,7 +119,8 @@
 }
 
 #gwo-game-options-panel,
-#gwo-commander-panel {
+#gwo-commander-panel,
+#gwo-ai-panel {
   margin: 0 0 16px;
   padding: 0;
   border: 0;
@@ -134,8 +129,69 @@
 }
 
 #gwo-game-options-panel .coop-setup-configure,
-#gwo-commander-panel .coop-setup-configure {
+#gwo-commander-panel .coop-setup-configure,
+#gwo-ai-panel .coop-setup-configure {
   text-transform: uppercase;
+}
+
+/* Qualified for the same injection-order reason as the game-options panel. */
+.gw-start-coop-settings-panel.gwo-ai-modal-panel {
+  width: 520px;
+}
+
+.gwo-ai-modal-body {
+  margin-bottom: 20px;
+}
+
+.gwo-ai-table-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #2d3840;
+}
+
+.gwo-ai-table-row:last-child {
+  border-bottom: 0;
+}
+
+/* The <loc> ids in ai_modal.html carry the casing of the game's own translation
+   entries, because i18n lookups are case sensitive; the casing this table wants
+   is applied after translation rather than written into the markup. */
+.gwo-ai-table-header {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.gwo-ai-table-race {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.gwo-ai-table-cell {
+  flex: 0 0 150px;
+  margin-left: 8px;
+}
+
+/* The cells are the scene's own selectpicker dropdowns. The brain names are
+   proper nouns spelled as the war record stores them, so the uppercase the
+   panel shows is applied here - hung off the cell, as #difficulty-cards does,
+   because an <option> is no CSS hook once selectpicker rewrites the menu. */
+#gwo-ai-table .gwo-ai-table-cell,
+#gwo-ai-table button {
+  text-transform: uppercase;
+}
+
+/* global.css's .btn_std_ix border precedent: the commander picker's blue.
+   Qualified so it wins over the stock .btn border regardless of order. */
+#gwo-ai-table .btn.dropdown-toggle {
+  border: 1px solid rgba(0, 179, 255, 0.5);
+}
+
+.gwo-ai-table-stale {
+  opacity: 0.4;
 }
 
 .gw-start-coop-settings-panel.gwo-commander-modal-panel {

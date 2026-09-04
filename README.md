@@ -25,7 +25,6 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
   - Land anywhere
   - Sudden death
   - Eradication
-- Option to give yourself more starting neutral systems
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war, defended by The Guardians who turn your own technology against you
 - 17 new loadouts
@@ -35,10 +34,11 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Fixes all the errors in the tech cards
 - Over 150 new tech cards
 - Every feature is supported in co-op, including per-player loadouts and per-player tech
-- Three AI brains, selectable separately for your enemies and your allies:
-  - Titans: the base game AI
+- Three AI brains, chosen per race and separately for your enemies and your allies:
+  - Titans: the base game AI, which knows every race
   - Queller: a greater challenge at the cost of performance
   - Penchant: increased personality
+- Play as, and against, the unit factions other mods add (see Races below)
 
 ## Installation
 
@@ -83,11 +83,19 @@ Chosen when you create a war, from the Game Options panel, and applied for its d
 - **Hardcore**: permanent death. No restarts when your Commander is annihilated.
 - **Faction Scaling**: the number of enemy factions is adjusted for the galaxy's size.
 - **System Scaling**: system size is determined by how far into the galaxy you are.
-- **Easy Systems**: use smaller, mostly single planet systems. Hidden when Shared Systems for Galactic War is active.
+- **Easy Systems**: use smaller, mostly single planet systems.
 - **Large Planets**: encounter large planets and systems much sooner.
-- **Easier Start**: four neutral systems to plunder at the start instead of the usual two.
 - **System Lore**: display the original pre-release Galactic War lore in the Planetary Intelligence panel.
 - **Static Tech**: the Available Tech in a system never changes.
+- **Unique Races**: no two enemy factions field the same race while there are races left to hand out.
+
+## Races
+
+With [GW Server Mods](https://github.com/Quitch/GW-Server-Mods) active, a war can be fought as a unit faction from a server mod, and every enemy faction fields one too. Legion Expansion, Bug Faction and Exiles are supported. Choose your race in the war setup; every installed race is in play for the enemy, so disable a race mod to keep it out of a war. Your tech cards apply to your race's units, your Sub Commanders follow your race, and each race is fought by the AI brains that know it (see the AI button in the war setup).
+
+In co-op, **Separate races** lets every player pick their own race and commander when they choose their loadout. It needs Separate loadout & tech, and offers the races the war was created with that the host still runs.
+
+A war remembers the race mods it was created with. Remove one and the war cannot be resumed until it is back.
 
 ## Seeds
 
@@ -136,7 +144,7 @@ These buffs are applied to commanders on a per-faction basis:
 
 ## Compatible Loadouts & Tech Cards
 
-To create a GWO compatible loadout or tech card, please see the [New GW Cards repository](https://github.com/Quitch/New-GW-Cards/).
+To create a GWO compatible loadout or tech card, please see the [New GW Cards repository](https://github.com/Quitch/New-GW-Cards/). A mod can also add a whole deck to the Techs picker in the war setup, composed from GWO's decks, other mods' decks and individual cards.
 
 ## Contributing
 
@@ -162,8 +170,10 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 
 ### Known issues
 
-- Some users have reported instances of the sim freezing while the UI continues to respond. The host should go to Settings - Server and set Local Server Multi-Threading to OFF prior to hosting - this is a PA bug not a GWO one.
-- Enemy Cluster Worker and Security commanders will use the Angel and Colonel icons - this is a PA bug not a GWO one.
+- Enemy Cluster Worker and Security commanders will use the Angel and Colonel icons - this is a PA bug.
+- The player and planet lists will show MLA commanders icons regardless of race - this is a PA bug.
+- Some loadouts are disabled for races other than MLA due to unit dependencies
+- Bugs and Exiles are not dealt some tech cards for MLA units they have access to
 
 ## Recommended mods
 

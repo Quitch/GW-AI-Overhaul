@@ -21,6 +21,20 @@ const gwoColour = loadCouiModule(
 const refereeCoop = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js"
 );
+const gwoPersonality = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js"
+);
+const personalities = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js"
+);
+
+// As gw_per_player_tech_referee.js injects it, for the player faction below.
+const resolvePersonality = (minion) =>
+  gwoPersonality.resolve(minion, {
+    side: "ally",
+    faction: 1,
+    penchantTags: minion.penchantName === "!LOC:Rush" ? ["Rush"] : [],
+  });
 
 const TACTICS_CARD = { id: "gwaio_upgrade_subcommander_tactics" };
 const FABBER_CARD = { id: "gwaio_upgrade_subcommander_fabber" };
@@ -58,6 +72,7 @@ function build(overrides) {
         playerCommander: "/pa/units/commanders/base_commander/base.json",
         playerFaction: 1,
         playerColor: PLAYER_COLOR,
+        resolvePersonality,
         viewerAiPath: "/pa/ai_subcommander/player_.player0/",
         subcommanderEconRate: 1.5,
         colourPosition: 0,
@@ -70,6 +85,37 @@ function build(overrides) {
 function snapshot(value) {
   return JSON.parse(JSON.stringify(value));
 }
+
+describe("buildViewerSubcommanderArmies personalities", () => {
+  it("builds a minion's personality from its id, as the host's referee does", () => {
+    const result = build({
+      playerInventory: makeInventory({
+        minionsList: [
+          makeMinion({
+            personalityId: "armour",
+            personality: { energy_demand_check: 0.48 },
+          }),
+        ],
+      }),
+    });
+    const personality = result.armies[0].personality;
+    assert.equal(
+      personality.energy_demand_check,
+      personalities.legonisMachina.energy_demand_check
+    );
+    assert.equal(personality.percent_vehicle, 1);
+  });
+
+  it("keeps a minion saved without an id as it was, on a copy", () => {
+    const minion = makeMinion();
+    const result = build({
+      playerInventory: makeInventory({ minionsList: [minion] }),
+    });
+    const personality = result.armies[0].personality;
+    assert.equal(personality.max_basic_fabbers, 4);
+    assert.notEqual(personality, minion.personality);
+  });
+});
 
 describe("buildViewerSubcommanderArmies", () => {
   it("applies subcommander tech to the army, not to the viewer's saved minion", () => {

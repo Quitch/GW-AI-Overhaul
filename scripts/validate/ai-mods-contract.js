@@ -11,6 +11,8 @@
 //     need `idToMod`, whose absence silently makes the mod a no-op.
 //   - op "unset" is the exception: it deletes `idToMod` rather than writing it,
 //     so it carries `toBuild` and `idToMod` but no `value`.
+//   - `treeOnly`, when present, is a boolean on a build-list op. It keeps the
+//     descriptor off files a `load` pulled in from /pa/ai_tech/.
 
 const path = require("node:path");
 const { loadCouiModule } = require("../lib/amd-loader.js");
@@ -113,6 +115,16 @@ function checkMod(mod, index) {
         mod[field] === undefined
       ) {
         problems.push(where + ': op "' + mod.op + '" requires `' + field + "`");
+      }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(mod, "treeOnly")) {
+      if (typeof mod.treeOnly !== "boolean") {
+        problems.push(where + ": `treeOnly` must be a boolean");
+      } else if (mod.op === "load" || mod.op === "squad") {
+        problems.push(
+          where + ': `treeOnly` is not read by op "' + mod.op + '"'
+        );
       }
     }
 

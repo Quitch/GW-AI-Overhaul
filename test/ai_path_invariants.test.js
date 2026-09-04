@@ -287,6 +287,33 @@ describe("invariant: mixed-brain fights (aiAlly differs from ai) never collide",
   }
 });
 
+describe("invariant: a mixed aiByRace table never collides enemy and subcommander paths", () => {
+  // The same non-collision as the sweep above, driven by a recorded per-race
+  // row instead of the war-wide strings. Legion is the one shipped race two
+  // brains support, so its row can differ per side both ways round.
+  for (const [enemy, ally] of [
+    ["Queller", "Titans"],
+    ["Titans", "Queller"],
+  ]) {
+    for (const techState of SCENARIO_AXES.SUBCOMMANDER_TECH_STATES) {
+      it(`legion enemy=${enemy}/ally=${ally}, subcommander tech=${techState}: paths differ`, () => {
+        const fixture = buildGame({
+          aiInUse: "Penchant",
+          aiAllyInUse: "Penchant",
+          aiByRace: { legion: { enemy: enemy, ally: ally } },
+          aiMods: techState === "active" ? [{ op: "load" }] : [],
+        });
+        installModel(fixture.game);
+
+        const enemyPath = refereeConfig.setAIPath(false, false, "legion");
+        const subcommanderPath = refereeConfig.setAIPath(false, true, "legion");
+
+        assert.notEqual(enemyPath, subcommanderPath);
+      });
+    }
+  }
+});
+
 describe("invariant: Guardians + matching brains + per-player tech never leaks one player's tech onto the Guardian's shared destination", () => {
   // On a shared source tree with Guardians active, the base pass is the only place
   // that combines every connected player's mods. A per-viewer pass writing the same

@@ -5,7 +5,7 @@ assigns personalities and minions, and stamps GWO's settings onto the save.
 
 ## Generation order
 
-`model.makeGame` is deliberately replaced with an empty function so that changing a
+GWO deliberately replaces `model.makeGame` with an empty function so that changing a
 setting does not regenerate the galaxy. Generation instead happens once, when the
 player clicks **Go To War**.
 
@@ -16,7 +16,8 @@ Roughly:
    sampled from it, so a Queller-incompatible minion can never be spread onto the
    galaxy as a worker AI.
 3. Place the boss system, then non-boss AI systems, FFA foes, allied commanders.
-4. Assign personalities, buffs and minions per AI.
+4. Build each AI's personality from its template's id and the war's tier, draw
+   its buffs, and add its minions.
 5. Stamp war settings onto `originSystem.gwaio` for the `gw_play` scene to read.
 
 Step 5 is a piggy-back channel rather than a real API — the origin system is simply
@@ -100,6 +101,8 @@ first. Two consequences worth relying on:
 | ↳ `size.<i>`, `star.<i>`                                              | that star's system size, and the seed handed to `generate()`                                      |
 | ↳↳ `planet.<i>`                                                       | that planet's biome and generator values                                                          |
 | `teams`                                                               | faction scaling, the AI faction shuffle, `gwoTeams.getTeam`                                       |
+| ↳ `races`                                                             | one race per faction (`races.assign`)                                                             |
+| `race.<faction>` → `worker.<n>`                                       | that AI's race commander; the boss stream draws none                                              |
 | `breeder`                                                             | which star each faction spawns on, and the spawn order                                            |
 | `boss.<team>`                                                         | the seed handed to `gwoTeams.makeBoss`                                                            |
 | `workers`                                                             | `makeWorker`'s picks — ordered, see below                                                         |
@@ -126,8 +129,10 @@ cards offered at each star, the cards sitting on enemy stars, the General Comman
 Commanders, the AI's landing behaviour — is dealt in the `gw_play` scene, which re-derives
 the root from the seed stamped on the save: `gwoRng.create(originSystem.gwaio.seed)`.
 
-Every key lives in `gw_play/gwo_streams.js`, so this table has one place to be checked
-against.
+Every parent key lives in `gw_play/gwo_streams.js`, so this table has one place to be
+checked against. Two children are minted where they are drawn: `minion.<n>` in
+`cards_deal_helpers.js`'s `buildGeneralCommanderMinions`, and the `landing_*` streams in
+`referee_config_setup.js`.
 
 | Stream                                            | Consumers                                          |
 | ------------------------------------------------- | -------------------------------------------------- |
@@ -210,6 +215,16 @@ cosmetic: restructuring `gwo_system_templates.js` while copying it once dropped 
 for an engine promise (see [`constraints.md`](constraints.md)) every war on the vanilla
 path failed with "no usable star system".
 
+Stock's own bugs are kept too. `gwo_system_templates.js`'s `fromRandomList` reads as
+filtering the pool by `isExplicit`, but lodash 3's `_.where` takes a source object,
+not a predicate, so the filter is inert: every entry stays viable and the
+`do/while`'s `usedIndexes` check is what keeps the draws apart. Deliberately not
+corrected. It is stock's, character for character, and nothing in stock or GWO pairs
+`isExplicit` with `fromRandomList`, so the filter would be a no-op either way — while
+switching to `_.filter` would shrink the viable list, shift the draw and regenerate
+every existing war's boss systems from the same seed.
+`test/gwo_system_templates.test.js` pins the inert filter.
+
 ### Shared Systems for Galactic War
 
 That mod replaces `systems/template-loader.js` wholesale, so GWO's seeded loader lives at
@@ -279,17 +294,30 @@ deferred that only settles on success, so the battle hangs at loading with no er
 switches such a planet to `earth`, which is what repairs a war saved before this screen
 existed.
 
-A modded biome is kept when an enabled server mod that ships **only JSON** provides it.
-`shared/gwo_biome_mods.js` catalogs each enabled server zip mod once, at war creation -
-through the Community Mods manager where the scene loads it, and through the manager's
-own IndexedDB store in `gw_start`, which does not - and a mod carrying anything else
-under `pa/` (`.papa` meshes, textures) is not a provider, because only text can be
-handed to the server. `selectorFor` stamps the providing mods onto the placed copy as
-`gwoBiomeMods`, so battle launch reads that stamp instead of resolving again.
+A modded biome is kept when an enabled server mod provides it and something can carry
+that mod to the server. `shared/gwo_biome_mods.js` catalogs each enabled server zip
+mod once, at war creation - through GW Server Mods' manifest when that mod is loaded,
+else through the Community Mods manager where the scene loads it, and through the
+manager's own IndexedDB store in `gw_start`, which does not. A mod that ships **only
+JSON** under `pa/` is always a provider, because GWO can hand text to the server
+itself. A mod carrying anything else there (`.papa` meshes, textures) is a provider
+only with GW Server Mods active, which mounts every active server mod for a GW battle;
+without it such a system is dropped as before. `selectorFor` stamps the providing mods
+onto the placed copy as `gwoBiomeMods`, so battle launch reads that stamp instead of
+resolving again.
 
 ### Biome mods in a GW battle
 
-Two channels carry a stamped mod into the battle, because the server needs it before
+Each stamped provider record carries `served`: `"cook"` when GWO carries the mod into
+the battle itself, `"gwsm"` when GW Server Mods does. That split is decided in one
+place, `gwo_biomes.js`'s `serviceFor` - text is always cooked; anything else is
+`"gwsm"` when GW Server Mods is present and no provider at all when it is not - so a
+later change of policy is a one-line change. A stamp written before `served` existed
+reads as `"cook"`. The record's `mountPath` is built from the manifest's
+`rawIdentifier`, not its lower-cased `identifier`: Community Mods mounts under the
+installed case and `spec:/` reads are path-sensitive.
+
+Two channels carry a **cooked** mod into the battle, because the server needs it before
 the clients do.
 
 The server validates `config.system` **before** it mounts `config.files`
@@ -305,11 +333,33 @@ Clients get the same files through `config.files`: `gwoGenerateBiomes` mounts th
 stamped mods, reads every `pa/**/*.json` they ship through `spec:` (the only scheme that
 resolves a `/server_mods/` mount client-side) and adds the text to `self.files()`, which
 the host mounts and the `gw_config` payload hands to every joiner. That is why only
-text-only mods qualify: a `.papa` has no way through either channel.
+text-only mods can be cooked: a `.papa` has no way through either channel.
 
-A mod that cannot be mounted or fully read at launch is dropped from both, and
+A cooked mod that cannot be mounted or fully read at launch is dropped from both, and
 `referee_config.js` then treats its biomes as unservable and switches those planets to
-`earth`.
+`earth`. The mod is not a dependency of the war: once its zip cannot be read, the
+planet falls to `earth` and nothing more. (Disabling alone does not do that - the
+stamp mounts the zip by path, so a disabled mod whose zip is still in `download/`
+keeps serving, verified 2026-09-04.)
+
+A **GW Server Mods-served** mod goes through neither channel. GW Server Mods mounts
+every active server mod at `/server_mods/<id>/` before the local server spawns, wrapping
+`model.fight` so the mount precedes the referee, and its connect gate keeps out a co-op
+viewer lacking any client-relevant server mod. `gwoGenerateBiomes` therefore only asks
+`gwo_biome_mods.js`'s `serve` which of the stamped mods GW Server Mods lists as active,
+catalogs the live manifest row (the stamp's `installedPath` is stale after a reinstall)
+and adds their biomes to `biomeServed`; a stamped mod it no longer lists falls to
+`earth` like an unreadable cooked one. Such a mod **is** a dependency of the war:
+`gw_start/setup.js` records the ones stamped on any placed star as
+`originSystem.gwaio.biomeMods = [{ identifier, displayName, version }]`, and on resume
+`gw_play/biomes.js` asks `shared/biome_check.js` what the stars are stamped with (the
+stamps carry names and versions; the recorded list stands in for a star whose system
+lost its stamp), compares that with `installedBiomeMods`, and blocks the war through the
+same gate `gw_play/races.js` built for races - the dialog, a "Missing Map Packs" list
+on the war panel, and `model.fight` refusing - with the same rules: without GW Server
+Mods a single mod-neutral line, an unreadable mod list decides nothing, and a version
+change only warns. A war saved before the record existed has neither stamp nor list, so
+nothing blocks.
 
 A war saved before the stamp existed has none, so a system there with a modded biome
 resolves providers at launch instead (`stampedMods` in `referee.js`) and writes the
@@ -398,9 +448,19 @@ Consequences that surface elsewhere:
 `UNITTYPE_Land` on an air unit (without it the AI misbehaves), a cost of 25000
 (because repair/reclaim), and health matched to a Commander's.
 
+### Races
+
+A faction's race - the unit faction it fields - is drawn per faction from the
+`teams` stream's `races` child once the factions are shuffled, and stamped onto
+every AI that faction spawns (`ai.race`). Each non-boss AI takes one of the
+race's commanders from `warRng.stream("race", faction)`; the boss keeps its
+Pumpkin and the Guardians the Unicorn, retagged at launch. Cluster never draws a
+race. The player's race is `global:playerRace` on the inventory, and the whole
+choice is recorded as `originSystem.gwaio.races`. See [`races.md`](races.md).
+
 ## Difficulty
 
-`gw_start/difficulty_levels.js` is a `difficulties` array of nine tiers — Beginner,
+`gw_start/difficulty_levels.js` is a `difficulties` array of tiers — Beginner,
 Casual, Iron, Bronze, Silver, Gold, Platinum, Diamond, Uber — plus a minimal
 `Custom` sentinel.
 
@@ -417,9 +477,29 @@ appearing with more than one `typeof` is almost certainly a typo.
 Custom also has no difficulty _rating_, so it is excluded from victory-badge
 recording — including it produced an index of -2, which no badge matches.
 
+**What the save records.** `originSystem.gwaio.difficulty` is the tier's
+`difficultyName` only. Every battle looks the tier up by that name through
+`shared/ai.js`'s `warTier()`, so a retune of a tier reaches wars in progress. A
+Custom war has no tier to look up, so generation also records
+`gwaio.customDifficulty`: the `tierSettings` values keyed by their
+`difficulty_levels.js` key names, in a named tier's shape — numbers as numbers,
+the three booleans as the `"true"`/`"false"` strings the tiers hold,
+`personality_tags` as an array. `warTier()` prefers that snapshot when present.
+A Custom war saved before snapshots existed resolves no tier and keeps the
+fallbacks each reader had before: an econ floor of 1, and the values baked into
+its AI records.
+
+Two per-AI numbers follow from the tier and are derived at launch rather than
+recorded: a boss's commander count (`tier.bossCommanders` per player in
+`gwaio.coopPlayerScalingCount`) and the bounty value, both through
+`shared/ai.js`'s `commanderCount()` and `bountyValue()`. An AI saved before
+this carries `bossCommanders` and `bountyModeValue`, which those read when the
+war resolves no tier. `galaxy.difficultyIndex` is no longer written; stock's
+`GWGalaxy.prototype.load` never restored it, so nothing ever read it back.
+
 ## AI personalities and penchants
 
-`shared/ai.js`'s `penchants()` samples one of 14 personality flavours (Artillery,
+`shared/ai.js`'s `penchants()` samples one personality flavour (Artillery,
 Fortress, All-terrain, Assault, Boomer, Heavy, Infernodier, Raider, Sniper, Nuker,
 Tactical, Platoon, Minelayer, plus a "Vanilla" no-change entry) and returns the
 build-file tags that drive `/pa/ai_penchant/`.
@@ -431,11 +511,66 @@ rather than as nothing.
 Personality display names support the _Show AI Personality Names_ mod, a dependency
 that lives entirely outside this repo.
 
+**Every template carries a `personalityId`.** `faction/faction_builder.js`'s
+`fromBaseline()` looks the declaration's `personality` reference up in
+`personalities.js` by identity and records its key on the merged minion or boss
+(the Cluster faction builds through the same helper; `faction_seed.js` copies
+the id along with the personality it draws for a Random commander). Every AI
+record — workers, minions, foes, an `ai.ally`, the Guardians, a dealt Sub
+Commander — is a deep clone of a template, so the id reaches the save for free.
+`shared/ai_personality.js`'s `base(id, faction)` rebuilds the same object from
+the id, and `test/faction_personality_ids.test.js` pins that the two merges
+agree for every shipped template.
+
+**Generation never edits a template.** The base game's own `makeGame` still runs
+once per `gw_start` load (it is kicked off before any mod script exists) and its
+difficulty ramp writes into the templates' shared `personality` objects, so the
+templates are dirty by the time GWO generates. `setAIPersonality` therefore
+assigns `ai.personality = gwoPersonality.resolve(ai, …)`, a fresh object: the
+template `personalityId` names, the tier's AI settings written over it
+(`applyTier()`), and `personality_tags` composed as the tier's tags followed by
+the brain's — `Default` for TITANS, the faction's arm plus `queller` for
+Queller, the drawn penchant's tags plus `Default` for Penchant. An `ai.ally`
+resolves as an ally: template tags plus its penchant, no tier. Queller's FFA
+tags are appended per entity afterwards, as before. The war records the id and
+the `penchantName`; the resolved object is written too, for stock readers and
+as the fallback for an AI whose id no longer resolves. Only
+`works_with_queller` is ever read from a template, and stock never writes it.
+A template declares no `econ_rate`: generation rolls one for every enemy, and
+an ally or a dealt Sub Commander carries none at all, since every reader gives
+them the Sub Commander rate. The clone paths still delete the field, because
+the base game's ramp writes one onto the template minions it samples. A dealt Sub Commander records its penchant
+as `penchantName` alone (`gw_play/cards_deal_helpers.js`, `gwc_minion.js`), as
+an enemy does; its `character` stays the template's, and the war panel, the
+minion card and the referee's display name show the penchant after it. A Sub
+Commander dealt before this carries the penchant's name inside `character` and
+its tags in its stored personality, which the resolver keeps as they are.
+
+**Launch resolves the same way.** `gw_play/referee_config_setup.js` builds every
+army's personality through the same `resolve()` from the record — id, tier by
+name, the brain the army's race runs, its penchant, and the FFA tags for a
+Queller army whose star has foes — so a change to `personalities.js`, a tier or
+a brain's tags reaches a war in progress on its next battle. The resolved
+object is what the army holds; the war's own record is never edited. An AI
+saved without an id (or whose id no longer ships) keeps its stored personality
+as the base and still takes the live tier's settings; its stored tags are kept
+as they are, FFA tags included. An ally resolves against the player's faction,
+since a Sub Commander record carries none.
+
 ## AI tech
 
 Distinct from the player's tech cards, and from `/pa/ai_tech/`: this is the AI's
-own stat tech, drawn at war creation and applied as **unit-spec mods** on the
-AI's inventory. Two modules:
+own stat tech, drawn at war creation and applied as **unit-spec mods** when the
+battle is launched. The war records only the draw — `typeOfBuffs`, the buff
+indices, on every boss, worker and foe — and `gw_start/ai_tech.js`'s
+`loadoutFor()` builds the descriptors from the live tables at launch
+(`referee_game_file_paths.js`'s `armyInventory()`), so a rebalance reaches wars
+in progress. A war saved before this carries the built descriptors as
+`ai.inventory` and no `typeOfBuffs` on its foes; `armyInventory()` uses those
+as they are, and `gw_play/bugfixes.js`'s Cluster commander repair only ever
+touches such a baked inventory. The Guardians take the faction tech of the
+worker they replaced but never the Cluster commander mods — they field the
+Unicorn, which those mods do not name. Two modules:
 
 - `gw_start/ai_tech.js` returns `factionTechs[faction][tech]` — arrays of
   `addMods`-shaped descriptors, the same shape [`specs.md`](specs.md) documents.
