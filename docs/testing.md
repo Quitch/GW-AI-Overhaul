@@ -6,7 +6,7 @@ shipped AMD modules under plain Node and asserting against them.
 ```bash
 npm test                  # node --test, everything under test/
 npm run test:coverage     # same, plus lcov for the Sonar job
-npm run validate          # all seven validate:* checks in sequence
+npm run validate          # every validate:* check in sequence
 npm run verify            # exactly what CI runs
 ```
 
@@ -32,18 +32,8 @@ Two entry points, and the difference matters:
 | `requireShippedModule(entry)` | The file's plain Node `module.exports`.                                          |
 
 `requireShippedModule` is only for files carrying a deliberate, additive,
-dead-in-production test hook:
-
-```js
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = { applyAiMods: applyAiMods };
-}
-```
-
-`module` does not exist in the game's Chromium runtime, so that branch never
-executes in-game. It exists to reach functions `define()` never returns —
-`referee_ai.js`'s `applyAiMods`, and the naming helpers in
-`gw_play/cards_card_name_sync.js`.
+dead-in-production test hook — the `typeof module` hook described under
+"Coverage" below.
 
 `loadCouiModule` resolves both `coui://` paths and bare AMD ids (`"cards/x"`,
 `"shared/x"`) the same way the game's loader would.
@@ -54,20 +44,26 @@ A bare AMD id this repo does not ship is a **base-game** module. The loader thro
 a distinct `NOT_SHIPPED` error for it rather than a generic failure, because CI has
 no base install to fall back on and the two cases need telling apart.
 
-This is why 61 of the 237 cards cannot be shape-checked: they transitively depend
-on `shared/gw_common`. For sweeps where skipping them would mean testing nothing,
-`registerModuleStub` is an opt-in escape hatch — it does **not** weaken the default.
+This is why a quarter of the cards cannot be shape-checked: they transitively
+depend on `shared/gw_common`. For sweeps where skipping them would mean testing
+nothing, `registerModuleStub` is an opt-in escape hatch — it does **not** weaken
+the default.
 
 `scripts/lib/card-probe.js` takes that hatch, and with `shared/gw_common` stubbed
-**236** of the 237 cards load. That sits oddly beside `validate:cards`'s 175 until
-you notice they answer different questions: the validator refuses the hatch on
-purpose, so its number is what can be checked with no stand-in at all.
+every card but the `KNOWN_UNLOADABLE` one loads. That sits oddly beside
+`validate:cards`'s `MIN_CHECKED` floor until you notice they answer different
+questions: the validator refuses the hatch on purpose, so its number is what can
+be checked with no stand-in at all.
 
 Because a bare `catch` around a load also swallows syntax errors and genuine
 breakage, the validators discriminate on the reason. A bare catch once reported
 real failures as "excluded" with the run still green.
 
-## The seven validators
+## The validators
+
+Every `validate:*` script `npm run validate` runs has a row here, and
+`validate:docs` checks that it does. `validate:race-trees` is local-only and
+described separately below.
 
 | Command             | Catches                                                                                                                                                           |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -78,6 +74,7 @@ real failures as "excluded" with the run still green.
 | `validate:schemas`  | AI build-order JSON and difficulty/personality data: type consistency.                                                                                            |
 | `validate:refs`     | Cross-references — loadout ids against card files, unit keys, AI builder roles against `unit_map`.                                                                |
 | `validate:sonar`    | `sonar-project.properties`: no stale exclusion paths, every analysed file is UTF-8.                                                                               |
+| `validate:docs`     | The hand-maintained inventories in `docs/` — scene, shadowed-file, `pa/` tree and validator tables — against the tree and `package.json`.                         |
 
 Several are worth understanding rather than just running.
 
@@ -287,13 +284,16 @@ factory, it is re-exported through:
 ```js
 // eslint-disable-next-line no-undef
 if (typeof module !== "undefined" && module.exports) {
+  module.exports = { applyAiMods: applyAiMods };
+}
 ```
 
 `module` is a Node/CommonJS global that does not exist in the game's Chromium
 runtime, so the branch is dead in production and exists purely for the test
-suite. It is deliberately absent from these files' configured globals, which is
-why each occurrence carries an `eslint-disable-next-line no-undef`. The same hook
-appears in `gw_play/referee_ai.js`.
+suite, which reaches it with `requireShippedModule`. It is deliberately absent
+from these files' configured globals, which is why each occurrence carries an
+`eslint-disable-next-line no-undef`. The same hook appears in
+`gw_play/referee_ai.js` for `applyAiMods`, which `define()` never returns.
 
 **A test file is named for the module it loads, not the feature it belongs to.**
 Once the pure logic is extracted, the bootstrap that is left — `gw_play/coop_ping.js`

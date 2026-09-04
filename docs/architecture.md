@@ -23,17 +23,18 @@ files that must replace a base-game file at its exact path — see
 
 `modinfo.json`'s `scenes` block is the mod's **real** entry-point list. The game
 loads exactly the `coui://` files listed there, for the scene named, and nothing
-else. Seven scenes, 23 entries:
+else. `validate:docs` checks this table against it:
 
-| Scene                        | Entries | What it covers                                                                                     |
-| ---------------------------- | ------- | -------------------------------------------------------------------------------------------------- |
-| `gw_start`                   | 3       | War creation: the setup lobby, difficulty/AI pickers, loadout selection.                           |
-| `gw_play`                    | 14      | The galaxy map and everything during a war: cards, referees, panels, intel, ping, co-op selection. |
-| `gw_war_over`                | 1       | Victory/defeat bookkeeping — records the highest difficulty defeated.                              |
-| `live_game`                  | 1       | In-battle menu patches (surrender/continue with more than two teams).                              |
-| `shared_build`               | 1       | Planetary radar behaviour.                                                                         |
-| `start`                      | 2       | Main menu.                                                                                         |
-| `gw_coop_per_player_loadout` | 1       | Per-player loadout selection for co-op viewers.                                                    |
+| Scene                        | What it covers                                                                                     |
+| ---------------------------- | -------------------------------------------------------------------------------------------------- |
+| `gw_start`                   | War creation: the setup lobby, difficulty/AI pickers, loadout selection.                           |
+| `gw_play`                    | The galaxy map and everything during a war: cards, referees, panels, intel, ping, co-op selection. |
+| `gw_war_over`                | Victory/defeat bookkeeping — records the highest difficulty defeated.                              |
+| `live_game`                  | In-battle menu patches (surrender/continue with more than two teams).                              |
+| `live_game_options_bar`      | Win-conditions text on the in-battle options bar.                                                  |
+| `shared_build`               | Planetary radar behaviour.                                                                         |
+| `start`                      | Main menu.                                                                                         |
+| `gw_coop_per_player_loadout` | Per-player loadout selection for co-op viewers.                                                    |
 
 `gw_play` carries most of it, and two of its entries own a panel outright:
 `gwo_panel.js` builds GWO's own war panel — seed, difficulty, the AI brains, the
@@ -65,28 +66,30 @@ ship is a base-game module, and the test harness reports it distinctly; see
 [`testing.md`](testing.md).
 
 Every mod gets **one shared JS scope per scene**. Stock UI code and mod scripts
-share a namespace, which is why several GWO values are deliberately globals
-(`model.gwoCards`, `model.gwoDecks`, `model.gwoSpecs`,
-`model.gwoCardsGrantingAdvancedTech`) — other mods hook them, and that is a
-supported contract, not an accident.
+share a namespace, which is why several GWO values are deliberately globals —
+other mods hook them, and that is a supported contract, not an accident. The
+full list is the globals table in [`tech-cards.md`](tech-cards.md),
+"Third-party card mods".
 
 ## The major subsystems
 
-| Subsystem                            | Doc                                | Entry file                   |
-| ------------------------------------ | ---------------------------------- | ---------------------------- |
-| Tech cards, deal weighting, loadouts | [`tech-cards.md`](tech-cards.md)   | `shared/cards.js`            |
-| AI build-order modification          | [`ai-pipeline.md`](ai-pipeline.md) | `gw_play/referee_ai.js`      |
-| Which AI reads which directory       | [`ai-paths.md`](ai-paths.md)       | `shared/referee_ai_paths.js` |
-| Co-op, per-player tech, colours      | [`coop.md`](coop.md)               | `shared/referee_coop.js`     |
-| Unit spec modification               | [`specs.md`](specs.md)             | `shared/specs.js`            |
-| Galaxy generation and factions       | [`galaxy.md`](galaxy.md)           | `gw_start/setup.js`          |
+One per doc; the table in [`docs/README.md`](README.md), "Subsystems", is the
+list.
 
 ## Battle launch, end to end
 
-The sequence that ties most of the above together:
+The sequence that ties most of the above together. `gw_play/referee.js` hijacks
+the base referee and installs GWO's, whose hire runs these in order:
 
-1. `gw_play/referee.js` hijacks the base referee and installs GWO's.
-2. `gw_play/referee_config.js` + `referee_config_setup.js` assemble the launch
+1. `gw_play/referee_game_files.js` generates unit specs per army tag, applying
+   the AI tech `gw_start/ai_tech.js` builds from the buffs the war recorded —
+   see galaxy.md, "AI tech".
+2. `gw_play/referee_ai.js` walks the AI build trees, applies AI-mod descriptors
+   from every card held, and writes the results into the config.
+3. `referee.js`'s own `gwoGenerateBiomes` mounts the server mods stamped on the
+   battle's system and cooks their JSON into the config's files — see
+   galaxy.md, "Biome mods in a GW battle".
+4. `gw_play/referee_config.js` + `referee_config_setup.js` assemble the launch
    config — armies, personalities, planets, game modes. Every army's
    personality is built here through `shared/ai_personality.js` from what the
    war recorded (its `personalityId`, `penchantName`, faction and brain) and
@@ -94,11 +97,6 @@ The sequence that ties most of the above together:
    follow from the tier (a boss's commander count, the bounty value) — none of
    it is read from the save. See galaxy.md, "Difficulty" and "AI personalities
    and penchants".
-3. `gw_play/referee_ai.js` walks the AI build trees, applies AI-mod descriptors
-   from every card held, and writes the results into the config.
-4. `gw_play/referee_game_files.js` generates unit specs per army tag, applying
-   the AI tech `gw_start/ai_tech.js` builds from the buffs the war recorded —
-   see galaxy.md, "AI tech".
 5. In co-op with per-player tech, `gw_per_player_tech_referee.js` runs afterwards
    and adds each viewer's own specs and subcommanders.
 
@@ -139,12 +137,9 @@ GWO's deferred from a native promise, so an exception in the callback surfaces
 only as a reason-less `Unhandled promise rejection` in the client log, one line
 after `[GW-SM] mounted server mods`. That is the signature to look for.
 
-A co-op host hires the referee **twice** per battle (the base game's
-`hireRefereesForLaunch` creates a clean shared referee plus a local one), and a
-failed launch can leave mutated in-memory state behind for a later save to
-serialise. None of the setup is idempotent — eco mods and fabber caps multiply,
-personality tags get pushed — so every setup function works on deep copies. This
-is load-bearing and is pinned by `test/referee_config_ai_paths.test.js`.
+A co-op host hires the referee **twice** per battle, and none of the setup is
+idempotent, so every setup function works on deep copies. See
+[`coop.md`](coop.md), "The two referees".
 
 ## Galaxy map redraw throttling
 

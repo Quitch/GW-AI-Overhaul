@@ -9,7 +9,7 @@ something new.
 
 1. **Descriptor** `ui/mods/…/race/<id>.js`, listed in
    `shared/races_shipped.js`. Fields: `id`, `name`, `serverMods` (every
-   identifier that counts as the mod active, a `-dev` build included),
+   identifier that counts as the mod active; matching is exact),
    `unitTypeBit` (`Custom<N>`), `commanderTypes`, `commanders`,
    `commanderArtHue`, `playerIcon`, `ai`, `units`, `unitNames`.
 2. **Unit table.** `units` keys every spec the race ships by a name of the
@@ -77,8 +77,8 @@ something new.
   mods, and by cell they turned Exiles' Heron into a broken commander.
 - **Cards never change.** They name vanilla units; the race's units follow at
   launch. A card that cannot work by cell goes in
-  `cards_deal_helpers.MLA_ONLY` (Paratrooper, Nomad, Killswitch, Deepspace
-  Radar) - every `_upgrade_` card is MLA-only except the commander's.
+  `cards_deal_helpers.MLA_ONLY`, with a comment saying why - and every
+  `_upgrade_` card is MLA-only except the commander's.
 - **The race tag travels with every inventory** (`global:playerRace`), the
   host's and each co-op viewer's, and every referee function takes the race
   per army. Never read a race off `model.game().inventory()` when the thing

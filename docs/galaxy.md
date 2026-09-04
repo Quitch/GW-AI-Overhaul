@@ -129,8 +129,10 @@ cards offered at each star, the cards sitting on enemy stars, the General Comman
 Commanders, the AI's landing behaviour — is dealt in the `gw_play` scene, which re-derives
 the root from the seed stamped on the save: `gwoRng.create(originSystem.gwaio.seed)`.
 
-Every key lives in `gw_play/gwo_streams.js`, so this table has one place to be checked
-against.
+Every parent key lives in `gw_play/gwo_streams.js`, so this table has one place to be
+checked against. Two children are minted where they are drawn: `minion.<n>` in
+`cards_deal_helpers.js`'s `buildGeneralCommanderMinions`, and the `landing_*` streams in
+`referee_config_setup.js`.
 
 | Stream                                            | Consumers                                          |
 | ------------------------------------------------- | -------------------------------------------------- |
@@ -423,7 +425,7 @@ choice is recorded as `originSystem.gwaio.races`. See [`races.md`](races.md).
 
 ## Difficulty
 
-`gw_start/difficulty_levels.js` is a `difficulties` array of nine tiers — Beginner,
+`gw_start/difficulty_levels.js` is a `difficulties` array of tiers — Beginner,
 Casual, Iron, Bronze, Silver, Gold, Platinum, Diamond, Uber — plus a minimal
 `Custom` sentinel.
 
@@ -462,7 +464,7 @@ war resolves no tier. `galaxy.difficultyIndex` is no longer written; stock's
 
 ## AI personalities and penchants
 
-`shared/ai.js`'s `penchants()` samples one of 14 personality flavours (Artillery,
+`shared/ai.js`'s `penchants()` samples one personality flavour (Artillery,
 Fortress, All-terrain, Assault, Boomer, Heavy, Infernodier, Raider, Sniper, Nuker,
 Tactical, Platoon, Minelayer, plus a "Vanilla" no-change entry) and returns the
 build-file tags that drive `/pa/ai_penchant/`.

@@ -180,7 +180,8 @@ the check would start rejecting a player's own results the moment they reconnect
 That is the same reason `gwo_streams.coopPlayerKey` prefers `record.playerId`.
 
 Every reply that concerns one player addresses itself, including the failure
-replies (`failPendingTechReroll`, `failGeneralCommanderSetup`) — an unaddressed
+replies (`cards_coop_reroll.js`'s `failReroll`, `cards_start_subcdr.js`'s
+`failSetup`) — an unaddressed
 error would put one viewer's refusal on every viewer's screen. The two host→viewer
 operators that carry **no** target are broadcasts by design: the ping, which
 self-identifies and deduplicates by `ping_id`, and the star-card name sync.
@@ -268,7 +269,7 @@ pinged again. Three things about it are not obvious:
 the war moves on cannot get past it. A star is pingable when this client is a
 connected viewer, the star index is one the galaxy has, and `star.explored()` is
 false — an explored star has been taken, and there is nothing left there to ask the
-host for. That observable travels in `syncViewerStarFromGame`'s copy list, so a
+host for. That observable travels in `syncViewerStarsFromGame`'s copy list, so a
 viewer's own is maintained rather than inferred.
 
 It also refuses while the turn state is `explore` or `fight`: where to go next stops
@@ -395,12 +396,9 @@ Four things about it are not obvious from the scene it sits in:
   `colour` is the war's `global.playerColor`, which paints the commander
   preview the way the war setup's Commander picker does: the same
   `race_picker_options.commanderTint` rotates the art's hue to the faction's.
-  `races` is the war's recorded offer intersected, through
-  `race_check.activeRaces`, with the host's active server mods — asked of
-  `GwServerMods.hostServerMods()`, the capability API over what its connect
-  gate captured on the way in, not of `race_mods.installedRaces`: that answers
-  with this client's own list, and the host's set is the authority. No API, or
-  the empty set a missing publish leaves, removes nothing.
+  `races` is the war's recorded offer intersected with the host's active
+  server mods — see [`races.md`](races.md), "Assignment and persistence", for
+  why the host's set and not this client's, and why no answer removes nothing.
 - **The deck it deals from is the loadout list, not the tech deck.** The scene
   deals exactly one card, the loadout, so it loads `loadouts.allCards` — the same
   list the picker offers — rather than calling `setupGwoCards`. That deck holds

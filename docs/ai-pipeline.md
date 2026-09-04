@@ -211,4 +211,5 @@ get at it with `requireShippedModule`, not `loadCouiModule`. See
 - [`ai-paths.md`](ai-paths.md) — how the source and destination paths are chosen.
 - [`tech-cards.md`](tech-cards.md) — where `addAIMods` gets called from.
 - `scripts/validate/ai-mods-contract.js` — the shape checker, which mirrors this
-  op table exactly and will fail if the two drift.
+  op table and will fail if the two drift. It also carries `load`, which is not
+  an op here but is a descriptor a card can emit, so its shape is checked too.

@@ -20,7 +20,7 @@ parts that need a running game stay thin.
 | ---------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/pa/ai/`              | Partly        | The base game's stock Titans AI build data. This repo ships only the handful of files GWO shadows; the rest is base-game-owned and absent from CI. |
 | `/pa/ai_penchant/`     | In full       | GWO's own personality-driven build trees. `shared/ai.js`'s `penchants()` maps a personality to build-file tags drawn from here.                    |
-| `/pa/ai_queller/`      | No            | The base game's Queller AI data.                                                                                                                   |
+| `/pa/ai_queller/`      | Partly        | The base game's Queller AI data. This repo adds a unit map to each tier GWO selects; the build data is base-game-owned and absent from CI.         |
 | `/pa/ai_subcommander/` | No            | Runtime-synthesised only. No on-disk existence anywhere.                                                                                           |
 | `/pa/ai_cluster/`      | No            | Runtime-synthesised only. Same.                                                                                                                    |
 
@@ -131,7 +131,10 @@ token, and the two live call sites differ:
   `/pa/ai_cluster/player_player0/`.
 - `shared/ai.js`'s `getSubcommanderPathForViewer` passes the **raw** player tag
   through as `scopeToken`, so the same viewer's subcommander destination is
-  `/pa/ai_subcommander/player_.player0/` — with the dot.
+  `/pa/ai_subcommander/player_.player0/` — with the dot. The pure module's own
+  `getViewerSubcommanderPath` has one special case: the host's tag, `.player`,
+  yields no scope at all, because the host's subcommanders already own the
+  unscoped destination.
 
 Both are internally consistent (the same code generates and consumes them), so
 this is not a live bug, but it is a real inconsistency and the tests pin it

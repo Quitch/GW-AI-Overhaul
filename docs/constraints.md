@@ -71,7 +71,7 @@ engine ships.
 
 `Math.seedrandom` exists in the game but **not** in Node, so nothing on a testable path
 can use it — hence `shared/gwo_rng.js`, which carries its own PRNG. See
-[`galaxy.md`](galaxy.md).
+[`galaxy.md`](galaxy.md), "Why a bespoke PRNG".
 
 Lodash is the workaround for most missing builtins. Two of its behaviours are
 relied on deliberately:

@@ -26,7 +26,7 @@ A descriptor:
 {
   id: "legion",
   name: "!LOC:Legion",
-  serverMods: ["com.pa.legion-expansion-server", "…-dev"], // any one active
+  serverMods: ["com.pa.legion-expansion-server"], // any one active
   unitTypeBit: "Custom1",
   commanderTypes: { unitType: "UNITTYPE_Custom1", buildable: "CmdBuild & Custom1" },
   commanders: [{ spec: "/pa/units/commanders/l_raptor/l_raptor.json" }, …],
@@ -119,10 +119,9 @@ whose `path` a race file lacks is the no-op it always was in `specs.mod`.
 A single-unit grant opens its whole cell (`gwc_start_subcdr`'s Ant brings
 every basic race tank) - accepted. What no cell can carry is a hand-picked
 list: `cards_deal_helpers.MLA_ONLY` names the cards a race player is never
-dealt or offered as a loadout - the Paratrooper and Nomad loadouts, the
-Killswitch protocol and the Deepspace Radar card - and every `_upgrade_` card
-but the commander's (`ubercannon`, `subcommander`), since those are tuned to
-the MLA unit they name. A race gets its own. `shared/loadouts.js` and
+dealt or offered as a loadout, each entry saying why, and `mlaOnlyCard` adds
+every `_upgrade_` card but the commander's (`ubercannon`, `subcommander`),
+since those are tuned to the MLA unit they name. A race gets its own. `shared/loadouts.js` and
 `gw_play/treasure_loadouts.js` apply the same list to the loadouts a race
 player is shown. Any other card is dealt when `races.cardUsable` finds a race
 unit in a cell its `card_units.js` entry names; a card with no entry - every
@@ -286,16 +285,22 @@ With it off every viewer's inventory is stamped with the host's race; with it on
 each viewer picks their own at the loadout screen, from the races the war
 recorded that the host still runs - never that client's own installed list.
 The active set is the host's, asked of `GwServerMods.hostServerMods()` — the
-capability API over what its connect gate captured — and the intersection is
-`race_check.activeRaces`, so a set that cannot be read removes nothing. Either way the referee
-reads the race off each inventory (`races.raceOf` understands the live `getTag`
+capability API over what its connect gate captured on the way into the
+session — not of `race_mods.installedRaces`, which answers with this client's
+own list: the host mounts the server mods a battle fields, so its set is the
+authority. The intersection is `race_check.activeRaces`, and no answer — a host
+without GW Server Mods, a build without the API in this scene, or the empty set
+the API returns when the host published nothing — is "cannot tell" and removes
+nothing. Nor is the recorded list alone enough: a race disabled since the war
+was made has no units in the battle either, and the resume check does not block
+a race nobody fields. Either way the referee reads the race off each inventory (`races.raceOf` understands the live `getTag`
 and the serialised `tags` shape), so nothing downstream has to know which mode
 it is in. See [`coop.md`](coop.md).
 
 ## Legion Expansion
 
-`race/legion.js`. Server mod `com.pa.legion-expansion-server` (its `-dev` build
-counts), unit-type bit `Custom1`, commanders Overwatch, Cyclops, Cataphract,
+`race/legion.js`. Server mod `com.pa.legion-expansion-server`, unit-type bit
+`Custom1`, commanders Overwatch, Cyclops, Cataphract,
 Raptor, Quad and Tank, player icon from the client mod's own
 `icon_player_{fill,outline}_l.png`. Under Titans its build orders are the flat
 `legion_*` files beside the stock ones plus `unit_maps/legion.json`; under

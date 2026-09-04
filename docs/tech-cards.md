@@ -1,7 +1,7 @@
 # Tech cards
 
 Every file under `ui/main/game/galactic_war/cards/*.js` is a tech card: an AMD
-module returning an object with a fixed shape. 237 of them ship today.
+module returning an object with a fixed shape.
 
 ## The contract
 
@@ -39,12 +39,13 @@ contract validator continues to accept them. They are legitimate extension point
 not typos.
 
 `npm run validate:cards` enforces this shape. It checks what `define()` returns —
-it does not call `deal`/`buff`/`dull`. Of the 237 cards it shape-checks 175; 61 are
-excluded as `NOT_SHIPPED` (they depend on base-game modules absent from this repo)
-and 1 as `KNOWN_UNLOADABLE`. The run prints the live tally, and `MIN_CHECKED` is an
-enforced floor that must never be lowered to make a run pass. The other 61 are
-reached by `test/card_deal_unit_gate.test.js`, which stubs `shared/gw_common` and so
-loads all but one — see [`testing.md`](testing.md).
+it does not call `deal`/`buff`/`dull`. A card is skipped as `NOT_SHIPPED` when it
+depends on a base-game module absent from this repo, and one as
+`KNOWN_UNLOADABLE`. The run prints the live tally, and `MIN_CHECKED` is an
+enforced floor that must never be lowered to make a run pass. The skipped cards
+are reached by `test/card_deal_unit_gate.test.js`, which stubs `shared/gw_common`
+and so loads all but the `KNOWN_UNLOADABLE` one — see
+[`testing.md`](testing.md).
 
 ## Which shape to write a card in
 

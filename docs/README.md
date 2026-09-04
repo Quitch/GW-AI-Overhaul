@@ -23,16 +23,17 @@ Then whichever subsystem you are touching.
 
 ## Subsystems
 
-| Doc                              | Covers                                                                  | Entry file                   |
-| -------------------------------- | ----------------------------------------------------------------------- | ---------------------------- |
-| [tech-cards.md](tech-cards.md)   | The card contract, `buff`/`dull`, deal weighting, loadouts              | `shared/cards.js`            |
-| [ai-pipeline.md](ai-pipeline.md) | How a card changes what an AI builds                                    | `gw_play/referee_ai.js`      |
-| [ai-paths.md](ai-paths.md)       | Which AI reads which directory                                          | `shared/referee_ai_paths.js` |
-| [coop.md](coop.md)               | Host/viewer, per-player tech, colour allocation                         | `shared/referee_coop.js`     |
-| [specs.md](specs.md)             | Unit spec modification and caching                                      | `shared/specs.js`            |
-| [galaxy.md](galaxy.md)           | Galaxy generation, factions, difficulty tiers                           | `gw_start/setup.js`          |
-| [races.md](races.md)             | Unit factions (Legion, Bugs, Exiles): registry, translation, race trees | `shared/races.js`            |
-| [testing.md](testing.md)         | The Node AMD harness and the seven validators                           | `scripts/lib/amd-loader.js`  |
+| Doc                                        | Covers                                                                  | Entry file                   |
+| ------------------------------------------ | ----------------------------------------------------------------------- | ---------------------------- |
+| [tech-cards.md](tech-cards.md)             | The card contract, `buff`/`dull`, deal weighting, loadouts              | `shared/cards.js`            |
+| [ai-pipeline.md](ai-pipeline.md)           | How a card changes what an AI builds                                    | `gw_play/referee_ai.js`      |
+| [ai-paths.md](ai-paths.md)                 | Which AI reads which directory                                          | `shared/referee_ai_paths.js` |
+| [coop.md](coop.md)                         | Host/viewer, per-player tech, colour allocation                         | `shared/referee_coop.js`     |
+| [specs.md](specs.md)                       | Unit spec modification and caching                                      | `shared/specs.js`            |
+| [galaxy.md](galaxy.md)                     | Galaxy generation, factions, difficulty tiers                           | `gw_start/setup.js`          |
+| [races.md](races.md)                       | Unit factions (Legion, Bugs, Exiles): registry, translation, race trees | `shared/races.js`            |
+| [race-conventions.md](race-conventions.md) | The checklist for adding a race, and the rules the race code relies on  | `shared/races_shipped.js`    |
+| [testing.md](testing.md)                   | The Node AMD harness and the validators                                 | `scripts/lib/amd-loader.js`  |
 
 ## Things that surprise people
 
@@ -61,11 +62,9 @@ full by the doc named:
 - **The GW server never sees mods, and `file.load` on a missing biome never
   settles.** A planet whose `generator.biome` is not a stock `/pa/terrain/*.json`
   hangs every player at loading with no error. → [galaxy.md](galaxy.md)
-- **`filter` is Chrome 53.** Only `-webkit-filter` does anything. So is `animation`
-  and `@keyframes` (Chrome 43), and `mask-*` (Chrome 120) — the base game ships
-  inert declarations of all three. → [constraints.md](constraints.md)
-- **`justify-content: space-evenly` parses, computes, and does nothing.**
-  `CSS.supports()` says yes; flex layout falls through to `flex-start`.
+- **`filter`, `animation`, `@keyframes` and `mask-*` are all inert in Chrome 40.**
+  → [constraints.md](constraints.md)
+- **`justify-content: space-evenly` parses and does nothing.**
   → [constraints.md](constraints.md)
 
 ## On comments in this codebase
@@ -93,9 +92,14 @@ Rejected alternatives, tuning history and "this used to live elsewhere" belong i
 npm run verify    # exactly what CI runs
 ```
 
-CI and the release workflow both run `npm run verify` and nothing else:
-`lint:js`/`lint:css`/`lint:md`/`format:check`/`validate`/`test`, every one a
-full-repo hard gate. A clean `verify` is a clean CI, and the reverse.
+`ci.yml` and the test job of `release.yml` run `npm run verify` and nothing
+else: `lint:js`/`lint:css`/`lint:md`/`format:check`/`validate`/`test`, every
+one a full-repo hard gate. Two more gates sit beside it: `build.yml` runs
+`test:coverage` and SonarCloud's quality gate on every push to `develop` and
+every pull request, and
+`release.yml` also checks the tag against `modinfo.json` and `CHANGELOG.md`
+(see CONTRIBUTING.md, "Releasing"). So a clean `verify` is a clean CI, but
+not yet a clean release.
 
 Nothing here starts PA. Anything that can only fail at runtime — a renamed
 identifier in shipped `ui/**`, a CSS class rename spanning HTML and CSS, a

@@ -25,7 +25,7 @@ logic the base file keeps in a private closure and never exposes.
 
 Two mods shadowing one path do not merge — one wins outright and the other's copy
 simply is not there. **Check whether a third-party mod already shadows a path before
-adding it to the inventory above**, because the loser fails silently: its module still
+adding it to the inventory below**, because the loser fails silently: its module still
 loads, so the symptom is a missing function on an otherwise-working object, surfacing
 far from the cause.
 
@@ -82,7 +82,10 @@ Two hijacking traps worth knowing, both recorded at their call sites:
 
 ## The complete shadowing inventory
 
-### `ui/main/` — 9 non-card files
+`validate:docs` checks the three tables below against the tree, so a file added
+or removed without its row fails `npm run verify`.
+
+### `ui/main/` — everything but the cards
 
 | File                                                      | What GWO changed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -94,6 +97,7 @@ Two hijacking traps worth knowing, both recorded at their call sites:
 | `game/galactic_war/shared/js/gw_faction_3.js`             | Overhauls personalities (Revenants).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | `game/galactic_war/shared/js/gw_inventory.js`             | Adds the `aiMods` observable that the whole AI-mod pipeline hangs off; changes `removeUnits` to remove _every_ copy of a unit; suspends loadout banking while a co-op viewer applies the host's inventory ([`coop.md`](coop.md)); drops stock's `cards.subscribe(applyCards)`, which double-applied - every stock mutator (`gw_game.js` `winTurn`/`load`, `gw_play.js`'s discard splices, `gw_start.js`'s start card) already calls `applyCards`, and the extra pass in `gw_start` marked the start card processed before `gw_play` ran its buffs. |
 | `game/galactic_war/shared/js/systems/titans-normal.js`    | Changes the Players arrays and adds classic systems.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `game/galactic_war/shared/img/icon_faction_4.png`         | Added, not shadowed: the Cluster faction icon, at the path stock's `icon_faction_<n>.png` pattern looks for.                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 `gw_inventory.js`'s `removeUnits` change is a **reversal of documented base-game
 behaviour** — stock explicitly notes that it does not perform set removes, so that
@@ -101,30 +105,31 @@ multiple adds and a single remove leave the unit available. Anyone reasoning fro
 base-game knowledge will be wrong here, and at least one card's logic
 (`gwc_start_allfactory.js`) depends on the new behaviour.
 
-### `ui/main/game/galactic_war/cards/` — 237 files, 69 shadowed
+### `ui/main/game/galactic_war/cards/`
 
 The prefix tells you exactly which is which, with no exceptions in either
 direction:
 
-| Prefix   | Count | Status                                     |
-| -------- | ----- | ------------------------------------------ |
-| `gwc_`   | 69    | **Shadows** a stock card of the same name  |
-| `gwaio_` | 162   | GWO-authored, new file at a base-game path |
-| `nem_`   | 4     | GWO-authored (Nemuneko set)                |
-| `tgw_`   | 2     | GWO-authored (trialq set)                  |
+| Prefix   | Status                                     |
+| -------- | ------------------------------------------ |
+| `gwc_`   | **Shadows** a stock card of the same name  |
+| `gwaio_` | GWO-authored, new file at a base-game path |
+| `nem_`   | GWO-authored (Nemuneko set)                |
+| `tgw_`   | GWO-authored (trialq set)                  |
 
 Being at a base-game _path_ is not the same as shadowing a base-game _file_. Only
-the `gwc_` cards replace something; the other 168 simply live in the same
-directory because that is where the game looks for cards.
+the `gwc_` cards replace something; the rest simply live in the same directory
+because that is where the game looks for cards.
 
-### `pa/` — 87 files, 8 shadowed
+### `pa/`
 
-| Tree              | Files | Status                                                                                        |
-| ----------------- | ----- | --------------------------------------------------------------------------------------------- |
-| `pa/ai/`          | 8     | All 8 shadow base-game build data — see the re-sync table below for which copy each replaces. |
-| `pa/ai_penchant/` | 70    | GWO-authored in full.                                                                         |
-| `pa/ai_tech/`     | 8     | GWO-authored; the files that AI-mod `load` descriptors name.                                  |
-| `pa/units/`       | 1     | GWO-authored; the CEO Commander's Colonel buildbar icon.                                      |
+| Tree              | Status                                                                                                                                   |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `pa/ai/`          | Every file shadows base-game build data — see the re-sync table below for which copy each replaces.                                      |
+| `pa/ai_penchant/` | GWO-authored in full.                                                                                                                    |
+| `pa/ai_queller/`  | Added, not shadowed: a unit map per tier GWO selects, carrying the unit names GWO's build entries reference and Queller's own maps lack. |
+| `pa/ai_tech/`     | GWO-authored; the files that AI-mod `load` descriptors name.                                                                             |
+| `pa/units/`       | GWO-authored; the CEO Commander's Colonel buildbar icon.                                                                                 |
 
 That last one is the reminder that **being at a base-game path is not shadowing**.
 `bot_support_commander_ceo_icon_buildbar.png` sits in the stock unit's own
@@ -133,7 +138,7 @@ a different name, so nothing is replaced.
 
 #### Which copy each `pa/ai/` file replaces
 
-All eight are written as `pa/ai/…` in this repo and addressed as `/pa/…` at
+All are written as `pa/ai/…` in this repo and addressed as `/pa/…` at
 runtime, but the base file to re-sync against is **not** always the one under
 `pa/`. TITANS is an overlay: where a path exists in both trees, the `pa_ex1/`
 copy is the one the game loads, and therefore the one GWO's copy was derived
@@ -187,16 +192,18 @@ one is added.
 A shadowed file usually cannot load under the Node AMD harness, because its
 `define()` depends on base-game modules this repo does not ship (`shared/gw_common`
 above all). The pattern is to extract the testable logic into a **measured sibling
-module** in the mod's own namespace, which the shadowed file then requires:
+module** in the mod's own namespace, which the glue file then requires. The same
+split serves two files in GWO's own namespace that are not shadows but depend on
+`shared/gw_common` all the same:
 
-| Shadowed file                   | Measured sibling                                                                    |
-| ------------------------------- | ----------------------------------------------------------------------------------- |
-| `gw_per_player_tech_referee.js` | `gw_play/per_player_tech.js`                                                        |
-| `gw_faction_*.js`               | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js` |
-| `gw_play/referee_game_files.js` | `gw_play/referee_game_file_paths.js`                                                |
-| `gw_play/referee_config.js`     | `gw_play/referee_config_setup.js`                                                   |
+| Glue file                                   | Measured sibling                                                                    |
+| ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `gw_per_player_tech_referee.js` (shadow)    | `gw_play/per_player_tech.js`                                                        |
+| `gw_faction_*.js` (shadows)                 | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js` |
+| `gw_play/referee_game_files.js` (GWO's own) | `gw_play/referee_game_file_paths.js`                                                |
+| `gw_play/referee_config.js` (GWO's own)     | `gw_play/referee_config_setup.js`                                                   |
 
-The shadowed file keeps only the `model`/`ko`/`api` glue and is coverage-excluded;
+The glue file keeps only the `model`/`ko`/`api` glue and is coverage-excluded;
 the sibling holds the logic and is unit-tested. Do **not** instead hoist helpers to
 file top level — in PA's RequireJS runtime that creates a `window` global. See
 [`constraints.md`](constraints.md).
@@ -233,4 +240,4 @@ under `noFog`.
 
 - [`architecture.md`](architecture.md) — how scenes and entry points work.
 - [`testing.md`](testing.md) — the harness, and why some files cannot load in it.
-- CONTRIBUTING.md's "Node test reach for base-game-shadowed modules".
+- CONTRIBUTING.md's "Test coverage and new code".
