@@ -5,21 +5,21 @@
 ### Added
 
 - Pressing Fight now shows a loading screen that reports each stage of battle preparation. Other mods can report their own stages through `model.gwoLaunchProgress`
-- Races: with GW Server Mods active, a war can be fought as a unit faction from a server mod, and every enemy faction fields one too. Choose your race in the war setup - every installed race is in play for the enemy, so disable a race mod to keep it out - and turn on Unique Races so no two factions share one
-- The two AI dropdowns are now an AI button opening a table with one row per race and an Opponent and Ally AI per row, offering only the AIs that know each race. The war panel lists the AIs per race when they differ
-- Legion Expansion is the first race: with its server mod active, fight as the Legion or against it, with Legion Sub Commanders, tech cards applied to Legion units, and the Legion AI build orders under the TITANS and QUELLER brains
-- Bug Faction is the second race, under the TITANS brain, research included: its research factories arrive with the factories and unlock what they research
-- Exiles is the third race, under the TITANS brain. Exiles has no orbital units beyond the launcher, so the orbital tech cards are not dealt to an Exiles player
-- Separate races: a co-op war generated with this on lets every player pick their own race and commander when they choose their loadout. Needs Separate loadout & tech, and offers the races the war was created with that are still active
-- Resuming a war whose race mods are gone stops you fighting it
-- With GW Server Mods active, Shared Systems maps whose biomes come from any active server mod (Alien Worlds included) now stay in the galaxy. The war records those map packs; resuming without one stops you fighting until it is re-enabled, and a version change only warns
-- Mods can now add whole decks to the Techs picker in the war setup, composed from the Basic and Galactic War Overhaul decks, other mods' decks, individual stock cards and their own cards. A war remembers its deck; resume one whose deck mod is gone and it deals the Galactic War Overhaul deck instead
+- Support for Legion, Bugs, and Exiles when you are running GW Server Mods
+  - Both the player and AI can be any race
+  - Enable separate races in co-op war settings to allow multiple races on the player team
+  - Disable a race mod to exclude it from a war - GWO does not have a UI for this
+  - Enable Unique Races to avoid duplicates where possible given the number of races and galaxy size.
+  - AI can be set per-race for both allies and enemies - not all AIs support all races
+  - Resuming a war whose race mods are gone stops you fighting it
+- With GW Server Mods active, Shared Systems maps which require server components (i.e. models) will now be included in the war
+- Support for mods to add new decks to the Techs picker in the war setup - see the `New-GW-Cards` template
 
 ### Changed
 
-- In a co-op war, the loadout screen shows your commander in the war's faction colour
+- A viewer's loadout screen shows their commander in the host's faction colour
 - Removed Easier Start - it's always on now
-- AI defaults to TITANS
+- AI defaults to TITANS again
 - Difficulty is applied when a battle starts rather than when a war is created, so a war in progress picks up balance changes to its difficulty tier. A Custom difficulty war keeps the settings it was created with
 - AI technology bonuses are built when a battle starts from the bonuses the war recorded, so a war in progress picks up balance changes to AI tech
 - AI personalities are built when a battle starts from the commander the war recorded, so a war in progress picks up balance changes to AI personalities
@@ -30,12 +30,12 @@
 - A Custom difficulty war now floors AI economy at its own economy settings instead of at 1.0
 - Enemy AIs no longer inherit the base game's Normal difficulty economy thresholds, fabber ratios and unit mix in place of their own personality's
 - A Random enemy commander no longer keeps the Armor personality's unit mix underneath the personality it drew
-- A war saved by a version before v5.52.2 is repaired again when resumed. The repair stopped at the first neutral system, so its Cluster commanders and treasure planet were never fixed and the check ran on every visit
+- A war saved by a version before v5.52.2 is repaired again when resumed
 - Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections
-- Sub Commanders were dealt Penchant personalities when the Opponent AI was Penchant; they now follow the Ally AI, as their Queller compatibility filter always did
+- Sub Commanders were dealt Penchant personalities when the Opponent AI was Penchant; they now follow the Ally AI
 - Joining a per player tech war with a loadout added by another card mod now works
 - A battle whose preparation fails no longer leaves Fight stuck launching forever; the error is logged and Fight can be pressed again
-- Co-op players returning from the final battle after the host now see the victory screen: the host waits for everyone to reconnect, with a Cancel to end the war without them
+- Co-op players returning from the final battle after the host now see the victory screen: the host waits for everyone to reconnect, with a Cancel to end the war without them - only happens if the boss is the last enemy star
 
 ## v6.14.0 - 2026-08-27
 
