@@ -394,6 +394,9 @@ function gwoSystemChanges() {
           : undefined;
       };
 
+      // Installed after gw_play.js has applied a battle result, so a real
+      // last-boss win runs stock's defeatTeam, not this. See architecture.md,
+      // "Returning from a battle".
       game.defeatTeam = function (defeatedTeam) {
         var remainingBosses = 0;
 

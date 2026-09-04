@@ -145,6 +145,20 @@ A co-op host hires the referee **twice** per battle, and none of the setup is
 idempotent, so every setup function works on deep copies. See
 [`coop.md`](coop.md), "The two referees".
 
+### Returning from a battle
+
+**A real battle that beats the last boss does not win a GWO war while any other
+AI star remains.** Known since 2026-09-04, not yet fixed. `live_game_patch.js`
+records the outcome as `game.lastBattleResult("win")`; gw_play consumes it at
+startup (`gw_play.js`, "startup battleResult" in the log), where `winTurn`'s boss
+branch calls `game.defeatTeam`. That runs 1.8 s before `loadMods`, so the
+`defeatTeam` override in `gw_play/systems.js` - which wins the war once no boss
+is left - is not installed yet, and stock's runs instead. Stock wins only when
+_no AI star of any team_ remains, which a GWO galaxy never satisfies at that
+point. Only the in-scene paths (the Cheat button's Win, an explore) reach
+GWO's rule. The log proves the order: `winTurn applied` precedes `War created
+using Galactic War Overhaul`.
+
 ## Galaxy map redraw throttling
 
 `gw_play/galaxy_map_perf.js` wraps `model.galaxy.stage.update()` with a dirty
