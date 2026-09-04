@@ -356,6 +356,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_seed.js",
         "main/game/galactic_war/shared/js/systems/template-loader",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/galaxy_build.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
@@ -383,6 +384,7 @@ function gwoSetup() {
         gwoFactionSeed,
         chooseStarSystemTemplates,
         gwoBiomeMods,
+        gwoBiomes,
         gwoGalaxyBuild,
         gwoRaces,
         gwoPromise,
@@ -1374,6 +1376,15 @@ function gwoSetup() {
                 model.gwoDifficultySettings.perPlayerRace() &&
                 !!model.newGamePerPlayerTechCards(),
             };
+            // The map packs GW Server Mods must mount for this war: the
+            // resume check reads the stars' own stamps and takes names and
+            // versions from here. See galaxy.md, "Biome mods in a GW battle".
+            originSystem.gwaio.biomeMods = gwoBiomes.gwsmMods(
+              _.map(game.galaxy().stars(), function (star) {
+                var system = star.system();
+                return system && system.gwoBiomeMods;
+              })
+            );
           };
 
           var warInfo = finishAis.then(onAisFinished);
