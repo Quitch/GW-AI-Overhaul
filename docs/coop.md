@@ -483,6 +483,48 @@ report their own list over the `gwo_report_unlocked_loadouts` operator, and the 
 stores it as `gwaioUnlockedStartCardIds`; `recordHasUnlockedLoadout` reads both fields
 plus `loadoutCardId`.
 
+## War end
+
+`gw_play/victory.js` ends a won war the moment the host lands in `gw_play`, and
+tells the viewers to do the same over the `gwo_war_end` operator. After the
+final battle that operator would never arrive, because of three stock rules:
+
+- Returning from a battle in co-op restarts the campaign server process. The
+  host is back in `gw_play` a couple of seconds after shutdown; a viewer must
+  rediscover the new server, connect, and sync a snapshot first, and may pass
+  through the loadout scene on the way.
+- A host operator goes only to connected clients, is dropped for a client that
+  has not yet received its initial snapshot, and is never replayed.
+- Once the host is on `gw_war_over` there are no campaign handlers, so the viewer
+  can never be sent a fresh `turnState: "end"` either. It lands in a won war
+  with the turn on `"begin"` and never sees the victory screen.
+
+So in a co-op war the host holds the end behind `gw_play/victory_wait_state.js`,
+which shows the "Waiting for players" modal (`victory_wait.html`, injected by
+`victory_wait.js`) until every player from the battle is back, then runs the
+victory flow unchanged. Three details in how it decides:
+
+- **Who to wait for.** At launch the host writes the number of connected clients
+  into `gw_campaign_settings` as `battle_launch_clients`; the server carries it
+  into the restart-prepare payload and the host keeps it in
+  `model.gwCampaignRestartContext()` under `settings`. Stock later restores
+  `max_clients` from it, but over an async `modify_settings` round trip, so
+  `gwCampaignMaxClients()` can still read 1 when the victory code first runs.
+  The expected count is the larger of the two.
+- **What "returned" means.** A viewer reports `loading: false` only from
+  `markGwCampaignAuthoritativeStateReady`, after its snapshot is applied. A
+  connected client with `loading` false and no `requires_loadout` or
+  `picking_loadout` / `picking_tech_cards` status has therefore passed the
+  point at which operators are delivered. The test is the per-client half of
+  `viewersReadyForStarRefresh` in `cards_coop_star_cards.js`.
+- **Cancel.** The host may end the war without waiting. Players still away then
+  land in a won war with no victory screen, which is what happened every time
+  before the wait existed.
+
+The state is built in `gw_play/systems.js`, in the same `requireGW` as
+`victory.js`, so the two cannot race. Solo wars skip it entirely:
+`gwCampaignEnabled()` is known synchronously from the URL at scene construction.
+
 ## Where to look next
 
 - [`ai-paths.md`](ai-paths.md) — per-viewer path scoping.
