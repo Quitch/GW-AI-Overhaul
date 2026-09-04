@@ -170,8 +170,9 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 
 ### Known issues
 
-- Some users have reported instances of the sim freezing while the UI continues to respond. The host should go to Settings - Server and set Local Server Multi-Threading to OFF prior to hosting - this is a PA bug not a GWO one.
-- Enemy Cluster Worker and Security commanders will use the Angel and Colonel icons - this is a PA bug not a GWO one.
+- Enemy Cluster Worker and Security commanders will use the Angel and Colonel icons - this is a PA bug.
+- The player and planet lists will show MLA commanders icons regardless of race - this is a PA bug.
+- Some loadouts are disabled for races other than MLA due to unit dependencies
 
 ## Recommended mods
 
