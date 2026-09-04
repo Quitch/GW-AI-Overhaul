@@ -174,6 +174,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - The player and planet lists will show MLA commanders icons regardless of race - this is a PA bug.
 - Some loadouts are disabled for races other than MLA due to unit dependencies
 - Bugs and Exiles are not dealt some tech cards for MLA units they have access to
+- Tech card tooltips will only show MLA units
 
 ## Recommended mods
 
