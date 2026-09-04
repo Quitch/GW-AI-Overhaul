@@ -23,19 +23,20 @@ unmodified file looked like before this mod shadowed it, or to find game systems
 [`docs/README.md`](docs/README.md) first - it gives a reading order and a list of
 the traps that have actually caused bugs here.
 
-| Topic                                                                   | Doc                                            |
-| ----------------------------------------------------------------------- | ---------------------------------------------- |
-| Chrome 40 / ES5 limits, available libraries, CSS and localisation rules | [`docs/constraints.md`](docs/constraints.md)   |
-| Tree layout, scenes, entry points, battle launch sequence               | [`docs/architecture.md`](docs/architecture.md) |
-| File shadowing, function hijacking, the full shadowed-file inventory    | [`docs/shadowing.md`](docs/shadowing.md)       |
-| Tech cards, the card mod API, and what breaks downstream if it changes  | [`docs/tech-cards.md`](docs/tech-cards.md)     |
-| AI-mod descriptors, the `ops` table, `managerPath`, the tree cache      | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)   |
-| The five AI trees, source vs destination, scope tokens                  | [`docs/ai-paths.md`](docs/ai-paths.md)         |
-| Host/viewer, per-player tech, colour allocation                         | [`docs/coop.md`](docs/coop.md)                 |
-| Unit spec ops, path segments, spec caching                              | [`docs/specs.md`](docs/specs.md)               |
-| Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)             |
-| Races (Legion, Bugs, Exiles): registry, translation, race AI trees      | [`docs/races.md`](docs/races.md)               |
-| The Node AMD harness, the validators, coverage                          | [`docs/testing.md`](docs/testing.md)           |
+| Topic                                                                   | Doc                                                    |
+| ----------------------------------------------------------------------- | ------------------------------------------------------ |
+| Chrome 40 / ES5 limits, available libraries, CSS and localisation rules | [`docs/constraints.md`](docs/constraints.md)           |
+| Tree layout, scenes, entry points, battle launch sequence               | [`docs/architecture.md`](docs/architecture.md)         |
+| File shadowing, function hijacking, the full shadowed-file inventory    | [`docs/shadowing.md`](docs/shadowing.md)               |
+| Tech cards, the card mod API, and what breaks downstream if it changes  | [`docs/tech-cards.md`](docs/tech-cards.md)             |
+| AI-mod descriptors, the `ops` table, `managerPath`, the tree cache      | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)           |
+| The five AI trees, source vs destination, scope tokens                  | [`docs/ai-paths.md`](docs/ai-paths.md)                 |
+| Host/viewer, per-player tech, colour allocation                         | [`docs/coop.md`](docs/coop.md)                         |
+| Unit spec ops, path segments, spec caching                              | [`docs/specs.md`](docs/specs.md)                       |
+| Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)                     |
+| Races (Legion, Bugs, Exiles): registry, translation, race AI trees      | [`docs/races.md`](docs/races.md)                       |
+| Adding a race: the checklist, and the rules the race code relies on     | [`docs/race-conventions.md`](docs/race-conventions.md) |
+| The Node AMD harness, the validators, coverage                          | [`docs/testing.md`](docs/testing.md)                   |
 
 These are worth knowing before you touch anything, each covered in full by the doc
 named:
@@ -69,8 +70,9 @@ named:
 
 ## Verifying a change
 
-`npm run verify` is the pre-submit gate - it runs everything CI checks. The
-individual scripts are in `package.json`, and what each validator catches is in
+`npm run verify` is the pre-submit gate - it is what `ci.yml` runs, and the two
+gates beside it are listed in [`docs/README.md`](docs/README.md), "Verifying a
+change". The individual scripts are in `package.json`, and what each validator catches is in
 [`docs/testing.md`](docs/testing.md), which also covers running a single test file
 or test.
 
@@ -83,13 +85,10 @@ files your change touches.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). The two that bite most often:
 
-- A PR touches only what the request needs. Drive-by cleanup, reformatting and
-  comment fixes elsewhere are correct but belong in a separate PR.
-- `CHANGELOG.md` additions go under `## Unreleased`, as `### Added`, `### Changed`
-  or `### Bugfix`. A versioned heading describes a copy that has shipped, so its
-  entries are static - never add to one or amend it. While a feature is still
-  unreleased, later fixes to it are not changes anyone can have seen: the entry
-  says the feature exists, and does not grow to cover the work behind it.
+- A PR touches only what the request needs (CONTRIBUTING.md, "Submissions").
+- `CHANGELOG.md` entries go under `## Unreleased`; a versioned heading is static,
+  and an unreleased entry does not grow to cover the work behind it
+  (CONTRIBUTING.md, "Conventions").
 
 ### Comments
 
@@ -110,9 +109,10 @@ Never removed, because they are not prose:
   marker itself stays. Stock's `// !LOCNS:...` is deliberately not carried; don't
   reinstate it ([`constraints.md`](docs/constraints.md)).
 - Stock's own comments inside a deliberate copy of a base-game file - today
-  `gw_start/gwo_breeder.js` and `shared/gwo_system_templates.js`. Those copies are
-  kept line-for-line close to stock so the diff after a PA patch stays readable,
-  which covers stock's comments, its dead branches, and its `TODO`s. Sonar flags
-  that TODO; leave it.
+  `gw_start/gwo_breeder.js`, `gw_start/gwo_teams.js` and
+  `shared/gwo_system_templates.js`. Those copies are kept line-for-line close to
+  stock so the diff after a PA patch stays readable, which covers stock's
+  comments, its dead branches, and its one `TODO` (in `gwo_breeder.js`). Sonar
+  flags that TODO; leave it.
 - The vendored-code attribution at the top of
   `gw_play/section_of_foreign_intelligence/`, which is a licence condition.
