@@ -125,6 +125,10 @@ panel driven by `model.gwoLaunchProgress`. That object is a public surface:
   `model.fight` instead, the panel still appears, but only once
   `launchingFight` turns true.
 
+The same panel skeleton serves `gw_play/victory_wait.js` and
+`victory_wait_state.js`, the "Waiting for players" modal a co-op host sees
+after the final battle. See [`coop.md`](coop.md), "War end".
+
 A stage that fails must reject the hire, because stock waits on it with no fail
 handler: a hire that never settles leaves `launchingFight` true, the panel open
 on the last stage it reported and the Fight button dead, forever. So

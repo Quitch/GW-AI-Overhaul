@@ -34,6 +34,7 @@
 - Sub Commanders were dealt Penchant personalities when the Opponent AI was Penchant; they now follow the Ally AI, as their Queller compatibility filter always did
 - Joining a per player tech war with a loadout added by another card mod now works
 - A battle whose preparation fails no longer leaves Fight stuck launching forever; the error is logged and Fight can be pressed again
+- Co-op players returning from the final battle after the host now see the victory screen: the host waits for everyone to reconnect, with a Cancel to end the war without them
 
 ## v6.14.0 - 2026-08-27
 
