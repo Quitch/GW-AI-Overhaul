@@ -64,7 +64,8 @@ const installed = (overrides) =>
 
 const stubs = createGlobalStubs();
 
-// GW Server Mods' capability API, shaped as test/capability.test.js pins it:
+// GW Server Mods' capability API, shaped as that mod's own
+// test/capability.test.js pins it:
 // hostServerMods() returns { identifier, displayName, version } rows, and an
 // empty array when the host published nothing.
 const stubHostServerMods = (hostServerMods) => {

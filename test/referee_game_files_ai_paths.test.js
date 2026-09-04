@@ -199,10 +199,9 @@ describe("resolveAiUnitMapPaths", () => {
     assert.deepEqual(resolved, clusterPaths);
   });
 
-  // The invariant the deleted ai_path_unit_map_consistency.test.js was written
-  // for, in the one form that can actually fail: unit-map routing and
-  // gwoAI.isCluster - which is what setAIPath routes the build orders on -
-  // must agree for every faction form a saved war can hold.
+  // Unit-map routing and gwoAI.isCluster - which is what setAIPath routes the
+  // build orders on - must agree for every faction form a saved war can hold,
+  // or the unit map and the build orders land in different trees.
   for (const faction of [4, ["4"], 1]) {
     it(`agrees with gwoAI.isCluster for faction ${JSON.stringify(faction)}`, () => {
       const ai = { faction: faction, foes: [{ faction: 1 }] };

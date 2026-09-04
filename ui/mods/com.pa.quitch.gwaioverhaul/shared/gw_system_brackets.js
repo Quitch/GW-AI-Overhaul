@@ -235,7 +235,7 @@ define([
   };
 
   // The pool holds live references - My Systems is a bound IndexedDB row - so
-  // withoutBrokenSystems' in-place backfill has to go on the copy instead.
+  // the starting_planet backfill goes on the copy, never on the source.
   var copyOf = function (system, providers) {
     var copy = JSON.parse(JSON.stringify(system));
     if (!_.some(copy.planets, "starting_planet")) {

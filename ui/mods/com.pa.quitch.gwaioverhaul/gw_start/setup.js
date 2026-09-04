@@ -100,7 +100,8 @@ function gwoSetup() {
     var foundationFaction = 1;
 
     // Index into ai_tech.js's factionTechs[faction][n]. 5 is absent because that
-    // tech was removed; see the note by setupAITech5 there.
+    // tech was removed; see the note in ai_tech.js where the setupAITech*
+    // functions are called.
     var aiBuffType = {
       cost: 0,
       damage: 1,

@@ -10,7 +10,8 @@
 // deal(). None of them failed loudly, so none of them were caught.
 //
 // Changing anything asserted here means updating New-GW-Cards in step. See
-// CLAUDE.md, "The third-party card mod API".
+// docs/tech-cards.md, "Third-party card mods", and the public-API bullet under
+// "Architecture" in CLAUDE.md.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
