@@ -213,6 +213,16 @@ cosmetic: restructuring `gwo_system_templates.js` while copying it once dropped 
 for an engine promise (see [`constraints.md`](constraints.md)) every war on the vanilla
 path failed with "no usable star system".
 
+Stock's own bugs are kept too. `gwo_system_templates.js`'s `fromRandomList` reads as
+filtering the pool by `isExplicit`, but lodash 3's `_.where` takes a source object,
+not a predicate, so the filter is inert: every entry stays viable and the
+`do/while`'s `usedIndexes` check is what keeps the draws apart. Deliberately not
+corrected. It is stock's, character for character, and nothing in stock or GWO pairs
+`isExplicit` with `fromRandomList`, so the filter would be a no-op either way — while
+switching to `_.filter` would shrink the viable list, shift the draw and regenerate
+every existing war's boss systems from the same seed.
+`test/gwo_system_templates.test.js` pins the inert filter.
+
 ### Shared Systems for Galactic War
 
 That mod replaces `systems/template-loader.js` wholesale, so GWO's seeded loader lives at

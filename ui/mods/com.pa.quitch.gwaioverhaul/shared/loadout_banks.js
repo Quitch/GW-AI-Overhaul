@@ -2,14 +2,6 @@
 // key, so GWO has to be told where to look. They push { prefix, path } onto
 // model.gwoLoadoutBanks - the New-GW-Cards template's start_cards.js does this.
 // See tech-cards.md, "Third-party loadout banks".
-//
-// The entry carries the bank's path rather than the loaded module because scene
-// scripts run synchronously at scene load while every requireGW callback resolves
-// afterwards - a mod that required its own bank before registering would lose the
-// race against the consumers below. Resolution therefore happens here, once, and
-// the result is module state: AMD modules are singletons per page, so a caller
-// that resolves early makes the banks available to every later reader without
-// each one having to thread them through.
 define(function () {
   var resolved = [];
 

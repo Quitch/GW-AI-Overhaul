@@ -159,15 +159,9 @@ define([
       );
     },
 
-    // Whether the exploration that started a deal is still live once the async
-    // chooser resolves. A recorded deal is a standing obligation to every viewer,
-    // so a stale one must not be recorded. The three checks cover gw_game.js's
-    // three ways of ending an exploration: winTurn, move, and turn state.
-    // A deal can come up empty: every card in a small third-party deck may be
-    // held, withheld for the player's race or refused by its own deal(). Stock
-    // offers no way out of "explore" but a win, so the acting client ends the
-    // turn itself. Never on a replayed host action - the host's own win_choice
-    // follows it.
+    // Both test whether the exploration that started a deal is still live once
+    // the async chooser resolves. See tech-cards.md, "A deal that arrives late,
+    // or empty".
     explorationDealtNothing: function (game, starIndex, star, replaying) {
       if (
         replaying ||

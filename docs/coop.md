@@ -36,6 +36,13 @@ tech referee is the only thing that reads a race per army. The war records it as
 `originSystem.gwaio.races.perPlayerRace`, so a viewer joining knows whether to
 offer a picker, and a war saved before the setting existed reads as off.
 
+Which races a client primes cells for follows from the same setting
+(`gw_play/races.js`). Normally it is the one race the client plays - its own
+record's under Separate races, the war's otherwise. A host under Separate races
+deals and builds files for every viewer, and a viewer may have picked any race
+the picker still offers - the recorded races whose server mod is active - so
+the host primes exactly that offer.
+
 ## The two referees
 
 A co-op host hires the referee **twice** per battle — the base game's

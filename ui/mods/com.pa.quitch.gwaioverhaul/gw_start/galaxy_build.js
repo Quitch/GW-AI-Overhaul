@@ -1,11 +1,6 @@
-// Galaxy generation: system size scaling, army brackets under Shared Systems for
-// Galactic War, and the repair for stars the base builder leaves with no gates.
-//
-// A hijack rather than a shadow of shared/gw_galaxy.js. Only `build` and
-// GalaxyBuilder's `buildGraph` differ from stock, and both are prototype methods,
-// so the rest of that file - including the constructor's routing - is left to the
-// base game. install() is called from gw_start/setup.js, whose own navToNewGame is
-// the only caller of build(). See galaxy.md and shadowing.md.
+// Galaxy generation, as a hijack of two prototype methods rather than a shadow
+// of shared/gw_galaxy.js. See shadowing.md, "Galaxy generation is a hijack, and
+// `pathBetween` is the base game's".
 define([
   "shared/gw_galaxy",
   "shared/GalaxyBuilder",

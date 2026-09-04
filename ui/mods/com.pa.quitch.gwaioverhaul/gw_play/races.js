@@ -123,12 +123,8 @@ function gwoPlayRaces() {
         var settings = gwoAI.originSettings(model.game());
         var recorded = settings && settings.races;
 
-        // Every race this client has to answer for. Normally the one race it
-        // plays - its own record's under Separate races, the war's otherwise.
-        // A host under Separate races deals and builds files for every viewer,
-        // and a viewer may have picked any race the picker still offers - the
-        // recorded races whose server mod is active - so the host primes
-        // exactly that offer. See coop.md.
+        // Every race this client has to answer for. See coop.md, "Shared tech
+        // versus per-player tech".
         var racesToPrime = function (info) {
           var record =
             _.isFunction(model.currentCoopPlayerInventoryData) &&
@@ -157,15 +153,8 @@ function gwoPlayRaces() {
           );
         };
 
-        // Deals are synchronous and gate on the race's cells, so build them
-        // as soon as the installed list is read - once GW Server Mods has the
-        // race zip mounted, or the unit list read has no race unit in it. See
-        // races.md.
-        //
-        // One unit list read for all of them: a read taken before the mount
-        // has no race unit and is discarded, and letting each race take its
-        // own means some land either side of the mount and only some races
-        // end up primed.
+        // One unit list read for every race, taken once the race zips are
+        // mounted. See races.md, "Capability cells".
         var primeRaces = function (info) {
           var toPrime = _.reject(racesToPrime(info), gwoRaces.isMla);
 

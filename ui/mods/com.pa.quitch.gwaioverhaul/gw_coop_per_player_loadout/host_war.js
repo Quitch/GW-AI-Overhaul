@@ -9,14 +9,8 @@ define([
 ], function (GW, gwoAI, gwoRaces, raceCheck) {
   var loaded;
 
-  // What the host said it is running, captured by GW Server Mods' connect
-  // gate on the way into the session and served by its hostServerMods(). The
-  // host's active set, not this client's: the host mounts the server mods a
-  // battle fields, so race_mods.installedRaces - this client's own list - is
-  // the wrong thing to ask. No answer - a host without GW Server Mods, a
-  // build without the API in this scene, or the empty set the API returns
-  // when the host published nothing - is "cannot tell", and activeRaces then
-  // removes nothing. See races.md.
+  // The host's active server mods, not this client's. No answer is "cannot
+  // tell". See races.md, "Assignment and persistence".
   var hostInstalledInfo = function () {
     var gwsm = window.GwServerMods;
     var mods;
@@ -41,12 +35,8 @@ define([
     };
   };
 
-  // The races a viewer may pick: the ones the host's war recorded that are
-  // still active, and MLA, which every war has. Deliberately not the viewer's
-  // own installed list - a race the host is not running has no units in the
-  // battle - and not the recorded list alone: a race disabled since the war
-  // was made has no units either, and the resume check does not block a race
-  // nobody fields. See races.md.
+  // The recorded races the host still runs, plus MLA. See races.md,
+  // "Assignment and persistence".
   var offeredRaces = function (recorded, installed) {
     var identifiers = _.map((recorded && recorded.mods) || [], function (mod) {
       return mod && mod.identifier;

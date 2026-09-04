@@ -502,16 +502,8 @@ describe("gwo_system_templates fromRandomList", () => {
     assert.deepEqual(system.planets[0].Radius, [300, 600]);
   });
 
-  // lodash 3's _.where takes a source object, not a predicate, so the isExplicit
-  // filter these lines read as applying is inert - every entry stays viable and
-  // the do/while's usedIndexes check is what actually keeps the draws apart.
-  //
-  // Deliberately not corrected. It is stock's, character for character
-  // (media/ui/main/game/galactic_war/shared/js/systems/template-loader.js), and
-  // this file tracks stock line for line. Nothing in stock or GWO pairs
-  // isExplicit with fromRandomList, so the filter would be a no-op either way -
-  // while switching to _.filter would shrink the viable list, shift the draw and
-  // regenerate every existing war's boss systems from the same seed.
+  // Stock's inert _.where filter, kept on purpose. See galaxy.md, "Copies, not
+  // shadows".
   it("does not in fact filter the list by isExplicit", async () => {
     const system = await generate(loader(), { players: 19, seed: "explicit" });
     // The pool holds no isExplicit entry, yet the explicit slot still drew one.

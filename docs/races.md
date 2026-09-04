@@ -96,6 +96,19 @@ The build rule is what carries Bugs' research: its research factories share
 the factories' cells, and the unlock tokens they build sit in cells of their
 own, so a token is granted once its factory is. `shared/build_types.js`
 evaluates `buildable_types` for it, the ES5 twin of `scripts/lib/build-types.js`.
+Both implement the same grammar, read off the base game's own expressions and
+evaluated against a unit's tags with the `UNITTYPE_` prefix dropped:
+
+```text
+or   := and ("|" and)*
+and  := atom (("&" | "-") atom)*     "-" is and-not
+atom := IDENT | "(" or ")"
+```
+
+`|` binds loosest; `&` and `-` share the next level and associate left to
+right, so `A & B - C | D` excludes C from the first alternative only. An
+unknown token is absent from the tag set and so reads false, as the engine
+treats it; an empty expression is false.
 
 A group card names several vanilla files of one cell - `gwoGroup.botsAmmo` is
 eight - and must land once on a race ammo, not eight times. `expandMods`
@@ -114,7 +127,12 @@ the MLA unit they name. A race gets its own. `shared/loadouts.js` and
 player is shown. Any other card is dealt when `races.cardUsable` finds a race
 unit in a cell its `card_units.js` entry names; a card with no entry - every
 loadout - passes, and so does everything until the race's cells are built,
-which `gw_play/races.js` starts as the scene loads.
+which `gw_play/races.js` starts as the scene loads. Deals are synchronous and
+gate on the cells, so they are built as soon as the installed list is read -
+once GW Server Mods has the race zip mounted, or once a unit list read comes
+back with no race unit in it. One unit list read serves every race: a read
+taken before the mount has no race unit and is discarded, and letting each race
+take its own would land some either side of the mount and prime only some.
 
 ## Race trees
 

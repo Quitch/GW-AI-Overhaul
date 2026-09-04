@@ -225,6 +225,20 @@ fought on — a naval start, or Tsunami tech. Owning ships is not the same as be
 able to use them, and most generated systems have little water, so elsewhere the
 card is offered proportionately less rather than withheld outright.
 
+### A deal that arrives late, or empty
+
+`chooseCards` is async, so by the time it resolves the exploration that started
+it may be over. A recorded deal is a standing obligation to every co-op viewer -
+a catch-up hand for an offer never made - so a stale one must not be recorded.
+`cards_deal_helpers.explorationStillLive` tests the three ways `gw_game.js` can
+end an exploration: `winTurn` (the turn state is no longer `explore`), `move`
+(the current star is no longer the one dealt to), and the star's own state
+(`hasCard` is false). A deal can also come up empty: every card in a small
+third-party deck may be held, withheld for the player's race, or refused by its
+own `deal()`. Stock offers no way out of `explore` but a win, so the acting
+client ends the turn itself when `explorationDealtNothing` says so - never on a
+replayed host action, whose own `win_choice` follows it.
+
 ### Distance thresholds
 
 The `travelled*` wrappers ask "is this system distant enough, relative to how many

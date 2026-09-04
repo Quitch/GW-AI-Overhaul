@@ -283,12 +283,8 @@ define([
     return result;
   };
 
-  // What a race player fields for the vanilla units held: the race's units in
-  // every held cell, plus whatever is neither a vanilla unit nor a vanilla
-  // part passed through (race commanders, foreign specs), plus what those can
-  // build in cells vanilla never fills. A held vanilla commander-class unit is
-  // kept too - a race has no stand-in for the Colonel - and the caller retags
-  // it. Commander cells are never granted.
+  // What a race player fields for the vanilla units held. See races.md,
+  // "Capability cells".
   var raceUnitsFor = function (heldPaths, vanilla, race) {
     var kept = [];
     var cells = [];
@@ -354,16 +350,8 @@ define([
     return undefined;
   };
 
-  // Spec mods re-aimed at the race: one on a vanilla unit lands on every race
-  // unit of its cell, one on a vanilla part on the race parts of that role in
-  // the part's cell. A group card names several vanilla files of one cell
-  // and must land once, not once per file: a race target gets the same
-  // (path, op, value) once per pass, and a pass ends when a vanilla source
-  // already seen recurs - two cards, two passes, and they stack. The original
-  // stays when the army still holds its file (`has`).
-  // A mod that changes what a unit is rather than how well it does it - its
-  // type bits, build list, tools, orders, identity - is about that one unit
-  // and never travels by cell. A descriptor may say so itself with `exact`.
+  // Spec mods re-aimed at the race by cell, once per pass. Identity mods stay
+  // on their own unit. See races.md, "Capability cells".
   var IDENTITY_PATH =
     /^(unit_types|buildable_types|base_spec|tools|command_caps|si_name|model|display_name|description|transportable|transporter|attachable)(\.|$)/;
 

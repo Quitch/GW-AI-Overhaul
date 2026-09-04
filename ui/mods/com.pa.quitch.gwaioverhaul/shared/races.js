@@ -304,14 +304,8 @@ define([
     };
   };
 
-  // Which files of a brain's source tree make up the race's own tree. Titans
-  // layers the race mod's `sources` files over the brain's base tree - the
-  // source listing is the merged filesystem, so a race file shadowing a base
-  // path already reads as the race's - minus every registered race's layer
-  // and everything under unit_maps/ but the brain's own maps. A brain that
-  // carries the race itself keeps everything but what it lists under
-  // `exclude`. The race's unit maps are never copied: they are merged into
-  // the army's tagged map instead. See ai-paths.md.
+  // Which files of a brain's source tree make up the race's own tree. See
+  // races.md, "Race trees".
   var treeFilter = function (raceId, brain, sourceRoot) {
     var c = treeConfig(raceId, brain, sourceRoot);
     var everyRaceSources = allSourcesFor(c.brainKey);

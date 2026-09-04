@@ -1,13 +1,5 @@
-// PA's unit-type expression language, as `buildable_types` and unit-map
-// `unit_types` write it, evaluated against a unit's tags:
-//
-//   or   := and ("|" and)*
-//   and  := atom (("&" | "-") atom)*     "-" is and-not
-//   atom := IDENT | "(" or ")"
-//
-// "|" binds loosest; "&" and "-" share the next level, left to right. An
-// unknown token is false; an empty expression is false. The ES5 twin of
-// scripts/lib/build-types.js. See races.md.
+// PA's unit-type expression language, evaluated against a unit's tags. The ES5
+// twin of scripts/lib/build-types.js. See races.md, "Capability cells".
 define(function () {
   var tokenize = function (expression) {
     return String(expression || "").match(/\w+|[()&|-]/g) || [];

@@ -263,6 +263,22 @@ asked for in a shouty casing and then down-cased in CSS rather than being writte
 naturally. `locTree` only rewrites an element's `innerHTML`, so attributes (and
 therefore CSS classes) survive translation — which is what makes the trick work.
 
+Three rules follow from that, and GWO's HTML applies each:
+
+- **A trailing colon sits outside the `<loc>`.** Keys are character-sensitive
+  too, and the game ships entries for the bare label (`ECONOMY`) but none for the
+  label plus colon (`ECONOMY:`). So `gw_start/ai_settings.html` writes
+  `<loc>ECONOMY</loc>:`.
+- **Where the entry's casing differs from what the panel displays**, the `<loc>`
+  spells the label the way the entry does and carries `.gwo-uppercase`;
+  `gw_start/gwo_start.css` restores the display casing after translation.
+- **`Mod:` in the war panel is deliberately left untranslatable**, as one
+  `<loc>Mod:</loc>` with no entry rather than `<loc>Mod</loc>:`, which would
+  resolve: the only `Mod` the game ships is the server browser's column, which
+  means something else there ("Modifizieren" in de, 模型 — "model" — in zh-CN),
+  and six more locales leave it as the English "Mod" anyway. Adopting it would
+  mislead more players than it would help (`gw_play/gwo_panel.html`).
+
 ## HTML
 
 HTML lives in its own file, never inline in JS.
