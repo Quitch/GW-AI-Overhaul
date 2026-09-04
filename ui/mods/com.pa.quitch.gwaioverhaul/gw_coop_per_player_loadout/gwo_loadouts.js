@@ -8,6 +8,23 @@ function gwoLoadouts() {
   gwoLoadoutsLoaded = true;
 
   try {
+    // Before ko.applyBindings, as race_picker.js is: Join is bound to this
+    // and submitLoadout reads self.ready() on the same object, so the swap
+    // gates both. A race-locked loadout can never be joined with.
+    var stockReady = model.ready;
+    model.ready = ko.computed(function () {
+      var activeCard = model.activeStartCard();
+      return stockReady() && !!activeCard && !activeCard.gwoRaceLocked;
+    });
+
+    var cardId = function (card) {
+      return card && card.id ? card.id() : undefined;
+    };
+
+    var isRaceLocked = function (card) {
+      return !!card.gwoRaceLocked;
+    };
+
     var validateStartingInventory = function (savedInventory, loadoutCardId) {
       var cards = savedInventory.cards || [];
       if (
@@ -105,15 +122,38 @@ function gwoLoadouts() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/host_war.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_selection.js",
       ],
-      function (loadouts, GWInventory, gwoDeal, gwoLoadoutBanks, hostWar) {
+      function (
+        loadouts,
+        GWInventory,
+        gwoDeal,
+        gwoLoadoutBanks,
+        hostWar,
+        loadoutSelection
+      ) {
         var banksResolved = false;
 
-        // Called again whenever the race changes: an MLA-only loadout is not
-        // offered to a race player. See races.md.
+        // Called again whenever the race changes: a race player's MLA-only
+        // loadouts are locked, so a selection resting on one moves. See
+        // races.md. Peeked, not read: race_picker.js calls this from inside
+        // a ko.computed, and a read here would make that computed re-run,
+        // and rebuild the list, on every selection change.
         model.gwoRebuildStartCards = function () {
-          if (banksResolved) {
-            model.startCards(loadouts.startCards());
+          if (!banksResolved) {
+            return;
+          }
+          var activeCard = model.activeStartCard.peek();
+          var activeId = activeCard && cardId(activeCard);
+          model.startCards(loadouts.startCards());
+          var index = loadoutSelection.selectableIndex(
+            model.startCards.peek(),
+            activeId,
+            cardId,
+            isRaceLocked
+          );
+          if (index !== -1) {
+            model.activeStartCardIndex(index);
           }
         };
 

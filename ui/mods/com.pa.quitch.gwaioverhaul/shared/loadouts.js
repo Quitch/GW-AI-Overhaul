@@ -36,9 +36,11 @@ define([
   // requireGW that may not have finished when this module's factory runs. Called
   // after gwoLoadoutBanks.resolve(), it sees every bank; called before, it falls
   // back to the two banks GWO ships and no mod loadout shows as unlocked.
-  // A race player is never offered a loadout built for MLA alone. The race is
-  // gw_start's setting for the host and the picker's observable for a co-op
-  // viewer; neither scene has the other's. See races.md.
+  // A loadout built for MLA alone is shown to a race player dimmed and
+  // unselectable, never hidden: the list keeps its order and the player's
+  // unlock state stays visible. The race is gw_start's setting for the host
+  // and the picker's observable for a co-op viewer; neither scene has the
+  // other's. See races.md.
   var raceInPlay = function () {
     var settings = model.gwoDifficultySettings;
 
@@ -51,25 +53,32 @@ define([
       : undefined;
   };
 
-  var offeredCards = function () {
-    var race = raceInPlay();
-    if (!race || race === "mla") {
-      return allCards;
-    }
-    return _.filter(allCards, function (cardData) {
-      return !helpers.mlaOnlyCard(cardData.id);
+  // The card's click binding is `click: activate` and its class binding
+  // `css: btnClass`, so an inert activate and an extra class are all the
+  // markup needs. A locked-hint card is left as it is.
+  var lockForRace = function (card) {
+    var stockBtnClass = card.btnClass;
+    card.gwoRaceLocked = true;
+    card.activate = function () {};
+    card.btnClass = ko.computed(function () {
+      return stockBtnClass() + " gwo-race-locked";
     });
+    return card;
   };
 
   var startCards = function () {
-    return _.map(offeredCards(), function (cardData) {
+    var race = raceInPlay();
+    return _.map(allCards, function (cardData) {
       if (
         _.includes(model.gwoStartingCards, cardData) ||
         GW.bank.hasStartCard(cardData) ||
         gwoBank.hasStartCard(cardData) ||
         gwoLoadoutBanks.hasStartCard(cardData)
       ) {
-        return model.makeKnown(cardData);
+        var card = model.makeKnown(cardData);
+        return helpers.raceLocksLoadout(race, cardData.id)
+          ? lockForRace(card)
+          : card;
       } else {
         return model.makeUnknown(cardData);
       }

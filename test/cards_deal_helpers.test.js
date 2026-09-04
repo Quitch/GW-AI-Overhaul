@@ -653,6 +653,40 @@ describe("races", () => {
     );
   });
 
+  it("raceLocksLoadout locks nothing for MLA or an unknown race", () => {
+    for (const id of helpers.MLA_ONLY.concat(["gwaio_upgrade_ant"])) {
+      assert.equal(helpers.raceLocksLoadout("mla", id), false, id);
+      assert.equal(helpers.raceLocksLoadout(undefined, id), false, id);
+      assert.equal(helpers.raceLocksLoadout("", id), false, id);
+    }
+  });
+
+  it("raceLocksLoadout locks exactly the MLA-only cards for a race", () => {
+    for (const id of helpers.MLA_ONLY) {
+      assert.equal(helpers.raceLocksLoadout("fixture", id), true, id);
+    }
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwaio_upgrade_ant"),
+      true
+    );
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwaio_upgrade_subcommander_1"),
+      false
+    );
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwaio_upgrade_ubercannon_structure"),
+      false
+    );
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwc_start_subcdr"),
+      false
+    );
+    assert.equal(
+      helpers.raceLocksLoadout("fixture", "gwaio_start_lucky"),
+      false
+    );
+  });
+
   it("applyRaceToSubcommander gives a race Sub Commander the race and one of its commanders", () => {
     const subcommander = {
       name: "x",

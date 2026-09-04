@@ -72,7 +72,8 @@ function gwoSetup() {
     // We change how we monitor model.ready() to prevent
     // Shared Systems for Galactic War breaking our new lobby
     model.ready = ko.computed(function () {
-      return enableGoToWar() && !!model.activeStartCard();
+      var activeCard = model.activeStartCard();
+      return enableGoToWar() && !!activeCard && !activeCard.gwoRaceLocked;
     });
 
     var onSelectedNamesChanged = function (names) {
@@ -347,6 +348,7 @@ function gwoSetup() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_selection.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourites.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_system_brackets.js",
@@ -373,6 +375,7 @@ function gwoSetup() {
         loadouts,
         gwoLoadoutBanks,
         favouriteLoadoutsModule,
+        loadoutSelection,
         favouritesModule,
         gwoVersion,
         gwoSystemBrackets,
@@ -393,10 +396,16 @@ function gwoSetup() {
 
         // Resolved before the list is built so a mod loadout the player has
         // earned shows as unlocked rather than as a locked hint.
-        // Also re-run by the race picker: the list a race player sees is
-        // shorter. See races.md.
+        // Also re-run by the race picker: a race player's MLA-only loadouts
+        // are locked, so a selection resting on one moves. See races.md.
+        // Peeked, not read, so a caller inside a ko.computed does not come
+        // to depend on the selection.
+        var isRaceLocked = function (card) {
+          return !!card.gwoRaceLocked;
+        };
+
         model.gwoRebuildStartCards = function () {
-          var activeCard = model.activeStartCard();
+          var activeCard = model.activeStartCard.peek();
           var activeId = activeCard && cardId(activeCard);
           model.startCards(
             gwoFavouriteLoadouts.sortCardsByFavourite(
@@ -405,11 +414,14 @@ function gwoSetup() {
               cardId
             )
           );
-          var index = _.findIndex(model.startCards(), function (c) {
-            return cardId(c) === activeId;
-          });
-          if (index === -1 && model.startCards().length) {
-            model.activeStartCardIndex(0);
+          var index = loadoutSelection.selectableIndex(
+            model.startCards.peek(),
+            activeId,
+            cardId,
+            isRaceLocked
+          );
+          if (index !== -1) {
+            model.activeStartCardIndex(index);
           }
         };
         requireGW(gwoLoadoutBanks.paths(), function () {
