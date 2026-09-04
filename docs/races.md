@@ -119,11 +119,17 @@ whose `path` a race file lacks is the no-op it always was in `specs.mod`.
 A single-unit grant opens its whole cell (`gwc_start_subcdr`'s Ant brings
 every basic race tank) - accepted. What no cell can carry is a hand-picked
 list: `cards_deal_helpers.MLA_ONLY` names the cards a race player is never
-dealt or offered as a loadout, each entry saying why, and `mlaOnlyCard` adds
-every `_upgrade_` card but the commander's (`ubercannon`, `subcommander`),
-since those are tuned to the MLA unit they name. A race gets its own. `shared/loadouts.js` and
-`gw_play/treasure_loadouts.js` apply the same list to the loadouts a race
-player is shown. Any other card is dealt when `races.cardUsable` finds a race
+dealt, each entry saying why, and `mlaOnlyCard` adds every `_upgrade_` card
+but the commander's (`ubercannon`, `subcommander`), since those are tuned to
+the MLA unit they name. A race gets its own. The two loadout-picking scenes
+(`gw_start` and the co-op per-player loadout) still show those loadouts, in
+their usual place, but `shared/loadouts.js` marks each one
+`raceLocksLoadout` returns true for as `gwoRaceLocked`: dimmed by
+`shared/loadouts.css`, its click inert, and refused by each scene's `ready`.
+When the race changes, `shared/loadout_selection.js`'s `selectableIndex`
+moves a selection resting on a locked card to the first usable one.
+`gw_play/treasure_loadouts.js` still excludes them from a race player's
+treasure pool - an unusable prize. Any other card is dealt when `races.cardUsable` finds a race
 unit in a cell its `card_units.js` entry names; a card with no entry - every
 loadout - passes, and so does everything until the race's cells are built,
 which `gw_play/races.js` starts as the scene loads. Deals are synchronous and
