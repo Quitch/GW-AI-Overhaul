@@ -1,5 +1,6 @@
 // Registers the races before any referee runs, and refuses to fight a war whose
-// races the player is no longer running. See races.md.
+// races - or, through gw_play/biomes.js, whose map packs - the player is no
+// longer running. See races.md.
 var gwoPlayRacesLoaded;
 
 function gwoPlayRaces() {
@@ -12,21 +13,29 @@ function gwoPlayRaces() {
   try {
     model.gwoRaces = _.isArray(model.gwoRaces) ? model.gwoRaces : [];
 
-    // Both are made here, before any asynchronous work. This scene script is
-    // first in modinfo's gw_play list, so the war panel and the fight gate
-    // always find them, however early the manifest read finishes.
+    // All four are made here, before any asynchronous work. This scene script
+    // is first in modinfo's gw_play list, so the war panel, the fight gate and
+    // biomes.js always find them, however early the manifest read finishes.
     model.gwoRaceWarning = ko.observable("");
     model.gwoRaceBlock = ko.observableArray([]);
+    model.gwoBiomeWarning = ko.observable("");
+    model.gwoBiomeBlock = ko.observableArray([]);
 
     var blocked = function () {
-      return model.gwoRaceBlock().length > 0;
+      return (
+        model.gwoRaceBlock().length > 0 || model.gwoBiomeBlock().length > 0
+      );
     };
 
     var blockMessage = function () {
       return (
         loc("!LOC:This war cannot be fought:") +
         "<br/>" +
-        model.gwoRaceBlock().join("<br/>") +
+        // Both lists say "GW Server Mods is not enabled" when that is what
+        // is missing; the dialog says it once.
+        _.uniq(model.gwoRaceBlock().concat(model.gwoBiomeBlock())).join(
+          "<br/>"
+        ) +
         "<br/><br/>" +
         loc(
           "!LOC:Enable the missing mods and restart Planetary Annihilation to continue this war."
@@ -42,10 +51,14 @@ function gwoPlayRaces() {
       model.popUp({ msg: blockMessage(), tags: { primary: "!LOC:OK" } });
     };
 
+    // biomes.js raises the same dialog once its own check is in.
+    model.gwoShowFightBlock = showBlockPopUp;
+
     // Knockout reads a click binding's value accessor when the click happens,
     // so replacing these holds however late this runs. The stock fight path
     // never consults gwCampaignFightBlocked, so this is the gate, not the
-    // greying below.
+    // greying below. GW Server Mods wraps model.fight too, to mount before the
+    // referee; whichever wrapper is outermost, a blocked war never launches.
     var gateAction = function (name) {
       var stock = model[name];
 
@@ -64,7 +77,7 @@ function gwoPlayRaces() {
     };
 
     // The stock co-op gate already greys the Fight button and gives it a
-    // reason; a missing race is one more reason to say no.
+    // reason; a missing race or map pack is one more reason to say no.
     var gateButton = function () {
       var stockBlocked = model.gwCampaignFightBlocked;
       var stockTooltip = model.gwCampaignFightTooltip;
@@ -77,8 +90,11 @@ function gwoPlayRaces() {
 
       if (ko.isObservable(stockTooltip)) {
         model.gwCampaignFightTooltip = ko.computed(function () {
+          if (model.gwoRaceBlock().length > 0) {
+            return "!LOC:A race this war fields is missing";
+          }
           return blocked()
-            ? "!LOC:A race this war fields is missing"
+            ? "!LOC:A map pack this war uses is missing"
             : stockTooltip();
         });
       }
