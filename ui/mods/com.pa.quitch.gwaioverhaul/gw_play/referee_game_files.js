@@ -155,7 +155,8 @@ define([
   return function () {
     var self = this;
 
-    // Game file generation cannot use previously mounted files.  That would be bad.
+    // The previous battle's cooked specs are still mounted; read as the base,
+    // they would be modded a second time.
     var done = $.Deferred();
     // A throw inside a deferred callback is a hang, not a rejection (see
     // constraints.md), so every path below that can fail rejects here instead.

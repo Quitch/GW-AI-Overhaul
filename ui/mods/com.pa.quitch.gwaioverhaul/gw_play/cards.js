@@ -191,7 +191,7 @@ function gwoCard() {
       }
     };
 
-    // modified to recognise mod loadouts
+    // Replaces gwt_card.js's CardViewModel; only isLoadout differs.
     globals.CardViewModel = function (params) {
       var self = this;
 
@@ -208,13 +208,13 @@ function gwoCard() {
       });
       self.summary = ko.observable();
       self.icon = ko.observable();
-      self.iconPlaceholder = ko.observable(); // Displayed when the icon is empty
+      self.iconPlaceholder = ko.observable();
       self.audio = ko.observable();
 
       self.isEmpty = ko.computed(function () {
         return !self.id();
       });
-      // Recognise loadouts introduced by mods as loadouts
+      // Stock tests for gwc_start only; mod loadouts carry _start_ anywhere.
       self.isLoadout = ko.computed(function () {
         return _.includes(self.id(), "_start_");
       });
@@ -320,8 +320,8 @@ function gwoCard() {
         // Also registers the gwo_sync_star_card_name host handler.
         var cardNameSync = cardsCardNameSync({ game: game });
 
-        /* Start of GWO implementation of GWDealer */
-
+        // GWO's own dealer, replacing stock's gw_dealer end to end. See
+        // shadowing.md, "Function hijacking".
         model.gwoCards = gwoDeal.setupGwoCards(gwoSettings);
 
         var cards = [];
@@ -503,7 +503,7 @@ function gwoCard() {
 
         var dealCardToSelectableAI = function (win, turnState) {
           if (model.isCampaignViewer()) {
-            return $.when().promise(); // already resolved jQuery promise
+            return $.when().promise();
           }
 
           var deferred = $.Deferred();
@@ -608,8 +608,6 @@ function gwoCard() {
           }
         };
         dealCardToSelectableAIWhenWarStarts(gwoSettings);
-
-        /* end of GWO implementation of GWDealer */
 
         // Installs model.cheats.testCards / model.cheats.giveCard.
         cardsCheats({

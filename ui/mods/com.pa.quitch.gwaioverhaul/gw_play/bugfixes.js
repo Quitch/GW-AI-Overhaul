@@ -72,8 +72,8 @@ function gwoBugfixes() {
       if (!_.isArray(ai.inventory)) {
         return;
       }
-      var securityFix = false; // we have to fix `unit_types`
-      var workerFix = 0; // we have to fix `buildable_types` and `unit_types`
+      var securityFix = false;
+      var workerFix = 0;
       var security =
         "/pa/units/land/bot_support_commander/bot_support_commander.json";
       var worker = "/pa/units/air/support_platform/support_platform.json";

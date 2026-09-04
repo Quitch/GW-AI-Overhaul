@@ -153,10 +153,9 @@ describe("clusterArmyIndex", () => {
     assert.equal(refereeGameFiles.clusterArmyIndex(ai, gwoAI.isCluster), 0);
   });
 
-  // A war saved before v5.44.0 stores faction as ["4"]. gwoAI.isCluster has
-  // always understood both forms; clusterArmyIndex used to test === 4 itself
-  // and so disagreed with it, sending the unit map to the non-Cluster path
-  // while setAIPath sent the build orders to /pa/ai_cluster/.
+  // A war saved before v5.44.0 stores faction as ["4"]. clusterArmyIndex must
+  // read it through gwoAI.isCluster, which understands both forms, or the unit
+  // map and the build orders land in different trees.
   it("returns 0 for a pre-v5.44.0 war whose faction is the legacy array", () => {
     const ai = { faction: ["4"] };
     assert.equal(refereeGameFiles.clusterArmyIndex(ai, gwoAI.isCluster), 0);

@@ -14,8 +14,7 @@ function gwoPlayRaces() {
 
     // Both are made here, before any asynchronous work. This scene script is
     // first in modinfo's gw_play list, so the war panel and the fight gate
-    // always find them; the manifest read used to be able to finish before
-    // gwo_panel.js made the observable, and the message was lost.
+    // always find them, however early the manifest read finishes.
     model.gwoRaceWarning = ko.observable("");
     model.gwoRaceBlock = ko.observableArray([]);
 

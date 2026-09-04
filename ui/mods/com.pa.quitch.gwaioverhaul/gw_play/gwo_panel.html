@@ -148,6 +148,8 @@
     <ul data-bind="foreach: $root.gwoPlayer">
       <li class="commander">
         <div class="div-player-icon">
+          <!-- .player-masked is section_of_foreign_intelligence.css's unscoped
+          rule, always loaded in gw_play alongside gwo_panel.css. -->
           <div
             class="fill player-masked"
             data-bind="style: { backgroundColor: color, webkitMaskImage: ko.unwrap(iconFill) ? 'url(' + ko.unwrap(iconFill) + ')' : '' }"

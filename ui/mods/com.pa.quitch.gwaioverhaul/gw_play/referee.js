@@ -120,7 +120,9 @@ function gwoRefereeChanges() {
         gwoReferee.prototype.stripSystems = function () {
           var self = this;
 
-          // remove the systems from the galaxy
+          // saveSystems deletes each star's generated system from the config
+          // and returns them; the config is what the battle carries, so this
+          // is the strip, and the return value is not needed.
           var gw = self.config().gw;
           GW.Game.saveSystems(gw);
         };

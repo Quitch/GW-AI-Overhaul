@@ -399,7 +399,8 @@ define([
       });
     };
 
-    // built on the assumption that the Guardians are never Cluster
+    // Relies on the Guardians never being Cluster. See ai-paths.md,
+    // "Invariants".
     var processClusterJson = function (json, pathLength) {
       var clusterOps = clusterAIModsInScopeOfFile();
       var clusterJson = _.cloneDeep(json);

@@ -354,8 +354,7 @@ define([
 
         var bp = _.cloneDeep(planet_template);
         bp.generator.seed = planetRng.int(0, 32767); // GWO
-        // GWO - was _.sample, then briefly the shared rng, which made a planet's
-        // biome depend on how many earlier planets took the isExplicit return.
+        // GWO - per-planet stream, so no other planet's draws can move this one.
         bp.generator.biome = planetRng.pick(plnt.Biomes);
 
         var biomeGet = $.get(

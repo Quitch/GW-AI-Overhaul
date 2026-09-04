@@ -195,7 +195,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           }
           return attribute;
         },
-        // theoretically unsafe, but mods can run whatever code they want anyway, so the risk is meaningless
+        // Runs arbitrary code against the attribute. No shipped card uses it; it
+        // is kept for third-party mods, which can run any code anyway. See
+        // specs.md, "The op table".
         eval: function (attribute, value) {
           return new Function("attribute", value)(attribute);
         },

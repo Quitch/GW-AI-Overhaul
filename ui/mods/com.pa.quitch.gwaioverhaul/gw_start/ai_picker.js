@@ -104,8 +104,7 @@ function gwoAiPicker() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_modal.html"
       )
     );
-    // Must hang off body: the modal is position: absolute, and in the Setup
-    // column it would resolve against a short, scrolling ancestor.
+    // Same reason as the commander modal in gw_start/ui.js.
     $("#gwo-ai-modal").appendTo("body");
     locTree($("#gwo-ai-panel"));
     locTree($("#gwo-ai-modal"));

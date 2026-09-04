@@ -107,7 +107,6 @@ function gwoSystemChanges() {
       });
     };
 
-    // Add tooltips, starting planet, and thruster icons on planet intelligence icons
     $(".all-planets").replaceWith(
       loadHtml("coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.html")
     );
@@ -431,7 +430,8 @@ function gwoSystemChanges() {
             !!system.ownerColor() &&
             system.ownerColor()[0] !== model.player.color()[0];
 
-          // Fix Z axis issues
+          // Toggling hover makes stock's hover-ring computed re-sort the star's
+          // display list, which is what puts this ring at its z.
           if (innerRing.visible === true) {
             system.mouseOver(1);
             system.mouseOver(0);

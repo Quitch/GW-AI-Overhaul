@@ -38,7 +38,7 @@ function gwoUI() {
       playerFaction: koNumeric(model.playerFactionIndex(), 0),
       difficultyLevel: koNumeric(0, 0),
       galaxySize: koNumeric(model.newGameSizeIndex(), 0),
-      hardcore: ko.observable(model.newGameHardcore()), // boolean
+      hardcore: ko.observable(model.newGameHardcore()),
       chosenLoadout: koNumeric(model.activeStartCardIndex(), 0),
       factionScaling: ko.observable(true),
       systemScaling: ko.observable(true),
@@ -263,8 +263,7 @@ function gwoUI() {
     $("#game-settings-label")
       .closest(".form-group")
       .replaceWith(loadHtml(addHtml.path + "difficulty_options.html"));
-    // Same reason as the commander modal below, plus it keeps a hidden node out
-    // of the Setup column's scroll flow.
+    // Same reason as the commander modal below.
     $("#gwo-game-options-modal").appendTo("body");
     addHtml.before("#faction-select", "faction_tooltip.html");
     addHtml.before("#game-size", "size_tooltip.html");
