@@ -284,7 +284,11 @@ scene script runs. `model.gwCampaignFightBlocked` and
 `model.gwCampaignFightTooltip` are swapped too, to grey the button and give it a
 reason, but those are bound once, so that half is installed ahead of
 `ko.applyBindings` (or immediately, if `model.gwCampaignPlayStarted` says the
-scene is already bound).
+scene is already bound). The gate is shared with map packs: `gw_play/biomes.js`
+fills `model.gwoBiomeBlock` and `model.gwoBiomeWarning`, which `races.js`
+creates beside the race pair and reads in the same `blocked()`, and raises the
+same dialog through `model.gwoShowFightBlock`. See
+[`galaxy.md`](galaxy.md), "Biome mods in a GW battle".
 
 In co-op the war also records `perPlayerRace`, the **Separate races** setting.
 With it off every viewer's inventory is stamped with the host's race; with it on

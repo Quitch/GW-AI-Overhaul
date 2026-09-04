@@ -59,9 +59,10 @@ full by the doc named:
   → [constraints.md](constraints.md)
 - **An unrecognised AI `test_type` is not an error** — the condition simply never
   validates and the build entry silently never fires. → [testing.md](testing.md)
-- **The GW server never sees mods, and `file.load` on a missing biome never
-  settles.** A planet whose `generator.biome` is not a stock `/pa/terrain/*.json`
-  hangs every player at loading with no error. → [galaxy.md](galaxy.md)
+- **The GW server sees no mods on its own, and `file.load` on a missing biome
+  never settles.** A planet whose `generator.biome` is not a stock
+  `/pa/terrain/*.json` hangs every player at loading with no error unless GWO
+  or GW Server Mods carried the mod in. → [galaxy.md](galaxy.md)
 - **`filter`, `animation`, `@keyframes` and `mask-*` are all inert in Chrome 40.**
   → [constraints.md](constraints.md)
 - **`justify-content: space-evenly` parses and does nothing.**

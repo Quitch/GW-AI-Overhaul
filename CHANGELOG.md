@@ -12,6 +12,7 @@
 - Exiles is the third race, under the TITANS brain. Exiles has no orbital units beyond the launcher, so the orbital tech cards are not dealt to an Exiles player
 - Separate races: a co-op war generated with this on lets every player pick their own race and commander when they choose their loadout. Needs Separate loadout & tech, and offers the races the war was created with that are still active
 - Resuming a war whose race mods are gone stops you fighting it
+- With GW Server Mods active, Shared Systems maps whose biomes come from any active server mod (Alien Worlds included) now stay in the galaxy. The war records those map packs; resuming without one stops you fighting until it is re-enabled, and a version change only warns
 - Mods can now add whole decks to the Techs picker in the war setup, composed from the Basic and Galactic War Overhaul decks, other mods' decks, individual stock cards and their own cards. A war remembers its deck; resume one whose deck mod is gone and it deals the Galactic War Overhaul deck instead
 
 ### Changed
