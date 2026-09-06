@@ -1,11 +1,7 @@
-var gwoLaunchProgressLoaded;
-
-function gwoLaunchProgress() {
-  if (gwoLaunchProgressLoaded || model.game().isTutorial()) {
+(function () {
+  if (model.game().isTutorial()) {
     return;
   }
-
-  gwoLaunchProgressLoaded = true;
 
   try {
     // Hangs off body: the backdrop is position: absolute, and .container is
@@ -130,5 +126,4 @@ function gwoLaunchProgress() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoLaunchProgress();
+})();

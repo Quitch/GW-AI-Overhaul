@@ -1,12 +1,4 @@
-var gwoSetupLoaded;
-
-function gwoSetup() {
-  if (gwoSetupLoaded) {
-    return;
-  }
-
-  gwoSetupLoaded = true;
-
+(function () {
   try {
     var cardId = function (card) {
       return card && card.id ? card.id() : undefined;
@@ -1464,5 +1456,4 @@ function gwoSetup() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoSetup();
+})();

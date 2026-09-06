@@ -1,15 +1,11 @@
-var gwoGalaxyMapPerfLoaded;
-
 // Dirty-checks the base game's uncapped galaxy-map redraw. The idle heartbeat
 // is load-bearing: systems.js animates off it. See architecture.md.
-function gwoGalaxyMapPerf() {
+(function () {
   var game = model.game();
 
-  if (gwoGalaxyMapPerfLoaded || game.isTutorial()) {
+  if (game.isTutorial()) {
     return;
   }
-
-  gwoGalaxyMapPerfLoaded = true;
 
   try {
     var stage = model.galaxy.stage;
@@ -73,5 +69,4 @@ function gwoGalaxyMapPerf() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoGalaxyMapPerf();
+})();

@@ -1,27 +1,24 @@
 // Vendored from wondible's Section of Foreign Intelligence for Galactic War
 // (Apache 2.0, see LICENSE.txt); modified by Quitch - changes documented at
 // https://github.com/Quitch/GW-AI-Overhaul
-var gwoIntelligenceLoaded;
 
-// The buff indices gw_start/setup.js writes into ai.typeOfBuffs. `commanders` is
-// only present in v5.11.0 and earlier saves.
-var gwoBuffType = {
-  cost: 0,
-  damage: 1,
-  health: 2,
-  speed: 3,
-  build: 4,
-  commanders: 5,
-  combat: 6,
-  cooldown: 7,
-};
-
-function gwoIntelligence() {
-  if (gwoIntelligenceLoaded || model.game().isTutorial()) {
+(function () {
+  if (model.game().isTutorial()) {
     return;
   }
 
-  gwoIntelligenceLoaded = true;
+  // The buff indices gw_start/setup.js writes into ai.typeOfBuffs. `commanders` is
+  // only present in v5.11.0 and earlier saves.
+  var gwoBuffType = {
+    cost: 0,
+    damage: 1,
+    health: 2,
+    speed: 3,
+    build: 4,
+    commanders: 5,
+    combat: 6,
+    cooldown: 7,
+  };
 
   try {
     model.gwoAvailableTechTooltip =
@@ -423,5 +420,4 @@ function gwoIntelligence() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoIntelligence();
+})();

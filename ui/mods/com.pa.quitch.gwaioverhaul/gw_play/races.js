@@ -1,15 +1,7 @@
 // Registers the races before any referee runs, and refuses to fight a war whose
 // races - or, through gw_play/biomes.js, whose map packs - the player is no
 // longer running. See races.md.
-var gwoPlayRacesLoaded;
-
-function gwoPlayRaces() {
-  if (gwoPlayRacesLoaded) {
-    return;
-  }
-
-  gwoPlayRacesLoaded = true;
-
+(function () {
   try {
     model.gwoRaces = _.isArray(model.gwoRaces) ? model.gwoRaces : [];
 
@@ -274,5 +266,4 @@ function gwoPlayRaces() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoPlayRaces();
+})();

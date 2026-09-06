@@ -1,15 +1,7 @@
 // Refuses to fight a war whose map packs the player is no longer running. The
 // observables and the gate itself are races.js's; this only fills them. See
 // galaxy.md, "Biome mods in a GW battle".
-var gwoPlayBiomesLoaded;
-
-function gwoPlayBiomes() {
-  if (gwoPlayBiomesLoaded) {
-    return;
-  }
-
-  gwoPlayBiomesLoaded = true;
-
+(function () {
   try {
     requireGW(
       [
@@ -79,5 +71,4 @@ function gwoPlayBiomes() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoPlayBiomes();
+})();

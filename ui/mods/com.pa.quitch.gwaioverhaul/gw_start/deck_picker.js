@@ -2,15 +2,7 @@
 // two, and describe each in the TECHS tooltip. The dropdown itself ships in
 // cards_dropdown.html, injected by ui.js. See tech-cards.md, "Third-party
 // decks".
-var gwoDeckPickerLoaded;
-
-function gwoDeckPicker() {
-  if (gwoDeckPickerLoaded) {
-    return;
-  }
-
-  gwoDeckPickerLoaded = true;
-
+(function () {
   try {
     var settings = model.gwoDifficultySettings;
     // The deck the last war was started with, read before the bindings run:
@@ -65,5 +57,4 @@ function gwoDeckPicker() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoDeckPicker();
+})();
