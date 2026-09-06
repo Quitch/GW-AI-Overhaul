@@ -16,6 +16,7 @@ const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const cardUnits = loadCouiModule(MOD_ROOT + "/gw_play/card_units.js");
 const helpers = loadCouiModule(MOD_ROOT + "/gw_play/cards_deal_helpers.js");
+const unitNames = loadCouiModule(MOD_ROOT + "/gw_play/unit_names.js");
 const fixture = require("./fixtures/unit_types.json");
 
 const bugsUnits = Object.keys(fixture.units).filter((unit) =>
@@ -152,5 +153,33 @@ describe("Bugs under capability cells", () => {
       .sort();
 
     assert.deepEqual(withheld, expected);
+  });
+
+  it("names every unit the tooltip lists for a card Bugs can be dealt (skipped without Bugs in the fixture)", (t) => {
+    if (!bugsUnits.length) {
+      t.skip("fixture harvested without Bugs");
+      return;
+    }
+    const index = races.cellsOf("bugs");
+    const named = Object.assign({}, races.byId("bugs").unitNames);
+    for (const entry of unitNames.units) {
+      named[entry.path] = entry.name;
+    }
+    const unnamed = [];
+    for (const card of cardUnits.cards) {
+      if (helpers.mlaOnlyCard(card.id)) {
+        continue;
+      }
+      for (const unit of cells.cardUnitsFor(
+        card.units || [],
+        index.vanilla,
+        index.race
+      )) {
+        if (!Object.prototype.hasOwnProperty.call(named, unit)) {
+          unnamed.push(card.id + ": " + unit);
+        }
+      }
+    }
+    assert.deepEqual(unnamed, []);
   });
 });

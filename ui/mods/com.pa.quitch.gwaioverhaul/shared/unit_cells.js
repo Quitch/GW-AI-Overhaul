@@ -419,6 +419,24 @@ define([
     });
   };
 
+  // The units a card reaches for a race player: the race's units of each cell
+  // a named vanilla unit occupies. A path with no cell, or in a Commander
+  // cell, is kept as raceUnitsFor keeps it. No build reach: a factory card
+  // lists factories, not what they build.
+  var cardUnitsFor = function (cardUnits, vanilla, race) {
+    return _.uniq(
+      _.flatten(
+        _.map(cardUnits || [], function (unit) {
+          var cell = vanilla.cellOf[unit];
+          if (_.isUndefined(cell) || isCommanderCell(cell)) {
+            return [unit];
+          }
+          return race.unitsByCell[cell] || [];
+        })
+      )
+    );
+  };
+
   // A merged unit map's spec_ids the race maps did not set, re-pointed from a
   // vanilla unit to the first race unit of its cell, so a key the engine reads
   // itself resolves to something the army can own. Returns a copy.
@@ -461,6 +479,7 @@ define([
     heldCommanderUnits: heldCommanderUnits,
     expandMods: expandMods,
     cardUsable: cardUsable,
+    cardUnitsFor: cardUnitsFor,
     unitMapFallback: unitMapFallback,
   };
 });
