@@ -132,8 +132,14 @@ function gwoCardTooltips() {
           return lookupHas(names, unit) ? names[unit] : unitNameFor(unit);
         };
 
+        // One line per name: Legion ships two units each called Purger,
+        // Spoiler and Meteoroid. A name is plain when any unit behind it is
+        // owned - highlighting it would say the player lacks a Spoiler.
         var sortUnitNames = function (units, race, owned) {
-          return _.map(units, function (unit) {
+          var ownedByName = {};
+          var names = [];
+
+          _.forEach(units, function (unit) {
             var name = raceUnitNameFor(race, unit);
 
             if (_.isUndefined(name)) {
@@ -144,13 +150,21 @@ function gwoCardTooltips() {
                     ? ""
                     : " and the " + race + " descriptor's unitNames")
               );
-              return loc("!LOC:Unknown Unit");
+              name = "!LOC:Unknown Unit";
             }
 
             var translatedName = loc(name);
-            return lookupHas(owned, unit)
-              ? translatedName
-              : highlightUnitName(translatedName);
+            if (!lookupHas(ownedByName, translatedName)) {
+              names.push(translatedName);
+              ownedByName[translatedName] = false;
+            }
+            if (lookupHas(owned, unit)) {
+              ownedByName[translatedName] = true;
+            }
+          });
+
+          return _.map(names, function (name) {
+            return ownedByName[name] ? name : highlightUnitName(name);
           }).sort();
         };
 
