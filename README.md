@@ -180,6 +180,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - Shared Systems for galactic war
 - AI Chat
 - Show AI Personality Names
+- Galactic War Server Mods
 
 ## Incompatible mods
 
