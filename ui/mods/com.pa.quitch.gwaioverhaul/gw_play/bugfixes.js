@@ -1,13 +1,9 @@
-var gwoBugfixesLoaded;
-
-function gwoBugfixes() {
+(function () {
   var game = model.game();
 
-  if (gwoBugfixesLoaded || game.isTutorial()) {
+  if (game.isTutorial()) {
     return;
   }
-
-  gwoBugfixesLoaded = true;
 
   try {
     var galaxy = game.galaxy();
@@ -201,5 +197,4 @@ function gwoBugfixes() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoBugfixes();
+})();

@@ -1,11 +1,7 @@
-var gwoRefereeChangesLoaded;
-
-function gwoRefereeChanges() {
-  if (gwoRefereeChangesLoaded || model.game().isTutorial()) {
+(function () {
+  if (model.game().isTutorial()) {
     return;
   }
-
-  gwoRefereeChangesLoaded = true;
 
   try {
     var gwoReferee = function (game) {
@@ -226,5 +222,4 @@ function gwoRefereeChanges() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoRefereeChanges();
+})();

@@ -3,15 +3,7 @@
 // requireGW. A race's commanders are not in the list CommanderUtility read at
 // page load, so their name and portrait come from the spec itself. See
 // races.md.
-var gwoRacePickerViewLoaded;
-
-function gwoRacePickerView() {
-  if (gwoRacePickerViewLoaded) {
-    return;
-  }
-
-  gwoRacePickerViewLoaded = true;
-
+(function () {
   try {
     var commanderInfo = {};
 
@@ -55,5 +47,4 @@ function gwoRacePickerView() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoRacePickerView();
+})();

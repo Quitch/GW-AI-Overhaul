@@ -1,11 +1,7 @@
-var gwoCardTooltipsLoaded;
-
-function gwoCardTooltips() {
-  if (gwoCardTooltipsLoaded || model.game().isTutorial()) {
+(function () {
+  if (model.game().isTutorial()) {
     return;
   }
-
-  gwoCardTooltipsLoaded = true;
 
   try {
     $("#system-card").replaceWith(
@@ -291,5 +287,4 @@ function gwoCardTooltips() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoCardTooltips();
+})();

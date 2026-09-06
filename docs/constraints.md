@@ -148,13 +148,19 @@ throw is not an error but a permanent hang.
 
 ## Function scoping, and Sonar S7721
 
-Keep module-private helpers **inside** the `define(...)` factory.
+Keep module-private helpers **inside** the `define(...)` factory, and keep a scene
+script **inside** one IIFE.
 
 In PA's RequireJS runtime a file-top-level declaration becomes a `window` global.
 Hoisting to the "outer scope" that Sonar's `javascript:S7721` wants therefore leaks
 a global for no gain — the factory runs once anyway. S7721 is accepted and scoped
 out of `ui/**` in `sonar-project.properties`; it stays active for `scripts/**` and
 `test/**`.
+
+The scene scripts `modinfo.json` lists have no `define(...)` to hide inside, so
+each is one `(function () { ... })();` holding its `try`/`catch` and any
+scene-specific early return, and declares nothing at file top level. Sharing
+between scene scripts goes through `model.gwo*`, never `window`.
 
 When a base-game-shadowed module needs its logic tested, extract it into a measured
 sibling module rather than hoisting helpers to file top level. See

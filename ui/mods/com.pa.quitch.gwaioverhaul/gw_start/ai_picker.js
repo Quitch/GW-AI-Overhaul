@@ -4,15 +4,7 @@
 // pick time. Cells are the scene's usual selectpicker dropdowns; the rows are
 // rebuilt wholesale on every change, so each select is initialised once with
 // its final option list and never needs a manual refresh. See races.md.
-var gwoAiPickerLoaded;
-
-function gwoAiPicker() {
-  if (gwoAiPickerLoaded) {
-    return;
-  }
-
-  gwoAiPickerLoaded = true;
-
+(function () {
   try {
     var settings = model.gwoDifficultySettings;
     // Written into by the requireGW callback below; the handlers only run on
@@ -132,6 +124,4 @@ function gwoAiPicker() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-
-gwoAiPicker();
+})();

@@ -1,12 +1,4 @@
-var gwoRecordHighestDifficultyDefeatedLoaded;
-
-function gwoRecordHighestDifficultyDefeated() {
-  if (gwoRecordHighestDifficultyDefeatedLoaded) {
-    return;
-  }
-
-  gwoRecordHighestDifficultyDefeatedLoaded = true;
-
+(function () {
   try {
     var game = model.game();
     var galaxy = game.galaxy();
@@ -77,5 +69,4 @@ function gwoRecordHighestDifficultyDefeated() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoRecordHighestDifficultyDefeated();
+})();

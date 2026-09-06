@@ -1,12 +1,4 @@
-var gwoStartMenuLoaded;
-
-function gwoStartMenu() {
-  if (gwoStartMenuLoaded) {
-    return;
-  }
-
-  gwoStartMenuLoaded = true;
-
+(function () {
   try {
     var $gwNav = $("#nav-gw");
     var htmlFile =
@@ -30,5 +22,4 @@ function gwoStartMenu() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoStartMenu();
+})();

@@ -1,13 +1,9 @@
-var gwoCardsLoaded;
-
-function gwoCard() {
+(function () {
   var game = model.game();
 
-  if (gwoCardsLoaded || game.isTutorial()) {
+  if (game.isTutorial()) {
     return;
   }
-
-  gwoCardsLoaded = true;
 
   try {
     // Allow tech cards to be deleted at any time
@@ -949,5 +945,4 @@ function gwoCard() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoCard();
+})();

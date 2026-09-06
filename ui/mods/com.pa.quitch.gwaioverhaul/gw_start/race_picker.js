@@ -1,15 +1,7 @@
 // The race picker: the player's race and the commander list for the chosen
 // race. Only shown when GW Server Mods has a race's server mod active. The
 // AI brains are per race, in ai_picker.js's modal. See races.md.
-var gwoRacePickerLoaded;
-
-function gwoRacePicker() {
-  if (gwoRacePickerLoaded) {
-    return;
-  }
-
-  gwoRacePickerLoaded = true;
-
+(function () {
   try {
     var settings = model.gwoDifficultySettings;
     // The race the last war was started with, read before the bindings run:
@@ -187,5 +179,4 @@ function gwoRacePicker() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoRacePicker();
+})();

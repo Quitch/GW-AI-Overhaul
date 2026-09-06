@@ -1,12 +1,4 @@
-var gwoLoadoutsLoaded;
-
-function gwoLoadouts() {
-  if (gwoLoadoutsLoaded) {
-    return;
-  }
-
-  gwoLoadoutsLoaded = true;
-
+(function () {
   try {
     // Before ko.applyBindings, as race_picker.js is: Join is bound to this
     // and submitLoadout reads self.ready() on the same object, so the swap
@@ -245,5 +237,4 @@ function gwoLoadouts() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoLoadouts();
+})();

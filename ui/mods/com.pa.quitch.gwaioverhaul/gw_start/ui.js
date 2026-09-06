@@ -1,12 +1,4 @@
-var gwoUILoaded;
-
-function gwoUI() {
-  if (gwoUILoaded) {
-    return;
-  }
-
-  gwoUILoaded = true;
-
+(function () {
   try {
     ko.extenders.stringBoolean = function (target) {
       var result = ko.computed({
@@ -351,5 +343,4 @@ function gwoUI() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoUI();
+})();
