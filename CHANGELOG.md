@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Tech card tooltips show a race player's units instead of MLA's
+
 ## v7.0.0 - 2026-09-04
 
 ### Added

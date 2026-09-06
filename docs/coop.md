@@ -16,7 +16,8 @@ their own cards, and their own subcommanders. That changes several assumptions:
   acting player's inventory must use the one passed to it. `antiTechDeal` and the
   `gwaio_anti_*` cards get this right deliberately; it is an easy thing to break.
   The same rule is why viewers get their own pre-dealt star cards and their own
-  treasure loadouts; both have their own sections below.
+  treasure loadouts (both have their own sections below), and why the card
+  tooltips name and highlight units against the viewer's own record.
 - Viewers only field their own subcommanders under per-player tech. Without it
   there is one shared inventory and no co-op records to read at all, so the viewer
   half of `getOrderedSubcommanders` is gated on it.
