@@ -18,7 +18,10 @@ something new.
    unlock tokens `<x>Unlock`. It exists for cards written for that race alone;
    nothing in the referee reads it. Generate it from the zip (a throwaway
    script reading `display_name` and each unit's `tools[].spec_id` /
-   `ammo_id` / `death_weapon`), do not hand-write it.
+   `ammo_id` / `death_weapon`), do not hand-write it. `unitNames` has one
+   consumer: the card tooltips name a race unit from it, falling back to
+   `gw_play/unit_names.js`, so every race unit in a cell a vanilla unit fills
+   needs a name or the tooltip says "Unknown Unit".
 3. **AI layout** under `ai.titans`: `unitMaps` (the mod's own map file) and
    `sources` (`{ dir, match }` prefixes under the five build directories - a
    file prefix for Legion's flat `legion_*`, a sub-directory for Bugs'
