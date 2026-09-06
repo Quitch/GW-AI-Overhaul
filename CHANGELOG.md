@@ -5,6 +5,7 @@
 ### Bugfix
 
 - Tech card tooltips show a race player's units instead of MLA's
+- In co-op with separate loadout & tech, tech card tooltips highlight units the viewer lacks rather than those the host lacks
 
 ## v7.0.0 - 2026-09-04
 
