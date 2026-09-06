@@ -17,6 +17,7 @@ const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const cardUnits = loadCouiModule(MOD_ROOT + "/gw_play/card_units.js");
 const helpers = loadCouiModule(MOD_ROOT + "/gw_play/cards_deal_helpers.js");
+const unitNames = loadCouiModule(MOD_ROOT + "/gw_play/unit_names.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
 // Cards a Legion player is never dealt beyond the MLA-only set every race
@@ -175,5 +176,33 @@ describe("Legion under capability cells", () => {
     assert.ok(!withheld.includes("gwaio_upgrade_ubercannon_structure"));
     assert.ok(!withheld.includes("gwc_combat_bots"));
     assert.ok(!withheld.includes("gwc_storage_1"));
+  });
+
+  it("names every unit the tooltip lists for a card Legion can be dealt (skipped without Legion in the fixture)", (t) => {
+    if (!legionUnits.length) {
+      t.skip("fixture harvested without Legion");
+      return;
+    }
+    const index = races.cellsOf("legion");
+    const named = Object.assign({}, races.byId("legion").unitNames);
+    for (const entry of unitNames.units) {
+      named[entry.path] = entry.name;
+    }
+    const unnamed = [];
+    for (const card of cardUnits.cards) {
+      if (helpers.mlaOnlyCard(card.id)) {
+        continue;
+      }
+      for (const unit of cells.cardUnitsFor(
+        card.units || [],
+        index.vanilla,
+        index.race
+      )) {
+        if (!Object.prototype.hasOwnProperty.call(named, unit)) {
+          unnamed.push(card.id + ": " + unit);
+        }
+      }
+    }
+    assert.deepEqual(unnamed, []);
   });
 });

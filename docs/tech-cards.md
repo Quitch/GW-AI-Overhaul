@@ -203,7 +203,9 @@ advanced factory that only its `card_units.js` entry named.
 A race player narrows this further: a card whose `card_units.js` entry names
 no unit in a cell the race fills is withheld from the deal, and so is every
 card in `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards
-keep naming vanilla units; the unit's capability cell decides. See
+keep naming vanilla units; the unit's capability cell decides. The tooltip
+shows that same entry translated by cell - the race units of each cell a
+named vanilla unit occupies - never a second, race-written list. See
 [`races.md`](races.md).
 
 `test/card_deal_unit_gate.test.js` enforces this, in both directions: a card must not

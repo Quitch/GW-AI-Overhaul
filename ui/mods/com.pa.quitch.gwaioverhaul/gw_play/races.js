@@ -13,13 +13,17 @@ function gwoPlayRaces() {
   try {
     model.gwoRaces = _.isArray(model.gwoRaces) ? model.gwoRaces : [];
 
-    // All four are made here, before any asynchronous work. This scene script
-    // is first in modinfo's gw_play list, so the war panel, the fight gate and
-    // biomes.js always find them, however early the manifest read finishes.
+    // All five are made here, before any asynchronous work. This scene script
+    // is first in modinfo's gw_play list, so the war panel, the fight gate,
+    // biomes.js and card_tooltips.js always find them, however early the
+    // manifest read finishes.
     model.gwoRaceWarning = ko.observable("");
     model.gwoRaceBlock = ko.observableArray([]);
     model.gwoBiomeWarning = ko.observable("");
     model.gwoBiomeBlock = ko.observableArray([]);
+    // True once every race this client primes has its cells built (or has
+    // given up); card_tooltips.js renames the open star's cards on it.
+    model.gwoRaceCellsPrimed = ko.observable(false);
 
     var blocked = function () {
       return (
@@ -180,8 +184,13 @@ function gwoPlayRaces() {
           raceMods.mountRoot().always(function () {
             raceCells.load().then(
               function (loaded) {
-                _.forEach(toPrime, function (race) {
-                  raceCells.prime(race, loaded.units);
+                // prime swallows its own errors, so this always settles.
+                Promise.all(
+                  _.map(toPrime, function (race) {
+                    return raceCells.prime(race, loaded.units);
+                  })
+                ).then(function () {
+                  model.gwoRaceCellsPrimed(true);
                 });
               },
               function (error) {

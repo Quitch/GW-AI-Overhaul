@@ -15,19 +15,21 @@ function gwoCardTooltips() {
     );
     locTree($("#system-card"));
 
-    // Build once per tooltip, not once per unit in it - a card covering most of
-    // the unit list would otherwise rescan the inventory on every hover.
-    var playerUnitLookup = function () {
-      var owned = {};
-      var playerUnits = model
-        .game()
-        .inventory()
-        .units()
-        .concat("/pa/units/commanders/base_commander/base_commander.json");
-      _.forEach(playerUnits, function (playerUnit) {
-        owned[playerUnit] = true;
-      });
-      return owned;
+    // This client's inventory, read as gw_play/races.js reads it: a viewer's
+    // own record under per-player tech, the host's otherwise.
+    var ownInventory = function () {
+      var record =
+        _.isFunction(model.currentCoopPlayerInventoryData) &&
+        model.currentCoopPlayerInventoryData();
+      return (record && record.inventory) || model.game().inventory();
+    };
+
+    // A live GWInventory keeps units in an observable; a co-op record holds
+    // the serialised array.
+    var heldUnits = function (inventory) {
+      return _.isFunction(inventory.units)
+        ? inventory.units()
+        : inventory.units || [];
     };
 
     var lookupHas = function (lookup, key) {
@@ -42,8 +44,29 @@ function gwoCardTooltips() {
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
       ],
-      function (gwoUnitToNames, gwoCardsToUnits) {
+      function (gwoUnitToNames, gwoCardsToUnits, gwoRaces, unitCells) {
+        // Build once per tooltip, not once per unit in it - a card covering
+        // most of the unit list would otherwise rescan the inventory on every
+        // hover. A race player owns what the referee would field for the
+        // vanilla paths held (raceUnitsFor keeps base_commander, so the
+        // commander card still reads owned). See races.md, "Capability cells".
+        var playerUnitLookup = function (inventory, cells) {
+          var owned = {};
+          var held = heldUnits(inventory).concat(
+            "/pa/units/commanders/base_commander/base_commander.json"
+          );
+          var fielded = cells
+            ? unitCells.raceUnitsFor(held, cells.vanilla, cells.race)
+            : held;
+          _.forEach(fielded, function (unit) {
+            owned[unit] = true;
+          });
+          return owned;
+        };
+
         model.gwoTechCardTooltip = ko.observableArray([]);
 
         // global for modder compatibility - New-GW-Cards pushes here
@@ -101,22 +124,47 @@ function gwoCardTooltips() {
             : undefined;
         };
 
-        var sortUnitNames = function (units) {
-          var owned = playerUnitLookup();
-          return _.map(units, function (unit) {
-            var name = unitNameFor(unit);
+        // A race unit is named by its descriptor, anything else by
+        // unit_names.js. Both hold "!LOC:" or bare strings for loc().
+        var raceUnitNameFor = function (race, unit) {
+          var descriptor = gwoRaces.byId(race);
+          var names = (descriptor && descriptor.unitNames) || {};
+          return lookupHas(names, unit) ? names[unit] : unitNameFor(unit);
+        };
+
+        // One line per name: Legion ships two units each called Purger,
+        // Spoiler and Meteoroid. A name is plain when any unit behind it is
+        // owned - highlighting it would say the player lacks a Spoiler.
+        var sortUnitNames = function (units, race, owned) {
+          var ownedByName = {};
+          var names = [];
+
+          _.forEach(units, function (unit) {
+            var name = raceUnitNameFor(race, unit);
 
             if (_.isUndefined(name)) {
               console.warn(
-                unit + " is invalid or missing from GWO unit_names.js"
+                unit +
+                  " is invalid or missing from GWO unit_names.js" +
+                  (gwoRaces.isMla(race)
+                    ? ""
+                    : " and the " + race + " descriptor's unitNames")
               );
-              return loc("!LOC:Unknown Unit");
+              name = "!LOC:Unknown Unit";
             }
 
             var translatedName = loc(name);
-            return lookupHas(owned, unit)
-              ? translatedName
-              : highlightUnitName(translatedName);
+            if (!lookupHas(ownedByName, translatedName)) {
+              names.push(translatedName);
+              ownedByName[translatedName] = false;
+            }
+            if (lookupHas(owned, unit)) {
+              ownedByName[translatedName] = true;
+            }
+          });
+
+          return _.map(names, function (name) {
+            return ownedByName[name] ? name : highlightUnitName(name);
           }).sort();
         };
 
@@ -155,7 +203,19 @@ function gwoCardTooltips() {
           var units = model.gwoCardsToUnits[cardUnitsIndex].units;
           var tooltip;
           if (units) {
-            var affectedUnits = sortUnitNames(units);
+            // Resolved per tooltip, not once: a third-party race registers
+            // in gw_play/races.js's own callback, and its cells land later.
+            var inventory = ownInventory();
+            var race = gwoRaces.raceOf(inventory);
+            var cells = gwoRaces.cellsOf(race);
+            var shown = cells
+              ? unitCells.cardUnitsFor(units, cells.vanilla, cells.race)
+              : units;
+            var affectedUnits = sortUnitNames(
+              shown,
+              race,
+              playerUnitLookup(inventory, cells)
+            );
             tooltip = _.map(affectedUnits, function (unitName, index) {
               if (affectedUnits.length < 13) {
                 return unitName.concat("<br>");
@@ -174,14 +234,25 @@ function gwoCardTooltips() {
           model.gwoTechCardTooltip(tooltips);
         };
 
-        model.showSystemCard.subscribe(function () {
+        var showSystemCardTooltips = function () {
           if (model.showSystemCard()) {
             _.forEach(model.currentSystemCardList(), makeCardTooltip);
           }
-        });
+        };
+
+        model.showSystemCard.subscribe(showSystemCardTooltips);
         // Ensure the tooltip is shown even if the UI is refreshed
-        if (model.showSystemCard()) {
-          _.forEach(model.currentSystemCardList(), makeCardTooltip);
+        showSystemCardTooltips();
+
+        // The cells land after the scene is up; a star opened before then was
+        // named for MLA. See races.md, "Capability cells".
+        if (ko.isObservable(model.gwoRaceCellsPrimed)) {
+          model.gwoRaceCellsPrimed.subscribe(function () {
+            showSystemCardTooltips();
+            if (model.hoverCard()) {
+              makeCardTooltip(model.hoverCard());
+            }
+          });
         }
 
         var hoverCount = 0;

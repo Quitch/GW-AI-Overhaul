@@ -3,5 +3,5 @@
 // the two cannot be derived from one another at runtime - bump both together when
 // cutting a release.
 define(function () {
-  return "7.0.0";
+  return "7.0.1";
 });

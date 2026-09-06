@@ -587,6 +587,60 @@ describe("cardUsable", () => {
   });
 });
 
+describe("cardUnitsFor", () => {
+  it("lists the race's units of every cell a card names, once each, in card order", () => {
+    assert.deepEqual(cells.cardUnitsFor([ANT], vanilla, race), [FX_TANK]);
+    assert.deepEqual(cells.cardUnitsFor([ANT, SKITTER, ANT], vanilla, race), [
+      FX_TANK,
+    ]);
+    assert.deepEqual(cells.cardUnitsFor([FACTORY, ANT], vanilla, race), [
+      FX_FACTORY,
+      FX_TANK,
+    ]);
+    assert.deepEqual(cells.cardUnitsFor([DOX], vanilla, race), []);
+    assert.deepEqual(cells.cardUnitsFor(undefined, vanilla, race), []);
+  });
+
+  it("keeps a commander-cell path and, unlike raceUnitsFor, any path with no cell", () => {
+    assert.deepEqual(cells.cardUnitsFor([COMMANDER, COLONEL], vanilla, race), [
+      COMMANDER,
+      COLONEL,
+    ]);
+    assert.deepEqual(
+      cells.cardUnitsFor(["/pa/units/mod/x.json", ANT_AMMO], vanilla, race),
+      ["/pa/units/mod/x.json", ANT_AMMO]
+    );
+  });
+
+  it("has no build reach: a factory card lists factories, not what they build", () => {
+    const RESEARCH = "/pa/units/research/fx_research/fx_research.json";
+    const TOKEN = "/pa/units/research/fx_token/fx_token.json";
+    const specs = Object.assign({}, SPECS, {
+      [RESEARCH]: {
+        unit_types: T("Basic Construction Factory Land Structure Tank Custom7"),
+        buildable_types: "(Custom7 & FactoryBuild & Basic & Tank) - Mobile",
+      },
+      [TOKEN]: {
+        unit_types: T("Basic Land Structure Tank FactoryBuild Custom7"),
+      },
+    });
+    const units = UNITS.concat([RESEARCH, TOKEN]);
+    const v = cells.buildIndex(units, specs, cells.vanillaMember);
+    const r = cells.buildIndex(units, specs, cells.raceMember("Custom7"));
+
+    assert.deepEqual(cells.cardUnitsFor([FACTORY], v, r), [
+      FX_FACTORY,
+      RESEARCH,
+    ]);
+  });
+
+  it("does not mutate the list it is given", () => {
+    const original = [ANT, COMMANDER];
+    cells.cardUnitsFor(original, vanilla, race);
+    assert.deepEqual(original, [ANT, COMMANDER]);
+  });
+});
+
 describe("unitMapFallback", () => {
   it("re-points a vanilla spec_id the race maps did not set to the first race unit of its cell", () => {
     const map = {
