@@ -145,7 +145,9 @@ card's `card_units.js` entry names (`unit_cells.cardUnitsFor`: no build reach,
 so a factory card lists Bugs' research factories but not their unlock tokens,
 and a Commander-cell path is kept), names them from the descriptor's
 `unitNames` falling back to `gw_play/unit_names.js`, and highlights whatever
-`raceUnitsFor` would not field for the inventory's vanilla paths. The inventory
+`raceUnitsFor` would not field for the inventory's vanilla paths. Names are
+listed once - Legion has two units each called Purger, Spoiler and Meteoroid -
+and a name is plain when any unit behind it is owned. The inventory
 is the client's own - a viewer's record under per-player tech. Until the cells
 land the MLA list shows; `gw_play/races.js` sets `model.gwoRaceCellsPrimed`
 once priming completes, and the open star's and the hovered card's tooltips
