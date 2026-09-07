@@ -129,7 +129,7 @@ define([
     return [];
   };
 
-  // A unit's parts by role, over the reference fields spec_cache.tagSpec
+  // A unit's parts by role, over the reference fields spec_cache.forEachReference
   // walks: a tool is a weapon when it fires ammo and a build arm otherwise.
   var partsOf = function (path, specs) {
     var spec = specOf(specs, path);

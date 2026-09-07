@@ -22,64 +22,81 @@ define(function () {
     return rawCache[item];
   };
 
-  // Mirror of base-game gw_specs.js:tagSpec - keep the reference list below in
-  // sync with it. Mutates `spec`; returns the untagged references it found.
-  var tagSpec = function (specId, tag, spec) {
-    var moreWork = [];
+  // Mirror of base-game gw_specs.js:tagSpec's field list - keep it in sync
+  // with it. Calls visit(obj, key) for every field of `spec` that names other
+  // specs, whether as one string or an array of them.
+  var forEachReference = function (spec, visit) {
     if (typeof spec !== "object") {
-      return moreWork;
+      return;
     }
-    var applyTag = function (obj, key) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        if (typeof obj[key] === "string") {
-          moreWork.push(obj[key]);
-          obj[key] = obj[key] + tag;
-        } else if (_.isArray(obj[key])) {
-          obj[key] = _.map(obj[key], function (value) {
-            moreWork.push(value);
-            return value + tag;
-          });
-        }
+    var field = function (obj, key) {
+      if (
+        Object.prototype.hasOwnProperty.call(obj, key) &&
+        (typeof obj[key] === "string" || _.isArray(obj[key]))
+      ) {
+        visit(obj, key);
       }
     };
 
-    applyTag(spec, "base_spec");
+    field(spec, "base_spec");
     if (spec.tools) {
       _.forEach(spec.tools, function (tool) {
-        applyTag(tool, "spec_id");
+        field(tool, "spec_id");
       });
     }
-    applyTag(spec, "replaceable_units");
-    applyTag(spec, "buildable_projectiles");
+    field(spec, "replaceable_units");
+    field(spec, "buildable_projectiles");
     if (spec.factory && _.isString(spec.factory.initial_build_spec)) {
-      applyTag(spec.factory, "initial_build_spec");
+      field(spec.factory, "initial_build_spec");
     }
 
     if (spec.ammo_id) {
       if (_.isString(spec.ammo_id)) {
-        applyTag(spec, "ammo_id");
+        field(spec, "ammo_id");
       } else {
         _.forEach(spec.ammo_id, function (ammo) {
-          applyTag(ammo, "id");
+          field(ammo, "id");
         });
       }
     }
 
     if (spec.death_weapon) {
       if (_.isString(spec.death_weapon.ground_ammo_spec)) {
-        applyTag(spec.death_weapon, "ground_ammo_spec");
+        field(spec.death_weapon, "ground_ammo_spec");
       }
       if (_.isString(spec.death_weapon.air_ammo_spec)) {
-        applyTag(spec.death_weapon, "air_ammo_spec");
+        field(spec.death_weapon, "air_ammo_spec");
       }
     }
 
     // Projectiles such as Lob ammo can spawn units when they expire.
     if (_.isString(spec.spawn_unit_on_death)) {
-      applyTag(spec, "spawn_unit_on_death");
+      field(spec, "spawn_unit_on_death");
     }
+  };
 
-    return moreWork;
+  // The untagged references a spec makes, in the order tagSpec finds them.
+  var references = function (spec) {
+    var found = [];
+    forEachReference(spec, function (obj, key) {
+      found = found.concat(obj[key]);
+    });
+    return found;
+  };
+
+  // Mutates `spec`; returns the untagged references it found.
+  var tagSpec = function (tag, spec) {
+    var found = [];
+    forEachReference(spec, function (obj, key) {
+      var value = obj[key];
+      found = found.concat(value);
+      obj[key] = _.isArray(value)
+        ? _.map(value, function (item) {
+            return item + tag;
+          })
+        : value + tag;
+    });
+    return found;
   };
 
   return {
@@ -124,7 +141,7 @@ define(function () {
               function (raw) {
                 // Tag a clone, never the cached pristine copy.
                 var data = _.cloneDeep(raw);
-                var newWork = tagSpec(item, tag, data);
+                var newWork = tagSpec(tag, data);
                 work = work.concat(newWork);
                 results[item + tag] = data;
               },
@@ -151,9 +168,7 @@ define(function () {
     },
 
     // The untagged references a spec makes, without touching it.
-    references: function (spec) {
-      return tagSpec(undefined, "", _.cloneDeep(spec));
-    },
+    references: references,
 
     // Test-only: lets tests assert fetch counts in isolation.
     clearCache: function () {

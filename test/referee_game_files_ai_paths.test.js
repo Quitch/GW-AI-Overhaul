@@ -463,3 +463,37 @@ describe("races", () => {
     assert.equal(recorded[0].tag, ".player");
   });
 });
+
+describe("loadMap", () => {
+  it("reads each map through spec:// once and hands out the parsed promise", async () => {
+    const stubs = createGlobalStubs();
+    const gets = [];
+    const $ = function () {};
+    $.get = (url) => {
+      gets.push(url);
+      return { then: (fn) => Promise.resolve(fn(JSON.stringify({ url }))) };
+    };
+    stubs.setGlobal("$", $);
+    stubs.setGlobal("parse", JSON.parse);
+    try {
+      const first = refereeGameFiles.loadMap(
+        "/pa/ai/unit_maps/ai_unit_map.json"
+      );
+      const second = refereeGameFiles.loadMap(
+        "/pa/ai/unit_maps/ai_unit_map.json"
+      );
+      refereeGameFiles.loadMap("/pa/ai/unit_maps/ai_unit_map_x1.json");
+
+      assert.equal(first, second);
+      assert.deepEqual(await first, {
+        url: "spec://pa/ai/unit_maps/ai_unit_map.json",
+      });
+      assert.deepEqual(gets, [
+        "spec://pa/ai/unit_maps/ai_unit_map.json",
+        "spec://pa/ai/unit_maps/ai_unit_map_x1.json",
+      ]);
+    } finally {
+      stubs.restoreGlobals();
+    }
+  });
+});

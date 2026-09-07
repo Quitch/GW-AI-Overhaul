@@ -195,8 +195,11 @@ Two details make it correct:
   new promise each time, so one stored request can be chained off repeatedly
   without being consumed.
 
-The cache is created inside the exported function, so it lives exactly one launch
-and a later battle always re-reads from disk.
+The cache lives exactly one launch: `gw_play/referee.js` creates it on the first
+hire after `launchingFight` turns on and hands the same one to every hire of that
+launch through `ref.treeCache`, so a co-op host's shared and own referee passes read
+each tree file once between them, and the next Fight starts from disk again. A run
+handed no cache (tests, the console) creates its own.
 
 ## Test hook
 

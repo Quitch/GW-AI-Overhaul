@@ -28,6 +28,7 @@ define([
   var resolveAiUnitMapPaths = gameFilePaths.resolveAiUnitMapPaths;
   var buildPlayerFiles = gameFilePaths.buildPlayerFiles;
   var specFetch = gameFilePaths.specFetch;
+  var loadMap = gameFilePaths.loadMap;
   // Drop-in for GW.specs.genUnitSpecs, fetching each spec file at most once.
   var genUnitSpecs = function (units, tag) {
     return gwoSpecCache.genUnitSpecs(units, tag, { fetch: specFetch });
@@ -186,17 +187,6 @@ define([
         var enemyAI = gwoAI.aiInUse("enemy");
         var aiUnitMapSourcePath = getAIUnitMapPath(false, enemyAI);
         var aiUnitMapTitansSourcePath = getAIUnitMapPath(true, enemyAI);
-
-        // Each map file once per launch, through spec:// like the unit list.
-        var mapCache = {};
-        var loadMap = function (path) {
-          if (!mapCache[path]) {
-            mapCache[path] = $.get("spec:/" + path).then(function (data) {
-              return parse(data);
-            });
-          }
-          return mapCache[path];
-        };
 
         // A race army reads the brain that carries its race (or Titans) from
         // that brain's own map with the race's maps laid over it, at the race's
