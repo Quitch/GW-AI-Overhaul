@@ -264,6 +264,30 @@ describe("per-player-tech viewer processing", () => {
     assert.deepEqual(getJSONCalls, ["coui://pa/ai/fabber_builds/x.json"]);
   });
 
+  // A co-op host hires twice per launch; the hire hands both runs one cache.
+  it("reads a tree once across two runs that share the launch's cache", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
+    installModel(fixture.game, [{ id: "host", name: "Host", role: "host" }]);
+    const { listCalls, getJSONCalls } = installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+    });
+    const treeCache = refereeAi.createTreeCache();
+
+    await refereeAi.call({ files: () => ({}), treeCache });
+    await refereeAi.call({ files: () => ({}), treeCache });
+    await refereeAi.call({ files: () => ({}) });
+
+    assert.deepEqual(listCalls, ["/pa/ai/", "/pa/ai/"]);
+    assert.deepEqual(getJSONCalls, [
+      "coui://pa/ai/fabber_builds/x.json",
+      "coui://pa/ai/fabber_builds/x.json",
+    ]);
+  });
+
   // Each pass mutates the JSON it is given, so a shared cache must hand out copies.
   it("gives each viewer's pass its own copy of a cached file", async () => {
     const fixture = buildGame({

@@ -35,10 +35,14 @@
         gwoBiomes
       ) {
         var hiresThisLaunch = 0;
+        // The AI tree cache lives one launch: a co-op host's two hires share
+        // it, the next Fight starts a new one. See ai-pipeline.md.
+        var treeCache = null;
         // Set by stock fight before it hires, so this resets first.
         model.launchingFight.subscribe(function (launching) {
           if (launching) {
             hiresThisLaunch = 0;
+            treeCache = null;
           }
         });
 
@@ -190,6 +194,8 @@
           var ref = new gwoReferee(game);
           hiresThisLaunch += 1;
           ref.pass = hiresThisLaunch;
+          treeCache = treeCache || gwoGenerateAI.createTreeCache();
+          ref.treeCache = treeCache;
           return _.bind(gwoGenerateGameFiles, ref)()
             .then(function () {
               ref.stage("!LOC:Processing AI mods");
