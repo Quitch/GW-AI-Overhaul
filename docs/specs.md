@@ -243,7 +243,12 @@ A failed fetch is deliberately not cached, so a later tag can retry rather than
 inheriting a permanent failure. `fetchRaw` hands a caller the pristine parsed
 spec through the same cache, and `references` lists a spec's untagged
 references without touching it; `shared/race_cells.js` uses both to read every
-spec ahead of the referee, which then fetches nothing twice.
+spec ahead of the referee, which then fetches nothing twice. The per-player tech
+referee generates each viewer's specs through the same cache too, so a co-op
+launch fetches a spec file once however many players hold it; the stock
+`GW.specs.genUnitSpecs` it replaced re-fetched all of them per viewer.
+`gw_play/referee_game_file_paths.js` does the same for AI unit maps with
+`loadMap`, shared by both referees.
 
 `forEachReference()` carries the field list the base game's `gw_specs.js:tagSpec`
 renames and must be kept in sync with it; `tagSpec` and `references` are both walks

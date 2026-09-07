@@ -11,6 +11,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
@@ -27,6 +28,7 @@ define([
   subcommanderTech,
   refereeAIPaths,
   gwoSpecs,
+  gwoSpecCache,
   gwoColour,
   perPlayerTech,
   gameFilePaths,
@@ -73,11 +75,7 @@ define([
       brain,
       gwoAI.getAIPathSource("subcommander", race)
     );
-    var loadMap = function (path) {
-      return $.get("spec:/" + path).then(function (data) {
-        return parse(data);
-      });
-    };
+    var loadMap = gameFilePaths.loadMap;
     var loads = [
       loadMap(mapPath + ".json"),
       titans ? loadMap(mapPath + "_x1.json") : {},
@@ -132,8 +130,12 @@ define([
         )
       );
 
-      GW.specs
-        .genUnitSpecs(playerSpecs, playerTag)
+      // The same cache the game-files referee filled, so a viewer's specs cost
+      // no second fetch of what the host's pass already read. See specs.md.
+      gwoSpecCache
+        .genUnitSpecs(playerSpecs, playerTag, {
+          fetch: gameFilePaths.specFetch,
+        })
         .then(function (playerSpecFiles) {
           // Only viewers reach here - apply() generates from index 1 - so the
           // host's .player files are never built by this path.
@@ -178,6 +180,16 @@ define([
             : inventory.mods();
           gwoSpecs.mod(playerFiles, mods.concat(retagMods), playerTag);
           done.resolve(playerFiles);
+        })
+        .then(null, function (error) {
+          // A native chain would otherwise swallow this and hang the launch.
+          console.error(
+            "Galactic War Overhaul (GWO): viewer specs failed for " +
+              playerTag +
+              ": " +
+              ((error && (error.stack || error.message)) || error)
+          );
+          done.reject(error);
         });
     };
 
