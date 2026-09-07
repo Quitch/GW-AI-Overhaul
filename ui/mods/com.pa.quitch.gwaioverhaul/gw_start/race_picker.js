@@ -69,7 +69,7 @@
     model.gwoRaceTooltip =
       "!LOC:The units you and your Sub Commanders field. Each race's AI is picked with the AI button.";
     model.gwoUniqueRacesTooltip =
-      "!LOC:No two enemy factions share a race until every race in play has been used.";
+      "!LOC:No enemy faction shares a race with you or another enemy faction until every race in play has been used.";
 
     $("#faction-select")
       .closest(".form-group")

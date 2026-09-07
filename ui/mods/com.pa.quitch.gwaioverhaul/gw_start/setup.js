@@ -793,12 +793,16 @@
 
             aiFactions = teamsRng.shuffle(aiFactions);
             // One race per faction, Cluster excepted - and not drawn for, or
-            // it would use up a Unique Races slot. See races.md.
+            // it would use up a Unique Races slot. The player's race does use
+            // one. See races.md.
             raceByFaction = gwoRaces.assign(
               teamsRng.stream("races"),
               _.without(aiFactions, 4),
               enemyRacePool,
-              { unique: model.gwoDifficultySettings.uniqueRaces() }
+              {
+                unique: model.gwoDifficultySettings.uniqueRaces(),
+                taken: [playerRace],
+              }
             );
             if (_.contains(aiFactions, 4)) {
               raceByFaction[4] = gwoRaces.MLA_ID;

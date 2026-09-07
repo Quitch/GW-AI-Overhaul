@@ -455,8 +455,10 @@ A faction's race - the unit faction it fields - is drawn per faction from the
 every AI that faction spawns (`ai.race`). Each non-boss AI takes one of the
 race's commanders from `warRng.stream("race", faction)`; the boss keeps its
 Pumpkin and the Guardians the Unicorn, retagged at launch. Cluster never draws a
-race. The player's race is `global:playerRace` on the inventory, and the whole
-choice is recorded as `originSystem.gwaio.races`. See [`races.md`](races.md).
+race. Under Unique Races the first pass through the pool is seeded with the
+player's race removed. The player's race is `global:playerRace` on the
+inventory, and the whole choice is recorded as `originSystem.gwaio.races`. See
+[`races.md`](races.md).
 
 ## Difficulty
 

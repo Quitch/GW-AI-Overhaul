@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Unique Races now counts your race as already in play, so enemy factions avoid it until every other race has been used
+- Seeds with Unique Races enabled now draw different enemy races. Existing saved wars are unaffected
+
 ## v7.0.1 - 2026-09-06
 
 ### Bugfix
