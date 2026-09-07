@@ -11,20 +11,6 @@ define([
   "main/game/galactic_war/shared/js/systems/titans-normal",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
 ], function (pa_easy, pa_normal, titans_easy, titans_normal, gwoRng) {
-  // GWO - one fetch per biome file per page: a galaxy asks for the same handful
-  // of files once per planet.
-  var biomeInfo = {};
-  var biomeInfoFor = function (biome) {
-    if (!biomeInfo[biome]) {
-      biomeInfo[biome] = $.get("coui://pa/terrain/" + biome + ".json").then(
-        function (data) {
-          return parse(data);
-        }
-      );
-    }
-    return biomeInfo[biome];
-  };
-
   var chooseStarSystemTemplates = function (content, easier) {
     var activeTemplates;
 
@@ -371,7 +357,11 @@ define([
         // GWO - per-planet stream, so no other planet's draws can move this one.
         bp.generator.biome = planetRng.pick(plnt.Biomes);
 
-        var biomeGet = biomeInfoFor(bp.generator.biome); // GWO - was a fetch per planet
+        var biomeGet = $.get(
+          "coui://pa/terrain/" + bp.generator.biome + ".json"
+        ).then(function (data) {
+          return parse(data);
+        });
         nameGet = plnt.name; // GWO - was var nameGet
         if (!nameGet) {
           nameGet = $.Deferred();

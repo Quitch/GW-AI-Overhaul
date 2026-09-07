@@ -275,15 +275,11 @@ function fakeWhen(...args) {
 }
 
 const stubs = createGlobalStubs();
-const biomeFetches = [];
 
 before(() => {
   const $ = function () {};
   $.Deferred = makeDeferred;
-  $.get = (url) => {
-    biomeFetches.push(url);
-    return parkedDeferred(JSON.stringify({ radius_range: [100, 1300] }));
-  };
+  $.get = () => parkedDeferred(JSON.stringify({ radius_range: [100, 1300] }));
   $.when = fakeWhen;
   $.when.apply = (ctx, list) => fakeWhen(...list);
   stubs.setGlobal("$", $);
@@ -366,21 +362,6 @@ describe("gwo_system_templates generate", () => {
       { reverse: true }
     );
     assert.equal(shape(forwards), shape(backwards));
-  });
-
-  // The biome files are a handful; a galaxy used to fetch them once per planet.
-  it("fetches each biome file once for the page, not once per planet", async () => {
-    await generate(loader(), { players: 2, seed: "gwo-test-1" });
-    const seen = biomeFetches.length;
-
-    await generate(loader(), { players: 2, seed: "gwo-test-1" });
-    await generate(loader(), { players: 6, seed: "explicit" });
-
-    assert.equal(biomeFetches.length, seen);
-    assert.equal(new Set(biomeFetches).size, biomeFetches.length);
-    assert.ok(
-      biomeFetches.every((url) => /^coui:\/\/pa\/terrain\/\w+\.json$/.test(url))
-    );
   });
 
   it("produces a different system for a different seed", async () => {
