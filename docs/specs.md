@@ -245,8 +245,9 @@ spec through the same cache, and `references` lists a spec's untagged
 references without touching it; `shared/race_cells.js` uses both to read every
 spec ahead of the referee, which then fetches nothing twice.
 
-`tagSpec()` mirrors the base game's `gw_specs.js:tagSpec` and must be kept in sync
-with it — including the list of fields that count as spec references. Projectiles
+`forEachReference()` carries the field list the base game's `gw_specs.js:tagSpec`
+renames and must be kept in sync with it; `tagSpec` and `references` are both walks
+over it, so the two cannot disagree about what counts as a reference. Projectiles
 such as Lob ammo can spawn units when they expire, so `spawn_unit_on_death` is one
 of them.
 
