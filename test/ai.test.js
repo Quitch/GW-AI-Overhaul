@@ -205,6 +205,26 @@ describe("isCluster", () => {
     assert.equal(gwoAI.isCluster({ faction: ["4"] }), true);
     assert.equal(gwoAI.isCluster({ faction: ["1"] }), false);
   });
+
+  // A Cluster of a registered non-MLA race is an ordinary faction. A race id
+  // the registry does not know reads as MLA, so such a record stays Cluster.
+  it("requires an MLA race alongside faction 4", () => {
+    const races = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+    );
+    races.register({ id: "legion" });
+    try {
+      assert.equal(gwoAI.isCluster({ faction: 4, race: "legion" }), false);
+      assert.equal(gwoAI.isCluster({ faction: ["4"], race: "legion" }), false);
+      assert.equal(gwoAI.isCluster({ faction: 4, race: "mla" }), true);
+      assert.equal(
+        gwoAI.isCluster({ faction: 4, race: "not-registered" }),
+        true
+      );
+    } finally {
+      races.reset();
+    }
+  });
 });
 
 describe("aiEconRateWithFloor", () => {

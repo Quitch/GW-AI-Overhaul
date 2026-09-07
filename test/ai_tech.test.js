@@ -50,6 +50,30 @@ describe("loadoutFor", () => {
     );
   });
 
+  // Cluster's rows carry multipliers aimed at the Angel and Colonel. Only an
+  // MLA Cluster fields them; any other Cluster gets the rest of the row.
+  it("keeps Angel and Colonel tech off a Cluster that is not MLA", () => {
+    const gwoUnit = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+    );
+    const subCommanderFiles = [
+      gwoUnit.angel,
+      gwoUnit.colonel,
+      gwoUnit.angelAmmo,
+      gwoUnit.colonelAmmo,
+    ];
+    const targets = (loadout) => loadout.map((mod) => mod.file);
+    const buffs = [2, 3, 6, 1];
+
+    const raced = aiTech.loadoutFor(CLUSTER, buffs, false);
+    assert.ok(!targets(raced).some((file) => subCommanderFiles.includes(file)));
+    assert.ok(targets(raced).includes(gwoUnit.commander));
+
+    const mla = aiTech.loadoutFor(CLUSTER, [2], true);
+    assert.ok(targets(mla).includes(gwoUnit.angel));
+    assert.ok(targets(mla).includes(gwoUnit.colonel));
+  });
+
   it("never hands out the tables themselves", () => {
     const loadout = aiTech.loadoutFor(CLUSTER, [], true);
     loadout.push("marker");
