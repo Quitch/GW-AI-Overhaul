@@ -1,25 +1,26 @@
 # GW-AI-Overhaul developer documentation
 
-How the mod is built, and why it is shaped the way it is.
+These documents explain how the mod is built, and why it has the shape it has.
 
-This is for people changing the code. For what the mod _does_ as a player, see the
-repo's [README](../README.md); for how to submit a change, see
+These documents are for people who change the code. For what the mod _does_ as a
+player, see the repo's [README](../README.md). For how to submit a change, see
 [CONTRIBUTING](../CONTRIBUTING.md).
 
 ## Start here
 
-If you are new to the codebase, read in this order:
+If you are new to the codebase, read these documents in this order:
 
-1. **[constraints.md](constraints.md)** — the runtime is Chrome 40. Read this
-   first, because it rules out things you would otherwise reach for by reflex
-   (`let`, arrow functions, template literals, `class`) and one arrow function
-   silently kills an entire scene.
-2. **[architecture.md](architecture.md)** — the shape of the tree, how scenes and
-   entry points work, what runs when a battle launches.
-3. **[shadowing.md](shadowing.md)** — how GWO overrides base-game behaviour, why
-   shadowing is a last resort, and the full inventory of what is shadowed today.
+1. **[constraints.md](constraints.md)**. The runtime is Chrome 40. Read this
+   first. Chrome 40 does not support features that you would otherwise use by
+   reflex (`let`, arrow functions, template literals, `class`). One arrow
+   function silently kills an entire scene.
+2. **[architecture.md](architecture.md)**. This doc covers the shape of the tree,
+   how scenes and entry points work, and what runs when a battle launches.
+3. **[shadowing.md](shadowing.md)**. This doc covers how GWO overrides base-game
+   behaviour, why shadowing is a last resort, and the full inventory of what GWO
+   shadows today.
 
-Then whichever subsystem you are touching.
+Then read the doc for the subsystem you are changing.
 
 ## Subsystems
 
@@ -37,32 +38,33 @@ Then whichever subsystem you are touching.
 
 ## Things that surprise people
 
-A short list of the traps that have actually caused bugs here, each covered in
-full by the doc named:
+This is a short list of the traps that caused real bugs here. The linked doc
+covers each one in full:
 
 - **A shadowed file is a full copy, not a diff.** GWO silently loses base-game
   updates to the parts it did not touch. → [shadowing.md](shadowing.md)
 - **`model.game().inventory()` is always the host's.** Under per-player tech in
   co-op, card code must use the inventory passed to it. → [coop.md](coop.md)
-- **`buff()` cannot see other cards' units.** `applyCards` has just refilled the
-  list with the loadout's own grants only, so test `hasCard`, not `hasUnit`.
-  → [tech-cards.md](tech-cards.md)
-- **The source AI tree never varies by Smart Subcommanders; the destination does.**
+- **`buff()` cannot see other cards' units.** Just before `buff()` runs,
+  `applyCards` refills the list with the loadout's own grants only. So test
+  `hasCard`, not `hasUnit`. → [tech-cards.md](tech-cards.md)
+- **The source AI tree never varies by Smart Subcommanders. The destination does.**
   → [ai-paths.md](ai-paths.md)
-- **jQuery 2.x swallows a `throw` inside a deferred callback.** No rejection, no
-  retry, caller hangs. → [constraints.md](constraints.md)
+- **jQuery 2.x swallows a `throw` inside a deferred callback.** There is no
+  rejection and no retry, and the caller hangs. → [constraints.md](constraints.md)
 - **A defensive check marks a trust boundary, and means nothing anywhere else.**
-  Where third-party code is _called_ rather than read, the check is mandatory —
-  that call sits in a deferred, so a throw is a hang, not an error.
+  Where the mod _calls_ third-party code rather than reads it, the check is
+  mandatory. That call sits in a deferred, so a throw is a hang, not an error.
   → [constraints.md](constraints.md)
 - **Knockout `<!-- ko -->` blocks are executable markup, not comments.**
   → [constraints.md](constraints.md)
-- **An unrecognised AI `test_type` is not an error** — the condition simply never
-  validates and the build entry silently never fires. → [testing.md](testing.md)
+- **An unrecognised AI `test_type` is not an error.** The condition simply never
+  validates, and the build entry silently never fires. → [testing.md](testing.md)
 - **The GW server sees no mods on its own, and `file.load` on a missing biome
   never settles.** A planet whose `generator.biome` is not a stock
-  `/pa/terrain/*.json` hangs every player at loading with no error unless GWO
-  or GW Server Mods carried the mod in. → [galaxy.md](galaxy.md)
+  `/pa/terrain/*.json` hangs every player at loading with no error. The hang
+  does not happen when GWO or GW Server Mods supplied the mod.
+  → [galaxy.md](galaxy.md)
 - **`filter`, `animation`, `@keyframes` and `mask-*` are all inert in Chrome 40.**
   → [constraints.md](constraints.md)
 - **`justify-content: space-evenly` parses and does nothing.**
@@ -70,19 +72,20 @@ full by the doc named:
 
 ## On comments in this codebase
 
-The code carries comments only where the code itself cannot explain something:
-base-game or engine behaviour, a bug workaround, a dependency that lives outside
-the mod, or a counter-intuitive ordering.
+The code carries comments only where the code itself cannot explain something.
+Those cases are base-game or engine behaviour, a bug workaround, a dependency
+that lives outside the mod, or a counter-intuitive ordering.
 
 These docs cover **system-level** knowledge. Line-anchored facts deliberately stay
-in the code — a doc cannot surface `// otherwise it won't display its icon` at the
-moment you are editing that line. Expect both, and do not treat a documented
-subsystem as licence to delete the comments inside it.
+in the code. A doc cannot show `// otherwise it won't display its icon` at the
+moment you edit that line. Expect both. Do not treat a documented subsystem as
+licence to delete the comments inside it.
 
-That split sets the length: past a line or two, a comment is documentation and
-belongs here instead. Where one of these docs already covers the fact, the comment
-is `See <doc>.md` (plus the section, where the doc is long) and nothing more; where
-it doesn't and the fact is subsystem-level, add it here and point at it.
+That split sets the length. Past a line or two, a comment is documentation and
+belongs here instead. Where one of these docs already covers the fact, the
+comment is `See <doc>.md` (plus the section, where the doc is long) and nothing
+more. Where no doc covers the fact and the fact is subsystem-level, add the fact
+here and reference it from the comment.
 
 Rejected alternatives, tuning history and "this used to live elsewhere" belong in
 [CHANGELOG](../CHANGELOG.md). A comment states the rule that holds now.
@@ -94,20 +97,22 @@ npm run verify    # exactly what CI runs
 ```
 
 `ci.yml` and the test job of `release.yml` run `npm run verify` and nothing
-else: `lint:js`/`lint:css`/`lint:md`/`format:check`/`validate`/`test`, every
-one a full-repo hard gate. Two more gates sit beside it: `build.yml` runs
-`test:coverage` and SonarCloud's quality gate on every push to `develop` and
-every pull request, and
-`release.yml` also checks the tag against `modinfo.json` and `CHANGELOG.md`
-(see CONTRIBUTING.md, "Releasing"). So a clean `verify` is a clean CI, but
-not yet a clean release.
+else. `verify` runs `lint:js`/`lint:css`/`lint:md`/`format:check`/`validate`/`test`.
+Every one of those is a full-repo hard gate.
+
+Two more gates sit beside it. `build.yml` runs `test:coverage` and SonarCloud's
+quality gate on every push to `develop` and on every pull request. `release.yml`
+also checks the tag against `modinfo.json` and `CHANGELOG.md` (see
+CONTRIBUTING.md, "Releasing"). So a clean `verify` is a clean CI, but not yet a
+clean release.
 
 `validate:docs` (part of `validate`) checks the inventories these docs carry by
-hand - the scene table, the shadowed-file and `pa/` tables, the validator table -
-against the tree, so adding a file without its row fails `verify`.
+hand against the tree. Those inventories are the scene table, the shadowed-file
+and `pa/` tables, and the validator table. So adding a file without its row
+fails `verify`.
 
-Nothing here starts PA. Anything that can only fail at runtime — a renamed
-identifier in shipped `ui/**`, a CSS class rename spanning HTML and CSS, a
-`modinfo.json` path, a localisation directive — needs the game loaded with the mod
-enabled and a war started. See [testing.md](testing.md) for what CI does and does
-not catch.
+Nothing here starts PA. Anything that can only fail at runtime needs the game
+loaded with the mod enabled and a war started. Examples are a renamed identifier
+in shipped `ui/**`, a CSS class rename spanning HTML and CSS, a `modinfo.json`
+path, and a localisation directive. See [testing.md](testing.md) for what CI does
+and does not catch.
