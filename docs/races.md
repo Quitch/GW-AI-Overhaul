@@ -243,11 +243,21 @@ ally the player's race unless the war gave it one of its own.
 
 ## Cluster
 
-Cluster is MLA-only in this pass: the picker locks the race to MLA while
-Cluster is the faction, and `setup.js` never assigns a race to faction 4. That
-is enforced in those two places only - the path, cell and tree code know
-nothing of it - so a race that later ships its own Angels and Colonels needs
-descriptor data, not a different design.
+The AI Cluster faction draws a race like the other four. Cluster-ness is a
+derived fact - `gwoAI.isCluster` is faction 4 _and_ an MLA race - and every
+Cluster-only mechanic is gated on it, at war creation and at launch alike. An
+MLA Cluster is the Cluster of old: commander stacks in place of minions, the
+Angel and Colonel Sub Commanders, build orders from `/pa/ai_cluster/`. A
+Cluster of any other race is an ordinary faction: its non-boss AIs field the
+race's own commanders, it gets regular minions, it reads the race tree, and
+neither the Angel/Colonel conversion mods nor the tech aimed at those two units
+(`ai_tech.loadoutFor` drops them) reach its army. The boss keeps its Pumpkin
+either way.
+
+The player side is still MLA-only: the picker locks the race to MLA while
+Cluster is the player's faction. A race id the registry does not know reads as
+MLA, so a Cluster record of a race whose mod is gone falls back to MLA Cluster;
+`race_check` blocks fighting such a war anyway.
 
 ## Assignment and persistence
 
