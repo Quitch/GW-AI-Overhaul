@@ -83,7 +83,7 @@ Two hijacking traps are worth knowing. Both are recorded at their call sites:
 
 ## The complete shadowing inventory
 
-`validate:docs` checks the three tables below against the tree. A file added or
+`validate:docs` checks the four tables below against the tree. A file added or
 removed without its row therefore fails `npm run verify`.
 
 ### `ui/main/` — everything but the cards
