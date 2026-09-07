@@ -4,9 +4,9 @@
 
 ### Changed
 
-- The Cluster faction can now be any race. A non-MLA Cluster fields its race's commanders and regular minions like any other faction
+- The AI Cluster faction can now be any race. A non-MLA Cluster fields its race's commanders and regular minions like any other faction
 - Unique Races now counts your race as already in play, so enemy factions avoid it until every other race has been used
-- Seeds now draw different enemy races. Existing saved wars are unaffected
+- These changes mean seeds now draw different enemy races. Existing saved wars are unaffected
 
 ## v7.0.1 - 2026-09-06
 
