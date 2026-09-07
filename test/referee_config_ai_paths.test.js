@@ -171,6 +171,29 @@ describe("setupPrimaryAiAndMinions", () => {
     assert.equal(armies[0].personality.ai_path, "/pa/ai_cluster/");
   });
 
+  it("routes a Cluster primary AI of another race to that race's tree", () => {
+    const races = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
+    );
+    const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+    races.register(FIXTURE_RACE);
+    try {
+      const fixture = buildGame({
+        aiInUse: "Titans",
+        enemyType: "cluster",
+        enemyRace: "fixture",
+      });
+      installModel(fixture.game);
+
+      const ai = makeAiDescriptor({ faction: 4, race: "fixture", minions: [] });
+      const armies = [];
+      refereeConfig.setupPrimaryAiAndMinions(ai, [], [".ai0"], armies);
+      assert.equal(armies[0].personality.ai_path, "/pa/ai_race_fixture/");
+    } finally {
+      races.reset();
+    }
+  });
+
   // A mirror-mode AI derives its personality from the player's card composition:
   // each unit-type share becomes a percent_*, and under Queller also a tag.
   it("derives a Queller guardian's personality percentages and tag from the player's cards", () => {

@@ -155,7 +155,21 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return army.inventory || [];
   };
 
+  // Each unit map once per page, through spec:// like the unit list. The
+  // engine serves a spec:// path's first read for the rest of the process
+  // anyway, so nothing later could read a different file. See specs.md.
+  var mapCache = {};
+  var loadMap = function (path) {
+    if (!mapCache[path]) {
+      mapCache[path] = $.get("spec:/" + path).then(function (data) {
+        return parse(data);
+      });
+    }
+    return mapCache[path];
+  };
+
   return {
+    loadMap: loadMap,
     armyInventory: armyInventory,
     getAIUnitMapPath: getAIUnitMapPath,
     getAIUnitMapDestinationPath: getAIUnitMapDestinationPath,

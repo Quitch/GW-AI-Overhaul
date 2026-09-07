@@ -340,12 +340,15 @@ define([
       );
     },
 
+    // An MLA Cluster AI: faction 4 fielding its Angel and Colonel Sub
+    // Commanders. A Cluster of any other race is an ordinary faction. The
+    // Guardians of a Cluster star carry faction 4 too. See races.md.
     isCluster: function (ai) {
       var guardians = ai.mirrorMode;
       if (guardians) {
         return false;
       }
-      return factionIndex(ai) === 4;
+      return factionIndex(ai) === 4 && races.isMla(ai.race);
     },
 
     // rng is optional. War creation passes the AI's own stream; the play-scene

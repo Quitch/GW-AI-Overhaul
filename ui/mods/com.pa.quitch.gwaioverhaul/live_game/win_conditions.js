@@ -1,12 +1,4 @@
-var gwoLiveGameModifiersLoaded;
-
-function gwoLiveGameModifiers() {
-  if (gwoLiveGameModifiersLoaded) {
-    return;
-  }
-
-  gwoLiveGameModifiersLoaded = true;
-
+(function () {
   try {
     var buildText = ko.observable();
 
@@ -49,5 +41,4 @@ function gwoLiveGameModifiers() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoLiveGameModifiers();
+})();

@@ -438,11 +438,13 @@ Consequences that surface elsewhere:
 
 - Cards must exclude `NoBuild` when writing fabber `buildable_types`, or Cluster
   gets a buildable Sub Commander. See [`tech-cards.md`](tech-cards.md).
-- Cluster gets additional commanders in place of minions, and in place of armies.
+- An MLA Cluster gets additional commanders in place of minions, and in place of
+  armies. A Cluster of any other race gets regular minions. See
+  [`races.md`](races.md).
 - Commander stat cards are worth less to Cluster, because its subcommanders do not
   inherit `base_commander`.
-- Cluster resolves its AI build orders through `/pa/ai_cluster/`, which wins over
-  every other path rule. See [`ai-paths.md`](ai-paths.md).
+- An MLA Cluster resolves its AI build orders through `/pa/ai_cluster/`, which
+  wins over every other path rule. See [`ai-paths.md`](ai-paths.md).
 
 `cluster_setup.js` also carries deliberate oddities worth not "fixing":
 `UNITTYPE_Land` on an air unit (without it the AI misbehaves), a cost of 25000
@@ -454,9 +456,11 @@ A faction's race - the unit faction it fields - is drawn per faction from the
 `teams` stream's `races` child once the factions are shuffled, and stamped onto
 every AI that faction spawns (`ai.race`). Each non-boss AI takes one of the
 race's commanders from `warRng.stream("race", faction)`; the boss keeps its
-Pumpkin and the Guardians the Unicorn, retagged at launch. Cluster never draws a
-race. The player's race is `global:playerRace` on the inventory, and the whole
-choice is recorded as `originSystem.gwaio.races`. See [`races.md`](races.md).
+Pumpkin and the Guardians the Unicorn, retagged at launch. Cluster draws a race
+like any other faction, and takes a Unique Races slot. Under Unique Races the
+first pass through the pool is seeded with the player's race removed. The player's race is `global:playerRace` on the
+inventory, and the whole choice is recorded as `originSystem.gwaio.races`. See
+[`races.md`](races.md).
 
 ## Difficulty
 

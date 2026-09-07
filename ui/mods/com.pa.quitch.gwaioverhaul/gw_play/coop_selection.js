@@ -1,11 +1,7 @@
-var gwoCoopSelectionLoaded;
-
-function gwoCoopSelection() {
-  if (gwoCoopSelectionLoaded || model.game().isTutorial()) {
+(function () {
+  if (model.game().isTutorial()) {
     return;
   }
-
-  gwoCoopSelectionLoaded = true;
 
   try {
     requireGW(
@@ -25,5 +21,4 @@ function gwoCoopSelection() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoCoopSelection();
+})();

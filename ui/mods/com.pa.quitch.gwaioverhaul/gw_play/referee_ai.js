@@ -747,7 +747,7 @@ define([
   }
 
   // parse AI files, apply AI mods, and load the results into self.files()
-  return function () {
+  var generate = function () {
     var deferred = $.Deferred();
 
     var self = this;
@@ -775,8 +775,9 @@ define([
         )
       : game.inventory();
 
-    // Scoped to this launch, so a later battle always re-reads the tree from disk.
-    var treeCache = createTreeCache();
+    // The hire hands the launch's cache in, so a co-op host's second hire
+    // reads no tree file twice; a run without one gets its own.
+    var treeCache = self.treeCache || createTreeCache();
 
     // Shared by every processDirectories call below; the viewer ones override
     // aiPaths, inventory and the two scope fields.
@@ -839,4 +840,8 @@ define([
 
     return deferred.promise();
   };
+
+  generate.createTreeCache = createTreeCache;
+
+  return generate;
 });

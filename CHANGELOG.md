@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v7.1.0 - 2026-09-07
+
+### Changed
+
+- Co-op battles launch faster: a viewer's unit specs and the AI build trees are read once per launch instead of once per player - about 10 seconds less on the host with one viewer
+- The AI Cluster faction can now be any race. A non-MLA Cluster fields its race's commanders and regular minions like any other faction
+- Unique Races now counts your race as already in play, so enemy factions avoid it until every other race has been used
+- These changes mean seeds now draw different enemy races. Existing saved wars are unaffected
+
 ## v7.0.1 - 2026-09-06
 
 ### Bugfix

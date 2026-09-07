@@ -1,12 +1,4 @@
-var gwoPlanetaryRadarLoaded;
-
-function gwoPlanetaryRadar() {
-  if (gwoPlanetaryRadarLoaded) {
-    return;
-  }
-
-  gwoPlanetaryRadarLoaded = true;
-
+(function () {
   try {
     _.assign(Build.HotkeyModel.SpecIdToGridMap, {
       "/pa/units/orbital/deep_space_radar/deep_space_radar.json": [
@@ -20,5 +12,4 @@ function gwoPlanetaryRadar() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoPlanetaryRadar();
+})();

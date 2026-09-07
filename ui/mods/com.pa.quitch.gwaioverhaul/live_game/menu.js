@@ -1,11 +1,7 @@
-var gwoLiveGameMenuLoaded;
-
-function gwoLiveGameMenu() {
-  if (gwoLiveGameMenuLoaded || model.gameType() !== "Galactic War") {
+(function () {
+  if (model.gameType() !== "Galactic War") {
     return;
   }
-
-  gwoLiveGameMenuLoaded = true;
 
   try {
     var getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
@@ -107,5 +103,4 @@ function gwoLiveGameMenu() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoLiveGameMenu();
+})();

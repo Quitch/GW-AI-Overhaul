@@ -467,9 +467,11 @@ define([
   };
 
   // One race per faction. Independent draws by default; `unique` draws without
-  // replacement until the pool is spent, then refills it. See galaxy.md.
+  // replacement until the pool is spent, then refills it, and `taken` (races
+  // already in play) count as drawn in the first pass. See galaxy.md.
   var assign = function (rng, factionIds, pool, options) {
     var unique = !!(options && options.unique);
+    var taken = _.map((options && options.taken) || [], normalizeId);
     var choices = _.filter(_.map(pool || [], normalizeId), function (id) {
       return id.length;
     });
@@ -480,6 +482,11 @@ define([
       choices = [MLA_ID];
     }
 
+    // A refill is the whole pool, so a taken race is reused only once every
+    // other race has been.
+    var firstPass = _.difference(choices, taken);
+    var passes = unique && firstPass.length ? [firstPass] : [];
+
     _.forEach(factionIds || [], function (factionId) {
       if (!unique) {
         result[factionId] = rng.pick(choices);
@@ -487,7 +494,9 @@ define([
       }
 
       if (!remaining.length) {
-        remaining = rng.shuffle(choices.slice());
+        remaining = rng.shuffle(
+          passes.length ? passes.shift() : choices.slice()
+        );
       }
 
       result[factionId] = remaining.shift();

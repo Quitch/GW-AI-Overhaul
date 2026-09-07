@@ -194,8 +194,8 @@ Two traps:
 ## Repairing wars made by older GWO versions
 
 A war is a save, and a save outlives the version that made it.
-`gw_play/bugfixes.js` runs once per entry into `gw_play` (guarded by
-`gwoBugfixesLoaded`, skipped for tutorials) and retroactively repairs wars whose
+`gw_play/bugfixes.js` runs once per entry into `gw_play` (skipped for tutorials)
+and retroactively repairs wars whose
 generation had a bug GWO has since fixed.
 
 The shape is worth knowing before adding a fix to it:

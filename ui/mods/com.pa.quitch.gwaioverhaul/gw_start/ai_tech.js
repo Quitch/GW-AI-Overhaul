@@ -200,12 +200,25 @@ define([
   // first, then the faction tech per buff index. Built per launch from the
   // live tables, so a rebalance reaches wars in progress. An index with no
   // tech (a v5.11.0 save can carry a 5) grants nothing. See galaxy.md.
+  // Tech aimed at the Angel and Colonel belongs to an MLA Cluster, whose Sub
+  // Commanders they are. Any other Cluster army fields neither, and without
+  // the conversion mods pinning them the multipliers would expand by cell
+  // onto the race's fabbers. See race-conventions.md.
+  var clusterSubCommanderFiles = inventory.clusterSubCommanders.concat(
+    inventory.clusterCommanderAmmo
+  );
+
   var loadoutFor = function (faction, buffs, isCluster) {
     var techs = factionTechs[faction] || [];
     var loadout = isCluster ? gwoCluster.clusterCommanderMods.slice() : [];
     _.forEach(buffs, function (buff) {
       loadout = loadout.concat(techs[buff] || []);
     });
+    if (!isCluster && faction === 4) {
+      loadout = _.reject(loadout, function (mod) {
+        return _.contains(clusterSubCommanderFiles, mod.file);
+      });
+    }
     return loadout;
   };
 

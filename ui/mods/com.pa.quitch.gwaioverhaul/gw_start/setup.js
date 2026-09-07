@@ -1,12 +1,4 @@
-var gwoSetupLoaded;
-
-function gwoSetup() {
-  if (gwoSetupLoaded) {
-    return;
-  }
-
-  gwoSetupLoaded = true;
-
+(function () {
   try {
     var cardId = function (card) {
       return card && card.id ? card.id() : undefined;
@@ -800,17 +792,17 @@ function gwoSetup() {
             }
 
             aiFactions = teamsRng.shuffle(aiFactions);
-            // One race per faction, Cluster excepted - and not drawn for, or
-            // it would use up a Unique Races slot. See races.md.
+            // One race per faction, Cluster included; each takes a Unique
+            // Races slot, as does the player's race. See races.md.
             raceByFaction = gwoRaces.assign(
               teamsRng.stream("races"),
-              _.without(aiFactions, 4),
+              aiFactions,
               enemyRacePool,
-              { unique: model.gwoDifficultySettings.uniqueRaces() }
+              {
+                unique: model.gwoDifficultySettings.uniqueRaces(),
+                taken: [playerRace],
+              }
             );
-            if (_.contains(aiFactions, 4)) {
-              raceByFaction[4] = gwoRaces.MLA_ID;
-            }
             // Wrapped, not passed by reference: _.map would hand getTeam's rng
             // parameter the array index.
             var teams = _.map(aiFactions, function (faction) {
@@ -1003,8 +995,9 @@ function gwoSetup() {
                 teamBrain
               );
 
-              // One minion per stream index off the parent's rng. A Cluster AI
-              // takes one minion carrying commanderCount commanders instead.
+              // One minion per stream index off the parent's rng. An MLA
+              // Cluster AI takes one minion carrying commanderCount commanders
+              // instead.
               var addMinions = function (
                 parent,
                 parentRng,
@@ -1032,7 +1025,7 @@ function gwoSetup() {
                     parent.faction
                   );
                   minion.econ_rate = aiEconRate(minionRng, dist, playerCount);
-                  if (parent.isCluster === true) {
+                  if (gwoAI.isCluster(parent)) {
                     minion.commanderCount = commanderCount;
                   }
                   parent.minions.push(minion);
@@ -1065,7 +1058,7 @@ function gwoSetup() {
               var totalMinions = numMinions;
 
               if (numMinions > 0) {
-                if (boss.isCluster === true) {
+                if (gwoAI.isCluster(boss)) {
                   clusterType = "Security";
                   totalMinions = 1;
                 }
@@ -1113,7 +1106,7 @@ function gwoSetup() {
 
                   totalMinions = numMinions;
                   var clusterWorkers = 0;
-                  if (ai.isCluster === true) {
+                  if (gwoAI.isCluster(ai)) {
                     clusterType = "Worker";
                     clusterWorkers = clusterCommanderCount(
                       numMinions,
@@ -1122,8 +1115,9 @@ function gwoSetup() {
                     totalMinions = 1;
                   }
 
-                  // Cluster Workers get additional commanders in place of minions
-                  if (ai.name === "Worker") {
+                  // MLA Cluster Workers get additional commanders in place of
+                  // minions
+                  if (gwoAI.isCluster(ai) && ai.name === "Worker") {
                     ai.commanderCount = Math.max(clusterWorkers, 2);
                   } else {
                     addMinions(ai, aiRng, totalMinions, dist, clusterWorkers);
@@ -1171,8 +1165,12 @@ function gwoSetup() {
                       playerCount
                     );
                     var numFoes = Math.round((numMinions + 1) / 2);
-                    // Cluster Workers get additional commanders in place of armies
-                    if (foeCommander.name === "Worker") {
+                    // MLA Cluster Workers get additional commanders in place of
+                    // armies
+                    if (
+                      gwoAI.isCluster(foeCommander) &&
+                      foeCommander.name === "Worker"
+                    ) {
                       numFoes = clusterCommanderCount(
                         numMinions,
                         bossCommanders
@@ -1464,5 +1462,4 @@ function gwoSetup() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoSetup();
+})();

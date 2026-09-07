@@ -1,11 +1,7 @@
-var gwoRefereeChangesLoaded;
-
-function gwoRefereeChanges() {
-  if (gwoRefereeChangesLoaded || model.game().isTutorial()) {
+(function () {
+  if (model.game().isTutorial()) {
     return;
   }
-
-  gwoRefereeChangesLoaded = true;
 
   try {
     var gwoReferee = function (game) {
@@ -39,10 +35,14 @@ function gwoRefereeChanges() {
         gwoBiomes
       ) {
         var hiresThisLaunch = 0;
+        // The AI tree cache lives one launch: a co-op host's two hires share
+        // it, the next Fight starts a new one. See ai-pipeline.md.
+        var treeCache = null;
         // Set by stock fight before it hires, so this resets first.
         model.launchingFight.subscribe(function (launching) {
           if (launching) {
             hiresThisLaunch = 0;
+            treeCache = null;
           }
         });
 
@@ -138,13 +138,14 @@ function gwoRefereeChanges() {
 
           var deferred = $.Deferred();
 
-          var allFiles = _.cloneDeep(self.files());
+          // GWO - shallow: keys are added below and no value is changed.
+          var allFiles = _.assign({}, self.files());
           // The player unit list needs to be the superset of units for proper UI behavior
           var unitList = "/pa/units/unit_list.json";
           var playerUnits = allFiles[unitList + ".player"];
 
           if (playerUnits) {
-            var allUnits = _.cloneDeep(playerUnits);
+            var allUnits = _.assign({}, playerUnits); // GWO - units is replaced, not appended to
             // AI factions are tagged .ai0, .ai1, .ai2, ... (never a bare .ai),
             // so every matching key needs to be folded in, not just one fixed tag.
             _.forEach(allFiles, function (value, key) {
@@ -193,6 +194,8 @@ function gwoRefereeChanges() {
           var ref = new gwoReferee(game);
           hiresThisLaunch += 1;
           ref.pass = hiresThisLaunch;
+          treeCache = treeCache || gwoGenerateAI.createTreeCache();
+          ref.treeCache = treeCache;
           return _.bind(gwoGenerateGameFiles, ref)()
             .then(function () {
               ref.stage("!LOC:Processing AI mods");
@@ -226,5 +229,4 @@ function gwoRefereeChanges() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoRefereeChanges();
+})();

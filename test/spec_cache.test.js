@@ -147,3 +147,71 @@ describe("genUnitSpecs - fetch caching", () => {
     assert.ok(calls.length > before);
   });
 });
+
+describe("references", () => {
+  // Every field the tagger renames, once each, so the two cannot drift apart.
+  const spec = () => ({
+    base_spec: "/pa/units/base.json",
+    tools: [{ spec_id: "/pa/tools/a.json" }, { spec_id: "/pa/tools/b.json" }],
+    replaceable_units: ["/pa/units/r1.json", "/pa/units/r2.json"],
+    buildable_projectiles: ["/pa/units/p.json"],
+    factory: { initial_build_spec: "/pa/units/f.json" },
+    ammo_id: [{ id: "/pa/ammo/x.json" }, { id: "/pa/ammo/y.json" }],
+    death_weapon: {
+      ground_ammo_spec: "/pa/ammo/g.json",
+      air_ammo_spec: "/pa/ammo/air.json",
+    },
+    spawn_unit_on_death: "/pa/units/spawn.json",
+    unrelated: "/pa/units/not_a_reference.json",
+  });
+
+  it("lists every reference field, string or array, without touching the spec", () => {
+    const input = spec();
+    const before = JSON.stringify(input);
+
+    const found = specCache.references(input);
+
+    assert.deepEqual(found, [
+      "/pa/units/base.json",
+      "/pa/tools/a.json",
+      "/pa/tools/b.json",
+      "/pa/units/r1.json",
+      "/pa/units/r2.json",
+      "/pa/units/p.json",
+      "/pa/units/f.json",
+      "/pa/ammo/x.json",
+      "/pa/ammo/y.json",
+      "/pa/ammo/g.json",
+      "/pa/ammo/air.json",
+      "/pa/units/spawn.json",
+    ]);
+    assert.equal(JSON.stringify(input), before);
+  });
+
+  it("handles a string ammo_id and a non-object spec", () => {
+    assert.deepEqual(specCache.references({ ammo_id: "/pa/ammo/one.json" }), [
+      "/pa/ammo/one.json",
+    ]);
+    assert.deepEqual(specCache.references("not a spec"), []);
+    assert.deepEqual(specCache.references({ base_spec: 7 }), []);
+  });
+
+  it("agrees with what genUnitSpecs tags", async () => {
+    specCache.clearCache();
+    const files = { "/pa/units/root.json": spec() };
+    const fetch = (item) =>
+      Promise.resolve(files[item] === undefined ? {} : files[item]);
+
+    const out = await specCache.genUnitSpecs(["/pa/units/root.json"], ".t", {
+      fetch,
+    });
+
+    const tagged = out["/pa/units/root.json.t"];
+    const referenced = specCache.references(spec()).map((r) => r + ".t");
+    assert.equal(tagged.base_spec, referenced[0]);
+    assert.deepEqual(tagged.replaceable_units, referenced.slice(3, 5));
+    assert.equal(tagged.spawn_unit_on_death, referenced[11]);
+    assert.equal(tagged.unrelated, "/pa/units/not_a_reference.json");
+    referenced.forEach((r) => assert.ok(r in out, r));
+  });
+});

@@ -1,15 +1,7 @@
 // A co-op viewer's own race, when the host generated the war with Separate
 // races on. The races on offer are the war's, not this client's - a race the
 // host is not running has no units in the battle. See coop.md and races.md.
-var gwoViewerRacePickerLoaded;
-
-function gwoViewerRacePicker() {
-  if (gwoViewerRacePickerLoaded) {
-    return;
-  }
-
-  gwoViewerRacePickerLoaded = true;
-
+(function () {
   try {
     var raceSelectId = "#gwo-viewer-race-select";
     // A viewer shares the host's faction, and Cluster fields Angels and
@@ -144,5 +136,4 @@ function gwoViewerRacePicker() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoViewerRacePicker();
+})();

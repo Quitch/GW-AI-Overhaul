@@ -100,7 +100,8 @@ something new.
   Queller runs MLA and Legion; Penchant MLA. A brain that does not know a race
   in play is not offered, and `races.brainFor` falls back to Titans.
 - **The enemy pool is every installed race plus MLA.** Keeping a race out of a
-  war means disabling its mod. Cluster is always MLA and is not drawn for.
+  war means disabling its mod. Cluster is drawn for like any faction; its
+  MLA-only mechanics are gated by `gwoAI.isCluster`.
 - **GW Server Mods** is the only source of which server mods are active and
   the only thing that mounts them. `gw_start` mounts at the root without the
   content remount (that remount freezes the UI); `gw_play` primes the race's

@@ -1,11 +1,7 @@
-var gwoCoopPingLoaded;
-
-function gwoCoopPing() {
-  if (gwoCoopPingLoaded || model.game().isTutorial()) {
+(function () {
+  if (model.game().isTutorial()) {
     return;
   }
-
-  gwoCoopPingLoaded = true;
 
   try {
     // A sibling of the stock action row, which is hidden for the viewers this
@@ -90,5 +86,4 @@ function gwoCoopPing() {
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
     );
   }
-}
-gwoCoopPing();
+})();

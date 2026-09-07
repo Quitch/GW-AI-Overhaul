@@ -87,7 +87,7 @@ Chosen when you create a war, from the Game Options panel, and applied for its d
 - **Large Planets**: encounter large planets and systems much sooner.
 - **System Lore**: display the original pre-release Galactic War lore in the Planetary Intelligence panel.
 - **Static Tech**: the Available Tech in a system never changes.
-- **Unique Races**: no two enemy factions field the same race while there are races left to hand out.
+- **Unique Races**: no enemy faction fields your race, or another enemy's, while there are races left to hand out.
 
 ## Races
 
@@ -180,6 +180,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - Shared Systems for galactic war
 - AI Chat
 - Show AI Personality Names
+- Galactic War Server Mods
 
 ## Incompatible mods
 

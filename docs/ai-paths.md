@@ -82,8 +82,9 @@ otherwise                                       -> /pa/ai/
 supplied.
 
 Two things worth pinning down. `type === "cluster"` wins over everything,
-including `aiInUse` — a Cluster commander always reads from `/pa/ai_cluster/`
-regardless of which AI brain the war is using. And the subcommander branch
+including `aiInUse` — an MLA Cluster commander always reads from
+`/pa/ai_cluster/` regardless of which AI brain the war is using. A Cluster of
+any other race is not `cluster` and routes like any race AI. And the subcommander branch
 requires a _non-empty_ `aiMods`: with no AI-modifying cards held there is nothing
 to write, so the subcommander falls through and shares the enemy's path.
 
@@ -210,9 +211,10 @@ and enemies read from. A per-player-tech viewer already has that isolation from
 their own scope, whatever their faction, so a second mechanism would be redundant.
 
 `isCluster(ai)` returns false for Guardians unconditionally — the game guarantees
-the Guardians are never Cluster — then checks faction 4. It handles `ai.faction`
-being either a bare number or an array, the latter being the pre-v5.44.0 save
-format.
+the Guardians are never Cluster — then requires faction 4 _and_ an MLA race
+(`races.isMla(ai.race)`, so a record with no race, or a race no longer
+registered, reads as MLA). It handles `ai.faction` being either a bare number or
+an array, the latter being the pre-v5.44.0 save format.
 
 ## Invariants
 
