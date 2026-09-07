@@ -262,6 +262,35 @@ describe("assign", () => {
   it("falls back to MLA for an empty pool", () => {
     assert.deepEqual(races.assign(predictableRng(), [0], []), { 0: "mla" });
   });
+
+  it("skips a taken race in the first pass, then refills with the whole pool", () => {
+    assert.deepEqual(
+      races.assign(predictableRng(), [0, 1, 2, 3], ["mla", "fixture"], {
+        unique: true,
+        taken: ["Fixture"],
+      }),
+      { 0: "mla", 1: "fixture", 2: "mla", 3: "fixture" }
+    );
+  });
+
+  it("draws from the whole pool when every race is taken", () => {
+    assert.deepEqual(
+      races.assign(predictableRng(), [0, 1], ["mla"], {
+        unique: true,
+        taken: ["mla"],
+      }),
+      { 0: "mla", 1: "mla" }
+    );
+  });
+
+  it("ignores taken without unique", () => {
+    assert.deepEqual(
+      races.assign(predictableRng(), [0], ["mla", "fixture"], {
+        taken: ["mla"],
+      }),
+      { 0: "mla" }
+    );
+  });
 });
 
 describe("treeFilter", () => {

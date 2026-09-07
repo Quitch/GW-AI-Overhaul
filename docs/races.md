@@ -255,7 +255,10 @@ descriptor data, not a different design.
 player picks one; the enemy pool is every installed race plus MLA - to keep a
 race out of a war, disable its mod. `races.assign` draws one race per faction
 from the `teams` stream: independently by default, and under **Unique Races**
-without replacement until the pool is spent, then refilled.
+without replacement until the pool is spent, then refilled. The host's race
+counts as the first draw, so no enemy takes it until every other race has been
+handed out; a refill is the whole pool. A co-op viewer's Separate-races pick is
+made after the draw, so it is not counted.
 
 The picker opens on the race the last war was started with, and on MLA when that
 race's server mod is no longer active. The race rides the `gwoDifficultySettings`
