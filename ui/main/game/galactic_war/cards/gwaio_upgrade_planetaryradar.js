@@ -5,16 +5,9 @@ define([
   return gwoCard.upgradeCard({
     name: "!LOC:Planetary Radar Upgrade Tech",
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return gwoCard.withSlot(
-          loc(
-            "!LOC:Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar."
-          )
-        );
-      }
       return gwoCard.withSlot(
         loc(
-          "!LOC:Planetary Upgrade Tech increases the vision of the planetary radar to match its radar."
+          "!LOC:Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar."
         )
       );
     },

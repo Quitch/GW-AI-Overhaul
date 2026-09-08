@@ -6,10 +6,7 @@ define([
   return {
     visible: _.constant(true),
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Economy Fabrication Tech reduces metal build costs of all metal and energy production and storage structures by 50%";
-      }
-      return "!LOC:Economy Fabrication Tech reduces metal build costs of all metal and energy production structures by 50%";
+      return "!LOC:Economy Fabrication Tech reduces metal build costs of all metal and energy production and storage structures by 50%";
     },
     summarize: _.constant("!LOC:Economy Fabrication Tech"),
     icon: _.constant(
