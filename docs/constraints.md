@@ -276,7 +276,8 @@ Do not restore it in a shadowed file "to match stock". It has no effect and no
 consumer in this repo.
 
 `loc()` lookups are **case sensitive**, and the shipped translation tables are
-inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has 14. `LOCKED` is the only casing shipped at all. That is why several UI strings
+inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has 14.
+`LOCKED` is the only casing shipped at all. That is why several UI strings
 are requested in a shouty casing and then down-cased in CSS rather than written
 naturally. `locTree` only rewrites an element's `innerHTML`, so attributes (and
 therefore CSS classes) survive translation. That is what makes the trick work.
