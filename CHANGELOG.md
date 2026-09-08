@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Remove Sub Commanders from Tourist Commander description
+
 ## v7.1.0 - 2026-09-07
 
 ### Changed
