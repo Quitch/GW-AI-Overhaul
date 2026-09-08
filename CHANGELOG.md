@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Change
+
+- Improved Intelligence Tech no longer applies to teleporters
+
 ### Bugfix
 
 - Remove Sub Commanders from Tourist Commander description
