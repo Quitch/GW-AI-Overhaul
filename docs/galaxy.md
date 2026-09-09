@@ -221,16 +221,17 @@ the `$.Deferred` wrapper around `getRandomPlanetName()`. `$.when` does not wait 
 engine promise (see [`constraints.md`](constraints.md)), so every war on the vanilla
 path failed with "no usable star system".
 
-Stock's own bugs are kept too. `gwo_system_templates.js`'s `fromRandomList` reads as
-filtering the pool by `isExplicit`. But lodash 3's `_.where` takes a source object,
-not a predicate, so the filter is inert. Every entry stays viable, and the
-`do/while`'s `usedIndexes` check is what keeps the draws apart.
+Stock's own bugs are kept too, with one correction. `fromRandomList` reads as
+filtering the pool by `isExplicit` and by the entries already drawn, but lodash 3's
+`_.where` takes a source object, not a predicate, so stock's filter was inert. GWO's
+copy uses `_.filter` there, marked `GWO -` like every other change, so a pool is drawn
+without repeats and an explicit slot only draws explicit entries.
 
-GWO deliberately does not correct this. The code is stock's, character for character.
-Nothing in stock or GWO pairs `isExplicit` with `fromRandomList`, so the filter would
-be a no-op either way. A switch to `_.filter` would shrink the viable list, shift the
-draw and regenerate every existing war's boss systems from the same seed.
-`test/gwo_system_templates.test.js` pins the inert filter.
+Nothing shipped can tell the difference. No stock or GWO system draws twice from one
+pool, and the stock pool is entirely `isExplicit` with no slot that asks for it, so
+the candidate list is the same either way and the same seed draws the same planet.
+The correction is there for third-party templates that do either.
+`test/gwo_system_templates.test.js` pins both behaviours.
 
 ### Shared Systems for Galactic War
 
