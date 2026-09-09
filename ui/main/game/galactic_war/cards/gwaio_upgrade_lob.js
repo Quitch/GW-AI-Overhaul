@@ -4,15 +4,8 @@ define([
 ], function (gwoCard, gwoUnit) {
   return gwoCard.upgradeCard({
     name: "!LOC:Lob Upgrade Tech",
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc("!LOC:Lob Upgrade Tech increases the range of the Lob by 150%.") +
-          " " +
-          loc(
-            "!LOC:Fires twice as fast and no longer costs metal to recharge its ammo."
-          )
-      )
-    ),
+    description:
+      "!LOC:Lob Upgrade Tech increases the range of the Lob by 150%. Fires twice as fast and no longer costs metal to recharge its ammo.",
     icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_artillery_upgrade.png",
     audio: "/VO/Computer/gw/board_tech_available_ammunition",
     requires: gwoUnit.lob,

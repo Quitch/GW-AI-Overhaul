@@ -4,15 +4,8 @@ define([
 ], function (gwoCard, gwoUnit) {
   return gwoCard.upgradeCard({
     name: "!LOC:Barnacle Upgrade Tech",
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Barnacle Upgrade Tech allows the assisting of all builds by the support barge."
-        ) +
-          " " +
-          loc("!LOC:Disables the auto-repair feature.")
-      )
-    ),
+    description:
+      "!LOC:Barnacle Upgrade Tech allows the assisting of all builds by the support barge. Disables the auto-repair feature.",
     icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_metal_upgrade.png",
     audio: "/VO/Computer/gw/board_tech_available_efficiency",
     requires: gwoUnit.barnacle,

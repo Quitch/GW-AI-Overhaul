@@ -66,16 +66,17 @@ Every `validate:*` script that `npm run validate` runs has a row here.
 `validate:docs` checks that it does. `validate:race-trees` is local-only and is
 described separately below.
 
-| Command             | Catches                                                                                                                                                                     |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `validate:json`     | Any `.json` in the repo that does not parse. The check is cheap. Otherwise this class of bug breaks the game silently, with no error until something loads that exact file. |
-| `validate:manifest` | `modinfo.json` `scenes` entries that point at files that no longer exist. This fails silently in-game.                                                                      |
-| `validate:cards`    | Every card exports the fixed contract shape.                                                                                                                                |
-| `validate:ai-mods`  | Every card's `buff()`/`dull()` emits descriptors matching `referee_ai.js`'s contract.                                                                                       |
-| `validate:schemas`  | AI build-order JSON and difficulty/personality data: type consistency.                                                                                                      |
-| `validate:refs`     | Cross-references: loadout ids against card files, unit keys, AI builder roles against `unit_map`.                                                                           |
-| `validate:sonar`    | `sonar-project.properties`: no stale exclusion paths, every analysed file is UTF-8.                                                                                         |
-| `validate:docs`     | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree and validator tables) against the tree and `package.json`.                                     |
+| Command                 | Catches                                                                                                                                                                                                                     |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `validate:json`         | Any `.json` in the repo that does not parse. The check is cheap. Otherwise this class of bug breaks the game silently, with no error until something loads that exact file.                                                 |
+| `validate:manifest`     | `modinfo.json` `scenes` entries that point at files that no longer exist. This fails silently in-game.                                                                                                                      |
+| `validate:cards`        | Every card exports the fixed contract shape.                                                                                                                                                                                |
+| `validate:ai-mods`      | Every card's `buff()`/`dull()` emits descriptors matching `referee_ai.js`'s contract.                                                                                                                                       |
+| `validate:schemas`      | AI build-order JSON and difficulty/personality data: type consistency.                                                                                                                                                      |
+| `validate:refs`         | Cross-references: loadout ids against card files, unit keys, AI builder roles against `unit_map`.                                                                                                                           |
+| `validate:sonar`        | `sonar-project.properties`: no stale exclusion paths, every analysed file is UTF-8.                                                                                                                                         |
+| `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree and validator tables) against the tree and `package.json`.                                                                                     |
+| `validate:translations` | The translation files under `translations/`: PA locale names, PA's table shape, sorted unique keys, the en-US catalog equal to the tree's `!LOC:` keys, other files a subset of it, placeholders and style codes preserved. |
 
 Several are worth understanding rather than just running.
 
@@ -111,6 +112,12 @@ With that fixture, `test/unit_groups_cells.test.js` can check the cell
 classifier against `unit_groups.js` in CI, and `test/race_legion.test.js` can
 see Legion's cells. With a PA install present, the test asserts that the fixture
 is fresh. **Re-harvest it after a PA or race patch.**
+
+**`i18n:missing` and `i18n:glossary` are local-only for the same reason.** They
+read the game's own translation tables from the PA install (`PA_MEDIA` or
+`--pa <path>`) to list what each language still lacks and how the stock UI renders
+shared terms. `validate:translations` needs no install and runs in `verify`. See
+[translations.md](translations.md).
 
 **`npm run validate:race-trees` is local-only for the same reason.** It runs
 the real `referee_ai.js` over the actual files on disk. Those files are the PA

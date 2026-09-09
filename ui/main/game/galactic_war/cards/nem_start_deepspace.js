@@ -107,12 +107,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build Omegas, any resource generating unit or structure";
-      }
-      return loc(
-        "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build Omegas, any resource generating unit or structure, or Sub Commanders."
-      );
+      return "!LOC:Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build orbital battleships, any resource generating unit or structure";
     },
     hint: gwoCard.lockedHint("!LOC:Space Excavation Commander"),
     deal: gwoCard.startCard,

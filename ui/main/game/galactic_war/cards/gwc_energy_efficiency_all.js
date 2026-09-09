@@ -6,10 +6,7 @@ define([
   return {
     visible: _.constant(true),
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%, and teleport energy costs by 75%.";
-      }
-      return "!LOC:Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%.";
+      return "!LOC:Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%, and teleport energy costs by 75%.";
     },
     summarize: _.constant("!LOC:Complete Energy Tech"),
     icon: _.constant(

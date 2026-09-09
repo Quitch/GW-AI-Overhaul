@@ -276,7 +276,8 @@ Do not restore it in a shadowed file "to match stock". It has no effect and no
 consumer in this repo.
 
 `loc()` lookups are **case sensitive**, and the shipped translation tables are
-inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has 14. `LOCKED` is the only casing shipped at all. That is why several UI strings
+inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has 14.
+`LOCKED` is the only casing shipped at all. That is why several UI strings
 are requested in a shouty casing and then down-cased in CSS rather than written
 naturally. `locTree` only rewrites an element's `innerHTML`, so attributes (and
 therefore CSS classes) survive translation. That is what makes the trick work.
@@ -296,6 +297,23 @@ Three rules follow from that, and GWO's HTML applies each:
   means something else there ("Modifizieren" in de, and 模型, "model", in
   zh-CN). Six more locales leave it as the English "Mod" anyway. Adopting it
   would mislead more players than it would help (`gw_play/gwo_panel.html`).
+
+### Where GWO's translations come from
+
+The game merges only its own `ui/main/_i18n/locales/<lang>/*.json` tables, natively,
+before any mod script runs, and a mod file at one of those paths would shadow a
+stock table wholesale. GWO therefore ships its translations as
+`ui/mods/com.pa.quitch.gwaioverhaul/translations/<lang>.json` and hands them to the
+**Mod Translations** mod, which adds them to the same i18next store `loc()` reads.
+`shared/mod_translations.js` is the sole `global_mod_list` entry in `modinfo.json`,
+and in no scene list, so the strings are in place before the stock scene's
+`document.ready` and its model constructor, which translate eagerly; a scene-list
+registration is too late for those and leaves them English. Where a key is in both
+a GWO file and a stock table the GWO entry wins; the shipped files hold only keys
+the stock tables lack, so nothing is overridden today. `en-US.json` is the catalog
+for translators and is never loaded. Without Mod Translations the shim does nothing
+and GWO's text is English, as it always was. Details and tooling:
+[`translations.md`](translations.md).
 
 ## HTML
 

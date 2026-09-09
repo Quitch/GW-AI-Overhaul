@@ -12,6 +12,9 @@
   "category": ["titans", "ai", "gw", "gameplay", "gwaio", "gwo"],
   "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/develop/images/icon.png",
   "scenes": {
+    "global_mod_list": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js"
+    ],
     "gw_start": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.css",
@@ -72,5 +75,6 @@
   "priority": 200,
   "titansOnly": true,
   "github": "https://github.com/Quitch/GW-AI-Overhaul",
-  "galacticWarMod": true
+  "galacticWarMod": true,
+  "dependencies": ["com.pa.quitch.modtranslations"]
 }

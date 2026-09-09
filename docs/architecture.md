@@ -35,12 +35,19 @@ nothing else. `validate:docs` checks this table against that block:
 | `shared_build`               | Planetary radar behaviour.                                                                         |
 | `start`                      | Main menu.                                                                                         |
 | `gw_coop_per_player_loadout` | Per-player loadout selection for co-op viewers.                                                    |
+| `global_mod_list`            | Every panel, before the scene's own scripts: translation registration only.                        |
 
 `gw_play` carries most of the entries. Two of its entries own a panel outright.
 `gwo_panel.js` builds GWO's own war panel. That panel shows the seed, the
 difficulty, the AI brains, the war's game options, and each client's colour for
 the next battle. `section_of_foreign_intelligence/` is the intel panel. It is
 vendored code under its own licence, so the attribution at its head stays.
+
+`shared/mod_translations.js` is the sole `global_mod_list` entry and is in no scene
+list: it registers GWO's translation files with the Mod Translations mod before the
+stock scene's `document.ready`, so stock code that translates eagerly (star
+descriptions in `gw_play`) sees them too, and does nothing when that mod is absent.
+See [`translations.md`](translations.md).
 
 Nothing under `ui/main/**` or `pa/**` appears in that list. Those files load by
 _shadowing_, not by manifest.

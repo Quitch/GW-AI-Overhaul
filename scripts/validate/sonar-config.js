@@ -126,8 +126,23 @@ function checkEncoding(files, analysisMatchers, failures) {
   );
 
   for (const file of analysed) {
+    // The file list comes from the index, so an unstaged deletion is still listed
+    // and reads ENOENT. Reporting that as bad encoding sends the fix the wrong way.
+    let bytes;
     try {
-      decoder.decode(fs.readFileSync(path.join(REPO_ROOT, file)));
+      bytes = fs.readFileSync(path.join(REPO_ROOT, file));
+    } catch (e) {
+      failures.push(
+        e.code === "ENOENT"
+          ? "tracked but missing from the working tree (stage the deletion?): " +
+              file
+          : "unreadable (" + e.code + "): " + file
+      );
+      continue;
+    }
+
+    try {
+      decoder.decode(bytes);
     } catch {
       failures.push(
         "not valid " +
