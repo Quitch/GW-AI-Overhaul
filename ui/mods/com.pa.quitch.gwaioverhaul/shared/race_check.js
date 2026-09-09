@@ -109,8 +109,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
         return normalizeIdentifier(candidate.identifier) === identifier;
       });
 
-      // Absent is either already blocked above, or the race is present under
-      // one of its other identifiers - a deliberate swap to a -dev build.
+      // Absent is already blocked above: a race lists one identifier, and it
+      // is matched exactly.
       if (!active || active.version === mod.version) {
         return;
       }

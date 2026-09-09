@@ -42,6 +42,8 @@ Any submissions should follow the requirements below:
 
 The version lives in `modinfo.json` alone; bump it there, move the `## Unreleased` entries under a `## v<version> - <date>` heading in `CHANGELOG.md`, and publish a GitHub release tagged `v<version>`. `release.yml` then runs `npm run verify` at the tag and checks that the tag matches `modinfo.json`'s version and that `CHANGELOG.md` has a `## v<version>` heading. It runs after the release is published, so it is an alarm rather than a gate: the checks are yours to make before clicking Publish.
 
+`develop` carries the identifier `com.pa.quitch.gwaioverhaul-dev` and the display name `Galactic War Overhaul DEV`, so a working copy installs alongside the released mod rather than over it. `master` carries the release identifier and display name, and the release zip is built from `master`. Nothing in the code special-cases the `-dev` identifier.
+
 ### Available Libraries
 
 - Those supported by Planetary Annihilation: TITANS - `media\ui\main\shared\js\thirdparty\`

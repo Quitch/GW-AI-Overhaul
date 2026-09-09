@@ -111,8 +111,8 @@ define([
     return !wanted || wanted === MLA_ID || !registry[wanted];
   };
 
-  // The races whose server mod is active: any one of the identifiers a race
-  // lists (a mod's -dev build counts). MLA is always present.
+  // The races whose server mod is active: any of the identifiers a race
+  // lists, matched exactly. MLA is always present.
   var detect = function (activeIdentifiers) {
     var active = _.map(activeIdentifiers || [], normalizeIdentifier);
 
