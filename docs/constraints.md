@@ -298,6 +298,20 @@ Three rules follow from that, and GWO's HTML applies each:
   zh-CN). Six more locales leave it as the English "Mod" anyway. Adopting it
   would mislead more players than it would help (`gw_play/gwo_panel.html`).
 
+### Where GWO's translations come from
+
+The game merges only its own `ui/main/_i18n/locales/<lang>/*.json` tables, natively,
+before any mod script runs, and a mod file at one of those paths would shadow a
+stock table wholesale. GWO therefore ships its translations as
+`ui/mods/com.pa.quitch.gwaioverhaul/translations/<lang>.json` and hands them to the
+**Mod Translations** mod, which adds them to the same i18next store `loc()` reads.
+`shared/mod_translations.js` heads every scene list in `modinfo.json` so the strings
+are in place before any other GWO script runs. Where a key is in both a GWO file and
+a stock table the GWO entry wins; the shipped files hold only keys the stock tables
+lack, so nothing is overridden today. `en-US.json` is the catalog for translators
+and is never loaded. Without Mod Translations the shim does nothing and GWO's text is
+English, as it always was. Details and tooling: [`translations.md`](translations.md).
+
 ## HTML
 
 HTML lives in its own file, never inline in JS.

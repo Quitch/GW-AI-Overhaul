@@ -13,6 +13,7 @@
   "icon": "https://raw.githubusercontent.com/Quitch/GW-AI-Overhaul/develop/images/icon.png",
   "scenes": {
     "gw_start": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js",
@@ -23,6 +24,7 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_picker.js"
     ],
     "gw_play": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/races.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/biomes.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/bugfixes.js",
@@ -45,24 +47,30 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory_wait.js"
     ],
     "gw_war_over": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
     ],
     "live_game": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/win_conditions.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"
     ],
     "live_game_options_bar": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game_options_bar/win_conditions.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game_options_bar/win_conditions.js"
     ],
     "shared_build": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared_build/planetary_radar.js"
     ],
     "start": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.css"
     ],
     "gw_coop_per_player_loadout": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/race_picker.js",

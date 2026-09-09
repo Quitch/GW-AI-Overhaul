@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- GWO's own text is translated into German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Russian, Simplified Chinese and Traditional Chinese when the Mod Translations mod is active. Without it GWO's text stays in English as before
+
 ### Change
 
 - Improved Intelligence Tech no longer applies to teleporters

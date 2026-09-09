@@ -14,6 +14,17 @@ This document covers GWO's side: where the files live, the tooling that builds
 them, and how to contribute a fix. How the framework loads them is Mod
 Translations' own `docs/design.md`.
 
+## Runtime
+
+`ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js` is the first entry
+of every scene list in `modinfo.json`. It calls
+`window.ModTranslations.register("com.pa.quitch.gwaioverhaul")` once per scene, so
+the framework has merged GWO's file for the player's locale before any other GWO
+script or template calls `loc()`. The framework's global is another mod's, so the
+shim treats absent, incomplete and throwing alike: no call, one `console.error` for
+a throw, and GWO's text stays English. `modinfo.json` declares no dependency on the
+framework yet; that is added once Mod Translations is on the community mod index.
+
 ## Files
 
 `ui/mods/com.pa.quitch.gwaioverhaul/translations/`:

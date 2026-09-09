@@ -42,6 +42,10 @@ difficulty, the AI brains, the war's game options, and each client's colour for
 the next battle. `section_of_foreign_intelligence/` is the intel panel. It is
 vendored code under its own licence, so the attribution at its head stays.
 
+`shared/mod_translations.js` heads every list: it registers GWO's translation files
+with the Mod Translations mod before any other GWO script calls `loc()`, and does
+nothing when that mod is absent. See [`translations.md`](translations.md).
+
 Nothing under `ui/main/**` or `pa/**` appears in that list. Those files load by
 _shadowing_, not by manifest.
 
