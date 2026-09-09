@@ -398,9 +398,17 @@
           return !!card.gwoRaceLocked;
         };
 
+        // ui.js swaps activeStartCardIndex for the remembered setting, but
+        // stock's activeStartCard computed still tracks the observable it was
+        // built on, so until the list first changes it peeks stock card 0.
+        // The first build therefore resolves the id from the new list at the
+        // remembered index; later builds preserve the id already selected.
+        var built = false;
         model.gwoRebuildStartCards = function () {
-          var activeCard = model.activeStartCard.peek();
-          var activeId = activeCard && cardId(activeCard);
+          var savedIndex = model.activeStartCardIndex.peek();
+          var previousId = built
+            ? cardId(model.activeStartCard.peek())
+            : undefined;
           model.startCards(
             gwoFavouriteLoadouts.sortCardsByFavourite(
               loadouts.startCards(),
@@ -408,8 +416,11 @@
               cardId
             )
           );
+          var cards = model.startCards.peek();
+          var activeId =
+            previousId || (cards[savedIndex] && cardId(cards[savedIndex]));
           var index = loadoutSelection.selectableIndex(
-            model.startCards.peek(),
+            cards,
             activeId,
             cardId,
             isRaceLocked
@@ -417,6 +428,7 @@
           if (index !== -1) {
             model.activeStartCardIndex(index);
           }
+          built = true;
         };
         requireGW(gwoLoadoutBanks.paths(), function () {
           gwoLoadoutBanks.resolve(_.toArray(arguments));
