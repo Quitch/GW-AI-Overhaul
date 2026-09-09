@@ -14,6 +14,7 @@
 
 - Remove Sub Commanders from Tourist Commander description
 - The faction tooltip on the war setup screen now shows in your language when TITANS is active, instead of English
+- Lore text on the galaxy map now shows in your language; the Bugs system description was English in every non-English locale
 
 ## v7.1.0 - 2026-09-07
 

@@ -305,12 +305,15 @@ before any mod script runs, and a mod file at one of those paths would shadow a
 stock table wholesale. GWO therefore ships its translations as
 `ui/mods/com.pa.quitch.gwaioverhaul/translations/<lang>.json` and hands them to the
 **Mod Translations** mod, which adds them to the same i18next store `loc()` reads.
-`shared/mod_translations.js` heads every scene list in `modinfo.json` so the strings
-are in place before any other GWO script runs. Where a key is in both a GWO file and
-a stock table the GWO entry wins; the shipped files hold only keys the stock tables
-lack, so nothing is overridden today. `en-US.json` is the catalog for translators
-and is never loaded. Without Mod Translations the shim does nothing and GWO's text is
-English, as it always was. Details and tooling: [`translations.md`](translations.md).
+`shared/mod_translations.js` is the sole `global_mod_list` entry in `modinfo.json`,
+and in no scene list, so the strings are in place before the stock scene's
+`document.ready` and its model constructor, which translate eagerly; a scene-list
+registration is too late for those and leaves them English. Where a key is in both
+a GWO file and a stock table the GWO entry wins; the shipped files hold only keys
+the stock tables lack, so nothing is overridden today. `en-US.json` is the catalog
+for translators and is never loaded. Without Mod Translations the shim does nothing
+and GWO's text is English, as it always was. Details and tooling:
+[`translations.md`](translations.md).
 
 ## HTML
 

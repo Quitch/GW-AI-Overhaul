@@ -7,8 +7,8 @@ maintainers at some past release; every key added since then, and every key they
 missed, falls back to English. The
 [Mod Translations](https://github.com/Quitch/Mod-Translations) mod closes that gap:
 a mod ships `translations/<lang>.json` in its own namespace, registers once per
-scene, and the entries are merged into the game's store, replacing the game's own
-where both exist.
+page from a `global_mod_list` script, and the entries are merged into the game's
+store, replacing the game's own where both exist.
 
 This document covers GWO's side: where the files live, the tooling that builds
 them, and how to contribute a fix. How the framework loads them is Mod
@@ -16,14 +16,22 @@ Translations' own `docs/design.md`.
 
 ## Runtime
 
-`ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js` is the first entry
-of every scene list in `modinfo.json`. It calls
-`window.ModTranslations.register("com.pa.quitch.gwaioverhaul")` once per scene, so
-the framework has merged GWO's file for the player's locale before any other GWO
-script or template calls `loc()`. The framework's global is another mod's, so the
-shim treats absent, incomplete and throwing alike: no call, one `console.error` for
-a throw, and GWO's text stays English. `modinfo.json` declares no dependency on the
-framework yet; that is added once Mod Translations is on the community mod index.
+`ui/mods/com.pa.quitch.gwaioverhaul/shared/mod_translations.js` is the sole
+`global_mod_list` entry in `modinfo.json` and appears in no scene list. It calls
+`window.ModTranslations.register("com.pa.quitch.gwaioverhaul")` once per page, so
+the framework has merged GWO's file for the player's locale before the stock scene
+runs. That timing matters: the game translates its static HTML in
+`locUpdateDocument()` at `document.ready`, and stock model constructors call
+`loc()` eagerly and cache the result (`gw_play.js` builds each star's description
+in a `ko.computed`). Both run before any scene-list script, so a registration from a
+scene list left every string the stock code had already translated in English,
+which is how the Bugs lore stayed English on the galaxy map. A `global_mod_list`
+script runs right after `locInit()`, ahead of both. The cost is one synchronous read
+of the locale file on every panel, not only in GWO's eight scenes; English reads
+nothing. The framework's global is another mod's, so the shim treats absent,
+incomplete and throwing alike: no call, one `console.error` for a throw, and GWO's
+text stays English. `modinfo.json` declares no dependency on the framework yet; that
+is added once Mod Translations is on the community mod index.
 
 ## Files
 
@@ -127,7 +135,8 @@ Conventions the notes and the translations follow:
 4. `npm run i18n:merge`, then `npm run validate:translations` and
    `PA_MEDIA=… npm run i18n:missing -- --report` (must list nothing).
 5. In-game: a non-English locale shows the new text with the game's own labels
-   still translated, and the log has one `[ModTranslations]` line per GWO scene.
+   still translated, and the log has one `[ModTranslations]` line per page load
+   (every panel, not only GWO's scenes), ahead of the scene's own scripts.
 
 ## Contributing a corrected translation
 
