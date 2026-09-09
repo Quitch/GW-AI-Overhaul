@@ -6,10 +6,6 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   races
 ) {
-  var normalizeIdentifier = function (identifier) {
-    return _.isString(identifier) ? identifier.trim().toLowerCase() : "";
-  };
-
   // The races a saved war actually fields: the player's, one per faction,
   // whatever every star's AI carries and, under Separate races, the race each
   // co-op record's inventory was stamped with, which lives nowhere else.
@@ -97,7 +93,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     }
 
     _.forEach((recorded && recorded.mods) || [], function (mod) {
-      var identifier = normalizeIdentifier(mod && mod.identifier);
+      var identifier = races.normalizeId(mod && mod.identifier);
 
       // Recorded mods cover every race installed when the war was made, not
       // the ones it fields. Disabling a race this war never used is not news.
@@ -106,7 +102,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       }
 
       var active = _.find(info.mods, function (candidate) {
-        return normalizeIdentifier(candidate.identifier) === identifier;
+        return races.normalizeId(candidate.identifier) === identifier;
       });
 
       // Absent is already blocked above: a race lists one identifier, and it

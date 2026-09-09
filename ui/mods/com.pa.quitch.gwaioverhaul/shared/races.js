@@ -30,10 +30,6 @@ define([
     return _.isString(id) ? id.trim().toLowerCase() : "";
   };
 
-  var normalizeIdentifier = function (identifier) {
-    return _.isString(identifier) ? identifier.trim().toLowerCase() : "";
-  };
-
   // `units` is the race's own table (race key -> race path), for cards
   // written for the race alone; `unitNames` names them by the same keys and
   // is compiled to path -> name.
@@ -49,7 +45,7 @@ define([
 
     return _.assign({}, descriptor, {
       id: normalizeId(descriptor.id),
-      serverMods: _.map(descriptor.serverMods || [], normalizeIdentifier),
+      serverMods: _.map(descriptor.serverMods || [], normalizeId),
       commanders: descriptor.commanders || [],
       ai: descriptor.ai || {},
       units: units,
@@ -114,7 +110,7 @@ define([
   // The races whose server mod is active: any of the identifiers a race
   // lists, matched exactly. MLA is always present.
   var detect = function (activeIdentifiers) {
-    var active = _.map(activeIdentifiers || [], normalizeIdentifier);
+    var active = _.map(activeIdentifiers || [], normalizeId);
 
     return _.filter(all(), function (race) {
       return (
