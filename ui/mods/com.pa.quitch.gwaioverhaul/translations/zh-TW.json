@@ -1,0 +1,821 @@
+{
+  "A map pack this war uses is missing": {
+    "message": "缺少這場戰爭使用的地圖包"
+  },
+  "A mystery.": {
+    "message": "一個謎。"
+  },
+  "A race this war fields is missing": {
+    "message": "缺少這場戰爭出戰的種族"
+  },
+  "ADVANCED FABBERS:": {
+    "message": "進階建造物："
+  },
+  "AI Settings": {
+    "message": "AI 設定"
+  },
+  "ALLY CHANCE:": {
+    "message": "盟友機率："
+  },
+  "ARMIES/COMMANDERS:": {
+    "message": "軍隊/指揮官："
+  },
+  "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
+    "message": "進階防禦科技啟用更強大的防禦設施。進階防禦設施由進階製造者建造。"
+  },
+  "Advanced Fabrication Aircraft Upgrade Tech adds the ability for the advanced fabricator to move between planets.": {
+    "message": "進階製造航空器升級科技使進階製造者能夠在星球之間移動。"
+  },
+  "Advanced Fabrication Bot Upgrade Tech equips the advanced fabricator with the support commander's weapon.": {
+    "message": "進階製造機器人升級科技為進階製造者裝備支援指揮官的武器。"
+  },
+  "Air Cooldown Tech": {
+    "message": "空中冷卻科技"
+  },
+  "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
+    "message": "空中冷卻科技將所有空軍工廠建造之間的冷卻時間減半。"
+  },
+  "All-terrain": {
+    "message": "全地形"
+  },
+  "An AI that does not know a race is not offered for it.": {
+    "message": "不熟悉某個種族的 AI 不會提供給該種族。"
+  },
+  "Anti-Air Ammo Tech": {
+    "message": "反空中彈藥科技"
+  },
+  "Anti-Air Ammo Tech doubles all damage you deal to air units but halves damage to orbital units.": {
+    "message": "反空中彈藥科技使你對空中單位造成的所有傷害加倍，但對軌道單位的傷害減半。"
+  },
+  "Anti-Bot Ammo Tech": {
+    "message": "反機器人彈藥科技"
+  },
+  "Anti-Bot Ammo Tech doubles all damage you deal to bots but halves damage to vehicles.": {
+    "message": "反機器人彈藥科技使你對機器人造成的所有傷害加倍，但對載具的傷害減半。"
+  },
+  "Anti-Commander Ammo Tech": {
+    "message": "反指揮官彈藥科技"
+  },
+  "Anti-Commander Ammo Tech doubles all damage you deal to commanders but halves damage to structures.": {
+    "message": "反指揮官彈藥科技使你對指揮官造成的所有傷害加倍，但對結構的傷害減半。"
+  },
+  "Anti-Hover Ammo Tech": {
+    "message": "反懸浮彈藥科技"
+  },
+  "Anti-Hover Ammo Tech doubles all damage you deal to hover units but halves damage to naval vessels.": {
+    "message": "反懸浮彈藥科技使你對懸浮單位造成的所有傷害加倍，但對海軍艦艇的傷害減半。"
+  },
+  "Anti-Orbital Ammo Tech": {
+    "message": "反軌道彈藥科技"
+  },
+  "Anti-Orbital Ammo Tech doubles all damage you deal to orbital units but halves damage to air units.": {
+    "message": "反軌道彈藥科技使你對軌道單位造成的所有傷害加倍，但對空中單位的傷害減半。"
+  },
+  "Anti-Ship Ammo Tech": {
+    "message": "反艦彈藥科技"
+  },
+  "Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units.": {
+    "message": "反艦彈藥科技使你對海軍艦艇造成的所有傷害加倍，但對懸浮單位的傷害減半。"
+  },
+  "Anti-Structure Ammo Tech": {
+    "message": "反結構彈藥科技"
+  },
+  "Anti-Structure Ammo Tech doubles all damage you deal to structures but halves damage to mobile units excluding commanders.": {
+    "message": "反結構彈藥科技使你對結構造成的所有傷害加倍，但對指揮官以外的機動單位的傷害減半。"
+  },
+  "Anti-Tank Ammo Tech": {
+    "message": "反坦克彈藥科技"
+  },
+  "Anti-Tank Ammo Tech doubles all damage you deal to vehicles but halves damage to bots.": {
+    "message": "反坦克彈藥科技使你對載具造成的所有傷害加倍，但對機器人的傷害減半。"
+  },
+  "Applied to AI commanders and units preferred by the faction.": {
+    "message": "套用於 AI 指揮官與該派系偏好的單位。"
+  },
+  "Apply Settings": {
+    "message": "套用設定"
+  },
+  "Armies:": {
+    "message": "軍隊："
+  },
+  "Artemis Upgrade Tech allows targeting of planetary units by the railgun platform.": {
+    "message": "阿提米絲升級科技允許軌道砲平台瞄準星球上的單位。"
+  },
+  "Artillery": {
+    "message": "火砲"
+  },
+  "Artillery Ammunition Tech increases the damage of all artillery structures by 25% and reduces their ammunition cost by 90%. Requires technology to build artillery structures and units.": {
+    "message": "火砲彈藥科技使所有火砲結構的傷害增加 25%，並使其彈藥費用減少 90%。需要建造火砲結構與單位的科技。"
+  },
+  "Assault": {
+    "message": "突擊"
+  },
+  "Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200% and increases its carry capacity to 12 units.": {
+    "message": "亞崔斯升級科技使軌道登陸艇的星際移動速度增加 200%，並將其運載量提高到 12 個單位。"
+  },
+  "Atlas Upgrade Tech doubles the health of the seismic titan.": {
+    "message": "亞特拉斯升級科技使地震泰坦的生命值加倍。"
+  },
+  "Available Tech": {
+    "message": "可用科技"
+  },
+  "Available Tech in a system never changes.": {
+    "message": "星系中的可用科技永遠不會改變。"
+  },
+  "Avenger Upgrade Tech adds a railgun to the orbital fighter.": {
+    "message": "復仇者升級科技為軌道戰鬥機加裝軌道砲。"
+  },
+  "BASIC FABBERS:": {
+    "message": "基本建造物："
+  },
+  "BASIC: base game tech cards": {
+    "message": "基本：原版遊戲的科技卡"
+  },
+  "BEGINNER: you completed the tutorial": {
+    "message": "新手：你已完成教學"
+  },
+  "BOUNTIES: earn an economic multiplier for every kill.": {
+    "message": "賞金：每次擊殺都能獲得經濟倍率。"
+  },
+  "BRONZE: you beat vanilla Galactic War": {
+    "message": "青銅：你已打贏原版銀河戰爭"
+  },
+  "Barnacle Upgrade Tech allows the assisting of all builds by the support barge. Disables the auto-repair feature.": {
+    "message": "藤壺升級科技允許支援駁船協助所有建造。停用自動修理功能。"
+  },
+  "Barracuda Upgrade Tech increases the rate of fire of the submarine by 200%.": {
+    "message": "梭魚升級科技使潛艇的射速增加 200%。"
+  },
+  "Beginner": {
+    "message": "新手"
+  },
+  "Bigger galaxies will result in more commanders, larger maps, higher CPU and RAM requirements, and will likely pose a greater challenge to complete.": {
+    "message": "更大的銀河代表更多指揮官、更大的地圖、更高的 CPU 與 RAM 需求，而且很可能更難通關。"
+  },
+  "Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs.": {
+    "message": "自爆兵升級科技可將 Lob 中的 Dox 更換為 Boom。啟用 Lob 的建造。"
+  },
+  "Boomer": {
+    "message": "自爆者"
+  },
+  "Bot Cooldown Tech": {
+    "message": "機器人冷卻科技"
+  },
+  "Bot Cooldown Tech halves the cooldown time between builds for all bot factories.": {
+    "message": "機器人冷卻科技將所有機器人工廠建造之間的冷卻時間減半。"
+  },
+  "Bounty Tech": {
+    "message": "賞金科技"
+  },
+  "Bounty tech enables the bounties game modifier in every system.": {
+    "message": "賞金科技在每個星系啟用賞金遊戲規則修正。"
+  },
+  "Bugs": {
+    "message": "Bugs"
+  },
+  "CASUAL: you have some hours in PA": {
+    "message": "休閒：你已在 PA 玩過幾個小時"
+  },
+  "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
+    "message": "CLUSTER：陸地。以 Angel 與 Colonel 作為次指揮官，但無法建造它們。"
+  },
+  "COMMANDER TRANSPORT:": {
+    "message": "指揮官運輸："
+  },
+  "CUSTOM: create your own challenge": {
+    "message": "自訂：打造你自己的挑戰"
+  },
+  "Catalyst Upgrade Tech doubles the health of the Catalyst and halves its cost.": {
+    "message": "催化器升級科技使 Catalyst 的生命值加倍，費用減半。"
+  },
+  "Chance of a system allowing you to land outside spawn zones.": {
+    "message": "星系允許你在出生區域之外登陸的機率。"
+  },
+  "Chance of a system awarding bounties for army kills.": {
+    "message": "星系為擊殺提供賞金的機率。"
+  },
+  "Chance of an allied Commander being present in a system.": {
+    "message": "星系中出現盟友指揮官的機率。"
+  },
+  "Chance of eradication mode being enabled.": {
+    "message": "啟用殲滅模式的機率。"
+  },
+  "Chance of more than one faction being present in a system.": {
+    "message": "星系中出現多個派系的機率。"
+  },
+  "Chance per system of a Commander death in a battle defeating all Commanders of that faction in the system.": {
+    "message": "每個星系中，戰鬥裡一名指揮官死亡即擊敗該派系在該星系所有指揮官的機率。"
+  },
+  "Co-Op Settings": {
+    "message": "合作設定"
+  },
+  "Co-op host setup": {
+    "message": "合作主機準備"
+  },
+  "Co-op shared setup": {
+    "message": "合作共用準備"
+  },
+  "Colonel": {
+    "message": "Colonel"
+  },
+  "Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal.": {
+    "message": "指揮官升級科技使 Uber 砲的傷害增加 300%，並允許你回收友軍指揮官以取得金屬。"
+  },
+  "Complete Basic Factory Tech": {
+    "message": "完整基本工廠科技"
+  },
+  "Complete Basic Tech enables building of basic air, bot, and vehicle units and factories. Basic factories are built via your commander or any basic fabricator.": {
+    "message": "完整基本科技啟用基本空中、機器人與載具單位及工廠的建造。基本工廠由你的指揮官或任何基本製造者建造。"
+  },
+  "Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%, and teleport energy costs by 75%.": {
+    "message": "完整能源科技使情報結構的能源消耗減少 75%、武器能源消耗減少 75%、傳送能源消耗減少 75%。"
+  },
+  "Complete air tech enables building of all mobile air units and factories. Basic air factories are built via your commander or any basic fabricator. Advanced factories are built via a basic or advanced air fabricator.": {
+    "message": "完整空中科技啟用所有機動空中單位與空軍工廠的建造。基本空軍工廠由你的指揮官或任何基本製造者建造。進階工廠由基本或進階空中製造者建造。"
+  },
+  "Configure campaign options.": {
+    "message": "設定戰役選項。"
+  },
+  "Contains every factory on every tier of the tech tree.": {
+    "message": "包含科技樹每個層級的每一種工廠。"
+  },
+  "Contains no basic land or air factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked.": {
+    "message": "不包含基本陸地或空軍工廠，只有由指揮官建造的 Lob 與單位機砲。兩者費用減半。所有陸地單位解鎖後都可由單位機砲建造。"
+  },
+  "DIAMOND: your loadouts are OP": {
+    "message": "鑽石：你的配備太強了"
+  },
+  "Deck:": {
+    "message": "牌組："
+  },
+  "Delay before AI realises it cannot expand.": {
+    "message": "AI 意識到無法擴張之前的延遲。"
+  },
+  "Delay in creating new bases.": {
+    "message": "建立新基地的延遲。"
+  },
+  "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
+    "message": "牠們由 Hegemony 的秘密部隊在 Century War 期間部署；從牠們目前的擴散程度來看，牠們在戰爭結束後自行發展出了播種星球的能力，或者這是 Xziphid 為避免戰敗而做的孤注一擲。"
+  },
+  "Distance examined when choosing spawn.": {
+    "message": "選擇出生點時檢查的距離。"
+  },
+  "ECONOMIC GROWTH:": {
+    "message": "經濟成長："
+  },
+  "ERADICATE: all units of specific types must be eradicated.": {
+    "message": "殲滅：必須殲滅特定類型的所有單位。"
+  },
+  "ERADICATION CHANCE:": {
+    "message": "殲滅機率："
+  },
+  "Each faction has its own style of play affecting Sub Commanders and enemy commanders:": {
+    "message": "每個派系都有自己的作戰風格，會影響次指揮官與敵方指揮官："
+  },
+  "Each player picks their own race when they choose their loadout. Requires Separate loadout &amp; tech.": {
+    "message": "每位玩家在選擇配備時挑選自己的種族。需要「個別配備 &amp; 科技」。"
+  },
+  "Eco bonus per army kill.": {
+    "message": "每次擊殺的經濟加成。"
+  },
+  "Economy Fabrication Tech reduces metal build costs of all metal and energy production and storage structures by 50%": {
+    "message": "經濟製造科技使所有金屬與能源生產及儲存結構的金屬建造費用減少 50%"
+  },
+  "Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons. Halves their cost.": {
+    "message": "授權你的部下，靠委派邁向勝利。你的指揮官可以建造 Colonel 代理指揮官，而且它們配備 Uber 砲。費用減半。"
+  },
+  "Enable the missing mods and restart Planetary Annihilation to continue this war.": {
+    "message": "啟用缺少的模組並重新啟動 Planetary Annihilation 以繼續這場戰爭。"
+  },
+  "Encounter large planets and systems much sooner.": {
+    "message": "更早遇到大型星球與星系。"
+  },
+  "Eradicate": {
+    "message": "殲滅"
+  },
+  "Eradication Tech": {
+    "message": "殲滅科技"
+  },
+  "Eradication tech enables the eradicate game modifier in every system.": {
+    "message": "殲滅科技在每個星系啟用殲滅遊戲規則修正。"
+  },
+  "Exiles": {
+    "message": "Exiles"
+  },
+  "FOUNDATION: air/navy": {
+    "message": "FOUNDATION：空中/海軍"
+  },
+  "Factory cooldown decreased": {
+    "message": "工廠冷卻降低"
+  },
+  "Fights for you.": {
+    "message": "為你而戰。"
+  },
+  "Fortress": {
+    "message": "堡壘"
+  },
+  "GALACTIC WAR OVERHAUL: over 150 additional cards.": {
+    "message": "銀河戰爭翻新：超過 150 張額外卡片。"
+  },
+  "GOLD: you beat the Queller AI mod": {
+    "message": "黃金：你已打敗 Queller AI 模組"
+  },
+  "GW Server Mods is not enabled": {
+    "message": "GW Server Mods 未啟用"
+  },
+  "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
+    "message": "哈雷升級科技使 delta-V 引擎的生命值加倍，費用減半。"
+  },
+  "Heavy": {
+    "message": "重型"
+  },
+  "Helios Upgrade Tech removes the delay between the invasion titan arriving at a planet and responding to orders and increases its health by 50%.": {
+    "message": "赫利俄斯升級科技消除侵略泰坦抵達星球後到回應命令之間的延遲，並使其生命值增加 50%。"
+  },
+  "Host Choosing Tech": {
+    "message": "主機正在選擇科技"
+  },
+  "How well the AI picks who to attack.": {
+    "message": "AI 選擇攻擊目標的能力。"
+  },
+  "How well the AI scouts.": {
+    "message": "AI 偵察的能力。"
+  },
+  "IRON: you no longer turtle": {
+    "message": "鋼鐵：你不再龜縮固守"
+  },
+  "Incompatible Mods": {
+    "message": "不相容的模組"
+  },
+  "Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders.": {
+    "message": "煉獄升級科技為火焰坦克加裝 Stitch 的修理手臂。收到攻擊命令時不會修理。"
+  },
+  "Infernodier": {
+    "message": "煉獄擲彈兵"
+  },
+  "Jig Upgrade Tech adds storage to gas mining and doubles its energy production.": {
+    "message": "Jig 升級科技為氣體開採增加儲存空間，並使其能源產量加倍。"
+  },
+  "Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage.": {
+    "message": "特攝怪獸升級科技將側砲更換為額外的主砲，帶來額外的射程與傷害。"
+  },
+  "Kessler": {
+    "message": "Kessler"
+  },
+  "Kessler Upgrade Tech": {
+    "message": "Kessler 升級科技"
+  },
+  "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
+    "message": "Kessler 升級科技允許軌道地雷可在不摧毀自己的情況下爆炸。"
+  },
+  "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
+    "message": "克拉肯升級科技使進階潛艇的飛彈射程增加 200%。"
+  },
+  "LAND ANYWHERE CHANCE:": {
+    "message": "從任何地點開始機率："
+  },
+  "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
+    "message": "從任何地點開始：玩家可以在合適的起始星球上任何地點開始。"
+  },
+  "LEGONIS MACHINA: vehicles": {
+    "message": "LEGONIS MACHINA：載具"
+  },
+  "Land Anywhere Tech": {
+    "message": "從任何地點開始科技"
+  },
+  "Land Anywhere tech enables the land anywhere game modifier in every system.": {
+    "message": "從任何地點開始科技在每個星系啟用從任何地點開始遊戲規則修正。"
+  },
+  "Laser Defense Tower Upgrade Tech increases the range of the turret by 50%.": {
+    "message": "雷射防禦塔升級科技使砲塔的射程增加 50%。"
+  },
+  "Legion": {
+    "message": "Legion"
+  },
+  "Lob Upgrade Tech increases the range of the Lob by 150%. Fires twice as fast and no longer costs metal to recharge its ammo.": {
+    "message": "Lob 升級科技使 Lob 的射程增加 150%。射速加倍，且補充彈藥不再消耗金屬。"
+  },
+  "Locusts Upgrade Tech adds splash damage to nanoswarms.": {
+    "message": "蝗蟲升級科技為奈米蟲群附加濺射傷害。"
+  },
+  "Lucky Commander": {
+    "message": "幸運指揮官"
+  },
+  "MLA": {
+    "message": "MLA"
+  },
+  "Map packs changed since this war began:": {
+    "message": "自這場戰爭開始以來已變更的地圖包："
+  },
+  "Maximum delay between units produced from a factory.": {
+    "message": "工廠生產單位之間的最大延遲。"
+  },
+  "Maximum number of advanced fabbers per army.": {
+    "message": "每支軍隊的進階建造物數量上限。"
+  },
+  "Maximum number of basic fabbers per army.": {
+    "message": "每支軍隊的基本建造物數量上限。"
+  },
+  "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
+    "message": "修繕升級科技允許進階戰鬥製造者協助所有建造。停用自動修理功能。"
+  },
+  "Minelayer": {
+    "message": "佈雷"
+  },
+  "Minimum delay between units produced from a factory.": {
+    "message": "工廠生產單位之間的最小延遲。"
+  },
+  "Minimum number of armies/Commanders per faction in every system irrespective of distance.": {
+    "message": "不論距離，每個星系中每個派系的軍隊/指揮官最少數量。"
+  },
+  "Missing Map Packs": {
+    "message": "缺少的地圖包"
+  },
+  "Missing Races": {
+    "message": "缺少的種族"
+  },
+  "Mod:": {
+    "message": "模組："
+  },
+  "Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build orbital battleships, any resource generating unit or structure": {
+    "message": "修改 Jig 使其可以在任何地方建造，代價是無法建造其他資源結構。它們便宜 75%，但金屬與能源產量減少 30%，死亡時的傷害減少 90%。軌道製造者可以建造所有基本結構。包含所有基本與進階軌道單位，但永遠無法建造軌道戰艦，以及任何產生資源的單位或結構"
+  },
+  "Mounting game files": {
+    "message": "正在掛載遊戲檔案"
+  },
+  "NEW BASE DELAY:": {
+    "message": "新基地延遲："
+  },
+  "Narwhal Upgrade Tech doubles the rate of fire of all weapons.": {
+    "message": "獨角鯨升級科技使其所有武器的射速加倍。"
+  },
+  "Naval Commander": {
+    "message": "海軍指揮官"
+  },
+  "Naval Cooldown Tech": {
+    "message": "海軍冷卻科技"
+  },
+  "Naval Cooldown Tech halves the cooldown time between builds for all naval factories.": {
+    "message": "海軍冷卻科技將所有海軍工廠建造之間的冷卻時間減半。"
+  },
+  "No enemy faction shares a race with you or another enemy faction until every race in play has been used.": {
+    "message": "在所有參戰種族都被使用之前，敵方派系不會與你或其他敵方派系使用相同種族。"
+  },
+  "Nuclear Missile Launcher Upgrade Tech increases the damage dealt to commanders and orbital from the LR-96 Pacifier Nuclear Missiles by 200%.": {
+    "message": "核導彈發射器升級科技使 LR-96 Pacifier 核子飛彈對指揮官與軌道單位的傷害增加 200%。"
+  },
+  "Nuker": {
+    "message": "核武"
+  },
+  "Number of Commanders in the boss's army.": {
+    "message": "頭目軍隊中的指揮官數目。"
+  },
+  "Number of systems until AI tech appears.": {
+    "message": "AI 科技出現前的星系數目。"
+  },
+  "Number of systems until additional armies/Commanders appear per faction.": {
+    "message": "每個派系出現額外軍隊/指揮官前的星系數目。"
+  },
+  "Nyx": {
+    "message": "Nyx"
+  },
+  "Nyx Upgrade Tech": {
+    "message": "Nyx 升級科技"
+  },
+  "Nyx Upgrade Tech doubles the jamming and radar radius of the jamming vehicle.": {
+    "message": "Nyx 升級科技使干擾載具的干擾與雷達半徑加倍。"
+  },
+  "Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser. Doubles the rate of fire of the other weapons.": {
+    "message": "歐米茄升級科技將戰艦的底部雷射更換為 SXX 雷射。其他武器的射速加倍。"
+  },
+  "Orbital Bombardment Tech": {
+    "message": "軌道轟炸科技"
+  },
+  "Orbital Bombardment Tech removes all trees, lava, and water from the systems you fight in.": {
+    "message": "軌道轟炸科技移除你作戰星系中的所有樹木、熔岩與水。"
+  },
+  "Orbital Cooldown Tech": {
+    "message": "軌道冷卻科技"
+  },
+  "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
+    "message": "軌道冷卻科技將所有軌道工廠建造之間的冷卻時間減半。"
+  },
+  "PENCHANT: increased personality": {
+    "message": "PENCHANT：更鮮明的個性"
+  },
+  "PERSONALITY MODIFIERS:": {
+    "message": "個性修正："
+  },
+  "PLATINUM: one enemy is no challenge": {
+    "message": "白金：一個敵人算不上挑戰"
+  },
+  "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
+    "message": "鵜鶘升級科技允許空中運輸機搭載指揮官。每個單位都能在運輸途中射擊。"
+  },
+  "Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar.": {
+    "message": "星際雷達升級科技將星際雷達的視野擴大到與其雷達範圍相同。"
+  },
+  "Platoon": {
+    "message": "排"
+  },
+  "Player Slots:": {
+    "message": "玩家位置："
+  },
+  "Players returned": {
+    "message": "已返回的玩家"
+  },
+  "Prefers air and navy.": {
+    "message": "偏好空軍與海軍。"
+  },
+  "Prefers bots and vehicles; applies tech to structures.": {
+    "message": "偏好機器人與載具；將科技套用於結構。"
+  },
+  "Prefers bots.": {
+    "message": "偏好機器人。"
+  },
+  "Prefers orbital.": {
+    "message": "偏好軌道。"
+  },
+  "Prefers vehicles.": {
+    "message": "偏好載具。"
+  },
+  "Processing AI mods": {
+    "message": "正在處理 AI 模組"
+  },
+  "Processing biome mods": {
+    "message": "正在處理生態模組"
+  },
+  "Processing game config": {
+    "message": "正在處理遊戲設定"
+  },
+  "Processing tech cards": {
+    "message": "正在處理科技卡"
+  },
+  "QUELLER: greater challenge at the cost of performance": {
+    "message": "QUELLER：更高的挑戰，但犧牲效能"
+  },
+  "REINFORCEMENT SYSTEM:": {
+    "message": "增援星系："
+  },
+  "REVENANTS: orbital": {
+    "message": "REVENANTS：軌道"
+  },
+  "Race": {
+    "message": "種族"
+  },
+  "Race mods changed since this war began:": {
+    "message": "自這場戰爭開始以來已變更的種族模組："
+  },
+  "Radar Jamming Station": {
+    "message": "Radar Jamming Station"
+  },
+  "Radar Jamming Station Upgrade Tech": {
+    "message": "Radar Jamming Station 升級科技"
+  },
+  "Radar Jamming Station Upgrade Tech doubles the jamming radius of the radar jammer.": {
+    "message": "Radar Jamming Station 升級科技使雷達干擾器的干擾半徑加倍。"
+  },
+  "Raider": {
+    "message": "突襲"
+  },
+  "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
+    "message": "以新的低成本/低當量型號取代傳統核武，並在攻防兩方面都高度依賴它。為此放棄大部分進階防禦設施。"
+  },
+  "SCOUTING:": {
+    "message": "偵察："
+  },
+  "SILVER: you beat the skirmish AI": {
+    "message": "白銀：你已打敗遭遇戰 AI"
+  },
+  "SUDDEN DEATH CHANCE:": {
+    "message": "驟死機率："
+  },
+  "SUDDEN DEATH: any commander death on a team kills the entire team.": {
+    "message": "驟死：隊伍中任何一名指揮官死亡都會消滅整個隊伍。"
+  },
+  "SYNCHRONOUS: bots": {
+    "message": "SYNCHRONOUS：機器人"
+  },
+  "Saving war": {
+    "message": "正在儲存戰爭"
+  },
+  "Scaling For:": {
+    "message": "調整對象："
+  },
+  "Separate": {
+    "message": "個別"
+  },
+  "Separate races": {
+    "message": "個別種族"
+  },
+  "Shared": {
+    "message": "共用"
+  },
+  "Sniper": {
+    "message": "狙擊"
+  },
+  "Spark Upgrade Tech increases the tesla bot's splash damage radius by 200%.": {
+    "message": "火花升級科技使特斯拉機器人的濺射傷害半徑增加 200%。"
+  },
+  "Speed the economy grows as you get deeper into the galaxy.": {
+    "message": "隨著你深入銀河，經濟成長的速度。"
+  },
+  "Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 200%.": {
+    "message": "旋轉升級科技使機動防空的射速增加 200%。"
+  },
+  "Squall Upgrade Tech allows you to issue orders to drones.": {
+    "message": "狂颮升級科技允許你向無人機下達命令。"
+  },
+  "Starting economy.": {
+    "message": "起始經濟。"
+  },
+  "Starts with a 25% boost to metal and energy production and is able to build metal and energy storage. Unable to build close-range armored tanks.": {
+    "message": "起始時金屬與能源產量提升 25%，並能建造金屬與能源儲存設施。無法建造近距離裝甲坦克。"
+  },
+  "Static Tech": {
+    "message": "固定科技"
+  },
+  "Static tech": {
+    "message": "固定科技"
+  },
+  "Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator. Disables the auto-repair feature.": {
+    "message": "裁縫者升級科技允許戰鬥製造者協助所有建造。停用自動修理功能。"
+  },
+  "Structure Engine Tech": {
+    "message": "結構引擎科技"
+  },
+  "Structure Engine Tech increases the speed of all mobile structures by 50%": {
+    "message": "結構引擎科技使所有機動結構的速度增加 50%"
+  },
+  "Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing.": {
+    "message": "打擊者升級科技使攻擊載具能夠透過自爆進行攻擊。"
+  },
+  "Sub Commander Duplication Tech": {
+    "message": "次指揮官複製科技"
+  },
+  "Sub Commander Duplication Tech adds an extra Commander to every Sub Commander's army.": {
+    "message": "次指揮官複製科技為每位次指揮官的軍隊增加一名額外的指揮官。"
+  },
+  "Sub Commander Fabber Tech": {
+    "message": "次指揮官建造物科技"
+  },
+  "Sub Commander Fabber Tech increases the number of fabbers each Sub Commander may use by 50%.": {
+    "message": "次指揮官建造物科技使每位次指揮官可使用的建造物數量增加 50%。"
+  },
+  "Sub Commander Tactics Tech": {
+    "message": "次指揮官戰術科技"
+  },
+  "Sub Commander Tactics Tech allows Sub Commanders to make smarter decisions when scouting, fighting, expanding, and escaping danger.": {
+    "message": "次指揮官戰術科技讓次指揮官在偵察、作戰、擴張與逃離危險時做出更聰明的決策。"
+  },
+  "Sudden Death Tech": {
+    "message": "驟死科技"
+  },
+  "Sudden Death tech enables the sudden death game modifier in every system.": {
+    "message": "驟死科技在每個星系啟用驟死遊戲規則修正。"
+  },
+  "TARGET SELECTION:": {
+    "message": "目標選擇："
+  },
+  "TECH SYSTEM:": {
+    "message": "科技星系："
+  },
+  "TITANS: base game AI": {
+    "message": "TITANS：原版遊戲 AI"
+  },
+  "Tactical": {
+    "message": "戰術"
+  },
+  "Tech:": {
+    "message": "科技："
+  },
+  "Terminal Commander": {
+    "message": "末期指揮官"
+  },
+  "The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 400%.": {
+    "message": "仿生加強壓制指揮官配備只包含一個資料庫，但使指揮官的射速增加 100%、Uber 砲的能源消耗減少 75%、生命值增加 200%、速度增加 400%。"
+  },
+  "The Commander can mass teleport itself and all units within weapons range to anywhere in the system, but they are highly vulnerable to attack afterwards.": {
+    "message": "指揮官可以將自己與武器射程內的所有單位集體傳送到星系中的任何地方，但之後它們極易受到攻擊。"
+  },
+  "The Lucky Commander is offered four cards instead of three at every planet.": {
+    "message": "幸運指揮官在每個星球獲得四張而非三張卡片。"
+  },
+  "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
+    "message": "海軍指揮官配備包含所有海軍工廠。增加合適星球上的水與熔岩數量。"
+  },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "只要派系、難易度與遊戲選項相同且安裝相同模組，同一個種子就會重建相同的銀河與相同的敵人。星球名稱仍會不同。留空即可產生全新的銀河。"
+  },
+  "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
+    "message": "你與你的次指揮官所使用的單位。每個種族的 AI 以 AI 按鈕選擇。"
+  },
+  "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
+    "message": "你與你的次指揮官所使用的單位。只能選擇主機戰爭建立時使用的種族。"
+  },
+  "This card will be offered as part of the first draw.": {
+    "message": "這張卡片會在第一次抽卡時提供。"
+  },
+  "This war cannot be fought:": {
+    "message": "無法進行這場戰爭："
+  },
+  "Titan Ammunition Tech": {
+    "message": "泰坦彈藥科技"
+  },
+  "Titan Ammunition Tech increases the damage of all titans by 25%.": {
+    "message": "泰坦彈藥科技使所有泰坦的傷害增加 25%。"
+  },
+  "Titan Armour Tech": {
+    "message": "泰坦裝甲科技"
+  },
+  "Titan Armour Tech increases the health of all Titans by 50%.": {
+    "message": "泰坦裝甲科技使所有泰坦的生命值增加 50%。"
+  },
+  "Titan Combat Tech": {
+    "message": "泰坦戰鬥科技"
+  },
+  "Titan Combat Tech increases the speed of all titans by 20%, health by 50%, and damage by 25%": {
+    "message": "泰坦戰鬥科技使所有泰坦的速度增加 20%、生命值增加 50%、傷害增加 25%"
+  },
+  "Toggle Favourite": {
+    "message": "切換最愛"
+  },
+  "Tsunami Tech": {
+    "message": "海嘯科技"
+  },
+  "Tsunami Tech increases the water and lava level in all systems you fight in.": {
+    "message": "海嘯科技提高你作戰的所有星系中的水與熔岩高度。"
+  },
+  "Tweaks to how the AI plays.": {
+    "message": "AI 遊玩方式的調整。"
+  },
+  "UBER: you hate winning": {
+    "message": "UBER：你討厭獲勝"
+  },
+  "UNIT DELAY (MAX):": {
+    "message": "單位延遲（最大）："
+  },
+  "UNIT DELAY (MIN):": {
+    "message": "單位延遲（最小）："
+  },
+  "Unique Races": {
+    "message": "獨特種族"
+  },
+  "Unique races": {
+    "message": "獨特種族"
+  },
+  "Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport and removes all cooldowns.": {
+    "message": "單位機砲升級科技使這種星際運輸工具的發射容量加倍，並移除所有冷卻時間。"
+  },
+  "Unknown Unit": {
+    "message": "未知單位"
+  },
+  "Unlocked": {
+    "message": "開放"
+  },
+  "Use smaller, mostly single planet systems.": {
+    "message": "使用較小、大多只有單一星球的星系。"
+  },
+  "Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders.": {
+    "message": "先鋒升級科技為火焰坦克加裝 Mend 的修理手臂。收到攻擊命令時不會修理。"
+  },
+  "Vehicle Cooldown Tech": {
+    "message": "載具冷卻科技"
+  },
+  "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
+    "message": "載具冷卻科技將所有載具工廠建造之間的冷卻時間減半。"
+  },
+  "Waiting for players": {
+    "message": "正在等待玩家"
+  },
+  "War:": {
+    "message": "戰爭："
+  },
+  "Ward": {
+    "message": "Ward"
+  },
+  "Ward Upgrade Tech": {
+    "message": "Ward 升級科技"
+  },
+  "Ward Upgrade Tech causes the mobile anti-nuke to start fully charged.": {
+    "message": "Ward 升級科技使機動反核裝置一開始就處於完全充能狀態。"
+  },
+  "Warp Commander": {
+    "message": "躍遷指揮官"
+  },
+  "You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors, no Mining Platforms, and no basic land or air factories.": {
+    "message": "你帶著鼓鼓的錢包現身，但其他所剩無幾。擁有巨大的儲存空間，卻沒有金屬提煉器、沒有開採平台，也沒有基本陸地或空軍工廠。"
+  },
+  "You're dying, but you have one last war left in you. Your units' health decreases over time, and your commander's fastest of all. Life is short and must be lived to the full, so unit damage and movement is doubled and costs are halved. Life through victory, Commander!": {
+    "message": "你快死了，但還有最後一場戰爭可打。你的單位生命值會隨時間減少，而你的指揮官減少得最快。人生苦短，必須活得淋漓盡致，因此單位的傷害與移動速度加倍，費用減半。以勝利換取生命，指揮官！"
+  },
+  "is not enabled": {
+    "message": "未啟用"
+  },
+  "its mod is not installed": {
+    "message": "其模組未安裝"
+  },
+  "missing:": {
+    "message": "缺少："
+  }
+}

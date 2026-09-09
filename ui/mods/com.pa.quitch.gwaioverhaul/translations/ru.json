@@ -1,0 +1,788 @@
+{
+  "A map pack this war uses is missing": {
+    "message": "Отсутствует набор карт, используемый в этой войне"
+  },
+  "A mystery.": {
+    "message": "Загадка."
+  },
+  "A race this war fields is missing": {
+    "message": "Отсутствует раса, участвующая в этой войне"
+  },
+  "ADVANCED FABBERS:": {
+    "message": "ПРОДВИНУТЫЕ ФАБРИКАТОРЫ:"
+  },
+  "AI Settings": {
+    "message": "Настройки ИИ"
+  },
+  "ALLY CHANCE:": {
+    "message": "ШАНС СОЮЗНИКА:"
+  },
+  "ARMIES/COMMANDERS:": {
+    "message": "АРМИИ/КОММАНДЕРЫ:"
+  },
+  "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
+    "message": "Усовершенствованная оборонная технология открывает более мощные оборонительные сооружения. Продвинутые оборонительные сооружения строятся продвинутыми фабрикаторами."
+  },
+  "Advanced Fabrication Aircraft Upgrade Tech adds the ability for the advanced fabricator to move between planets.": {
+    "message": "Технология модернизации усовершенствованного авиафабрикатора позволяет продвинутому фабрикатору перемещаться между планетами."
+  },
+  "Advanced Fabrication Bot Upgrade Tech equips the advanced fabricator with the support commander's weapon.": {
+    "message": "Технология модернизации усовершенствованного бота-фабрикатора оснащает продвинутого фабрикатора оружием коммандера поддержки."
+  },
+  "Air Cooldown Tech": {
+    "message": "Технология перезарядки авиазаводов"
+  },
+  "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
+    "message": "Технология перезарядки авиазаводов вдвое сокращает время перезарядки между постройками для всех авиазаводов."
+  },
+  "An AI that does not know a race is not offered for it.": {
+    "message": "ИИ, не знакомый с расой, для неё не предлагается."
+  },
+  "Anti-Air Ammo Tech": {
+    "message": "Технология противовоздушной амуниции"
+  },
+  "Anti-Air Ammo Tech doubles all damage you deal to air units but halves damage to orbital units.": {
+    "message": "Технология противовоздушной амуниции удваивает весь урон, наносимый вами воздушным юнитам, но вдвое снижает урон орбитальным юнитам."
+  },
+  "Anti-Bot Ammo Tech": {
+    "message": "Технология амуниции против ботов"
+  },
+  "Anti-Bot Ammo Tech doubles all damage you deal to bots but halves damage to vehicles.": {
+    "message": "Технология амуниции против ботов удваивает весь урон, наносимый вами ботам, но вдвое снижает урон машинам."
+  },
+  "Anti-Commander Ammo Tech": {
+    "message": "Технология амуниции против коммандеров"
+  },
+  "Anti-Commander Ammo Tech doubles all damage you deal to commanders but halves damage to structures.": {
+    "message": "Технология амуниции против коммандеров удваивает весь урон, наносимый вами коммандерам, но вдвое снижает урон зданиям."
+  },
+  "Anti-Hover Ammo Tech": {
+    "message": "Технология амуниции против ховеров"
+  },
+  "Anti-Hover Ammo Tech doubles all damage you deal to hover units but halves damage to naval vessels.": {
+    "message": "Технология амуниции против ховеров удваивает весь урон, наносимый вами ховер-юнитам, но вдвое снижает урон кораблям."
+  },
+  "Anti-Orbital Ammo Tech": {
+    "message": "Технология противоорбитальной амуниции"
+  },
+  "Anti-Orbital Ammo Tech doubles all damage you deal to orbital units but halves damage to air units.": {
+    "message": "Технология противоорбитальной амуниции удваивает весь урон, наносимый вами орбитальным юнитам, но вдвое снижает урон воздушным юнитам."
+  },
+  "Anti-Ship Ammo Tech": {
+    "message": "Технология противокорабельной амуниции"
+  },
+  "Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units.": {
+    "message": "Технология противокорабельной амуниции удваивает весь урон, наносимый вами кораблям, но вдвое снижает урон ховер-юнитам."
+  },
+  "Anti-Structure Ammo Tech": {
+    "message": "Технология амуниции против зданий"
+  },
+  "Anti-Structure Ammo Tech doubles all damage you deal to structures but halves damage to mobile units excluding commanders.": {
+    "message": "Технология амуниции против зданий удваивает весь урон, наносимый вами зданиям, но вдвое снижает урон мобильным юнитам, за исключением коммандеров."
+  },
+  "Anti-Tank Ammo Tech": {
+    "message": "Технология противотанковой амуниции"
+  },
+  "Anti-Tank Ammo Tech doubles all damage you deal to vehicles but halves damage to bots.": {
+    "message": "Технология противотанковой амуниции удваивает весь урон, наносимый вами машинам, но вдвое снижает урон ботам."
+  },
+  "Applied to AI commanders and units preferred by the faction.": {
+    "message": "Применяется к коммандерам ИИ и юнитам, предпочитаемым фракцией."
+  },
+  "Apply Settings": {
+    "message": "Применить настройки"
+  },
+  "Armies:": {
+    "message": "Армии:"
+  },
+  "Artemis Upgrade Tech allows targeting of planetary units by the railgun platform.": {
+    "message": "Технология модернизации Artemis позволяет рельсовому орудию платформы поражать планетарные юниты."
+  },
+  "Artillery Ammunition Tech increases the damage of all artillery structures by 25% and reduces their ammunition cost by 90%. Requires technology to build artillery structures and units.": {
+    "message": "Технология амуниции артиллерии увеличивает урон всех артиллерийских зданий на 25% и снижает стоимость их боеприпасов на 90%. Требует технологию строительства артиллерийских зданий и юнитов."
+  },
+  "Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200% and increases its carry capacity to 12 units.": {
+    "message": "Технология модернизации \"Астрея\" увеличивает скорость межпланетного перемещения орбитального посадочного модуля на 200% и повышает его вместимость до 12 юнитов."
+  },
+  "Atlas Upgrade Tech doubles the health of the seismic titan.": {
+    "message": "Технология модернизации Atlas удваивает прочность сейсмического титана."
+  },
+  "Available Tech": {
+    "message": "Доступная технология"
+  },
+  "Available Tech in a system never changes.": {
+    "message": "Доступная технология в системе никогда не меняется."
+  },
+  "Avenger Upgrade Tech adds a railgun to the orbital fighter.": {
+    "message": "Технология модернизации Avenger добавляет орбитальному истребителю рельсовое орудие."
+  },
+  "BASIC FABBERS:": {
+    "message": "БАЗОВЫЕ ФАБРИКАТОРЫ:"
+  },
+  "BASIC: base game tech cards": {
+    "message": "БАЗОВЫЙ: карты технологий из базовой игры"
+  },
+  "BEGINNER: you completed the tutorial": {
+    "message": "НОВИЧОК: вы прошли обучение"
+  },
+  "BOUNTIES: earn an economic multiplier for every kill.": {
+    "message": "НАГРАДЫ: получайте экономический множитель за каждое убийство."
+  },
+  "BRONZE: you beat vanilla Galactic War": {
+    "message": "БРОНЗА: вы прошли обычную Галактическую Войну"
+  },
+  "Barnacle Upgrade Tech allows the assisting of all builds by the support barge. Disables the auto-repair feature.": {
+    "message": "Технология модернизации Barnacle позволяет барже поддержки помогать любому строительству. Отключает функцию автопочинки."
+  },
+  "Barracuda Upgrade Tech increases the rate of fire of the submarine by 200%.": {
+    "message": "Технология модернизации \"Барракуды\" увеличивает скорострельность подводной лодки на 200%."
+  },
+  "Beginner": {
+    "message": "Новичок"
+  },
+  "Bigger galaxies will result in more commanders, larger maps, higher CPU and RAM requirements, and will likely pose a greater challenge to complete.": {
+    "message": "Большие галактики означают больше коммандеров, более крупные карты, повышенные требования к CPU и RAM и, скорее всего, более серьёзное испытание."
+  },
+  "Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs.": {
+    "message": "Технология модернизации пусковой установки \"Бум\" заменяет Dox на Boom в Lob. Позволяет строить Lob."
+  },
+  "Bot Cooldown Tech": {
+    "message": "Технология перезарядки заводов ботов"
+  },
+  "Bot Cooldown Tech halves the cooldown time between builds for all bot factories.": {
+    "message": "Технология перезарядки заводов ботов вдвое сокращает время перезарядки между постройками для всех заводов ботов."
+  },
+  "Bounty Tech": {
+    "message": "Технология наград"
+  },
+  "Bounty tech enables the bounties game modifier in every system.": {
+    "message": "Технология наград включает модификатор игры «Награды» в каждой системе."
+  },
+  "Bugs": {
+    "message": "Bugs"
+  },
+  "CASUAL: you have some hours in PA": {
+    "message": "КАЗУАЛЬНЫЙ: у вас есть несколько часов в PA"
+  },
+  "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
+    "message": "CLUSTER: наземные. Использует Angel и Colonel как Коммандеров Помощников и не может их строить."
+  },
+  "COMMANDER TRANSPORT:": {
+    "message": "ТРАНСПОРТ КОММАНДЕРА:"
+  },
+  "CUSTOM: create your own challenge": {
+    "message": "ПОЛЬЗОВАТЕЛЬСКИЙ: создайте собственное испытание"
+  },
+  "Catalyst Upgrade Tech doubles the health of the Catalyst and halves its cost.": {
+    "message": "Усовершенствованная технология \"Катализатора\" удваивает прочность Catalyst и вдвое снижает его стоимость."
+  },
+  "Chance of a system allowing you to land outside spawn zones.": {
+    "message": "Шанс того, что система позволит высадиться за пределами стартовых зон."
+  },
+  "Chance of a system awarding bounties for army kills.": {
+    "message": "Шанс того, что система будет давать награды за убийства."
+  },
+  "Chance of an allied Commander being present in a system.": {
+    "message": "Шанс присутствия союзного Коммандера в системе."
+  },
+  "Chance of eradication mode being enabled.": {
+    "message": "Шанс включения режима уничтожения."
+  },
+  "Chance of more than one faction being present in a system.": {
+    "message": "Шанс присутствия в системе более одной фракции."
+  },
+  "Chance per system of a Commander death in a battle defeating all Commanders of that faction in the system.": {
+    "message": "Шанс на систему, что гибель Коммандера в бою приведёт к поражению всех Коммандеров этой фракции в системе."
+  },
+  "Co-Op Settings": {
+    "message": "Настройки кооператива"
+  },
+  "Co-op host setup": {
+    "message": "Подготовка хоста кооператива"
+  },
+  "Co-op shared setup": {
+    "message": "Общая подготовка кооператива"
+  },
+  "Colonel": {
+    "message": "Colonel"
+  },
+  "Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal.": {
+    "message": "Технология модернизации \"Коммандера\" увеличивает урон Uber Cannon на 300% и позволяет разбирать дружественных Коммандеров на металл."
+  },
+  "Complete Basic Factory Tech": {
+    "message": "Полная базовая заводская технология"
+  },
+  "Complete Basic Tech enables building of basic air, bot, and vehicle units and factories. Basic factories are built via your commander or any basic fabricator.": {
+    "message": "Полная базовая технология открывает строительство базовых воздушных, бото- и автоюнитов и заводов. Базовые заводы строит ваш коммандер или любой базовый фабрикатор."
+  },
+  "Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%, and teleport energy costs by 75%.": {
+    "message": "Полная энергетическая технология снижает энергозатраты разведывательных зданий на 75%, энергозатраты оружия на 75% и энергозатраты телепортов на 75%."
+  },
+  "Complete air tech enables building of all mobile air units and factories. Basic air factories are built via your commander or any basic fabricator. Advanced factories are built via a basic or advanced air fabricator.": {
+    "message": "Полная авиатехнология открывает строительство всех мобильных воздушных юнитов и авиазаводов. Базовые авиазаводы строит ваш коммандер или любой базовый фабрикатор. Продвинутые заводы строит базовый или продвинутый авиафабрикатор."
+  },
+  "Configure campaign options.": {
+    "message": "Настройте параметры кампании."
+  },
+  "Contains every factory on every tier of the tech tree.": {
+    "message": "Содержит все заводы всех уровней технологического древа."
+  },
+  "Contains no basic land or air factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked.": {
+    "message": "Не содержит базовых наземных и авиазаводов, только Lob и Пушки для боевых единиц, которые строит коммандер. Вдвое снижает стоимость обоих. Все наземные юниты можно строить из Пушки для боевых единиц по мере их открытия."
+  },
+  "DIAMOND: your loadouts are OP": {
+    "message": "АЛМАЗ: ваше снаряжение имбовое"
+  },
+  "Deck:": {
+    "message": "Колода:"
+  },
+  "Delay before AI realises it cannot expand.": {
+    "message": "Задержка, прежде чем ИИ поймёт, что не может расширяться."
+  },
+  "Delay in creating new bases.": {
+    "message": "Задержка создания новых баз."
+  },
+  "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
+    "message": "Развёрнутые тайными силами Hegemony на время Century War, они распространились настолько, что, судя по всему, после окончания войны сами обрели способность заселять планеты, либо это была отчаянная попытка Xziphid отсрочить поражение."
+  },
+  "Distance examined when choosing spawn.": {
+    "message": "Дистанция, оцениваемая при выборе точки высадки."
+  },
+  "ECONOMIC GROWTH:": {
+    "message": "РОСТ ЭКОНОМИКИ:"
+  },
+  "ERADICATE: all units of specific types must be eradicated.": {
+    "message": "УНИЧТОЖЕНИЕ: все юниты определённых типов должны быть уничтожены."
+  },
+  "ERADICATION CHANCE:": {
+    "message": "ШАНС УНИЧТОЖЕНИЯ:"
+  },
+  "Each faction has its own style of play affecting Sub Commanders and enemy commanders:": {
+    "message": "У каждой фракции свой стиль игры, влияющий на Коммандеров Помощников и вражеских коммандеров:"
+  },
+  "Each player picks their own race when they choose their loadout. Requires Separate loadout &amp; tech.": {
+    "message": "Каждый игрок выбирает свою расу при выборе снаряжения. Требует раздельного снаряжения &amp; технологий."
+  },
+  "Eco bonus per army kill.": {
+    "message": "Экономический бонус за каждое убийство."
+  },
+  "Economy Fabrication Tech reduces metal build costs of all metal and energy production and storage structures by 50%": {
+    "message": "Технология производства экономических сооружений снижает стоимость постройки в металле всех зданий добычи и хранения металла и энергии на 50%"
+  },
+  "Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons. Halves their cost.": {
+    "message": "Наделите подчинённых полномочиями и делегируйте свой путь к победе. Ваш коммандер может строить Colonel — коммандеров-заместителей, вооружённых Uber Cannon. Вдвое снижает их стоимость."
+  },
+  "Enable the missing mods and restart Planetary Annihilation to continue this war.": {
+    "message": "Включите отсутствующие моды и перезапустите Planetary Annihilation, чтобы продолжить эту войну."
+  },
+  "Encounter large planets and systems much sooner.": {
+    "message": "Встречайте большие планеты и системы гораздо раньше."
+  },
+  "Eradicate": {
+    "message": "Уничтожение"
+  },
+  "Eradication Tech": {
+    "message": "Технология уничтожения"
+  },
+  "Eradication tech enables the eradicate game modifier in every system.": {
+    "message": "Технология уничтожения включает модификатор игры «Уничтожение» в каждой системе."
+  },
+  "Exiles": {
+    "message": "Exiles"
+  },
+  "FOUNDATION: air/navy": {
+    "message": "FOUNDATION: авиация/флот"
+  },
+  "Factory cooldown decreased": {
+    "message": "Сокращение перезарядки заводов"
+  },
+  "Fights for you.": {
+    "message": "Сражается за вас."
+  },
+  "GALACTIC WAR OVERHAUL: over 150 additional cards.": {
+    "message": "ПЕРЕРАБОТАННАЯ ГАЛАКТИЧЕСКАЯ ВОЙНА: более 150 дополнительных карт."
+  },
+  "GOLD: you beat the Queller AI mod": {
+    "message": "ЗОЛОТО: вы победили мод ИИ Queller"
+  },
+  "GW Server Mods is not enabled": {
+    "message": "GW Server Mods не включён"
+  },
+  "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
+    "message": "Технология модернизации \"Галлей\" удваивает прочность двигателя дельта-V и вдвое снижает его стоимость."
+  },
+  "Helios Upgrade Tech removes the delay between the invasion titan arriving at a planet and responding to orders and increases its health by 50%.": {
+    "message": "Технология модернизации Helios убирает задержку между прибытием титана вторжения на планету и реакцией на приказы и увеличивает его прочность на 50%."
+  },
+  "Host Choosing Tech": {
+    "message": "Хост выбирает технологию"
+  },
+  "How well the AI picks who to attack.": {
+    "message": "Насколько хорошо ИИ выбирает, кого атаковать."
+  },
+  "How well the AI scouts.": {
+    "message": "Насколько хорошо ИИ ведёт разведку."
+  },
+  "IRON: you no longer turtle": {
+    "message": "ЖЕЛЕЗНЫЙ: вы больше не отсиживаетесь в обороне"
+  },
+  "Incompatible Mods": {
+    "message": "Несовместимые моды"
+  },
+  "Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders.": {
+    "message": "Технология модернизации \"Инферно\" добавляет огнемётному танку ремонтный манипулятор Stitch. Они не чинят, получив приказ атаковать."
+  },
+  "Jig Upgrade Tech adds storage to gas mining and doubles its energy production.": {
+    "message": "Технология модернизации \"Джига\" добавляет газодобыче хранилище и удваивает её выработку энергии."
+  },
+  "Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage.": {
+    "message": "Технология модернизации \"Кайдзю\" заменяет бортовые орудия дополнительными главными орудиями, что увеличивает дальность и урон."
+  },
+  "Kessler": {
+    "message": "Kessler"
+  },
+  "Kessler Upgrade Tech": {
+    "message": "Технология модернизации Kessler"
+  },
+  "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
+    "message": "Технология модернизации Kessler позволяет орбитальным минам взрываться без самоуничтожения."
+  },
+  "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
+    "message": "Технология модернизации \"Кракена\" увеличивает дальность ракет продвинутой подводной лодки на 200%."
+  },
+  "LAND ANYWHERE CHANCE:": {
+    "message": "ШАНС «НАЧАТЬ ГДЕ УГОДНО»:"
+  },
+  "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
+    "message": "НАЧАТЬ ГДЕ УГОДНО: игроки могут начать в любой точке пригодных стартовых планет."
+  },
+  "LEGONIS MACHINA: vehicles": {
+    "message": "LEGONIS MACHINA: машины"
+  },
+  "Land Anywhere Tech": {
+    "message": "Технология «Начать где угодно»"
+  },
+  "Land Anywhere tech enables the land anywhere game modifier in every system.": {
+    "message": "Технология «Начать где угодно» включает модификатор игры «Начать где угодно» в каждой системе."
+  },
+  "Laser Defense Tower Upgrade Tech increases the range of the turret by 50%.": {
+    "message": "Технология модернизации лазерной башни увеличивает дальность башни на 50%."
+  },
+  "Legion": {
+    "message": "Legion"
+  },
+  "Lob Upgrade Tech increases the range of the Lob by 150%. Fires twice as fast and no longer costs metal to recharge its ammo.": {
+    "message": "Технология модернизации \"Лоба\" увеличивает дальность Lob на 150%. Стреляет вдвое быстрее, а перезарядка боеприпасов больше не стоит металла."
+  },
+  "Locusts Upgrade Tech adds splash damage to nanoswarms.": {
+    "message": "Технология модернизации \"Саранчи\" добавляет нанороям урон по площади."
+  },
+  "Lucky Commander": {
+    "message": "Коммандер-счастливчик"
+  },
+  "MLA": {
+    "message": "MLA"
+  },
+  "Map packs changed since this war began:": {
+    "message": "Наборы карт, изменившиеся с начала этой войны:"
+  },
+  "Maximum delay between units produced from a factory.": {
+    "message": "Максимальная задержка между юнитами, производимыми заводом."
+  },
+  "Maximum number of advanced fabbers per army.": {
+    "message": "Максимальное число продвинутых фабрикаторов на армию."
+  },
+  "Maximum number of basic fabbers per army.": {
+    "message": "Максимальное число базовых фабрикаторов на армию."
+  },
+  "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
+    "message": "Технология модернизации Mend позволяет продвинутому боевому фабрикатору помогать любому строительству. Отключает функцию автопочинки."
+  },
+  "Minelayer": {
+    "message": "Минёр"
+  },
+  "Minimum delay between units produced from a factory.": {
+    "message": "Минимальная задержка между юнитами, производимыми заводом."
+  },
+  "Minimum number of armies/Commanders per faction in every system irrespective of distance.": {
+    "message": "Минимальное число армий/Коммандеров на фракцию в каждой системе независимо от расстояния."
+  },
+  "Missing Map Packs": {
+    "message": "Отсутствующие наборы карт"
+  },
+  "Missing Races": {
+    "message": "Отсутствующие расы"
+  },
+  "Mod:": {
+    "message": "Мод:"
+  },
+  "Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build orbital battleships, any resource generating unit or structure": {
+    "message": "Изменяет Jig так, что их можно строить где угодно, ценой невозможности строить другие ресурсные здания. Они на 75% дешевле, но производят на 30% меньше металла и энергии и наносят на 90% меньше урона при гибели. Орбитальные фабрикаторы могут строить все базовые здания. Содержит все базовые и продвинутые орбитальные юниты, но никогда не позволит строить орбитальные линкоры и любые юниты или здания, производящие ресурсы"
+  },
+  "Mounting game files": {
+    "message": "Подключение файлов игры"
+  },
+  "NEW BASE DELAY:": {
+    "message": "ЗАДЕРЖКА НОВОЙ БАЗЫ:"
+  },
+  "Narwhal Upgrade Tech doubles the rate of fire of all weapons.": {
+    "message": "Технология модернизации \"Нарвала\" удваивает скорострельность всех его орудий."
+  },
+  "Naval Commander": {
+    "message": "Коммандер ВМС"
+  },
+  "Naval Cooldown Tech": {
+    "message": "Технология перезарядки верфей"
+  },
+  "Naval Cooldown Tech halves the cooldown time between builds for all naval factories.": {
+    "message": "Технология перезарядки верфей вдвое сокращает время перезарядки между постройками для всех военно-морских заводов."
+  },
+  "No enemy faction shares a race with you or another enemy faction until every race in play has been used.": {
+    "message": "Ни одна вражеская фракция не делит расу с вами или другой вражеской фракцией, пока не будут задействованы все расы в игре."
+  },
+  "Nuclear Missile Launcher Upgrade Tech increases the damage dealt to commanders and orbital from the LR-96 Pacifier Nuclear Missiles by 200%.": {
+    "message": "Технология модернизации ядерной ракетной пусковой установки увеличивает урон ядерных ракет LR-96 Pacifier по коммандерам и орбитальным юнитам на 200%."
+  },
+  "Number of Commanders in the boss's army.": {
+    "message": "Количество Коммандеров в армии босса."
+  },
+  "Number of systems until AI tech appears.": {
+    "message": "Число систем до появления технологий ИИ."
+  },
+  "Number of systems until additional armies/Commanders appear per faction.": {
+    "message": "Число систем до появления дополнительных армий/Коммандеров у каждой фракции."
+  },
+  "Nyx": {
+    "message": "Nyx"
+  },
+  "Nyx Upgrade Tech": {
+    "message": "Технология модернизации Nyx"
+  },
+  "Nyx Upgrade Tech doubles the jamming and radar radius of the jamming vehicle.": {
+    "message": "Технология модернизации Nyx удваивает радиус глушения и радара машины-глушителя."
+  },
+  "Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser. Doubles the rate of fire of the other weapons.": {
+    "message": "Технология модернизации \"Омеги\" заменяет нижний лазер линкора лазером SXX. Удваивает скорострельность остальных орудий."
+  },
+  "Orbital Bombardment Tech": {
+    "message": "Технология орбитальной бомбардировки"
+  },
+  "Orbital Bombardment Tech removes all trees, lava, and water from the systems you fight in.": {
+    "message": "Технология орбитальной бомбардировки убирает все деревья, лаву и воду из систем, в которых вы сражаетесь."
+  },
+  "Orbital Cooldown Tech": {
+    "message": "Технология перезарядки орбитальных заводов"
+  },
+  "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
+    "message": "Технология перезарядки орбитальных заводов вдвое сокращает время перезарядки между постройками для всех орбитальных заводов."
+  },
+  "PENCHANT: increased personality": {
+    "message": "PENCHANT: более выраженный характер"
+  },
+  "PERSONALITY MODIFIERS:": {
+    "message": "МОДИФИКАТОРЫ ХАРАКТЕРА:"
+  },
+  "PLATINUM: one enemy is no challenge": {
+    "message": "ПЛАТИНА: один враг — не испытание"
+  },
+  "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
+    "message": "Технология модернизации \"Пеликана\" позволяет воздушным транспортам перевозить коммандеров. Каждый юнит может стрелять во время перевозки."
+  },
+  "Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar.": {
+    "message": "Технология модернизации планетарного радара увеличивает обзор планетарного радара до дальности его радара."
+  },
+  "Platoon": {
+    "message": "Взвод"
+  },
+  "Player Slots:": {
+    "message": "Слоты игроков:"
+  },
+  "Players returned": {
+    "message": "Вернувшиеся игроки"
+  },
+  "Prefers air and navy.": {
+    "message": "Предпочитает авиацию и флот."
+  },
+  "Prefers bots and vehicles; applies tech to structures.": {
+    "message": "Предпочитает ботов и машины; применяет технологии к зданиям."
+  },
+  "Prefers bots.": {
+    "message": "Предпочитает ботов."
+  },
+  "Prefers orbital.": {
+    "message": "Предпочитает орбитальные юниты."
+  },
+  "Prefers vehicles.": {
+    "message": "Предпочитает машины."
+  },
+  "Processing AI mods": {
+    "message": "Обработка модов ИИ"
+  },
+  "Processing biome mods": {
+    "message": "Обработка модов биомов"
+  },
+  "Processing game config": {
+    "message": "Обработка конфигурации игры"
+  },
+  "Processing tech cards": {
+    "message": "Обработка карт технологий"
+  },
+  "QUELLER: greater challenge at the cost of performance": {
+    "message": "QUELLER: более серьёзное испытание ценой производительности"
+  },
+  "REINFORCEMENT SYSTEM:": {
+    "message": "СИСТЕМА ПОДКРЕПЛЕНИЙ:"
+  },
+  "REVENANTS: orbital": {
+    "message": "REVENANTS: орбитальные"
+  },
+  "Race": {
+    "message": "Раса"
+  },
+  "Race mods changed since this war began:": {
+    "message": "Моды рас, изменившиеся с начала этой войны:"
+  },
+  "Radar Jamming Station": {
+    "message": "Radar Jamming Station"
+  },
+  "Radar Jamming Station Upgrade Tech": {
+    "message": "Технология модернизации Radar Jamming Station"
+  },
+  "Radar Jamming Station Upgrade Tech doubles the jamming radius of the radar jammer.": {
+    "message": "Технология модернизации Radar Jamming Station удваивает радиус глушения радарного глушителя."
+  },
+  "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
+    "message": "Заменяет обычные ядерные ракеты новым дешёвым маломощным вариантом и во многом полагается на него как в нападении, так и в обороне. Ради этого отказывается от большинства продвинутых оборонительных сооружений."
+  },
+  "SCOUTING:": {
+    "message": "РАЗВЕДКА:"
+  },
+  "SILVER: you beat the skirmish AI": {
+    "message": "СЕРЕБРО: вы победили ИИ в схватке"
+  },
+  "SUDDEN DEATH CHANCE:": {
+    "message": "ШАНС МГНОВЕННОЙ СМЕРТИ:"
+  },
+  "SUDDEN DEATH: any commander death on a team kills the entire team.": {
+    "message": "МГНОВЕННАЯ СМЕРТЬ: гибель любого коммандера команды уничтожает всю команду."
+  },
+  "SYNCHRONOUS: bots": {
+    "message": "SYNCHRONOUS: боты"
+  },
+  "Saving war": {
+    "message": "Сохранение войны"
+  },
+  "Scaling For:": {
+    "message": "Масштаб для:"
+  },
+  "Separate": {
+    "message": "Раздельные"
+  },
+  "Separate races": {
+    "message": "Раздельные расы"
+  },
+  "Shared": {
+    "message": "Общие"
+  },
+  "Spark Upgrade Tech increases the tesla bot's splash damage radius by 200%.": {
+    "message": "Технология модернизации \"Искры\" увеличивает радиус урона по площади бота-тесла на 200%."
+  },
+  "Speed the economy grows as you get deeper into the galaxy.": {
+    "message": "Скорость роста экономики по мере продвижения вглубь галактики."
+  },
+  "Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 200%.": {
+    "message": "Технология модернизации \"Прядильщика\" увеличивает скорострельность мобильной ПВО на 200%."
+  },
+  "Squall Upgrade Tech allows you to issue orders to drones.": {
+    "message": "Технология модернизации \"Шквала\" позволяет отдавать приказы дронам."
+  },
+  "Starting economy.": {
+    "message": "Стартовая экономика."
+  },
+  "Static Tech": {
+    "message": "Статичные технологии"
+  },
+  "Static tech": {
+    "message": "Статичные технологии"
+  },
+  "Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator. Disables the auto-repair feature.": {
+    "message": "Технология модернизации Stitch позволяет боевому фабрикатору помогать любому строительству. Отключает функцию автопочинки."
+  },
+  "Structure Engine Tech": {
+    "message": "Технология двигателей зданий"
+  },
+  "Structure Engine Tech increases the speed of all mobile structures by 50%": {
+    "message": "Технология двигателей зданий увеличивает скорость всех мобильных зданий на 50%"
+  },
+  "Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing.": {
+    "message": "Технология модернизации \"Страйкера\" даёт штурмовой машине способность атаковать самоуничтожением."
+  },
+  "Sub Commander Duplication Tech": {
+    "message": "Технология дублирования Коммандеров Помощников"
+  },
+  "Sub Commander Duplication Tech adds an extra Commander to every Sub Commander's army.": {
+    "message": "Технология дублирования Коммандеров Помощников добавляет дополнительного Коммандера в армию каждого Коммандера Помощника."
+  },
+  "Sub Commander Fabber Tech": {
+    "message": "Технология фабрикаторов Коммандеров Помощников"
+  },
+  "Sub Commander Fabber Tech increases the number of fabbers each Sub Commander may use by 50%.": {
+    "message": "Технология фабрикаторов Коммандеров Помощников увеличивает число фабрикаторов, которыми может пользоваться каждый Коммандер Помощник, на 50%."
+  },
+  "Sub Commander Tactics Tech": {
+    "message": "Технология тактики Коммандеров Помощников"
+  },
+  "Sub Commander Tactics Tech allows Sub Commanders to make smarter decisions when scouting, fighting, expanding, and escaping danger.": {
+    "message": "Технология тактики Коммандеров Помощников позволяет Коммандерам Помощникам принимать более разумные решения при разведке, бое, расширении и уходе от опасности."
+  },
+  "Sudden Death Tech": {
+    "message": "Технология мгновенной смерти"
+  },
+  "Sudden Death tech enables the sudden death game modifier in every system.": {
+    "message": "Технология мгновенной смерти включает модификатор игры «Мгновенная смерть» в каждой системе."
+  },
+  "TARGET SELECTION:": {
+    "message": "ВЫБОР ЦЕЛЕЙ:"
+  },
+  "TECH SYSTEM:": {
+    "message": "СИСТЕМА ТЕХНОЛОГИЙ:"
+  },
+  "TITANS: base game AI": {
+    "message": "TITANS: ИИ базовой игры"
+  },
+  "Tactical": {
+    "message": "Тактик"
+  },
+  "Tech:": {
+    "message": "Технологии:"
+  },
+  "Terminal Commander": {
+    "message": "Обречённый Коммандер"
+  },
+  "The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 400%.": {
+    "message": "Снаряжение Бионического нейтрализующего коммандера содержит одно хранилище данных, но увеличивает скорострельность Коммандера на 100%, снижает энергопотребление Uber Cannon на 75%, увеличивает прочность на 200% и скорость на 400%."
+  },
+  "The Commander can mass teleport itself and all units within weapons range to anywhere in the system, but they are highly vulnerable to attack afterwards.": {
+    "message": "Коммандер может массово телепортировать себя и все юниты в радиусе действия оружия в любую точку системы, но после этого они крайне уязвимы для атаки."
+  },
+  "The Lucky Commander is offered four cards instead of three at every planet.": {
+    "message": "Коммандеру-счастливчику на каждой планете предлагают четыре карты вместо трёх."
+  },
+  "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
+    "message": "Снаряжение Коммандера ВМС содержит все военно-морские заводы. Увеличивает количество воды и лавы на подходящих планетах."
+  },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "Тот же номер воссоздаёт ту же галактику и тех же врагов при условии, что фракция, сложность и настройки игры совпадают и установлены те же моды. Названия планет всё равно меняются. Оставьте поле как есть, чтобы получить новую галактику."
+  },
+  "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
+    "message": "Юниты, которыми сражаетесь вы и ваши Коммандеры Помощники. ИИ каждой расы выбирается кнопкой ИИ."
+  },
+  "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
+    "message": "Юниты, которыми сражаетесь вы и ваши Коммандеры Помощники. Можно выбрать только расы, с которыми была создана война хоста."
+  },
+  "This card will be offered as part of the first draw.": {
+    "message": "Эта карта будет предложена в первой раздаче."
+  },
+  "This war cannot be fought:": {
+    "message": "Эту войну нельзя вести:"
+  },
+  "Titan Ammunition Tech": {
+    "message": "Технология амуниции титанов"
+  },
+  "Titan Ammunition Tech increases the damage of all titans by 25%.": {
+    "message": "Технология амуниции титанов увеличивает урон всех титанов на 25%."
+  },
+  "Titan Armour Tech": {
+    "message": "Технология брони титанов"
+  },
+  "Titan Armour Tech increases the health of all Titans by 50%.": {
+    "message": "Технология брони титанов увеличивает прочность всех титанов на 50%."
+  },
+  "Titan Combat Tech": {
+    "message": "Боевая технология титанов"
+  },
+  "Titan Combat Tech increases the speed of all titans by 20%, health by 50%, and damage by 25%": {
+    "message": "Боевая технология титанов увеличивает скорость всех титанов на 20%, прочность на 50% и урон на 25%"
+  },
+  "Toggle Favourite": {
+    "message": "Добавить/убрать из избранного"
+  },
+  "Tsunami Tech": {
+    "message": "Технология цунами"
+  },
+  "Tsunami Tech increases the water and lava level in all systems you fight in.": {
+    "message": "Технология цунами повышает уровень воды и лавы во всех системах, в которых вы сражаетесь."
+  },
+  "Tweaks to how the AI plays.": {
+    "message": "Корректировки манеры игры ИИ."
+  },
+  "UBER: you hate winning": {
+    "message": "UBER: вы ненавидите побеждать"
+  },
+  "UNIT DELAY (MAX):": {
+    "message": "ЗАДЕРЖКА ЮНИТОВ (МАКС.):"
+  },
+  "UNIT DELAY (MIN):": {
+    "message": "ЗАДЕРЖКА ЮНИТОВ (МИН.):"
+  },
+  "Unique Races": {
+    "message": "Уникальные расы"
+  },
+  "Unique races": {
+    "message": "Уникальные расы"
+  },
+  "Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport and removes all cooldowns.": {
+    "message": "Технология модернизации Unit Cannon удваивает пусковую вместимость этого межпланетного транспорта и убирает все перезарядки."
+  },
+  "Unknown Unit": {
+    "message": "Неизвестный юнит"
+  },
+  "Unlocked": {
+    "message": "Открытые"
+  },
+  "Use smaller, mostly single planet systems.": {
+    "message": "Использовать меньшие системы, в основном с одной планетой."
+  },
+  "Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders.": {
+    "message": "Технология модернизации \"Авангарда\" добавляет огнемётному танку ремонтный манипулятор Mend. Они не чинят, получив приказ атаковать."
+  },
+  "Vehicle Cooldown Tech": {
+    "message": "Технология перезарядки автозаводов"
+  },
+  "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
+    "message": "Технология перезарядки автозаводов вдвое сокращает время перезарядки между постройками для всех автозаводов."
+  },
+  "Waiting for players": {
+    "message": "Ожидание игроков"
+  },
+  "War:": {
+    "message": "Война:"
+  },
+  "Ward": {
+    "message": "Ward"
+  },
+  "Ward Upgrade Tech": {
+    "message": "Технология модернизации Ward"
+  },
+  "Ward Upgrade Tech causes the mobile anti-nuke to start fully charged.": {
+    "message": "Технология модернизации Ward делает мобильную ПРО полностью заряженной с момента постройки."
+  },
+  "Warp Commander": {
+    "message": "Варп-Коммандер"
+  },
+  "You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors, no Mining Platforms, and no basic land or air factories.": {
+    "message": "Вы явились с толстым кошельком, но почти ни с чем другим. Огромные хранилища, но никаких добытчиков металла, никаких добывающих платформ и никаких базовых наземных или авиазаводов."
+  },
+  "You're dying, but you have one last war left in you. Your units' health decreases over time, and your commander's fastest of all. Life is short and must be lived to the full, so unit damage and movement is doubled and costs are halved. Life through victory, Commander!": {
+    "message": "Вы умираете, но на одну последнюю войну вас ещё хватит. Прочность ваших юнитов со временем падает, а у вашего коммандера — быстрее всех. Жизнь коротка, и прожить её надо на полную, поэтому урон и скорость юнитов удвоены, а стоимость снижена вдвое. Жизнь через победу, Коммандер!"
+  },
+  "is not enabled": {
+    "message": "не включён"
+  },
+  "its mod is not installed": {
+    "message": "её мод не установлен"
+  },
+  "missing:": {
+    "message": "отсутствует:"
+  }
+}

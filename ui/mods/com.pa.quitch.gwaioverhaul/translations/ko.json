@@ -1,0 +1,788 @@
+{
+  "A map pack this war uses is missing": {
+    "message": "이 전쟁에 사용되는 맵 팩이 없습니다"
+  },
+  "A mystery.": {
+    "message": "미스터리입니다."
+  },
+  "A race this war fields is missing": {
+    "message": "이 전쟁에 참전하는 종족이 없습니다"
+  },
+  "ADVANCED FABBERS:": {
+    "message": "상급 건설 유닛:"
+  },
+  "AI Settings": {
+    "message": "AI 설정"
+  },
+  "ALLY CHANCE:": {
+    "message": "아군 확률:"
+  },
+  "ARMIES/COMMANDERS:": {
+    "message": "군대/지휘관:"
+  },
+  "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
+    "message": "상급 방어 기술은 더 강력한 방어 체계를 구축할 수 있게 해줍니다. 상급 방어 시설은 상급 건설 유닛이 건설합니다."
+  },
+  "Advanced Fabrication Aircraft Upgrade Tech adds the ability for the advanced fabricator to move between planets.": {
+    "message": "상급 건설 항공기 업그레이드 기술은 상급 건설 유닛이 행성 사이를 이동할 수 있게 합니다."
+  },
+  "Advanced Fabrication Bot Upgrade Tech equips the advanced fabricator with the support commander's weapon.": {
+    "message": "상급 건설 로봇 업그레이드 기술은 상급 건설 유닛에 지원 지휘관의 무기를 장착합니다."
+  },
+  "Air Cooldown Tech": {
+    "message": "항공 쿨다운 기술"
+  },
+  "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
+    "message": "항공 쿨다운 기술은 모든 항공 공장의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
+  },
+  "An AI that does not know a race is not offered for it.": {
+    "message": "종족을 알지 못하는 AI는 해당 종족에 제공되지 않습니다."
+  },
+  "Anti-Air Ammo Tech": {
+    "message": "대항공 탄약 기술"
+  },
+  "Anti-Air Ammo Tech doubles all damage you deal to air units but halves damage to orbital units.": {
+    "message": "대항공 탄약 기술은 항공 유닛에 주는 모든 피해를 두 배로 늘리지만 궤도 유닛에 주는 피해는 절반으로 줄입니다."
+  },
+  "Anti-Bot Ammo Tech": {
+    "message": "대로봇 탄약 기술"
+  },
+  "Anti-Bot Ammo Tech doubles all damage you deal to bots but halves damage to vehicles.": {
+    "message": "대로봇 탄약 기술은 로봇에 주는 모든 피해를 두 배로 늘리지만 차량에 주는 피해는 절반으로 줄입니다."
+  },
+  "Anti-Commander Ammo Tech": {
+    "message": "대지휘관 탄약 기술"
+  },
+  "Anti-Commander Ammo Tech doubles all damage you deal to commanders but halves damage to structures.": {
+    "message": "대지휘관 탄약 기술은 지휘관에게 주는 모든 피해를 두 배로 늘리지만 구조물에 주는 피해는 절반으로 줄입니다."
+  },
+  "Anti-Hover Ammo Tech": {
+    "message": "대호버 탄약 기술"
+  },
+  "Anti-Hover Ammo Tech doubles all damage you deal to hover units but halves damage to naval vessels.": {
+    "message": "대호버 탄약 기술은 호버 유닛에 주는 모든 피해를 두 배로 늘리지만 해양 유닛에 주는 피해는 절반으로 줄입니다."
+  },
+  "Anti-Orbital Ammo Tech": {
+    "message": "대궤도 탄약 기술"
+  },
+  "Anti-Orbital Ammo Tech doubles all damage you deal to orbital units but halves damage to air units.": {
+    "message": "대궤도 탄약 기술은 궤도 유닛에 주는 모든 피해를 두 배로 늘리지만 항공 유닛에 주는 피해는 절반으로 줄입니다."
+  },
+  "Anti-Ship Ammo Tech": {
+    "message": "대함 탄약 기술"
+  },
+  "Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units.": {
+    "message": "대함 탄약 기술은 해양 유닛에 주는 모든 피해를 두 배로 늘리지만 호버 유닛에 주는 피해는 절반으로 줄입니다."
+  },
+  "Anti-Structure Ammo Tech": {
+    "message": "대구조물 탄약 기술"
+  },
+  "Anti-Structure Ammo Tech doubles all damage you deal to structures but halves damage to mobile units excluding commanders.": {
+    "message": "대구조물 탄약 기술은 구조물에 주는 모든 피해를 두 배로 늘리지만 지휘관을 제외한 기동 유닛에 주는 피해는 절반으로 줄입니다."
+  },
+  "Anti-Tank Ammo Tech": {
+    "message": "대전차 탄약 기술"
+  },
+  "Anti-Tank Ammo Tech doubles all damage you deal to vehicles but halves damage to bots.": {
+    "message": "대전차 탄약 기술은 차량에 주는 모든 피해를 두 배로 늘리지만 로봇에 주는 피해는 절반으로 줄입니다."
+  },
+  "Applied to AI commanders and units preferred by the faction.": {
+    "message": "AI 지휘관과 진영이 선호하는 유닛에 적용됩니다."
+  },
+  "Apply Settings": {
+    "message": "설정 적용"
+  },
+  "Armies:": {
+    "message": "군대:"
+  },
+  "Artemis Upgrade Tech allows targeting of planetary units by the railgun platform.": {
+    "message": "아르테미스 업그레이드 기술은 레일건 플랫폼이 행성 위의 유닛을 조준할 수 있게 합니다."
+  },
+  "Artillery Ammunition Tech increases the damage of all artillery structures by 25% and reduces their ammunition cost by 90%. Requires technology to build artillery structures and units.": {
+    "message": "포격 무기 기술은 모든 포격 구조물의 공격 피해량을 25% 증가시키고 탄약 비용을 90% 감소시킵니다. 포격 구조물과 유닛을 건설할 수 있는 기술이 필요합니다."
+  },
+  "Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200% and increases its carry capacity to 12 units.": {
+    "message": "아스트라이오스 업그레이드 기술은 궤도 착륙선의 행성 간 이동 속도를 200% 증가시키고 수송 용량을 12유닛으로 늘립니다."
+  },
+  "Atlas Upgrade Tech doubles the health of the seismic titan.": {
+    "message": "아틀라스 업그레이드 기술은 사이즈믹 타이탄의 HP를 두 배로 늘립니다."
+  },
+  "Available Tech": {
+    "message": "획득 가능한 기술"
+  },
+  "Available Tech in a system never changes.": {
+    "message": "행성계에서 획득 가능한 기술은 절대 변하지 않습니다."
+  },
+  "Avenger Upgrade Tech adds a railgun to the orbital fighter.": {
+    "message": "어벤저 업그레이드 기술은 궤도 전투기에 레일건을 추가합니다."
+  },
+  "BASIC FABBERS:": {
+    "message": "기본 건설 유닛:"
+  },
+  "BASIC: base game tech cards": {
+    "message": "기본: 기본 게임 기술 카드"
+  },
+  "BEGINNER: you completed the tutorial": {
+    "message": "초보자: 튜토리얼을 완료했습니다"
+  },
+  "BOUNTIES: earn an economic multiplier for every kill.": {
+    "message": "현상금: 처치할 때마다 경제 배수를 얻습니다."
+  },
+  "BRONZE: you beat vanilla Galactic War": {
+    "message": "브론즈: 기본 은하계 전쟁을 완료했습니다"
+  },
+  "Barnacle Upgrade Tech allows the assisting of all builds by the support barge. Disables the auto-repair feature.": {
+    "message": "바나클 업그레이드 기술은 지원 바지선이 모든 건설을 보조할 수 있게 합니다. 자동 수리 기능이 비활성화됩니다."
+  },
+  "Barracuda Upgrade Tech increases the rate of fire of the submarine by 200%.": {
+    "message": "바라쿠다 업그레이드 기술은 잠수함의 발사 속도를 200% 증가시킵니다."
+  },
+  "Beginner": {
+    "message": "초보자"
+  },
+  "Bigger galaxies will result in more commanders, larger maps, higher CPU and RAM requirements, and will likely pose a greater challenge to complete.": {
+    "message": "은하계가 크면 지휘관 수가 많고 맵도 커지며, CPU 및 RAM 요구 사양도 높아지고 완료하기가 더 어려워집니다."
+  },
+  "Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs.": {
+    "message": "붐 업그레이드 기술은 Lob의 Dox를 Boom으로 교체합니다. Lob을 생산할 수 있게 합니다."
+  },
+  "Bot Cooldown Tech": {
+    "message": "로봇 쿨다운 기술"
+  },
+  "Bot Cooldown Tech halves the cooldown time between builds for all bot factories.": {
+    "message": "로봇 쿨다운 기술은 모든 로봇 공장의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
+  },
+  "Bounty Tech": {
+    "message": "현상금 기술"
+  },
+  "Bounty tech enables the bounties game modifier in every system.": {
+    "message": "현상금 기술은 모든 행성계에서 현상금 게임 모디파이어를 활성화합니다."
+  },
+  "Bugs": {
+    "message": "벅스"
+  },
+  "CASUAL: you have some hours in PA": {
+    "message": "캐주얼: PA를 몇 시간 플레이했습니다"
+  },
+  "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
+    "message": "클러스터: 지상. Angel과 Colonel을 부관으로 사용하며 이들을 생산할 수 없습니다."
+  },
+  "COMMANDER TRANSPORT:": {
+    "message": "지휘관 수송:"
+  },
+  "CUSTOM: create your own challenge": {
+    "message": "사용자 설정: 직접 도전 과제를 만드십시오"
+  },
+  "Catalyst Upgrade Tech doubles the health of the Catalyst and halves its cost.": {
+    "message": "카탈리스트 업그레이드 기술은 Catalyst의 HP를 두 배로 늘리고 비용을 절반으로 줄입니다."
+  },
+  "Chance of a system allowing you to land outside spawn zones.": {
+    "message": "행성계에서 시작 지역 밖에 착륙할 수 있을 확률입니다."
+  },
+  "Chance of a system awarding bounties for army kills.": {
+    "message": "행성계에서 군대 처치에 현상금을 지급할 확률입니다."
+  },
+  "Chance of an allied Commander being present in a system.": {
+    "message": "행성계에 아군 지휘관이 있을 확률입니다."
+  },
+  "Chance of eradication mode being enabled.": {
+    "message": "전멸 모드가 활성화될 확률입니다."
+  },
+  "Chance of more than one faction being present in a system.": {
+    "message": "행성계에 둘 이상의 진영이 있을 확률입니다."
+  },
+  "Chance per system of a Commander death in a battle defeating all Commanders of that faction in the system.": {
+    "message": "전투 중 지휘관 하나가 사망하면 그 행성계에 있는 해당 진영의 모든 지휘관이 패배할, 행성계당 확률입니다."
+  },
+  "Co-Op Settings": {
+    "message": "협동 설정"
+  },
+  "Co-op host setup": {
+    "message": "협동 호스트 설정"
+  },
+  "Co-op shared setup": {
+    "message": "협동 공유 설정"
+  },
+  "Colonel": {
+    "message": "Colonel"
+  },
+  "Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal.": {
+    "message": "지휘관 업그레이드 기술은 우버 캐논의 피해를 300% 증가시키고 아군 지휘관을 회수하여 금속을 얻을 수 있게 합니다."
+  },
+  "Complete Basic Factory Tech": {
+    "message": "최상급 기본 공장 기술"
+  },
+  "Complete Basic Tech enables building of basic air, bot, and vehicle units and factories. Basic factories are built via your commander or any basic fabricator.": {
+    "message": "최상급 기본 기술은 기본 항공, 로봇, 차량 유닛과 공장을 사용 가능하게 해줍니다. 기본 공장은 지휘관이나 모든 기본 건설 유닛이 건설할 수 있습니다."
+  },
+  "Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%, and teleport energy costs by 75%.": {
+    "message": "최상급 에너지 기술은 정보 시설의 에너지 비용을 75%, 무기의 에너지 비용을 75%, 텔레포트 에너지 비용을 75% 감소시킵니다."
+  },
+  "Complete air tech enables building of all mobile air units and factories. Basic air factories are built via your commander or any basic fabricator. Advanced factories are built via a basic or advanced air fabricator.": {
+    "message": "최상급 항공 기술은 모든 기동 항공 유닛과 공장을 사용 가능하게 해줍니다. 기본 항공 공장은 지휘관이나 모든 기본 건설 유닛이 건설할 수 있습니다. 상급 공장은 기본 또는 상급 건설 항공기가 건설합니다."
+  },
+  "Configure campaign options.": {
+    "message": "캠페인 옵션을 설정하십시오."
+  },
+  "Contains every factory on every tier of the tech tree.": {
+    "message": "테크 트리의 모든 티어에 있는 모든 공장을 포함합니다."
+  },
+  "Contains no basic land or air factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked.": {
+    "message": "기본 지상 공장이나 항공 공장이 없으며 지휘관이 만드는 Lob과 유닛 캐논만 있습니다. 두 가지 모두 비용이 절반으로 줍니다. 모든 지상 유닛은 잠금 해제되는 대로 유닛 캐논에서 생산할 수 있습니다."
+  },
+  "DIAMOND: your loadouts are OP": {
+    "message": "다이아몬드: 로드아웃이 너무 강합니다"
+  },
+  "Deck:": {
+    "message": "덱:"
+  },
+  "Delay before AI realises it cannot expand.": {
+    "message": "AI가 확장할 수 없음을 인식하기 전의 지연 시간입니다."
+  },
+  "Delay in creating new bases.": {
+    "message": "새 기지 생성의 지연 시간입니다."
+  },
+  "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
+    "message": "세기 전쟁 동안 헤게모니의 비밀 부대가 투입한 존재로, 현재의 확산 수준을 보면 전쟁이 끝난 뒤 스스로 행성에 퍼지는 능력을 발달시켰거나, 크지피드가 패배를 막으려는 필사적인 시도로 퍼뜨린 것으로 보입니다."
+  },
+  "Distance examined when choosing spawn.": {
+    "message": "시작 지점을 선택할 때 검토하는 거리입니다."
+  },
+  "ECONOMIC GROWTH:": {
+    "message": "경제 성장:"
+  },
+  "ERADICATE: all units of specific types must be eradicated.": {
+    "message": "전멸: 특정 유형의 모든 유닛을 전멸시켜야 합니다."
+  },
+  "ERADICATION CHANCE:": {
+    "message": "전멸 확률:"
+  },
+  "Each faction has its own style of play affecting Sub Commanders and enemy commanders:": {
+    "message": "진영은 각자의 플레이 스타일이 있어 부관과 적 지휘관에 영향을 줍니다:"
+  },
+  "Each player picks their own race when they choose their loadout. Requires Separate loadout &amp; tech.": {
+    "message": "각 플레이어가 로드아웃을 선택할 때 자신의 종족을 고릅니다. 개별 로드아웃 &amp; 기술이 필요합니다."
+  },
+  "Eco bonus per army kill.": {
+    "message": "군대 처치당 경제 보너스입니다."
+  },
+  "Economy Fabrication Tech reduces metal build costs of all metal and energy production and storage structures by 50%": {
+    "message": "자원 설비 기술은 모든 금속 및 에너지 생산 건물과 저장고의 금속 비용을 50% 줄여줍니다"
+  },
+  "Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons. Halves their cost.": {
+    "message": "부하에게 권한을 주고 위임하여 승리를 향해 나아가십시오. 지휘관이 대리 지휘관인 Colonel을 생산할 수 있으며, Colonel은 우버 캐논으로 무장합니다. Colonel의 비용이 절반으로 줍니다."
+  },
+  "Enable the missing mods and restart Planetary Annihilation to continue this war.": {
+    "message": "이 전쟁을 계속하려면 누락된 모드를 활성화하고 Planetary Annihilation을 다시 시작하십시오."
+  },
+  "Encounter large planets and systems much sooner.": {
+    "message": "큰 행성과 행성계를 훨씬 빨리 만납니다."
+  },
+  "Eradicate": {
+    "message": "전멸"
+  },
+  "Eradication Tech": {
+    "message": "전멸 기술"
+  },
+  "Eradication tech enables the eradicate game modifier in every system.": {
+    "message": "전멸 기술은 모든 행성계에서 전멸 게임 모디파이어를 활성화합니다."
+  },
+  "Exiles": {
+    "message": "엑자일즈"
+  },
+  "FOUNDATION: air/navy": {
+    "message": "파운데이션: 항공/해양"
+  },
+  "Factory cooldown decreased": {
+    "message": "공장 쿨다운 감소"
+  },
+  "Fights for you.": {
+    "message": "당신을 위해 싸웁니다."
+  },
+  "GALACTIC WAR OVERHAUL: over 150 additional cards.": {
+    "message": "은하계 전쟁 재점검: 150개 이상의 추가 카드."
+  },
+  "GOLD: you beat the Queller AI mod": {
+    "message": "골드: 퀠러 AI 모드를 이겼습니다"
+  },
+  "GW Server Mods is not enabled": {
+    "message": "GW Server Mods가 활성화되지 않았습니다"
+  },
+  "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
+    "message": "할리 업그레이드 기술은 델타 V 엔진의 HP를 두 배로 늘리고 비용을 절반으로 줄입니다."
+  },
+  "Helios Upgrade Tech removes the delay between the invasion titan arriving at a planet and responding to orders and increases its health by 50%.": {
+    "message": "헬리오스 업그레이드 기술은 인베이전 타이탄이 행성에 도착한 뒤 명령에 반응하기까지의 지연을 없애고 HP를 50% 증가시킵니다."
+  },
+  "Host Choosing Tech": {
+    "message": "호스트가 기술 선택 중"
+  },
+  "How well the AI picks who to attack.": {
+    "message": "AI가 공격 대상을 얼마나 잘 고르는지입니다."
+  },
+  "How well the AI scouts.": {
+    "message": "AI가 얼마나 잘 정찰하는지입니다."
+  },
+  "IRON: you no longer turtle": {
+    "message": "아이언: 더 이상 거북이 전략을 쓰지 않습니다"
+  },
+  "Incompatible Mods": {
+    "message": "호환되지 않는 모드"
+  },
+  "Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders.": {
+    "message": "인페르노 업그레이드 기술은 화염 전차에 Stitch의 수리 암을 추가합니다. 공격 명령을 받으면 수리하지 않습니다."
+  },
+  "Jig Upgrade Tech adds storage to gas mining and doubles its energy production.": {
+    "message": "지그 업그레이드 기술은 가스 채굴에 저장고를 추가하고 에너지 생산량을 두 배로 늘립니다."
+  },
+  "Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage.": {
+    "message": "카이주 업그레이드 기술은 측면 포를 추가 주포로 교체하여 사거리와 피해를 늘립니다."
+  },
+  "Kessler": {
+    "message": "Kessler"
+  },
+  "Kessler Upgrade Tech": {
+    "message": "Kessler 업그레이드 기술"
+  },
+  "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
+    "message": "Kessler 업그레이드 기술은 궤도 기뢰가 폭발해도 제거되지 않게 해줍니다."
+  },
+  "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
+    "message": "크라켄 업그레이드 기술은 상급 잠수함 미사일의 사거리를 200% 증가시킵니다."
+  },
+  "LAND ANYWHERE CHANCE:": {
+    "message": "아무 곳에나 착륙 확률:"
+  },
+  "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
+    "message": "아무 곳에나 착륙: 플레이어가 시작 가능한 행성의 아무 곳에서나 시작할 수 있습니다."
+  },
+  "LEGONIS MACHINA: vehicles": {
+    "message": "리저니스 머시나: 차량"
+  },
+  "Land Anywhere Tech": {
+    "message": "아무 곳에나 착륙 기술"
+  },
+  "Land Anywhere tech enables the land anywhere game modifier in every system.": {
+    "message": "아무 곳에나 착륙 기술은 모든 행성계에서 아무 곳에나 착륙 게임 모디파이어를 활성화합니다."
+  },
+  "Laser Defense Tower Upgrade Tech increases the range of the turret by 50%.": {
+    "message": "레이저 방어 타워 업그레이드 기술은 포탑의 사거리를 50% 증가시킵니다."
+  },
+  "Legion": {
+    "message": "군단"
+  },
+  "Lob Upgrade Tech increases the range of the Lob by 150%. Fires twice as fast and no longer costs metal to recharge its ammo.": {
+    "message": "롭 업그레이드 기술은 Lob의 사거리를 150% 증가시킵니다. 두 배 빠르게 발사하며 탄약 재충전에 더 이상 금속이 들지 않습니다."
+  },
+  "Locusts Upgrade Tech adds splash damage to nanoswarms.": {
+    "message": "로커스트 업그레이드 기술은 나노 스웜에 확산 피해를 추가합니다."
+  },
+  "Lucky Commander": {
+    "message": "행운의 지휘관"
+  },
+  "MLA": {
+    "message": "MLA"
+  },
+  "Map packs changed since this war began:": {
+    "message": "이 전쟁이 시작된 후 변경된 맵 팩:"
+  },
+  "Maximum delay between units produced from a factory.": {
+    "message": "공장 유닛 생산 사이의 최대 지연 시간입니다."
+  },
+  "Maximum number of advanced fabbers per army.": {
+    "message": "군대당 상급 건설 유닛의 최대 수입니다."
+  },
+  "Maximum number of basic fabbers per army.": {
+    "message": "군대당 기본 건설 유닛의 최대 수입니다."
+  },
+  "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
+    "message": "멘드 업그레이드 기술은 상급 전투 건설 유닛이 모든 건설을 보조할 수 있게 합니다. 자동 수리 기능이 비활성화됩니다."
+  },
+  "Minelayer": {
+    "message": "지뢰형"
+  },
+  "Minimum delay between units produced from a factory.": {
+    "message": "공장 유닛 생산 사이의 최소 지연 시간입니다."
+  },
+  "Minimum number of armies/Commanders per faction in every system irrespective of distance.": {
+    "message": "거리와 관계없이 모든 행성계에서 진영당 군대/지휘관의 최소 수입니다."
+  },
+  "Missing Map Packs": {
+    "message": "누락된 맵 팩"
+  },
+  "Missing Races": {
+    "message": "누락된 종족"
+  },
+  "Mod:": {
+    "message": "모드:"
+  },
+  "Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build orbital battleships, any resource generating unit or structure": {
+    "message": "Jig를 개조해 아무 곳에서나 건설할 수 있게 만듭니다. 그 대신 다른 자원 시설을 건설할 수 없습니다. Jig의 비용이 75% 저렴하지만 생산하는 금속과 에너지가 30% 감소하고, 파괴 시 주는 피해가 90% 감소합니다. 궤도 건설 유닛은 모든 기본 구조물을 건설할 수 있습니다. 모든 기본 및 상급 궤도 유닛을 포함하지만 궤도 전함과 자원을 생산하는 유닛 및 구조물은 절대 만들 수 없습니다"
+  },
+  "Mounting game files": {
+    "message": "게임 파일 마운트 중"
+  },
+  "NEW BASE DELAY:": {
+    "message": "새 기지 지연:"
+  },
+  "Narwhal Upgrade Tech doubles the rate of fire of all weapons.": {
+    "message": "나르왈 업그레이드 기술은 모든 무기의 발사 속도를 두 배로 늘립니다."
+  },
+  "Naval Commander": {
+    "message": "해양 지휘관"
+  },
+  "Naval Cooldown Tech": {
+    "message": "해양 쿨다운 기술"
+  },
+  "Naval Cooldown Tech halves the cooldown time between builds for all naval factories.": {
+    "message": "해양 쿨다운 기술은 모든 조선소의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
+  },
+  "No enemy faction shares a race with you or another enemy faction until every race in play has been used.": {
+    "message": "사용 중인 모든 종족이 쓰이기 전까지는 어떤 적 진영도 당신이나 다른 적 진영과 종족을 공유하지 않습니다."
+  },
+  "Nuclear Missile Launcher Upgrade Tech increases the damage dealt to commanders and orbital from the LR-96 Pacifier Nuclear Missiles by 200%.": {
+    "message": "핵 미사일 발사기 업그레이드 기술은 LR-96 Pacifier 핵미사일이 지휘관과 궤도 유닛에 주는 피해를 200% 증가시킵니다."
+  },
+  "Number of Commanders in the boss's army.": {
+    "message": "보스 군대에 있는 지휘관 수입니다."
+  },
+  "Number of systems until AI tech appears.": {
+    "message": "AI 기술이 등장하기까지의 행성계 수입니다."
+  },
+  "Number of systems until additional armies/Commanders appear per faction.": {
+    "message": "진영당 추가 군대/지휘관이 등장하기까지의 행성계 수입니다."
+  },
+  "Nyx": {
+    "message": "Nyx"
+  },
+  "Nyx Upgrade Tech": {
+    "message": "Nyx 업그레이드 기술"
+  },
+  "Nyx Upgrade Tech doubles the jamming and radar radius of the jamming vehicle.": {
+    "message": "Nyx 업그레이드 기술은 재밍 차량의 재밍 및 레이더 반경을 두 배로 늘립니다."
+  },
+  "Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser. Doubles the rate of fire of the other weapons.": {
+    "message": "오메가 업그레이드 기술은 전함의 하부 레이저를 SXX 레이저로 교체합니다. 다른 무기의 발사 속도를 두 배로 늘립니다."
+  },
+  "Orbital Bombardment Tech": {
+    "message": "궤도 폭격 기술"
+  },
+  "Orbital Bombardment Tech removes all trees, lava, and water from the systems you fight in.": {
+    "message": "궤도 폭격 기술은 전투하는 행성계에서 모든 나무, 용암, 물을 제거합니다."
+  },
+  "Orbital Cooldown Tech": {
+    "message": "궤도 쿨다운 기술"
+  },
+  "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
+    "message": "궤도 쿨다운 기술은 모든 궤도 공장의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
+  },
+  "PENCHANT: increased personality": {
+    "message": "PENCHANT: 개성 강화"
+  },
+  "PERSONALITY MODIFIERS:": {
+    "message": "개성 수정자:"
+  },
+  "PLATINUM: one enemy is no challenge": {
+    "message": "플래티넘: 적 하나는 상대도 안 됩니다"
+  },
+  "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
+    "message": "펠리컨 업그레이드 기술은 항공 수송기가 지휘관을 실어 나를 수 있게 합니다. 모든 유닛이 수송 중에도 사격할 수 있습니다."
+  },
+  "Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar.": {
+    "message": "행성 레이더 업그레이드 기술은 행성 레이더의 시야를 레이더 범위와 같게 늘립니다."
+  },
+  "Platoon": {
+    "message": "소대형"
+  },
+  "Player Slots:": {
+    "message": "플레이어 슬롯:"
+  },
+  "Players returned": {
+    "message": "복귀한 플레이어"
+  },
+  "Prefers air and navy.": {
+    "message": "항공과 해양을 선호합니다."
+  },
+  "Prefers bots and vehicles; applies tech to structures.": {
+    "message": "로봇과 차량을 선호하며, 기술을 구조물에 적용합니다."
+  },
+  "Prefers bots.": {
+    "message": "로봇을 선호합니다."
+  },
+  "Prefers orbital.": {
+    "message": "궤도를 선호합니다."
+  },
+  "Prefers vehicles.": {
+    "message": "차량을 선호합니다."
+  },
+  "Processing AI mods": {
+    "message": "AI 모드 처리 중"
+  },
+  "Processing biome mods": {
+    "message": "바이옴 모드 처리 중"
+  },
+  "Processing game config": {
+    "message": "게임 설정 처리 중"
+  },
+  "Processing tech cards": {
+    "message": "기술 카드 처리 중"
+  },
+  "QUELLER: greater challenge at the cost of performance": {
+    "message": "QUELLER: 성능을 대가로 더 큰 도전"
+  },
+  "REINFORCEMENT SYSTEM:": {
+    "message": "증원 행성계:"
+  },
+  "REVENANTS: orbital": {
+    "message": "레버넌트: 궤도"
+  },
+  "Race": {
+    "message": "종족"
+  },
+  "Race mods changed since this war began:": {
+    "message": "이 전쟁이 시작된 후 변경된 종족 모드:"
+  },
+  "Radar Jamming Station": {
+    "message": "레이더 재밍 스테이션"
+  },
+  "Radar Jamming Station Upgrade Tech": {
+    "message": "레이더 재밍 스테이션 업그레이드 기술"
+  },
+  "Radar Jamming Station Upgrade Tech doubles the jamming radius of the radar jammer.": {
+    "message": "레이더 재밍 스테이션 업그레이드 기술은 레이더 재머의 재밍 반경을 두 배로 늘립니다."
+  },
+  "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
+    "message": "기존의 핵미사일을 비용과 위력이 낮은 새 버전으로 대체하고 공격과 방어 모두에서 이에 크게 의존합니다. 그 대가로 대부분의 상급 방어 시설을 포기합니다."
+  },
+  "SCOUTING:": {
+    "message": "정찰:"
+  },
+  "SILVER: you beat the skirmish AI": {
+    "message": "실버: 대전 AI를 이겼습니다"
+  },
+  "SUDDEN DEATH CHANCE:": {
+    "message": "서든데스 확률:"
+  },
+  "SUDDEN DEATH: any commander death on a team kills the entire team.": {
+    "message": "서든데스: 팀의 지휘관 하나가 사망하면 팀 전체가 사망합니다."
+  },
+  "SYNCHRONOUS: bots": {
+    "message": "싱크로너스: 로봇"
+  },
+  "Saving war": {
+    "message": "전쟁 저장 중"
+  },
+  "Scaling For:": {
+    "message": "스케일링 기준:"
+  },
+  "Separate": {
+    "message": "개별"
+  },
+  "Separate races": {
+    "message": "개별 종족"
+  },
+  "Shared": {
+    "message": "공유"
+  },
+  "Spark Upgrade Tech increases the tesla bot's splash damage radius by 200%.": {
+    "message": "스파크 업그레이드 기술은 테슬라 로봇의 확산 피해 반경을 200% 증가시킵니다."
+  },
+  "Speed the economy grows as you get deeper into the galaxy.": {
+    "message": "은하계 깊이 들어갈수록 경제가 성장하는 속도입니다."
+  },
+  "Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 200%.": {
+    "message": "스피너 업그레이드 기술은 이동식 대공 유닛의 발사 속도를 200% 증가시킵니다."
+  },
+  "Squall Upgrade Tech allows you to issue orders to drones.": {
+    "message": "스퀄 업그레이드 기술은 드론에 명령을 내릴 수 있게 합니다."
+  },
+  "Starting economy.": {
+    "message": "시작 경제입니다."
+  },
+  "Static Tech": {
+    "message": "고정 기술"
+  },
+  "Static tech": {
+    "message": "고정 기술"
+  },
+  "Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator. Disables the auto-repair feature.": {
+    "message": "스티치 업그레이드 기술은 전투 건설 유닛이 모든 건설을 보조할 수 있게 합니다. 자동 수리 기능이 비활성화됩니다."
+  },
+  "Structure Engine Tech": {
+    "message": "구조물 엔진 기술"
+  },
+  "Structure Engine Tech increases the speed of all mobile structures by 50%": {
+    "message": "구조물 엔진 기술은 모든 이동식 구조물의 속도를 50% 증가시킵니다"
+  },
+  "Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing.": {
+    "message": "스트라이커 업그레이드 기술은 공격 차량이 자폭으로 공격할 수 있게 합니다."
+  },
+  "Sub Commander Duplication Tech": {
+    "message": "부관 복제 기술"
+  },
+  "Sub Commander Duplication Tech adds an extra Commander to every Sub Commander's army.": {
+    "message": "부관 복제 기술은 모든 부관의 군대에 지휘관을 하나 더 추가합니다."
+  },
+  "Sub Commander Fabber Tech": {
+    "message": "부관 건설 유닛 기술"
+  },
+  "Sub Commander Fabber Tech increases the number of fabbers each Sub Commander may use by 50%.": {
+    "message": "부관 건설 유닛 기술은 각 부관이 사용할 수 있는 건설 유닛의 수를 50% 증가시킵니다."
+  },
+  "Sub Commander Tactics Tech": {
+    "message": "부관 전술 기술"
+  },
+  "Sub Commander Tactics Tech allows Sub Commanders to make smarter decisions when scouting, fighting, expanding, and escaping danger.": {
+    "message": "부관 전술 기술은 부관이 정찰, 전투, 확장, 위험 회피 시 더 현명한 결정을 내릴 수 있게 합니다."
+  },
+  "Sudden Death Tech": {
+    "message": "서든데스 기술"
+  },
+  "Sudden Death tech enables the sudden death game modifier in every system.": {
+    "message": "서든데스 기술은 모든 행성계에서 서든데스 게임 모디파이어를 활성화합니다."
+  },
+  "TARGET SELECTION:": {
+    "message": "목표 선택:"
+  },
+  "TECH SYSTEM:": {
+    "message": "기술 행성계:"
+  },
+  "TITANS: base game AI": {
+    "message": "TITANS: 기본 게임 AI"
+  },
+  "Tactical": {
+    "message": "전술형"
+  },
+  "Tech:": {
+    "message": "기술:"
+  },
+  "Terminal Commander": {
+    "message": "시한부 지휘관"
+  },
+  "The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 400%.": {
+    "message": "생체 증강 지휘관 로드아웃은 데이터 뱅크를 하나만 포함하지만 지휘관의 발사 속도를 100% 증가시키고, 우버 캐논의 에너지 소모를 75% 감소시키며, HP를 200%, 속도를 400% 증가시킵니다."
+  },
+  "The Commander can mass teleport itself and all units within weapons range to anywhere in the system, but they are highly vulnerable to attack afterwards.": {
+    "message": "지휘관은 자신과 무기 사거리 안의 모든 유닛을 행성계 어디로든 한꺼번에 순간이동시킬 수 있지만, 그 직후에는 공격에 매우 취약해집니다."
+  },
+  "The Lucky Commander is offered four cards instead of three at every planet.": {
+    "message": "행운의 지휘관은 모든 행성에서 카드를 세 장이 아닌 네 장 제안받습니다."
+  },
+  "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
+    "message": "해양 지휘관 로드아웃은 모든 조선소를 포함합니다. 조건에 맞는 행성의 물과 용암의 양을 늘립니다."
+  },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "진영, 난이도, 게임 옵션이 같고 같은 모드가 설치되어 있으면 같은 시드로 같은 은하와 같은 적이 다시 만들어집니다. 행성 이름은 여전히 달라집니다. 새로운 은하를 원하면 그대로 두십시오."
+  },
+  "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
+    "message": "나와 내 부관이 사용하는 유닛입니다. 각 종족의 AI는 AI 버튼으로 선택합니다."
+  },
+  "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
+    "message": "나와 내 부관이 사용하는 유닛입니다. 호스트의 전쟁이 만들어질 때 사용된 종족만 선택할 수 있습니다."
+  },
+  "This card will be offered as part of the first draw.": {
+    "message": "이 카드는 첫 번째 뽑기에서 제안됩니다."
+  },
+  "This war cannot be fought:": {
+    "message": "이 전쟁을 치를 수 없습니다:"
+  },
+  "Titan Ammunition Tech": {
+    "message": "타이탄 무기 기술"
+  },
+  "Titan Ammunition Tech increases the damage of all titans by 25%.": {
+    "message": "타이탄 무기 기술은 모든 타이탄의 피해를 25% 증가시킵니다."
+  },
+  "Titan Armour Tech": {
+    "message": "타이탄 장갑 기술"
+  },
+  "Titan Armour Tech increases the health of all Titans by 50%.": {
+    "message": "타이탄 장갑 기술은 모든 타이탄의 HP를 50% 증가시킵니다."
+  },
+  "Titan Combat Tech": {
+    "message": "타이탄 전투 기술"
+  },
+  "Titan Combat Tech increases the speed of all titans by 20%, health by 50%, and damage by 25%": {
+    "message": "타이탄 전투 기술은 모든 타이탄의 속도를 20%, HP를 50%, 피해를 25% 증가시킵니다"
+  },
+  "Toggle Favourite": {
+    "message": "즐겨찾기 전환"
+  },
+  "Tsunami Tech": {
+    "message": "쓰나미 기술"
+  },
+  "Tsunami Tech increases the water and lava level in all systems you fight in.": {
+    "message": "쓰나미 기술은 전투하는 모든 행성계의 물과 용암 높이를 높입니다."
+  },
+  "Tweaks to how the AI plays.": {
+    "message": "AI 플레이 방식을 조정합니다."
+  },
+  "UBER: you hate winning": {
+    "message": "우버: 이기는 게 싫은 분께"
+  },
+  "UNIT DELAY (MAX):": {
+    "message": "유닛 지연 (최대):"
+  },
+  "UNIT DELAY (MIN):": {
+    "message": "유닛 지연 (최소):"
+  },
+  "Unique Races": {
+    "message": "고유 종족"
+  },
+  "Unique races": {
+    "message": "고유 종족"
+  },
+  "Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport and removes all cooldowns.": {
+    "message": "유닛 캐논 업그레이드 기술은 이 행성 간 수송 수단의 발사 용량을 두 배로 늘리고 모든 쿨다운을 없앱니다."
+  },
+  "Unknown Unit": {
+    "message": "알 수 없는 유닛"
+  },
+  "Unlocked": {
+    "message": "열림"
+  },
+  "Use smaller, mostly single planet systems.": {
+    "message": "대부분 행성이 하나뿐인 더 작은 행성계를 사용합니다."
+  },
+  "Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders.": {
+    "message": "뱅가드 업그레이드 기술은 화염 전차에 Mend의 수리 암을 추가합니다. 공격 명령을 받으면 수리하지 않습니다."
+  },
+  "Vehicle Cooldown Tech": {
+    "message": "차량 쿨다운 기술"
+  },
+  "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
+    "message": "차량 쿨다운 기술은 모든 차량 공장의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
+  },
+  "Waiting for players": {
+    "message": "플레이어 대기 중"
+  },
+  "War:": {
+    "message": "전쟁:"
+  },
+  "Ward": {
+    "message": "Ward"
+  },
+  "Ward Upgrade Tech": {
+    "message": "Ward 업그레이드 기술"
+  },
+  "Ward Upgrade Tech causes the mobile anti-nuke to start fully charged.": {
+    "message": "Ward 업그레이드 기술은 이동식 핵 요격 유닛이 완전히 충전된 상태로 시작하게 합니다."
+  },
+  "Warp Commander": {
+    "message": "워프 지휘관"
+  },
+  "You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors, no Mining Platforms, and no basic land or air factories.": {
+    "message": "두둑한 지갑만 들고 나타났고 그 외에는 거의 없습니다. 저장고는 엄청나지만 금속 추출기도, 채굴 플랫폼도, 기본 지상 공장이나 항공기 공장도 없습니다."
+  },
+  "You're dying, but you have one last war left in you. Your units' health decreases over time, and your commander's fastest of all. Life is short and must be lived to the full, so unit damage and movement is doubled and costs are halved. Life through victory, Commander!": {
+    "message": "당신은 죽어가고 있지만 마지막 전쟁을 치를 힘은 남아 있습니다. 유닛의 HP는 시간이 지날수록 줄어들고, 지휘관의 HP가 가장 빨리 줄어듭니다. 인생은 짧으니 온전히 살아야 합니다. 그래서 유닛의 피해와 이동 속도는 두 배, 비용은 절반입니다. 승리로 살아남으십시오, 지휘관!"
+  },
+  "is not enabled": {
+    "message": "이(가) 활성화되지 않았습니다"
+  },
+  "its mod is not installed": {
+    "message": "해당 모드가 설치되지 않았습니다"
+  },
+  "missing:": {
+    "message": "누락:"
+  }
+}
