@@ -185,10 +185,14 @@
       if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
         model.gwoOfferRerolls(false);
       }
+      // The held offer's view models were built by stock before the
+      // replacement below was installed, so rebuild them with it.
+      star.cardList(star.cardList().slice());
     };
 
-    // Replaces gwt_card.js's CardViewModel; only isLoadout differs.
-    globals.CardViewModel = function (params) {
+    // Replaces gwt_card.js's CardViewModel; only isLoadout differs. Installed
+    // once helpers has loaded, since isLoadout reads it.
+    var gwoCardViewModel = function (params) {
       var self = this;
 
       self.params = ko.observable(params);
@@ -212,7 +216,7 @@
       });
       // Stock tests for gwc_start only; mod loadouts carry _start_ anywhere.
       self.isLoadout = ko.computed(function () {
-        return _.includes(self.id(), "_start_");
+        return helpers.isStartLoadoutCardId(self.id());
       });
 
       var completed = $.Deferred();
@@ -301,6 +305,7 @@
         gwoRaces
       ) {
         helpers = cardsDealHelpers;
+        globals.CardViewModel = gwoCardViewModel;
         // Nothing reads the banks until the player explores, so resolving them
         // alongside setup is early enough and keeps this callback synchronous.
         requireGW(gwoLoadoutBanks.paths(), function () {
