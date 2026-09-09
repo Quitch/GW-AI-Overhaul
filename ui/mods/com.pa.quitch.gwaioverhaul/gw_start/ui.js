@@ -239,9 +239,6 @@
 
     model.gwoCommanderModalVisible = ko.observable(false);
     model.gwoCommanderDraft = ko.observable(model.selectedCommander());
-    model.gwoDraftCommanderName = ko.computed(function () {
-      return CommanderUtility.bySpec.getName(model.gwoCommanderDraft());
-    });
     model.openGwoCommanderModal = function () {
       model.gwoCommanderDraft(model.selectedCommander());
       model.gwoCommanderModalVisible(true);
