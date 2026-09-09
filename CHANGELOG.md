@@ -4,7 +4,7 @@
 
 ### Added
 
-- Translations for missing strings for German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Russian, Simplified Chinese, and Traditional Chinese using the Mod Translations mod
+- Translations for missing strings for German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Russian, Simplified Chinese, and Traditional Chinese using the Mod Translations mod. To fix a translation, join the [Galactic War Overhaul project on Playglot](https://playglot.pro/projects/galactic-war-overhaul)
 
 ### Changed
 
