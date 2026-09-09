@@ -166,7 +166,7 @@ Galactic War hides eco modifiers from the player list. The bounties are still be
 
 ## Translations
 
-GWO's text is translated into German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Russian, Simplified Chinese and Traditional Chinese. The game loads only its own translation tables, so seeing them needs the [Mod Translations](https://github.com/Quitch/Mod-Translations) mod enabled alongside GWO; without it GWO's text is English. To fix or add a translation, edit the language's file under `ui/mods/com.pa.quitch.gwaioverhaul/translations/` and open a pull request; `docs/translations.md` explains the file format and the tooling.
+GWO's text is translated into German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Russian, Simplified Chinese and Traditional Chinese. The game loads only its own translation tables, so seeing them needs the [Mod Translations](https://github.com/Quitch/Mod-Translations) mod enabled alongside GWO; without it GWO's text is English. To fix or add a translation, join the [Galactic War Overhaul project on Playglot](https://playglot.pro/projects/galactic-war-overhaul); no coding is needed and accepted translations are pulled into the mod.
 
 ## Report a Bug
 
