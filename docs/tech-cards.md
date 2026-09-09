@@ -23,11 +23,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 });
 ```
 
-| Field                                                              | Required?                                  |
-| ------------------------------------------------------------------ | ------------------------------------------ |
-| `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` | Always functions, on every card.           |
-| `audio`, `getContext`                                              | On every card except one legacy exception. |
-| `keep`, `discard`                                                  | Optional. No card carries either today.    |
+| Field                                                              | Required?                                                                                                                                                                      |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` | Always functions, on every card.                                                                                                                                               |
+| `audio`, `getContext`                                              | On every card except one legacy exception.                                                                                                                                     |
+| `keep`, `discard`                                                  | Optional. No card carries either today.                                                                                                                                        |
+| `hint`                                                             | Optional, loadout cards only: the icon and text of the locked-loadout hover, read by stock `gw_start.js` and `gw_coop_per_player_loadout.js`. `gwoCard.lockedHint` builds one. |
 
 The `audio`/`getContext` exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
 save-compatibility with GWO v5.9.0 and earlier. The card is deliberately invisible
