@@ -40,7 +40,7 @@
           return getMenuString(hardcore(), "menuAbandonWar", "menuSurrender");
         };
 
-        var playerLost = model.gameOver() || model.defeated();
+        var playerLost = model.gameOver() || model.isSpectator();
 
         var menu = [
           {
