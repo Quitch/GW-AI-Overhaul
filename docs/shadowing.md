@@ -185,6 +185,11 @@ what a re-sync after a PA patch is done against.
 The convention is a `// GWO - …` prefix. Some older files use a bare descriptive
 line.
 
+The `gwc_` cards are the exception. Each is a wholesale rewrite onto `gwoCard`,
+`gwoGroup` and `gwoUnit`, so a line-by-line marker would name every line; the
+cards table above is their record. `gwc_start_orbital.js` carries one anyway,
+because its unit list deliberately departs from stock's.
+
 The marker goes on line 1. It replaces stock's `// !LOCNS:galactic_war` where the
 upstream file has one. That directive is build-time only and has no consumer in
 this repo. GWO therefore deliberately does not carry it. See

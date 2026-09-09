@@ -1,5 +1,6 @@
-// Overhauls personalities. The gwaioRandomSpec below is read by
-// faction/faction_seed.js - see galaxy.md.
+// GWO - overhauls personalities; the boss commander is quad_pumpkin and stock's
+// bossCard is dropped, so gwo_teams.js's bossCard branch never runs. Faction colour is GWO's own.
+// The gwaioRandomSpec below is read by faction/faction_seed.js - see galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/faction_builder.js",
