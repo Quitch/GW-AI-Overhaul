@@ -9,6 +9,7 @@
 ### Bugfix
 
 - Remove Sub Commanders from Tourist Commander description
+- The faction tooltip on the war setup screen now shows in your language when TITANS is active, instead of English
 
 ## v7.1.0 - 2026-09-07
 

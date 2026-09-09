@@ -4,13 +4,8 @@ define([
 ], function (gwoCard, gwoUnit) {
   return gwoCard.upgradeCard({
     name: "!LOC:Planetary Radar Upgrade Tech",
-    describe: function () {
-      return gwoCard.withSlot(
-        loc(
-          "!LOC:Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar."
-        )
-      );
-    },
+    description:
+      "!LOC:Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar.",
     icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_intelligence_fabrication_upgrade.png",
     audio: "/VO/Computer/gw/board_tech_available_efficiency",
     available: function (inventory) {

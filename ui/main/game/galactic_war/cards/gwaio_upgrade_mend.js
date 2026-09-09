@@ -4,15 +4,8 @@ define([
 ], function (gwoCard, gwoUnit) {
   return gwoCard.upgradeCard({
     name: "!LOC:Mend Upgrade Tech",
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator."
-        ) +
-          " " +
-          loc("!LOC:Disables the auto-repair feature.")
-      )
-    ),
+    description:
+      "!LOC:Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.",
     icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_metal_upgrade.png",
     audio: "/VO/Computer/gw/board_tech_available_efficiency",
     requires: gwoUnit.mend,

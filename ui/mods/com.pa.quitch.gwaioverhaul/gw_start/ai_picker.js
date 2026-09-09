@@ -51,11 +51,12 @@
     // See shadowing.md, "Function hijacking".
     model.gwoAiModalVisible = ko.observable(false);
     model.gwoAiTableRows = ko.observableArray([]);
-    model.gwoAiModalIntro =
-      loc(
-        "!LOC:TITANS: base game AI<br>QUELLER: greater challenge at the cost of performance<br>PENCHANT: increased personality"
-      ) +
-      loc("!LOC:<br>An AI that does not know a race is not offered for it.");
+    model.gwoAiModalIntro = [
+      loc("!LOC:TITANS: base game AI"),
+      loc("!LOC:QUELLER: greater challenge at the cost of performance"),
+      loc("!LOC:PENCHANT: increased personality"),
+      loc("!LOC:An AI that does not know a race is not offered for it."),
+    ].join("<br>");
 
     // The rows are the draft: open re-seeds them from the settings, close
     // discards them, apply writes them back.

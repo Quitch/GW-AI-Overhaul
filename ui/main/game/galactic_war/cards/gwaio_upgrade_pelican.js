@@ -4,15 +4,8 @@ define([
 ], function (gwoCard, gwoUnit) {
   return gwoCard.upgradeCard({
     name: "!LOC:Pelican Upgrade Tech",
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Pelican Upgrade Tech allows air transports to carry commanders."
-        ) +
-          " " +
-          loc("!LOC:Every unit can shoot while being transported.")
-      )
-    ),
+    description:
+      "!LOC:Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.",
     icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_air_engine_upgrade.png",
     audio: "/VO/Computer/gw/board_tech_available_speed",
     requires: gwoUnit.pelican,

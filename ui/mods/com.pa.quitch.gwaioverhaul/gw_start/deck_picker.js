@@ -41,7 +41,7 @@
                 loc(deck.tooltip);
             }
           });
-          model.gwoCardsTooltip = loc(model.gwoCardsTooltip) + extra;
+          model.gwoCardsTooltip = model.gwoCardsTooltip + extra;
         }
 
         // Restore the remembered deck; one whose mod is gone falls back to

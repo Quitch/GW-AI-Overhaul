@@ -35,6 +35,7 @@ Then read the doc for the subsystem you are changing.
 | [races.md](races.md)                       | Unit factions (Legion, Bugs, Exiles): registry, translation, race trees | `shared/races.js`            |
 | [race-conventions.md](race-conventions.md) | The checklist for adding a race, and the rules the race code relies on  | `shared/races_shipped.js`    |
 | [testing.md](testing.md)                   | The Node AMD harness and the validators                                 | `scripts/lib/amd-loader.js`  |
+| [translations.md](translations.md)         | Translation files, the i18n tooling, the catalog and the scope rule     | `scripts/lib/loc-keys.js`    |
 
 ## Things that surprise people
 
