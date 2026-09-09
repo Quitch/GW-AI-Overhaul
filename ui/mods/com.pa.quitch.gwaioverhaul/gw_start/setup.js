@@ -57,6 +57,7 @@
     model.makeGame = function () {}; // Prevent changes to settings causing creation of new galaxies
 
     var enableGoToWar = ko.observable(true);
+    var gwoReady = ko.observable(false); // the modules below have loaded
     var sharedSystemsForGalacticWarActive = false;
     var defaultNewGameName = model.newGameName();
     var warGenerationFailed;
@@ -65,7 +66,12 @@
     // Shared Systems for Galactic War breaking our new lobby
     model.ready = ko.computed(function () {
       var activeCard = model.activeStartCard();
-      return enableGoToWar() && !!activeCard && !activeCard.gwoRaceLocked;
+      return (
+        gwoReady() &&
+        enableGoToWar() &&
+        !!activeCard &&
+        !activeCard.gwoRaceLocked
+      );
     });
 
     var onSelectedNamesChanged = function (names) {
@@ -1461,6 +1467,7 @@
 
           finishSetup.then(onSetupFinished).fail(onWarGenerationError);
         };
+        gwoReady(true);
       }
     );
   } catch (e) {
