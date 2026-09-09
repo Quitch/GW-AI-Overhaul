@@ -305,8 +305,10 @@ define([
 
       cards = inventory.cards();
       if (appendGeneralCommanderMinions(cards, playerFaction)) {
-        inventory.applyCards();
-        gwoSave(game, false);
+        inventory.cards.valueHasMutated();
+        inventory.applyCards(function () {
+          gwoSave(game, false);
+        });
       }
     };
   };
