@@ -6,7 +6,7 @@
 
 - Translations for missing strings for German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Russian, Simplified Chinese and Traditional Chinese using the Mod Translations mod
 
-### Change
+### Changed
 
 - Improved Intelligence Tech no longer applies to teleporters
 
