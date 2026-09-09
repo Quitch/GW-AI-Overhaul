@@ -198,7 +198,8 @@
             buffNames.push(loc("!LOC:Factory cooldown decreased"));
             break;
           default:
-            throw new Error("Undefined buff type: " + buff);
+            // Inside a ko.computed, so a throw would take the tooltip down.
+            console.warn("Undefined buff type: " + buff);
         }
       });
       if (guardians) {
@@ -360,8 +361,10 @@
               case gwoBuffType.combat:
                 totalThreat *= 1.5;
                 break;
+              case gwoBuffType.commanders:
+                break;
               default:
-                throw new Error("Undefined buff type: " + buff);
+                console.warn("Undefined buff type: " + buff);
             }
           });
           var guardians = ai.mirrorMode;
