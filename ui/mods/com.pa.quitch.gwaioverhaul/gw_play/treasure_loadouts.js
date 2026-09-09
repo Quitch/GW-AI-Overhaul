@@ -232,12 +232,10 @@ define([
     var stockBank = params.stockBank;
     var gwoBank = params.gwoBank;
 
-    if (model.registerCampaignViewerOperatorHandler) {
-      model.registerCampaignViewerOperatorHandler(
-        reportOperator,
-        applyReportedLoadouts.bind(null, game)
-      );
-    }
+    model.registerCampaignViewerOperatorHandler(
+      reportOperator,
+      applyReportedLoadouts.bind(null, game)
+    );
 
     var reported = "";
     ko.computed(function () {
