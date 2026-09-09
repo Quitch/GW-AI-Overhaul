@@ -584,3 +584,38 @@ describe("load files and treeOnly", () => {
     );
   });
 });
+
+// referee.js clears launchingFight from the rejection. Before these, a failed
+// read inside the walk settled nothing and Fight stayed dead.
+describe("failure", () => {
+  it("rejects when a tree file cannot be read", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => {
+        throw new Error("unreadable tech file");
+      },
+    });
+
+    await assert.rejects(run({}), /unreadable tech file/);
+  });
+
+  it("rejects when a tree cannot be listed", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      listFiles: () => Promise.reject(new Error("no such directory")),
+    });
+
+    await assert.rejects(run({}), /no such directory/);
+  });
+});
