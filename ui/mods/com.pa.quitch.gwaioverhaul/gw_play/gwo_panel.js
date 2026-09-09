@@ -430,7 +430,7 @@
             var human = loc("!LOC:Human");
             var commanders = [
               {
-                name: ko.observable().extend({ session: "displayName" }),
+                name: model.displayName,
                 color: playerColour,
                 character: model.gwoLoadout,
                 iconFill: raceIcon(playerRace).fill,

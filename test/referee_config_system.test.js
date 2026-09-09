@@ -3,7 +3,7 @@
 // The battle config's system is a copy of the star's: orbital bombardment and
 // flooding change the planets the server is sent, never the war's own system.
 
-const { describe, it, before, after } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
@@ -11,21 +11,6 @@ const {
   useModel,
   makeAiDescriptor,
 } = require("../scripts/lib/ai-path-fixtures.js");
-const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-
-const stubs = createGlobalStubs();
-
-before(() => {
-  // The referee reads the player's name from a session observable.
-  const sessionObservable = () => {
-    const observable = () => undefined;
-    observable.extend = () => observable;
-    return observable;
-  };
-  stubs.setGlobal("ko", { observable: sessionObservable });
-});
-
-after(() => stubs.restoreGlobals());
 
 const refereeConfig = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js"
@@ -50,6 +35,7 @@ function generate(cards) {
   fixture.game.stats = () => ({ turns: () => 1 });
   fixture.game.save = () => ({});
   installModel(fixture.game, []);
+  global.model.displayName = () => "Tester";
 
   let config;
   refereeConfig.call({
@@ -83,5 +69,10 @@ describe("referee_config system", () => {
     assert.equal(config.system.planets[0].generator.biome, "earth");
     assert.equal(config.system.planets[0].generator.waterHeight, 35);
     assert.equal(JSON.stringify(system), untouched);
+  });
+
+  it("names the player's army slot from the session display name", () => {
+    const { config } = generate([]);
+    assert.equal(config.armies[0].slots[0].name, "Tester");
   });
 });

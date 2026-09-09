@@ -90,11 +90,10 @@ define([
       inventory,
       game
     );
-    var playerName = ko.observable().extend({ session: "displayName" });
     var playerTag = ".player";
     var armies = [
       {
-        slots: [{ name: playerName() || "Player" }],
+        slots: [{ name: model.displayName() || "Player" }],
         color: inventory.getTag("global", "playerColor"),
         econ_rate: 1,
         spec_tag: playerTag,
