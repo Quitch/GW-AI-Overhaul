@@ -23,6 +23,10 @@
     "message": "ADVANCED FABBERS:",
     "description": "Label on the AI Settings panel on the war setup screen (gw_start), which appears when the Custom difficulty is chosen. Sits before a dropdown of numbers and means the maximum number of advanced fabbers (T2 builder units) the AI may have per army; its tooltip is \"Maximum number of advanced fabbers per army.\" Noun phrase, plural, upper-case; keep the trailing colon. The sibling label is \"BASIC FABBERS:\". (ai_settings.html:173)"
   },
+  "AI": {
+    "message": "AI",
+    "description": "Title of the AI picker dialog on the war setup screen (gw_start), and the label of the button in the co-op setup strip that opens it, beside \"Commander\" and \"Game Options\". The dialog holds the Race / Opponent / ALLY table of AI brains. Noun, singular, the initialism for artificial intelligence; no punctuation. The same word as the game's \"AI:\" label with the colon removed, so use that translation without the colon (KI, IA, SI, ИИ, 电脑, or AI where the game keeps the English). (ai_modal.html:6, ai_modal.html:23)"
+  },
   "AI Settings": {
     "message": "AI Settings",
     "description": "Title/header of the AI Settings panel on the war setup screen (gw_start), which appears when the Custom difficulty is chosen. Noun phrase, plural (\"Settings\"), title case, no punctuation. (ai_settings.html:3)"
