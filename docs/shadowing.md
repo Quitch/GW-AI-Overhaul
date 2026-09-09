@@ -124,13 +124,13 @@ because that is where the game reads cards from.
 
 ### `pa/`
 
-| Tree              | Status                                                                                                                                   |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `pa/ai/`          | Every file shadows base-game build data. See the re-sync table below for which copy each replaces.                                       |
-| `pa/ai_penchant/` | GWO-authored in full.                                                                                                                    |
-| `pa/ai_queller/`  | Added, not shadowed: a unit map per tier GWO selects, carrying the unit names GWO's build entries reference and Queller's own maps lack. |
-| `pa/ai_tech/`     | GWO-authored. The files that AI-mod `load` descriptors name.                                                                             |
-| `pa/units/`       | GWO-authored. The CEO Commander's Colonel buildbar icon.                                                                                 |
+| Tree              | Status                                                                                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pa/ai/`          | Every file shadows base-game build data. See the re-sync table below for which copy each replaces.                                                                              |
+| `pa/ai_penchant/` | GWO-authored in full.                                                                                                                                                           |
+| `pa/ai_queller/`  | Shadows Queller's unit map in each tier GWO selects, merged with the tier's `unit_maps/mla.json` so that file needs no mounting of its own. See the second re-sync table below. |
+| `pa/ai_tech/`     | GWO-authored. The files that AI-mod `load` descriptors name.                                                                                                                    |
+| `pa/units/`       | GWO-authored. The CEO Commander's Colonel buildbar icon.                                                                                                                        |
 
 That last one is the reminder that **a file at a base-game path is not a shadow**.
 `bot_support_commander_ceo_icon_buildbar.png` sits in the stock unit's own
@@ -161,6 +161,19 @@ trees under the same name. `pa/platoon_templates.json` is half the size of the
 `pa_ex1/` one. A re-sync against the wrong copy therefore silently discards every
 TITANS-era entry rather than fail. See [`ai-paths.md`](ai-paths.md) for why the
 overlay is addressed as `/pa/…` regardless.
+
+#### Which copy each `pa/ai_queller/` file replaces
+
+Queller ships only under `pa_ex1/`, so there is one base copy of each. Every GWO
+copy is that file plus the five `AnyMLA*Factory` entries from the same tier's
+`unit_maps/mla.json`, which Queller's build orders reference. Merging them keeps
+the map a single file, so `mla.json` needs no mounting of its own.
+
+| GWO file                              | Base copy to diff against |
+| ------------------------------------- | ------------------------- |
+| `q_bronze/unit_maps/ai_unit_map.json` | `pa_ex1/` (the only one)  |
+| `q_silver/unit_maps/ai_unit_map.json` | `pa_ex1/` (the only one)  |
+| `q_uber/unit_maps/ai_unit_map.json`   | `pa_ex1/` (the only one)  |
 
 ## Marking a shadowed file
 

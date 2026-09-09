@@ -16,6 +16,7 @@ const UI_MAIN = path.join(REPO_ROOT, "ui", "main");
 const CARDS_DIR = path.join(UI_MAIN, "game", "galactic_war", "cards");
 const PA_DIR = path.join(REPO_ROOT, "pa");
 const PA_AI_DIR = path.join(PA_DIR, "ai");
+const PA_QUELLER_DIR = path.join(PA_DIR, "ai_queller");
 
 function readDoc(name) {
   return fs.readFileSync(path.join(DOCS_DIR, name), "utf8").split(/\r?\n/);
@@ -148,6 +149,21 @@ function checkPaTrees(problems) {
     "shadowing.md pa/ai/ re-sync table",
     documentedFiles,
     actualFiles
+  );
+
+  // Every tier's map shares a basename, so these rows are tier-relative paths.
+  const documentedQueller = firstCells(lines, (text) =>
+    text.startsWith("Which copy each `pa/ai_queller/` file replaces")
+  );
+  const actualQueller = relativeTo(
+    PA_QUELLER_DIR,
+    walkFiles(PA_QUELLER_DIR, () => true)
+  );
+  compareSets(
+    problems,
+    "shadowing.md pa/ai_queller/ re-sync table",
+    documentedQueller,
+    actualQueller
   );
 }
 

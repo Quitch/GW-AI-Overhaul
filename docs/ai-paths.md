@@ -17,13 +17,13 @@ running game stay thin.
 
 ## The five trees
 
-| Path                   | Shipped here? | What it is                                                                                                                                         |
-| ---------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/pa/ai/`              | Partly        | The base game's stock Titans AI build data. This repo ships only the handful of files GWO shadows. The rest is base-game-owned and absent from CI. |
-| `/pa/ai_penchant/`     | In full       | GWO's own personality-driven build trees. `shared/ai.js`'s `penchants()` maps a personality to build-file tags drawn from here.                    |
-| `/pa/ai_queller/`      | Partly        | The base game's Queller AI data. This repo adds a unit map to each tier GWO selects. The build data is base-game-owned and absent from CI.         |
-| `/pa/ai_subcommander/` | No            | Runtime-synthesised only. No on-disk existence anywhere.                                                                                           |
-| `/pa/ai_cluster/`      | No            | Runtime-synthesised only. No on-disk existence anywhere.                                                                                           |
+| Path                   | Shipped here? | What it is                                                                                                                                                                                 |
+| ---------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/pa/ai/`              | Partly        | The base game's stock Titans AI build data. This repo ships only the handful of files GWO shadows. The rest is base-game-owned and absent from CI.                                         |
+| `/pa/ai_penchant/`     | In full       | GWO's own personality-driven build trees. `shared/ai.js`'s `penchants()` maps a personality to build-file tags drawn from here.                                                            |
+| `/pa/ai_queller/`      | Partly        | The base game's Queller AI data. This repo shadows the unit map of each tier GWO selects, merged with the tier's `mla.json` entries. The build data is base-game-owned and absent from CI. |
+| `/pa/ai_subcommander/` | No            | Runtime-synthesised only. No on-disk existence anywhere.                                                                                                                                   |
+| `/pa/ai_cluster/`      | No            | Runtime-synthesised only. No on-disk existence anywhere.                                                                                                                                   |
 
 A race adds a sixth kind of root, synthesised per battle. The root is the
 brain's root with `_race_<id>` inserted, for example `/pa/ai_race_legion/`,
