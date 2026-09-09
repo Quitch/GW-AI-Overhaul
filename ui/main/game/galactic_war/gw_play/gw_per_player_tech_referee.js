@@ -1,7 +1,8 @@
 // Per-player tech in co-op. GWO extracts the validation to the measured
 // gw_play/per_player_tech.js (see testing.md), and continues viewers'
 // subcommanders along the player-faction colour sequence where stock leaves them
-// on colliding raw faction colours. Glue only. See shadowing.md.
+// on colliding raw faction colours. Stock's 23 console.log calls are removed;
+// the six console.error calls are GWO's. Glue only. See shadowing.md.
 define([
   "shared/gw_common",
   "shared/gw_inventory",

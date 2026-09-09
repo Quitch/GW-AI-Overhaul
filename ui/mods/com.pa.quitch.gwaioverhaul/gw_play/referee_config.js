@@ -90,11 +90,10 @@ define([
       inventory,
       game
     );
-    var playerName = ko.observable().extend({ session: "displayName" });
     var playerTag = ".player";
     var armies = [
       {
-        slots: [{ name: playerName() || "Player" }],
+        slots: [{ name: model.displayName() || "Player" }],
         color: inventory.getTag("global", "playerColor"),
         econ_rate: 1,
         spec_tag: playerTag,
@@ -103,7 +102,8 @@ define([
     ];
     var galaxy = game.galaxy();
     var currentStar = galaxy.stars()[game.currentStar()];
-    var system = currentStar.system();
+    // A copy: the planet changes below are the battle's, not the war's.
+    var battleSystem = _.cloneDeep(currentStar.system());
     var ai = currentStar.ai();
     // Keyed on the turn as well as the star, so retrying a lost battle still
     // reshuffles - loseTurn does not advance the turn, so the retry needs
@@ -148,11 +148,11 @@ define([
       battleRng
     );
     setupFfaAis(ai.foes, aiTag, armies, battleRng);
-    system.planets = modifyPlanets(
+    battleSystem.planets = modifyPlanets(
       inventory,
-      system.planets,
+      battleSystem.planets,
       game,
-      system.name,
+      battleSystem.name,
       self.biomeServed
     );
 
@@ -162,7 +162,7 @@ define([
       player: {
         commander: inventory.getTag("global", "commander"),
       },
-      system: currentStar.system(),
+      system: battleSystem,
       land_anywhere:
         ai.landAnywhere ||
         gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_landanywhere", game),

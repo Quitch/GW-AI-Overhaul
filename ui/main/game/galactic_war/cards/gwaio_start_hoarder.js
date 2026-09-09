@@ -28,10 +28,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Contains every factory on every tier of the tech tree.";
-      }
-      return "!LOC:Contains every factory on every tier of the tech tree, but this has left no space for anything else. You will need to seek out additional data banks.";
+      return "!LOC:Contains every factory on every tier of the tech tree.";
     },
     hint: gwoCard.lockedHint("!LOC:Hoarder Commander"),
     deal: gwoCard.startCard,

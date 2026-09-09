@@ -32,15 +32,14 @@ const BASE_CHANCE = 80;
 const minions = (count) =>
   Array.from({ length: count }, (unused, n) => ({ name: "cdr_" + n }));
 
-// A viewer's own inventory, as chooseCards hands it to deal(). Holding an
-// opening factory and none of the three cards that zero the weight, so the
-// subject is the minion count alone.
+// A viewer's own inventory, as chooseCards hands it to deal(). Holding both of
+// the things the card insists on - an opening factory and a metal source - so
+// the subject is the minion count alone.
 function inventory(over) {
   return Object.assign(
     {
-      units: () => [gwoUnit.vehicleFactory],
+      units: () => [gwoUnit.vehicleFactory, gwoUnit.metalExtractor],
       minions: () => [],
-      hasCard: () => false,
     },
     over || {}
   );
@@ -167,8 +166,8 @@ describe("gwc_minion weight - malformed co-op state", () => {
 
 describe("gwc_minion weight - what zeroes it", () => {
   const zeroing = {
-    "no opening factory": { units: () => [] },
-    "the tourist start": { hasCard: (id) => id === "gwaio_start_tourist" },
+    "no opening factory": { units: () => [gwoUnit.metalExtractor] },
+    "no source of metal income": { units: () => [gwoUnit.vehicleFactory] },
   };
 
   // Each short-circuits before the count, so a crowded galaxy cannot revive it.
@@ -182,6 +181,24 @@ describe("gwc_minion weight - what zeroes it", () => {
         undefined
       );
       assert.equal(result.chance, 0);
+    });
+  }
+
+  // The metal test is by unit, not by card id, so that a mod whose own start
+  // card strips metal income is covered without naming it here - and equally,
+  // so that any one of the three sources is enough to earn the offer back.
+  const metalSources = {
+    "a basic extractor": gwoUnit.metalExtractor,
+    "an advanced extractor": gwoUnit.metalExtractorAdvanced,
+    "a mining platform": gwoUnit.jig,
+  };
+
+  for (const [name, unit] of Object.entries(metalSources)) {
+    it("offers at full weight on " + name + " alone", () => {
+      assert.equal(
+        chanceFor({ units: () => [gwoUnit.vehicleFactory, unit] }),
+        BASE_CHANCE
+      );
     });
   }
 });

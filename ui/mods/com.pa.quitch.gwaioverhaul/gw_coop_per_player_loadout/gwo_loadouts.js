@@ -4,9 +4,15 @@
     // and submitLoadout reads self.ready() on the same object, so the swap
     // gates both. A race-locked loadout can never be joined with.
     var stockReady = model.ready;
+    var modulesReady = ko.observable(false); // the requireGW below has resolved
     model.ready = ko.computed(function () {
       var activeCard = model.activeStartCard();
-      return stockReady() && !!activeCard && !activeCard.gwoRaceLocked;
+      return (
+        modulesReady() &&
+        stockReady() &&
+        !!activeCard &&
+        !activeCard.gwoRaceLocked
+      );
     });
 
     var cardId = function (card) {
@@ -230,6 +236,7 @@
 
           return result.promise();
         };
+        modulesReady(true);
       }
     );
   } catch (e) {

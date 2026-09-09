@@ -142,10 +142,31 @@
     model.gwoBossCommandersTooltip =
       "!LOC:Number of Commanders in the boss's army.";
     // deck_picker.js appends a line per third-party deck
-    model.gwoCardsTooltip =
-      "!LOC:BASIC: base game tech cards<BR>GALACTIC WAR OVERHAUL: over 150 additional cards.";
-    model.gwoFactionTooltip =
-      "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:<br>LEGONIS MACHINA: vehicles<br>FOUNDATION: air/navy<br>SYNCHRONOUS: bots<br>REVENANTS: orbital";
+    model.gwoCardsTooltip = [
+      loc("!LOC:BASIC: base game tech cards"),
+      loc("!LOC:GALACTIC WAR OVERHAUL: over 150 additional cards."),
+    ].join("<br>");
+    model.gwoFactionTooltip = [
+      loc(
+        "!LOC:Each faction has its own style of play affecting Sub Commanders and enemy commanders:"
+      ),
+      loc("!LOC:LEGONIS MACHINA: vehicles"),
+      loc("!LOC:FOUNDATION: air/navy"),
+      loc("!LOC:SYNCHRONOUS: bots"),
+      loc("!LOC:REVENANTS: orbital"),
+    ].join("<br>");
+    model.gwoDifficultyLevelsTooltip = [
+      loc("!LOC:BEGINNER: you completed the tutorial"),
+      loc("!LOC:CASUAL: you have some hours in PA"),
+      loc("!LOC:IRON: you no longer turtle"),
+      loc("!LOC:BRONZE: you beat vanilla Galactic War"),
+      loc("!LOC:SILVER: you beat the skirmish AI"),
+      loc("!LOC:GOLD: you beat the Queller AI mod"),
+      loc("!LOC:PLATINUM: one enemy is no challenge"),
+      loc("!LOC:DIAMOND: your loadouts are OP"),
+      loc("!LOC:UBER: you hate winning"),
+      loc("!LOC:CUSTOM: create your own challenge"),
+    ].join("<br>");
 
     model.gwoGameOptionsDraft = {
       hardcore: ko.observable(false),
@@ -218,9 +239,6 @@
 
     model.gwoCommanderModalVisible = ko.observable(false);
     model.gwoCommanderDraft = ko.observable(model.selectedCommander());
-    model.gwoDraftCommanderName = ko.computed(function () {
-      return CommanderUtility.bySpec.getName(model.gwoCommanderDraft());
-    });
     model.openGwoCommanderModal = function () {
       model.gwoCommanderDraft(model.selectedCommander());
       model.gwoCommanderModalVisible(true);
@@ -283,10 +301,10 @@
     locTree($("#difficulty-cards"));
 
     if (api.content.usingTitans()) {
-      model.gwoFactionTooltip =
-        model.gwoFactionTooltip +
+      model.gwoFactionTooltip +=
+        "<br>" +
         loc(
-          "!LOC:<br>CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
+          "!LOC:CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
         );
     }
 

@@ -48,46 +48,47 @@ define(function () {
 
     var testMinions = function (product, inventory) {
       // Flattened up front, so units.js is required once rather than per minion.
-      require([
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-      ], function (gwoUnit) {
-        var clusterSecurity = gwoUnit.colonel;
-        var clusterWorker = gwoUnit.angel;
+      requireGW(
+        ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"],
+        function (gwoUnit) {
+          var clusterSecurity = gwoUnit.colonel;
+          var clusterWorker = gwoUnit.angel;
 
-        var allMinions = _.reduce(
-          GWFactions,
-          function (collected, faction) {
-            return collected.concat(faction.minions || []);
-          },
-          []
-        );
+          var allMinions = _.reduce(
+            GWFactions,
+            function (collected, faction) {
+              return collected.concat(faction.minions || []);
+            },
+            []
+          );
 
-        _.forEach(allMinions, function (minion) {
-          var minionStock = _.cloneDeep(product);
-          minionStock.minion = minion;
-          inventory.cards.push(minionStock);
-          inventory.cards.pop();
+          _.forEach(allMinions, function (minion) {
+            var minionStock = _.cloneDeep(product);
+            minionStock.minion = minion;
+            inventory.cards.push(minionStock);
+            inventory.cards.pop();
 
-          if (!minionStock.minion.commander) {
-            // This will use the player's commander
-            return;
-          }
+            if (!minionStock.minion.commander) {
+              // This will use the player's commander
+              return;
+            }
 
-          if (
-            !CommanderUtility.bySpec.getObjectName(
-              minionStock.minion.commander
-            ) &&
-            minionStock.minion.commander !== clusterSecurity &&
-            minionStock.minion.commander !== clusterWorker
-          ) {
-            console.error(
-              "Minion commander unit spec " +
-                minionStock.minion.commander +
-                " invalid"
-            );
-          }
-        });
-      });
+            if (
+              !CommanderUtility.bySpec.getObjectName(
+                minionStock.minion.commander
+              ) &&
+              minionStock.minion.commander !== clusterSecurity &&
+              minionStock.minion.commander !== clusterWorker
+            ) {
+              console.error(
+                "Minion commander unit spec " +
+                  minionStock.minion.commander +
+                  " invalid"
+              );
+            }
+          });
+        }
+      );
     };
 
     var dealSubCommander = function (product) {

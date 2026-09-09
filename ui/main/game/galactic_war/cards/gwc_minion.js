@@ -4,7 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-], function (GWFactions, gwoCard, gwoGroup, gwoAI, gwoRaces) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (GWFactions, gwoCard, gwoGroup, gwoAI, gwoRaces, gwoUnit) {
   var coopMinionCount = function () {
     var game = model.game();
     // Counts minions of absent players too, in case one rejoins.
@@ -64,7 +65,11 @@ define([
           inventory.units(),
           gwoGroup.landFactoriesBasic
         ) ||
-        inventory.hasCard("gwaio_start_tourist")
+        gwoCard.missingAllUnits(inventory.units(), [
+          gwoUnit.metalExtractorAdvanced,
+          gwoUnit.metalExtractor,
+          gwoUnit.jig,
+        ])
       ) {
         chance = 0;
       } else if (inventory.minions) {

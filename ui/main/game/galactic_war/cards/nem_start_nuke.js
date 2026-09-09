@@ -71,10 +71,7 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.";
-      }
-      return "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence.";
+      return "!LOC:Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.";
     },
     hint: gwoCard.lockedHint("!LOC:Tactical Nuke Commander"),
     deal: gwoCard.startCard,

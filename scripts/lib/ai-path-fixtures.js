@@ -79,6 +79,37 @@ function makeAiDescriptor(overrides) {
 //   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
 //   viewerInventoryData feeds a fake game.findCoopPlayerInventoryData(client)
 //
+// The origin star's system: its gwaio settings block only when a brain is
+// recorded, as a war saved before GWO existed carries none.
+function buildSystem(opts, aiInUse, aiAllyInUse) {
+  if (!aiInUse && !aiAllyInUse && !opts.aiByRace) {
+    return {};
+  }
+  var gwaio = {};
+  if (aiInUse) {
+    gwaio.ai = aiInUse;
+  }
+  if (aiAllyInUse) {
+    gwaio.aiAlly = aiAllyInUse;
+  }
+  // The per-race brain table as gw_start records it:
+  // { raceId: { enemy, ally } }. Absent means a war saved before it existed.
+  if (opts.aiByRace) {
+    gwaio.aiByRace = opts.aiByRace;
+  }
+  if (opts.difficultyName) {
+    gwaio.difficulty = opts.difficultyName;
+  }
+  // A Custom war's recorded tier values, as gw_start snapshots them.
+  if (opts.customDifficulty) {
+    gwaio.customDifficulty = opts.customDifficulty;
+  }
+  if (opts.coopPlayerScalingCount) {
+    gwaio.coopPlayerScalingCount = opts.coopPlayerScalingCount;
+  }
+  return { gwaio: gwaio };
+}
+
 // Connected clients go to installModel(), not here.
 function buildGame(options) {
   var opts = options || {};
@@ -128,31 +159,7 @@ function buildGame(options) {
     ai.race = enemyRace;
   }
 
-  var system = {};
-  if (aiInUse || aiAllyInUse || opts.aiByRace) {
-    system.gwaio = {};
-    if (aiInUse) {
-      system.gwaio.ai = aiInUse;
-    }
-    if (aiAllyInUse) {
-      system.gwaio.aiAlly = aiAllyInUse;
-    }
-    // The per-race brain table as gw_start records it:
-    // { raceId: { enemy, ally } }. Absent means a war saved before it existed.
-    if (opts.aiByRace) {
-      system.gwaio.aiByRace = opts.aiByRace;
-    }
-    if (opts.difficultyName) {
-      system.gwaio.difficulty = opts.difficultyName;
-    }
-    // A Custom war's recorded tier values, as gw_start snapshots them.
-    if (opts.customDifficulty) {
-      system.gwaio.customDifficulty = opts.customDifficulty;
-    }
-    if (opts.coopPlayerScalingCount) {
-      system.gwaio.coopPlayerScalingCount = opts.coopPlayerScalingCount;
-    }
-  }
+  var system = buildSystem(opts, aiInUse, aiAllyInUse);
 
   var star = {
     system: function () {

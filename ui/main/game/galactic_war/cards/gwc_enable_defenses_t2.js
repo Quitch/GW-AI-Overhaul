@@ -5,10 +5,7 @@ define([
   return {
     visible: _.constant(true),
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.";
-      }
-      return "!LOC:Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators. Advanced defenses include tactical missile launchers, triple barrel laser turrets, and anti-air flak towers.";
+      return "!LOC:Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.";
     },
     summarize: _.constant("!LOC:Advanced Defense Technology"),
     icon: _.constant(

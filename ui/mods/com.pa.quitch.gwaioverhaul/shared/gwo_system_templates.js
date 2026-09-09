@@ -279,7 +279,8 @@ define([
           // get planet templates that match the isExplicit value and haven't been used yet
           // if the requesting planet doesn't actually have isExplicit value true or false,
           // we don't care.
-          var viablePlanets = _.where(planetList, function (planet) {
+          // GWO - _.filter; stock's _.where discards a predicate under lodash 3
+          var viablePlanets = _.filter(planetList, function (planet) {
             return (
               (typeof plnt.isExplicit === "undefined" ||
                 !!planet.isExplicit === plnt.isExplicit) &&
@@ -304,7 +305,8 @@ define([
           } else {
             // Stop caring about if it is unused
             // GWO - was var viablePlanets, redeclaring the one above
-            viablePlanets = _.where(planetList, function (planet) {
+            // GWO - _.filter; stock's _.where discards a predicate under lodash 3
+            viablePlanets = _.filter(planetList, function (planet) {
               return (
                 typeof plnt.isExplicit === "undefined" ||
                 !!planet.isExplicit === plnt.isExplicit

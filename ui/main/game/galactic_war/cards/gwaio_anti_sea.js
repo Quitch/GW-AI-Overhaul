@@ -5,9 +5,6 @@ define([
   return {
     visible: _.constant(true),
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units. The Kaiju is armoured as a hover unit.";
-      }
       return "!LOC:Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units.";
     },
     summarize: _.constant("!LOC:Anti-Ship Ammo Tech"),

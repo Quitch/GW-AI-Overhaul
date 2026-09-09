@@ -34,10 +34,7 @@ define([
   return {
     visible: _.constant(false),
     summarize: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Warp Commander";
-      }
-      return loc("!LOC:Teleporter") + " " + loc("!LOC:Commander"); // scuffed translation using existing strings
+      return "!LOC:Warp Commander";
     },
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
@@ -48,15 +45,9 @@ define([
     hint: function () {
       var icon =
         "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png";
-      if (gwoCard.isEnglish()) {
-        return {
-          icon: icon,
-          description: "!LOC:Warp Commander",
-        };
-      }
       return {
         icon: icon,
-        description: loc("!LOC:Teleporter") + " " + loc("!LOC:Commander"), // scuffed translation using existing strings
+        description: "!LOC:Warp Commander",
       };
     },
     deal: gwoCard.startCard,

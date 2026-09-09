@@ -29,7 +29,7 @@ define([
 
   var validate = function (descriptor) {
     if (!_.isPlainObject(descriptor)) {
-      throw new Error("gwoDecks: a deck must be an object");
+      throw new TypeError("gwoDecks: a deck must be an object");
     }
     if (!normalizeId(descriptor.id)) {
       throw new Error("gwoDecks: a deck needs an id");
@@ -38,12 +38,12 @@ define([
       throw new Error('gwoDecks: deck "' + descriptor.id + '" needs a name');
     }
     if (!_.isUndefined(descriptor.include) && !_.isArray(descriptor.include)) {
-      throw new Error(
+      throw new TypeError(
         'gwoDecks: deck "' + descriptor.id + '" include must be an array'
       );
     }
     if (!_.isUndefined(descriptor.cards) && !_.isArray(descriptor.cards)) {
-      throw new Error(
+      throw new TypeError(
         'gwoDecks: deck "' + descriptor.id + '" cards must be an array'
       );
     }

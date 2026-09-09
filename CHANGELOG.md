@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## v7.2.0 - 2026-09-09
+
+### Added
+
+- Translations for missing strings for German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Russian, Simplified Chinese, and Traditional Chinese using the Mod Translations mod. To fix a translation, join the [Galactic War Overhaul project on Playglot](https://playglot.pro/projects/galactic-war-overhaul)
+
+### Changed
+
+- Improved Intelligence Tech no longer applies to teleporters
+
+### Bugfix
+
+- Remove Sub Commanders from Tourist Commander description
+- The war setup screen restores the loadout you last used
+- Easy Systems now generates the smaller template set without Shared Systems for Galactic War
+- A missing or unreadable AI file fails the battle launch with an error instead of leaving Fight stuck
+- The faction tooltip on the war setup screen now shows in your language when TITANS is active, instead of English
+- Lore text on the galaxy map now shows in your language; the Bugs system description was English in every non-English locale
+
 ## v7.1.0 - 2026-09-07
 
 ### Changed

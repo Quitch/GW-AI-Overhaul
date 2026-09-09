@@ -23,8 +23,16 @@
   try {
     model.gwoAvailableTechTooltip =
       "!LOC:This card will be offered as part of the first draw.";
-    model.gwoGameModifiersTooltip =
-      "!LOC:BOUNTIES: earn an economic multiplier for every kill.<br>LAND ANYWHERE: players can start anywhere on viable starting planets.<br>SUDDEN DEATH: any commander death on a team kills the entire team.<br>ERADICATE: all units of specific types must be eradicated.";
+    model.gwoGameModifiersTooltip = [
+      loc("!LOC:BOUNTIES: earn an economic multiplier for every kill."),
+      loc(
+        "!LOC:LAND ANYWHERE: players can start anywhere on viable starting planets."
+      ),
+      loc(
+        "!LOC:SUDDEN DEATH: any commander death on a team kills the entire team."
+      ),
+      loc("!LOC:ERADICATE: all units of specific types must be eradicated."),
+    ].join("<br>");
     model.gwoAIBuffsTooltip =
       "!LOC:Applied to AI commanders and units preferred by the faction.";
 
@@ -190,7 +198,8 @@
             buffNames.push(loc("!LOC:Factory cooldown decreased"));
             break;
           default:
-            throw new Error("Undefined buff type: " + buff);
+            // Inside a ko.computed, so a throw would take the tooltip down.
+            console.warn("Undefined buff type: " + buff);
         }
       });
       if (guardians) {
@@ -352,8 +361,10 @@
               case gwoBuffType.combat:
                 totalThreat *= 1.5;
                 break;
+              case gwoBuffType.commanders:
+                break;
               default:
-                throw new Error("Undefined buff type: " + buff);
+                console.warn("Undefined buff type: " + buff);
             }
           });
           var guardians = ai.mirrorMode;

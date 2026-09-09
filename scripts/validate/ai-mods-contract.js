@@ -81,10 +81,7 @@ function collectAiMods(card) {
   return captured;
 }
 
-function checkMod(mod, index) {
-  const problems = [];
-  const where = "mod[" + index + "] (op=" + mod.op + ")";
-
+function checkType(problems, where, mod) {
   if (!Object.prototype.hasOwnProperty.call(mod, "type")) {
     problems.push(where + ": missing `type`");
   } else if (!VALID_TYPES.has(mod.type)) {
@@ -97,9 +94,58 @@ function checkMod(mod, index) {
         ")"
     );
   }
+}
+
+function checkTreeOnly(problems, where, mod) {
+  if (!Object.prototype.hasOwnProperty.call(mod, "treeOnly")) {
+    return;
+  }
+  if (typeof mod.treeOnly !== "boolean") {
+    problems.push(where + ": `treeOnly` must be a boolean");
+  } else if (mod.op === "load" || mod.op === "squad") {
+    problems.push(where + ': `treeOnly` is not read by op "' + mod.op + '"');
+  }
+}
+
+// The checks that need a known op: its required fields, treeOnly, and the
+// types it may target.
+function checkOp(problems, where, mod, requiredFields) {
+  for (const field of requiredFields) {
+    if (
+      !Object.prototype.hasOwnProperty.call(mod, field) ||
+      mod[field] === undefined
+    ) {
+      problems.push(where + ': op "' + mod.op + '" requires `' + field + "`");
+    }
+  }
+
+  checkTreeOnly(problems, where, mod);
+
+  const allowedTypes = VALID_TYPES_BY_OP[mod.op];
+  if (VALID_TYPES.has(mod.type) && !allowedTypes.has(mod.type)) {
+    problems.push(
+      where +
+        ': op "' +
+        mod.op +
+        '" cannot target type "' +
+        mod.type +
+        '" (expected one of: ' +
+        [...allowedTypes].join(", ") +
+        ")"
+    );
+  }
+}
+
+function checkMod(mod, index) {
+  const problems = [];
+  const where = "mod[" + index + "] (op=" + mod.op + ")";
+
+  checkType(problems, where, mod);
 
   const requiredFields = REQUIRED_FIELDS_BY_OP[mod.op];
-  if (!requiredFields) {
+  if (requiredFields) {
+    checkOp(problems, where, mod, requiredFields);
+  } else {
     problems.push(
       where +
         ': invalid `op` "' +
@@ -108,39 +154,6 @@ function checkMod(mod, index) {
         Object.keys(REQUIRED_FIELDS_BY_OP).join(", ") +
         ")"
     );
-  } else {
-    for (const field of requiredFields) {
-      if (
-        !Object.prototype.hasOwnProperty.call(mod, field) ||
-        mod[field] === undefined
-      ) {
-        problems.push(where + ': op "' + mod.op + '" requires `' + field + "`");
-      }
-    }
-
-    if (Object.prototype.hasOwnProperty.call(mod, "treeOnly")) {
-      if (typeof mod.treeOnly !== "boolean") {
-        problems.push(where + ": `treeOnly` must be a boolean");
-      } else if (mod.op === "load" || mod.op === "squad") {
-        problems.push(
-          where + ': `treeOnly` is not read by op "' + mod.op + '"'
-        );
-      }
-    }
-
-    const allowedTypes = VALID_TYPES_BY_OP[mod.op];
-    if (VALID_TYPES.has(mod.type) && !allowedTypes.has(mod.type)) {
-      problems.push(
-        where +
-          ': op "' +
-          mod.op +
-          '" cannot target type "' +
-          mod.type +
-          '" (expected one of: ' +
-          [...allowedTypes].join(", ") +
-          ")"
-      );
-    }
   }
 
   return problems;

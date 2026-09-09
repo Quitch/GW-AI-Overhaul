@@ -265,19 +265,15 @@ define([
       return result.promise();
     };
 
-    if (model.registerCampaignViewerOperatorHandler) {
-      model.registerCampaignViewerOperatorHandler(
-        rerollPendingTechRequest,
-        rerollPendingTechForCoopPlayer
-      );
-    }
+    model.registerCampaignViewerOperatorHandler(
+      rerollPendingTechRequest,
+      rerollPendingTechForCoopPlayer
+    );
 
-    if (model.registerCampaignHostOperatorHandler) {
-      model.registerCampaignHostOperatorHandler(
-        rerollPendingTechResult,
-        applyPendingTechRerollResult
-      );
-    }
+    model.registerCampaignHostOperatorHandler(
+      rerollPendingTechResult,
+      applyPendingTechRerollResult
+    );
   };
 
   // Test-only hook - see testing.md.

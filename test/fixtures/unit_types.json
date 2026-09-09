@@ -3642,6 +3642,7 @@
       "UNITTYPE_Offense",
       "UNITTYPE_Land",
       "UNITTYPE_Advanced",
+      "UNITTYPE_Heavy",
       "UNITTYPE_FactoryBuild",
       "UNITTYPE_Custom6"
     ],
@@ -3742,8 +3743,6 @@
     ],
     "/pa/units/land/tin/dead/tin_ded.json": [
       "UNITTYPE_Bot",
-      "UNITTYPE_Mobile",
-      "UNITTYPE_Offense",
       "UNITTYPE_Land",
       "UNITTYPE_Basic",
       "UNITTYPE_Custom6",

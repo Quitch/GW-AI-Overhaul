@@ -37,6 +37,7 @@ the traps that have actually caused bugs here.
 | Races (Legion, Bugs, Exiles): registry, translation, race AI trees      | [`docs/races.md`](docs/races.md)                       |
 | Adding a race: the checklist, and the rules the race code relies on     | [`docs/race-conventions.md`](docs/race-conventions.md) |
 | The Node AMD harness, the validators, coverage                          | [`docs/testing.md`](docs/testing.md)                   |
+| Translation files, the i18n tooling, the catalog and the scope rule     | [`docs/translations.md`](docs/translations.md)         |
 
 These are worth knowing before you touch anything, each covered in full by the doc
 named:

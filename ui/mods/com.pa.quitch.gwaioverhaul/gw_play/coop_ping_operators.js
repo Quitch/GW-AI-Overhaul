@@ -247,19 +247,15 @@ define([
       showPing(payload.star, payload.client_name);
     };
 
-    if (model.registerCampaignViewerOperatorHandler) {
-      model.registerCampaignViewerOperatorHandler(
-        PING_REQUEST,
-        relayPingToViewers
-      );
-    }
+    model.registerCampaignViewerOperatorHandler(
+      PING_REQUEST,
+      relayPingToViewers
+    );
 
-    if (model.registerCampaignHostOperatorHandler) {
-      model.registerCampaignHostOperatorHandler(
-        PING_BROADCAST,
-        applyPingBroadcast
-      );
-    }
+    model.registerCampaignHostOperatorHandler(
+      PING_BROADCAST,
+      applyPingBroadcast
+    );
 
     return { canPing: canPing, pingStar: pingStar };
   };

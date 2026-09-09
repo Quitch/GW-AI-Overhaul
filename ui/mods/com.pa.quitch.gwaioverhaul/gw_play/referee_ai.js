@@ -590,50 +590,59 @@ define([
   var processDirectories = function (aiPath, request) {
     var deferred = $.Deferred();
     var inventory = request.inventory;
+    // A throw inside a deferred callback is a hang, not a rejection (see
+    // constraints.md), so every path below that can fail rejects here instead.
+    var fail = function (error) {
+      deferred.reject(error);
+    };
 
     request.treeCache.list(aiPath).then(function (fileList) {
-      var aisToModify = request.forceSubCommanderScope
-        ? "SubCommanders"
-        : whichAIsAreBeingModified(request.clusterPresence, inventory);
-      var nonLoadAiMods = _.reject(getRefereeInventoryAiMods(inventory), {
-        op: "load",
-      });
+      try {
+        var aisToModify = request.forceSubCommanderScope
+          ? "SubCommanders"
+          : whichAIsAreBeingModified(request.clusterPresence, inventory);
+        var nonLoadAiMods = _.reject(getRefereeInventoryAiMods(inventory), {
+          op: "load",
+        });
 
-      addApplicableAiLoadModsToFileList(
-        aiPath,
-        fileList,
-        inventory,
-        aisToModify,
-        request.aiPaths
-      );
+        addApplicableAiLoadModsToFileList(
+          aiPath,
+          fileList,
+          inventory,
+          aisToModify,
+          request.aiPaths
+        );
 
-      var context = {
-        configFiles: request.configFiles,
-        aisToModify: aisToModify,
-        aiPaths: request.aiPaths,
-        clusterPresence: request.clusterPresence,
-        scopeToken: request.scopeToken,
-        nonLoadAiMods: nonLoadAiMods,
-        forceSubCommanderScope: request.forceSubCommanderScope,
-        treeCache: request.treeCache,
-      };
+        var context = {
+          configFiles: request.configFiles,
+          aisToModify: aisToModify,
+          aiPaths: request.aiPaths,
+          clusterPresence: request.clusterPresence,
+          scopeToken: request.scopeToken,
+          nonLoadAiMods: nonLoadAiMods,
+          forceSubCommanderScope: request.forceSubCommanderScope,
+          treeCache: request.treeCache,
+        };
 
-      var promises = _.map(fileList, function (filePath) {
-        if (
-          !_.endsWith(filePath, ".json") ||
-          _.includes(filePath, "/neural_networks/") || // AIs fall back to /pa/ai/neural_networks/
-          gwoRaces.inAnyRaceLayer(filePath) // a race's files belong to its own tree - see races.md
-        ) {
-          return;
-        }
+        var promises = _.map(fileList, function (filePath) {
+          if (
+            !_.endsWith(filePath, ".json") ||
+            _.includes(filePath, "/neural_networks/") || // AIs fall back to /pa/ai/neural_networks/
+            gwoRaces.inAnyRaceLayer(filePath) // a race's files belong to its own tree - see races.md
+          ) {
+            return;
+          }
 
-        return processFilesInDirectory(filePath, context);
-      });
+          return processFilesInDirectory(filePath, context);
+        });
 
-      Promise.all(promises).then(function () {
-        deferred.resolve();
-      });
-    });
+        Promise.all(promises).then(function () {
+          deferred.resolve();
+        }, fail);
+      } catch (error) {
+        fail(error);
+      }
+    }, fail);
 
     return deferred.promise();
   };
@@ -749,6 +758,9 @@ define([
   // parse AI files, apply AI mods, and load the results into self.files()
   var generate = function () {
     var deferred = $.Deferred();
+    var fail = function (error) {
+      deferred.reject(error);
+    };
 
     var self = this;
     var configFiles = self.files(); // JSON files passed to the server
@@ -836,7 +848,7 @@ define([
 
     Promise.all(promises).then(function () {
       deferred.resolve();
-    });
+    }, fail);
 
     return deferred.promise();
   };

@@ -6,9 +6,6 @@ define([
   return {
     visible: _.constant(true),
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Improved Intelligence Tech reduces energy costs for intelligence structures by 75%, and teleport energy costs by 75%";
-      }
       return "!LOC:Improved Intelligence Tech reduces energy costs for intelligence structures by 75%";
     },
     summarize: _.constant("!LOC:Improved Intelligence Tech"),
@@ -30,15 +27,9 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        gwoCard
-          .flatMapMods(gwoGroup.energyIntel, "multiply", {
-            "consumption.energy": 0.25,
-          })
-          .concat(
-            gwoCard.flatMapMods(gwoGroup.teleporters, "multiply", {
-              "teleporter.energy_demand": 0.25,
-            })
-          )
+        gwoCard.flatMapMods(gwoGroup.energyIntel, "multiply", {
+          "consumption.energy": 0.25,
+        })
       );
     },
     dull: function () {},

@@ -99,13 +99,10 @@
       }
     };
 
-    var fixLuckyCommanderLocalStorageVariable = function () {
+    var fixLuckyCommanderLocalStorageVariable = function (gwoBank) {
       var unlockedVanillaStartCards = ko
         .observableArray()
         .extend({ local: "gw_bank" });
-      var unlockedGwoStartCards = ko
-        .observableArray()
-        .extend({ local: "gwaio_bank" });
       var index = _.findIndex(unlockedVanillaStartCards().startCards, {
         id: "gwaio_start_lucky",
       });
@@ -113,10 +110,7 @@
       if (index !== -1) {
         unlockedVanillaStartCards().startCards.splice(index, 1);
         unlockedVanillaStartCards.valueHasMutated();
-        unlockedGwoStartCards().startCards.push({
-          id: "gwaio_start_lucky",
-        });
-        unlockedGwoStartCards.valueHasMutated();
+        gwoBank.addStartCard({ id: "gwaio_start_lucky" });
       }
 
       luckyCommanderFixed("true");
@@ -154,7 +148,7 @@
       }
     };
 
-    var applyFixes = function (gwoTreasure) {
+    var applyFixes = function (gwoTreasure, gwoBank) {
       for (var star of galaxy.stars()) {
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
@@ -176,7 +170,7 @@
       gwoSettings.treasureLoadoutDerived = true;
 
       if (luckyCommanderFixed() !== "true") {
-        fixLuckyCommanderLocalStorageVariable();
+        fixLuckyCommanderLocalStorageVariable(gwoBank);
       }
     };
 
@@ -186,9 +180,10 @@
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
       ],
-      function (gwoSave, gwoTreasure) {
-        applyFixes(gwoTreasure);
+      function (gwoSave, gwoTreasure, gwoBank) {
+        applyFixes(gwoTreasure, gwoBank);
         gwoSave(game, true);
       }
     );

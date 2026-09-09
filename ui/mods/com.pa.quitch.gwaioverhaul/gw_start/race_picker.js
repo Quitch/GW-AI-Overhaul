@@ -124,7 +124,7 @@
           );
           if (
             choices.length &&
-            !_.contains(choices, model.selectedCommander())
+            !_.contains(choices, model.selectedCommander.peek())
           ) {
             model.selectedCommander(choices[0]);
           }

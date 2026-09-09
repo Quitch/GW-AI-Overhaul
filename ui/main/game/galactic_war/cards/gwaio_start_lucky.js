@@ -13,10 +13,7 @@ define([
   return {
     visible: _.constant(false),
     summarize: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Lucky Commander";
-      }
-      return loc("!LOC:Reroll Tech") + " " + loc("!LOC:Commander"); // scuffed translation using existing strings
+      return "!LOC:Lucky Commander";
     },
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
@@ -27,15 +24,9 @@ define([
     hint: function () {
       var icon =
         "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png";
-      if (gwoCard.isEnglish()) {
-        return {
-          icon: icon,
-          description: "!LOC:Lucky Commander",
-        };
-      }
       return {
         icon: icon,
-        description: loc("!LOC:Reroll Tech") + " " + loc("!LOC:Commander"), // scuffed translation using existing strings
+        description: "!LOC:Lucky Commander",
       };
     },
     deal: gwoCard.startCard,

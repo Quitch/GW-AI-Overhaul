@@ -82,6 +82,14 @@
       warnIfViewerIdentityMissing();
       model.gwCampaignConnected.subscribe(warnIfViewerIdentityMissing);
 
+      var options = function (optionsList, setting, text) {
+        if (setting) {
+          optionsList.push(loc(text));
+        }
+      };
+
+      model.gwoOptions = ko.observableArray([]);
+
       var cheatsDetected = function () {
         if (!model.devMode()) {
           return;
@@ -110,13 +118,6 @@
       cheatsDetected();
       model.devMode.subscribe(cheatsDetected);
 
-      var options = function (optionsList, setting, text) {
-        if (setting) {
-          optionsList.push(loc(text));
-        }
-      };
-
-      model.gwoOptions = ko.observableArray([]);
       // Unwrapped, not subscribed: each is fixed for the lifetime of a war.
       var optionDefs = [
         [model.gwoSettings.factionScaling, "!LOC:Faction Scaling"],
@@ -429,7 +430,7 @@
             var human = loc("!LOC:Human");
             var commanders = [
               {
-                name: ko.observable().extend({ session: "displayName" }),
+                name: model.displayName,
                 color: playerColour,
                 character: model.gwoLoadout,
                 iconFill: raceIcon(playerRace).fill,

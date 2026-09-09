@@ -57,6 +57,7 @@
     model.makeGame = function () {}; // Prevent changes to settings causing creation of new galaxies
 
     var enableGoToWar = ko.observable(true);
+    var gwoReady = ko.observable(false); // the modules below have loaded
     var sharedSystemsForGalacticWarActive = false;
     var defaultNewGameName = model.newGameName();
     var warGenerationFailed;
@@ -65,7 +66,12 @@
     // Shared Systems for Galactic War breaking our new lobby
     model.ready = ko.computed(function () {
       var activeCard = model.activeStartCard();
-      return enableGoToWar() && !!activeCard && !activeCard.gwoRaceLocked;
+      return (
+        gwoReady() &&
+        enableGoToWar() &&
+        !!activeCard &&
+        !activeCard.gwoRaceLocked
+      );
     });
 
     var onSelectedNamesChanged = function (names) {
@@ -332,8 +338,6 @@
         "shared/gw_factions",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_breeder.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_teams.js",
-        "main/shared/js/star_system_templates",
-        "main/game/galactic_war/shared/js/gw_easy_star_systems",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
@@ -360,8 +364,6 @@
         GWFactions,
         gwoBreeder,
         gwoTeams,
-        normalSystemTemplates, // window.star_system_templates is set instead
-        easySystemTemplates,
         gwoLore,
         gwoDifficulty,
         gwoAI,
@@ -398,9 +400,17 @@
           return !!card.gwoRaceLocked;
         };
 
+        // ui.js swaps activeStartCardIndex for the remembered setting, but
+        // stock's activeStartCard computed still tracks the observable it was
+        // built on, so until the list first changes it peeks stock card 0.
+        // The first build therefore resolves the id from the new list at the
+        // remembered index; later builds preserve the id already selected.
+        var built = false;
         model.gwoRebuildStartCards = function () {
-          var activeCard = model.activeStartCard.peek();
-          var activeId = activeCard && cardId(activeCard);
+          var savedIndex = model.activeStartCardIndex.peek();
+          var previousId = built
+            ? cardId(model.activeStartCard.peek())
+            : undefined;
           model.startCards(
             gwoFavouriteLoadouts.sortCardsByFavourite(
               loadouts.startCards(),
@@ -408,8 +418,11 @@
               cardId
             )
           );
+          var cards = model.startCards.peek();
+          var activeId =
+            previousId || (cards[savedIndex] && cardId(cards[savedIndex]));
           var index = loadoutSelection.selectableIndex(
-            model.startCards.peek(),
+            cards,
             activeId,
             cardId,
             isRaceLocked
@@ -417,6 +430,7 @@
           if (index !== -1) {
             model.activeStartCardIndex(index);
           }
+          built = true;
         };
         requireGW(gwoLoadoutBanks.paths(), function () {
           gwoLoadoutBanks.resolve(_.toArray(arguments));
@@ -696,9 +710,6 @@
           var warTierData = selectedTier.customDifficulty
             ? tierSnapshot()
             : selectedTier;
-          var systemTemplates = model.gwoDifficultySettings.simpleSystems()
-            ? easySystemTemplates
-            : star_system_templates;
           var sizes = GW.balance.numberOfSystems;
           var size = sizes[model.newGameSizeIndex()] || 40;
           var aiFactions = _.range(GWFactions.length);
@@ -738,7 +749,8 @@
                 seed: model.newGameSeed(),
                 gwoRng: warRng.stream("galaxy"),
                 size: size,
-                systemTemplates: systemTemplates,
+                useEasierSystemTemplate:
+                  model.gwoDifficultySettings.simpleSystems(),
                 content: game.content(),
                 coopPlayersForSystemGeneration: playerCount,
                 minStarDistance: 2,
@@ -897,7 +909,7 @@
                   star,
                   ai,
                   teams[ai.team],
-                  systemTemplates,
+                  undefined, // stock's sst parameter, which makeBoss never reads
                   // Keyed by team: makeBoss generates a system, so these resolve out of
                   // order. Stock omits the seed entirely.
                   warRng.stream("boss", ai.team).int(0, 2147483647)
@@ -1455,6 +1467,7 @@
 
           finishSetup.then(onSetupFinished).fail(onWarGenerationError);
         };
+        gwoReady(true);
       }
     );
   } catch (e) {
