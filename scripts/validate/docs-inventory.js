@@ -30,17 +30,14 @@ function firstCells(lines, matches) {
   const cells = [];
 
   for (const line of lines) {
-    const heading = /^#+\s+(.*)$/.exec(line);
-    if (heading) {
+    const heading = /^#+\s+(\S.*)$/.exec(line);
+    const isRow = !heading && inSection && line.startsWith("|");
+    if (!isRow) {
       if (inSection && rows > 0) {
         break;
       }
-      inSection = matches(heading[1]);
-      continue;
-    }
-    if (!inSection || !line.startsWith("|")) {
-      if (inSection && rows > 0) {
-        break;
+      if (heading) {
+        inSection = matches(heading[1]);
       }
       continue;
     }
@@ -48,14 +45,20 @@ function firstCells(lines, matches) {
     if (rows <= 2) {
       continue; // header and separator
     }
-    const first = line.split("|")[1] || "";
-    const code = /`([^`]+)`/.exec(first);
+    const code = firstCellCode(line);
     if (code) {
-      cells.push(code[1]);
+      cells.push(code);
     }
   }
 
   return cells;
+}
+
+// The backtick value in a table row's first cell, if any.
+function firstCellCode(line) {
+  const first = line.split("|")[1] || "";
+  const code = /`([^`]+)`/.exec(first);
+  return code ? code[1] : undefined;
 }
 
 function compareSets(problems, label, documented, actual) {
@@ -154,7 +157,7 @@ function checkAiPathTrees(problems) {
   let rows = 0;
 
   for (const line of lines) {
-    const heading = /^#+\s+(.*)$/.exec(line);
+    const heading = /^#+\s+(\S.*)$/.exec(line);
     if (heading) {
       if (inSection && rows > 0) {
         break;
@@ -166,33 +169,37 @@ function checkAiPathTrees(problems) {
       continue;
     }
     rows += 1;
-    if (rows <= 2) {
-      continue;
-    }
-    const cells = line.split("|").map((cell) => cell.trim());
-    const code = /`\/pa\/([^`/]+)\/`/.exec(cells[1] || "");
-    if (!code) {
-      continue;
-    }
-    const shipped = fs.existsSync(path.join(PA_DIR, code[1]));
-    const saysNo = cells[2] === "No";
-    if (shipped && saysNo) {
-      problems.push(
-        "ai-paths.md tree table: pa/" +
-          code[1] +
-          " exists here but the row says No"
-      );
-    } else if (!shipped && !saysNo) {
-      problems.push(
-        "ai-paths.md tree table: pa/" +
-          code[1] +
-          " is absent but the row says " +
-          cells[2]
-      );
+    if (rows > 2) {
+      checkTreeRow(problems, line);
     }
   }
   if (rows === 0) {
     problems.push("ai-paths.md tree table: not found");
+  }
+}
+
+// One row of the tree table: its Shipped column against the pa/ tree here.
+function checkTreeRow(problems, line) {
+  const cells = line.split("|").map((cell) => cell.trim());
+  const code = /`\/pa\/([^`/]+)\/`/.exec(cells[1] || "");
+  if (!code) {
+    return;
+  }
+  const shipped = fs.existsSync(path.join(PA_DIR, code[1]));
+  const saysNo = cells[2] === "No";
+  if (shipped && saysNo) {
+    problems.push(
+      "ai-paths.md tree table: pa/" +
+        code[1] +
+        " exists here but the row says No"
+    );
+  } else if (!shipped && !saysNo) {
+    problems.push(
+      "ai-paths.md tree table: pa/" +
+        code[1] +
+        " is absent but the row says " +
+        cells[2]
+    );
   }
 }
 

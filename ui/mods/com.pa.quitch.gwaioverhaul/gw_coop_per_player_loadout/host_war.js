@@ -61,6 +61,7 @@ define([
       settings = game ? gwoAI.originSettings(game) : undefined;
       recorded = settings && settings.races;
     } catch (e) {
+      // Not hydrated: nothing recorded, and the scene must still open.
       recorded = undefined;
     }
 

@@ -191,8 +191,11 @@ function createFakeJQuery(options) {
 // A callable `$` carrying the fake's members, installed through the stubs so
 // the suite's own restore puts the previous global back.
 function installFakeJQuery(stubs, options) {
-  var $ = function () {};
-  Object.assign($, createFakeJQuery(options));
+  // A fresh shell per install, so one suite's members never linger on the
+  // next; nothing under test calls `$()` itself, only its members.
+  var $ = Object.assign(function () {
+    // Deliberately a no-op: the members assigned below are the fake.
+  }, createFakeJQuery(options));
   stubs.setGlobal("$", $);
   return $;
 }

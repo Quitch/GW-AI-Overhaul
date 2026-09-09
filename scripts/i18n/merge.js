@@ -36,6 +36,59 @@ function workLists() {
   return byLocale;
 }
 
+// The work lists' non-empty messages layered over `merged`, in place;
+// returns how many were taken and how many empty ones were skipped.
+function takeMessages(merged, files) {
+  const counts = { taken: 0, empty: 0 };
+  for (const file of files) {
+    const list = JSON.parse(fs.readFileSync(file, "utf8"));
+    for (const key of Object.keys(list)) {
+      const message = list[key] && list[key].message;
+      if (typeof message !== "string" || !message.trim()) {
+        counts.empty += 1;
+        continue;
+      }
+      merged[key] = { message: message };
+      counts.taken += 1;
+    }
+  }
+  return counts;
+}
+
+function mergeLocale(locale, files) {
+  const target = path.join(TRANSLATIONS_DIR, locale + ".json");
+  const merged = fs.existsSync(target)
+    ? JSON.parse(fs.readFileSync(target, "utf8"))
+    : {};
+  const counts = takeMessages(merged, files);
+  const out = {};
+  for (const key of sortedKeys(Object.keys(merged))) {
+    out[key] = { message: merged[key].message };
+  }
+  if (!Object.keys(out).length) {
+    // An untranslated work list is not a translation file.
+    console.log(
+      "i18n:merge: " + locale.padEnd(6) + "    0 entries, nothing written"
+    );
+    return;
+  }
+  fs.writeFileSync(target, JSON.stringify(out, null, 2) + "\n");
+  console.log(
+    "i18n:merge: " +
+      locale.padEnd(6) +
+      String(counts.taken).padStart(5) +
+      " entries from " +
+      files.length +
+      " file" +
+      (files.length === 1 ? "" : "s") +
+      (counts.empty ? ", " + counts.empty + " empty skipped" : "") +
+      " -> " +
+      Object.keys(out).length +
+      " in " +
+      path.relative(process.cwd(), target)
+  );
+}
+
 function main() {
   const lists = workLists();
   if (!lists.size) {
@@ -52,50 +105,7 @@ function main() {
       process.exitCode = 1;
       continue;
     }
-    const target = path.join(TRANSLATIONS_DIR, locale + ".json");
-    const merged = fs.existsSync(target)
-      ? JSON.parse(fs.readFileSync(target, "utf8"))
-      : {};
-    let taken = 0;
-    let empty = 0;
-    for (const file of files) {
-      const list = JSON.parse(fs.readFileSync(file, "utf8"));
-      for (const key of Object.keys(list)) {
-        const message = list[key] && list[key].message;
-        if (typeof message !== "string" || !message.trim()) {
-          empty += 1;
-          continue;
-        }
-        merged[key] = { message: message };
-        taken += 1;
-      }
-    }
-    const out = {};
-    for (const key of sortedKeys(Object.keys(merged))) {
-      out[key] = { message: merged[key].message };
-    }
-    if (!Object.keys(out).length) {
-      // An untranslated work list is not a translation file.
-      console.log(
-        "i18n:merge: " + locale.padEnd(6) + "    0 entries, nothing written"
-      );
-      continue;
-    }
-    fs.writeFileSync(target, JSON.stringify(out, null, 2) + "\n");
-    console.log(
-      "i18n:merge: " +
-        locale.padEnd(6) +
-        String(taken).padStart(5) +
-        " entries from " +
-        files.length +
-        " file" +
-        (files.length === 1 ? "" : "s") +
-        (empty ? ", " + empty + " empty skipped" : "") +
-        " -> " +
-        Object.keys(out).length +
-        " in " +
-        path.relative(process.cwd(), target)
-    );
+    mergeLocale(locale, files);
   }
 }
 

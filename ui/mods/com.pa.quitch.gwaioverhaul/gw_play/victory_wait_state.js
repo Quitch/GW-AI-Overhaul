@@ -16,8 +16,8 @@ define([], function () {
     var onDone;
 
     var expected = function () {
-      var fromBattle = parseInt(expectedFromBattle()) || 1;
-      var fromLobby = parseInt(maxClients()) || 1;
+      var fromBattle = Number.parseInt(expectedFromBattle(), 10) || 1;
+      var fromLobby = Number.parseInt(maxClients(), 10) || 1;
       return Math.max(fromBattle, fromLobby, 1);
     };
 

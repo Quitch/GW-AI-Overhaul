@@ -86,48 +86,58 @@ function main(argv) {
       keys.length;
 
     if (report) {
-      const shipped = shippedFile(locale) || {};
-      const overrides = Object.keys(shipped).filter((key) =>
-        Object.hasOwn(pa, key)
-      );
-      console.log(line + ", " + overrides.length + " overrides in GWO's file");
-      for (const key of overrides) {
-        console.log(
-          "    " +
-            JSON.stringify(key) +
-            "\n      PA  (" +
-            pa[key].file +
-            "): " +
-            pa[key].message +
-            "\n      GWO: " +
-            shipped[key].message
-        );
-      }
-      continue;
-    }
-
-    if (!out) {
+      reportOverrides(locale, line, pa);
+    } else if (!out) {
       console.log(line);
-      continue;
+    } else {
+      writeWorkList(locale, line, pa, all ? keys : missing, {
+        cat: cat,
+        all: all,
+        chunk: chunk,
+      });
     }
+  }
+}
 
-    const entries = {};
-    for (const key of all ? keys : missing) {
-      entries[key] = { message: "", description: cat[key].description };
-      if (all && Object.hasOwn(pa, key)) {
-        entries[key].existing = pa[key].message;
-      }
-    }
-    const files = writeChunks(locale, entries, chunk);
+// --report: GWO's own entries that shadow one PA already ships.
+function reportOverrides(locale, line, pa) {
+  const shipped = shippedFile(locale) || {};
+  const overrides = Object.keys(shipped).filter((key) =>
+    Object.hasOwn(pa, key)
+  );
+  console.log(line + ", " + overrides.length + " overrides in GWO's file");
+  for (const key of overrides) {
     console.log(
-      line +
-        (all ? ", all " + keys.length + " keys" : "") +
-        " -> " +
-        files +
-        " file" +
-        (files === 1 ? "" : "s")
+      "    " +
+        JSON.stringify(key) +
+        "\n      PA  (" +
+        pa[key].file +
+        "): " +
+        pa[key].message +
+        "\n      GWO: " +
+        shipped[key].message
     );
   }
+}
+
+// --out: the work list for `keys`, chunked; --all carries PA's current text.
+function writeWorkList(locale, line, pa, keys, options) {
+  const entries = {};
+  for (const key of keys) {
+    entries[key] = { message: "", description: options.cat[key].description };
+    if (options.all && Object.hasOwn(pa, key)) {
+      entries[key].existing = pa[key].message;
+    }
+  }
+  const files = writeChunks(locale, entries, options.chunk);
+  console.log(
+    line +
+      (options.all ? ", all " + keys.length + " keys" : "") +
+      " -> " +
+      files +
+      " file" +
+      (files === 1 ? "" : "s")
+  );
 }
 
 try {

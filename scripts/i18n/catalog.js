@@ -90,6 +90,13 @@ function cardFacts(site) {
   return facts;
 }
 
+function otherSites(count) {
+  if (count <= 0) {
+    return "";
+  }
+  return " and " + count + " other site" + (count > 1 ? "s" : "");
+}
+
 // The generated translator note: role, site, where a player sees it, the
 // source snippet, the facts the site carries, and the rules for the role.
 function describe(key, entry) {
@@ -98,18 +105,10 @@ function describe(key, entry) {
   const others = entry.sites.length - 1;
 
   parts.push(
-    site.role +
-      " in " +
-      site.file +
-      ":" +
-      site.line +
-      (others > 0
-        ? " and " + others + " other site" + (others > 1 ? "s" : "")
-        : "") +
-      "."
+    site.role + " in " + site.file + ":" + site.line + otherSites(others) + ".",
+    "Shown: " + shownIn(site.file) + ".",
+    "Source: `" + site.snippet + "`."
   );
-  parts.push("Shown: " + shownIn(site.file) + ".");
-  parts.push("Source: `" + site.snippet + "`.");
 
   const facts = cardFacts(site);
   if (site.context.race) {

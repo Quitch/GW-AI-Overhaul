@@ -108,8 +108,8 @@ function decodeEntities(text) {
     if (body[0] === "#") {
       const code =
         body[1] === "x" || body[1] === "X"
-          ? parseInt(body.slice(2), 16)
-          : parseInt(body.slice(1), 10);
+          ? Number.parseInt(body.slice(2), 16)
+          : Number.parseInt(body.slice(1), 10);
       return Number.isNaN(code) ? match : String.fromCodePoint(code);
     }
     return Object.hasOwn(ENTITIES, body.toLowerCase())
@@ -140,56 +140,68 @@ function squash(text) {
 // A `{` that opens a `key: function () {` body pulls the key in too, so a
 // card's `summarize: function () { return "!LOC:…" }` reads as one snippet.
 function jsStatement(source, start, end) {
+  const back = statementStart(source, start);
+  const to = statementEnd(source, end, back.outward);
+  return source.slice(back.from, to);
+}
+
+// Backwards from `start` to the statement's opening: past balanced brackets,
+// counting the unbalanced openers (`outward`) the forward scan must close.
+function statementStart(source, start) {
   let depth = 0;
   let outward = 0;
   let from = start;
   while (from > 0) {
     const ch = source[from - 1];
-    if ((ch === ")" || ch === "]") && !inString(source, from - 1)) {
+    const quoted = inString(source, from - 1);
+    if (!quoted && (ch === ")" || ch === "]")) {
       depth += 1;
-    } else if ((ch === "(" || ch === "[") && !inString(source, from - 1)) {
+    } else if (!quoted && (ch === "(" || ch === "[")) {
       if (depth === 0) {
         outward += 1;
       } else {
         depth -= 1;
       }
-    } else if (
-      depth === 0 &&
-      (ch === ";" || ch === "{" || ch === "}" || ch === ",") &&
-      !inString(source, from - 1)
-    ) {
+    } else if (!quoted && depth === 0 && ";{},".includes(ch)) {
       break;
     }
     from -= 1;
   }
-  const opener = /(\w+)\s*:\s*function\s*\([^)]*\)\s*\{\s*$/.exec(
+  const opener = /\b(\w+)\s*:\s*function\s*\([^)]*\)\s*\{\s*$/.exec(
     source.slice(Math.max(0, from - 120), from)
   );
   if (opener) {
     from -= opener[0].length;
   }
-  depth = 0;
+  return { from: from, outward: outward };
+}
+
+// Forwards from `end` to the statement's close: past balanced brackets and
+// the `outward` openers still to close, stopping after the `;` or `,`.
+function statementEnd(source, end, outward) {
+  let depth = 0;
+  let open = outward;
   let to = end;
   while (to < source.length) {
     const ch = source[to];
     if (ch === "(" || ch === "[" || ch === "{") {
       depth += 1;
     } else if (ch === ")" || ch === "]" || ch === "}") {
-      if (depth === 0 && outward === 0) {
+      if (depth === 0 && open === 0) {
         break;
       }
       if (depth === 0) {
-        outward -= 1;
+        open -= 1;
       } else {
         depth -= 1;
       }
-    } else if (depth === 0 && outward === 0 && (ch === ";" || ch === ",")) {
+    } else if (depth === 0 && open === 0 && (ch === ";" || ch === ",")) {
       to += 1;
       break;
     }
     to += 1;
   }
-  return source.slice(from, to);
+  return to;
 }
 
 // Whether `index` sits inside a quoted string on its line. Cheap and good
@@ -289,45 +301,56 @@ function lastIndexIn(window, marker) {
   return window.lastIndexOf(marker);
 }
 
+// A card literal's role: the nearest marker before it, with a description
+// that sits under a hint read as the hint.
+function cardRole(window) {
+  let best = null;
+  for (const [marker, role] of CARD_MARKERS) {
+    const at = lastIndexIn(window, marker);
+    if (at >= 0 && (!best || at > best.at)) {
+      best = { at: at, role: role, marker: marker };
+    }
+  }
+  if (best && best.marker === "description:") {
+    const hintAt = Math.max(
+      lastIndexIn(window, "hint:"),
+      lastIndexIn(window, "lockedHint(")
+    );
+    const otherAt = Math.max(
+      lastIndexIn(window, "summarize"),
+      lastIndexIn(window, "describe")
+    );
+    if (hintAt > otherAt) {
+      return "card-hint";
+    }
+  }
+  return best ? best.role : "loc-call";
+}
+
+// A race file's literal: a unit name inside its unitNames block, else the
+// race's own name; undefined when neither.
+function raceRole(facts, window, index) {
+  if (
+    facts.unitNamesStart !== undefined &&
+    index > facts.unitNamesStart &&
+    index < facts.unitNamesEnd
+  ) {
+    return "race-unit-name";
+  }
+  return /\bname:\s*$/.test(window) ? "race-name" : undefined;
+}
+
 function jsRole(facts, source, index) {
   const window = source.slice(Math.max(0, index - ROLE_WINDOW), index);
   if (facts.card) {
-    let best = null;
-    for (const [marker, role] of CARD_MARKERS) {
-      const at = lastIndexIn(window, marker);
-      if (at >= 0 && (!best || at > best.at)) {
-        best = { at: at, role: role, marker: marker };
-      }
-    }
-    if (best && best.marker === "description:") {
-      const hintAt = Math.max(
-        lastIndexIn(window, "hint:"),
-        lastIndexIn(window, "lockedHint(")
-      );
-      const otherAt = Math.max(
-        lastIndexIn(window, "summarize"),
-        lastIndexIn(window, "describe")
-      );
-      if (hintAt > otherAt) {
-        return "card-hint";
-      }
-    }
-    return best ? best.role : "loc-call";
+    return cardRole(window);
   }
   if (facts.faction !== undefined && /character:\s*$/.test(window)) {
     return "faction-character";
   }
-  if (facts.race) {
-    if (
-      facts.unitNamesStart !== undefined &&
-      index > facts.unitNamesStart &&
-      index < facts.unitNamesEnd
-    ) {
-      return "race-unit-name";
-    }
-    if (/\bname:\s*$/.test(window)) {
-      return "race-name";
-    }
+  const race = facts.race && raceRole(facts, window, index);
+  if (race) {
+    return race;
   }
   if (facts.unitNames && /\bname:\s*$/.test(window)) {
     return "unit-name";
@@ -428,7 +451,7 @@ function scanTags(map, facts, html) {
   while ((match = LOC_TAG.exec(source)) !== null) {
     const id = /\bdata-loc-id\s*=\s*"([^"]*)"/.exec(match[1]);
     const key = (
-      id ? id[1] : decodeEntities(match[2].replace(/<[^>]*>/g, ""))
+      id ? id[1] : decodeEntities(match[2].replace(/<[^<>]*>/g, ""))
     ).trim();
     if (!key) {
       continue;
@@ -446,6 +469,19 @@ function scanTags(map, facts, html) {
 // Card names and descriptions of the same card, so a translator sees the
 // pair together; the site's own key is left out.
 function addSiblings(map) {
+  const byCard = cardKeys(map);
+  for (const [key, entry] of map) {
+    for (const site of entry.sites) {
+      const card = site.context.card && byCard.get(site.context.card);
+      if (card) {
+        noteSiblings(site, card, key);
+      }
+    }
+  }
+}
+
+// Map<card, { names, descriptions }>: each card's name and description keys.
+function cardKeys(map) {
   const byCard = new Map();
   for (const [key, entry] of map) {
     for (const site of entry.sites) {
@@ -456,32 +492,26 @@ function addSiblings(map) {
         byCard.set(site.context.card, { names: [], descriptions: [] });
       }
       const card = byCard.get(site.context.card);
-      if (site.role === "card-name" && !card.names.includes(key)) {
-        card.names.push(key);
-      }
-      if (
-        site.role === "card-description" &&
-        !card.descriptions.includes(key)
-      ) {
-        card.descriptions.push(key);
+      const list = {
+        "card-name": card.names,
+        "card-description": card.descriptions,
+      }[site.role];
+      if (list && !list.includes(key)) {
+        list.push(key);
       }
     }
   }
-  for (const [key, entry] of map) {
-    for (const site of entry.sites) {
-      const card = site.context.card && byCard.get(site.context.card);
-      if (!card) {
-        continue;
-      }
-      const names = card.names.filter((name) => name !== key);
-      const descriptions = card.descriptions.filter((text) => text !== key);
-      if (names.length) {
-        site.context.cardNames = names;
-      }
-      if (descriptions.length) {
-        site.context.cardDescriptions = descriptions;
-      }
-    }
+  return byCard;
+}
+
+function noteSiblings(site, card, key) {
+  const names = card.names.filter((name) => name !== key);
+  const descriptions = card.descriptions.filter((text) => text !== key);
+  if (names.length) {
+    site.context.cardNames = names;
+  }
+  if (descriptions.length) {
+    site.context.cardDescriptions = descriptions;
   }
 }
 
@@ -490,7 +520,7 @@ function sourceFiles() {
     SOURCE_EXTENSIONS.includes(path.extname(name))
   )
     .filter((file) => !file.startsWith(TRANSLATIONS_DIR + path.sep))
-    .sort();
+    .sort(codeUnitCompare);
 }
 
 // Map<key, { sites: [{ file, line, role, snippet, context }] }>, sites in
@@ -513,12 +543,21 @@ function extractKeys() {
   return map;
 }
 
+// UTF-16 code unit order: the same on every machine, unlike localeCompare.
+function codeUnitCompare(a, b) {
+  if (a < b) {
+    return -1;
+  }
+  return a > b ? 1 : 0;
+}
+
 function sortedKeys(iterable) {
-  return Array.from(iterable).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  return Array.from(iterable).sort(codeUnitCompare);
 }
 
 module.exports = {
   CATALOG_LOCALE,
+  codeUnitCompare,
   MOD_ID,
   PA_LOCALES,
   SHIPPED_LOCALES,
