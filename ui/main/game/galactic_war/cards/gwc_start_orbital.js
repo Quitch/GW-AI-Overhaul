@@ -1,3 +1,7 @@
+// GWO - rebuilt on gwoCard.loadout and gwoGroup.orbital: adds the Astraeus and
+// Orbital Launcher, drops the Anchor and Kessler, and neither pushes
+// UNITTYPE_CmdBuild onto the Orbital Launcher, Deep Space Radar and Umbrella nor
+// changes the orbital fabber's buildable_types. Stock's hint is not carried.
 define([
   "module",
   "shared/gw_common",
