@@ -220,10 +220,25 @@ TEMPLATES.push(
   }
 );
 
-["pa-easy", "pa-normal", "titans-easy", "titans-normal"].forEach((name) => {
+// The easy sets get a pool of their own, so a system can say which set it came
+// from: setup.js asks for them through galaxy_build's useEasierSystemTemplate.
+const EASY_TEMPLATES = [
+  {
+    Players: [0, 99],
+    Systems: [{ Planets: [generated(["easy-only"])] }],
+  },
+];
+
+["pa-normal", "titans-normal"].forEach((name) => {
   registerModuleStub(
     "main/game/galactic_war/shared/js/systems/" + name,
     TEMPLATES
+  );
+});
+["pa-easy", "titans-easy"].forEach((name) => {
+  registerModuleStub(
+    "main/game/galactic_war/shared/js/systems/" + name,
+    EASY_TEMPLATES
   );
 });
 
@@ -337,6 +352,19 @@ describe("gwo_system_templates chooseFor", () => {
 
   it("uses GWO's seeded loader when there is no base loader at all", () => {
     assert.ok(templates.chooseFor(undefined, "PAExpansion1", false).generate);
+  });
+
+  // Easy Systems reaches here as galaxy_build's useEasierSystemTemplate; a
+  // loader built with it draws from the easy set, not the normal one.
+  it("draws from the easy template set when asked for it", async () => {
+    const easy = templates.chooseFor(undefined, "PAExpansion1", true);
+    const system = await generate(easy, { players: 2, seed: "easy" });
+    assert.equal(system.planets.length, 1);
+    assert.equal(system.planets[0].generator.biome, "easy-only");
+
+    const normal = templates.chooseFor(undefined, "PAExpansion1", false);
+    const other = await generate(normal, { players: 2, seed: "easy" });
+    assert.notEqual(other.planets[0].generator.biome, "easy-only");
   });
 });
 

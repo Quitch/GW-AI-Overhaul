@@ -332,8 +332,6 @@
         "shared/gw_factions",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_breeder.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_teams.js",
-        "main/shared/js/star_system_templates",
-        "main/game/galactic_war/shared/js/gw_easy_star_systems",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
@@ -360,8 +358,6 @@
         GWFactions,
         gwoBreeder,
         gwoTeams,
-        normalSystemTemplates, // window.star_system_templates is set instead
-        easySystemTemplates,
         gwoLore,
         gwoDifficulty,
         gwoAI,
@@ -708,9 +704,6 @@
           var warTierData = selectedTier.customDifficulty
             ? tierSnapshot()
             : selectedTier;
-          var systemTemplates = model.gwoDifficultySettings.simpleSystems()
-            ? easySystemTemplates
-            : star_system_templates;
           var sizes = GW.balance.numberOfSystems;
           var size = sizes[model.newGameSizeIndex()] || 40;
           var aiFactions = _.range(GWFactions.length);
@@ -750,7 +743,8 @@
                 seed: model.newGameSeed(),
                 gwoRng: warRng.stream("galaxy"),
                 size: size,
-                systemTemplates: systemTemplates,
+                useEasierSystemTemplate:
+                  model.gwoDifficultySettings.simpleSystems(),
                 content: game.content(),
                 coopPlayersForSystemGeneration: playerCount,
                 minStarDistance: 2,
@@ -909,7 +903,7 @@
                   star,
                   ai,
                   teams[ai.team],
-                  systemTemplates,
+                  undefined, // stock's sst parameter, which makeBoss never reads
                   // Keyed by team: makeBoss generates a system, so these resolve out of
                   // order. Stock omits the seed entirely.
                   warRng.stream("boss", ai.team).int(0, 2147483647)

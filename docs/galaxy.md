@@ -636,9 +636,11 @@ which is what keeps a seed's enemies reproducible.
 
 - **Bigger Galactic War** adds galaxy sizes 5–8. The distance-threshold tables in
   `shared/cards.js` have nine entries to cover them.
-- **Shared Systems for Galactic War**: GWO removes Easy Systems when this is loaded.
-  It also changes how it watches `model.ready()` so the mod's lobby is not broken. System
-  Scaling and Large Planets both stay, served by the brackets above. Map-pack systems
+- **Shared Systems for Galactic War**: a real-system pool has no simpler template set
+  for Easy Systems to swap to, so `galaxy_build.js` asks for the lowest bracket
+  instead, after System Scaling and Large Planets have had their say. GWO also changes
+  how it watches `model.ready()` so the mod's lobby is not broken. System Scaling and
+  Large Planets both stay, served by the brackets above. Map-pack systems
   whose biome comes from a server mod are kept only when that mod ships JSON alone.
   Otherwise they are excluded, because the GW server never mounts server mods.
 - **New-GW-Cards** is the template that third-party card mods are written from, rather
