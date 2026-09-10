@@ -254,7 +254,9 @@ function fileFacts(file, source) {
   if (rel.includes("/galactic_war/cards/")) {
     facts.card = base;
   }
-  if (rel.includes("/race/")) {
+  // An add-on descriptor has the same shape as a race's: its name and its
+  // unit names take the race roles.
+  if (rel.includes("/race/") || rel.includes("/addon/")) {
     const id = /\bid:\s*"([^"]+)"/.exec(source);
     facts.race = id ? id[1] : base;
     const unitNames = /\bunitNames:\s*\{/.exec(source);

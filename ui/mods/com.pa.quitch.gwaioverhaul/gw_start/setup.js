@@ -674,6 +674,7 @@
           var raceInfo = (model.gwoRaceInfo && model.gwoRaceInfo()) || {
             races: [],
             mods: [],
+            addonMods: [],
           };
           var installedRaces = _.pluck(raceInfo.races, "id");
           var playerRace = _.contains(
@@ -1380,6 +1381,9 @@
               byFaction: raceByFaction,
               unique: model.gwoDifficultySettings.uniqueRaces(),
               mods: raceInfo.mods,
+              // The add-on server mods active at creation, so a resume can
+              // say which are gone. See races.md, "Add-ons".
+              addons: raceInfo.addonMods || [],
               // Only the per-player tech referee reads a viewer's own race, so
               // a war without it never claims one. See coop.md.
               perPlayerRace:
