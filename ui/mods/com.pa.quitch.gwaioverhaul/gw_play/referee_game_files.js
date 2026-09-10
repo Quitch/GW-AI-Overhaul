@@ -120,8 +120,9 @@ define([
           );
         }
         // The AI's tech names vanilla files; a race army's land on the race
-        // files of the same cell too. Its spec set holds every listed unit,
-        // so the originals stay as well. See races.md.
+        // files of the same cell too, and an MLA army's on the add-on files.
+        // Its spec set holds every listed unit, so the originals stay as
+        // well. See races.md.
         if (cells) {
           aiInventory = unitCells.expandMods(
             aiInventory,
@@ -206,6 +207,8 @@ define([
             loadMap(getAIUnitMapPath(false, brain)),
             titans ? loadMap(getAIUnitMapPath(true, brain)) : null,
           ].concat(_.map(raceMaps, loadMap));
+          // A key the race maps left falls back to a race unit of its cell,
+          // preferring one the race's own AI data knows over an add-on's.
           var merge = function (base, extra) {
             var merged = mergeUnitMaps(base, extra);
             return cells
@@ -213,7 +216,8 @@ define([
                   merged,
                   extra,
                   cells.vanilla,
-                  cells.race
+                  cells.race,
+                  gwoRaces.addonUnitPaths()
                 )
               : merged;
           };
@@ -252,11 +256,10 @@ define([
             // Identical for every faction - build it once rather than per iteration.
             var aiSpecs = units.concat(model.gwoSpecs);
             // A race's capability cells, from the same specs genUnitSpecs will
-            // fetch.
+            // fetch. MLA's are its add-on cells, and undefined while no
+            // add-on is mounted. See races.md, "Add-ons".
             var cellsFor = function (race) {
-              return gwoRaces.isMla(race)
-                ? Promise.resolve(undefined)
-                : gwoRaceCells.indexFor(race, units);
+              return gwoRaceCells.indexFor(race, units);
             };
             _.times(aiFactionCount, function (n) {
               var army = armyOf(n);
@@ -311,20 +314,30 @@ define([
               .concat(_.pluck(inventory.minions(), "commander"))
               .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander]);
 
+            var playerIsMla = gwoRaces.isMla(playerRace);
+
             cellsFor(playerRace)
               .then(function (cells) {
                 // A race player fields the race's units of the cells the
                 // vanilla ones held occupy; a kept vanilla unit (the Colonel)
-                // is retagged so the race can build it. See races.md.
-                var playerSpecs = cells
-                  ? unitCells.raceUnitsFor(held, cells.vanilla, cells.race)
-                  : held;
-                var keptVanilla = cells
-                  ? _.difference(
-                      unitCells.heldCommanderUnits(held, cells.vanilla),
-                      playerCommanders
-                    )
-                  : [];
+                // is retagged so the race can build it. An MLA player keeps
+                // everything held and gains the add-on units of those cells.
+                // See races.md.
+                var playerSpecs = held;
+                if (cells) {
+                  playerSpecs = (
+                    playerIsMla
+                      ? unitCells.addonUnitsFor
+                      : unitCells.raceUnitsFor
+                  )(held, cells.vanilla, cells.race);
+                }
+                var keptVanilla =
+                  cells && !playerIsMla
+                    ? _.difference(
+                        unitCells.heldCommanderUnits(held, cells.vanilla),
+                        playerCommanders
+                      )
+                    : [];
                 var playerExtraMods = _.flatten(
                   _.map(playerCommanders, function (commander) {
                     return gwoRaces.commanderModsFor(playerRace, commander);

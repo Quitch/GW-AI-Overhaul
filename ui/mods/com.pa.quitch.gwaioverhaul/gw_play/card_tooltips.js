@@ -48,15 +48,22 @@
         // most of the unit list would otherwise rescan the inventory on every
         // hover. A race player owns what the referee would field for the
         // vanilla paths held (raceUnitsFor keeps base_commander, so the
-        // commander card still reads owned). See races.md, "Capability cells".
-        var playerUnitLookup = function (inventory, cells) {
+        // commander card still reads owned); an MLA player with add-ons owns
+        // those and the add-on units they bring. See races.md, "Capability
+        // cells".
+        var playerUnitLookup = function (inventory, race, cells) {
           var owned = {};
           var held = heldUnits(inventory).concat(
             "/pa/units/commanders/base_commander/base_commander.json"
           );
-          var fielded = cells
-            ? unitCells.raceUnitsFor(held, cells.vanilla, cells.race)
-            : held;
+          var fielded = held;
+          if (cells) {
+            fielded = (
+              gwoRaces.isMla(race)
+                ? unitCells.addonUnitsFor
+                : unitCells.raceUnitsFor
+            )(held, cells.vanilla, cells.race);
+          }
           _.forEach(fielded, function (unit) {
             owned[unit] = true;
           });
@@ -120,12 +127,11 @@
             : undefined;
         };
 
-        // A race unit is named by its descriptor, anything else by
+        // A race or add-on unit is named by its descriptor, anything else by
         // unit_names.js. Both hold "!LOC:" or bare strings for loc().
         var raceUnitNameFor = function (race, unit) {
-          var descriptor = gwoRaces.byId(race);
-          var names = (descriptor && descriptor.unitNames) || {};
-          return lookupHas(names, unit) ? names[unit] : unitNameFor(unit);
+          var name = gwoRaces.unitName(race, unit);
+          return _.isUndefined(name) ? unitNameFor(unit) : name;
         };
 
         // One line per name: Legion ships two units each called Purger,
@@ -204,13 +210,18 @@
             var inventory = ownInventory();
             var race = gwoRaces.raceOf(inventory);
             var cells = gwoRaces.cellsOf(race);
-            var shown = cells
-              ? unitCells.cardUnitsFor(units, cells.vanilla, cells.race)
-              : units;
+            var shown = units;
+            if (cells) {
+              shown = (
+                gwoRaces.isMla(race)
+                  ? unitCells.addonCardUnitsFor
+                  : unitCells.cardUnitsFor
+              )(units, cells.vanilla, cells.race);
+            }
             var affectedUnits = sortUnitNames(
               shown,
               race,
-              playerUnitLookup(inventory, cells)
+              playerUnitLookup(inventory, race, cells)
             );
             tooltip = _.map(affectedUnits, function (unitName, index) {
               if (affectedUnits.length < 13) {
