@@ -531,3 +531,246 @@ describe("unitMapsFor", () => {
     assert.deepEqual(races.unitMapsFor("mla", "Titans", "/pa/ai/"), []);
   });
 });
+
+describe("add-ons", () => {
+  const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
+
+  it("registers an add-on apart from the races, normalised, and detects it by server mod", () => {
+    races.registerAddon(FIXTURE_ADDON);
+
+    assert.deepEqual(
+      races.addons().map((addon) => addon.id),
+      ["fixture_addon"]
+    );
+    assert.deepEqual(
+      races.all().map((race) => race.id),
+      ["mla", "fixture"]
+    );
+    assert.deepEqual(races.addonById("FIXTURE_ADDON").serverMods, [
+      "com.example.fixture-addon",
+    ]);
+    assert.equal(races.isMla("fixture_addon"), true);
+    assert.deepEqual(
+      races.detectAddons(["Com.Example.Fixture-Addon"]).map((a) => a.id),
+      ["fixture_addon"]
+    );
+    assert.deepEqual(races.detectAddons(["com.other"]), []);
+    assert.deepEqual(races.detectAddons(undefined), []);
+  });
+
+  it("refuses an add-on without an id, replaces on re-register, and is cleared by reset", () => {
+    assert.throws(() => races.registerAddon({}), /needs an id/);
+    races.registerAddon(FIXTURE_ADDON);
+    races.registerAddon(Object.assign({}, FIXTURE_ADDON, { name: "Again" }));
+
+    assert.equal(races.addons().length, 1);
+    assert.equal(races.addonById("fixture_addon").name, "Again");
+    races.reset();
+    assert.deepEqual(races.addons(), []);
+  });
+
+  it("knows vanilla's bit and every race's, and every add-on unit path", () => {
+    assert.deepEqual(races.knownBits(), ["Custom58", "Custom7"]);
+    assert.deepEqual(races.addonUnitPaths(), {});
+    races.registerAddon(FIXTURE_ADDON);
+
+    const paths = races.addonUnitPaths();
+    assert.equal(paths[FIXTURE_ADDON.units.fxGantry], true);
+    assert.equal(
+      Object.keys(paths).length,
+      Object.keys(FIXTURE_ADDON.units).length
+    );
+  });
+
+  it("names a unit from the race's table, else from an add-on's", () => {
+    races.registerAddon(FIXTURE_ADDON);
+
+    assert.equal(
+      races.unitName("fixture", FIXTURE_RACE.units.fxTank),
+      "Fixture Tank"
+    );
+    assert.equal(
+      races.unitName("fixture", FIXTURE_ADDON.units.fxAddonTank),
+      "Fixture Add-on Tank"
+    );
+    assert.equal(
+      races.unitName("mla", FIXTURE_ADDON.units.fxExclusive),
+      "Fixture Exclusive"
+    );
+    assert.equal(
+      races.unitName("mla", FIXTURE_ADDON.units.fxGantry),
+      undefined
+    );
+    assert.equal(races.unitName("nope", gwoUnit.dox), undefined);
+  });
+
+  it("registers the shipped add-ons beside the shipped races", () => {
+    races.registerShipped();
+
+    assert.deepEqual(
+      races.addons().map((addon) => addon.id),
+      ["second_wave", "section17", "osmech"]
+    );
+    assert.ok(races.byId("legion"));
+  });
+});
+
+describe("layersFor", () => {
+  const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
+
+  it("merges each race's ai block with every add-on's layer for it, MLA and unregistered ids included", () => {
+    races.registerAddon(FIXTURE_ADDON);
+    races.registerAddon({
+      id: "ghost",
+      layers: {
+        phantom: {
+          titans: {
+            sources: [{ dir: "/pa/ai/platoon_builds/", match: "phantom/" }],
+          },
+        },
+      },
+    });
+
+    const layers = races.layersFor("titans");
+    assert.deepEqual(Object.keys(layers).sort(), ["fixture", "mla", "phantom"]);
+    assert.deepEqual(layers.mla, {
+      unitMaps: [
+        "/pa/ai/unit_maps/fixture_addon.json",
+        "/pa/ai/unit_maps/fixture_addon_aux.json",
+      ],
+      sources: [{ dir: "/pa/ai/fabber_builds/", match: "mla/" }],
+    });
+    assert.deepEqual(layers.fixture.unitMaps, [
+      "/pa/ai/unit_maps/fixture.json",
+      "/pa/ai/unit_maps/fixture_addon_fx.json",
+      "/pa/ai/unit_maps/fixture_addon_aux.json",
+    ]);
+    assert.equal(layers.fixture.sources.length, 3);
+    assert.equal(layers.phantom.sources.length, 1);
+    assert.deepEqual(races.layersFor("queller").fixture, {
+      unitMaps: [],
+      sources: [],
+    });
+  });
+});
+
+describe("treeFilter with add-ons", () => {
+  const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
+
+  it("keeps the race's add-on layer, drops MLA's and other races', and never copies an add-on map", () => {
+    races.register({
+      id: "rival",
+      ai: {
+        titans: {
+          unitMaps: ["/pa/ai/unit_maps/rival.json"],
+          sources: [{ dir: "/pa/ai/factory_builds/", match: "rival_" }],
+        },
+      },
+    });
+    races.registerAddon(FIXTURE_ADDON);
+    const keep = races.treeFilter("fixture", "Titans", "/pa/ai/");
+
+    assert.equal(keep("/pa/ai/factory_builds/fixture/factory_2w.json"), true);
+    assert.equal(keep("/pa/ai/fabber_builds/fixture/fabber_land.json"), true);
+    assert.equal(keep("/pa/ai/fabber_builds/fabber_land.json"), true);
+    assert.equal(keep("/pa/ai/fabber_builds/mla/fabber_2w.json"), false);
+    assert.equal(keep("/pa/ai/factory_builds/rival_air.json"), false);
+    // Merged into the tagged map, never listed untagged.
+    assert.equal(keep("/pa/ai/unit_maps/fixture_addon_fx.json"), false);
+    assert.equal(keep("/pa/ai/unit_maps/fixture_addon_aux.json"), false);
+    assert.equal(keep("/pa/ai/unit_maps/fixture_addon.json"), false);
+
+    const rival = races.treeFilter("rival", "Titans", "/pa/ai/");
+    assert.equal(rival("/pa/ai/factory_builds/fixture/factory_2w.json"), false);
+    assert.equal(rival("/pa/ai/fabber_builds/mla/fabber_2w.json"), false);
+    assert.equal(rival("/pa/ai/factory_builds/rival_air.json"), true);
+  });
+
+  it("keeps a file the race's own layer and another layer both claim", () => {
+    races.registerAddon({
+      id: "shared",
+      layers: {
+        mla: {
+          titans: {
+            sources: [{ dir: "/pa/ai/factory_builds/", match: "shared/" }],
+          },
+        },
+        fixture: {
+          titans: {
+            sources: [{ dir: "/pa/ai/factory_builds/", match: "shared/" }],
+          },
+        },
+      },
+    });
+
+    assert.equal(
+      races.treeFilter(
+        "fixture",
+        "Titans",
+        "/pa/ai/"
+      )("/pa/ai/factory_builds/shared/x.json"),
+      true
+    );
+  });
+
+  it("leaves a brain that carries the race on its exclude branch, add-ons or not", () => {
+    races.register(
+      Object.assign({}, FIXTURE_RACE, {
+        ai: {
+          queller: {
+            unitMaps: ["unit_maps/fixture.json"],
+            exclude: ["/mla/", "/unit_maps/mla.json"],
+          },
+        },
+      })
+    );
+    races.registerAddon(FIXTURE_ADDON);
+    const keep = races.treeFilter(
+      "fixture",
+      "Queller",
+      "/pa/ai_queller/q_uber/"
+    );
+
+    assert.equal(keep("/pa/ai_queller/q_uber/platoon_builds/land.json"), true);
+    assert.equal(
+      keep("/pa/ai_queller/q_uber/fabber_builds/mla/land.json"),
+      false
+    );
+  });
+});
+
+describe("inAnyRaceLayer with add-ons", () => {
+  const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
+
+  it("claims an add-on's race files and maps, not MLA's, and not a map MLA claims too", () => {
+    races.registerAddon(FIXTURE_ADDON);
+    const claimed = races.inAnyRaceLayer;
+
+    assert.equal(
+      claimed("/pa/ai/factory_builds/fixture/factory_2w.json"),
+      true
+    );
+    assert.equal(claimed("/pa/ai/unit_maps/fixture_addon_fx.json"), true);
+    assert.equal(claimed("/pa/ai/unit_maps/fixture.json"), true);
+    assert.equal(claimed("/pa/ai/fabber_builds/mla/fabber_2w.json"), false);
+    assert.equal(claimed("/pa/ai/unit_maps/fixture_addon.json"), false);
+    assert.equal(claimed("/pa/ai/unit_maps/fixture_addon_aux.json"), false);
+    assert.equal(claimed("/pa/ai/fabber_builds/fabber_land.json"), false);
+  });
+});
+
+describe("unitMapsFor with add-ons", () => {
+  const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
+
+  it("adds the race's add-on maps after its own and gives MLA none", () => {
+    races.registerAddon(FIXTURE_ADDON);
+
+    assert.deepEqual(races.unitMapsFor("fixture", "Titans", "/pa/ai/"), [
+      "/pa/ai/unit_maps/fixture.json",
+      "/pa/ai/unit_maps/fixture_addon_fx.json",
+      "/pa/ai/unit_maps/fixture_addon_aux.json",
+    ]);
+    assert.deepEqual(races.unitMapsFor("mla", "Titans", "/pa/ai/"), []);
+    assert.deepEqual(races.unitMapsFor("nope", "Titans", "/pa/ai/"), []);
+  });
+});

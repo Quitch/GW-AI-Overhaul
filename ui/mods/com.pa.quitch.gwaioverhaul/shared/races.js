@@ -4,7 +4,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races_shipped.js",
-], function (unitCells, shipped) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/addons_shipped.js",
+], function (unitCells, shipped, shippedAddons) {
   var MLA_ID = "mla";
   var TITANS = "Titans";
 
@@ -16,12 +17,18 @@ define([
     Penchant: [MLA_ID],
   };
 
-  var VANILLA_UNIT_TYPE = "UNITTYPE_Custom58";
+  var VANILLA_BIT = "Custom58";
+  var VANILLA_UNIT_TYPE = "UNITTYPE_" + VANILLA_BIT;
   // The hue MLA's commander preview art ships in (blue team paint).
   var MLA_ART_HUE = 210;
 
   var registry = {};
   var order = [];
+  // Add-ons: server mods that add units to races that exist rather than
+  // being one. A separate registry; nothing here is ever MLA. See races.md,
+  // "Add-ons".
+  var addonRegistry = {};
+  var addonOrder = [];
   // Capability-cell indexes by race id, built by race_cells.js once the specs
   // are read. See unit_cells.js.
   var cellsById = {};
@@ -30,18 +37,24 @@ define([
     return _.isString(id) ? id.trim().toLowerCase() : "";
   };
 
-  // `units` is the race's own table (race key -> race path), for cards
-  // written for the race alone; `unitNames` names them by the same keys and
-  // is compiled to path -> name.
-  var compile = function (descriptor) {
-    var units = descriptor.units || {};
-    var unitNames = {};
+  // `unitNames` names units by the keys of `units` and is compiled to
+  // path -> name.
+  var compileNames = function (units, unitNames) {
+    var byPath = {};
 
-    _.forEach(descriptor.unitNames || {}, function (name, raceKey) {
-      if (!_.isUndefined(units[raceKey])) {
-        unitNames[units[raceKey]] = name;
+    _.forEach(unitNames || {}, function (name, key) {
+      if (!_.isUndefined(units[key])) {
+        byPath[units[key]] = name;
       }
     });
+
+    return byPath;
+  };
+
+  // `units` is the race's own table (race key -> race path), for cards
+  // written for the race alone.
+  var compile = function (descriptor) {
+    var units = descriptor.units || {};
 
     return _.assign({}, descriptor, {
       id: normalizeId(descriptor.id),
@@ -49,7 +62,21 @@ define([
       commanders: descriptor.commanders || [],
       ai: descriptor.ai || {},
       units: units,
-      unitNames: unitNames,
+      unitNames: compileNames(units, descriptor.unitNames),
+    });
+  };
+
+  // `layers` is { [raceId]: { [brainKey]: { unitMaps, sources } } }: the AI
+  // files the add-on ships for each race, which join that race's layer.
+  var compileAddon = function (descriptor) {
+    var units = descriptor.units || {};
+
+    return _.assign({}, descriptor, {
+      id: normalizeId(descriptor.id),
+      serverMods: _.map(descriptor.serverMods || [], normalizeId),
+      layers: descriptor.layers || {},
+      units: units,
+      unitNames: compileNames(units, descriptor.unitNames),
     });
   };
 
@@ -57,7 +84,7 @@ define([
     id: MLA_ID,
     name: "!LOC:MLA",
     serverMods: [],
-    unitTypeBit: "Custom58",
+    unitTypeBit: VANILLA_BIT,
     commanderTypes: {
       unitType: VANILLA_UNIT_TYPE,
       buildable: "CmdBuild & Custom58",
@@ -107,19 +134,101 @@ define([
     return !wanted || wanted === MLA_ID || !registry[wanted];
   };
 
+  var hasServerMod = function (active, descriptor) {
+    return _.some(descriptor.serverMods, function (identifier) {
+      return _.contains(active, identifier);
+    });
+  };
+
   // The races whose server mod is active: any of the identifiers a race
   // lists, matched exactly. MLA is always present.
   var detect = function (activeIdentifiers) {
     var active = _.map(activeIdentifiers || [], normalizeId);
 
     return _.filter(all(), function (race) {
-      return (
-        race.id === MLA_ID ||
-        _.some(race.serverMods, function (identifier) {
-          return _.contains(active, identifier);
-        })
-      );
+      return race.id === MLA_ID || hasServerMod(active, race);
     });
+  };
+
+  var registerAddon = function (descriptor) {
+    var id = normalizeId(descriptor && descriptor.id);
+
+    if (!id) {
+      throw new Error("gwoRaces: an add-on needs an id");
+    }
+
+    if (!addonRegistry[id]) {
+      addonOrder.push(id);
+    }
+
+    addonRegistry[id] = compileAddon(descriptor);
+
+    return addonRegistry[id];
+  };
+
+  var addonById = function (id) {
+    return addonRegistry[normalizeId(id)];
+  };
+
+  var addons = function () {
+    return _.map(addonOrder, function (id) {
+      return addonRegistry[id];
+    });
+  };
+
+  var detectAddons = function (activeIdentifiers) {
+    var active = _.map(activeIdentifiers || [], normalizeId);
+
+    return _.filter(addons(), function (addon) {
+      return hasServerMod(active, addon);
+    });
+  };
+
+  // The faction bits a unit may carry and still belong to something: vanilla's
+  // and every registered race's. A unit under any other Custom bit is
+  // exclusive - built only by whatever's buildable_types names it. See
+  // races.md, "Add-ons".
+  var knownBits = function () {
+    return _.uniq(
+      [VANILLA_BIT].concat(_.filter(_.pluck(all(), "unitTypeBit"), _.isString))
+    );
+  };
+
+  // Every add-on unit, as { path: true }: MLA's add-on index is these and
+  // nothing else.
+  var addonUnitPaths = function () {
+    var paths = {};
+
+    _.forEach(addons(), function (addon) {
+      _.forEach(addon.units, function (path) {
+        paths[path] = true;
+      });
+    });
+
+    return paths;
+  };
+
+  var hasName = function (descriptor, path) {
+    return (
+      !!descriptor &&
+      Object.prototype.hasOwnProperty.call(descriptor.unitNames, path)
+    );
+  };
+
+  // A unit's display name: the race's, else any add-on's, else undefined for
+  // the caller's own table.
+  var unitName = function (raceId, path) {
+    var race = byId(raceId);
+
+    if (hasName(race, path)) {
+      return race.unitNames[path];
+    }
+
+    var addon = _.find(addons(), function (candidate) {
+      return hasName(candidate, path);
+    });
+
+    return addon ? addon.unitNames[path] : undefined;
   };
 
   var supportedBy = function (brain, raceId) {
@@ -262,14 +371,43 @@ define([
     );
   };
 
-  // Every registered race's layer for a brain: what the merged source listing
-  // carries beside the base files while those race mods are mounted.
-  var allSourcesFor = function (brainKey) {
-    return _.flatten(
-      _.map(all(), function (race) {
-        var config = (race.ai && race.ai[brainKey]) || {};
+  var brainKeyOf = function (brain) {
+    return _.isString(brain) ? brain.toLowerCase() : "";
+  };
 
-        return config.sources || [];
+  // Every layer a brain's merged source listing carries beside the base
+  // files, by race id: each race's own `ai` block plus what every add-on
+  // ships for that race under the brain, MLA's included. An add-on layer for
+  // a race id nothing registered still appears - its files are not base
+  // files either way. See races.md, "Add-ons".
+  var layersFor = function (brainKey) {
+    var layers = {};
+    var add = function (raceId, config) {
+      var layer = layers[raceId] || { unitMaps: [], sources: [] };
+
+      layers[raceId] = {
+        unitMaps: layer.unitMaps.concat((config && config.unitMaps) || []),
+        sources: layer.sources.concat((config && config.sources) || []),
+      };
+    };
+
+    _.forEach(all(), function (race) {
+      add(race.id, race.ai && race.ai[brainKey]);
+    });
+    _.forEach(addons(), function (addon) {
+      _.forEach(addon.layers, function (brains, raceId) {
+        add(normalizeId(raceId), brains && brains[brainKey]);
+      });
+    });
+
+    return layers;
+  };
+
+  var layerClaims = function (layer, filePath) {
+    return (
+      _.contains(layer.unitMaps, filePath) ||
+      _.some(layer.sources, function (source) {
+        return matchesSource(filePath, source);
       })
     );
   };
@@ -278,13 +416,12 @@ define([
   // path constants they share.
   var treeConfig = function (raceId, brain, sourceRoot) {
     var race = byId(raceId);
-    var brainKey = _.isString(brain) ? brain.toLowerCase() : "";
+    var brainKey = brainKeyOf(brain);
     var config = (race && race.ai && race.ai[brainKey]) || {};
 
     return {
       race: race,
       brainKey: brainKey,
-      unitMaps: config.unitMaps || [],
       sources: config.sources || [],
       exclude: config.exclude || [],
       aiConfig: sourceRoot + "ai_config.json",
@@ -304,10 +441,17 @@ define([
   // races.md, "Race trees".
   var treeFilter = function (raceId, brain, sourceRoot) {
     var c = treeConfig(raceId, brain, sourceRoot);
-    var everyRaceSources = allSourcesFor(c.brainKey);
+    var layers = layersFor(c.brainKey);
+    // The race's own layer is its `ai` block plus its add-ons'; every other
+    // layer, MLA's add-ons included, is subtracted from the base. A file two
+    // layers claim (Second Wave's aux map) is the race's when its own does.
+    var own = (c.race && layers[c.race.id]) || { unitMaps: [], sources: [] };
+    var otherSources = _.flatten(
+      _.map(_.omit(layers, c.race ? c.race.id : ""), "sources")
+    );
 
     var isUnitMap = function (filePath) {
-      return _.some(c.unitMaps, function (map) {
+      return _.some(own.unitMaps, function (map) {
         return filePath === map || _.endsWith(filePath, "/" + map);
       });
     };
@@ -325,9 +469,9 @@ define([
         return false;
       }
 
-      if (c.sources.length) {
+      if (own.sources.length) {
         if (
-          _.some(c.sources, function (source) {
+          _.some(own.sources, function (source) {
             return matchesSource(filePath, source);
           })
         ) {
@@ -340,8 +484,8 @@ define([
           return false;
         }
 
-        // The base layer: whatever no registered race's layer claims.
-        return !_.some(everyRaceSources, function (source) {
+        // The base layer: whatever no other layer claims.
+        return !_.some(otherSources, function (source) {
           return matchesSource(filePath, source);
         });
       }
@@ -388,31 +532,60 @@ define([
     };
   };
 
-  // Whether a registered race's layer claims this file: a race mod's own build
-  // files or unit map, under any brain, in the merged listing. An MLA tree is
-  // the brain's base files alone, so referee_ai.js's sweep drops these. A
-  // relative unit map names a file the brain ships itself, never a race mod's,
-  // and matches nothing here.
-  var inAnyRaceLayer = function (filePath) {
-    return _.some(all(), function (race) {
-      return _.some(race.ai || {}, function (config) {
-        return (
-          _.contains(config.unitMaps || [], filePath) ||
-          _.some(config.sources || [], function (source) {
-            return matchesSource(filePath, source);
+  // Every brain key any descriptor names a layer for.
+  var brainKeys = function () {
+    return _.uniq(
+      _.flatten(
+        _.map(all(), function (race) {
+          return _.keys(race.ai || {});
+        }).concat(
+          _.map(addons(), function (addon) {
+            return _.flatten(_.map(addon.layers, _.keys));
           })
-        );
-      });
-    });
+        )
+      )
+    );
   };
 
-  // The race's unit map files for a brain, absolute.
+  // Whether a race's layer claims this file and MLA's does not: a race mod's
+  // own build files or unit map, or an add-on's files for a race, under any
+  // brain, in the merged listing. An MLA tree is the brain's base files plus
+  // MLA's add-on files, so referee_ai.js's sweep drops these and keeps the
+  // rest - an add-on map both MLA and a race claim rides along untagged. A
+  // relative unit map names a file the brain ships itself, never a race
+  // mod's, and matches nothing here.
+  var inAnyRaceLayer = function (filePath) {
+    var mla = false;
+    var other = false;
+
+    _.forEach(brainKeys(), function (brainKey) {
+      _.forEach(layersFor(brainKey), function (layer, raceId) {
+        if (layerClaims(layer, filePath)) {
+          if (raceId === MLA_ID) {
+            mla = true;
+          } else {
+            other = true;
+          }
+        }
+      });
+    });
+
+    return other && !mla;
+  };
+
+  // The race's unit map files for a brain, its add-ons' included, absolute.
+  // None for MLA: an MLA army's unit_maps/ is the live listing, where an
+  // add-on's map already sits untagged, so nothing is merged for it.
   var unitMapsFor = function (raceId, brain, sourceRoot) {
     var race = byId(raceId);
-    var brainKey = _.isString(brain) ? brain.toLowerCase() : "";
-    var config = (race && race.ai && race.ai[brainKey]) || {};
 
-    return _.map(config.unitMaps || [], function (map) {
+    if (!race || race.id === MLA_ID) {
+      return [];
+    }
+
+    var layer = layersFor(brainKeyOf(brain))[race.id];
+
+    return _.map(layer.unitMaps, function (map) {
       return _.startsWith(map, "/") ? map : sourceRoot + map;
     });
   };
@@ -515,6 +688,15 @@ define([
         );
       }
     });
+    _.forEach(shippedAddons, function (descriptor) {
+      try {
+        registerAddon(descriptor);
+      } catch (e) {
+        console.error(
+          "gwoRaces: shipped add-on not registered: " + (e.message || e)
+        );
+      }
+    });
   };
 
   registerShipped();
@@ -529,6 +711,14 @@ define([
     all: all,
     isMla: isMla,
     detect: detect,
+    registerAddon: registerAddon,
+    addonById: addonById,
+    addons: addons,
+    detectAddons: detectAddons,
+    knownBits: knownBits,
+    addonUnitPaths: addonUnitPaths,
+    unitName: unitName,
+    layersFor: layersFor,
     supportedBy: supportedBy,
     brainFor: brainFor,
     brainsFor: brainsFor,
@@ -553,6 +743,8 @@ define([
     reset: function () {
       registry = {};
       order = [];
+      addonRegistry = {};
+      addonOrder = [];
       cellsById = {};
     },
     registerShipped: registerShipped,
