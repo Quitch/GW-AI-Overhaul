@@ -15,8 +15,10 @@
 // mod is mounted at once, to prove no other layer leaks into any tree, and
 // each mounted descriptor's `unitMaps` and `sources` are checked against the
 // merge, so a stale descriptor fails here rather than silently claiming
-// nothing. Local-only: CI has neither the PA install nor the mods. See
-// testing.md.
+// nothing. The reverse is checked too: every AI file an add-on's own mods
+// ship is claimed by one of its layers, so a layer the mod grew upstream
+// fails here rather than being dropped from every tree. Local-only: CI has
+// neither the PA install nor the mods. See testing.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -334,6 +336,30 @@ function checkDescriptor(label, configs, merged) {
   return true;
 }
 
+// Every AI file an add-on's own mods ship is claimed by one of its layers,
+// else a layer the mod grew upstream is silently dropped from every tree.
+function checkUnclaimed(label, configs, own) {
+  const layer = {
+    unitMaps: configs.flatMap((config) => config.unitMaps || []),
+    sources: configs.flatMap((config) => config.sources || []),
+  };
+  const unclaimed = own.rels.filter(
+    (rel) =>
+      rel.endsWith(".json") &&
+      !rel.includes("/neural_networks/") &&
+      !claimedBy(rel, layer)
+  );
+  if (unclaimed.length) {
+    console.error(label + ": files no layer claims");
+    for (const rel of unclaimed) {
+      console.error("  " + rel);
+    }
+    return false;
+  }
+  console.log(label + ": every shipped AI file is claimed");
+  return true;
+}
+
 async function main() {
   const candidates = races
     .all()
@@ -410,6 +436,12 @@ async function main() {
       .map((brains) => brains && brains.titans)
       .filter(Boolean);
     ok = checkDescriptor(addon.id, configs, allMounted) && ok;
+    ok =
+      checkUnclaimed(
+        addon.id,
+        configs,
+        mergeRoots(modRoots(addon.serverMods))
+      ) && ok;
   }
 
   if (!ok) {
