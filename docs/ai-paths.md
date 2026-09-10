@@ -33,6 +33,11 @@ carries the race's build orders layered over the brain's base files.
 set. Sources never change, because the tree is written from the brain's files.
 See [`races.md`](races.md).
 
+An add-on (Second Wave, Section 17, Osmech) adds no root. Its files under
+`/pa/ai/` join the tree of the race each of its layers names: a Legion layer
+rides into `/pa/ai_race_legion/`, an MLA layer stays in the brain's base and
+in every scoped MLA tree. See [`races.md`](races.md), "Add-ons".
+
 `/pa/ai_tech/` is deliberately **not** in that table. It is never handed to an AI
 as an `ai_path`. It is a file source. The pipeline reads extra build files from
 it when a card's AI mod carries a `load`. It is also a place where

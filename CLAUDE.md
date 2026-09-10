@@ -23,21 +23,21 @@ unmodified file looked like before this mod shadowed it, or to find game systems
 [`docs/README.md`](docs/README.md) first - it gives a reading order and a list of
 the traps that have actually caused bugs here.
 
-| Topic                                                                   | Doc                                                    |
-| ----------------------------------------------------------------------- | ------------------------------------------------------ |
-| Chrome 40 / ES5 limits, available libraries, CSS and localisation rules | [`docs/constraints.md`](docs/constraints.md)           |
-| Tree layout, scenes, entry points, battle launch sequence               | [`docs/architecture.md`](docs/architecture.md)         |
-| File shadowing, function hijacking, the full shadowed-file inventory    | [`docs/shadowing.md`](docs/shadowing.md)               |
-| Tech cards, the card mod API, and what breaks downstream if it changes  | [`docs/tech-cards.md`](docs/tech-cards.md)             |
-| AI-mod descriptors, the `ops` table, `managerPath`, the tree cache      | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)           |
-| The five AI trees, source vs destination, scope tokens                  | [`docs/ai-paths.md`](docs/ai-paths.md)                 |
-| Host/viewer, per-player tech, colour allocation                         | [`docs/coop.md`](docs/coop.md)                         |
-| Unit spec ops, path segments, spec caching                              | [`docs/specs.md`](docs/specs.md)                       |
-| Galaxy generation, factions, difficulty tiers, penchants                | [`docs/galaxy.md`](docs/galaxy.md)                     |
-| Races (Legion, Bugs, Exiles): registry, translation, race AI trees      | [`docs/races.md`](docs/races.md)                       |
-| Adding a race: the checklist, and the rules the race code relies on     | [`docs/race-conventions.md`](docs/race-conventions.md) |
-| The Node AMD harness, the validators, coverage                          | [`docs/testing.md`](docs/testing.md)                   |
-| Translation files, the i18n tooling, the catalog and the scope rule     | [`docs/translations.md`](docs/translations.md)         |
+| Topic                                                                       | Doc                                                    |
+| --------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Chrome 40 / ES5 limits, available libraries, CSS and localisation rules     | [`docs/constraints.md`](docs/constraints.md)           |
+| Tree layout, scenes, entry points, battle launch sequence                   | [`docs/architecture.md`](docs/architecture.md)         |
+| File shadowing, function hijacking, the full shadowed-file inventory        | [`docs/shadowing.md`](docs/shadowing.md)               |
+| Tech cards, the card mod API, and what breaks downstream if it changes      | [`docs/tech-cards.md`](docs/tech-cards.md)             |
+| AI-mod descriptors, the `ops` table, `managerPath`, the tree cache          | [`docs/ai-pipeline.md`](docs/ai-pipeline.md)           |
+| The five AI trees, source vs destination, scope tokens                      | [`docs/ai-paths.md`](docs/ai-paths.md)                 |
+| Host/viewer, per-player tech, colour allocation                             | [`docs/coop.md`](docs/coop.md)                         |
+| Unit spec ops, path segments, spec caching                                  | [`docs/specs.md`](docs/specs.md)                       |
+| Galaxy generation, factions, difficulty tiers, penchants                    | [`docs/galaxy.md`](docs/galaxy.md)                     |
+| Races (Legion, Bugs, Exiles) and add-ons: registry, cells, race AI trees    | [`docs/races.md`](docs/races.md)                       |
+| Adding a race or an add-on: the checklist, and the rules the code relies on | [`docs/race-conventions.md`](docs/race-conventions.md) |
+| The Node AMD harness, the validators, coverage                              | [`docs/testing.md`](docs/testing.md)                   |
+| Translation files, the i18n tooling, the catalog and the scope rule         | [`docs/translations.md`](docs/translations.md)         |
 
 These are worth knowing before you touch anything, each covered in full by the doc
 named:

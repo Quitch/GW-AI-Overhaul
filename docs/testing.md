@@ -104,14 +104,16 @@ stays in the list because the engine accepts what its own data ships.
 **`test/fixtures/unit_types.json` is harvested the same way.**
 `scripts/harvest-unit-types.js` writes it. It holds every listed unit's
 effective `unit_types`, with their `buildable_types`. The sources are the
-installed game (`pa_ex1` over `pa`) and the race server mods on disk. A race
-server mod on disk is a `download/` zip or a `server_mods/` folder. The race
-mods are read in mount order.
+installed game (`pa_ex1` over `pa`) and the race and add-on server mods on
+disk. A server mod on disk is a `download/` zip or a `server_mods/` folder.
+The mods are read in mount order.
 
 With that fixture, `test/unit_groups_cells.test.js` can check the cell
-classifier against `unit_groups.js` in CI, and `test/race_legion.test.js` can
-see Legion's cells. With a PA install present, the test asserts that the fixture
-is fresh. **Re-harvest it after a PA or race patch.**
+classifier against `unit_groups.js` in CI, `test/race_legion.test.js` can see
+Legion's cells, and `test/addon_second_wave.test.js` can see what an add-on
+brings (`scripts/lib/addon-fixture.js` builds the index as `race_cells.js`
+does). With a PA install present, the test asserts that the fixture is fresh.
+**Re-harvest it after a PA, race or add-on patch.**
 
 **`i18n:missing` and `i18n:glossary` are local-only for the same reason.** They
 read the game's own translation tables from the PA install (`PA_MEDIA` or
@@ -121,15 +123,20 @@ shared terms. `validate:translations` needs no install and runs in `verify`. See
 
 **`npm run validate:race-trees` is local-only for the same reason.** It runs
 the real `referee_ai.js` over the actual files on disk. Those files are the PA
-install (`pa_ex1` over `pa`), GWO's own shadows, and each race's server mod,
-merged in mount order. The check requires the Titans race tree to match that
-merge exactly. It then re-runs with every race mounted to prove that no race's
-layer leaks into another's tree.
+install (`pa_ex1` over `pa`), GWO's own shadows, each race's server mod and
+every add-on's, merged in mount order. The check requires the Titans race
+tree to match that merge exactly, minus every other layer. An MLA pass then
+requires the sweep into `/pa/ai/player_guardians/` to hold the base files
+and MLA's add-on files, untagged add-on maps included, and no race layer. It
+then re-runs with every mod mounted to prove that no other layer leaks into
+any tree, and checks each mounted descriptor's `unitMaps` and `sources`
+against the merge, so a descriptor that has gone stale fails rather than
+silently claiming nothing.
 
 CI has none of those files, so the unit tests pin the same contract on mocked
 listings (`test/races.test.js`, `test/referee_ai_file_processing.test.js`). Run
-it after a PA or race patch. Also run it after you change `races.treeFilter` or
-`referee_ai.js`'s tree writing.
+it after a PA, race or add-on patch. Also run it after you change
+`races.treeFilter`, `races.inAnyRaceLayer` or `referee_ai.js`'s tree writing.
 
 **`validate:schemas` checks whatever files it finds, which is why
 `test/ai_source_files.test.js` exists alongside it.** The walk covers `pa/ai`,

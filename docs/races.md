@@ -186,22 +186,26 @@ distinct (source, destination):
   a skirmish.
 
   The source listing is the merged filesystem, so a race file that shadows a
-  base path already reads as the race's. The base layer drops three sets of
-  files. It drops every registered race's `sources`, because another race's
-  files ride in the same merged listing. It drops everything under
-  `unit_maps/` but the brain's own `ai_unit_map*.json`. It drops
-  `neural_networks/`. Files a race ships at vanilla paths are
-  indistinguishable from base files. Examples are Exiles'
-  `platoon_templates.json` and `platoon_land_builds.json`, and Bugs'
-  `platoon_builds/platoon_misc_builds.json`. They enter every race tree's base
-  layer with the merged content.
+  base path already reads as the race's. The race's own **layer** is its
+  `sources` plus every add-on's layer for it (`races.layersFor`, see
+  "Add-ons"). The base layer drops three sets of files. It drops every
+  **other** layer's `sources`, MLA's add-on files included, because they ride
+  in the same merged listing. A file the race's own layer and another both
+  claim (Second Wave's aux map) stays. It drops everything under `unit_maps/`
+  but the brain's own `ai_unit_map*.json`. It drops `neural_networks/`. Files
+  a race ships at vanilla paths are indistinguishable from base files.
+  Examples are Exiles' `platoon_templates.json` and `platoon_land_builds.json`,
+  and Bugs' `platoon_builds/platoon_misc_builds.json`. They enter every race
+  tree's base layer with the merged content.
 
   `scripts/validate-race-trees.js` checks the tree against a manual mount-order
   merge of the real files on disk. `referee_ai.js`'s sweep writes an MLA tree
   to a scoped destination (`/pa/ai/player_guardians/`, a viewer's Sub
-  Commanders). That tree is the base layer by the same rule. It drops every
-  registered race's `sources` and `unitMaps` (`races.inAnyRaceLayer`), so an
-  MLA army's `unit_maps/` never lists a race's map.
+  Commanders). That tree is the base layer plus MLA's own add-on layer, by the
+  same rule. It drops every file a race's layer claims and MLA's does not
+  (`races.inAnyRaceLayer`), so an MLA army's `unit_maps/` never lists a
+  race's map. An add-on's MLA map, and a map both MLA and a race claim, ride
+  along untagged, as the live `/pa/ai/` listing has them.
 
 - **A brain that carries the race** (Queller carries Legion): the tree is the
   tier minus the descriptor's `exclude` fragments, which are the MLA side.
@@ -448,6 +452,141 @@ while Exiles is active every MLA Titans AI reads those copies.
 The one cost is GWO's own `platoon_templates.json` shadow, which is not seen.
 That shadow is a Suicide squad on the two Transfer templates. This is accepted
 for this pass, because the change is a tightening, not a break. See
+[`race-conventions.md`](race-conventions.md).
+
+## Add-ons
+
+An **add-on** is a server mod that adds units to races that already exist,
+rather than being one: Second Wave, Section 17 and Osmech. It has no
+unit-type bit of its own, no commanders and no tree of its own. Its
+descriptor lives in `addon/<id>.js`, `shared/addons_shipped.js` lists the
+shipped ones, and a third-party mod pushes its own onto `model.gwoAddons`
+the way it pushes a race onto `model.gwoRaces`. `races.registerAddon`,
+`addonById`, `addons` and `detectAddons` mirror the race registry, in a
+registry of their own. An add-on id never reads as a race.
+
+```js
+{
+  id: "second_wave",
+  name: "!LOC:Second Wave",
+  serverMods: ["pa.mla.unit.addon"], // any one active
+  layers: {
+    mla: { titans: { unitMaps: [paths], sources: [{ dir, match }] } },
+    legion: { titans: { unitMaps: [paths], sources: [{ dir, match }] } },
+  },
+  units: { rex: "/pa/units/addon/rex/rex.json", … }, // add-on key -> path
+  unitNames: { rex: "!LOC:Rex", … }, // add-on key -> display name
+}
+```
+
+`units` is the add-on's table, in the shape of a race's. For MLA it is also
+the membership rule: an add-on unit carries `Custom58` like any vanilla unit,
+so the only thing that says it is an add-on's is this table
+(`races.addonUnitPaths`). Legion and Bugs units an add-on ships carry the
+race's bit and belong to that race by the ordinary rule, so a Legion player
+already fields Second Wave's Legion units. The table gives them names for the
+tooltips (`races.unitName` reads the race's table, then every add-on's).
+
+**Layers.** `layers[raceId][brain]` is the AI data the add-on ships for that
+race, in the shape of a race descriptor's `ai[brain]`. `races.layersFor(brain)`
+adds every add-on's layer for a race to the race's own, and gives MLA a layer
+too. That table is what `treeFilter`, `inAnyRaceLayer` and `unitMapsFor`
+read. A race tree keeps its own layer and subtracts every other, MLA's
+included, so a Legion tree holds Second Wave's `factory_builds/legion/` files
+and none of its `mla/` ones, and its merged map carries the
+`second_wave_legion.json` keys. Before add-ons, a Legion-only add-on map rode
+untagged into every scoped MLA tree; now it is Legion's and stays out. A
+file two layers claim belongs to each of them: Second Wave's
+`second_wave_aux.json` holds the builder aliases both its MLA and its Legion
+build files read, so both layers name it. `unitMapsFor` gives MLA no maps at
+all. An MLA army's `unit_maps/` is the live listing, where an add-on's map
+already sits untagged, so nothing is merged for it.
+
+**What an MLA player fields** (`unit_cells.addonUnitsFor`) is additive. Every
+held path stays, parts and commander-class units included. Each held vanilla
+unit brings every add-on unit of its cell: an extractor brings Second Wave's
+Metal Generator, the Atlas brings Juno and Osmech's bot titans. Add-on units
+in cells no vanilla unit fills (the fabrication towers, the advanced
+storages, Section 17's gantry, Poseidon) arrive through the build rule, from
+a held vanilla builder or an add-on unit already granted. The vanilla side of
+the index is the base game's units alone: an add-on's vanilla-typed units are
+kept out of it, or they would fill exactly those cells and nothing could ever
+reach them, for MLA or for the race twins Legion and Bugs get. A spec mod on
+a vanilla unit lands on its add-on cell-mates too, and the original stays
+because the army still holds its file. No commander is retagged and no unit
+map falls back for MLA. An MLA AI army and a co-op viewer get the same
+treatment. `unit_cells.addonCardUnitsFor` lists a card's own units and the
+add-on units of their cells for the tooltips.
+
+**Exclusive units** carry a `Custom` bit nothing registered owns and none
+that is: Section 17's Big Bill, Pineapple, Floater and Horntail are
+`Custom17`, built only by its gantries (`buildable_types: "Mobile &
+FactoryBuild & Custom17"`). `unit_cells.exclusiveMember(races.knownBits())`
+marks them in every index. They get a cell, tags and a build list, but sit in
+`index.exclusive` rather than `units` or `unitsByCell`, so no cell grant, no
+card and no mod ever reaches them. They arrive only through the build rule,
+from any granted unit whose `buildable_types` matches, whatever their cell
+holds. Both gantries reach them: the MLA one from a held advanced fabber, the
+Legion one from Legion's. A cell whose vanilla occupants are all `NoBuild`
+counts as unfilled for that rule.
+
+**The fallback set.** A unit-map `spec_id` a race's maps left on a vanilla
+unit still falls back to a race unit of its cell, but `unitMapFallback` now
+takes an `avoid` set - every add-on unit path - and prefers a unit outside
+it. `/pa/units/l_addon/` sorts before `/pa/units/land/`, so without it the
+base map keys Legion leaves vanilla would land on Second Wave's units, which
+Legion's own AI data does not know.
+
+**Priming.** `race_cells.indexFor("mla")` builds the add-on index. It does
+nothing while no add-on is registered, and resolves `undefined` without a
+word when the list holds no add-on unit - none mounted, the usual case.
+`gw_play/races.js` primes MLA only while `installedRaces` reports an active
+add-on: the shipped descriptors are registered whether or not their mods
+are, and every MLA war must not crawl every spec for nothing.
+
+**Recording.** `installedRaces` also reports `addons` and `addonMods`; `mods`
+stays race-only, since `race_check`, `host_war.js` and `setup.js` read it as
+the race mods. The war records `gwaio.races.addons`, the identifier, name
+and version of each add-on server mod active at creation. On resume
+`race_check.evaluate` **warns** for each one no longer active, and never
+blocks: every inventory holds vanilla paths, so the add-on's units simply
+stop arriving. The war panel joins that line with the race-version line. A
+war saved before add-ons recorded none and says nothing. The check runs for
+an all-MLA war too.
+
+### Second Wave
+
+The descriptor is `addon/second_wave.js`. The server mod is
+`pa.mla.unit.addon`, with a client companion. It adds 23 MLA units under
+`/pa/units/addon/`, 15 Legion units under `/pa/units/l_addon/` and 6 Bugs
+units under `/pa/units/b_addon/`, and shadows the two vanilla AA towers to
+rebalance them. Its AI data is an MLA layer (`fabber_builds/mla/`,
+`factory_builds/mla/`, `unit_maps/second_wave.json`) and a Legion layer
+(`legion/` sub-directories, `unit_maps/second_wave_legion.json`), plus the
+shared `unit_maps/second_wave_aux.json`. It ships no Bugs AI. Its Bugs units
+reach a Bugs player by cell; its Bugs AI armies never build them.
+
+### Section 17
+
+The descriptor is `addon/section17.js`. The server mod is
+`com.pa.daedelus.experimentals`. Everything sits under `/pa/units/paeiou/`:
+MLA units, the Legion units Ligma, Ægir and the Legion gantry, a NoBuild
+larva and drones no cell grants, and the four `Custom17` exclusives. Its AI
+data is MLA only: flat files named for the unit each builds
+(`factory_builds/dolfin.json`, `fabber_builds/solar_cell.json`, …) and
+`unit_maps/s17_paeiou.json`. The layer names each file in full, the way
+Bugs' `platoon_templates/bugs.json` is named; no base file starts with any
+of them.
+
+### Osmech
+
+The descriptor is `addon/osmech.js`. The server mod is
+`com.pa.loloares.thorosmen`, with a client companion. It adds 45 MLA units
+under `/pa/units/thorosmen/`, many of them titans, and shadows five vanilla
+specs to rebalance them without changing their types. It ships no AI data at
+all, so it has no layers: its units reach a player by cell and never an AI.
+
+The known upstream issues these three carry are listed in
 [`race-conventions.md`](race-conventions.md).
 
 ## Where to look next
