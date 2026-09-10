@@ -675,3 +675,223 @@ describe("unitMapFallback", () => {
     );
   });
 });
+
+describe("exclusive units and add-ons", () => {
+  const FABBER_ADV =
+    "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json";
+  const FX_FABBER_ADV = "/pa/units/land/fx_fabber_adv/fx_fabber_adv.json";
+  const ADDON_TANK = "/pa/units/addon/rex/rex.json";
+  const ADDON_TANK_WEAPON = "/pa/units/addon/rex/rex_tool_weapon.json";
+  const ADDON_TANK_AMMO = "/pa/units/addon/rex/rex_ammo.json";
+  const GANTRY = "/pa/units/addon/gantry/gantry.json";
+  const GANTRY_FX = "/pa/units/addon/fx_gantry/fx_gantry.json";
+  const EXCLUSIVE = "/pa/units/addon/big/big.json";
+  const LARVA = "/pa/units/addon/larva/larva.json";
+  const FX_TOWER = "/pa/units/addon/fx_tower/fx_tower.json";
+  const specs = Object.assign({}, SPECS, {
+    [FABBER_ADV]: {
+      unit_types: T("Advanced Bot Construction Fabber Land Mobile Custom58"),
+      buildable_types: "FabAdvBuild & Custom58",
+    },
+    [FX_FABBER_ADV]: {
+      unit_types: T("Advanced Bot Construction Fabber Land Mobile Custom7"),
+      buildable_types: "FabAdvBuild & Custom7",
+    },
+    [ADDON_TANK]: {
+      unit_types: T("Basic Land Mobile Offense Tank Custom58 FactoryBuild"),
+      tools: [{ spec_id: ADDON_TANK_WEAPON }],
+    },
+    [ADDON_TANK_WEAPON]: { ammo_id: ADDON_TANK_AMMO },
+    [ADDON_TANK_AMMO]: { damage: 11 },
+    // The gantries sit in a cell no vanilla unit fills and build Custom17.
+    [GANTRY]: {
+      unit_types: T(
+        "Factory Construction Structure Important FabAdvBuild Custom58"
+      ),
+      buildable_types: "Mobile & FactoryBuild & Custom17",
+    },
+    [GANTRY_FX]: {
+      unit_types: T(
+        "Factory Construction Structure Important FabAdvBuild Custom7"
+      ),
+      buildable_types: "Mobile & FactoryBuild & Custom17",
+    },
+    [EXCLUSIVE]: {
+      unit_types: T("Advanced Land Mobile Offense Tank FactoryBuild Custom17"),
+    },
+    // A NoBuild vanilla spec alone in its cell, and a race unit there.
+    [LARVA]: { unit_types: T("Offense Advanced Deconstruction NoBuild Hover") },
+    [FX_TOWER]: { unit_types: T("Advanced Structure FabAdvBuild Custom7") },
+  });
+  const units = UNITS.concat([
+    FABBER_ADV,
+    FX_FABBER_ADV,
+    ADDON_TANK,
+    GANTRY,
+    GANTRY_FX,
+    EXCLUSIVE,
+    LARVA,
+    FX_TOWER,
+  ]);
+  const addonPaths = {
+    [ADDON_TANK]: true,
+    [GANTRY]: true,
+    [EXCLUSIVE]: true,
+  };
+  const exclusive = cells.exclusiveMember(["Custom58", "Custom7"]);
+  // As race_cells.js builds them: the base game's units on the vanilla side,
+  // never an add-on's, so the gantry's cell reads as unfilled.
+  const v = cells.buildIndex(
+    units,
+    specs,
+    (types, path) => cells.vanillaMember(types) && !addonPaths[path]
+  );
+  const r = cells.buildIndex(
+    units,
+    specs,
+    cells.raceMember("Custom7"),
+    exclusive
+  );
+  const a = cells.buildIndex(
+    units,
+    specs,
+    (types, path) => cells.vanillaMember(types) && !!addonPaths[path],
+    exclusive
+  );
+
+  it("marks a unit under a bit nothing owns exclusive", () => {
+    assert.equal(exclusive(T("Bot Custom17")), true);
+    assert.equal(exclusive(T("Bot Custom7 Custom17")), false);
+    assert.equal(exclusive(T("Bot Custom58")), false);
+    assert.equal(exclusive(T("Bot")), false);
+    assert.equal(cells.exclusiveMember(undefined)(T("Bot Custom17")), true);
+  });
+
+  it("indexes an exclusive unit apart from the members, in every index", () => {
+    for (const index of [r, a]) {
+      assert.equal(index.exclusive[EXCLUSIVE], true);
+      assert.equal(index.cellOf[EXCLUSIVE], "Vehicle/Advanced/Combat");
+      assert.ok(!index.units.includes(EXCLUSIVE));
+      assert.equal(index.unitsByCell["Vehicle/Advanced/Combat"], undefined);
+    }
+    assert.deepEqual(v.exclusive, {});
+    assert.equal(v.cellOf[EXCLUSIVE], undefined);
+    // The add-on index holds the add-on's vanilla-typed units alone, and the
+    // vanilla index none of them.
+    assert.deepEqual(a.units, [ADDON_TANK, GANTRY]);
+    assert.equal(a.cellOf[ANT], undefined);
+    assert.equal(v.cellOf[GANTRY], undefined);
+    assert.equal(v.unitsByCell["Land/Basic/Factory"], undefined);
+  });
+
+  it("grants an exclusive unit only through a builder, whatever its cell holds", () => {
+    // The race's advanced fabber (by cell) builds the race's gantry (an
+    // orphan), which builds the exclusive.
+    assert.deepEqual(cells.raceUnitsFor([FABBER_ADV], v, r), [
+      FX_FABBER_ADV,
+      GANTRY_FX,
+      FX_TOWER,
+      EXCLUSIVE,
+    ]);
+    assert.deepEqual(cells.raceUnitsFor([ANT], v, r), [FX_TANK]);
+    // Never a cell grant, and never a mod target.
+    assert.deepEqual(cells.cardUnitsFor([ANT], v, r), [FX_TANK]);
+    assert.equal(cells.cardUsable([EXCLUSIVE], v, r), false);
+    const mod = { file: ANT, path: "max_health", op: "multiply", value: 2 };
+    assert.deepEqual(cells.expandMods([mod], v, r), [
+      Object.assign({}, mod, { file: FX_TANK }),
+    ]);
+  });
+
+  it("treats a cell held only by NoBuild vanilla specs as unfilled", () => {
+    assert.deepEqual(v.unitsByCell["Land/Advanced/Structure"], [LARVA]);
+    assert.ok(cells.raceUnitsFor([FABBER_ADV], v, r).includes(FX_TOWER));
+    // A cell with a buildable vanilla occupant is still filled.
+    assert.ok(!cells.raceUnitsFor([FACTORY], v, r).includes(FX_TANK));
+  });
+
+  describe("addonUnitsFor", () => {
+    it("keeps everything held and adds the add-on units of the held cells", () => {
+      assert.deepEqual(cells.addonUnitsFor([ANT, ANT, DOX], v, a), [
+        ANT,
+        DOX,
+        ADDON_TANK,
+      ]);
+      assert.deepEqual(cells.addonUnitsFor(undefined, v, a), []);
+    });
+
+    it("reaches an orphan through a held vanilla builder, and the exclusive through it", () => {
+      assert.deepEqual(cells.addonUnitsFor([FABBER_ADV], v, a), [
+        FABBER_ADV,
+        GANTRY,
+        EXCLUSIVE,
+      ]);
+      // An orphan nothing held can build stays out.
+      assert.deepEqual(cells.addonUnitsFor([ANT], v, a), [ANT, ADDON_TANK]);
+    });
+
+    it("keeps held parts, commander-class units and foreign paths", () => {
+      assert.deepEqual(
+        cells.addonUnitsFor(
+          [ANT_AMMO, COMMANDER, COLONEL, "/pa/units/mod/x.json"],
+          v,
+          a
+        ),
+        [ANT_AMMO, COMMANDER, COLONEL, "/pa/units/mod/x.json"]
+      );
+    });
+  });
+
+  it("lists a card's own units and the add-on units of their cells", () => {
+    assert.deepEqual(cells.addonCardUnitsFor([ANT, DOX], v, a), [
+      ANT,
+      DOX,
+      ADDON_TANK,
+    ]);
+    assert.deepEqual(cells.addonCardUnitsFor([COMMANDER], v, a), [COMMANDER]);
+    assert.deepEqual(cells.addonCardUnitsFor(undefined, v, a), []);
+  });
+
+  it("lands a mod on the add-on cell-mates beside the original the army holds", () => {
+    const mod = { file: ANT_AMMO, path: "damage", op: "multiply", value: 2 };
+    assert.deepEqual(
+      cells.expandMods([mod], v, a, () => true),
+      [mod, Object.assign({}, mod, { file: ADDON_TANK_AMMO })]
+    );
+  });
+});
+
+describe("unitMapFallback with avoid", () => {
+  // Sorts before /pa/units/land/, so it would be stand[0].
+  const EARLY_TANK = "/pa/units/l_addon/a_tank/a_tank.json";
+  const specs = Object.assign({}, SPECS, {
+    [EARLY_TANK]: { unit_types: T("Basic Land Mobile Offense Tank Custom7") },
+  });
+  const units = UNITS.concat([EARLY_TANK]);
+  const v = cells.buildIndex(units, specs, cells.vanillaMember);
+  const r = cells.buildIndex(units, specs, cells.raceMember("Custom7"));
+  const map = { unit_map: { Tank: { spec_id: ANT } } };
+
+  it("prefers the first unit not avoided, and falls back to the first of the cell", () => {
+    assert.deepEqual(r.unitsByCell["Vehicle/Basic/Combat"], [
+      EARLY_TANK,
+      FX_TANK,
+    ]);
+    assert.equal(
+      cells.unitMapFallback(map, [], v, r).unit_map.Tank.spec_id,
+      EARLY_TANK
+    );
+    assert.equal(
+      cells.unitMapFallback(map, [], v, r, { [EARLY_TANK]: true }).unit_map.Tank
+        .spec_id,
+      FX_TANK
+    );
+    assert.equal(
+      cells.unitMapFallback(map, [], v, r, {
+        [EARLY_TANK]: true,
+        [FX_TANK]: true,
+      }).unit_map.Tank.spec_id,
+      EARLY_TANK
+    );
+  });
+});

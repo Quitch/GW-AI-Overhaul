@@ -174,15 +174,39 @@ define([
     };
   };
 
-  // Vanilla carries Custom58 or no faction bit at all.
-  var vanillaMember = function (types) {
-    return !_.some(types || [], function (type) {
-      var tag = bare(type);
-      return /^Custom\d+$/.test(tag) && tag !== "Custom58";
+  var customBits = function (types) {
+    return _.filter(_.map(types || [], bare), function (tag) {
+      return /^Custom\d+$/.test(tag);
     });
   };
 
-  var buildIndex = function (unitPaths, specs, member) {
+  // Vanilla carries Custom58 or no faction bit at all.
+  var vanillaMember = function (types) {
+    return !_.some(customBits(types), function (tag) {
+      return tag !== "Custom58";
+    });
+  };
+
+  // Exclusive: a faction bit nothing registered owns, and none that is
+  // (Section 17's Custom17 gantry builds). Such a unit belongs to no cell and
+  // is reached only through the build rule. See races.md, "Add-ons".
+  var exclusiveMember = function (knownBits) {
+    return function (types) {
+      var bits = customBits(types);
+      return (
+        bits.length > 0 &&
+        !_.some(bits, function (bit) {
+          return _.contains(knownBits || [], bit);
+        })
+      );
+    };
+  };
+
+  // `member(types, path)` says what is indexed; an optional
+  // `exclusive(types)` marks units that get a cell, tags and build list but
+  // sit in `exclusive` rather than `units` or `unitsByCell`, so nothing
+  // counts them as the race's own and no cell grant reaches them.
+  var buildIndex = function (unitPaths, specs, member, exclusive) {
     var index = {
       units: [],
       cellOf: {},
@@ -192,21 +216,30 @@ define([
       // Bare tags and buildable_types per unit, for the build rule below.
       tagsOf: {},
       buildableOf: {},
+      exclusive: {},
     };
 
     _.forEach(_.uniq(unitPaths || []), function (path) {
       var types = effectiveTypes(path, specs);
-      if (!specOf(specs, path) || !member(types)) {
+      if (!specOf(specs, path)) {
+        return;
+      }
+      var isExclusive = _.isFunction(exclusive) && exclusive(types);
+      if (!isExclusive && !member(types, path)) {
         return;
       }
       var cell = classify(types).key;
-      index.units.push(path);
       index.cellOf[path] = cell;
       index.tagsOf[path] = _.map(types, bare);
       var buildable = chainValue(path, specs, "buildable_types");
       if (_.isString(buildable) && buildable.length) {
         index.buildableOf[path] = buildable;
       }
+      if (isExclusive) {
+        index.exclusive[path] = true;
+        return;
+      }
+      index.units.push(path);
       index.unitsByCell[cell] = index.unitsByCell[cell] || [];
       index.unitsByCell[cell].push(path);
       var parts = partsOf(path, specs);
@@ -247,30 +280,49 @@ define([
     return _.endsWith(cell || "", "/" + COMMANDER);
   };
 
-  // The race's units in cells no vanilla unit occupies that something already
-  // granted can build - Bugs' research unlock tokens, made by its research
-  // factories - until nothing more is reachable.
-  var buildableOrphans = function (granted, vanilla, race) {
-    var orphans = _.filter(race.units, function (unit) {
-      var cell = race.cellOf[unit];
-      return (
-        !isCommanderCell(cell) &&
-        _.isEmpty(vanilla.unitsByCell[cell]) &&
-        !_.contains(granted, unit)
-      );
+  // A cell no buildable vanilla unit occupies: empty, or held only by NoBuild
+  // specs (Section 17 lists a NoBuild larva alone in a cell).
+  var unfilledByVanilla = function (vanilla, cell) {
+    return _.every(vanilla.unitsByCell[cell] || [], function (unit) {
+      return _.contains(vanilla.tagsOf[unit] || [], "NoBuild");
     });
+  };
+
+  // The race's units in cells no vanilla unit occupies, and its exclusive
+  // units whatever their cell, that something already granted can build -
+  // Bugs' research unlock tokens, made by its research factories - until
+  // nothing more is reachable. `buildableOf(unit)` resolves a builder's
+  // build list; the race's own table by default.
+  var buildableOrphans = function (granted, vanilla, race, buildableOf) {
+    var buildable = _.isFunction(buildableOf)
+      ? buildableOf
+      : function (unit) {
+          return race.buildableOf[unit];
+        };
+    var exclusive = race.exclusive || {};
+    var orphans = _.filter(
+      race.units.concat(_.keys(exclusive)),
+      function (unit) {
+        var cell = race.cellOf[unit];
+        return (
+          !isCommanderCell(cell) &&
+          (exclusive[unit] || unfilledByVanilla(vanilla, cell)) &&
+          !_.contains(granted, unit)
+        );
+      }
+    );
     var result = granted.slice();
     var added = true;
 
     while (added && orphans.length) {
       added = false;
       var builders = _.filter(result, function (unit) {
-        return !!race.buildableOf[unit];
+        return !!buildable(unit);
       });
       orphans = _.filter(orphans, function (orphan) {
         var tags = race.tagsOf[orphan] || [];
         var reachable = _.some(builders, function (builder) {
-          return buildTypes.matches(race.buildableOf[builder], tags);
+          return buildTypes.matches(buildable(builder), tags);
         });
         if (reachable) {
           result.push(orphan);
@@ -313,6 +365,40 @@ define([
     );
 
     return buildableOrphans(granted, vanilla, race);
+  };
+
+  // What an MLA player fields with add-ons active: everything held, plus the
+  // add-on units of every cell a held vanilla unit occupies, plus what those
+  // and the held vanilla builders can build. Nothing is taken away. See
+  // races.md, "Add-ons".
+  var addonUnitsFor = function (heldPaths, vanilla, addon) {
+    var held = _.uniq(heldPaths || []);
+    var cells = [];
+
+    _.forEach(held, function (path) {
+      var cell = vanilla.cellOf[path];
+      if (
+        !_.isUndefined(cell) &&
+        !isCommanderCell(cell) &&
+        !_.contains(cells, cell)
+      ) {
+        cells.push(cell);
+      }
+    });
+
+    var granted = _.uniq(
+      held.concat(
+        _.flatten(
+          _.map(cells, function (cell) {
+            return addon.unitsByCell[cell] || [];
+          })
+        )
+      )
+    );
+
+    return buildableOrphans(granted, vanilla, addon, function (unit) {
+      return addon.buildableOf[unit] || vanilla.buildableOf[unit];
+    });
   };
 
   // The vanilla commander-class units among those held.
@@ -437,10 +523,20 @@ define([
     );
   };
 
+  // The units a card reaches for an MLA player with add-ons: the card's own
+  // vanilla units and the add-on units of their cells.
+  var addonCardUnitsFor = function (cardUnits, vanilla, addon) {
+    return _.uniq(
+      (cardUnits || []).concat(cardUnitsFor(cardUnits, vanilla, addon))
+    );
+  };
+
   // A merged unit map's spec_ids the race maps did not set, re-pointed from a
   // vanilla unit to the first race unit of its cell, so a key the engine reads
-  // itself resolves to something the army can own. Returns a copy.
-  var unitMapFallback = function (map, raceMaps, vanilla, race) {
+  // itself resolves to something the army can own. `avoid` ({ path: true })
+  // names units to pass over while the cell offers another: an add-on's,
+  // which the race's own AI data does not know. Returns a copy.
+  var unitMapFallback = function (map, raceMaps, vanilla, race, avoid) {
     if (!map || !map.unit_map) {
       return map;
     }
@@ -450,6 +546,13 @@ define([
         raceKeys[key] = true;
       });
     });
+    var preferred = function (candidates) {
+      return (
+        _.find(candidates, function (unit) {
+          return !avoid || !avoid[unit];
+        }) || candidates[0]
+      );
+    };
 
     var unitMap = {};
     _.forEach(map.unit_map, function (entry, key) {
@@ -458,7 +561,7 @@ define([
       var stand = cell && !raceKeys[key] ? race.unitsByCell[cell] : undefined;
       unitMap[key] =
         stand && stand.length
-          ? _.assign({}, entry, { spec_id: stand[0] })
+          ? _.assign({}, entry, { spec_id: preferred(stand) })
           : entry;
     });
 
@@ -473,13 +576,16 @@ define([
     partsOf: partsOf,
     raceMember: raceMember,
     vanillaMember: vanillaMember,
+    exclusiveMember: exclusiveMember,
     buildIndex: buildIndex,
     isCommanderCell: isCommanderCell,
     raceUnitsFor: raceUnitsFor,
+    addonUnitsFor: addonUnitsFor,
     heldCommanderUnits: heldCommanderUnits,
     expandMods: expandMods,
     cardUsable: cardUsable,
     cardUnitsFor: cardUnitsFor,
+    addonCardUnitsFor: addonCardUnitsFor,
     unitMapFallback: unitMapFallback,
   };
 });

@@ -90,27 +90,51 @@ define([
   // index with no race unit in it is a list read before the race's zip was
   // mounted: it is handed back but neither kept nor published, so the deal
   // gate keeps dealing and a later read tries again.
+  //
+  // The `vanilla` half is the base game's units alone: an add-on's
+  // vanilla-typed units are kept out of it, or they would fill the cells its
+  // gantries and towers sit in and no builder could ever reach those. For
+  // MLA the `race` half is the add-on index: exactly those add-on units. No
+  // add-on registered means no crawl, and a list with no add-on unit in it
+  // (none mounted - the usual case) resolves undefined without a word. See
+  // races.md, "Add-ons".
   var indexFor = function (raceId, units) {
     var race = gwoRaces.byId(raceId);
-    if (!race || gwoRaces.isMla(raceId)) {
+    var isMla = gwoRaces.isMla(raceId);
+    var addonPaths = gwoRaces.addonUnitPaths();
+    if (!race || (isMla && _.isEmpty(addonPaths))) {
       return Promise.resolve(undefined);
     }
     return load(units).then(function (loaded) {
       var key = race.id + "@" + signatureOf(loaded.units);
       if (!indexes[key]) {
+        var isAddon = function (path) {
+          return !!addonPaths[path];
+        };
+        var member = isMla
+          ? function (types, path) {
+              return unitCells.vanillaMember(types) && isAddon(path);
+            }
+          : unitCells.raceMember(race.unitTypeBit);
         var index = {
           vanilla: unitCells.buildIndex(
             loaded.units,
             loaded.specs,
-            unitCells.vanillaMember
+            function (types, path) {
+              return unitCells.vanillaMember(types) && !isAddon(path);
+            }
           ),
           race: unitCells.buildIndex(
             loaded.units,
             loaded.specs,
-            unitCells.raceMember(race.unitTypeBit)
+            member,
+            unitCells.exclusiveMember(gwoRaces.knownBits())
           ),
         };
         if (!index.race.units.length) {
+          if (isMla) {
+            return undefined;
+          }
           console.warn(
             "gwoRaces: no " +
               race.id +
