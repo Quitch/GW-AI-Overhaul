@@ -473,6 +473,7 @@ registry of their own. An add-on id never reads as a race.
   layers: {
     mla: { titans: { unitMaps: [paths], sources: [{ dir, match }] } },
     legion: { titans: { unitMaps: [paths], sources: [{ dir, match }] } },
+    bugs: { titans: { unitMaps: [paths], sources: [{ dir, match }] } },
   },
   units: { rex: "/pa/units/addon/rex/rex.json", … }, // add-on key -> path
   unitNames: { rex: "!LOC:Rex", … }, // add-on key -> display name
@@ -496,10 +497,10 @@ included, so a Legion tree holds Second Wave's `factory_builds/legion/` files
 and none of its `mla/` ones, and its merged map carries the
 `second_wave_legion.json` keys. Before add-ons, a Legion-only add-on map rode
 untagged into every scoped MLA tree; now it is Legion's and stays out. A
-file two layers claim belongs to each of them: Second Wave's
-`second_wave_aux.json` holds the builder aliases both its MLA and its Legion
-build files read, so both layers name it. `unitMapsFor` gives MLA no maps at
-all. An MLA army's `unit_maps/` is the live listing, where an add-on's map
+file two layers claim belongs to each of them, and both name it (Second
+Wave's `second_wave_aux.json` was one until 0.16.1, when its Legion build
+files stopped reading it; it is MLA's alone now). `unitMapsFor` gives MLA no
+maps at all. An MLA army's `unit_maps/` is the live listing, where an add-on's map
 already sits untagged, so nothing is merged for it.
 
 **What an MLA player fields** (`unit_cells.addonUnitsFor`) is additive. Every
@@ -561,10 +562,13 @@ The descriptor is `addon/second_wave.js`. The server mod is
 `/pa/units/addon/`, 15 Legion units under `/pa/units/l_addon/` and 6 Bugs
 units under `/pa/units/b_addon/`, and shadows the two vanilla AA towers to
 rebalance them. Its AI data is an MLA layer (`fabber_builds/mla/`,
-`factory_builds/mla/`, `unit_maps/second_wave.json`) and a Legion layer
-(`legion/` sub-directories, `unit_maps/second_wave_legion.json`), plus the
-shared `unit_maps/second_wave_aux.json`. It ships no Bugs AI. Its Bugs units
-reach a Bugs player by cell; its Bugs AI armies never build them.
+`factory_builds/mla/`, `unit_maps/second_wave.json` and the MLA builder
+aliases in `unit_maps/second_wave_aux.json`), a Legion layer (`legion/`
+sub-directories, `unit_maps/second_wave_legion.json`) and, since 0.16.1, a
+Bugs layer (`fabber_builds/bugs/`, `unit_maps/second_wave_bugs.json`; no
+factory builds). The Bugs build files name the Bugs mod's own builder
+aliases (`BugCommander`, `AnyBugFabberBasic`, `AnyBugFabberAdvanced`), which
+the Bugs race's `unit_maps/bugs.json` supplies in every Bugs tree.
 
 ### Section 17
 

@@ -131,7 +131,10 @@ and MLA's add-on files, untagged add-on maps included, and no race layer. It
 then re-runs with every mod mounted to prove that no other layer leaks into
 any tree, and checks each mounted descriptor's `unitMaps` and `sources`
 against the merge, so a descriptor that has gone stale fails rather than
-silently claiming nothing.
+silently claiming nothing. The reverse holds too: every AI file an add-on's
+server mod ships must be claimed by one of its layers, so a layer the mod
+grows upstream (Second Wave's Bugs layer in 0.16.1) fails here instead of
+being dropped from every tree.
 
 CI has none of those files, so the unit tests pin the same contract on mocked
 listings (`test/races.test.js`, `test/referee_ai_file_processing.test.js`). Run

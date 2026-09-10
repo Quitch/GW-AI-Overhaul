@@ -199,5 +199,9 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
   missing `tank_jammer`, `orbital_mine` and `tank_anti_nuke`. GW Server Mods'
   client union and Community Mods' server merge repair the list, so nothing
   is lost in a battle.
-- Second Wave's Bugs units have no AI data, and Osmech has none at all. A
-  player fields them by cell; an AI army never builds them.
+- Second Wave's Bugs build files (0.16.1 and later) name `BugCommander`,
+  `AnyBugFabberBasic` and `AnyBugFabberAdvanced`, which its own maps never
+  define: the Bugs race's `unit_maps/bugs.json` supplies them in every Bugs
+  tree (`test/addon_second_wave.test.js` pins the dependency).
+- Osmech has no AI data. A player fields its units by cell; an AI army never
+  builds them.

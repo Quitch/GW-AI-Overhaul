@@ -4,7 +4,7 @@
 
 ### Added
 
-- Second Wave, Section 17 and Osmech units now reach Galactic War: an MLA player and AI field them alongside the vanilla units of the same kind, and a Legion or Bugs player's tooltips name the ones those races get. A war warns on resume when an add-on it began with has been disabled
+- Second Wave, Section 17 and Osmech units now reach Galactic War: an MLA player and AI field them alongside the vanilla units of the same kind, and a Legion or Bugs player's tooltips name the ones those races get. A Bugs AI fields Second Wave's Bugs units too, which needs Second Wave 0.16.1 or later. A war warns on resume when an add-on it began with has been disabled
 
 ## v7.2.0 - 2026-09-09
 
