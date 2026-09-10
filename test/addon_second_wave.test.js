@@ -27,17 +27,24 @@ const AUX = "/pa/ai/unit_maps/second_wave_aux.json";
 const harvested = inFixture(secondWave);
 
 describe("the Second Wave descriptor", () => {
-  it("is registered as shipped, with an MLA and a Legion layer sharing the aux map", () => {
+  it("is registered as shipped, with an MLA, a Legion and a Bugs layer, the aux map MLA's alone", () => {
     const addon = races.addonById("second_wave");
 
     assert.equal(addon.id, "second_wave");
     assert.equal(addon.name, "!LOC:Second Wave");
     assert.deepEqual(addon.serverMods, ["pa.mla.unit.addon"]);
-    assert.deepEqual(Object.keys(addon.layers), ["mla", "legion"]);
+    assert.deepEqual(Object.keys(addon.layers), ["mla", "legion", "bugs"]);
     assert.ok(addon.layers.mla.titans.unitMaps.includes(AUX));
-    assert.ok(addon.layers.legion.titans.unitMaps.includes(AUX));
+    assert.ok(!addon.layers.legion.titans.unitMaps.includes(AUX));
+    assert.ok(!addon.layers.bugs.titans.unitMaps.includes(AUX));
     assert.equal(addon.layers.mla.titans.sources.length, 2);
     assert.equal(addon.layers.legion.titans.sources.length, 2);
+    assert.deepEqual(addon.layers.bugs.titans.unitMaps, [
+      "/pa/ai/unit_maps/second_wave_bugs.json",
+    ]);
+    assert.deepEqual(addon.layers.bugs.titans.sources, [
+      { dir: "/pa/ai/fabber_builds/", match: "bugs/" },
+    ]);
     assert.equal(addon.unitTypeBit, undefined);
     assert.equal(addon.commanders, undefined);
   });
@@ -102,10 +109,45 @@ describe("the Second Wave descriptor", () => {
         );
       }
     }
-    // The aux map holds the builder aliases both layers' build files read.
+    // The aux map holds MLA's builder aliases and nothing of Legion's: since
+    // 0.16.1 no Legion build file reads it.
     const aux = zips.readJson(AUX.slice(1)).unit_map;
-    assert.ok("AnyMLABasicFabber" in aux);
-    assert.ok("LegionCommander" in aux);
+    assert.deepEqual(Object.keys(aux).sort(), [
+      "AnyMLAAdvancedFabber",
+      "AnyMLABasicFabber",
+      "MLACommander",
+      "MLASupportCommander",
+    ]);
+    assert.ok(!("LegionCommander" in aux));
+  });
+
+  it("names Bugs builders the Bugs mod's own map supplies (skipped without both zips)", (t) => {
+    const zips = zipsFor(ZIPS);
+    const bugs = zipsFor(["com.pa.ferretmaster.bugs"]);
+    if (!zips || !bugs) {
+      t.skip("no Second Wave or Bugs zip installed");
+      return;
+    }
+    const map = bugs.readJson("pa/ai/unit_maps/bugs.json").unit_map;
+    const referenced = new Set();
+    for (const name of zips.names()) {
+      if (!/^pa\/ai\/fabber_builds\/bugs\//.test(name)) {
+        continue;
+      }
+      for (const build of zips.readJson(name).build_list || []) {
+        for (const builder of build.builders || []) {
+          referenced.add(builder);
+        }
+      }
+    }
+    assert.deepEqual([...referenced].sort(), [
+      "AnyBugFabberAdvanced",
+      "AnyBugFabberBasic",
+      "BugCommander",
+    ]);
+    for (const builder of referenced) {
+      assert.ok(builder in map, builder + " not in the Bugs map");
+    }
   });
 });
 

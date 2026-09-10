@@ -123,7 +123,7 @@ function fixtureIndex() {
 // gantry for MLA and one for the fixture race (both orphans reached from an
 // advanced fabber, both building Custom17), and one Custom17 unit no
 // registered race owns. Its layers share an aux map between MLA and the
-// fixture race, as Second Wave's does.
+// fixture race, as Second Wave's did before 0.16.1.
 const FX_ADDON_TANK = "/pa/units/land/fx_addon_tank/fx_addon_tank.json";
 const FX_ADDON_TANK_WEAPON =
   "/pa/units/land/fx_addon_tank/fx_addon_tank_tool_weapon.json";

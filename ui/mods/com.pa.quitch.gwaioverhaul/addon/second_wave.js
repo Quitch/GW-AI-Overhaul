@@ -1,5 +1,5 @@
-// Second Wave as a Galactic War add-on: units for MLA, Legion and Bugs, and
-// AI data for the first two. `units` keys every spec the mod adds by a name
+// Second Wave as a Galactic War add-on: units and AI data for MLA, Legion
+// and Bugs. `units` keys every spec the mod adds by a name
 // of its own (the same shape as shared/units.js) and `unitNames` carries the
 // display names by the same keys. What a player fields follows from
 // capability cells. See races.md, "Add-ons".
@@ -10,7 +10,7 @@ define(function () {
     serverMods: ["pa.mla.unit.addon"],
     layers: {
       // mla/ sub-directories under two build directories, a unit map, and an
-      // aux map of builder aliases both layers' build files read.
+      // aux map of MLA builder aliases (Section 17's build files read it too).
       mla: {
         titans: {
           unitMaps: [
@@ -25,14 +25,18 @@ define(function () {
       },
       legion: {
         titans: {
-          unitMaps: [
-            "/pa/ai/unit_maps/second_wave_legion.json",
-            "/pa/ai/unit_maps/second_wave_aux.json",
-          ],
+          unitMaps: ["/pa/ai/unit_maps/second_wave_legion.json"],
           sources: [
             { dir: "/pa/ai/fabber_builds/", match: "legion/" },
             { dir: "/pa/ai/factory_builds/", match: "legion/" },
           ],
+        },
+      },
+      // Fabber builds only: the mod ships no factory_builds/bugs/.
+      bugs: {
+        titans: {
+          unitMaps: ["/pa/ai/unit_maps/second_wave_bugs.json"],
+          sources: [{ dir: "/pa/ai/fabber_builds/", match: "bugs/" }],
         },
       },
     },
