@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v7.3.0 - 2026-09-11
 
 ### Added
 
