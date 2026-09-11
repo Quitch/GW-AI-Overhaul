@@ -69,6 +69,8 @@ const GLOBALS = [
   ["gwoLoadoutBanks", MOD_ROOT + "/shared/loadout_banks.js"],
   ["gwoRaces", MOD_ROOT + "/shared/race_mods.js"],
   ["gwoRaces", MOD_ROOT + "/gw_play/races.js"],
+  ["gwoAddons", MOD_ROOT + "/shared/race_mods.js"],
+  ["gwoAddons", MOD_ROOT + "/gw_play/races.js"],
   ["gwoDecks", MOD_ROOT + "/shared/deck_mods.js"],
 ];
 

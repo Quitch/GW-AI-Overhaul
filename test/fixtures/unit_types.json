@@ -1,5 +1,172 @@
 {
   "units": {
+    "/pa/units/addon/adv_energy_storage/adv_energy_storage.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/adv_fab_tower/adv_fab_tower.json": [
+      "UNITTYPE_Construction",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Fabber",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/adv_heavy_bot/adv_heavy_bot.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/adv_metal_generator/adv_metal_generator.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_MetalProduction",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/adv_metal_storage/adv_metal_storage.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/adv_stealth_transport/adv_stealth_transport.json": [
+      "UNITTYPE_Air",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Transport",
+      "UNITTYPE_Interplanetary",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/adv_tank_hover/adv_tank_hover.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Hover",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/andreas/andreas.json": [
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_LaserPlatform",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/anti_missile_tower/anti_missile_tower.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Land",
+      "UNITTYPE_SurfaceDefense",
+      "UNITTYPE_Defense",
+      "UNITTYPE_TacticalDefense",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_CombatFabAdvBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/basic_missile_defence/basic_missile_defence.json": [
+      "UNITTYPE_Land",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Tactical",
+      "UNITTYPE_Defense",
+      "UNITTYPE_SurfaceDefense",
+      "UNITTYPE_Basic",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/demi_titan_bot/demi_titan_bot.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Amphibious",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/fab_tower/fab_tower.json": [
+      "UNITTYPE_Construction",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Fabber",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/fabrication_sub/fabrication_sub.json": [
+      "UNITTYPE_Fabber",
+      "UNITTYPE_Construction",
+      "UNITTYPE_Naval",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Sub",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/jammer_titan/jammer_titan.json": [
+      "UNITTYPE_Land",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Recon",
+      "UNITTYPE_RadarJammer",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/metal_generator/metal_generator.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Basic",
+      "UNITTYPE_MetalProduction",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/naval_anti_orbital_ship/naval_anti_orbital.json": [
+      "UNITTYPE_Naval",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Basic",
+      "UNITTYPE_OrbitalDefense",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/orbital_anti_nuke/orbital_anti_nuke.json": [
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_LaserPlatform",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_NukeDefense",
+      "UNITTYPE_Important",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/pounder/pounder.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Artillery",
+      "UNITTYPE_Defense",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Custom58"
+    ],
     "/pa/units/addon/r_radar/r_radar.json": [
       "UNITTYPE_Custom6",
       "UNITTYPE_Land",
@@ -31,6 +198,58 @@
       "UNITTYPE_FabAdvBuild",
       "UNITTYPE_CombatFabAdvBuild",
       "UNITTYPE_CmdBuild"
+    ],
+    "/pa/units/addon/rex/rex.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_OrbitalDefense",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_CannonBuildable",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/shield_gen/shield_gen.json": [
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Land",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Defense",
+      "UNITTYPE_Shield",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Important"
+    ],
+    "/pa/units/addon/stalker/stalker.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Vehicle",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_CannonBuildable",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/swordfish/swordfish.json": [
+      "UNITTYPE_Gunship",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Air",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/addon/system_radar/system_radar.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Recon",
+      "UNITTYPE_Interplanetary",
+      "UNITTYPE_Radar",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Important",
+      "UNITTYPE_Custom58"
     ],
     "/pa/units/addon/t_control_module/t_control_module.json": [
       "UNITTYPE_Custom6",
@@ -633,6 +852,62 @@
       "UNITTYPE_Transport",
       "UNITTYPE_Basic",
       "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/b_addon/adv_fab_tower/adv_fab_tower.json": [
+      "UNITTYPE_Construction",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Fabber",
+      "UNITTYPE_Custom2"
+    ],
+    "/pa/units/b_addon/adv_metal_generator/adv_metal_generator.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_MetalProduction",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom2"
+    ],
+    "/pa/units/b_addon/basic_missile_defence/basic_missile_defence.json": [
+      "UNITTYPE_Land",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Tactical",
+      "UNITTYPE_Defense",
+      "UNITTYPE_SurfaceDefense",
+      "UNITTYPE_Basic",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Custom2"
+    ],
+    "/pa/units/b_addon/fab_tower/fab_tower.json": [
+      "UNITTYPE_Construction",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Fabber",
+      "UNITTYPE_Custom2"
+    ],
+    "/pa/units/b_addon/metal_generator/metal_generator.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Basic",
+      "UNITTYPE_MetalProduction",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom2"
+    ],
+    "/pa/units/b_addon/system_radar/system_radar.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Recon",
+      "UNITTYPE_Interplanetary",
+      "UNITTYPE_Radar",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Important",
+      "UNITTYPE_Custom2"
     ],
     "/pa/units/base/dot_1/dot_1.json": [
       "UNITTYPE_Structure",
@@ -1680,6 +1955,150 @@
       "UNITTYPE_Important",
       "UNITTYPE_Titan"
     ],
+    "/pa/units/l_addon/adv_fab_turret/adv_fab_turret.json": [
+      "UNITTYPE_Construction",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Fabber",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/adv_mass_generator/adv_mass_generator.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_MetalProduction",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/anti_ground_satellite/almaz.json": [
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_LaserPlatform",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/anti_orbital_armor/lynx.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Vehicle",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_AirDefense",
+      "UNITTYPE_OrbitalDefense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_CannonBuildable",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/anti_orbital_ship/anti_orbital_ship.json": [
+      "UNITTYPE_Naval",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Basic",
+      "UNITTYPE_Tactical",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/basic_missile_defence/basic_missile_defence.json": [
+      "UNITTYPE_Land",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Tactical",
+      "UNITTYPE_Defense",
+      "UNITTYPE_SurfaceDefense",
+      "UNITTYPE_Basic",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/fab_turret/fab_turret.json": [
+      "UNITTYPE_Construction",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Fabber",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/l_adv_storage/l_adv_storage.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/l_demi_titan_bot/l_demi_titan_bot.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Amphibious",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/l_jammer_station/l_jammer_station.json": [
+      "UNITTYPE_Land",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Recon",
+      "UNITTYPE_RadarJammer",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/l_orbital_jammer/l_orbital_jammer.json": [
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Recon",
+      "UNITTYPE_RadarJammer",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/l_orbital_power/l_orbital_power.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_EnergyProduction",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/mass_generator/mass_generator.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Basic",
+      "UNITTYPE_MetalProduction",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/orbital_anti_nuke/orbital_anti_nuke.json": [
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_LaserPlatform",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_NukeDefense",
+      "UNITTYPE_Important",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/l_addon/system_radar/system_radar.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Recon",
+      "UNITTYPE_Interplanetary",
+      "UNITTYPE_Radar",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Important",
+      "UNITTYPE_Custom1"
+    ],
     "/pa/units/land/aa_missile_launcher/aa_missile_launcher.json": [
       "UNITTYPE_Land",
       "UNITTYPE_Structure",
@@ -1772,9 +2191,9 @@
       "UNITTYPE_CombatFabAdvBuild"
     ],
     "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher.json": [
-      "UNITTYPE_Custom58",
       "UNITTYPE_Land",
       "UNITTYPE_Structure",
+      "UNITTYPE_Custom58",
       "UNITTYPE_Defense",
       "UNITTYPE_NukeDefense",
       "UNITTYPE_Advanced",
@@ -3709,10 +4128,10 @@
       "UNITTYPE_CannonBuildable"
     ],
     "/pa/units/land/tank_nuke/tank_nuke.json": [
-      "UNITTYPE_Custom58",
       "UNITTYPE_Tank",
       "UNITTYPE_Heavy",
       "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
       "UNITTYPE_Offense",
       "UNITTYPE_Land",
       "UNITTYPE_Advanced",
@@ -3760,9 +4179,9 @@
       "UNITTYPE_Custom6"
     ],
     "/pa/units/land/titan_bot/titan_bot.json": [
-      "UNITTYPE_Custom58",
       "UNITTYPE_Bot",
       "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
       "UNITTYPE_Offense",
       "UNITTYPE_Land",
       "UNITTYPE_Advanced",
@@ -4356,6 +4775,229 @@
       "UNITTYPE_FabOrbBuild",
       "UNITTYPE_Important",
       "UNITTYPE_Interplanetary"
+    ],
+    "/pa/units/paeiou/aegir/aegir.json": [
+      "UNITTYPE_Naval",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Sub",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/paeiou/big_bill/big_bill.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom17"
+    ],
+    "/pa/units/paeiou/dolfin/dolfin.json": [
+      "UNITTYPE_Naval",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Artillery",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_AirDefense",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/paeiou/dox_materializer/dox_materializer.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Factory",
+      "UNITTYPE_Construction",
+      "UNITTYPE_Bot",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/paeiou/energy_coil/energy_coil.json": [
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Structure",
+      "UNITTYPE_EnergyProduction",
+      "UNITTYPE_Basic",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Basic",
+      "UNITTYPE_Land",
+      "UNITTYPE_SurfaceDefense",
+      "UNITTYPE_AirDefense",
+      "UNITTYPE_Defense",
+      "UNITTYPE_CombatFabAdvBuild"
+    ],
+    "/pa/units/paeiou/experimental_gantry/experimental_gantry.json": [
+      "UNITTYPE_Factory",
+      "UNITTYPE_Construction",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Important",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/paeiou/floater/floater.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Hover",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom17"
+    ],
+    "/pa/units/paeiou/horntail/horntail.json": [
+      "UNITTYPE_Bomber",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Air",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Deconstruction",
+      "UNITTYPE_Custom17"
+    ],
+    "/pa/units/paeiou/horntail/larva/larva.json": [
+      "UNITTYPE_Offense",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Deconstruction",
+      "UNITTYPE_NoBuild",
+      "UNITTYPE_Hover"
+    ],
+    "/pa/units/paeiou/katrina/katrina.json": [
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Tank",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Artillery",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/paeiou/l_experimental_gantry/l_experimental_gantry.json": [
+      "UNITTYPE_Factory",
+      "UNITTYPE_Construction",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Important",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Custom1"
+    ],
+    "/pa/units/paeiou/ligma/drone_bomber/drone_bomber.json": [
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Air",
+      "UNITTYPE_Basic",
+      "UNITTYPE_NoBuild",
+      "UNITTYPE_Bomber"
+    ],
+    "/pa/units/paeiou/ligma/drone_fighter/drone_fighter.json": [
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_Fighter",
+      "UNITTYPE_Basic",
+      "UNITTYPE_Interplanetary",
+      "UNITTYPE_NoBuild"
+    ],
+    "/pa/units/paeiou/ligma/ligma.json": [
+      "UNITTYPE_Custom1",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_LaserPlatform",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Titan",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Important",
+      "UNITTYPE_Interplanetary"
+    ],
+    "/pa/units/paeiou/pineapple/pineapple.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Land",
+      "UNITTYPE_Recon",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom17"
+    ],
+    "/pa/units/paeiou/poseidon/pos_air_drone/pos_air_drone.json": [
+      "UNITTYPE_Fighter",
+      "UNITTYPE_Air",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Basic",
+      "UNITTYPE_NoBuild"
+    ],
+    "/pa/units/paeiou/poseidon/pos_amph_drone/pos_amph_drone.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Basic",
+      "UNITTYPE_NoBuild",
+      "UNITTYPE_Amphibious"
+    ],
+    "/pa/units/paeiou/poseidon/pos_torp_drone/pos_torp_drone.json": [
+      "UNITTYPE_Naval",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Basic",
+      "UNITTYPE_Sub",
+      "UNITTYPE_NoBuild"
+    ],
+    "/pa/units/paeiou/poseidon/poseidon.json": [
+      "UNITTYPE_Naval",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Sub",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/paeiou/sigma/sigma.json": [
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_Fighter",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabberBuild",
+      "UNITTYPE_Interplanetary",
+      "UNITTYPE_Important",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/paeiou/solar_cell/solar_cell.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_EnergyProduction",
+      "UNITTYPE_Basic",
+      "UNITTYPE_CmdBuild",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Economy"
+    ],
+    "/pa/units/paeiou/spider/spider.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_AirDefense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_CannonBuildable",
+      "UNITTYPE_Amphibious",
+      "UNITTYPE_Custom58"
+    ],
+    "/pa/units/paeiou/yellowjacket/yellowjacket.json": [
+      "UNITTYPE_Bomber",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Air",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom58"
     ],
     "/pa/units/research/unlocks/base_unlock/base_adv_research.json": [
       "UNITTYPE_Factory",
@@ -5531,9 +6173,494 @@
       "UNITTYPE_Structure",
       "UNITTYPE_Fabber",
       "UNITTYPE_Custom6"
+    ],
+    "/pa/units/thorosmen/air_healer/air_healer.json": [
+      "UNITTYPE_Bomber",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Air",
+      "UNITTYPE_Tactical",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild"
+    ],
+    "/pa/units/thorosmen/atat/atat.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Gunship",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Amphibious"
+    ],
+    "/pa/units/thorosmen/binho/binho.json": [
+      "UNITTYPE_Bomber",
+      "UNITTYPE_Transport",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Air",
+      "UNITTYPE_Tactical",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/bot_drone/boombot_air/boombot_air.json": [
+      "UNITTYPE_Fighter",
+      "UNITTYPE_Air",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/bot_drone/bot_drone.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Tactical",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/bot_freeze/bot_freeze.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/bot_shield_wall/bot_shield_wall.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Hover",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/bot_sniper_big/bot_sniper_big.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/bot_tp/bot_tesla_tped/bot_tesla_tped.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Basic"
+    ],
+    "/pa/units/thorosmen/bot_tp/bot_tp.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_SelfDestruct"
+    ],
+    "/pa/units/thorosmen/bot_tree/bot_tree.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/bumba/bumba.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Artillery",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/bunker_build/bunker/bunker.json": [
+      "UNITTYPE_Land",
+      "UNITTYPE_Bot",
+      "UNITTYPE_Transport",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_NoBuild"
+    ],
+    "/pa/units/thorosmen/bunker_build/bunker_build.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Land",
+      "UNITTYPE_SelfDestruct"
+    ],
+    "/pa/units/thorosmen/canhao/canhao.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Artillery",
+      "UNITTYPE_Defense",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Basic"
+    ],
+    "/pa/units/thorosmen/cuzeta/cuzeta.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Amphibious"
+    ],
+    "/pa/units/thorosmen/dagua/dagua.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Hover",
+      "UNITTYPE_Land",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_CannonBuildable"
+    ],
+    "/pa/units/thorosmen/drill/drill.json": [
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Land",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/gigatank/gigatank.json": [
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Tank",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/halabib/halabib.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_CannonBuildable",
+      "UNITTYPE_Amphibious"
+    ],
+    "/pa/units/thorosmen/healer/healer/healer.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_CannonBuildable"
+    ],
+    "/pa/units/thorosmen/kinha/kinha.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Artillery",
+      "UNITTYPE_Defense",
+      "UNITTYPE_FabBuild",
+      "UNITTYPE_Basic"
+    ],
+    "/pa/units/thorosmen/lolis/lolis.json": [
+      "UNITTYPE_Air",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Transport",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/maciota/maciota.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Basic",
+      "UNITTYPE_Defense",
+      "UNITTYPE_OrbitalDefense",
+      "UNITTYPE_FabAdvBuild"
+    ],
+    "/pa/units/thorosmen/metal_destructor/metal_destructor.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_MetalProduction",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Economy",
+      "UNITTYPE_Heavy"
+    ],
+    "/pa/units/thorosmen/prex/prex.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Artillery",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/spell_heal/spell_heal.json": [
+      "UNITTYPE_Structure",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Factory",
+      "UNITTYPE_Tactical",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Important",
+      "UNITTYPE_Interplanetary"
+    ],
+    "/pa/units/thorosmen/st_airship/st_airship.json": [
+      "UNITTYPE_Fighter",
+      "UNITTYPE_Air",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_FabAdvBuild"
+    ],
+    "/pa/units/thorosmen/st_bot_anti_nuke/st_bot_anti_nuke.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Defense",
+      "UNITTYPE_NukeDefense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Hover",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important"
+    ],
+    "/pa/units/thorosmen/st_bot_white_hole/st_bot_white_hole.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild"
+    ],
+    "/pa/units/thorosmen/st_colum/st_colum.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Artillery",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Important",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Amphibious"
+    ],
+    "/pa/units/thorosmen/st_fef/st_fef.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Amphibious"
+    ],
+    "/pa/units/thorosmen/st_ggspider_build/st_ggspider/st_ggspider.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Land",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Offense",
+      "UNITTYPE_SelfDestruct"
+    ],
+    "/pa/units/thorosmen/st_ggspider_build/st_ggspider_build.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Land",
+      "UNITTYPE_SelfDestruct"
+    ],
+    "/pa/units/thorosmen/st_ilegal/st_ilegal.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Amphibious"
+    ],
+    "/pa/units/thorosmen/st_lawnmower/st_lawnmower.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Deconstruction",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_FabAdvBuild"
+    ],
+    "/pa/units/thorosmen/st_pap/st_pap.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Amphibious"
+    ],
+    "/pa/units/thorosmen/tank_decoy/tank_decoy.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Hover",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/tank_decoy_little/tank_decoy_little.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Hover",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/tank_drone/tank_drone/tank_drone.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/tank_shield/tank_shield.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Hover",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild"
+    ],
+    "/pa/units/thorosmen/thorondor/thorondor.json": [
+      "UNITTYPE_Air",
+      "UNITTYPE_Orbital",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Transport",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Interplanetary"
+    ],
+    "/pa/units/thorosmen/titan_egg_build/titan_egg_build.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Heavy",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_Land",
+      "UNITTYPE_SelfDestruct"
+    ],
+    "/pa/units/thorosmen/titan_radar/titan_radar.json": [
+      "UNITTYPE_Land",
+      "UNITTYPE_Structure",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_Recon",
+      "UNITTYPE_Radar"
+    ],
+    "/pa/units/thorosmen/tripod/tripod.json": [
+      "UNITTYPE_Bot",
+      "UNITTYPE_FabOrbBuild",
+      "UNITTYPE_FabAdvBuild",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Custom58",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Titan",
+      "UNITTYPE_Important",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Amphibious"
     ]
   },
   "buildable": {
+    "/pa/units/addon/fabrication_sub/fabrication_sub.json": "(Naval & Structure & Basic | Naval & Factory & Advanced | Air & Factory & Basic | FabBuild) & Custom58",
     "/pa/units/air/air_factory/air_factory.json": "(Air & Mobile & Basic | Air & Fabber & Basic & Mobile) & FactoryBuild & Custom58",
     "/pa/units/air/air_factory_adv/air_factory_adv.json": "Air & Mobile & FactoryBuild & Custom58",
     "/pa/units/air/bug_air_fab/bug_air_fab.json": "((Land & Structure & Basic | Factory & Basic & FabBuild | Factory & Advanced & Air | FabBuild) & Custom2)",
@@ -5690,6 +6817,8 @@
     "/pa/units/orbital/orbital_factory/orbital_factory.json": "Orbital & FactoryBuild & Custom58",
     "/pa/units/orbital/orbital_launcher/orbital_launcher.json": "Orbital & FactoryBuild & Basic & Custom58",
     "/pa/units/orbital/t_orbital_launcher/t_orbital_launcher.json": "Orbital & FactoryBuild & Basic & Custom58",
+    "/pa/units/paeiou/experimental_gantry/experimental_gantry.json": "Mobile & FactoryBuild & Custom17",
+    "/pa/units/paeiou/l_experimental_gantry/l_experimental_gantry.json": "Mobile & FactoryBuild & Custom17",
     "/pa/units/research/unlocks/base_unlock/base_adv_research.json": "(Basic & FactoryBuild & Wall & Custom2)",
     "/pa/units/research/unlocks/base_unlock/base_research.json": "(Basic & FactoryBuild & Wall & Custom2)",
     "/pa/units/research/unlocks/bug_advanced_orbital_radar_unlock/research_bug_advanced_orbital_radar.json": "(Custom2 & FactoryBuild & Advanced & Orbital & Radar) - Mobile",

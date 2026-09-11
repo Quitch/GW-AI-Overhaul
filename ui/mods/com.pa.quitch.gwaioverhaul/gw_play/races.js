@@ -4,6 +4,7 @@
 (function () {
   try {
     model.gwoRaces = _.isArray(model.gwoRaces) ? model.gwoRaces : [];
+    model.gwoAddons = _.isArray(model.gwoAddons) ? model.gwoAddons : [];
 
     // All five are made here, before any asynchronous work. This scene script
     // is first in modinfo's gw_play list, so the war panel, the fight gate,
@@ -165,9 +166,13 @@
         };
 
         // One unit list read for every race, taken once the race zips are
-        // mounted. See races.md, "Capability cells".
+        // mounted. MLA is primed only while an add-on is active: its cells
+        // are the add-on units, and the shipped descriptors are registered
+        // whether or not their mods are. See races.md, "Capability cells".
         var primeRaces = function (info) {
-          var toPrime = _.reject(racesToPrime(info), gwoRaces.isMla);
+          var toPrime = _.filter(racesToPrime(info), function (race) {
+            return !gwoRaces.isMla(race) || !_.isEmpty(info.addons);
+          });
 
           if (!toPrime.length) {
             return;
@@ -231,23 +236,42 @@
           // Separate races still primes the offer for a viewer joining later.
           primeRaces(info);
 
-          if (!warRaceIds.length) {
+          // An all-MLA war has nothing to block on, but may have begun with
+          // add-ons it should mention losing.
+          if (!warRaceIds.length && _.isEmpty(recorded && recorded.addons)) {
             return;
           }
 
           var result = raceCheck.evaluate(recorded, warRaceIds, info);
 
-          var changed = _.map(result.warnings, function (warning) {
+          var byReason = _.groupBy(result.warnings, "reason");
+          var changed = _.map(byReason.version, function (warning) {
             return warning.name + " " + warning.from + " -> " + warning.to;
           });
+          var gone = _.map(byReason.addon, function (warning) {
+            return loc(warning.name);
+          });
+          var lines = [];
 
           if (changed.length) {
-            console.warn("gwoRaces: " + changed.join("; "));
-            model.gwoRaceWarning(
+            lines.push(
               loc("!LOC:Race mods changed since this war began:") +
                 " " +
                 changed.join("; ")
             );
+          }
+          if (gone.length) {
+            lines.push(
+              loc(
+                "!LOC:Add-on mods this war began with are no longer enabled:"
+              ) +
+                " " +
+                gone.join(", ")
+            );
+          }
+          if (lines.length) {
+            console.warn("gwoRaces: " + lines.join(" "));
+            model.gwoRaceWarning(lines.join(" "));
           }
 
           if (!result.blocked.length) {

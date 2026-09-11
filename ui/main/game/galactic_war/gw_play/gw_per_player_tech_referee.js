@@ -59,16 +59,16 @@ define([
   // GWO - the race comes off the player's own inventory, which is the host's
   // under Separate races off and the viewer's own under it on: their units and
   // mods follow the race's capability cells the way the host's do, and their
-  // map is the race's merged one. See races.md and coop.md.
+  // map is the race's merged one. An MLA viewer's cells are its add-on cells,
+  // undefined while no add-on is mounted. See races.md and coop.md.
   var generateUnitSpecsForPlayer = function (inventory, playerTag) {
     var done = $.Deferred();
     var titans = api.content.usingTitans();
     var race = gwoRaces.raceOf(inventory);
-    var cellsLoad = gwoRaces.isMla(race)
-      ? Promise.resolve(undefined)
-      : gwoRaceCells.indexFor(race);
+    var isMla = gwoRaces.isMla(race);
+    var cellsLoad = gwoRaceCells.indexFor(race);
     var brain = gwoAI.aiInUse("subcommander", race);
-    var mapPath = gwoRaces.isMla(race)
+    var mapPath = isMla
       ? "/pa/ai/unit_maps/ai_unit_map"
       : gameFilePaths.getAIUnitMapPath(false, brain).replace(/\.json$/, "");
     var raceMaps = gwoRaces.unitMapsFor(
@@ -89,10 +89,18 @@ define([
     };
     var buildFiles = function (cells, maps) {
       var extra = maps.slice(2);
+      // A key the race maps left falls back to a race unit of its cell,
+      // preferring one the race's own AI data knows over an add-on's.
       var merge = function (base) {
         var merged = gameFilePaths.mergeUnitMaps(base, extra);
         return cells
-          ? unitCells.unitMapFallback(merged, extra, cells.vanilla, cells.race)
+          ? unitCells.unitMapFallback(
+              merged,
+              extra,
+              cells.vanilla,
+              cells.race,
+              gwoRaces.addonUnitPaths()
+            )
           : merged;
       };
       var aiUnitMap = merge(maps[0]);
@@ -103,13 +111,20 @@ define([
         ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
         : {};
       var held = inventory.units().concat(model.gwoSpecs);
-      var playerSpecs = cells
-        ? unitCells.raceUnitsFor(held, cells.vanilla, cells.race)
-        : held;
+      // A race viewer fields the race's units of the cells the vanilla ones
+      // held occupy; an MLA viewer keeps everything held and gains the
+      // add-on units of those cells.
+      var playerSpecs = held;
+      if (cells) {
+        playerSpecs = (
+          isMla ? unitCells.addonUnitsFor : unitCells.raceUnitsFor
+        )(held, cells.vanilla, cells.race);
+      }
       // A viewer that picked no race commander is on the stock list, so its
       // vanilla commander (and its Sub Commanders') is retagged the way the
       // Guardians' Unicorn is; a kept vanilla Commander-class unit likewise.
-      // commanderModsFor is a no-op for a commander already of the race.
+      // commanderModsFor is a no-op for a commander already of the race, and
+      // for MLA.
       var viewerCommanders = [inventory.getTag("global", "commander")].concat(
         _.pluck(inventory.minions ? inventory.minions() : [], "commander")
       );
@@ -118,7 +133,7 @@ define([
           return gwoRaces.commanderModsFor(race, commander);
         }).concat(
           _.map(
-            cells
+            cells && !isMla
               ? _.difference(
                   unitCells.heldCommanderUnits(held, cells.vanilla),
                   viewerCommanders

@@ -368,3 +368,90 @@ describe("activeRaces", () => {
     assert.deepEqual(ids(kept), ["mla", "fixture"]);
   });
 });
+
+describe("evaluate with add-ons", () => {
+  const ADDON_ID = "com.example.fixture-addon";
+  const ADDON_MOD = {
+    identifier: ADDON_ID,
+    displayName: "Fixture Add-on",
+    version: "1.0.0",
+  };
+  const withAddon = (overrides) =>
+    recorded(Object.assign({ addons: [ADDON_MOD] }, overrides));
+
+  it("warns, never blocks, when a recorded add-on is no longer active", () => {
+    const result = raceCheck.evaluate(
+      withAddon(),
+      ["fixture"],
+      installed({ addonMods: [] })
+    );
+
+    assert.deepEqual(result.blocked, []);
+    assert.deepEqual(result.warnings, [
+      { reason: "addon", identifier: ADDON_ID, name: "Fixture Add-on" },
+    ]);
+  });
+
+  it("says nothing about an add-on still active, whatever its version", () => {
+    const result = raceCheck.evaluate(
+      withAddon(),
+      ["fixture"],
+      installed({
+        addonMods: [Object.assign({}, ADDON_MOD, { version: "2.0.0" })],
+      })
+    );
+
+    assert.deepEqual(result, { blocked: [], warnings: [] });
+  });
+
+  it("decides nothing about add-ons when the mod list cannot be read", () => {
+    const result = raceCheck.evaluate(
+      withAddon(),
+      ["fixture"],
+      installed({ known: false, addonMods: [] })
+    );
+
+    assert.deepEqual(result.warnings, []);
+  });
+
+  it("has nothing to say for a war that recorded no add-ons", () => {
+    const result = raceCheck.evaluate(recorded(), ["fixture"], installed());
+
+    assert.deepEqual(result, { blocked: [], warnings: [] });
+  });
+
+  it("checks add-ons for an all-MLA war too", () => {
+    const result = raceCheck.evaluate(
+      withAddon({ player: "mla", byFaction: { 0: "mla" } }),
+      [],
+      installed({ races: [races.byId("mla")], mods: [], addonMods: [] })
+    );
+
+    assert.deepEqual(result.blocked, []);
+    assert.equal(result.warnings.length, 1);
+    assert.equal(result.warnings[0].reason, "addon");
+  });
+
+  it("names a recorded add-on by its identifier when it has no display name", () => {
+    const result = raceCheck.evaluate(
+      withAddon({ addons: [{ identifier: ADDON_ID }] }),
+      ["fixture"],
+      installed({ addonMods: [] })
+    );
+
+    assert.equal(result.warnings[0].name, ADDON_ID);
+  });
+
+  it("prefers the descriptor's localisable name while one claims the identifier", () => {
+    const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
+    races.registerAddon(FIXTURE_ADDON);
+
+    const result = raceCheck.evaluate(
+      withAddon(),
+      ["fixture"],
+      installed({ addonMods: [] })
+    );
+
+    assert.equal(result.warnings[0].name, "!LOC:Fixture Add-on");
+  });
+});

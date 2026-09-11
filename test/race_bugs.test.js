@@ -161,10 +161,15 @@ describe("Bugs under capability cells", () => {
       return;
     }
     const index = races.cellsOf("bugs");
-    const named = Object.assign({}, races.byId("bugs").unitNames);
+    // As card_tooltips.js names them: the race's table, any add-on's, then
+    // unit_names.js.
+    const named = {};
     for (const entry of unitNames.units) {
       named[entry.path] = entry.name;
     }
+    const isNamed = (unit) =>
+      races.unitName("bugs", unit) !== undefined ||
+      Object.prototype.hasOwnProperty.call(named, unit);
     const unnamed = [];
     for (const card of cardUnits.cards) {
       if (helpers.mlaOnlyCard(card.id)) {
@@ -175,7 +180,7 @@ describe("Bugs under capability cells", () => {
         index.vanilla,
         index.race
       )) {
-        if (!Object.prototype.hasOwnProperty.call(named, unit)) {
+        if (!isNamed(unit)) {
           unnamed.push(card.id + ": " + unit);
         }
       }

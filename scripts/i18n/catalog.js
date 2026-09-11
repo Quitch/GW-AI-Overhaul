@@ -29,6 +29,7 @@ const SHOWN = [
   ["/shared_build/", "the in-battle build bar"],
   ["/start/", "the main menu"],
   ["/race/", "the race picker, the galaxy map and unit tooltips"],
+  ["/addon/", "unit tooltips and the war panel"],
   ["/faction/", "the galaxy map"],
   ["/shared/", "several Galactic War screens"],
 ];

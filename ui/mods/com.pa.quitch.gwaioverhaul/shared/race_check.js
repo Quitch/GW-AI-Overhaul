@@ -92,6 +92,29 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       return { blocked: blocked, warnings: warnings };
     }
 
+    // An add-on the war began with that is off now: its units simply stop
+    // arriving, since every inventory holds vanilla paths, so this is said
+    // and never blocked. A war saved before add-ons recorded none. The name
+    // is the descriptor's (localised) when one still claims the identifier,
+    // else what the war recorded.
+    _.forEach((recorded && recorded.addons) || [], function (mod) {
+      var identifier = races.normalizeId(mod && mod.identifier);
+      var active = _.some(info.addonMods || [], function (candidate) {
+        return races.normalizeId(candidate.identifier) === identifier;
+      });
+      var addon = _.find(races.addons(), function (candidate) {
+        return _.contains(candidate.serverMods, identifier);
+      });
+
+      if (identifier && !active) {
+        warnings.push({
+          reason: "addon",
+          identifier: identifier,
+          name: (addon && addon.name) || mod.displayName || identifier,
+        });
+      }
+    });
+
     _.forEach((recorded && recorded.mods) || [], function (mod) {
       var identifier = races.normalizeId(mod && mod.identifier);
 

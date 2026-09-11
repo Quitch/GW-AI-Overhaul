@@ -54,7 +54,51 @@ race needs something new.
    cells, the player's unit list, one group card landing once, the AI founding
    a base, and the deals.
 
+## Adding an add-on
+
+An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
+[`races.md`](races.md), "Add-ons", explains what the code does with one.
+
+1. **Descriptor.** Add `ui/mods/…/addon/<id>.js` and list it in
+   `shared/addons_shipped.js`. Its fields are `id`, `name`, `serverMods`,
+   `layers`, `units`, `unitNames`. No bit, no commanders, no `ai`.
+2. **Unit table.** Generate `units` and `unitNames` from the zip with a
+   throwaway script, as for a race: the zip's `unit_list.json` minus the base
+   game's `pa` and `pa_ex1` lists (which drops the rebalancing shadows of
+   vanilla units), keys camel-cased from `display_name`, parts by owner plus
+   role from `tools[].spec_id` / `ammo_id` / `death_weapon`, and `!LOC:`
+   prefixed onto a bare display name. For MLA the table _is_ the membership
+   rule, so every unit the mod adds must be in it.
+3. **Layers.** `layers[raceId].titans` carries `unitMaps` and `sources` for
+   each race the mod ships AI data for, `mla` included. `sources` must cover
+   everything the add-on ships under `/pa/ai/`, because it is what every
+   other tree subtracts. A flat file is matched by its full name
+   (`{ dir: "/pa/ai/factory_builds/", match: "dolfin.json" }`); check that no
+   base file starts with it. A map two layers share is listed under both.
+4. **Fixture.** Add the server mod to `SERVER_MODS` in
+   `scripts/harvest-unit-types.js`, in mount order, and re-run it.
+5. **Tests** in `test/addon_<id>.test.js` check the descriptor shape, that
+   every harvested unit is in the table, that the zip ships every path and
+   every layer entry (skipped without the zip), and the cells: a held vanilla
+   unit brings the add-on units of its cell, an orphan arrives through a
+   builder, an exclusive arrives only through its gantry.
+6. **Validator.** Run `npm run validate:race-trees` with the zip in
+   `download/`. Its MLA pass and descriptor check cover the new layer.
+7. **Docs**: a subsection in `races.md`, a CHANGELOG line, and any upstream
+   issue below.
+
 ## Conventions the code relies on
+
+- **Add-on membership for MLA is the unit table, not a bit.** An add-on's
+  MLA units carry `Custom58` like vanilla's. `races.addonUnitPaths` is what
+  tells them apart, on both sides of the index: they are the add-on index,
+  and they are kept out of the vanilla index. An add-on's Legion or Bugs
+  units carry that race's bit and are the race's by the ordinary rule.
+- **An exclusive bit belongs to nobody.** A unit under a `Custom` bit no
+  registered race owns (Section 17's `Custom17`) has no cell grant, no card
+  and no mod, and arrives only through a builder's `buildable_types`. A
+  third-party race registering `Custom17` would claim those units by the bit
+  rule instead.
 
 - **Race membership is the unit-type bit alone.** A unit is the race's when
   its effective `unit_types` carry `UNITTYPE_<bit>`. Vanilla is `Custom58` or
@@ -146,3 +190,18 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
 
 - Legion's GW theming stays off because stock leaves
   `model.player().commanders` as `[null]` in a GW battle.
+- Section 17's fabber builds name the builder aliases `AnyMLABasicFabber`
+  and `MLACommander`, which only Second Wave's `unit_maps/second_wave_aux.json`
+  defines. Without Second Wave active, its Dox Materializer, Energy Coil and
+  Solar Cell builds never fire. GWO documents this and never patches it
+  (`test/addon_section17.test.js` pins the dependency).
+- Section 17's and Osmech's `unit_list.json` are stale vanilla snapshots
+  missing `tank_jammer`, `orbital_mine` and `tank_anti_nuke`. GW Server Mods'
+  client union and Community Mods' server merge repair the list, so nothing
+  is lost in a battle.
+- Second Wave's Bugs build files (0.16.1 and later) name `BugCommander`,
+  `AnyBugFabberBasic` and `AnyBugFabberAdvanced`, which its own maps never
+  define: the Bugs race's `unit_maps/bugs.json` supplies them in every Bugs
+  tree (`test/addon_second_wave.test.js` pins the dependency).
+- Osmech has no AI data. A player fields its units by cell; an AI army never
+  builds them.

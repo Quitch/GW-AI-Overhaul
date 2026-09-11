@@ -119,6 +119,126 @@ function fixtureIndex() {
   };
 }
 
+// A made-up add-on beside it: a vanilla-typed tank in the ant's cell, a
+// gantry for MLA and one for the fixture race (both orphans reached from an
+// advanced fabber, both building Custom17), and one Custom17 unit no
+// registered race owns. Its layers share an aux map between MLA and the
+// fixture race, as Second Wave's did before 0.16.1.
+const FX_ADDON_TANK = "/pa/units/land/fx_addon_tank/fx_addon_tank.json";
+const FX_ADDON_TANK_WEAPON =
+  "/pa/units/land/fx_addon_tank/fx_addon_tank_tool_weapon.json";
+const FX_ADDON_TANK_AMMO =
+  "/pa/units/land/fx_addon_tank/fx_addon_tank_ammo.json";
+const FX_GANTRY = "/pa/units/land/fx_gantry/fx_gantry.json";
+const FX_GANTRY_L = "/pa/units/land/fx_gantry_l/fx_gantry_l.json";
+const FX_EXCLUSIVE = "/pa/units/land/fx_exclusive/fx_exclusive.json";
+
+const FIXTURE_ADDON = {
+  id: "Fixture_Addon",
+  name: "!LOC:Fixture Add-on",
+  serverMods: ["com.example.fixture-addon"],
+  layers: {
+    mla: {
+      titans: {
+        unitMaps: [
+          "/pa/ai/unit_maps/fixture_addon.json",
+          "/pa/ai/unit_maps/fixture_addon_aux.json",
+        ],
+        sources: [{ dir: "/pa/ai/fabber_builds/", match: "mla/" }],
+      },
+    },
+    fixture: {
+      titans: {
+        unitMaps: [
+          "/pa/ai/unit_maps/fixture_addon_fx.json",
+          "/pa/ai/unit_maps/fixture_addon_aux.json",
+        ],
+        sources: [{ dir: "/pa/ai/factory_builds/", match: "fixture/" }],
+      },
+    },
+  },
+  units: {
+    fxAddonTank: FX_ADDON_TANK,
+    fxAddonTankAmmo: FX_ADDON_TANK_AMMO,
+    fxAddonTankWeapon: FX_ADDON_TANK_WEAPON,
+    fxGantry: FX_GANTRY,
+    fxGantryL: FX_GANTRY_L,
+    fxExclusive: FX_EXCLUSIVE,
+  },
+  unitNames: {
+    fxAddonTank: "Fixture Add-on Tank",
+    fxExclusive: "Fixture Exclusive",
+  },
+};
+
+const FIXTURE_ADDON_SPECS = {
+  [gwoUnit.botFabberAdvanced]: {
+    unit_types: types("Advanced Bot Construction Fabber Land Mobile Custom58"),
+    buildable_types: "FabAdvBuild & Custom58",
+  },
+  [FX_ADDON_TANK]: {
+    unit_types: types("Basic Land Mobile Offense Tank Custom58 FactoryBuild"),
+    tools: [{ spec_id: FX_ADDON_TANK_WEAPON }],
+  },
+  [FX_ADDON_TANK_WEAPON]: { ammo_id: FX_ADDON_TANK_AMMO },
+  [FX_ADDON_TANK_AMMO]: { damage: 11 },
+  [FX_GANTRY]: {
+    unit_types: types(
+      "Factory Construction Structure Important FabAdvBuild Custom58"
+    ),
+    buildable_types: "Mobile & FactoryBuild & Custom17",
+  },
+  [FX_GANTRY_L]: {
+    unit_types: types(
+      "Factory Construction Structure Important FabAdvBuild Custom7"
+    ),
+    buildable_types: "Mobile & FactoryBuild & Custom17",
+  },
+  [FX_EXCLUSIVE]: {
+    unit_types: types(
+      "Advanced Land Mobile Offense Tank FactoryBuild Custom17"
+    ),
+  },
+};
+const FIXTURE_ADDON_UNITS = [
+  gwoUnit.botFabberAdvanced,
+  FX_ADDON_TANK,
+  FX_GANTRY,
+  FX_GANTRY_L,
+  FX_EXCLUSIVE,
+];
+
+// The { vanilla, race } index race_cells.js builds for MLA with the fixture
+// add-on registered: the base game's units on one side, the add-on's
+// vanilla-typed units on the other, the Custom17 unit exclusive. `withRace`
+// gives the fixture race's index instead, its add-on gantry included.
+function addonIndex(withRace) {
+  const units = FIXTURE_UNITS.concat(FIXTURE_ADDON_UNITS);
+  const specs = Object.assign({}, FIXTURE_SPECS, FIXTURE_ADDON_SPECS);
+  const addonPaths = {};
+  for (const path of Object.values(FIXTURE_ADDON.units)) {
+    addonPaths[path] = true;
+  }
+  const member = withRace
+    ? unitCells.raceMember("Custom7")
+    : (unitTypes, path) =>
+        unitCells.vanillaMember(unitTypes) && !!addonPaths[path];
+  return {
+    vanilla: unitCells.buildIndex(
+      units,
+      specs,
+      (unitTypes, path) =>
+        unitCells.vanillaMember(unitTypes) && !addonPaths[path]
+    ),
+    race: unitCells.buildIndex(
+      units,
+      specs,
+      member,
+      unitCells.exclusiveMember(["Custom58", "Custom7"])
+    ),
+  };
+}
+
 // A stand-in for gwo_rng: pick takes the first entry, shuffle reverses, so a
 // test can predict every draw.
 function predictableRng() {
@@ -136,6 +256,10 @@ module.exports = {
   FIXTURE_RACE,
   FIXTURE_SPECS,
   FIXTURE_UNITS,
+  FIXTURE_ADDON,
+  FIXTURE_ADDON_SPECS,
+  FIXTURE_ADDON_UNITS,
   fixtureIndex,
+  addonIndex,
   predictableRng,
 };

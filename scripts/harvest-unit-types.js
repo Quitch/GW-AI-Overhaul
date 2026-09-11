@@ -2,10 +2,11 @@
 
 // Writes test/fixtures/unit_types.json: every unit the merged unit list names
 // with its effective unit_types and buildable_types (base_spec chain
-// resolved), from the PA install (pa_ex1 over pa) and the race server mods
-// found on disk - a folder under server_mods/ or a zip under download/, later
-// roots shadowing earlier ones as the runtime virtual filesystem does. CI has
-// none of it, so the fixture is committed - re-run after a PA or race patch.
+// resolved), from the PA install (pa_ex1 over pa) and the race and add-on
+// server mods found on disk - a folder under server_mods/ or a zip under
+// download/, later roots shadowing earlier ones as the runtime virtual
+// filesystem does. CI has none of it, so the fixture is committed - re-run
+// after a PA, race or add-on patch.
 // See testing.md.
 
 const fs = require("node:fs");
@@ -28,13 +29,17 @@ const USER_DATA =
     "Planetary Annihilation"
   );
 
-// The race server mods GWO knows, in the order GW Server Mods mounts them
-// (each shadows the ones before it). A folder build beside a zip wins.
-const RACE_MODS = [
+// The race and add-on server mods GWO knows, in the order GW Server Mods
+// mounts them (each shadows the ones before it). A folder build beside a zip
+// wins.
+const SERVER_MODS = [
   "com.pa.legion-expansion-server",
   "com.pa.ferretmaster.commander-merge",
   "com.pa.ferretmaster.bugs",
   "com.pa.nik.exiles",
+  "com.pa.loloares.thorosmen",
+  "pa.mla.unit.addon",
+  "com.pa.daedelus.experimentals",
 ];
 
 function folderRoot(dir) {
@@ -54,9 +59,9 @@ function zipRoot(file) {
   };
 }
 
-function raceRoots() {
+function modRoots() {
   const roots = [];
-  for (const id of RACE_MODS) {
+  for (const id of SERVER_MODS) {
     const zip = path.join(USER_DATA, "download", id + ".zip");
     if (fs.existsSync(zip)) {
       roots.push(zipRoot(zip));
@@ -75,7 +80,7 @@ const ROOTS = [
   folderRoot(path.join(MEDIA, "pa")),
   folderRoot(path.join(MEDIA, "pa_ex1")),
 ]
-  .concat(raceRoots())
+  .concat(modRoots())
   .concat(
     (process.env.GWO_RACE_ROOTS || "")
       .split(path.delimiter)

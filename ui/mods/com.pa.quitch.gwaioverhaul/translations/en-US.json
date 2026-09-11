@@ -75,6 +75,10 @@
     "message": "Activates the Tech to build artillery structures.",
     "description": "Card description, shown in the card tooltip in the Data Bank and when the card is dealt. The card unlocks the artillery structures (Pelter, Holkins and similar static artillery) so the player can build them. 'Tech' is the game's own term for a Galactic War technology. Must agree with the card name 'Artillery Tech'. (gwc_enable_artillery.js:8)"
   },
+  "Add-on mods this war began with are no longer enabled:": {
+    "message": "Add-on mods this war began with are no longer enabled:",
+    "description": "Warning on the galaxy map's war panel, shown when a war resumes without an add-on unit mod (Second Wave, Section 17, Osmech) it was created with. The names of the missing mods follow it on the same line. Keep the trailing colon."
+  },
   "Additional Data Bank": {
     "message": "Additional Data Bank",
     "description": "Name of a tech card, shown in the Data Bank card list, the card tooltip and the tech deal on the galaxy map. 'Data Bank' is the game's own name for a card slot in the player's hand; this card adds slots (two in gwc_add_card_slot, one in the obsolete gwaio_enable_bot_aa kept for old saves). Noun phrase, singular, used as a title; reuse the stock translation of 'Data Bank'. Must agree with the description 'Adds a new slot for another technology.'. (gwc_add_card_slot.js:10, gwaio_enable_bot_aa.js:5)"
@@ -2227,6 +2231,10 @@
     "message": "Osiris often considered the most dangerous commander in all the galaxy for the amount of annihilations he is credited with. A force of war equal to any army, high command of any faction takes his movements into consideration when deploying forces.",
     "description": "Lore text: one of several faction description passages shown at random as the system description in the star detail card on the galaxy map when a system held by that faction is selected. Full paragraph; keep the tone. Revenants faction; Osiris is a proper name. The English omits \"is\" after Osiris; translate the intended meaning. (gw_faction_3.js:140)"
   },
+  "Osmech": {
+    "message": "Osmech",
+    "description": "Name of Osmech, a unit expansion mod. Shown on the war panel when the mod was enabled at war creation and is off now. A proper noun: keep untranslated in Latin, Cyrillic and Chinese locales; transliterate in ja/ko as PA's legion.json does."
+  },
   "PENCHANT: increased personality": {
     "message": "PENCHANT: increased personality",
     "description": "One line of the introduction text in the AI picker dialog on the war setup screen (gw_start), which lets the player choose which AI runs each race. Lines read \"AI NAME: what it offers\", joined with <br> by the code. The upper-case name before the colon is an AI: TITANS is the base game's AI, QUELLER and PENCHANT are AI mods; these are proper nouns and stay as written. Keep the colon; no line break in the string. (ai_picker.js, gwoAiModalIntro) \"Personality\" means the AI's play styles are more distinct from one another."
@@ -2578,6 +2586,14 @@
   "Scattered references point to the Progenitors using their most advanced technologies for some final conflict. Little more is known of the Legion, only that they were defeated.": {
     "message": "Scattered references point to the Progenitors using their most advanced technologies for some final conflict. Little more is known of the Legion, only that they were defeated.",
     "description": "Lore text: the description shown in the star detail card on the galaxy map for a neutral system, beneath the matching lore title. Full paragraph. Pairs with the title \"The Legion\"; Progenitors and Legion are proper names. (lore.js:28)"
+  },
+  "Second Wave": {
+    "message": "Second Wave",
+    "description": "Name of Second Wave, a unit expansion mod for MLA, Legion and Bugs. Shown on the war panel when the mod was enabled at war creation and is off now. A proper noun: keep untranslated in Latin, Cyrillic and Chinese locales; transliterate in ja/ko as PA's legion.json does."
+  },
+  "Section 17": {
+    "message": "Section 17",
+    "description": "Name of Section 17, an experimental-units mod. Shown on the war panel when the mod was enabled at war creation and is off now. A proper noun: keep untranslated in Latin, Cyrillic and Chinese locales; transliterate in ja/ko as PA's legion.json does."
   },
   "Seed:": {
     "message": "Seed:",

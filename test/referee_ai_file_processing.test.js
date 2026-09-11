@@ -340,7 +340,10 @@ describe("race trees", () => {
   const races = loadCouiModule(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"
   );
-  const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+  const {
+    FIXTURE_RACE,
+    FIXTURE_ADDON,
+  } = require("../scripts/lib/race-fixture.js");
   const { beforeEach } = require("node:test");
   const RIVAL_RACE = {
     id: "rival",
@@ -351,13 +354,21 @@ describe("race trees", () => {
       },
     },
   };
+  // The fixture add-on ships an MLA layer (fabber_builds/mla/, its own map),
+  // a fixture-race layer (factory_builds/fixture/, its own map) and an aux
+  // map both layers name.
   const TITANS_FILES = [
     "/pa/ai/ai_config.json",
     "/pa/ai/fabber_builds/fabber_land.json",
     "/pa/ai/fabber_builds/fixture/fabber_land.json",
+    "/pa/ai/fabber_builds/mla/fabber_2w.json",
     "/pa/ai/factory_builds/fixture_air.json",
+    "/pa/ai/factory_builds/fixture/factory_2w.json",
     "/pa/ai/factory_builds/rival_air.json",
     "/pa/ai/unit_maps/fixture.json",
+    "/pa/ai/unit_maps/fixture_addon.json",
+    "/pa/ai/unit_maps/fixture_addon_aux.json",
+    "/pa/ai/unit_maps/fixture_addon_fx.json",
     "/pa/ai/unit_maps/ai_unit_map.json",
   ];
 
@@ -365,10 +376,11 @@ describe("race trees", () => {
     races.reset();
     races.register(FIXTURE_RACE);
     races.register(RIVAL_RACE);
+    races.registerAddon(FIXTURE_ADDON);
   });
   afterEach(() => races.reset());
 
-  it("layers a race enemy's files over the brain's base files at the race root, dropping other races' layers", async () => {
+  it("layers a race enemy's files and its add-on layer over the brain's base files at the race root, dropping other layers", async () => {
     const fixture = buildGame({
       aiInUse: "Titans",
       enemyRace: "fixture",
@@ -390,9 +402,10 @@ describe("race trees", () => {
       "/pa/ai_race_fixture/ai_config.json",
       // The base layer fills the race's gaps...
       "/pa/ai_race_fixture/fabber_builds/fabber_land.json",
-      // ...under the race's own layer; rival_air.json and the untagged
-      // unit_maps/fixture.json never ride along.
+      // ...under the race's own layer and its add-on's; rival_air.json, the
+      // add-on's MLA layer and every untagged map never ride along.
       "/pa/ai_race_fixture/fabber_builds/fixture/fabber_land.json",
+      "/pa/ai_race_fixture/factory_builds/fixture/factory_2w.json",
       "/pa/ai_race_fixture/factory_builds/fixture_air.json",
       "/pa/ai_race_fixture/unit_maps/ai_unit_map.json",
     ]);
@@ -401,6 +414,36 @@ describe("race trees", () => {
     });
     // The MLA pipeline still writes the plain tree for the player's side.
     assert.ok(filesObj["/pa/ai/fabber_builds/fabber_land.json"]);
+  });
+
+  it("sweeps an MLA army's add-on files and maps into its scoped tree, and no race's", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      aiMods: [],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": TITANS_FILES },
+      getJSON: (url) => ({ from: url }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    const guardianKeys = Object.keys(filesObj).filter((key) =>
+      key.startsWith("/pa/ai/player_guardians/")
+    );
+    assert.deepEqual(guardianKeys.sort(), [
+      "/pa/ai/player_guardians/ai_config.json",
+      "/pa/ai/player_guardians/fabber_builds/fabber_land.json",
+      "/pa/ai/player_guardians/fabber_builds/mla/fabber_2w.json",
+      "/pa/ai/player_guardians/unit_maps/ai_unit_map.json",
+      // Untagged, as the live listing has them: the engine loads each map it
+      // finds under unit_maps/ itself.
+      "/pa/ai/player_guardians/unit_maps/fixture_addon.json",
+      "/pa/ai/player_guardians/unit_maps/fixture_addon_aux.json",
+    ]);
   });
 
   it("writes one tree per distinct destination: guardians, a race player, its viewers", async () => {
