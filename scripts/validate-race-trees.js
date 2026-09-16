@@ -42,6 +42,9 @@ const USER_DATA =
 
 const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
+// Node has no GW Server Mods to activate add-ons, so every registered one
+// counts here, as descriptorLayers() counts them.
+races.activateAddons(races.addons().map((addon) => addon.id));
 const refereeAi = loadCouiModule(MOD_ROOT + "/gw_play/referee_ai.js");
 
 const MLA = races.MLA_ID;

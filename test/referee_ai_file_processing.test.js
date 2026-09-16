@@ -377,6 +377,7 @@ describe("race trees", () => {
     races.register(FIXTURE_RACE);
     races.register(RIVAL_RACE);
     races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons(["fixture_addon"]);
   });
   afterEach(() => races.reset());
 
