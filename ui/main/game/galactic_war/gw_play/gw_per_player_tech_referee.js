@@ -2,7 +2,7 @@
 // gw_play/per_player_tech.js (see testing.md), and continues viewers'
 // subcommanders along the player-faction colour sequence where stock leaves them
 // on colliding raw faction colours. Stock's 23 console.log calls are removed;
-// the six console.error calls are GWO's. Glue only. See shadowing.md.
+// the seven console.error calls are GWO's. Glue only. See shadowing.md.
 define([
   "shared/gw_common",
   "shared/gw_inventory",
@@ -81,11 +81,21 @@ define([
       loadMap(mapPath + ".json"),
       titans ? loadMap(mapPath + "_x1.json") : {},
     ].concat(_.map(raceMaps, loadMap));
-    // Chained, not $.when'd: the cells are a native Promise. See constraints.md.
-    var withCells = function (cells) {
-      return $.when.apply($, loads).then(function () {
-        return buildFiles(cells, _.toArray(arguments));
-      });
+    // Gathered into one first: a jQuery promise adopted by a native one hands
+    // over its first argument only, as referee_game_files.js notes.
+    var mapsLoad = $.when.apply($, loads).then(function () {
+      return _.toArray(arguments);
+    });
+    // Every path that can fail ends here, so a viewer's failed read rejects
+    // rather than hanging the launch. See architecture.md, "Battle launch".
+    var fail = function (error) {
+      console.error(
+        "Galactic War Overhaul (GWO): viewer specs failed for " +
+          playerTag +
+          ": " +
+          gameFilePaths.describeError(error)
+      );
+      done.reject(error);
     };
     var buildFiles = function (cells, maps) {
       var extra = maps.slice(2);
@@ -148,7 +158,7 @@ define([
 
       // The same cache the game-files referee filled, so a viewer's specs cost
       // no second fetch of what the host's pass already read. See specs.md.
-      gwoSpecCache
+      return gwoSpecCache
         .genUnitSpecs(playerSpecs, playerTag, {
           fetch: gameFilePaths.specFetch,
         })
@@ -196,23 +206,25 @@ define([
             : inventory.mods();
           gwoSpecs.mod(playerFiles, mods.concat(retagMods), playerTag);
           done.resolve(playerFiles);
-        })
-        .then(null, function (error) {
-          // A native chain would otherwise swallow this and hang the launch.
-          console.error(
-            "Galactic War Overhaul (GWO): viewer specs failed for " +
-              playerTag +
-              ": " +
-              ((error && (error.stack || error.message)) || error)
-          );
-          done.reject(error);
         });
     };
 
-    cellsLoad.then(withCells, function (error) {
-      console.error("gwoRaces: cells not built for " + race, error);
-      withCells(undefined);
-    });
+    // Native from here on: the cells are a native Promise (see
+    // constraints.md), and a native callback that throws rejects where a
+    // jQuery one would hang. Cells that fail to build are logged and the
+    // viewer continues without them; a map read, a throw in buildFiles, or a
+    // spec fetch that fails rejects through fail.
+    cellsLoad
+      .then(null, function (error) {
+        console.error("gwoRaces: cells not built for " + race, error);
+        return undefined;
+      })
+      .then(function (cells) {
+        return Promise.resolve(mapsLoad).then(function (maps) {
+          return buildFiles(cells, maps);
+        });
+      })
+      .then(null, fail);
 
     return done.promise();
   };
@@ -329,7 +341,21 @@ define([
       );
     }
 
-    $.when.apply($, playerSpecPromises).then(function () {
+    // Stock aborts the launch, with its own log line and launchingFight
+    // cleared, when this resolves false; a rejection would hang it. So a
+    // viewer whose specs failed resolves false here rather than rejecting,
+    // unlike the hire. See architecture.md, "Battle launch".
+    var fail = function (error) {
+      console.error(
+        "[GW COOP] viewer specs not generated: " +
+          gameFilePaths.describeError(error)
+      );
+      config.per_player_tech_ready = false;
+      referee.config(config);
+      done.resolve(false);
+    };
+
+    var ok = function () {
       var thisPlayersFiles = Array.prototype.slice.call(arguments);
       var generatedFiles = {};
 
@@ -398,7 +424,17 @@ define([
       config.per_player_tech_tags = playerTags;
       referee.config(config);
       done.resolve(true);
-    });
+    };
+
+    // A jQuery callback that throws hangs rather than rejects, so the
+    // synchronous body is guarded the way the host referee's prelude is.
+    $.when.apply($, playerSpecPromises).then(function () {
+      try {
+        ok.apply(null, arguments);
+      } catch (error) {
+        fail(error);
+      }
+    }, fail);
     return done.promise();
   };
 
