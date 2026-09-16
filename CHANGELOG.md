@@ -6,6 +6,7 @@
 
 - A Legion or Bugs player could not Fight while Second Wave was disabled; an add-on's AI files now count only while its mod is enabled
 - A unit map that fails to read is read again on the next Fight, and the error names the file
+- A co-op battle whose viewer's unit maps or specs could not be read no longer hangs on the load screen; the launch aborts with the error logged and Fight re-enabled
 
 ## v7.3.0 - 2026-09-11
 
