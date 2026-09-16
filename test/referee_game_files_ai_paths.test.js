@@ -10,6 +10,11 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
+  makeDeferred,
+  rejected: jqRejected,
+  resolved: jqResolved,
+} = require("../scripts/lib/fake-jquery.js");
+const {
   buildGame,
   SCENARIO_AXES,
   useModel,
@@ -495,5 +500,61 @@ describe("loadMap", () => {
     } finally {
       stubs.restoreGlobals();
     }
+  });
+
+  it("drops a failed read from the cache and rejects with an Error naming the file, so the next read tries again", async () => {
+    const stubs = createGlobalStubs();
+    // A fresh path: mapCache is module-level and the case above filled it.
+    const path = "/pa/ai/unit_maps/second_wave_legion.json";
+    const outcomes = [
+      jqRejected({ status: 404, statusText: "Not Found" }),
+      jqResolved(JSON.stringify({ unit_map: { ok: true } })),
+    ];
+    const gets = [];
+    const $ = function () {};
+    $.Deferred = makeDeferred;
+    $.get = (url) => {
+      gets.push(url);
+      return outcomes.shift();
+    };
+    stubs.setGlobal("$", $);
+    stubs.setGlobal("parse", JSON.parse);
+    try {
+      await assert.rejects(refereeGameFiles.loadMap(path), (error) => {
+        assert.ok(error instanceof Error);
+        assert.equal(
+          error.message,
+          "unit map not read: " + path + " (HTTP 404 Not Found)"
+        );
+        return true;
+      });
+
+      assert.deepEqual(await refereeGameFiles.loadMap(path), {
+        unit_map: { ok: true },
+      });
+      assert.deepEqual(gets, ["spec:/" + path, "spec:/" + path]);
+    } finally {
+      stubs.restoreGlobals();
+    }
+  });
+});
+
+describe("describeError", () => {
+  const describeError = refereeGameFiles.describeError;
+
+  it("prefers an Error's stack, then its message, then a jqXHR's status, else the value", () => {
+    const error = new Error("boom");
+    assert.equal(describeError(error), error.stack);
+    assert.equal(
+      describeError({ message: "just a message" }),
+      "just a message"
+    );
+    assert.equal(
+      describeError({ status: 404, statusText: "Not Found" }),
+      "HTTP 404 Not Found"
+    );
+    assert.equal(describeError({ status: 0, statusText: "" }), "HTTP 0");
+    assert.equal(describeError("plain"), "plain");
+    assert.equal(describeError(undefined), "undefined");
   });
 });
