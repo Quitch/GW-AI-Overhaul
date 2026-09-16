@@ -183,12 +183,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
         function (data) {
           return parse(data);
         },
-        function (xhr) {
+        function (error) {
           delete mapCache[path];
           return $.Deferred()
             .reject(
               new Error(
-                "unit map not read: " + path + " (" + describeError(xhr) + ")"
+                "unit map not read: " + path + " (" + describeError(error) + ")"
               )
             )
             .promise();
