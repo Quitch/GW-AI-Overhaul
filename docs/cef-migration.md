@@ -98,7 +98,7 @@ test 136) and green in the rewritten copy, 98.5% lines under
 
 Merged to `develop`'s v7.3.0 (2026-09-16, `feecab00`): `npm run verify` green,
 1,772 tests, 98.7% lines under `npm run test:coverage`, rename rehearsal
-REHEARSAL_PLACEHOLDER. 362 commits and 500 files arrived (races and add-ons,
+1,305 occurrences (modinfo.json 41, ui 1,042 in 331 files, scripts 14, test 208 in 88 files) and green in the rewritten copy after the one `format:write` the scheme strategy anticipates. 362 commits and 500 files arrived (races and add-ons,
 translations, custom decks, the IIFE scene scripts, the launch-progress
 overlay, the referee tree cache) and `git merge` raised 280 conflicts, so the
 mechanical half of steps 1–2 was done as a three-way merge of _modernised_
