@@ -34,10 +34,12 @@ describe("the Osmech descriptor", () => {
     assert.equal(addon.name, "!LOC:Osmech");
     assert.deepEqual(addon.serverMods, ["com.pa.loloares.thorosmen"]);
     assert.deepEqual(addon.layers, {});
+    races.activateAddons(["second_wave", "section17", "osmech"]);
     assert.deepEqual(races.layersFor("titans").mla.sources, [
       ...races.addonById("second_wave").layers.mla.titans.sources,
       ...races.addonById("section17").layers.mla.titans.sources,
     ]);
+    races.activateAddons([]);
   });
 
   it("keys every Osmech spec by a name of its own, and names each unit", () => {

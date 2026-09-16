@@ -124,7 +124,9 @@ shared terms. `validate:translations` needs no install and runs in `verify`. See
 **`npm run validate:race-trees` is local-only for the same reason.** It runs
 the real `referee_ai.js` over the actual files on disk. Those files are the PA
 install (`pa_ex1` over `pa`), GWO's own shadows, each race's server mod and
-every add-on's, merged in mount order. The check requires the Titans race
+every add-on's, merged in mount order. Node has no GW Server Mods to activate
+add-ons, so the validator activates every registered one itself, matching
+its own `descriptorLayers()`. The check requires the Titans race
 tree to match that merge exactly, minus every other layer. An MLA pass then
 requires the sweep into `/pa/ai/player_guardians/` to hold the base files
 and MLA's add-on files, untagged add-on maps included, and no race layer. It
