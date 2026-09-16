@@ -2,8 +2,7 @@ define([
   "shared/gw_common",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], (GW, gwoCard, gwoGroup, gwoUnit) => ({
+], (GW, gwoCard, gwoGroup) => ({
   visible: () => true,
 
   describe: () =>
@@ -21,11 +20,7 @@ define([
   getContext: gwoCard.getContext,
 
   deal: function (system, context, inventory) {
-    const basicFactories = [
-      gwoUnit.airFactory,
-      gwoUnit.botFactory,
-      gwoUnit.vehicleFactory,
-    ];
+    const basicFactories = gwoGroup.landFactoriesBasic;
     let chance = 0;
     if (gwoCard.missingUnit(inventory.units(), basicFactories)) {
       chance = gwoCard.travelledShort(

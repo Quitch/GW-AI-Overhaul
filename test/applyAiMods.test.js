@@ -163,6 +163,51 @@ describe("applyAiMods - replace", () => {
   });
 });
 
+describe("applyAiMods - unset", () => {
+  it("deletes a field narrowed by refId/refValue", () => {
+    const json = buildJson([
+      { to_build: "Mex", task_type: "AreaBuild", priority: 261 },
+      { to_build: "Mex", task_type: "Something", priority: 262 },
+    ]);
+    applyAiMods(json, [
+      {
+        op: "unset",
+        toBuild: "Mex",
+        idToMod: "task_type",
+        refId: "task_type",
+        refValue: "AreaBuild",
+      },
+    ]);
+    assert.equal("task_type" in json.build_list[0], false);
+    assert.equal(json.build_list[0].priority, 261);
+    assert.equal(json.build_list[1].task_type, "Something");
+  });
+
+  it("with matchAll deletes the field from every build_conditions test", () => {
+    const json = buildJson([
+      {
+        to_build: "Bot",
+        build_conditions: [
+          [{ test_type: "A", boolean: true }],
+          [{ test_type: "B", boolean: false }],
+        ],
+      },
+    ]);
+    applyAiMods(json, [
+      {
+        op: "unset",
+        toBuild: "Bot",
+        idToMod: "boolean",
+        matchAll: true,
+      },
+    ]);
+    assert.deepEqual(json.build_list[0].build_conditions, [
+      [{ test_type: "A" }],
+      [{ test_type: "B" }],
+    ]);
+  });
+});
+
 describe("applyAiMods - remove", () => {
   it("removes matching entries from build_conditions", () => {
     const json = buildJson([

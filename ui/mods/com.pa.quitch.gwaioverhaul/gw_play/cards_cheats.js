@@ -15,6 +15,7 @@ define(() => (params) => {
   const loaded = params.loaded;
   const dealCardToSelectableAI = params.dealCardToSelectableAI;
   const helpers = params.helpers;
+  const races = params.races;
 
   const testCardForMatches = (inventory, card) => {
     const cardsDealt = [card];
@@ -46,54 +47,84 @@ define(() => (params) => {
 
   const testMinions = (product, inventory) => {
     // Flattened up front, so units.js is required once rather than per minion.
-    require(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
-      gwoUnit,
-    ) => {
-      const clusterSecurity = gwoUnit.colonel;
-      const clusterWorker = gwoUnit.angel;
+    requireGW(
+      ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"],
+      (gwoUnit) => {
+        const clusterSecurity = gwoUnit.colonel;
+        const clusterWorker = gwoUnit.angel;
 
-      const allMinions = _.reduce(
-        GWFactions,
-        (collected, faction) => collected.concat(faction.minions || []),
-        [],
-      );
+        const allMinions = _.reduce(
+          GWFactions,
+          (collected, faction) => collected.concat(faction.minions || []),
+          [],
+        );
 
-      _.forEach(allMinions, (minion) => {
-        const minionStock = _.cloneDeep(product);
-        minionStock.minion = minion;
-        inventory.cards.push(minionStock);
-        inventory.cards.pop();
+        _.forEach(allMinions, (minion) => {
+          const minionStock = _.cloneDeep(product);
+          minionStock.minion = minion;
+          inventory.cards.push(minionStock);
+          inventory.cards.pop();
 
-        if (!minionStock.minion.commander) {
-          // This will use the player's commander
-          return;
-        }
+          if (!minionStock.minion.commander) {
+            // This will use the player's commander
+            return;
+          }
 
-        if (
-          !CommanderUtility.bySpec.getObjectName(
-            minionStock.minion.commander,
-          ) &&
-          minionStock.minion.commander !== clusterSecurity &&
-          minionStock.minion.commander !== clusterWorker
-        ) {
-          console.error(
-            `Minion commander unit spec ${minionStock.minion.commander} invalid`,
-          );
-        }
-      });
-    });
+          if (
+            !CommanderUtility.bySpec.getObjectName(
+              minionStock.minion.commander,
+            ) &&
+            minionStock.minion.commander !== clusterSecurity &&
+            minionStock.minion.commander !== clusterWorker
+          ) {
+            console.error(
+              `Minion commander unit spec ${minionStock.minion.commander} invalid`,
+            );
+          }
+        });
+      },
+    );
   };
 
   const dealSubCommander = (product) => {
     const subcommander = _.cloneDeep(
       _.sample(GWFactions[playerFaction].minions),
     );
-    helpers.applyPenchantToSubcommander(subcommander, gwoSettings, gwoAI);
+    const race = races ? races.raceOf(inventory) : undefined;
+    helpers.applyPenchantToSubcommander(
+      subcommander,
+      gwoSettings,
+      gwoAI,
+      undefined,
+      race,
+    );
+    helpers.applyRaceToSubcommander(subcommander, races, race);
     product.minion = subcommander;
     product.unique = Math.random();
 
     return product;
   };
+
+  // The per-card fix-up a real deal does in model.win: a minion product
+  // needs a Sub Commander, a slot product its overflow flag.
+  const prepareProduct = (product, inventory, testing) => {
+    if (product.id === "gwc_minion") {
+      if (testing) {
+        testMinions(product, inventory);
+      }
+      return dealSubCommander(product);
+    }
+    if (product.id === "gwc_add_card_slot") {
+      return setupNewCardSlot(product);
+    }
+    return product;
+  };
+
+  const finishCheat = (snapshotName) =>
+    dealCardToSelectableAI(false).then(() => {
+      model.sendCampaignSnapshot(snapshotName, true);
+      gwoSave(game, true);
+    });
 
   const expandInventorySize = (galaxy, inventory, star, maxCards) => {
     const sizeDifference = inventory.cards().length - maxCards;
@@ -147,12 +178,7 @@ define(() => (params) => {
             cards,
           )
           .then((product) => {
-            if (product.id === "gwc_minion") {
-              testMinions(product, inventory);
-              product = dealSubCommander(product);
-            } else if (product.id === "gwc_add_card_slot") {
-              product = setupNewCardSlot(product);
-            }
+            product = prepareProduct(product, inventory, true);
             applyCheatCards(product, inventory);
             if (!product.unique) {
               testCardForMatches(inventory, product);
@@ -163,10 +189,7 @@ define(() => (params) => {
     deferredQueue.push(expandInventorySize(galaxy, inventory, star, maxCards));
 
     $.when.apply($, deferredQueue).then(() => {
-      dealCardToSelectableAI(false).then(() => {
-        model.sendCampaignSnapshot("gwo_cheat_test_cards", true);
-        gwoSave(game, true);
-      });
+      finishCheat("gwo_cheat_test_cards");
     });
   };
 
@@ -179,7 +202,7 @@ define(() => (params) => {
     }
 
     const id = model.cheats.giveCardId();
-    const cardId = _.find(model.gwoCards, (card) => card === id);
+    const cardId = _.includes(model.gwoCards, id) ? id : undefined;
 
     if (cardId) {
       gwoDeal
@@ -194,17 +217,8 @@ define(() => (params) => {
           cards,
         )
         .then((product) => {
-          if (product.id === "gwc_minion") {
-            product = dealSubCommander(product);
-          } else if (product.id === "gwc_add_card_slot") {
-            product = setupNewCardSlot(product);
-          }
-          inventory.cards.push(product);
-          inventory.applyCards();
-          dealCardToSelectableAI(false).then(() => {
-            model.sendCampaignSnapshot("gwo_cheat_give_card", true);
-            gwoSave(game, true);
-          });
+          applyCheatCards(prepareProduct(product, inventory), inventory);
+          finishCheat("gwo_cheat_give_card");
         });
     } else {
       console.error(

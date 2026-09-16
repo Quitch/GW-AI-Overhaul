@@ -23,57 +23,24 @@ define([
   },
 
   buff: function (inventory) {
-    const mods = _.map(gwoGroup.titans, (unit) => ({
-      file: unit,
-      path: "max_health",
-      op: "multiply",
-      value: 1.5,
-    }));
-    _.forEach(gwoGroup.titansMobile, (unit) => {
-      mods.push(
-        {
-          file: unit,
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.2,
-        },
-        {
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: 1.2,
-        },
-        {
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 1.2,
-        },
-        {
-          file: unit,
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: 1.2,
-        },
-      );
-    });
-    _.forEach(gwoGroup.titansAmmo, (ammo) => {
-      mods.push(
-        {
-          file: ammo,
-          path: "damage",
-          op: "multiply",
-          value: 1.25,
-        },
-        {
-          file: ammo,
-          path: "splash_damage",
-          op: "multiply",
-          value: 1.25,
-        },
-      );
-    });
-    inventory.addMods(mods);
+    inventory.addMods(
+      gwoCard
+        .flatMapMods(gwoGroup.titans, "multiply", { max_health: 1.5 })
+        .concat(
+          gwoCard.flatMapMods(
+            gwoGroup.titansMobile,
+            "multiply",
+            gwoCard.paths.navigation,
+            1.2,
+          ),
+          gwoCard.flatMapMods(
+            gwoGroup.titansAmmo,
+            "multiply",
+            gwoCard.paths.damage,
+            1.25,
+          ),
+        ),
+    );
   },
 
   dull: function () {},

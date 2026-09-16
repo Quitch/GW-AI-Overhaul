@@ -23,48 +23,37 @@ define([
   buff: function (inventory) {
     const rangePercentageIncrease = 1.5;
 
-    const healthMods = _.map(gwoGroup.units, (unit) =>
-      gwoCard.mods(unit, "multiply", { max_health: 1.3 }),
-    );
-    const rangeMods = _.map(gwoGroup.weapons, (weapon) =>
-      gwoCard.mods(weapon, "multiply", {
-        max_range: rangePercentageIncrease,
-      }),
-    );
+    const healthMods = gwoCard.flatMapMods(gwoGroup.units, "multiply", {
+      max_health: 1.3,
+    });
+    const rangeMods = gwoCard.flatMapMods(gwoGroup.weapons, "multiply", {
+      max_range: rangePercentageIncrease,
+    });
     // Try to make sure that units can use their full range
-    const ammoMods = _.map(gwoGroup.ammo, (ammo) =>
-      gwoCard.mods(ammo, "multiply", {
-        lifetime: rangePercentageIncrease,
-        max_velocity: rangePercentageIncrease,
-      }),
-    );
+    const ammoMods = gwoCard.flatMapMods(gwoGroup.ammo, "multiply", {
+      lifetime: rangePercentageIncrease,
+      max_velocity: rangePercentageIncrease,
+    });
 
     // Radar is excluded: its vision slots are ordered differently.
-    const unitsExcludingRadarScoutsCommanders = _.reject(
-      gwoGroup.units,
-      (unit) =>
-        _.includes(
-          [
-            gwoUnit.antiNukeLauncher,
-            gwoUnit.arkyd,
-            gwoUnit.commander,
-            gwoUnit.firefly,
-            gwoUnit.hermes,
-            gwoUnit.manhattan,
-            gwoUnit.nyx,
-            // gwoUnit.planetaryRadar - uses slot 3+ for radar vision
-            gwoUnit.radar,
-            gwoUnit.radarAdvanced,
-            gwoUnit.radarSatelliteAdvanced,
-            gwoUnit.skitter,
-            // gwoUnit.stingray - uses slot 2+ for radar vision
-            gwoUnit.torpedoLauncher,
-            gwoUnit.torpedoLauncherAdvanced,
-            gwoUnit.ward,
-          ],
-          unit,
-        ),
-    );
+    const unitsExcludingRadarScoutsCommanders = _.difference(gwoGroup.units, [
+      gwoUnit.antiNukeLauncher,
+      gwoUnit.arkyd,
+      gwoUnit.commander,
+      gwoUnit.firefly,
+      gwoUnit.hermes,
+      gwoUnit.manhattan,
+      gwoUnit.nyx,
+      // gwoUnit.deepSpaceOrbitalRadar - uses slot 3+ for radar vision
+      gwoUnit.radar,
+      gwoUnit.radarAdvanced,
+      gwoUnit.radarSatelliteAdvanced,
+      gwoUnit.skitter,
+      // gwoUnit.stingray - uses slot 2+ for radar vision
+      gwoUnit.torpedoLauncher,
+      gwoUnit.torpedoLauncherAdvanced,
+      gwoUnit.ward,
+    ]);
     const radarsWithRadarVisionInSlot0 = [
       gwoUnit.arkyd,
       gwoUnit.radarSatelliteAdvanced,
@@ -80,26 +69,26 @@ define([
       gwoUnit.ward,
     ];
 
-    const blindMods = _.map(unitsExcludingRadarScoutsCommanders, (unit) =>
-      // can't use replace due to Planetary Radar using it - multiply runs later
-      gwoCard.mods(unit, "multiply", {
-        "recon.observer.items.0.radius": 0,
-        "recon.observer.items.1.radius": 0,
-      }),
+    // can't use replace due to Planetary Radar using it - multiply runs later
+    const blindMods = gwoCard.flatMapMods(
+      unitsExcludingRadarScoutsCommanders,
+      "multiply",
+      gwoCard.observerPaths(2, "radius"),
+      0,
     );
-    const radarsWithRadarVisionInSlot1Mods = _.map(
+    const radarsWithRadarVisionInSlot1Mods = gwoCard.flatMapMods(
       radarsWithRadarVisionInSlot1,
-      (unit) =>
-        gwoCard.mods(unit, "replace", {
-          "recon.observer.items.0.radius": 0,
-        }),
+      "replace",
+      {
+        "recon.observer.items.0.radius": 0,
+      },
     );
-    const radarsWithRadarVisionInSlot0Mods = _.map(
+    const radarsWithRadarVisionInSlot0Mods = gwoCard.flatMapMods(
       radarsWithRadarVisionInSlot0,
-      (unit) =>
-        gwoCard.mods(unit, "replace", {
-          "recon.observer.items.1.radius": 0,
-        }),
+      "replace",
+      {
+        "recon.observer.items.1.radius": 0,
+      },
     );
 
     // Ares needs a high arc to reach the extended range
@@ -109,15 +98,13 @@ define([
     });
 
     inventory.addMods(
-      _.flatten(
-        healthMods.concat(
-          rangeMods,
-          ammoMods,
-          blindMods,
-          radarsWithRadarVisionInSlot1Mods,
-          radarsWithRadarVisionInSlot0Mods,
-          aresFixMods,
-        ),
+      healthMods.concat(
+        rangeMods,
+        ammoMods,
+        blindMods,
+        radarsWithRadarVisionInSlot1Mods,
+        radarsWithRadarVisionInSlot0Mods,
+        aresFixMods,
       ),
     );
   },

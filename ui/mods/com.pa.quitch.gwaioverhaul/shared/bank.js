@@ -91,6 +91,31 @@ define(() => {
       suspendedStockBank = undefined;
     }
 
+    // Loads a co-op viewer's saved inventory into a fresh GWInventory and
+    // applies its cards with every bank held off, then hands it to done. Also
+    // returned, for a caller that needs it before done runs.
+    applyRecordInventory(GWInventory, record, stockBank, done) {
+      const inventory = new GWInventory();
+      inventory.load(_.cloneDeep(record.inventory));
+
+      if (!inventory.cards().length) {
+        done(inventory);
+        return inventory;
+      }
+
+      this.suspendUnlocks(stockBank);
+      try {
+        inventory.applyCards(() => {
+          this.resumeUnlocks();
+          done(inventory);
+        });
+      } catch (e) {
+        this.resumeUnlocks();
+        throw e;
+      }
+      return inventory;
+    }
+
     addStartCard(card) {
       if (suspended || this.hasStartCard(card)) {
         return false;

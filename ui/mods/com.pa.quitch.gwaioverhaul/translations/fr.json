@@ -1,0 +1,791 @@
+{
+  "A map pack this war uses is missing": {
+    "message": "Un pack de cartes utilisé par cette guerre est manquant"
+  },
+  "A mystery.": {
+    "message": "Un mystère."
+  },
+  "A race this war fields is missing": {
+    "message": "Une race engagée dans cette guerre est manquante"
+  },
+  "ADVANCED FABBERS:": {
+    "message": "CONSTRUCTEURS AVANCÉS :"
+  },
+  "AI": {
+    "message": "IA"
+  },
+  "AI Settings": {
+    "message": "Paramètres de l'IA"
+  },
+  "ALLY CHANCE:": {
+    "message": "PROBABILITÉ D'ALLIÉ :"
+  },
+  "ARMIES/COMMANDERS:": {
+    "message": "ARMÉES/COMMANDEURS :"
+  },
+  "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
+    "message": "La Technologie de défense avancée permet des défenses plus puissantes. Les défenses avancées sont construites par les bâtisseurs avancés."
+  },
+  "Advanced Fabrication Aircraft Upgrade Tech adds the ability for the advanced fabricator to move between planets.": {
+    "message": "La Technologie de mise à niveau de l'aéronef de fabrication avancée permet au bâtisseur avancé de se déplacer entre les planètes."
+  },
+  "Advanced Fabrication Bot Upgrade Tech equips the advanced fabricator with the support commander's weapon.": {
+    "message": "La Technologie de mise à niveau du robot de fabrication avancée équipe le bâtisseur avancé de l'arme du Commandeur de soutien."
+  },
+  "Air Cooldown Tech": {
+    "message": "Technologie de recharge aérienne"
+  },
+  "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
+    "message": "La Technologie de recharge aérienne divise par deux le temps de recharge entre deux constructions pour toutes les usines aériennes."
+  },
+  "An AI that does not know a race is not offered for it.": {
+    "message": "Une IA qui ne connaît pas une race n'est pas proposée pour celle-ci."
+  },
+  "Anti-Air Ammo Tech": {
+    "message": "Technologie de munition anti-aérienne"
+  },
+  "Anti-Air Ammo Tech doubles all damage you deal to air units but halves damage to orbital units.": {
+    "message": "La Technologie de munition anti-aérienne double tous les dégâts que vous infligez aux unités aériennes mais divise par deux les dégâts aux unités orbitales."
+  },
+  "Anti-Bot Ammo Tech": {
+    "message": "Technologie de munition anti-robots"
+  },
+  "Anti-Bot Ammo Tech doubles all damage you deal to bots but halves damage to vehicles.": {
+    "message": "La Technologie de munition anti-robots double tous les dégâts que vous infligez aux robots mais divise par deux les dégâts aux véhicules."
+  },
+  "Anti-Commander Ammo Tech": {
+    "message": "Technologie de munition anti-Commandeurs"
+  },
+  "Anti-Commander Ammo Tech doubles all damage you deal to commanders but halves damage to structures.": {
+    "message": "La Technologie de munition anti-Commandeurs double tous les dégâts que vous infligez aux Commandeurs mais divise par deux les dégâts aux structures."
+  },
+  "Anti-Hover Ammo Tech": {
+    "message": "Technologie de munition anti-aéroglisseurs"
+  },
+  "Anti-Hover Ammo Tech doubles all damage you deal to hover units but halves damage to naval vessels.": {
+    "message": "La Technologie de munition anti-aéroglisseurs double tous les dégâts que vous infligez aux aéroglisseurs mais divise par deux les dégâts aux navires."
+  },
+  "Anti-Orbital Ammo Tech": {
+    "message": "Technologie de munition anti-orbitale"
+  },
+  "Anti-Orbital Ammo Tech doubles all damage you deal to orbital units but halves damage to air units.": {
+    "message": "La Technologie de munition anti-orbitale double tous les dégâts que vous infligez aux unités orbitales mais divise par deux les dégâts aux unités aériennes."
+  },
+  "Anti-Ship Ammo Tech": {
+    "message": "Technologie de munition anti-navires"
+  },
+  "Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units.": {
+    "message": "La Technologie de munition anti-navires double tous les dégâts que vous infligez aux navires mais divise par deux les dégâts aux aéroglisseurs."
+  },
+  "Anti-Structure Ammo Tech": {
+    "message": "Technologie de munition anti-structures"
+  },
+  "Anti-Structure Ammo Tech doubles all damage you deal to structures but halves damage to mobile units excluding commanders.": {
+    "message": "La Technologie de munition anti-structures double tous les dégâts que vous infligez aux structures mais divise par deux les dégâts aux unités mobiles, Commandeurs exceptés."
+  },
+  "Anti-Tank Ammo Tech": {
+    "message": "Technologie de munition anti-chars"
+  },
+  "Anti-Tank Ammo Tech doubles all damage you deal to vehicles but halves damage to bots.": {
+    "message": "La Technologie de munition anti-chars double tous les dégâts que vous infligez aux véhicules mais divise par deux les dégâts aux robots."
+  },
+  "Applied to AI commanders and units preferred by the faction.": {
+    "message": "S'applique aux Commandeurs IA et aux unités préférées de la faction."
+  },
+  "Apply Settings": {
+    "message": "Appliquer les paramètres"
+  },
+  "Armies:": {
+    "message": "Armées :"
+  },
+  "Artemis Upgrade Tech allows targeting of planetary units by the railgun platform.": {
+    "message": "La Technologie de mise à niveau de l'Artemis permet à la plate-forme à canon monté de cibler les unités planétaires."
+  },
+  "Artillery Ammunition Tech increases the damage of all artillery structures by 25% and reduces their ammunition cost by 90%. Requires technology to build artillery structures and units.": {
+    "message": "La Technologie de munition d'artillerie augmente les dégâts de toutes les structures d'artillerie de 25 % et réduit le coût de leurs munitions de 90 %. Nécessite la technologie de construction des structures et unités d'artillerie."
+  },
+  "Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200% and increases its carry capacity to 12 units.": {
+    "message": "La Technologie de mise à niveau de l'Astraeus augmente la vitesse de déplacement interplanétaire de l'atterrisseur orbital de 200 % et porte sa capacité de transport à 12 unités."
+  },
+  "Atlas Upgrade Tech doubles the health of the seismic titan.": {
+    "message": "La Technologie de mise à niveau de l'Atlas double les PV du titan sismique."
+  },
+  "Available Tech": {
+    "message": "Technologie disponible"
+  },
+  "Available Tech in a system never changes.": {
+    "message": "La technologie disponible dans un système ne change jamais."
+  },
+  "Avenger Upgrade Tech adds a railgun to the orbital fighter.": {
+    "message": "La Technologie de mise à niveau de l'Avenger ajoute un canon monté au chasseur orbital."
+  },
+  "BASIC FABBERS:": {
+    "message": "CONSTRUCTEURS BASIQUES :"
+  },
+  "BASIC: base game tech cards": {
+    "message": "BASIQUE : cartes technologiques du jeu de base"
+  },
+  "BEGINNER: you completed the tutorial": {
+    "message": "DÉBUTANT : vous avez terminé le didacticiel"
+  },
+  "BOUNTIES: earn an economic multiplier for every kill.": {
+    "message": "PRIMES : gagnez un multiplicateur économique à chaque élimination."
+  },
+  "BRONZE: you beat vanilla Galactic War": {
+    "message": "BRONZE : vous avez gagné la Guerre galactique de base"
+  },
+  "Barnacle Upgrade Tech allows the assisting of all builds by the support barge. Disables the auto-repair feature.": {
+    "message": "La Technologie de mise à niveau du Barnacle permet à la barge de soutien d'assister toutes les constructions. Désactive la réparation automatique."
+  },
+  "Barracuda Upgrade Tech increases the rate of fire of the submarine by 200%.": {
+    "message": "La Technologie de mise à niveau du Barracuda augmente la cadence de tir du sous-marin de 200 %."
+  },
+  "Beginner": {
+    "message": "Débutant"
+  },
+  "Bigger galaxies will result in more commanders, larger maps, higher CPU and RAM requirements, and will likely pose a greater challenge to complete.": {
+    "message": "Les galaxies plus grandes impliquent plus de Commandeurs, des cartes plus vastes, des besoins accrus en CPU et en RAM, et constitueront probablement un défi plus difficile à relever."
+  },
+  "Boom Upgrade Tech replaces Dox with Booms in the Lob. Enables the building of Lobs.": {
+    "message": "La Technologie de mise à niveau du Boom remplace le Dox avec des Booms dans le Lob. Permet la construction de Lobs."
+  },
+  "Bot Cooldown Tech": {
+    "message": "Technologie de recharge robotique"
+  },
+  "Bot Cooldown Tech halves the cooldown time between builds for all bot factories.": {
+    "message": "La Technologie de recharge robotique divise par deux le temps de recharge entre deux constructions pour toutes les usines de robots."
+  },
+  "Bounty Tech": {
+    "message": "Technologie de primes"
+  },
+  "Bounty tech enables the bounties game modifier in every system.": {
+    "message": "La Technologie de primes active le modificateur de jeu Primes dans chaque système."
+  },
+  "Bugs": {
+    "message": "Bugs"
+  },
+  "CASUAL: you have some hours in PA": {
+    "message": "DÉTENDU : vous avez quelques heures de PA à votre actif"
+  },
+  "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
+    "message": "CLUSTER : terrestre. Utilise des Angels et des Colonels comme Sous-Commandeurs et ne peut pas les construire."
+  },
+  "COMMANDER TRANSPORT:": {
+    "message": "TRANSPORT DU COMMANDEUR :"
+  },
+  "CUSTOM: create your own challenge": {
+    "message": "PERSONNALISÉ : créez votre propre défi"
+  },
+  "Catalyst Upgrade Tech doubles the health of the Catalyst and halves its cost.": {
+    "message": "La Technologie de mise à niveau du Catalyst double les PV du Catalyst et divise son coût par deux."
+  },
+  "Chance of a system allowing you to land outside spawn zones.": {
+    "message": "Probabilité qu'un système vous permette d'atterrir hors des zones de départ."
+  },
+  "Chance of a system awarding bounties for army kills.": {
+    "message": "Probabilité qu'un système accorde des primes pour les éliminations."
+  },
+  "Chance of an allied Commander being present in a system.": {
+    "message": "Probabilité qu'un Commandeur allié soit présent dans un système."
+  },
+  "Chance of eradication mode being enabled.": {
+    "message": "Probabilité que le mode éradication soit activé."
+  },
+  "Chance of more than one faction being present in a system.": {
+    "message": "Probabilité que plusieurs factions soient présentes dans un système."
+  },
+  "Chance per system of a Commander death in a battle defeating all Commanders of that faction in the system.": {
+    "message": "Probabilité par système que la mort d'un Commandeur au combat entraîne la défaite de tous les Commandeurs de cette faction dans le système."
+  },
+  "Co-Op Settings": {
+    "message": "Paramètres de coopération"
+  },
+  "Co-op host setup": {
+    "message": "Préparation de l'hôte en coopération"
+  },
+  "Co-op shared setup": {
+    "message": "Préparation partagée en coopération"
+  },
+  "Colonel": {
+    "message": "Colonel"
+  },
+  "Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal.": {
+    "message": "La Technologie de mise à niveau du Commandeur augmente les dégâts de l'Uber Canon de 300 % et vous permet de recycler les Commandeurs alliés en métal."
+  },
+  "Complete Basic Factory Tech": {
+    "message": "Technologie d'usines basiques complète"
+  },
+  "Complete Basic Tech enables building of basic air, bot, and vehicle units and factories. Basic factories are built via your commander or any basic fabricator.": {
+    "message": "La Technologie basique complète permet de construire les unités et usines basiques aériennes, robotiques et de véhicules. Les usines basiques sont construites par votre Commandeur ou par n'importe quel bâtisseur basique."
+  },
+  "Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%, and teleport energy costs by 75%.": {
+    "message": "La Technologie énergétique complète réduit de 75 % la consommation d'énergie des structures de renseignement, de 75 % celle des armes et de 75 % celle des téléporteurs."
+  },
+  "Complete air tech enables building of all mobile air units and factories. Basic air factories are built via your commander or any basic fabricator. Advanced factories are built via a basic or advanced air fabricator.": {
+    "message": "La Technologie aérienne complète permet de construire toutes les unités aériennes mobiles et les usines aériennes. Les bases aériennes basiques sont construites par votre Commandeur ou par n'importe quel bâtisseur basique. Les usines avancées sont construites par un bâtisseur aérien basique ou avancé."
+  },
+  "Configure campaign options.": {
+    "message": "Configurez les options de la campagne."
+  },
+  "Contains every factory on every tier of the tech tree.": {
+    "message": "Contient toutes les usines de tous les niveaux de l'arbre technologique."
+  },
+  "Contains no basic land or air factories, just Lobs and Unit Cannons built by the commander. Halves the cost of both. All land units can be built from the Unit Cannon as they are unlocked.": {
+    "message": "Ne contient aucune usine terrestre ou aérienne basique, seulement des Lobs et des Canons d'unité construits par le Commandeur. Divise leur coût par deux. Toutes les unités terrestres peuvent être construites depuis le Canon d'unité à mesure qu'elles sont débloquées."
+  },
+  "DIAMOND: your loadouts are OP": {
+    "message": "DIAMANT : vos arsenaux sont cheatés"
+  },
+  "Deck:": {
+    "message": "Deck :"
+  },
+  "Delay before AI realises it cannot expand.": {
+    "message": "Délai avant que l'IA ne comprenne qu'elle ne peut plus s'étendre."
+  },
+  "Delay in creating new bases.": {
+    "message": "Délai de création de nouvelles bases."
+  },
+  "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
+    "message": "Déployés par des forces secrètes de l'Hegemony pendant toute la durée de la Century War, leur niveau actuel de prolifération indique qu'ils ont développé la capacité d'ensemencer des planètes par eux-mêmes après la fin de la guerre, ou qu'il s'agit d'une tentative désespérée des Xziphid pour conjurer la défaite."
+  },
+  "Distance examined when choosing spawn.": {
+    "message": "Distance examinée lors du choix du point de départ."
+  },
+  "ECONOMIC GROWTH:": {
+    "message": "CROISSANCE ÉCONOMIQUE :"
+  },
+  "ERADICATE: all units of specific types must be eradicated.": {
+    "message": "ÉRADIQUER : toutes les unités de certains types doivent être éradiquées."
+  },
+  "ERADICATION CHANCE:": {
+    "message": "PROBABILITÉ D'ÉRADICATION :"
+  },
+  "Each faction has its own style of play affecting Sub Commanders and enemy commanders:": {
+    "message": "Chaque faction a son propre style de jeu, qui influe sur les Sous-Commandeurs et les Commandeurs ennemis :"
+  },
+  "Each player picks their own race when they choose their loadout. Requires Separate loadout &amp; tech.": {
+    "message": "Chaque joueur choisit sa propre race en même temps que son arsenal. Nécessite l'option Arsenal &amp; technologie séparés."
+  },
+  "Eco bonus per army kill.": {
+    "message": "Bonus économique par élimination."
+  },
+  "Economy Fabrication Tech reduces metal build costs of all metal and energy production and storage structures by 50%": {
+    "message": "La Technologie de fabrication économique réduit de 50 % le coût en métal de toutes les structures de production et de stockage de métal et d'énergie"
+  },
+  "Empower your subordinates and delegate your way to victory. Your commander can build Colonel proxy commanders and they are armed with Uber Cannons. Halves their cost.": {
+    "message": "Responsabilisez vos subordonnés et déléguez jusqu'à la victoire. Votre Commandeur peut construire des Colonels, Commandeurs par procuration armés d'Uber Canons. Divise leur coût par deux."
+  },
+  "Enable the missing mods and restart Planetary Annihilation to continue this war.": {
+    "message": "Activez les mods manquants et redémarrez Planetary Annihilation pour poursuivre cette guerre."
+  },
+  "Encounter large planets and systems much sooner.": {
+    "message": "Rencontrez de grandes planètes et de grands systèmes bien plus tôt."
+  },
+  "Eradicate": {
+    "message": "Éradiquer"
+  },
+  "Eradication Tech": {
+    "message": "Technologie d'éradication"
+  },
+  "Eradication tech enables the eradicate game modifier in every system.": {
+    "message": "La Technologie d'éradication active le modificateur de jeu Éradiquer dans chaque système."
+  },
+  "Exiles": {
+    "message": "Exiles"
+  },
+  "FOUNDATION: air/navy": {
+    "message": "FOUNDATION : aérien/naval"
+  },
+  "Factory cooldown decreased": {
+    "message": "Recharge des usines réduite"
+  },
+  "Fights for you.": {
+    "message": "Combat à vos côtés."
+  },
+  "GALACTIC WAR OVERHAUL: over 150 additional cards.": {
+    "message": "RÉVISION DE LA GUERRE GALACTIQUE : plus de 150 cartes supplémentaires."
+  },
+  "GOLD: you beat the Queller AI mod": {
+    "message": "OR : vous avez vaincu le mod d'IA Queller"
+  },
+  "GW Server Mods is not enabled": {
+    "message": "GW Server Mods n'est pas activé"
+  },
+  "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
+    "message": "La Technologie de mise à niveau du Halley double les PV du moteur delta-V et divise son coût par deux."
+  },
+  "Helios Upgrade Tech removes the delay between the invasion titan arriving at a planet and responding to orders and increases its health by 50%.": {
+    "message": "La Technologie de mise à niveau du Helios supprime le délai entre l'arrivée du titan d'invasion sur une planète et sa réponse aux ordres, et augmente ses PV de 50 %."
+  },
+  "Host Choosing Tech": {
+    "message": "L'hôte choisit la technologie"
+  },
+  "How well the AI picks who to attack.": {
+    "message": "Qualité du choix des cibles par l'IA."
+  },
+  "How well the AI scouts.": {
+    "message": "Qualité de la reconnaissance de l'IA."
+  },
+  "IRON: you no longer turtle": {
+    "message": "FER : vous ne campez plus dans votre base"
+  },
+  "Incompatible Mods": {
+    "message": "Mods incompatibles"
+  },
+  "Inferno Upgrade Tech adds the Stitch repair arm to the flame tank. They will not repair when given attack orders.": {
+    "message": "La Technologie de mise à niveau de l'Inferno ajoute le bras de réparation du Stitch au char lance-flammes. Ils ne réparent pas lorsqu'ils reçoivent un ordre d'attaque."
+  },
+  "Jig Upgrade Tech adds storage to gas mining and doubles its energy production.": {
+    "message": "La Technologie de mise à niveau du Jig ajoute du stockage à l'extraction de gaz et double sa production d'énergie."
+  },
+  "Kaiju Upgrade Tech replaces the side-guns with additional main guns, resulting in additional range and damage.": {
+    "message": "La Technologie de mise à niveau du Kaiju remplace les canons latéraux par des canons principaux supplémentaires, ce qui accroît la portée et les dégâts."
+  },
+  "Kessler": {
+    "message": "Kessler"
+  },
+  "Kessler Upgrade Tech": {
+    "message": "Technologie de mise à niveau du Kessler"
+  },
+  "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
+    "message": "La Technologie de mise à niveau du Kessler permet aux mines orbitales d'exploser sans s'autodétruire."
+  },
+  "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
+    "message": "La Technologie de mise à niveau du Kraken augmente la portée des missiles du sous-marin avancé de 200 %."
+  },
+  "LAND ANYWHERE CHANCE:": {
+    "message": "PROBABILITÉ D'ATTERRIR N'IMPORTE OÙ :"
+  },
+  "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
+    "message": "ATTERRIR N'IMPORTE OÙ : les joueurs peuvent démarrer n'importe où sur les planètes de départ viables."
+  },
+  "LEGONIS MACHINA: vehicles": {
+    "message": "LEGONIS MACHINA : véhicules"
+  },
+  "Land Anywhere Tech": {
+    "message": "Technologie Atterrir n'importe où"
+  },
+  "Land Anywhere tech enables the land anywhere game modifier in every system.": {
+    "message": "La Technologie Atterrir n'importe où active le modificateur de jeu Atterrir n'importe où dans chaque système."
+  },
+  "Laser Defense Tower Upgrade Tech increases the range of the turret by 50%.": {
+    "message": "La Technologie de mise à niveau de la tour défensive laser augmente la portée de la tourelle de 50 %."
+  },
+  "Legion": {
+    "message": "Legion"
+  },
+  "Lob Upgrade Tech increases the range of the Lob by 150%. Fires twice as fast and no longer costs metal to recharge its ammo.": {
+    "message": "La Technologie de mise à niveau du Lob augmente la portée du Lob de 150 %. Tire deux fois plus vite et le rechargement de ses munitions ne coûte plus de métal."
+  },
+  "Locusts Upgrade Tech adds splash damage to nanoswarms.": {
+    "message": "La Technologie de mise à niveau du Locusts ajoute des dégâts de projection aux nano-essaims."
+  },
+  "Lucky Commander": {
+    "message": "Commandeur chanceux"
+  },
+  "MLA": {
+    "message": "MLA"
+  },
+  "Map packs changed since this war began:": {
+    "message": "Packs de cartes modifiés depuis le début de cette guerre :"
+  },
+  "Maximum delay between units produced from a factory.": {
+    "message": "Délai maximal entre deux unités produites par une usine."
+  },
+  "Maximum number of advanced fabbers per army.": {
+    "message": "Nombre maximal de constructeurs avancés par armée."
+  },
+  "Maximum number of basic fabbers per army.": {
+    "message": "Nombre maximal de constructeurs basiques par armée."
+  },
+  "Mend Upgrade Tech allows the assisting of all builds by the advanced combat fabricator. Disables the auto-repair feature.": {
+    "message": "La Technologie de mise à niveau du Mend permet au bâtisseur de combat avancé d'assister toutes les constructions. Désactive la réparation automatique."
+  },
+  "Minelayer": {
+    "message": "Mineur"
+  },
+  "Minimum delay between units produced from a factory.": {
+    "message": "Délai minimal entre deux unités produites par une usine."
+  },
+  "Minimum number of armies/Commanders per faction in every system irrespective of distance.": {
+    "message": "Nombre minimal d'armées/Commandeurs par faction dans chaque système, quelle que soit la distance."
+  },
+  "Missing Map Packs": {
+    "message": "Packs de cartes manquants"
+  },
+  "Missing Races": {
+    "message": "Races manquantes"
+  },
+  "Mod:": {
+    "message": "Mod :"
+  },
+  "Modifies Jigs to allow building them anywhere, at the expense of not being able to build other resource structures. They are 75% cheaper but produce 30% less metal and energy and do 90% less damage on death. Orbital fabricators can build all basic structures. Contains all basic and advanced orbital units but can never build orbital battleships, any resource generating unit or structure": {
+    "message": "Modifie les Jigs pour permettre de les construire n'importe où, au prix de l'impossibilité de construire d'autres structures de ressources. Ils coûtent 75 % moins cher mais produisent 30 % de métal et d'énergie en moins et infligent 90 % de dégâts en moins à leur mort. Les bâtisseurs orbitaux peuvent construire toutes les structures basiques. Contient toutes les unités orbitales basiques et avancées mais ne permet jamais de construire de cuirassé orbital ni aucune unité ou structure produisant des ressources"
+  },
+  "Mounting game files": {
+    "message": "Montage des fichiers de jeu"
+  },
+  "NEW BASE DELAY:": {
+    "message": "DÉLAI DE NOUVELLE BASE :"
+  },
+  "Narwhal Upgrade Tech doubles the rate of fire of all weapons.": {
+    "message": "La Technologie de mise à niveau du Narwhal double la cadence de tir de toutes ses armes."
+  },
+  "Naval Commander": {
+    "message": "Commandeur naval"
+  },
+  "Naval Cooldown Tech": {
+    "message": "Technologie de recharge navale"
+  },
+  "Naval Cooldown Tech halves the cooldown time between builds for all naval factories.": {
+    "message": "La Technologie de recharge navale divise par deux le temps de recharge entre deux constructions pour tous les chantiers navals."
+  },
+  "No enemy faction shares a race with you or another enemy faction until every race in play has been used.": {
+    "message": "Aucune faction ennemie ne partage de race avec vous ou avec une autre faction ennemie tant que toutes les races en jeu n'ont pas été utilisées."
+  },
+  "Nuclear Missile Launcher Upgrade Tech increases the damage dealt to commanders and orbital from the LR-96 Pacifier Nuclear Missiles by 200%.": {
+    "message": "La Technologie de mise à niveau du lanceur de missiles nucléaires augmente de 200 % les dégâts infligés aux Commandeurs et aux unités orbitales par les missiles nucléaires LR-96 Pacifier."
+  },
+  "Number of Commanders in the boss's army.": {
+    "message": "Nombre de Commandeurs dans l'armée du boss."
+  },
+  "Number of systems until AI tech appears.": {
+    "message": "Nombre de systèmes avant l'apparition de la technologie IA."
+  },
+  "Number of systems until additional armies/Commanders appear per faction.": {
+    "message": "Nombre de systèmes avant l'apparition d'armées/Commandeurs supplémentaires par faction."
+  },
+  "Nyx": {
+    "message": "Nyx"
+  },
+  "Nyx Upgrade Tech": {
+    "message": "Technologie de mise à niveau du Nyx"
+  },
+  "Nyx Upgrade Tech doubles the jamming and radar radius of the jamming vehicle.": {
+    "message": "La Technologie de mise à niveau du Nyx double le rayon de brouillage et de radar du véhicule de brouillage."
+  },
+  "Omega Upgrade Tech replaces the battleship's underside laser with an SXX laser. Doubles the rate of fire of the other weapons.": {
+    "message": "La Technologie de mise à niveau du Omega remplace le laser ventral du cuirassé par un laser SXX. Double la cadence de tir des autres armes."
+  },
+  "Orbital Bombardment Tech": {
+    "message": "Technologie de bombardement orbital"
+  },
+  "Orbital Bombardment Tech removes all trees, lava, and water from the systems you fight in.": {
+    "message": "La Technologie de bombardement orbital supprime tous les arbres, la lave et l'eau des systèmes où vous combattez."
+  },
+  "Orbital Cooldown Tech": {
+    "message": "Technologie de recharge orbitale"
+  },
+  "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
+    "message": "La Technologie de recharge orbitale divise par deux le temps de recharge entre deux constructions pour toutes les usines orbitales."
+  },
+  "PENCHANT: increased personality": {
+    "message": "PENCHANT : personnalité plus marquée"
+  },
+  "PERSONALITY MODIFIERS:": {
+    "message": "MODIFICATEURS DE PERSONNALITÉ :"
+  },
+  "PLATINUM: one enemy is no challenge": {
+    "message": "PLATINE : un seul ennemi n'est pas un défi"
+  },
+  "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
+    "message": "La Technologie de mise à niveau du Pelican permet aux transports aériens de porter des Commandeurs. Toutes les unités peuvent tirer pendant leur transport."
+  },
+  "Planetary Radar Upgrade Tech increases the vision of the planetary radar to match its radar.": {
+    "message": "La Technologie de mise à niveau du radar planétaire étend la vision du radar planétaire jusqu'à égaler sa portée radar."
+  },
+  "Platoon": {
+    "message": "Peloton"
+  },
+  "Player Slots:": {
+    "message": "Places de joueurs :"
+  },
+  "Players returned": {
+    "message": "Joueurs revenus"
+  },
+  "Prefers air and navy.": {
+    "message": "Préfère l'aviation et la marine."
+  },
+  "Prefers bots and vehicles; applies tech to structures.": {
+    "message": "Préfère les robots et les véhicules ; applique la technologie aux structures."
+  },
+  "Prefers bots.": {
+    "message": "Préfère les robots."
+  },
+  "Prefers orbital.": {
+    "message": "Préfère l'orbital."
+  },
+  "Prefers vehicles.": {
+    "message": "Préfère les véhicules."
+  },
+  "Processing AI mods": {
+    "message": "Traitement des mods d'IA"
+  },
+  "Processing biome mods": {
+    "message": "Traitement des mods de biomes"
+  },
+  "Processing game config": {
+    "message": "Traitement de la configuration de la partie"
+  },
+  "Processing tech cards": {
+    "message": "Traitement des cartes technologiques"
+  },
+  "QUELLER: greater challenge at the cost of performance": {
+    "message": "QUELLER : plus grand défi au détriment des performances"
+  },
+  "REINFORCEMENT SYSTEM:": {
+    "message": "SYSTÈME DE RENFORTS :"
+  },
+  "REVENANTS: orbital": {
+    "message": "REVENANTS : orbital"
+  },
+  "Race": {
+    "message": "Race"
+  },
+  "Race mods changed since this war began:": {
+    "message": "Mods de races modifiés depuis le début de cette guerre :"
+  },
+  "Radar Jamming Station": {
+    "message": "Radar Jamming Station"
+  },
+  "Radar Jamming Station Upgrade Tech": {
+    "message": "Technologie de mise à niveau de la Radar Jamming Station"
+  },
+  "Radar Jamming Station Upgrade Tech doubles the jamming radius of the radar jammer.": {
+    "message": "La Technologie de mise à niveau de la Radar Jamming Station double le rayon de brouillage du brouilleur radar."
+  },
+  "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
+    "message": "Remplace les missiles nucléaires classiques par une nouvelle variante bon marché et de faible puissance, sur laquelle il compte fortement en attaque comme en défense. Renonce pour cela à la plupart des défenses avancées."
+  },
+  "SCOUTING:": {
+    "message": "RECONNAISSANCE :"
+  },
+  "SILVER: you beat the skirmish AI": {
+    "message": "ARGENT : vous avez vaincu l'IA d'escarmouche"
+  },
+  "SUDDEN DEATH CHANCE:": {
+    "message": "PROBABILITÉ DE MORT SUBITE :"
+  },
+  "SUDDEN DEATH: any commander death on a team kills the entire team.": {
+    "message": "MORT SUBITE : la mort de n'importe quel Commandeur d'une équipe élimine toute l'équipe."
+  },
+  "SYNCHRONOUS: bots": {
+    "message": "SYNCHRONOUS : robots"
+  },
+  "Saving war": {
+    "message": "Sauvegarde de la guerre"
+  },
+  "Scaling For:": {
+    "message": "Mise à l'échelle pour :"
+  },
+  "Separate": {
+    "message": "Séparés"
+  },
+  "Separate races": {
+    "message": "Races séparées"
+  },
+  "Shared": {
+    "message": "Partagés"
+  },
+  "Spark Upgrade Tech increases the tesla bot's splash damage radius by 200%.": {
+    "message": "La Technologie de mise à niveau du Spark augmente le rayon des dégâts de projection du robot tesla de 200 %."
+  },
+  "Speed the economy grows as you get deeper into the galaxy.": {
+    "message": "Vitesse à laquelle l'économie croît à mesure que vous vous enfoncez dans la galaxie."
+  },
+  "Spinner Upgrade Tech increases the mobile anti-air's rate of fire by 200%.": {
+    "message": "La Technologie de mise à niveau du Spinner augmente la cadence de tir de l'anti-aérien mobile de 200 %."
+  },
+  "Squall Upgrade Tech allows you to issue orders to drones.": {
+    "message": "La Technologie de mise à niveau du Squall vous permet de donner des ordres aux drones."
+  },
+  "Starting economy.": {
+    "message": "Économie de départ."
+  },
+  "Static Tech": {
+    "message": "Technologie fixe"
+  },
+  "Static tech": {
+    "message": "Technologie fixe"
+  },
+  "Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator. Disables the auto-repair feature.": {
+    "message": "La Technologie de mise à niveau du Stitch permet au bâtisseur de combat d'assister toutes les constructions. Désactive la réparation automatique."
+  },
+  "Structure Engine Tech": {
+    "message": "Technologie de moteur des structures"
+  },
+  "Structure Engine Tech increases the speed of all mobile structures by 50%": {
+    "message": "La Technologie de moteur des structures augmente la vitesse de toutes les structures mobiles de 50 %"
+  },
+  "Stryker Upgrade Tech adds the ability for the attack vehicle to attack through self-destructing.": {
+    "message": "La Technologie de mise à niveau du Stryker permet au véhicule d'attaque d'attaquer en s'autodétruisant."
+  },
+  "Sub Commander Duplication Tech": {
+    "message": "Technologie de duplication des Sous-Commandeurs"
+  },
+  "Sub Commander Duplication Tech adds an extra Commander to every Sub Commander's army.": {
+    "message": "La Technologie de duplication des Sous-Commandeurs ajoute un Commandeur supplémentaire à l'armée de chaque Sous-Commandeur."
+  },
+  "Sub Commander Fabber Tech": {
+    "message": "Technologie de constructeurs des Sous-Commandeurs"
+  },
+  "Sub Commander Fabber Tech increases the number of fabbers each Sub Commander may use by 50%.": {
+    "message": "La Technologie de constructeurs des Sous-Commandeurs augmente de 50 % le nombre de constructeurs que chaque Sous-Commandeur peut utiliser."
+  },
+  "Sub Commander Tactics Tech": {
+    "message": "Technologie tactique des Sous-Commandeurs"
+  },
+  "Sub Commander Tactics Tech allows Sub Commanders to make smarter decisions when scouting, fighting, expanding, and escaping danger.": {
+    "message": "La Technologie tactique des Sous-Commandeurs permet aux Sous-Commandeurs de prendre de meilleures décisions en reconnaissance, au combat, en expansion et face au danger."
+  },
+  "Sudden Death Tech": {
+    "message": "Technologie de mort subite"
+  },
+  "Sudden Death tech enables the sudden death game modifier in every system.": {
+    "message": "La Technologie de mort subite active le modificateur de jeu Mort subite dans chaque système."
+  },
+  "TARGET SELECTION:": {
+    "message": "SÉLECTION DES CIBLES :"
+  },
+  "TECH SYSTEM:": {
+    "message": "SYSTÈME DE TECHNOLOGIE :"
+  },
+  "TITANS: base game AI": {
+    "message": "TITANS : IA du jeu de base"
+  },
+  "Tactical": {
+    "message": "Tactique"
+  },
+  "Tech:": {
+    "message": "Technologie :"
+  },
+  "Terminal Commander": {
+    "message": "Commandeur condamné"
+  },
+  "The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 400%.": {
+    "message": "L'arsenal Bio-Augmentation de Commandeur Officier de Neutralisation contient une seule banque de données mais augmente la cadence de tir du Commandeur de 100 %, réduit la consommation d'énergie de l'Uber Canon de 75 %, augmente les PV de 200 % et la vitesse de 400 %."
+  },
+  "The Commander can mass teleport itself and all units within weapons range to anywhere in the system, but they are highly vulnerable to attack afterwards.": {
+    "message": "Le Commandeur peut se téléporter en masse, avec toutes les unités à portée de ses armes, n'importe où dans le système, mais elles sont ensuite très vulnérables aux attaques."
+  },
+  "The Lucky Commander is offered four cards instead of three at every planet.": {
+    "message": "Le Commandeur chanceux se voit proposer quatre cartes au lieu de trois à chaque planète."
+  },
+  "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
+    "message": "L'arsenal du Commandeur naval contient tous les chantiers navals. Augmente la quantité d'eau et de lave sur les planètes éligibles."
+  },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "La même valeur reconstruit la même galaxie et les mêmes ennemis, à condition que la faction, la difficulté et les options de jeu correspondent et que les mêmes mods soient installés. Les noms des planètes varient quand même. Laissez le champ tel quel pour une nouvelle galaxie."
+  },
+  "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
+    "message": "Les unités que vous et vos Sous-Commandeurs engagez. L'IA de chaque race se choisit avec le bouton IA."
+  },
+  "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
+    "message": "Les unités que vous et vos Sous-Commandeurs engagez. Seules les races avec lesquelles la guerre de l'hôte a été créée peuvent être choisies."
+  },
+  "This card will be offered as part of the first draw.": {
+    "message": "Cette carte sera proposée lors du premier tirage."
+  },
+  "This war cannot be fought:": {
+    "message": "Cette guerre ne peut pas être menée :"
+  },
+  "Titan Ammunition Tech": {
+    "message": "Technologie de munition des Titans"
+  },
+  "Titan Ammunition Tech increases the damage of all titans by 25%.": {
+    "message": "La Technologie de munition des Titans augmente les dégâts de tous les titans de 25 %."
+  },
+  "Titan Armour Tech": {
+    "message": "Technologie d'armure des Titans"
+  },
+  "Titan Armour Tech increases the health of all Titans by 50%.": {
+    "message": "La Technologie d'armure des Titans augmente les PV de tous les Titans de 50 %."
+  },
+  "Titan Combat Tech": {
+    "message": "Technologie de combat des Titans"
+  },
+  "Titan Combat Tech increases the speed of all titans by 20%, health by 50%, and damage by 25%": {
+    "message": "La Technologie de combat des Titans augmente la vitesse de tous les titans de 20 %, leurs PV de 50 % et leurs dégâts de 25 %"
+  },
+  "Toggle Favourite": {
+    "message": "Ajouter/retirer des favoris"
+  },
+  "Tsunami Tech": {
+    "message": "Technologie tsunami"
+  },
+  "Tsunami Tech increases the water and lava level in all systems you fight in.": {
+    "message": "La Technologie tsunami élève le niveau de l'eau et de la lave dans tous les systèmes où vous combattez."
+  },
+  "Tweaks to how the AI plays.": {
+    "message": "Ajustements de la façon de jouer de l'IA."
+  },
+  "UBER: you hate winning": {
+    "message": "UBER : vous détestez gagner"
+  },
+  "UNIT DELAY (MAX):": {
+    "message": "DÉLAI ENTRE UNITÉS (MAX) :"
+  },
+  "UNIT DELAY (MIN):": {
+    "message": "DÉLAI ENTRE UNITÉS (MIN) :"
+  },
+  "Unique Races": {
+    "message": "Races uniques"
+  },
+  "Unique races": {
+    "message": "Races uniques"
+  },
+  "Unit Cannon Upgrade Tech doubles the launch capacity of this interplanetary transport and removes all cooldowns.": {
+    "message": "La Technologie de mise à niveau du canon d'unité double la capacité de lancement de ce transport interplanétaire et supprime tous les temps de recharge."
+  },
+  "Unknown Unit": {
+    "message": "Unité inconnue"
+  },
+  "Unlocked": {
+    "message": "Déverrouillé"
+  },
+  "Use smaller, mostly single planet systems.": {
+    "message": "Utiliser des systèmes plus petits, composés le plus souvent d'une seule planète."
+  },
+  "Vanguard Upgrade Tech adds the Mend repair arm to the flame tank. They will not repair when given attack orders.": {
+    "message": "La Technologie de mise à niveau du Vanguard ajoute le bras de réparation du Mend au char lance-flammes. Ils ne réparent pas lorsqu'ils reçoivent un ordre d'attaque."
+  },
+  "Vehicle Cooldown Tech": {
+    "message": "Technologie de recharge des véhicules"
+  },
+  "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
+    "message": "La Technologie de recharge des véhicules divise par deux le temps de recharge entre deux constructions pour toutes les usines de véhicules."
+  },
+  "Waiting for players": {
+    "message": "En attente des joueurs"
+  },
+  "War:": {
+    "message": "Guerre :"
+  },
+  "Ward": {
+    "message": "Ward"
+  },
+  "Ward Upgrade Tech": {
+    "message": "Technologie de mise à niveau du Ward"
+  },
+  "Ward Upgrade Tech causes the mobile anti-nuke to start fully charged.": {
+    "message": "La Technologie de mise à niveau du Ward fait démarrer l'antinucléaire mobile entièrement chargé."
+  },
+  "Warp Commander": {
+    "message": "Commandeur de saut"
+  },
+  "You turned up with a fat wallet, but little else. Huge amounts of storage, but no Metal Extractors, no Mining Platforms, and no basic land or air factories.": {
+    "message": "Vous êtes arrivé avec un gros portefeuille, mais pas grand-chose d'autre. D'énormes capacités de stockage, mais pas d'extracteurs de métal, pas de plates-formes d'extraction, et aucune usine terrestre ou aérienne basique."
+  },
+  "You're dying, but you have one last war left in you. Your units' health decreases over time, and your commander's fastest of all. Life is short and must be lived to the full, so unit damage and movement is doubled and costs are halved. Life through victory, Commander!": {
+    "message": "Vous vous mourez, mais il vous reste une dernière guerre à mener. Les PV de vos unités diminuent avec le temps, et ceux de votre Commandeur plus vite que tous. La vie est courte et doit être vécue pleinement : les dégâts et la vitesse des unités sont doublés et les coûts divisés par deux. La vie par la victoire, Commandeur !"
+  },
+  "is not enabled": {
+    "message": "n'est pas activé"
+  },
+  "its mod is not installed": {
+    "message": "son mod n'est pas installé"
+  },
+  "missing:": {
+    "message": "manquant :"
+  }
+}

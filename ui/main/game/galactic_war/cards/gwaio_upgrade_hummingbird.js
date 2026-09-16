@@ -1,60 +1,27 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], (gwoCard, gwoUnit) => ({
-  visible: () => true,
-
-  describe: _.constant(
-    gwoCard.withSlot(
-      loc(
-        "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets.",
-      ),
-    ),
-  ),
-
-  summarize: () => "!LOC:Hummingbird Upgrade Tech",
-
-  icon: () =>
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_air_engine_upgrade.png",
-
-  audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
-  getContext: gwoCard.getContext,
-
-  deal: function (system, context, inventory) {
-    return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.hummingbird),
-    );
-  },
-
-  buff: function (inventory) {
-    inventory.maxCards(inventory.maxCards() + 1);
-    inventory.addMods([
-      {
-        file: gwoUnit.hummingbird,
-        path: "system_velocity_multiplier",
-        op: "replace",
-        value: 30,
-      },
-      {
-        file: gwoUnit.hummingbird,
-        path: "gravwell_velocity_multiplier",
-        op: "replace",
-        value: 10,
-      },
-      {
-        file: gwoUnit.hummingbird,
-        path: "navigation.inter_planetary_type",
-        op: "replace",
-        value: "system",
-      },
-      {
-        file: gwoUnit.hummingbird,
-        path: "unit_types",
-        op: "push",
-        value: "UNITTYPE_Interplanetary",
-      },
-    ]);
-  },
-
-  dull: function () {},
-}));
+], (gwoCard, gwoUnit) =>
+  gwoCard.upgradeCard({
+    name: "!LOC:Hummingbird Upgrade Tech",
+    description:
+      "!LOC:Hummingbird Upgrade Tech adds the ability for fighters to move between planets.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_air_engine_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_speed",
+    requires: gwoUnit.hummingbird,
+    buff: function (inventory) {
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.hummingbird, "replace", {
+            system_velocity_multiplier: 30,
+            gravwell_velocity_multiplier: 10,
+            "navigation.inter_planetary_type": "system",
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.hummingbird, "push", {
+              unit_types: "UNITTYPE_Interplanetary",
+            }),
+          ),
+      );
+    },
+  }));

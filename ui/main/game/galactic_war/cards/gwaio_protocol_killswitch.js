@@ -18,38 +18,20 @@ define([
   },
 
   buff: function (inventory) {
-    const deathAmmo = [
-      gwoUnit.wyrmDeath,
-      gwoUnit.zeusDeath,
-      gwoUnit.commanderDeath,
-      gwoUnit.manhattanDeath,
-      gwoUnit.atlasDeath,
-      gwoUnit.aresDeath,
-      gwoUnit.jigDeath,
-      gwoUnit.kesslerAmmo,
-      gwoUnit.landMineAmmo,
-      gwoUnit.boomAmmo,
-      gwoUnit.heliosDeath,
-    ];
-    const deathAmmoMods = _.map(deathAmmo, (ammo) =>
-      gwoCard.mods(ammo, "replace", { splash_damages_allies: true }),
-    );
+    const deathAmmoMods = gwoCard.flatMapMods(gwoGroup.deathAmmo, "replace", {
+      splash_damages_allies: true,
+    });
 
-    const unitsWithoutADeathWeapon = _.reject(gwoGroup.units, (unit) =>
-      _.includes(
-        [
-          gwoUnit.wyrm,
-          gwoUnit.zeus,
-          gwoUnit.commander,
-          gwoUnit.manhattan,
-          gwoUnit.atlas,
-          gwoUnit.ares,
-          gwoUnit.jig,
-          gwoUnit.helios,
-        ],
-        unit,
-      ),
-    );
+    const unitsWithoutADeathWeapon = _.difference(gwoGroup.units, [
+      gwoUnit.wyrm,
+      gwoUnit.zeus,
+      gwoUnit.commander,
+      gwoUnit.manhattan,
+      gwoUnit.atlas,
+      gwoUnit.ares,
+      gwoUnit.jig,
+      gwoUnit.helios,
+    ]);
     const deathWeaponMods = _.map(unitsWithoutADeathWeapon, (unit) =>
       gwoCard
         .mods(unit, "replace", {

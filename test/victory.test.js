@@ -10,27 +10,15 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const {
+  makeObservable: observable,
+} = require("../scripts/lib/fake-knockout.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory.js",
 );
 
 const WAR_END = "gwo_war_end";
-
-function observable(initial) {
-  const subscribers = [];
-  const accessor = function () {
-    if (arguments.length) {
-      accessor.value = arguments[0];
-      subscribers.forEach((fn) => fn(accessor.value));
-      return undefined;
-    }
-    return accessor.value;
-  };
-  accessor.value = initial;
-  accessor.subscribe = (fn) => subscribers.push(fn);
-  return accessor;
-}
 
 let stubs;
 
@@ -44,13 +32,22 @@ function setup(overrides = {}) {
       canUnlockLoadout: false,
       perPlayerTech: false,
       isViewer: false,
+      coop: false,
+      // Undefined stands for a scene where the wait module never loaded.
+      playersReturned: undefined,
       records: [{ gwaioUnlockedStartCardIds: [] }],
       stars: [],
     },
     overrides,
   );
 
-  const calls = { operators: [], handlers: {}, stats: [], unlockQueries: [] };
+  const calls = {
+    operators: [],
+    handlers: {},
+    stats: [],
+    unlockQueries: [],
+    waits: [],
+  };
   const saves = [];
   const stats = [];
   const gateWrites = [];
@@ -100,6 +97,7 @@ function setup(overrides = {}) {
   stubs.setGlobal("model", {
     exitGate,
     isCampaignViewer: () => options.isViewer,
+    gwCampaignEnabled: () => options.coop,
     gwCampaignPerPlayerTechCards: () => options.perPlayerTech,
     sendCampaignHostOperator: (type, payload) =>
       calls.operators.push([type, payload]),
@@ -129,6 +127,10 @@ function setup(overrides = {}) {
     treasure,
     stockBank: "stock-bank",
     gwoBank: "gwo-bank",
+    playersReturned:
+      options.playersReturned === "pending"
+        ? { wait: (onDone) => calls.waits.push(onDone) }
+        : options.playersReturned,
   });
 
   return { victory, game, calls, saves, stats, gateWrites, exitGate, options };
@@ -275,6 +277,7 @@ describe("the treasure star", () => {
 
     assert.deepEqual(calls.unlockQueries, [
       {
+        race: undefined,
         localUnlockedIds: ["gwaio_start_ceo"],
         records: options.records,
         perPlayerTech: true,
@@ -330,5 +333,78 @@ describe("co-op", () => {
 
     assert.equal(game.turnState(), "end");
     assert.equal(saves.length, 1);
+  });
+});
+
+// The campaign server restarts after a battle, so the host is back in gw_play
+// before the viewers are, and a war-end operator sent then never reaches them.
+describe("waiting for the players to return", () => {
+  it("holds the operator and the turn end until everyone is back", () => {
+    const { victory, game, calls, saves } = setup({
+      coop: true,
+      playersReturned: "pending",
+    });
+
+    victory.endWarIfWon();
+
+    assert.equal(calls.waits.length, 1);
+    assert.deepEqual(calls.operators, []);
+    assert.equal(game.turnState(), "begin");
+    assert.equal(saves.length, 0);
+
+    calls.waits[0]();
+
+    assert.deepEqual(calls.operators, [[WAR_END, {}]]);
+    assert.equal(game.turnState(), "end");
+    assert.equal(saves.length, 1);
+  });
+
+  it("asks once, however often the win is noticed", () => {
+    const { victory, calls } = setup({
+      coop: true,
+      playersReturned: "pending",
+    });
+
+    victory.endWarIfWon();
+    victory.endWarIfWon();
+    calls.waits[0]();
+    victory.endWarIfWon();
+
+    assert.equal(calls.waits.length, 1);
+    assert.equal(calls.operators.length, 1);
+  });
+
+  it("does not wait in a solo war", () => {
+    const { victory, game, calls } = setup({
+      coop: false,
+      playersReturned: "pending",
+    });
+
+    victory.endWarIfWon();
+
+    assert.equal(calls.waits.length, 0);
+    assert.equal(game.turnState(), "end");
+  });
+
+  it("does not wait on a viewer", async () => {
+    const { calls } = setup({
+      coop: true,
+      isViewer: true,
+      playersReturned: "pending",
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    assert.equal(calls.waits.length, 0);
+  });
+
+  // Async, so the factory's deferred check runs before the globals go.
+  it("ends at once when the wait module never loaded", async () => {
+    const { victory, game } = setup({ coop: true });
+
+    victory.endWarIfWon();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    assert.equal(game.turnState(), "end");
   });
 });

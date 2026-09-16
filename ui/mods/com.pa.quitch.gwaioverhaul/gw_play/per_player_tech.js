@@ -36,15 +36,12 @@ define(() => {
     }
   };
 
-  const stringEndsWith = (value, suffix) =>
-    _.isString(value) && value.slice(-suffix.length) === suffix;
-
   const stripKnownSpecTag = (value) => {
     if (!_.isString(value)) {
       return value;
     }
 
-    if (stringEndsWith(value, ".player")) {
+    if (_.endsWith(value, ".player")) {
       return value.slice(0, -".player".length);
     }
 
@@ -56,26 +53,25 @@ define(() => {
     return value;
   };
 
-  // The hardcoded guardians:false, and the absence of any Cluster routing, are
-  // both deliberate - see ai-paths.md.
   const getViewerSubcommanderAiPath = (
     refereeAIPaths,
     subcommanderTech,
     aiInUse,
     playerInventory,
     playerTag,
+    race,
   ) =>
-    refereeAIPaths.getAIPathDestination("subcommander", aiInUse, {
-      guardians: false,
-      aiMods: playerInventory.aiMods(),
-      smartSubcommanders:
-        subcommanderTech.hasSmartSubcommanders(playerInventory),
-      scopeToken: playerTag === ".player" ? undefined : playerTag,
-    });
+    refereeAIPaths.getViewerSubcommanderPath(
+      aiInUse,
+      playerInventory.aiMods(),
+      subcommanderTech.hasSmartSubcommanders(playerInventory),
+      playerTag,
+      race,
+    );
 
   // A viewer's subcommander armies, and the colour position the next viewer
-  // starts from. subcommanderTech, gwoColour and refereeCoop are injected - see
-  // testing.md, "Coverage".
+  // starts from. subcommanderTech, gwoColour, refereeCoop and
+  // resolvePersonality are injected - see testing.md, "Coverage".
   const buildViewerSubcommanderArmies = (params) => {
     const subcommanderTech = params.subcommanderTech;
     const playerInventory = params.playerInventory;
@@ -94,10 +90,11 @@ define(() => {
       subcommanderTech.applySubcommanderDuplicationTech(cards);
 
     _.forEach(playerInventory.minions(), (minion) => {
-      // Cloned because the tech mutators write in place, and the minion here is
-      // the saved inventory one. Editing it would bake the bonus in past a
-      // discard of the card that granted it. See tech-cards.md.
-      const minionPersonality = _.cloneDeep(minion.personality);
+      // A fresh object, as the host's referee builds one: the tech mutators
+      // write in place, and the minion here is the saved inventory one.
+      // Editing it would bake the bonus in past a discard of the card that
+      // granted it. See tech-cards.md.
+      const minionPersonality = params.resolvePersonality(minion);
       subcommanderTech.applySubcommanderTacticsTech(minionPersonality, cards);
       subcommanderTech.applySubcommanderFabberTech(minionPersonality, cards);
       minionPersonality.ai_path = params.viewerAiPath;

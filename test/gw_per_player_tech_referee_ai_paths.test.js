@@ -20,17 +20,10 @@ const refereeAIPaths = loadCouiModule(
 const subcommanderTech = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
 );
-
-function makePlayerInventory(overrides) {
-  const data = Object.assign(
-    { aiModsList: [], cardsList: [] },
-    overrides || {},
-  );
-  return {
-    aiMods: () => data.aiModsList,
-    cards: () => data.cardsList,
-  };
-}
+const races = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+);
+const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
 
 describe("getPlayerTagGivenIndex", () => {
   it("index 0 is the host tag .player", () => {
@@ -71,7 +64,7 @@ describe("stripKnownSpecTag", () => {
 
 describe("getViewerSubcommanderAiPath", () => {
   it("the host tag (.player) never gets a scoped path, even with active tech", () => {
-    const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
+    const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
@@ -83,7 +76,7 @@ describe("getViewerSubcommanderAiPath", () => {
   });
 
   it("a non-host tag with active tech gets scoped by that raw tag", () => {
-    const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
+    const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
@@ -97,7 +90,7 @@ describe("getViewerSubcommanderAiPath", () => {
   });
 
   it("a non-host tag with no active tech still gets scoped onto the vanilla brain path", () => {
-    const inventory = makePlayerInventory({ aiModsList: [] });
+    const inventory = makeInventory({ aiModsList: [] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
@@ -112,7 +105,7 @@ describe("getViewerSubcommanderAiPath", () => {
 
   it("is guardians-unaware by construction: always passes guardians:false", () => {
     // Pins the documented guardians asymmetry - see ai-paths.md.
-    const inventory = makePlayerInventory({ aiModsList: [{ op: "load" }] });
+    const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     const path = hook.getViewerSubcommanderAiPath(
       refereeAIPaths,
       subcommanderTech,
@@ -132,10 +125,10 @@ describe("getViewerSubcommanderAiPath", () => {
   });
 
   it("smartSubcommanders toggles Queller q_silver/ vs q_bronze/ via the tactics card", () => {
-    const smartInventory = makePlayerInventory({
+    const smartInventory = makeInventory({
       cardsList: [{ id: "gwaio_upgrade_subcommander_tactics" }],
     });
-    const plainInventory = makePlayerInventory({ cardsList: [] });
+    const plainInventory = makeInventory({ cardsList: [] });
 
     assert.equal(
       hook.getViewerSubcommanderAiPath(
@@ -157,6 +150,43 @@ describe("getViewerSubcommanderAiPath", () => {
       ),
       "/pa/ai_queller/q_bronze/player_.player0/",
     );
+  });
+
+  // aiRoot only knows a registered race, so the fixture one is registered for
+  // this case alone - see testing.md.
+  it("routes two viewers on two races to their own race trees", () => {
+    races.register(FIXTURE_RACE);
+    // Separate races: each viewer's race comes off their own inventory, so a
+    // race viewer and an MLA viewer in the same battle land in different roots.
+    const raceInventory = makeInventory({
+      aiModsList: [{ op: "load" }],
+      tags: { "global:playerRace": "fixture" },
+    });
+    const mlaInventory = makeInventory({ aiModsList: [{ op: "load" }] });
+
+    assert.equal(
+      hook.getViewerSubcommanderAiPath(
+        refereeAIPaths,
+        subcommanderTech,
+        "Titans",
+        raceInventory,
+        ".player0",
+        "fixture",
+      ),
+      "/pa/ai_subcommander_race_fixture/player_.player0/",
+    );
+    assert.equal(
+      hook.getViewerSubcommanderAiPath(
+        refereeAIPaths,
+        subcommanderTech,
+        "Titans",
+        mlaInventory,
+        ".player1",
+        "mla",
+      ),
+      "/pa/ai_subcommander/player_.player1/",
+    );
+    races.reset();
   });
 
   it("stays pairwise-distinct across a heterogeneous mix of brains and aiMods states, not just uniform Titans", () => {

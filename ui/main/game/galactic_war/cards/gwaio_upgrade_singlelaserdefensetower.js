@@ -5,147 +5,104 @@ define([
   const TITANS_BASIC_DEFENCE = "Structure & Basic & SurfaceDefense";
   const QUELLER_BASIC_DEFENCE =
     "Structure & (SurfaceDefense | Tactical) - Shield";
+  const QUELLER_UBER_BASIC_DEFENCE = "Structure & SurfaceDefense - Shield";
 
-  return {
-    visible: () => true,
-    describe: _.constant(
-      gwoCard.withSlot(
-        loc(
-          "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabrication arm which repairs units and reclaims wreckage within range.",
-        ),
-      ),
-    ),
-    summarize: () => "!LOC:Single Laser Defense Tower Upgrade Tech",
-    icon: () =>
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_turret_upgrade.png",
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.upgradeDeal(
-        gwoCard.hasUnit(inventory.units(), gwoUnit.singleLaserDefenseTower),
-      );
-    },
+  return gwoCard.upgradeCard({
+    name: "!LOC:Single Laser Defense Tower Upgrade Tech",
+    description:
+      "!LOC:Single Laser Defense Tower Upgrade Tech replaces the basic turret's laser with a fabrication arm which repairs units and reclaims wreckage within range.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_turret_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.singleLaserDefenseTower,
     buff: function (inventory) {
-      inventory.maxCards(inventory.maxCards() + 1);
-      const mods = [
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "tools",
-          op: "replace",
-          value: [
+      let mods = gwoCard
+        .mods(gwoUnit.singleLaserDefenseTower, "replace", {
+          tools: [{ spec_id: gwoUnit.mendBuildArm, aim_bone: "bone_pitch" }],
+        })
+        .concat(
+          [
             {
-              spec_id: gwoUnit.mendBuildArm,
-              aim_bone: "bone_pitch",
+              file: gwoUnit.singleLaserDefenseTower,
+              path: "tools.0.spec_id",
+              op: "tag",
             },
           ],
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "tools.0.spec_id",
-          op: "tag",
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "command_caps",
-          op: "replace",
-          value: ["ORDER_Reclaim", "ORDER_Repair"],
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "fx_offsets",
-          op: "replace",
-          value: [
-            {
-              type: "build",
-              filename: "/pa/effects/specs/fab_combat_spray.pfx",
-              bone: "socket_muzzle",
-              offset: [0, 0, 0],
-              orientation: [0, 0, 0],
-            },
-          ],
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "audio",
-          op: "merge",
-          value: {
-            loops: {
-              build: {
-                cue: "/SE/Construction/Fab_contruction_beam_loop",
-                flag: "build_target_changed",
-                should_start_func: "has_build_target",
-                should_stop_func: "no_build_target",
+          gwoCard.mods(gwoUnit.singleLaserDefenseTower, "replace", {
+            command_caps: ["ORDER_Reclaim", "ORDER_Repair"],
+            fx_offsets: [
+              {
+                type: "build",
+                filename: "/pa/effects/specs/fab_combat_spray.pfx",
+                bone: "socket_muzzle",
+                offset: [0, 0, 0],
+                orientation: [0, 0, 0],
+              },
+            ],
+          }),
+          gwoCard.mods(gwoUnit.singleLaserDefenseTower, "merge", {
+            audio: {
+              loops: {
+                build: {
+                  cue: "/SE/Construction/Fab_contruction_beam_loop",
+                  flag: "build_target_changed",
+                  should_start_func: "has_build_target",
+                  should_stop_func: "no_build_target",
+                },
               },
             },
-          },
-        },
-        {
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "unit_types",
-          op: "push",
-          value: "UNITTYPE_Construction",
-        },
-      ];
+          }),
+          gwoCard.mods(gwoUnit.singleLaserDefenseTower, "push", {
+            unit_types: "UNITTYPE_Construction",
+          }),
+        );
       if (inventory.hasCard("gwaio_start_nomad")) {
-        mods.push({
-          file: gwoUnit.singleLaserDefenseTower,
-          path: "command_caps",
-          op: "push",
-          value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
-        });
+        mods = mods.concat(
+          gwoCard.mods(gwoUnit.singleLaserDefenseTower, "push", {
+            command_caps: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
+          }),
+        );
       }
       inventory.addMods(mods);
 
-      inventory.addAIMods([
-        {
-          type: "fabber",
-          op: "replace",
-          toBuild: "BasicLandDefenseSingle",
-          idToMod: "value0",
-          value: 1,
-          refId: "unit_type_string0",
-          refValue: TITANS_BASIC_DEFENCE,
-        },
-        {
-          type: "fabber",
-          op: "replace",
-          toBuild: "BasicLandDefenseSingle",
-          idToMod: "unit_type_string0",
-          value: "Structure & Basic & Construction",
-          refId: "unit_type_string0",
-          refValue: TITANS_BASIC_DEFENCE,
-        },
-        {
-          type: "fabber",
-          op: "replace",
-          toBuild: "BasicLandDefenseSingle",
-          idToMod: "value0",
-          value: 1,
-          refId: "unit_type_string0",
-          refValue: QUELLER_BASIC_DEFENCE,
-        },
-        {
-          type: "fabber",
-          op: "replace",
-          toBuild: "BasicLandDefenseSingle",
-          idToMod: "unit_type_string0",
-          value: "Structure & Basic & Construction",
-          refId: "unit_type_string0",
-          refValue: QUELLER_BASIC_DEFENCE,
-        },
-        {
+      const basicDefences = [
+        TITANS_BASIC_DEFENCE,
+        QUELLER_BASIC_DEFENCE,
+        QUELLER_UBER_BASIC_DEFENCE,
+      ];
+      const aiMods = _.flatten(
+        _.map(basicDefences, (basicDefence) => [
+          {
+            type: "fabber",
+            op: "replace",
+            toBuild: "BasicLandDefenseSingle",
+            idToMod: "value0",
+            value: 1,
+            refId: "unit_type_string0",
+            refValue: basicDefence,
+          },
+          {
+            type: "fabber",
+            op: "replace",
+            toBuild: "BasicLandDefenseSingle",
+            idToMod: "unit_type_string0",
+            value: "Structure & Basic & Construction",
+            refId: "unit_type_string0",
+            refValue: basicDefence,
+          },
+        ]),
+      );
+
+      inventory.addAIMods(
+        aiMods.concat({
           type: "fabber",
           op: "replace",
           toBuild: "BasicLandDefenseSingle",
           idToMod: "priority",
           value: 0,
           refId: "name",
-          refValue: "Single Laser Defense Tower - Snipe",
-        },
-      ]);
+          refValue: "Single Laser Defense Tower - Snipe", // Queller Uber
+        }),
+      );
     },
-    dull: function () {},
-  };
+  });
 });

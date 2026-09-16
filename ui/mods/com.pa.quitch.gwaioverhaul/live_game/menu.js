@@ -1,11 +1,7 @@
-var gwoLiveGameMenuLoaded;
-
-function gwoLiveGameMenu() {
-  if (gwoLiveGameMenuLoaded || model.gameType() !== "Galactic War") {
+(() => {
+  if (model.gameType() !== "Galactic War") {
     return;
   }
-
-  gwoLiveGameMenuLoaded = true;
 
   try {
     const getMenuString = (boolean, stringIfTrue, stringIfFalse) =>
@@ -43,7 +39,7 @@ function gwoLiveGameMenu() {
           return getMenuString(hardcore(), "menuAbandonWar", "menuSurrender");
         };
 
-        const playerLost = model.gameOver() || model.defeated();
+        const playerLost = model.gameOver() || model.isSpectator();
 
         const menu = [
           {
@@ -102,5 +98,4 @@ function gwoLiveGameMenu() {
   } catch (e) {
     console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
-}
-gwoLiveGameMenu();
+})();

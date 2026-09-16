@@ -1,10 +1,60 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_fetch.js",
-], (gwoAI, refereeAIPaths, refereeCoop, gwoUrl, gwoFetch) => {
+], (
+  gwoAI,
+  gwoCard,
+  refereeAIPaths,
+  refereeCoop,
+  gwoRaces,
+  gwoUrl,
+  gwoFetch,
+) => {
+  // The walk append, prepend and replace share. A build entry for toBuild that
+  // carries idToMod (and refId/refValue, when given) is the target; otherwise
+  // every test in its build_conditions that refId/refValue or matchAll selects
+  // is. onBuild(build) and onTest(test) do the write.
+  const forEachMatchingTarget = (
+    json,
+    toBuild,
+    idToMod,
+    refId,
+    refValue,
+    matchAll,
+    onBuild,
+    onTest,
+  ) => {
+    _.forEach(json.build_list, (build) => {
+      if (build.to_build !== toBuild) {
+        return;
+      }
+
+      const validMatch =
+        (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
+        Object.prototype.hasOwnProperty.call(build, idToMod);
+
+      if (validMatch) {
+        onBuild(build);
+        return;
+      }
+
+      _.forEach(build.build_conditions, (testArray) => {
+        _.forEach(testArray, (test) => {
+          const testMatches =
+            matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
+          if (testMatches) {
+            onTest(test);
+          }
+        });
+      });
+    });
+  };
+
   // `json` is a parameter, not a closure capture, so this table is built once
   // at module load rather than per applyAiMods call.
   const aiModOps = {
@@ -17,35 +67,28 @@ define([
       refValue,
       matchAll,
     ) {
-      _.forEach(json.build_list, (build) => {
-        if (build.to_build !== toBuild) {
-          return;
-        }
-
-        const validMatch =
-          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-          Object.prototype.hasOwnProperty.call(build, idToMod);
-
-        if (validMatch && Array.isArray(build[idToMod])) {
-          build[idToMod] = build[idToMod].concat(value);
-        } else if (validMatch) {
-          build[idToMod] += value;
-        } else {
-          _.forEach(build.build_conditions, (testArray) => {
-            _.forEach(testArray, (test) => {
-              const testMatches =
-                matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
-              if (testMatches) {
-                if (Array.isArray(test[idToMod])) {
-                  test[idToMod] = test[idToMod].concat(value);
-                } else if (test[idToMod]) {
-                  test[idToMod] += value;
-                }
-              }
-            });
-          });
-        }
-      });
+      forEachMatchingTarget(
+        json,
+        toBuild,
+        idToMod,
+        refId,
+        refValue,
+        matchAll,
+        (build) => {
+          if (Array.isArray(build[idToMod])) {
+            build[idToMod] = build[idToMod].concat(value);
+          } else {
+            build[idToMod] += value;
+          }
+        },
+        (test) => {
+          if (Array.isArray(test[idToMod])) {
+            test[idToMod] = test[idToMod].concat(value);
+          } else if (test[idToMod]) {
+            test[idToMod] += value;
+          }
+        },
+      );
     },
     prepend: function (
       json,
@@ -60,35 +103,28 @@ define([
       // targets, so coercing the parameter in place corrupts the later ones.
       const arrayValue = Array.isArray(value) ? value : [value];
 
-      _.forEach(json.build_list, (build) => {
-        if (build.to_build !== toBuild) {
-          return;
-        }
-
-        const validMatch =
-          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-          Object.prototype.hasOwnProperty.call(build, idToMod);
-
-        if (validMatch && Array.isArray(build[idToMod])) {
-          build[idToMod] = arrayValue.concat(build[idToMod]);
-        } else if (validMatch) {
-          build[idToMod] = value + build[idToMod];
-        } else {
-          _.forEach(build.build_conditions, (testArray) => {
-            _.forEach(testArray, (test) => {
-              const testMatches =
-                matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
-              if (testMatches) {
-                if (Array.isArray(test[idToMod])) {
-                  test[idToMod] = arrayValue.concat(test[idToMod]);
-                } else if (test[idToMod]) {
-                  test[idToMod] = value + test[idToMod];
-                }
-              }
-            });
-          });
-        }
-      });
+      forEachMatchingTarget(
+        json,
+        toBuild,
+        idToMod,
+        refId,
+        refValue,
+        matchAll,
+        (build) => {
+          if (Array.isArray(build[idToMod])) {
+            build[idToMod] = arrayValue.concat(build[idToMod]);
+          } else {
+            build[idToMod] = value + build[idToMod];
+          }
+        },
+        (test) => {
+          if (Array.isArray(test[idToMod])) {
+            test[idToMod] = arrayValue.concat(test[idToMod]);
+          } else if (test[idToMod]) {
+            test[idToMod] = value + test[idToMod];
+          }
+        },
+      );
     },
     replace: function (
       json,
@@ -99,29 +135,39 @@ define([
       refValue,
       matchAll,
     ) {
-      _.forEach(json.build_list, (build) => {
-        if (build.to_build !== toBuild) {
-          return;
-        }
-
-        const validMatch =
-          (_.isUndefined(refId) || _.isEqual(build[refId], refValue)) &&
-          Object.prototype.hasOwnProperty.call(build, idToMod);
-
-        if (validMatch) {
+      forEachMatchingTarget(
+        json,
+        toBuild,
+        idToMod,
+        refId,
+        refValue,
+        matchAll,
+        (build) => {
           build[idToMod] = value;
-        } else {
-          _.forEach(build.build_conditions, (testArray) => {
-            _.forEach(testArray, (test) => {
-              const testMatches =
-                matchAll || (!_.isUndefined(refId) && test[refId] === refValue);
-              if (testMatches && test[idToMod]) {
-                test[idToMod] = value;
-              }
-            });
-          });
-        }
-      });
+        },
+        (test) => {
+          if (test[idToMod]) {
+            test[idToMod] = value;
+          }
+        },
+      );
+    },
+    // `value` is unused: this deletes the key rather than writing one.
+    unset: function (json, value, toBuild, idToMod, refId, refValue, matchAll) {
+      forEachMatchingTarget(
+        json,
+        toBuild,
+        idToMod,
+        refId,
+        refValue,
+        matchAll,
+        (build) => {
+          delete build[idToMod];
+        },
+        (test) => {
+          delete test[idToMod];
+        },
+      );
     },
     remove: function (json, value, toBuild) {
       _.forEach(json.build_list, (build) => {
@@ -221,8 +267,7 @@ define([
   };
 
   const whichAIsAreBeingModified = (clusterPresence, inventory) => {
-    const game = model.game();
-    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const ai = gwoAI.currentStarAi(model.game());
     const guardians = ai.mirrorMode;
 
     if (
@@ -326,8 +371,15 @@ define([
         _(pathTypeMap)
           .keys()
           .find((key) => filePathIncludes(key)) || "";
+      // A file a `load` pulled in from /pa/ai_tech/ is walked like any other,
+      // so a card's own descriptors land on its own file unless it opts out.
+      const isTechFile = filePathStarts(aiTechPath);
 
-      return _.filter(nonLoadAiMods, { type: pathTypeMap[aiManager] });
+      return _.filter(
+        nonLoadAiMods,
+        (mod) =>
+          mod.type === pathTypeMap[aiManager] && !(isTechFile && mod.treeOnly),
+      );
     };
 
     const changeFilePath = (aiPath, pathLength) =>
@@ -350,7 +402,8 @@ define([
       }));
     };
 
-    // built on the assumption that the Guardians are never Cluster
+    // Relies on the Guardians never being Cluster. See ai-paths.md,
+    // "Invariants".
     const processClusterJson = (json, pathLength) => {
       const clusterOps = clusterAIModsInScopeOfFile();
       const clusterJson = _.cloneDeep(json);
@@ -539,6 +592,9 @@ define([
   const processDirectories = (aiPath, request) => {
     const inventory = request.inventory;
 
+    // Native from here on: a throw anywhere below rejects the launch instead
+    // of hanging it, and the hire's fail handler reports it. See
+    // constraints.md.
     return request.treeCache.list(aiPath).then((fileList) => {
       const aisToModify = request.forceSubCommanderScope
         ? "SubCommanders"
@@ -569,7 +625,8 @@ define([
       const promises = _.map(fileList, (filePath) => {
         if (
           !_.endsWith(filePath, ".json") ||
-          _.includes(filePath, "/neural_networks/") // AIs fall back to /pa/ai/neural_networks/
+          _.includes(filePath, "/neural_networks/") || // AIs fall back to /pa/ai/neural_networks/
+          gwoRaces.inAnyRaceLayer(filePath) // a race's files belong to its own tree - see races.md
         ) {
           return;
         }
@@ -581,15 +638,90 @@ define([
     });
   };
 
+  // Every race tree a battle needs: one per distinct (source, destination),
+  // the race's files layered over the brain's base files, written to the
+  // race's own root. AI mods are not applied to a race tree - see races.md.
+  const raceTreeJobs = (game, connectedClients) => {
+    const inventory = game.inventory();
+    const ai = gwoAI.currentStarAi(game);
+    const playerRace = gwoRaces.raceOf(inventory);
+    const jobs = {};
+
+    const add = (type, race, destination) => {
+      if (gwoRaces.isMla(race)) {
+        return;
+      }
+      const brain = gwoAI.aiInUse(type, race);
+      const source = gwoAI.getAIPathSource(type, race);
+      const target = destination || gwoAI.getAIPathDestination(type, { race });
+      jobs[`${source}|${target}`] = {
+        source,
+        destination: target,
+        keep: gwoRaces.treeFilter(race, brain, source),
+        raceOwned: gwoRaces.raceLayerFilter(race, brain, source),
+      };
+    };
+
+    add("enemy", ai.mirrorMode ? playerRace : gwoRaces.raceOf(ai));
+    _.forEach(ai.foes, (foe) => {
+      add("enemy", gwoRaces.raceOf(foe));
+    });
+    add("subcommander", playerRace);
+    if (!_.isUndefined(ai.ally)) {
+      add(
+        "subcommander",
+        _.isUndefined(ai.ally.race) ? playerRace : gwoRaces.raceOf(ai.ally),
+      );
+    }
+    // Each viewer's own race: the host's under Separate races off, and whatever
+    // they picked under it on. A viewer's destination is its own either way -
+    // the race decides which brain's tree is filtered into it. See coop.md.
+    _.forEach(
+      refereeCoop.getConnectedViewerInventories(game, connectedClients),
+      (viewer, viewerIndex) => {
+        const viewerRace = gwoRaces.raceOf(viewer.inventory);
+        add(
+          "subcommander",
+          viewerRace,
+          gwoAI.getSubcommanderPathForViewer(
+            viewer.inventory,
+            `.player${viewerIndex}`,
+            viewerRace,
+          ),
+        );
+      },
+    );
+
+    return _.values(jobs);
+  };
+
+  const writeRaceTree = (job, treeCache, configFiles) =>
+    treeCache.list(job.source).then((fileList) => {
+      const kept = _.filter(fileList, job.keep);
+
+      if (!_.some(fileList, job.raceOwned)) {
+        console.warn(`gwoRefereeAi: no race build orders under ${job.source}`);
+      }
+
+      return Promise.all(
+        _.map(kept, (filePath) =>
+          treeCache.getJSON(filePath).then((json) => {
+            configFiles[job.destination + filePath.slice(job.source.length)] =
+              json;
+          }),
+        ),
+      );
+    });
+
   const whoIsCluster = () => {
     const game = model.game();
     const inventory = game.inventory();
-    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const ai = gwoAI.currentStarAi(game);
     const alliedCommanders = _.isUndefined(ai.ally)
       ? inventory.minions()
       : inventory.minions().concat(ai.ally);
     const numberOfAllies = alliedCommanders.length;
-    const playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
+    const playerIsCluster = gwoCard.playerIsCluster(inventory);
     const enemyIsCluster =
       gwoAI.isCluster(ai) || _.some(ai.foes, (foe) => gwoAI.isCluster(foe));
 
@@ -606,11 +738,11 @@ define([
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = { applyAiMods };
+    module.exports = { applyAiMods, raceTreeJobs };
   }
 
   // parse AI files, apply AI mods, and load the results into self.files()
-  return function () {
+  const generate = function () {
     const self = this;
     const configFiles = self.files(); // JSON files passed to the server
     const aiPaths = {
@@ -625,7 +757,7 @@ define([
       : [aiPaths.enemySource, aiPaths.subCommanderSource];
     const clusterPresence = whoIsCluster();
     const game = model.game();
-    const ai = game.galaxy().stars()[game.currentStar()].ai();
+    const ai = gwoAI.currentStarAi(game);
     const guardians = ai.mirrorMode;
     const connectedClients = refereeCoop.getConnectedViewers();
     const playerAiModInventory = guardians
@@ -636,8 +768,9 @@ define([
         )
       : game.inventory();
 
-    // Scoped to this launch, so a later battle always re-reads the tree from disk.
-    const treeCache = createTreeCache();
+    // The hire hands the launch's cache in, so a co-op host's second hire
+    // reads no tree file twice; a run without one gets its own.
+    const treeCache = self.treeCache || createTreeCache();
 
     // Shared by every processDirectories call below; the viewer ones override
     // aiPaths, inventory and the two scope fields.
@@ -688,6 +821,14 @@ define([
       },
     );
 
+    _.forEach(raceTreeJobs(game, connectedClients), (job) => {
+      promises.push(writeRaceTree(job, treeCache, configFiles));
+    });
+
     return Promise.all(promises);
   };
+
+  generate.createTreeCache = createTreeCache;
+
+  return generate;
 });

@@ -1,7 +1,9 @@
 // Co-op star pings. A viewer asks the host (gwo_ping_star) to raise a marker on a
 // star; the host validates it and relays it to every viewer
 // (gwo_ping_star_broadcast). See coop.md.
-define(() => {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js"], (
+  refereeCoop,
+) => {
   const PING_REQUEST = "gwo_ping_star";
   const PING_BROADCAST = "gwo_ping_star_broadcast";
   const PING_CUE = "/SE/UI/UI_ping";
@@ -16,10 +18,7 @@ define(() => {
   const MAX_PING_ID_LENGTH = 64;
   const OWN_PING_MEMORY = 8;
 
-  // An unauthenticated viewer can have an empty client_id, so the key is the
-  // composite gwo_panel.js uses.
-  const clientKey = (clientId, clientName) =>
-    `${String(clientId || "")}::${String(clientName || "")}`;
+  const clientKey = refereeCoop.clientKey;
 
   const starValidationError = (star, starCount) => {
     if (!_.isFinite(star) || star !== Math.floor(star)) {
@@ -245,19 +244,15 @@ define(() => {
       showPing(payload.star, payload.client_name);
     };
 
-    if (model.registerCampaignViewerOperatorHandler) {
-      model.registerCampaignViewerOperatorHandler(
-        PING_REQUEST,
-        relayPingToViewers,
-      );
-    }
+    model.registerCampaignViewerOperatorHandler(
+      PING_REQUEST,
+      relayPingToViewers,
+    );
 
-    if (model.registerCampaignHostOperatorHandler) {
-      model.registerCampaignHostOperatorHandler(
-        PING_BROADCAST,
-        applyPingBroadcast,
-      );
-    }
+    model.registerCampaignHostOperatorHandler(
+      PING_BROADCAST,
+      applyPingBroadcast,
+    );
 
     return { canPing, pingStar };
   };

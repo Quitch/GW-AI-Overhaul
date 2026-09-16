@@ -7,12 +7,8 @@
       <div class="header">
         <loc>ECONOMY</loc>
       </div>
-      <!-- Where a label has a shipped translation entry, the trailing colon sits
-      outside the <loc>: i18n keys are case- and character-sensitive, and the game
-      ships entries for the bare label ("ECONOMY") but none for the label plus colon
-      ("ECONOMY:"). Where the entry's casing also differs from what this panel
-      displays, the <loc> carries .gwo-uppercase and gwo_start.css restores the
-      display casing after translation. -->
+      <!-- Colons outside the <loc>, and .gwo-uppercase where the entry's casing
+      differs. See constraints.md, "Localisation". -->
       <loc>ECONOMY</loc>:
       <span class="info_tip" data-bind="tooltip: '!LOC:Starting economy.'"
         >?</span

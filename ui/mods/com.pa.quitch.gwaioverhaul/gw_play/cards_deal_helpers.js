@@ -1,212 +1,319 @@
 // The measured half of gw_play/cards.js. Nothing here may touch model/$/ko/game
 // at define time - see testing.md, "Coverage".
-define(() => ({
-  // The base count, plus one for a full hand and one for the Lucky start card.
-  // A falsy inventory yields the base count.
-  cardsOfferedCount: function (offer, inventory) {
-    let cardsToOffer = offer;
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js"], (
+  brainTable,
+) => {
+  // Cards a race player is never offered: unit upgrades are tuned to the MLA
+  // unit they name (the commander's excepted - every race has one), these
+  // loadouts and protocols are built on hand-picked unit lists no cell reads,
+  // and the Deepspace Radar is a TITANS stub only its card brings back. A
+  // race gets its own. See races.md.
+  const MLA_ONLY = [
+    "gwaio_start_paratrooper", // specific to Unit Cannon and Lob
+    "gwaio_start_nomad",
+    "gwaio_protocol_killswitch", // unit scoped - cannot be automatically translated
+    "gwaio_enable_planetaryradar", // MLA only unit
+    "gwaio_start_rapid", // loads AI files specific to MLA
+  ];
+  const RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
 
-    if (
-      inventory &&
-      _.isFunction(inventory.handIsFull) &&
-      inventory.handIsFull()
-    ) {
-      cardsToOffer++;
+  const mlaOnlyCard = (cardId) => {
+    if (MLA_ONLY.includes(cardId)) {
+      return true;
     }
+    return /_upgrade_/.test(cardId) && !RACE_UPGRADES.test(cardId);
+  };
 
-    if (
-      inventory &&
-      _.isFunction(inventory.hasCard) &&
-      inventory.hasCard("gwaio_start_lucky")
+  // Whether the loadout scenes show this loadout dimmed and unselectable for
+  // `race`. An MLA or unknown race locks nothing.
+  const raceLocksLoadout = (race, cardId) =>
+    !!race && race !== "mla" && mlaOnlyCard(cardId);
+
+  const isStartLoadoutCardId = (cardId) =>
+    _.isString(cardId) && _.includes(cardId, "_start_");
+
+  return {
+    // The base count, plus one for a full hand and one for the Lucky start card.
+    // A falsy inventory yields the base count.
+    cardsOfferedCount: function (offer, inventory) {
+      let cardsToOffer = offer;
+
+      if (
+        inventory &&
+        _.isFunction(inventory.handIsFull) &&
+        inventory.handIsFull()
+      ) {
+        cardsToOffer++;
+      }
+
+      if (
+        inventory &&
+        _.isFunction(inventory.hasCard) &&
+        inventory.hasCard("gwaio_start_lucky")
+      ) {
+        cardsToOffer++;
+      }
+
+      return cardsToOffer;
+    },
+
+    // Whether `card` should be withheld from a deal. Duplicates are allowed
+    // across players but not within one player's deal.
+    doNotDealCard: function (
+      inventory,
+      card,
+      cardsDealt,
+      dealAddSlot,
+      testRun,
+      systemCards,
     ) {
-      cardsToOffer++;
-    }
+      const cardsInSystem = Array.isArray(systemCards) ? systemCards : [];
+      const systemHasCard = _.some(cardsInSystem, (systemCard) => {
+        if (!systemCard) {
+          return false;
+        }
 
-    return cardsToOffer;
-  },
+        if (_.isFunction(systemCard.id)) {
+          return systemCard.id() === card.id;
+        }
 
-  // Whether `card` should be withheld from a deal. Duplicates are allowed
-  // across players but not within one player's deal.
-  doNotDealCard: function (
-    inventory,
-    card,
-    cardsDealt,
-    dealAddSlot,
-    testRun,
-    systemCards,
-  ) {
-    const cardsInSystem = Array.isArray(systemCards) ? systemCards : [];
-    const systemHasCard = _.some(cardsInSystem, (systemCard) => {
-      if (!systemCard) {
+        return systemCard.id === card.id;
+      });
+
+      // Never deal Additional Data Bank as a system's pre-dealt card
+      if (card.id === "gwc_add_card_slot" && dealAddSlot === false) {
+        return true;
+      }
+
+      if (testRun) {
+        return (
+          inventory.hasCard(card.id) &&
+          _.some(cardsDealt, { id: card.id }) &&
+          systemHasCard
+        );
+      }
+
+      return (
+        inventory.hasCard(card.id) ||
+        _.some(cardsDealt, { id: card.id }) ||
+        systemHasCard
+      );
+    },
+
+    // The weighted walk over one deal iteration; `roll` is [0, 1). Undefined when
+    // nothing is dealable, or the roll falls off the end through float error.
+    chooseDealIndex: function (fullHand, roll) {
+      const hand = [];
+      let probability = 0;
+
+      _.forEach(fullHand, (deal, index) => {
+        if (deal && deal.chance) {
+          hand.push({ index, chance: deal.chance });
+          probability += deal.chance;
+        }
+      });
+
+      if (!hand.length) {
+        return undefined;
+      }
+
+      let remaining = roll * probability;
+      for (const entry of hand) {
+        if (remaining < entry.chance) {
+          return entry.index;
+        }
+        remaining -= entry.chance;
+      }
+
+      return undefined;
+    },
+
+    // A reroll spends one offered card, and the last card is never rerolled.
+    rerollsRemain: function (rerollsUsed, cardsOffered) {
+      return rerollsUsed < cardsOffered - 1;
+    },
+
+    isStartLoadoutCardId,
+
+    filterStartLoadoutCards: function (cards) {
+      return _.filter(cards || [], (card) => isStartLoadoutCardId(card.id));
+    },
+
+    buildPendingStartLoadoutCard: function (card) {
+      const result = _.isString(card) ? { id: card } : _.cloneDeep(card);
+      if (
+        result &&
+        isStartLoadoutCardId(result.id) &&
+        _.isUndefined(result.allowOverflow)
+      ) {
+        result.allowOverflow = true;
+      }
+
+      return result;
+    },
+
+    pendingCardsContainLoadout: function (pendingTechCards) {
+      return !!(
+        pendingTechCards &&
+        Array.isArray(pendingTechCards.cards) &&
+        pendingTechCards.cards.length &&
+        isStartLoadoutCardId(pendingTechCards.cards[0].id)
+      );
+    },
+
+    // Both test whether the exploration that started a deal is still live once
+    // the async chooser resolves. See tech-cards.md, "A deal that arrives late,
+    // or empty".
+    explorationDealtNothing: function (game, starIndex, star, replaying) {
+      if (
+        replaying ||
+        !game ||
+        !_.isFunction(game.turnState) ||
+        !_.isFunction(game.currentStar) ||
+        !_.isNumber(starIndex) ||
+        !star ||
+        !_.isFunction(star.cardList)
+      ) {
         return false;
       }
 
-      if (_.isFunction(systemCard.id)) {
-        return systemCard.id() === card.id;
-      }
-
-      return systemCard.id === card.id;
-    });
-
-    // Never deal Additional Data Bank as a system's pre-dealt card
-    if (card.id === "gwc_add_card_slot" && dealAddSlot === false) {
-      return true;
-    }
-
-    if (testRun) {
       return (
-        inventory.hasCard(card.id) &&
-        _.some(cardsDealt, { id: card.id }) &&
-        systemHasCard
+        game.turnState() === "explore" &&
+        game.currentStar() === starIndex &&
+        _.isEmpty(star.cardList())
       );
-    }
-
-    return (
-      inventory.hasCard(card.id) ||
-      _.some(cardsDealt, { id: card.id }) ||
-      systemHasCard
-    );
-  },
-
-  // The weighted walk over one deal iteration; `roll` is [0, 1). Undefined when
-  // nothing is dealable, or the roll falls off the end through float error.
-  chooseDealIndex: function (fullHand, roll) {
-    const hand = [];
-    let probability = 0;
-
-    _.forEach(fullHand, (deal, index) => {
-      if (deal && deal.chance) {
-        hand.push({ index, chance: deal.chance });
-        probability += deal.chance;
+    },
+    explorationStillLive: function (game, starIndex, star) {
+      if (
+        !game ||
+        !_.isFunction(game.turnState) ||
+        !_.isFunction(game.currentStar) ||
+        !_.isNumber(starIndex) ||
+        !star ||
+        !_.isFunction(star.hasCard)
+      ) {
+        return false;
       }
-    });
 
-    if (!hand.length) {
-      return undefined;
-    }
-
-    let remaining = roll * probability;
-    for (const entry of hand) {
-      if (remaining < entry.chance) {
-        return entry.index;
-      }
-      remaining -= entry.chance;
-    }
-
-    return undefined;
-  },
-
-  isStartLoadoutCardId: function (cardId) {
-    return _.isString(cardId) && _.includes(cardId, "_start_");
-  },
-
-  filterStartLoadoutCards: function (cards) {
-    const self = this;
-    return _.filter(cards || [], (card) => self.isStartLoadoutCardId(card.id));
-  },
-
-  buildPendingStartLoadoutCard: function (card) {
-    const result = _.isString(card) ? { id: card } : _.cloneDeep(card);
-    if (
-      result &&
-      this.isStartLoadoutCardId(result.id) &&
-      _.isUndefined(result.allowOverflow)
-    ) {
-      result.allowOverflow = true;
-    }
-
-    return result;
-  },
-
-  pendingCardsContainLoadout: function (pendingTechCards) {
-    return !!(
-      pendingTechCards &&
-      Array.isArray(pendingTechCards.cards) &&
-      pendingTechCards.cards.length &&
-      _.includes(pendingTechCards.cards[0].id, "_start_")
-    );
-  },
-
-  // Whether the exploration that started a deal is still live once the async
-  // chooser resolves. A recorded deal is a standing obligation to every viewer,
-  // so a stale one must not be recorded. The three checks cover gw_game.js's
-  // three ways of ending an exploration: winTurn, move, and turn state.
-  explorationStillLive: function (game, starIndex, star) {
-    if (
-      !game ||
-      !_.isFunction(game.turnState) ||
-      !_.isFunction(game.currentStar) ||
-      !_.isNumber(starIndex) ||
-      !star ||
-      !_.isFunction(star.hasCard)
-    ) {
-      return false;
-    }
-
-    return (
-      game.turnState() === "explore" &&
-      game.currentStar() === starIndex &&
-      !!star.hasCard()
-    );
-  },
-
-  // Mutates the subcommander. A no-op unless the ally is Penchant.
-  applyPenchantToSubcommander: function (
-    subcommander,
-    gwoSettings,
-    gwoAI,
-    rng,
-  ) {
-    if (!gwoSettings || gwoSettings.aiAlly !== "Penchant") {
-      return;
-    }
-
-    const penchantValues = gwoAI.penchants(rng);
-    subcommander.character = `${subcommander.character} ${loc(penchantValues.penchantName)}`;
-    subcommander.personality.personality_tags =
-      subcommander.personality.personality_tags.concat(
-        penchantValues.penchants,
+      return (
+        game.turnState() === "explore" &&
+        game.currentStar() === starIndex &&
+        !!star.hasCard()
       );
-  },
+    },
 
-  // The two Sub Commanders the General Commander loadout grants. Each draws
-  // from its own stream, so adding a draw to one cannot move the other.
-  buildGeneralCommanderMinions: function (params) {
-    const minionPool = params.minionPool || [];
-    const gwoSettings = params.gwoSettings;
-    const gwoAI = params.gwoAI;
-    const gwoCard = params.gwoCard;
-    const rng = params.rng;
-    const self = this;
-    const minions = [];
-
-    if (!minionPool.length) {
-      return minions;
-    }
-
-    _.times(2, (index) => {
-      const minionRng = rng ? rng.stream("minion", index) : undefined;
-      const baseSubcommander = minionRng
-        ? minionRng.pick(minionPool)
-        : _.sample(minionPool);
-      if (!baseSubcommander) {
+    // Mutates the subcommander. A no-op unless the race's ally brain is
+    // Penchant - a Sub Commander fights as the player's race, so its brain
+    // comes from that race's row, not the war-wide string. See races.md. Only
+    // the name is recorded: its tags are built at launch, and the referee
+    // shows the name after the character. See galaxy.md.
+    applyPenchantToSubcommander: function (
+      subcommander,
+      gwoSettings,
+      gwoAI,
+      rng,
+      race,
+    ) {
+      const settings = gwoSettings || {};
+      const allyBrain = brainTable.resolve(
+        settings.aiByRace,
+        settings.ai,
+        settings.aiAlly,
+        "ally",
+        race,
+      );
+      if (allyBrain !== "Penchant") {
         return;
       }
 
-      const subcommander = _.cloneDeep(baseSubcommander);
-      self.applyPenchantToSubcommander(
-        subcommander,
-        gwoSettings,
-        gwoAI,
-        minionRng,
-      );
-      minions.push({
-        id: "gwc_minion",
-        minion: subcommander,
-        unique: gwoCard.uniqueValue(minionRng),
-      });
-    });
+      subcommander.penchantName = gwoAI.penchants(rng).penchantName;
+    },
 
-    return minions;
-  },
-}));
+    MLA_ONLY,
+    mlaOnlyCard,
+    raceLocksLoadout,
+
+    // A card the player's race can own nothing of is not worth a hand slot.
+    // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes.
+    // See races.md.
+    raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
+      if (!races) {
+        return true;
+      }
+      const race = races.raceOf(inventory);
+      if (races.isMla(race)) {
+        return true;
+      }
+      if (mlaOnlyCard(cardId)) {
+        return false;
+      }
+      const entry = _.find(cardsToUnits || [], { id: cardId });
+      return !entry || races.cardUsable(race, entry.units);
+    },
+
+    // A Sub Commander fights as the player's race, with one of its commanders.
+    // Mutates the subcommander; a no-op for MLA.
+    applyRaceToSubcommander: function (subcommander, races, race, rng) {
+      if (!races || races.isMla(race)) {
+        return subcommander;
+      }
+      subcommander.race = race;
+      const commander = races.commanderFor(rng, race);
+      if (commander) {
+        subcommander.commander = commander;
+      }
+      return subcommander;
+    },
+
+    // The two Sub Commanders the General Commander loadout grants. Each draws
+    // from its own stream, so adding a draw to one cannot move the other.
+    buildGeneralCommanderMinions: function (params) {
+      const minionPool = params.minionPool || [];
+      const gwoSettings = params.gwoSettings;
+      const gwoAI = params.gwoAI;
+      const gwoCard = params.gwoCard;
+      const rng = params.rng;
+      const self = this;
+      const minions = [];
+
+      if (!minionPool.length) {
+        return minions;
+      }
+
+      _.times(2, (index) => {
+        const minionRng = rng ? rng.stream("minion", index) : undefined;
+        const baseSubcommander = minionRng
+          ? minionRng.pick(minionPool)
+          : _.sample(minionPool);
+        if (!baseSubcommander) {
+          return;
+        }
+
+        const subcommander = _.cloneDeep(baseSubcommander);
+        // Every reader gives a Sub Commander its own rate, so the card carries
+        // no rate the template may hold.
+        delete subcommander.econ_rate;
+        self.applyPenchantToSubcommander(
+          subcommander,
+          gwoSettings,
+          gwoAI,
+          minionRng,
+          params.race,
+        );
+        self.applyRaceToSubcommander(
+          subcommander,
+          params.races,
+          params.race,
+          minionRng ? minionRng.stream("commander") : undefined,
+        );
+        minions.push({
+          id: "gwc_minion",
+          minion: subcommander,
+          unique: gwoCard.uniqueValue(minionRng),
+        });
+      });
+
+      return minions;
+    },
+  };
+});

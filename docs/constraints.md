@@ -15,7 +15,7 @@ exempt - `eslint.config.mjs` has a separate override block for them.
 ## One shared scope per scene
 
 PA loads scene scripts as **classic scripts, all in one scope per scene** -
-stock UI code and every enabled mod's scripts share it. Two consequences, both
+stock UI code and every enabled mod's scripts share it. Three consequences, all
 enforced or documented rather than left to memory:
 
 - **No top-level `let`, `const` or `class` in any shipped file.** Top-level
@@ -26,6 +26,11 @@ enforced or documented rather than left to memory:
   collision there reassigns instead of throwing. `eslint.config.mjs` enforces
   this with `no-restricted-syntax`; everything else belongs inside the
   `define(...)` factory or an IIFE.
+- **A scene script is one IIFE.** The scene scripts that `modinfo.json` lists
+  have no `define(...)` to hide inside, so each is one `(() => { ... })();`
+  that holds its `try`/`catch` and any scene-specific early return, and
+  declares nothing at file top level. Sharing between scene scripts goes
+  through `model.gwo*`, never `window`.
 - **Keep module-private helpers inside the `define(...)` factory.** A
   file-top-level declaration becomes a `window` global in PA's RequireJS
   runtime. Hoisting to the "outer scope" that Sonar's `javascript:S7721` wants
@@ -93,6 +98,17 @@ _consuming_ a stock deferred natively is safe; a promise _produced for_ stock
 code must stay a `$.Deferred`, because stock calls `.done`/`.fail`/`.always`
 on it.
 
+`$.when()` and `deferred.then` identify a promise by a `promise` **method**. An
+engine promise (what every `api.*` call returns) has no such method, and a
+native promise has none either, so jQuery reads both as plain values and never
+waits for either one, with no error and no log line. Where a jQuery chain must
+wait on one, `shared/gwo_promise.js` adapts it into a jQuery promise; a native
+chain assimilates it directly (`Promise.resolve(enginePromise)`), which is what
+the converted referee pipeline does. `scripts/lib/fake-jquery.js` applies the
+same test, so a shipped file that skips the adapter fails a test rather than
+skipping the wait in a war. An audit on 2026-08-31 found that every other
+`$.when` in the mod is handed a jQuery promise or a plain value.
+
 PA installs one-argument `String.prototype.startsWith`/`endsWith` polyfills in
 `ui/main/shared/js/helpers.js`. Both are guarded by
 `typeof ... !== "function"`, so under CEF the native two-argument forms win
@@ -101,43 +117,44 @@ ignored the position argument, which is why older code here reaches for
 `_.startsWith`/`_.endsWith`.)
 
 `requireGW` is configured `waitSeconds: 0`, so a module that never arrives never
-errors either — the callback simply never fires. A tally that counts callbacks
-must count failures too, or the promise it gates is never settled at all.
+errors either. The callback simply never fires. A tally that counts callbacks
+must count failures too. Otherwise the promise it gates is never settled at all.
 
 ## Where a defensive check belongs
 
-A guard marks a **trust boundary**, so its presence should tell a reader that the
-data came from somewhere GWO does not control. Adding one anywhere else costs
-that signal, and buys nothing: a check on a value GWO itself built moments
-earlier cannot prevent a crisis, only hide one that has already happened, turning
-a stack trace into a war that silently plays wrong.
+A guard marks a **trust boundary**. Its presence should tell a reader that the
+data came from somewhere GWO does not control. A guard anywhere else costs that
+signal and buys nothing. A check on a value that GWO itself built moments
+earlier cannot prevent a crisis. It can only hide a crisis that already
+happened. That turns a stack trace into a war that silently plays wrong.
 
 Guard when the data is:
 
-- **Third-party** — a card object and its methods, `addMods`/`addAIMods`
+- **Third-party**: a card object and its methods, `addMods`/`addAIMods`
   descriptors, `model.gwo*` entries, a registered loadout bank, a system
   template. The validators cover shipped cards only ([`tech-cards.md`](tech-cards.md)).
-- **Remote** — an operator payload from another peer ([`coop.md`](coop.md)).
-- **Persisted** — an older GWO's save, or user-writable `localStorage`. Name the
+- **Remote**: an operator payload from another peer ([`coop.md`](coop.md)).
+- **Persisted**: an older GWO's save, or user-writable `localStorage`. Name the
   version the field appeared in, as `shared/deal.js` does.
-- **Scene- or mod-conditional** — a symbol genuinely absent from a scene the
+- **Scene- or mod-conditional**: a symbol genuinely absent from a scene the
   module also loads into, or a base path another mod may own.
-- **Optional by contract** — `rng` on `deal()`, `keep`/`discard`.
+- **Optional by contract**: `rng` on `deal()`, `keep`/`discard`.
 
-Do not guard a hard invariant, re-check what a named gate upstream already
-validated, or write a half-guard — `card.deal && card.deal(…)` followed by an
-unguarded read of the result is worse than neither, because it advertises a
-safety it does not provide.
+Do not guard a hard invariant. Do not re-check what a named gate upstream
+already validated. Do not write a half-guard. `card.deal && card.deal(…)`
+followed by an unguarded read of the result is worse than neither, because it
+advertises a safety it does not provide.
 
-`gw_play/gwo_panel.js` is the calibration: it walks
+`gw_play/gwo_panel.js` is the calibration. It walks
 `model.game() → galaxy() → stars()[origin()].system()` unguarded, then checks
-`_.isPlainObject(originSystem.gwaio)` — base game trusted, the field an old save
-may lack checked.
+`_.isPlainObject(originSystem.gwaio)`. It trusts the base game and checks the
+field that an old save may lack.
 
-The two shapes that satisfy this rather than scattering checks are a **named
+Two shapes satisfy this rather than scattering checks. The first is a **named
 pre-flight gate** that refuses the whole operation with a diagnostic
-(`gw_play/per_player_tech.js`), and a **per-item `try`/`catch`** so one bad entry
-in a batch is skipped rather than aborting the rest (`shared/specs.js`).
+(`gw_play/per_player_tech.js`). The second is a **per-item `try`/`catch`**, so
+one bad entry in a batch is skipped rather than aborting the rest
+(`shared/specs.js`).
 
 That second shape is not optional where third-party code is _called_ rather than
 read. In the deliberately-still-jQuery deal/cards subsystem the reason is the
@@ -176,28 +193,60 @@ Overrides should out-specify rather than rely on source order.
 
 ## Localisation
 
-Base-game files carrying `!LOC:` strings open with a `// !LOCNS:<namespace>`
+Base-game files that carry `!LOC:` strings open with a `// !LOCNS:<namespace>`
 directive on line 1. **GWO deliberately does not carry it**, including in
 shadowed copies of files that have it upstream.
 
 It is a build-time directive, not a runtime one. Nothing in the shipped game
-parses it - every occurrence in the base install is the directive itself, and
-`localization.js` has no namespace handling. It tells Uber's string-extraction
-tooling which translation file (`galactic_war.json`, `leaderboard.json`, …) a
-file's strings belong in. GWO's strings never go through that tooling, so the
-directive would do nothing here; at runtime `loc()` resolves against the
-merged tables regardless.
+parses it. Every occurrence in the base install is the directive itself, and
+`localization.js` has no namespace handling. The directive tells Uber's
+string-extraction tooling which translation file (`galactic_war.json`,
+`leaderboard.json`, …) a file's strings belong in. GWO's strings never go
+through that tooling, so the directive would do nothing here. At runtime,
+`loc()` resolves against the merged tables regardless.
 
-Don't add it back to a shadowed file "to match stock" - it has no effect and
-no consumer in this repo.
+Do not restore it in a shadowed file "to match stock". It has no effect and no
+consumer in this repo.
 
 `loc()` lookups are **case sensitive**, and the shipped translation tables are
-inconsistent about casing. `PLAYER` has entries in 20 locales where `Player`
-has 14; `LOCKED` is the only casing shipped at all. That is why several UI
-strings are asked for in a shouty casing and then down-cased in CSS rather
-than being written naturally. `locTree` only rewrites an element's
-`innerHTML`, so attributes (and therefore CSS classes) survive translation -
-which is what makes the trick work.
+inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has 14.
+`LOCKED` is the only casing shipped at all. That is why several UI strings
+are requested in a shouty casing and then down-cased in CSS rather than written
+naturally. `locTree` only rewrites an element's `innerHTML`, so attributes (and
+therefore CSS classes) survive translation. That is what makes the trick work.
+
+Three rules follow from that, and GWO's HTML applies each:
+
+- **A trailing colon sits outside the `<loc>`.** Keys are character-sensitive
+  too. The game ships entries for the bare label (`ECONOMY`) but none for the
+  label plus colon (`ECONOMY:`). So `gw_start/ai_settings.html` writes
+  `<loc>ECONOMY</loc>:`.
+- **Where the entry's casing differs from what the panel displays**, the `<loc>`
+  spells the label the way the entry does and carries `.gwo-uppercase`.
+  `gw_start/gwo_start.css` restores the display casing after translation.
+- **`Mod:` in the war panel is deliberately left untranslatable.** It is one
+  `<loc>Mod:</loc>` with no entry, rather than `<loc>Mod</loc>:`, which would
+  resolve. The only `Mod` the game ships is the server browser's column. It
+  means something else there ("Modifizieren" in de, and 模型, "model", in
+  zh-CN). Six more locales leave it as the English "Mod" anyway. Adopting it
+  would mislead more players than it would help (`gw_play/gwo_panel.html`).
+
+### Where GWO's translations come from
+
+The game merges only its own `ui/main/_i18n/locales/<lang>/*.json` tables, natively,
+before any mod script runs, and a mod file at one of those paths would shadow a
+stock table wholesale. GWO therefore ships its translations as
+`ui/mods/com.pa.quitch.gwaioverhaul/translations/<lang>.json` and hands them to the
+**Mod Translations** mod, which adds them to the same i18next store `loc()` reads.
+`shared/mod_translations.js` is the sole `global_mod_list` entry in `modinfo.json`,
+and in no scene list, so the strings are in place before the stock scene's
+`document.ready` and its model constructor, which translate eagerly; a scene-list
+registration is too late for those and leaves them English. Where a key is in both
+a GWO file and a stock table the GWO entry wins; the shipped files hold only keys
+the stock tables lack, so nothing is overridden today. `en-US.json` is the catalog
+for translators and is never loaded. Without Mod Translations the shim does nothing
+and GWO's text is English, as it always was. Details and tooling:
+[`translations.md`](translations.md).
 
 ## HTML
 
@@ -210,7 +259,7 @@ Knockout virtual bindings look like comments but are **executable markup**:
 <!-- /ko -->
 ```
 
-They are not comments and must never be removed as such.
+They are not comments. Never remove them as comments.
 
 ## Engine URLs
 

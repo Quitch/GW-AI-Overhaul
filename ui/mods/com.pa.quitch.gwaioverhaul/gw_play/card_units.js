@@ -7,7 +7,7 @@ define([
     gwoUnit.mend,
     gwoUnit.botFabberAdvanced,
   ];
-  const advancedBotsExcludingFabbers = _.xor(
+  const advancedBotsExcludingFabbers = _.difference(
     gwoGroup.botsAdvancedMobile,
     advancedBotFabbers,
   );
@@ -216,7 +216,7 @@ define([
       },
       {
         id: "gwc_energy_efficiency_intel",
-        units: gwoGroup.energyIntel.concat(gwoGroup.teleporters),
+        units: gwoGroup.energyIntel,
       },
       { id: "gwc_energy_efficiency_weapons", units: gwoGroup.energyUnits },
       { id: "gwc_health_air", units: gwoGroup.airMobile },

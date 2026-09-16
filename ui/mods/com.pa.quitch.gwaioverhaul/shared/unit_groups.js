@@ -56,10 +56,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   const airAmmo = airBasicAmmo.concat(airAdvancedAmmo);
   const airWeapons = airBasicWeapons.concat(airAdvancedWeapons);
   const airMobile = airBasicMobile.concat(airAdvancedMobile);
-  const airMobileNoCluster = _.filter(
-    airMobile,
-    (unit) => unit !== gwoUnit.angel,
-  );
+  const airMobileNoCluster = _.without(airMobile, gwoUnit.angel);
   const airCombat = airBasicCombat.concat(airAdvancedCombat);
   const air = airBasic.concat(airAdvanced);
 
@@ -504,6 +501,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
   ];
   const fabbers = fabbersBasic.concat(fabbersAdvanced);
 
+  const landFactoriesBasic = [
+    gwoUnit.airFactory,
+    gwoUnit.botFactory,
+    gwoUnit.vehicleFactory,
+  ];
   const factoriesBasic = [
     gwoUnit.airFactory,
     gwoUnit.botFactory,
@@ -598,6 +600,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     gwoUnit.commanderWeaponLaser,
     gwoUnit.commanderWeaponMissile,
   ];
+  const commanderPrimaryWeapons = _.without(
+    commanderWeapons,
+    gwoUnit.commanderAA,
+  );
 
   // Armed only once their upgrade tech attaches a weapon, so they sit outside
   // the combat groups despite being in the domain rosters.
@@ -621,7 +627,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
 
   // A death payload scales a self-destruct rather than a weapon, so no domain
   // group carries one - except the Manhattan's, which is its real damage.
-  const deathAmmo = [
+  const deathPayloads = [
     gwoUnit.aresDeath,
     gwoUnit.atlasDeath,
     gwoUnit.commanderDeath,
@@ -642,9 +648,25 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
       structuresArtilleryAmmo,
       commanderAmmo,
       unhomedAmmo,
-      deathAmmo,
+      deathPayloads,
     ),
   );
+
+  // Everything that detonates on death or on command, and takes the mines and
+  // the Boom with it: what a kill-switch turns against its own side.
+  const deathAmmo = [
+    gwoUnit.wyrmDeath,
+    gwoUnit.zeusDeath,
+    gwoUnit.commanderDeath,
+    gwoUnit.manhattanDeath,
+    gwoUnit.atlasDeath,
+    gwoUnit.aresDeath,
+    gwoUnit.jigDeath,
+    gwoUnit.kesslerAmmo,
+    gwoUnit.landMineAmmo,
+    gwoUnit.boomAmmo,
+    gwoUnit.heliosDeath,
+  ];
 
   const weaponsMobile = airWeapons.concat(
     botsWeapons,
@@ -731,6 +753,40 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     gwoUnit.vehicleFactory,
     gwoUnit.vehicleFactoryAdvanced,
   ];
+  // What the Nomad loadout can carry, teleport, or only drive, by footprint;
+  // the orbital three fly instead.
+  const nomadStructuresSmall = [
+    gwoUnit.energyPlant,
+    gwoUnit.energyStorage,
+    gwoUnit.galata,
+    gwoUnit.landMine,
+    gwoUnit.laserDefenseTower,
+    gwoUnit.lob,
+    gwoUnit.metalStorage,
+    gwoUnit.pelter,
+    gwoUnit.radar,
+    gwoUnit.singleLaserDefenseTower,
+    gwoUnit.torpedoLauncher,
+    gwoUnit.umbrella,
+    gwoUnit.wall,
+  ];
+  const nomadStructuresMedium = [
+    gwoUnit.catapult,
+    gwoUnit.energyPlantAdvanced,
+    gwoUnit.flak,
+    gwoUnit.laserDefenseTowerAdvanced,
+    gwoUnit.radarJammingStation,
+    gwoUnit.torpedoLauncherAdvanced,
+  ];
+  const nomadStructuresLarge = [
+    gwoUnit.anchor,
+    gwoUnit.deepSpaceOrbitalRadar,
+    gwoUnit.holkins,
+    gwoUnit.jig,
+    gwoUnit.kessler,
+    gwoUnit.radarAdvanced,
+  ];
+  const nomadStructuresOrbital = [gwoUnit.anchor, gwoUnit.jig, gwoUnit.kessler];
   const nomadStructures = structuresDefences.concat(
     structuresIntel,
     structuresArtillery,
@@ -747,9 +803,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     structuresDefences,
     gwoUnit.commander,
   );
-  const combatMobile = _.reject(combat, (unit) =>
-    _.includes(structuresDefences, unit),
-  );
+  const combatMobile = _.difference(combat, structuresDefences);
 
   return {
     air,
@@ -786,6 +840,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     combatMobileAmmo,
     combatMobileWeapons,
     commanderAmmo,
+    commanderPrimaryWeapons,
+    commanderWeapons,
+    deathAmmo,
     energyAll,
     energyIntel,
     energyUnits,
@@ -799,6 +856,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     factoriesBasic,
     factoryBuildArms,
     immobile,
+    landFactoriesBasic,
     mobile,
     mobileNoCluster,
     naval,
@@ -814,6 +872,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     navalMobile,
     navalWeapons,
     nomadStructures,
+    nomadStructuresLarge,
+    nomadStructuresMedium,
+    nomadStructuresOrbital,
+    nomadStructuresSmall,
     orbital,
     orbitalAdvanced,
     orbitalAdvancedCombat,
@@ -860,9 +922,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], (
     vehicleFactories,
     vehicles,
     vehiclesAdvanced,
+    vehiclesAdvancedCombat,
     vehiclesAdvancedMobile,
     vehiclesAmmo,
     vehiclesBasic,
+    vehiclesBasicCombat,
     vehiclesBasicMobile,
     vehiclesCombat,
     vehiclesMobile,

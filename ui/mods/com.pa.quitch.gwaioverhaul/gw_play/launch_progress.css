@@ -1,0 +1,19 @@
+/* Above the co-op inventory modal (9000), below #settings (10000). */
+.gwo-launch-progress {
+  position: absolute;
+  inset: 0;
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 68%);
+  animation: uifadein 0.2s ease-in-out;
+}
+
+.gwo-launch-progress-steps {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: normal;
+  color: rgb(255 255 255 / 55%);
+  text-shadow: none;
+}

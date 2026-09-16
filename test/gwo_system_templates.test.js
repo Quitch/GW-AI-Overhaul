@@ -4,7 +4,7 @@
 // dispatch, since shadowing this path once broke Shared Systems' own panel; and the
 // per-planet streams, drained in both resolution orders to require the same system.
 
-const { describe, it, before, after } = require("node:test");
+const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
@@ -164,6 +164,16 @@ const RANDOM_POOL = {
   ],
 };
 const SINGLE_POOL = { planets: [generated(["tropical"])] };
+// Three explicit entries, so two explicit slots always find an unused one, and
+// one that is not, which an explicit slot must never draw.
+const EXPLICIT_POOL = {
+  planets: [
+    generated(["moon"]),
+    generated(["earth"], { isExplicit: true }),
+    generated(["lava"], { isExplicit: true }),
+    generated(["ice"], { isExplicit: true }),
+  ],
+};
 const EMPTY_POOL = { planets: [] };
 
 TEMPLATES.push(
@@ -208,7 +218,22 @@ TEMPLATES.push(
     Systems: [
       {
         Planets: [
-          { fromRandomList: RANDOM_POOL, isExplicit: true, name: "Handpicked" },
+          {
+            fromRandomList: EXPLICIT_POOL,
+            isExplicit: true,
+            name: "Handpicked",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    Players: [23, 24],
+    Systems: [
+      {
+        Planets: [
+          { fromRandomList: EXPLICIT_POOL, isExplicit: true },
+          { fromRandomList: EXPLICIT_POOL, isExplicit: true },
         ],
       },
     ],
@@ -220,10 +245,25 @@ TEMPLATES.push(
   },
 );
 
-["pa-easy", "pa-normal", "titans-easy", "titans-normal"].forEach((name) => {
+// The easy sets get a pool of their own, so a system can say which set it came
+// from: setup.js asks for them through galaxy_build's useEasierSystemTemplate.
+const EASY_TEMPLATES = [
+  {
+    Players: [0, 99],
+    Systems: [{ Planets: [generated(["easy-only"])] }],
+  },
+];
+
+["pa-normal", "titans-normal"].forEach((name) => {
   registerModuleStub(
     "main/game/galactic_war/shared/js/systems/" + name,
     TEMPLATES,
+  );
+});
+["pa-easy", "titans-easy"].forEach((name) => {
+  registerModuleStub(
+    "main/game/galactic_war/shared/js/systems/" + name,
+    EASY_TEMPLATES,
   );
 });
 
@@ -315,6 +355,10 @@ function shape(system) {
   return JSON.stringify({ name: system.name, planets: system.planets });
 }
 
+afterEach(() => {
+  mock.restoreAll();
+});
+
 describe("gwo_system_templates chooseFor", () => {
   // Shared Systems for Galactic War marks its template-loader with loadOptions. Taking
   // it over is what broke that mod's Systems panel when GWO shadowed the base path.
@@ -333,6 +377,19 @@ describe("gwo_system_templates chooseFor", () => {
 
   it("uses GWO's seeded loader when there is no base loader at all", () => {
     assert.ok(templates.chooseFor(undefined, "PAExpansion1", false).generate);
+  });
+
+  // Easy Systems reaches here as galaxy_build's useEasierSystemTemplate; a
+  // loader built with it draws from the easy set, not the normal one.
+  it("draws from the easy template set when asked for it", async () => {
+    const easy = templates.chooseFor(undefined, "PAExpansion1", true);
+    const system = await generate(easy, { players: 2, seed: "easy" });
+    assert.equal(system.planets.length, 1);
+    assert.equal(system.planets[0].generator.biome, "easy-only");
+
+    const normal = templates.chooseFor(undefined, "PAExpansion1", false);
+    const other = await generate(normal, { players: 2, seed: "easy" });
+    assert.notEqual(other.planets[0].generator.biome, "easy-only");
   });
 });
 
@@ -381,20 +438,14 @@ describe("gwo_system_templates generate", () => {
 
   // The one hole that produced a plausible-looking unseeded war in silence.
   it("warns when a caller supplies no seed, and not when the seed is 0", async () => {
-    const warnings = [];
-    const priorWarn = console.warn;
-    console.warn = (message) => warnings.push(message);
-    try {
-      await generate(loader(), { players: 2 });
-      assert.equal(warnings.length, 1);
-      assert.match(warnings[0], /no seed/);
+    const warnMock = mock.method(console, "warn", () => {});
+    await generate(loader(), { players: 2 });
+    assert.equal(warnMock.mock.callCount(), 1);
+    assert.match(warnMock.mock.calls[0].arguments[0], /no seed/);
 
-      warnings.length = 0;
-      await generate(loader(), { players: 2, seed: 0 });
-      assert.deepEqual(warnings, []);
-    } finally {
-      console.warn = priorWarn;
-    }
+    warnMock.mock.resetCalls();
+    await generate(loader(), { players: 2, seed: 0 });
+    assert.equal(warnMock.mock.callCount(), 0);
   });
 
   // Each planet draws from its own stream, so a planet's biome cannot depend on
@@ -504,21 +555,24 @@ describe("gwo_system_templates fromRandomList", () => {
     assert.deepEqual(system.planets[0].Radius, [300, 600]);
   });
 
-  // lodash 3's _.where takes a source object, not a predicate, so the isExplicit
-  // filter these lines read as applying is inert - every entry stays viable and
-  // the do/while's usedIndexes check is what actually keeps the draws apart.
-  //
-  // Deliberately not corrected. It is stock's, character for character
-  // (media/ui/main/game/galactic_war/shared/js/systems/template-loader.js), and
-  // this file tracks stock line for line. Nothing in stock or GWO pairs
-  // isExplicit with fromRandomList, so the filter would be a no-op either way -
-  // while switching to _.filter would shrink the viable list, shift the draw and
-  // regenerate every existing war's boss systems from the same seed.
-  it("does not in fact filter the list by isExplicit", async () => {
-    const system = await generate(loader(), { players: 19, seed: "explicit" });
-    // The pool holds no isExplicit entry, yet the explicit slot still drew one.
-    assert.ok(RANDOM_POOL.planets.every((planet) => !planet.isExplicit));
-    assert.equal(system.planets.length, 1);
+  // Stock's _.where discarded this predicate under lodash 3; GWO's copy uses
+  // _.filter. See galaxy.md, "Copies, not shadows".
+  it("only draws entries matching the slot's isExplicit", async () => {
+    for (const seed of ["e1", "e2", "e3", "e4", "e5", "e6"]) {
+      const system = await generate(loader(), { players: 19, seed });
+      assert.equal(system.planets.length, 1);
+      assert.notDeepEqual(system.planets[0].Biomes, ["moon"], `seed ${seed}`);
+    }
+  });
+
+  it("excludes entries already drawn from an explicit slot's choices", async () => {
+    for (const seed of ["u1", "u2", "u3", "u4", "u5", "u6"]) {
+      const system = await generate(loader(), { players: 23, seed });
+      const drawn = system.planets.map((planet) => planet.Biomes[0]);
+      assert.equal(drawn.length, 2);
+      assert.notEqual(drawn[0], drawn[1], `seed ${seed} drew ${drawn}`);
+      assert.ok(!drawn.includes("moon"), `seed ${seed} drew ${drawn}`);
+    }
   });
 });
 

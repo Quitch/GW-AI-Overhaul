@@ -36,11 +36,13 @@ mechanical pass rather than a judgement call:
 --replace <file> --transform let,arrow,arrow-return,template,obj-shorthand`,
    then `_.isArray` → `Array.isArray`, `_.assign({},` → `Object.assign({},`,
    the lodash-3-only names in the table below, and `_.constant(<primitive>)` →
-   an arrow in mod-authored cards. lebab also turns every file-top-level `var`
-   into `let`/`const`; put those back to `var` — the scene entry flags,
-   `gwo_panel.js`'s `disposeGwoPanelLoader`, `section_of_foreign_intelligence.js`'s
-   `gwoBuffType` — under the scene-scope rule in
-   [constraints.md](constraints.md). `eslint` catches any that slip.
+   an arrow in mod-authored cards. lebab also turns any file-top-level `var`
+   into `let`/`const`; put those back to `var` under the scene-scope rule in
+   [constraints.md](constraints.md) (`develop`'s scene scripts are IIFEs since
+   v7.0 and declare nothing at top level, so this is now rare). `eslint`
+   catches any that slip. The pass is scoped to `ui/**` on the mod's side of
+   the boundary: `scripts/**` and `test/**` keep `develop`'s own idiom, and the
+   shadowed files and `gwc_` cards stay ES5.
 3. Re-apply the dynamic-URL routing by hand: a new `window.location.href`,
    `$.get`/`$.ajax` or `"coui:/" + path` site from `develop` must go through
    `shared/gwo_url.js`, and new fetching through `shared/gwo_fetch.js`.
@@ -48,17 +50,17 @@ mechanical pass rather than a judgement call:
    stock copies, and `npm run verify` green. `develop`'s _own_ files keep their
    own conventions; realigning those is drive-by.
 
-| lodash 3 call              | Native form                    | Why it cannot stay                                     |
-| -------------------------- | ------------------------------ | ------------------------------------------------------ |
-| `_.first(a)` / `_.last(a)` | `a[0]` / `a[a.length - 1]`     | `_.first` is `_.head` in 4; `_.last` survives, aliased |
-| `_.rest(a)`                | `a.slice(1)`                   | `_.rest` in 4 is a function wrapper, not `_.tail`      |
-| `_.contains(a, x)`         | `a.includes(x)`                | removed in 4 (`_.includes`)                            |
-| `_.any` / `_.all`          | `a.some` / `a.every`           | removed in 4 (`_.some` / `_.every`)                    |
-| `_.pluck(a, "k")`          | `a.map((o) => o.k)`            | removed in 4 (`_.map` with a string)                   |
-| `_.sum(a)`                 | `a.reduce((t, n) => t + n, 0)` | 4's `_.sum` drops the iteratee                         |
-| `_.zipObject(pairs)`       | `Object.fromEntries(pairs)`    | 4 takes `(keys, values)` only; pairs is `_.fromPairs`  |
-| `_.isArray(a)`             | `Array.isArray(a)`             | drop-in; spelled once                                  |
-| `_.assign({}, ...)`        | `Object.assign({}, ...)`       | drop-in; spelled once                                  |
+| lodash 3 call              | Native form                    | Why it cannot stay                                         |
+| -------------------------- | ------------------------------ | ---------------------------------------------------------- |
+| `_.first(a)` / `_.last(a)` | `a[0]` / `a[a.length - 1]`     | `_.first` is `_.head` in 4; `_.last` survives, aliased     |
+| `_.rest(a)`                | `a.slice(1)`                   | `_.rest` in 4 is a function wrapper, not `_.tail`          |
+| `_.contains(a, x)`         | `a.includes(x)`                | removed in 4 (`_.includes`)                                |
+| `_.any` / `_.all`          | `a.some` / `a.every`           | removed in 4 (`_.some` / `_.every`)                        |
+| `_.pluck(a, "k")`          | `_.map(a, "k")`                | removed in 4; `_.map` keeps the string form and a null `a` |
+| `_.sum(a)`                 | `a.reduce((t, n) => t + n, 0)` | 4's `_.sum` drops the iteratee                             |
+| `_.zipObject(pairs)`       | `Object.fromEntries(pairs)`    | 4 takes `(keys, values)` only; pairs is `_.fromPairs`      |
+| `_.isArray(a)`             | `Array.isArray(a)`             | drop-in; spelled once                                      |
+| `_.assign({}, ...)`        | `Object.assign({}, ...)`       | drop-in; spelled once                                      |
 
 `_.zipObject(keys, values)`, `_.map`, `_.filter`, `_.forEach`, `_.partial`,
 `_.compact` and the rest of the shared 3/4 surface stay.
@@ -93,6 +95,61 @@ test 136) and green in the rewritten copy, 98.5% lines under
   and `package-lock.json` regenerated.
 - `docs/README.md`'s trap list keeps `develop`'s new biome entry and not its
   Chrome-40 CSS ones (`filter`, `space-evenly`), which stage 2 retired.
+
+Merged to `develop`'s v7.3.0 (2026-09-16, `feecab00`): `npm run verify` green,
+1,772 tests, 98.7% lines under `npm run test:coverage`, rename rehearsal
+REHEARSAL_PLACEHOLDER. 362 commits and 500 files arrived (races and add-ons,
+translations, custom decks, the IIFE scene scripts, the launch-progress
+overlay, the referee tree cache) and `git merge` raised 280 conflicts, so the
+mechanical half of steps 1–2 was done as a three-way merge of _modernised_
+sides rather than file by file: the merge base and `develop`'s copy of each
+conflicted file were both run through the step-2 pass (lebab, the native
+forms, `_.constant` → arrow, top-level `let`/`const` → `var`) and prettier,
+then `git merge-file ours base' develop'`. A file whose modernised base equals
+this branch's copy is pure spelling and takes `develop'` outright (251 of the
+280); the rest merge with only the real CEF delta in play, and 12 needed a
+hand. What the hand pass had to do:
+
+- `gw_play/referee.js`: `develop` added `stage()` progress labels, the
+  per-launch `treeCache` and `pass` counter, and a fail handler that clears
+  `launchingFight` so a rejected hire cannot leave Fight dead. All slotted into
+  this branch's `GwoReferee` class and native-first `hire` chain; the fail
+  handler rejects the boundary deferred instead of returning a new one.
+- `gw_play/referee_ai.js`: `develop`'s `processDirectories` and `generate` grew
+  a `$.Deferred` plus `try`/`catch`/`fail` so a throw rejects rather than hangs.
+  This branch's chains are native, where a throw already rejects, so the
+  deferreds and the `try` are dropped and `develop`'s race-tree jobs and
+  `forEachMatchingTarget` are kept as they are. `fake-jquery.js` is
+  `develop`'s (it grew `when`/`enginePromise`/`installFakeJQuery`), with
+  `fake-fetch.js` still standing in for `gwo_fetch.js`.
+- `gw_play/referee_game_file_paths.js`: `develop` moved the unit-map reads here
+  as `loadMap`, a `` `spec:/${path}` `` builder; it goes through
+  `gwoUrl.specFile` like the two it replaced, and `specFetch` stays on
+  `gwo_fetch`. `referee_game_files.js` no longer needs `gwoUrl` at all.
+- `shared/race_picker_view.js` is a scene script, not an AMD module, and built
+  `` `coui:/${spec}` `` for a race commander's portrait; the read now sits
+  inside a `requireGW` for `gwo_url.js`, which is fine because only the fetch
+  waits, not the bindings.
+- `develop`'s `shared/gwo_promise.js` (`settled`: engine promise → jQuery
+  promise, for `$.when` chains) is kept as is. It is the jQuery-side adapter
+  for the same fact the native pipelines handle with `Promise.resolve`, and
+  constraints.md now says which to reach for.
+- `develop`'s race and add-on code arrived with 52 lodash-3-only calls:
+  `_.pluck` → `_.map(a, "k")`, `_.contains` → `.includes` where the array is
+  certain and `_.includes` where it may be null, `_.last` → index. The two-array
+  `_.zipObject(keys, values)` sites stay.
+- `develop` re-added `eslint-plugin-es-x` and Chrome-40 CSS (`-webkit-`
+  prefixes, `rgba()`, four-side `top/right/bottom/left`), and two
+  `webkitFilter`/`webkitMaskImage` style binds; the plugin is dropped again,
+  `format:css` converged the CSS, and the binds are unprefixed like the CSS.
+- `scripts/lib/amd-loader.js`: `develop`'s `couiToFsPath` helper reads its
+  prefix from `scripts/lib/scheme.js` rather than its own `"coui://"` literal,
+  so the rewriter still has one Node-side constant to rename.
+- The CEF changelog entry had been released under v6.13.0 by the merge; it is
+  back under Unreleased.
+- Four files `develop` deleted (`gw_galaxy.js` and its graph module, replaced
+  by `gw_start/galaxy_build.js`, and two obsolete tests) had only spelling
+  changes here and go.
 
 Things that a bulk "take `develop`'s version" would have broken, and the
 reason step 1 above names files rather than a rule:

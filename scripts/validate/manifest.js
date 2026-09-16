@@ -5,7 +5,8 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { REPO_ROOT } = require("../lib/amd-loader.js");
+const { REPO_ROOT, couiToFsPath } = require("../lib/amd-loader.js");
+const { reportProblems } = require("../lib/report-failures.js");
 const { UI_SCHEME } = require("../lib/scheme.js");
 
 const MODINFO_PATH = path.join(REPO_ROOT, "modinfo.json");
@@ -23,7 +24,8 @@ function validateScene(sceneName, files, failures) {
   }
 
   for (const entry of files) {
-    if (!entry.startsWith(UI_SCHEME)) {
+    const fsPath = couiToFsPath(entry);
+    if (!fsPath) {
       failures.push(
         "scene `" +
           sceneName +
@@ -34,7 +36,6 @@ function validateScene(sceneName, files, failures) {
       );
       continue;
     }
-    const fsPath = path.join(REPO_ROOT, entry.slice(UI_SCHEME.length));
     if (!fs.existsSync(fsPath)) {
       failures.push(
         "scene `" +
@@ -85,11 +86,7 @@ function main() {
       " problems.",
   );
 
-  if (failures.length) {
-    console.error("");
-    failures.forEach((f) => console.error("  - " + f));
-    process.exitCode = 1;
-  }
+  reportProblems(failures);
 }
 
 main();

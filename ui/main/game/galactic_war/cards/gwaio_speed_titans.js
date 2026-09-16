@@ -20,35 +20,14 @@ define([
   },
 
   buff: function (inventory) {
-    const mods = _.flatten(
-      _.map(gwoGroup.titansMobile, (unit) => [
-        {
-          file: unit,
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.2,
-        },
-        {
-          file: unit,
-          path: "navigation.brake",
-          op: "multiply",
-          value: 1.2,
-        },
-        {
-          file: unit,
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 1.2,
-        },
-        {
-          file: unit,
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: 1.2,
-        },
-      ]),
+    inventory.addMods(
+      gwoCard.flatMapMods(
+        gwoGroup.titansMobile,
+        "multiply",
+        gwoCard.paths.navigation,
+        1.2,
+      ),
     );
-    inventory.addMods(mods);
   },
 
   dull: function () {},

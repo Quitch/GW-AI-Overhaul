@@ -23,13 +23,9 @@ define([
   },
 
   buff: function (inventory) {
-    const mods = _.map(gwoGroup.titans, (unit) => ({
-      file: unit,
-      path: "max_health",
-      op: "multiply",
-      value: 1.5,
-    }));
-    inventory.addMods(mods);
+    inventory.addMods(
+      gwoCard.flatMapMods(gwoGroup.titans, "multiply", { max_health: 1.5 }),
+    );
   },
 
   dull: function () {},

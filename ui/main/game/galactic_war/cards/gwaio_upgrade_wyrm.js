@@ -1,64 +1,29 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], (gwoCard, gwoUnit) => ({
-  visible: () => true,
+], (gwoCard, gwoUnit) =>
+  gwoCard.upgradeCard({
+    name: "!LOC:Wyrm Upgrade Tech",
+    description:
+      "!LOC:Wyrm Upgrade Tech replaces the siege bomber's bombs with drones.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_combat_air_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_ammunition",
+    requires: gwoUnit.wyrm,
+    buff: function (inventory) {
+      inventory.addUnits(gwoUnit.squall);
 
-  describe: _.constant(
-    gwoCard.withSlot(
-      loc(
-        "!LOC:Wyrm Upgrade Tech replaces the siege bomber's bombs with drones.",
-      ),
-    ),
-  ),
-
-  summarize: () => "!LOC:Wyrm Upgrade Tech",
-
-  icon: () =>
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_combat_air_upgrade.png",
-
-  audio: _.constant({
-    found: "/VO/Computer/gw/board_tech_available_ammunition",
-  }),
-
-  getContext: gwoCard.getContext,
-
-  deal: function (system, context, inventory) {
-    return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.wyrm),
-    );
-  },
-
-  buff: function (inventory) {
-    inventory.maxCards(inventory.maxCards() + 1);
-    inventory.addUnits(gwoUnit.squall);
-
-    inventory.addMods([
-      {
-        file: gwoUnit.wyrm,
-        path: "tools.0.spec_id",
-        op: "replace",
-        value: gwoUnit.typhoonWeapon,
-      },
-      {
-        file: gwoUnit.wyrm,
-        path: "tools.0.spec_id",
-        op: "tag",
-      },
-      {
-        file: gwoUnit.wyrm,
-        path: "navigation.aggressive_distance",
-        op: "replace",
-        value: 250, // matches the Typhoon's drone launcher range
-      },
-      {
-        file: gwoUnit.wyrm,
-        path: "navigation.aggressive_behavior",
-        op: "replace",
-        value: "circle",
-      },
-    ]);
-  },
-
-  dull: function () {},
-}));
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.wyrm, "replace", {
+            "tools.0.spec_id": gwoUnit.typhoonWeapon,
+          })
+          .concat(
+            [{ file: gwoUnit.wyrm, path: "tools.0.spec_id", op: "tag" }],
+            gwoCard.mods(gwoUnit.wyrm, "replace", {
+              "navigation.aggressive_distance": 250, // matches the Typhoon's drone launcher range
+              "navigation.aggressive_behavior": "circle",
+            }),
+          ),
+      );
+    },
+  }));

@@ -2,35 +2,36 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
 ], (inventory, gwoUnit) => {
-  const clusterSubCommanderTech = [
-    {
-      file: gwoUnit.colonel,
-      path: "tools.0.spec_id",
-      op: "replace",
-      value: gwoUnit.commanderBuildArm,
-    },
-    {
-      file: gwoUnit.colonel,
-      path: "tools.0.spec_id",
-      op: "tag",
-    },
-    {
-      file: gwoUnit.colonel,
-      path: "max_health",
-      op: "multiply",
-      value: 1.5625, // match Commander health
-    },
-    {
-      file: gwoUnit.colonel,
-      path: "buildable_types",
-      op: "replace",
-      value: "CmdBuild & Custom58",
-    },
-    {
-      file: gwoUnit.colonel,
-      path: "unit_types",
-      op: "replace",
-      value: [
+  // Every mod here turns one vanilla unit into a commander. That is about the
+  // unit, not its kind, so none of them may be re-aimed at a race's units of
+  // the same cell (`exact`) - see races.md, "Capability cells".
+  const op = (file, name, path, value) => ({
+    file,
+    path,
+    op: name,
+    value,
+    exact: true,
+  });
+
+  // One replace per path, in the order given.
+  const replace = (file, props) =>
+    _.map(_.keys(props), (path) => op(file, "replace", path, props[path]));
+
+  // A build arm swapped in by replace needs the tag op after it, or the
+  // referee leaves the stock arm on the unit - see specs.md.
+  const commanderBuildArm = (file, path) => [
+    op(file, "replace", path, gwoUnit.commanderBuildArm),
+    { file, path, op: "tag", exact: true },
+  ];
+
+  let clusterSubCommanderTech = commanderBuildArm(
+    gwoUnit.colonel,
+    "tools.0.spec_id",
+  ).concat(
+    op(gwoUnit.colonel, "multiply", "max_health", 1.5625), // match Commander health
+    replace(gwoUnit.colonel, {
+      buildable_types: "CmdBuild & Custom58",
+      unit_types: [
         "UNITTYPE_Custom58",
         "UNITTYPE_Commander",
         "UNITTYPE_Construction",
@@ -40,18 +41,10 @@ define([
         "UNITTYPE_Amphibious",
         "UNITTYPE_NoBuild",
       ],
-    },
-    {
-      file: gwoUnit.angel,
-      path: "buildable_types",
-      op: "replace",
-      value: "CmdBuild & Custom58",
-    },
-    {
-      file: gwoUnit.angel,
-      path: "command_caps",
-      op: "replace",
-      value: [
+    }),
+    replace(gwoUnit.angel, {
+      buildable_types: "CmdBuild & Custom58",
+      command_caps: [
         "ORDER_Move",
         "ORDER_Patrol",
         "ORDER_Build",
@@ -60,35 +53,12 @@ define([
         "ORDER_Assist",
         "ORDER_Use",
       ],
-    },
-    {
-      file: gwoUnit.angel,
-      path: "max_health",
-      op: "multiply",
-      value: 5,
-    },
-    {
-      file: gwoUnit.angel,
-      path: "tools.1.spec_id",
-      op: "replace",
-      value: gwoUnit.commanderBuildArm,
-    },
-    {
-      file: gwoUnit.angel,
-      path: "tools.1.spec_id",
-      op: "tag",
-    },
-    {
-      file: gwoUnit.angel,
-      path: "transportable.size",
-      op: "replace",
-      value: 1,
-    },
-    {
-      file: gwoUnit.angel,
-      path: "unit_types",
-      op: "replace",
-      value: [
+    }),
+    op(gwoUnit.angel, "multiply", "max_health", 5),
+    commanderBuildArm(gwoUnit.angel, "tools.1.spec_id"),
+    replace(gwoUnit.angel, {
+      "transportable.size": 1,
+      unit_types: [
         "UNITTYPE_Commander",
         "UNITTYPE_Construction",
         "UNITTYPE_Mobile",
@@ -97,65 +67,27 @@ define([
         "UNITTYPE_NoBuild",
         "UNITTYPE_Custom58",
       ],
-    },
-  ];
+    }),
+  );
   _.forEach(inventory.clusterSubCommanders, (commander) => {
     // match with key Commander stats
-    clusterSubCommanderTech.push(
-      {
-        file: commander,
-        path: "build_metal_cost",
-        op: "replace",
-        value: 25000, // because repair/reclaim
-      },
-      {
-        file: commander,
-        path: "si_name",
-        op: "replace",
-        value: "commander",
-      },
-      {
-        file: commander,
-        path: "storage.energy",
-        op: "replace",
-        value: 45000,
-      },
-      {
-        file: commander,
-        path: "storage.metal",
-        op: "replace",
-        value: 1500,
-      },
-      {
-        file: commander,
-        path: "strategic_icon_priority",
-        op: "replace",
-        value: 0,
-      },
-      {
-        file: commander,
-        path: "production.energy",
-        op: "replace",
-        value: 2000,
-      },
-      {
-        file: commander,
-        path: "production.metal",
-        op: "replace",
-        value: 20,
-      },
+    clusterSubCommanderTech = clusterSubCommanderTech.concat(
+      replace(commander, {
+        build_metal_cost: 25000, // because repair/reclaim
+        si_name: "commander",
+        "storage.energy": 45000,
+        "storage.metal": 1500,
+        strategic_icon_priority: 0,
+        "production.energy": 2000,
+        "production.metal": 20,
+      }),
       // only required in classic mode - done for safety
-      {
-        file: commander,
-        path: "recon.observer.items",
-        op: "push",
-        value: {
-          channel: "sight",
-          layer: "celestial",
-          radius: 1,
-          shape: "sphere",
-        },
-      },
+      op(commander, "push", "recon.observer.items", {
+        channel: "sight",
+        layer: "celestial",
+        radius: 1,
+        shape: "sphere",
+      }),
     );
   });
 

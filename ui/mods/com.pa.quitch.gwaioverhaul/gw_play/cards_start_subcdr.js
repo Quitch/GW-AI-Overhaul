@@ -6,7 +6,19 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-], (GWFactions, gwoAI, gwoSave, GWInventory, helpers, gwoStreams, gwoCard) =>
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+], (
+  GWFactions,
+  gwoAI,
+  gwoSave,
+  GWInventory,
+  helpers,
+  gwoStreams,
+  gwoCard,
+  coopHost,
+  gwoRaces,
+) =>
   (params) => {
     const game = params.game;
     const gwoSettings = params.gwoSettings;
@@ -40,9 +52,19 @@ define([
         : [];
     };
 
-    const buildGeneralCommanderMinions = (factionIndex, playerKey) => {
+    // raceInventory is whose race the minions are drawn for: the host's own
+    // inventory on the host's path, and the viewer's record inventory when the
+    // host is setting a viewer up under Separate races. See coop.md.
+    const buildGeneralCommanderMinions = (
+      factionIndex,
+      playerKey,
+      raceInventory,
+    ) => {
       let minionPool = resolveFactionMinions(factionIndex);
-      if (gwoSettings && gwoSettings.aiAlly === "Queller") {
+      // The minions fight as this player's race, so the pool follows that
+      // race's ally brain. See races.md.
+      const race = gwoRaces.raceOf(raceInventory || inventory);
+      if (gwoAI.aiInUse("subcommander", race) === "Queller") {
         minionPool = gwoAI.quellerCompatibleMinions(minionPool);
       }
 
@@ -51,17 +73,28 @@ define([
         gwoSettings,
         gwoAI,
         gwoCard,
+        races: gwoRaces,
+        race,
         rng: gwoStreams.generalCommanderRng(warRng, playerKey),
       });
     };
 
-    const appendGeneralCommanderMinions = (cards, factionIndex, playerKey) => {
+    const appendGeneralCommanderMinions = (
+      cards,
+      factionIndex,
+      playerKey,
+      raceInventory,
+    ) => {
       let minions;
       if (!inventoryNeedsGeneralCommanderSetup(cards)) {
         return false;
       }
 
-      minions = buildGeneralCommanderMinions(factionIndex, playerKey);
+      minions = buildGeneralCommanderMinions(
+        factionIndex,
+        playerKey,
+        raceInventory,
+      );
       if (!minions.length) {
         return false;
       }
@@ -71,26 +104,6 @@ define([
       });
 
       return true;
-    };
-
-    const sendGeneralCommanderSetupResult = (clientId, requestId, payload) => {
-      model.sendCampaignHostOperator(setupGeneralCommanderResult, payload, {
-        target_client_id: clientId,
-        request_id: requestId,
-      });
-    };
-
-    const failGeneralCommanderSetup = (operator, reason) => {
-      console.error(`[GW COOP] failed to setup general commander: ${reason}`);
-      if (_.isUndefined(operator.client_id)) {
-        return;
-      }
-
-      sendGeneralCommanderSetupResult(operator.client_id, operator.request_id, {
-        client_id: operator.client_id,
-        client_name: operator.client_name,
-        error: reason,
-      });
     };
 
     const applyGeneralCommanderSetupResult = (operator) => {
@@ -167,8 +180,21 @@ define([
       // Rejects as well as notifying the viewer, so the campaign queue can
       // order this handler's async work.
       const failSetup = (reason) => {
-        failGeneralCommanderSetup(operator, reason);
+        coopHost.fail(
+          setupGeneralCommanderResult,
+          operator,
+          "setup general commander",
+          reason,
+        );
         result.reject(reason);
+      };
+
+      const replyUnchanged = () => {
+        coopHost.reply(setupGeneralCommanderResult, operator, {
+          changed: false,
+        });
+        result.resolve();
+        return result.promise();
       };
 
       if (
@@ -180,10 +206,7 @@ define([
         return result.promise();
       }
 
-      record = game.findCoopPlayerInventoryData({
-        id: operator.client_id,
-        name: operator.client_name,
-      });
+      record = coopHost.recordFor(game, operator);
 
       if (!record || !record.inventory) {
         failSetup("missing co-op player inventory");
@@ -198,17 +221,7 @@ define([
       }
 
       if (!inventoryNeedsGeneralCommanderSetup(cards)) {
-        sendGeneralCommanderSetupResult(
-          operator.client_id,
-          operator.request_id,
-          {
-            client_id: operator.client_id,
-            client_name: operator.client_name,
-            changed: false,
-          },
-        );
-        result.resolve();
-        return result.promise();
+        return replyUnchanged();
       }
 
       recordFaction =
@@ -221,27 +234,19 @@ define([
       playerInventory.load(recordInventory);
 
       finish = () => {
-        const nextRecord = Object.assign({}, _.cloneDeep(record), {
+        const nextRecord = coopHost.upsertRecord(game, record, {
           inventory: playerInventory.save(),
-          updatedAt: _.now(),
         });
-
-        if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
+        if (!nextRecord) {
           failSetup("failed to store co-op player inventory");
           return;
         }
 
         model.sendCampaignSnapshot("gwo_setup_general_commander", true);
-        sendGeneralCommanderSetupResult(
-          operator.client_id,
-          operator.request_id,
-          {
-            client_id: operator.client_id,
-            client_name: operator.client_name,
-            changed: true,
-            updated_at: nextRecord.updatedAt,
-          },
-        );
+        coopHost.reply(setupGeneralCommanderResult, operator, {
+          changed: true,
+          updated_at: nextRecord.updatedAt,
+        });
         gwoSave(game, false).then(
           () => {
             result.resolve();
@@ -261,19 +266,10 @@ define([
             id: operator.client_id,
             name: operator.client_name,
           }),
+          playerInventory,
         )
       ) {
-        sendGeneralCommanderSetupResult(
-          operator.client_id,
-          operator.request_id,
-          {
-            client_id: operator.client_id,
-            client_name: operator.client_name,
-            changed: false,
-          },
-        );
-        result.resolve();
-        return result.promise();
+        return replyUnchanged();
       }
 
       playerInventory.applyCards(finish);
@@ -308,8 +304,10 @@ define([
 
       cards = inventory.cards();
       if (appendGeneralCommanderMinions(cards, playerFaction)) {
-        inventory.applyCards();
-        gwoSave(game, false);
+        inventory.cards.valueHasMutated();
+        inventory.applyCards(() => {
+          gwoSave(game, false);
+        });
       }
     };
   });

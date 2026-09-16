@@ -2,72 +2,54 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], (gwoCard, gwoUnit, gwoGroup) => ({
-  visible: () => true,
+], (gwoCard, gwoUnit, gwoGroup) =>
+  gwoCard.upgradeCard({
+    name: "!LOC:Naval Factory Upgrade Tech",
+    description:
+      "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_naval_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_sea",
+    requires: gwoUnit.navalFactory,
+    unless: "gwaio_start_rapid",
+    chance: function (inventory) {
+      return gwoCard.navalWeight(inventory, 30);
+    },
+    buff: function (inventory) {
+      inventory.addUnits(gwoGroup.navalAdvancedCombat);
 
-  describe: _.constant(
-    gwoCard.withSlot(
-      loc(
-        "!LOC:Naval Factory Upgrade Tech enables the building of advanced units by basic naval manufacturing.",
-      ),
-    ),
-  ),
+      const units = [
+        "Battleship",
+        "MissleShip", // typo in the base AI files
+        "MissileSub",
+        "HoverShip",
+        "DroneCarrier",
+      ];
+      const aiMods = _.flatten(
+        _.map(units, (unit) => [
+          {
+            type: "factory",
+            op: "append",
+            toBuild: unit,
+            idToMod: "builders",
+            value: "BasicNavalFactory",
+            matchAll: true,
+          },
+          {
+            type: "factory",
+            op: "replace",
+            toBuild: unit,
+            idToMod: "priority",
+            value: 97,
+            matchAll: true,
+          },
+        ]),
+      );
 
-  summarize: () => "!LOC:Naval Factory Upgrade Tech",
-
-  icon: () =>
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_naval_upgrade.png",
-
-  audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_sea" }),
-  getContext: gwoCard.getContext,
-
-  deal: function (system, context, inventory) {
-    return gwoCard.upgradeDeal(
-      !inventory.hasCard("gwaio_start_rapid") &&
-        gwoCard.hasUnit(inventory.units(), gwoUnit.navalFactory),
-      gwoCard.navalWeight(inventory, 30),
-    );
-  },
-
-  buff: function (inventory) {
-    inventory.maxCards(inventory.maxCards() + 1);
-    inventory.addUnits(gwoGroup.navalAdvancedCombat);
-
-    const units = [
-      "Battleship",
-      "MissleShip", // typo in the base AI files
-      "MissileSub",
-      "HoverShip",
-      "DroneCarrier",
-    ];
-    const aiMods = _.flatten(
-      _.map(units, (unit) => [
-        {
-          type: "factory",
-          op: "append",
-          toBuild: unit,
-          idToMod: "builders",
-          value: "BasicNavalFactory",
-          matchAll: true,
-        },
-        {
-          type: "factory",
-          op: "replace",
-          toBuild: unit,
-          idToMod: "priority",
-          value: 97,
-          matchAll: true,
-        },
-      ]),
-    );
-
-    inventory.addMods(
-      gwoCard.mods(gwoUnit.navalFactory, "add", {
-        buildable_types: " | (Naval & Mobile & FactoryBuild & Custom58)",
-      }),
-    );
-    inventory.addAIMods(aiMods);
-  },
-
-  dull: function () {},
-}));
+      inventory.addMods(
+        gwoCard.mods(gwoUnit.navalFactory, "add", {
+          buildable_types: " | (Naval & Mobile & FactoryBuild & Custom58)",
+        }),
+      );
+      inventory.addAIMods(aiMods);
+    },
+  }));

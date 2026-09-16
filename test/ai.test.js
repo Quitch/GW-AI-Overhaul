@@ -3,12 +3,12 @@
 // shared/ai.js, which derives the ai_path settings from model.game() and hands them
 // to referee_ai_paths.js. That layer is covered on its own.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
-  installModel,
+  useModel,
   makeInventory,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
@@ -19,33 +19,26 @@ const gwoRng = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
 );
 
-let restoreModel;
-
-afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
-});
+const installModel = useModel();
 
 describe("aiInUse", () => {
   it("defaults to Titans when the star has no gwaio system data", () => {
     const fixture = buildGame({ aiInUse: undefined });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiInUse("enemy"), "Titans");
     assert.equal(gwoAI.aiInUse("subcommander"), "Titans");
   });
 
   it("uses gwaio.ai for both enemy and subcommander when no aiAlly override is set", () => {
     const fixture = buildGame({ aiInUse: "Queller" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiInUse("enemy"), "Queller");
     assert.equal(gwoAI.aiInUse("subcommander"), "Queller");
   });
 
   it("uses gwaio.aiAlly for subcommander independent of the enemy's brain", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiAllyInUse: "Queller" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiInUse("enemy"), "Titans");
     assert.equal(gwoAI.aiInUse("subcommander"), "Queller");
   });
@@ -54,13 +47,13 @@ describe("aiInUse", () => {
 describe("getAIPathSource / getAIPathDestination", () => {
   it("getAIPathSource routes through aiInUse for the given type", () => {
     const fixture = buildGame({ aiInUse: "Penchant" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.getAIPathSource("enemy"), "/pa/ai_penchant/");
   });
 
   it("auto-scopes enemy destination to 'guardians' only for enemy+mirrorMode", () => {
     const fixture = buildGame({ aiInUse: "Titans", enemyType: "guardians" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       gwoAI.getAIPathDestination("enemy"),
       "/pa/ai/player_guardians/",
@@ -73,7 +66,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
       enemyType: "guardians",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     // guardians:true is derived and passed through to referee_ai_paths, which blocks
     // the dedicated subcommander branch regardless of aiMods - see
     // referee_ai_paths.test.js's "guardians blocks..." case.
@@ -82,7 +75,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
 
   it("passes an explicit scopeToken option through untouched", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       gwoAI.getAIPathDestination("subcommander", { scopeToken: ".player0" }),
       "/pa/ai_subcommander/player_.player0/",
@@ -94,7 +87,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
       aiInUse: "Titans",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       gwoAI.getAIPathDestination("subcommander"),
       "/pa/ai_subcommander/",
@@ -105,7 +98,7 @@ describe("getAIPathSource / getAIPathDestination", () => {
 describe("getSubcommanderPathForViewer", () => {
   it("the host tag (.player) never gets a scoped path", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(inventory, ".player"),
@@ -115,7 +108,7 @@ describe("getSubcommanderPathForViewer", () => {
 
   it("a non-host tag gets scoped by that raw tag", () => {
     const fixture = buildGame({ aiInUse: "Titans", aiMods: [{ op: "load" }] });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(inventory, ".player0"),
@@ -129,7 +122,7 @@ describe("getSubcommanderPathForViewer", () => {
       enemyType: "guardians",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     const inventory = makeInventory({ aiModsList: [{ op: "load" }] });
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(inventory, ".player0"),
@@ -139,7 +132,7 @@ describe("getSubcommanderPathForViewer", () => {
 
   it("derives smartSubcommanders from the given viewer's own inventory, not the current player's", () => {
     const fixture = buildGame({ aiInUse: "Queller" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     const smartInventory = makeInventory({
       cardsList: [{ id: "gwaio_upgrade_subcommander_tactics" }],
     });
@@ -152,6 +145,45 @@ describe("getSubcommanderPathForViewer", () => {
     assert.equal(
       gwoAI.getSubcommanderPathForViewer(plainInventory, ".player0"),
       "/pa/ai_queller/q_bronze/player_.player0/",
+    );
+  });
+});
+
+describe("builderAppendMods", () => {
+  it("appends the builder to every named build, matching all lists", () => {
+    assert.deepEqual(
+      gwoAI.builderAppendMods("fabber", ["TML", "Wall"], "Commander"),
+      [
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "TML",
+          idToMod: "builders",
+          value: "Commander",
+          matchAll: true,
+        },
+        {
+          type: "fabber",
+          op: "append",
+          toBuild: "Wall",
+          idToMod: "builders",
+          value: "Commander",
+          matchAll: true,
+        },
+      ],
+    );
+  });
+
+  it("returns nothing for no builds", () => {
+    assert.deepEqual(gwoAI.builderAppendMods("factory", [], "UnitCannon"), []);
+  });
+
+  it("publishes the advanced structure list the fabber upgrades share", () => {
+    assert.ok(gwoAI.advancedStructureBuilds.includes("NukeSilo"));
+    assert.ok(gwoAI.advancedStructureBuilds.includes("UnitCannon"));
+    assert.equal(
+      new Set(gwoAI.advancedStructureBuilds).size,
+      gwoAI.advancedStructureBuilds.length,
     );
   });
 });
@@ -173,12 +205,32 @@ describe("isCluster", () => {
     assert.equal(gwoAI.isCluster({ faction: ["4"] }), true);
     assert.equal(gwoAI.isCluster({ faction: ["1"] }), false);
   });
+
+  // A Cluster of a registered non-MLA race is an ordinary faction. A race id
+  // the registry does not know reads as MLA, so such a record stays Cluster.
+  it("requires an MLA race alongside faction 4", () => {
+    const races = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+    );
+    races.register({ id: "legion" });
+    try {
+      assert.equal(gwoAI.isCluster({ faction: 4, race: "legion" }), false);
+      assert.equal(gwoAI.isCluster({ faction: ["4"], race: "legion" }), false);
+      assert.equal(gwoAI.isCluster({ faction: 4, race: "mla" }), true);
+      assert.equal(
+        gwoAI.isCluster({ faction: 4, race: "not-registered" }),
+        true,
+      );
+    } finally {
+      races.reset();
+    }
+  });
 });
 
 describe("aiEconRateWithFloor", () => {
   it("floors below the difficulty's econ base + econRatePerDist", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Beginner" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     // Beginner: econBase 0.35 + econRatePerDist 0.05 = 0.4 floor (floating-point
     // addition, so compare with a tolerance rather than strict equality).
     assert.ok(Math.abs(gwoAI.aiEconRateWithFloor(0.1) - 0.4) < 1e-9);
@@ -186,13 +238,13 @@ describe("aiEconRateWithFloor", () => {
 
   it("leaves a rate above the floor untouched", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Beginner" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiEconRateWithFloor(5), 5);
   });
 
   it("falls back to a floor of 1 for an unrecognized difficulty name", () => {
     const fixture = buildGame({ difficultyName: "!LOC:NotARealDifficulty" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiEconRateWithFloor(0.1), 1);
   });
 
@@ -200,14 +252,141 @@ describe("aiEconRateWithFloor", () => {
   // the case above fails. Without a field check that yields NaN, not a floor.
   it("falls back to a floor of 1 for the Custom tier, which has no econ fields", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Custom" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiEconRateWithFloor(0.1), 1);
   });
 
   it("leaves a rate above the Custom floor untouched rather than returning NaN", () => {
     const fixture = buildGame({ difficultyName: "!LOC:Custom" });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(gwoAI.aiEconRateWithFloor(5), 5);
+  });
+
+  it("floors a Custom war at the econ fields of its recorded snapshot", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Custom",
+      customDifficulty: { econBase: 0.5, econRatePerDist: 0.25 },
+    });
+    installModel(fixture.game);
+    assert.equal(gwoAI.aiEconRateWithFloor(0.1), 0.75);
+  });
+
+  it("floors as Beginner when the war recorded no difficulty", () => {
+    const fixture = buildGame({});
+    installModel(fixture.game);
+    assert.ok(Math.abs(gwoAI.aiEconRateWithFloor(0.1) - 0.4) < 1e-9);
+  });
+});
+
+describe("commanderCount", () => {
+  const goldBosses = gwoAI.warTier({ difficulty: "!LOC:Gold" }).bossCommanders;
+
+  it("derives a boss's count from the tier times the players generated for", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Gold",
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    assert.equal(
+      gwoAI.commanderCount({ boss: true, bossCommanders: 99 }),
+      goldBosses * 2,
+    );
+  });
+
+  it("derives the Guardians' count the same way", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Gold",
+      coopPlayerScalingCount: 3,
+    });
+    installModel(fixture.game);
+    assert.equal(
+      gwoAI.commanderCount({ boss: true, mirrorMode: true }),
+      goldBosses * 3,
+    );
+  });
+
+  it("reads a Custom war's count from its snapshot", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Custom",
+      customDifficulty: { bossCommanders: 4 },
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ boss: true }), 8);
+  });
+
+  it("keeps a boss's recorded count when the war resolves no tier", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Custom",
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ boss: true, bossCommanders: 3 }), 3);
+  });
+
+  it("keeps a boss's recorded count when the war has no player count", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Gold" });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ boss: true, bossCommanders: 3 }), 3);
+  });
+
+  it("reads a minion's or foe's recorded commanderCount", () => {
+    const fixture = buildGame({
+      difficultyName: "!LOC:Gold",
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ commanderCount: 2 }), 2);
+  });
+
+  it("falls back to the landing policy count of a legacy AI, then to 1", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Gold" });
+    installModel(fixture.game);
+    assert.equal(gwoAI.commanderCount({ landing_policy: ["a", "b"] }), 2);
+    assert.equal(gwoAI.commanderCount({}), 1);
+  });
+});
+
+describe("bountyValue", () => {
+  it("reads the tier's bounty value, not the one the war recorded", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Gold" });
+    installModel(fixture.game);
+    const expected = gwoAI.warTier({ difficulty: "!LOC:Gold" }).bountyModeValue;
+    assert.equal(gwoAI.bountyValue({ bountyModeValue: 99 }), expected);
+  });
+
+  it("keeps the recorded value when the war resolves no tier", () => {
+    const fixture = buildGame({ difficultyName: "!LOC:Custom" });
+    installModel(fixture.game);
+    assert.equal(gwoAI.bountyValue({ bountyModeValue: 0.3 }), 0.3);
+  });
+});
+
+describe("warTier", () => {
+  it("resolves a named tier live from difficulty_levels.js", () => {
+    const tier = gwoAI.warTier({ difficulty: "!LOC:Gold" });
+    assert.equal(tier.difficultyName, "!LOC:Gold");
+    assert.equal(typeof tier.bossCommanders, "number");
+  });
+
+  it("prefers a Custom war's recorded snapshot over any lookup", () => {
+    const snapshot = { econBase: 2, econRatePerDist: 0.5 };
+    assert.equal(
+      gwoAI.warTier({ difficulty: "!LOC:Custom", customDifficulty: snapshot }),
+      snapshot,
+    );
+  });
+
+  it("resolves nothing for a Custom war saved without a snapshot", () => {
+    assert.equal(gwoAI.warTier({ difficulty: "!LOC:Custom" }), undefined);
+  });
+
+  it("resolves nothing for a tier name that no longer ships", () => {
+    assert.equal(gwoAI.warTier({ difficulty: "!LOC:Retired" }), undefined);
+  });
+
+  it("resolves nothing without settings", () => {
+    assert.equal(gwoAI.warTier(undefined), undefined);
   });
 });
 
@@ -226,6 +405,24 @@ describe("quellerCompatibleMinions", () => {
       { ai: { personality: { works_with_queller: false } } },
     ];
     assert.deepEqual(gwoAI.quellerCompatibleMinions(minions), [minions[0]]);
+  });
+});
+
+describe("penchantTags", () => {
+  it("returns the tags a recorded penchant name stands for, as a copy", () => {
+    const tags = gwoAI.penchantTags("!LOC:Platoon");
+    assert.deepEqual(tags, ["Platoon", "PenchantPlatoon"]);
+    tags.push("marker");
+    assert.deepEqual(gwoAI.penchantTags("!LOC:Platoon"), [
+      "Platoon",
+      "PenchantPlatoon",
+    ]);
+  });
+
+  it("returns nothing for the Vanilla entry, no name, or a name no longer shipped", () => {
+    assert.deepEqual(gwoAI.penchantTags(""), []);
+    assert.deepEqual(gwoAI.penchantTags(undefined), []);
+    assert.deepEqual(gwoAI.penchantTags("!LOC:Retired"), []);
   });
 });
 
@@ -251,5 +448,121 @@ describe("penchants", () => {
     const result = gwoAI.penchants();
     assert.ok(Array.isArray(result.penchants));
     assert.equal(typeof result.penchantName, "string");
+  });
+});
+
+describe("aiInUse with a race", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  );
+  const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+
+  it("keeps the war's brain for a race it supports and falls back to Titans otherwise", () => {
+    races.register(FIXTURE_RACE);
+    races.register({ id: "legion" });
+    try {
+      const fixture = buildGame({
+        aiInUse: "Penchant",
+        aiAllyInUse: "Queller",
+      });
+      installModel(fixture.game);
+
+      assert.equal(gwoAI.aiInUse("enemy", "mla"), "Penchant");
+      assert.equal(gwoAI.aiInUse("enemy", "fixture"), "Titans");
+      assert.equal(gwoAI.aiInUse("subcommander", "legion"), "Queller");
+      assert.equal(gwoAI.aiInUse("subcommander", "fixture"), "Titans");
+      assert.equal(gwoAI.getAIPathSource("enemy", "fixture"), "/pa/ai/");
+      assert.equal(
+        gwoAI.getAIPathDestination("enemy", { race: "fixture" }),
+        "/pa/ai_race_fixture/",
+      );
+      assert.equal(
+        gwoAI.getAIPathDestination("subcommander", { race: "legion" }),
+        "/pa/ai_queller_race_legion/q_bronze/",
+      );
+      assert.equal(
+        gwoAI.getSubcommanderPathForViewer(
+          makeInventory({ aiModsList: [{ op: "load" }] }),
+          ".player0",
+          "fixture",
+        ),
+        "/pa/ai_subcommander_race_fixture/player_.player0/",
+      );
+    } finally {
+      races.reset();
+    }
+  });
+
+  it("answers from the war's aiByRace row for the race and side", () => {
+    races.register(FIXTURE_RACE);
+    races.register({ id: "legion" });
+    try {
+      const fixture = buildGame({
+        aiInUse: "Penchant",
+        aiAllyInUse: "Penchant",
+        aiByRace: {
+          legion: { enemy: "Queller", ally: "Titans" },
+          fixture: { enemy: "Queller", ally: "Penchant" },
+        },
+      });
+      installModel(fixture.game);
+
+      assert.equal(gwoAI.aiInUse("enemy", "legion"), "Queller");
+      assert.equal(gwoAI.aiInUse("subcommander", "legion"), "Titans");
+      // A recorded cell the race cannot run still coerces to Titans.
+      assert.equal(gwoAI.aiInUse("enemy", "fixture"), "Titans");
+      assert.equal(gwoAI.aiInUse("subcommander", "fixture"), "Titans");
+      // MLA reads the war-wide strings, never the table.
+      assert.equal(gwoAI.aiInUse("enemy", "mla"), "Penchant");
+      assert.equal(gwoAI.aiInUse("enemy"), "Penchant");
+      // The row routes the whole path family, not just the name.
+      assert.equal(
+        gwoAI.getAIPathDestination("enemy", { race: "legion" }),
+        "/pa/ai_queller_race_legion/q_uber/",
+      );
+      assert.equal(
+        gwoAI.getAIPathSource("enemy", "legion"),
+        "/pa/ai_queller/q_uber/",
+      );
+    } finally {
+      races.reset();
+    }
+  });
+
+  it("falls back to the war-wide strings for a race with no row", () => {
+    races.register({ id: "legion" });
+    try {
+      const fixture = buildGame({
+        aiInUse: "Queller",
+        aiAllyInUse: "Titans",
+        aiByRace: {},
+      });
+      installModel(fixture.game);
+
+      assert.equal(gwoAI.aiInUse("enemy", "legion"), "Queller");
+      assert.equal(gwoAI.aiInUse("subcommander", "legion"), "Titans");
+    } finally {
+      races.reset();
+    }
+  });
+
+  it("reads a race off an AI, a live inventory and a serialised record", () => {
+    races.register(FIXTURE_RACE);
+    try {
+      assert.equal(gwoAI.raceOf({ race: "fixture" }), "fixture");
+      assert.equal(
+        gwoAI.raceOf(
+          makeInventory({ tags: { "global:playerRace": "fixture" } }),
+        ),
+        "fixture",
+      );
+      assert.equal(
+        gwoAI.raceOf({ tags: { global: { playerRace: "Fixture" } } }),
+        "fixture",
+      );
+      assert.equal(gwoAI.raceOf({ tags: {} }), "mla");
+    } finally {
+      races.reset();
+    }
   });
 });

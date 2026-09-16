@@ -6,6 +6,9 @@
 // perPlayerTechCards already set. gw_bank and gw_game_patches are both
 // dependency-free, so requiring them here cannot close the cycle that
 // shared/gw_common or shared/gw_game would. See coop.md.
+// Also GWO's: aiMods and addAIMods, setTag deleted after a pass beside getTag,
+// removeUnits removing every copy, and tags.valueHasMutated() from getTag and
+// setTag so tag readers update.
 define([
   "shared/gw_bank",
   "shared/gw_game_patches",

@@ -14,3 +14,6 @@ Desktop.ini
 # Node.js tooling (lint/test only - the mod itself has no build step)
 node_modules/
 coverage/
+
+# Translation work lists and glossaries (i18n:missing, i18n:glossary)
+scripts/i18n/out/

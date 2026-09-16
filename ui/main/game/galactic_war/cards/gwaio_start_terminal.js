@@ -7,13 +7,49 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) => {
   const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+  const loadout = gwoCard.loadout(CARD, {
+    bank: gwoBank,
+    start: GWCStart,
+    apply: function (inventory) {
+      const playerIsCluster = gwoCard.playerIsCluster(inventory);
+      const mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
+      const mods = gwoCard
+        .flatMapMods(
+          playerIsCluster ? gwoGroup.unitsNoCluster : gwoGroup.units,
+          "multiply",
+          { build_metal_cost: 0.5 },
+        )
+        .concat(
+          gwoCard.mods(gwoUnit.commander, "add", {
+            passive_health_regen: -15,
+          }),
+          gwoCard.flatMapMods(gwoGroup.immobile, "add", {
+            passive_health_regen: -3,
+          }),
+          gwoCard.flatMapMods(gwoGroup.factories, "add", {
+            passive_health_regen: -7,
+          }),
+          gwoCard.flatMapMods(gwoGroup.mobile, "add", {
+            passive_health_regen: -1,
+          }),
+          gwoCard.flatMapMods(mobileUnits, "multiply", {
+            "navigation.move_speed": 2,
+            "navigation.acceleration": 2,
+            "navigation.brake": 2,
+            "navigation.turn_speed": 2,
+          }),
+          gwoCard.flatMapMods(gwoGroup.ammo, "multiply", {
+            damage: 2,
+            splash_damage: 2,
+          }),
+        );
+      inventory.addMods(mods);
+    },
+  });
   return {
     visible: () => false,
     summarize: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Terminal Commander";
-      }
-      return `${loc("!LOC:Deathmark")} ${loc("!LOC:Commander")}`; // scuffed translation using existing strings
+      return "!LOC:Terminal Commander";
     },
     icon: function () {
       return gwoCard.loadoutIcon(CARD.id);
@@ -23,136 +59,13 @@ define([
     hint: function () {
       const icon =
         "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png";
-      if (gwoCard.isEnglish()) {
-        return {
-          icon,
-          description: "!LOC:Terminal Commander",
-        };
-      }
       return {
         icon,
-        description: `${loc("!LOC:Deathmark")} ${loc("!LOC:Commander")}`, // scuffed translation using existing strings
+        description: "!LOC:Terminal Commander",
       };
     },
     deal: gwoCard.startCard,
-    buff: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        let buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.maxCards(inventory.maxCards() + 1);
-        } else {
-          GWCStart.buff(inventory);
-
-          const playerIsCluster =
-            inventory.getTag("global", "playerFaction") === 4;
-          const mods = [];
-          const mobileUnits = gwoGroup.mobile.concat(gwoUnit.commander);
-
-          if (playerIsCluster) {
-            _.forEach(gwoGroup.unitsNoCluster, (unit) => {
-              mods.push({
-                file: unit,
-                path: "build_metal_cost",
-                op: "multiply",
-                value: 0.5,
-              });
-            });
-          } else {
-            _.forEach(gwoGroup.units, (unit) => {
-              mods.push({
-                file: unit,
-                path: "build_metal_cost",
-                op: "multiply",
-                value: 0.5,
-              });
-            });
-          }
-
-          mods.push({
-            file: gwoUnit.commander,
-            path: "passive_health_regen",
-            op: "add",
-            value: -15,
-          });
-          _.forEach(gwoGroup.immobile, (unit) => {
-            mods.push({
-              file: unit,
-              path: "passive_health_regen",
-              op: "add",
-              value: -3,
-            });
-          });
-          _.forEach(gwoGroup.factories, (unit) => {
-            mods.push({
-              file: unit,
-              path: "passive_health_regen",
-              op: "add",
-              value: -7,
-            });
-          });
-          _.forEach(gwoGroup.mobile, (unit) => {
-            mods.push({
-              file: unit,
-              path: "passive_health_regen",
-              op: "add",
-              value: -1,
-            });
-          });
-          _.forEach(mobileUnits, (unit) => {
-            mods.push(
-              {
-                file: unit,
-                path: "navigation.move_speed",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "navigation.acceleration",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "navigation.brake",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: unit,
-                path: "navigation.turn_speed",
-                op: "multiply",
-                value: 2,
-              },
-            );
-          });
-          _.forEach(gwoGroup.ammo, (ammo) => {
-            mods.push(
-              {
-                file: ammo,
-                path: "damage",
-                op: "multiply",
-                value: 2,
-              },
-              {
-                file: ammo,
-                path: "splash_damage",
-                op: "multiply",
-                value: 2,
-              },
-            );
-          });
-          inventory.addMods(mods);
-        }
-        ++buffCount;
-        inventory.setTag("", "buffCount", buffCount);
-      } else {
-        inventory.maxCards(inventory.maxCards() + 1);
-        gwoBank.addStartCard(CARD);
-      }
-    },
-    dull: function (inventory) {
-      gwoCard.applyDulls(CARD, inventory);
-    },
+    buff: loadout.buff,
+    dull: loadout.dull,
   };
 });

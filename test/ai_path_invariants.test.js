@@ -14,7 +14,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
-  installModel,
+  useModel,
   makeInventory,
   SCENARIO_AXES,
 } = require("../scripts/lib/ai-path-fixtures.js");
@@ -42,14 +42,10 @@ const refereeAi = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js",
 );
 
-let restoreModel;
+const installModel = useModel();
 let restoreFakes;
 
 afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
   if (restoreFakes) {
     restoreFakes();
     restoreFakes = undefined;
@@ -86,10 +82,11 @@ function everyResolvableAiPath() {
 
   for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
     for (const type of types) {
-      paths.add(refereeAIPaths.getAIPathSource(type, aiInUse));
-
       for (const guardians of [false, true]) {
         for (const smartSubcommanders of [false, true]) {
+          paths.add(
+            refereeAIPaths.getAIPathSource(type, aiInUse, smartSubcommanders),
+          );
           for (const aiMods of [[], [{ op: "load" }]]) {
             for (const scopeToken of scopeTokens) {
               paths.add(
@@ -171,7 +168,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
             enemyType: enemyType,
             aiMods: techState === "active" ? [{ op: "load" }] : [],
           });
-          restoreModel = installModel(fixture.game);
+          installModel(fixture.game);
 
           const enemyIsCluster = gwoAI.isCluster(fixture.ai);
           const enemyPath = refereeConfig.setAIPath(enemyIsCluster, false);
@@ -190,7 +187,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
       enemyType: "neither",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       refereeConfig.setAIPath(false, false),
       refereeConfig.setAIPath(false, true),
@@ -204,7 +201,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
       enemyType: "neither",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(
       refereeConfig.setAIPath(false, false),
       refereeConfig.setAIPath(false, true),
@@ -218,7 +215,7 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
       enemyType: "neither",
       aiMods: [],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.notEqual(
       refereeConfig.setAIPath(false, false),
       refereeConfig.setAIPath(false, true),
@@ -226,32 +223,9 @@ describe("invariant: enemies and subcommanders never share an ai_path", () => {
   });
 });
 
+// The pairwise-distinct and guardians-unaware cases for a single viewer live in
+// gw_per_player_tech_referee_ai_paths.test.js; only the wrap-around sweep is here.
 describe("invariant: per-player-tech viewer paths are pairwise distinct", () => {
-  it("4 viewers with varying tech/brain never collide, even when base paths would", () => {
-    const players = [
-      { tag: ".player0", aiInUse: "Titans", aiMods: [] }, // base path /pa/ai/
-      { tag: ".player1", aiInUse: "Titans", aiMods: [] }, // same base path as above absent scoping
-      { tag: ".player2", aiInUse: "Titans", aiMods: [{ op: "load" }] },
-      { tag: ".player3", aiInUse: "Queller", aiMods: [] },
-    ];
-
-    const paths = players.map((player) =>
-      perPlayerTechHook.getViewerSubcommanderAiPath(
-        refereeAIPaths,
-        subcommanderTech,
-        player.aiInUse,
-        { aiMods: () => player.aiMods, cards: () => [] },
-        player.tag,
-      ),
-    );
-
-    assert.equal(
-      new Set(paths).size,
-      paths.length,
-      `expected all distinct, got: ${paths}`,
-    );
-  });
-
   it("a large player count (8) does not wrap around or collide", () => {
     const paths = [];
     for (let i = 0; i < 8; i++) {
@@ -270,28 +244,13 @@ describe("invariant: per-player-tech viewer paths are pairwise distinct", () => 
 });
 
 describe("documented behavior: guardians is ignored by per-player-tech viewer scoping", () => {
-  it("a per-player-tech viewer's path is identical whether or not the fight is Guardians", () => {
-    const inventory = { aiMods: () => [{ op: "load" }], cards: () => [] };
-
-    // Pins the documented guardians asymmetry - see ai-paths.md.
-    const path = perPlayerTechHook.getViewerSubcommanderAiPath(
-      refereeAIPaths,
-      subcommanderTech,
-      "Titans",
-      inventory,
-      ".player0",
-    );
-
-    assert.equal(path, "/pa/ai_subcommander/player_.player0/");
-  });
-
   it("contrast: the shared-tech ally path DOES react to guardians (falls back to the vanilla brain path)", () => {
     const fixture = buildGame({
       aiInUse: "Titans",
       enemyType: "guardians",
       aiMods: [{ op: "load" }],
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
     assert.equal(refereeConfig.setAIPath(false, true), "/pa/ai/");
   });
 });
@@ -314,7 +273,7 @@ describe("invariant: mixed-brain fights (aiAlly differs from ai) never collide",
               enemyType: enemyType,
               aiMods: techState === "active" ? [{ op: "load" }] : [],
             });
-            restoreModel = installModel(fixture.game);
+            installModel(fixture.game);
 
             const enemyIsCluster = gwoAI.isCluster(fixture.ai);
             const enemyPath = refereeConfig.setAIPath(enemyIsCluster, false);
@@ -324,6 +283,33 @@ describe("invariant: mixed-brain fights (aiAlly differs from ai) never collide",
           });
         }
       }
+    }
+  }
+});
+
+describe("invariant: a mixed aiByRace table never collides enemy and subcommander paths", () => {
+  // The same non-collision as the sweep above, driven by a recorded per-race
+  // row instead of the war-wide strings. Legion is the one shipped race two
+  // brains support, so its row can differ per side both ways round.
+  for (const [enemy, ally] of [
+    ["Queller", "Titans"],
+    ["Titans", "Queller"],
+  ]) {
+    for (const techState of SCENARIO_AXES.SUBCOMMANDER_TECH_STATES) {
+      it(`legion enemy=${enemy}/ally=${ally}, subcommander tech=${techState}: paths differ`, () => {
+        const fixture = buildGame({
+          aiInUse: "Penchant",
+          aiAllyInUse: "Penchant",
+          aiByRace: { legion: { enemy: enemy, ally: ally } },
+          aiMods: techState === "active" ? [{ op: "load" }] : [],
+        });
+        installModel(fixture.game);
+
+        const enemyPath = refereeConfig.setAIPath(false, false, "legion");
+        const subcommanderPath = refereeConfig.setAIPath(false, true, "legion");
+
+        assert.notEqual(enemyPath, subcommanderPath);
+      });
     }
   }
 });
@@ -346,7 +332,7 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
         },
       ],
     });
-    restoreModel = installModel(fixture.game, []);
+    installModel(fixture.game, []);
     installAiProcessingFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
       getJSON: () => ({ build_list: [{ to_build: "Bot", builders: [] }] }),
@@ -412,7 +398,7 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
       { id: "v1", name: "Viewer1", role: "viewer" },
       { id: "v2", name: "Viewer2", role: "viewer" },
     ];
-    restoreModel = installModel(fixture.game, connectedClients);
+    installModel(fixture.game, connectedClients);
     installAiProcessingFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
       getJSON: () => ({ build_list: [{ to_build: "Bot", builders: [] }] }),
@@ -489,7 +475,7 @@ describe("invariant: no ai_path root sits inside another ai_path's scanned direc
     });
     fixture.game.findCoopPlayerInventoryData = (client) =>
       client.id === "v1" ? { inventory: viewerInventory } : undefined;
-    restoreModel = installModel(fixture.game, [
+    installModel(fixture.game, [
       { id: "host", name: "Host", role: "host" },
       { id: "v1", name: "Viewer1", role: "viewer" },
     ]);

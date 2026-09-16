@@ -1,0 +1,125 @@
+// Engine glue for shared/races.js: which races' server mods GW Server Mods
+// has active, and the root mount that makes their files readable. Every
+// function copes with GW Server Mods being absent - then there are no races.
+// See races.md.
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], (
+  races,
+) => {
+  const manifest = () => {
+    const gwsm = window.GwServerMods;
+    return gwsm && gwsm.manifest && _.isFunction(gwsm.manifest.load)
+      ? gwsm.manifest
+      : undefined;
+  };
+
+  const gwsmActive = () => !!manifest();
+
+  // Whatever a mod pushed onto model.gwoRaces and model.gwoAddons before this
+  // ran; GWO's own were registered when races.js loaded. Adopted, never
+  // assigned over - see tech-cards.md.
+  const registerAll = () => {
+    const registered = [];
+    model.gwoRaces = Array.isArray(model.gwoRaces) ? model.gwoRaces : [];
+    model.gwoAddons = Array.isArray(model.gwoAddons) ? model.gwoAddons : [];
+
+    _.forEach(model.gwoRaces, (descriptor) => {
+      try {
+        registered.push(races.register(descriptor));
+      } catch (e) {
+        console.error(`gwoRaceMods: race not registered: ${e.message || e}`);
+      }
+    });
+    _.forEach(model.gwoAddons, (descriptor) => {
+      try {
+        races.registerAddon(descriptor);
+      } catch (e) {
+        console.error(`gwoRaceMods: add-on not registered: ${e.message || e}`);
+      }
+    });
+
+    return registered;
+  };
+
+  // Resolves { races, mods, addons, addonMods, known, gwsm }: the races whose
+  // server mod is active, the identifier, name and version of each such mod
+  // for the war to record, the same pair for add-ons, whether the installed
+  // mods could be read at all, and whether GW Server Mods is here to mount
+  // them. `mods` stays race-only: race_check, host_war.js and setup.js read
+  // it as the race mods. `known` false is "cannot tell" - Community Mods
+  // absent and nothing in the IndexedDB fallback - which a resume check must
+  // not mistake for "not installed". `gwsm` false is not that: no race can be
+  // mounted whatever is installed, so the answer is a definite none, and it
+  // is the thing to tell the player about. See races.md.
+  const installedRaces = () => {
+    const done = $.Deferred();
+    const mfst = manifest();
+
+    if (!mfst) {
+      done.resolve({
+        races: races.detect([]),
+        mods: [],
+        addons: [],
+        addonMods: [],
+        known: true,
+        gwsm: false,
+      });
+      return done.promise();
+    }
+
+    $.when(mfst.load()).always(() => {
+      const known = !_.isFunction(mfst.listed) || !!mfst.listed();
+      const active = mfst.activeServerMods();
+      const identifiers = _.map(active, (mod) => mod.identifier);
+      const detected = races.detect(identifiers);
+      const detectedAddons = races.detectAddons(identifiers);
+      const modsOf = (descriptors) => {
+        const wanted = _.flatten(_.map(descriptors, "serverMods"));
+
+        return _.map(
+          _.filter(active, (mod) => wanted.includes(mod.identifier)),
+          (mod) => ({
+            identifier: mod.identifier,
+
+            // GW Server Mods falls back to the identifier when a mod ships no
+            // display name, so this is always something to show a player.
+            displayName: mod.displayName || mod.identifier,
+
+            version: mod.version,
+          }),
+        );
+      };
+
+      done.resolve({
+        races: detected,
+        mods: modsOf(detected),
+        addons: detectedAddons,
+        addonMods: modsOf(detectedAddons),
+        known,
+        gwsm: true,
+      });
+    });
+
+    return done.promise();
+  };
+
+  // The server zips at the root, so a race's commander specs and portraits can
+  // be read before a war exists. gw_start has no battle to prepare, and the
+  // UI reads them through coui:, so the renderer's content catalogue - the
+  // remount that freezes the scene for seconds - is left alone.
+  const mountRoot = () => {
+    const gwsm = window.GwServerMods;
+
+    if (!gwsm || !gwsm.mount || !_.isFunction(gwsm.mount.run)) {
+      return $.Deferred().resolve(false).promise();
+    }
+
+    return $.when(gwsm.mount.run({ rootOnly: true, remountContent: false }));
+  };
+
+  return {
+    gwsmActive,
+    registerAll,
+    installedRaces,
+    mountRoot,
+  };
+});

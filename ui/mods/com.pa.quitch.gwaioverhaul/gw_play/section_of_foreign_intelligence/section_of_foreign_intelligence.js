@@ -1,38 +1,40 @@
 // Vendored from wondible's Section of Foreign Intelligence for Galactic War
 // (Apache 2.0, see LICENSE.txt); modified by Quitch - changes documented at
 // https://github.com/Quitch/GW-AI-Overhaul
-var gwoIntelligenceLoaded;
 
-// The buff indices gw_start/setup.js writes into ai.typeOfBuffs. `commanders` is
-// only present in v5.11.0 and earlier saves.
-var gwoBuffType = {
-  cost: 0,
-  damage: 1,
-  health: 2,
-  speed: 3,
-  build: 4,
-  commanders: 5,
-  combat: 6,
-  cooldown: 7,
-};
-
-function gwoIntelligence() {
-  if (gwoIntelligenceLoaded || model.game().isTutorial()) {
+(() => {
+  if (model.game().isTutorial()) {
     return;
   }
 
-  gwoIntelligenceLoaded = true;
+  // The buff indices gw_start/setup.js writes into ai.typeOfBuffs. `commanders` is
+  // only present in v5.11.0 and earlier saves.
+  const gwoBuffType = {
+    cost: 0,
+    damage: 1,
+    health: 2,
+    speed: 3,
+    build: 4,
+    commanders: 5,
+    combat: 6,
+    cooldown: 7,
+  };
 
   try {
     model.gwoAvailableTechTooltip =
       "!LOC:This card will be offered as part of the first draw.";
-    model.gwoGameModifiersTooltip =
-      "!LOC:BOUNTIES: earn an economic multiplier for every kill.<br>LAND ANYWHERE: players can start anywhere on viable starting planets.<br>SUDDEN DEATH: any commander death on a team kills the entire team.<br>ERADICATE: all units of specific types must be eradicated.";
+    model.gwoGameModifiersTooltip = [
+      loc("!LOC:BOUNTIES: earn an economic multiplier for every kill."),
+      loc(
+        "!LOC:LAND ANYWHERE: players can start anywhere on viable starting planets.",
+      ),
+      loc(
+        "!LOC:SUDDEN DEATH: any commander death on a team kills the entire team.",
+      ),
+      loc("!LOC:ERADICATE: all units of specific types must be eradicated."),
+    ].join("<br>");
     model.gwoAIBuffsTooltip =
       "!LOC:Applied to AI commanders and units preferred by the faction.";
-
-    const getNumberOfCommanders = (commander) =>
-      commander.bossCommanders || commander.commanderCount || 1;
 
     const getCommanderCharacter = (commander) => {
       let character = commander.character
@@ -191,7 +193,8 @@ function gwoIntelligence() {
             buffNames.push(loc("!LOC:Factory cooldown decreased"));
             break;
           default:
-            throw new Error(`Undefined buff type: ${buff}`);
+            // Inside a ko.computed, so a throw would take the tooltip down.
+            console.warn(`Undefined buff type: ${buff}`);
         }
       });
       if (guardians) {
@@ -207,9 +210,20 @@ function gwoIntelligence() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],
-      (gwoColour, gwoCards, gwoAI, gwoRefereeCoop, gwoStarCardsView) => {
+      (
+        gwoColour,
+        gwoCards,
+        gwoAI,
+        gwoRefereeCoop,
+        gwoStarCardsView,
+        gwoRaces,
+      ) => {
         const starCardsView = gwoStarCardsView();
+
+        const getNumberOfCommanders = (commander) =>
+          gwoAI.commanderCount(commander);
 
         const url =
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.html";
@@ -269,12 +283,16 @@ function gwoIntelligence() {
             ? gwoAI.subcommanderEconRate
             : gwoAI.aiEconRateWithFloor(commander.econ_rate);
           const numCommanders = getNumberOfCommanders(commander);
+          // The race shows through the icon, not the name. See races.md.
+          const raceDescriptor = gwoRaces.byId(commander.race);
           const faction = getFactionName(commander, factionIndex);
 
           if (numCommanders > 1) {
             name = name.concat(" x", numCommanders);
             eco = eco * ((numCommanders + 1) / 2);
           }
+
+          const icon = (raceDescriptor && raceDescriptor.playerIcon) || {};
 
           return {
             name,
@@ -285,6 +303,8 @@ function gwoIntelligence() {
             eco,
             faction: faction.name,
             tooltip: faction.tooltip,
+            iconFill: icon.fill,
+            iconOutline: icon.outline,
           };
         };
 
@@ -302,13 +322,7 @@ function gwoIntelligence() {
           if (ai.foes) {
             commanders = commanders.concat(_.map(ai.foes, intelligenceOf));
             _.forEach(ai.foes, (army) => {
-              let commanderCount = 1;
-              if (army.commanderCount) {
-                commanderCount = army.commanderCount;
-              } else if (army.landing_policy) {
-                // legacy GWO support
-                commanderCount = army.landing_policy.length;
-              }
+              const commanderCount = gwoAI.commanderCount(army);
               totalThreat +=
                 gwoAI.aiEconRateWithFloor(army.econ_rate) *
                 0.4 *
@@ -340,8 +354,10 @@ function gwoIntelligence() {
               case gwoBuffType.combat:
                 totalThreat *= 1.5;
                 break;
+              case gwoBuffType.commanders:
+                break;
               default:
-                throw new Error(`Undefined buff type: ${buff}`);
+                console.warn(`Undefined buff type: ${buff}`);
             }
           });
           const guardians = ai.mirrorMode;
@@ -406,5 +422,4 @@ function gwoIntelligence() {
   } catch (e) {
     console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
-}
-gwoIntelligence();
+})();

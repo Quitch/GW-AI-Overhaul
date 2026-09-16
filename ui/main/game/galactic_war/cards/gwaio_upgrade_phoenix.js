@@ -1,68 +1,39 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], (gwoCard, gwoUnit) => ({
-  visible: () => true,
+], (gwoCard, gwoUnit) =>
+  gwoCard.upgradeCard({
+    name: "!LOC:Phoenix Upgrade Tech",
+    description:
+      "!LOC:Phoenix Upgrade Tech changes the advanced interplanetary fighter's weapon from anti-air to anti-ground.",
+    icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_air_engine_upgrade.png",
+    audio: "/VO/Computer/gw/board_tech_available_speed",
+    requires: gwoUnit.phoenix,
+    buff: function (inventory) {
+      inventory.addMods(
+        gwoCard
+          .mods(gwoUnit.phoenixWeapon, "replace", {
+            target_layers: ["WL_LandHorizontal", "WL_WaterSurface"],
+          })
+          .concat(
+            gwoCard.mods(gwoUnit.phoenix, "push", {
+              unit_types: "UNITTYPE_Gunship",
+            }),
+            gwoCard.mods(gwoUnit.phoenixAmmo, "replace", {
+              "armor_damage_map.AT_Structure": 1,
+            }),
+            gwoCard.mods(gwoUnit.phoenix, "replace", {
+              guard_layer: "WL_AnySurface",
+            }),
+          ),
+      );
 
-  describe: _.constant(
-    gwoCard.withSlot(
-      loc(
-        "!LOC:Phoenix Upgrade Tech changes the advanced interplanetary fighter's weapon from anti-air to anti-ground.",
-      ),
-    ),
-  ),
-
-  summarize: () => "!LOC:Phoenix Upgrade Tech",
-
-  icon: () =>
-    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_air_engine_upgrade.png",
-
-  audio: _.constant({ found: "/VO/Computer/gw/board_tech_available_speed" }),
-  getContext: gwoCard.getContext,
-
-  deal: function (system, context, inventory) {
-    return gwoCard.upgradeDeal(
-      gwoCard.hasUnit(inventory.units(), gwoUnit.phoenix),
-    );
-  },
-
-  buff: function (inventory) {
-    inventory.maxCards(inventory.maxCards() + 1);
-    inventory.addMods([
-      {
-        file: gwoUnit.phoenixWeapon,
-        path: "target_layers",
-        op: "replace",
-        value: ["WL_LandHorizontal", "WL_WaterSurface"],
-      },
-      {
-        file: gwoUnit.phoenix,
-        path: "unit_types",
-        op: "push",
-        value: "UNITTYPE_Gunship",
-      },
-      {
-        file: gwoUnit.phoenixAmmo,
-        path: "armor_damage_map.AT_Structure",
-        op: "replace",
-        value: 1,
-      },
-      {
-        file: gwoUnit.phoenix,
-        path: "guard_layer",
-        op: "replace",
-        value: "WL_AnySurface",
-      },
-    ]);
-
-    inventory.addAIMods([
-      {
-        type: "factory",
-        op: "load",
-        value: "gwaio_upgrade_phoenix.json",
-      },
-    ]);
-  },
-
-  dull: function () {},
-}));
+      inventory.addAIMods([
+        {
+          type: "factory",
+          op: "load",
+          value: "gwaio_upgrade_phoenix.json",
+        },
+      ]);
+    },
+  }));

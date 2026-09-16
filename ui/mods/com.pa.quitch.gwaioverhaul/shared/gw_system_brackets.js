@@ -1,10 +1,6 @@
-// Groups a pool of real star systems into army-count brackets, so Galactic War
-// can scale system size with distance from the origin.
-//
-// Shared Systems for Galactic War reads gw_galaxy.js's `players` as a surface-area
-// window and never looks at spawn points, so size stops tracking how many
-// commanders a map was built for. These brackets restore that from the landing
-// zones. A measured sibling of the shadowed gw_galaxy.js - see testing.md.
+// Groups a pool of real star systems into army-count brackets, so system size
+// can track distance from the origin under Shared Systems for Galactic War. See
+// galaxy.md, "System brackets, under Shared Systems for Galactic War".
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js"], (
   gwoBiomes,
 ) => {
@@ -81,15 +77,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js"], (
     return [Math.max(MIN_ARMIES, min), Math.max(MIN_ARMIES, max)];
   };
 
-  // Every pooled system has been through UberUtility.fixupPlanetConfig, which
-  // renames planet.planet to planet.generator. Both forms are read, so this also
-  // works against default_systems.json straight off disk.
   const generatedArmies = (system) => {
     const planets = (system && system.planets) || [];
     let total = 0;
 
     for (const planet of planets) {
-      const generator = planet.generator || planet.planet;
+      const generator = gwoBiomes.generatorOf(planet);
       if (generator && generator.numArmies) {
         total += generator.numArmies;
       }
@@ -227,17 +220,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js"], (
     );
 
   // The pool holds live references - My Systems is a bound IndexedDB row - so
-  // withoutBrokenSystems' in-place backfill has to go on the copy instead.
+  // the starting_planet backfill goes on the copy, never on the source.
   const copyOf = (system, providers) => {
     const copy = JSON.parse(JSON.stringify(system));
-    let started = false;
-
-    for (const planet of copy.planets) {
-      if (planet.starting_planet) {
-        started = true;
-      }
-    }
-    if (!started) {
+    if (!_.some(copy.planets, "starting_planet")) {
       copy.planets[0].starting_planet = true;
     }
 

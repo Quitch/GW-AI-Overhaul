@@ -1,16 +1,8 @@
 "use strict";
 
 // Evaluates PA's `buildable_types` expression language against a target's
-// `unit_types`, with the UNITTYPE_ prefix dropped. Grammar, read off the base
-// game's own expressions:
-//
-//   or   := and ("|" and)*
-//   and  := atom (("&" | "-") atom)*        `-` is and-not
-//   atom := IDENT | "(" or ")"
-//
-// `|` is lowest; `&` and `-` share the next level and associate left-to-right, so
-// "A & B - C | D" excludes C from the first alternative only. An unknown token is
-// absent from the tag set and so reads false, as the engine treats it.
+// `unit_types`. The Node twin of shared/build_types.js. See races.md,
+// "Capability cells".
 
 // Every operator is one character, so anything but an identifier or ()&|- is noise.
 function tokenize(expression) {

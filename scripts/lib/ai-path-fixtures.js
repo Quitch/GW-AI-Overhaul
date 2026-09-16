@@ -6,6 +6,8 @@
 // buildGame()/installModel() return the same object references on every call,
 // matching production code, which re-reads rather than snapshotting.
 
+var afterEach = require("node:test").afterEach;
+
 var CLUSTER_FACTION = 4;
 var DEFAULT_FACTION = 1;
 
@@ -16,6 +18,9 @@ var SCENARIO_AXES = {
   SUBCOMMANDER_TYPES: ["cluster", "notCluster"],
   SUBCOMMANDER_TECH_STATES: ["none", "active"],
   COOP_MODES: ["solo", "sharedTech", "perPlayerTech"],
+  // "fixture" is scripts/lib/race-fixture.js, registered by the test that
+  // sweeps it; an unregistered id reads as MLA.
+  RACES: ["mla", "fixture"],
 };
 
 function makeInventory(overrides) {
@@ -53,11 +58,58 @@ function makeInventory(overrides) {
   };
 }
 
+// One AI descriptor as gw_start's generator writes it, with the fields the
+// referee reads when it builds a battle config.
+function makeAiDescriptor(overrides) {
+  return Object.assign(
+    {
+      name: "Test AI",
+      commander: "test_commander",
+      econ_rate: 1,
+      color: [[10, 10, 10]],
+      faction: 1,
+      personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
+    },
+    overrides || {},
+  );
+}
+
 // -> { game, star, ai, inventory }. The non-obvious options:
 //   subcommanderType drives inventory's global:playerFaction tag
 //   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
 //   viewerInventoryData feeds a fake game.findCoopPlayerInventoryData(client)
 //
+// The origin star's system: its gwaio settings block only when a brain is
+// recorded, as a war saved before GWO existed carries none.
+function buildSystem(opts, aiInUse, aiAllyInUse) {
+  if (!aiInUse && !aiAllyInUse && !opts.aiByRace) {
+    return {};
+  }
+  var gwaio = {};
+  if (aiInUse) {
+    gwaio.ai = aiInUse;
+  }
+  if (aiAllyInUse) {
+    gwaio.aiAlly = aiAllyInUse;
+  }
+  // The per-race brain table as gw_start records it:
+  // { raceId: { enemy, ally } }. Absent means a war saved before it existed.
+  if (opts.aiByRace) {
+    gwaio.aiByRace = opts.aiByRace;
+  }
+  if (opts.difficultyName) {
+    gwaio.difficulty = opts.difficultyName;
+  }
+  // A Custom war's recorded tier values, as gw_start snapshots them.
+  if (opts.customDifficulty) {
+    gwaio.customDifficulty = opts.customDifficulty;
+  }
+  if (opts.coopPlayerScalingCount) {
+    gwaio.coopPlayerScalingCount = opts.coopPlayerScalingCount;
+  }
+  return { gwaio: gwaio };
+}
+
 // Connected clients go to installModel(), not here.
 function buildGame(options) {
   var opts = options || {};
@@ -72,6 +124,10 @@ function buildGame(options) {
   var foes = opts.foes || [];
   var perPlayerTech = !!opts.perPlayerTech;
   var viewerInventoryData = opts.viewerInventoryData || {};
+  // Race ids from SCENARIO_AXES.RACES; absent means MLA, as in a war saved
+  // before races existed.
+  var playerRace = opts.playerRace;
+  var enemyRace = opts.enemyRace;
 
   var mirrorMode = enemyType === "guardians";
   var enemyFaction =
@@ -79,12 +135,17 @@ function buildGame(options) {
   var playerFaction =
     subcommanderType === "cluster" ? CLUSTER_FACTION : DEFAULT_FACTION;
 
+  var tags = { "global:playerFaction": playerFaction };
+  if (playerRace) {
+    tags["global:playerRace"] = playerRace;
+  }
+
   var inventory = makeInventory({
     aiModsList: aiMods,
     cardsList: smartSubcommanders
       ? [{ id: "gwaio_upgrade_subcommander_tactics" }]
       : [],
-    tags: { "global:playerFaction": playerFaction },
+    tags: tags,
   });
 
   var ai = {
@@ -94,20 +155,11 @@ function buildGame(options) {
     personality: {},
     foes: foes,
   };
-
-  var system = {};
-  if (aiInUse || aiAllyInUse) {
-    system.gwaio = {};
-    if (aiInUse) {
-      system.gwaio.ai = aiInUse;
-    }
-    if (aiAllyInUse) {
-      system.gwaio.aiAlly = aiAllyInUse;
-    }
-    if (opts.difficultyName) {
-      system.gwaio.difficulty = opts.difficultyName;
-    }
+  if (enemyRace) {
+    ai.race = enemyRace;
   }
+
+  var system = buildSystem(opts, aiInUse, aiAllyInUse);
 
   var star = {
     system: function () {
@@ -162,11 +214,34 @@ function installModel(game, connectedClients) {
   };
 }
 
+// installModel with the afterEach restore built in: call once per suite, then
+// install a game per test through the returned function. Its restore() hands
+// the global back early, for a test that installs more than one.
+function useModel() {
+  var restore;
+  var release = function () {
+    if (restore) {
+      restore();
+      restore = undefined;
+    }
+  };
+  afterEach(release);
+
+  var use = function (game, connectedClients) {
+    release();
+    restore = installModel(game, connectedClients);
+  };
+  use.restore = release;
+  return use;
+}
+
 module.exports = {
   SCENARIO_AXES: SCENARIO_AXES,
   CLUSTER_FACTION: CLUSTER_FACTION,
   DEFAULT_FACTION: DEFAULT_FACTION,
   makeInventory: makeInventory,
+  makeAiDescriptor: makeAiDescriptor,
   buildGame: buildGame,
   installModel: installModel,
+  useModel: useModel,
 };

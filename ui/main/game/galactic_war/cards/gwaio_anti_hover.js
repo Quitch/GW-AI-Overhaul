@@ -5,9 +5,6 @@ define([
   visible: () => true,
 
   describe: function () {
-    if (gwoCard.isEnglish()) {
-      return "!LOC:Anti-Hover Ammo Tech doubles all damage you deal to hover units — the Drifter, Ward, Kaiju and Ares — but halves damage to naval vessels.";
-    }
     return "!LOC:Anti-Hover Ammo Tech doubles all damage you deal to hover units but halves damage to naval vessels.";
   },
 
@@ -32,14 +29,10 @@ define([
 
   buff: function (inventory) {
     inventory.addMods(
-      _.flatten(
-        _.map(gwoGroup.ammo, (ammo) =>
-          gwoCard.mods(ammo, "multiplyOrCreate", {
-            "armor_damage_map.AT_Hover": 2,
-            "armor_damage_map.AT_Naval": 0.5,
-          }),
-        ),
-      ),
+      gwoCard.flatMapMods(gwoGroup.ammo, "multiplyOrCreate", {
+        "armor_damage_map.AT_Hover": 2,
+        "armor_damage_map.AT_Naval": 0.5,
+      }),
     );
   },
 

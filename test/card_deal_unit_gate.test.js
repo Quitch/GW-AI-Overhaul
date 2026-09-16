@@ -17,8 +17,8 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const { loadCouiModule, REPO_ROOT } = require("../scripts/lib/amd-loader.js");
+const { listCardFiles } = require("../scripts/lib/card-files.js");
 const {
-  CARDS_DIR,
   cardIdFromFile,
   grantedUnits,
   loadAllCards,
@@ -106,10 +106,7 @@ const OPENED_BY_UNRELATED_UNITS = {
   },
 };
 
-const CARD_FILES = fs
-  .readdirSync(CARDS_DIR)
-  .filter((file) => file.endsWith(".js"))
-  .sort();
+const CARD_FILES = listCardFiles();
 
 // card_tooltips.js is a self-invoking scene script that reaches for model.game()
 // at load, so its list is read out of the source rather than by loading it - the

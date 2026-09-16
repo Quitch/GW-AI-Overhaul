@@ -10,9 +10,9 @@ define([
   "main/game/galactic_war/shared/js/systems/titans-easy",
   "main/game/galactic_war/shared/js/systems/titans-normal",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
-], function (pa_easy, pa_normal, titans_easy, titans_normal, gwoRng) {
-  var chooseStarSystemTemplates = function (content, easier) {
-    var activeTemplates;
+], (pa_easy, pa_normal, titans_easy, titans_normal, gwoRng) => {
+  const chooseStarSystemTemplates = (content, easier) => {
+    let activeTemplates;
 
     if (content === "PAExpansion1") {
       activeTemplates = easier ? titans_easy : titans_normal;
@@ -20,7 +20,7 @@ define([
       activeTemplates = easier ? pa_easy : pa_normal;
     }
 
-    var planet_template = {
+    const planet_template = {
       name: "Default Planet",
       mass: 5000,
       position: [0, 0],
@@ -39,7 +39,7 @@ define([
       },
     };
 
-    var classicSystemNames = [
+    const classicSystemNames = [
       /* yes, we plan to keep many of these forever -- but yes, we intend to filter them and dilute them */
       "Helecon",
       "Kehlmor",
@@ -154,7 +154,7 @@ define([
       "Monday Night",
     ];
 
-    var generate = function (config) {
+    const generate = (config) => {
       // GWO - was new Math.seedrandom: same [0, 1) callable, plus pick/stream.
       // The fallback keeps stock's contract for callers outside GWO's seeded
       // path, but a seedless call from inside it unseeds a whole system, so it
@@ -164,42 +164,42 @@ define([
           "GWO: generating a system with no seed - it will not reproduce",
         );
       }
-      var rng = gwoRng.create(
+      const rng = gwoRng.create(
         config.seed !== undefined ? config.seed : Math.random(),
       );
-      var getRandomInt = function (min, max) {
-        return Math.floor(rng() * (max - min + 1)) + min;
-      };
+      const getRandomInt = (min, max) =>
+        Math.floor(rng() * (max - min + 1)) + min;
 
-      var rSystem = {
-        name: config.name || "PA-" + getRandomInt(100, 30000),
+      const rSystem = {
+        name: config.name || `PA-${getRandomInt(100, 30000)}`,
         description: "",
         isRandomlyGenerated: true,
       };
 
-      var cSys = _.cloneDeep(config.template);
+      let cSys = _.cloneDeep(config.template);
       if (!cSys) {
         // Choose a system from the templates
-        var starSystemTempl = _.find(activeTemplates, function (sst) {
-          return (
-            sst.Players[0] <= config.players && config.players <= sst.Players[1]
-          );
-        });
+        let starSystemTempl = _.find(
+          activeTemplates,
+          (sst) =>
+            sst.Players[0] <= config.players &&
+            config.players <= sst.Players[1],
+        );
         if (!starSystemTempl) {
           // Fall back to the last template
-          starSystemTempl = _.last(activeTemplates);
+          starSystemTempl = activeTemplates[activeTemplates.length - 1];
           if (!starSystemTempl) return $.when(null);
         }
 
         // we have found a star system group for this number of players. Choose a random system template
-        var idx = getRandomInt(0, starSystemTempl.Systems.length - 1);
+        const idx = getRandomInt(0, starSystemTempl.Systems.length - 1);
         cSys = starSystemTempl.Systems[idx];
 
         rSystem.name = rng.pick(classicSystemNames); // GWO - was _.sample
         rSystem.players = starSystemTempl.Players;
       }
 
-      var usedIndexContainers = [];
+      const usedIndexContainers = [];
 
       // explicit planets always need a generator
 
@@ -207,17 +207,17 @@ define([
       // or - use an explicitly defined planet that is not randomized
       // and/or - use a randomly selected planet as a template
 
-      var pgen = _.map(cSys.Planets, function (plnt, planetIndex) {
+      const pgen = _.map(cSys.Planets, (plnt, planetIndex) => {
         // GWO - stock names this parameter `index`, and the fromRandomList branch below
         // reassigns it via `var index = 0` - var is function-scoped, so that is not a new
         // binding. Both are kept: `index` still feeds bp.generator.index, planetIndex
         // holds the position in cSys.Planets so each planet can key its own stream.
-        var index = planetIndex;
+        let index = planetIndex;
         // GWO - taken synchronously, because the draws at the end of this function run
         // after a $.when and so in resolution order, not in cSys.Planets order.
-        var planetRng = rng.stream("planet", planetIndex);
+        const planetRng = rng.stream("planet", planetIndex);
         // GWO - hoisted; stock declares var nameGet twice below, in sibling branches.
-        var nameGet;
+        let nameGet;
 
         if (plnt.fromRandomList) {
           // GWO - was !!plnt.fromRandomList
@@ -241,13 +241,13 @@ define([
           // if isExplicit were not set to false here, BiomeScale may or may not actually be used
           // because an isExplicit planet could be selected instead
 
-          var planetList = [];
+          let planetList = [];
 
           // if we're provided with an array of arrays, merge them into a single list
-          if (_.isArray(plnt.fromRandomList)) {
+          if (Array.isArray(plnt.fromRandomList)) {
             // there doesn't seem to be an equivalent lodash function?
-            for (var i = 0; i < plnt.fromPlanetList.length; i++) {
-              for (var j = 0; j < plnt.fromPlanetList[i].planets; j++) {
+            for (let i = 0; i < plnt.fromPlanetList.length; i++) {
+              for (let j = 0; j < plnt.fromPlanetList[i].planets; j++) {
                 planetList.push(plnt.fromPlanetList[i].planets[j]);
               }
             }
@@ -259,11 +259,9 @@ define([
           // this way, we avoid duplicates selected from the list of planet templates
           // the key is the fromRandomList because it is keyed by instance while planetList
           // is new every time.
-          var usedIndexContainer = _.find(
+          let usedIndexContainer = _.find(
             usedIndexContainers,
-            function (container) {
-              return container.planets === plnt.fromRandomList;
-            },
+            (container) => container.planets === plnt.fromRandomList,
           );
 
           // if there isn't a container already, create it
@@ -279,20 +277,21 @@ define([
           // get planet templates that match the isExplicit value and haven't been used yet
           // if the requesting planet doesn't actually have isExplicit value true or false,
           // we don't care.
-          var viablePlanets = _.where(planetList, function (planet) {
-            return (
+          // GWO - _.filter; stock's _.where discards a predicate under lodash 3
+          let viablePlanets = _.filter(
+            planetList,
+            (planet) =>
               (typeof plnt.isExplicit === "undefined" ||
                 !!planet.isExplicit === plnt.isExplicit) &&
               usedIndexContainer.usedIndexes.indexOf(
                 planetList.indexOf(planet),
-              ) === -1
-            );
-          });
+              ) === -1,
+          );
 
           // pick a random planet that hasn't been used
           index = 0; // GWO - was var index, redeclaring the parameter above
           if (viablePlanets.length > 1) {
-            var attemptedIndexes = [];
+            const attemptedIndexes = [];
             do {
               index = getRandomInt(0, viablePlanets.length - 1);
               if (attemptedIndexes.indexOf(index) === -1)
@@ -304,12 +303,13 @@ define([
           } else {
             // Stop caring about if it is unused
             // GWO - was var viablePlanets, redeclaring the one above
-            viablePlanets = _.where(planetList, function (planet) {
-              return (
+            // GWO - _.filter; stock's _.where discards a predicate under lodash 3
+            viablePlanets = _.filter(
+              planetList,
+              (planet) =>
                 typeof plnt.isExplicit === "undefined" ||
-                !!planet.isExplicit === plnt.isExplicit
-              );
-            });
+                !!planet.isExplicit === plnt.isExplicit,
+            );
 
             if (viablePlanets.length === 0) {
               // There's no way we can fulfill this request because
@@ -323,14 +323,14 @@ define([
 
           // Use the current index. If we had to give up on finding an unused one, just use
           // the last random index.
-          var planet = viablePlanets[index];
+          const planet = viablePlanets[index];
           usedIndexContainer.usedIndexes.push(planetList.indexOf(planet));
 
           // Extend the selected planet template with the requesting planet
           // So we can override properties on the template. (Not deep.)
-          var sourceList = plnt.fromRandomList;
+          const sourceList = plnt.fromRandomList;
           plnt.fromRandomList = null; // Don't clone this
-          var extendedPlanet = _.cloneDeep(planet);
+          const extendedPlanet = _.cloneDeep(planet);
           _.assign(extendedPlanet, _.cloneDeep(plnt));
           plnt.fromRandomList = sourceList;
 
@@ -343,7 +343,7 @@ define([
           if (plnt.name) {
             nameGet.resolve(plnt);
           } else {
-            api.game.getRandomPlanetName().then(function (name) {
+            api.game.getRandomPlanetName().then((name) => {
               plnt.name = name;
               nameGet.resolve(plnt);
             });
@@ -352,27 +352,24 @@ define([
           return nameGet.promise();
         }
 
-        var bp = _.cloneDeep(planet_template);
+        const bp = _.cloneDeep(planet_template);
         bp.generator.seed = planetRng.int(0, 32767); // GWO
-        // GWO - was _.sample, then briefly the shared rng, which made a planet's
-        // biome depend on how many earlier planets took the isExplicit return.
+        // GWO - per-planet stream, so no other planet's draws can move this one.
         bp.generator.biome = planetRng.pick(plnt.Biomes);
 
-        var biomeGet = $.get(
-          "coui://pa/terrain/" + bp.generator.biome + ".json",
-        ).then(function (data) {
-          return parse(data);
-        });
+        const biomeGet = $.get(
+          `coui://pa/terrain/${bp.generator.biome}.json`,
+        ).then((data) => parse(data));
         nameGet = plnt.name; // GWO - was var nameGet
         if (!nameGet) {
           nameGet = $.Deferred();
-          api.game.getRandomPlanetName().then(function (name) {
+          api.game.getRandomPlanetName().then((name) => {
             nameGet.resolve(name);
           });
         }
-        return $.when(biomeGet, nameGet).then(function (biomeInfo, name) {
-          var radius_range = biomeInfo.radius_range;
-          if (!_.isArray(radius_range)) radius_range = [100, 1300];
+        return $.when(biomeGet, nameGet).then((biomeInfo, name) => {
+          let radius_range = biomeInfo.radius_range;
+          if (!Array.isArray(radius_range)) radius_range = [100, 1300];
 
           // GWO - planetRng, not the shared getRandomInt; threaded rather than
           // pre-drawn so radius can still read the fetched radius_range.
@@ -419,8 +416,8 @@ define([
       });
 
       // clean out the null responses from the array of generation promises
-      var fulfillableGenPromises = [];
-      for (var i = 0; i < pgen.length; i++) {
+      const fulfillableGenPromises = [];
+      for (let i = 0; i < pgen.length; i++) {
         if (pgen[i]) fulfillableGenPromises.push(pgen[i]);
       }
 
@@ -431,7 +428,7 @@ define([
     };
 
     return {
-      generate: generate,
+      generate,
     };
   };
 

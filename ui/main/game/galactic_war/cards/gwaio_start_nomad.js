@@ -7,6 +7,107 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], (module, GWCStart, gwoBank, gwoCard, gwoUnit, gwoGroup) => {
   const CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
+  const loadout = gwoCard.loadout(CARD, {
+    bank: gwoBank,
+    start: GWCStart,
+    apply: function (inventory) {
+      const smallStructures = gwoGroup.nomadStructuresSmall;
+      const mediumStructures = gwoGroup.nomadStructuresMedium;
+      const allStructures = smallStructures.concat(
+        mediumStructures,
+        gwoGroup.nomadStructuresLarge,
+      );
+      const orbitalStructures = gwoGroup.nomadStructuresOrbital;
+      const groundStructures = _.difference(allStructures, orbitalStructures);
+      const teleportableStructures = smallStructures.concat(mediumStructures);
+      const defensiveStructures = gwoGroup.structuresArtillery.concat(
+        gwoGroup.structuresDefences,
+      );
+      const offensiveStructures = _.without(defensiveStructures, gwoUnit.wall);
+      const mods = _.flatten(
+        _.map(groundStructures, (unit) =>
+          gwoCard
+            .mods(unit, "replace", {
+              "navigation.type": "Hover",
+              "navigation.acceleration": 100,
+              "navigation.brake": 100,
+              "navigation.move_speed": 10,
+              "navigation.turn_speed": 60,
+              "physics.allow_pushing": true,
+              "physics.push_sideways": true,
+              "physics.type": "Mobile",
+              structure: null,
+              "navigation.park_stamp.shape": "sphere",
+              "navigation.park_stamp.cost": 10,
+              "navigation.park_stamp.type_data": [
+                { move_type: "land-small", stamp_type: "simple" },
+                { move_type: "amphibious", stamp_type: "simple" },
+                { move_type: "hover", stamp_type: "simple" },
+                { move_type: "water-hover", stamp_type: "simple" },
+              ],
+            })
+            .concat(
+              gwoCard.mods(unit, "push", { unit_types: "UNITTYPE_Hover" }),
+            ),
+        ),
+      ).concat(
+        gwoCard.flatMapMods(orbitalStructures, "replace", {
+          "navigation.type": "orbital",
+          "navigation.acceleration": 25,
+          "navigation.brake": 25,
+          "navigation.move_speed": 25,
+          "navigation.turn_speed": 90,
+          "navigation.bank_factor": 5,
+          "navigation.hover_time": -1,
+        }),
+        _.flatten(
+          _.map(allStructures, (unit) =>
+            gwoCard
+              .mods(unit, "replace", {
+                command_caps: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
+              })
+              .concat(
+                gwoCard.mods(unit, "pull", {
+                  unit_types: "UNITTYPE_Structure",
+                }),
+                gwoCard.mods(unit, "push", {
+                  unit_types: "UNITTYPE_Mobile",
+                }),
+                gwoCard.mods(unit, "replace", {
+                  "physics.radius": 5,
+                  "physics.air_friction": 0.5,
+                  "navigation.dodge_radius": 15,
+                  "navigation.dodge_multiplier": 1,
+                  "navigation.wobble_factor": 0.1,
+                  "navigation.wobble_speed": 0.2,
+                }),
+              ),
+          ),
+        ),
+        gwoCard.flatMapMods(smallStructures, "replace", {
+          transportable: { size: 1 },
+          attachable: { offsets: { root: [0, 0, 0], head: [0, 0, 13] } },
+        }),
+        gwoCard.mods(gwoUnit.pelican, "replace", {
+          "transporter.transportable_unit_types":
+            "Mobile & ((Land - Commander) | CmdBuild | FabBuild)",
+        }),
+        _.flatten(
+          _.map(teleportableStructures, (unit) =>
+            gwoCard
+              .mods(unit, "replace", { teleportable: {} })
+              .concat(
+                gwoCard.mods(unit, "push", { command_caps: "ORDER_Use" }),
+              ),
+          ),
+        ),
+        gwoCard.flatMapMods(offensiveStructures, "push", {
+          command_caps: "ORDER_Attack",
+        }),
+      );
+      inventory.addMods(mods);
+    },
+  });
   return {
     visible: () => false,
     summarize: () => "!LOC:Nomad Commander",
@@ -14,325 +115,11 @@ define([
       return gwoCard.loadoutIcon(CARD.id);
     },
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Non-factory and non-Titan structures are mobile, except metal extractors and the Catalyst, which must stay on the map features they claim, and the Teleporter. Small structures can be transported and use teleporters, medium size structures can use teleporters.";
-      }
       return "!LOC:Non-factory and non-Titan structures are mobile. Small structures can be transported and use teleporters, medium size structures can use teleporters.";
     },
-    hint: _.constant({
-      icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
-      description: "!LOC:Nomad Commander",
-    }),
+    hint: gwoCard.lockedHint("!LOC:Nomad Commander"),
     deal: gwoCard.startCard,
-    buff: function (inventory) {
-      if (inventory.lookupCard(CARD) === 0) {
-        let buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.maxCards(inventory.maxCards() + 1);
-        } else {
-          GWCStart.buff(inventory);
-
-          const mods = [];
-          const smallStructures = [
-            gwoUnit.energyPlant,
-            gwoUnit.energyStorage,
-            gwoUnit.galata,
-            gwoUnit.landMine,
-            gwoUnit.laserDefenseTower,
-            gwoUnit.lob,
-            gwoUnit.metalStorage,
-            gwoUnit.pelter,
-            gwoUnit.radar,
-            gwoUnit.singleLaserDefenseTower,
-            gwoUnit.torpedoLauncher,
-            gwoUnit.umbrella,
-            gwoUnit.wall,
-          ];
-          const mediumStructures = [
-            gwoUnit.catapult,
-            gwoUnit.energyPlantAdvanced,
-            gwoUnit.flak,
-            gwoUnit.laserDefenseTowerAdvanced,
-            gwoUnit.radarJammingStation,
-            gwoUnit.torpedoLauncherAdvanced,
-          ];
-          const largeStructures = [
-            gwoUnit.anchor,
-            gwoUnit.deepSpaceOrbitalRadar,
-            gwoUnit.holkins,
-            gwoUnit.jig,
-            gwoUnit.kessler,
-            gwoUnit.radarAdvanced,
-          ];
-          const allStructures = smallStructures.concat(
-            mediumStructures,
-            largeStructures,
-          );
-          const orbitalStructures = [
-            gwoUnit.anchor,
-            gwoUnit.jig,
-            gwoUnit.kessler,
-          ];
-          const groundStructures = _.reject(allStructures, (structure) =>
-            _.includes(orbitalStructures, structure),
-          );
-          _.forEach(groundStructures, (unit) => {
-            mods.push(
-              {
-                file: unit,
-                path: "navigation.type",
-                op: "replace",
-                value: "Hover",
-              },
-              {
-                file: unit,
-                path: "navigation.acceleration",
-                op: "replace",
-                value: 100,
-              },
-              {
-                file: unit,
-                path: "navigation.brake",
-                op: "replace",
-                value: 100,
-              },
-              {
-                file: unit,
-                path: "navigation.move_speed",
-                op: "replace",
-                value: 10,
-              },
-              {
-                file: unit,
-                path: "navigation.turn_speed",
-                op: "replace",
-                value: 60,
-              },
-              {
-                file: unit,
-                path: "physics.allow_pushing",
-                op: "replace",
-                value: true,
-              },
-              {
-                file: unit,
-                path: "physics.push_sideways",
-                op: "replace",
-                value: true,
-              },
-              {
-                file: unit,
-                path: "physics.type",
-                op: "replace",
-                value: "Mobile",
-              },
-              {
-                file: unit,
-                path: "structure",
-                op: "replace",
-                value: null,
-              },
-              {
-                file: unit,
-                path: "navigation.park_stamp.shape",
-                op: "replace",
-                value: "sphere",
-              },
-              {
-                file: unit,
-                path: "navigation.park_stamp.cost",
-                op: "replace",
-                value: 10,
-              },
-              {
-                file: unit,
-                path: "navigation.park_stamp.type_data",
-                op: "replace",
-                value: [
-                  { move_type: "land-small", stamp_type: "simple" },
-                  { move_type: "amphibious", stamp_type: "simple" },
-                  { move_type: "hover", stamp_type: "simple" },
-                  { move_type: "water-hover", stamp_type: "simple" },
-                ],
-              },
-              {
-                file: unit,
-                path: "unit_types",
-                op: "push",
-                value: "UNITTYPE_Hover",
-              },
-            );
-          });
-          _.forEach(orbitalStructures, (unit) => {
-            mods.push(
-              {
-                file: unit,
-                path: "navigation.type",
-                op: "replace",
-                value: "orbital",
-              },
-              {
-                file: unit,
-                path: "navigation.acceleration",
-                op: "replace",
-                value: 25,
-              },
-              {
-                file: unit,
-                path: "navigation.brake",
-                op: "replace",
-                value: 25,
-              },
-              {
-                file: unit,
-                path: "navigation.move_speed",
-                op: "replace",
-                value: 25,
-              },
-              {
-                file: unit,
-                path: "navigation.turn_speed",
-                op: "replace",
-                value: 90,
-              },
-              {
-                file: unit,
-                path: "navigation.bank_factor",
-                op: "replace",
-                value: 5,
-              },
-              {
-                file: unit,
-                path: "navigation.hover_time",
-                op: "replace",
-                value: -1,
-              },
-            );
-          });
-          _.forEach(allStructures, (unit) => {
-            mods.push(
-              {
-                file: unit,
-                path: "command_caps",
-                op: "replace",
-                value: ["ORDER_Move", "ORDER_Patrol", "ORDER_Assist"],
-              },
-              {
-                file: unit,
-                path: "unit_types",
-                op: "pull",
-                value: "UNITTYPE_Structure",
-              },
-              {
-                file: unit,
-                path: "unit_types",
-                op: "push",
-                value: "UNITTYPE_Mobile",
-              },
-              {
-                file: unit,
-                path: "physics.radius",
-                op: "replace",
-                value: 5,
-              },
-              {
-                file: unit,
-                path: "physics.air_friction",
-                op: "replace",
-                value: 0.5,
-              },
-              {
-                file: unit,
-                path: "navigation.dodge_radius",
-                op: "replace",
-                value: 15,
-              },
-              {
-                file: unit,
-                path: "navigation.dodge_multiplier",
-                op: "replace",
-                value: 1,
-              },
-              {
-                file: unit,
-                path: "navigation.wobble_factor",
-                op: "replace",
-                value: 0.1,
-              },
-              {
-                file: unit,
-                path: "navigation.wobble_speed",
-                op: "replace",
-                value: 0.2,
-              },
-            );
-          });
-          _.forEach(smallStructures, (unit) => {
-            mods.push(
-              {
-                file: unit,
-                path: "transportable",
-                op: "replace",
-                value: { size: 1 },
-              },
-              {
-                file: unit,
-                path: "attachable",
-                op: "replace",
-                value: { offsets: { root: [0, 0, 0], head: [0, 0, 13] } },
-              },
-            );
-          });
-          mods.push({
-            file: gwoUnit.pelican,
-            path: "transporter.transportable_unit_types",
-            op: "replace",
-            value: "Mobile & ((Land - Commander) | CmdBuild | FabBuild)",
-          });
-          const teleportableStructures =
-            smallStructures.concat(mediumStructures);
-          _.forEach(teleportableStructures, (unit) => {
-            mods.push(
-              {
-                file: unit,
-                path: "teleportable",
-                op: "replace",
-                value: {},
-              },
-              {
-                file: unit,
-                path: "command_caps",
-                op: "push",
-                value: "ORDER_Use",
-              },
-            );
-          });
-          const defensiveStructures = gwoGroup.structuresArtillery.concat(
-            gwoGroup.structuresDefences,
-          );
-          const offensiveStructures = _.filter(
-            defensiveStructures,
-            (structure) => structure !== gwoUnit.wall,
-          );
-          _.forEach(offensiveStructures, (unit) => {
-            mods.push({
-              file: unit,
-              path: "command_caps",
-              op: "push",
-              value: "ORDER_Attack",
-            });
-          });
-          inventory.addMods(mods);
-        }
-        ++buffCount;
-        inventory.setTag("", "buffCount", buffCount);
-      } else {
-        inventory.maxCards(inventory.maxCards() + 1);
-        gwoBank.addStartCard(CARD);
-      }
-    },
-    dull: function (inventory) {
-      gwoCard.applyDulls(CARD, inventory);
-    },
+    buff: loadout.buff,
+    dull: loadout.dull,
   };
 });

@@ -6,6 +6,106 @@
 
 - Prepared the mod for PA's move from Coherent UI to the Chrome Embedded Framework: engine URL handling is centralised behind a scheme adapter and a one-command rewrite tool, the toolchain and mod-owned code target Chromium 151 (modern JavaScript and CSS), and the migration assumptions and test plan are documented in `docs/cef-migration.md`
 
+## v7.3.0 - 2026-09-11
+
+### Added
+
+- Second Wave, Section 17, and Osmech units now reach Galactic War: an MLA player and AI field them alongside the vanilla units of the same kind, and a Legion or Bugs player's tooltips name the ones those races get. A Bugs AI fields Second Wave's Bugs units too. A war warns on resume when an add-on it began with has been disabled
+
+## v7.2.0 - 2026-09-09
+
+### Added
+
+- Translations for missing strings for German, Spanish, French, Italian, Japanese, Korean, Dutch, Polish, Russian, Simplified Chinese, and Traditional Chinese using the Mod Translations mod. To fix a translation, join the [Galactic War Overhaul project on Playglot](https://playglot.pro/projects/galactic-war-overhaul)
+
+### Changed
+
+- Improved Intelligence Tech no longer applies to teleporters
+
+### Bugfix
+
+- Remove Sub Commanders from Tourist Commander description
+- The war setup screen restores the loadout you last used
+- Easy Systems now generates the smaller template set without Shared Systems for Galactic War
+- A missing or unreadable AI file fails the battle launch with an error instead of leaving Fight stuck
+- The faction tooltip on the war setup screen now shows in your language when TITANS is active, instead of English
+- Lore text on the galaxy map now shows in your language; the Bugs system description was English in every non-English locale
+
+## v7.1.0 - 2026-09-07
+
+### Changed
+
+- Co-op battles launch faster: a viewer's unit specs and the AI build trees are read once per launch instead of once per player - about 10 seconds less on the host with one viewer
+- The AI Cluster faction can now be any race. A non-MLA Cluster fields its race's commanders and regular minions like any other faction
+- Unique Races now counts your race as already in play, so enemy factions avoid it until every other race has been used
+- These changes mean seeds now draw different enemy races. Existing saved wars are unaffected
+
+## v7.0.1 - 2026-09-06
+
+### Bugfix
+
+- Tech card tooltips show a race player's units instead of MLA's
+- In co-op with separate loadout & tech, tech card tooltips highlight units the viewer lacks rather than those the host lacks
+
+## v7.0.0 - 2026-09-04
+
+### Added
+
+- Pressing Fight now shows a loading screen that reports each stage of battle preparation. Other mods can report their own stages through `model.gwoLaunchProgress`
+- Support for Legion, Bugs, and Exiles when you are running GW Server Mods
+  - Both the player and AI can be any race
+  - Enable separate races in co-op war settings to allow multiple races on the player team
+  - Disable a race mod to exclude it from a war - GWO does not have a UI for this
+  - Enable Unique Races to avoid duplicates where possible given the number of races and galaxy size.
+  - AI can be set per-race for both allies and enemies - not all AIs support all races
+  - Resuming a war whose race mods are gone stops you fighting it
+- With GW Server Mods active, Shared Systems maps which require server components (i.e. models) will now be included in the war
+- Support for mods to add new decks to the Techs picker in the war setup - see the `New-GW-Cards` template
+
+### Changed
+
+- A viewer's loadout screen shows their commander in the host's faction colour
+- Removed Easier Start - it's always on now
+- AI defaults to TITANS again
+- Difficulty is applied when a battle starts rather than when a war is created, so a war in progress picks up balance changes to its difficulty tier. A Custom difficulty war keeps the settings it was created with
+- AI technology bonuses are built when a battle starts from the bonuses the war recorded, so a war in progress picks up balance changes to AI tech
+- AI personalities are built when a battle starts from the commander the war recorded, so a war in progress picks up balance changes to AI personalities
+
+### Bugfix
+
+- Picking Beginner or Casual no longer leaves the Custom difficulty's landing evaluation radius blank
+- A Custom difficulty war now floors AI economy at its own economy settings instead of at 1.0
+- Enemy AIs no longer inherit the base game's Normal difficulty economy thresholds, fabber ratios and unit mix in place of their own personality's
+- A Random enemy commander no longer keeps the Armor personality's unit mix underneath the personality it drew
+- A war saved by a version before v5.52.2 is repaired again when resumed
+- Clicking Go To War the moment the war setup screen opens no longer risks generating the galaxy without your Shared Systems for Galactic War selections
+- Sub Commanders were dealt Penchant personalities when the Opponent AI was Penchant; they now follow the Ally AI
+- Joining a per player tech war with a loadout added by another card mod now works
+- A battle whose preparation fails no longer leaves Fight stuck launching forever; the error is logged and Fight can be pressed again
+- Co-op players returning from the final battle after the host now see the victory screen: the host waits for everyone to reconnect, with a Cancel to end the war without them - only happens if the boss is the last enemy star
+
+## v6.14.0 - 2026-08-27
+
+### Changed
+
+- Space Excavation Commander is now offered Sub Commanders
+
+### Bugfix
+
+- Rapid Deployment Commander now silences the AI's stock factory builds under every AI brain
+- Enemy Quellers handle Single Laser Defense Tower Upgrade Tech correctly
+- The AI will properly go orbital for resources with Space Excavation Commander
+- Planetary Excavation Commander no longer leaves the Queller AI unable to expand its metal income
+- Planetary Excavation Commander now correctly tells the AI it can place an extractor anywhere
+- Smart Subcommanders works with Queller again
+- Queller builder references that depended on a custom unit map are now loaded
+
+## v6.13.0 - 2026-08-26
+
+### Changed
+
+- Tech cards build their spec mods and card frames through shared `gwoCard` helpers (`flatMapMods`, `loadout`, `upgradeCard`, ...); card behaviour unchanged. New helpers are documented for card modders
+
 ### Bugfix
 
 - A system from a Shared Systems source whose planets use a biome from another mod no longer leaves every player stuck loading when its battle starts. Biome mods that ship only JSON (such as _multiple Biomes for System Designers_ and _Simple Biomes_) are now given to the Galactic War server and sent to every player, so those maps play as designed; a system whose biome needs a mod the server cannot be given is left out of the galaxy, and a war already carrying one has the planet switched to an earth biome at launch. Wars saved before this change get the same treatment when their battles start

@@ -16,21 +16,12 @@ define(() => {
   // stable. A falsy getId(card) means never-favouritable, and lands in `rest`.
   const sortCardsByFavourite = (cards, favouriteIds, getId) => {
     const ids = normalizeIds(favouriteIds);
-    const rest = [];
-    const cardsById = {};
-
-    _.forEach(cards, (card) => {
-      const id = getId(card);
-      if (id && _.includes(ids, id)) {
-        cardsById[id] = card;
-      } else {
-        rest.push(card);
-      }
-    });
+    const split = _.partition(cards, (card) => isFavourite(ids, getId(card)));
+    const cardsById = _.indexBy(split[0], (card) => getId(card));
 
     const favourites = _.compact(_.map(ids, (id) => cardsById[id]));
 
-    return favourites.concat(rest);
+    return favourites.concat(split[1]);
   };
 
   return {

@@ -1,0 +1,28 @@
+<div
+  class="gwo-launch-progress gwo-victory-wait"
+  data-bind="visible: gwoVictoryWait.visible"
+  style="display: none"
+>
+  <div class="div_panel_bar_background">
+    <div
+      class="div_panel_primary_msg transit"
+      data-bind="text: gwoVictoryWait.title"
+    ></div>
+    <div class="div_options_bar">
+      <div data-bind="text: gwoVictoryWait.message"></div>
+      <div>
+        <img
+          class="img_loading_animation working std"
+          src="coui://ui/main/shared/img/working.svg"
+        />
+      </div>
+      <div
+        class="btn_std attendmouse gwo-victory-wait-cancel"
+        data-bind="click: gwoVictoryWait.cancel, rollover_sound: 'default', visible: isCampaignHost"
+      >
+        <div class="btn_label"><loc>Cancel</loc></div>
+      </div>
+    </div>
+    <div class="div_bottom_margin_bar"></div>
+  </div>
+</div>

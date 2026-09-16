@@ -4,13 +4,20 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
-], (gwoLoadoutIds, helpers, gwoLoadoutBanks) => {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
+], (gwoLoadoutIds, helpers, gwoLoadoutBanks, coopHost) => {
   const cardId = (card) => {
     if (_.isString(card)) {
       return card;
     }
     return card && _.isString(card.id) ? card.id : undefined;
   };
+
+  // The distinct loadout ids in a list of cards or ids.
+  const loadoutIdsOf = (cards) =>
+    _.uniq(
+      _.filter(_.map(cards, cardId), (id) => helpers.isStartLoadoutCardId(id)),
+    );
 
   // The base game records only ids beginning "gwc_start", so every mod loadout a
   // player owns reaches us through gwaioUnlockedStartCardIds instead.
@@ -22,12 +29,7 @@ define([
       ? record.gwaioUnlockedStartCardIds
       : [];
 
-    return _.uniq(
-      _.filter(
-        _.map(base.concat(gwaio, [record && record.loadoutCardId]), cardId),
-        (id) => helpers.isStartLoadoutCardId(id),
-      ),
-    );
+    return loadoutIdsOf(base.concat(gwaio, [record && record.loadoutCardId]));
   };
 
   // gw_game.js's winTurn passes the Guardians' ai.team to defeatTeam, and
@@ -91,28 +93,27 @@ define([
   // A mod's locked loadouts join the pool through model.gwoNewStartCards. gw_play
   // is a fresh page, so this holds only what the mod's own gw_play loader pushed -
   // shared/loadouts.js, which adds GWO's unlockable list, runs in gw_start.
-  const modLoadoutIds = () => {
-    const registered = Array.isArray(model.gwoNewStartCards)
-      ? model.gwoNewStartCards
-      : [];
-
-    return _.filter(_.map(registered, cardId), (id) =>
-      helpers.isStartLoadoutCardId(id),
+  const modLoadoutIds = () =>
+    loadoutIdsOf(
+      Array.isArray(model.gwoNewStartCards) ? model.gwoNewStartCards : [],
     );
-  };
 
-  const treasureLoadoutPool = () =>
-    _.map(
-      _.uniq(
-        gwoLoadoutIds.lockedBase.concat(
-          gwoLoadoutIds.unlockable,
-          modLoadoutIds(),
-        ),
+  // A race player is never offered a loadout built for MLA alone. See
+  // races.md.
+  const treasureLoadoutPool = (race) => {
+    let ids = _.uniq(
+      gwoLoadoutIds.lockedBase.concat(
+        gwoLoadoutIds.unlockable,
+        modLoadoutIds(),
       ),
-      (id) => ({
-        id,
-      }),
     );
+    if (race && race !== "mla") {
+      ids = _.reject(ids, helpers.mlaOnlyCard);
+    }
+    return _.map(ids, (id) => ({
+      id,
+    }));
+  };
 
   const recordHasUnlockedLoadout = (record, card) => {
     const id = cardId(card);
@@ -125,7 +126,7 @@ define([
 
   // The loadout this player is offered, or undefined once they hold them all.
   const pickTreasureLoadout = (params) => {
-    const pool = params.pool || treasureLoadoutPool();
+    const pool = params.pool || treasureLoadoutPool(params.race);
     const isUnlocked = params.isUnlocked;
     const rng = params.rng;
     const locked = _.filter(pool, (card) => !isUnlocked(card));
@@ -144,7 +145,7 @@ define([
   // not filtered by connection, because a stale one only leaves the offer
   // standing.
   const anyPlayerCanUnlockLoadout = (params) => {
-    const pool = params.pool || treasureLoadoutPool();
+    const pool = params.pool || treasureLoadoutPool(params.race);
     const localIds = Array.isArray(params.localUnlockedIds)
       ? params.localUnlockedIds
       : [];
@@ -168,15 +169,12 @@ define([
   // but drops everything outside the "gwc_start" prefix on the way - which is
   // every mod loadout, so a registered bank's holdings have to come along here or
   // the host will keep offering the viewer loadouts they already own.
-  const localUnlockedLoadoutIds = (stockBank, gwoBank) => {
-    const held = stockBank
-      .startCards()
-      .concat(gwoBank.startCards(), gwoLoadoutBanks.startCards());
-
-    return _.uniq(
-      _.filter(_.map(held, cardId), (id) => helpers.isStartLoadoutCardId(id)),
+  const localUnlockedLoadoutIds = (stockBank, gwoBank) =>
+    loadoutIdsOf(
+      stockBank
+        .startCards()
+        .concat(gwoBank.startCards(), gwoLoadoutBanks.startCards()),
     );
-  };
 
   const applyReportedLoadouts = (game, operator) => {
     const payload = (operator && operator.payload) || {};
@@ -202,12 +200,9 @@ define([
       return;
     }
 
-    const stored = game.upsertCoopPlayerInventoryData(
-      Object.assign({}, _.cloneDeep(record), {
-        gwaioUnlockedStartCardIds: ids,
-        updatedAt: _.now(),
-      }),
-    );
+    const stored = coopHost.upsertRecord(game, record, {
+      gwaioUnlockedStartCardIds: ids,
+    });
     if (!stored) {
       console.error("[GW COOP] failed to store reported loadout unlocks");
       return;
@@ -223,12 +218,10 @@ define([
     const stockBank = params.stockBank;
     const gwoBank = params.gwoBank;
 
-    if (model.registerCampaignViewerOperatorHandler) {
-      model.registerCampaignViewerOperatorHandler(
-        reportOperator,
-        applyReportedLoadouts.bind(null, game),
-      );
-    }
+    model.registerCampaignViewerOperatorHandler(
+      reportOperator,
+      applyReportedLoadouts.bind(null, game),
+    );
 
     let reported = "";
     ko.computed(() => {

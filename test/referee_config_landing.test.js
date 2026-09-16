@@ -3,12 +3,13 @@
 // The AI landing policy referee_config_setup.js assigns each commander, keyed on
 // the war seed, the star and the turn.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
-  installModel,
+  useModel,
+  makeAiDescriptor: ai,
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeConfig = loadCouiModule(
@@ -17,6 +18,9 @@ const refereeConfig = loadCouiModule(
 const streams = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
 );
+const difficulty = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+);
 
 const LANDING_POLICIES = [
   "off_player_planet",
@@ -24,34 +28,13 @@ const LANDING_POLICIES = [
   "no_restriction",
 ];
 
-let restoreModel;
-
-afterEach(() => {
-  if (restoreModel) {
-    restoreModel();
-    restoreModel = undefined;
-  }
-});
+const installModel = useModel();
 
 function battleRng(star, turns) {
   return streams.battleRng(
     streams.warRng({ seed: "battle-seed" }),
     star,
     turns,
-  );
-}
-
-function ai(overrides) {
-  return Object.assign(
-    {
-      name: "Test AI",
-      commander: "test_commander",
-      econ_rate: 1,
-      color: [[10, 10, 10]],
-      faction: 1,
-      personality: { adv_eco_mod: 1, adv_eco_mod_alone: 1 },
-    },
-    overrides || {},
   );
 }
 
@@ -63,20 +46,18 @@ function policies(armies) {
 function primary(opts) {
   const options = opts || {};
   const fixture = buildGame({ aiInUse: "Titans", difficultyName: "!LOC:Uber" });
-  restoreModel = installModel(fixture.game);
+  installModel(fixture.game);
 
   const armies = [];
   refereeConfig.setupPrimaryAiAndMinions(
     ai({ minions: options.minions || [] }),
     [],
     [".ai0", ".ai1"],
-    "Titans",
     armies,
     options.rng === null ? undefined : options.rng || battleRng(3, 5),
   );
   const result = policies(armies);
-  restoreModel();
-  restoreModel = undefined;
+  installModel.restore();
   return result;
 }
 
@@ -137,19 +118,41 @@ describe("AI landing policy", () => {
     assert.ok(LANDING_POLICIES.includes(result[0][0]));
   });
 
+  it("gives a boss the tier's commander count per player, not the recorded one", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      difficultyName: "!LOC:Uber",
+      coopPlayerScalingCount: 2,
+    });
+    installModel(fixture.game);
+    const perPlayer = difficulty.difficulties.find(
+      (tier) => tier.difficultyName === "!LOC:Uber",
+    ).bossCommanders;
+
+    const armies = [];
+    refereeConfig.setupPrimaryAiAndMinions(
+      ai({ minions: [], boss: true, bossCommanders: 1 }),
+      [],
+      [".ai0"],
+      armies,
+      battleRng(3, 5),
+    );
+
+    assert.equal(armies[0].slots.length, perPlayer * 2);
+  });
+
   it("cycles the shuffled policies for an AI with more commanders than policies", () => {
     const fixture = buildGame({
       aiInUse: "Titans",
       difficultyName: "!LOC:Uber",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const armies = [];
     refereeConfig.setupPrimaryAiAndMinions(
       ai({ minions: [], bossCommanders: 4 }),
       [],
       [".ai0"],
-      "Titans",
       armies,
       battleRng(3, 5),
     );
@@ -168,7 +171,7 @@ describe("FFA foe landing policy", () => {
       aiInUse: "Titans",
       difficultyName: "!LOC:Uber",
     });
-    restoreModel = installModel(fixture.game);
+    installModel(fixture.game);
 
     const armies = [];
     refereeConfig.setupFfaAis(
@@ -176,13 +179,11 @@ describe("FFA foe landing policy", () => {
         ai({ name: "Foe" + i }),
       ),
       [".ai0", ".ai1", ".ai2"],
-      "Titans",
       armies,
       rng,
     );
     const result = policies(armies);
-    restoreModel();
-    restoreModel = undefined;
+    installModel.restore();
     return result;
   }
 

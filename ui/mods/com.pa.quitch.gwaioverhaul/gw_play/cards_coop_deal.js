@@ -90,6 +90,9 @@ define(() => {
     const gwoBank = params.gwoBank;
     const stockBank = params.stockBank;
     const gwoTreasure = params.gwoTreasure;
+    // Read per target, not once: under Separate races each viewer has its own,
+    // and it rides their record's inventory. See races.md.
+    const gwoRaces = params.gwoRaces;
     const coopStarCards = params.coopStarCards;
     const gwoSettings = params.gwoSettings;
 
@@ -138,6 +141,7 @@ define(() => {
         },
         pickStartLoadoutCard: function (record, client) {
           return gwoTreasure.pickTreasureLoadout({
+            race: gwoRaces.raceOf(record.inventory),
             isUnlocked: function (card) {
               return gwoTreasure.recordHasUnlockedLoadout(record, card);
             },
@@ -218,20 +222,14 @@ define(() => {
           return;
         }
 
-        const inventory = new GWInventory();
-        inventory.load(_.cloneDeep(record.inventory));
-
-        if (inventory.cards().length) {
-          // Applying a viewer's cards runs their loadout card's buff(), which
-          // would otherwise unlock that loadout into the host's own banks.
-          gwoBank.suspendUnlocks(stockBank);
-          inventory.applyCards(() => {
-            gwoBank.resumeUnlocks();
+        gwoBank.applyRecordInventory(
+          GWInventory,
+          record,
+          stockBank,
+          (inventory) => {
             dealCardsForTarget(target, job, inventory);
-          });
-        } else {
-          dealCardsForTarget(target, job, inventory);
-        }
+          },
+        );
       });
 
       $.when.apply($, jobs).then(() => {

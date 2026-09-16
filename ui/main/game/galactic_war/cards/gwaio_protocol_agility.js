@@ -23,21 +23,17 @@ define([
     const percentageReduction = 0.8;
     const percentageIncrease = 1.2;
 
-    const mobileMods = _.map(gwoGroup.combatMobile, (unit) =>
-      gwoCard.mods(unit, "multiply", {
-        "navigation.move_speed": percentageIncrease,
-        "navigation.brake": percentageIncrease,
-        "navigation.acceleration": percentageIncrease,
-        "navigation.turn_speed": percentageIncrease,
-      }),
+    const mobileMods = gwoCard.flatMapMods(
+      gwoGroup.combatMobile,
+      "multiply",
+      gwoCard.paths.navigation,
+      percentageIncrease,
     );
-    const healthMods = _.map(gwoGroup.combat, (unit) =>
-      gwoCard.mods(unit, "multiply", {
-        max_health: percentageReduction,
-      }),
-    );
+    const healthMods = gwoCard.flatMapMods(gwoGroup.combat, "multiply", {
+      max_health: percentageReduction,
+    });
 
-    inventory.addMods(_.flatten(mobileMods.concat(healthMods)));
+    inventory.addMods(mobileMods.concat(healthMods));
   },
 
   dull: function () {},

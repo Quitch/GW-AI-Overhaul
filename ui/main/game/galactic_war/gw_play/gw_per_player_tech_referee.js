@@ -1,7 +1,8 @@
 // Per-player tech in co-op. GWO extracts the validation to the measured
 // gw_play/per_player_tech.js (see testing.md), and continues viewers'
 // subcommanders along the player-faction colour sequence where stock leaves them
-// on colliding raw faction colours. Glue only. See shadowing.md.
+// on colliding raw faction colours. Stock's 23 console.log calls are removed;
+// the six console.error calls are GWO's. Glue only. See shadowing.md.
 define([
   "shared/gw_common",
   "shared/gw_inventory",
@@ -11,8 +12,14 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
 ], function (
   GW,
   GWInventory,
@@ -22,8 +29,14 @@ define([
   subcommanderTech,
   refereeAIPaths,
   gwoSpecs,
+  gwoSpecCache,
   gwoColour,
   perPlayerTech,
+  gameFilePaths,
+  gwoRaces,
+  gwoRaceCells,
+  unitCells,
+  gwoPersonality,
 ) {
   var getPlayerTagGivenIndex = perPlayerTech.getPlayerTagGivenIndex;
   var stripKnownSpecTag = perPlayerTech.stripKnownSpecTag;
@@ -33,9 +46,9 @@ define([
   var validatePerPlayerTechInputs = perPlayerTech.validatePerPlayerTechInputs;
 
   // Files not assigned by default that we wish to mod - global for modder
-  // compatibility, New-GW-Cards pushes here - see tech-cards.md
+  // compatibility, New-GW-Cards pushes here - see tech-cards.md. Seeded with
+  // GWO's own list by gw_play/referee_game_files.js, which loads first.
   model.gwoSpecs = _.isArray(model.gwoSpecs) ? model.gwoSpecs : [];
-  model.gwoSpecs = model.gwoSpecs.concat(gwoSpecs.additionalSpecs);
 
   var loadInventoryFromRecord = function (record) {
     var inventory = new GWInventory();
@@ -43,52 +56,122 @@ define([
     return inventory;
   };
 
+  // GWO - the race comes off the player's own inventory, which is the host's
+  // under Separate races off and the viewer's own under it on: their units and
+  // mods follow the race's capability cells the way the host's do, and their
+  // map is the race's merged one. An MLA viewer's cells are its add-on cells,
+  // undefined while no add-on is mounted. See races.md and coop.md.
   var generateUnitSpecsForPlayer = function (inventory, playerTag) {
     var done = $.Deferred();
     var titans = api.content.usingTitans();
-    var aiMapLoad = $.get("spec://pa/ai/unit_maps/ai_unit_map.json");
-    var aiX1MapLoad = titans
-      ? $.get("spec://pa/ai/unit_maps/ai_unit_map_x1.json")
-      : {};
-    $.when(aiMapLoad, aiX1MapLoad).then(function (aiMapGet, aiX1MapGet) {
-      var aiUnitMap = parse(aiMapGet[0]);
-      var aiX1UnitMap = parse(aiX1MapGet[0]);
+    var race = gwoRaces.raceOf(inventory);
+    var isMla = gwoRaces.isMla(race);
+    var cellsLoad = gwoRaceCells.indexFor(race);
+    var brain = gwoAI.aiInUse("subcommander", race);
+    var mapPath = isMla
+      ? "/pa/ai/unit_maps/ai_unit_map"
+      : gameFilePaths.getAIUnitMapPath(false, brain).replace(/\.json$/, "");
+    var raceMaps = gwoRaces.unitMapsFor(
+      race,
+      brain,
+      gwoAI.getAIPathSource("subcommander", race),
+    );
+    var loadMap = gameFilePaths.loadMap;
+    var loads = [
+      loadMap(mapPath + ".json"),
+      titans ? loadMap(mapPath + "_x1.json") : {},
+    ].concat(_.map(raceMaps, loadMap));
+    // Chained, not $.when'd: the cells are a native Promise. See constraints.md.
+    var withCells = function (cells) {
+      return $.when.apply($, loads).then(function () {
+        return buildFiles(cells, _.toArray(arguments));
+      });
+    };
+    var buildFiles = function (cells, maps) {
+      var extra = maps.slice(2);
+      // A key the race maps left falls back to a race unit of its cell,
+      // preferring one the race's own AI data knows over an add-on's.
+      var merge = function (base) {
+        var merged = gameFilePaths.mergeUnitMaps(base, extra);
+        return cells
+          ? unitCells.unitMapFallback(
+              merged,
+              extra,
+              cells.vanilla,
+              cells.race,
+              gwoRaces.addonUnitPaths(),
+            )
+          : merged;
+      };
+      var aiUnitMap = merge(maps[0]);
+      var aiX1UnitMap = titans ? merge(maps[1]) : {};
 
       var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
       var playerX1AIUnitMap = titans
         ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
         : {};
-      var playerSpecs = inventory.units().concat(model.gwoSpecs);
+      var held = inventory.units().concat(model.gwoSpecs);
+      // A race viewer fields the race's units of the cells the vanilla ones
+      // held occupy; an MLA viewer keeps everything held and gains the
+      // add-on units of those cells.
+      var playerSpecs = held;
+      if (cells) {
+        playerSpecs = (
+          isMla ? unitCells.addonUnitsFor : unitCells.raceUnitsFor
+        )(held, cells.vanilla, cells.race);
+      }
+      // A viewer that picked no race commander is on the stock list, so its
+      // vanilla commander (and its Sub Commanders') is retagged the way the
+      // Guardians' Unicorn is; a kept vanilla Commander-class unit likewise.
+      // commanderModsFor is a no-op for a commander already of the race, and
+      // for MLA.
+      var viewerCommanders = [inventory.getTag("global", "commander")].concat(
+        _.pluck(inventory.minions ? inventory.minions() : [], "commander"),
+      );
+      var retagMods = _.flatten(
+        _.map(viewerCommanders, function (commander) {
+          return gwoRaces.commanderModsFor(race, commander);
+        }).concat(
+          _.map(
+            cells && !isMla
+              ? _.difference(
+                  unitCells.heldCommanderUnits(held, cells.vanilla),
+                  viewerCommanders,
+                )
+              : [],
+            function (unit) {
+              return gwoRaces.unitRetagMods(race, unit);
+            },
+          ),
+        ),
+      );
 
-      GW.specs
-        .genUnitSpecs(playerSpecs, playerTag)
+      // The same cache the game-files referee filled, so a viewer's specs cost
+      // no second fetch of what the host's pass already read. See specs.md.
+      gwoSpecCache
+        .genUnitSpecs(playerSpecs, playerTag, {
+          fetch: gameFilePaths.specFetch,
+        })
         .then(function (playerSpecFiles) {
+          // Only viewers reach here - apply() generates from index 1 - so the
+          // host's .player files are never built by this path.
+          var playerScopedPath = getViewerSubcommanderAiPath(
+            refereeAIPaths,
+            subcommanderTech,
+            brain,
+            inventory,
+            playerTag,
+            race,
+          );
           var playerFilesClassic = {};
           var playerFilesX1 = {};
-          if (playerTag === ".player") {
-            playerFilesClassic["/pa/ai/unit_maps/ai_unit_map.json.player"] =
-              playerAIUnitMap;
-            if (titans) {
-              playerFilesX1["/pa/ai/unit_maps/ai_unit_map_x1.json.player"] =
-                playerX1AIUnitMap;
-            }
-          } else {
-            var playerScopedPath = getViewerSubcommanderAiPath(
-              refereeAIPaths,
-              subcommanderTech,
-              gwoAI.aiInUse("subcommander"),
-              inventory,
-              playerTag,
-            );
-
-            playerFilesClassic[
-              playerScopedPath + "unit_maps/ai_unit_map.json" + playerTag
-            ] = playerAIUnitMap;
-            if (titans) {
-              playerFilesX1[
-                playerScopedPath + "unit_maps/ai_unit_map_x1.json" + playerTag
-              ] = playerX1AIUnitMap;
-            }
+          playerFilesClassic[
+            playerScopedPath + "unit_maps/ai_unit_map.json" + playerTag
+          ] = playerAIUnitMap;
+          if (titans) {
+            playerFilesX1[
+              playerScopedPath + "unit_maps/ai_unit_map_x1.json" + playerTag
+            ] = playerX1AIUnitMap;
           }
 
           var playerFiles = _.assign(
@@ -97,9 +180,38 @@ define([
             playerFilesX1,
             playerSpecFiles,
           );
-          gwoSpecs.mod(playerFiles, inventory.mods(), playerTag);
+          var has = function (file) {
+            return Object.prototype.hasOwnProperty.call(
+              playerSpecFiles,
+              file + playerTag,
+            );
+          };
+          var mods = cells
+            ? unitCells.expandMods(
+                inventory.mods(),
+                cells.vanilla,
+                cells.race,
+                has,
+              )
+            : inventory.mods();
+          gwoSpecs.mod(playerFiles, mods.concat(retagMods), playerTag);
           done.resolve(playerFiles);
+        })
+        .then(null, function (error) {
+          // A native chain would otherwise swallow this and hang the launch.
+          console.error(
+            "Galactic War Overhaul (GWO): viewer specs failed for " +
+              playerTag +
+              ": " +
+              ((error && (error.stack || error.message)) || error),
+          );
+          done.reject(error);
         });
+    };
+
+    cellsLoad.then(withCells, function (error) {
+      console.error("gwoRaces: cells not built for " + race, error);
+      withCells(undefined);
     });
 
     return done.promise();
@@ -246,12 +358,14 @@ define([
         });
 
         var thisPlayersInventory = playerInventories[index];
+        var viewerRace = gwoRaces.raceOf(thisPlayersInventory);
         var viewerAiPath = getViewerSubcommanderAiPath(
           refereeAIPaths,
           subcommanderTech,
-          gwoAI.aiInUse("subcommander"),
+          gwoAI.aiInUse("subcommander", viewerRace),
           thisPlayersInventory,
           playerTags[index],
+          viewerRace,
         );
         var viewerSubcommanders = buildViewerSubcommanderArmies({
           subcommanderTech: subcommanderTech,
@@ -265,6 +379,14 @@ define([
           viewerAiPath: viewerAiPath,
           subcommanderEconRate: gwoAI.subcommanderEconRate,
           colourPosition: colourPosition,
+          // As the host's referee resolves its own Sub Commanders.
+          resolvePersonality: function (minion) {
+            return gwoPersonality.resolve(minion, {
+              side: "ally",
+              faction: playerFaction,
+              penchantTags: gwoAI.penchantTags(minion.penchantName),
+            });
+          },
         });
         colourPosition = viewerSubcommanders.colourPosition;
         _.forEach(viewerSubcommanders.armies, function (subcommanderArmy) {

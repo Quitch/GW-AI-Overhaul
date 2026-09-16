@@ -1,13 +1,9 @@
-var gwoCardsLoaded;
-
-function gwoCard() {
+(() => {
   const game = model.game();
 
-  if (gwoCardsLoaded || game.isTutorial()) {
+  if (game.isTutorial()) {
     return;
   }
-
-  gwoCardsLoaded = true;
 
   try {
     // Allow tech cards to be deleted at any time
@@ -93,7 +89,7 @@ function gwoCard() {
       );
       const star = game.galaxy().stars()[game.currentStar()];
       model.gwoRerollsUsed(model.gwoRerollsUsed() + 1);
-      if (model.gwoRerollsUsed() >= cardsOffered - 1) {
+      if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
         model.gwoOfferRerolls(false);
       }
       star.cardList([]);
@@ -158,7 +154,7 @@ function gwoCard() {
         model.gwoRerollsUsed(rerollsUsed);
         model.gwoOfferRerolls(
           !helpers.pendingCardsContainLoadout(pendingTechCards) &&
-            rerollsUsed < cardsOffered - 1,
+            helpers.rerollsRemain(rerollsUsed, cardsOffered),
         );
         model.gwoRerollPending(false);
       });
@@ -186,13 +182,17 @@ function gwoCard() {
         game.inventory(),
       );
       model.gwoRerollsUsed(cardsOffered - star.cardList().length);
-      if (model.gwoRerollsUsed() >= cardsOffered - 1) {
+      if (!helpers.rerollsRemain(model.gwoRerollsUsed(), cardsOffered)) {
         model.gwoOfferRerolls(false);
       }
+      // The held offer's view models were built by stock before the
+      // replacement below was installed, so rebuild them with it.
+      star.cardList(star.cardList().slice());
     };
 
-    // modified to recognise mod loadouts
-    globals.CardViewModel = function (params) {
+    // Replaces gwt_card.js's CardViewModel; only isLoadout differs. Installed
+    // once helpers has loaded, since isLoadout reads it.
+    const gwoCardViewModel = function (params) {
       const self = this;
 
       self.params = ko.observable(params);
@@ -206,12 +206,14 @@ function gwoCard() {
       self.locDesc = ko.computed(() => loc(self.desc()));
       self.summary = ko.observable();
       self.icon = ko.observable();
-      self.iconPlaceholder = ko.observable(); // Displayed when the icon is empty
+      self.iconPlaceholder = ko.observable();
       self.audio = ko.observable();
 
       self.isEmpty = ko.computed(() => !self.id());
-      // Recognise loadouts introduced by mods as loadouts
-      self.isLoadout = ko.computed(() => _.includes(self.id(), "_start_"));
+      // Stock tests for gwc_start only; mod loadouts carry _start_ anywhere.
+      self.isLoadout = ko.computed(() =>
+        helpers.isStartLoadoutCardId(self.id()),
+      );
 
       const completed = $.Deferred();
       self.card = completed.promise();
@@ -277,6 +279,7 @@ function gwoCard() {
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],
       (
         GW,
@@ -295,8 +298,10 @@ function gwoCard() {
         gwoStreams,
         gwoTreasure,
         gwoLoadoutBanks,
+        gwoRaces,
       ) => {
         helpers = cardsDealHelpers;
+        globals.CardViewModel = gwoCardViewModel;
         // Nothing reads the banks until the player explores, so resolving them
         // alongside setup is early enough and keeps this callback synchronous.
         requireGW(gwoLoadoutBanks.paths(), function () {
@@ -306,14 +311,14 @@ function gwoCard() {
         const inventory = game.inventory();
         const playerFaction = inventory.getTag("global", "playerFaction");
         const galaxy = game.galaxy();
-        const gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
+        const gwoSettings = gwoAI.originSettings(game);
         const warRng = gwoStreams.warRng(gwoSettings);
 
         // Also registers the gwo_sync_star_card_name host handler.
         const cardNameSync = cardsCardNameSync({ game });
 
-        /* Start of GWO implementation of GWDealer */
-
+        // GWO's own dealer, replacing stock's gw_dealer end to end. See
+        // shadowing.md, "Function hijacking".
         model.gwoCards = gwoDeal.setupGwoCards(gwoSettings);
 
         const cards = [];
@@ -365,14 +370,21 @@ function gwoCard() {
                 return undefined;
               }
 
-              const match = helpers.doNotDealCard(
-                dealInventory,
-                card,
-                list,
-                dealAddSlot,
-                false,
-                systemCards,
-              );
+              const match =
+                helpers.doNotDealCard(
+                  dealInventory,
+                  card,
+                  list,
+                  dealAddSlot,
+                  false,
+                  systemCards,
+                ) ||
+                !helpers.raceCanDeal(
+                  gwoRaces,
+                  dealInventory,
+                  card.id,
+                  model.gwoCardsToUnits,
+                );
 
               if (match && cardChance) {
                 cardChance.chance = 0;
@@ -458,6 +470,7 @@ function gwoCard() {
           gwoTreasure,
           coopStarCards,
           gwoSettings,
+          gwoRaces,
         });
 
         // Reports a viewer's loadout unlocks to the host, which needs the mod
@@ -487,7 +500,7 @@ function gwoCard() {
 
         const dealCardToSelectableAI = (win, turnState) => {
           if (model.isCampaignViewer()) {
-            return $.when().promise(); // already resolved jQuery promise
+            return $.when().promise();
           }
 
           const deferred = $.Deferred();
@@ -593,8 +606,6 @@ function gwoCard() {
         };
         dealCardToSelectableAIWhenWarStarts(gwoSettings);
 
-        /* end of GWO implementation of GWDealer */
-
         // Installs model.cheats.testCards / model.cheats.giveCard.
         cardsCheats({
           game,
@@ -610,6 +621,7 @@ function gwoCard() {
           loaded,
           dealCardToSelectableAI,
           helpers,
+          races: gwoRaces,
         });
 
         // Every bank: base game, GWO, and any a third-party card mod registered.
@@ -663,6 +675,7 @@ function gwoCard() {
             gwoTreasure.isTreasureStar(gwoSettings, starIndex)
           ) {
             const treasureLoadout = gwoTreasure.pickTreasureLoadout({
+              race: gwoRaces.raceOf(inventory),
               isUnlocked: startCardUnlocked,
               rng: gwoStreams.treasureLoadoutRng(warRng, undefined, starIndex),
             });
@@ -762,6 +775,21 @@ function gwoCard() {
               _.delay(() => {
                 model.scanning(false);
               }, 2000);
+              if (
+                helpers.explorationDealtNothing(
+                  game,
+                  starIndex,
+                  star,
+                  model.gwCampaignReplayingAction,
+                )
+              ) {
+                console.warn(
+                  `GWO: no tech card could be dealt at star ${starIndex}; ending the exploration with nothing`,
+                );
+                _.delay(() => {
+                  model.win(-1);
+                }, 2000);
+              }
               return gwoSave(game, false);
             },
             (reason) => {
@@ -905,5 +933,4 @@ function gwoCard() {
   } catch (e) {
     console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
-}
-gwoCard();
+})();

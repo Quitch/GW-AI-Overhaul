@@ -23,16 +23,11 @@ define(() => {
     return personality;
   };
 
-  const applySubcommanderDuplicationTech = (cards) => {
-    if (
-      _.some(cards, {
-        id: "gwaio_upgrade_subcommander_duplication",
-      })
-    ) {
-      return 2;
-    }
-    return 1;
-  };
+  const hasDuplicatedSubcommanders = (cards) =>
+    _.some(cards, { id: "gwaio_upgrade_subcommander_duplication" });
+
+  const applySubcommanderDuplicationTech = (cards) =>
+    hasDuplicatedSubcommanders(cards) ? 2 : 1;
 
   const hasSmartSubcommanders = (inventory) => {
     const cards = _.isFunction(inventory && inventory.cards)
@@ -47,6 +42,7 @@ define(() => {
     applySubcommanderTacticsTech,
     applySubcommanderFabberTech,
     applySubcommanderDuplicationTech,
+    hasDuplicatedSubcommanders,
     hasSmartSubcommanders,
   };
 });

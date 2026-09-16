@@ -31,6 +31,26 @@ define(() => {
       return !!clientName && !!dataName && clientName === dataName;
     });
 
+  // The saved inventories of every connected co-op player bar the host, whose
+  // own is the live GWInventory.
+  const connectedPlayerInventories = (game) => {
+    const activeGame = game || model.game();
+    const connectedClients = getConnectedClients();
+    const records =
+      activeGame && _.isFunction(activeGame.coopPlayerInventoryData)
+        ? activeGame.coopPlayerInventoryData()
+        : [];
+
+    return _.filter(
+      _.map(records, (data) =>
+        isConnectedPlayerInventory(data, connectedClients)
+          ? data.inventory
+          : undefined,
+      ),
+      (inventory) => inventory && Array.isArray(inventory.cards),
+    );
+  };
+
   // Indexed by GW.balance.numberOfSystems tier - see tech-cards.md. Small shares a
   // short/moderate threshold because star distance is integer and it spans ~8 values.
   const distances = {
@@ -50,37 +70,88 @@ define(() => {
     return system.distance() > thresholds[tier];
   };
 
+  const hasUnit = (inventoryUnits, units) => {
+    if (_.isString(units)) {
+      return _.includes(inventoryUnits, units);
+    }
+    return _.some(units, (unit) => _.includes(inventoryUnits, unit));
+  };
+
+  const hasAllUnits = (inventoryUnits, units) => {
+    if (_.isString(units)) {
+      return _.includes(inventoryUnits, units);
+    }
+    return _.every(units, (unit) => _.includes(inventoryUnits, unit));
+  };
+
+  // The two states that flood every planet fought on. See tech-cards.md.
+  const floodsPlanets = (inventory) =>
+    inventory.hasCard("gwaio_start_naval") ||
+    inventory.hasCard("gwaio_enable_tsunami");
+
+  const playerIsCluster = (inventory) =>
+    inventory.getTag("global", "playerFaction") === 4;
+
+  // Must run inside inventory.applyCards()'s dull phase: relies on
+  // getTag/setTag's "" context resolving to the current card, and on
+  // buff() having already run for every card this cycle.
+  const applyDulls = (card, inventory, units) => {
+    if (inventory.lookupCard(card) === 0) {
+      const buffCount = inventory.getTag("", "buffCount", 0);
+      if (buffCount) {
+        inventory.removeUnits(units);
+        inventory.setTag("", "buffCount", undefined);
+      }
+    }
+  };
+
+  // Every card that grants a slot says so as its own paragraph. Kept here so the
+  // wording stays one translatable string rather than over a hundred copies of it.
+  const withSlot = (description) =>
+    `${description}<br> <br>${loc("!LOC:Adds a new slot for another technology.")}`;
+
+  const getContext = (galaxy) => ({
+    totalSize: galaxy.stars().length,
+  });
+
+  // Tested for undefined, not falsiness: a computed weight of 0 is legitimate.
+  const upgradeDeal = (available, chance) => {
+    const weight = _.isUndefined(chance) ? 60 : chance;
+    return {
+      params: {
+        allowOverflow: true,
+      },
+      chance: available ? weight : 0,
+    };
+  };
+
+  // props is either a path -> value map, or a list of paths that all take the
+  // same `value`. Emitted in the order the map's keys or the list give.
+  const mods = (file, op, props, value) => {
+    const byPath = Array.isArray(props)
+      ? _.zipObject(props, _.times(props.length, _.constant(value)))
+      : props;
+    return _.map(_.keys(byPath), (path) => ({
+      file,
+      path,
+      op,
+      value: byPath[path],
+    }));
+  };
+
   return {
     getConnectedClients,
 
-    hasUnit: function (inventoryUnits, units) {
-      if (_.isString(units)) {
-        return _.includes(inventoryUnits, units);
-      }
-      return _.some(units, (unit) => _.includes(inventoryUnits, unit));
-    },
+    hasUnit,
 
-    hasAllUnits: function (inventoryUnits, units) {
-      if (_.isString(units)) {
-        return _.includes(inventoryUnits, units);
-      }
-
-      return _.every(units, (unit) => _.includes(inventoryUnits, unit));
-    },
+    hasAllUnits,
 
     missingUnit: function (inventoryUnits, units) {
-      if (_.isString(units)) {
-        return !_.includes(inventoryUnits, units);
-      }
-      return _.some(units, (unit) => !_.includes(inventoryUnits, unit));
+      return !hasAllUnits(inventoryUnits, units);
     },
 
     missingAllUnits: function (inventoryUnits, units) {
-      if (_.isString(units)) {
-        return !_.includes(inventoryUnits, units);
-      }
-
-      return _.every(units, (unit) => !_.includes(inventoryUnits, unit));
+      return !hasUnit(inventoryUnits, units);
     },
 
     // Substring rather than a prefix test because the shipped English locales are "en"
@@ -92,11 +163,7 @@ define(() => {
       return !language || _.includes(language, "en");
     },
 
-    // Every card that grants a slot says so as its own paragraph. Kept here so the
-    // wording stays one translatable string rather than over a hundred copies of it.
-    withSlot: function (description) {
-      return `${description}<br> <br>${loc("!LOC:Adds a new slot for another technology.")}`;
-    },
+    withSlot,
 
     loadoutIcon: function (loadoutId) {
       const raw = window.localStorage[`gwaio_victory_${loadoutId}`];
@@ -160,24 +227,56 @@ define(() => {
       }
     },
 
-    // Must run inside inventory.applyCards()'s dull phase: relies on
-    // getTag/setTag's "" context resolving to the current card, and on
-    // buff() having already run for every card this cycle.
-    applyDulls: function (card, inventory, units) {
-      if (inventory.lookupCard(card) === 0) {
-        const buffCount = inventory.getTag("", "buffCount", 0);
-        if (buffCount) {
-          inventory.removeUnits(units);
-          inventory.setTag("", "buffCount", undefined);
-        }
-      }
-    },
+    applyDulls,
 
-    getContext: function (galaxy) {
+    // The buff/dull pair every loadout shares. The first buff of the war
+    // runs the default start and `apply`; a later one only adds the slot
+    // (unless `repeatSlot` is false); a copy dealt after the start goes to
+    // `bank`. `always` runs on every buff of the start card. See tech-cards.md.
+    loadout: function (card, options) {
       return {
-        totalSize: galaxy.stars().length,
+        buff: function (inventory, context) {
+          if (inventory.lookupCard(card) === 0) {
+            let buffCount = inventory.getTag("", "buffCount", 0);
+            if (!buffCount) {
+              options.start.buff(inventory);
+              if (options.apply) {
+                options.apply(inventory);
+              }
+            } else if (options.repeatSlot !== false) {
+              inventory.maxCards(inventory.maxCards() + 1);
+            }
+            if (options.always) {
+              options.always(inventory, context);
+            }
+            ++buffCount;
+            inventory.setTag("", "buffCount", buffCount);
+          } else {
+            inventory.maxCards(inventory.maxCards() + 1);
+            options.bank.addStartCard(card);
+          }
+        },
+        dull: function (inventory) {
+          applyDulls(
+            card,
+            inventory,
+            _.isFunction(options.dulls)
+              ? options.dulls(inventory)
+              : options.dulls,
+          );
+        },
       };
     },
+
+    // A locked loadout's `hint`: the red commander and the loadout's name.
+    lockedHint: function (description) {
+      return _.constant({
+        icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_commander_locked.png",
+        description,
+      });
+    },
+
+    getContext,
 
     startCard: function () {
       return {
@@ -194,14 +293,45 @@ define(() => {
       return rng ? 1 + rng() : Math.random();
     },
 
-    // Tested for undefined, not falsiness: a computed weight of 0 is legitimate.
-    upgradeDeal: function (available, chance) {
-      const weight = _.isUndefined(chance) ? 60 : chance;
+    upgradeDeal,
+
+    // The whole of an upgrade card: visible, one slot, dealt through
+    // upgradeDeal once `requires` is held (and `unless` is not), `description`
+    // wrapped by withSlot. `describe`, `available`, `deal` and `chance` (a
+    // weight or a function of the inventory) override those parts; `slot:
+    // false` skips the slot. See tech-cards.md.
+    upgradeCard: function (options) {
+      const available =
+        options.available ||
+        ((inventory) =>
+          (!options.unless || !inventory.hasCard(options.unless)) &&
+          hasUnit(inventory.units(), options.requires));
       return {
-        params: {
-          allowOverflow: true,
+        visible: () => true,
+        describe:
+          options.describe || _.constant(withSlot(loc(options.description))),
+        summarize: _.constant(options.name),
+        icon: _.constant(options.icon),
+        audio: _.constant({ found: options.audio }),
+        getContext,
+        deal:
+          options.deal ||
+          ((system, context, inventory) =>
+            upgradeDeal(
+              available(inventory),
+              _.isFunction(options.chance)
+                ? options.chance(inventory)
+                : options.chance,
+            )),
+        buff: function (inventory) {
+          if (options.slot !== false) {
+            inventory.maxCards(inventory.maxCards() + 1);
+          }
+          if (options.buff) {
+            options.buff(inventory);
+          }
         },
-        chance: available ? weight : 0,
+        dull: function () {},
       };
     },
 
@@ -213,8 +343,7 @@ define(() => {
     // subcommanders are not commanders. See tech-cards.md.
     commanderWeight: function (inventory, chance) {
       const commanders = inventory.minions().length;
-      const playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
-      const finalChance = playerIsCluster
+      const finalChance = playerIsCluster(inventory)
         ? chance
         : Math.min(chance + Math.round(chance / 3) * commanders, chance * 2);
       return finalChance;
@@ -237,14 +366,15 @@ define(() => {
     // dryChance is for a card whose value collapses without water, not merely
     // dips (see gwaio_anti_sea). See tech-cards.md.
     navalWeight: function (inventory, chance, dryChance) {
-      const floodsPlanets =
-        inventory.hasCard("gwaio_start_naval") ||
-        inventory.hasCard("gwaio_enable_tsunami");
-      if (floodsPlanets) {
+      if (floodsPlanets(inventory)) {
         return chance;
       }
       return _.isUndefined(dryChance) ? Math.round(chance * 0.4) : dryChance;
     },
+
+    floodsPlanets,
+
+    playerIsCluster,
 
     // Prefer the wrappers below, which keep the tables private. numberOfSystems
     // is a parameter, not an import: this module must stay dependency-free, as
@@ -264,13 +394,41 @@ define(() => {
     },
 
     // e.g. mods(gwoUnit.x, "replace", { max_health: 100 })
-    mods: function (file, op, props) {
-      return _.map(_.keys(props), (path) => ({
-        file,
-        path,
-        op,
-        value: props[path],
-      }));
+    //      mods(gwoUnit.x, "multiply", gwoCard.paths.navigation, 1.25)
+    mods,
+
+    // The attribute sets cards multiply as one, in the order they emit them.
+    paths: {
+      navigation: [
+        "navigation.move_speed",
+        "navigation.brake",
+        "navigation.acceleration",
+        "navigation.turn_speed",
+      ],
+      damage: ["damage", "splash_damage"],
+      energyWeapon: ["ammo_capacity", "ammo_demand", "ammo_per_shot"],
+    },
+
+    // One value across several paths, as a props map - for merging with other
+    // keys. Passing the paths straight to mods()/flatMapMods() needs no map.
+    eachPath: function (paths, value) {
+      return _.zipObject(paths, _.times(paths.length, _.constant(value)));
+    },
+
+    // The first `count` recon.observer slots' `field`.
+    observerPaths: function (count, field) {
+      return _.times(count, (i) => `recon.observer.items.${i}.${field}`);
+    },
+
+    // { path: value } for every path, for mods() and flatMapMods().
+
+    // mods() over every file, flattened: one file's entries before the next's.
+    flatMapMods: function (files, op, props, value) {
+      return _.flatten(
+        _.map(_.isString(files) ? [files] : files, (file) =>
+          mods(file, op, props, value),
+        ),
+      );
     },
 
     // The gwaio_anti_* shape: zero against its counter card, half once any other
@@ -292,53 +450,28 @@ define(() => {
     },
 
     getAllConnectedPlayerCards: function (hostInventory, game) {
-      const activeGame = game || model.game();
-      const connectedClients = getConnectedClients();
-      const coopPlayerInventoryData =
-        activeGame && _.isFunction(activeGame.coopPlayerInventoryData)
-          ? activeGame.coopPlayerInventoryData()
-          : [];
-      let allCards =
+      const hostCards =
         hostInventory && _.isFunction(hostInventory.cards)
           ? hostInventory.cards().slice(0)
           : [];
 
-      _.forEach(coopPlayerInventoryData, (data) => {
-        if (!isConnectedPlayerInventory(data, connectedClients)) {
-          return;
-        }
-
-        if (data.inventory && Array.isArray(data.inventory.cards)) {
-          allCards = allCards.concat(data.inventory.cards);
-        }
-      });
-
-      return allCards;
+      return _.reduce(
+        connectedPlayerInventories(game),
+        (allCards, inventory) => allCards.concat(inventory.cards),
+        hostCards,
+      );
     },
 
+    // The host's own check honours card.unique (gw_inventory.hasCard); a
+    // viewer's saved cards are matched by id alone.
     anyPlayerHasCard: function (hostInventory, cardId, game) {
-      const activeGame = game || model.game();
-      const coopPlayerInventoryData =
-        activeGame && _.isFunction(activeGame.coopPlayerInventoryData)
-          ? activeGame.coopPlayerInventoryData()
-          : [];
-      const connectedClients = getConnectedClients();
-
       return (
         (hostInventory &&
           _.isFunction(hostInventory.hasCard) &&
           hostInventory.hasCard(cardId)) ||
-        _.some(coopPlayerInventoryData, (data) => {
-          if (!isConnectedPlayerInventory(data, connectedClients)) {
-            return false;
-          }
-
-          return (
-            data.inventory &&
-            Array.isArray(data.inventory.cards) &&
-            _.some(data.inventory.cards, { id: cardId })
-          );
-        })
+        _.some(connectedPlayerInventories(game), (inventory) =>
+          _.some(inventory.cards, { id: cardId }),
+        )
       );
     },
   };

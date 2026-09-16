@@ -1,0 +1,267 @@
+// Registers the races before any referee runs, and refuses to fight a war whose
+// races - or, through gw_play/biomes.js, whose map packs - the player is no
+// longer running. See races.md.
+(() => {
+  try {
+    model.gwoRaces = Array.isArray(model.gwoRaces) ? model.gwoRaces : [];
+    model.gwoAddons = Array.isArray(model.gwoAddons) ? model.gwoAddons : [];
+
+    // All five are made here, before any asynchronous work. This scene script
+    // is first in modinfo's gw_play list, so the war panel, the fight gate,
+    // biomes.js and card_tooltips.js always find them, however early the
+    // manifest read finishes.
+    model.gwoRaceWarning = ko.observable("");
+    model.gwoRaceBlock = ko.observableArray([]);
+    model.gwoBiomeWarning = ko.observable("");
+    model.gwoBiomeBlock = ko.observableArray([]);
+    // True once every race this client primes has its cells built (or has
+    // given up); card_tooltips.js renames the open star's cards on it.
+    model.gwoRaceCellsPrimed = ko.observable(false);
+
+    const blocked = () =>
+      model.gwoRaceBlock().length > 0 || model.gwoBiomeBlock().length > 0;
+
+    const blockMessage = () =>
+      // Both lists say "GW Server Mods is not enabled" when that is what
+      // is missing; the dialog says it once.
+      `${loc("!LOC:This war cannot be fought:")}<br/>${
+        // Both lists say "GW Server Mods is not enabled" when that is what
+        // is missing; the dialog says it once.
+        _.uniq(model.gwoRaceBlock().concat(model.gwoBiomeBlock())).join("<br/>")
+      }<br/><br/>${loc(
+        "!LOC:Enable the missing mods and restart Planetary Annihilation to continue this war.",
+      )}`;
+
+    const showBlockPopUp = () => {
+      if (!_.isFunction(model.popUp)) {
+        return;
+      }
+
+      model.popUp({ msg: blockMessage(), tags: { primary: "!LOC:OK" } });
+    };
+
+    // biomes.js raises the same dialog once its own check is in.
+    model.gwoShowFightBlock = showBlockPopUp;
+
+    // Knockout reads a click binding's value accessor when the click happens,
+    // so replacing these holds however late this runs. The stock fight path
+    // never consults gwCampaignFightBlocked, so this is the gate, not the
+    // greying below. GW Server Mods wraps model.fight too, to mount before the
+    // referee; whichever wrapper is outermost, a blocked war never launches.
+    const gateAction = (name) => {
+      const stock = model[name];
+
+      if (!_.isFunction(stock)) {
+        return;
+      }
+
+      model[name] = function () {
+        if (blocked()) {
+          showBlockPopUp();
+          return;
+        }
+
+        return stock.apply(this, arguments);
+      };
+    };
+
+    // The stock co-op gate already greys the Fight button and gives it a
+    // reason; a missing race or map pack is one more reason to say no.
+    const gateButton = () => {
+      const stockBlocked = model.gwCampaignFightBlocked;
+      const stockTooltip = model.gwCampaignFightTooltip;
+
+      if (ko.isObservable(stockBlocked)) {
+        model.gwCampaignFightBlocked = ko.computed(
+          () => blocked() || stockBlocked(),
+        );
+      }
+
+      if (ko.isObservable(stockTooltip)) {
+        model.gwCampaignFightTooltip = ko.computed(() => {
+          if (model.gwoRaceBlock().length > 0) {
+            return "!LOC:A race this war fields is missing";
+          }
+          return blocked()
+            ? "!LOC:A map pack this war uses is missing"
+            : stockTooltip();
+        });
+      }
+    };
+
+    // A binding captures the computed it was given, so the swap has to precede
+    // ko.applyBindings - which a scene script may run either side of. gw_play
+    // sets gwCampaignPlayStarted immediately after binding, so that says which.
+    const whenBound = (install) => {
+      if (model.gwCampaignPlayStarted) {
+        install();
+        return;
+      }
+
+      const applyBindings = ko.applyBindings;
+
+      ko.applyBindings = function () {
+        ko.applyBindings = applyBindings;
+        install();
+        return applyBindings.apply(this, arguments);
+      };
+    };
+
+    whenBound(() => {
+      gateButton();
+      gateAction("fight");
+      gateAction("restartFight");
+    });
+
+    requireGW(
+      [
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_check.js",
+      ],
+      (raceMods, gwoAI, gwoRaces, raceCells, raceCheck) => {
+        raceMods.registerAll();
+
+        const settings = gwoAI.originSettings(model.game());
+        const recorded = settings && settings.races;
+
+        // Every race this client has to answer for. See coop.md, "Shared tech
+        // versus per-player tech".
+        const racesToPrime = (info) => {
+          const record =
+            _.isFunction(model.currentCoopPlayerInventoryData) &&
+            model.currentCoopPlayerInventoryData();
+          const own = gwoRaces.raceOf(
+            (record && record.inventory) || model.game().inventory(),
+          );
+
+          if (
+            !(recorded && recorded.perPlayerRace) ||
+            !(_.isFunction(model.isCampaignHost) && model.isCampaignHost())
+          ) {
+            return [own];
+          }
+
+          return _.uniq(
+            [own].concat(
+              _.map(
+                raceCheck.activeRaces(
+                  gwoRaces.detect(_.map(recorded.mods, "identifier")),
+                  info,
+                ),
+                "id",
+              ),
+            ),
+          );
+        };
+
+        // One unit list read for every race, taken once the race zips are
+        // mounted. MLA is primed only while an add-on is active: its cells
+        // are the add-on units, and the shipped descriptors are registered
+        // whether or not their mods are. See races.md, "Capability cells".
+        const primeRaces = (info) => {
+          const toPrime = _.filter(
+            racesToPrime(info),
+            (race) => !gwoRaces.isMla(race) || !_.isEmpty(info.addons),
+          );
+
+          if (!toPrime.length) {
+            return;
+          }
+
+          raceMods.mountRoot().always(() => {
+            raceCells.load().then(
+              (loaded) => {
+                // prime swallows its own errors, so this always settles.
+                Promise.all(
+                  _.map(toPrime, (race) => raceCells.prime(race, loaded.units)),
+                ).then(() => {
+                  model.gwoRaceCellsPrimed(true);
+                });
+              },
+              (error) => {
+                console.error("gwoRaces: unit list not read", error);
+              },
+            );
+          });
+        };
+
+        // A war resumed without the mods behind its races loses units with no
+        // other warning, so say so and stop it being fought. See races.md.
+        const ais = _.map(model.game().galaxy().stars(), (star) => star.ai());
+        // Under Separate races a viewer's race lives only on its co-op
+        // record - recorded.player and byFaction never see it. See coop.md.
+        const records =
+          _.isFunction(model.game().coopPlayerInventoryData) &&
+          model.game().coopPlayerInventoryData();
+        const warRaceIds = raceCheck.warRaces(recorded, ais, records || []);
+
+        const describe = (entry) => {
+          if (entry.reason === "descriptor") {
+            return `${loc(entry.name)} - ${loc("!LOC:its mod is not installed")}`;
+          }
+
+          // Not a race's own line: without GW Server Mods no race at all can
+          // be mounted.
+          if (entry.reason === "gwServerMods") {
+            return loc("!LOC:GW Server Mods is not enabled");
+          }
+
+          return `${loc(entry.name)} - ${entry.mods[0]} ${loc("!LOC:is not enabled")}`;
+        };
+
+        raceMods.installedRaces().then((info) => {
+          // Priming is not behind the warRaceIds gate: an all-MLA war under
+          // Separate races still primes the offer for a viewer joining later.
+          primeRaces(info);
+
+          // An all-MLA war has nothing to block on, but may have begun with
+          // add-ons it should mention losing.
+          if (!warRaceIds.length && _.isEmpty(recorded && recorded.addons)) {
+            return;
+          }
+
+          const result = raceCheck.evaluate(recorded, warRaceIds, info);
+
+          const byReason = _.groupBy(result.warnings, "reason");
+          const changed = _.map(
+            byReason.version,
+            (warning) => `${warning.name} ${warning.from} -> ${warning.to}`,
+          );
+          const gone = _.map(byReason.addon, (warning) => loc(warning.name));
+          const lines = [];
+
+          if (changed.length) {
+            lines.push(
+              `${loc("!LOC:Race mods changed since this war began:")} ${changed.join("; ")}`,
+            );
+          }
+          if (gone.length) {
+            lines.push(
+              `${loc(
+                "!LOC:Add-on mods this war began with are no longer enabled:",
+              )} ${gone.join(", ")}`,
+            );
+          }
+          if (lines.length) {
+            console.warn(`gwoRaces: ${lines.join(" ")}`);
+            model.gwoRaceWarning(lines.join(" "));
+          }
+
+          if (!result.blocked.length) {
+            return;
+          }
+
+          const missing = _.map(result.blocked, describe);
+          console.error(`gwoRaces: ${missing.join("; ")}`);
+          model.gwoRaceBlock(missing);
+          showBlockPopUp();
+        });
+      },
+    );
+  } catch (e) {
+    console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
+  }
+})();

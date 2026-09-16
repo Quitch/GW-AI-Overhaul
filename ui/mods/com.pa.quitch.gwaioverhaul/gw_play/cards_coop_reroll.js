@@ -1,7 +1,10 @@
 // Co-op pending-tech reroll. A viewer asks the host (gwo_reroll_pending_tech) to
 // reroll its pending offer; the host deals a smaller hand, stores it, and returns
 // it (gwo_reroll_pending_tech_result) for the viewer to apply. See coop.md.
-define(() => {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
+], (dealHelpers, coopHost) => {
   // A reroll spends one more of the viewer's offered cards.
   const computeRerollDeal = (cardsOffered, currentCardCount) => {
     const rerollsUsed = Math.max(0, cardsOffered - currentCardCount);
@@ -10,6 +13,8 @@ define(() => {
       rerollsUsed,
       nextRerollsUsed,
       cardCount: cardsOffered - nextRerollsUsed,
+      // Not rerollsRemain: the last reroll still deals one card, and only
+      // the offer after it is withheld.
       exhausted: nextRerollsUsed > cardsOffered - 1,
     };
   };
@@ -76,30 +81,6 @@ define(() => {
     const rerollPendingTechRequest = "gwo_reroll_pending_tech";
     const rerollPendingTechResult = "gwo_reroll_pending_tech_result";
 
-    const sendPendingTechRerollResult = (clientId, requestId, payload) => {
-      if (!model.sendCampaignHostOperator) {
-        return;
-      }
-
-      model.sendCampaignHostOperator(rerollPendingTechResult, payload, {
-        target_client_id: clientId,
-        request_id: requestId,
-      });
-    };
-
-    const failPendingTechReroll = (operator, reason) => {
-      console.error(`[GW COOP] failed to reroll pending tech: ${reason}`);
-      if (_.isUndefined(operator.client_id)) {
-        return;
-      }
-
-      sendPendingTechRerollResult(operator.client_id, operator.request_id, {
-        client_id: operator.client_id,
-        client_name: operator.client_name,
-        error: reason,
-      });
-    };
-
     const applyPendingTechRerollResult = (operator) => {
       const payload = (operator && operator.payload) || {};
       model.gwoRerollPending(false);
@@ -133,12 +114,11 @@ define(() => {
         return;
       }
 
-      const nextRecord = Object.assign({}, _.cloneDeep(record), {
+      const stored = coopHost.upsertRecord(game, record, {
         pendingTechCards,
         updatedAt: payload.updated_at || _.now(),
       });
-
-      if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
+      if (!stored) {
         console.error("[GW COOP] failed to apply pending tech reroll result");
         model.scanning(false);
         return;
@@ -171,7 +151,12 @@ define(() => {
       // Rejects as well as notifying the viewer, so the campaign queue can
       // order this handler's async work.
       const failReroll = (reason) => {
-        failPendingTechReroll(operator, reason);
+        coopHost.fail(
+          rerollPendingTechResult,
+          operator,
+          "reroll pending tech",
+          reason,
+        );
         result.reject(reason);
       };
 
@@ -189,10 +174,7 @@ define(() => {
       }
 
       const payload = (operator && operator.payload) || {};
-      const record = game.findCoopPlayerInventoryData({
-        id: operator.client_id,
-        name: operator.client_name,
-      });
+      const record = coopHost.recordFor(game, operator);
 
       if (!record || !record.inventory || !record.pendingTechCards) {
         failReroll("missing pending tech cards");
@@ -216,10 +198,7 @@ define(() => {
         return result.promise();
       }
 
-      const playerInventory = new GWInventory();
-      playerInventory.load(_.cloneDeep(record.inventory));
-
-      const dealCards = () => {
+      const dealCards = (playerInventory) => {
         const cardsOffered = helpers.cardsOfferedCount(
           numCardsToOffer,
           playerInventory,
@@ -258,57 +237,43 @@ define(() => {
             rerollsUsed: nextRerollsUsed,
             updatedAt,
           };
-          const nextRecord = Object.assign({}, _.cloneDeep(record), {
+          const stored = coopHost.upsertRecord(game, record, {
             pendingTechCards: nextPendingTechCards,
             updatedAt,
           });
-
-          if (!game.upsertCoopPlayerInventoryData(nextRecord)) {
+          if (!stored) {
             failReroll("failed to store rerolled pending tech");
             return;
           }
 
           model.sendCampaignSnapshot("gwo_reroll_pending_tech", true);
-          sendPendingTechRerollResult(operator.client_id, operator.request_id, {
-            client_id: operator.client_id,
-            client_name: operator.client_name,
+          coopHost.reply(rerollPendingTechResult, operator, {
             pendingTechCards: nextPendingTechCards,
             rerolls_used: nextRerollsUsed,
-            offer_rerolls: nextRerollsUsed < cardsOffered - 1,
+            offer_rerolls: dealHelpers.rerollsRemain(
+              nextRerollsUsed,
+              cardsOffered,
+            ),
             updated_at: updatedAt,
           });
           gwoSave(game, false).then(resolveResult, rejectResult);
         });
       };
 
-      if (playerInventory.cards().length) {
-        // Their loadout card's buff() would otherwise bank into the host's own
-        // unlocks, as in cards_coop_deal.js.
-        gwoBank.suspendUnlocks(stockBank);
-        playerInventory.applyCards(() => {
-          gwoBank.resumeUnlocks();
-          dealCards();
-        });
-      } else {
-        dealCards();
-      }
+      gwoBank.applyRecordInventory(GWInventory, record, stockBank, dealCards);
 
       return result.promise();
     };
 
-    if (model.registerCampaignViewerOperatorHandler) {
-      model.registerCampaignViewerOperatorHandler(
-        rerollPendingTechRequest,
-        rerollPendingTechForCoopPlayer,
-      );
-    }
+    model.registerCampaignViewerOperatorHandler(
+      rerollPendingTechRequest,
+      rerollPendingTechForCoopPlayer,
+    );
 
-    if (model.registerCampaignHostOperatorHandler) {
-      model.registerCampaignHostOperatorHandler(
-        rerollPendingTechResult,
-        applyPendingTechRerollResult,
-      );
-    }
+    model.registerCampaignHostOperatorHandler(
+      rerollPendingTechResult,
+      applyPendingTechRerollResult,
+    );
   };
 
   // Test-only hook - see testing.md.

@@ -1,7 +1,9 @@
 // Host-side per-viewer pre-dealt star cards. Each viewer gets their own card on
 // every selectable AI star, stored on their co-op inventory record so it rides
 // the campaign snapshot. See coop.md, "Per-player pre-dealt cards".
-define(() => {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js"], (
+  coopHost,
+) => {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.
   const starCardForRecord = (record, starIndex) => {
@@ -173,25 +175,14 @@ define(() => {
       }
 
       const playerKey = gwoStreams.coopPlayerKey(record, client);
-      const inventory = new GWInventory();
-      inventory.load(_.cloneDeep(record.inventory));
-
+      let inventory;
       const applied = new Promise((resolve) => {
-        if (!inventory.cards().length) {
-          resolve();
-          return;
-        }
-
-        gwoBank.suspendUnlocks(stockBank);
-        try {
-          inventory.applyCards(() => {
-            gwoBank.resumeUnlocks();
-            resolve();
-          });
-        } catch (e) {
-          gwoBank.resumeUnlocks();
-          throw e;
-        }
+        inventory = gwoBank.applyRecordInventory(
+          GWInventory,
+          record,
+          stockBank,
+          resolve,
+        );
       });
 
       return applied
@@ -237,12 +228,7 @@ define(() => {
             return false;
           }
 
-          return game.upsertCoopPlayerInventoryData(
-            Object.assign({}, _.cloneDeep(fresh), {
-              gwaioStarCards: next,
-              updatedAt: _.now(),
-            }),
-          );
+          return !!coopHost.upsertRecord(game, fresh, { gwaioStarCards: next });
         });
     };
 

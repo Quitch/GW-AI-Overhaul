@@ -9,22 +9,23 @@
 //   - op "load" carries only `value`, a build-file filename.
 //   - Every other op carries `value` and `toBuild`; append/prepend/replace also
 //     need `idToMod`, whose absence silently makes the mod a no-op.
+//   - op "unset" is the exception: it deletes `idToMod` rather than writing it,
+//     so it carries `toBuild` and `idToMod` but no `value`.
+//   - `treeOnly`, when present, is a boolean on a build-list op. It keeps the
+//     descriptor off files a `load` pulled in from /pa/ai_tech/.
 
-const fs = require("node:fs");
 const path = require("node:path");
-const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
-const { createAutoStub } = require("../lib/auto-stub.js");
-const { KNOWN_UNLOADABLE } = require("../lib/known-unloadable-cards.js");
+const { loadCouiModule } = require("../lib/amd-loader.js");
+const {
+  CARDS_DIR,
+  classifyLoadFailure,
+  listCardFiles,
+} = require("../lib/card-files.js");
+const {
+  createCapturingInventory,
+  recordInto,
+} = require("../lib/capturing-inventory.js");
 const { reportFailures } = require("../lib/report-failures.js");
-
-const CARDS_DIR = path.join(
-  REPO_ROOT,
-  "ui",
-  "main",
-  "game",
-  "galactic_war",
-  "cards",
-);
 
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
 const BUILD_LIST_TYPES = new Set(["fabber", "factory", "platoon"]);
@@ -34,6 +35,7 @@ const REQUIRED_FIELDS_BY_OP = {
   append: ["value", "toBuild", "idToMod"],
   prepend: ["value", "toBuild", "idToMod"],
   replace: ["value", "toBuild", "idToMod"],
+  unset: ["toBuild", "idToMod"],
   remove: ["value", "toBuild"],
   new: ["value", "toBuild"],
   squad: ["value", "toBuild"],
@@ -48,6 +50,7 @@ const VALID_TYPES_BY_OP = {
   append: BUILD_LIST_TYPES,
   prepend: BUILD_LIST_TYPES,
   replace: BUILD_LIST_TYPES,
+  unset: BUILD_LIST_TYPES,
   remove: BUILD_LIST_TYPES,
   new: BUILD_LIST_TYPES,
   squad: new Set(["template"]),
@@ -55,25 +58,9 @@ const VALID_TYPES_BY_OP = {
 
 function collectAiMods(card) {
   const captured = [];
-  const inventory = new Proxy(
-    {
-      addAIMods: function (mods) {
-        // addAIMods concats, so it takes a bare descriptor as readily as an
-        // array. push.apply on a non-array captures nothing.
-        if (Array.isArray(mods)) {
-          captured.push.apply(captured, mods);
-        } else if (mods) {
-          captured.push(mods);
-        }
-        return createAutoStub();
-      },
-    },
-    {
-      get(target, prop) {
-        return prop in target ? target[prop] : createAutoStub();
-      },
-    },
-  );
+  const inventory = createCapturingInventory({
+    capture: { addAIMods: recordInto(captured) },
+  });
 
   for (const method of ["buff", "dull"]) {
     if (typeof card[method] !== "function") {
@@ -94,10 +81,7 @@ function collectAiMods(card) {
   return captured;
 }
 
-function checkMod(mod, index) {
-  const problems = [];
-  const where = "mod[" + index + "] (op=" + mod.op + ")";
-
+function checkType(problems, where, mod) {
   if (!Object.prototype.hasOwnProperty.call(mod, "type")) {
     problems.push(where + ": missing `type`");
   } else if (!VALID_TYPES.has(mod.type)) {
@@ -110,9 +94,58 @@ function checkMod(mod, index) {
         ")",
     );
   }
+}
+
+function checkTreeOnly(problems, where, mod) {
+  if (!Object.prototype.hasOwnProperty.call(mod, "treeOnly")) {
+    return;
+  }
+  if (typeof mod.treeOnly !== "boolean") {
+    problems.push(where + ": `treeOnly` must be a boolean");
+  } else if (mod.op === "load" || mod.op === "squad") {
+    problems.push(where + ': `treeOnly` is not read by op "' + mod.op + '"');
+  }
+}
+
+// The checks that need a known op: its required fields, treeOnly, and the
+// types it may target.
+function checkOp(problems, where, mod, requiredFields) {
+  for (const field of requiredFields) {
+    if (
+      !Object.prototype.hasOwnProperty.call(mod, field) ||
+      mod[field] === undefined
+    ) {
+      problems.push(where + ': op "' + mod.op + '" requires `' + field + "`");
+    }
+  }
+
+  checkTreeOnly(problems, where, mod);
+
+  const allowedTypes = VALID_TYPES_BY_OP[mod.op];
+  if (VALID_TYPES.has(mod.type) && !allowedTypes.has(mod.type)) {
+    problems.push(
+      where +
+        ': op "' +
+        mod.op +
+        '" cannot target type "' +
+        mod.type +
+        '" (expected one of: ' +
+        [...allowedTypes].join(", ") +
+        ")",
+    );
+  }
+}
+
+function checkMod(mod, index) {
+  const problems = [];
+  const where = "mod[" + index + "] (op=" + mod.op + ")";
+
+  checkType(problems, where, mod);
 
   const requiredFields = REQUIRED_FIELDS_BY_OP[mod.op];
-  if (!requiredFields) {
+  if (requiredFields) {
+    checkOp(problems, where, mod, requiredFields);
+  } else {
     problems.push(
       where +
         ': invalid `op` "' +
@@ -121,29 +154,6 @@ function checkMod(mod, index) {
         Object.keys(REQUIRED_FIELDS_BY_OP).join(", ") +
         ")",
     );
-  } else {
-    for (const field of requiredFields) {
-      if (
-        !Object.prototype.hasOwnProperty.call(mod, field) ||
-        mod[field] === undefined
-      ) {
-        problems.push(where + ': op "' + mod.op + '" requires `' + field + "`");
-      }
-    }
-
-    const allowedTypes = VALID_TYPES_BY_OP[mod.op];
-    if (VALID_TYPES.has(mod.type) && !allowedTypes.has(mod.type)) {
-      problems.push(
-        where +
-          ': op "' +
-          mod.op +
-          '" cannot target type "' +
-          mod.type +
-          '" (expected one of: ' +
-          [...allowedTypes].join(", ") +
-          ")",
-      );
-    }
   }
 
   return problems;
@@ -155,10 +165,7 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    if (
-      e.code === "NOT_SHIPPED" ||
-      Object.prototype.hasOwnProperty.call(KNOWN_UNLOADABLE, file)
-    ) {
+    if (classifyLoadFailure(e, file)) {
       return { excluded: true };
     }
     return { error: "failed to load: " + e.message };
@@ -196,10 +203,7 @@ function checkFile(file) {
 }
 
 function main() {
-  const files = fs
-    .readdirSync(CARDS_DIR)
-    .filter((f) => f.endsWith(".js"))
-    .sort();
+  const files = listCardFiles();
 
   let cardsChecked = 0;
   let modsChecked = 0;

@@ -1,13 +1,9 @@
-var gwoBugfixesLoaded;
-
-function gwoBugfixes() {
+(() => {
   const game = model.game();
 
-  if (gwoBugfixesLoaded || game.isTutorial()) {
+  if (game.isTutorial()) {
     return;
   }
-
-  gwoBugfixesLoaded = true;
 
   try {
     const galaxy = game.galaxy();
@@ -67,8 +63,13 @@ function gwoBugfixes() {
     };
 
     const fixClusterCommanderTypes = (ai) => {
-      let securityFix = false; // we have to fix `unit_types`
-      let workerFix = 0; // we have to fix `buildable_types` and `unit_types`
+      // A war that records typeOfBuffs builds its spec mods at launch from the
+      // live Cluster mods, so only a baked inventory needs repairing.
+      if (!Array.isArray(ai.inventory)) {
+        return;
+      }
+      let securityFix = false;
+      let workerFix = 0;
       const security =
         "/pa/units/land/bot_support_commander/bot_support_commander.json";
       const worker = "/pa/units/air/support_platform/support_platform.json";
@@ -99,13 +100,10 @@ function gwoBugfixes() {
       }
     };
 
-    const fixLuckyCommanderLocalStorageVariable = () => {
+    const fixLuckyCommanderLocalStorageVariable = (gwoBank) => {
       const unlockedVanillaStartCards = ko
         .observableArray()
         .extend({ local: "gw_bank" });
-      const unlockedGwoStartCards = ko
-        .observableArray()
-        .extend({ local: "gwaio_bank" });
       const index = _.findIndex(unlockedVanillaStartCards().startCards, {
         id: "gwaio_start_lucky",
       });
@@ -113,10 +111,7 @@ function gwoBugfixes() {
       if (index !== -1) {
         unlockedVanillaStartCards().startCards.splice(index, 1);
         unlockedVanillaStartCards.valueHasMutated();
-        unlockedGwoStartCards().startCards.push({
-          id: "gwaio_start_lucky",
-        });
-        unlockedGwoStartCards.valueHasMutated();
+        gwoBank.addStartCard({ id: "gwaio_start_lucky" });
       }
 
       luckyCommanderFixed("true");
@@ -152,18 +147,16 @@ function gwoBugfixes() {
       }
     };
 
-    const applyFixes = (gwoTreasure) => {
+    const applyFixes = (gwoTreasure, gwoBank) => {
       for (const star of galaxy.stars()) {
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
         }
 
-        if (
-          !gwoSettings.clusterFixed &&
-          ko.isObservable(star.ai) &&
-          star.ai().isCluster
-        ) {
-          fixClusterCommanderTypes(star.ai());
+        // A neutral star's ai() is undefined.
+        const ai = ko.isObservable(star.ai) ? star.ai() : undefined;
+        if (!gwoSettings.clusterFixed && ai && ai.isCluster) {
+          fixClusterCommanderTypes(ai);
         }
       }
 
@@ -176,7 +169,7 @@ function gwoBugfixes() {
       gwoSettings.treasureLoadoutDerived = true;
 
       if (luckyCommanderFixed() !== "true") {
-        fixLuckyCommanderLocalStorageVariable();
+        fixLuckyCommanderLocalStorageVariable(gwoBank);
       }
     };
 
@@ -186,14 +179,14 @@ function gwoBugfixes() {
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
       ],
-      (gwoSave, gwoTreasure) => {
-        applyFixes(gwoTreasure);
+      (gwoSave, gwoTreasure, gwoBank) => {
+        applyFixes(gwoTreasure, gwoBank);
         gwoSave(game, true);
       },
     );
   } catch (e) {
     console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
-}
-gwoBugfixes();
+})();

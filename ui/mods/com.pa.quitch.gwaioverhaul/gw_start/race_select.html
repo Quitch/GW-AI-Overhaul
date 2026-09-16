@@ -1,0 +1,21 @@
+<div
+  class="form-group"
+  id="gwo-race-group"
+  data-bind="visible: gwoRacesAvailable()"
+  style="display: none"
+>
+  <label for="gwo-race-select"><loc>Race</loc></label>
+  <span
+    class="info_tip"
+    data-placement="right"
+    data-bind="tooltip: $root.gwoRaceTooltip"
+    >?</span
+  >
+  <select
+    class="form-control"
+    id="gwo-race-select"
+    data-bind="selectPicker: gwoDifficultySettings.playerRace"
+  >
+    <option value="mla">MLA</option>
+  </select>
+</div>

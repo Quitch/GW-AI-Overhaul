@@ -6,10 +6,7 @@ define([
   return {
     visible: _.constant(true),
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Economy Fabrication Tech reduces metal build costs of all metal and energy production and storage structures by 50%";
-      }
-      return "!LOC:Economy Fabrication Tech reduces metal build costs of all metal and energy production structures by 50%";
+      return "!LOC:Economy Fabrication Tech reduces metal build costs of all metal and energy production and storage structures by 50%";
     },
     summarize: _.constant("!LOC:Economy Fabrication Tech"),
     icon: _.constant(
@@ -30,11 +27,9 @@ define([
     },
     buff: function (inventory) {
       inventory.addMods(
-        _.flatten(
-          _.map(gwoGroup.structuresEco, function (unit) {
-            return gwoCard.mods(unit, "multiply", { build_metal_cost: 0.5 });
-          }),
-        ),
+        gwoCard.flatMapMods(gwoGroup.structuresEco, "multiply", {
+          build_metal_cost: 0.5,
+        }),
       );
     },
     dull: function () {},

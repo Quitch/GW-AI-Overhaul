@@ -1,12 +1,4 @@
-var gwoOptionsBarModifiersLoaded;
-
-function gwoOptionsBarModifiers() {
-  if (gwoOptionsBarModifiersLoaded) {
-    return;
-  }
-
-  gwoOptionsBarModifiersLoaded = true;
-
+(() => {
   try {
     model.gwoGameModifiersText = ko.observable("");
     model.gwoGameModifiersText.subscribe(() => {
@@ -38,5 +30,4 @@ function gwoOptionsBarModifiers() {
   } catch (e) {
     console.error(`Galactic War Overhaul (GWO): ${e.stack || e.message || e}`);
   }
-}
-gwoOptionsBarModifiers();
+})();

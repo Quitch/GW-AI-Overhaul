@@ -1,6 +1,7 @@
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"], (
-  inventory,
-) => {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
+], (inventory, gwoCluster) => {
   const AMMUNITION_TECH = 1;
   const ARMOUR_TECH = 2;
   const COMBAT_TECH = 6;
@@ -195,7 +196,34 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js"], (
   setupAITech6CombatTech();
   setupAITech7CooldownTech();
 
+  // The spec mods an AI's recorded buffs grant: a Cluster AI's commander mods
+  // first, then the faction tech per buff index. Built per launch from the
+  // live tables, so a rebalance reaches wars in progress. An index with no
+  // tech (a v5.11.0 save can carry a 5) grants nothing. See galaxy.md.
+  // Tech aimed at the Angel and Colonel belongs to an MLA Cluster, whose Sub
+  // Commanders they are. Any other Cluster army fields neither, and without
+  // the conversion mods pinning them the multipliers would expand by cell
+  // onto the race's fabbers. See race-conventions.md.
+  const clusterSubCommanderFiles = inventory.clusterSubCommanders.concat(
+    inventory.clusterCommanderAmmo,
+  );
+
+  const loadoutFor = (faction, buffs, isCluster) => {
+    const techs = factionTechs[faction] || [];
+    let loadout = isCluster ? gwoCluster.clusterCommanderMods.slice() : [];
+    _.forEach(buffs, (buff) => {
+      loadout = loadout.concat(techs[buff] || []);
+    });
+    if (!isCluster && faction === 4) {
+      loadout = _.reject(loadout, (mod) =>
+        clusterSubCommanderFiles.includes(mod.file),
+      );
+    }
+    return loadout;
+  };
+
   return {
     factionTechs,
+    loadoutFor,
   };
 });

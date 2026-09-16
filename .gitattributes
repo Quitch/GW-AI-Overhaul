@@ -19,7 +19,7 @@
 # Keep development junk out of our ZIP files
 .claude/ export-ignore
 .github/ export-ignore
-.vscode/settings.json
+.vscode/settings.json export-ignore
 docs/ export-ignore
 images/ export-ignore
 scripts/ export-ignore
@@ -37,3 +37,4 @@ stylelint.config.mjs export-ignore
 package-lock.json export-ignore
 package.json export-ignore
 sonar-project.properties export-ignore
+ui/mods/com.pa.quitch.gwaioverhaul/translations/en-US.json export-ignore

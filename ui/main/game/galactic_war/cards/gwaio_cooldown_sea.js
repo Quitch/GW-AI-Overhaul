@@ -22,13 +22,11 @@ define([
   },
 
   buff: function (inventory) {
-    const mods = _.map(gwoGroup.navalFactories, (unit) => ({
-      file: unit,
-      path: "factory_cooldown_time",
-      op: "multiply",
-      value: 0.5,
-    }));
-    inventory.addMods(mods);
+    inventory.addMods(
+      gwoCard.flatMapMods(gwoGroup.navalFactories, "multiply", {
+        factory_cooldown_time: 0.5,
+      }),
+    );
   },
 
   dull: function () {},

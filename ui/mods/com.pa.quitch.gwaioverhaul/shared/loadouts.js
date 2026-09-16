@@ -3,7 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
-], (GW, gwoBank, gwoLoadoutIds, gwoLoadoutBanks) => {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+], (GW, gwoBank, gwoLoadoutIds, gwoLoadoutBanks, helpers) => {
   const asCards = (ids) =>
     _.map(ids, (id) => ({
       id,
@@ -34,19 +35,50 @@ define([
   // requireGW that may not have finished when this module's factory runs. Called
   // after gwoLoadoutBanks.resolve(), it sees every bank; called before, it falls
   // back to the two banks GWO ships and no mod loadout shows as unlocked.
-  const startCards = () =>
-    _.map(allCards, (cardData) => {
+  // A loadout built for MLA alone is shown to a race player locked, never
+  // hidden. The race is gw_start's setting for the host and the picker's
+  // observable for a co-op viewer; neither scene has the other's. See races.md.
+  const raceInPlay = () => {
+    const settings = model.gwoDifficultySettings;
+
+    if (settings && _.isFunction(settings.playerRace)) {
+      return settings.playerRace();
+    }
+
+    return _.isFunction(model.gwoViewerRace)
+      ? model.gwoViewerRace()
+      : undefined;
+  };
+
+  // The card's click binding is `click: activate` and its class binding
+  // `css: btnClass`, so an inert activate and an extra class are all the
+  // markup needs. A locked-hint card is left as it is.
+  const lockForRace = (card) => {
+    const stockBtnClass = card.btnClass;
+    card.gwoRaceLocked = true;
+    card.activate = () => {};
+    card.btnClass = ko.computed(() => `${stockBtnClass()} gwo-race-locked`);
+    return card;
+  };
+
+  const startCards = () => {
+    const race = raceInPlay();
+    return _.map(allCards, (cardData) => {
       if (
         _.includes(model.gwoStartingCards, cardData) ||
         GW.bank.hasStartCard(cardData) ||
         gwoBank.hasStartCard(cardData) ||
         gwoLoadoutBanks.hasStartCard(cardData)
       ) {
-        return model.makeKnown(cardData);
+        const card = model.makeKnown(cardData);
+        return helpers.raceLocksLoadout(race, cardData.id)
+          ? lockForRace(card)
+          : card;
       } else {
         return model.makeUnknown(cardData);
       }
     });
+  };
 
   return {
     startCards,

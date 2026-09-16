@@ -16,7 +16,7 @@ define([
   // server cannot load hangs every player at loading. See galaxy.md.
   const loadablePlanets = (planets, systemName, served) => {
     _.forEach(planets, (planet) => {
-      const generator = planet.generator || planet.planet;
+      const generator = gwoBiomes.generatorOf(planet);
       const biome = gwoBiomes.planetBiome(planet);
       if (
         generator &&
@@ -53,17 +53,6 @@ define([
     return planets;
   };
 
-  const setupAiTags = (ai) => {
-    const aiTag = [];
-    const aiFactionCount = ai.foes ? 1 + ai.foes.length : 1;
-    _.times(aiFactionCount, (n) => {
-      const aiNewTag = `.ai${n.toString()}`;
-      aiTag.push(aiNewTag);
-    });
-
-    return aiTag;
-  };
-
   const modifyPlanets = (inventory, planets, game, systemName, served) => {
     const canGlassPlanets = gwoCards.anyPlayerHasCard(
       inventory,
@@ -95,11 +84,10 @@ define([
       inventory,
       game,
     );
-    const playerName = ko.observable().extend({ session: "displayName" });
     const playerTag = ".player";
     const armies = [
       {
-        slots: [{ name: playerName() || "Player" }],
+        slots: [{ name: model.displayName() || "Player" }],
         color: inventory.getTag("global", "playerColor"),
         econ_rate: 1,
         spec_tag: playerTag,
@@ -108,18 +96,18 @@ define([
     ];
     const galaxy = game.galaxy();
     const currentStar = galaxy.stars()[game.currentStar()];
-    const system = currentStar.system();
+    // A copy: the planet changes below are the battle's, not the war's.
+    const battleSystem = _.cloneDeep(currentStar.system());
     const ai = currentStar.ai();
     // Keyed on the turn as well as the star, so retrying a lost battle still
     // reshuffles - loseTurn does not advance the turn, so the retry needs
     // another move. See galaxy.md, "Play-scene streams".
     const battleRng = gwoStreams.battleRng(
-      gwoStreams.warRng(galaxy.stars()[galaxy.origin()].system().gwaio),
+      gwoStreams.warRng(gwoAI.originSettings(game)),
       game.currentStar(),
       game.stats().turns(),
     );
-    const aiInUse = gwoAI.aiInUse("enemy");
-    const aiTag = setupAiTags(ai);
+    const aiTag = gwoAI.aiTags(ai);
 
     setupAlliedCommanders(
       inventory.minions(),
@@ -142,6 +130,7 @@ define([
         playerTag,
         refereeCoop.getOrderedSubcommanders(inventory, game).length,
         battleRng,
+        { ffa: !_.isEmpty(ai.foes) },
       );
     }
 
@@ -149,16 +138,15 @@ define([
       ai,
       connectedPlayerCards,
       aiTag,
-      aiInUse,
       armies,
       battleRng,
     );
-    setupFfaAis(ai.foes, aiTag, aiInUse, armies, battleRng);
-    system.planets = modifyPlanets(
+    setupFfaAis(ai.foes, aiTag, armies, battleRng);
+    battleSystem.planets = modifyPlanets(
       inventory,
-      system.planets,
+      battleSystem.planets,
       game,
-      system.name,
+      battleSystem.name,
       self.biomeServed,
     );
 
@@ -168,14 +156,14 @@ define([
       player: {
         commander: inventory.getTag("global", "commander"),
       },
-      system: currentStar.system(),
+      system: battleSystem,
       land_anywhere:
         ai.landAnywhere ||
         gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_landanywhere", game),
       bounty_mode:
         ai.bountyMode ||
         gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_bounties", game),
-      bounty_value: ai.bountyModeValue,
+      bounty_value: gwoAI.bountyValue(ai),
       sudden_death_mode:
         ai.suddenDeath ||
         gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_suddendeath", game),

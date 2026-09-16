@@ -1,6 +1,7 @@
-// The Galactic War local server mounts no mods, and server-script/sim_utils.js
-// validatePlanet waits forever on a /pa/terrain/<biome>.json it cannot load, so
-// any biome outside this list hangs every player at loading. See galaxy.md.
+// The Galactic War local server mounts no mods on its own, and
+// server-script/sim_utils.js validatePlanet waits forever on a
+// /pa/terrain/<biome>.json it cannot load, so any biome outside this list
+// hangs every player at loading unless a mod carries it in. See galaxy.md.
 define(() => {
   const STOCK_BIOMES = [
     "1v1test",
@@ -20,28 +21,26 @@ define(() => {
     "tropical",
   ];
   const FALLBACK_BIOME = "earth";
+  // Who carries a provider into the battle: GWO cooks its JSON into the config
+  // files, or GW Server Mods mounts the zip for the local server. See
+  // galaxy.md, "Biome mods in a GW battle".
+  const SERVICE = { COOK: "cook", GWSM: "gwsm" };
 
   const isStockBiome = (biome) => _.includes(STOCK_BIOMES, biome);
 
-  // Pooled systems have been through fixupPlanetConfig; default_systems.json and
-  // the server's validatePlanet still read the pre-fixup `planet` key.
-  const planetBiome = (planet) => {
-    const generator = (planet && (planet.generator || planet.planet)) || {};
-    return generator.biome;
-  };
+  // Pooled systems have been through fixupPlanetConfig, which renames
+  // planet.planet to planet.generator; default_systems.json and the server's
+  // validatePlanet still read the pre-fixup `planet` key.
+  const generatorOf = (planet) => planet && (planet.generator || planet.planet);
 
-  const systemBiomes = (system) => {
-    const planets = (system && system.planets) || [];
-    const biomes = [];
+  const planetBiome = (planet) => (generatorOf(planet) || {}).biome;
 
-    for (const planet of planets) {
-      const biome = String(planetBiome(planet));
-      if (!_.includes(biomes, biome)) {
-        biomes.push(biome);
-      }
-    }
-    return biomes;
-  };
+  const systemBiomes = (system) =>
+    _.uniq(
+      _.map((system && system.planets) || [], (planet) =>
+        String(planetBiome(planet)),
+      ),
+    );
 
   const unservableBiome = (system, providers) => {
     const served = providers || {};
@@ -54,8 +53,15 @@ define(() => {
     return undefined;
   };
 
+  const normalizeIdentifier = (identifier) =>
+    _.isString(identifier) ? identifier.trim().toLowerCase() : "";
+
+  const sameMod = (a, b) =>
+    normalizeIdentifier(a.identifier) === normalizeIdentifier(b.identifier);
+
   // The providers a system needs, deduplicated - the value stamped on a placed
-  // system as gwoBiomeMods.
+  // system as gwoBiomeMods. GW Server Mods lower-cases identifiers and
+  // Community Mods does not, so the same mod is matched across case.
   const modsFor = (system, providers) => {
     const served = providers || {};
     const mods = [];
@@ -65,12 +71,29 @@ define(() => {
       if (
         !isStockBiome(biome) &&
         mod &&
-        !_.some(mods, { identifier: mod.identifier })
+        !_.some(mods, _.partial(sameMod, mod))
       ) {
         mods.push(mod);
       }
     }
     return mods;
+  };
+
+  // A provider record from a manifest row (GW Server Mods) or a Community Mods
+  // row. The mount path is built from `rawIdentifier`, the installed case,
+  // not the lower-cased `identifier`. See galaxy.md, "Biome mods in a GW
+  // battle".
+  const recordFrom = (mod) => {
+    const raw = mod.rawIdentifier || mod.identifier;
+
+    return {
+      identifier: mod.identifier,
+      rawIdentifier: raw,
+      installedPath: mod.installedPath,
+      mountPath: mod.mountPath || `/server_mods/${raw}/`,
+      displayName: mod.displayName || mod.identifier,
+      version: mod.version,
+    };
   };
 
   // api.file.zip.catalog returns [{name, crc32, size}] (observed, PA 124673);
@@ -94,7 +117,7 @@ define(() => {
   const isFile = (entry) => !_.endsWith(entry, "/");
 
   const underPa = (entries) =>
-    _.filter(entries, (entry) => isFile(entry) && entry.slice(0, 3) === "pa/");
+    _.filter(entries, (entry) => isFile(entry) && _.startsWith(entry, "pa/"));
 
   const REGISTRY_FILES = ["brush_list", "feature_list", "decal_list"];
 
@@ -116,21 +139,57 @@ define(() => {
     };
   };
 
+  // The one rule: text is always cooked, anything else needs GW Server Mods
+  // (`gwsm`) to carry it, and without that it is no provider at all.
+  const serviceFor = (info, gwsm) => {
+    if (info.pureText) {
+      return SERVICE.COOK;
+    }
+    return gwsm ? SERVICE.GWSM : undefined;
+  };
+
+  // A stamp written before `served` existed was always cooked.
+  const serviceOf = (record) => (record && record.served) || SERVICE.COOK;
+
+  const isGwsmServed = (record) => serviceOf(record) === SERVICE.GWSM;
+
   // First provider wins, so pass infos in the order the mods are prioritised.
-  const providersFrom = (infos) => {
+  // The record stored is the mod plus `served`, which the stamp then carries.
+  const providersFrom = (infos, gwsm) => {
     const providers = {};
 
     for (const info of infos || []) {
-      if (!info || !info.pureText) {
+      const served = info && serviceFor(info, gwsm);
+      if (!served) {
         continue;
       }
+      const record = Object.assign({}, info.mod, { served });
       for (const biome of info.biomes) {
         if (!_.has(providers, biome)) {
-          providers[biome] = info.mod;
+          providers[biome] = record;
         }
       }
     }
     return providers;
+  };
+
+  // The mods a war depends on: every GW Server Mods-served stamp across the
+  // given stamp lists, once each, in the shape gwaio.races.mods uses.
+  const gwsmMods = (stampLists) => {
+    const mods = [];
+
+    _.forEach(stampLists || [], (stamps) => {
+      _.forEach(stamps || [], (record) => {
+        if (isGwsmServed(record) && !_.some(mods, _.partial(sameMod, record))) {
+          mods.push({
+            identifier: record.identifier,
+            displayName: record.displayName || record.identifier,
+            version: record.version,
+          });
+        }
+      });
+    });
+    return mods;
   };
 
   const jsonEntries = (entries) =>
@@ -139,14 +198,21 @@ define(() => {
   return {
     STOCK_BIOMES,
     FALLBACK_BIOME,
+    SERVICE,
     isStockBiome,
+    generatorOf,
     planetBiome,
     systemBiomes,
     unservableBiome,
     modsFor,
+    recordFrom,
     catalogEntries,
     catalogInfo,
+    serviceFor,
+    serviceOf,
+    isGwsmServed,
     providersFrom,
+    gwsmMods,
     jsonEntries,
   };
 });

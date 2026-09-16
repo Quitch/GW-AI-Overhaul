@@ -23,36 +23,36 @@ define([
     const percentageReduction = 0.85;
     const percentageIncrease = 1.15;
 
-    const speedMods = _.map(gwoGroup.combatMobile, (unit) =>
-      gwoCard.mods(unit, "multiply", {
-        "navigation.move_speed": percentageReduction,
-        "navigation.brake": percentageReduction,
-        "navigation.acceleration": percentageReduction,
-        "navigation.turn_speed": percentageReduction,
-      }),
+    const speedMods = gwoCard.flatMapMods(
+      gwoGroup.combatMobile,
+      "multiply",
+      gwoCard.paths.navigation,
+      percentageReduction,
     );
-    const sightMods = _.map(gwoGroup.combatMobile, (unit) =>
-      gwoCard.mods(unit, "multiply", {
-        "recon.observer.items.0.radius": percentageIncrease,
-        "recon.observer.items.1.radius": percentageIncrease,
-      }),
+    const sightMods = gwoCard.flatMapMods(
+      gwoGroup.combatMobile,
+      "multiply",
+      gwoCard.observerPaths(2, "radius"),
+      percentageIncrease,
     );
-    const rangeMods = _.map(gwoGroup.combatMobileWeapons, (weapon) =>
-      gwoCard.mods(weapon, "multiply", {
+    const rangeMods = gwoCard.flatMapMods(
+      gwoGroup.combatMobileWeapons,
+      "multiply",
+      {
         max_range: percentageIncrease,
-      }),
+      },
     );
     // Try to make sure that units can use their full range
-    const ammoMods = _.map(gwoGroup.combatMobileAmmo, (ammo) =>
-      gwoCard.mods(ammo, "multiply", {
+    const ammoMods = gwoCard.flatMapMods(
+      gwoGroup.combatMobileAmmo,
+      "multiply",
+      {
         lifetime: percentageIncrease,
         max_velocity: percentageIncrease,
-      }),
+      },
     );
 
-    inventory.addMods(
-      _.flatten(speedMods.concat(sightMods, rangeMods, ammoMods)),
-    );
+    inventory.addMods(speedMods.concat(sightMods, rangeMods, ammoMods));
   },
 
   dull: function () {},

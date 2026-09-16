@@ -17,6 +17,7 @@ const {
   registerModuleStub,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const FACTIONS = [
   {
@@ -62,11 +63,7 @@ registerModuleStub("shared/gw_factions", FACTIONS);
 
 const stubs = createGlobalStubs();
 
-before(() => {
-  const $ = function () {};
-  $.when = (value) => Promise.resolve(value);
-  stubs.setGlobal("$", $);
-});
+before(() => installFakeJQuery(stubs));
 
 after(() => stubs.restoreGlobals());
 

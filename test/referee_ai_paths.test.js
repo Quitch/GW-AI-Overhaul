@@ -6,6 +6,7 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { SCENARIO_AXES } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeAIPaths = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
@@ -79,7 +80,7 @@ describe("getScopeToken", () => {
 
 describe("getAIPathDestination - cluster type", () => {
   it("always resolves to /pa/ai_cluster/ regardless of aiInUse/guardians/aiMods", () => {
-    for (const aiInUse of ["Titans", "Queller", "Penchant"]) {
+    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
       const path = refereeAIPaths.getAIPathDestination("cluster", aiInUse, {
         guardians: true,
         aiMods: [{ op: "load" }],
@@ -214,9 +215,9 @@ describe("getAIPathSource", () => {
     );
   });
 
-  it("Queller enemy source is q_uber/, subcommander source is always q_bronze/", () => {
-    // The source tree never varies by smartSubcommanders - always q_bronze/, even
-    // when the destination copied to is q_silver/. See ai-paths.md.
+  it("Queller enemy source is q_uber/, subcommander source follows smartSubcommanders", () => {
+    // Source and destination take the same flag, so a Smart Subcommander reads
+    // the tier it writes to. See ai-paths.md.
     assert.equal(
       refereeAIPaths.getAIPathSource("enemy", "Queller"),
       "/pa/ai_queller/q_uber/",
@@ -224,6 +225,10 @@ describe("getAIPathSource", () => {
     assert.equal(
       refereeAIPaths.getAIPathSource("subcommander", "Queller"),
       "/pa/ai_queller/q_bronze/",
+    );
+    assert.equal(
+      refereeAIPaths.getAIPathSource("subcommander", "Queller", true),
+      "/pa/ai_queller/q_silver/",
     );
   });
 });
@@ -234,35 +239,9 @@ describe("scopeToken sanitization asymmetry", () => {
       aiMods: [{ op: "load" }],
       scopeToken: ".player0",
     });
-    // The leading dot is not stripped here, unlike getPlayerScopedUnitMapPath.
+    // The leading dot is not stripped here, unlike getScopeToken.
     // "Fixing" that would silently change shipped mount paths.
     assert.equal(path, "/pa/ai_subcommander/player_.player0/");
-  });
-
-  it("getPlayerScopedUnitMapPath sanitizes the identity/fallback token first", () => {
-    const path = refereeAIPaths.getPlayerScopedUnitMapPath(
-      "/pa/ai_subcommander/",
-      ".player0",
-      "fallback",
-      false,
-    );
-    assert.equal(
-      path,
-      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map.json",
-    );
-  });
-
-  it("getPlayerScopedUnitMapPath appends _x1.json when titans is true", () => {
-    const path = refereeAIPaths.getPlayerScopedUnitMapPath(
-      "/pa/ai_subcommander/",
-      ".player0",
-      "fallback",
-      true,
-    );
-    assert.equal(
-      path,
-      "/pa/ai_subcommander/player_player0/unit_maps/ai_unit_map_x1.json",
-    );
   });
 });
 
@@ -272,5 +251,114 @@ describe("getAIPathDestination - no scope token", () => {
       refereeAIPaths.getAIPathDestination("enemy", "Titans", {}),
       "/pa/ai/",
     );
+  });
+});
+
+describe("getViewerSubcommanderPath", () => {
+  it("scopes a non-host tag raw, under the brain-and-tech tree", () => {
+    assert.equal(
+      refereeAIPaths.getViewerSubcommanderPath(
+        "Titans",
+        [{ op: "load" }],
+        false,
+        ".player0",
+      ),
+      "/pa/ai_subcommander/player_.player0/",
+    );
+    assert.equal(
+      refereeAIPaths.getViewerSubcommanderPath("Queller", [], true, ".player1"),
+      "/pa/ai_queller/q_silver/player_.player1/",
+    );
+  });
+
+  it("never scopes the host tag", () => {
+    assert.equal(
+      refereeAIPaths.getViewerSubcommanderPath(
+        "Titans",
+        [{ op: "load" }],
+        false,
+        ".player",
+      ),
+      "/pa/ai_subcommander/",
+    );
+  });
+});
+
+describe("race option", () => {
+  const races = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  );
+  const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
+
+  it("moves every destination to the race's own root, scope included", () => {
+    races.register(FIXTURE_RACE);
+    try {
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("enemy", "Titans", {
+          race: "fixture",
+        }),
+        "/pa/ai_race_fixture/",
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("enemy", "Titans", {
+          race: "fixture",
+          scopeToken: "guardians",
+        }),
+        "/pa/ai_race_fixture/player_guardians/",
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("enemy", "Queller", {
+          race: "fixture",
+        }),
+        "/pa/ai_queller_race_fixture/q_uber/",
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("subcommander", "Penchant", {
+          race: "fixture",
+          aiMods: [{ op: "load" }],
+        }),
+        "/pa/ai_subcommander_race_fixture/",
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("cluster", "Titans", {
+          race: "fixture",
+        }),
+        "/pa/ai_cluster_race_fixture/",
+      );
+      assert.equal(
+        refereeAIPaths.getViewerSubcommanderPath(
+          "Titans",
+          [{ op: "load" }],
+          false,
+          ".player0",
+          "fixture",
+        ),
+        "/pa/ai_subcommander_race_fixture/player_.player0/",
+      );
+    } finally {
+      races.reset();
+    }
+  });
+
+  it("leaves MLA, an absent race and an unregistered race on the brain's own root", () => {
+    for (const race of [undefined, "mla", "unregistered"]) {
+      assert.equal(
+        refereeAIPaths.getAIPathDestination("enemy", "Titans", { race: race }),
+        "/pa/ai/",
+      );
+    }
+  });
+
+  it("never changes the source: the race tree is written from the brain's files", () => {
+    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
+      assert.equal(
+        refereeAIPaths.getAIPathSource("enemy", aiInUse, false),
+        refereeAIPaths.getAIPathSource("enemy", aiInUse, false),
+      );
+      assert.equal(
+        refereeAIPaths.getAIPathSource("enemy", aiInUse, false).indexOf("race"),
+        -1,
+      );
+    }
   });
 });

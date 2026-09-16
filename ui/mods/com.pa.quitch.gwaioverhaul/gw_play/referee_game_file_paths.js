@@ -1,9 +1,10 @@
 // The measured half of gw_play/referee_game_files.js. Nothing here may touch an
 // engine global at define time - see testing.md, "Coverage".
 define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_fetch.js",
-], (gwoUrl, gwoFetch) => {
+], (gwoCard, gwoUrl, gwoFetch) => {
   const getAIUnitMapPath = (titans, aiInUse) => {
     const append = titans ? "_x1.json" : ".json";
 
@@ -54,15 +55,35 @@ define([
     return normalPaths;
   };
 
+  // The brain's map with each race map laid over it: a race key wins, so a
+  // race that re-defines a vanilla key gets its own meaning of it.
+  const mergeUnitMaps = (baseMap, raceMaps) => {
+    const merged = Object.assign({}, baseMap && baseMap.unit_map);
+
+    _.forEach(raceMaps, (raceMap) => {
+      _.assign(merged, raceMap && raceMap.unit_map);
+    });
+
+    return Object.assign({}, baseMap, { unit_map: merged });
+  };
+
+  // params.race is optional: without it the player is MLA. params.mods, when
+  // given, is the inventory's mods already expanded onto the race's files
+  // (unit_cells.expandMods); otherwise the mods land as they always have.
   const buildPlayerFiles = (params, gwoAI, gwoSpecs) => {
     const playerAIUnitMap = params.playerAIUnitMap;
     const playerX1AIUnitMap = params.playerX1AIUnitMap;
     const playerSpecFiles = params.playerSpecFiles;
     const inventory = params.inventory;
     const titans = params.titans;
+    const race = params.race;
+    const extraMods = params.extraMods || [];
+    const mods = params.mods || inventory.mods();
 
-    const playerIsCluster = inventory.getTag("global", "playerFaction") === 4;
-    const hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander");
+    const playerIsCluster = gwoCard.playerIsCluster(inventory);
+    const hostSubcommanderPath = gwoAI.getAIPathDestination("subcommander", {
+      race,
+    });
     let playerFilesClassic;
     let playerFilesX1;
 
@@ -96,7 +117,7 @@ define([
     }
 
     const playerFiles = Object.assign({}, playerFilesClassic, playerFilesX1);
-    gwoSpecs.mod(playerFiles, inventory.mods(), ".player");
+    gwoSpecs.mod(playerFiles, mods.concat(extraMods), ".player");
     return playerFiles;
   };
 
@@ -112,9 +133,36 @@ define([
       }
     });
 
+  // The spec mods an army carries into the battle: derived from the buffs the
+  // war recorded, or the descriptors a war saved before that baked in.
+  const armyInventory = (army, loadoutFor, factionIndexFn, isClusterFn) => {
+    if (Array.isArray(army.typeOfBuffs)) {
+      return loadoutFor(
+        factionIndexFn(army),
+        army.typeOfBuffs,
+        isClusterFn(army),
+      );
+    }
+    return army.inventory || [];
+  };
+
+  // Each unit map once per page, through spec:// like the unit list. The
+  // engine serves a spec:// path's first read for the rest of the process
+  // anyway, so nothing later could read a different file. See specs.md.
+  const mapCache = {};
+  const loadMap = (path) => {
+    if (!mapCache[path]) {
+      mapCache[path] = $.get(gwoUrl.specFile(path)).then((data) => parse(data));
+    }
+    return mapCache[path];
+  };
+
   return {
+    loadMap,
+    armyInventory,
     getAIUnitMapPath,
     getAIUnitMapDestinationPath,
+    mergeUnitMaps,
     clusterArmyIndex,
     resolveAiUnitMapPaths,
     buildPlayerFiles,

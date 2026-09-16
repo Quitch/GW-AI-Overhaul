@@ -1,7 +1,8 @@
 // Ending a won war the moment the last boss falls. gw_game.js's winTurn wins the
 // war in its fight branch but leaves the turn on "begin", and gw_play.js only
 // opens gw_war_over once the turn reaches "end" - which nothing but exploring the
-// star and taking a card ever does.
+// star and taking a card ever does. In co-op the host first waits for the
+// players from the battle to return (victory_wait_state.js; coop.md, "War end").
 define(() => {
   const warEndOperator = "gwo_war_end";
 
@@ -9,7 +10,9 @@ define(() => {
     const game = params.game;
     const gwoSettings = params.gwoSettings;
     const treasure = params.treasure;
+    const playersReturned = params.playersReturned;
     let ended = false;
+    let waiting = false;
 
     const onTreasureStar = () => {
       const star = game.currentStar();
@@ -28,6 +31,7 @@ define(() => {
     const guardiansStillOweALoadout = () =>
       onTreasureStar() &&
       treasure.anyPlayerCanUnlockLoadout({
+        race: params.race,
         localUnlockedIds: treasure.localUnlockedLoadoutIds(
           params.stockBank,
           params.gwoBank,
@@ -64,6 +68,7 @@ define(() => {
     // Only the host holds every player's unlock record, so only the host decides.
     const endWarIfWon = () => {
       if (
+        waiting ||
         model.isCampaignViewer() ||
         !warWon() ||
         guardiansStillOweALoadout()
@@ -71,8 +76,19 @@ define(() => {
         return;
       }
 
-      model.sendCampaignHostOperator(warEndOperator, {});
-      endWar();
+      const tellViewersAndEnd = () => {
+        waiting = false;
+        model.sendCampaignHostOperator(warEndOperator, {});
+        endWar();
+      };
+
+      if (!playersReturned || !model.gwCampaignEnabled()) {
+        tellViewersAndEnd();
+        return;
+      }
+
+      waiting = true;
+      playersReturned.wait(tellViewersAndEnd);
     };
 
     model.registerCampaignHostOperatorHandler(warEndOperator, endWar);

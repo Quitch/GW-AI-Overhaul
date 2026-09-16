@@ -58,9 +58,18 @@ function resolveBareId(entry) {
   );
 }
 
+// -> the repo path a coui:// entry names, or undefined for any other entry.
+// Does not check existence; resolveEntryPath does.
+function couiToFsPath(entry) {
+  if (!entry.startsWith(UI_SCHEME)) {
+    return undefined;
+  }
+  return path.resolve(REPO_ROOT, entry.slice(UI_SCHEME.length));
+}
+
 function resolveEntryPath(entry) {
-  if (entry.startsWith(UI_SCHEME)) {
-    const fsPath = path.resolve(REPO_ROOT, entry.slice(UI_SCHEME.length));
+  const fsPath = couiToFsPath(entry);
+  if (fsPath) {
     if (!fs.existsSync(fsPath)) {
       throw new Error(
         'amd-loader: "' +
@@ -209,6 +218,7 @@ function requireShippedModule(entry) {
 
 module.exports = {
   REPO_ROOT: REPO_ROOT,
+  couiToFsPath: couiToFsPath,
   installGlobals: installGlobals,
   loadCouiModule: loadCouiModule,
   registerModuleStub: registerModuleStub,

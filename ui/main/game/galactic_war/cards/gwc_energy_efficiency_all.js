@@ -6,10 +6,7 @@ define([
   return {
     visible: _.constant(true),
     describe: function () {
-      if (gwoCard.isEnglish()) {
-        return "!LOC:Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%, and teleport energy costs by 75%.";
-      }
-      return "!LOC:Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%.";
+      return "!LOC:Complete Energy Tech reduces energy costs for intelligence structures by 75%, weapon energy costs by 75%, and teleport energy costs by 75%.";
     },
     summarize: _.constant("!LOC:Complete Energy Tech"),
     icon: _.constant(
@@ -29,46 +26,23 @@ define([
       };
     },
     buff: function (inventory) {
-      var mods = [];
-      _.forEach(gwoGroup.energyIntel, function (unit) {
-        mods.push({
-          file: unit,
-          path: "consumption.energy",
-          op: "multiply",
-          value: 0.25,
-        });
-      });
-      _.forEach(gwoGroup.teleporters, function (unit) {
-        mods.push({
-          file: unit,
-          path: "teleporter.energy_demand",
-          op: "multiply",
-          value: 0.25,
-        });
-      });
-      _.forEach(gwoGroup.energyWeapons, function (weapon) {
-        mods.push(
-          {
-            file: weapon,
-            path: "ammo_capacity",
-            op: "multiply",
-            value: 0.25,
-          },
-          {
-            file: weapon,
-            path: "ammo_demand",
-            op: "multiply",
-            value: 0.25,
-          },
-          {
-            file: weapon,
-            path: "ammo_per_shot",
-            op: "multiply",
-            value: 0.25,
-          },
-        );
-      });
-      inventory.addMods(mods);
+      inventory.addMods(
+        gwoCard
+          .flatMapMods(gwoGroup.energyIntel, "multiply", {
+            "consumption.energy": 0.25,
+          })
+          .concat(
+            gwoCard.flatMapMods(gwoGroup.teleporters, "multiply", {
+              "teleporter.energy_demand": 0.25,
+            }),
+            gwoCard.flatMapMods(
+              gwoGroup.energyWeapons,
+              "multiply",
+              gwoCard.paths.energyWeapon,
+              0.25,
+            ),
+          ),
+      );
     },
     dull: function () {},
   };
