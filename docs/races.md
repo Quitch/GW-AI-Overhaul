@@ -187,7 +187,7 @@ distinct (source, destination):
 
   The source listing is the merged filesystem, so a race file that shadows a
   base path already reads as the race's. The race's own **layer** is its
-  `sources` plus every add-on's layer for it (`races.layersFor`, see
+  `sources` plus every active add-on's layer for it (`races.layersFor`, see
   "Add-ons"). The base layer drops three sets of files. It drops every
   **other** layer's `sources`, MLA's add-on files included, because they ride
   in the same merged listing. A file the race's own layer and another both
@@ -463,7 +463,11 @@ descriptor lives in `addon/<id>.js`, `shared/addons_shipped.js` lists the
 shipped ones, and a third-party mod pushes its own onto `model.gwoAddons`
 the way it pushes a race onto `model.gwoRaces`. `races.registerAddon`,
 `addonById`, `addons` and `detectAddons` mirror the race registry, in a
-registry of their own. An add-on id never reads as a race.
+registry of their own. An add-on id never reads as a race. Registered is not
+active: `races.activateAddons(ids)` records which add-ons' server mods are
+enabled, `activeAddons` lists them in registration order, and only those
+contribute a layer. `race_mods.installedRaces` does the activating, from
+the GW Server Mods manifest, so `races.js` stays engine-free.
 
 ```js
 {
@@ -490,8 +494,12 @@ tooltips (`races.unitName` reads the race's table, then every add-on's).
 
 **Layers.** `layers[raceId][brain]` is the AI data the add-on ships for that
 race, in the shape of a race descriptor's `ai[brain]`. `races.layersFor(brain)`
-adds every add-on's layer for a race to the race's own, and gives MLA a layer
-too. That table is what `treeFilter`, `inAnyRaceLayer` and `unitMapsFor`
+adds every **active** add-on's layer for a race to the race's own, and gives
+MLA a layer too. An inactive add-on's files are not on disk, and
+`unitMapsFor` names files the referee reads: before activation existed, a
+Legion player could not Fight while Second Wave was disabled, because the
+hire tried to read `second_wave_legion.json` and failed. That table is what
+`treeFilter`, `inAnyRaceLayer` and `unitMapsFor`
 read. A race tree keeps its own layer and subtracts every other, MLA's
 included, so a Legion tree holds Second Wave's `factory_builds/legion/` files
 and none of its `mla/` ones, and its merged map carries the
@@ -545,7 +553,14 @@ word when the list holds no add-on unit - none mounted, the usual case.
 add-on: the shipped descriptors are registered whether or not their mods
 are, and every MLA war must not crawl every spec for nothing.
 
-**Recording.** `installedRaces` also reports `addons` and `addonMods`; `mods`
+**Activation.** `installedRaces` also calls `races.activateAddons` with the
+detected add-ons' ids (none without GW Server Mods), so the registry agrees
+with what the player was told. `gw_play/races.js` runs it once per scene
+load, and `GWReferee.hire` runs it again before the game-files stage, so a
+hire never depends on scene-load ordering and an add-on disabled mid-session
+drops out of the next Fight. It does no I/O while Community Mods is present.
+
+**Recording.** `installedRaces` reports `addons` and `addonMods` too; `mods`
 stays race-only, since `race_check`, `host_war.js` and `setup.js` read it as
 the race mods. The war records `gwaio.races.addons`, the identifier, name
 and version of each add-on server mod active at creation. On resume

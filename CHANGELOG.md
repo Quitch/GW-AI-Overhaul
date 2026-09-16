@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- A Legion or Bugs player could not Fight while Second Wave was disabled; an add-on's AI files now count only while its mod is enabled
+- A unit map that fails to read is read again on the next Fight, and the error names the file
+
 ## v7.3.0 - 2026-09-11
 
 ### Added
