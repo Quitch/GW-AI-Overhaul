@@ -10,6 +10,7 @@
 - Rapid Deployment Sub Commanders no longer order fabricators and factories to build things the loadout forbids
 - A race's commander portraits and names now load when the war setup screen opens on the race used for the last war
 - Defeating the last boss in battle now wins the war while other enemy systems remain, and a defeated boss's systems pass to the faction contesting them
+- A system taken over by a contesting faction now falls when that faction's boss is defeated
 
 ## v7.3.1 - 2026-09-17
 
