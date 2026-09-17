@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- An enemy Cluster AI no longer receives the build orders of the player's loadout (Rapid Deployment and other loadouts that add AI build files) when it shares an AI with the Sub Commanders
+
 ## v7.3.1 - 2026-09-17
 
 ### Bugfix
