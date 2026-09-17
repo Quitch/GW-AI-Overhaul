@@ -7,13 +7,15 @@
 // dependency-free, so requiring them here cannot close the cycle that
 // shared/gw_common or shared/gw_game would. See coop.md.
 // Also GWO's: aiMods and addAIMods, setTag deleted after a pass beside getTag,
-// removeUnits removing every copy, and tags.valueHasMutated() from getTag and
-// setTag so tag readers update.
+// removeUnits removing every copy, tags.valueHasMutated() from getTag and setTag
+// so tag readers update, and the same patch hijack installing GWO's defeatTeam
+// before gw_play.js applies a battle result. See architecture.md.
 define([
   "shared/gw_bank",
   "shared/gw_game_patches",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-], function (stockBank, gwoGamePatches, gwoBank) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/defeat_team.js",
+], function (stockBank, gwoGamePatches, gwoBank, gwoDefeatTeam) {
   var loadingAnotherPlayersCards = false;
 
   var isCampaignViewerSession = function () {
@@ -34,6 +36,7 @@ define([
       _.isFunction(game.perPlayerTechCards) &&
       game.perPlayerTechCards()
     );
+    gwoDefeatTeam.install(game);
     return stockPatch.apply(this, arguments);
   };
 

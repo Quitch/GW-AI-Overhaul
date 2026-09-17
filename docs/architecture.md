@@ -172,19 +172,33 @@ idempotent. So every setup function works on deep copies. See
 
 ### Returning from a battle
 
-**A real battle that beats the last boss does not win a GWO war while any other
-AI star remains.** This bug has been known since 2026-09-04 and is not yet
-fixed. `live_game_patch.js` records the outcome as
+**GWO's `defeatTeam` is installed from the `GWGamePatches.patch` hijack, not
+from a scene script, because a scene script is too late.**
+`live_game_patch.js` records the outcome of a battle as
 `game.lastBattleResult("win")`. gw_play consumes it at startup (`gw_play.js`,
 "startup battleResult" in the log). There, the boss branch of `winTurn` calls
-`game.defeatTeam`. That call runs 1.8 s before `loadMods`. So the `defeatTeam`
-override in `gw_play/systems.js`, which wins the war once no boss is left, is
-not installed yet, and the stock function runs instead.
+`game.defeatTeam`. That call runs 1.8 s before `loadMods`. The log proves the
+order: `winTurn applied` precedes `War created using Galactic War Overhaul`.
 
-Stock wins only when _no AI star of any team_ remains. A GWO galaxy never
-satisfies that at that point. Only the in-scene paths (the Cheat button's Win,
-an explore) reach GWO's rule. The log proves the order: `winTurn applied`
-precedes `War created using Galactic War Overhaul`.
+`GWGame.load` calls `patch(self, …)` on every game it loads, before `gw_play.js`
+reads `lastBattleResult`. The shadowed `gw_inventory.js` already hijacks `patch`
+([`coop.md`](coop.md), "Whose unlocks are whose"), so the same hijack calls
+`shared/defeat_team.js`'s `install(game)`. That sets `defeatTeam` on the game
+instance, except for the tutorial. The module is dependency-free for the reason
+`coop.md` gives: `shared/gw_game` and `shared/gw_common` would close a cycle
+back onto `gw_inventory`.
+
+GWO's rule differs from stock's in three ways:
+
+- Stock wins only when _no AI star of any team_ remains. GWO wins when no boss
+  remains. A GWO galaxy never satisfies stock's test when the last boss falls.
+- Stock clears every star of the defeated team. GWO promotes the first of a
+  star's `foes` to own it, and clears the star only when it has none.
+- Stock leaves pre-dealt cards on the stars it clears. GWO empties their
+  `cardList`, except the Guardians'.
+
+All three results are saved as soon as `winTurn` returns, so none can be
+repaired on scene entry: by then the save no longer holds the `foes`.
 
 ## Galaxy map redraw throttling
 
