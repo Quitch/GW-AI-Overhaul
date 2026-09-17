@@ -243,3 +243,67 @@ describe("recordFor", () => {
     assert.deepEqual(record, {});
   });
 });
+
+describe("forContent", () => {
+  const stored = {
+    legion: { enemy: "Queller", ally: "Titans" },
+    fixture: { enemy: "Titans" },
+  };
+
+  it("replaces a stored Queller with Titans on classic content", () => {
+    assert.deepEqual(
+      brainTable.forContent(stored, "Queller", "Queller", false),
+      {
+        aiByRace: {
+          legion: { enemy: "Titans", ally: "Titans" },
+          fixture: { enemy: "Titans" },
+        },
+        ai: "Titans",
+        aiAlly: "Titans",
+      }
+    );
+    assert.deepEqual(
+      brainTable.forContent(undefined, "Penchant", undefined, false),
+      { aiByRace: {}, ai: "Penchant", aiAlly: undefined }
+    );
+  });
+
+  it("changes nothing under TITANS, or when content was not asked", () => {
+    [true, undefined].forEach((hasTitansContent) => {
+      assert.deepEqual(
+        brainTable.forContent(stored, "Queller", "Penchant", hasTitansContent),
+        { aiByRace: stored, ai: "Queller", aiAlly: "Penchant" }
+      );
+    });
+  });
+
+  it("never edits the stored table", () => {
+    brainTable.forContent(stored, "Queller", "Queller", false);
+
+    assert.equal(stored.legion.enemy, "Queller");
+  });
+
+  it("keeps Queller out of a classic war's record", () => {
+    const brains = brainTable.forContent(stored, "Queller", "Queller", false);
+
+    assert.deepEqual(
+      brainTable.recordFor(
+        brains.aiByRace,
+        ["mla", "legion"],
+        brains.ai,
+        brains.aiAlly
+      ),
+      { legion: { enemy: "Titans", ally: "Titans" } }
+    );
+    assert.equal(
+      brainTable.resolve(
+        brains.aiByRace,
+        brains.ai,
+        brains.aiAlly,
+        "enemy",
+        "mla"
+      ),
+      "Titans"
+    );
+  });
+});

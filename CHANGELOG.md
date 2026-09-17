@@ -5,6 +5,7 @@
 ### Bugfix
 
 - An enemy Cluster AI no longer receives the build orders of the player's loadout (Rapid Deployment and other loadouts that add AI build files) when it shares an AI with the Sub Commanders
+- A war created without TITANS no longer uses the Queller AI because it was the choice saved from a TITANS session
 
 ## v7.3.1 - 2026-09-17
 
