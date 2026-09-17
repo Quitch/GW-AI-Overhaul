@@ -101,18 +101,18 @@
       function (raceMods, races, pickerOptions) {
         raceMods.registerAll();
 
-        // Zip mounts only, no content remount: quick enough that nothing
-        // waits on it.
-        var mount = function () {
-          raceMods.mountRoot();
-        };
+        // A commander read before its zip is mounted caches a failure, and the
+        // name never recovers, so the list stays MLA's until the mount
+        // settles. See races.md.
+        var mounted = ko.observable(false);
 
         // The commander list follows the race; a race's list is its own, and
         // so is the paint its preview art ships in.
         ko.computed(function () {
-          var race = races.byId(settings.playerRace());
+          var playerRace = settings.playerRace();
+          var shownRace = mounted() ? playerRace : races.MLA_ID;
           var choices = pickerOptions.commanderChoices(
-            race,
+            races.byId(shownRace),
             model.commanders(),
             races.MLA_ID
           );
@@ -120,7 +120,7 @@
           model.gwoCommanderTintFilter(
             pickerOptions.commanderTint(
               model.playerColor()[0],
-              races.commanderArtHue(settings.playerRace())
+              races.commanderArtHue(shownRace)
             )
           );
           if (
@@ -169,8 +169,12 @@
           $(raceSelectId).selectpicker("val", settings.playerRace());
           $(raceSelectId).selectpicker("refresh");
 
+          // Zip mounts only, no content remount. Always, not done: a failed
+          // mount must not leave a race's player on MLA's commanders.
           if (model.gwoRacesAvailable()) {
-            mount();
+            raceMods.mountRoot().always(function () {
+              mounted(true);
+            });
           }
         });
       }

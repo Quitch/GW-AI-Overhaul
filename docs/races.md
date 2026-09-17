@@ -319,6 +319,11 @@ to read the restored value at script scope, before `ko.applyBindings`. Until
 rejects a model value no option can show, and overwrites it with the
 placeholder.
 
+The commander list and the preview tint stay MLA's until `raceMods.mountRoot()`
+settles, as they do in the co-op loadout scene. A race commander's spec read
+before its zip is mounted fails, and `race_picker_view.js` holds what it read
+for as long as the tiles are on show. The race setting itself is not held back.
+
 The war records `global:playerRace` on the inventory, `race` on every AI, and
 `originSystem.gwaio.races = { player, byFaction, unique, mods }`. `mods` is the
 identifier and version of each race server mod installed when the war was made.
