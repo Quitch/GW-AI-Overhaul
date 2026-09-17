@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v7.3.1 - 2026-09-17
 
 ### Bugfix
 
