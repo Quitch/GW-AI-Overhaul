@@ -203,10 +203,14 @@ Two details make it correct:
 
 - **It returns copies.** Every pass mutates the JSON it receives: `applyAiMods`
   writes in place, and the result is stored in `configFiles`. So the cache keeps
-  the pristine parse and `_.cloneDeep`s on the way out.
-- **It re-chains rather than re-fetches.** `.then` on a jQuery promise returns a
-  new promise each time. So the cache can chain from one stored request
-  repeatedly without consuming it.
+  the pristine parse and `_.cloneDeep`s on the way out. Listings are copied too:
+  `processDirectories` pushes the pass's `load` paths onto its listing. A shared
+  array would carry the host's `/pa/ai_tech/` files into every later pass, a
+  viewer's tree and a race tree included.
+- **It re-chains rather than re-fetches.** `.then` returns a new promise each
+  time, on the engine's promise (`api.file.list`) as on jQuery's (`$.getJSON`).
+  So the cache can chain from one stored request repeatedly without consuming
+  it.
 
 The cache lives exactly one launch. `gw_play/referee.js` creates it on the first
 hire after `launchingFight` becomes true. It passes the same cache to every hire
