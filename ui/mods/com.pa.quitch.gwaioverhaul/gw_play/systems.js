@@ -390,49 +390,6 @@
           : undefined;
       };
 
-      // Installed after gw_play.js has applied a battle result, so a real
-      // last-boss win runs stock's defeatTeam, not this. See architecture.md,
-      // "Returning from a battle".
-      game.defeatTeam = function (defeatedTeam) {
-        var remainingBosses = 0;
-
-        api.tally.incStatInt("gw_eliminate_faction");
-
-        _.forEach(model.galaxy.systems(), function (system) {
-          var star = system.star;
-          var ai = star.ai();
-          var guardians = ai && ai.mirrorMode;
-
-          if (ai && ai.team === defeatedTeam) {
-            var replacementAI = _.first(ai.foes);
-            if (replacementAI) {
-              var newAI = _.extend({}, ai, replacementAI);
-              newAI.foes = _.rest(ai.foes);
-              delete newAI.minions;
-
-              var factionColor = normalizedColor(GWFactions[newAI.faction]);
-              system.ownerColor(factionColor.concat(3));
-
-              star.ai(newAI);
-            } else {
-              star.ai(undefined);
-              // Delete pre-dealt cards when boss defeated
-              if (!guardians) {
-                star.cardList([]);
-              }
-            }
-          } else if (ai && ai.boss) {
-            ++remainingBosses;
-          }
-        });
-
-        if (!remainingBosses) {
-          requireGW(["shared/gw_game"], function (GWGame) {
-            game.gameState(GWGame.gameStates.won);
-          });
-        }
-      };
-
       _.forEach(model.galaxy.systems(), function (system) {
         // Every system gets a ring: Conquest rolls allies and foes turn by
         // turn, and War's defeatTeam rewrites them, so load-time state is not final

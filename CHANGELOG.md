@@ -9,6 +9,7 @@
 - In co-op with per-player tech, a viewer's Sub Commanders no longer build from the host's loadout build orders (Rapid Deployment and other loadouts that add AI build files)
 - Rapid Deployment Sub Commanders no longer order fabricators and factories to build things the loadout forbids
 - A race's commander portraits and names now load when the war setup screen opens on the race used for the last war
+- Defeating the last boss in battle now wins the war while other enemy systems remain, and a defeated boss's systems pass to the faction contesting them
 
 ## v7.3.1 - 2026-09-17
 

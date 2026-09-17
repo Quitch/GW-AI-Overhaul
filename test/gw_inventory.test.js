@@ -53,6 +53,14 @@ registerModuleStub("coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js", {
   resumeUnlocks: () => bank.push("resume"),
 });
 
+// defeat_team.test.js covers the function; here it only matters that the patch
+// hijack hands it the game.
+const defeatTeamInstalls = [];
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/defeat_team.js",
+  { install: (game) => defeatTeamInstalls.push(game) }
+);
+
 const mutations = [];
 const hooks = { onMutate: (value) => mutations.push(value) };
 
@@ -134,6 +142,7 @@ afterEach(() => {
   patch(perPlayerTechGame(true));
   bank.length = 0;
   patched.length = 0;
+  defeatTeamInstalls.length = 0;
   timers.delayed.length = 0;
   mutations.length = 0;
   cardModules = {};
@@ -150,6 +159,14 @@ describe("gw_inventory - the patch hijack", () => {
 
     assert.equal(patch(game), "stock");
     assert.deepEqual(patched, [game]);
+  });
+
+  it("installs GWO's defeatTeam on the game it is handed", () => {
+    const game = perPlayerTechGame(false);
+
+    patch(game);
+
+    assert.deepEqual(defeatTeamInstalls, [game]);
   });
 });
 

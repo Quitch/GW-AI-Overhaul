@@ -482,7 +482,8 @@ Two signals _are_ available at that point: `sessionStorage.gw_campaign_role`,
 and the game passed to `GWGamePatches.patch`. `GWGame.load` calls `patch`
 immediately before `applyCards`, after setting `perPlayerTechCards`.
 `gw_inventory.js` therefore hijacks `patch` to raise a flag that the next
-`applyCards` consumes and suspends on.
+`applyCards` consumes and suspends on. The same hijack installs GWO's
+`defeatTeam` ([`architecture.md`](architecture.md), "Returning from a battle").
 
 Hijacking rather than shadowing `gw_game.js` keeps a 459-line save-format file
 out of the tree. `gw_game_patches` is reachable because, like `gw_bank`, it
