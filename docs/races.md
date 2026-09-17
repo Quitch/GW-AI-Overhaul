@@ -245,6 +245,12 @@ war-wide `gwoDifficultySettings.ai`/`aiAlly` pair. The other rows live in
 `gwoDifficultySettings.aiByRace`, and the war records them, coerced, as
 `gwaio.aiByRace` beside the strings.
 
+The modal does not rewrite the settings until it is applied, so a Queller
+stored under TITANS is still there in a classic session. `setup.js` therefore
+reads every brain through `brain_table.forContent`, which turns Queller into
+Titans on classic content for the war alone. The stored choice is untouched and
+returns with TITANS.
+
 `shared/ai.js`'s `warBrain(alignment, race)` reads the race's row, and
 otherwise uses the strings. So a war saved before the table behaves exactly as
 it always did.
@@ -312,6 +318,11 @@ to read the restored value at script scope, before `ko.applyBindings`. Until
 `installedRaces` resolves, the select holds only its MLA placeholder. Knockout
 rejects a model value no option can show, and overwrites it with the
 placeholder.
+
+The commander list and the preview tint stay MLA's until `raceMods.mountRoot()`
+settles, as they do in the co-op loadout scene. A race commander's spec read
+before its zip is mounted fails, and `race_picker_view.js` holds what it read
+for as long as the tiles are on show. The race setting itself is not held back.
 
 The war records `global:playerRace` on the inventory, `race` on every AI, and
 `originSystem.gwaio.races = { player, byFaction, unique, mods }`. `mods` is the

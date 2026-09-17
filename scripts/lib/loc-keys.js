@@ -446,15 +446,24 @@ function withoutComments(source) {
   );
 }
 
+// Repeated until stable: one pass over `<<b>i>` leaves a new `<i>` behind.
+function withoutTags(text) {
+  let stripped = text;
+  let previous;
+  do {
+    previous = stripped;
+    stripped = stripped.replace(/<[^<>]*>/g, "");
+  } while (stripped !== previous);
+  return stripped;
+}
+
 function scanTags(map, facts, html) {
   const source = withoutComments(html);
   LOC_TAG.lastIndex = 0;
   let match;
   while ((match = LOC_TAG.exec(source)) !== null) {
     const id = /\bdata-loc-id\s*=\s*"([^"]*)"/.exec(match[1]);
-    const key = (
-      id ? id[1] : decodeEntities(match[2].replace(/<[^<>]*>/g, ""))
-    ).trim();
+    const key = (id ? id[1] : decodeEntities(withoutTags(match[2]))).trim();
     if (!key) {
       continue;
     }

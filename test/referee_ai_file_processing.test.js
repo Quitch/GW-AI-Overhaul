@@ -334,6 +334,38 @@ describe("per-player-tech viewer processing", () => {
       1
     );
   });
+
+  // The base pass pushes the host's `load` paths onto its listing, so a shared
+  // cache must hand out copies of that too.
+  it("keeps the host's load file out of a viewer's tree", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [{ type: "fabber", op: "load", value: "hosttech.json" }],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.id === "v1"
+        ? { inventory: makeInventory({ aiModsList: [] }) }
+        : undefined;
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/land.json"] },
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    const viewerKeys = Object.keys(filesObj).filter((key) =>
+      key.includes("player_.player0")
+    );
+    assert.deepEqual(viewerKeys, [
+      "/pa/ai/player_.player0/fabber_builds/land.json",
+    ]);
+    assert.ok("/pa/ai_subcommander/fabber_builds/hosttech.json" in filesObj);
+  });
 });
 
 describe("race trees", () => {
@@ -543,6 +575,29 @@ describe("race trees", () => {
     assert.ok(filesObj["/pa/ai_race_fixture/x.json"]);
   });
 
+  it("keeps the player's load file out of a race enemy's tree", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyRace: "fixture",
+      aiMods: [{ type: "fabber", op: "load", value: "hosttech.json" }],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": TITANS_FILES },
+      getJSON: (url) => ({ from: url }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.deepEqual(
+      Object.keys(filesObj).filter((key) =>
+        key.startsWith("/pa/ai_race_fixture/tech/")
+      ),
+      []
+    );
+  });
+
   it("does nothing extra for an MLA battle", async () => {
     const fixture = buildGame({ aiInUse: "Titans" });
     installModel(fixture.game, []);
@@ -615,6 +670,47 @@ describe("load files and treeOnly", () => {
     );
   });
 
+  it("with treeOnly, a silence zeroes a tree factory file and leaves the loaded one alone", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [
+        { type: "factory", op: "load", value: "x.json" },
+        {
+          type: "factory",
+          op: "silence",
+          treeOnly: true,
+          value: { builders: ["BasicBotFactory"], except: [] },
+        },
+      ],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/factory_builds/bot.json"] },
+      getJSON: () => ({
+        build_list: [
+          {
+            to_build: "BasicAssaultBot",
+            priority: 100,
+            builders: ["BasicBotFactory"],
+          },
+        ],
+      }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.equal(
+      priorityAt(filesObj, "/pa/ai_subcommander/factory_builds/bot.json"),
+      0
+    );
+    assert.equal(
+      priorityAt(filesObj, "/pa/ai_subcommander/factory_builds/x.json"),
+      100
+    );
+  });
+
   it("without treeOnly, a descriptor reaches the loaded file too", async () => {
     const filesObj = await runWith(zero({}));
 
@@ -626,6 +722,51 @@ describe("load files and treeOnly", () => {
       priorityAt(filesObj, "/pa/ai_subcommander/fabber_builds/x.json"),
       0
     );
+  });
+});
+
+// Under a shared source every walked file reads as "shared", the player's
+// /pa/ai_tech/ files included, so ownership alone cannot keep them from the
+// enemy Cluster tree.
+describe("Cluster enemy under a shared source", () => {
+  const TREE_FILE = "/pa/ai/fabber_builds/land.json";
+  const FACTORY_FILE = "/pa/ai/factory_builds/f.json";
+
+  async function runAgainstCluster() {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "cluster",
+      aiMods: [{ type: "fabber", op: "load", value: "x.json" }],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": [TREE_FILE, FACTORY_FILE] },
+      getJSON: (url) =>
+        url.includes("/factory_builds/")
+          ? { build_list: [{ to_build: "SupportCommander", priority: 100 }] }
+          : { build_list: [{ to_build: "BasicBotFactory", priority: 376 }] },
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+    return filesObj;
+  }
+
+  it("keeps the player's load file out of the Cluster tree", async () => {
+    const filesObj = await runAgainstCluster();
+
+    assert.ok(!("/pa/ai_cluster/fabber_builds/x.json" in filesObj));
+    assert.ok("/pa/ai_cluster/fabber_builds/land.json" in filesObj);
+    assert.ok("/pa/ai_subcommander/fabber_builds/x.json" in filesObj);
+  });
+
+  it("keeps the Cluster's own ops out of the enemy and Sub Commander trees", async () => {
+    const filesObj = await runAgainstCluster();
+    const priorityAt = (path) => filesObj[path].build_list[0].priority;
+
+    assert.equal(priorityAt("/pa/ai_cluster/factory_builds/f.json"), 0);
+    assert.equal(priorityAt("/pa/ai/factory_builds/f.json"), 100);
+    assert.equal(priorityAt("/pa/ai_subcommander/factory_builds/f.json"), 100);
   });
 });
 

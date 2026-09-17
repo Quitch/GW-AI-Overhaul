@@ -189,6 +189,21 @@ define([
         }
       });
     },
+    // value: { builders: [...], except: [...] }. Zeroes every build whose
+    // builders all sit in value.builders, bar the to_builds in value.except.
+    silence: function (json, value) {
+      _.forEach(json.build_list, function (build) {
+        var inScope =
+          _.isArray(build.builders) &&
+          build.builders.length &&
+          _.every(build.builders, function (builder) {
+            return _.includes(value.builders, builder);
+          });
+        if (inScope && !_.includes(value.except, build.to_build)) {
+          build.priority = 0;
+        }
+      });
+    },
     // template only
     squad: function (json, value, toBuild) {
       var template = json.platoon_templates && json.platoon_templates[toBuild];
@@ -491,8 +506,9 @@ define([
     };
 
     // The enemy branch takes the pre-mod originalJson so an enemy Cluster foe
-    // never inherits the subcommander's tech. The player branch wants it, and
-    // so uses the mutated `json`.
+    // never inherits the subcommander's tech, and skips a /pa/ai_tech/ file
+    // outright, since that is the player's tech by definition. The player
+    // branch wants it, and so uses the mutated `json`.
     var applyClusterModsIfNeeded = function (
       json,
       originalJson,
@@ -504,11 +520,12 @@ define([
           ? aiTechPath.length
           : aiPaths.subCommanderSource.length;
         processClusterJson(json, pathLength);
-      } else if (clusterPresence === "Enemy" && fileOwner !== "subcommander") {
-        var enemyPathLength = isSubCommanderTechFile
-          ? aiTechPath.length
-          : aiPaths.enemySource.length;
-        processClusterJson(originalJson, enemyPathLength);
+      } else if (
+        clusterPresence === "Enemy" &&
+        fileOwner !== "subcommander" &&
+        !isSubCommanderTechFile
+      ) {
+        processClusterJson(originalJson, aiPaths.enemySource.length);
       }
     };
 
@@ -564,15 +581,17 @@ define([
       return store[key];
     };
 
+    // Callers mutate what they are handed, so the cache keeps the pristine
+    // result and hands out a copy. .then returns a new promise each time, on
+    // the engine's promise as on jQuery's, so the stored request is not consumed.
     return {
       list: function (aiPath) {
         return cached(listings, aiPath, function (path) {
           return api.file.list(path, true);
+        }).then(function (fileList) {
+          return fileList.slice();
         });
       },
-      // Callers mutate what they are handed, so the cache keeps the pristine
-      // parse and hands out a copy. .then on a jQuery promise returns a new
-      // promise each time, so the stored request is not consumed.
       getJSON: function (filePath) {
         return cached(files, filePath, function (path) {
           return $.getJSON("coui:/" + path);

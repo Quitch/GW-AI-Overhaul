@@ -38,6 +38,7 @@ the traps that have actually caused bugs here.
 | Adding a race or an add-on: the checklist, and the rules the code relies on | [`docs/race-conventions.md`](docs/race-conventions.md) |
 | The Node AMD harness, the validators, coverage                              | [`docs/testing.md`](docs/testing.md)                   |
 | Translation files, the i18n tooling, the catalog and the scope rule         | [`docs/translations.md`](docs/translations.md)         |
+| Checking a change in a running game: test clients, logs, console recipes    | [`docs/live-testing.md`](docs/live-testing.md)         |
 
 These are worth knowing before you touch anything, each covered in full by the doc
 named:

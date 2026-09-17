@@ -45,7 +45,7 @@ Anything else throws. Note that there is no `unit_map` type.
 
 ## The op table
 
-Six ops work on `json.build_list` and are valid for `fabber`/`factory`/`platoon`
+Seven ops work on `json.build_list` and are valid for `fabber`/`factory`/`platoon`
 only. One works on `json.platoon_templates` and is valid for `template` only.
 
 | Op        | Applies to        | Behaviour                                                                                                                                                                            |
@@ -56,7 +56,12 @@ only. One works on `json.platoon_templates` and is valid for `template` only.
 | `unset`   | build lists       | Deletes the field outright. Carries no `value`.                                                                                                                                      |
 | `remove`  | build lists       | Removes deep-equal entries from each `build_conditions` test array.                                                                                                                  |
 | `new`     | build lists       | Pushes a new entry into each test array if `idToMod` is truthy, otherwise into `build_conditions` itself. `idToMod` is a flag here, not a field name. `""` reads as the second form. |
+| `silence` | build lists       | Sets `priority` to 0 on every build whose `builders` are all in `value.builders`, except a build whose `to_build` is in `value.except`.                                              |
 | `squad`   | platoon templates | Pushes a unit into `platoon_templates[toBuild].units`.                                                                                                                               |
+
+`silence` does not use the `toBuild` matcher. It selects a build by its
+`builders`, and it reads only `value`. A build with one builder outside
+`value.builders` stays as it is, and so does a build with no `builders`.
 
 `load` is **not in this table**. It is not an op at all.
 `addApplicableAiLoadModsToFileList` handles it separately. That function appends
@@ -71,7 +76,9 @@ entries as well.
 
 But it is a trap for the "silence the stock builds, re-supply them from my file"
 pattern. `gwaio_start_rapid` zeroes every brain's factory `priority` and loads a
-file that carries the replacements. Until the descriptors excluded the loaded
+file that carries the replacements. It also uses `silence` on the factory side,
+to zero every unit the brain orders from a factory except the fabbers, because a
+Rapid factory builds only fabbers. Until the descriptors excluded the loaded
 file, the zeroing reached the replacements as well. That left the Sub Commanders
 and the Guardians with no factory they were allowed to build.
 
@@ -174,7 +181,9 @@ mutated `json`, because the player's own Cluster ally is _supposed_ to receive t
 tech. The enemy branch uses `originalJson`, a pre-mod snapshot, so an enemy
 Cluster foe never inherits tech the player bought. The code skips the deep clone
 that produces `originalJson` entirely unless `clusterPresence === "Enemy"`. That
-is the only branch that reads it.
+is the only branch that reads it. The enemy branch also skips `/pa/ai_tech/` files
+outright. Under a shared source every file reads as `"shared"`, so the snapshot
+alone would not stop a `load` file being copied into the Cluster tree.
 
 **A per-viewer pass must not write the enemy's scoped destination.** The base pass
 walks the tree once. It combines every connected player's mods into one
@@ -201,10 +210,14 @@ Two details make it correct:
 
 - **It returns copies.** Every pass mutates the JSON it receives: `applyAiMods`
   writes in place, and the result is stored in `configFiles`. So the cache keeps
-  the pristine parse and `_.cloneDeep`s on the way out.
-- **It re-chains rather than re-fetches.** `.then` on a jQuery promise returns a
-  new promise each time. So the cache can chain from one stored request
-  repeatedly without consuming it.
+  the pristine parse and `_.cloneDeep`s on the way out. Listings are copied too:
+  `processDirectories` pushes the pass's `load` paths onto its listing. A shared
+  array would carry the host's `/pa/ai_tech/` files into every later pass, a
+  viewer's tree and a race tree included.
+- **It re-chains rather than re-fetches.** `.then` returns a new promise each
+  time, on the engine's promise (`api.file.list`) as on jQuery's (`$.getJSON`).
+  So the cache can chain from one stored request repeatedly without consuming
+  it.
 
 The cache lives exactly one launch. `gw_play/referee.js` creates it on the first
 hire after `launchingFight` becomes true. It passes the same cache to every hire

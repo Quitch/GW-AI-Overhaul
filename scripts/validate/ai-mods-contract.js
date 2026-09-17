@@ -11,6 +11,8 @@
 //     need `idToMod`, whose absence silently makes the mod a no-op.
 //   - op "unset" is the exception: it deletes `idToMod` rather than writing it,
 //     so it carries `toBuild` and `idToMod` but no `value`.
+//   - op "silence" matches on builders rather than `toBuild`, so it carries
+//     only `value`: `{ builders, except }`, both arrays of strings.
 //   - `treeOnly`, when present, is a boolean on a build-list op. It keeps the
 //     descriptor off files a `load` pulled in from /pa/ai_tech/.
 
@@ -38,6 +40,7 @@ const REQUIRED_FIELDS_BY_OP = {
   unset: ["toBuild", "idToMod"],
   remove: ["value", "toBuild"],
   new: ["value", "toBuild"],
+  silence: ["value"],
   squad: ["value", "toBuild"],
 };
 
@@ -53,6 +56,7 @@ const VALID_TYPES_BY_OP = {
   unset: BUILD_LIST_TYPES,
   remove: BUILD_LIST_TYPES,
   new: BUILD_LIST_TYPES,
+  silence: BUILD_LIST_TYPES,
   squad: new Set(["template"]),
 };
 
@@ -107,6 +111,27 @@ function checkTreeOnly(problems, where, mod) {
   }
 }
 
+function isStringArray(value) {
+  return (
+    Array.isArray(value) && value.every((item) => typeof item === "string")
+  );
+}
+
+// A malformed `silence` value matches nothing at runtime, so the card ships a
+// descriptor that silently does no work.
+function checkSilenceValue(problems, where, mod) {
+  if (mod.op !== "silence" || mod.value === undefined) {
+    return;
+  }
+  for (const field of ["builders", "except"]) {
+    if (!mod.value || !isStringArray(mod.value[field])) {
+      problems.push(
+        where + ": `value." + field + "` must be an array of strings"
+      );
+    }
+  }
+}
+
 // The checks that need a known op: its required fields, treeOnly, and the
 // types it may target.
 function checkOp(problems, where, mod, requiredFields) {
@@ -120,6 +145,7 @@ function checkOp(problems, where, mod, requiredFields) {
   }
 
   checkTreeOnly(problems, where, mod);
+  checkSilenceValue(problems, where, mod);
 
   const allowedTypes = VALID_TYPES_BY_OP[mod.op];
   if (VALID_TYPES.has(mod.type) && !allowedTypes.has(mod.type)) {

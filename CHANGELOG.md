@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v7.3.2 - 2026-09-17
+
+### Bugfix
+
+- An enemy Cluster AI no longer receives the build orders of the player's loadout (Rapid Deployment and other loadouts that add AI build files) when it shares an AI with the Sub Commanders
+- A war created without TITANS no longer uses the Queller AI because it was the choice saved from a TITANS session
+- In co-op with per-player tech, a viewer's Sub Commanders no longer build from the host's loadout build orders (Rapid Deployment and other loadouts that add AI build files)
+- Rapid Deployment Sub Commanders no longer order fabricators and factories to build things the loadout forbids
+- A race's commander portraits and names now load when the war setup screen opens on the race used for the last war
+- Defeating the last boss in battle now wins the war while other enemy systems remain, and a defeated boss's systems pass to the faction contesting them
+- A system taken over by a contesting faction now falls when that faction's boss is defeated
+
 ## v7.3.1 - 2026-09-17
 
 ### Bugfix

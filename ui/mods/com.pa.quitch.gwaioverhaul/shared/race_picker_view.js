@@ -27,7 +27,10 @@
               });
             })
             .fail(function () {
+              // Written before it is forgotten: the write re-runs the
+              // bindings, and a miss there would start the read again.
               commanderInfo[spec]({ name: spec });
+              delete commanderInfo[spec];
             });
         }
       }

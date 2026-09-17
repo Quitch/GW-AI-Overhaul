@@ -114,9 +114,32 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     return record;
   };
 
+  // The stored choices as a war on this content may use them: copies, so a
+  // Queller stored under TITANS survives a classic session. See races.md.
+  var forContent = function (stored, ai, aiAlly, hasTitansContent) {
+    var coerce = function (brain) {
+      return hasTitansContent === false && brain === "Queller"
+        ? races.TITANS
+        : brain;
+    };
+    var table = {};
+
+    _.forEach(stored || {}, function (row, id) {
+      table[id] = _.assign({}, row);
+      _.forEach(SIDES, function (side) {
+        if (row && row[side]) {
+          table[id][side] = coerce(row[side]);
+        }
+      });
+    });
+
+    return { aiByRace: table, ai: coerce(ai), aiAlly: coerce(aiAlly) };
+  };
+
   var api = {
     SIDES: SIDES,
     cellOptions: cellOptions,
+    forContent: forContent,
     seedRow: seedRow,
     rowsFor: rowsFor,
     resolve: resolve,
