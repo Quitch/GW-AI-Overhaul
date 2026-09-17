@@ -18,6 +18,7 @@ Launch `bin_x64\PA.exe` directly with:
 | `--devmode`                | Shows the `gw_play` cheat panel, and lets `live_game` grant vision. One word, no hyphen.  |
 | `--localstorageurl=<name>` | Picks the profile folder. Use one that is not your own, so a test cannot damage your war. |
 | `--ai-log`                 | Makes the server log what each AI army loads and which orders it was refused.             |
+| `--no-content`             | Runs classic content: `api.content.usingTitans()` is false, and there is no Cluster.      |
 
 A bad flag exits before a log file is written. `PA.exe --help` lists them all.
 

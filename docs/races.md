@@ -245,6 +245,12 @@ war-wide `gwoDifficultySettings.ai`/`aiAlly` pair. The other rows live in
 `gwoDifficultySettings.aiByRace`, and the war records them, coerced, as
 `gwaio.aiByRace` beside the strings.
 
+The modal does not rewrite the settings until it is applied, so a Queller
+stored under TITANS is still there in a classic session. `setup.js` therefore
+reads every brain through `brain_table.forContent`, which turns Queller into
+Titans on classic content for the war alone. The stored choice is untouched and
+returns with TITANS.
+
 `shared/ai.js`'s `warBrain(alignment, race)` reads the race's row, and
 otherwise uses the strings. So a war saved before the table behaves exactly as
 it always did.

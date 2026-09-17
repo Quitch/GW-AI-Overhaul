@@ -503,14 +503,25 @@
           return result;
         };
 
-        // The brain an AI of this race runs on that side: the per-race table
-        // with the war-wide dropdowns as its fallback. See races.md.
-        var brainForRace = function (race, side) {
+        // The stored brains minus what this content cannot run. See races.md.
+        var warBrains = function () {
           var settings = model.gwoDifficultySettings;
-          return gwoBrainTable.resolve(
+          return gwoBrainTable.forContent(
             settings.aiByRace(),
             settings.ai(),
             settings.aiAlly(),
+            api.content.usingTitans()
+          );
+        };
+
+        // The brain an AI of this race runs on that side: the per-race table
+        // with the war-wide dropdowns as its fallback. See races.md.
+        var brainForRace = function (race, side) {
+          var brains = warBrains();
+          return gwoBrainTable.resolve(
+            brains.aiByRace,
+            brains.ai,
+            brains.aiAlly,
             side,
             race
           );
@@ -1353,15 +1364,16 @@
             if (model.devMode()) {
               originSystem.gwaio.cheatsUsed = true;
             }
-            originSystem.gwaio.ai = model.gwoDifficultySettings.ai();
-            originSystem.gwaio.aiAlly = model.gwoDifficultySettings.aiAlly();
+            var brains = warBrains();
+            originSystem.gwaio.ai = brains.ai;
+            originSystem.gwaio.aiAlly = brains.aiAlly;
             // One coerced row per installed race, so the save never carries a
             // brain a race cannot run and co-op viewers read the same answers.
             originSystem.gwaio.aiByRace = gwoBrainTable.recordFor(
-              model.gwoDifficultySettings.aiByRace(),
+              brains.aiByRace,
               installedRaces,
-              model.gwoDifficultySettings.ai(),
-              model.gwoDifficultySettings.aiAlly()
+              brains.ai,
+              brains.aiAlly
             );
             originSystem.gwaio.aiMods = [];
             originSystem.gwaio.techCardDeck =
