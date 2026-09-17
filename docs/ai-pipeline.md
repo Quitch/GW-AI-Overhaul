@@ -174,7 +174,9 @@ mutated `json`, because the player's own Cluster ally is _supposed_ to receive t
 tech. The enemy branch uses `originalJson`, a pre-mod snapshot, so an enemy
 Cluster foe never inherits tech the player bought. The code skips the deep clone
 that produces `originalJson` entirely unless `clusterPresence === "Enemy"`. That
-is the only branch that reads it.
+is the only branch that reads it. The enemy branch also skips `/pa/ai_tech/` files
+outright. Under a shared source every file reads as `"shared"`, so the snapshot
+alone would not stop a `load` file being copied into the Cluster tree.
 
 **A per-viewer pass must not write the enemy's scoped destination.** The base pass
 walks the tree once. It combines every connected player's mods into one

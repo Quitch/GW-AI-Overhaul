@@ -491,8 +491,9 @@ define([
     };
 
     // The enemy branch takes the pre-mod originalJson so an enemy Cluster foe
-    // never inherits the subcommander's tech. The player branch wants it, and
-    // so uses the mutated `json`.
+    // never inherits the subcommander's tech, and skips a /pa/ai_tech/ file
+    // outright, since that is the player's tech by definition. The player
+    // branch wants it, and so uses the mutated `json`.
     var applyClusterModsIfNeeded = function (
       json,
       originalJson,
@@ -504,11 +505,12 @@ define([
           ? aiTechPath.length
           : aiPaths.subCommanderSource.length;
         processClusterJson(json, pathLength);
-      } else if (clusterPresence === "Enemy" && fileOwner !== "subcommander") {
-        var enemyPathLength = isSubCommanderTechFile
-          ? aiTechPath.length
-          : aiPaths.enemySource.length;
-        processClusterJson(originalJson, enemyPathLength);
+      } else if (
+        clusterPresence === "Enemy" &&
+        fileOwner !== "subcommander" &&
+        !isSubCommanderTechFile
+      ) {
+        processClusterJson(originalJson, aiPaths.enemySource.length);
       }
     };
 

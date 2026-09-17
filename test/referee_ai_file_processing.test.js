@@ -629,6 +629,51 @@ describe("load files and treeOnly", () => {
   });
 });
 
+// Under a shared source every walked file reads as "shared", the player's
+// /pa/ai_tech/ files included, so ownership alone cannot keep them from the
+// enemy Cluster tree.
+describe("Cluster enemy under a shared source", () => {
+  const TREE_FILE = "/pa/ai/fabber_builds/land.json";
+  const FACTORY_FILE = "/pa/ai/factory_builds/f.json";
+
+  async function runAgainstCluster() {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "cluster",
+      aiMods: [{ type: "fabber", op: "load", value: "x.json" }],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": [TREE_FILE, FACTORY_FILE] },
+      getJSON: (url) =>
+        url.includes("/factory_builds/")
+          ? { build_list: [{ to_build: "SupportCommander", priority: 100 }] }
+          : { build_list: [{ to_build: "BasicBotFactory", priority: 376 }] },
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+    return filesObj;
+  }
+
+  it("keeps the player's load file out of the Cluster tree", async () => {
+    const filesObj = await runAgainstCluster();
+
+    assert.ok(!("/pa/ai_cluster/fabber_builds/x.json" in filesObj));
+    assert.ok("/pa/ai_cluster/fabber_builds/land.json" in filesObj);
+    assert.ok("/pa/ai_subcommander/fabber_builds/x.json" in filesObj);
+  });
+
+  it("keeps the Cluster's own ops out of the enemy and Sub Commander trees", async () => {
+    const filesObj = await runAgainstCluster();
+    const priorityAt = (path) => filesObj[path].build_list[0].priority;
+
+    assert.equal(priorityAt("/pa/ai_cluster/factory_builds/f.json"), 0);
+    assert.equal(priorityAt("/pa/ai/factory_builds/f.json"), 100);
+    assert.equal(priorityAt("/pa/ai_subcommander/factory_builds/f.json"), 100);
+  });
+});
+
 // referee.js clears launchingFight from the rejection. Before these, a failed
 // read inside the walk settled nothing and Fight stayed dead.
 describe("failure", () => {
