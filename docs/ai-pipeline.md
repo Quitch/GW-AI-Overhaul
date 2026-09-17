@@ -45,7 +45,7 @@ Anything else throws. Note that there is no `unit_map` type.
 
 ## The op table
 
-Six ops work on `json.build_list` and are valid for `fabber`/`factory`/`platoon`
+Seven ops work on `json.build_list` and are valid for `fabber`/`factory`/`platoon`
 only. One works on `json.platoon_templates` and is valid for `template` only.
 
 | Op        | Applies to        | Behaviour                                                                                                                                                                            |
@@ -56,7 +56,12 @@ only. One works on `json.platoon_templates` and is valid for `template` only.
 | `unset`   | build lists       | Deletes the field outright. Carries no `value`.                                                                                                                                      |
 | `remove`  | build lists       | Removes deep-equal entries from each `build_conditions` test array.                                                                                                                  |
 | `new`     | build lists       | Pushes a new entry into each test array if `idToMod` is truthy, otherwise into `build_conditions` itself. `idToMod` is a flag here, not a field name. `""` reads as the second form. |
+| `silence` | build lists       | Sets `priority` to 0 on every build whose `builders` are all in `value.builders`, except a build whose `to_build` is in `value.except`.                                              |
 | `squad`   | platoon templates | Pushes a unit into `platoon_templates[toBuild].units`.                                                                                                                               |
+
+`silence` does not use the `toBuild` matcher. It selects a build by its
+`builders`, and it reads only `value`. A build with one builder outside
+`value.builders` stays as it is, and so does a build with no `builders`.
 
 `load` is **not in this table**. It is not an op at all.
 `addApplicableAiLoadModsToFileList` handles it separately. That function appends
@@ -71,7 +76,9 @@ entries as well.
 
 But it is a trap for the "silence the stock builds, re-supply them from my file"
 pattern. `gwaio_start_rapid` zeroes every brain's factory `priority` and loads a
-file that carries the replacements. Until the descriptors excluded the loaded
+file that carries the replacements. It also uses `silence` on the factory side,
+to zero every unit the brain orders from a factory except the fabbers, because a
+Rapid factory builds only fabbers. Until the descriptors excluded the loaded
 file, the zeroing reached the replacements as well. That left the Sub Commanders
 and the Guardians with no factory they were allowed to build.
 

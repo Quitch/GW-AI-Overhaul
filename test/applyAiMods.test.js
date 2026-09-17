@@ -256,6 +256,55 @@ describe("applyAiMods - new", () => {
   });
 });
 
+describe("applyAiMods - silence", () => {
+  const silence = {
+    op: "silence",
+    value: {
+      builders: ["BasicBotFactory", "AdvancedBotFactory"],
+      except: ["BasicBotFabber"],
+    },
+  };
+  const build = (toBuild, builders) => ({
+    to_build: toBuild,
+    priority: 100,
+    builders: builders,
+  });
+  const priorities = (json) => json.build_list.map((entry) => entry.priority);
+
+  it("zeroes a build whose builders are all in scope", () => {
+    const json = buildJson([
+      build("BasicAssaultBot", ["BasicBotFactory"]),
+      build("BasicBotCombatFabber", ["BasicBotFactory", "AdvancedBotFactory"]),
+    ]);
+    applyAiMods(json, [silence]);
+    assert.deepEqual(priorities(json), [0, 0]);
+  });
+
+  it("spares a to_build named in except", () => {
+    const json = buildJson([build("BasicBotFabber", ["BasicBotFactory"])]);
+    applyAiMods(json, [silence]);
+    assert.deepEqual(priorities(json), [100]);
+  });
+
+  it("spares a build with any builder out of scope", () => {
+    const json = buildJson([
+      build("Nuke", ["NukeSilo"]),
+      build("BasicAssaultBot", ["BasicBotFactory", "LegionFactoryBasicBot"]),
+    ]);
+    applyAiMods(json, [silence]);
+    assert.deepEqual(priorities(json), [100, 100]);
+  });
+
+  it("spares a build with no builders, or an empty list", () => {
+    const json = buildJson([
+      { to_build: "BasicAssaultBot", priority: 100 },
+      build("BasicAssaultBot", []),
+    ]);
+    applyAiMods(json, [silence]);
+    assert.deepEqual(priorities(json), [100, 100]);
+  });
+});
+
 describe("applyAiMods - squad", () => {
   it("pushes a unit onto a platoon template", () => {
     const json = { platoon_templates: { Squad1: { units: ["Bot"] } } };

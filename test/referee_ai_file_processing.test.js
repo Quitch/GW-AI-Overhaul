@@ -670,6 +670,47 @@ describe("load files and treeOnly", () => {
     );
   });
 
+  it("with treeOnly, a silence zeroes a tree factory file and leaves the loaded one alone", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [
+        { type: "factory", op: "load", value: "x.json" },
+        {
+          type: "factory",
+          op: "silence",
+          treeOnly: true,
+          value: { builders: ["BasicBotFactory"], except: [] },
+        },
+      ],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/factory_builds/bot.json"] },
+      getJSON: () => ({
+        build_list: [
+          {
+            to_build: "BasicAssaultBot",
+            priority: 100,
+            builders: ["BasicBotFactory"],
+          },
+        ],
+      }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.equal(
+      priorityAt(filesObj, "/pa/ai_subcommander/factory_builds/bot.json"),
+      0
+    );
+    assert.equal(
+      priorityAt(filesObj, "/pa/ai_subcommander/factory_builds/x.json"),
+      100
+    );
+  });
+
   it("without treeOnly, a descriptor reaches the loaded file too", async () => {
     const filesObj = await runWith(zero({}));
 
