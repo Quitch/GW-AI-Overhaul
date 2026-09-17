@@ -146,7 +146,19 @@ It also leaves the panel open on the last stage it reported, and the Fight
 button dead. So `referee_game_files.js` routes every path that can throw into
 one `fail` that rejects its deferred. Those paths are the synchronous prelude
 and each nested spec-fetch chain. The hire's own fail handler in `referee.js`
-logs the error and clears `launchingFight`, which closes the panel.
+logs the error through `gameFilePaths.describeError`, which formats a jqXHR
+as its HTTP status rather than `[object Object]`, and clears
+`launchingFight`, which closes the panel.
+
+The per-player tech referee, `gw_per_player_tech_referee.js`, is waited on the
+same way: stock calls its `apply` with no fail handler. But there stock aborts
+on its own when `apply` resolves a falsy value, through `abortRefereeLaunch`,
+which logs the reason and clears `launchingFight`. So a viewer whose unit maps
+or specs could not be read resolves `false` with `per_player_tech_ready` set to
+`false`, rather than rejecting, and a rejection would hang the launch exactly
+as an unsettled hire does. The rule for the next referee is one `fail` per
+chain, `gameFilePaths.describeError` for the message, and the stock-facing
+outcome chosen by what that referee's stock caller listens for.
 
 The throw itself is otherwise invisible. GW Server Mods remounts inside
 `unmountAllMemoryFiles` and resolves GWO's deferred from a native promise. So an

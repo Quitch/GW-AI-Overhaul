@@ -604,21 +604,53 @@ describe("add-ons", () => {
     assert.equal(races.unitName("nope", gwoUnit.dox), undefined);
   });
 
-  it("registers the shipped add-ons beside the shipped races", () => {
+  it("registers the shipped add-ons beside the shipped races, none of them active", () => {
     races.registerShipped();
 
     assert.deepEqual(
       races.addons().map((addon) => addon.id),
       ["second_wave", "section17", "osmech"]
     );
+    assert.deepEqual(races.activeAddons(), []);
     assert.ok(races.byId("legion"));
+  });
+
+  it("activates add-ons by normalised id in registration order, replacing the set, and reset clears it", () => {
+    races.registerAddon({ id: "second" });
+    races.registerAddon(FIXTURE_ADDON);
+
+    races.activateAddons([" Fixture_Addon ", "nope"]);
+    assert.deepEqual(
+      races.activeAddons().map((addon) => addon.id),
+      ["fixture_addon"]
+    );
+
+    races.activateAddons(["fixture_addon", "second"]);
+    assert.deepEqual(
+      races.activeAddons().map((addon) => addon.id),
+      ["second", "fixture_addon"]
+    );
+
+    races.activateAddons(["second"]);
+    assert.deepEqual(
+      races.activeAddons().map((addon) => addon.id),
+      ["second"]
+    );
+
+    races.activateAddons(undefined);
+    assert.deepEqual(races.activeAddons(), []);
+
+    races.activateAddons(["second"]);
+    races.reset();
+    races.registerAddon({ id: "second" });
+    assert.deepEqual(races.activeAddons(), []);
   });
 });
 
 describe("layersFor", () => {
   const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
 
-  it("merges each race's ai block with every add-on's layer for it, MLA and unregistered ids included", () => {
+  it("merges each race's ai block with every active add-on's layer for it, MLA and unregistered ids included", () => {
     races.registerAddon(FIXTURE_ADDON);
     races.registerAddon({
       id: "ghost",
@@ -630,6 +662,7 @@ describe("layersFor", () => {
         },
       },
     });
+    races.activateAddons(["fixture_addon", "ghost"]);
 
     const layers = races.layersFor("titans");
     assert.deepEqual(Object.keys(layers).sort(), ["fixture", "mla", "phantom"]);
@@ -652,6 +685,18 @@ describe("layersFor", () => {
       sources: [],
     });
   });
+
+  it("gives an inactive add-on no layer: registered is not active", () => {
+    races.registerAddon(FIXTURE_ADDON);
+
+    const layers = races.layersFor("titans");
+    assert.deepEqual(Object.keys(layers).sort(), ["fixture", "mla"]);
+    assert.deepEqual(layers.mla, { unitMaps: [], sources: [] });
+    assert.deepEqual(layers.fixture, {
+      unitMaps: ["/pa/ai/unit_maps/fixture.json"],
+      sources: FIXTURE_RACE.ai.titans.sources,
+    });
+  });
 });
 
 describe("treeFilter with add-ons", () => {
@@ -668,6 +713,7 @@ describe("treeFilter with add-ons", () => {
       },
     });
     races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons(["fixture_addon"]);
     const keep = races.treeFilter("fixture", "Titans", "/pa/ai/");
 
     assert.equal(keep("/pa/ai/factory_builds/fixture/factory_2w.json"), true);
@@ -702,6 +748,7 @@ describe("treeFilter with add-ons", () => {
         },
       },
     });
+    races.activateAddons(["shared"]);
 
     assert.equal(
       races.treeFilter(
@@ -725,6 +772,7 @@ describe("treeFilter with add-ons", () => {
       })
     );
     races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons(["fixture_addon"]);
     const keep = races.treeFilter(
       "fixture",
       "Queller",
@@ -744,6 +792,7 @@ describe("inAnyRaceLayer with add-ons", () => {
 
   it("claims an add-on's race files and maps, not MLA's, and not a map MLA claims too", () => {
     races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons(["fixture_addon"]);
     const claimed = races.inAnyRaceLayer;
 
     assert.equal(
@@ -764,6 +813,7 @@ describe("unitMapsFor with add-ons", () => {
 
   it("adds the race's add-on maps after its own and gives MLA none", () => {
     races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons(["fixture_addon"]);
 
     assert.deepEqual(races.unitMapsFor("fixture", "Titans", "/pa/ai/"), [
       "/pa/ai/unit_maps/fixture.json",
@@ -772,5 +822,14 @@ describe("unitMapsFor with add-ons", () => {
     ]);
     assert.deepEqual(races.unitMapsFor("mla", "Titans", "/pa/ai/"), []);
     assert.deepEqual(races.unitMapsFor("nope", "Titans", "/pa/ai/"), []);
+  });
+
+  it("omits an inactive add-on's maps: its files are not on disk to read", () => {
+    races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons([]);
+
+    assert.deepEqual(races.unitMapsFor("fixture", "Titans", "/pa/ai/"), [
+      "/pa/ai/unit_maps/fixture.json",
+    ]);
   });
 });

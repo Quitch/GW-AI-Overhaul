@@ -25,10 +25,13 @@ define([
   var registry = {};
   var order = [];
   // Add-ons: server mods that add units to races that exist rather than
-  // being one. A separate registry; nothing here is ever MLA. See races.md,
-  // "Add-ons".
+  // being one. A separate registry; nothing here is ever MLA. Registered is
+  // not active: the shipped descriptors register at load whether or not
+  // their mods are enabled, and race_mods.js activates the ones whose mod
+  // is. See races.md, "Add-ons".
   var addonRegistry = {};
   var addonOrder = [];
+  var activeAddonIds = [];
   // Capability-cell indexes by race id, built by race_cells.js once the specs
   // are read. See unit_cells.js.
   var cellsById = {};
@@ -181,6 +184,18 @@ define([
 
     return _.filter(addons(), function (addon) {
       return hasServerMod(active, addon);
+    });
+  };
+
+  // Which add-ons' server mods are enabled, by add-on id; replaces the set.
+  // An id nothing registered is harmless.
+  var activateAddons = function (ids) {
+    activeAddonIds = _.map(ids || [], normalizeId);
+  };
+
+  var activeAddons = function () {
+    return _.filter(addons(), function (addon) {
+      return _.contains(activeAddonIds, addon.id);
     });
   };
 
@@ -376,10 +391,11 @@ define([
   };
 
   // Every layer a brain's merged source listing carries beside the base
-  // files, by race id: each race's own `ai` block plus what every add-on
-  // ships for that race under the brain, MLA's included. An add-on layer for
-  // a race id nothing registered still appears - its files are not base
-  // files either way. See races.md, "Add-ons".
+  // files, by race id: each race's own `ai` block plus what every active
+  // add-on ships for that race under the brain, MLA's included. An inactive
+  // add-on's files are not on disk, and unitMapsFor reads each map it names.
+  // An add-on layer for a race id nothing registered still appears - its
+  // files are not base files either way. See races.md, "Add-ons".
   var layersFor = function (brainKey) {
     var layers = {};
     var add = function (raceId, config) {
@@ -394,7 +410,7 @@ define([
     _.forEach(all(), function (race) {
       add(race.id, race.ai && race.ai[brainKey]);
     });
-    _.forEach(addons(), function (addon) {
+    _.forEach(activeAddons(), function (addon) {
       _.forEach(addon.layers, function (brains, raceId) {
         add(normalizeId(raceId), brains && brains[brainKey]);
       });
@@ -715,6 +731,8 @@ define([
     addonById: addonById,
     addons: addons,
     detectAddons: detectAddons,
+    activateAddons: activateAddons,
+    activeAddons: activeAddons,
     knownBits: knownBits,
     addonUnitPaths: addonUnitPaths,
     unitName: unitName,
@@ -745,6 +763,7 @@ define([
       order = [];
       addonRegistry = {};
       addonOrder = [];
+      activeAddonIds = [];
       cellsById = {};
     },
     registerShipped: registerShipped,

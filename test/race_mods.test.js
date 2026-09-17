@@ -150,20 +150,28 @@ describe("installedRaces with add-ons", () => {
     assert.deepEqual(_.pluck(info.mods, "identifier"), [
       "com.example.fixture-server",
     ]);
+    assert.deepEqual(
+      races.activeAddons().map((addon) => addon.id),
+      ["fixture_addon"]
+    );
   });
 
-  it("reports no add-ons when none is active, and none without GW Server Mods", async () => {
+  it("reports no add-ons when none is active, and none without GW Server Mods, deactivating what was", async () => {
     races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons(["fixture_addon"]);
     window.GwServerMods = { manifest: fakeManifest({ active: [FIXTURE_MOD] }) };
 
     const info = await raceMods.installedRaces();
     assert.deepEqual(info.addons, []);
     assert.deepEqual(info.addonMods, []);
+    assert.deepEqual(races.activeAddons(), []);
 
+    races.activateAddons(["fixture_addon"]);
     delete window.GwServerMods;
     const none = await raceMods.installedRaces();
     assert.deepEqual(none.addons, []);
     assert.deepEqual(none.addonMods, []);
+    assert.deepEqual(races.activeAddons(), []);
   });
 });
 

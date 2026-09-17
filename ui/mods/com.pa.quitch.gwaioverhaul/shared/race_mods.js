@@ -53,12 +53,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   // absent and nothing in the IndexedDB fallback - which a resume check must
   // not mistake for "not installed". `gwsm` false is not that: no race can be
   // mounted whatever is installed, so the answer is a definite none, and it
-  // is the thing to tell the player about. See races.md.
+  // is the thing to tell the player about. Also activates the detected
+  // add-ons in the registry, so only their layers apply. See races.md.
   var installedRaces = function () {
     var done = $.Deferred();
     var mfst = manifest();
 
     if (!mfst) {
+      races.activateAddons([]);
       done.resolve({
         races: races.detect([]),
         mods: [],
@@ -78,6 +80,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       });
       var detected = races.detect(identifiers);
       var detectedAddons = races.detectAddons(identifiers);
+      races.activateAddons(_.pluck(detectedAddons, "id"));
       var modsOf = function (descriptors) {
         var wanted = _.flatten(_.pluck(descriptors, "serverMods"));
 

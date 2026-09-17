@@ -155,20 +155,51 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return army.inventory || [];
   };
 
+  // What a rejection carries, for a log line: an Error's stack or message, a
+  // jqXHR's status, else the value itself.
+  var describeError = function (error) {
+    if (error && (error.stack || error.message)) {
+      return error.stack || error.message;
+    }
+    if (error && _.isNumber(error.status)) {
+      return (
+        "HTTP " +
+        error.status +
+        (error.statusText ? " " + error.statusText : "")
+      );
+    }
+    return String(error);
+  };
+
   // Each unit map once per page, through spec:// like the unit list. The
   // engine serves a spec:// path's first read for the rest of the process
-  // anyway, so nothing later could read a different file. See specs.md.
+  // anyway, so nothing later could read a different file. A failed read is
+  // dropped from the cache, so the next Fight reads the file again rather
+  // than inheriting the rejection. See specs.md.
   var mapCache = {};
   var loadMap = function (path) {
     if (!mapCache[path]) {
-      mapCache[path] = $.get("spec:/" + path).then(function (data) {
-        return parse(data);
-      });
+      mapCache[path] = $.get("spec:/" + path).then(
+        function (data) {
+          return parse(data);
+        },
+        function (error) {
+          delete mapCache[path];
+          return $.Deferred()
+            .reject(
+              new Error(
+                "unit map not read: " + path + " (" + describeError(error) + ")"
+              )
+            )
+            .promise();
+        }
+      );
     }
     return mapCache[path];
   };
 
   return {
+    describeError: describeError,
     loadMap: loadMap,
     armyInventory: armyInventory,
     getAIUnitMapPath: getAIUnitMapPath,

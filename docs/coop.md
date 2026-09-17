@@ -82,7 +82,10 @@ referee's input contract.
 It distinguishes two kinds of rejection, which is why the two branches log
 differently. `writeFailure` marks a genuine failure that must disable per-player
 tech, and it stamps `per_player_tech_ready = false`. "No co-op" and "feature
-disabled" are benign no-ops that still resolve successfully.
+disabled" are benign no-ops that still resolve successfully. A viewer's unit map or
+spec read that fails takes the same path: the launch aborts with
+`per_player_tech_ready = false` and the error named in the log, rather than
+hanging on the load screen.
 
 ## Player tags
 

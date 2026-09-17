@@ -1,10 +1,18 @@
 # CHANGELOG
 
+## v7.3.1 - 2026-09-17
+
+### Bugfix
+
+- A Legion or Bugs player could not Fight while Second Wave was disabled; an add-on's AI files now count only while its mod is enabled
+- A unit map that fails to read is read again on the next Fight, and the error names the file
+- A co-op battle whose viewer's unit maps or specs could not be read no longer hangs on the load screen; the launch aborts with the error logged and Fight re-enabled
+
 ## v7.3.0 - 2026-09-11
 
 ### Added
 
-- Second Wave, Section 17 and Osmech units now reach Galactic War: an MLA player and AI field them alongside the vanilla units of the same kind, and a Legion or Bugs player's tooltips name the ones those races get. A Bugs AI fields Second Wave's Bugs units too. A war warns on resume when an add-on it began with has been disabled
+- Second Wave, Section 17, and Osmech units now reach Galactic War: an MLA player and AI field them alongside the vanilla units of the same kind, and a Legion or Bugs player's tooltips name the ones those races get. A Bugs AI fields Second Wave's Bugs units too. A war warns on resume when an add-on it began with has been disabled
 
 ## v7.2.0 - 2026-09-09
 

@@ -24,6 +24,8 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
       ],
       function (
         GW,
@@ -32,7 +34,9 @@
         gwoGenerateAI,
         gwoGenerateConfig,
         gwoBiomeMods,
-        gwoBiomes
+        gwoBiomes,
+        raceMods,
+        gameFilePaths
       ) {
         var hiresThisLaunch = 0;
         // The AI tree cache lives one launch: a co-op host's two hires share
@@ -196,7 +200,14 @@
           ref.pass = hiresThisLaunch;
           treeCache = treeCache || gwoGenerateAI.createTreeCache();
           ref.treeCache = treeCache;
-          return _.bind(gwoGenerateGameFiles, ref)()
+          // installedRaces activates the add-ons whose mods are enabled, so a
+          // hire never depends on scene-load ordering. It never rejects, and
+          // resolves at once without GW Server Mods.
+          return raceMods
+            .installedRaces()
+            .then(function () {
+              return _.bind(gwoGenerateGameFiles, ref)();
+            })
             .then(function () {
               ref.stage("!LOC:Processing AI mods");
             })
@@ -216,7 +227,7 @@
               // one would leave launchingFight set and the Fight button dead.
               console.error(
                 "Galactic War Overhaul (GWO): battle preparation failed: " +
-                  ((error && (error.stack || error.message)) || error)
+                  gameFilePaths.describeError(error)
               );
               model.launchingFight(false);
               return $.Deferred().reject(error).promise();
