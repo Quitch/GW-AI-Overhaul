@@ -7,6 +7,7 @@
 - An enemy Cluster AI no longer receives the build orders of the player's loadout (Rapid Deployment and other loadouts that add AI build files) when it shares an AI with the Sub Commanders
 - A war created without TITANS no longer uses the Queller AI because it was the choice saved from a TITANS session
 - In co-op with per-player tech, a viewer's Sub Commanders no longer build from the host's loadout build orders (Rapid Deployment and other loadouts that add AI build files)
+- Rapid Deployment Sub Commanders no longer order fabricators and factories to build things the loadout forbids
 
 ## v7.3.1 - 2026-09-17
 

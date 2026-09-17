@@ -1,10 +1,11 @@
 define([
   "module",
   "cards/gwc_start",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
-], function (module, GWCStart, gwoBank, gwoCard, gwoUnit) {
+], function (module, GWCStart, gwoAI, gwoBank, gwoCard, gwoUnit) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   var loadout = gwoCard.loadout(CARD, {
     bank: gwoBank,
@@ -195,9 +196,21 @@ define([
       }
       inventory.addMods(mods);
 
-      // Silence every brain's own factory and launcher builds; the loaded file
-      // re-supplies them. treeOnly keeps these off that file, or its copies
-      // would be zeroed too.
+      var factories = [
+        "BasicAirFactory",
+        "BasicBotFactory",
+        "BasicNavalFactory",
+        "BasicVehicleFactory",
+        "AdvancedAirFactory",
+        "AdvancedBotFactory",
+        "AdvancedNavalFactory",
+        "AdvancedVehicleFactory",
+      ];
+
+      // Silence every brain's own factory and launcher builds, and every unit
+      // it would order from those factories bar the fabbers they still build;
+      // the loaded file re-supplies the rest. treeOnly keeps these off that
+      // file, or its copies would be zeroed too.
       var aiMods = [
         {
           type: "fabber",
@@ -215,6 +228,35 @@ define([
           value: 0,
           treeOnly: true,
         },
+        {
+          type: "factory",
+          op: "silence",
+          treeOnly: true,
+          value: {
+            // The AnyMLA roles are Queller's.
+            builders: factories.concat(
+              "OrbitalLauncher",
+              "OrbitalFactory",
+              "UnitCannon",
+              "AnyMLAAirFactory",
+              "AnyMLABotFactory",
+              "AnyMLANavalFactory",
+              "AnyMLAOrbitalFactory",
+              "AnyMLAVehicleFactory"
+            ),
+            except: [
+              "BasicAirFabber",
+              "BasicBotFabber",
+              "BasicNavalFabber",
+              "BasicVehicleFabber",
+              "AdvancedAirFabber",
+              "AdvancedBotFabber",
+              "AdvancedNavalFabber",
+              "AdvancedVehicleFabber",
+              "OrbitalFabber",
+            ],
+          },
+        },
       ];
       var types = ["fabber", "factory"];
       _.forEach(types, function (type) {
@@ -224,16 +266,25 @@ define([
           value: CARD.id + ".json",
         });
       });
-      var factories = [
-        "BasicAirFactory",
-        "BasicBotFactory",
-        "BasicNavalFactory",
-        "BasicVehicleFactory",
-        "AdvancedAirFactory",
-        "AdvancedBotFactory",
-        "AdvancedNavalFactory",
-        "AdvancedVehicleFactory",
-      ];
+      // A Cluster Colonel keeps its commander build list, which has no mobile
+      // units in it, so only the Colonel re-pointed above is a builder of these.
+      if (!playerIsCluster) {
+        aiMods = aiMods.concat(
+          gwoAI.builderAppendMods(
+            "fabber",
+            [
+              "SupportCommander",
+              "NanoSwarm",
+              "AdvancedBotFabber",
+              "AdvancedAssaultBot",
+              "AdvancedBotCombatFabber",
+              "AdvancedArtilleryBot",
+              "TMLBot",
+            ],
+            "SupportCommander"
+          )
+        );
+      }
       _.forEach(factories, function (factory) {
         aiMods.push({
           type: "fabber",

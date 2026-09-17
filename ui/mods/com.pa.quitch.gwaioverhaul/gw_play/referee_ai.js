@@ -189,6 +189,21 @@ define([
         }
       });
     },
+    // value: { builders: [...], except: [...] }. Zeroes every build whose
+    // builders all sit in value.builders, bar the to_builds in value.except.
+    silence: function (json, value) {
+      _.forEach(json.build_list, function (build) {
+        var inScope =
+          _.isArray(build.builders) &&
+          build.builders.length &&
+          _.every(build.builders, function (builder) {
+            return _.includes(value.builders, builder);
+          });
+        if (inScope && !_.includes(value.except, build.to_build)) {
+          build.priority = 0;
+        }
+      });
+    },
     // template only
     squad: function (json, value, toBuild) {
       var template = json.platoon_templates && json.platoon_templates[toBuild];
