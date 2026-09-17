@@ -83,17 +83,21 @@ describe("defeat_team - winning the war", () => {
 });
 
 describe("defeat_team - the defeated team's stars", () => {
-  it("promotes the first foe, and drops the old owner's minions", () => {
+  // gw_start/setup.js gives a foe a faction but no team, and team indices
+  // differ from faction indices.
+  it("promotes the first foe onto its faction's team, and drops the old owner's minions", () => {
     const foes = [
-      { name: "First", faction: 2, team: 2 },
-      { name: "Second", faction: 3, team: 3 },
+      { name: "First", faction: 2 },
+      { name: "Second", faction: 3 },
     ];
     const stars = [
       makeStar(
-        { name: "Owner", faction: 0, team: 0, minions: [{}], foes: foes },
+        { name: "Owner", faction: 4, team: 0, minions: [{}], foes: foes },
         [{ id: "gwc_kept" }]
       ),
-      makeStar({ team: 1, boss: true }),
+      makeStar({ faction: 4, team: 0, boss: true }),
+      makeStar({ faction: 2, team: 1, boss: true }),
+      makeStar({ faction: 3, team: 2, boss: true }),
     ];
     const { game } = setup(stars);
 
@@ -102,10 +106,109 @@ describe("defeat_team - the defeated team's stars", () => {
     assert.deepEqual(stars[0].ai(), {
       name: "First",
       faction: 2,
-      team: 2,
+      team: 1,
       foes: [foes[1]],
     });
     assert.deepEqual(stars[0].cardList(), [{ id: "gwc_kept" }]);
+  });
+
+  it("skips a foe of an eliminated faction and promotes the next", () => {
+    const foes = [
+      { name: "Eliminated", faction: 2 },
+      { name: "Living", faction: 3 },
+    ];
+    const stars = [
+      makeStar({ name: "Owner", faction: 4, team: 0, foes: foes }),
+      makeStar({ faction: 4, team: 0, boss: true }),
+      makeStar({ faction: 3, team: 2, boss: true }),
+    ];
+    const { game } = setup(stars);
+
+    game.defeatTeam(0);
+
+    assert.deepEqual(stars[0].ai(), {
+      name: "Living",
+      faction: 3,
+      team: 2,
+      foes: [foes[0]],
+    });
+  });
+
+  it("clears the star and its cards when every foe's faction is eliminated", () => {
+    const stars = [
+      makeStar(
+        {
+          name: "Owner",
+          faction: 4,
+          team: 0,
+          foes: [{ name: "Eliminated", faction: 2 }],
+        },
+        [{ id: "gwc_dealt" }]
+      ),
+      makeStar({ faction: 4, team: 0, boss: true }),
+      makeStar({ faction: 3, team: 2, boss: true }),
+    ];
+    const { game } = setup(stars);
+
+    game.defeatTeam(0);
+
+    assert.equal(stars[0].ai(), undefined);
+    assert.deepEqual(stars[0].cardList(), []);
+  });
+
+  it("clears a promoted star when the promoted faction's boss falls", () => {
+    const stars = [
+      makeStar({
+        name: "Owner",
+        faction: 4,
+        team: 0,
+        foes: [{ name: "First", faction: 2 }],
+      }),
+      makeStar({ faction: 4, team: 0, boss: true }),
+      makeStar({ faction: 2, team: 1, boss: true }),
+      makeStar({ faction: 3, team: 2, boss: true }),
+    ];
+    const { game } = setup(stars);
+
+    game.defeatTeam(0);
+    game.defeatTeam(1);
+
+    assert.equal(stars[0].ai(), undefined);
+    assert.equal(stars[2].ai(), undefined);
+    assert.equal(game.gameState(), "active");
+  });
+
+  // A save from before the promoted owner took its faction's team: the star
+  // holds a living faction on a dead team.
+  it("clears a mis-teamed star along with its faction", () => {
+    const stars = [
+      makeStar({ name: "First", faction: 2, team: 0 }),
+      makeStar({ faction: 2, team: 1, boss: true }),
+      makeStar({ faction: 3, team: 2, boss: true }),
+    ];
+    const { game } = setup(stars);
+
+    game.defeatTeam(1);
+
+    assert.equal(stars[0].ai(), undefined);
+    assert.equal(game.gameState(), "active");
+  });
+
+  // gw_start/setup.js converts a worker into the Guardians in place, so they
+  // keep its faction.
+  it("leaves the Guardians alone when their faction's boss falls", () => {
+    const guardians = { faction: 2, mirrorMode: true, boss: true };
+    const stars = [
+      makeStar(guardians, [{ id: "gwc_treasure" }]),
+      makeStar({ faction: 2, team: 1, boss: true }),
+    ];
+    const { game } = setup(stars);
+
+    game.defeatTeam(1);
+
+    assert.deepEqual(stars[0].ai(), guardians);
+    assert.deepEqual(stars[0].cardList(), [{ id: "gwc_treasure" }]);
+    assert.equal(game.gameState(), "active");
   });
 
   it("clears the pre-dealt cards of a star it empties", () => {

@@ -3,18 +3,46 @@
 define(function () {
   var defeatTeam = function (game, defeatedTeam) {
     var remainingBosses = 0;
+    var defeatedFaction;
+    var teamOfFaction = {};
 
     api.tally.incStatInt("gw_eliminate_faction");
 
     _.forEach(game.galaxy().stars(), function (star) {
       var ai = star.ai();
+      if (!ai || !ai.boss || ai.team === undefined) {
+        return;
+      }
+      if (ai.team === defeatedTeam) {
+        defeatedFaction = ai.faction;
+      } else {
+        teamOfFaction[ai.faction] = ai.team;
+      }
+    });
+
+    var isDefeated = function (ai) {
+      if (ai.team === defeatedTeam) {
+        return true;
+      }
+      return (
+        ai.team !== undefined &&
+        defeatedFaction !== undefined &&
+        ai.faction === defeatedFaction
+      );
+    };
+
+    _.forEach(game.galaxy().stars(), function (star) {
+      var ai = star.ai();
       var guardians = ai && ai.mirrorMode;
 
-      if (ai && ai.team === defeatedTeam) {
-        var replacementAI = _.first(ai.foes);
+      if (ai && isDefeated(ai)) {
+        var replacementAI = _.find(ai.foes, function (foe) {
+          return _.has(teamOfFaction, foe.faction);
+        });
         if (replacementAI) {
           var newAI = _.extend({}, ai, replacementAI);
-          newAI.foes = _.rest(ai.foes);
+          newAI.team = teamOfFaction[replacementAI.faction];
+          newAI.foes = _.without(ai.foes, replacementAI);
           delete newAI.minions;
           star.ai(newAI);
         } else {

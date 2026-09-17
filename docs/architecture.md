@@ -193,7 +193,10 @@ GWO's rule differs from stock's in three ways:
 - Stock wins only when _no AI star of any team_ remains. GWO wins when no boss
   remains. A GWO galaxy never satisfies stock's test when the last boss falls.
 - Stock clears every star of the defeated team. GWO promotes the first of a
-  star's `foes` to own it, and clears the star only when it has none.
+  star's `foes` whose faction still has a boss. The new owner takes that boss's
+  `team`, because a foe carries a `faction` but no `team`. A star with no such
+  foe is cleared. A star also matches when it has a `team` and the defeated
+  boss's `faction`, which heals a save whose promoted owners kept a dead team.
 - Stock leaves pre-dealt cards on the stars it clears. GWO empties their
   `cardList`, except the Guardians'.
 
