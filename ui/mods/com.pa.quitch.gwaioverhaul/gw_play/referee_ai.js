@@ -566,15 +566,17 @@ define([
       return store[key];
     };
 
+    // Callers mutate what they are handed, so the cache keeps the pristine
+    // result and hands out a copy. .then returns a new promise each time, on
+    // the engine's promise as on jQuery's, so the stored request is not consumed.
     return {
       list: function (aiPath) {
         return cached(listings, aiPath, function (path) {
           return api.file.list(path, true);
+        }).then(function (fileList) {
+          return fileList.slice();
         });
       },
-      // Callers mutate what they are handed, so the cache keeps the pristine
-      // parse and hands out a copy. .then on a jQuery promise returns a new
-      // promise each time, so the stored request is not consumed.
       getJSON: function (filePath) {
         return cached(files, filePath, function (path) {
           return $.getJSON("coui:/" + path);

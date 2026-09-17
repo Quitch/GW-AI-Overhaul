@@ -334,6 +334,38 @@ describe("per-player-tech viewer processing", () => {
       1
     );
   });
+
+  // The base pass pushes the host's `load` paths onto its listing, so a shared
+  // cache must hand out copies of that too.
+  it("keeps the host's load file out of a viewer's tree", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [{ type: "fabber", op: "load", value: "hosttech.json" }],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.id === "v1"
+        ? { inventory: makeInventory({ aiModsList: [] }) }
+        : undefined;
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/land.json"] },
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    const viewerKeys = Object.keys(filesObj).filter((key) =>
+      key.includes("player_.player0")
+    );
+    assert.deepEqual(viewerKeys, [
+      "/pa/ai/player_.player0/fabber_builds/land.json",
+    ]);
+    assert.ok("/pa/ai_subcommander/fabber_builds/hosttech.json" in filesObj);
+  });
 });
 
 describe("race trees", () => {
@@ -541,6 +573,29 @@ describe("race trees", () => {
     // The warning means the race contributed nothing - the base layer is
     // still written.
     assert.ok(filesObj["/pa/ai_race_fixture/x.json"]);
+  });
+
+  it("keeps the player's load file out of a race enemy's tree", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyRace: "fixture",
+      aiMods: [{ type: "fabber", op: "load", value: "hosttech.json" }],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": TITANS_FILES },
+      getJSON: (url) => ({ from: url }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.deepEqual(
+      Object.keys(filesObj).filter((key) =>
+        key.startsWith("/pa/ai_race_fixture/tech/")
+      ),
+      []
+    );
   });
 
   it("does nothing extra for an MLA battle", async () => {
