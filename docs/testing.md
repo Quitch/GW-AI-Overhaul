@@ -160,6 +160,10 @@ coverage settings are real config. But nothing else reads it. Its paths
 therefore drift silently and only fail on SonarCloud after a push. A rename out
 from under an exclusion once put a GBK-encoded readme back into analysis.
 
+The validator sees only what `git ls-files` returns. A new file that needs an
+exclusion is invisible to it until git tracks it, so run `git add -N <file>`
+before `npm run verify`.
+
 Do not run the `sonar` CLI locally. It does not perform real rule analysis for
 this org.
 
@@ -369,3 +373,4 @@ No test here starts PA. Anything that only fails at runtime is verified by
 loading the game with the mod enabled and starting a war. That includes a
 renamed identifier in shipped `ui/**`, a CSS class rename that spans HTML and
 CSS, a `modinfo.json` path and a localisation directive. CI gates the rest.
+[live-testing.md](live-testing.md) covers how to make that check.

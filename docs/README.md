@@ -36,6 +36,7 @@ Then read the doc for the subsystem you are changing.
 | [race-conventions.md](race-conventions.md) | The checklist for adding a race, and the rules the race code relies on  | `shared/races_shipped.js`    |
 | [testing.md](testing.md)                   | The Node AMD harness and the validators                                 | `scripts/lib/amd-loader.js`  |
 | [translations.md](translations.md)         | Translation files, the i18n tooling, the catalog and the scope rule     | `scripts/lib/loc-keys.js`    |
+| [live-testing.md](live-testing.md)         | Checking a change in a running game: clients, logs, and console recipes | -                            |
 
 ## Things that surprise people
 
@@ -116,4 +117,5 @@ Nothing here starts PA. Anything that can only fail at runtime needs the game
 loaded with the mod enabled and a war started. Examples are a renamed identifier
 in shipped `ui/**`, a CSS class rename spanning HTML and CSS, a `modinfo.json`
 path, and a localisation directive. See [testing.md](testing.md) for what CI does
-and does not catch.
+and does not catch, and [live-testing.md](live-testing.md) for how to check the
+rest in a running game.
