@@ -197,9 +197,7 @@
           // game - and the race with it.
           hostWar.load().then(function (host) {
             var dealInventory = new GWInventory();
-            var viewerRace = _.isFunction(model.gwoViewerRace)
-              ? model.gwoViewerRace()
-              : undefined;
+            var viewerRace = model.gwoViewerRace();
             var globalTags = buildGlobalTags(
               commander,
               host && host.faction,

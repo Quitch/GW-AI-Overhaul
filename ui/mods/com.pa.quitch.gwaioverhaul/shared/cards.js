@@ -10,8 +10,12 @@ define(function () {
   };
 
   var isConnectedPlayerInventory = function (data, connectedClients) {
+    if (!data) {
+      return false;
+    }
+
     return _.some(connectedClients, function (client) {
-      if (!client || !data) {
+      if (!client) {
         return false;
       }
 

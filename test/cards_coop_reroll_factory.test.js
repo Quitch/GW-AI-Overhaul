@@ -76,7 +76,6 @@ function setup(overrides = {}) {
       upsertOk: true,
       saveFails: false,
       manifestFails: false,
-      hasHostOperator: true,
     },
     overrides
   );
@@ -108,9 +107,8 @@ function setup(overrides = {}) {
     registerCampaignHostOperatorHandler: (name, fn) => {
       handlers[name] = fn;
     },
-    sendCampaignHostOperator: options.hasHostOperator
-      ? (name, payload, meta) => calls.hostOperators.push([name, payload, meta])
-      : undefined,
+    sendCampaignHostOperator: (name, payload, meta) =>
+      calls.hostOperators.push([name, payload, meta]),
     sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
     gwoRerollPending: (value) => calls.rerollPending.push(value),
     scanning: (value) => calls.scanning.push(value),
@@ -313,14 +311,6 @@ describe("host reroll handler - refusals", () => {
 
     assert.deepEqual(calls.hostOperators, []);
     assert.equal(errors.length, 1);
-  });
-
-  it("does not try to answer a host with no operator channel", async () => {
-    const { handlers, calls } = build({ records: {}, hasHostOperator: false });
-
-    await captureErrors(() => rejection(handlers[REQUEST](operator())));
-
-    assert.deepEqual(calls.hostOperators, []);
   });
 
   // A refusal names one player, so it has to be addressed to that player. The

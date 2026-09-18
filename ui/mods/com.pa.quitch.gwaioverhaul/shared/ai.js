@@ -15,10 +15,6 @@ define([
   // a co-op viewer's arrives deserialised from the war record, where it is a
   // plain array. Both reach the referee, so both shapes are read here.
   var getInventoryAiMods = function (inventory) {
-    if (!inventory) {
-      return [];
-    }
-
     if (_.isFunction(inventory.aiMods)) {
       return inventory.aiMods();
     }

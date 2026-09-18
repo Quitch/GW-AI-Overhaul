@@ -21,12 +21,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
           return viewers;
         }
 
-        var playerData =
-          game.findCoopPlayerInventoryData &&
-          game.findCoopPlayerInventoryData({
-            id: client.id,
-            name: client.name,
-          });
+        var playerData = game.findCoopPlayerInventoryData({
+          id: client.id,
+          name: client.name,
+        });
 
         if (!playerData || !playerData.inventory) {
           return viewers;
@@ -53,10 +51,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       return { subcommander: minion, cards: hostCards };
     });
 
-    var perPlayerTech =
-      game &&
-      _.isFunction(game.perPlayerTechCards) &&
-      game.perPlayerTechCards();
+    var perPlayerTech = game.perPlayerTechCards();
 
     if (!perPlayerTech) {
       return subcommanders;

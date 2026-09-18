@@ -136,7 +136,7 @@ define([
       // commanderModsFor is a no-op for a commander already of the race, and
       // for MLA.
       var viewerCommanders = [inventory.getTag("global", "commander")].concat(
-        _.pluck(inventory.minions ? inventory.minions() : [], "commander")
+        _.pluck(inventory.minions(), "commander")
       );
       var retagMods = _.flatten(
         _.map(viewerCommanders, function (commander) {
@@ -281,7 +281,6 @@ define([
     ) {
       var connectedClient = connectedClients[clientIndex];
       var inventoryDataRecord =
-        _.isFunction(game.findCoopPlayerInventoryData) &&
         game.findCoopPlayerInventoryData(connectedClient);
 
       if (!inventoryDataRecord) {
@@ -310,21 +309,6 @@ define([
       }
 
       var loadedInventory = loadInventoryFromRecord(inventoryDataRecord);
-      if (
-        !_.isFunction(loadedInventory.units) ||
-        !_.isFunction(loadedInventory.mods) ||
-        !_.isFunction(loadedInventory.minions)
-      ) {
-        console.error(
-          "[GW COOP] Invalid co-op player inventory for client " +
-            JSON.stringify(connectedClient)
-        );
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
       playerInventories[clientIndex] = loadedInventory;
       playerCommanders[clientIndex] = stripKnownSpecTag(
         inventoryDataRecord.commander

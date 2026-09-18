@@ -2,14 +2,14 @@
 // twin of scripts/lib/build-types.js. See races.md, "Capability cells".
 define(function () {
   var tokenize = function (expression) {
-    return String(expression || "").match(/\w+|[()&|-]/g) || [];
+    return String(expression).match(/\w+|[()&|-]/g) || [];
   };
 
   var matches = function (expression, tags) {
     var tokens = tokenize(expression);
     var index = 0;
     var has = function (tag) {
-      return _.contains(tags || [], tag);
+      return _.contains(tags, tag);
     };
 
     var parseAtom = function () {

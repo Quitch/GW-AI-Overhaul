@@ -142,25 +142,14 @@ describe("modsFor", () => {
 });
 
 describe("catalogEntries", () => {
-  it("accepts a bare path list", () => {
-    assert.deepEqual(biomes.catalogEntries(["pa/a.json", "/pa/b.json"]), [
-      "pa/a.json",
-      "pa/b.json",
-    ]);
-  });
-
-  it("accepts entry objects and a wrapping object", () => {
+  it("strips a leading ./ from an entry's name", () => {
     assert.deepEqual(
-      biomes.catalogEntries({
-        files: [{ path: "./pa/a.json" }, { name: "b" }],
-      }),
+      biomes.catalogEntries([{ name: "./pa/a.json" }, { name: "b" }]),
       ["pa/a.json", "b"]
     );
   });
 
   it("is empty for anything else", () => {
-    assert.deepEqual(biomes.catalogEntries(undefined), []);
-    assert.deepEqual(biomes.catalogEntries({}), []);
     assert.deepEqual(biomes.catalogEntries([42, null]), []);
   });
 });

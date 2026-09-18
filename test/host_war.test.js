@@ -279,12 +279,4 @@ describe("readGame", () => {
       ["mla"]
     );
   });
-
-  it("survives a game that did not hydrate", () => {
-    const info = hostWar.readGame({});
-
-    assert.equal(info.faction, undefined);
-    assert.equal(info.colour, undefined);
-    assert.equal(info.perPlayerRace, false);
-  });
 });

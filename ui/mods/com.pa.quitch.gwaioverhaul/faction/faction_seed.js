@@ -42,7 +42,7 @@ define([
     // them verbatim and the biome written here is the one used.
     _.forEach(spec.biomes, function (entry, order) {
       var biome = rng.stream("biome", order).pick(entry.from);
-      if (biome && entry.generator) {
+      if (biome) {
         entry.generator.biome = biome;
       }
     });

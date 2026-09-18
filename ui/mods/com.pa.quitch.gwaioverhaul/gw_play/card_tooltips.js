@@ -14,9 +14,7 @@
     // This client's inventory, read as gw_play/races.js reads it: a viewer's
     // own record under per-player tech, the host's otherwise.
     var ownInventory = function () {
-      var record =
-        _.isFunction(model.currentCoopPlayerInventoryData) &&
-        model.currentCoopPlayerInventoryData();
+      var record = model.currentCoopPlayerInventoryData();
       return (record && record.inventory) || model.game().inventory();
     };
 
@@ -253,14 +251,12 @@
 
         // The cells land after the scene is up; a star opened before then was
         // named for MLA. See races.md, "Capability cells".
-        if (ko.isObservable(model.gwoRaceCellsPrimed)) {
-          model.gwoRaceCellsPrimed.subscribe(function () {
-            showSystemCardTooltips();
-            if (model.hoverCard()) {
-              makeCardTooltip(model.hoverCard());
-            }
-          });
-        }
+        model.gwoRaceCellsPrimed.subscribe(function () {
+          showSystemCardTooltips();
+          if (model.hoverCard()) {
+            makeCardTooltip(model.hoverCard());
+          }
+        });
 
         var hoverCount = 0;
         model.setHoverCard = function (card, hoverEvent) {

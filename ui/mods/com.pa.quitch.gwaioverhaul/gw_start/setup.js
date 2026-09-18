@@ -1,7 +1,7 @@
 (function () {
   try {
     var cardId = function (card) {
-      return card && card.id ? card.id() : undefined;
+      return card.id();
     };
 
     // Closure vars, not per-card properties, so the model.gwo* functions below
@@ -321,8 +321,7 @@
       var difficultyName = loc(difficulties[selectedDifficulty].difficultyName);
       var players = playerCount + " " + loc("!LOC:Players");
       var sizeName = loc(galaxySizeNames[sizeIndex] || "!LOC:Unknown");
-      var startCardSummary =
-        startCard && startCard.summary ? loc(startCard.summary()) : "";
+      var startCardSummary = loc(startCard.summary());
 
       return _.compact([
         difficultyName,
@@ -408,9 +407,8 @@
         var built = false;
         model.gwoRebuildStartCards = function () {
           var savedIndex = model.activeStartCardIndex.peek();
-          var previousId = built
-            ? cardId(model.activeStartCard.peek())
-            : undefined;
+          var activeCard = model.activeStartCard.peek();
+          var previousId = built && activeCard ? cardId(activeCard) : undefined;
           model.startCards(
             gwoFavouriteLoadouts.sortCardsByFavourite(
               loadouts.startCards(),
@@ -481,7 +479,7 @@
                 card.getContext(params.galaxy, params.inventory);
               deal = card.deal && card.deal(params.star, context);
               var cardParams = deal && deal.params;
-              if (cardParams && _.isPlainObject(cardParams)) {
+              if (_.isPlainObject(cardParams)) {
                 _.assign(product, cardParams);
               }
               card.keep && card.keep(deal, context);
@@ -682,11 +680,7 @@
           gwoFactionSeed.reseed(GWFactions, warRng.stream("factions"));
           var teamsRng = warRng.stream("teams");
           var loreRng = warRng.stream("lore");
-          var raceInfo = (model.gwoRaceInfo && model.gwoRaceInfo()) || {
-            races: [],
-            mods: [],
-            addonMods: [],
-          };
+          var raceInfo = model.gwoRaceInfo();
           var installedRaces = _.pluck(raceInfo.races, "id");
           var playerRace = _.contains(
             installedRaces,
@@ -777,9 +771,7 @@
           );
 
           var onStartCardDealt = function (startCardProduct) {
-            game
-              .inventory()
-              .cards.push(startCardProduct || { id: startCard.id() });
+            game.inventory().cards.push(startCardProduct);
           };
 
           var onGalaxyBuilt = function (galaxy) {
@@ -1395,7 +1387,7 @@
               mods: raceInfo.mods,
               // The add-on server mods active at creation, so a resume can
               // say which are gone. See races.md, "Add-ons".
-              addons: raceInfo.addonMods || [],
+              addons: raceInfo.addonMods,
               // Only the per-player tech referee reads a viewer's own race, so
               // a war without it never claims one. See coop.md.
               perPlayerRace:
@@ -1408,8 +1400,7 @@
             // mods in a GW battle".
             originSystem.gwaio.biomeMods = gwoBiomes.gwsmMods(
               _.map(game.galaxy().stars(), function (star) {
-                var system = star.system();
-                return system && system.gwoBiomeMods;
+                return star.system().gwoBiomeMods;
               })
             );
           };

@@ -305,9 +305,7 @@
           // The colour this client gets in the next battle, as the base game
           // resolves it. See coop.md.
           var coopColour = function (client) {
-            var resolved = _.isFunction(model.gwCoopPlayerColors)
-              ? model.gwCoopPlayerColors()
-              : [];
+            var resolved = model.gwCoopPlayerColors();
             var record = _.find(resolved, function (candidate) {
               return (
                 candidate.id === client.id && candidate.name === client.name
@@ -400,12 +398,10 @@
             commander.color(coopColour(client));
 
             if (!commander.loadoutResolved || !commander.raceResolved) {
-              record =
-                game.findCoopPlayerInventoryData &&
-                game.findCoopPlayerInventoryData({
-                  id: client.id,
-                  name: client.name,
-                });
+              record = game.findCoopPlayerInventoryData({
+                id: client.id,
+                name: client.name,
+              });
               loadoutCardId = record && record.loadoutCardId;
 
               if (loadoutCardId && !commander.loadoutResolved) {

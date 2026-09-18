@@ -80,18 +80,15 @@ before(() => {
 
 after(() => timers.restore());
 
-function setup(overrides = {}) {
-  const options = Object.assign({ hasThrottleHook: true }, overrides);
-
+function setup() {
   const calls = { interactiveFrames: [] };
   const system = { systemDisplay: displayObject({}) };
 
   const stubs = createGlobalStubs();
   stubs.setGlobal("createjs", fakeCreatejs());
   stubs.setGlobal("model", {
-    gwoRequestInteractiveFrames: options.hasThrottleHook
-      ? (duration) => calls.interactiveFrames.push(duration)
-      : undefined,
+    gwoRequestInteractiveFrames: (duration) =>
+      calls.interactiveFrames.push(duration),
   });
 
   return {
@@ -134,14 +131,6 @@ describe("raising a marker", () => {
     const { layer, calls } = build();
     layer.raise(0);
     assert.deepEqual(calls.interactiveFrames, [LIFETIME_MS]);
-  });
-
-  // galaxy_map_perf.js loads after this file, and stands down entirely in a
-  // tutorial.
-  it("works without the frame rate hook", () => {
-    const { layer, system } = build({ hasThrottleHook: false });
-    layer.raise(0);
-    assert.equal(system.systemDisplay.children.length, 1);
   });
 
   it("ignores a star the galaxy no longer has", () => {

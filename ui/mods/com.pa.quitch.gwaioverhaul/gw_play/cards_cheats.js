@@ -95,7 +95,7 @@ define(function () {
       var subcommander = _.cloneDeep(
         _.sample(GWFactions[playerFaction].minions)
       );
-      var race = races ? races.raceOf(inventory) : undefined;
+      var race = races.raceOf(inventory);
       helpers.applyPenchantToSubcommander(
         subcommander,
         gwoSettings,

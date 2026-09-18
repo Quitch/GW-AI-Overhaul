@@ -60,13 +60,9 @@ describe("selectableIndex", () => {
     );
   });
 
-  it("is -1 for an empty or non-array list", () => {
+  it("is -1 for an empty list", () => {
     assert.equal(
       loadoutSelection.selectableIndex([], "a", cardId, isLocked),
-      -1
-    );
-    assert.equal(
-      loadoutSelection.selectableIndex(undefined, "a", cardId, isLocked),
       -1
     );
   });

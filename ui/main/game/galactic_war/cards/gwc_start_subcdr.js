@@ -44,7 +44,7 @@ define([
     hint: gwoCard.lockedHint("!LOC:General Commander"),
     getContext: function (galaxy, inventory) {
       return {
-        faction: inventory.getTag("global", "playerFaction") || 0,
+        faction: inventory.getTag("global", "playerFaction"),
       };
     },
     deal: gwoCard.startCard,

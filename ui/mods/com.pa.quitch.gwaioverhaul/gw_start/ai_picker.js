@@ -75,7 +75,7 @@
 
       // Start from the stored table, so a stale race's remembered row
       // survives an apply that never rendered it editable.
-      var stored = _.cloneDeep(settings.aiByRace()) || {};
+      var stored = _.cloneDeep(settings.aiByRace());
       _.forEach(model.gwoAiTableRows(), function (row) {
         if (row.stale) {
           return;

@@ -32,9 +32,9 @@ define(function () {
   };
 
   var hasSmartSubcommanders = function (inventory) {
-    var cards = _.isFunction(inventory && inventory.cards)
+    var cards = _.isFunction(inventory.cards)
       ? inventory.cards()
-      : (inventory && inventory.cards) || [];
+      : inventory.cards || [];
     return _.some(cards, {
       id: "gwaio_upgrade_subcommander_tactics",
     });
