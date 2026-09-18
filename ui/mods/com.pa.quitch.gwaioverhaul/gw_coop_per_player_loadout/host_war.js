@@ -50,16 +50,9 @@ define([
     var tag = function (name) {
       return inventory.getTag("global", name);
     };
-    // originSettings walks the galaxy's origin star, so a game that did not
-    // hydrate is a war with nothing recorded rather than a thrown scene.
-    var settings;
-    var recorded;
-    try {
-      settings = gwoAI.originSettings(game);
-      recorded = settings && settings.races;
-    } catch (e) {
-      // Not hydrated: recorded stays undefined, and the scene must still open.
-    }
+    // A stock war, or one saved before GWO, has no gwaio block on its origin.
+    var settings = gwoAI.originSettings(game);
+    var recorded = settings && settings.races;
 
     return {
       faction: tag("playerFaction"),
