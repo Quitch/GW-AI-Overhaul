@@ -62,7 +62,6 @@ define([
     var aiUnitMapTitansDestinationPath = params.aiUnitMapTitansDestinationPath;
     var clusterUnitMapPath = params.clusterUnitMapPath;
     var clusterUnitMapTitansPath = params.clusterUnitMapTitansPath;
-    var titans = params.titans;
     var game = params.game;
     var inventory = params.inventory;
     var aiFactionDeferred = params.aiFactionDeferred;
@@ -102,9 +101,7 @@ define([
         var enemyX1AIUnitMapPair = {};
         enemyX1AIUnitMapPair[enemyX1AIUnitMapFile] = enemyX1AIUnitMap;
         var aiFilesClassic = _.assign(enemyAIUnitMapPair, aiSpecFiles);
-        var aiFilesX1 = titans
-          ? _.assign(enemyX1AIUnitMapPair, aiSpecFiles)
-          : {};
+        var aiFilesX1 = _.assign(enemyX1AIUnitMapPair, aiSpecFiles);
         var aiFiles = _.assign({}, aiFilesClassic, aiFilesX1);
 
         var aiInventory = gameFilePaths.armyInventory(
@@ -170,8 +167,6 @@ define([
     api.file.unmountAllMemoryFiles().always(function () {
       try {
         self.stage("!LOC:Processing tech cards");
-        var titans = api.content.usingTitans();
-
         var game = self.game();
         var ai = gwoAI.currentStarAi(game);
         var aiTag = gwoAI.aiTags(ai);
@@ -205,7 +200,7 @@ define([
           var raceMaps = gwoRaces.unitMapsFor(race, brain, source);
           var loads = [
             loadMap(getAIUnitMapPath(false, brain)),
-            titans ? loadMap(getAIUnitMapPath(true, brain)) : null,
+            loadMap(getAIUnitMapPath(true, brain)),
           ].concat(_.map(raceMaps, loadMap));
           // A key the race maps left falls back to a race unit of its cell,
           // preferring one the race's own AI data knows over an add-on's.
@@ -227,14 +222,14 @@ define([
             var extra = maps.slice(2);
             return {
               classic: merge(maps[0], extra),
-              x1: titans ? merge(maps[1], extra) : {},
+              x1: merge(maps[1], extra),
             };
           });
         };
 
         var unitsLoad = $.get("spec://pa/units/unit_list.json");
         var aiMapLoad = loadMap(aiUnitMapSourcePath);
-        var aiX1MapLoad = titans ? loadMap(aiUnitMapTitansSourcePath) : {};
+        var aiX1MapLoad = loadMap(aiUnitMapTitansSourcePath);
         // Native from here on: a jQuery callback that throws hangs the launch,
         // a native one rejects, and every chain below ends in fail. A jQuery
         // promise adopted by a native one hands over its first argument only,
@@ -295,7 +290,6 @@ define([
                         getAIUnitMapDestinationPath(true, destination),
                       clusterUnitMapPath: clusterUnitMapPath,
                       clusterUnitMapTitansPath: clusterUnitMapTitansPath,
-                      titans: titans,
                       game: game,
                       inventory: inventory,
                       aiFactionDeferred: aiFactions[n],
@@ -376,12 +370,12 @@ define([
                               unitMaps.classic,
                               playerTag
                             ),
-                            playerX1AIUnitMap: titans
-                              ? GW.specs.genAIUnitMap(unitMaps.x1, playerTag)
-                              : {},
+                            playerX1AIUnitMap: GW.specs.genAIUnitMap(
+                              unitMaps.x1,
+                              playerTag
+                            ),
                             playerSpecFiles: playerSpecFiles,
                             inventory: inventory,
-                            titans: titans,
                             race: playerRace,
                             mods: playerMods,
                             extraMods: playerExtraMods,

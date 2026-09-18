@@ -2,16 +2,12 @@
 
 // The two cards that draw inside deal(). Everything else in the deck is a pure
 // function of the star and the inventory.
-//
-// gwc_minion is in KNOWN_UNLOADABLE because gw_factions reads api at define time.
-// Stubbing api first is enough - that list is about what loads bare.
 
 const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
-setGlobal("api", { content: { usingTitans: () => true } });
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const gwoRng = loadCouiModule(

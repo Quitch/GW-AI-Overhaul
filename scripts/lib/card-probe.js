@@ -6,6 +6,7 @@
 
 const path = require("node:path");
 const { loadCouiModule, registerModuleStub } = require("./amd-loader.js");
+const { createAutoStub } = require("./auto-stub.js");
 const {
   CARDS_DIR,
   classifyLoadFailure,
@@ -68,21 +69,19 @@ function loadAllCards() {
   installCardHarness();
 
   const byFile = new Map();
-  const unloadable = [];
 
   for (const file of listCardFiles()) {
     try {
       byFile.set(file, loadCouiModule(path.join(CARDS_DIR, file)));
     } catch (e) {
-      if (classifyLoadFailure(e, file)) {
-        unloadable.push(file);
+      if (classifyLoadFailure(e)) {
         continue;
       }
       throw e;
     }
   }
 
-  return { byFile, unloadable };
+  return { byFile };
 }
 
 function cardIdFromFile(file) {
@@ -112,7 +111,9 @@ function recordGrantedUnits(buff, gwoUnit, hasCard) {
     capture: { addUnits: recordInto(granted) },
   });
 
-  buff(inventory);
+  // params is what the card's own deal() returned at runtime; a card that reads
+  // it (gwc_minion) gets a stub, since no deal() ran here.
+  buff(inventory, createAutoStub());
   return granted.filter((unit) => typeof unit === "string");
 }
 

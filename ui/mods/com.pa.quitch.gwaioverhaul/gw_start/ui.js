@@ -300,13 +300,11 @@
     locTree($("#gwo-ai-settings"));
     locTree($("#difficulty-cards"));
 
-    if (api.content.usingTitans()) {
-      model.gwoFactionTooltip +=
-        "<br>" +
-        loc(
-          "!LOC:CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
-        );
-    }
+    model.gwoFactionTooltip +=
+      "<br>" +
+      loc(
+        "!LOC:CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them."
+      );
 
     // Track difficulty settings so AI Settings' fields display correct values
     requireGW(

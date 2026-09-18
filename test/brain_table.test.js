@@ -24,29 +24,13 @@ afterEach(() => {
 
 describe("cellOptions", () => {
   it("offers only the brains that support the race", () => {
-    assert.deepEqual(brainTable.cellOptions("mla", true), [
+    assert.deepEqual(brainTable.cellOptions("mla"), [
       "Titans",
       "Queller",
       "Penchant",
     ]);
-    assert.deepEqual(brainTable.cellOptions("legion", true), [
-      "Titans",
-      "Queller",
-    ]);
-    assert.deepEqual(brainTable.cellOptions("fixture", true), ["Titans"]);
-  });
-
-  it("withholds Queller on classic content only", () => {
-    assert.deepEqual(brainTable.cellOptions("legion", false), ["Titans"]);
-    assert.deepEqual(brainTable.cellOptions("mla", false), [
-      "Titans",
-      "Penchant",
-    ]);
-    // Undefined means "not asked", not "classic".
-    assert.deepEqual(brainTable.cellOptions("legion", undefined), [
-      "Titans",
-      "Queller",
-    ]);
+    assert.deepEqual(brainTable.cellOptions("legion"), ["Titans", "Queller"]);
+    assert.deepEqual(brainTable.cellOptions("fixture"), ["Titans"]);
   });
 });
 
@@ -73,8 +57,7 @@ describe("rowsFor", () => {
       { legion: { enemy: "Titans" } },
       ["mla", "legion", "fixture"],
       "Queller",
-      "Penchant",
-      true
+      "Penchant"
     );
 
     assert.deepEqual(
@@ -96,25 +79,11 @@ describe("rowsFor", () => {
       { fixture: { enemy: "Queller", ally: "Penchant" } },
       ["fixture"],
       "Titans",
-      "Titans",
-      true
+      "Titans"
     );
 
     assert.equal(rows[0].enemy, "Titans");
     assert.equal(rows[0].ally, "Titans");
-  });
-
-  it("drops a stored Queller when classic content withholds it", () => {
-    const rows = brainTable.rowsFor(
-      { legion: { enemy: "Queller", ally: "Queller" } },
-      ["legion"],
-      "Queller",
-      "Queller",
-      false
-    );
-
-    assert.equal(rows[0].enemy, "Titans");
-    assert.deepEqual(rows[0].options, ["Titans"]);
   });
 
   it("appends a stored race no longer listed as a disabled row", () => {
@@ -122,8 +91,7 @@ describe("rowsFor", () => {
       { bugs: { enemy: "Titans", ally: "Titans" } },
       ["mla", "legion"],
       "Titans",
-      "Titans",
-      true
+      "Titans"
     );
 
     assert.equal(rows.length, 3);
@@ -141,8 +109,7 @@ describe("rowsFor", () => {
       undefined,
       ["mla", "legion"],
       "Penchant",
-      "Titans",
-      true
+      "Titans"
     );
 
     assert.deepEqual(rows[0], {
@@ -241,69 +208,5 @@ describe("recordFor", () => {
     );
 
     assert.deepEqual(record, {});
-  });
-});
-
-describe("forContent", () => {
-  const stored = {
-    legion: { enemy: "Queller", ally: "Titans" },
-    fixture: { enemy: "Titans" },
-  };
-
-  it("replaces a stored Queller with Titans on classic content", () => {
-    assert.deepEqual(
-      brainTable.forContent(stored, "Queller", "Queller", false),
-      {
-        aiByRace: {
-          legion: { enemy: "Titans", ally: "Titans" },
-          fixture: { enemy: "Titans" },
-        },
-        ai: "Titans",
-        aiAlly: "Titans",
-      }
-    );
-    assert.deepEqual(
-      brainTable.forContent(undefined, "Penchant", undefined, false),
-      { aiByRace: {}, ai: "Penchant", aiAlly: undefined }
-    );
-  });
-
-  it("changes nothing under TITANS, or when content was not asked", () => {
-    [true, undefined].forEach((hasTitansContent) => {
-      assert.deepEqual(
-        brainTable.forContent(stored, "Queller", "Penchant", hasTitansContent),
-        { aiByRace: stored, ai: "Queller", aiAlly: "Penchant" }
-      );
-    });
-  });
-
-  it("never edits the stored table", () => {
-    brainTable.forContent(stored, "Queller", "Queller", false);
-
-    assert.equal(stored.legion.enemy, "Queller");
-  });
-
-  it("keeps Queller out of a classic war's record", () => {
-    const brains = brainTable.forContent(stored, "Queller", "Queller", false);
-
-    assert.deepEqual(
-      brainTable.recordFor(
-        brains.aiByRace,
-        ["mla", "legion"],
-        brains.ai,
-        brains.aiAlly
-      ),
-      { legion: { enemy: "Titans", ally: "Titans" } }
-    );
-    assert.equal(
-      brainTable.resolve(
-        brains.aiByRace,
-        brains.ai,
-        brains.aiAlly,
-        "enemy",
-        "mla"
-      ),
-      "Titans"
-    );
   });
 });

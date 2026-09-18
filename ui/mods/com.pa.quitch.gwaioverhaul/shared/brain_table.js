@@ -7,16 +7,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
 ) {
   var SIDES = ["enemy", "ally"];
 
-  // Queller's build orders read TITANS units, so classic content cannot run
-  // it whatever the race - the old war-wide picker disabled it the same way.
-  var cellOptions = function (raceId, hasTitansContent) {
-    var options = races.brainsFor([raceId]);
-
-    if (hasTitansContent === false) {
-      options = _.without(options, "Queller");
-    }
-
-    return options;
+  var cellOptions = function (raceId) {
+    return races.brainsFor([raceId]);
   };
 
   var pick = function (value, options) {
@@ -35,12 +27,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   // The modal's rows, in the caller's race order: the stored cell where it is
   // still offerable, the seeded default otherwise. Stored races no longer in
   // the list follow as disabled rows, so a remembered choice stays visible.
-  var rowsFor = function (stored, raceIds, ai, aiAlly, hasTitansContent) {
+  var rowsFor = function (stored, raceIds, ai, aiAlly) {
     var table = stored || {};
     var listed = _.map(raceIds || [], races.normalizeId);
 
     var rows = _.map(listed, function (id) {
-      var options = cellOptions(id, hasTitansContent);
+      var options = cellOptions(id);
       var row = table[id];
       var seed = seedRow(id, ai, aiAlly);
       var cells = { id: id, stale: false, options: options };
@@ -114,32 +106,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     return record;
   };
 
-  // The stored choices as a war on this content may use them: copies, so a
-  // Queller stored under TITANS survives a classic session. See races.md.
-  var forContent = function (stored, ai, aiAlly, hasTitansContent) {
-    var coerce = function (brain) {
-      return hasTitansContent === false && brain === "Queller"
-        ? races.TITANS
-        : brain;
-    };
-    var table = {};
-
-    _.forEach(stored || {}, function (row, id) {
-      table[id] = _.assign({}, row);
-      _.forEach(SIDES, function (side) {
-        if (row && row[side]) {
-          table[id][side] = coerce(row[side]);
-        }
-      });
-    });
-
-    return { aiByRace: table, ai: coerce(ai), aiAlly: coerce(aiAlly) };
-  };
-
   var api = {
     SIDES: SIDES,
     cellOptions: cellOptions,
-    forContent: forContent,
     seedRow: seedRow,
     rowsFor: rowsFor,
     resolve: resolve,

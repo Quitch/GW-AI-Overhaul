@@ -40,13 +40,12 @@ therefore continues to accept them. They are legitimate extension points, not ty
 
 `npm run validate:cards` enforces this shape. It checks what `define()` returns. It
 does not call `deal`/`buff`/`dull`. The validator skips a card as `NOT_SHIPPED` when
-the card depends on a base-game module absent from this repo. It skips one card as
-`KNOWN_UNLOADABLE`.
+the card depends on a base-game module absent from this repo.
 
 The run prints the live tally. `MIN_CHECKED` is an enforced floor that must never be
 lowered to make a run pass. `test/card_deal_unit_gate.test.js` reaches the skipped
-cards. It stubs `shared/gw_common` and so loads every card except the
-`KNOWN_UNLOADABLE` one. See [`testing.md`](testing.md).
+cards. It stubs `shared/gw_common` and so loads every card. See
+[`testing.md`](testing.md).
 
 ## Which shape to write a card in
 
