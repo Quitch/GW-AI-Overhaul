@@ -501,15 +501,13 @@
           return result;
         };
 
-        // The stored brains minus what this content cannot run. See races.md.
         var warBrains = function () {
           var settings = model.gwoDifficultySettings;
-          return gwoBrainTable.forContent(
-            settings.aiByRace(),
-            settings.ai(),
-            settings.aiAlly(),
-            api.content.usingTitans()
-          );
+          return {
+            aiByRace: settings.aiByRace(),
+            ai: settings.ai(),
+            aiAlly: settings.aiAlly(),
+          };
         };
 
         // The brain an AI of this race runs on that side: the per-race table
@@ -549,13 +547,6 @@
             brain: brain,
             penchantTags: gwoAI.penchantTags(ai.penchantName),
           });
-        };
-
-        // Must wrap, as stock's playerFaction computed does: gw_factions.js
-        // appends Cluster only under Titans, so a stored index of 4 can be
-        // restored into a session where it addresses nothing.
-        var playerFactionIndex = function () {
-          return model.playerFactionIndex() % GWFactions.length;
         };
 
         // Bosses keep their commander and are retagged at launch; every other AI
@@ -719,7 +710,7 @@
           var sizes = GW.balance.numberOfSystems;
           var size = sizes[model.newGameSizeIndex()] || 40;
           var aiFactions = _.range(GWFactions.length);
-          aiFactions.splice(playerFactionIndex(), 1);
+          aiFactions.splice(model.playerFactionIndex(), 1);
           if (model.gwoDifficultySettings.factionScaling()) {
             var numFactions = model.newGameSizeIndex() + 1;
             aiFactions = teamsRng.sample(aiFactions, numFactions);
@@ -744,7 +735,7 @@
           model.updateCommander();
           game
             .inventory()
-            .setTag("global", "playerFaction", playerFactionIndex());
+            .setTag("global", "playerFaction", model.playerFactionIndex());
           game.inventory().setTag("global", "playerColor", model.playerColor());
           game.inventory().setTag("global", "playerRace", playerRace);
 
@@ -1207,7 +1198,7 @@
                   !startCardBreaksAllies &&
                   gameModeEnabled(allyRng, difficulty.alliedCommanderChance())
                 ) {
-                  var playerFaction = playerFactionIndex();
+                  var playerFaction = model.playerFactionIndex();
                   // The ally fights as the player's race, so its brain is
                   // that race's ally cell.
                   var allyBrain = brainForRace(playerRace, "ally");

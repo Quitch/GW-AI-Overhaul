@@ -27,6 +27,7 @@ const {
   recordInto,
 } = require("../scripts/lib/capturing-inventory.js");
 const { installCardHarness } = require("../scripts/lib/card-probe.js");
+const { createAutoStub } = require("../scripts/lib/auto-stub.js");
 
 // Every loadout card - which is where the replacements live - depends on the
 // unshipped shared/gw_common, so without a stand-in the sweep tests nothing. Only
@@ -123,7 +124,9 @@ function collectMods(card, hasCard) {
 
   for (const method of ["buff", "dull"]) {
     if (typeof card[method] === "function") {
-      card[method](inventory);
+      // params is what the card's own deal() returned at runtime; a card that
+      // reads it (gwc_minion) gets a stub, since no deal() ran here.
+      card[method](inventory, createAutoStub());
     }
   }
   return captured;
@@ -133,7 +136,7 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    if (classifyLoadFailure(e, file)) {
+    if (classifyLoadFailure(e)) {
       return { excluded: true };
     }
     throw e;

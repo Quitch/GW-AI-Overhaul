@@ -27,8 +27,7 @@
         settings.aiByRace(),
         _.pluck(raceOptions, "id"),
         settings.ai(),
-        settings.aiAlly(),
-        api.content.usingTitans()
+        settings.aiAlly()
       );
 
       return _.map(rows, function (row) {

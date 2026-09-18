@@ -3,8 +3,8 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   gwoCard
 ) {
-  var getAIUnitMapPath = function (titans, aiInUse) {
-    var append = titans ? "_x1.json" : ".json";
+  var getAIUnitMapPath = function (x1, aiInUse) {
+    var append = x1 ? "_x1.json" : ".json";
 
     switch (aiInUse) {
       case "Queller":
@@ -16,8 +16,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     }
   };
 
-  var getAIUnitMapDestinationPath = function (titans, aiPath) {
-    var append = titans ? "_x1.json" : ".json";
+  var getAIUnitMapDestinationPath = function (x1, aiPath) {
+    var append = x1 ? "_x1.json" : ".json";
     return aiPath + "unit_maps/ai_unit_map" + append;
   };
 
@@ -75,7 +75,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     var playerX1AIUnitMap = params.playerX1AIUnitMap;
     var playerSpecFiles = params.playerSpecFiles;
     var inventory = params.inventory;
-    var titans = params.titans;
     var race = params.race;
     var extraMods = params.extraMods || [];
     var mods = params.mods || inventory.mods();
@@ -94,26 +93,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
         },
         playerSpecFiles
       );
-      playerFilesX1 = titans
-        ? _.assign(
-            {
-              "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player":
-                playerX1AIUnitMap,
-            },
-            playerSpecFiles
-          )
-        : {};
+      playerFilesX1 = _.assign(
+        {
+          "/pa/ai_cluster/unit_maps/ai_unit_map_x1.json.player":
+            playerX1AIUnitMap,
+        },
+        playerSpecFiles
+      );
     } else {
       playerFilesClassic = _.assign({}, playerSpecFiles);
       playerFilesClassic[
         hostSubcommanderPath + "unit_maps/ai_unit_map.json.player"
       ] = playerAIUnitMap;
       playerFilesX1 = {};
-      if (titans) {
-        playerFilesX1[
-          hostSubcommanderPath + "unit_maps/ai_unit_map_x1.json.player"
-        ] = playerX1AIUnitMap;
-      }
+      playerFilesX1[
+        hostSubcommanderPath + "unit_maps/ai_unit_map_x1.json.player"
+      ] = playerX1AIUnitMap;
     }
 
     var playerFiles = _.assign({}, playerFilesClassic, playerFilesX1);
