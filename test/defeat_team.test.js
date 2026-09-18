@@ -251,8 +251,4 @@ describe("defeat_team - where it installs", () => {
 
     assert.equal(game.defeatTeam, undefined);
   });
-
-  it("ignores a missing game", () => {
-    assert.doesNotThrow(() => defeatTeam.install(undefined));
-  });
 });

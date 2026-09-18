@@ -51,17 +51,14 @@ const coopRecord = (id, minionCount) => ({
 });
 
 function install(over) {
-  const options = Object.assign({ coopRecords: [], omitCoop: false }, over);
+  const options = Object.assign({ coopRecords: [] }, over);
   const game = {
     galaxy: () => ({
       origin: () => 0,
       stars: () => [{ system: () => ({ gwaio: { ai: "TITANS" } }) }],
     }),
+    coopPlayerInventoryData: () => options.coopRecords,
   };
-
-  if (!options.omitCoop) {
-    game.coopPlayerInventoryData = () => options.coopRecords;
-  }
 
   setGlobal("model", { game: () => game });
 }
@@ -144,10 +141,6 @@ describe("gwc_minion weight - counting Sub Commanders", () => {
 });
 
 describe("gwc_minion weight - malformed co-op state", () => {
-  it("treats a war with no co-op records at all as solo", () => {
-    assert.equal(chanceFor({ omitCoop: true }, minions(1)), BASE_CHANCE / 2);
-  });
-
   it("contributes nothing for a record it cannot read, rather than aborting", () => {
     const broken = [
       null,

@@ -336,32 +336,28 @@
         createVictoryWait
       ) {
         var wait = model.gwoVictoryWait;
-        var playersReturned;
-
-        if (wait) {
-          playersReturned = createVictoryWait({
-            visible: wait.visible,
-            message: wait.message,
-            connectedClients: model.gwCampaignConnectedClients,
-            maxClients: model.gwCampaignMaxClients,
-            connected: model.gwCampaignConnected,
-            // Stock restores max_clients from this over an async round trip.
-            expectedFromBattle: function () {
-              var context = model.gwCampaignRestartContext();
-              return context && context.settings
-                ? context.settings.battle_launch_clients
-                : undefined;
+        var playersReturned = createVictoryWait({
+          visible: wait.visible,
+          message: wait.message,
+          connectedClients: model.gwCampaignConnectedClients,
+          maxClients: model.gwCampaignMaxClients,
+          connected: model.gwCampaignConnected,
+          // Stock restores max_clients from this over an async round trip.
+          expectedFromBattle: function () {
+            var context = model.gwCampaignRestartContext();
+            return context && context.settings
+              ? context.settings.battle_launch_clients
+              : undefined;
+          },
+          labels: {
+            message: function (back, expected) {
+              return (
+                loc("!LOC:Players returned") + ": " + back + " / " + expected
+              );
             },
-            labels: {
-              message: function (back, expected) {
-                return (
-                  loc("!LOC:Players returned") + ": " + back + " / " + expected
-                );
-              },
-            },
-          });
-          wait.state(playersReturned);
-        }
+          },
+        });
+        wait.state(playersReturned);
 
         gwoVictory({
           game: game,

@@ -284,7 +284,7 @@ define([
   // specs (Section 17 lists a NoBuild larva alone in a cell).
   var unfilledByVanilla = function (vanilla, cell) {
     return _.every(vanilla.unitsByCell[cell] || [], function (unit) {
-      return _.contains(vanilla.tagsOf[unit] || [], "NoBuild");
+      return _.contains(vanilla.tagsOf[unit], "NoBuild");
     });
   };
 
@@ -299,7 +299,7 @@ define([
       : function (unit) {
           return race.buildableOf[unit];
         };
-    var exclusive = race.exclusive || {};
+    var exclusive = race.exclusive;
     var orphans = _.filter(
       race.units.concat(_.keys(exclusive)),
       function (unit) {
@@ -320,7 +320,7 @@ define([
         return !!buildable(unit);
       });
       orphans = _.filter(orphans, function (orphan) {
-        var tags = race.tagsOf[orphan] || [];
+        var tags = race.tagsOf[orphan];
         var reachable = _.some(builders, function (builder) {
           return buildTypes.matches(buildable(builder), tags);
         });
@@ -416,7 +416,7 @@ define([
         _.map(cells, function (cell) {
           return _.map(race.unitsByCell[cell] || [], function (unit) {
             return _.pluck(
-              _.filter(race.partsByUnit[unit] || [], { role: role }),
+              _.filter(race.partsByUnit[unit], { role: role }),
               "path"
             );
           });

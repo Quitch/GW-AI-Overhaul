@@ -60,9 +60,7 @@
           var missing = _.map(result.blocked, describe);
           console.error("gwoBiomes: " + missing.join("; "));
           model.gwoBiomeBlock(missing);
-          if (_.isFunction(model.gwoShowFightBlock)) {
-            model.gwoShowFightBlock();
-          }
+          model.gwoShowFightBlock();
         });
       }
     );

@@ -64,7 +64,7 @@ define(function () {
 
   return {
     install: function (game) {
-      if (!game || game.isTutorial()) {
+      if (game.isTutorial()) {
         return;
       }
 

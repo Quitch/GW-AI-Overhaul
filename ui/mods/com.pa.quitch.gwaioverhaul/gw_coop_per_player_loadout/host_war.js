@@ -46,23 +46,13 @@ define([
   };
 
   var readGame = function (game, installed) {
-    var inventory =
-      game && _.isFunction(game.inventory) ? game.inventory() : undefined;
+    var inventory = game.inventory();
     var tag = function (name) {
-      return inventory && _.isFunction(inventory.getTag)
-        ? inventory.getTag("global", name)
-        : undefined;
+      return inventory.getTag("global", name);
     };
-    // originSettings walks the galaxy's origin star, so a game that did not
-    // hydrate is a war with nothing recorded rather than a thrown scene.
-    var settings;
-    var recorded;
-    try {
-      settings = game ? gwoAI.originSettings(game) : undefined;
-      recorded = settings && settings.races;
-    } catch (e) {
-      // Not hydrated: recorded stays undefined, and the scene must still open.
-    }
+    // A stock war, or one saved before GWO, has no gwaio block on its origin.
+    var settings = gwoAI.originSettings(game);
+    var recorded = settings && settings.races;
 
     return {
       faction: tag("playerFaction"),
@@ -91,9 +81,7 @@ define([
     }
 
     var deferred = $.Deferred();
-    var activeGameId = _.isFunction(model.activeGameId)
-      ? model.activeGameId()
-      : undefined;
+    var activeGameId = model.activeGameId();
 
     loaded = deferred.promise();
 

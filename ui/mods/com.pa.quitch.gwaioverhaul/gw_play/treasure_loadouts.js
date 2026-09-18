@@ -51,7 +51,7 @@ define([
   // while the Guardians stand; afterwards only the pre-dealt card is left.
   var findTreasureStar = function (stars) {
     var found = _.findIndex(stars, function (star) {
-      var ai = star && _.isFunction(star.ai) && star.ai();
+      var ai = star.ai();
       return !!(ai && ai.treasurePlanet);
     });
 
@@ -60,12 +60,9 @@ define([
     }
 
     found = _.findIndex(stars, function (star) {
-      return _.some(
-        (star && _.isFunction(star.cardList) && star.cardList()) || [],
-        function (card) {
-          return card && helpers.isStartLoadoutCardId(card.id);
-        }
-      );
+      return _.some(star.cardList(), function (card) {
+        return card && helpers.isStartLoadoutCardId(card.id);
+      });
     });
 
     return found === -1 ? undefined : found;

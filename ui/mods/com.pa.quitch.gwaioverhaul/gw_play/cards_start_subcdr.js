@@ -23,10 +23,9 @@ define([
     var game = params.game;
     var gwoSettings = params.gwoSettings;
     var playerFaction = params.playerFaction;
-    var inventory =
-      params.inventory ||
-      (game && _.isFunction(game.inventory) ? game.inventory() : undefined);
+    var inventory = params.inventory;
     var warRng = gwoStreams.warRng(gwoSettings);
+    model.gwoGeneralCommanderSetupPending = ko.observable(false);
 
     var setupGeneralCommanderRequest = "gwo_setup_general_commander";
     var setupGeneralCommanderResult = "gwo_setup_general_commander_result";
@@ -109,9 +108,7 @@ define([
 
     var applyGeneralCommanderSetupResult = function (operator) {
       var payload = operator && operator.payload ? operator.payload : {};
-      if (model.gwoGeneralCommanderSetupPending) {
-        model.gwoGeneralCommanderSetupPending(false);
-      }
+      model.gwoGeneralCommanderSetupPending(false);
 
       if (payload.error) {
         console.error(
@@ -120,7 +117,7 @@ define([
         return;
       }
 
-      if (payload.changed && _.isFunction(model.prepareCoopPlayerInventories)) {
+      if (payload.changed) {
         return model.prepareCoopPlayerInventories();
       }
     };
@@ -134,15 +131,9 @@ define([
         !model.isCampaignViewer() ||
         !model.gwCampaignActive() ||
         !model.gwCampaignPerPlayerTechCards() ||
-        !model.sendCampaignViewerOperator ||
-        !model.gwCampaignConnected() ||
-        !model.currentCoopPlayerInventoryData
+        !model.gwCampaignConnected()
       ) {
         return false;
-      }
-
-      if (!ko.isObservable(model.gwoGeneralCommanderSetupPending)) {
-        model.gwoGeneralCommanderSetupPending = ko.observable(false);
       }
 
       if (model.gwoGeneralCommanderSetupPending()) {
@@ -296,10 +287,6 @@ define([
         model.gwCampaignPerPlayerTechCards() &&
         setupGeneralCommanderForViewer()
       ) {
-        return;
-      }
-
-      if (!inventory || !_.isFunction(inventory.cards)) {
         return;
       }
 

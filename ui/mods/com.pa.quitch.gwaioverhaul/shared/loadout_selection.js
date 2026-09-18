@@ -4,7 +4,7 @@ define(function () {
   // else the first unlocked card, else -1. `cardId` reads a card's id;
   // `isLocked` says whether a card is refused.
   var selectableIndex = function (cards, activeId, cardId, isLocked) {
-    var list = _.isArray(cards) ? cards : [];
+    var list = cards;
     var unlocked = function (card) {
       return !isLocked(card);
     };

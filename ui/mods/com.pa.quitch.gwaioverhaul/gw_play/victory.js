@@ -39,9 +39,7 @@ define(function () {
             params.stockBank,
             params.gwoBank
           ),
-          records: _.isFunction(game.coopPlayerInventoryData)
-            ? game.coopPlayerInventoryData()
-            : [],
+          records: game.coopPlayerInventoryData(),
           perPlayerTech: perPlayerTech(),
         })
       );

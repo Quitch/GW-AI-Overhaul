@@ -165,10 +165,7 @@ define([
         0,
         Math.floor((config.coopPlayersForSystemGeneration || 1) - 1)
       );
-      if (
-        model.gwoDifficultySettings &&
-        model.gwoDifficultySettings.systemScaling()
-      ) {
+      if (model.gwoDifficultySettings.systemScaling()) {
         systemSize = star.distance() + coopSystemPlayerBonus;
       } else {
         // "size", not "star": the template seed below already keys stream("star", i).
@@ -178,19 +175,12 @@ define([
       }
       // Large Planets brings bigger systems forward rather than resizing
       // planets. The name is kept for its translation strings.
-      if (
-        model.gwoDifficultySettings &&
-        model.gwoDifficultySettings.largePlanets()
-      ) {
+      if (model.gwoDifficultySettings.largePlanets()) {
         systemSize += 4;
       }
       // A real-system pool has no simpler template set for Easy Systems to swap
       // to, so it asks for the lowest bracket. Last, so it wins over the rest.
-      if (
-        brackets &&
-        model.gwoDifficultySettings &&
-        model.gwoDifficultySettings.simpleSystems()
-      ) {
+      if (brackets && model.gwoDifficultySettings.simpleSystems()) {
         systemSize = Math.min(systemSize, 0);
       }
       return systemSize;
