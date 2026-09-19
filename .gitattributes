@@ -1,40 +1,44 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Custom for Visual Studio
-*.cs     diff=csharp
+# Binary assets - never normalise line endings or attempt a text diff
+*.png binary
+*.jpg binary
+*.gif binary
 
-# Standard to msysgit
-*.doc	 diff=astextplain
-*.DOC	 diff=astextplain
-*.docx diff=astextplain
-*.DOCX diff=astextplain
-*.dot  diff=astextplain
-*.DOT  diff=astextplain
-*.pdf  diff=astextplain
-*.PDF	 diff=astextplain
-*.rtf	 diff=astextplain
-*.RTF	 diff=astextplain
+# GitHub (Linguist): collapse machine-generated files in PR diffs and keep them
+# out of the language stats. -diff also stops git itself diffing the lockfile.
+package-lock.json linguist-generated=true -diff
+# Written by scripts/harvest-unit-types.js
+test/fixtures/unit_types.json linguist-generated=true -diff
+# Catalog written by `npm run i18n:catalog`; only its descriptions are hand-edited
+ui/mods/com.pa.quitch.gwaioverhaul/translations/en-US.json linguist-generated=true
+# Vendored from wondible's Section of Foreign Intelligence (Apache 2.0)
+ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/** linguist-vendored
 
-# Keep development junk out of our ZIP files
+# Keep development junk out of our ZIP files (git archive, GitHub "Download ZIP",
+# release archives). What is left is what a player drops into client_mods.
 .claude/ export-ignore
 .github/ export-ignore
-.vscode/settings.json export-ignore
+.sonarlint/ export-ignore
+.vscode/ export-ignore
 docs/ export-ignore
 images/ export-ignore
 scripts/ export-ignore
 test/ export-ignore
+.browserslistrc export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 .markdownlint.json export-ignore
 .nvmrc export-ignore
 .prettierignore export-ignore
 .prettierrc export-ignore
-.browserslistrc export-ignore
 CLAUDE.md export-ignore
+CONTRIBUTING.md export-ignore
 eslint.config.mjs export-ignore
-stylelint.config.mjs export-ignore
 package-lock.json export-ignore
 package.json export-ignore
 sonar-project.properties export-ignore
+stylelint.config.mjs export-ignore
+# Translator catalog only - the game reads the per-language files beside it
 ui/mods/com.pa.quitch.gwaioverhaul/translations/en-US.json export-ignore
