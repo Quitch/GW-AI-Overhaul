@@ -187,6 +187,15 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - Show AI Personality Names
 - Galactic War Server Mods
 
+## Supported unit mods
+
+- Legion Expansion
+- Bugs Faction
+- Exiles Faction
+- Second Wave Expansion
+- Section 17 - Endgame Units
+- Osmech
+
 ## Incompatible mods
 
 - Aurora Artillery
