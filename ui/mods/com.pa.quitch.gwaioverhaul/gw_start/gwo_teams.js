@@ -12,7 +12,7 @@ define([
     getTeam: function (index, rng) {
       var faction = GWFactions[index],
         team = rng.pick(faction.teams); // GWO - was _.sample
-      return _.extend({}, team, {
+      return _.assign({}, team, {
         color: faction.color,
         faction: faction,
         remainingMinions: _.clone(faction.minions),

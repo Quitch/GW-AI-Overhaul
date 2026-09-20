@@ -10,11 +10,13 @@ define(function () {
   };
 
   var paths = function () {
-    return _.uniq(
-      _.filter(_.map(entries(), "path"), function (path) {
+    return _(entries())
+      .map("path")
+      .filter(function (path) {
         return _.isString(path) && path.length > 0;
       })
-    );
+      .uniq()
+      .value();
   };
 
   return {
@@ -73,7 +75,7 @@ define(function () {
         return (
           _.isString(entry.prefix) &&
           _.isString(id) &&
-          id.indexOf(entry.prefix) === 0
+          _.startsWith(id, entry.prefix)
         );
       });
 

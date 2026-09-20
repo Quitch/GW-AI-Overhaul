@@ -2,7 +2,7 @@
 // under the Node AMD harness - see testing.md, "Coverage".
 define(function () {
   var armyHasAI = function (army) {
-    return !!(army && _.isArray(army.slots) && _.any(army.slots, "ai"));
+    return !!(army && _.isArray(army.slots) && _.some(army.slots, "ai"));
   };
 
   // 0 is reported by validateRefereeState's own playerCount branch, which owns

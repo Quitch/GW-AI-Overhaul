@@ -75,9 +75,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     $.when(mfst.load()).always(function () {
       var known = !_.isFunction(mfst.listed) || !!mfst.listed();
       var active = mfst.activeServerMods();
-      var identifiers = _.map(active, function (mod) {
-        return mod.identifier;
-      });
+      var identifiers = _.map(active, "identifier");
       var detected = races.detect(identifiers);
       var detectedAddons = races.detectAddons(identifiers);
       races.activateAddons(_.pluck(detectedAddons, "id"));
@@ -86,7 +84,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
 
         return _.map(
           _.filter(active, function (mod) {
-            return _.contains(wanted, mod.identifier);
+            return _.includes(wanted, mod.identifier);
           }),
           function (mod) {
             return {

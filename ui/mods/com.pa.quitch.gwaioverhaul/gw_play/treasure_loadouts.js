@@ -15,11 +15,13 @@ define([
 
   // The distinct loadout ids in a list of cards or ids.
   var loadoutIdsOf = function (cards) {
-    return _.uniq(
-      _.filter(_.map(cards, cardId), function (id) {
+    return _(cards)
+      .map(cardId)
+      .filter(function (id) {
         return helpers.isStartLoadoutCardId(id);
       })
-    );
+      .uniq()
+      .value();
   };
 
   // The base game records only ids beginning "gwc_start", so every mod loadout a
@@ -72,7 +74,7 @@ define([
   // rejects are the ones the server pushes into a viewer's war inventory
   // instead of recording as an unlock.
   var isBaseLoadoutCardId = function (id) {
-    return _.isString(id) && id.indexOf("gwc_start") === 0;
+    return _.isString(id) && _.startsWith(id, "gwc_start");
   };
 
   // A loadout won mid-war unlocks the commander and nothing else, so its buff()
@@ -125,7 +127,7 @@ define([
       return false;
     }
 
-    return unlockedIds(record).indexOf(id) !== -1;
+    return _.includes(unlockedIds(record), id);
   };
 
   // The loadout this player is offered, or undefined once they hold them all.
@@ -157,7 +159,7 @@ define([
       : [];
 
     var localLocked = _.some(pool, function (card) {
-      return localIds.indexOf(card.id) === -1;
+      return !_.includes(localIds, card.id);
     });
     if (localLocked || !params.perPlayerTech) {
       return localLocked;

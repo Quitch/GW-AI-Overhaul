@@ -9,7 +9,7 @@ define(function () {
     var tokens = tokenize(expression);
     var index = 0;
     var has = function (tag) {
-      return _.contains(tags, tag);
+      return _.includes(tags, tag);
     };
 
     var parseAtom = function () {

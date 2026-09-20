@@ -259,8 +259,11 @@ define([
           // this way, we avoid duplicates selected from the list of planet templates
           // the key is the fromRandomList because it is keyed by instance while planetList
           // is new every time.
+          // Not the "planets", value shorthand: lodash 3 compares an array value
+          // by deep equality, and this lookup must be by instance.
           var usedIndexContainer = _.find(
             usedIndexContainers,
+            // eslint-disable-next-line lodash/matches-prop-shorthand
             function (container) {
               return container.planets === plnt.fromRandomList;
             }
@@ -284,9 +287,10 @@ define([
             return (
               (typeof plnt.isExplicit === "undefined" ||
                 !!planet.isExplicit === plnt.isExplicit) &&
-              usedIndexContainer.usedIndexes.indexOf(
+              !_.includes(
+                usedIndexContainer.usedIndexes,
                 planetList.indexOf(planet)
-              ) === -1
+              )
             );
           });
 
@@ -296,10 +300,10 @@ define([
             var attemptedIndexes = [];
             do {
               index = getRandomInt(0, viablePlanets.length - 1);
-              if (attemptedIndexes.indexOf(index) === -1)
+              if (!_.includes(attemptedIndexes, index))
                 attemptedIndexes.push(index);
             } while (
-              usedIndexContainer.usedIndexes.indexOf(index) !== -1 &&
+              _.includes(usedIndexContainer.usedIndexes, index) &&
               attemptedIndexes.length < viablePlanets.length
             );
           } else {

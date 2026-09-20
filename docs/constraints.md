@@ -7,6 +7,15 @@ X?".
 The scope is `ui/**` only. `scripts/**` and `test/**` are Node-only tooling and
 are exempt. `eslint.config.mjs` has a separate override block for them.
 
+The same `ui/**` scope carries the `eslint-plugin-lodash` `v3` rules, because `_`
+is a PA runtime global the Node tooling does not have. Every non-`prefer-*` rule is
+on. Of the `prefer-*` rules only `prefer-get`, `prefer-includes`, and
+`prefer-startswith` are kept, since there the lodash method stands in for a post-ES5
+feature Chrome 40 lacks (optional chaining, `includes`, and `startsWith`); the other
+fourteen are off as style preferences over ES5 equivalents. ESLint is held at 9.x
+because the plugin calls `context.getSourceCode`, which ESLint 10 removed, and
+`eslint-plugin-es-x` is held at 9.x for the same reason (its 10.x needs ESLint >= 10.6).
+
 ## The whitelist, not a denylist
 
 `eslint.config.mjs` applies `flat/restrict-to-es5` from `eslint-plugin-es-x` to

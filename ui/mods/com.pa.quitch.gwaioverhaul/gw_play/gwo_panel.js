@@ -186,19 +186,17 @@
           // same brain - every pre-table save, and any uniform table - else the
           // per-race list. See races.md.
           var recordedRaces = gwoSettings.races || {};
-          var warRaceIds = _.uniq(
-            _.filter(
-              _.map(
-                [gwoRaces.MLA_ID, recordedRaces.player].concat(
-                  _.values(recordedRaces.byFaction || {})
-                ),
-                gwoRaces.normalizeId
-              ),
-              function (id) {
-                return id.length > 0;
-              }
+          var warRaceIds = _(
+            [gwoRaces.MLA_ID, recordedRaces.player].concat(
+              _.values(recordedRaces.byFaction || {})
             )
-          );
+          )
+            .map(gwoRaces.normalizeId)
+            .filter(function (id) {
+              return id.length > 0;
+            })
+            .uniq()
+            .value();
           var raceName = function (id) {
             var descriptor = gwoRaces.byId(id);
             return descriptor ? loc(descriptor.name) : id;
@@ -306,10 +304,9 @@
           // resolves it. See coop.md.
           var coopColour = function (client) {
             var resolved = model.gwCoopPlayerColors();
-            var record = _.find(resolved, function (candidate) {
-              return (
-                candidate.id === client.id && candidate.name === client.name
-              );
+            var record = _.find(resolved, {
+              id: client.id,
+              name: client.name,
             });
 
             // No record means the base game could not resolve one; fall back
