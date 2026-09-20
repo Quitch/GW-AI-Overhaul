@@ -32,9 +32,7 @@ define([
     var allEdges = this.graph.getEdges();
     var outerEdges = this.graph.getOuterEdges();
     var innerEdges = _.filter(allEdges, function (testEdge) {
-      return !_.some(outerEdges, function (o) {
-        return testEdge[0] === o[0] && testEdge[1] === o[1];
-      });
+      return !_.some(outerEdges, { 0: testEdge[0], 1: testEdge[1] });
     });
     this.reducedGraph = new Graph(innerEdges);
     this.reducedGraph.reduceConnections(this.maxConnections, this.seed); // GWO - was (this.maxConnections)

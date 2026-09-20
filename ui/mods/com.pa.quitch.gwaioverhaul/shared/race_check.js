@@ -21,16 +21,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       )
       .concat(
         _.map(records || [], function (record) {
-          var tags = record && record.inventory && record.inventory.tags;
-          return tags && tags.global && tags.global.playerRace;
+          return _.get(record, "inventory.tags.global.playerRace");
         })
       );
 
-    return _.uniq(
-      _.filter(_.map(ids, races.normalizeId), function (id) {
+    return _(ids)
+      .map(races.normalizeId)
+      .filter(function (id) {
         return id.length && id !== races.MLA_ID;
       })
-    );
+      .uniq()
+      .value();
   };
 
   // { blocked, warnings }. `blocked` stops the war being fought; `warnings` are
@@ -39,11 +40,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   var evaluate = function (recorded, warRaceIds, info) {
     var blocked = [];
     var warnings = [];
-    var ids = _.uniq(
-      _.filter(_.map(warRaceIds || [], races.normalizeId), function (id) {
+    var ids = _(warRaceIds || [])
+      .map(races.normalizeId)
+      .filter(function (id) {
         return id.length && id !== races.MLA_ID;
       })
-    );
+      .uniq()
+      .value();
     // "Cannot tell" - Community Mods absent and nothing in the IndexedDB
     // fallback - is not "not installed". Nothing that depends on the installed
     // list is decided while it is false. See races.md.
@@ -70,7 +73,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
 
       wanted = wanted.concat(race.serverMods);
 
-      if (known && !_.contains(installed, race.id)) {
+      if (known && !_.includes(installed, race.id)) {
         absent.push(race);
       }
     });
@@ -103,7 +106,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
         return races.normalizeId(candidate.identifier) === identifier;
       });
       var addon = _.find(races.addons(), function (candidate) {
-        return _.contains(candidate.serverMods, identifier);
+        return _.includes(candidate.serverMods, identifier);
       });
 
       if (identifier && !active) {
@@ -120,7 +123,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
 
       // Recorded mods cover every race installed when the war was made, not
       // the ones it fields. Disabling a race this war never used is not news.
-      if (!_.contains(wanted, identifier)) {
+      if (!_.includes(wanted, identifier)) {
         return;
       }
 
@@ -159,7 +162,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     var active = _.pluck(info.races || [], "id");
 
     return _.filter(detected || [], function (race) {
-      return race.id === races.MLA_ID || _.contains(active, race.id);
+      return race.id === races.MLA_ID || _.includes(active, race.id);
     });
   };
 

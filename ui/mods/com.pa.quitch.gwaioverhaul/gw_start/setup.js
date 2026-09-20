@@ -673,7 +673,7 @@
           var loreRng = warRng.stream("lore");
           var raceInfo = model.gwoRaceInfo();
           var installedRaces = _.pluck(raceInfo.races, "id");
-          var playerRace = _.contains(
+          var playerRace = _.includes(
             installedRaces,
             model.gwoDifficultySettings.playerRace()
           )

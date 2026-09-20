@@ -18,7 +18,7 @@ define([
   var RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
 
   var mlaOnlyCard = function (cardId) {
-    if (_.contains(MLA_ONLY, cardId)) {
+    if (_.includes(MLA_ONLY, cardId)) {
       return true;
     }
     return /_upgrade_/.test(cardId) && !RACE_UPGRADES.test(cardId);

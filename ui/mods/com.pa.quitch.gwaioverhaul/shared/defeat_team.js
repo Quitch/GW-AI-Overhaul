@@ -40,7 +40,7 @@ define(function () {
           return _.has(teamOfFaction, foe.faction);
         });
         if (replacementAI) {
-          var newAI = _.extend({}, ai, replacementAI);
+          var newAI = _.assign({}, ai, replacementAI);
           newAI.team = teamOfFaction[replacementAI.faction];
           newAI.foes = _.without(ai.foes, replacementAI);
           delete newAI.minions;

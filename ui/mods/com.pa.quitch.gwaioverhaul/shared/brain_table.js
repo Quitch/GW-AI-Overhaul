@@ -12,7 +12,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   };
 
   var pick = function (value, options) {
-    return _.contains(options, value) ? value : undefined;
+    return _.includes(options, value) ? value : undefined;
   };
 
   // A row a race starts with: the war-wide choice, coerced where the race
@@ -48,7 +48,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     });
 
     var stale = _.filter(_.keys(table).sort(), function (id) {
-      return !_.contains(listed, races.normalizeId(id));
+      return !_.includes(listed, races.normalizeId(id));
     });
 
     return rows.concat(

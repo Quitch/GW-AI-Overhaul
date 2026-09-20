@@ -139,7 +139,7 @@ define([
 
   var hasServerMod = function (active, descriptor) {
     return _.some(descriptor.serverMods, function (identifier) {
-      return _.contains(active, identifier);
+      return _.includes(active, identifier);
     });
   };
 
@@ -195,7 +195,7 @@ define([
 
   var activeAddons = function () {
     return _.filter(addons(), function (addon) {
-      return _.contains(activeAddonIds, addon.id);
+      return _.includes(activeAddonIds, addon.id);
     });
   };
 
@@ -254,7 +254,7 @@ define([
     }
 
     return (
-      supported === "*" || _.contains(supported || [], normalizeId(raceId))
+      supported === "*" || _.includes(supported || [], normalizeId(raceId))
     );
   };
 
@@ -421,7 +421,7 @@ define([
 
   var layerClaims = function (layer, filePath) {
     return (
-      _.contains(layer.unitMaps, filePath) ||
+      _.includes(layer.unitMaps, filePath) ||
       _.some(layer.sources, function (source) {
         return matchesSource(filePath, source);
       })
@@ -462,9 +462,11 @@ define([
     // layer, MLA's add-ons included, is subtracted from the base. A file two
     // layers claim (Second Wave's aux map) is the race's when its own does.
     var own = (c.race && layers[c.race.id]) || { unitMaps: [], sources: [] };
-    var otherSources = _.flatten(
-      _.map(_.omit(layers, c.race ? c.race.id : ""), "sources")
-    );
+    var otherSources = _(layers)
+      .omit(c.race ? c.race.id : "")
+      .map("sources")
+      .flatten()
+      .value();
 
     var isUnitMap = function (filePath) {
       return _.some(own.unitMaps, function (map) {
@@ -477,7 +479,7 @@ define([
         return false;
       }
 
-      if (filePath === c.aiConfig || _.contains(c.baseMaps, filePath)) {
+      if (filePath === c.aiConfig || _.includes(c.baseMaps, filePath)) {
         return true;
       }
 
@@ -543,7 +545,7 @@ define([
       return (
         keep(filePath) &&
         filePath !== c.aiConfig &&
-        !_.contains(c.baseMaps, filePath)
+        !_.includes(c.baseMaps, filePath)
       );
     };
   };
@@ -617,12 +619,7 @@ define([
   var isRaceCommander = function (raceId, commanderPath) {
     var race = byId(raceId);
 
-    return (
-      !!race &&
-      _.some(race.commanders, function (commander) {
-        return commander.spec === commanderPath;
-      })
-    );
+    return !!race && _.some(race.commanders, "spec", commanderPath);
   };
 
   // The spec mods a race army needs for its commander: none for one of the
@@ -657,9 +654,7 @@ define([
   var assign = function (rng, factionIds, pool, options) {
     var unique = !!(options && options.unique);
     var taken = _.map((options && options.taken) || [], normalizeId);
-    var choices = _.filter(_.map(pool || [], normalizeId), function (id) {
-      return id.length;
-    });
+    var choices = _.filter(_.map(pool || [], normalizeId), "length");
     var result = {};
     var remaining = [];
 

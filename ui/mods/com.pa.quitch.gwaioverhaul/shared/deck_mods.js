@@ -14,7 +14,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js"], function (
     model.gwoDecks = _.isArray(model.gwoDecks) ? model.gwoDecks : [];
 
     _.forEach(model.gwoDecks, function (descriptor) {
-      if (_.contains(seen, descriptor)) {
+      if (_.includes(seen, descriptor)) {
         return;
       }
       seen.push(descriptor);

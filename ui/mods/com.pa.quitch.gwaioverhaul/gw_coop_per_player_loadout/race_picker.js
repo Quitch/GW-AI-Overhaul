@@ -81,7 +81,7 @@
             return;
           }
 
-          var startingRace = _.contains(_.pluck(host.races, "id"), host.race)
+          var startingRace = _.includes(_.pluck(host.races, "id"), host.race)
             ? host.race
             : races.MLA_ID;
 
@@ -118,7 +118,7 @@
                 model.commanders(choices);
                 if (
                   choices.length &&
-                  !_.contains(choices, model.selectedCommander.peek())
+                  !_.includes(choices, model.selectedCommander.peek())
                 ) {
                   model.selectedCommander(choices[0]);
                 }

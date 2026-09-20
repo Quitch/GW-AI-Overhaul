@@ -216,7 +216,7 @@ define([
     });
     if (!isCluster && faction === 4) {
       loadout = _.reject(loadout, function (mod) {
-        return _.contains(clusterSubCommanderFiles, mod.file);
+        return _.includes(clusterSubCommanderFiles, mod.file);
       });
     }
     return loadout;
