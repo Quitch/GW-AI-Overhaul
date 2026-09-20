@@ -4,7 +4,7 @@ This project welcomes any changes which aim to build upon existing features or s
 
 ## Tooling
 
-Run `npm ci` once to install this project's tooling (eslint, stylelint, prettier, markdownlint) at the exact pinned versions CI checks against - versions are pinned in `package.json`/`package-lock.json` rather than floating on latest, so a local pass means CI will pass too. Dependabot proposes version bumps as reviewable PRs.
+Run `npm ci` once to install this project's tooling (eslint, eslint-plugin-es-x, eslint-plugin-lodash, stylelint, prettier, markdownlint) at the exact pinned versions CI checks against - versions are pinned in `package.json`/`package-lock.json` rather than floating on latest, so a local pass means CI will pass too. Dependabot proposes version bumps as reviewable PRs.
 
 Before submitting a change, run:
 
