@@ -1,8 +1,9 @@
 // The measured half of gw_play/referee_game_files.js. Nothing here may touch an
 // engine global at define time - see testing.md, "Coverage".
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
-  gwoCard
-) {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
+], function (gwoCard, gwoUrl) {
   var getAIUnitMapPath = function (x1, aiInUse) {
     var append = x1 ? "_x1.json" : ".json";
 
@@ -121,7 +122,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   var specFetch = function (item) {
     return new Promise(function (resolve, reject) {
       $.ajax({
-        url: "coui:/" + item,
+        url: gwoUrl.gameFile(item),
         success: function (data) {
           try {
             data = JSON.parse(data);
@@ -174,7 +175,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   var mapCache = {};
   var loadMap = function (path) {
     if (!mapCache[path]) {
-      mapCache[path] = $.get("spec:/" + path).then(
+      mapCache[path] = $.get(gwoUrl.specFile(path)).then(
         function (data) {
           return parse(data);
         },

@@ -4,7 +4,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-], function (gwoAI, gwoCard, refereeAIPaths, refereeCoop, gwoRaces) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
+], function (gwoAI, gwoCard, refereeAIPaths, refereeCoop, gwoRaces, gwoUrl) {
   // The walk append, prepend and replace share. A build entry for toBuild that
   // carries idToMod (and refId/refValue, when given) is the target; otherwise
   // every test in its build_conditions that refId/refValue or matchAll selects
@@ -594,7 +595,7 @@ define([
       },
       getJSON: function (filePath) {
         return cached(files, filePath, function (path) {
-          return $.getJSON("coui:/" + path);
+          return $.getJSON(gwoUrl.gameFile(path));
         }).then(function (json) {
           return _.cloneDeep(json);
         });

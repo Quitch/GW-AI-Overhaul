@@ -451,6 +451,7 @@ describe("loadMap", () => {
     const stubs = createGlobalStubs();
     // A fresh path: mapCache is module-level and the case above filled it.
     const path = "/pa/ai/unit_maps/second_wave_legion.json";
+    const url = "spec://pa/ai/unit_maps/second_wave_legion.json";
     const outcomes = [
       jqRejected({ status: 404, statusText: "Not Found" }),
       jqResolved(JSON.stringify({ unit_map: { ok: true } })),
@@ -477,7 +478,7 @@ describe("loadMap", () => {
       assert.deepEqual(await refereeGameFiles.loadMap(path), {
         unit_map: { ok: true },
       });
-      assert.deepEqual(gets, ["spec:/" + path, "spec:/" + path]);
+      assert.deepEqual(gets, [url, url]);
     } finally {
       stubs.restoreGlobals();
     }

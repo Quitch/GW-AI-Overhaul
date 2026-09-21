@@ -1,8 +1,8 @@
 // A scene script, not an AMD module: gw_start and the co-op loadout scene both
 // bind to these before ko.applyBindings runs, so they cannot wait on a
-// requireGW. A race's commanders are not in the list CommanderUtility read at
-// page load, so their name and portrait come from the spec itself. See
-// races.md.
+// requireGW for the bindings themselves. A race's commanders are not in the
+// list CommanderUtility read at page load, so their name and portrait come
+// from the spec itself. See races.md.
 (function () {
   try {
     var commanderInfo = {};
@@ -15,23 +15,30 @@
           profile: CommanderUtility.bySpec.getProfileImage(spec),
         });
         if (!commanderInfo[spec]().name) {
-          $.getJSON("coui:/" + spec)
-            .done(function (data) {
-              var ui = _.get(data, "client.ui") || {};
-              commanderInfo[spec]({
-                name: (data && data.display_name) || spec,
-                image: ui.image ? "coui:/" + ui.image : undefined,
-                profile: ui.profile_image
-                  ? "coui:/" + ui.profile_image
-                  : undefined,
-              });
-            })
-            .fail(function () {
-              // Written before it is forgotten: the write re-runs the
-              // bindings, and a miss there would start the read again.
-              commanderInfo[spec]({ name: spec });
-              delete commanderInfo[spec];
-            });
+          // The observable is bound synchronously above; only the spec read
+          // waits on the module, so the URL builder can be required here.
+          requireGW(
+            ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js"],
+            function (gwoUrl) {
+              $.getJSON(gwoUrl.gameFile(spec))
+                .done(function (data) {
+                  var ui = _.get(data, "client.ui") || {};
+                  commanderInfo[spec]({
+                    name: (data && data.display_name) || spec,
+                    image: ui.image ? gwoUrl.gameFile(ui.image) : undefined,
+                    profile: ui.profile_image
+                      ? gwoUrl.gameFile(ui.profile_image)
+                      : undefined,
+                  });
+                })
+                .fail(function () {
+                  // Written before it is forgotten: the write re-runs the
+                  // bindings, and a miss there would start the read again.
+                  commanderInfo[spec]({ name: spec });
+                  delete commanderInfo[spec];
+                });
+            }
+          );
         }
       }
       return commanderInfo[spec]();

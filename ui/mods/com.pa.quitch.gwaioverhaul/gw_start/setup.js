@@ -357,6 +357,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
       ],
       function (
         GW,
@@ -382,7 +383,8 @@
         gwoRaces,
         gwoPromise,
         gwoBrainTable,
-        gwoPersonality
+        gwoPersonality,
+        gwoUrl
       ) {
         // Replaces GWGalaxy.prototype.build, which navToNewGame below calls.
         gwoGalaxyBuild.install();
@@ -1430,10 +1432,11 @@
 
           var onGameSaved = function () {
             model.lastSceneUrl(
-              "coui://ui/main/game/galactic_war/gw_start/gw_start.html"
+              gwoUrl.ui("ui/main/game/galactic_war/gw_start/gw_start.html")
             );
-            window.location.href =
-              "coui://ui/main/game/galactic_war/gw_play/gw_play.html";
+            window.location.href = gwoUrl.ui(
+              "ui/main/game/galactic_war/gw_play/gw_play.html"
+            );
           };
 
           var onSetupFinished = function () {

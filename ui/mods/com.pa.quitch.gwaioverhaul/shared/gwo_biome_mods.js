@@ -3,7 +3,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
-], function (gwoBiomes, gwoPromise) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_url.js",
+], function (gwoBiomes, gwoPromise, gwoUrl) {
   var modRecord = gwoBiomes.recordFrom;
 
   var manifest = function () {
@@ -208,7 +209,7 @@ define([
   // copy is byte-for-byte what the mod ships.
   var readEntry = function (mod, entry) {
     return settled(
-      $.ajax({ url: "spec:/" + mod.mountPath + entry, dataType: "text" }),
+      $.ajax({ url: gwoUrl.specFile(mod.mountPath + entry), dataType: "text" }),
       function () {
         return undefined;
       }
