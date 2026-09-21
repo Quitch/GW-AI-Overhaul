@@ -56,6 +56,9 @@ const NOT_IN_A_DECK = {
   gwc_start:
     "the base card every loadout is buffed through, not a dealable card - " +
     "its deal is _.constant(false) and it is in no deck",
+  gwaio_start_ceo:
+    "a retired loadout, dropped from loadout_ids.js but kept on disk so a war " +
+    "started on it still resumes",
 };
 
 // A card that is gated on holding another card, or on more than the units it

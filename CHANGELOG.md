@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- The Assault Commander, Storage Commander, and CEO Commander loadouts have been removed from Galactic War; a war already started with one of them continues
+
 ## v7.3.2 - 2026-09-17
 
 ### Bugfix

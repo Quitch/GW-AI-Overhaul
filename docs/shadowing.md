@@ -103,8 +103,10 @@ removed without its row therefore fails `npm run verify`.
 `gw_inventory.js`'s `removeUnits` change is a **reversal of documented base-game
 behaviour**. Stock explicitly notes that it does not perform set removes. In stock,
 multiple adds and a single remove therefore leave the unit available. Anyone who
-reasons from base-game knowledge will be wrong here. At least one card's logic
-(`gwc_start_allfactory.js`) depends on the new behaviour.
+reasons from base-game knowledge will be wrong here. Every loadout's `dull`
+depends on the new behaviour: `gwoCard.loadout` in `shared/cards.js` removes the
+loadout's `dulls` with a single `removeUnits`, which must hold even where another
+card has added the same unit.
 
 ### `ui/main/game/galactic_war/cards/`
 
