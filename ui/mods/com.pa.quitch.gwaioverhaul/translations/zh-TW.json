@@ -632,9 +632,6 @@
   "Starting economy.": {
     "message": "起始經濟。"
   },
-  "Starts with a 25% boost to metal and energy production and is able to build metal and energy storage. Unable to build close-range armored tanks.": {
-    "message": "起始時金屬與能源產量提升 25%，並能建造金屬與能源儲存設施。無法建造近距離裝甲坦克。"
-  },
   "Static Tech": {
     "message": "固定科技"
   },

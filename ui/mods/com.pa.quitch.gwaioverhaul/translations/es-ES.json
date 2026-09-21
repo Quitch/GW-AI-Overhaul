@@ -641,9 +641,6 @@
   "Starting economy.": {
     "message": "Economía inicial."
   },
-  "Starts with a 25% boost to metal and energy production and is able to build metal and energy storage. Unable to build close-range armored tanks.": {
-    "message": "Empieza con una mejora del 25% en la producción de metal y energía y puede construir almacenes de metal y energía. No puede construir tanques blindados de corto alcance."
-  },
   "Static Tech": {
     "message": "Tecnología fija"
   },

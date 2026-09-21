@@ -310,6 +310,13 @@ runs on every buff of the start card, for work that must repeat. `dull` is
 `applyDulls` over `dulls`. `gwoCard.lockedHint(description)` is the `hint` a locked
 loadout shows.
 
+Retiring a loadout is one edit to `loadout_ids.js`: dropping the id removes it from
+the picker, the treasure pool and the deck at once. A `gwc_` shadow is then deleted,
+and stock's copy takes over for a saved war on it. A GWO-authored card has no stock
+copy behind it, so the card file and everything its `buff` reaches stay on disk;
+otherwise a war started on it loses its starting units on the next `applyCards`.
+`gwaio_start_ceo` is the example.
+
 Unlocks and victory badges live in `localStorage` under `gwaio_`-prefixed keys.
 Badge indices run from **-1 (Beginner)** so that Casual is 0. See the `loadoutIcon`
 switch in `shared/cards.js`, and `gw_war_over/stats.js`. `stats.js` reads tiers from
