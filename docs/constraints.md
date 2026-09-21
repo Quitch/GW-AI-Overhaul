@@ -336,3 +336,11 @@ Knockout virtual bindings look like comments but are **executable markup**:
 ```
 
 They are not comments. Never remove them as comments.
+
+## Engine URLs
+
+The engine serves game files over the `coui://` scheme (and unit-spec reads
+over `spec://`). Static references stay literal; dynamic URL builders go
+through `shared/gwo_url.js`, and `scripts/migrate/rewrite-scheme.js` re-points
+everything at once if the CEF port renames the scheme. See
+[cef-migration.md](cef-migration.md).

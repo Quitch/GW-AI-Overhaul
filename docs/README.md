@@ -37,6 +37,7 @@ Then read the doc for the subsystem you are changing.
 | [testing.md](testing.md)                   | The Node AMD harness and the validators                                 | `scripts/lib/amd-loader.js`  |
 | [translations.md](translations.md)         | Translation files, the i18n tooling, the catalog and the scope rule     | `scripts/lib/loc-keys.js`    |
 | [live-testing.md](live-testing.md)         | Checking a change in a running game: clients, logs, and console recipes | -                            |
+| [cef-migration.md](cef-migration.md)       | Engine URL scheme, the scheme rewriter, the post-CEF modernisation pass | `scripts/lib/scheme.js`      |
 
 ## Things that surprise people
 

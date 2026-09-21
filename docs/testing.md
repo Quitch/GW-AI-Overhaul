@@ -37,7 +37,11 @@ dead-in-production test hook. That hook is the `typeof module` hook described
 under "Coverage" below.
 
 `loadCouiModule` resolves both `coui://` paths and bare AMD ids (`"cards/x"`,
-`"shared/x"`) the same way the game's loader would.
+`"shared/x"`) the same way the game's loader would. The scheme it resolves
+comes from `scripts/lib/scheme.js`, the Node-side source of truth paired with
+the shipped `shared/gwo_url.js`; `scripts/migrate/rewrite-scheme.js` rewrites
+both, plus every static literal, if the CEF port changes the scheme. See
+[cef-migration.md](cef-migration.md).
 
 ### `NOT_SHIPPED`
 
