@@ -6,9 +6,9 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { UI_SCHEME } = require("./scheme.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
-const COUI_PREFIX = "coui://";
 const GW_ROOT = path.join(REPO_ROOT, "ui", "main", "game", "galactic_war");
 
 // Namespace -> directory under GW_ROOT, where the two differ. Bare ids are the
@@ -61,10 +61,10 @@ function resolveBareId(entry) {
 // -> the repo path a coui:// entry names, or undefined for any other entry.
 // Does not check existence; resolveEntryPath does.
 function couiToFsPath(entry) {
-  if (!entry.startsWith(COUI_PREFIX)) {
+  if (!entry.startsWith(UI_SCHEME)) {
     return undefined;
   }
-  return path.resolve(REPO_ROOT, entry.slice(COUI_PREFIX.length));
+  return path.resolve(REPO_ROOT, entry.slice(UI_SCHEME.length));
 }
 
 function resolveEntryPath(entry) {

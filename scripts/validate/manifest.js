@@ -6,6 +6,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { REPO_ROOT, couiToFsPath } = require("../lib/amd-loader.js");
+const { UI_SCHEME } = require("../lib/scheme.js");
 const { reportProblems } = require("../lib/report-failures.js");
 
 const MODINFO_PATH = path.join(REPO_ROOT, "modinfo.json");
@@ -26,7 +27,12 @@ function validateScene(sceneName, files, failures) {
     const fsPath = couiToFsPath(entry);
     if (!fsPath) {
       failures.push(
-        "scene `" + sceneName + "` entry is not a coui:// path: " + entry
+        "scene `" +
+          sceneName +
+          "` entry is not a " +
+          UI_SCHEME +
+          " path: " +
+          entry
       );
       continue;
     }
