@@ -125,7 +125,7 @@
           );
           if (
             choices.length &&
-            !_.contains(choices, model.selectedCommander.peek())
+            !_.includes(choices, model.selectedCommander.peek())
           ) {
             model.selectedCommander(choices[0]);
           }
@@ -164,7 +164,7 @@
           // resolves, and it outranks the remembered race.
           var wanted = model.gwoRaceSelectDisabled() ? races.MLA_ID : savedRace;
           settings.playerRace(
-            _.contains(installed, wanted) ? wanted : races.MLA_ID
+            _.includes(installed, wanted) ? wanted : races.MLA_ID
           );
           $(raceSelectId).selectpicker("val", settings.playerRace());
           $(raceSelectId).selectpicker("refresh");

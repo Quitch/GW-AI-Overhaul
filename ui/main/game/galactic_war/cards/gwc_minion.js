@@ -9,10 +9,7 @@ define([
   var coopMinionCount = function () {
     var game = model.game();
     // Counts minions of absent players too, in case one rejoins.
-    var coopPlayerInventoryData =
-      game.coopPlayerInventoryData && _.isFunction(game.coopPlayerInventoryData)
-        ? game.coopPlayerInventoryData()
-        : [];
+    var coopPlayerInventoryData = game.coopPlayerInventoryData();
     var minionCount = 0;
     _.forEach(coopPlayerInventoryData, function (playerData) {
       if (
@@ -55,7 +52,7 @@ define([
     getContext: function (galaxy, inventory) {
       return {
         totalSize: galaxy.stars().length,
-        faction: inventory.getTag("global", "playerFaction") || 0,
+        faction: inventory.getTag("global", "playerFaction"),
       };
     },
     deal: function (system, context, inventory, rng) {
@@ -72,7 +69,7 @@ define([
         ])
       ) {
         chance = 0;
-      } else if (inventory.minions) {
+      } else {
         var hostMinionCount = inventory.minions().length;
         var allMinionCount = coopMinionCount();
         var totalMinions = Math.max(hostMinionCount, allMinionCount);

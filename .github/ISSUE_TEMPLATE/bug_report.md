@@ -44,6 +44,7 @@ If applicable, add screenshots to help explain your problem.
 Taken from the top-right GWO panel:
 
 - Version:
+- Seed:
 - Difficulty:
 - Size:
 - Enemy AI:

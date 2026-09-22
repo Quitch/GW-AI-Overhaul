@@ -41,10 +41,6 @@
     };
 
     var showBlockPopUp = function () {
-      if (!_.isFunction(model.popUp)) {
-        return;
-      }
-
       model.popUp({ msg: blockMessage(), tags: { primary: "!LOC:OK" } });
     };
 
@@ -58,10 +54,6 @@
     // referee; whichever wrapper is outermost, a blocked war never launches.
     var gateAction = function (name) {
       var stock = model[name];
-
-      if (!_.isFunction(stock)) {
-        return;
-      }
 
       model[name] = function () {
         if (blocked()) {
@@ -79,22 +71,18 @@
       var stockBlocked = model.gwCampaignFightBlocked;
       var stockTooltip = model.gwCampaignFightTooltip;
 
-      if (ko.isObservable(stockBlocked)) {
-        model.gwCampaignFightBlocked = ko.computed(function () {
-          return blocked() || stockBlocked();
-        });
-      }
+      model.gwCampaignFightBlocked = ko.computed(function () {
+        return blocked() || stockBlocked();
+      });
 
-      if (ko.isObservable(stockTooltip)) {
-        model.gwCampaignFightTooltip = ko.computed(function () {
-          if (model.gwoRaceBlock().length > 0) {
-            return "!LOC:A race this war fields is missing";
-          }
-          return blocked()
-            ? "!LOC:A map pack this war uses is missing"
-            : stockTooltip();
-        });
-      }
+      model.gwCampaignFightTooltip = ko.computed(function () {
+        if (model.gwoRaceBlock().length > 0) {
+          return "!LOC:A race this war fields is missing";
+        }
+        return blocked()
+          ? "!LOC:A map pack this war uses is missing"
+          : stockTooltip();
+      });
     };
 
     // A binding captures the computed it was given, so the swap has to precede
@@ -138,16 +126,14 @@
         // Every race this client has to answer for. See coop.md, "Shared tech
         // versus per-player tech".
         var racesToPrime = function (info) {
-          var record =
-            _.isFunction(model.currentCoopPlayerInventoryData) &&
-            model.currentCoopPlayerInventoryData();
+          var record = model.currentCoopPlayerInventoryData();
           var own = gwoRaces.raceOf(
             (record && record.inventory) || model.game().inventory()
           );
 
           if (
             !(recorded && recorded.perPlayerRace) ||
-            !(_.isFunction(model.isCampaignHost) && model.isCampaignHost())
+            !model.isCampaignHost()
           ) {
             return [own];
           }
@@ -204,10 +190,8 @@
         });
         // Under Separate races a viewer's race lives only on its co-op
         // record - recorded.player and byFaction never see it. See coop.md.
-        var records =
-          _.isFunction(model.game().coopPlayerInventoryData) &&
-          model.game().coopPlayerInventoryData();
-        var warRaceIds = raceCheck.warRaces(recorded, ais, records || []);
+        var records = model.game().coopPlayerInventoryData();
+        var warRaceIds = raceCheck.warRaces(recorded, ais, records);
 
         var describe = function (entry) {
           if (entry.reason === "descriptor") {

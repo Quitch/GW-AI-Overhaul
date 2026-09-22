@@ -107,20 +107,12 @@ define(function () {
     };
   };
 
-  // api.file.zip.catalog returns [{name, crc32, size}] (observed, PA 124673);
-  // a bare path list and a wrapping object are accepted in case that changes.
+  // api.file.zip.catalog returns [{name, crc32, size}] (PA 124673).
   var catalogEntries = function (catalog) {
-    var list = catalog;
-
-    if (list && !_.isArray(list)) {
-      list = list.files || list.entries || list.catalog || [];
-    }
     return _.compact(
-      _.map(list || [], function (entry) {
-        var path = _.isString(entry)
-          ? entry
-          : entry && (entry.path || entry.name || entry.file);
-        return _.isString(path) ? path.replace(/^\.?\/+/, "") : undefined;
+      _.map(catalog, function (entry) {
+        var name = entry && entry.name;
+        return _.isString(name) ? name.replace(/^\.?\/+/, "") : undefined;
       })
     );
   };

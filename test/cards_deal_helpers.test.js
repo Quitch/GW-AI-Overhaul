@@ -400,6 +400,8 @@ describe("buildGeneralCommanderMinions", () => {
         gwoSettings: opts.gwoSettings || { aiAlly: "TITANS" },
         gwoAI: gwoAI,
         gwoCard: gwoCard,
+        races: { isMla: () => true },
+        race: "mla",
         rng: opts.seed === undefined ? undefined : gwoRng.create(opts.seed),
       });
     } finally {

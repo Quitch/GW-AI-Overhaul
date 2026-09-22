@@ -63,7 +63,6 @@ define([
   // undefined while no add-on is mounted. See races.md and coop.md.
   var generateUnitSpecsForPlayer = function (inventory, playerTag) {
     var done = $.Deferred();
-    var titans = api.content.usingTitans();
     var race = gwoRaces.raceOf(inventory);
     var isMla = gwoRaces.isMla(race);
     var cellsLoad = gwoRaceCells.indexFor(race);
@@ -79,7 +78,7 @@ define([
     var loadMap = gameFilePaths.loadMap;
     var loads = [
       loadMap(mapPath + ".json"),
-      titans ? loadMap(mapPath + "_x1.json") : {},
+      loadMap(mapPath + "_x1.json"),
     ].concat(_.map(raceMaps, loadMap));
     // Gathered into one first: a jQuery promise adopted by a native one hands
     // over its first argument only, as referee_game_files.js notes.
@@ -114,12 +113,10 @@ define([
           : merged;
       };
       var aiUnitMap = merge(maps[0]);
-      var aiX1UnitMap = titans ? merge(maps[1]) : {};
+      var aiX1UnitMap = merge(maps[1]);
 
       var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
-      var playerX1AIUnitMap = titans
-        ? GW.specs.genAIUnitMap(aiX1UnitMap, playerTag)
-        : {};
+      var playerX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, playerTag);
       var held = inventory.units().concat(model.gwoSpecs);
       // A race viewer fields the race's units of the cells the vanilla ones
       // held occupy; an MLA viewer keeps everything held and gains the
@@ -136,7 +133,7 @@ define([
       // commanderModsFor is a no-op for a commander already of the race, and
       // for MLA.
       var viewerCommanders = [inventory.getTag("global", "commander")].concat(
-        _.pluck(inventory.minions ? inventory.minions() : [], "commander")
+        _.pluck(inventory.minions(), "commander")
       );
       var retagMods = _.flatten(
         _.map(viewerCommanders, function (commander) {
@@ -178,11 +175,9 @@ define([
           playerFilesClassic[
             playerScopedPath + "unit_maps/ai_unit_map.json" + playerTag
           ] = playerAIUnitMap;
-          if (titans) {
-            playerFilesX1[
-              playerScopedPath + "unit_maps/ai_unit_map_x1.json" + playerTag
-            ] = playerX1AIUnitMap;
-          }
+          playerFilesX1[
+            playerScopedPath + "unit_maps/ai_unit_map_x1.json" + playerTag
+          ] = playerX1AIUnitMap;
 
           var playerFiles = _.assign(
             {},
@@ -281,7 +276,6 @@ define([
     ) {
       var connectedClient = connectedClients[clientIndex];
       var inventoryDataRecord =
-        _.isFunction(game.findCoopPlayerInventoryData) &&
         game.findCoopPlayerInventoryData(connectedClient);
 
       if (!inventoryDataRecord) {
@@ -310,21 +304,6 @@ define([
       }
 
       var loadedInventory = loadInventoryFromRecord(inventoryDataRecord);
-      if (
-        !_.isFunction(loadedInventory.units) ||
-        !_.isFunction(loadedInventory.mods) ||
-        !_.isFunction(loadedInventory.minions)
-      ) {
-        console.error(
-          "[GW COOP] Invalid co-op player inventory for client " +
-            JSON.stringify(connectedClient)
-        );
-        config.per_player_tech_ready = false;
-        referee.config(config);
-        done.resolve(false);
-        return done.promise();
-      }
-
       playerInventories[clientIndex] = loadedInventory;
       playerCommanders[clientIndex] = stripKnownSpecTag(
         inventoryDataRecord.commander

@@ -1,3 +1,5 @@
+// Not in shared/loadout_ids.js: retired from the loadout picker, the treasure
+// pool and the deck, but kept on disk so a war started on it still resumes.
 define([
   "module",
   "cards/gwc_start",

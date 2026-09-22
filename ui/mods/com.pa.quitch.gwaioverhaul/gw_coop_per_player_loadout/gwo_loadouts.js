@@ -167,11 +167,7 @@
         // The tech deck would not serve: this scene deals one card, the loadout.
         // gw_start/setup.js loads the host's start cards from allCards for the
         // same reason.
-        var loadoutIds = _.uniq(
-          _.map(loadouts.allCards, function (cardData) {
-            return cardData.id;
-          })
-        );
+        var loadoutIds = _.uniq(_.map(loadouts.allCards, "id"));
 
         var cards = [];
         var deck = [];
@@ -197,9 +193,7 @@
           // game - and the race with it.
           hostWar.load().then(function (host) {
             var dealInventory = new GWInventory();
-            var viewerRace = _.isFunction(model.gwoViewerRace)
-              ? model.gwoViewerRace()
-              : undefined;
+            var viewerRace = model.gwoViewerRace();
             var globalTags = buildGlobalTags(
               commander,
               host && host.faction,

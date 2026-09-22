@@ -39,15 +39,9 @@
     var helpers;
 
     var currentCoopPendingTechCards = function () {
-      if (
-        model.currentCoopPendingTechCards &&
-        model.canChooseCoopTechCards &&
-        model.canChooseCoopTechCards()
-      ) {
-        return model.currentCoopPendingTechCards();
-      }
-
-      return undefined;
+      return model.canChooseCoopTechCards()
+        ? model.currentCoopPendingTechCards()
+        : undefined;
     };
 
     model.rerollTech = function () {
@@ -61,7 +55,6 @@
       if (pendingTechCards) {
         if (
           helpers.pendingCardsContainLoadout(pendingTechCards) ||
-          !model.sendCampaignViewerOperator ||
           !model.gwCampaignConnected() ||
           model.gwoRerollPending()
         ) {
@@ -138,7 +131,7 @@
           pendingTechCards.updatedAt,
           pendingTechCards.cardsOffered,
           pendingTechCards.rerollsUsed,
-          pendingTechCards.cards && pendingTechCards.cards.length,
+          pendingTechCards.cards.length,
         ].join("|");
         if (key === coopPendingRerollKey) {
           return;
@@ -653,7 +646,7 @@
             return;
           }
 
-          if (!game || !game.explore()) {
+          if (!game.explore()) {
             return;
           }
 
@@ -753,8 +746,7 @@
               explorationLive &&
               force !== true &&
               (ok || startLoadoutCards.length) &&
-              star.cardList().length &&
-              _.isFunction(game.recordHostTechCardDeal)
+              star.cardList().length
             ) {
               dealEntry = game.recordHostTechCardDeal(starIndex, {
                 startLoadoutCards: startLoadoutCards,

@@ -40,11 +40,6 @@ describe("coop_host.reply", () => {
       ],
     ]);
   });
-
-  it("is a no-op when the model cannot send host operators", () => {
-    stubs.setGlobal("model", {});
-    coopHost.reply("gwo_result", operator, {});
-  });
 });
 
 describe("coop_host.fail", () => {

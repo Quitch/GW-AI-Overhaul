@@ -3,13 +3,17 @@ define(function () {
     return _.isArray(ids) ? ids : [];
   };
 
+  var contains = function (ids, id) {
+    return !!id && _.includes(ids, id);
+  };
+
   var isFavourite = function (ids, id) {
-    return !!id && _.includes(normalizeIds(ids), id);
+    return contains(normalizeIds(ids), id);
   };
 
   var toggleId = function (ids, id) {
     var current = normalizeIds(ids);
-    return isFavourite(current, id)
+    return contains(current, id)
       ? _.without(current, id)
       : current.concat([id]);
   };
@@ -21,7 +25,7 @@ define(function () {
   var sortCardsByFavourite = function (cards, favouriteIds, getId) {
     var ids = normalizeIds(favouriteIds);
     var split = _.partition(cards, function (card) {
-      return isFavourite(ids, getId(card));
+      return contains(ids, getId(card));
     });
     var cardsById = _.indexBy(split[0], function (card) {
       return getId(card);

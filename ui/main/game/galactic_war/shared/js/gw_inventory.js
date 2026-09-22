@@ -31,10 +31,7 @@ define([
   var stockPatch = gwoGamePatches.patch;
   gwoGamePatches.patch = function (game) {
     loadingAnotherPlayersCards = !!(
-      isCampaignViewerSession() &&
-      game &&
-      _.isFunction(game.perPlayerTechCards) &&
-      game.perPlayerTechCards()
+      isCampaignViewerSession() && game.perPlayerTechCards()
     );
     gwoDefeatTeam.install(game);
     return stockPatch.apply(this, arguments);

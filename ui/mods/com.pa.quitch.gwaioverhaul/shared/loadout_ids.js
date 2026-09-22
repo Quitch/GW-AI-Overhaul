@@ -14,13 +14,10 @@ define(function () {
     "gwc_start_artillery",
     "gwc_start_subcdr",
     "gwc_start_combatcdr",
-    "gwc_start_allfactory",
-    "gwc_start_storage",
   ];
 
   // Loadouts this mod adds, also unlocked by winning a war.
   var unlockable = [
-    "gwaio_start_ceo",
     "gwaio_start_paratrooper",
     "nem_start_deepspace",
     "nem_start_nuke",

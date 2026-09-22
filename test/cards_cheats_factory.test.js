@@ -95,6 +95,7 @@ function setup(overrides = {}) {
       },
     },
     gwoAI: { name: "ai" },
+    races: { raceOf: () => "mla" },
     GWFactions: factions,
     gwoSave: (game, flag) => calls.saves.push(flag),
     cards: ["deck"],

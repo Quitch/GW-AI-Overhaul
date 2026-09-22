@@ -6,16 +6,12 @@
 // reads model.game(), which is the host's game object. The Math.max over the two
 // is what reconciles them; cards_deal_seeding.test.js deals against an inventory
 // with no minions and no co-op records, so neither arm was ever discriminated.
-//
-// gwc_minion is in KNOWN_UNLOADABLE because gw_factions reads api at define
-// time. Stubbing api first is enough - that list is about what loads bare.
 
 const { describe, it, before, after, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
-setGlobal("api", { content: { usingTitans: () => true } });
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const minionCard = loadCouiModule(
@@ -51,17 +47,14 @@ const coopRecord = (id, minionCount) => ({
 });
 
 function install(over) {
-  const options = Object.assign({ coopRecords: [], omitCoop: false }, over);
+  const options = Object.assign({ coopRecords: [] }, over);
   const game = {
     galaxy: () => ({
       origin: () => 0,
       stars: () => [{ system: () => ({ gwaio: { ai: "TITANS" } }) }],
     }),
+    coopPlayerInventoryData: () => options.coopRecords,
   };
-
-  if (!options.omitCoop) {
-    game.coopPlayerInventoryData = () => options.coopRecords;
-  }
 
   setGlobal("model", { game: () => game });
 }
@@ -144,10 +137,6 @@ describe("gwc_minion weight - counting Sub Commanders", () => {
 });
 
 describe("gwc_minion weight - malformed co-op state", () => {
-  it("treats a war with no co-op records at all as solo", () => {
-    assert.equal(chanceFor({ omitCoop: true }, minions(1)), BASE_CHANCE / 2);
-  });
-
   it("contributes nothing for a record it cannot read, rather than aborting", () => {
     const broken = [
       null,

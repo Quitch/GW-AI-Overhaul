@@ -52,6 +52,12 @@ named:
   unsupported declaration is dropped silently rather than erroring, so
   `stylelint.config.mjs` is the CSS half of that whitelist and the answer to "may I
   use this property?". ([`constraints.md`](docs/constraints.md))
+- **The lodash `v3` lint rules cover `ui/**` only, and ESLint is held at 9.x.**
+  Every non-`prefer-*` rule is on; of the `prefer-*` rules only `prefer-get`,
+  `prefer-includes`, and `prefer-startswith` are kept, where the lodash method
+  stands in for a post-ES5 feature Chrome 40 lacks. `eslint-plugin-lodash` calls
+  `context.getSourceCode`, which ESLint 10 removed, so `eslint`, `@eslint/js`,
+  and `eslint-plugin-es-x` stay on 9.x and Dependabot ignores their major bumps.
 - **A shadowed file is a full copy, not a diff.** Prefer injecting into a scene or
   hijacking a function; shadow only when neither works.
   ([`shadowing.md`](docs/shadowing.md))

@@ -240,16 +240,10 @@ so do the Guardians' borrowed player mods.
 The player picks the brain **per race and per side** in `gw_start`'s AI modal
 (`ai_picker.js` + `shared/brain_table.js`). The modal has one row per
 installed race, and an Opponent and an Ally cell per row. Each cell offers only
-`brainsFor([race])`, minus Queller on classic content. The MLA row is the
+`brainsFor([race])`. The MLA row is the
 war-wide `gwoDifficultySettings.ai`/`aiAlly` pair. The other rows live in
 `gwoDifficultySettings.aiByRace`, and the war records them, coerced, as
 `gwaio.aiByRace` beside the strings.
-
-The modal does not rewrite the settings until it is applied, so a Queller
-stored under TITANS is still there in a classic session. `setup.js` therefore
-reads every brain through `brain_table.forContent`, which turns Queller into
-Titans on classic content for the war alone. The stored choice is untouched and
-returns with TITANS.
 
 `shared/ai.js`'s `warBrain(alignment, race)` reads the race's row, and
 otherwise uses the strings. So a war saved before the table behaves exactly as

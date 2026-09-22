@@ -4,10 +4,6 @@
 // "Addressing a host's reply".
 define(function () {
   var reply = function (type, operator, payload) {
-    if (!model.sendCampaignHostOperator) {
-      return;
-    }
-
     model.sendCampaignHostOperator(
       type,
       _.assign(

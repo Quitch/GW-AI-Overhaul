@@ -51,7 +51,7 @@ those cards. For those sweeps, `registerModuleStub` is an opt-in escape hatch.
 It does **not** weaken the default.
 
 `scripts/lib/card-probe.js` takes that hatch. With `shared/gw_common` stubbed,
-every card but the `KNOWN_UNLOADABLE` one loads. That sits oddly beside
+every card loads. That sits oddly beside
 `validate:cards`'s `MIN_CHECKED` floor until you notice that they answer
 different questions. The validator refuses the hatch on purpose. Its number is
 therefore what can be checked with no stand-in at all.

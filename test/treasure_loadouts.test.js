@@ -96,7 +96,7 @@ describe("treasureLoadoutPool", () => {
 
     assert.ok(!forRace.includes("gwaio_start_paratrooper"));
     assert.ok(!forRace.includes("gwaio_start_nomad"));
-    assert.ok(forRace.includes("gwaio_start_ceo"));
+    assert.ok(forRace.includes("gwaio_start_tourist"));
     assert.deepEqual(
       forMla,
       treasure.treasureLoadoutPool().map((c) => c.id)
@@ -110,7 +110,10 @@ describe("treasureLoadoutPool", () => {
     );
 
     assert.ok(ids.includes("mym_start_one"), "the mod loadout is unreachable");
-    assert.ok(ids.includes("gwaio_start_ceo"), "GWO's own are still offered");
+    assert.ok(
+      ids.includes("gwaio_start_tourist"),
+      "GWO's own are still offered"
+    );
   });
 
   it("accepts a bare id as well as a card object", () => {
@@ -122,12 +125,12 @@ describe("treasureLoadoutPool", () => {
   });
 
   it("deduplicates a mod id that collides with a shipped one", () => {
-    const ids = withModLoadouts([{ id: "gwaio_start_ceo" }], () =>
+    const ids = withModLoadouts([{ id: "gwaio_start_tourist" }], () =>
       treasure.treasureLoadoutPool().map((card) => card.id)
     );
 
     assert.equal(
-      ids.filter((id) => id === "gwaio_start_ceo").length,
+      ids.filter((id) => id === "gwaio_start_tourist").length,
       1,
       "a duplicate would weight that loadout twice in the draw"
     );

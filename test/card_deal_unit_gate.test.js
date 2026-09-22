@@ -27,7 +27,7 @@ const {
   starterUnits,
 } = require("../scripts/lib/card-probe.js");
 
-const { byFile, unloadable } = loadAllCards();
+const { byFile } = loadAllCards();
 
 const gwoUnit = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
@@ -50,12 +50,15 @@ const MIN_PROBED = 190;
 const MIN_DEALABLE = 169;
 
 // Cards with no card_units.js entry that are neither a loadout nor listed in
-// gwoCardsWithoutTooltip. Shaped like KNOWN_UNLOADABLE: an id and the reason it is
-// out of scope, so the exclusion is argued rather than assumed.
+// gwoCardsWithoutTooltip: an id and the reason it is out of scope, so the
+// exclusion is argued rather than assumed.
 const NOT_IN_A_DECK = {
   gwc_start:
     "the base card every loadout is buffed through, not a dealable card - " +
     "its deal is _.constant(false) and it is in no deck",
+  gwaio_start_ceo:
+    "a retired loadout, dropped from loadout_ids.js but kept on disk so a war " +
+    "started on it still resumes",
 };
 
 // A card that is gated on holding another card, or on more than the units it
@@ -193,8 +196,7 @@ describe("every shipped card is accounted for", () => {
         !affectedById.has(id) &&
         !LOADOUTS.has(id) &&
         !NO_TOOLTIP.has(id) &&
-        !Object.prototype.hasOwnProperty.call(NOT_IN_A_DECK, id) &&
-        !unloadable.includes(file)
+        !Object.prototype.hasOwnProperty.call(NOT_IN_A_DECK, id)
       );
     });
     assert.deepEqual(

@@ -91,9 +91,7 @@ define(function () {
         return;
       }
 
-      if (model.gwoRequestInteractiveFrames) {
-        model.gwoRequestInteractiveFrames(LIFETIME_MS);
-      }
+      model.gwoRequestInteractiveFrames(LIFETIME_MS);
 
       var state = live[star];
       if (state) {

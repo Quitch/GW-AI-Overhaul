@@ -18,7 +18,7 @@ define([
   var RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
 
   var mlaOnlyCard = function (cardId) {
-    if (_.contains(MLA_ONLY, cardId)) {
+    if (_.includes(MLA_ONLY, cardId)) {
       return true;
     }
     return /_upgrade_/.test(cardId) && !RACE_UPGRADES.test(cardId);
@@ -258,7 +258,7 @@ define([
     // A Sub Commander fights as the player's race, with one of its commanders.
     // Mutates the subcommander; a no-op for MLA.
     applyRaceToSubcommander: function (subcommander, races, race, rng) {
-      if (!races || races.isMla(race)) {
+      if (races.isMla(race)) {
         return subcommander;
       }
       subcommander.race = race;

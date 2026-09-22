@@ -17,7 +17,7 @@
         if (!commanderInfo[spec]().name) {
           $.getJSON("coui:/" + spec)
             .done(function (data) {
-              var ui = (data && data.client && data.client.ui) || {};
+              var ui = _.get(data, "client.ui") || {};
               commanderInfo[spec]({
                 name: (data && data.display_name) || spec,
                 image: ui.image ? "coui:/" + ui.image : undefined,

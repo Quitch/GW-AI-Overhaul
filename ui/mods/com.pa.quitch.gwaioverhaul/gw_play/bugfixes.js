@@ -155,7 +155,7 @@
         }
 
         // A neutral star's ai() is undefined.
-        var ai = ko.isObservable(star.ai) ? star.ai() : undefined;
+        var ai = star.ai();
         if (!gwoSettings.clusterFixed && ai && ai.isCluster) {
           fixClusterCommanderTypes(ai);
         }

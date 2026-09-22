@@ -52,7 +52,7 @@ define([
       return done.promise();
     }
 
-    if (!window.localStorage || !window.localStorage.installedModsDB) {
+    if (!window.localStorage.installedModsDB) {
       return done.resolve([]).promise();
     }
     var installed = ko.observableArray([]).extend({
@@ -201,15 +201,7 @@ define([
     if (!zips.length) {
       return $.Deferred().resolve().promise();
     }
-    if (_.isFunction(api.file.zip.mountMany)) {
-      return settled(api.file.zip.mountMany(zips), failed);
-    }
-    return $.when.apply(
-      $,
-      _.map(zips, function (zip) {
-        return settled(api.file.zip.mount(zip.path, zip.root, false), failed);
-      })
-    );
+    return settled(api.file.zip.mountMany(zips), failed);
   };
 
   // Only spec: resolves a /server_mods/ mount client-side. Text, so the cooked

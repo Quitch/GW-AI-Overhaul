@@ -114,7 +114,7 @@ define([
   var expand = function (deck, visited, out) {
     var key = normalizeId(deck.id);
 
-    if (_.contains(visited, key)) {
+    if (_.includes(visited, key)) {
       return;
     }
     visited.push(key);

@@ -525,8 +525,8 @@ absent from the pool, and its loadouts can never be awarded. See
 **A viewer's unlocks arrive by a GWO route, not the base game's.** Both
 `normalizeStartCardIds` and the server's `normalizeUnlockedStartCardIds` filter
 to ids that begin `gwc_start`. `record.unlockedStartCardIds` can therefore never
-hold a `gwaio_start_*`, `nem_start_*` or `tgw_start_*` id. Those are 16 of the
-21 cards in the pool. `model.recordHasUnlockedStartCard` returns false for all
+hold a `gwaio_start_*`, `nem_start_*` or `tgw_start_*` id. Those are 15 of the
+18 cards in the pool. `model.recordHasUnlockedStartCard` returns false for all
 of them. Viewers therefore report their own list over the
 `gwo_report_unlocked_loadouts` operator, and the host stores it as
 `gwaioUnlockedStartCardIds`. `recordHasUnlockedLoadout` reads both fields plus

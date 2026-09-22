@@ -57,7 +57,7 @@ define([
   var classify = function (types) {
     var tags = stripTypes(types);
     var has = function (tag) {
-      return _.contains(tags, tag);
+      return _.includes(tags, tag);
     };
     var cls;
 
@@ -170,7 +170,7 @@ define([
   var raceMember = function (unitTypeBit) {
     var wanted = PREFIX + unitTypeBit;
     return function (types) {
-      return _.contains(types || [], wanted);
+      return _.includes(types || [], wanted);
     };
   };
 
@@ -196,7 +196,7 @@ define([
       return (
         bits.length > 0 &&
         !_.some(bits, function (bit) {
-          return _.contains(knownBits || [], bit);
+          return _.includes(knownBits || [], bit);
         })
       );
     };
@@ -251,7 +251,7 @@ define([
           cells: [],
         };
         var entry = index.partIndex[part.path];
-        if (!_.contains(entry.cells, cell)) {
+        if (!_.includes(entry.cells, cell)) {
           entry.cells.push(cell);
         }
         // A part shared by units of several cells (the Dox's ammo also arms
@@ -284,7 +284,7 @@ define([
   // specs (Section 17 lists a NoBuild larva alone in a cell).
   var unfilledByVanilla = function (vanilla, cell) {
     return _.every(vanilla.unitsByCell[cell] || [], function (unit) {
-      return _.contains(vanilla.tagsOf[unit] || [], "NoBuild");
+      return _.includes(vanilla.tagsOf[unit], "NoBuild");
     });
   };
 
@@ -299,7 +299,7 @@ define([
       : function (unit) {
           return race.buildableOf[unit];
         };
-    var exclusive = race.exclusive || {};
+    var exclusive = race.exclusive;
     var orphans = _.filter(
       race.units.concat(_.keys(exclusive)),
       function (unit) {
@@ -307,7 +307,7 @@ define([
         return (
           !isCommanderCell(cell) &&
           (exclusive[unit] || unfilledByVanilla(vanilla, cell)) &&
-          !_.contains(granted, unit)
+          !_.includes(granted, unit)
         );
       }
     );
@@ -320,7 +320,7 @@ define([
         return !!buildable(unit);
       });
       orphans = _.filter(orphans, function (orphan) {
-        var tags = race.tagsOf[orphan] || [];
+        var tags = race.tagsOf[orphan];
         var reachable = _.some(builders, function (builder) {
           return buildTypes.matches(buildable(builder), tags);
         });
@@ -349,7 +349,7 @@ define([
         }
       } else if (isCommanderCell(cell)) {
         kept.push(path);
-      } else if (!_.contains(cells, cell)) {
+      } else if (!_.includes(cells, cell)) {
         cells.push(cell);
       }
     });
@@ -380,7 +380,7 @@ define([
       if (
         !_.isUndefined(cell) &&
         !isCommanderCell(cell) &&
-        !_.contains(cells, cell)
+        !_.includes(cells, cell)
       ) {
         cells.push(cell);
       }
@@ -411,18 +411,18 @@ define([
   };
 
   var racePartsIn = function (race, cells, role) {
-    return _.uniq(
-      _.flattenDeep(
-        _.map(cells, function (cell) {
-          return _.map(race.unitsByCell[cell] || [], function (unit) {
-            return _.pluck(
-              _.filter(race.partsByUnit[unit] || [], { role: role }),
-              "path"
-            );
-          });
-        })
-      )
-    );
+    return _(cells)
+      .map(function (cell) {
+        return _.map(race.unitsByCell[cell] || [], function (unit) {
+          return _.pluck(
+            _.filter(race.partsByUnit[unit], { role: role }),
+            "path"
+          );
+        });
+      })
+      .flattenDeep()
+      .uniq()
+      .value();
   };
 
   var targetsFor = function (file, vanilla, race) {
@@ -510,17 +510,17 @@ define([
   // cell, is kept as raceUnitsFor keeps it. No build reach: a factory card
   // lists factories, not what they build.
   var cardUnitsFor = function (cardUnits, vanilla, race) {
-    return _.uniq(
-      _.flatten(
-        _.map(cardUnits || [], function (unit) {
-          var cell = vanilla.cellOf[unit];
-          if (_.isUndefined(cell) || isCommanderCell(cell)) {
-            return [unit];
-          }
-          return race.unitsByCell[cell] || [];
-        })
-      )
-    );
+    return _(cardUnits || [])
+      .map(function (unit) {
+        var cell = vanilla.cellOf[unit];
+        if (_.isUndefined(cell) || isCommanderCell(cell)) {
+          return [unit];
+        }
+        return race.unitsByCell[cell] || [];
+      })
+      .flatten()
+      .uniq()
+      .value();
   };
 
   // The units a card reaches for an MLA player with add-ons: the card's own

@@ -184,8 +184,6 @@ describe("gw_inventory - holding the bank for another player's cards", () => {
     const cases = {
       "a host session": ["host", perPlayerTechGame(true)],
       "shared tech": ["viewer", perPlayerTechGame(false)],
-      "no game at all": ["viewer", undefined],
-      "a game predating per-player tech": ["viewer", {}],
     };
 
     for (const [name, [session, game]] of Object.entries(cases)) {

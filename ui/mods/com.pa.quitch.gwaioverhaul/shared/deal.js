@@ -61,7 +61,7 @@ define([
 
         if (!card) {
           result.reject(new Error("GWO card not found: " + params.id));
-          return result;
+          return;
         }
 
         var product = { id: params.id };
@@ -77,7 +77,7 @@ define([
             card.deal &&
             card.deal(params.star, context, params.inventory, params.rng);
           var cardParams = deal && deal.params;
-          if (cardParams && _.isPlainObject(cardParams)) {
+          if (_.isPlainObject(cardParams)) {
             _.assign(product, cardParams);
           }
           card.keep && card.keep(deal, context);

@@ -175,20 +175,6 @@ describe("referee_coop.getOrderedSubcommanders", () => {
     assert.deepEqual(ordered[2].cards, []);
   });
 
-  it("finds no viewers in a game that cannot look records up", () => {
-    const game = { perPlayerTechCards: () => true };
-
-    assert.deepEqual(
-      names(
-        refereeCoop.getOrderedSubcommanders(hostInventory, game, [
-          HOST,
-          VIEWER_ONE,
-        ])
-      ),
-      ["Alpha", "Beta"]
-    );
-  });
-
   // referee_game_files.js and referee_config.js both call through without a
   // client list, leaving it to read model.gwCampaignConnectedClients().
   it("reads the connected clients itself when given none", () => {

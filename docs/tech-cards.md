@@ -40,13 +40,12 @@ therefore continues to accept them. They are legitimate extension points, not ty
 
 `npm run validate:cards` enforces this shape. It checks what `define()` returns. It
 does not call `deal`/`buff`/`dull`. The validator skips a card as `NOT_SHIPPED` when
-the card depends on a base-game module absent from this repo. It skips one card as
-`KNOWN_UNLOADABLE`.
+the card depends on a base-game module absent from this repo.
 
 The run prints the live tally. `MIN_CHECKED` is an enforced floor that must never be
 lowered to make a run pass. `test/card_deal_unit_gate.test.js` reaches the skipped
-cards. It stubs `shared/gw_common` and so loads every card except the
-`KNOWN_UNLOADABLE` one. See [`testing.md`](testing.md).
+cards. It stubs `shared/gw_common` and so loads every card. See
+[`testing.md`](testing.md).
 
 ## Which shape to write a card in
 
@@ -310,6 +309,13 @@ dealt later in the war adds its slot and goes to `bank`. `always(inventory, cont
 runs on every buff of the start card, for work that must repeat. `dull` is
 `applyDulls` over `dulls`. `gwoCard.lockedHint(description)` is the `hint` a locked
 loadout shows.
+
+Retiring a loadout is one edit to `loadout_ids.js`: dropping the id removes it from
+the picker, the treasure pool and the deck at once. A `gwc_` shadow is then deleted,
+and stock's copy takes over for a saved war on it. A GWO-authored card has no stock
+copy behind it, so the card file and everything its `buff` reaches stay on disk;
+otherwise a war started on it loses its starting units on the next `applyCards`.
+`gwaio_start_ceo` is the example.
 
 Unlocks and victory badges live in `localStorage` under `gwaio_`-prefixed keys.
 Badge indices run from **-1 (Beginner)** so that Casual is 0. See the `loadoutIcon`

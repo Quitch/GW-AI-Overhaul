@@ -30,7 +30,7 @@ const KNOWN_FIELDS = new Set(REQUIRED_FIELDS.concat(OPTIONAL_FIELDS));
 // Coverage floor. NOT_SHIPPED is swallowed generically below, so one broken
 // dependency can demote every card requiring it from checked to excluded with CI
 // still green. Raise this when coverage genuinely rises; never lower it to pass.
-const MIN_CHECKED = 175;
+const MIN_CHECKED = 176;
 
 function checkShape(file, card) {
   const problems = [];
@@ -77,7 +77,7 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    const skip = classifyLoadFailure(e, file);
+    const skip = classifyLoadFailure(e);
     return skip ? { skip } : { error: "failed to load: " + e.message };
   }
 }
@@ -86,7 +86,7 @@ function main() {
   const files = listCardFiles();
 
   let checked = 0;
-  const skipped = { notShipped: 0, knownUnloadable: 0 };
+  const skipped = { notShipped: 0 };
   const failures = [];
 
   for (const file of files) {
@@ -113,8 +113,6 @@ function main() {
       " cards shape-checked, " +
       skipped.notShipped +
       " excluded (base-game dependency unavailable outside the game), " +
-      skipped.knownUnloadable +
-      " excluded (known engine coupling), " +
       failures.length +
       " failed."
   );

@@ -240,7 +240,7 @@ define([
         return;
       }
 
-      if (_.indexOf(ownPings, payload.ping_id) !== -1) {
+      if (_.includes(ownPings, payload.ping_id)) {
         return;
       }
 

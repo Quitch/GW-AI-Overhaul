@@ -27,7 +27,7 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
   - Eradication
 - The AI uses tech card buffs
 - Guaranteed loadout to unlock every war, defended by The Guardians who turn your own technology against you
-- 17 new loadouts
+- 16 new loadouts
 - Unlocks Galactic War's biggest planetary systems
 - Adds the classic Galactic War systems in addition to the TITANS systems
 - Adds a new faction
@@ -186,6 +186,15 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - AI Chat
 - Show AI Personality Names
 - Galactic War Server Mods
+
+## Supported unit mods
+
+- Legion Expansion
+- Bugs Faction
+- Exiles Faction
+- Second Wave Expansion
+- Section 17 - Endgame Units
+- Osmech
 
 ## Incompatible mods
 

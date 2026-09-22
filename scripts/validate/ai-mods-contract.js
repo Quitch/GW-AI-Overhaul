@@ -23,6 +23,7 @@ const {
   classifyLoadFailure,
   listCardFiles,
 } = require("../lib/card-files.js");
+const { createAutoStub } = require("../lib/auto-stub.js");
 const {
   createCapturingInventory,
   recordInto,
@@ -71,7 +72,9 @@ function collectAiMods(card) {
       continue;
     }
     try {
-      card[method](inventory);
+      // params is what the card's own deal() returned at runtime; a card that
+      // reads it (gwc_minion) gets a stub, since no deal() ran here.
+      card[method](inventory, createAutoStub());
     } catch (e) {
       throw new Error(
         method + "() threw against the mock inventory: " + e.message,
@@ -191,7 +194,7 @@ function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
   } catch (e) {
-    if (classifyLoadFailure(e, file)) {
+    if (classifyLoadFailure(e)) {
       return { excluded: true };
     }
     return { error: "failed to load: " + e.message };
@@ -253,7 +256,7 @@ function main() {
       modsChecked +
       " AI-mod descriptors checked, " +
       excluded +
-      " cards excluded (unloadable via shim), " +
+      " cards excluded (base-game dependency unavailable outside the game), " +
       failures.length +
       " cards failed."
   );

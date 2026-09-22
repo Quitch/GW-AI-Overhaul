@@ -555,10 +555,6 @@
     "message": "Assault",
     "description": "Penchant name: a one-word style bias an AI Commander can be given when the war's AI is set to PENCHANT. On the galaxy map it is appended after the personality trait in the \"Personality:\" row, joined with a space (e.g. \"Aggressive Artillery\"), so it must read as a noun/adjective that can follow a trait word; word order of that pairing cannot be changed. Singular, no punctuation. \"Assault\" = favours direct-attack combat units across land, air and sea. (ai.js:165)"
   },
-  "Assault Commander": {
-    "message": "Assault Commander",
-    "description": "Name of a starting loadout card, shown in the loadout picker when starting a war, in the Data Bank and its tooltip; the same string is also shown as the hint on the greyed-out (locked) version of the card. This loadout starts the player with all basic factories (air, bot, vehicle) and their units but no basic defensive structures. Noun phrase used as a title. Must agree with the opening words of its description 'The Assault Commander loadout contains...'. (gwc_start_allfactory.js:37, 44)"
-  },
   "Astraeus Upgrade Tech": {
     "message": "Astraeus Upgrade Tech",
     "description": "Name of the tech card gwaio_upgrade_astraeus, shown in the Data Bank card list, its tooltip and the tech deal on the galaxy map. \"Upgrade Tech\" is the shared suffix of every unit upgrade card; render it the same way across all of them and reuse the game's own word for Tech (a tech card). \"Astraeus\" is a proper-noun unit name: keep it untranslated in Latin, Cyrillic and Chinese locales and transliterate it in Japanese and Korean as the game does for other unit names. The card's text, which repeats the name as its subject, reads \"Astraeus Upgrade Tech increases the orbital lander's interplanetary movement speed by 200% and increases its carry capacity to 12 units.\"; keep the two consistent. (gwaio_upgrade_astraeus.js)"
@@ -833,7 +829,7 @@
   },
   "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
     "message": "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.",
-    "description": "One line of the faction tooltip on the war setup screen (gw_start), shown beside the Faction dropdown. Lines read \"FACTION NAME: preferred unit class\", joined with <br> by the code. The upper-case name before the colon is one of the game's enemy factions (a proper noun; render it as the game's own translation does, uppercased) and the word after the colon is the unit class that faction favours (vehicles, air/navy, bots, orbital, land), using the game's stock wording for that class. Keep the colon; no line break in the string. (ui.js, gwoFactionTooltip) This line is added only when TITANS is active. The Cluster is a TITANS-only faction; \"land\" means ground units. Angel and Colonel are unit names (proper nouns: keep untranslated in Latin, Cyrillic and Chinese locales, transliterate in ja/ko as the game does); the Cluster fields them as Sub Commanders but cannot build more."
+    "description": "One line of the faction tooltip on the war setup screen (gw_start), shown beside the Faction dropdown. Lines read \"FACTION NAME: preferred unit class\", joined with <br> by the code. The upper-case name before the colon is one of the game's enemy factions (a proper noun; render it as the game's own translation does, uppercased) and the word after the colon is the unit class that faction favours (vehicles, air/navy, bots, orbital, land), using the game's stock wording for that class. Keep the colon; no line break in the string. (ui.js, gwoFactionTooltip) The Cluster is a TITANS-only faction; \"land\" means ground units. Angel and Colonel are unit names (proper nouns: keep untranslated in Latin, Cyrillic and Chinese locales, transliterate in ja/ko as the game does); the Cluster fields them as Sub Commanders but cannot build more."
   },
   "COMMANDER TRANSPORT:": {
     "message": "COMMANDER TRANSPORT:",
@@ -2723,10 +2719,6 @@
     "message": "Starting economy.",
     "description": "Tooltip on the \"?\" beside a setting on the AI Settings dialog opened from the war setup screen. Explains the \"ECONOMY\" setting: the AI's economy rate at the start of the war. Keep the full stop. (ai_settings.html:13)"
   },
-  "Starts with a 25% boost to metal and energy production and is able to build metal and energy storage. Unable to build close-range armored tanks.": {
-    "message": "Starts with a 25% boost to metal and energy production and is able to build metal and energy storage. Unable to build close-range armored tanks.",
-    "description": "Description of a starting commander loadout (a start card), shown as body text under the loadout name in the loadout picker when starting a Galactic War and in its card tooltip. This is the Storage Commander loadout: it applies the stock storage-and-buff start (25% more metal and energy income plus metal and energy storage blueprints) and can never build the Inferno or Vanguard flame tanks. Must agree with the loadout name 'Storage Commander'. Keep '25%' exactly; 'close-range armored tanks' describes the Inferno and Vanguard, so use the game's normal words for tank and armour. (gwc_start_storage.js:25)"
-  },
   "Static Tech": {
     "message": "Static Tech",
     "description": "Label of the \"Static Tech\" switch in the Game Options dialog on the war setup screen: the tech offered in a system never changes. Title case noun phrase. Its lowercase twin \"Static tech\" is the same option listed on the GWO panel; translate both the same apart from casing. Must agree with its tooltip \"Available Tech in a system never changes.\" (difficulty_options.html:202)"
@@ -2758,10 +2750,6 @@
   "Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator. Disables the auto-repair feature.": {
     "message": "Stitch Upgrade Tech allows the assisting of all builds by the combat fabricator. Disables the auto-repair feature.",
     "description": "Description of the upgrade tech card 'Stitch Upgrade Tech', shown in the Data Bank card list, the card tooltip on the galaxy map and the tech deal after a battle. The card upgrades the Stitch combat fabricator: its build arm may assist any build in progress, not just items on its own build list, and its auto-repair is switched off. This sentence is followed at runtime by a space, then the separate string 'Disables the auto-repair feature.', then the standard new-slot paragraph, so it must read as a complete first sentence ending in a full stop. The leading card name must match the translation of 'Stitch Upgrade Tech' exactly; 'combat fabricator' is a plain description of the Stitch, not a unit name. (gwaio_upgrade_stitch.js:10) The second sentence (\"Disables the auto-repair feature.\") was once a separate string; it is one description now."
-  },
-  "Storage Commander": {
-    "message": "Storage Commander",
-    "description": "Name of a starting commander loadout (a start card). Shown as the loadout's title in the loadout picker when starting a Galactic War, and in the Data Bank; the same string is also shown as the placeholder label of that loadout while it is still locked (unearned), so it must read well both as a title and as a locked-entry label. This loadout gives 25% more metal and energy income and storage-structure blueprints, but no Inferno or Vanguard flame tanks. Must agree with its description 'Starts with a 25% boost to metal and energy production...'. 'Storage' means metal/energy resource storage; 'Commander' must use the same word as every other '... Commander' loadout name. Used both as the card name (line 20) and as the locked-loadout hint label (line 27). (gwc_start_storage.js:20)"
   },
   "Storage Compression Tech": {
     "message": "Storage Compression Tech",
@@ -2954,10 +2942,6 @@
   "The Artillery Commander loadout contains all artillery units and reduces costs of those structures by 75%. It also enables the Commander to build radar, double barreled turrets and basic artillery turrets.": {
     "message": "The Artillery Commander loadout contains all artillery units and reduces costs of those structures by 75%. It also enables the Commander to build radar, double barreled turrets and basic artillery turrets.",
     "description": "Description of a starting commander loadout (a start card), shown as body text under the loadout name in the loadout picker when starting a Galactic War and in its card tooltip. This is the Artillery Commander loadout: all artillery structures at 25% of their normal metal cost, plus the commander itself can build radar, the double-barrelled laser tower and the basic artillery turret. 'Artillery Commander' must match the translation of the loadout name 'Artillery Commander'. Keep '75%' exactly; 'double barreled turrets' describes the Laser Defense Tower, and 'basic artillery turrets' the Pelter, so use the game's normal terms rather than inventing names. (gwc_start_artillery.js:47)"
-  },
-  "The Assault Commander loadout contains all basic factories and units but no basic defenses.": {
-    "message": "The Assault Commander loadout contains all basic factories and units but no basic defenses.",
-    "description": "Description of a starting commander loadout (a start card), shown as body text under the loadout name in the loadout picker when starting a Galactic War and in its card tooltip. This is the Assault Commander loadout: every basic factory (bot, vehicle, air, naval) and their units, but none of the basic defence structures. 'Assault Commander' must match the translation of the loadout name 'Assault Commander'. (gwc_start_allfactory.js:42)"
   },
   "The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 400%.": {
     "message": "The Bionic Augmentation Commander Of Neutralizing loadout contains one data bank but increases the Commander's fire rate by 100%, decreases Uber Cannon energy usage by 75%, increases health by 200%, and increases speed by 400%.",
