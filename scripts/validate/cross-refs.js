@@ -110,9 +110,9 @@ function checkUnitReferencesInCards() {
     }
     checkedCards++;
 
-    const escaped = paramName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const escaped = paramName.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const refPattern = new RegExp(
-      "\\b" + escaped + "\\.([A-Za-z_$][A-Za-z0-9_$]*)",
+      String.raw`\b${escaped}\.([A-Za-z_$][A-Za-z0-9_$]*)`,
       "g"
     );
     const referenced = new Set(

@@ -110,7 +110,7 @@ function readTables(localesDir, locale) {
 }
 
 function escapeCell(text) {
-  return text.replace(/[\\|]/g, "\\$&").replace(/\s+/g, " ");
+  return text.replace(/[\\|]/g, String.raw`\$&`).replace(/\s+/g, " ");
 }
 
 function wordMatch(term) {
