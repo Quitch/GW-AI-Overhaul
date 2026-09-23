@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- In co-op with per-player tech, a viewer who picks the General Commander loadout now always gets its Sub Commanders, including when it connects after the war has loaded
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed
