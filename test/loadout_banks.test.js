@@ -331,4 +331,27 @@ describe("startCards", () => {
   it("is empty with nothing registered", () => {
     assert.deepEqual(loadBanks(undefined).startCards(), []);
   });
+
+  it("skips a bank that throws and still lists the others", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const banks = loadBanks([
+      { prefix: "a_start_", path: "coui://a/bank.js" },
+      { prefix: "b_start_", path: "coui://b/bank.js" },
+    ]);
+    const thrower = fakeBank([]);
+    thrower.startCards = () => {
+      throw new Error("bank exploded");
+    };
+    banks.resolve([thrower, fakeBank(["b_start_one"])]);
+
+    assert.deepEqual(
+      banks.startCards().map((card) => card.id),
+      ["b_start_one"]
+    );
+    assert.equal(errorMock.mock.callCount(), 1);
+    assert.match(
+      errorMock.mock.calls[0].arguments[0],
+      /^Loadout bank startCards\(\) threw: a_start_: Error: bank exploded/
+    );
+  });
 });
