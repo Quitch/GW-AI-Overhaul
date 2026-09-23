@@ -102,6 +102,10 @@ define([
 
     var refreshInFlight;
     var refreshPending;
+    // A host re-deal the gate turned away, or one that failed. The host's
+    // re-deal follows a win, which is when viewers hold pendingTechCards, so
+    // without this the viewers kept last turn's cards.
+    var redealOwed = false;
 
     var connectedViewers = function () {
       var clients = _.isArray(model.gwCampaignConnectedClients())
@@ -263,6 +267,7 @@ define([
     var runRefresh = function (redeal) {
       var viewers = connectedViewers();
       if (!viewers.length) {
+        redealOwed = redealOwed || redeal;
         return Promise.resolve();
       }
 
@@ -278,19 +283,28 @@ define([
           turnState: game.turnState(),
         })
       ) {
+        redealOwed = redealOwed || redeal;
         return Promise.resolve();
       }
 
-      return refreshEachViewer(viewers, redeal).then(function (changed) {
-        if (!changed) {
-          return undefined;
-        }
+      var dealing = redeal || redealOwed;
+      redealOwed = false;
 
-        console.log("[GW COOP] refreshed co-op player star cards");
-        return Promise.resolve(gwoSave(game, false)).then(function () {
-          model.sendCampaignSnapshot("gwo_star_cards", true);
+      return refreshEachViewer(viewers, dealing)
+        .then(function (changed) {
+          if (!changed) {
+            return undefined;
+          }
+
+          console.log("[GW COOP] refreshed co-op player star cards");
+          return Promise.resolve(gwoSave(game, false)).then(function () {
+            model.sendCampaignSnapshot("gwo_star_cards", true);
+          });
+        })
+        .then(null, function (reason) {
+          redealOwed = redealOwed || dealing;
+          throw reason;
         });
-      });
     };
 
     // redeal replaces every viewer's card, and belongs only to the host's own

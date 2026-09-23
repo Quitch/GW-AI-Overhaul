@@ -498,6 +498,101 @@ describe("coop star cards refresh - coalescing", () => {
     assert.deepEqual(starsDealt(calls), [0, 0]);
   });
 
+  // The host re-deals after a win, which is exactly when viewers hold
+  // pendingTechCards. A gate that turned the re-deal away used to lose it, so
+  // the viewers kept last turn's star cards.
+  it("owes a re-deal the gate turned away, and pays it once the gate opens", async () => {
+    const { coopStarCards, calls, options } = build({ stars: [{}, {}] });
+
+    await coopStarCards.refresh();
+    calls.deals.length = 0;
+    options.turnState = "explore";
+    await coopStarCards.refresh({ redeal: true });
+    assert.deepEqual(starsDealt(calls), [], "the gate is closed");
+
+    options.turnState = "begin";
+    await coopStarCards.refresh();
+    assert.deepEqual(starsDealt(calls), [0, 1]);
+
+    calls.deals.length = 0;
+    await coopStarCards.refresh();
+    assert.deepEqual(starsDealt(calls), [], "the debt is paid once");
+  });
+
+  it("owes a re-deal while a viewer still has an offer to answer", async () => {
+    const { coopStarCards, calls, options } = build({ stars: [{}] });
+
+    await coopStarCards.refresh();
+    calls.deals.length = 0;
+    options.records.alice.pendingTechCards = { star: 0, cards: [] };
+    await coopStarCards.refresh({ redeal: true });
+    assert.deepEqual(starsDealt(calls), []);
+
+    delete options.records.alice.pendingTechCards;
+    await coopStarCards.refresh();
+    assert.deepEqual(starsDealt(calls), [0]);
+  });
+
+  it("owes a re-deal made while no viewer was connected", async () => {
+    const { coopStarCards, calls, options } = build({ stars: [{}] });
+
+    await coopStarCards.refresh();
+    calls.deals.length = 0;
+    options.viewers = [];
+    await coopStarCards.refresh({ redeal: true });
+
+    options.viewers = [viewer("alice")];
+    await coopStarCards.refresh();
+    assert.deepEqual(starsDealt(calls), [0]);
+  });
+
+  it("owes a re-deal that failed", async () => {
+    let failing = false;
+    const { coopStarCards, calls } = build({
+      stars: [{}],
+      records: {
+        alice: { id: "alice", inventory: { cards: [{ id: "gwc_start_bot" }] } },
+      },
+      onApply: () => {
+        if (failing) {
+          throw new Error("bad card");
+        }
+      },
+    });
+
+    await coopStarCards.refresh();
+    calls.deals.length = 0;
+    failing = true;
+    const errors = await captureErrors(() =>
+      coopStarCards.refresh({ redeal: true })
+    );
+    assert.equal(errors.length, 1);
+    assert.deepEqual(starsDealt(calls), []);
+
+    failing = false;
+    await coopStarCards.refresh();
+    assert.deepEqual(starsDealt(calls), [0]);
+  });
+
+  // A re-deal queued behind an in-flight refresh that the gate then turns
+  // away is owed the same way as one called directly.
+  it("owes a queued re-deal the gate turned away", async () => {
+    const { coopStarCards, calls, options } = build({ stars: [{}] });
+
+    await coopStarCards.refresh();
+    calls.deals.length = 0;
+    const first = coopStarCards.refresh();
+    options.turnState = "explore";
+    await Promise.all([first, coopStarCards.refresh({ redeal: true })]);
+    const dealtWhileQueued = starsDealt(calls).length;
+
+    options.turnState = "begin";
+    calls.deals.length = 0;
+    await coopStarCards.refresh();
+    assert.equal(dealtWhileQueued, 0);
+    assert.deepEqual(starsDealt(calls), [0]);
+  });
+
   it("runs a later refresh normally once the queue has drained", async () => {
     const { coopStarCards, calls } = build({ stars: [{}] });
 

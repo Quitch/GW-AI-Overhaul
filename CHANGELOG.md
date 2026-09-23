@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- In co-op with per-player tech, a viewer who is still choosing a tech card when the host takes one now gets new star cards once they choose, rather than keeping last turn's
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed

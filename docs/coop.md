@@ -356,6 +356,12 @@ would therefore change what a star advertises to a viewer while the host was
 merely travelling to it. The card would then no longer be the one in their hand
 on arrival.
 
+A re-deal the gate below turns away is **owed**, not dropped. So is one made
+while no viewer is connected, and one that fails. The next refresh the gate
+allows pays it. This matters because the host re-deals after a win, which is
+exactly when viewers hold `pendingTechCards`. A dropped re-deal left them with
+last turn's cards, which could duplicate cards they had just taken.
+
 The refresh depends on two ordering rules:
 
 - **Re-read the record immediately before writing it.**
