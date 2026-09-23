@@ -7,10 +7,9 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { loadCouiModule } = require("./amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("./amd-loader.js");
 const { ZipReader } = require("./zip-read.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const fixture = require("../../test/fixtures/unit_types.json");

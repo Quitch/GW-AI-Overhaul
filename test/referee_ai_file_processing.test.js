@@ -235,6 +235,57 @@ describe("per-player-tech viewer processing", () => {
     ]);
   });
 
+  // The source and destination tiers both follow the viewer's own Sub Commander
+  // Tactics. Reading the host's tier put q_bronze data in a viewer's q_silver
+  // slot, so the viewer's card did nothing.
+  it("reads a viewer's Queller tier from the viewer's own tactics card", async () => {
+    const fixture = buildGame({
+      aiInUse: "Queller",
+      enemyType: "neither",
+      aiMods: [],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.id === "v1"
+        ? {
+            inventory: makeInventory({
+              cardsList: [{ id: "gwaio_upgrade_subcommander_tactics" }],
+            }),
+          }
+        : undefined;
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    const { listCalls } = installFakes({
+      fileListByPath: {
+        "/pa/ai_queller/q_uber/": [
+          "/pa/ai_queller/q_uber/fabber_builds/u.json",
+        ],
+        "/pa/ai_queller/q_bronze/": [
+          "/pa/ai_queller/q_bronze/fabber_builds/bronze.json",
+        ],
+        "/pa/ai_queller/q_silver/": [
+          "/pa/ai_queller/q_silver/fabber_builds/silver.json",
+        ],
+      },
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.deepEqual(listCalls, [
+      "/pa/ai_queller/q_uber/",
+      "/pa/ai_queller/q_bronze/",
+      "/pa/ai_queller/q_silver/",
+    ]);
+    const viewerKeys = Object.keys(filesObj).filter((key) =>
+      key.includes("player_.player")
+    );
+    assert.deepEqual(viewerKeys, [
+      "/pa/ai_queller/q_silver/player_.player0/fabber_builds/silver.json",
+    ]);
+  });
+
   // The base pass plus one pass per viewer all walk the same tree. Reading it once
   // per launch keeps co-op launch cost flat instead of growing with viewer count.
   it("lists and fetches the shared tree once, not once per viewer", async () => {

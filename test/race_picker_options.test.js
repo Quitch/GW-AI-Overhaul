@@ -5,10 +5,9 @@
 
 const { describe, it, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const pickerOptions = loadCouiModule(
   MOD_ROOT + "/shared/race_picker_options.js"
@@ -31,6 +30,15 @@ describe("optionsHtml", () => {
       pickerOptions.optionsHtml(races.all()),
       '<option value="mla">!LOC:MLA</option>' +
         '<option value="fixture">!LOC:Fixture</option>'
+    );
+  });
+
+  // Race and deck ids come from public registries, and are only trimmed and
+  // lower-cased, so an id can carry markup characters.
+  it("escapes the id as well as the name", () => {
+    assert.equal(
+      pickerOptions.optionsHtml([{ id: 'odd"id<x>', name: "Odd & Co" }]),
+      '<option value="odd&quot;id&lt;x&gt;">Odd &amp; Co</option>'
     );
   });
 

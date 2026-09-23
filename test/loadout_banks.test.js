@@ -10,6 +10,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 const banksPath =
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js";
@@ -135,6 +136,116 @@ describe("resolve", () => {
   });
 });
 
+describe("load", () => {
+  // Collects each requireGW request so a test decides when, and whether, each
+  // path loads.
+  function deferredRequireGW() {
+    const pending = [];
+    stubs.setGlobal("requireGW", (paths, callback, errback) => {
+      assert.equal(paths.length, 1, "each bank path is requested on its own");
+      pending.push({ path: paths[0], callback, errback });
+    });
+    return pending;
+  }
+
+  // The fake Deferred is a native promise, so its callbacks run a turn later.
+  const flush = () => new Promise((resolve) => setImmediate(resolve));
+
+  function capture(promise) {
+    const seen = { banks: undefined, settled: 0 };
+    promise.then((banks) => {
+      seen.banks = banks;
+      seen.settled++;
+    });
+    return seen;
+  }
+
+  it("resolves at once with no banks when no mod has registered", async () => {
+    installFakeJQuery(stubs);
+    const banks = loadBanks(undefined);
+    stubs.setGlobal("requireGW", () => {
+      assert.fail("nothing should be requested");
+    });
+
+    const seen = capture(banks.load());
+
+    await flush();
+    assert.equal(seen.settled, 1);
+    assert.deepEqual(seen.banks, []);
+  });
+
+  it("resolves each bank against its own path, whatever order they load in", async () => {
+    installFakeJQuery(stubs);
+    const banks = loadBanks([
+      { prefix: "a_start_", path: "coui://a/bank.js" },
+      { prefix: "b_start_", path: "coui://b/bank.js" },
+    ]);
+    const pending = deferredRequireGW();
+    const a = fakeBank(["a_start_one"]);
+    const b = fakeBank(["b_start_one"]);
+
+    const seen = capture(banks.load());
+    pending[1].callback(b);
+    await flush();
+    assert.equal(seen.settled, 0, "a_start_ has not loaded yet");
+    pending[0].callback(a);
+
+    await flush();
+    assert.equal(seen.settled, 1);
+    assert.equal(banks.bankFor("a_start_one"), a);
+    assert.equal(banks.bankFor("b_start_one"), b);
+  });
+
+  // One requireGW over every path never calls back if any path fails, which
+  // lost every bank. Each path is now its own request, so only the broken
+  // mod's unlocks are lost.
+  it("keeps the other banks when one fails to load", async () => {
+    installFakeJQuery(stubs);
+    const errorMock = mock.method(console, "error", () => {});
+    const banks = loadBanks([
+      { prefix: "a_start_", path: "coui://a/bank.js" },
+      { prefix: "b_start_", path: "coui://b/bank.js" },
+    ]);
+    const pending = deferredRequireGW();
+
+    const seen = capture(banks.load());
+    pending[0].errback(new Error("load failed"));
+    pending[1].callback(fakeBank(["b_start_one"]));
+
+    await flush();
+    assert.equal(seen.settled, 1);
+    assert.deepEqual(
+      seen.banks.map((entry) => entry.prefix),
+      ["b_start_"]
+    );
+    assert.equal(banks.hasStartCard({ id: "b_start_one" }), true);
+    assert.deepEqual(
+      errorMock.mock.calls.map((call) => call.arguments),
+      [["Loadout bank failed to load: coui://a/bank.js"]]
+    );
+  });
+
+  it("counts a failed path once however often its errback fires", async () => {
+    installFakeJQuery(stubs);
+    mock.method(console, "error", () => {});
+    const banks = loadBanks([
+      { prefix: "a_start_", path: "coui://a/bank.js" },
+      { prefix: "b_start_", path: "coui://b/bank.js" },
+    ]);
+    const pending = deferredRequireGW();
+
+    const seen = capture(banks.load());
+    pending[0].errback(new Error("first"));
+    pending[0].errback(new Error("second"));
+
+    await flush();
+    assert.equal(seen.settled, 0, "b_start_ has not loaded yet");
+    pending[1].callback(fakeBank([]));
+    await flush();
+    assert.equal(seen.settled, 1);
+  });
+});
+
 describe("hasStartCard", () => {
   it("is false before resolve, so a slow bank never claims an unlock", () => {
     const banks = loadBanks([{ prefix: "a_start_", path: "coui://a/bank.js" }]);
@@ -219,5 +330,28 @@ describe("startCards", () => {
 
   it("is empty with nothing registered", () => {
     assert.deepEqual(loadBanks(undefined).startCards(), []);
+  });
+
+  it("skips a bank that throws and still lists the others", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const banks = loadBanks([
+      { prefix: "a_start_", path: "coui://a/bank.js" },
+      { prefix: "b_start_", path: "coui://b/bank.js" },
+    ]);
+    const thrower = fakeBank([]);
+    thrower.startCards = () => {
+      throw new Error("bank exploded");
+    };
+    banks.resolve([thrower, fakeBank(["b_start_one"])]);
+
+    assert.deepEqual(
+      banks.startCards().map((card) => card.id),
+      ["b_start_one"]
+    );
+    assert.equal(errorMock.mock.callCount(), 1);
+    assert.match(
+      errorMock.mock.calls[0].arguments[0],
+      /^Loadout bank startCards\(\) threw: a_start_: Error: bank exploded/
+    );
   });
 });

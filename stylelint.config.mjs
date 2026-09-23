@@ -38,7 +38,7 @@ export default {
           // declaration-block-no-redundant-longhand-properties' ignoreShorthands.
           "css-overflow",
           // caniuse marks Chrome 40 "a x" - partial, prefixed. The -webkit-
-          // form is the one that works, and property-no-vendor-prefix above
+          // form is the one that works, and property-no-vendor-prefix below
           // allows only that while property-disallowed-list bans the bare one.
           "css-masks",
           // Fires on any border-image, because caniuse marks the feature

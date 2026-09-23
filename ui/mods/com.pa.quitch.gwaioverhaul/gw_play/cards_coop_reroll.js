@@ -102,10 +102,7 @@ define([
         return;
       }
 
-      var record = game.findCoopPlayerInventoryData({
-        id: payload.client_id,
-        name: payload.client_name,
-      });
+      var record = coopHost.recordFor(game, payload);
       if (!record || !record.inventory) {
         console.error(
           "[GW COOP] missing inventory for pending tech reroll result"
@@ -139,7 +136,10 @@ define([
       return $.when(
         model.prepareCoopPlayerInventories(),
         GW.manifest.saveGame(game).then(null, function (err) {
-          console.error("[GW COOP] failed to save rerolled tech", err);
+          console.error(
+            "[GW COOP] failed to save rerolled tech: " +
+              ((err && err.stack) || err)
+          );
           return $.Deferred().reject(err).promise();
         })
       );

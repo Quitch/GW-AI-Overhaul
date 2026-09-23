@@ -5,14 +5,13 @@
 
 const { describe, it, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   FIXTURE_RACE,
   fixtureIndex,
   predictableRng,
 } = require("../scripts/lib/race-fixture.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 
@@ -503,6 +502,38 @@ describe("inAnyRaceLayer", () => {
       claimed("/pa/ai_queller/q_uber/factory_builds/carried/x.json"),
       false
     );
+  });
+});
+
+// referee_ai.js builds the test once per sweep rather than per file; it must
+// answer exactly as inAnyRaceLayer does.
+describe("raceLayerTest", () => {
+  it("agrees with inAnyRaceLayer on every file", () => {
+    races.register({
+      id: "rival",
+      ai: {
+        titans: {
+          unitMaps: ["/pa/ai/unit_maps/rival.json"],
+          sources: [{ dir: "/pa/ai/factory_builds/", match: "rival_" }],
+        },
+      },
+    });
+    const test = races.raceLayerTest();
+    const files = [
+      "/pa/ai/unit_maps/fixture.json",
+      "/pa/ai/factory_builds/fixture_air.json",
+      "/pa/ai/fabber_builds/fixture/fabber_land.json",
+      "/pa/ai/unit_maps/rival.json",
+      "/pa/ai/factory_builds/rival_air.json",
+      "/pa/ai/ai_config.json",
+      "/pa/ai/unit_maps/ai_unit_map.json",
+      "/pa/ai/factory_builds/factory_air_builds.json",
+      "/pa/ai/factory_builds/fixtures_air.json",
+    ];
+
+    for (const file of files) {
+      assert.equal(test(file), races.inAnyRaceLayer(file), file);
+    }
   });
 });
 

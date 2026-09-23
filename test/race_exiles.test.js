@@ -7,9 +7,8 @@
 
 const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const exiles = loadCouiModule(MOD_ROOT + "/race/exiles.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");

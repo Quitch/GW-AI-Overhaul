@@ -40,6 +40,7 @@
           name:
             namesById[row.id] || (descriptor ? loc(descriptor.name) : row.id),
           options: row.options,
+          allyOptions: row.allyOptions,
           enemy: ko.observable(row.enemy),
           ally: ko.observable(row.ally),
         };

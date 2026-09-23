@@ -22,13 +22,14 @@ define(function () {
       var duplicate = helpers.doNotDealCard(inventory, card, [], false, []);
 
       if (!duplicate) {
-        console.error(card.id, "failed duplication test");
+        console.error(card.id + " failed duplication test");
       }
     };
 
-    var applyCheatCards = function (product, inventory) {
+    // Applied once per cheat, not per card: each applyCards re-applies every
+    // card held.
+    var addCheatCard = function (product, inventory) {
       inventory.cards.push(product);
-      inventory.applyCards();
     };
 
     var setupNewCardSlot = function (product) {
@@ -140,7 +141,7 @@ define(function () {
             )
             .then(function (product) {
               product = setupNewCardSlot(product);
-              applyCheatCards(product, inventory);
+              addCheatCard(product, inventory);
             })
         );
       });
@@ -159,35 +160,52 @@ define(function () {
       var star = galaxy.stars()[game.currentStar()];
       var maxCards = inventory.maxCards() + 1; // start card doesn't use a slot
       var deferredQueue = [];
+      var failed = false;
+      // $.when rejects on the first failure, before the other deals settle, so
+      // each is settled here and the cards that did deal are still applied.
+      // jQuery 2 keeps a rejection rejected unless the handler returns a
+      // resolved promise.
+      var settle = function (deferred) {
+        return deferred.then(null, function (error) {
+          failed = true;
+          console.error("GWO cheats.testCards deal failed: " + error);
+          return $.Deferred().resolve().promise();
+        });
+      };
 
       _.forEach(model.gwoCards, function (cardId) {
         deferredQueue.push(
-          gwoDeal
-            .dealCard(
-              {
-                id: cardId,
-                galaxy: galaxy,
-                inventory: inventory,
-                star: star,
-              },
-              loaded,
-              cards
-            )
-            .then(function (product) {
-              product = prepareProduct(product, inventory, true);
-              applyCheatCards(product, inventory);
-              if (!product.unique) {
-                testCardForMatches(inventory, product);
-              }
-            })
+          settle(
+            gwoDeal
+              .dealCard(
+                {
+                  id: cardId,
+                  galaxy: galaxy,
+                  inventory: inventory,
+                  star: star,
+                },
+                loaded,
+                cards
+              )
+              .then(function (product) {
+                product = prepareProduct(product, inventory, true);
+                addCheatCard(product, inventory);
+                if (!product.unique) {
+                  testCardForMatches(inventory, product);
+                }
+              })
+          )
         );
       });
       deferredQueue.push(
-        expandInventorySize(galaxy, inventory, star, maxCards)
+        settle(expandInventorySize(galaxy, inventory, star, maxCards))
       );
 
       $.when.apply($, deferredQueue).then(function () {
-        finishCheat("gwo_cheat_test_cards");
+        inventory.applyCards();
+        if (!failed) {
+          finishCheat("gwo_cheat_test_cards");
+        }
       });
     };
 
@@ -215,7 +233,8 @@ define(function () {
             cards
           )
           .then(function (product) {
-            applyCheatCards(prepareProduct(product, inventory), inventory);
+            addCheatCard(prepareProduct(product, inventory), inventory);
+            inventory.applyCards();
             finishCheat("gwo_cheat_give_card");
           });
       } else {

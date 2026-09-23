@@ -1,16 +1,9 @@
 "use strict";
 
-// Existence check for the ai_path source files this repo ships.
-//
-// Shape is deliberately not asserted here. validate:schemas walks pa/ai,
-// pa/ai_penchant and pa/ai_tech and checks every JSON it finds far more
-// strictly than this could - but it checks whatever it finds, so a file
-// renamed or deleted out from under the code leaves it green. That gap is
-// what this covers, and the whole of what it covers. Parsing is validate:json's
-// job, repo-wide.
-//
-// The remaining ai_path sources are base-game-owned or runtime-synthesised,
-// and are covered by test/referee_ai_file_processing.test.js's mocks instead.
+// Existence check for the ai_path source files this repo ships. Why shape is
+// not asserted here: testing.md, "The validators". The remaining ai_path
+// sources are base-game-owned or runtime-synthesised, and
+// test/referee_ai_file_processing.test.js's mocks cover them.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

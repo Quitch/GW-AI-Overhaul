@@ -236,14 +236,17 @@
           model.gwoCoopArmyControl = ko.computed(function () {
             return coopText(model.gwCampaignSharedControl());
           });
-          model.gwoCoopTechControl = coopText(
-            !model.gwCampaignPerPlayerTechCards()
-          );
+          // Computed, because stock writes both settings later, from server data.
+          model.gwoCoopTechControl = ko.pureComputed(function () {
+            return coopText(!model.gwCampaignPerPlayerTechCards());
+          });
           // LOCKED, not Locked: case-sensitive i18n, and that casing reaches four
           // more locales. Unlocked has no entry under any casing.
-          model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
-            ? loc("!LOC:LOCKED")
-            : loc("!LOC:Unlocked");
+          model.gwoCoopLockedSlots = ko.pureComputed(function () {
+            return model.gwCampaignMaxClientsLocked()
+              ? loc("!LOC:LOCKED")
+              : loc("!LOC:Unlocked");
+          });
 
           model.gwoIncompatibleMods = ko.observableArray([]);
           api.mods.getMounted("client").then(function (mods) {
@@ -395,10 +398,7 @@
             commander.color(coopColour(client));
 
             if (!commander.loadoutResolved || !commander.raceResolved) {
-              record = game.findCoopPlayerInventoryData({
-                id: client.id,
-                name: client.name,
-              });
+              record = gwoRefereeCoop.recordForClient(game, client);
               loadoutCardId = record && record.loadoutCardId;
 
               if (loadoutCardId && !commander.loadoutResolved) {

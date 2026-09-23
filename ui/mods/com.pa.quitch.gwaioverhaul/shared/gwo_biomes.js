@@ -2,7 +2,9 @@
 // server-script/sim_utils.js validatePlanet waits forever on a
 // /pa/terrain/<biome>.json it cannot load, so any biome outside this list
 // hangs every player at loading unless a mod carries it in. See galaxy.md.
-define(function () {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js"], function (
+  ids
+) {
   var STOCK_BIOMES = [
     "1v1test",
     "asteroid",
@@ -60,9 +62,7 @@ define(function () {
     return undefined;
   };
 
-  var normalizeIdentifier = function (identifier) {
-    return _.isString(identifier) ? identifier.trim().toLowerCase() : "";
-  };
+  var normalizeIdentifier = ids.normalize;
 
   var sameMod = function (a, b) {
     return (

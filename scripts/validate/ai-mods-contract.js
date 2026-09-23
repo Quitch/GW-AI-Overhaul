@@ -16,19 +16,27 @@
 //   - `treeOnly`, when present, is a boolean on a build-list op. It keeps the
 //     descriptor off files a `load` pulled in from /pa/ai_tech/.
 
-const path = require("node:path");
-const { loadCouiModule } = require("../lib/amd-loader.js");
-const {
-  CARDS_DIR,
-  classifyLoadFailure,
-  listCardFiles,
-} = require("../lib/card-files.js");
+const { registerModuleStub } = require("../lib/amd-loader.js");
+const { listCardFiles, loadCard } = require("../lib/card-files.js");
 const { createAutoStub } = require("../lib/auto-stub.js");
 const {
   createCapturingInventory,
   recordInto,
 } = require("../lib/capturing-inventory.js");
 const { reportFailures } = require("../lib/report-failures.js");
+const { GW_COMMON_STUB, installCardHarness } = require("../lib/card-probe.js");
+
+// The cards that add AI mods today. A harness change that silently skipped
+// cards would otherwise leave the run green while checking less.
+const MIN_CARDS_CHECKED = 24;
+
+// A loadout card banks itself in buff(), into the base game's bank and GWO's.
+// Only the AI mods buff() adds matter here, so both banks take the call and
+// keep nothing.
+const INERT_BANK = {
+  addStartCard: () => false,
+  hasStartCard: () => false,
+};
 
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
 const BUILD_LIST_TYPES = new Set(["fabber", "factory", "platoon"]);
@@ -61,9 +69,21 @@ const VALID_TYPES_BY_OP = {
   squad: new Set(["template"]),
 };
 
-function collectAiMods(card) {
+// A loadout only adds its AI mods as the war's start card: the first card in
+// the hand, on the first buff. Anywhere else buff() only banks it, so a loadout
+// is run down that path.
+function startCardAnswers() {
+  return {
+    lookupCard: () => 0,
+    getTag: (context, name) =>
+      context === "" && name === "buffCount" ? 0 : createAutoStub(),
+  };
+}
+
+function collectAiMods(card, file) {
   const captured = [];
   const inventory = createCapturingInventory({
+    answers: file.includes("_start_") ? startCardAnswers() : undefined,
     capture: { addAIMods: recordInto(captured) },
   });
 
@@ -188,34 +208,21 @@ function checkMod(mod, index) {
   return problems;
 }
 
-// Discriminates on the reason: a bare catch also swallows syntax errors and
-// genuine breakage, reporting them as "excluded" with the run still green.
-function loadCard(file) {
-  try {
-    return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
-  } catch (e) {
-    if (classifyLoadFailure(e)) {
-      return { excluded: true };
-    }
-    return { error: "failed to load: " + e.message };
-  }
-}
-
 // The second try/catch is separate from loadCard's on purpose: that one
 // discriminates why a card would not load, this one reports a card that loaded
 // but whose descriptors could not be collected.
 function checkFile(file) {
   const loaded = loadCard(file);
-  if (loaded.excluded) {
-    return { excluded: true };
+  if (loaded.skip) {
+    return { excluded: true, file };
   }
   if (loaded.error) {
-    return { problems: [loaded.error] };
+    return { problems: ["failed to load: " + loaded.error.message] };
   }
 
   let mods;
   try {
-    mods = collectAiMods(loaded.card);
+    mods = collectAiMods(loaded.card, file);
   } catch (e) {
     return { problems: [e.message] };
   }
@@ -232,16 +239,29 @@ function checkFile(file) {
 }
 
 function main() {
+  // Stubs shared/gw_common, which nearly every card requires. Without it the
+  // cards were skipped as excluded, nine of them AI-mod authors.
+  installCardHarness();
+  registerModuleStub(
+    "shared/gw_common",
+    Object.assign({}, GW_COMMON_STUB, { bank: INERT_BANK })
+  );
+  registerModuleStub(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+    INERT_BANK
+  );
   const files = listCardFiles();
 
   let cardsChecked = 0;
   let modsChecked = 0;
-  let excluded = 0;
+  const excluded = [];
   const failures = [];
 
   for (const file of files) {
     const result = checkFile(file);
-    excluded += result.excluded ? 1 : 0;
+    if (result.excluded) {
+      excluded.push(result.file);
+    }
     cardsChecked += result.cardsChecked || 0;
     modsChecked += result.modsChecked || 0;
     if (result.problems && result.problems.length) {
@@ -255,11 +275,25 @@ function main() {
       " cards / " +
       modsChecked +
       " AI-mod descriptors checked, " +
-      excluded +
+      excluded.length +
       " cards excluded (base-game dependency unavailable outside the game), " +
       failures.length +
       " cards failed."
   );
+  if (excluded.length) {
+    console.log("ai-mods-contract: excluded: " + excluded.join(", "));
+  }
+  if (cardsChecked < MIN_CARDS_CHECKED) {
+    failures.push({
+      file: "ai-mods-contract",
+      problems: [
+        cardsChecked +
+          " cards added AI mods, fewer than the " +
+          MIN_CARDS_CHECKED +
+          " expected: a card stopped adding them, or the harness stopped reaching it",
+      ],
+    });
+  }
 
   reportFailures(failures);
 }

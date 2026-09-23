@@ -51,6 +51,40 @@ describe("getAIPathSource / getAIPathDestination", () => {
     assert.equal(gwoAI.getAIPathSource("enemy"), "/pa/ai_penchant/");
   });
 
+  // A co-op viewer's Sub Commanders read the tier its own Sub Commander
+  // Tactics card picks, not the host's, in both directions.
+  it("getAIPathSource reads Sub Commander Tactics from the inventory it is given", () => {
+    const tactics = [{ id: "gwaio_upgrade_subcommander_tactics" }];
+    const plainHost = buildGame({ aiInUse: "Queller" });
+    installModel(plainHost.game);
+    assert.equal(
+      gwoAI.getAIPathSource("subcommander"),
+      "/pa/ai_queller/q_bronze/"
+    );
+    assert.equal(
+      gwoAI.getAIPathSource(
+        "subcommander",
+        undefined,
+        makeInventory({ cardsList: tactics })
+      ),
+      "/pa/ai_queller/q_silver/"
+    );
+
+    const smartHost = buildGame({
+      aiInUse: "Queller",
+      smartSubcommanders: true,
+    });
+    installModel(smartHost.game);
+    assert.equal(
+      gwoAI.getAIPathSource("subcommander"),
+      "/pa/ai_queller/q_silver/"
+    );
+    assert.equal(
+      gwoAI.getAIPathSource("subcommander", undefined, makeInventory()),
+      "/pa/ai_queller/q_bronze/"
+    );
+  });
+
   it("auto-scopes enemy destination to 'guardians' only for enemy+mirrorMode", () => {
     const fixture = buildGame({ aiInUse: "Titans", enemyType: "guardians" });
     installModel(fixture.game);

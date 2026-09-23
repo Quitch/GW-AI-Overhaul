@@ -26,11 +26,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 | Field                                                              | Required?                                                                                                                                                                      |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` | Always functions, on every card.                                                                                                                                               |
-| `audio`, `getContext`                                              | On every card except one legacy exception.                                                                                                                                     |
+| `audio`, `getContext`                                              | On every tech card except one legacy exception. Loadout cards have neither: `gwoCard.loadout()` returns only `buff` and `dull`, and only `gwc_start_subcdr` adds `getContext`. |
 | `keep`, `discard`                                                  | Optional. No card carries either today.                                                                                                                                        |
 | `hint`                                                             | Optional, loadout cards only: the icon and text of the locked-loadout hover, read by stock `gw_start.js` and `gw_coop_per_player_loadout.js`. `gwoCard.lockedHint` builds one. |
 
-The `audio`/`getContext` exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
+The tech-card exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
 save-compatibility with GWO v5.9.0 and earlier. The card is deliberately invisible
 and undiscardable. It exists only so that old saves that reference it still load.
 
@@ -353,6 +353,8 @@ silently discards everything the mod registered.
 | `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
 | `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |
+| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`       |
+| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`      |
 
 The public API goes beyond the globals. The helper names that `shared/cards.js`
 returns are equally published. So are the **key** names in `shared/units.js` and
@@ -383,8 +385,9 @@ model.gwoDecks.push({
 ```
 
 - `cards` takes **any** card id without naming a whole deck: the mod's own ids, or
-  cherry-picked stock `gwc_*`/`gwaio_*` ids. A missing module costs one card at
-  deal time, never a hang.
+  cherry-picked stock `gwc_*`/`gwaio_*` ids. A module that fails to load, or
+  that returns nothing, costs one card at deal time and is logged by id. It does
+  not stop the deal.
 - `include` takes the id of any **already registered** deck: `Basic`, `Expanded`,
   or another mod's. Registration order is mod `priority` order (ascending). A mod
   that includes another mod's deck therefore declares that mod under
@@ -419,11 +422,12 @@ model.gwoLoadoutBanks.push({
 
 The entry carries the bank's **path**, not the loaded module. The reason is that a
 mod that `requireGW`d its own bank before it registered would resolve after the
-loadout list was already built. `shared/loadout_banks.js` resolves the paths once.
-Every later reader reads the result: the unlock test in `shared/loadouts.js`,
-`startCardUnlocked` in `gw_play/cards.js`, and `bankStartCard` /
-`localUnlockedLoadoutIds` in `treasure_loadouts.js`. The module at `path` need only
-expose `hasStartCard` and `addStartCard`.
+loadout list was already built. `shared/loadout_banks.js` loads each path on its
+own and resolves them once. A path that fails to load is logged and costs only its
+own bank. Every later reader reads the result: the unlock test in
+`shared/loadouts.js`, `startCardUnlocked` in `gw_play/cards.js`, and
+`bankStartCard` / `localUnlockedLoadoutIds` in `treasure_loadouts.js`. The module
+at `path` need only expose `hasStartCard` and `addStartCard`.
 
 `prefix` routes a won loadout back to the mod that shipped it. Ids that begin
 `gwc_start` are tested first and always go to the base game's bank. The base game

@@ -7,7 +7,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { REPO_ROOT } = require("./amd-loader.js");
+const { REPO_ROOT, loadCouiModule } = require("./amd-loader.js");
 
 const CARDS_DIR = path.join(
   REPO_ROOT,
@@ -33,4 +33,16 @@ function classifyLoadFailure(error) {
   return undefined;
 }
 
-module.exports = { CARDS_DIR, classifyLoadFailure, listCardFiles };
+// -> { card } | { skip: "notShipped" } | { error }, the error being what the
+// load threw. A bare catch would also swallow syntax errors and genuine
+// breakage, reporting them as skipped with the run still green.
+function loadCard(file) {
+  try {
+    return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
+  } catch (e) {
+    const skip = classifyLoadFailure(e);
+    return skip ? { skip } : { error: e };
+  }
+}
+
+module.exports = { CARDS_DIR, listCardFiles, loadCard };

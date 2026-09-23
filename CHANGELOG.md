@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- The war information panel's co-op Tech and Slots rows now show the current settings rather than those at load
+- The AI settings window shows a removed race's stored Ally AI, not its Enemy AI, in the Ally column
+- A co-op viewer's victory badge is now recorded against the viewer's own loadout under per-player tech, not the host's
+- When a war cannot be created, the setup screen now says why and what to do, and the seed goes back to the one entered; only a galaxy too small for every enemy faction is retried with a new seed
+- Go To War waits for the installed races to load, so a quick click no longer starts a war with only MLA enemies and the player's race reset to MLA
+- A Legion, Bugs, or Exiles player's first tech deal can no longer offer cards for units their race does not have
+- A war saved before v5.52.2 now repairs every enemy Cluster faction's Sub Commanders when it loads, not only the first
+- In co-op with per-player tech and Queller Sub Commanders, a viewer's Sub Commanders now follow the viewer's own Sub Commander Tactics card rather than the host's
+- A tech card, loadout, or loadout bank from another mod that fails to load no longer stops Explore, Go To War, or joining a co-op war; the failure is logged and only that card or bank is missing
+- A tech card from another mod that fails while it is applied no longer stops co-op star cards from being dealt, or stops loadouts being unlocked, for the rest of the session; the failure is logged
+- In co-op with per-player tech, a viewer who is still choosing a tech card, or is away, when the host takes one now gets new star cards once they choose or return, even if the war is reloaded in between, rather than keeping last turn's
+- In co-op with per-player tech, a viewer who picks the General Commander loadout now always gets its Sub Commanders, including when it connects after the war has loaded
+- The intelligence panel places an allied Cluster faction's tooltip the way it places every other Cluster tooltip
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed
