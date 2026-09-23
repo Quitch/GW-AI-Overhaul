@@ -17,6 +17,7 @@
 - In co-op with per-player tech, a viewer who is still choosing a tech card, or is away, when the host takes one now gets new star cards once they choose or return, even if the war is reloaded in between, rather than keeping last turn's
 - In co-op with per-player tech, a viewer who picks the General Commander loadout now always gets its Sub Commanders, including when it connects after the war has loaded
 - The intelligence panel places an allied Cluster faction's tooltip the way it places every other Cluster tooltip
+- With Easy Systems, a battle on some systems no longer hangs on the landing screen and returns every player to the menu
 
 ## v7.4.0 - 2026-09-22
 

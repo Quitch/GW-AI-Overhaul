@@ -221,7 +221,7 @@ the `$.Deferred` wrapper around `getRandomPlanetName()`. `$.when` does not wait 
 engine promise (see [`constraints.md`](constraints.md)), so every war on the vanilla
 path failed with "no usable star system".
 
-Stock's own bugs are kept too, with one correction. `fromRandomList` reads as
+Stock's own bugs are kept too, with two corrections. `fromRandomList` reads as
 filtering the pool by `isExplicit` and by the entries already drawn, but lodash 3's
 `_.where` takes a source object, not a predicate, so stock's filter was inert. GWO's
 copy uses `_.filter` there, marked `GWO -` like every other change, so a pool is drawn
@@ -232,6 +232,17 @@ pool, and the stock pool is entirely `isExplicit` with no slot that asks for it,
 the candidate list is the same either way and the same seed draws the same planet.
 The correction is there for third-party templates that do either.
 `test/gwo_system_templates.test.js` pins both behaviours.
+
+The second correction does change what ships. Stock `titans-easy.js` gives its
+`fromRandomList` slots a capitalised `Position` and `Velocity`, and every entry in the
+stock pool is `isExplicit`, so the drawn planet takes the `isExplicit` return with no
+`position` or `velocity`. Only the generated path maps the capitalised keys, and the
+server rejects a planet without the lowercase ones ("No position"), so the battle
+never starts. GWO's copy fills in `position` and `velocity` from the capitalised keys
+when the drawn planet lacks them. That fixes only systems GWO's copy generates, so
+`gw_play/bugfixes.js` makes the same repair once on each war's saved systems. It covers
+wars saved before the fix and systems from Shared Systems for Galactic War, which
+replaces the loader.
 
 ### Shared Systems for Galactic War
 
