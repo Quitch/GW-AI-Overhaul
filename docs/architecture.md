@@ -296,7 +296,8 @@ CONTRIBUTING.md covers them in full. The load-bearing ones are:
 
 - Shipped `ui/**` code must be ES5 / Chrome 40 safe. See
   [`constraints.md`](constraints.md).
-- Use camelCase in JS, kebab-case in CSS, and a 2-space indent. Put HTML in its
+- Use camelCase in JS, lower-case kebab-case or snake_case in CSS, and a
+  2-space indent. Put HTML in its
   own file (never inline in JS).
 - `pa/**` JSON is intentionally minified to one line, matching the base game. It
   is excluded from Prettier.

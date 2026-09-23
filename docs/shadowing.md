@@ -83,7 +83,7 @@ Two hijacking traps are worth knowing. Both are recorded at their call sites:
 
 ## The complete shadowing inventory
 
-`validate:docs` checks the four tables below against the tree. A file added or
+`validate:docs` checks the five tables below against the tree. A file added or
 removed without its row therefore fails `npm run verify`.
 
 ### `ui/main/` — everything but the cards
@@ -262,4 +262,4 @@ An intermediate star is traversable when explored, or when visited at all under
 
 - [`architecture.md`](architecture.md): how scenes and entry points work.
 - [`testing.md`](testing.md): the harness, and why some files cannot load in it.
-- CONTRIBUTING.md's "Test coverage and new code".
+- [`testing.md`](testing.md), "Coverage".

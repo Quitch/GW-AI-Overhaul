@@ -75,7 +75,7 @@ described separately below.
 | `validate:schemas`      | AI build-order JSON and difficulty/personality data: type consistency.                                                                                                                                                      |
 | `validate:refs`         | Cross-references: loadout ids against card files, unit keys, AI builder roles against `unit_map`.                                                                                                                           |
 | `validate:sonar`        | `sonar-project.properties`: no stale exclusion paths, every analysed file is UTF-8.                                                                                                                                         |
-| `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree and validator tables) against the tree and `package.json`.                                                                                     |
+| `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree, AI-path tree and validator tables) against the tree and `package.json`.                                                                       |
 | `validate:translations` | The translation files under `translations/`: PA locale names, PA's table shape, sorted unique keys, the en-US catalog equal to the tree's `!LOC:` keys, other files a subset of it, placeholders and style codes preserved. |
 
 Several are worth understanding rather than just running.
@@ -306,9 +306,42 @@ have grown one.
 
 ## Coverage
 
-The Sonar quality gate requires ~80% coverage on **new code only**. Files that are
-pure `model`/`ko`/`api` glue are coverage-excluded. Their testable logic is
-extracted into measured sibling modules. See [`shadowing.md`](shadowing.md).
+CI runs SonarCloud's default quality gate, which requires **≥ 80% coverage on
+_new code_** (the lines a change adds or edits) - not on the whole repo, so the
+large body of pre-existing untested `ui/**` is not retroactively measured. The
+aim is honest coverage, never padding to hit the number:
+
+- **New/changed logic gets a unit test.** Add coverage under `test/**` for the
+  branching you introduce in the measured logic layer (`shared/**` helpers,
+  `gw_play/referee_*.js`, `gw_start/ai_tech.js`, and similar). Follow the
+  existing harness in `test/*.test.js` (`node:test` +
+  `scripts/lib/amd-loader.js`, engine globals stubbed only where a function
+  reads them).
+- **Keep non-trivial logic in a measured `shared/` helper, not inline in a tech
+  card.** Tech cards (`cards/**`) are excluded from the coverage metric because
+  their contract and AI-mod behaviour are already enforced by
+  `validate:cards`/`validate:ai-mods`; that exclusion is only honest while cards
+  stay thin, so real logic belongs in a `shared/` module where it is both
+  testable and tested.
+- **Genuinely-untestable new code is excluded, not faked.**
+  DOM/knockout/createjs glue and pure `define({...})` data blobs (whose
+  correctness is guarded by `validate:schemas`/`validate:refs`) belong in
+  `sonar.coverage.exclusions` in `sonar-project.properties` - each with a
+  one-line rationale matching the categories already documented there - rather
+  than being given assertionless "tests" just to move coverage.
+- **Renaming or deleting an excluded file means updating its exclusion.**
+  Nothing in the game or the rest of the tooling reads
+  `sonar-project.properties`, so a path left pointing at a file that no longer
+  exists looks deliberate and silently puts that file back into analysis - which
+  is how a GBK-encoded readme reintroduced SonarCloud's "problems with file
+  encoding" warning. `validate:sonar` (part of `npm run validate`) fails on any
+  exclusion pattern matching no tracked file, and on any file still in analysis
+  that isn't valid UTF-8; a genuinely non-UTF-8 asset needs an exclusion rather
+  than a re-encode.
+
+Files that are pure `model`/`ko`/`api` glue are coverage-excluded. Their testable
+logic is extracted into measured sibling modules. See
+[`shadowing.md`](shadowing.md).
 
 Each sibling is a plain `define()` over lodash and `console` only. It has no
 engine globals and no dependency the repo does not ship, so it loads under the
@@ -343,8 +376,9 @@ if (typeof module !== "undefined" && module.exports) {
 runtime. The branch is therefore dead in production and exists purely for the
 test suite. The suite reaches it with `requireShippedModule`. The global is
 deliberately absent from these files' configured globals. That is why each
-occurrence carries an `eslint-disable-next-line no-undef`. The same hook appears
-in `gw_play/referee_ai.js` for `applyAiMods`, which `define()` never returns.
+occurrence carries an `eslint-disable-next-line no-undef`. Many modules carry the
+hook, among them `gw_play/referee_ai.js` for `applyAiMods`, which `define()`
+never returns. A search for `typeof module` under `ui/` lists them all.
 
 **A test file is named for the module it loads, not the feature it belongs to.**
 Once the pure logic is extracted, the bootstrap that is left has nothing the

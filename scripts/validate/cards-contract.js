@@ -71,8 +71,8 @@ function checkShape(file, card) {
 }
 
 // Discriminates on the reason: a bare catch also swallows syntax errors and
-// genuine breakage, reporting them as excluded with the run still green. The two
-// skip reasons stay distinct because the summary counts them separately.
+// genuine breakage, reporting them as excluded with the run still green. A skip
+// stays distinct from a failure because the summary counts it separately.
 function loadCard(file) {
   try {
     return { card: loadCouiModule(path.join(CARDS_DIR, file)) };

@@ -43,12 +43,14 @@ If applicable, add screenshots to help explain your problem.
 
 Taken from the top-right GWO panel:
 
-- Version:
+- Mod:
+- War:
 - Seed:
 - Difficulty:
 - Size:
-- Enemy AI:
-- Allied AI:
+- Opponent AI:
+- Ally AI:
+- Deck:
 - Options:
 
 ## Additional context

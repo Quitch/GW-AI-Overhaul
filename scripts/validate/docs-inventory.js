@@ -247,7 +247,7 @@ function main() {
   checkAiPathTrees(problems);
   checkValidators(problems);
 
-  console.log("docs: 6 inventories checked, " + problems.length + " problems.");
+  console.log("docs: 8 inventories checked, " + problems.length + " problems.");
   reportProblems(problems);
 }
 

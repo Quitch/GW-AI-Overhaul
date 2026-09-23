@@ -40,7 +40,7 @@ race needs something new.
    (`shared/brain_table.js`) offer it from there automatically.
 
 4. **Fixture.** Add the server mod (and any companion that supplies base
-   specs) to `RACE_MODS` in `scripts/harvest-unit-types.js`, in mount order.
+   specs) to `SERVER_MODS` in `scripts/harvest-unit-types.js`, in mount order.
    Then re-run the script, so `test/fixtures/unit_types.json` carries the
    race's units and `buildable_types`.
 5. **Tests** in `test/race_<id>.test.js` cover four things. They check the
