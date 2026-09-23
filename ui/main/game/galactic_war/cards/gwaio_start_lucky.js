@@ -1,10 +1,9 @@
 define([
   "module",
-  "shared/gw_common",
   "cards/gwc_start",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-], function (module, GW, GWCStart, gwoBank, gwoCard) {
+], function (module, GWCStart, gwoBank, gwoCard) {
   var CARD = { id: module.id.substring(module.id.lastIndexOf("/") + 1) };
   var loadout = gwoCard.loadout(CARD, {
     bank: gwoBank,

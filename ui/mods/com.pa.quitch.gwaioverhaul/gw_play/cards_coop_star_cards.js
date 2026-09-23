@@ -363,7 +363,7 @@ define([
 
     return {
       refresh: refresh,
-      starCardForClient: starCardForRecord,
+      starCardForRecord: starCardForRecord,
     };
   };
 

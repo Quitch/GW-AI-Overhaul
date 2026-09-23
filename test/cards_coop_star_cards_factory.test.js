@@ -762,11 +762,11 @@ describe("coop star cards refresh - coalescing", () => {
   });
 });
 
-describe("starCardForClient", () => {
-  it("is the record reader, exposed for the viewer-side view model", () => {
+describe("starCardForRecord", () => {
+  it("is the record reader, exposed for cards_coop_deal.js", () => {
     const { coopStarCards } = build();
     assert.deepEqual(
-      coopStarCards.starCardForClient(
+      coopStarCards.starCardForRecord(
         { gwaioStarCards: { cards: { 4: { id: "gwc_combat_bots" } } } },
         4
       ),
