@@ -72,40 +72,49 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       return done.promise();
     }
 
+    // A throw here would escape into GW Server Mods' manifest load unlogged.
     $.when(mfst.load()).always(function () {
-      var known = !_.isFunction(mfst.listed) || !!mfst.listed();
-      var active = mfst.activeServerMods();
-      var identifiers = _.map(active, "identifier");
-      var detected = races.detect(identifiers);
-      var detectedAddons = races.detectAddons(identifiers);
-      races.activateAddons(_.pluck(detectedAddons, "id"));
-      var modsOf = function (descriptors) {
-        var wanted = _.flatten(_.pluck(descriptors, "serverMods"));
+      try {
+        var known = !_.isFunction(mfst.listed) || !!mfst.listed();
+        var active = mfst.activeServerMods();
+        var identifiers = _.map(active, "identifier");
+        var detected = races.detect(identifiers);
+        var detectedAddons = races.detectAddons(identifiers);
+        races.activateAddons(_.pluck(detectedAddons, "id"));
+        var modsOf = function (descriptors) {
+          var wanted = _.flatten(_.pluck(descriptors, "serverMods"));
 
-        return _.map(
-          _.filter(active, function (mod) {
-            return _.includes(wanted, mod.identifier);
-          }),
-          function (mod) {
-            return {
-              identifier: mod.identifier,
-              // GW Server Mods falls back to the identifier when a mod ships no
-              // display name, so this is always something to show a player.
-              displayName: mod.displayName || mod.identifier,
-              version: mod.version,
-            };
-          }
+          return _.map(
+            _.filter(active, function (mod) {
+              return _.includes(wanted, mod.identifier);
+            }),
+            function (mod) {
+              return {
+                identifier: mod.identifier,
+                // GW Server Mods falls back to the identifier when a mod ships no
+                // display name, so this is always something to show a player.
+                displayName: mod.displayName || mod.identifier,
+                version: mod.version,
+              };
+            }
+          );
+        };
+
+        done.resolve({
+          races: detected,
+          mods: modsOf(detected),
+          addons: detectedAddons,
+          addonMods: modsOf(detectedAddons),
+          known: known,
+          gwsm: true,
+        });
+      } catch (e) {
+        console.error(
+          "gwoRaceMods: installed races not read: " +
+            (e.stack || e.message || e)
         );
-      };
-
-      done.resolve({
-        races: detected,
-        mods: modsOf(detected),
-        addons: detectedAddons,
-        addonMods: modsOf(detectedAddons),
-        known: known,
-        gwsm: true,
-      });
+        done.reject(e);
+      }
     });
 
     return done.promise();
