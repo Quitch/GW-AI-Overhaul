@@ -73,29 +73,30 @@ function war(overrides) {
 describe("build", () => {
   it("records the war's settings", () => {
     const record = warRecord.build(war());
-    assert.deepEqual(Object.keys(record).sort(), [
+    // In save order: a reorder changes the saved JSON byte for byte.
+    assert.deepEqual(Object.keys(record), [
+      "version",
+      "seed",
+      "difficulty",
+      "galaxySize",
+      "factionScaling",
+      "systemScaling",
+      "simpleSystems",
+      "largePlanets",
+      "easierStart",
       "ai",
       "aiAlly",
       "aiByRace",
       "aiMods",
-      "biomeMods",
-      "clusterFixed",
-      "coopPlayerScalingCount",
-      "difficulty",
-      "easierStart",
-      "factionScaling",
-      "galaxySize",
-      "largePlanets",
-      "races",
-      "seed",
-      "simpleSystems",
-      "staticTech",
-      "systemScaling",
       "techCardDeck",
-      "treasureLoadoutDerived",
+      "staticTech",
       "treasurePlanetFixed",
+      "clusterFixed",
+      "treasureLoadoutDerived",
       "treasureStar",
-      "version",
+      "coopPlayerScalingCount",
+      "races",
+      "biomeMods",
     ]);
     // Without them, gw_play/bugfixes.js reapplies the legacy hotfixes.
     assert.equal(record.treasurePlanetFixed, true);
@@ -126,6 +127,12 @@ describe("build", () => {
         perPlayerTechCards: true,
       })
     );
+    const keys = Object.keys(record);
+    assert.equal(
+      keys.indexOf("customDifficulty"),
+      keys.indexOf("difficulty") + 1
+    );
+    assert.equal(keys.indexOf("cheatsUsed"), keys.indexOf("easierStart") + 1);
     assert.deepEqual(record.customDifficulty, { econBase: 1 });
     assert.equal(record.cheatsUsed, true);
     assert.equal(record.races.perPlayerRace, true);

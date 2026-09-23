@@ -154,6 +154,10 @@ describe("populate", () => {
     assert.equal(worker.minions.length, 1);
     assert.equal(worker.minions[0].race, "mla");
     assert.ok(worker.minions[0].personality);
+    // Only a Cluster AI's minions carry a commander count.
+    boss.minions.concat(worker.minions).forEach((m) => {
+      assert.equal(Object.hasOwn(m, "commanderCount"), false);
+    });
     assert.equal(worker.landAnywhere, false);
     assert.equal(worker.foes, undefined);
     assert.equal(worker.ally, undefined);
@@ -222,23 +226,39 @@ describe("populate", () => {
     const { war, teamInfo, boss, worker } = warWith({
       faction: CLUSTER,
       workerName: "Worker",
+      settings: { bossCommanders: 4 },
     });
     population.populate(war, teamInfo);
 
     assert.equal(boss.minions.length, 1);
     assert.equal(boss.minions[0].name, "Security");
     assert.equal(boss.minions[0].commanderCount, 2);
-    // A Worker takes commanders in place of minions: max(1 + floor(2 / 2), 2).
+    // A Worker takes commanders in place of minions: max(1 + floor(4 / 2), 2).
     assert.deepEqual(worker.minions, []);
+    assert.equal(worker.commanderCount, 3);
+  });
+
+  it("gives a Cluster Worker at least two commanders", () => {
+    const { war, teamInfo, worker } = warWith({
+      faction: CLUSTER,
+      workerName: "Worker",
+      settings: { bossCommanders: 1 },
+    });
+    population.populate(war, teamInfo);
+    // max(1 + floor(1 / 2), 2).
     assert.equal(worker.commanderCount, 2);
   });
 
   it("gives a non-Worker Cluster AI one Worker minion", () => {
-    const { war, teamInfo, worker } = warWith({ faction: CLUSTER });
+    const { war, teamInfo, worker } = warWith({
+      faction: CLUSTER,
+      settings: { bossCommanders: 4 },
+    });
     population.populate(war, teamInfo);
     assert.equal(worker.minions.length, 1);
     assert.equal(worker.minions[0].name, "Worker");
-    assert.equal(worker.minions[0].commanderCount, 2);
+    // 1 + floor(4 / 2).
+    assert.equal(worker.minions[0].commanderCount, 3);
   });
 
   it("fails the war when a minion pool is empty", () => {

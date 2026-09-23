@@ -1,5 +1,4 @@
 // Fills in the AIs the breeder placed, then the Guardians and the system lore.
-// Split from gw_start/setup.js to be testable - see shadowing.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
@@ -191,9 +190,11 @@ define([
     }
   };
 
-  // Runs inside a jQuery deferred callback, where a throw hangs Go To War. A
-  // missing boss, an unknown brain or faction, or an empty minion pool is
-  // reported through the returned outcome instead.
+  // Every AI in teamInfo, the breeder's result. Returns the outcome setup.js
+  // acts on: failed, whether the failure was a faction without a home system
+  // (spawnShortage), and the Guardians' star index (treasureStar). A missing
+  // boss, an unknown brain, a faction Queller has no personality for, or an
+  // empty minion pool fails the war through the outcome, not a throw.
   var populate = function (war, teamInfo) {
     var outcome = {
       failed: false,
@@ -257,9 +258,9 @@ define([
         teamBrain
       );
 
-      // One minion per stream index off the parent's rng. An MLA Cluster AI
-      // passes a clusterRole and takes one minion carrying commanderCount
-      // commanders instead.
+      // One minion per stream index off the parent's rng. A clusterRole picks
+      // minions by role and gives each one commanderCount commanders, so an
+      // MLA Cluster AI's callers pass a count of 1.
       var addMinions = function (
         parent,
         parentRng,

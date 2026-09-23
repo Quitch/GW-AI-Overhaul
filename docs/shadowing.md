@@ -216,19 +216,21 @@ module** in the mod's own namespace. The glue file then requires that sibling. T
 same split serves files in GWO's own namespace that are not shadows but depend on
 base-game modules all the same:
 
-| Glue file                                   | Measured sibling                                                                    |
-| ------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `gw_per_player_tech_referee.js` (shadow)    | `gw_play/per_player_tech.js`                                                        |
-| `gw_faction_*.js` (shadows)                 | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js` |
-| `gw_play/referee_game_files.js` (GWO's own) | `shared/referee_game_file_paths.js`                                                 |
-| `gw_play/referee_config.js` (GWO's own)     | `gw_play/referee_config_setup.js`                                                   |
-| `gw_play/cards_start_subcdr.js` (GWO's own) | `gw_play/general_commander_setup.js`                                                |
-| `gw_start/setup.js` (GWO's own)             | `gw_start/ai_population.js`, `gw_start/war_record.js`                               |
+| Glue file                                   | Measured sibling                                                                         |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `gw_per_player_tech_referee.js` (shadow)    | `gw_play/per_player_tech.js`                                                             |
+| `gw_faction_*.js` (shadows)                 | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js`      |
+| `gw_play/referee_game_files.js` (GWO's own) | `shared/referee_game_file_paths.js`                                                      |
+| `gw_play/referee_config.js` (GWO's own)     | `gw_play/referee_config_setup.js`                                                        |
+| `gw_play/cards_start_subcdr.js` (GWO's own) | `gw_play/general_commander_setup.js`                                                     |
+| `gw_start/setup.js` (GWO's own)             | `gw_start/ai_population.js`, `gw_start/war_record.js`, and the other `gw_start/` modules |
 
 The glue file keeps only the `model`/`ko`/`api` glue and is coverage-excluded.
-The sibling holds the logic and is unit-tested. Do **not** instead hoist helpers to
-file top level. In PA's RequireJS runtime that creates a `window` global. See
-[`constraints.md`](constraints.md).
+The sibling holds the logic and is unit-tested. `gw_start/setup.js` is the
+exception: it is coverage-excluded but still holds the war-generation sequence,
+including boss and worker placement and the start-card ally check. Do **not**
+instead hoist helpers to file top level. In PA's RequireJS runtime that creates a
+`window` global. See [`constraints.md`](constraints.md).
 
 ## Galaxy generation is a hijack, and `pathBetween` is the base game's
 

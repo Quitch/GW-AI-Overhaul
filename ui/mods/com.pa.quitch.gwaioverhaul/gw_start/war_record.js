@@ -1,5 +1,5 @@
 // The war settings stamped onto originSystem.gwaio for the gw_play scene to
-// read. Split from gw_start/setup.js to be testable - see shadowing.md.
+// read.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
