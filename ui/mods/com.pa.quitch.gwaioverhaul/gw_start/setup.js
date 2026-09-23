@@ -8,6 +8,10 @@
     // are bindable before the requireGW call sets these.
     var gwoFavourites;
     var gwoFavouriteLoadouts;
+    // From shared/ai.js and shared/ai_personality.js, once they load.
+    var aiBuffTypes;
+    var eradicationModes;
+    var ffaTags;
 
     model.gwoIsFavourite = function (card) {
       return !!gwoFavourites && gwoFavourites.has(cardId(card));
@@ -61,6 +65,22 @@
     var sharedSystemsForGalacticWarActive = false;
     var defaultNewGameName = model.newGameName();
     var warGenerationFailed;
+    // Set only when an enemy faction found no home system, the one failure a
+    // new seed can fix.
+    var spawnShortage;
+    // Shown above Go To War once generation gives up.
+    model.gwoWarGenerationError = ko.observable("");
+
+    // War generation reads model.gwoRaceInfo, which race_picker.js fills
+    // once the installed races resolve, so an earlier Go To War would
+    // generate an MLA-only war. race_picker.js loads after this file; if it
+    // failed to install, the war stays blocked rather than going MLA-only.
+    var racesResolved = function () {
+      return (
+        ko.isObservable(model.gwoRaceInfo) &&
+        model.gwoRaceInfo().races.length > 0
+      );
+    };
 
     // We change how we monitor model.ready() to prevent
     // Shared Systems for Galactic War breaking our new lobby
@@ -68,6 +88,7 @@
       var activeCard = model.activeStartCard();
       return (
         gwoReady() &&
+        racesResolved() &&
         enableGoToWar() &&
         !!activeCard &&
         !activeCard.gwoRaceLocked
@@ -98,23 +119,10 @@
 
     var foundationFaction = 1;
 
-    // Index into ai_tech.js's factionTechs[faction][n]. 5 is absent because that
-    // tech was removed; see the note in ai_tech.js where the setupAITech*
-    // functions are called.
-    var aiBuffType = {
-      cost: 0,
-      damage: 1,
-      health: 2,
-      speed: 3,
-      build: 4,
-      combat: 6,
-      cooldown: 7,
-    };
-
     // Drawing helpers take an rng parameter rather than closing over one: the
     // seed is only known inside navToNewGame. See galaxy.md.
     var selectAIBuffs = function (rng, numberOfBuffs) {
-      return rng.sample(_.values(aiBuffType), numberOfBuffs);
+      return rng.sample(_.values(aiBuffTypes), numberOfBuffs);
     };
 
     var setupAIBuffs = function (rng, distance, buffDistanceDelay) {
@@ -131,14 +139,15 @@
       return minionCount + Math.floor(bossCommanders / 2);
     };
 
-    var selectMinion = function (rng, minions, faction, minionName) {
-      var isCluster = minionName === "Worker" || minionName === "Security";
+    // clusterRole is given only for a Cluster faction, whose minions are
+    // picked by role.
+    var selectMinion = function (rng, minions, faction, clusterRole) {
       var selectedMinion;
-      if (isCluster) {
+      if (clusterRole) {
         selectedMinion = _.cloneDeep(
           rng.pick(
             _.filter(minions, {
-              name: minionName,
+              name: clusterRole,
             })
           )
         );
@@ -213,7 +222,7 @@
 
     var enableAnEradicationModeTypes = function (rng, ai) {
       var numberOfModes = rng.int(1, 3);
-      var modes = ["SubCommanders", "Factories", "Fabbers"];
+      var modes = eradicationModes;
 
       _.forEach(rng.sample(modes, numberOfModes), function (mode) {
         ai["eradicationMode" + mode] = true;
@@ -242,7 +251,7 @@
         return;
       }
 
-      var ffa = ["ffa", "platoon"];
+      var ffa = ffaTags;
 
       if (_.isArray(ais)) {
         _.forEach(ais, function (ai) {
@@ -280,17 +289,26 @@
     var warGenerationAttempts = 0;
     // The seed the player actually asked for, captured on the first attempt of a run.
     var warGenerationBaseSeed;
+    // gw_start/war_generation_failure.js, set once the modules below load. Only
+    // navToNewGame, which is defined there too, can fail.
+    var generationFailure;
 
-    var warGenerationFailure = function () {
+    var warGenerationFailure = function (cause) {
       model.makeGameBusy(false);
       enableGoToWar(true);
-      if (warGenerationAttempts < 5) {
+      if (generationFailure.shouldRetry(cause, warGenerationAttempts)) {
         // Derived, not re-rolled, so an entered seed reproduces the whole retry chain.
         model.newGameSeed(warGenerationBaseSeed + "-" + warGenerationAttempts);
         model.navToNewGame();
       } else {
         warGenerationAttempts = 0;
-        console.error("Failed to generate valid war");
+        // Put back, so the next click starts from the seed the player asked
+        // for rather than from the last retry's.
+        model.newGameSeed(warGenerationBaseSeed);
+        model.gwoWarGenerationError(
+          generationFailure.message(cause, warGenerationBaseSeed)
+        );
+        console.error("Failed to generate valid war: " + (cause || "error"));
       }
     };
 
@@ -338,7 +356,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_breeder.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_teams.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
@@ -357,6 +375,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/war_generation_failure.js",
       ],
       function (
         GW,
@@ -382,12 +401,17 @@
         gwoRaces,
         gwoPromise,
         gwoBrainTable,
-        gwoPersonality
+        gwoPersonality,
+        gwoGenerationFailure
       ) {
+        generationFailure = gwoGenerationFailure;
         // Replaces GWGalaxy.prototype.build, which navToNewGame below calls.
         gwoGalaxyBuild.install();
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
         gwoFavourites = favouritesModule;
+        aiBuffTypes = gwoAI.BUFF_TYPES;
+        eradicationModes = gwoAI.ERADICATION_MODES;
+        ffaTags = gwoPersonality.FFA_TAGS;
 
         // Resolved before the list is built so a mod loadout the player has
         // earned shows as unlocked rather than as a locked hint.
@@ -504,9 +528,10 @@
               card.releaseContext && card.releaseContext(context);
             } catch (e) {
               console.error(
-                "Start card threw while being dealt:",
-                params.id,
-                e
+                "Start card threw while being dealt: " +
+                  params.id +
+                  ": " +
+                  ((e && e.stack) || e)
               );
               warGenerationFailed = true;
               result.reject("start card threw: " + params.id);
@@ -551,11 +576,11 @@
           if (brain === "Penchant") {
             ai.penchantName = gwoAI.penchants(rng).penchantName;
           } else if (brain !== "Queller" && brain !== "Titans") {
-            console.error("Undefined AI type:", brain);
+            console.error("Undefined AI type: " + brain);
             warGenerationFailed = true;
           }
           if (brain === "Queller" && !gwoPersonality.FACTION_IDS[faction]) {
-            console.error("Undefined faction:", faction);
+            console.error("Undefined faction: " + faction);
             warGenerationFailed = true;
           }
           ai.personality = gwoPersonality.resolve(ai, {
@@ -583,8 +608,8 @@
           return ai;
         };
 
-        // Never rejects - every failure resolves undefined. Rejecting would spend
-        // warGenerationFailure's retries on a condition no reseed can change.
+        // Never rejects - every failure resolves undefined. Rejecting would fail
+        // the war over brackets it can do without.
         var loadSystemBrackets = function () {
           var ready = $.Deferred();
 
@@ -617,7 +642,12 @@
                 try {
                   loading.push(option.load());
                 } catch (e) {
-                  console.error("System source failed to load:", name, e);
+                  console.error(
+                    "System source failed to load: " +
+                      name +
+                      ": " +
+                      ((e && e.stack) || e)
+                  );
                 }
               }
             });
@@ -674,6 +704,8 @@
 
           enableGoToWar(false);
           warGenerationFailed = false;
+          spawnShortage = false;
+          model.gwoWarGenerationError("");
           warGenerationAttempts++;
           if (warGenerationAttempts === 1) {
             warGenerationBaseSeed = model.newGameSeed();
@@ -1004,6 +1036,7 @@
                     ", terminating war generation"
                 );
                 warGenerationFailed = true;
+                spawnShortage = true;
                 return;
               }
 
@@ -1456,7 +1489,9 @@
 
           var onSetupFinished = function () {
             if (warGenerationFailed === true) {
-              warGenerationFailure();
+              warGenerationFailure(
+                spawnShortage ? generationFailure.SPAWN_SHORTAGE : undefined
+              );
               return;
             }
 

@@ -146,7 +146,7 @@ define(function () {
                 results[item + tag] = data;
               },
               function (error) {
-                console.log("error loading spec:", item, error);
+                console.log("error loading spec: " + item + " (" + error + ")");
               }
             )
             .then(function () {

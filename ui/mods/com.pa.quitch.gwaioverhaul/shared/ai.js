@@ -1,6 +1,6 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/difficulty_levels.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
@@ -11,6 +11,8 @@ define([
   races,
   brainTable
 ) {
+  var CLUSTER_FACTION = 4;
+
   // The host's inventory is the live GWInventory, where aiMods is an observable;
   // a co-op viewer's arrives deserialised from the war record, where it is a
   // plain array. Both reach the referee, so both shapes are read here.
@@ -290,8 +292,10 @@ define([
 
     raceOf: races.raceOf,
 
-    getAIPathSource: function (type, race) {
-      var inventory = model.game().inventory();
+    // inventory is whose Sub Commander Tactics decides a Queller tier: a co-op
+    // viewer's own, or the host's when none is given.
+    getAIPathSource: function (type, race, inventory) {
+      inventory = inventory || model.game().inventory();
       var currentAiInUse = aiInUse(type, race);
 
       return refereeAIPaths.getAIPathSource(
@@ -336,6 +340,26 @@ define([
       );
     },
 
+    // The faction index of Cluster, for AIs and players alike.
+    CLUSTER_FACTION: CLUSTER_FACTION,
+
+    // Indices into ai_tech.js's factionTechs[faction][n], as ai.typeOfBuffs
+    // records them. 5 is absent: that tech was removed, and only v5.11.0 and
+    // earlier saves carry it. Key order is the order war generation samples.
+    BUFF_TYPES: {
+      cost: 0,
+      damage: 1,
+      health: 2,
+      speed: 3,
+      build: 4,
+      combat: 6,
+      cooldown: 7,
+    },
+
+    // The eradication modes an AI can carry, in the order war generation
+    // samples them. Each is the suffix of an ai.eradicationMode<name> flag.
+    ERADICATION_MODES: ["SubCommanders", "Factories", "Fabbers"],
+
     // An MLA Cluster AI: faction 4 fielding its Angel and Colonel Sub
     // Commanders. A Cluster of any other race is an ordinary faction. The
     // Guardians of a Cluster star carry faction 4 too. See races.md.
@@ -344,7 +368,7 @@ define([
       if (guardians) {
         return false;
       }
-      return factionIndex(ai) === 4 && races.isMla(ai.race);
+      return factionIndex(ai) === CLUSTER_FACTION && races.isMla(ai.race);
     },
 
     // rng is optional. War creation passes the AI's own stream; the play-scene

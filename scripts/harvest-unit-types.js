@@ -12,35 +12,19 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { ZipReader } = require("./lib/zip-read.js");
+const { mediaDir, userDataDir } = require("./lib/pa-install.js");
+const { shippedServerMods } = require("./lib/server-mods.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const OUT =
   process.env.GWO_HARVEST_OUT ||
   path.join(REPO_ROOT, "test", "fixtures", "unit_types.json");
 
-const MEDIA =
-  process.env.PA_MEDIA ||
-  "C:/Program Files (x86)/Steam/steamapps/common/Planetary Annihilation Titans/media";
-const USER_DATA =
-  process.env.PA_USER_DATA ||
-  path.join(
-    process.env.LOCALAPPDATA || "",
-    "Uber Entertainment",
-    "Planetary Annihilation"
-  );
+const MEDIA = mediaDir();
+const USER_DATA = userDataDir();
 
-// The race and add-on server mods GWO knows, in the order GW Server Mods
-// mounts them (each shadows the ones before it). A folder build beside a zip
-// wins.
-const SERVER_MODS = [
-  "com.pa.legion-expansion-server",
-  "com.pa.ferretmaster.commander-merge",
-  "com.pa.ferretmaster.bugs",
-  "com.pa.nik.exiles",
-  "com.pa.loloares.thorosmen",
-  "pa.mla.unit.addon",
-  "com.pa.daedelus.experimentals",
-];
+// A folder build beside a zip wins.
+const SERVER_MODS = shippedServerMods();
 
 function folderRoot(dir) {
   return {

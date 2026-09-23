@@ -44,7 +44,8 @@ function inventoryClass(options) {
 
 // The gwoBank a factory is handed. Suspend and resume are recorded; a record
 // is applied through the shipped shared/bank.js helper, so the suspension
-// around applyCards under test is the real one.
+// around applyCards under test is the real one. That helper suspends through
+// the module's own instance, so the recorders sit on it for the call.
 let realBank;
 function fakeBank(calls) {
   if (!realBank) {
@@ -57,7 +58,16 @@ function fakeBank(calls) {
   return {
     suspendUnlocks: () => calls.bank.push("suspend"),
     resumeUnlocks: () => calls.bank.push("resume"),
-    applyRecordInventory: realBank.applyRecordInventory,
+    applyRecordInventory: function () {
+      realBank.suspendUnlocks = () => calls.bank.push("suspend");
+      realBank.resumeUnlocks = () => calls.bank.push("resume");
+      try {
+        return realBank.applyRecordInventory.apply(realBank, arguments);
+      } finally {
+        delete realBank.suspendUnlocks;
+        delete realBank.resumeUnlocks;
+      }
+    },
   };
 }
 

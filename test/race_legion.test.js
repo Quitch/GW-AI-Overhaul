@@ -9,14 +9,13 @@ const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const cardUnits = loadCouiModule(MOD_ROOT + "/gw_play/card_units.js");
-const helpers = loadCouiModule(MOD_ROOT + "/gw_play/cards_deal_helpers.js");
+const helpers = loadCouiModule(MOD_ROOT + "/shared/cards_deal_helpers.js");
 const unitNames = loadCouiModule(MOD_ROOT + "/gw_play/unit_names.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
@@ -80,8 +79,9 @@ describe("the Legion descriptor", () => {
   });
 
   it("names units by Legion key, each in the table", () => {
-    for (const key of Object.keys(legion.unitNames)) {
+    for (const [key, name] of Object.entries(legion.unitNames)) {
       assert.ok(key in legion.units, key + " is named but not in units");
+      assert.match(name, /^!LOC:/, key);
     }
     assert.equal(legion.unitNames.shank, "!LOC:Shank");
     assert.equal(

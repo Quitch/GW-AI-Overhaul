@@ -35,11 +35,7 @@ define([
           .mods(unit, "replace", {
             "death_weapon.ground_ammo_spec": gwoUnit.kesslerAmmo,
           })
-          .concat(
-            gwoCard.mods(unit, "tag", {
-              "death_weapon.ground_ammo_spec": gwoUnit.kesslerAmmo,
-            })
-          );
+          .concat(gwoCard.mods(unit, "tag", ["death_weapon.ground_ammo_spec"]));
       });
 
       inventory.addMods(_.flatten(deathAmmoMods.concat(deathWeaponMods)));

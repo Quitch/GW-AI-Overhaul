@@ -1,46 +1,22 @@
 "use strict";
 
-// Validates the referee's Titans trees against a manual mount-order merge of
-// the real files on disk: media/pa/ai -> media/pa_ex1/ai -> GWO's own pa/ai
-// -> the race's server mod(s) -> every add-on's server mod, later layers
-// overwriting duplicates, which is the order the runtime virtual filesystem
-// mounts them. The real referee_ai.js runs against that merge served through
-// the test fakes.
-//
-// One pass per race: its tree must match the merge exactly, minus the
-// unit_maps and neural_networks rules the engine forces and minus every
-// other layer (another race's files, MLA's add-on files). One MLA pass: the
-// sweep into /pa/ai/player_guardians/ must carry the base files and MLA's
-// add-on files, untagged add-on maps included, and no race layer. Then every
-// mod is mounted at once, to prove no other layer leaks into any tree, and
-// each mounted descriptor's `unitMaps` and `sources` are checked against the
-// merge, so a stale descriptor fails here rather than silently claiming
-// nothing. The reverse is checked too: every AI file an add-on's own mods
-// ship is claimed by one of its layers, so a layer the mod grew upstream
-// fails here rather than being dropped from every tree. Local-only: CI has
-// neither the PA install nor the mods. See testing.md.
+// Validates the referee's race trees against a mount-order merge of the real
+// files on disk. Local-only: CI has neither the PA install nor the mods. What
+// each pass checks: testing.md, "The validators".
 
 const fs = require("node:fs");
 const path = require("node:path");
 const util = require("node:util");
 const { ZipReader } = require("./lib/zip-read.js");
-const { loadCouiModule } = require("./lib/amd-loader.js");
+const { mediaDir, userDataDir } = require("./lib/pa-install.js");
+const { MOD_ROOT, loadCouiModule } = require("./lib/amd-loader.js");
 const { buildGame, installModel } = require("./lib/ai-path-fixtures.js");
 const { installRefereeFakes, runRefereeAi } = require("./lib/referee-fakes.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
-const MEDIA =
-  process.env.PA_MEDIA ||
-  "C:/Program Files (x86)/Steam/steamapps/common/Planetary Annihilation Titans/media";
-const USER_DATA =
-  process.env.PA_USER_DATA ||
-  path.join(
-    process.env.LOCALAPPDATA || "",
-    "Uber Entertainment",
-    "Planetary Annihilation"
-  );
+const MEDIA = mediaDir();
+const USER_DATA = userDataDir();
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 // Node has no GW Server Mods to activate add-ons, so every registered one
 // counts here, as descriptorLayers() counts them.

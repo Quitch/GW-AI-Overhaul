@@ -41,9 +41,11 @@ jobs:
 
       - name: modinfo.json version matches the release tag
         shell: bash
+        # Through env, not interpolated into the script, so the tag is data.
+        env:
+          TAG: ${{ github.event.release.tag_name }}
         run: |
           set -euo pipefail
-          TAG="${{ github.event.release.tag_name }}"
           EXPECTED="${TAG#v}"
           ACTUAL="$(node -p "require('./modinfo.json').version")"
           if [ "$EXPECTED" != "$ACTUAL" ]; then
@@ -54,9 +56,10 @@ jobs:
 
       - name: CHANGELOG.md has an entry for this release
         shell: bash
+        env:
+          TAG: ${{ github.event.release.tag_name }}
         run: |
           set -euo pipefail
-          TAG="${{ github.event.release.tag_name }}"
           if ! grep -qE "^## ${TAG//./\\.} " CHANGELOG.md; then
             echo "::error::CHANGELOG.md has no \"## $TAG\" heading. Either the changelog entry is missing, or it's still sitting under \"## Unreleased\"."
             exit 1

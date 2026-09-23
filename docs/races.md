@@ -49,6 +49,40 @@ a card written for that race alone address the specs. Nobody writes anything
 else about the race's units by hand. What a race player fields follows from
 **capability cells**.
 
+## Unit tables
+
+`units` and `unitNames` in every `race/` and `addon/` file are generated.
+Everything above them in the file is hand-written.
+`scripts/generate-race-tables.js` (`npm run generate:race-tables`) builds
+the two tables from `test/fixtures/race_specs.json` and splices them in,
+formatted as Prettier formats the repo. `npm run harvest:race-specs` writes that fixture
+from the race and add-on mods on disk. `test/race_tables.test.js` runs the
+generator in memory and requires every file to come out byte for byte as
+committed, so a hand edit to a table fails the suite.
+
+The rules, and the mods each table reads, are in
+`scripts/lib/race-table-inputs.js`:
+
+- A race keys each unit that its own mod lists and ships and that carries its
+  bit. The key is the display name, less the race's prefix, with "Advanced"
+  moved last. A name two units share takes the unit's directory. A part is
+  keyed by its owner's key plus the role its file name gives (`shankAmmo`,
+  `crusherWeapon`). Bugs keys a research factory `<x>Research` and its
+  token `<x>Unlock`.
+- An add-on keys each unit its list has and the base game's lists do not. A
+  name two units share takes the race word of each one's bit, then the unit's
+  directory. Each unit is followed by its tools, ammo and death weapons.
+- Every name is written as a `!LOC:` key. The tooltips pass it through
+  `loc()`, so the English name shows wherever no table translates it.
+
+What no rule derives is written in the inputs, each with its reason: Legion's
+keys for the units it names twice and for its storage, and the entries its
+first, hand-mapped table carried that no rule reaches; the Bugs rule that reads only a unit's own
+types; and Exiles' Jelly, held under its first key and name after the mod
+renamed it Navigator. A key is what a race-only card addresses, so a table
+changes after a mod update on purpose, not as a side effect: re-harvest, run
+the generator, and review the diff.
+
 ## Capability cells
 
 Every card, `gw_start/ai_tech.js`, `shared/ai_inventory.js` and
@@ -221,8 +255,8 @@ merges the race's map over the brain's map
 `spec_id` the race map left resolves to a race unit of its cell. The referee
 writes the result as the army's tagged `ai_unit_map[_x1].json.<tag>`. It also
 copies the brain's untagged map, so the engine has a name to derive the tagged
-one from. This was measured live: with only the tagged file present, the engine
-looked for `ai_unit_map.json.ai0.ai0` and found nothing.
+one from. With only the tagged file present, the engine looks for
+`ai_unit_map.json.ai0.ai0` and finds nothing.
 
 No AI mod (`addAIMods`) is applied to a race tree in this pass. The descriptors
 name MLA build entries, which a race tree does not have. An AI's stat tech

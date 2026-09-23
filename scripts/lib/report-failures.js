@@ -1,6 +1,6 @@
 "use strict";
 
-// The failure dumps shared by the validators. The contract validators accumulate
+// The failure dumps shared by the validators. The per-file validators accumulate
 // `{ file, problems }`; the rest a flat list of problem strings. Both print the
 // same way, so the format lives here rather than drifting between them.
 

@@ -1,6 +1,8 @@
 // Host-side co-op pending-tech deal. Stock gw_play.js always deals each viewer
 // exactly 3 cards; this honours the bonus-card rules and per-player loadouts.
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+], function (refereeCoop) {
   // Short-circuits on the first validation problem.
   var collectPendingTechTargets = function (params) {
     var viewers = params.viewers;
@@ -123,15 +125,11 @@ define(function () {
         return result.promise();
       }
 
-      var connectedClients = _.isArray(model.gwCampaignConnectedClients())
-        ? model.gwCampaignConnectedClients()
-        : [];
-      var sourceClients = _.isArray(dealOptions.clients)
-        ? dealOptions.clients
-        : connectedClients;
-      var viewers = _.filter(sourceClients, function (client) {
-        return client && client.role === "viewer";
-      });
+      var viewers = refereeCoop.viewersOf(
+        _.isArray(dealOptions.clients)
+          ? dealOptions.clients
+          : model.gwCampaignConnectedClients()
+      );
 
       if (!viewers.length) {
         result.resolve([]);
@@ -165,7 +163,7 @@ define(function () {
             ),
           });
         },
-        starCardForRecord: coopStarCards.starCardForClient,
+        starCardForRecord: coopStarCards.starCardForRecord,
       });
       var targets = collected.targets;
 

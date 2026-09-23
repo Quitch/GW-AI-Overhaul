@@ -72,6 +72,12 @@ Base-game modules use bare relative ids instead (`"shared/gw_common"`,
 does not ship is a base-game module. The test harness reports such an id
 distinctly. See [`testing.md`](testing.md).
 
+A module in `shared/` never requires a module from a scene folder (`gw_start/`,
+`gw_play/` and the other `scenes` keys). Several scenes load `shared/`, so such a
+require pulls one scene's code into the others. A module that a scene and
+`shared/` both need lives in `shared/`. `test/shared_layering.test.js` enforces
+this.
+
 Every mod gets **one shared JS scope per scene**. Stock UI code and mod scripts
 share a namespace. That is why several GWO values are deliberately globals.
 Other mods hook them, and that is a supported contract, not an accident. The
@@ -299,7 +305,8 @@ CONTRIBUTING.md covers them in full. The load-bearing ones are:
 
 - Shipped `ui/**` code must be ES5 / Chrome 40 safe. See
   [`constraints.md`](constraints.md).
-- Use camelCase in JS, kebab-case in CSS, and a 2-space indent. Put HTML in its
+- Use camelCase in JS, lower-case kebab-case or snake_case in CSS, and a
+  2-space indent. Put HTML in its
   own file (never inline in JS).
 - `pa/**` JSON is intentionally minified to one line, matching the base game. It
   is excluded from Prettier.

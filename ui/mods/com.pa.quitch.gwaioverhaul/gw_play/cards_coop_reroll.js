@@ -2,7 +2,7 @@
 // reroll its pending offer; the host deals a smaller hand, stores it, and returns
 // it (gwo_reroll_pending_tech_result) for the viewer to apply. See coop.md.
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
 ], function (dealHelpers, coopHost) {
   // A reroll spends one more of the viewer's offered cards.
@@ -102,10 +102,7 @@ define([
         return;
       }
 
-      var record = game.findCoopPlayerInventoryData({
-        id: payload.client_id,
-        name: payload.client_name,
-      });
+      var record = coopHost.recordFor(game, payload);
       if (!record || !record.inventory) {
         console.error(
           "[GW COOP] missing inventory for pending tech reroll result"
@@ -139,7 +136,10 @@ define([
       return $.when(
         model.prepareCoopPlayerInventories(),
         GW.manifest.saveGame(game).then(null, function (err) {
-          console.error("[GW COOP] failed to save rerolled tech", err);
+          console.error(
+            "[GW COOP] failed to save rerolled tech: " +
+              ((err && err.stack) || err)
+          );
           return $.Deferred().reject(err).promise();
         })
       );

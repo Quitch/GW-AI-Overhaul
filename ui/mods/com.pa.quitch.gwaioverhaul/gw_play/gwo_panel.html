@@ -58,10 +58,7 @@
           <div class="td">
             <span data-bind="visible:$index() === 0"><loc>Options:</loc></span>
           </div>
-          <div
-            class="data gwo-option"
-            data-bind="text: $root.gwoOptions()[$index()]"
-          ></div>
+          <div class="data gwo-option" data-bind="text: $data"></div>
         </div>
       </div>
     </div>
@@ -116,14 +113,11 @@
     >
       <loc>Incompatible Mods</loc>
     </h3>
-    <!-- ko if: $root.gwoIncompatibleMods -->
+    <!-- ko if: $root.gwoIncompatibleMods().length -->
     <div class="table">
       <div class="tablebody" data-bind="foreach: $root.gwoIncompatibleMods()">
         <div class="tr">
-          <div
-            class="data"
-            data-bind="text: $root.gwoIncompatibleMods()[$index()]"
-          ></div>
+          <div class="data" data-bind="text: $data"></div>
         </div>
       </div>
     </div>
@@ -131,7 +125,7 @@
     <h3 id="missing-races" data-bind="visible: $root.gwoRaceBlock().length > 0">
       <loc>Missing Races</loc>
     </h3>
-    <!-- ko if: $root.gwoRaceBlock -->
+    <!-- ko if: $root.gwoRaceBlock().length -->
     <div class="table">
       <div class="tablebody" data-bind="foreach: $root.gwoRaceBlock()">
         <div class="tr">
@@ -146,7 +140,7 @@
     >
       <loc>Missing Map Packs</loc>
     </h3>
-    <!-- ko if: $root.gwoBiomeBlock -->
+    <!-- ko if: $root.gwoBiomeBlock().length -->
     <div class="table">
       <div class="tablebody" data-bind="foreach: $root.gwoBiomeBlock()">
         <div class="tr">

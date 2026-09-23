@@ -26,11 +26,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 | Field                                                              | Required?                                                                                                                                                                      |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` | Always functions, on every card.                                                                                                                                               |
-| `audio`, `getContext`                                              | On every card except one legacy exception.                                                                                                                                     |
+| `audio`, `getContext`                                              | On every tech card except one legacy exception. Loadout cards have neither: `gwoCard.loadout()` returns only `buff` and `dull`, and only `gwc_start_subcdr` adds `getContext`. |
 | `keep`, `discard`                                                  | Optional. No card carries either today.                                                                                                                                        |
 | `hint`                                                             | Optional, loadout cards only: the icon and text of the locked-loadout hover, read by stock `gw_start.js` and `gw_coop_per_player_loadout.js`. `gwoCard.lockedHint` builds one. |
 
-The `audio`/`getContext` exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
+The tech-card exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
 save-compatibility with GWO v5.9.0 and earlier. The card is deliberately invisible
 and undiscardable. It exists only so that old saves that reference it still load.
 
@@ -49,25 +49,41 @@ cards. It stubs `shared/gw_common` and so loads every card. See
 
 ## Which shape to write a card in
 
-There are three shapes. The card's family decides which one to use:
+The card's family decides which shape to use:
 
-| Family                            | Shape                       |
-| --------------------------------- | --------------------------- |
-| Unit upgrades (`gwaio_upgrade_*`) | `gwoCard.upgradeCard({})`   |
-| Loadouts (`*_start_*`)            | `gwoCard.loadout(CARD, {})` |
-| Everything else                   | The object literal above    |
+| Family                                 | Shape                               |
+| -------------------------------------- | ----------------------------------- |
+| Unit upgrades (`gwaio_upgrade_*`)      | `gwoCard.upgradeCard({})`           |
+| Loadouts (`*_start_*`)                 | `gwoCard.loadout(CARD, {})`         |
+| Anti-tech ammo (`gwaio_anti_*`)        | `gwoCardFactories.antiTechCard({})` |
+| Factory cooldowns (`gwaio_cooldown_*`) | `gwoCardFactories.cooldownCard({})` |
+| Everything else                        | The object literal above            |
 
-The first two families each have a rigid frame that every member repeats. For an
+The first four families each have a rigid frame that every member repeats. For an
 upgrade, the frame is a slot and a `requires` gate. For a loadout, the frame is the
-`buffCount` bank dance. The factory carries the frame, and the card supplies only
-what differs. **Write a new card of either family through its factory**. A card that
-cannot fit the frame stays a literal, and several do (see the factory's options, and
-the notes at the end of this file).
+`buffCount` bank dance. An anti-tech card multiplies armour entries on every ammo
+spec and deals through `antiTechDeal`. A cooldown card halves
+`factory_cooldown_time` on a factory group and deals while one is held. The factory
+carries the frame, and the card supplies only what differs. **Write a new card of
+any of these families through its factory**. A card that cannot fit the frame stays
+a literal, and several do (see the factory's options, and the notes at the end of
+this file).
+
+`upgradeCard` and `loadout` are in `shared/cards.js`, so they are part of the
+published API. `antiTechCard` and `cooldownCard` are in `shared/card_factories.js`,
+which is not published. Both of them take `name`, `description`, and `icon`. They
+also take a `chance`, which is a weight or a function of
+`(inventory, system, context)`. The anti-tech default is 40, and the cooldown
+default is 70. An anti-tech card names its `counter` card and its `armour` map, for
+example `{ AT_Air: 2, AT_Orbital: 0.5 }`. A cooldown card names its `audio`, its
+`factories`, and optionally `requires`, which replaces `factories` as the ownership
+gate.
 
 Everything else is a literal because there is no shared frame to lift. The variety of
 those cards lives in their `deal` weighting. A factory for them would need an
-override for nearly every field. Apply that test to a fourth family if one appears:
-a factory is worth it when the members differ in _data_, not in _logic_.
+override for nearly every field. Apply that test to a new family if one appears:
+a factory is worth it when the members differ in _data_, not in _logic_. The titan
+cards fail it: `gwaio_combat_titans` chains three `flatMapMods` calls.
 
 ## `buff` and `dull`
 
@@ -353,6 +369,8 @@ silently discards everything the mod registered.
 | `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
 | `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |
+| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`       |
+| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`      |
 
 The public API goes beyond the globals. The helper names that `shared/cards.js`
 returns are equally published. So are the **key** names in `shared/units.js` and

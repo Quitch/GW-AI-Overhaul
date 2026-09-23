@@ -6,7 +6,7 @@ define(function () {
     return _.map(raceList, function (race) {
       return (
         '<option value="' +
-        race.id +
+        _.escape(race.id) +
         '">' +
         _.escape(loc(race.name)) +
         "</option>"

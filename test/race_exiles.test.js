@@ -7,14 +7,13 @@
 
 const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const exiles = loadCouiModule(MOD_ROOT + "/race/exiles.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const cardUnits = loadCouiModule(MOD_ROOT + "/gw_play/card_units.js");
-const helpers = loadCouiModule(MOD_ROOT + "/gw_play/cards_deal_helpers.js");
+const helpers = loadCouiModule(MOD_ROOT + "/shared/cards_deal_helpers.js");
 const unitNames = loadCouiModule(MOD_ROOT + "/gw_play/unit_names.js");
 const fixture = require("./fixtures/unit_types.json");
 
@@ -71,11 +70,12 @@ describe("the Exiles descriptor", () => {
       assert.match(key, /^[a-z][A-Za-z0-9]*$/, key);
       assert.match(value, /^\/pa\/(units|ammo|tools)\/.*\.json$/, key);
     }
-    for (const key of Object.keys(exiles.unitNames)) {
+    for (const [key, name] of Object.entries(exiles.unitNames)) {
       assert.ok(key in exiles.units, key + " is named but not in units");
+      assert.match(name, /^!LOC:/, key);
     }
     assert.ok(Object.keys(exiles.units).length >= 280);
-    assert.equal(exiles.unitNames.maximCommander, "Maxim Commander");
+    assert.equal(exiles.unitNames.maximCommander, "!LOC:Maxim Commander");
   });
 });
 

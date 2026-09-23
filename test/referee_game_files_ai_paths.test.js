@@ -1,7 +1,7 @@
 "use strict";
 
 // Unit tests for the game-files referee's ai_unit_map path logic. The tested helpers
-// live in the extracted gw_play/referee_game_file_paths.js; the referee file itself
+// live in the extracted shared/referee_game_file_paths.js; the referee file itself
 // depends on the unshipped shared/gw_common and cannot load here, so this loads the
 // extracted module.
 
@@ -21,7 +21,7 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeGameFiles = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_game_file_paths.js"
 );
 const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
