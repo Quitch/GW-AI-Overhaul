@@ -34,6 +34,17 @@ function inventory(units, cardIds) {
   };
 }
 
+function assertContract(card, base, audio) {
+  assert.deepEqual(Object.keys(card).sort(), CONTRACT);
+  assert.equal(card.visible(), true);
+  assert.equal(card.summarize(), base.name);
+  assert.equal(card.describe(), base.description);
+  assert.equal(card.icon(), base.icon);
+  assert.deepEqual(card.audio(), { found: audio });
+  assert.equal(card.getContext, gwoCard.getContext);
+  assert.equal(card.dull(), undefined);
+}
+
 describe("antiTechCard", () => {
   const base = {
     name: "!LOC:Anti-Air Ammo Tech",
@@ -44,17 +55,11 @@ describe("antiTechCard", () => {
   };
 
   it("returns the full card contract", () => {
-    const card = factories.antiTechCard(base);
-    assert.deepEqual(Object.keys(card).sort(), CONTRACT);
-    assert.equal(card.visible(), true);
-    assert.equal(card.summarize(), "!LOC:Anti-Air Ammo Tech");
-    assert.equal(card.describe(), "!LOC:Doubles damage to air.");
-    assert.equal(card.icon(), "icon.png");
-    assert.deepEqual(card.audio(), {
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    });
-    assert.equal(card.getContext, gwoCard.getContext);
-    assert.equal(card.dull(), undefined);
+    assertContract(
+      factories.antiTechCard(base),
+      base,
+      "/VO/Computer/gw/board_tech_available_ammunition"
+    );
   });
 
   it("multiplies every ammo spec's armour entries in the order given", () => {
@@ -116,17 +121,7 @@ describe("cooldownCard", () => {
   };
 
   it("returns the full card contract", () => {
-    const card = factories.cooldownCard(base);
-    assert.deepEqual(Object.keys(card).sort(), CONTRACT);
-    assert.equal(card.visible(), true);
-    assert.equal(card.summarize(), "!LOC:Air Cooldown Tech");
-    assert.equal(card.describe(), "!LOC:Halves the cooldown.");
-    assert.equal(card.icon(), "icon.png");
-    assert.deepEqual(card.audio(), {
-      found: "/VO/Computer/gw/board_tech_available_air",
-    });
-    assert.equal(card.getContext, gwoCard.getContext);
-    assert.equal(card.dull(), undefined);
+    assertContract(factories.cooldownCard(base), base, base.audio);
   });
 
   it("halves factory_cooldown_time on each factory", () => {
