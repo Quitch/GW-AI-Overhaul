@@ -4,6 +4,7 @@
 
 ### Bugfix
 
+- A Legion, Bugs, or Exiles player's first tech deal can no longer offer cards for units their race does not have
 - A war saved before v5.52.2 now repairs every enemy Cluster faction's Sub Commanders when it loads, not only the first
 - In co-op with per-player tech and Queller Sub Commanders, a viewer's Sub Commanders now follow the viewer's own Sub Commander Tactics card rather than the host's
 - A tech card, loadout, or loadout bank from another mod that fails to load no longer stops Explore, Go To War, or joining a co-op war; the failure is logged and only that card or bank is missing
