@@ -163,7 +163,15 @@ define([
           ["cards/" + cardId],
           function (card) {
             curCard = cardId;
-            card[op](self, cardParams);
+            // GWO - a card that throws still finishes, or done and the unlock
+            // resume never run. The loader does not catch a throw here.
+            try {
+              card[op](self, cardParams);
+            } catch (e) {
+              console.error(
+                "GWO card " + cardId + " threw in " + op + ": " + e
+              );
+            }
             finishCard();
           },
           function (error) {

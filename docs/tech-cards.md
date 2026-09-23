@@ -383,8 +383,9 @@ model.gwoDecks.push({
 ```
 
 - `cards` takes **any** card id without naming a whole deck: the mod's own ids, or
-  cherry-picked stock `gwc_*`/`gwaio_*` ids. A missing module costs one card at
-  deal time, never a hang.
+  cherry-picked stock `gwc_*`/`gwaio_*` ids. A module that fails to load, or
+  that returns nothing, costs one card at deal time and is logged by id. It does
+  not stop the deal.
 - `include` takes the id of any **already registered** deck: `Basic`, `Expanded`,
   or another mod's. Registration order is mod `priority` order (ascending). A mod
   that includes another mod's deck therefore declares that mod under
@@ -419,11 +420,12 @@ model.gwoLoadoutBanks.push({
 
 The entry carries the bank's **path**, not the loaded module. The reason is that a
 mod that `requireGW`d its own bank before it registered would resolve after the
-loadout list was already built. `shared/loadout_banks.js` resolves the paths once.
-Every later reader reads the result: the unlock test in `shared/loadouts.js`,
-`startCardUnlocked` in `gw_play/cards.js`, and `bankStartCard` /
-`localUnlockedLoadoutIds` in `treasure_loadouts.js`. The module at `path` need only
-expose `hasStartCard` and `addStartCard`.
+loadout list was already built. `shared/loadout_banks.js` loads each path on its
+own and resolves them once. A path that fails to load is logged and costs only its
+own bank. Every later reader reads the result: the unlock test in
+`shared/loadouts.js`, `startCardUnlocked` in `gw_play/cards.js`, and
+`bankStartCard` / `localUnlockedLoadoutIds` in `treasure_loadouts.js`. The module
+at `path` need only expose `hasStartCard` and `addStartCard`.
 
 `prefix` routes a won loadout back to the mod that shipped it. Ids that begin
 `gwc_start` are tested first and always go to the base game's bank. The base game
