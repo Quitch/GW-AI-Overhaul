@@ -125,7 +125,6 @@ describe("the harvested fixture", () => {
       t.skip("no PA install");
       return;
     }
-    // Outside the repo, and removed however the harvest ends.
     const tmp = path.join(
       os.tmpdir(),
       "gwo-unit-types-" + process.pid + ".json"

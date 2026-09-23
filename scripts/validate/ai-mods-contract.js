@@ -276,8 +276,9 @@ function checkFile(file) {
 }
 
 function main() {
-  // Stubs shared/gw_common, which nearly every card requires. Without it the
-  // cards were skipped as excluded, nine of them AI-mod authors.
+  // Stubs shared/gw_common, which 59 cards load, 16 of them through
+  // cards/gwc_start. Without it those cards were skipped as excluded, nine of
+  // them AI-mod authors.
   installCardHarness();
   registerModuleStub(
     "shared/gw_common",

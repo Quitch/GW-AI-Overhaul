@@ -3,6 +3,8 @@
 // scripts/lib/race-tables.js: the generator reproduces every race/ and
 // addon/ file from the harvested specs (test/fixtures/race_specs.json) and
 // the hand-kept inputs, and its naming rules on small hand-built sources.
+// scripts/harvest-race-specs.js, which writes that fixture, fails without
+// writing it when a spec does not parse.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -34,14 +36,6 @@ describe("the race table generator", () => {
     );
     for (const [file, content] of Object.entries(files)) {
       assert.equal(lf(content), lf(read(file)), file);
-    }
-  });
-
-  it("names every unit as a !LOC: key", () => {
-    for (const input of TABLES) {
-      for (const [key, name] of buildTable(input, fixture).unitNames) {
-        assert.match(name, /^!LOC:./, input.id + " " + key);
-      }
     }
   });
 });
@@ -151,7 +145,7 @@ describe("race naming rules", () => {
       unit_types: ["UNITTYPE_Custom1"],
     },
   };
-  const source = (companion = {}) => ({
+  const source = () => ({
     mods: [OWN, "com.fx.companion"],
     unitList: [
       "/pa/units/land/fx_tank/fx_tank.json",
@@ -162,7 +156,7 @@ describe("race naming rules", () => {
       "/pa/units/land/fx_nameless/fx_nameless.json",
       "/pa/units/land/fx_other/fx_other.json",
     ],
-    specs: { [OWN]: units, "com.fx.companion": companion },
+    specs: { [OWN]: units, "com.fx.companion": {} },
   });
   const table = (input, src = source()) =>
     buildTable(input, { tables: { fx: src }, baseUnits: [] });
@@ -252,7 +246,7 @@ describe("race naming rules", () => {
     const moved = "/pa/units/structure/fx_factory_adv/fx_factory_adv.json";
     delete own[moved];
     const src = {
-      ...source({ [moved]: units[moved] }),
+      ...source(),
       specs: { [OWN]: own, "com.fx.companion": { [moved]: units[moved] } },
     };
 

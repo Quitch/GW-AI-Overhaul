@@ -34,8 +34,9 @@ define([
   );
   // A function rather than a value because a mod's bank is resolved by a
   // requireGW that may not have finished when this module's factory runs. Called
-  // after gwoLoadoutBanks.resolve(), it sees every bank; called before, it falls
-  // back to the two banks GWO ships and no mod loadout shows as unlocked.
+  // once gwoLoadoutBanks.load() settles, it sees every bank; called before, it
+  // falls back to the base game's bank and GWO's own, so a loadout that only a
+  // mod's bank records shows as locked.
   // A loadout built for MLA alone is shown to a race player locked, never
   // hidden. The race is gw_start's setting for the host and the picker's
   // observable for a co-op viewer; neither scene has the other's. See races.md.

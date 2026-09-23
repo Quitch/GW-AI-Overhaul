@@ -57,11 +57,13 @@ Everything above them in the file is hand-written.
 the two tables from `test/fixtures/race_specs.json` and splices them in,
 formatted as Prettier formats the repo. `npm run harvest:race-specs` writes that fixture
 from the race and add-on mods on disk. `test/race_tables.test.js` runs the
-generator in memory and requires every file to come out byte for byte as
-committed, so a hand edit to a table fails the suite.
+generator in memory, calling `generateAll` from `scripts/lib/race-tables.js`,
+the generator behind `scripts/generate-race-tables.js`. It requires every file
+to come out byte for byte as committed, so a hand edit to a table fails the
+suite.
 
-The rules, and the mods each table reads, are in
-`scripts/lib/race-table-inputs.js`:
+The rules are in `scripts/lib/race-tables.js`, and the mods each table reads
+are in `scripts/lib/race-table-inputs.js`:
 
 - A race keys each unit that its own mod lists and ships and that carries its
   bit. The key is the display name, less the race's prefix, with "Advanced"

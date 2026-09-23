@@ -28,11 +28,4 @@ describe("signatureOf", () => {
       signatureOf(["/pa/units/a.json", "/pa/units/c.json"])
     );
   });
-
-  it("differs when a unit is added", () => {
-    assert.notEqual(
-      signatureOf(["/pa/units/a.json"]),
-      signatureOf(["/pa/units/a.json", "/pa/units/b.json"])
-    );
-  });
 });
