@@ -295,8 +295,12 @@ describe("setupGwoDeck", () => {
   // them in any order - which is what the engine's loader effectively does.
   function deferredRequireGW() {
     const pending = [];
-    const requireGW = (ids, callback) => {
-      pending.push({ id: ids[0].replace("cards/", ""), callback: callback });
+    const requireGW = (ids, callback, errback) => {
+      pending.push({
+        id: ids[0].replace("cards/", ""),
+        callback: callback,
+        errback: errback,
+      });
     };
     return { pending, requireGW };
   }
@@ -386,6 +390,62 @@ describe("setupGwoDeck", () => {
     assert.equal(deck[1], undefined);
     // The surviving cards keep their own indices, so the deck does not shift.
     assert.equal(deck[2], "gwc_gamma");
+  });
+
+  // requireGW never times out, so a module that fails to load reaches only the
+  // errback. Without it counting, `loaded` never resolves and every deal waits.
+  it("still resolves when a card module fails to load", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    const { pending, requireGW } = deferredRequireGW();
+    setGlobal("model", { gwoCards: ids });
+    setGlobal("requireGW", requireGW);
+
+    const cards = [];
+    const deck = [];
+    let resolved = 0;
+    deal.setupGwoDeck(cards, deck, ids.length, {
+      resolve: () => {
+        resolved++;
+      },
+    });
+
+    pending[0].callback({});
+    pending[1].errback(new Error("load failed"));
+    pending[2].callback({});
+    pending[3].callback({});
+
+    assert.equal(resolved, 1);
+    assert.equal(deck[1], undefined);
+    assert.equal(deck[2], "gwc_gamma");
+    assert.deepEqual(
+      errorMock.mock.calls.map((call) => call.arguments),
+      [["GWO card failed to load: gwc_beta"]]
+    );
+  });
+
+  // RequireJS can call an errback once per failed dependency, so a card must not
+  // count twice and resolve the deck before the other cards arrive.
+  it("counts a failed card once however often its errback fires", () => {
+    mock.method(console, "error", () => {});
+    const { pending, requireGW } = deferredRequireGW();
+    setGlobal("model", { gwoCards: ids });
+    setGlobal("requireGW", requireGW);
+
+    let resolved = 0;
+    deal.setupGwoDeck([], [], ids.length, {
+      resolve: () => {
+        resolved++;
+      },
+    });
+
+    pending[0].errback(new Error("first"));
+    pending[0].errback(new Error("second"));
+    pending[0].errback(new Error("third"));
+    pending[1].callback({});
+    pending[2].callback({});
+    assert.equal(resolved, 0, "gwc_delta has not loaded yet");
+    pending[3].callback({});
+    assert.equal(resolved, 1);
   });
 
   // The co-op loadout scene deals one loadout and never a tech card, so it
