@@ -139,7 +139,7 @@ define([
       return $.when(
         model.prepareCoopPlayerInventories(),
         GW.manifest.saveGame(game).then(null, function (err) {
-          console.error("[GW COOP] failed to save rerolled tech", err);
+          console.error("[GW COOP] failed to save rerolled tech: " + err);
           return $.Deferred().reject(err).promise();
         })
       );

@@ -30,7 +30,7 @@ define(function () {
       );
 
       if (!duplicate) {
-        console.error(card.id, "failed duplication test");
+        console.error(card.id + " failed duplication test");
       }
     };
 

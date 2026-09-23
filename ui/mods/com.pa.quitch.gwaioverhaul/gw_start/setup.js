@@ -504,9 +504,7 @@
               card.releaseContext && card.releaseContext(context);
             } catch (e) {
               console.error(
-                "Start card threw while being dealt:",
-                params.id,
-                e
+                "Start card threw while being dealt: " + params.id + ": " + e
               );
               warGenerationFailed = true;
               result.reject("start card threw: " + params.id);
@@ -551,11 +549,11 @@
           if (brain === "Penchant") {
             ai.penchantName = gwoAI.penchants(rng).penchantName;
           } else if (brain !== "Queller" && brain !== "Titans") {
-            console.error("Undefined AI type:", brain);
+            console.error("Undefined AI type: " + brain);
             warGenerationFailed = true;
           }
           if (brain === "Queller" && !gwoPersonality.FACTION_IDS[faction]) {
-            console.error("Undefined faction:", faction);
+            console.error("Undefined faction: " + faction);
             warGenerationFailed = true;
           }
           ai.personality = gwoPersonality.resolve(ai, {
@@ -617,7 +615,9 @@
                 try {
                   loading.push(option.load());
                 } catch (e) {
-                  console.error("System source failed to load:", name, e);
+                  console.error(
+                    "System source failed to load: " + name + ": " + e
+                  );
                 }
               }
             });

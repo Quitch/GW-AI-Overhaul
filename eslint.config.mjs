@@ -124,6 +124,22 @@ export default defineConfig([
     },
   },
   {
+    // PA prefixes each log line with the file and line of the console call, so
+    // a logging wrapper would name itself on every line. The rule is the guard.
+    files: ["ui/**/*.js"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "CallExpression[callee.object.name='console'][arguments.length>1]",
+          message:
+            "PA's log keeps only the first console argument; build one string.",
+        },
+      ],
+    },
+  },
+  {
     // lodash rules for shipped code only: `_` is a PA runtime global that the
     // Node tooling under scripts/ and test/ does not have.
     files: ["ui/**/*.js"],

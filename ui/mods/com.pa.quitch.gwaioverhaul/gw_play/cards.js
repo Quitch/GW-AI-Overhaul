@@ -367,7 +367,9 @@
                     gwoStreams.cardRng(iterationRng, card.id)
                   );
               } catch (e) {
-                console.error("Tech card deal() threw, skipping", card.id, e);
+                console.error(
+                  "Tech card deal() threw, skipping " + card.id + ": " + e
+                );
                 return undefined;
               }
 
@@ -426,9 +428,10 @@
                   );
                 } catch (e) {
                   console.error(
-                    "Tech card getContext() threw, skipping",
-                    card.id,
-                    e
+                    "Tech card getContext() threw, skipping " +
+                      card.id +
+                      ": " +
+                      e
                   );
                 }
               }
@@ -906,7 +909,9 @@
 
           return game.winTurn(wonIndex).then(function (didWin) {
             if (!didWin) {
-              console.error("Failed winning turn", game);
+              console.error(
+                "Failed winning turn at star " + game.currentStar()
+              );
               return $.Deferred().reject("Failed winning turn").promise();
             }
 

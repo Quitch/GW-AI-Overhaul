@@ -107,8 +107,10 @@ define(function () {
             cardName = loc(data.summarize());
           } catch (e) {
             console.error(
-              "[GW COOP] card summarize() threw for id=" + payload.card_id,
-              e
+              "[GW COOP] card summarize() threw for id=" +
+                payload.card_id +
+                ": " +
+                e
             );
             result.reject("Card summarize threw for " + payload.card_id);
             return;

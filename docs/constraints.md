@@ -180,6 +180,17 @@ When a base-game-shadowed module needs its logic tested, extract that logic into
 a measured sibling module. Do not hoist helpers to file top level. See
 [`shadowing.md`](shadowing.md).
 
+## Log one string
+
+PA's log file keeps only the **first** argument of a `console` call.
+`console.error("failed:", path, error)` reaches the log as `failed:`, with no
+path. Build one string, with `JSON.stringify` for a descriptor or spec and
+`+ error` for an error. ESLint's `no-restricted-syntax` rule fails any `ui/**`
+call with more than one argument.
+
+Do not add a logging wrapper instead. PA prefixes each log line with the file
+and line of the `console` call, so every line would name the wrapper.
+
 ## CSS
 
 CSS has the same problem as the ES5 whitelist, and it is worse in one way. An

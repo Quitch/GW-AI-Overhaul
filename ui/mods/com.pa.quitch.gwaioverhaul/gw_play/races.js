@@ -177,7 +177,7 @@
                 });
               },
               function (error) {
-                console.error("gwoRaces: unit list not read", error);
+                console.error("gwoRaces: unit list not read: " + error);
               }
             );
           });

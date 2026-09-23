@@ -108,7 +108,9 @@ define(function () {
         try {
           return entry.bank.hasStartCard(card);
         } catch (e) {
-          console.error("Loadout bank hasStartCard() threw:", entry.prefix, e);
+          console.error(
+            "Loadout bank hasStartCard() threw: " + entry.prefix + ": " + e
+          );
           return false;
         }
       });
@@ -137,7 +139,9 @@ define(function () {
           try {
             return entry.bank.startCards();
           } catch (e) {
-            console.error("Loadout bank startCards() threw:", entry.prefix, e);
+            console.error(
+              "Loadout bank startCards() threw: " + entry.prefix + ": " + e
+            );
             return [];
           }
         })

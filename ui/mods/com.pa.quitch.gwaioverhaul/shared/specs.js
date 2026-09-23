@@ -148,8 +148,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         multiply: function (attribute, value) {
           if (!_.isNumber(attribute)) {
             console.warn(
-              "multiply: attribute is not a number. Leaving unchanged:",
-              attribute
+              "multiply: attribute is not a number. Leaving unchanged: " +
+                JSON.stringify(attribute)
             );
             return attribute;
           }
@@ -162,8 +162,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             !isNullish(attribute)
           ) {
             console.warn(
-              "add: attribute is not a number, string, or nullish. Leaving unchanged:",
-              attribute
+              "add: attribute is not a number, string, or nullish. Leaving unchanged: " +
+                JSON.stringify(attribute)
             );
             return attribute;
           } else if (isNullish(attribute)) {
@@ -177,8 +177,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         merge: function (attribute, value) {
           if (!_.isPlainObject(attribute)) {
             console.warn(
-              "merge: attribute is not an object. Leaving unchanged:",
-              attribute
+              "merge: attribute is not an object. Leaving unchanged: " +
+                JSON.stringify(attribute)
             );
             return attribute;
           }
@@ -213,16 +213,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         tag: function (attribute) {
           if (!_.isString(attribute)) {
             console.warn(
-              "tag: attribute is not a string. Leaving unchanged:",
-              attribute
+              "tag: attribute is not a string. Leaving unchanged: " +
+                JSON.stringify(attribute)
             );
             return attribute;
           }
           var jsonIndex = attribute.lastIndexOf(".json");
           if (jsonIndex === -1) {
             console.warn(
-              "tag: attribute does not contain '.json'. Leaving unchanged:",
-              attribute
+              "tag: attribute does not contain '.json'. Leaving unchanged: " +
+                attribute
             );
             return attribute;
           }
@@ -269,8 +269,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         multiplyOrCreate: function (attribute, value) {
           if (!_.isNumber(attribute) && !isNullish(attribute)) {
             console.warn(
-              "multiplyOrCreate: attribute is not a number or nullish. Leaving unchanged:",
-              attribute
+              "multiplyOrCreate: attribute is not a number or nullish. Leaving unchanged: " +
+                JSON.stringify(attribute)
             );
             return attribute;
           }
@@ -288,10 +288,14 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       var applyMod = function (mod) {
         var spec = load(mod.file);
         if (!spec) {
-          return console.warn("Warning: File not found in mod", mod);
+          return console.warn(
+            "Warning: File not found in mod " + JSON.stringify(mod)
+          );
         }
         if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
-          return console.error("Invalid operation in mod", mod);
+          return console.error(
+            "Invalid operation in mod " + JSON.stringify(mod)
+          );
         }
 
         // Captured before the path walk reassigns `spec` to a nested container.
@@ -302,15 +306,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         var path = originalPath.slice().reverse();
 
         var reportError = function (error, step) {
+          // The whole spec is left out: one line, and the mod names its file.
           console.error(
-            error,
-            spec[step],
-            "spec",
-            spec,
-            "mod",
-            mod,
-            "path",
-            originalPath.slice(0, -path.length).join(".")
+            error +
+              " at " +
+              originalPath.slice(0, -path.length).join(".") +
+              ", found " +
+              JSON.stringify(spec[step]) +
+              ", mod " +
+              JSON.stringify(mod)
           );
         };
 
@@ -398,8 +402,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           console.error(
             "Invalid mod: op '" +
               mod.op +
-              "' requires a path, but none was given",
-            mod
+              "' requires a path, but none was given: " +
+              JSON.stringify(mod)
           );
         }
 
@@ -413,7 +417,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         try {
           applyMod(mod);
         } catch (e) {
-          console.error("specs.mod: applyMod threw, skipping mod", mod, e);
+          console.error(
+            "specs.mod: applyMod threw, skipping mod " +
+              JSON.stringify(mod) +
+              ": " +
+              e
+          );
         }
       });
     },
