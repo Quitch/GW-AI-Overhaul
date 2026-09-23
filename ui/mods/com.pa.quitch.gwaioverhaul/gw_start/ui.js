@@ -291,9 +291,7 @@
 
     // Track difficulty settings so AI Settings' fields display correct values
     requireGW(
-      [
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
-      ],
+      ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/difficulty_levels.js"],
       function (gwoDifficulty) {
         // Scoped, not a bare $("select"): only these change disabled state here,
         // and refreshing the rest on every difficulty change costs time for nothing.

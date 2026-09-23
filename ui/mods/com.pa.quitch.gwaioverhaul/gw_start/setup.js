@@ -356,7 +356,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_breeder.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_teams.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/lore.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/difficulty_levels.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",

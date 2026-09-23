@@ -19,7 +19,7 @@ const streams = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
 );
 const difficulty = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/difficulty_levels.js"
 );
 
 const LANDING_POLICIES = [

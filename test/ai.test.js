@@ -476,7 +476,7 @@ describe("penchants", () => {
     assert.ok(names.size > 1);
   });
 
-  // gwc_minion.js and gw_play/cards_deal_helpers.js deal during play, outside the
+  // gwc_minion.js and shared/cards_deal_helpers.js deal during play, outside the
   // seeded war-creation path, and pass no rng.
   it("still works with no rng", () => {
     const result = gwoAI.penchants();

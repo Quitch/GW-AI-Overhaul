@@ -52,9 +52,7 @@
     };
 
     requireGW(
-      [
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js",
-      ],
+      ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/difficulty_levels.js"],
       function (gwoDifficulty) {
         // Read from the difficulty data, not restated: renaming or inserting a
         // tier would otherwise shift everybody's badge history.

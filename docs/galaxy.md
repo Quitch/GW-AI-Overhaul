@@ -497,7 +497,7 @@ choice is recorded as `originSystem.gwaio.races`. See [`races.md`](races.md).
 
 ## Difficulty
 
-`gw_start/difficulty_levels.js` is a `difficulties` array of tiers (Beginner,
+`shared/difficulty_levels.js` is a `difficulties` array of tiers (Beginner,
 Casual, Iron, Bronze, Silver, Gold, Platinum, Diamond, Uber), plus a minimal
 `Custom` sentinel.
 
@@ -582,7 +582,7 @@ at all, since every reader gives them the Sub Commander rate. The clone paths st
 ramp writes one onto the template minions it samples.
 
 A dealt Sub Commander records its penchant as `penchantName` alone
-(`gw_play/cards_deal_helpers.js`, `gwc_minion.js`), as an enemy does. Its
+(`shared/cards_deal_helpers.js`, `gwc_minion.js`), as an enemy does. Its
 `character` stays the template's, and the war panel, the minion card and the
 referee's display name show the penchant after it. A Sub Commander dealt before
 this carries the penchant's name inside `character` and its tags in its stored

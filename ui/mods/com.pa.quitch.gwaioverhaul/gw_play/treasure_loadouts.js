@@ -2,7 +2,7 @@
 // than pre-dealt at war creation. See coop.md, "Treasure loadouts".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
 ], function (gwoLoadoutIds, helpers, gwoLoadoutBanks, coopHost) {

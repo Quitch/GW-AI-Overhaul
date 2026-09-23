@@ -15,7 +15,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_game_file_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",

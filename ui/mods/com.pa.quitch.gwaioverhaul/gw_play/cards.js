@@ -276,7 +276,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
         "shared/gw_inventory",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js",

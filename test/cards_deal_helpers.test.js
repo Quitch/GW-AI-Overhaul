@@ -1,13 +1,13 @@
 "use strict";
 
-// Unit tests for gw_play/cards_deal_helpers.js, the measured half of cards.js.
+// Unit tests for shared/cards_deal_helpers.js, the measured half of cards.js.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const helpers = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js"
 );
 
 describe("cardsOfferedCount", () => {
