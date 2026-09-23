@@ -6,9 +6,8 @@
 
 const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const decks = loadCouiModule(MOD_ROOT + "/shared/decks.js");
 const deckIds = loadCouiModule(MOD_ROOT + "/shared/deck_ids.js");
 

@@ -1,23 +1,26 @@
 "use strict";
 
 // The game's own translation tables, read from a PA install for the local-only
-// i18n scripts. PA_MEDIA (or --pa <path>) names the install's media folder; CI
-// has none, so nothing in `verify` may require this. See docs/translations.md.
+// i18n scripts. --pa <path> names the install's media folder, else pa-install.js
+// finds it. CI has none, so nothing in `verify` may require this. See
+// docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { mediaDir } = require("./pa-install.js");
+
+const NAME_THE_INSTALL =
+  "set PA_MEDIA to the game's media folder or pass --pa <path>";
 
 function paMedia(argv) {
   const flag = argv.indexOf("--pa");
-  const dir = flag >= 0 ? argv[flag + 1] : process.env.PA_MEDIA;
+  const dir = flag >= 0 ? argv[flag + 1] : mediaDir();
   if (!dir) {
-    throw new Error(
-      "set PA_MEDIA to the game's media folder or pass --pa <path>"
-    );
+    throw new Error(NAME_THE_INSTALL);
   }
   const locales = path.join(dir, "ui", "main", "_i18n", "locales");
   if (!fs.existsSync(locales)) {
-    throw new Error("no _i18n/locales under " + dir);
+    throw new Error("no _i18n/locales under " + dir + ": " + NAME_THE_INSTALL);
   }
   return { media: dir, locales: locales };
 }

@@ -5,9 +5,8 @@
 // commanders under the Custom7 bit, beside the vanilla ant, dox, vehicle
 // factory and commander they share cells with.
 
-const { loadCouiModule } = require("./amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("./amd-loader.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 
@@ -208,37 +207,6 @@ const FIXTURE_ADDON_UNITS = [
   FX_EXCLUSIVE,
 ];
 
-// The { vanilla, race } index race_cells.js builds for MLA with the fixture
-// add-on registered: the base game's units on one side, the add-on's
-// vanilla-typed units on the other, the Custom17 unit exclusive. `withRace`
-// gives the fixture race's index instead, its add-on gantry included.
-function addonIndex(withRace) {
-  const units = FIXTURE_UNITS.concat(FIXTURE_ADDON_UNITS);
-  const specs = Object.assign({}, FIXTURE_SPECS, FIXTURE_ADDON_SPECS);
-  const addonPaths = {};
-  for (const path of Object.values(FIXTURE_ADDON.units)) {
-    addonPaths[path] = true;
-  }
-  const member = withRace
-    ? unitCells.raceMember("Custom7")
-    : (unitTypes, path) =>
-        unitCells.vanillaMember(unitTypes) && !!addonPaths[path];
-  return {
-    vanilla: unitCells.buildIndex(
-      units,
-      specs,
-      (unitTypes, path) =>
-        unitCells.vanillaMember(unitTypes) && !addonPaths[path]
-    ),
-    race: unitCells.buildIndex(
-      units,
-      specs,
-      member,
-      unitCells.exclusiveMember(["Custom58", "Custom7"])
-    ),
-  };
-}
-
 // A stand-in for gwo_rng: pick takes the first entry, shuffle reverses, so a
 // test can predict every draw.
 function predictableRng() {
@@ -260,6 +228,5 @@ module.exports = {
   FIXTURE_ADDON_SPECS,
   FIXTURE_ADDON_UNITS,
   fixtureIndex,
-  addonIndex,
   predictableRng,
 };

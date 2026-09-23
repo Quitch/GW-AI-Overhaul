@@ -108,11 +108,14 @@ a PA patch adds tests.** `UnitCountonPlanet` is a base-game spelling variant. It
 stays in the list because the engine accepts what its own data ships.
 
 **`test/fixtures/unit_types.json` is harvested the same way.**
-`scripts/harvest-unit-types.js` writes it. It holds every listed unit's
+`npm run harvest:unit-types` writes it. It holds every listed unit's
 effective `unit_types`, with their `buildable_types`. The sources are the
 installed game (`pa_ex1` over `pa`) and the race and add-on server mods on
 disk. A server mod on disk is a `download/` zip or a `server_mods/` folder.
-The mods are read in mount order.
+The mods are the shipped descriptors' `serverMods`, every race's and then
+every add-on's, as `validate:race-trees` layers them. A companion mod that a
+descriptor does not list, such as the Bugs commander-merge, is in
+`scripts/lib/server-mods.js`. The mods are read in that order.
 
 With that fixture, `test/unit_groups_cells.test.js` can check the cell
 classifier against `unit_groups.js` in CI, `test/race_legion.test.js` can see
@@ -122,8 +125,8 @@ does). With a PA install present, the test asserts that the fixture is fresh.
 **Re-harvest it after a PA, race or add-on patch.**
 
 **`i18n:missing` and `i18n:glossary` are local-only for the same reason.** They
-read the game's own translation tables from the PA install (`PA_MEDIA` or
-`--pa <path>`) to list what each language still lacks and how the stock UI renders
+read the game's own translation tables from the PA install (`--pa <path>`, or
+as below) to list what each language still lacks and how the stock UI renders
 shared terms. `validate:translations` needs no install and runs in `verify`. See
 [translations.md](translations.md).
 
@@ -148,6 +151,16 @@ CI has none of those files, so the unit tests pin the same contract on mocked
 listings (`test/races.test.js`, `test/referee_ai_file_processing.test.js`). Run
 it after a PA, race or add-on patch. Also run it after you change
 `races.treeFilter`, `races.inAnyRaceLayer` or `referee_ai.js`'s tree writing.
+
+The local-only scripts find the PA install through `scripts/lib/pa-install.js`.
+The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
+data folder, which holds `download/` and `server_mods/`, is `PA_USER_DATA`,
+else `Uber Entertainment/Planetary Annihilation` under `%LOCALAPPDATA%`.
+
+`npm run minify:json -- <dir>` is the one data script that is not a check. It
+rewrites every `.json` under `<dir>` onto one line, which is how `pa/**` is
+kept ([architecture.md](architecture.md)). It skips `.git`, `node_modules`
+and `coverage`, and exits non-zero on a file that does not parse.
 
 **`validate:schemas` checks whatever files it finds, which is why
 `test/ai_source_files.test.js` exists alongside it.** The walk covers `pa/ai`,

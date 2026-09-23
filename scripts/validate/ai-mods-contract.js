@@ -16,13 +16,8 @@
 //   - `treeOnly`, when present, is a boolean on a build-list op. It keeps the
 //     descriptor off files a `load` pulled in from /pa/ai_tech/.
 
-const path = require("node:path");
-const { loadCouiModule, registerModuleStub } = require("../lib/amd-loader.js");
-const {
-  CARDS_DIR,
-  classifyLoadFailure,
-  listCardFiles,
-} = require("../lib/card-files.js");
+const { registerModuleStub } = require("../lib/amd-loader.js");
+const { listCardFiles, loadCard } = require("../lib/card-files.js");
 const { createAutoStub } = require("../lib/auto-stub.js");
 const {
   createCapturingInventory,
@@ -213,29 +208,16 @@ function checkMod(mod, index) {
   return problems;
 }
 
-// Discriminates on the reason: a bare catch also swallows syntax errors and
-// genuine breakage, reporting them as "excluded" with the run still green.
-function loadCard(file) {
-  try {
-    return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
-  } catch (e) {
-    if (classifyLoadFailure(e)) {
-      return { excluded: true };
-    }
-    return { error: "failed to load: " + e.message };
-  }
-}
-
 // The second try/catch is separate from loadCard's on purpose: that one
 // discriminates why a card would not load, this one reports a card that loaded
 // but whose descriptors could not be collected.
 function checkFile(file) {
   const loaded = loadCard(file);
-  if (loaded.excluded) {
+  if (loaded.skip) {
     return { excluded: true, file };
   }
   if (loaded.error) {
-    return { problems: [loaded.error] };
+    return { problems: ["failed to load: " + loaded.error.message] };
   }
 
   let mods;

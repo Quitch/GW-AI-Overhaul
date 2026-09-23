@@ -7,10 +7,9 @@
 
 const { describe, it, beforeEach, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const decks = loadCouiModule(MOD_ROOT + "/shared/decks.js");
 const deckMods = loadCouiModule(MOD_ROOT + "/shared/deck_mods.js");
 
