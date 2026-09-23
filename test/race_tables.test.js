@@ -7,7 +7,9 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
+const { spawnSync } = require("node:child_process");
 const {
   REPO_ROOT,
   camelKeepCase,
@@ -41,6 +43,56 @@ describe("the race table generator", () => {
         assert.match(name, /^!LOC:./, input.id + " " + key);
       }
     }
+  });
+});
+
+describe("the race spec harvester", () => {
+  it("fails, naming the mod and spec, when a spec does not parse", (t) => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "gwo-harvest-"));
+    t.after(() => fs.rmSync(tmp, { recursive: true, force: true }));
+    const write = (file, text) => {
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, text);
+    };
+    const media = path.join(tmp, "media");
+    const userData = path.join(tmp, "user");
+    const broken = "/pa/units/land/fx_tank/fx_tank.json";
+    for (const dir of ["pa", "pa_ex1"]) {
+      write(path.join(media, dir, "units", "unit_list.json"), '{"units":[]}');
+    }
+    for (const table of TABLES) {
+      for (const mod of table.mods) {
+        const pa = path.join(userData, "server_mods", mod, "pa");
+        write(path.join(pa, "units", "unit_list.json"), '{"units":[]}');
+      }
+    }
+    const own = path.join(userData, "server_mods", TABLES[0].mods[0], "pa");
+    write(
+      path.join(own, "units", "unit_list.json"),
+      JSON.stringify({ units: [broken] })
+    );
+    write(path.join(own, broken.replace(/^\/pa\//, "")), '{"display_name": }');
+
+    const run = spawnSync(
+      process.execPath,
+      [path.join(REPO_ROOT, "scripts", "harvest-race-specs.js")],
+      {
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          PA_MEDIA: media,
+          PA_USER_DATA: userData,
+          GWO_HARVEST_OUT: path.join(tmp, "race_specs.json"),
+        },
+      }
+    );
+
+    assert.notEqual(run.status, 0);
+    assert.ok(
+      run.stderr.includes(TABLES[0].mods[0] + " " + broken + ": "),
+      run.stderr
+    );
+    assert.equal(fs.existsSync(path.join(tmp, "race_specs.json")), false);
   });
 });
 
