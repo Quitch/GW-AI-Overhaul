@@ -34,9 +34,10 @@ define(function () {
       }
     };
 
-    var applyCheatCards = function (product, inventory) {
+    // Applied once per cheat, not per card: each applyCards re-applies every
+    // card held.
+    var addCheatCard = function (product, inventory) {
       inventory.cards.push(product);
-      inventory.applyCards();
     };
 
     var setupNewCardSlot = function (product) {
@@ -150,7 +151,7 @@ define(function () {
             )
             .then(function (product) {
               product = setupNewCardSlot(product);
-              applyCheatCards(product, inventory);
+              addCheatCard(product, inventory);
             })
         );
       });
@@ -185,7 +186,7 @@ define(function () {
             )
             .then(function (product) {
               product = prepareProduct(product, inventory, true);
-              applyCheatCards(product, inventory);
+              addCheatCard(product, inventory);
               if (!product.unique) {
                 testCardForMatches(inventory, product);
               }
@@ -197,6 +198,7 @@ define(function () {
       );
 
       $.when.apply($, deferredQueue).then(function () {
+        inventory.applyCards();
         finishCheat("gwo_cheat_test_cards");
       });
     };
@@ -225,7 +227,8 @@ define(function () {
             cards
           )
           .then(function (product) {
-            applyCheatCards(prepareProduct(product, inventory), inventory);
+            addCheatCard(prepareProduct(product, inventory), inventory);
+            inventory.applyCards();
             finishCheat("gwo_cheat_give_card");
           });
       } else {

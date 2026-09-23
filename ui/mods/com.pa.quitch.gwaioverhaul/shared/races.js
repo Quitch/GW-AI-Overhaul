@@ -572,23 +572,34 @@ define([
   // rest - an add-on map both MLA and a race claim rides along untagged. A
   // relative unit map names a file the brain ships itself, never a race
   // mod's, and matches nothing here.
-  var inAnyRaceLayer = function (filePath) {
-    var mla = false;
-    var other = false;
+  //
+  // raceLayerTest builds the layers once, for a caller testing a whole file
+  // list: nothing it reads changes during one sweep.
+  var raceLayerTest = function () {
+    var layerSets = _.map(brainKeys(), layersFor);
 
-    _.forEach(brainKeys(), function (brainKey) {
-      _.forEach(layersFor(brainKey), function (layer, raceId) {
-        if (layerClaims(layer, filePath)) {
-          if (raceId === MLA_ID) {
-            mla = true;
-          } else {
-            other = true;
+    return function (filePath) {
+      var mla = false;
+      var other = false;
+
+      _.forEach(layerSets, function (layers) {
+        _.forEach(layers, function (layer, raceId) {
+          if (layerClaims(layer, filePath)) {
+            if (raceId === MLA_ID) {
+              mla = true;
+            } else {
+              other = true;
+            }
           }
-        }
+        });
       });
-    });
 
-    return other && !mla;
+      return other && !mla;
+    };
+  };
+
+  var inAnyRaceLayer = function (filePath) {
+    return raceLayerTest()(filePath);
   };
 
   // The race's unit map files for a brain, its add-ons' included, absolute.
@@ -749,6 +760,7 @@ define([
     treeFilter: treeFilter,
     raceLayerFilter: raceLayerFilter,
     inAnyRaceLayer: inAnyRaceLayer,
+    raceLayerTest: raceLayerTest,
     unitMapsFor: unitMapsFor,
     assign: assign,
     // Test-only: a registered race outlives the module, and the harness loads

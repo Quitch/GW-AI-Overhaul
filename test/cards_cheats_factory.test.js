@@ -170,7 +170,7 @@ describe("cheats testCards", () => {
     assert.equal(calls.dealt[0].inventory, current().inventory);
   });
 
-  it("applies each dealt card to the inventory", async () => {
+  it("adds each dealt card and applies the inventory once", async () => {
     const { inventory } = build();
 
     testCards();
@@ -180,7 +180,7 @@ describe("cheats testCards", () => {
       inventory.cards().map((card) => card.id),
       ["gwc_combat_bots", "gwc_orbital"]
     );
-    assert.equal(inventory.applied, 2);
+    assert.equal(inventory.applied, 1);
   });
 
   it("re-deals to the selectable AI, broadcasts and saves once", async () => {

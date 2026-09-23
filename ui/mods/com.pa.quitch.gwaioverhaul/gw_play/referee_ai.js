@@ -332,6 +332,13 @@ define([
     }
   };
 
+  var pathTypeMap = {
+    "/fabber_builds/": "fabber",
+    "/factory_builds/": "factory",
+    "/platoon_builds/": "platoon",
+    "/platoon_templates/": "template",
+  };
+
   var processFilesInDirectory = function (filePath, context) {
     var configFiles = context.configFiles;
     var aisToModify = context.aisToModify;
@@ -368,12 +375,6 @@ define([
         return [];
       }
 
-      var pathTypeMap = {
-        "/fabber_builds/": "fabber",
-        "/factory_builds/": "factory",
-        "/platoon_builds/": "platoon",
-        "/platoon_templates/": "template",
-      };
       var aiManager =
         _(pathTypeMap)
           .keys()
@@ -643,11 +644,12 @@ define([
           treeCache: request.treeCache,
         };
 
+        var inRaceLayer = gwoRaces.raceLayerTest();
         var promises = _.map(fileList, function (filePath) {
           if (
             !_.endsWith(filePath, ".json") ||
             _.includes(filePath, "/neural_networks/") || // AIs fall back to /pa/ai/neural_networks/
-            gwoRaces.inAnyRaceLayer(filePath) // a race's files belong to its own tree - see races.md
+            inRaceLayer(filePath) // a race's files belong to its own tree - see races.md
           ) {
             return;
           }
