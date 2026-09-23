@@ -1,7 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
-], function (inventory, gwoCluster) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
+], function (inventory, gwoCluster, gwoAI) {
   var AMMUNITION_TECH = 1;
   var ARMOUR_TECH = 2;
   var COMBAT_TECH = 6;
@@ -214,7 +215,7 @@ define([
     _.forEach(buffs, function (buff) {
       loadout = loadout.concat(techs[buff] || []);
     });
-    if (!isCluster && faction === 4) {
+    if (!isCluster && faction === gwoAI.CLUSTER_FACTION) {
       loadout = _.reject(loadout, function (mod) {
         return _.includes(clusterSubCommanderFiles, mod.file);
       });

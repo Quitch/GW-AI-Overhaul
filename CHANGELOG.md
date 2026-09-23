@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- The intelligence panel places an allied Cluster faction's tooltip the way it places every other Cluster tooltip
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed

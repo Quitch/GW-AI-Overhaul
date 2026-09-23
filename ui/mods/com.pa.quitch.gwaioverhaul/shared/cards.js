@@ -1,7 +1,9 @@
 // The helper names this returns are a published API: third-party cards call
 // them directly, and the New-GW-Cards template documents every one. Renaming
 // or dropping one breaks those cards silently. See tech-cards.md.
-define(function () {
+define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"], function (
+  gwoAI
+) {
   var getConnectedClients = function () {
     return _.isFunction(model.gwCampaignConnectedClients) &&
       _.isArray(model.gwCampaignConnectedClients())
@@ -105,7 +107,9 @@ define(function () {
   };
 
   var playerIsCluster = function (inventory) {
-    return inventory.getTag("global", "playerFaction") === 4;
+    return (
+      inventory.getTag("global", "playerFaction") === gwoAI.CLUSTER_FACTION
+    );
   };
 
   // Must run inside inventory.applyCards()'s dull phase: relies on
