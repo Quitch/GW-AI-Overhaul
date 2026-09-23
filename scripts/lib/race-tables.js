@@ -263,7 +263,9 @@ function addRaceParts(input, reader, table, { key, unit, stem }) {
     if (reader.read(part) && !table.has(part)) {
       const partKey = key + raceSuffix(input, stem, part);
       let free = partKey;
-      for (let n = 2; table.taken(free, part); n++) {
+      let n = 1;
+      while (table.taken(free, part)) {
+        n++;
         free = partKey + n;
       }
       table.addPart(free, part);
