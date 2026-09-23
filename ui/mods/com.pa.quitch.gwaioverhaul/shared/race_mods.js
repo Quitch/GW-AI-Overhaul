@@ -68,7 +68,8 @@ define([
       return done.promise();
     }
 
-    // A throw here would escape into GW Server Mods' manifest load unlogged.
+    // A throw here, the consumers' included, would escape into GW Server
+    // Mods' manifest load unlogged.
     $.when(mfst.load()).always(function () {
       var result;
       try {
@@ -113,9 +114,16 @@ define([
         done.reject(e);
         return;
       }
-      // Outside the try: jQuery 2 runs .then callbacks inside resolve(), so a
-      // consumer's throw would otherwise be reported as a failed read.
-      done.resolve(result);
+      // A try of its own: jQuery 2 runs .then callbacks inside resolve(), so
+      // a consumer's throw lands here, and is not a failed read.
+      try {
+        done.resolve(result);
+      } catch (e) {
+        console.error(
+          "gwoRaceMods: a consumer of installed races threw: " +
+            (e.stack || e.message || e)
+        );
+      }
     });
 
     return done.promise();

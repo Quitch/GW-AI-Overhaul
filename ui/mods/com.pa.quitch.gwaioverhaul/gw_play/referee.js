@@ -207,7 +207,13 @@
           return raceMods
             .installedRaces()
             .then(function () {
-              return _.bind(gwoGenerateGameFiles, ref)();
+              // jQuery 2's .then does not turn a throw into a rejection, so
+              // the handler below would never run.
+              try {
+                return _.bind(gwoGenerateGameFiles, ref)();
+              } catch (e) {
+                return $.Deferred().reject(e).promise();
+              }
             })
             .then(function () {
               ref.stage("!LOC:Processing AI mods");
@@ -234,6 +240,16 @@
               return $.Deferred().reject(error).promise();
             });
         };
+      },
+      // Stock's referee stays hired, so battles are fought without GWO's
+      // game files.
+      function (err) {
+        console.error(
+          "Galactic War Overhaul (GWO): referee modules not loaded: " +
+            err.requireModules +
+            ": " +
+            (err.stack || err.message || err)
+        );
       }
     );
   } catch (e) {

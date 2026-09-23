@@ -119,6 +119,71 @@ describe("installedRaces", () => {
   });
 });
 
+// With jQuery 2's synchronous Deferred, a consumer's .then runs inside
+// installedRaces' own resolve(), so its throw arrives in race_mods.js.
+describe("installedRaces under jQuery 2's Deferred", () => {
+  let errors;
+  let previous;
+
+  beforeEach(() => {
+    installFakeJQuery(stubs, { sync: true });
+    previous = console.error;
+    errors = [];
+    console.error = (message) => errors.push(message);
+  });
+
+  afterEach(() => {
+    console.error = previous;
+  });
+
+  const pendingManifest = (overrides) => {
+    const load = $.Deferred();
+    window.GwServerMods = {
+      manifest: Object.assign(fakeManifest(overrides), {
+        load: () => load.promise(),
+      }),
+    };
+    return load;
+  };
+
+  it("logs a consumer's throw as the consumer's, not as a failed read", () => {
+    const load = pendingManifest({ active: [FIXTURE_MOD] });
+    let failed = false;
+
+    const pending = raceMods.installedRaces();
+    pending.then(() => {
+      throw new Error("consumer broke");
+    });
+    pending.fail(() => {
+      failed = true;
+    });
+    load.resolve(true);
+
+    assert.equal(errors.length, 1);
+    assert.match(errors[0], /a consumer of installed races threw/);
+    assert.match(errors[0], /consumer broke/);
+    assert.equal(failed, false);
+  });
+
+  it("logs and rejects a read that throws", () => {
+    const load = pendingManifest();
+    window.GwServerMods.manifest.activeServerMods = () => {
+      throw new Error("manifest broke");
+    };
+    let reason;
+
+    raceMods.installedRaces().fail((e) => {
+      reason = e;
+    });
+    load.resolve(true);
+
+    assert.equal(errors.length, 1);
+    assert.match(errors[0], /installed races not read/);
+    assert.match(errors[0], /manifest broke/);
+    assert.equal(reason.message, "manifest broke");
+  });
+});
+
 describe("installedRaces with add-ons", () => {
   const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
   const ADDON_MOD = {

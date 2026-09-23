@@ -54,6 +54,92 @@ function makeDeferred() {
   return deferred;
 }
 
+// jQuery 2.1.4's own Deferred, for code whose behaviour depends on it: callbacks
+// run inside resolve() and reject(), so a callback's throw escapes through the
+// call that settled it, and .then does not turn a throw into a rejection.
+function makeSyncDeferred() {
+  var state = "pending";
+  var value;
+  var lists = { resolved: [], rejected: [] };
+
+  var settle = function (to, settledValue) {
+    if (state !== "pending") {
+      return;
+    }
+    state = to;
+    value = settledValue;
+    var list = lists[to];
+    lists = { resolved: [], rejected: [] };
+    list.forEach(function (fn) {
+      fn(value);
+    });
+  };
+
+  var on = function (when, fn) {
+    if (state === when) {
+      fn(value);
+    } else if (state === "pending") {
+      lists[when].push(fn);
+    }
+  };
+
+  var deferred = {
+    state: function () {
+      return state;
+    },
+    resolve: function (resolvedValue) {
+      settle("resolved", resolvedValue);
+      return deferred;
+    },
+    reject: function (reason) {
+      settle("rejected", reason);
+      return deferred;
+    },
+    done: function (fn) {
+      on("resolved", fn);
+      return deferred;
+    },
+    fail: function (fn) {
+      on("rejected", fn);
+      return deferred;
+    },
+    always: function (fn) {
+      on("resolved", fn);
+      on("rejected", fn);
+      return deferred;
+    },
+    then: function (onDone, onFail) {
+      var next = makeSyncDeferred();
+      var forward = function (fn, settleNext) {
+        return function (settledValue) {
+          var returned = fn ? fn(settledValue) : settledValue;
+          if (returned && typeof returned.promise === "function") {
+            returned.promise().done(next.resolve).fail(next.reject);
+          } else {
+            settleNext(returned);
+          }
+        };
+      };
+      on("resolved", forward(onDone, next.resolve));
+      on("rejected", forward(onFail, next.reject));
+      return next.promise();
+    },
+    promise: function () {
+      return deferred;
+    },
+  };
+
+  return deferred;
+}
+
+// $.when for makeSyncDeferred: one argument, waited on without a tick.
+function syncWhen(arg) {
+  if (isJqueryPromise(arg)) {
+    return arg.promise();
+  }
+  return makeSyncDeferred().resolve(arg).promise();
+}
+
 // What every api.* call hands back: `then` and nothing jQuery recognises. Hold
 // one pending to prove the code under test waits for it.
 function enginePromise() {
@@ -164,13 +250,14 @@ function when() {
 }
 
 // Requesting a URL with no configured resolver rejects, so a test's fixtures can't
-// silently drift from what the code under test actually asks for.
+// silently drift from what the code under test actually asks for. `sync` swaps
+// in makeSyncDeferred and syncWhen.
 function createFakeJQuery(options) {
   var opts = options || {};
 
   return {
-    Deferred: makeDeferred,
-    when: when,
+    Deferred: opts.sync ? makeSyncDeferred : makeDeferred,
+    when: opts.sync ? syncWhen : when,
     getJSON: function (url) {
       return Promise.resolve()
         .then(function () {
@@ -215,6 +302,7 @@ function createFakeApi(overrides) {
 
 module.exports = {
   makeDeferred: makeDeferred,
+  makeSyncDeferred: makeSyncDeferred,
   enginePromise: enginePromise,
   resolved: resolved,
   rejected: rejected,

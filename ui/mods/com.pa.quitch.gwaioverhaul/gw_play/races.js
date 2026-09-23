@@ -270,6 +270,15 @@
           model.gwoRaceBlock(missing);
           showBlockPopUp();
         });
+      },
+      // No race check runs, so Fight is not blocked for a missing race mod.
+      function (err) {
+        console.error(
+          "Galactic War Overhaul (GWO): race modules not loaded: " +
+            err.requireModules +
+            ": " +
+            (err.stack || err.message || err)
+        );
       }
     );
   } catch (e) {
