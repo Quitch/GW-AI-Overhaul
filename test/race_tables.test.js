@@ -242,6 +242,34 @@ describe("race naming rules", () => {
 
     assert.deepEqual(keys, [...keys].sort());
   });
+
+  it("numbers a part key past every key already taken", () => {
+    const keyed = new Map(
+      table({
+        ...RACE,
+        parts: {
+          heavyAATankAmmo: "/pa/units/land/fx_x/fx_x_ammo.json",
+          heavyAATankAmmo2: "/pa/units/land/fx_y/fx_y_ammo.json",
+        },
+      }).units
+    );
+
+    assert.equal(
+      keyed.get("heavyAATankAmmo3"),
+      "/pa/units/land/fx_tank/fx_tank_ammo.json"
+    );
+  });
+
+  it("refuses a unit key its directory does not free", () => {
+    assert.throws(
+      () =>
+        table({
+          ...RACE,
+          units: { heavyAATankfxTankFast: "/pa/units/land/fx_x/fx_x.json" },
+        }),
+      /fx: key heavyAATankfxTankFast for \/pa\/units\/land\/fx_tank_fast\/fx_tank_fast\.json is already taken/
+    );
+  });
 });
 
 describe("add-on naming rules", () => {
@@ -310,6 +338,23 @@ describe("add-on naming rules", () => {
       ["rexBoomDeathAmmo", "/pa/units/addon/rex/rex_boom_ammo.json"],
     ]);
     assert.deepEqual(unitNames, [["rex", "!LOC:Rex"]]);
+  });
+
+  it("refuses a unit key an earlier unit's part holds", () => {
+    const specs = {
+      "/pa/units/addon/rex/rex.json": {
+        display_name: "Rex",
+        tools: ["/pa/units/addon/rex/rex_build_arm.json"],
+      },
+      "/pa/units/addon/rex_arm/rex_arm.json": {
+        display_name: "Rex Build Arm",
+      },
+    };
+
+    assert.throws(
+      () => addon(Object.keys(specs), specs),
+      /fx: key rexBuildArm for \/pa\/units\/addon\/rex_arm\/rex_arm\.json is already taken/
+    );
   });
 
   it("folds accents and lower-cases every word", () => {

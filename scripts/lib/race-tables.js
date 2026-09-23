@@ -244,13 +244,29 @@ function raceUnitKey(input, reader, unit, stem) {
     : key;
 }
 
+// A unit key the fallbacks could not free; the input must pin one.
+function keyClash(id, key, unit) {
+  return new Error(
+    id +
+      ": key " +
+      key +
+      " for " +
+      unit +
+      " is already taken; pin a key in the table's input"
+  );
+}
+
 // A unit's tools and ammo the harvest found, each keyed once.
 function addRaceParts(input, reader, table, { key, unit, stem }) {
   const parts = raceParts(input, reader.read(unit), reader.read);
   for (const part of parts) {
     if (reader.read(part) && !table.has(part)) {
       const partKey = key + raceSuffix(input, stem, part);
-      table.addPart(table.taken(partKey, part) ? partKey + "2" : partKey, part);
+      let free = partKey;
+      for (let n = 2; table.taken(free, part); n++) {
+        free = partKey + n;
+      }
+      table.addPart(free, part);
     }
   }
 }
@@ -275,6 +291,9 @@ function buildRaceTable(input, source) {
       let key = raceUnitKey(input, reader, unit, stem);
       if (table.taken(key, unit)) {
         key += camelKeepCase(dirOf(unit));
+      }
+      if (table.taken(key, unit)) {
+        throw keyClash(input.id, key, unit);
       }
       table.addUnit(key, unit);
       owners.push({ key, unit, stem });
@@ -382,7 +401,7 @@ function resolveAddonKeys(entries) {
 
 // The units the add-on lists and the base game does not, keyed by display
 // name. Units sort by key, each followed by its parts.
-function buildAddonTable(source, baseUnits) {
+function buildAddonTable(id, source, baseUnits) {
   const reader = specsReader(source);
   const entries = addonEntries(source, baseUnits, reader);
   resolveAddonKeys(entries);
@@ -391,6 +410,9 @@ function buildAddonTable(source, baseUnits) {
   const units = {};
   const unitNames = [];
   for (const entry of entries) {
+    if (Object.hasOwn(units, entry.key)) {
+      throw keyClash(id, entry.key, entry.unit);
+    }
     units[entry.key] = entry.unit;
     if (entry.display) {
       unitNames.push([entry.key, LOC + stripLoc(entry.display)]);
@@ -421,7 +443,7 @@ function buildTable(input, fixture) {
     throw new Error("race_specs.json has no table " + input.id);
   }
   return input.strategy === "addon"
-    ? buildAddonTable(source, fixture.baseUnits)
+    ? buildAddonTable(input.id, source, fixture.baseUnits)
     : buildRaceTable(input, source);
 }
 
