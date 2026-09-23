@@ -73,6 +73,34 @@ function war(overrides) {
 describe("build", () => {
   it("records the war's settings", () => {
     const record = warRecord.build(war());
+    assert.deepEqual(Object.keys(record).sort(), [
+      "ai",
+      "aiAlly",
+      "aiByRace",
+      "aiMods",
+      "biomeMods",
+      "clusterFixed",
+      "coopPlayerScalingCount",
+      "difficulty",
+      "easierStart",
+      "factionScaling",
+      "galaxySize",
+      "largePlanets",
+      "races",
+      "seed",
+      "simpleSystems",
+      "staticTech",
+      "systemScaling",
+      "techCardDeck",
+      "treasureLoadoutDerived",
+      "treasurePlanetFixed",
+      "treasureStar",
+      "version",
+    ]);
+    // Without them, gw_play/bugfixes.js reapplies the legacy hotfixes.
+    assert.equal(record.treasurePlanetFixed, true);
+    assert.equal(record.clusterFixed, true);
+    assert.equal(record.treasureLoadoutDerived, true);
     assert.equal(record.version, gwoVersion);
     assert.equal(record.seed, "abc");
     assert.equal(record.difficulty, "!LOC:Gold");
