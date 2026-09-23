@@ -574,6 +574,68 @@ describe("coop star cards refresh - coalescing", () => {
     assert.deepEqual(starsDealt(calls), [0]);
   });
 
+  // The re-dealt viewer's record write triggers the next refresh, so owing
+  // them again would re-deal them on every refresh while the other one failed.
+  it("owes a failed re-deal only to the viewer it failed for", async () => {
+    let failing = true;
+    const { coopStarCards, calls } = build({
+      stars: [{}],
+      viewers: [viewer("alice"), viewer("bob")],
+      records: {
+        alice: { id: "alice", inventory: { cards: [] } },
+        bob: { id: "bob", inventory: { cards: [{ id: "gwc_bad" }] } },
+      },
+      onApply: (inventory) => {
+        if (failing && inventory.cards().length) {
+          throw new Error("bad card");
+        }
+      },
+    });
+
+    await captureErrors(() => coopStarCards.refresh());
+    calls.deals.length = 0;
+    await captureErrors(() => coopStarCards.refresh({ redeal: true }));
+    assert.deepEqual(starsDealt(calls), [0], "alice is re-dealt");
+
+    calls.deals.length = 0;
+    for (let i = 0; i < 5; i++) {
+      await captureErrors(() => coopStarCards.refresh());
+    }
+    assert.deepEqual(starsDealt(calls), [], "alice is not re-dealt again");
+
+    failing = false;
+    await coopStarCards.refresh();
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.playerKey),
+      ["bob"],
+      "bob is still owed"
+    );
+  });
+
+  it("does not owe a re-deal whose save failed", async () => {
+    const { coopStarCards, calls } = build({
+      stars: [{}],
+      saveFails: true,
+      records: {
+        alice: {
+          id: "alice",
+          inventory: { cards: [] },
+          gwaioStarCards: { turn: 6, cards: { 0: { id: "last_turns" } } },
+        },
+      },
+    });
+
+    const errors = await captureErrors(() =>
+      coopStarCards.refresh({ redeal: true })
+    );
+    assert.equal(errors.length, 1, "the save failed");
+    assert.deepEqual(starsDealt(calls), [0]);
+
+    calls.deals.length = 0;
+    await captureErrors(() => coopStarCards.refresh());
+    assert.deepEqual(starsDealt(calls), []);
+  });
+
   // A re-deal queued behind an in-flight refresh that the gate then turns
   // away is owed the same way as one called directly.
   it("owes a queued re-deal the gate turned away", async () => {

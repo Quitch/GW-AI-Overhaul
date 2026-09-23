@@ -362,6 +362,14 @@ allows pays it. This matters because the host re-deals after a win, which is
 exactly when viewers hold `pendingTechCards`. A dropped re-deal left them with
 last turn's cards, which could duplicate cards they had just taken.
 
+The debt is kept **per viewer**, keyed by `coopPlayerKey`. When the gate opens,
+every connected viewer is owed the re-deal. Each viewer's debt is cleared only
+when that viewer's re-deal succeeds. A single flag would not work: after one
+viewer failed, it would owe the re-deal again to viewers already re-dealt. Their
+record write triggers the next refresh, so each such viewer would get a new card
+on every refresh for as long as the other viewer kept failing. A failed save
+does not create a debt, because the re-deal already happened in memory.
+
 The refresh depends on two ordering rules:
 
 - **Re-read the record immediately before writing it.**

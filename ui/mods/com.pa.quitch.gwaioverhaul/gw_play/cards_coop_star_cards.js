@@ -102,10 +102,10 @@ define([
 
     var refreshInFlight;
     var refreshPending;
-    // A host re-deal the gate turned away, or one that failed. The host's
-    // re-deal follows a win, which is when viewers hold pendingTechCards, so
-    // without this the viewers kept last turn's cards.
-    var redealOwed = false;
+    // Re-deals the gate turned away or that failed, per viewer by coopPlayerKey.
+    // See coop.md.
+    var redealOwedToAll = false;
+    var redealOwedTo = {};
 
     var connectedViewers = function () {
       var clients = _.isArray(model.gwCampaignConnectedClients())
@@ -246,15 +246,23 @@ define([
       });
     };
 
-    var refreshEachViewer = function (viewers, redeal) {
+    var viewerKey = function (client) {
+      return gwoStreams.coopPlayerKey(findRecord(client), client);
+    };
+
+    var refreshEachViewer = function (viewers) {
       var changedAny = false;
 
       return _.reduce(
         viewers,
         function (chain, client) {
+          var key = viewerKey(client);
           return chain
-            .then(refreshViewerLater.bind(null, client, redeal))
+            .then(function () {
+              return refreshViewerLater(client, !!redealOwedTo[key]);
+            })
             .then(function (changed) {
+              delete redealOwedTo[key];
               changedAny = changedAny || changed;
             });
         },
@@ -267,7 +275,7 @@ define([
     var runRefresh = function (redeal) {
       var viewers = connectedViewers();
       if (!viewers.length) {
-        redealOwed = redealOwed || redeal;
+        redealOwedToAll = redealOwedToAll || redeal;
         return Promise.resolve();
       }
 
@@ -283,28 +291,27 @@ define([
           turnState: game.turnState(),
         })
       ) {
-        redealOwed = redealOwed || redeal;
+        redealOwedToAll = redealOwedToAll || redeal;
         return Promise.resolve();
       }
 
-      var dealing = redeal || redealOwed;
-      redealOwed = false;
-
-      return refreshEachViewer(viewers, dealing)
-        .then(function (changed) {
-          if (!changed) {
-            return undefined;
-          }
-
-          console.log("[GW COOP] refreshed co-op player star cards");
-          return Promise.resolve(gwoSave(game, false)).then(function () {
-            model.sendCampaignSnapshot("gwo_star_cards", true);
-          });
-        })
-        .then(null, function (reason) {
-          redealOwed = redealOwed || dealing;
-          throw reason;
+      if (redeal || redealOwedToAll) {
+        _.forEach(viewers, function (client) {
+          redealOwedTo[viewerKey(client)] = true;
         });
+        redealOwedToAll = false;
+      }
+
+      return refreshEachViewer(viewers).then(function (changed) {
+        if (!changed) {
+          return undefined;
+        }
+
+        console.log("[GW COOP] refreshed co-op player star cards");
+        return Promise.resolve(gwoSave(game, false)).then(function () {
+          model.sendCampaignSnapshot("gwo_star_cards", true);
+        });
+      });
     };
 
     // redeal replaces every viewer's card, and belongs only to the host's own
