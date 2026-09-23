@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- Go To War waits for the installed races to load, so a quick click no longer starts a war with only MLA enemies and the player's race reset to MLA
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed

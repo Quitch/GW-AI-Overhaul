@@ -62,12 +62,24 @@
     var defaultNewGameName = model.newGameName();
     var warGenerationFailed;
 
+    // War generation reads model.gwoRaceInfo, which race_picker.js fills
+    // once the installed races resolve, so an earlier Go To War would
+    // generate an MLA-only war. race_picker.js loads after this file, and if
+    // it failed to install there is nothing to wait for.
+    var racesResolved = function () {
+      return (
+        !ko.isObservable(model.gwoRaceInfo) ||
+        model.gwoRaceInfo().races.length > 0
+      );
+    };
+
     // We change how we monitor model.ready() to prevent
     // Shared Systems for Galactic War breaking our new lobby
     model.ready = ko.computed(function () {
       var activeCard = model.activeStartCard();
       return (
         gwoReady() &&
+        racesResolved() &&
         enableGoToWar() &&
         !!activeCard &&
         !activeCard.gwoRaceLocked
