@@ -8,6 +8,7 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
@@ -126,15 +127,23 @@ describe("the harvested fixture", () => {
       t.skip("no PA install");
       return;
     }
-    const tmp = path.join(__dirname, "fixtures", "unit_types.tmp.json");
-    const { execFileSync } = require("node:child_process");
-    execFileSync(
-      process.execPath,
-      [path.join(__dirname, "..", "scripts", "harvest-unit-types.js")],
-      { env: Object.assign({}, process.env, { GWO_HARVEST_OUT: tmp }) }
+    // Outside the repo, and removed however the harvest ends.
+    const tmp = path.join(
+      os.tmpdir(),
+      "gwo-unit-types-" + process.pid + ".json"
     );
-    const fresh = JSON.parse(fs.readFileSync(tmp, "utf8")).units;
-    fs.unlinkSync(tmp);
+    const { execFileSync } = require("node:child_process");
+    let fresh;
+    try {
+      execFileSync(
+        process.execPath,
+        [path.join(__dirname, "..", "scripts", "harvest-unit-types.js")],
+        { env: Object.assign({}, process.env, { GWO_HARVEST_OUT: tmp }) }
+      );
+      fresh = JSON.parse(fs.readFileSync(tmp, "utf8")).units;
+    } finally {
+      fs.rmSync(tmp, { force: true });
+    }
     assert.deepEqual(
       fixture,
       fresh,
