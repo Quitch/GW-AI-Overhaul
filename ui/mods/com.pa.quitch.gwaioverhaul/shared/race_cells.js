@@ -13,8 +13,10 @@ define([
   var specsLoads = {};
   var indexes = {};
 
+  // The whole list, not a digest of it: two lists of the same count and total
+  // length would otherwise share one entry.
   var signatureOf = function (units) {
-    return units.length + ":" + units.join("|").length;
+    return units.join("|");
   };
 
   // coui:, not spec: - spec: pins the first read of a path for the process,
@@ -160,6 +162,13 @@ define([
       console.error("gwoRaces: cells not built for " + raceId, error);
     });
   };
+
+  // Test-only hook - see testing.md.
+  // eslint-disable-next-line no-undef
+  if (typeof module !== "undefined" && module.exports) {
+    // eslint-disable-next-line no-undef
+    module.exports = { signatureOf: signatureOf };
+  }
 
   return {
     load: load,
