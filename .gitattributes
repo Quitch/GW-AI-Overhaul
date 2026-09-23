@@ -11,6 +11,8 @@
 package-lock.json linguist-generated=true -diff
 # Written by scripts/harvest-unit-types.js
 test/fixtures/unit_types.json linguist-generated=true -diff
+# Written by scripts/harvest-race-specs.js
+test/fixtures/race_specs.json linguist-generated=true -diff
 # Catalog written by `npm run i18n:catalog`; only its descriptions are hand-edited
 ui/mods/com.pa.quitch.gwaioverhaul/translations/en-US.json linguist-generated=true
 # Vendored from wondible's Section of Foreign Intelligence (Apache 2.0)

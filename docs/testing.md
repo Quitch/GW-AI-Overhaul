@@ -124,6 +124,19 @@ brings (`scripts/lib/addon-fixture.js` builds the index as `race_cells.js`
 does). With a PA install present, the test asserts that the fixture is fresh.
 **Re-harvest it after a PA, race or add-on patch.**
 
+**`test/fixtures/race_specs.json` is the race tables' source, harvested the
+same way.** `scripts/harvest-race-specs.js` (`npm run harvest:race-specs`)
+writes it. For each table in `scripts/lib/race-table-inputs.js` it holds the
+mod's unit list and the specs that the listed units reach through
+`base_spec`, `tools`, `ammo_id` and `death_weapon`, trimmed to the fields
+that name and key a unit, and grouped by the mod that ships each spec.
+`unit_types.json` cannot stand in for it: it carries no display names and no
+parts. `test/race_tables.test.js` runs `scripts/generate-race-tables.js` in
+memory and requires every `race/` and `addon/` file to come out byte for
+byte as committed. After a re-harvest, `npm run generate:race-tables`
+rewrites the tables, and the diff is the review. See
+[races.md](races.md), "Unit tables".
+
 **`i18n:missing` and `i18n:glossary` are local-only for the same reason.** They
 read the game's own translation tables from the PA install (`--pa <path>`, or
 as below) to list what each language still lacks and how the stock UI renders

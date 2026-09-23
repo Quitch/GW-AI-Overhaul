@@ -16,9 +16,11 @@ race needs something new.
    race's own (`shank`, `crusher`). It keys parts by owner plus role
    (`shankAmmo`, `crusherWeapon`, `hiveBuildArm`), research factories as
    `<x>Research`, and unlock tokens as `<x>Unlock`. The table exists for cards
-   written for that race alone. Nothing in the referee reads it. Generate it
-   from the zip with a throwaway script that reads `display_name` and each
-   unit's `tools[].spec_id` / `ammo_id` / `death_weapon`. Do not hand-write it.
+   written for that race alone. Nothing in the referee reads it. Add the race
+   to `scripts/lib/race-table-inputs.js` (its mods, bit and name prefixes),
+   then run `npm run harvest:race-specs` and `npm run generate:race-tables`.
+   Do not hand-write it. [`races.md`](races.md), "Unit tables", has the
+   rules.
 
    `unitNames` has one consumer: the card tooltips name a race unit from it,
    and they use `gw_play/unit_names.js` when it has no name. So every race
@@ -43,7 +45,8 @@ race needs something new.
    `COMPANIONS` in `scripts/lib/server-mods.js`. The race's own `serverMods`
    are read from its descriptor. Then run `npm run harvest:unit-types`, so
    `test/fixtures/unit_types.json` carries the race's units and
-   `buildable_types`.
+   `buildable_types`. Commit `test/fixtures/race_specs.json` from step 2 with
+   it.
 5. **Tests** in `test/race_<id>.test.js` cover four things. They check the
    descriptor shape. They check that the cells the starter set and the `gwc_`
    cards open all hold a race unit. They check any race-specific grant rule
@@ -63,13 +66,14 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
 1. **Descriptor.** Add `ui/mods/…/addon/<id>.js` and list it in
    `shared/addons_shipped.js`. Its fields are `id`, `name`, `serverMods`,
    `layers`, `units`, `unitNames`. No bit, no commanders, no `ai`.
-2. **Unit table.** Generate `units` and `unitNames` from the zip with a
-   throwaway script, as for a race: the zip's `unit_list.json` minus the base
-   game's `pa` and `pa_ex1` lists (which drops the rebalancing shadows of
-   vanilla units), keys camel-cased from `display_name`, parts by owner plus
-   role from `tools[].spec_id` / `ammo_id` / `death_weapon`, and `!LOC:`
-   prefixed onto a bare display name. For MLA the table _is_ the membership
-   rule, so every unit the mod adds must be in it.
+2. **Unit table.** Add the add-on to `scripts/lib/race-table-inputs.js` with
+   `strategy: "addon"`, then harvest and generate as for a race. The table
+   holds the zip's `unit_list.json` minus the base game's `pa` and `pa_ex1`
+   lists (which drops the rebalancing shadows of vanilla units), keys
+   camel-cased from `display_name`, parts by owner plus role from
+   `tools[].spec_id` / `ammo_id` / `death_weapon`, and every name as a
+   `!LOC:` key. For MLA the table _is_ the membership rule, so every unit the
+   mod adds must be in it.
 3. **Layers.** `layers[raceId].titans` carries `unitMaps` and `sources` for
    each race the mod ships AI data for, `mla` included. `sources` must cover
    everything the add-on ships under `/pa/ai/`, because it is what every
@@ -78,7 +82,7 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
    base file starts with it. A map two layers share is listed under both.
 4. **Fixture.** Run `npm run harvest:unit-types` with the zip in
    `download/`. The script reads the add-on's `serverMods` from its
-   descriptor.
+   descriptor. Commit `test/fixtures/race_specs.json` from step 2 with it.
 5. **Tests** in `test/addon_<id>.test.js` check the descriptor shape, that
    every harvested unit is in the table, that the zip ships every path and
    every layer entry (skipped without the zip), and the cells: a held vanilla

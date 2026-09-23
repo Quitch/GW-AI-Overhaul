@@ -20,6 +20,8 @@
     "validate:translations": "node scripts/validate/translations.js",
     "validate": "npm run validate:json && npm run validate:manifest && npm run validate:cards && npm run validate:ai-mods && npm run validate:schemas && npm run validate:refs && npm run validate:sonar && npm run validate:docs && npm run validate:translations",
     "validate:race-trees": "node scripts/validate-race-trees.js",
+    "harvest:race-specs": "node scripts/harvest-race-specs.js",
+    "generate:race-tables": "node scripts/generate-race-tables.js",
     "harvest:unit-types": "node scripts/harvest-unit-types.js",
     "minify:json": "node scripts/minify-json.js",
     "i18n:extract": "node scripts/i18n/extract.js",

@@ -79,8 +79,9 @@ describe("the Legion descriptor", () => {
   });
 
   it("names units by Legion key, each in the table", () => {
-    for (const key of Object.keys(legion.unitNames)) {
+    for (const [key, name] of Object.entries(legion.unitNames)) {
       assert.ok(key in legion.units, key + " is named but not in units");
+      assert.match(name, /^!LOC:/, key);
     }
     assert.equal(legion.unitNames.shank, "!LOC:Shank");
     assert.equal(
