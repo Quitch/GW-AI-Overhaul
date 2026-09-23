@@ -246,12 +246,18 @@
         var myToken = loadToken;
         var cardId = self.id();
         if (cardId) {
-          requireGW(["cards/" + cardId], function (card) {
-            if (loadToken !== myToken) {
-              return;
+          requireGW(
+            ["cards/" + cardId],
+            function (card) {
+              if (loadToken !== myToken) {
+                return;
+              }
+              loadCard(card, data);
+            },
+            function () {
+              console.error("GWO card failed to load: " + cardId);
             }
-            loadCard(card, data);
-          });
+          );
         } else {
           loadCard({}, data);
         }
@@ -301,9 +307,7 @@
         globals.CardViewModel = gwoCardViewModel;
         // Nothing reads the banks until the player explores, so resolving them
         // alongside setup is early enough and keeps this callback synchronous.
-        requireGW(gwoLoadoutBanks.paths(), function () {
-          gwoLoadoutBanks.resolve(_.toArray(arguments));
-        });
+        gwoLoadoutBanks.load();
         restoreExploreSaveRerolls();
         var inventory = game.inventory();
         var playerFaction = inventory.getTag("global", "playerFaction");
@@ -590,6 +594,9 @@
               inventory: inventory,
             });
             setupGeneralCommander();
+          },
+          function () {
+            console.error("GWO failed to load cards_start_subcdr.js");
           }
         );
 

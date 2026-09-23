@@ -40,9 +40,13 @@ function setup(overrides = {}) {
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
-  stubs.setGlobal("requireGW", (ids, done) => {
+  stubs.setGlobal("requireGW", (ids, done, fail) => {
     const cardId = ids[0].slice("cards/".length);
     calls.requested.push(cardId);
+    if ((options.unloadable || []).includes(cardId)) {
+      fail(new Error("load failed"));
+      return;
+    }
     done(options.cards[cardId]);
   });
 
@@ -126,6 +130,21 @@ describe("card name sync - naming a star the host explored", () => {
 
     await sync.setCardName(system, [{ id: "gwc_missing" }], 1);
 
+    assert.equal(options.boardAi.cardName, undefined);
+    assert.deepEqual(calls.sent, []);
+  });
+
+  // requireGW never times out, so a module that fails to load reaches only the
+  // errback. Without one, the turn deal waiting on this promise never settled.
+  it("resolves and logs when the card fails to load", async () => {
+    const { sync, calls, options } = build({ unloadable: ["gwc_broken"] });
+    const system = { star: starWithAi(options.boardAi) };
+
+    const errors = await capture("error", () =>
+      sync.setCardName(system, [{ id: "gwc_broken" }], 1)
+    );
+
+    assert.deepEqual(errors, ["GWO card failed to load: gwc_broken"]);
     assert.equal(options.boardAi.cardName, undefined);
     assert.deepEqual(calls.sent, []);
   });

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- A tech card, loadout, or loadout bank from another mod that fails to load no longer stops Explore, Go To War, or joining a co-op war; the failure is logged and only that card or bank is missing
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed
