@@ -8,6 +8,7 @@
 - A tech card, loadout, or loadout bank from another mod that fails to load no longer stops Explore, Go To War, or joining a co-op war; the failure is logged and only that card or bank is missing
 - A tech card from another mod that fails while it is applied no longer stops co-op star cards from being dealt, or stops loadouts being unlocked, for the rest of the session; the failure is logged
 - In co-op with per-player tech, a viewer who is still choosing a tech card, or is away, when the host takes one now gets new star cards once they choose or return, even if the war is reloaded in between, rather than keeping last turn's
+- In co-op with per-player tech, a viewer who picks the General Commander loadout now always gets its Sub Commanders, including when it connects after the war has loaded
 
 ## v7.4.0 - 2026-09-22
 
