@@ -1,7 +1,8 @@
 # Galaxy, factions and difficulty
 
-War creation happens in `gw_start/setup.js`. It generates the galaxy, places AIs,
-assigns personalities and minions, and stamps GWO's settings onto the save.
+War creation happens in `gw_start/setup.js`. It generates the galaxy and places
+AIs. `gw_start/ai_population.js` assigns their personalities and minions, and
+`gw_start/war_record.js` builds the settings GWO stamps onto the save.
 
 ## Generation order
 
@@ -577,7 +578,7 @@ once per `gw_start` load (it starts before any mod script exists). Its difficult
 ramp writes into the templates' shared `personality` objects, so the templates are
 dirty by the time GWO generates.
 
-`setAIPersonality` therefore assigns `ai.personality = gwoPersonality.resolve(ai, …)`,
+`ai_population.js`'s `setAIPersonality` therefore assigns `ai.personality = gwoPersonality.resolve(ai, …)`,
 a fresh object. That object is the template `personalityId` names, with the tier's
 AI settings written over it (`applyTier()`). Its `personality_tags` are the tier's
 tags followed by the brain's. The brain's tags are `Default` for TITANS, the

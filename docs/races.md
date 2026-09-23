@@ -292,7 +292,7 @@ the pre-table fallback.
 ## Commanders
 
 A race army fields one of the race's commanders, drawn at war creation
-(`setup.js`'s `giveRace`). Two armies keep a vanilla one and are **retagged**
+(`ai_population.js`'s `giveRace`). Two armies keep a vanilla one and are **retagged**
 instead. The boss keeps its Pumpkin and the Guardians keep the Unicorn.
 `races.commanderRetagMods` swaps `UNITTYPE_Custom58` for the race's bit and
 replaces `buildable_types` with the race's. That is exactly the shape every
