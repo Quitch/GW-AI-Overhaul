@@ -56,9 +56,13 @@ function makeDeferred() {
 
 // jQuery 2.1.4's own Deferred, for code whose behaviour depends on it: callbacks
 // run inside resolve() and reject(), so a callback's throw escapes through the
-// call that settled it, and .then does not turn a throw into a rejection.
+// call that settled it, and .then does not turn a throw into a rejection. After
+// a throw the Deferred is stuck, as 2.1.4's is (Callbacks.fire never clears
+// `firing`, so add() only queues): the callbacks after the thrower never run,
+// and neither does one attached later.
 function makeSyncDeferred() {
   var state = "pending";
+  var stuck = false;
   var value;
   var lists = { resolved: [], rejected: [] };
 
@@ -70,23 +74,33 @@ function makeSyncDeferred() {
     value = settledValue;
     var list = lists[to];
     lists = { resolved: [], rejected: [] };
-    list.forEach(function (fn) {
-      fn(value);
-    });
+    for (var i = 0; i < list.length; i++) {
+      try {
+        list[i](value);
+      } catch (e) {
+        stuck = true;
+        throw e;
+      }
+    }
   };
 
   var on = function (when, fn) {
+    if (stuck) {
+      return;
+    }
     if (state === when) {
-      fn(value);
+      try {
+        fn(value);
+      } catch (e) {
+        stuck = true;
+        throw e;
+      }
     } else if (state === "pending") {
       lists[when].push(fn);
     }
   };
 
   var deferred = {
-    state: function () {
-      return state;
-    },
     resolve: function (resolvedValue) {
       settle("resolved", resolvedValue);
       return deferred;
@@ -132,8 +146,13 @@ function makeSyncDeferred() {
   return deferred;
 }
 
-// $.when for makeSyncDeferred: one argument, waited on without a tick.
+// $.when for makeSyncDeferred: one argument, waited on without a tick. More
+// than one is refused rather than waited on partially, so a $.when(a, b) under
+// test can't pass with b never waited for.
 function syncWhen(arg) {
+  if (arguments.length !== 1) {
+    throw new Error("syncWhen waits on one argument, not " + arguments.length);
+  }
   if (isJqueryPromise(arg)) {
     return arg.promise();
   }

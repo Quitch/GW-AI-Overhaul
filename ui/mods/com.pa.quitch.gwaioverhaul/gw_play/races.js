@@ -221,7 +221,16 @@
         raceMods.installedRaces().then(function (info) {
           // Priming is not behind the warRaceIds gate: an all-MLA war under
           // Separate races still primes the offer for a viewer joining later.
-          primeRaces(info);
+          // Nor is the gate behind priming: a throw here must not skip the
+          // race check, or Fight would be open for a war whose race mod is
+          // missing.
+          try {
+            primeRaces(info);
+          } catch (e) {
+            console.error(
+              "gwoRaces: race offer not primed: " + (e.stack || e.message || e)
+            );
+          }
 
           // An all-MLA war has nothing to block on, but may have begun with
           // add-ons it should mention losing.

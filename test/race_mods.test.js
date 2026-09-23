@@ -182,6 +182,25 @@ describe("installedRaces under jQuery 2's Deferred", () => {
     assert.match(errors[0], /manifest broke/);
     assert.equal(reason.message, "manifest broke");
   });
+
+  // reject() runs .fail callbacks the same way, so a fail handler's throw
+  // must be caught and logged like a .then callback's.
+  it("logs a fail handler's throw as the consumer's, after the failed read", () => {
+    const load = pendingManifest();
+    window.GwServerMods.manifest.activeServerMods = () => {
+      throw new Error("manifest broke");
+    };
+
+    raceMods.installedRaces().fail(() => {
+      throw new Error("fail handler broke");
+    });
+    load.resolve(true);
+
+    assert.equal(errors.length, 2);
+    assert.match(errors[0], /installed races not read/);
+    assert.match(errors[1], /a consumer of installed races threw/);
+    assert.match(errors[1], /fail handler broke/);
+  });
 });
 
 describe("installedRaces with add-ons", () => {

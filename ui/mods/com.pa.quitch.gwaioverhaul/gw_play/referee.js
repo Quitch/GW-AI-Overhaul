@@ -26,6 +26,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_game_file_paths.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
       ],
       function (
         GW,
@@ -36,7 +37,8 @@
         gwoBiomeMods,
         gwoBiomes,
         raceMods,
-        gameFilePaths
+        gameFilePaths,
+        gwoPromise
       ) {
         var hiresThisLaunch = 0;
         // The AI tree cache lives one launch: a co-op host's two hires share
@@ -203,32 +205,27 @@
           // installedRaces activates the add-ons whose mods are enabled, so a
           // hire never depends on scene-load ordering. It resolves at once
           // without GW Server Mods, and rejects if the installed races cannot
-          // be read.
-          return raceMods
-            .installedRaces()
-            .then(function () {
-              // jQuery 2's .then does not turn a throw into a rejection, so
-              // the handler below would never run.
-              try {
-                return _.bind(gwoGenerateGameFiles, ref)();
-              } catch (e) {
-                return $.Deferred().reject(e).promise();
-              }
-            })
-            .then(function () {
-              ref.stage("!LOC:Processing AI mods");
-            })
-            .then(_.bind(gwoGenerateAI, ref))
-            .then(_.bind(gwoGenerateBiomes, ref))
-            .then(function () {
-              ref.stage("!LOC:Processing game config");
-            })
-            .then(_.bind(gwoGenerateConfig, ref))
-            .then(function () {
-              // Later stages (mountFiles) belong to the launch, not a pass.
-              ref.pass = 0;
-              return ref;
-            })
+          // be read. gwoPromise.steps turns a step's synchronous throw into
+          // a rejection, which jQuery 2's .then would not, so the fail
+          // handler below runs for every step.
+          return gwoPromise
+            .steps(raceMods.installedRaces(), [
+              _.bind(gwoGenerateGameFiles, ref),
+              function () {
+                ref.stage("!LOC:Processing AI mods");
+              },
+              _.bind(gwoGenerateAI, ref),
+              _.bind(gwoGenerateBiomes, ref),
+              function () {
+                ref.stage("!LOC:Processing game config");
+              },
+              _.bind(gwoGenerateConfig, ref),
+              function () {
+                // Later stages (mountFiles) belong to the launch, not a pass.
+                ref.pass = 0;
+                return ref;
+              },
+            ])
             .then(null, function (error) {
               // Stock waits on the hire with no fail handler, so a rejected
               // one would leave launchingFight set and the Fight button dead.

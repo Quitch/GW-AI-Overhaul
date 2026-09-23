@@ -20,5 +20,25 @@ define(function () {
     return done.promise();
   };
 
-  return { settled: settled };
+  // A .then chain that a step's synchronous throw rejects. jQuery 2.1.4's
+  // .then does not turn a throw into a rejection: the throw escapes through
+  // the resolve() that ran the callback, and a fail handler on the chain
+  // never runs. Each step gets the previous step's value, as with .then.
+  var steps = function (start, fns) {
+    return _.reduce(
+      fns,
+      function (promise, fn) {
+        return promise.then(function (value) {
+          try {
+            return fn(value);
+          } catch (e) {
+            return $.Deferred().reject(e).promise();
+          }
+        });
+      },
+      start
+    );
+  };
+
+  return { settled: settled, steps: steps };
 });
