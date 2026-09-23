@@ -87,8 +87,12 @@ no static JSON form. The only way to check their shape is to call every card's
 A loadout adds its AI mods only as the war's start card, the first card in the
 hand on its first buff. Anywhere else its `buff()` only banks it. The validator
 therefore runs a loadout down that path, with both banks stubbed to accept and
-keep nothing. `MIN_CARDS_CHECKED` fails the run when fewer cards add AI mods
-than do today, and an excluded card is listed by name.
+keep nothing. Every card runs twice: once on the stub's answers, and once as a
+Cluster player who holds no cards. The stub alone never takes the Cluster side
+of `playerIsCluster()` or the "not held" side of `hasCard()`, so the second run
+checks the AI mods added only there. `MIN_CARDS_CHECKED` counts cards, not runs.
+It fails the run when fewer cards add AI mods than do today, and an excluded
+card is listed by name.
 
 `scripts/lib/auto-stub.js` provides that mock. It is a Proxy that answers any
 property access or call with another instance of itself. The check therefore

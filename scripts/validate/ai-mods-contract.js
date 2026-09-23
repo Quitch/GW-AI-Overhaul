@@ -80,10 +80,27 @@ function startCardAnswers() {
   };
 }
 
-function collectAiMods(card, file) {
+// gwoAI.CLUSTER_FACTION, which gwoCard.playerIsCluster() compares against.
+const CLUSTER_FACTION = 4;
+
+// The stub alone takes one side of each fork: playerIsCluster() is never true
+// and hasCard() always is. This run takes the other side of both, so AI mods
+// added only for a Cluster player or one without a card are checked too.
+function clusterWithoutCards(answers) {
+  const getTag = answers.getTag || createAutoStub;
+  return Object.assign({}, answers, {
+    hasCard: () => false,
+    getTag: (context, name) =>
+      context === "global" && name === "playerFaction"
+        ? CLUSTER_FACTION
+        : getTag(context, name),
+  });
+}
+
+function runCard(card, answers, label) {
   const captured = [];
   const inventory = createCapturingInventory({
-    answers: file.includes("_start_") ? startCardAnswers() : undefined,
+    answers,
     capture: { addAIMods: recordInto(captured) },
   });
 
@@ -97,7 +114,11 @@ function collectAiMods(card, file) {
       card[method](inventory, createAutoStub());
     } catch (e) {
       throw new Error(
-        method + "() threw against the mock inventory: " + e.message,
+        method +
+          "() threw against the mock inventory (" +
+          label +
+          "): " +
+          e.message,
         {
           cause: e,
         }
@@ -106,6 +127,22 @@ function collectAiMods(card, file) {
   }
 
   return captured;
+}
+
+// A descriptor both runs add is checked, and reported, once.
+function collectAiMods(card, file) {
+  const answers = file.includes("_start_") ? startCardAnswers() : {};
+  const byKey = new Map();
+  for (const mod of [
+    ...runCard(card, answers, "stub answers"),
+    ...runCard(card, clusterWithoutCards(answers), "Cluster, no cards held"),
+  ]) {
+    const key = JSON.stringify(mod);
+    if (!byKey.has(key)) {
+      byKey.set(key, mod);
+    }
+  }
+  return [...byKey.values()];
 }
 
 function checkType(problems, where, mod) {
