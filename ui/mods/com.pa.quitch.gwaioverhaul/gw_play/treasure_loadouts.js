@@ -272,7 +272,7 @@ define([
     };
   };
 
-  var api = {
+  var treasureLoadouts = {
     isTreasureStar: isTreasureStar,
     findTreasureStar: findTreasureStar,
     isBaseLoadoutCardId: isBaseLoadoutCardId,
@@ -290,8 +290,8 @@ define([
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = api;
+    module.exports = treasureLoadouts;
   }
 
-  return api;
+  return treasureLoadouts;
 });

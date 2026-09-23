@@ -152,12 +152,15 @@
         model.gwoRerollPending(false);
       });
 
-      $(".div_options_bar").replaceWith(
+      // launch_progress.html and victory_wait.html carry the class too.
+      var systemOptionsBar =
+        ".div_panel_bar_background.tech > .div_options_bar";
+      $(systemOptionsBar).replaceWith(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html"
         )
       );
-      locTree($(".div_options_bar"));
+      locTree($(systemOptionsBar));
     };
     setupTechRerolls();
 
@@ -373,7 +376,6 @@
                   card,
                   list,
                   dealAddSlot,
-                  false,
                   systemCards
                 ) ||
                 !helpers.raceCanDeal(

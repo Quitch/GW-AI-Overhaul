@@ -19,15 +19,7 @@ define(function () {
     var races = params.races;
 
     var testCardForMatches = function (inventory, card) {
-      var cardsDealt = [card];
-      var duplicate = helpers.doNotDealCard(
-        inventory,
-        card,
-        cardsDealt,
-        false,
-        true,
-        [card]
-      );
+      var duplicate = helpers.doNotDealCard(inventory, card, [], false, []);
 
       if (!duplicate) {
         console.error(card.id, "failed duplication test");
@@ -46,7 +38,7 @@ define(function () {
       return product;
     };
 
-    var testMinions = function (product, inventory) {
+    var testMinions = function (product) {
       // Flattened up front, so units.js is required once rather than per minion.
       requireGW(
         ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"],
@@ -65,8 +57,6 @@ define(function () {
           _.forEach(allMinions, function (minion) {
             var minionStock = _.cloneDeep(product);
             minionStock.minion = minion;
-            inventory.cards.push(minionStock);
-            inventory.cards.pop();
 
             if (!minionStock.minion.commander) {
               // This will use the player's commander
@@ -115,7 +105,7 @@ define(function () {
     var prepareProduct = function (product, inventory, testing) {
       if (product.id === "gwc_minion") {
         if (testing) {
-          testMinions(product, inventory);
+          testMinions(product);
         }
         return dealSubCommander(product);
       }

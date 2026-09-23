@@ -101,7 +101,6 @@ define(function () {
     // applies its cards with every bank held off, then hands it to done. Also
     // returned, for a caller that needs it before done runs.
     applyRecordInventory: function (GWInventory, record, stockBank, done) {
-      var bank = this;
       var inventory = new GWInventory();
       inventory.load(_.cloneDeep(record.inventory));
 
@@ -110,14 +109,14 @@ define(function () {
         return inventory;
       }
 
-      bank.suspendUnlocks(stockBank);
+      self.suspendUnlocks(stockBank);
       try {
         inventory.applyCards(function () {
-          bank.resumeUnlocks();
+          self.resumeUnlocks();
           done(inventory);
         });
       } catch (e) {
-        bank.resumeUnlocks();
+        self.resumeUnlocks();
         throw e;
       }
       return inventory;

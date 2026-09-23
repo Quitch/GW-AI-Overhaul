@@ -53,7 +53,6 @@ describe("doNotDealCard", () => {
         card,
         [],
         true,
-        false,
         []
       ),
       true
@@ -62,30 +61,21 @@ describe("doNotDealCard", () => {
 
   it("withholds a card already dealt this round", () => {
     assert.equal(
-      helpers.doNotDealCard(
-        emptyInventory,
-        card,
-        [{ id: "gwc_x" }],
-        true,
-        false,
-        []
-      ),
+      helpers.doNotDealCard(emptyInventory, card, [{ id: "gwc_x" }], true, []),
       true
     );
   });
 
   it("withholds a card already present in the system (id as a value)", () => {
     assert.equal(
-      helpers.doNotDealCard(emptyInventory, card, [], true, false, [
-        { id: "gwc_x" },
-      ]),
+      helpers.doNotDealCard(emptyInventory, card, [], true, [{ id: "gwc_x" }]),
       true
     );
   });
 
   it("withholds a card already present in the system (id as an observable)", () => {
     assert.equal(
-      helpers.doNotDealCard(emptyInventory, card, [], true, false, [
+      helpers.doNotDealCard(emptyInventory, card, [], true, [
         { id: () => "gwc_x" },
       ]),
       true
@@ -94,7 +84,7 @@ describe("doNotDealCard", () => {
 
   it("deals a fresh card no one holds", () => {
     assert.equal(
-      helpers.doNotDealCard(emptyInventory, card, [], true, false, []),
+      helpers.doNotDealCard(emptyInventory, card, [], true, []),
       false
     );
   });
@@ -106,7 +96,6 @@ describe("doNotDealCard", () => {
         { id: "gwc_add_card_slot" },
         [],
         false,
-        false,
         []
       ),
       true
@@ -115,24 +104,7 @@ describe("doNotDealCard", () => {
 
   it("treats a non-array systemCards as an empty system", () => {
     assert.equal(
-      helpers.doNotDealCard(emptyInventory, card, [], true, false, undefined),
-      false
-    );
-  });
-
-  it("in testRun mode requires all three duplicate signals to be present", () => {
-    const held = { hasCard: (id) => id === "gwc_x" };
-    assert.equal(
-      helpers.doNotDealCard(held, card, [{ id: "gwc_x" }], true, true, [
-        { id: "gwc_x" },
-      ]),
-      true
-    );
-    // System has it, but it is neither held nor dealt this round.
-    assert.equal(
-      helpers.doNotDealCard(emptyInventory, card, [], true, true, [
-        { id: "gwc_x" },
-      ]),
+      helpers.doNotDealCard(emptyInventory, card, [], true, undefined),
       false
     );
   });
@@ -394,8 +366,12 @@ describe("buildGeneralCommanderMinions", () => {
   function build(opts) {
     const priorLoc = global.loc;
     global.loc = (key) => key;
+    // Detached, it runs with no receiver at all.
+    const run = opts.detached
+      ? helpers.buildGeneralCommanderMinions
+      : (params) => helpers.buildGeneralCommanderMinions(params);
     try {
-      return helpers.buildGeneralCommanderMinions({
+      return run({
         minionPool: opts.pool === undefined ? POOL : opts.pool,
         gwoSettings: opts.gwoSettings || { aiAlly: "TITANS" },
         gwoAI: gwoAI,
@@ -429,6 +405,13 @@ describe("buildGeneralCommanderMinions", () => {
 
   it("reproduces the same pair for the same seed", () => {
     assert.deepEqual(build({ seed: "s" }), build({ seed: "s" }));
+  });
+
+  it("does not depend on how it is called", () => {
+    assert.deepEqual(
+      build({ seed: "s", detached: true }),
+      build({ seed: "s" })
+    );
   });
 
   it("draws a different pair for a different seed", () => {

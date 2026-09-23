@@ -165,7 +165,7 @@ define(function () {
             ),
           });
         },
-        starCardForRecord: coopStarCards.starCardForClient,
+        starCardForRecord: coopStarCards.starCardForRecord,
       });
       var targets = collected.targets;
 

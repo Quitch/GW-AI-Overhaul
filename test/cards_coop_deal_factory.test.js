@@ -130,7 +130,7 @@ function setup(overrides = {}) {
       }),
     },
     coopStarCards: {
-      starCardForClient: (rec, starIndex) =>
+      starCardForRecord: (rec, starIndex) =>
         rec.gwaioStarCards && rec.gwaioStarCards.cards[String(starIndex)],
     },
     gwoSettings: { treasureStar: options.treasureStar },

@@ -23,7 +23,8 @@
 
     // gw_start uses ko.applyBindings(model)
     model.gwoDifficultySettings = {
-      // Name-keyed, but may be a legacy positional array on v6.2.0 and earlier saves.
+      // Name-keyed. A v6.2.0 or earlier save holds a positional array, which
+      // is ignored.
       previousSettings: ko
         .observableArray()
         .extend({ local: "gwo_previous_settings" }),
@@ -64,7 +65,6 @@
       factionTechHandicap: koNumeric(0, 1),
       alliedCommanderChance: koNumeric(0, 0),
       personalityTags: ko.observableArray(),
-      aiPersonalityAsName: ko.observable(false), // obsolete, left to maintain v6.2.0 and earlier previous settings integrity
       eradicationModeChance: koNumeric(0, 0),
       aiAlly: ko.observable("Titans"),
       staticTech: ko.observable(false),
@@ -90,38 +90,20 @@
       difficultySettings.playerFaction(model.playerFactionIndex());
     });
 
-    // The legacy array shape is positional, so it is only restored while its
-    // length still matches the setting count - past that, values misassign.
     var restorePreviousSettings = function (settings) {
       var previousSettings = settings.previousSettings();
 
-      if (_.isEmpty(previousSettings)) {
+      if (_.isEmpty(previousSettings) || _.isArray(previousSettings)) {
         return settings;
       }
 
       var settingNames = _.without(_.keys(settings), "previousSettings");
 
-      if (_.isArray(previousSettings)) {
-        if (previousSettings.length !== settingNames.length) {
-          console.warn(
-            "gwoUI: previousSettings is a legacy array of length " +
-              previousSettings.length +
-              " but there are now " +
-              settingNames.length +
-              " settings; skipping restore to avoid misassigning values."
-          );
-          return settings;
+      _.forEach(settingNames, function (name) {
+        if (_.has(previousSettings, name)) {
+          settings[name](previousSettings[name]);
         }
-        _.forEach(settingNames, function (name, i) {
-          settings[name](previousSettings[i]);
-        });
-      } else {
-        _.forEach(settingNames, function (name) {
-          if (_.has(previousSettings, name)) {
-            settings[name](previousSettings[name]);
-          }
-        });
-      }
+      });
 
       _.defer(function () {
         $("#gwo-personality-picker")
