@@ -4,6 +4,9 @@
 
 ### Bugfix
 
+- The war information panel's co-op Tech and Slots rows now show the current settings rather than those at load
+- The AI settings window shows a removed race's stored Ally AI, not its Enemy AI, in the Ally column
+- A co-op viewer's victory badge is now recorded against the viewer's own loadout under per-player tech, not the host's
 - When a war cannot be created, the setup screen now says why and what to do, and the seed goes back to the one entered; only a galaxy too small for every enemy faction is retried with a new seed
 - Go To War waits for the installed races to load, so a quick click no longer starts a war with only MLA enemies and the player's race reset to MLA
 - A Legion, Bugs, or Exiles player's first tech deal can no longer offer cards for units their race does not have

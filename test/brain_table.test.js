@@ -99,9 +99,25 @@ describe("rowsFor", () => {
       id: "bugs",
       stale: true,
       options: ["Titans"],
+      allyOptions: ["Titans"],
       enemy: "Titans",
       ally: "Titans",
     });
+  });
+
+  // The ally select binds allyOptions, so a stale row whose brains differ
+  // shows its own ally brain rather than the enemy's.
+  it("lists each side's own stored brain on a stale row", () => {
+    const rows = brainTable.rowsFor(
+      { bugs: { enemy: "Queller", ally: "Penchant" } },
+      ["mla"],
+      "Titans",
+      "Titans"
+    );
+
+    assert.deepEqual(rows[1].options, ["Queller"]);
+    assert.deepEqual(rows[1].allyOptions, ["Penchant"]);
+    assert.equal(rows[1].ally, "Penchant");
   });
 
   it("seeds every row from nothing stored", () => {
@@ -116,6 +132,7 @@ describe("rowsFor", () => {
       id: "mla",
       stale: false,
       options: ["Titans", "Queller", "Penchant"],
+      allyOptions: ["Titans", "Queller", "Penchant"],
       enemy: "Penchant",
       ally: "Titans",
     });
