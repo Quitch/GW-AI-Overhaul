@@ -113,9 +113,9 @@ define([
     var ids = _.uniq(
       gwoLoadoutIds.lockedBase.concat(gwoLoadoutIds.unlockable, modLoadoutIds())
     );
-    if (race && race !== "mla") {
-      ids = _.reject(ids, helpers.mlaOnlyCard);
-    }
+    ids = _.reject(ids, function (id) {
+      return helpers.raceLocksLoadout(race, id);
+    });
     return _.map(ids, function (id) {
       return { id: id };
     });
@@ -197,10 +197,7 @@ define([
       }
     );
 
-    var record = game.findCoopPlayerInventoryData({
-      id: operator.client_id,
-      name: operator.client_name,
-    });
+    var record = coopHost.recordFor(game, operator);
     if (!record) {
       console.warn(
         "[GW COOP] no record for reported loadout unlocks client=" +

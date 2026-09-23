@@ -35,7 +35,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       var options = cellOptions(id);
       var row = table[id];
       var seed = seedRow(id, ai, aiAlly);
-      var cells = { id: id, stale: false, options: options };
+      var cells = {
+        id: id,
+        stale: false,
+        options: options,
+        allyOptions: options,
+      };
 
       _.forEach(SIDES, function (side) {
         cells[side] =
@@ -58,9 +63,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
         return {
           id: races.normalizeId(id),
           stale: true,
-          // Just the stored value: the cell renders disabled, and offering
+          // Just the stored values: the cells render disabled, and offering
           // alternatives for a race that cannot be fielded reads as settable.
+          // Each side lists its own, or a stale ally cell shows the enemy's.
           options: [row.enemy || races.TITANS],
+          allyOptions: [row.ally || races.TITANS],
           enemy: row.enemy || races.TITANS,
           ally: row.ally || races.TITANS,
         };

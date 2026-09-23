@@ -55,6 +55,7 @@ function setup(overrides = {}) {
       duplicate: true,
       currentStar: 2,
       playerFaction: 0,
+      missing: [],
     },
     overrides
   );
@@ -91,6 +92,9 @@ function setup(overrides = {}) {
     gwoDeal: {
       dealCard: (request) => {
         calls.dealt.push(request);
+        if (options.missing.includes(request.id)) {
+          return Promise.reject(new Error("GWO card not found: " + request.id));
+        }
         return Promise.resolve({ id: request.id });
       },
     },
@@ -170,7 +174,7 @@ describe("cheats testCards", () => {
     assert.equal(calls.dealt[0].inventory, current().inventory);
   });
 
-  it("applies each dealt card to the inventory", async () => {
+  it("adds each dealt card and applies the inventory once", async () => {
     const { inventory } = build();
 
     testCards();
@@ -180,7 +184,30 @@ describe("cheats testCards", () => {
       inventory.cards().map((card) => card.id),
       ["gwc_combat_bots", "gwc_orbital"]
     );
-    assert.equal(inventory.applied, 2);
+    assert.equal(inventory.applied, 1);
+  });
+
+  // $.when rejects on the first failed deal, so without settling each one the
+  // cards already pushed into the hand would never be applied.
+  it("applies the cards that dealt when another deal fails", async () => {
+    const { inventory, calls } = build({
+      gwoCards: ["gwc_combat_bots", "gwc_missing", "gwc_orbital"],
+      missing: ["gwc_missing"],
+    });
+
+    const errors = await capture("error", async () => {
+      testCards();
+      await flush();
+    });
+
+    assert.deepEqual(
+      inventory.cards().map((card) => card.id),
+      ["gwc_combat_bots", "gwc_orbital"]
+    );
+    assert.equal(inventory.applied, 1);
+    assert.match(errors[0], /GWO card not found: gwc_missing/);
+    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(calls.saves, []);
   });
 
   it("re-deals to the selectable AI, broadcasts and saves once", async () => {

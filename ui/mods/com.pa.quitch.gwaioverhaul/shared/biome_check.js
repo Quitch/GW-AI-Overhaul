@@ -5,10 +5,9 @@
 // caller localises. The race twin is shared/race_check.js. See galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
-], function (gwoBiomes) {
-  var normalizeIdentifier = function (identifier) {
-    return _.isString(identifier) ? identifier.trim().toLowerCase() : "";
-  };
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js",
+], function (gwoBiomes, ids) {
+  var normalizeIdentifier = ids.normalize;
 
   var project = function (mod) {
     var identifier = normalizeIdentifier(mod && mod.identifier);

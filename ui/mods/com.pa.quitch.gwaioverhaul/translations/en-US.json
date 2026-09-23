@@ -3011,6 +3011,10 @@
     "message": "The commanders have slumbered for millions of years, and awaken to a galaxy that contains only echoes of civilization. These ancient war machines now battle across the galaxy, following the only directives they still hold from long ago.",
     "description": "Lore text: the description shown in the star detail card on the galaxy map for a neutral system, beneath the matching lore title. Full paragraph. Pairs with the title \"The Commanders\". (lore.js:18)"
   },
+  "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
+    "message": "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.",
+    "description": "Error shown above the Go To War button on the war setup screen when a new war cannot be created because the galaxy has too few systems for every enemy faction to have a home system, even after several new seeds were tried. 'Faction Scaling' is an option in the game options panel of the same screen: use that option's translated name. Full sentences; keep the full stops. (war_generation_failure.js)"
+  },
   "The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.": {
     "message": "The goal of the Legionis Machina is simple--conquest. Invictus is the designated ruler of the galaxy, and any commanders disobeying this directive are faulty.",
     "description": "Lore text: one of several faction description passages shown at random as the system description in the star detail card on the galaxy map when a system held by that faction is selected. Full paragraph; keep the tone. Legonis Machina faction; Legionis Machina and Invictus are proper names. The double hyphen is a dash. (gw_faction_0.js:139)"
@@ -3034,6 +3038,10 @@
   "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
     "message": "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.",
     "description": "Tooltip on the \"?\" beside the \"Race\" drop-down on the co-op loadout screen a joining player sees. First sentence must match the war setup screen's race tooltip. Keep the full stops. (race_picker.js:19)"
+  },
+  "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.": {
+    "message": "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.",
+    "description": "Error shown above the Go To War button on the war setup screen when a new war cannot be created for any reason other than galaxy size, which means a bug in the mod. __url__ is the GitHub issues web address, __seed__ is the war seed, and __folder__ is the Windows folder that holds PA's log files: keep all three verbatim. PA is Planetary Annihilation. Full sentences; keep the full stops. (war_generation_failure.js)"
   },
   "This Commander likes to raid and has modified its blueprints to that end. Units are twice as fast and 30% cheaper but have damage output decreased by 50%.": {
     "message": "This Commander likes to raid and has modified its blueprints to that end. Units are twice as fast and 30% cheaper but have damage output decreased by 50%.",
