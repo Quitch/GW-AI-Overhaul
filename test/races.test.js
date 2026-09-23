@@ -454,7 +454,7 @@ describe("raceLayerFilter", () => {
   });
 });
 
-describe("inAnyRaceLayer", () => {
+describe("raceLayerTest", () => {
   it("claims every registered race's Titans files and unit map, and nothing of the base tree", () => {
     races.register({
       id: "rival",
@@ -465,7 +465,7 @@ describe("inAnyRaceLayer", () => {
         },
       },
     });
-    const claimed = races.inAnyRaceLayer;
+    const claimed = races.raceLayerTest();
 
     assert.equal(claimed("/pa/ai/unit_maps/fixture.json"), true);
     assert.equal(claimed("/pa/ai/factory_builds/fixture_air.json"), true);
@@ -492,7 +492,7 @@ describe("inAnyRaceLayer", () => {
         queller: { unitMaps: ["unit_maps/carried.json"], exclude: ["/mla/"] },
       },
     });
-    const claimed = races.inAnyRaceLayer;
+    const claimed = races.raceLayerTest();
 
     assert.equal(
       claimed("/pa/ai_queller/q_uber/unit_maps/carried.json"),
@@ -502,38 +502,6 @@ describe("inAnyRaceLayer", () => {
       claimed("/pa/ai_queller/q_uber/factory_builds/carried/x.json"),
       false
     );
-  });
-});
-
-// referee_ai.js builds the test once per sweep rather than per file; it must
-// answer exactly as inAnyRaceLayer does.
-describe("raceLayerTest", () => {
-  it("agrees with inAnyRaceLayer on every file", () => {
-    races.register({
-      id: "rival",
-      ai: {
-        titans: {
-          unitMaps: ["/pa/ai/unit_maps/rival.json"],
-          sources: [{ dir: "/pa/ai/factory_builds/", match: "rival_" }],
-        },
-      },
-    });
-    const test = races.raceLayerTest();
-    const files = [
-      "/pa/ai/unit_maps/fixture.json",
-      "/pa/ai/factory_builds/fixture_air.json",
-      "/pa/ai/fabber_builds/fixture/fabber_land.json",
-      "/pa/ai/unit_maps/rival.json",
-      "/pa/ai/factory_builds/rival_air.json",
-      "/pa/ai/ai_config.json",
-      "/pa/ai/unit_maps/ai_unit_map.json",
-      "/pa/ai/factory_builds/factory_air_builds.json",
-      "/pa/ai/factory_builds/fixtures_air.json",
-    ];
-
-    for (const file of files) {
-      assert.equal(test(file), races.inAnyRaceLayer(file), file);
-    }
   });
 });
 
@@ -818,13 +786,13 @@ describe("treeFilter with add-ons", () => {
   });
 });
 
-describe("inAnyRaceLayer with add-ons", () => {
+describe("raceLayerTest with add-ons", () => {
   const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
 
   it("claims an add-on's race files and maps, not MLA's, and not a map MLA claims too", () => {
     races.registerAddon(FIXTURE_ADDON);
     races.activateAddons(["fixture_addon"]);
-    const claimed = races.inAnyRaceLayer;
+    const claimed = races.raceLayerTest();
 
     assert.equal(
       claimed("/pa/ai/factory_builds/fixture/factory_2w.json"),

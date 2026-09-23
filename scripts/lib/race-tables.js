@@ -7,17 +7,11 @@
 
 const path = require("node:path");
 const prettier = require("prettier");
+const { byCodePoint } = require("./mod-roots.js");
 const { TABLES, ADDON_BIT_WORDS } = require("./race-table-inputs.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
 const LOC = "!LOC:";
-
-function byCodePoint(a, b) {
-  if (a < b) {
-    return -1;
-  }
-  return a > b ? 1 : 0;
-}
 
 function stemOf(specPath) {
   return path.posix.basename(specPath, ".json");
@@ -244,6 +238,17 @@ function raceUnitKey(input, reader, unit, stem) {
     : key;
 }
 
+// `base`, else the first of base2, base3, ... that isTaken turns down.
+function freeKey(base, isTaken) {
+  let key = base;
+  let n = 1;
+  while (isTaken(key)) {
+    n++;
+    key = base + n;
+  }
+  return key;
+}
+
 // A unit key the fallbacks could not free; the input must pin one.
 function keyClash(id, key, unit) {
   return new Error(
@@ -261,13 +266,9 @@ function addRaceParts(input, reader, table, { key, unit, stem }) {
   const parts = raceParts(input, reader.read(unit), reader.read);
   for (const part of parts) {
     if (reader.read(part) && !table.has(part)) {
-      const partKey = key + raceSuffix(input, stem, part);
-      let free = partKey;
-      let n = 1;
-      while (table.taken(free, part)) {
-        n++;
-        free = partKey + n;
-      }
+      const free = freeKey(key + raceSuffix(input, stem, part), (candidate) =>
+        table.taken(candidate, part)
+      );
       table.addPart(free, part);
     }
   }
@@ -423,13 +424,10 @@ function buildAddonTable(id, source, baseUnits) {
       entry.spec,
       reader.chain
     )) {
-      const partKey = addonPartKey(entry, partPath, role);
-      let key = partKey;
-      let n = 2;
-      while (units[key]) {
-        key = partKey + n;
-        n++;
-      }
+      const key = freeKey(
+        addonPartKey(entry, partPath, role),
+        (candidate) => units[candidate]
+      );
       units[key] = partPath;
     }
   }

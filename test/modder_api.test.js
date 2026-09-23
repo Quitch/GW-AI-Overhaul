@@ -56,7 +56,7 @@ function source(relativePath) {
 // assigning over it.
 const GLOBALS = [
   ["gwoCards", MOD_ROOT + "/shared/deal.js"],
-  ["gwoCardsToUnits", MOD_ROOT + "/gw_play/card_tooltips.js"],
+  ["gwoCardsToUnits", MOD_ROOT + "/gw_play/card_units.js"],
   ["gwoCardsWithoutTooltip", MOD_ROOT + "/gw_play/card_tooltips.js"],
   ["gwoCardsGrantingAdvancedTech", MOD_ROOT + "/gw_play/cards.js"],
   ["gwoNewStartCards", MOD_ROOT + "/shared/loadouts.js"],

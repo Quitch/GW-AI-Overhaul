@@ -11,11 +11,7 @@ define([
   var multiply = function (units, multiplier, paths) {
     return _.flatten(
       _.map(_.isArray(paths) ? paths : [paths], function (path) {
-        return _.flatten(
-          _.map(units, function (unit) {
-            return gwoCard.mods(unit, "multiply", [path], multiplier);
-          })
-        );
+        return gwoCard.flatMapMods(units, "multiply", [path], multiplier);
       })
     );
   };

@@ -13,8 +13,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const prettier = require("prettier");
-const { ZipReader } = require("./lib/zip-read.js");
-const { mediaDir, userDataDir } = require("./lib/pa-install.js");
+const { mediaDir } = require("./lib/pa-install.js");
+const { byCodePoint, folderRoot, modRoots } = require("./lib/mod-roots.js");
 const { TABLES } = require("./lib/race-table-inputs.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -23,45 +23,13 @@ const OUT =
   path.join(REPO_ROOT, "test", "fixtures", "race_specs.json");
 
 const MEDIA = mediaDir();
-const USER_DATA = userDataDir();
 
-function folderRoot(mod, dir) {
-  return {
-    mod,
-    has: (rel) => fs.existsSync(path.join(dir, rel)),
-    read: (rel) => fs.readFileSync(path.join(dir, rel), "utf8"),
-  };
-}
-
-function zipRoot(mod, file) {
-  const zip = new ZipReader(file);
-  return {
-    mod,
-    has: (rel) => zip.has("pa/" + rel),
-    read: (rel) => zip.read("pa/" + rel).toString("utf8"),
-  };
-}
-
-// A mod's roots, a folder build ahead of its zip.
-function modRoots(mod) {
-  const roots = [];
-  for (const dir of [mod + "-dev", mod]) {
-    const folder = path.join(USER_DATA, "server_mods", dir, "pa");
-    if (fs.existsSync(folder)) {
-      roots.push(folderRoot(mod, folder));
-    }
-  }
-  const zip = path.join(USER_DATA, "download", mod + ".zip");
-  if (fs.existsSync(zip)) {
-    roots.push(zipRoot(mod, zip));
-  }
-  return roots;
-}
-
+// Searched first to last, so a mod's roots run against mount order: a
+// folder build ahead of its zip. The base game's carry no `mod`.
 function tableRoots(table) {
   let roots = [];
   for (const mod of table.mods) {
-    const found = modRoots(mod);
+    const found = modRoots([mod]).reverse();
     if (!found.length) {
       throw new Error(mod + " is on disk neither as a zip nor as a folder");
     }
@@ -69,8 +37,8 @@ function tableRoots(table) {
   }
   if (table.baseGame) {
     roots.push(
-      folderRoot(null, path.join(MEDIA, "pa_ex1")),
-      folderRoot(null, path.join(MEDIA, "pa"))
+      folderRoot(path.join(MEDIA, "pa_ex1")),
+      folderRoot(path.join(MEDIA, "pa"))
     );
   }
   return roots;
@@ -138,13 +106,6 @@ function trim(spec) {
   return { out, reached };
 }
 
-function byCodePoint(a, b) {
-  if (a < b) {
-    return -1;
-  }
-  return a > b ? 1 : 0;
-}
-
 function harvestTable(table) {
   const roots = tableRoots(table);
   const own = roots.filter((root) => root.mod === table.mods[0]);
@@ -153,7 +114,7 @@ function harvestTable(table) {
     throw new Error(table.mods[0] + " ships no unit_list.json");
   }
   // Only the listed units a mod ships are read, so only those are kept.
-  const modRootsOnly = roots.filter((root) => root.mod !== null);
+  const modRootsOnly = roots.filter((root) => root.mod !== undefined);
   const unitList = list.spec.units.filter((unit) => lookup(modRootsOnly, unit));
   const queue = unitList.concat(
     Object.values(table.units || {}),
