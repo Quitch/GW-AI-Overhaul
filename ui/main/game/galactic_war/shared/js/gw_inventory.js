@@ -163,7 +163,15 @@ define([
           ["cards/" + cardId],
           function (card) {
             curCard = cardId;
-            card[op](self, cardParams);
+            // GWO - a card that throws still finishes, or done and the unlock
+            // resume never run. The loader does not catch a throw here.
+            try {
+              card[op](self, cardParams);
+            } catch (e) {
+              console.error(
+                "GWO card " + cardId + " threw in " + op + ": " + e
+              );
+            }
             finishCard();
           },
           function (error) {
@@ -179,11 +187,18 @@ define([
         resetCardCount();
         finishPhase = finishApplyCards;
         _.forEach(cards, _.bind(applyCardOp, self, "dull"));
+        // GWO - with no cards, no finishCard call ends the phase
+        if (!cards.length) {
+          finishPhase();
+        }
       };
       var applyBuffs = function () {
         resetCardCount();
         finishPhase = applyDulls;
         _.forEach(cards, _.bind(applyCardOp, self, "buff"));
+        if (!cards.length) {
+          finishPhase();
+        }
       };
 
       self.units([]);

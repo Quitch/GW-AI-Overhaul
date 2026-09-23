@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- A tech card from another mod that fails while it is applied no longer stops co-op star cards from being dealt, or stops loadouts being unlocked, for the rest of the session; the failure is logged
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed
