@@ -451,8 +451,6 @@ define(function () {
       });
     },
 
-    // { path: value } for every path, for mods() and flatMapMods().
-
     // mods() over every file, flattened: one file's entries before the next's.
     flatMapMods: function (files, op, props, value) {
       return _.flatten(

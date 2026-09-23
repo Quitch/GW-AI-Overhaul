@@ -1,8 +1,8 @@
 "use strict";
 
-// The roots the local-only scripts read `pa/` files through: a folder, a mod's
-// store zip, or a race mod's every copy on disk. Each root serves paths
-// relative to its `pa/` folder. See testing.md.
+// The roots the two harvests and validate-race-trees.js read `pa/` files
+// through: a folder, a mod's store zip, or a server mod's every copy on disk.
+// Each root serves paths relative to its `pa/` folder. See testing.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -63,7 +63,7 @@ function modRoots(identifiers) {
   return roots;
 }
 
-// Code-point order, what an argument-less sort gives strings: committed output
+// Code-unit order, what an argument-less sort gives strings: committed output
 // must not churn with the machine's locale.
 function byCodePoint(a, b) {
   if (a < b) {

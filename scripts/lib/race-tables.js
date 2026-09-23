@@ -238,7 +238,7 @@ function raceUnitKey(input, reader, unit, stem) {
     : key;
 }
 
-// `base`, else the first of base2, base3, ... that isTaken turns down.
+// `base`, else the first of base2, base3, ... for which isTaken is false.
 function freeKey(base, isTaken) {
   let key = base;
   let n = 1;

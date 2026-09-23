@@ -175,8 +175,9 @@ The local-only scripts find the PA install through `scripts/lib/pa-install.js`.
 The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
 data folder, which holds `download/` and `server_mods/`, is `PA_USER_DATA`,
 else `Uber Entertainment/Planetary Annihilation` under `%LOCALAPPDATA%`.
-They read files through `scripts/lib/mod-roots.js`. A server mod mounts as its
-`download/` zip, then any `server_mods/` build, which shadows the zip.
+The two harvests and `validate:race-trees` read `pa/` files through
+`scripts/lib/mod-roots.js`. A server mod mounts as its `download/` zip, then any
+`server_mods/` build, which shadows the zip.
 
 `npm run minify:json -- <dir>` is the one data script that is not a check. It
 rewrites every `.json` under `<dir>` onto one line, which is how `pa/**` is
