@@ -206,6 +206,13 @@
         } catch (e) {
           logError(e);
         }
+      },
+      // Go To War stays blocked: gwoRaceInfo is never set.
+      function (err) {
+        console.error(
+          "Galactic War Overhaul (GWO): race modules not loaded: " +
+            (err.requireModules || err.message || err)
+        );
       }
     );
   } catch (e) {
