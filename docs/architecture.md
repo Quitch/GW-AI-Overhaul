@@ -72,6 +72,12 @@ Base-game modules use bare relative ids instead (`"shared/gw_common"`,
 does not ship is a base-game module. The test harness reports such an id
 distinctly. See [`testing.md`](testing.md).
 
+A module in `shared/` never requires a module from a scene folder (`gw_start/`,
+`gw_play/` and the other `scenes` keys). Several scenes load `shared/`, so such a
+require pulls one scene's code into the others. A module that a scene and
+`shared/` both need lives in `shared/`. `test/shared_layering.test.js` enforces
+this.
+
 Every mod gets **one shared JS scope per scene**. Stock UI code and mod scripts
 share a namespace. That is why several GWO values are deliberately globals.
 Other mods hook them, and that is a supported contract, not an accident. The

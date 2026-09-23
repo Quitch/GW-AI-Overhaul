@@ -220,7 +220,7 @@ base-game modules all the same:
 | ------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `gw_per_player_tech_referee.js` (shadow)    | `gw_play/per_player_tech.js`                                                        |
 | `gw_faction_*.js` (shadows)                 | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js` |
-| `gw_play/referee_game_files.js` (GWO's own) | `gw_play/referee_game_file_paths.js`                                                |
+| `gw_play/referee_game_files.js` (GWO's own) | `shared/referee_game_file_paths.js`                                                 |
 | `gw_play/referee_config.js` (GWO's own)     | `gw_play/referee_config_setup.js`                                                   |
 | `gw_play/cards_start_subcdr.js` (GWO's own) | `gw_play/general_commander_setup.js`                                                |
 

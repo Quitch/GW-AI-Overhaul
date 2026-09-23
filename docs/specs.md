@@ -255,7 +255,7 @@ the referee, which then fetches nothing twice.
 The per-player tech referee generates each viewer's specs through the same cache
 too. A co-op launch therefore fetches a spec file once, however many players hold
 it. The stock `GW.specs.genUnitSpecs` that it replaced re-fetched all of them per
-viewer. `gw_play/referee_game_file_paths.js` does the same for AI unit maps with
+viewer. `shared/referee_game_file_paths.js` does the same for AI unit maps with
 `loadMap`, which both referees share. `loadMap` drops a failed read from its
 cache and rejects with an `Error` naming the file, so the next Fight reads the
 file again instead of inheriting the rejection.

@@ -39,7 +39,7 @@ const gwoDeckMods = loadCouiModule(
   "coui://" + MOD_ROOT + "/shared/deck_mods.js"
 );
 const helpers = loadCouiModule(
-  "coui://" + MOD_ROOT + "/gw_play/cards_deal_helpers.js"
+  "coui://" + MOD_ROOT + "/shared/cards_deal_helpers.js"
 );
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();

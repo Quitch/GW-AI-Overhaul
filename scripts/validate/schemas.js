@@ -319,7 +319,7 @@ function checkAiJsonFiles() {
 
 function checkDifficultyLevels() {
   const where =
-    "ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js";
+    "ui/mods/com.pa.quitch.gwaioverhaul/shared/difficulty_levels.js";
   const data = loadCouiModule("coui://" + where);
 
   if (!Array.isArray(data.difficulties) || data.difficulties.length === 0) {

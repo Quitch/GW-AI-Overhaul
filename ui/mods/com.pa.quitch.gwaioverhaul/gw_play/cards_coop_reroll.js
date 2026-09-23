@@ -2,7 +2,7 @@
 // reroll its pending offer; the host deals a smaller hand, stores it, and returns
 // it (gwo_reroll_pending_tech_result) for the viewer to apply. See coop.md.
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
 ], function (dealHelpers, coopHost) {
   // A reroll spends one more of the viewer's offered cards.

@@ -15,7 +15,7 @@ const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const cardUnits = loadCouiModule(MOD_ROOT + "/gw_play/card_units.js");
-const helpers = loadCouiModule(MOD_ROOT + "/gw_play/cards_deal_helpers.js");
+const helpers = loadCouiModule(MOD_ROOT + "/shared/cards_deal_helpers.js");
 const unitNames = loadCouiModule(MOD_ROOT + "/gw_play/unit_names.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
