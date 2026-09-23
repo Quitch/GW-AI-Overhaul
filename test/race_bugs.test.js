@@ -60,8 +60,9 @@ describe("the Bugs descriptor", () => {
       assert.match(key, /^[a-z][A-Za-z0-9]*$/, key);
       assert.match(value, /^\/pa\/(units|ammo|tools)\/.*\.json$/, key);
     }
-    for (const key of Object.keys(bugs.unitNames)) {
+    for (const [key, name] of Object.entries(bugs.unitNames)) {
       assert.ok(key in bugs.units, key + " is named but not in units");
+      assert.match(name, /^!LOC:/, key);
     }
     assert.ok(Object.keys(bugs.units).length >= 240);
     assert.equal(bugs.unitNames.crusher, "!LOC:Crusher");

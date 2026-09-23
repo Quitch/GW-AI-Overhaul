@@ -71,11 +71,12 @@ describe("the Exiles descriptor", () => {
       assert.match(key, /^[a-z][A-Za-z0-9]*$/, key);
       assert.match(value, /^\/pa\/(units|ammo|tools)\/.*\.json$/, key);
     }
-    for (const key of Object.keys(exiles.unitNames)) {
+    for (const [key, name] of Object.entries(exiles.unitNames)) {
       assert.ok(key in exiles.units, key + " is named but not in units");
+      assert.match(name, /^!LOC:/, key);
     }
     assert.ok(Object.keys(exiles.units).length >= 280);
-    assert.equal(exiles.unitNames.maximCommander, "Maxim Commander");
+    assert.equal(exiles.unitNames.maximCommander, "!LOC:Maxim Commander");
   });
 });
 
