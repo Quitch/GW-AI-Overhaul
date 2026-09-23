@@ -49,25 +49,41 @@ cards. It stubs `shared/gw_common` and so loads every card. See
 
 ## Which shape to write a card in
 
-There are three shapes. The card's family decides which one to use:
+The card's family decides which shape to use:
 
-| Family                            | Shape                       |
-| --------------------------------- | --------------------------- |
-| Unit upgrades (`gwaio_upgrade_*`) | `gwoCard.upgradeCard({})`   |
-| Loadouts (`*_start_*`)            | `gwoCard.loadout(CARD, {})` |
-| Everything else                   | The object literal above    |
+| Family                                 | Shape                               |
+| -------------------------------------- | ----------------------------------- |
+| Unit upgrades (`gwaio_upgrade_*`)      | `gwoCard.upgradeCard({})`           |
+| Loadouts (`*_start_*`)                 | `gwoCard.loadout(CARD, {})`         |
+| Anti-tech ammo (`gwaio_anti_*`)        | `gwoCardFactories.antiTechCard({})` |
+| Factory cooldowns (`gwaio_cooldown_*`) | `gwoCardFactories.cooldownCard({})` |
+| Everything else                        | The object literal above            |
 
-The first two families each have a rigid frame that every member repeats. For an
+The first four families each have a rigid frame that every member repeats. For an
 upgrade, the frame is a slot and a `requires` gate. For a loadout, the frame is the
-`buffCount` bank dance. The factory carries the frame, and the card supplies only
-what differs. **Write a new card of either family through its factory**. A card that
-cannot fit the frame stays a literal, and several do (see the factory's options, and
-the notes at the end of this file).
+`buffCount` bank dance. An anti-tech card multiplies armour entries on every ammo
+spec and deals through `antiTechDeal`. A cooldown card halves
+`factory_cooldown_time` on a factory group and deals while one is held. The factory
+carries the frame, and the card supplies only what differs. **Write a new card of
+any of these families through its factory**. A card that cannot fit the frame stays
+a literal, and several do (see the factory's options, and the notes at the end of
+this file).
+
+`upgradeCard` and `loadout` are in `shared/cards.js`, so they are part of the
+published API. `antiTechCard` and `cooldownCard` are in `shared/card_factories.js`,
+which is not published. Both of them take `name`, `description`, and `icon`. They
+also take a `chance`, which is a weight or a function of
+`(inventory, system, context)`. The anti-tech default is 40, and the cooldown
+default is 70. An anti-tech card names its `counter` card and its `armour` map, for
+example `{ AT_Air: 2, AT_Orbital: 0.5 }`. A cooldown card names its `audio`, its
+`factories`, and optionally `requires`, which replaces `factories` as the ownership
+gate.
 
 Everything else is a literal because there is no shared frame to lift. The variety of
 those cards lives in their `deal` weighting. A factory for them would need an
-override for nearly every field. Apply that test to a fourth family if one appears:
-a factory is worth it when the members differ in _data_, not in _logic_.
+override for nearly every field. Apply that test to a new family if one appears:
+a factory is worth it when the members differ in _data_, not in _logic_. The titan
+cards fail it: `gwaio_combat_titans` chains three `flatMapMods` calls.
 
 ## `buff` and `dull`
 

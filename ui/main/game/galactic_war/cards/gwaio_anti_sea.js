@@ -1,35 +1,19 @@
 define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_factories.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoGroup) {
-  return {
-    visible: _.constant(true),
-    describe: function () {
-      return "!LOC:Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units.";
+], function (gwoCardFactories, gwoCard) {
+  return gwoCardFactories.antiTechCard({
+    name: "!LOC:Anti-Ship Ammo Tech",
+    description:
+      "!LOC:Anti-Ship Ammo Tech doubles all damage you deal to naval vessels but halves damage to hover units.",
+    icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png",
+    counter: "gwaio_anti_hover",
+    chance: function (inventory) {
+      return gwoCard.navalWeight(inventory, 40, 15);
     },
-    summarize: _.constant("!LOC:Anti-Ship Ammo Tech"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_naval.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.antiTechDeal(
-        inventory,
-        gwoCard.navalWeight(inventory, 40, 15),
-        "gwaio_anti_hover"
-      );
+    armour: {
+      AT_Hover: 0.5,
+      AT_Naval: 2,
     },
-    buff: function (inventory) {
-      inventory.addMods(
-        gwoCard.flatMapMods(gwoGroup.ammo, "multiplyOrCreate", {
-          "armor_damage_map.AT_Hover": 0.5,
-          "armor_damage_map.AT_Naval": 2,
-        })
-      );
-    },
-    dull: function () {},
-  };
+  });
 });
