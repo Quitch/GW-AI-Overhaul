@@ -605,7 +605,8 @@
         };
 
         // refresh reads these a tick later, too late to subscribe this, so they
-        // are read here. See coop.md, "Per-player pre-dealt cards".
+        // are read here. stats().turns() is left out on purpose. See coop.md,
+        // "Per-player pre-dealt cards", "What triggers a gap-filling refresh".
         ko.computed(function () {
           model.gwCampaignConnectedClients();
           model.gwCampaignPlayerSetupBlocked();

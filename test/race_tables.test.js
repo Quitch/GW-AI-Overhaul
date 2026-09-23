@@ -38,6 +38,14 @@ describe("the race table generator", () => {
       assert.equal(lf(content), lf(read(file)), file);
     }
   });
+
+  it("names every unit as a !LOC: key", () => {
+    for (const input of TABLES) {
+      for (const [key, name] of buildTable(input, fixture).unitNames) {
+        assert.match(name, /^!LOC:./, input.id + " " + key);
+      }
+    }
+  });
 });
 
 describe("the race spec harvester", () => {

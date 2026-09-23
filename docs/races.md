@@ -56,10 +56,11 @@ Everything above them in the file is hand-written.
 `scripts/generate-race-tables.js` (`npm run generate:race-tables`) builds
 the two tables from `test/fixtures/race_specs.json` and splices them in,
 formatted as Prettier formats the repo. `npm run harvest:race-specs` writes that fixture
-from the race and add-on mods on disk. `test/race_tables.test.js` calls
-`generateAll` from `scripts/lib/race-tables.js`, which the script wraps, in
-memory and requires every file to come out byte for byte as committed, so a
-hand edit to a table fails the suite.
+from the race and add-on mods on disk. `test/race_tables.test.js` runs the
+generator in memory, calling `generateAll` from `scripts/lib/race-tables.js`,
+the generator behind `scripts/generate-race-tables.js`. It requires every file
+to come out byte for byte as committed, so a hand edit to a table fails the
+suite.
 
 The rules are in `scripts/lib/race-tables.js`, and the mods each table reads
 are in `scripts/lib/race-table-inputs.js`:
