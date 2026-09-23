@@ -84,8 +84,11 @@ function lookup(roots, specPath) {
       let spec;
       try {
         spec = JSON.parse(root.read(rel));
-      } catch {
-        spec = {};
+      } catch (error) {
+        throw new Error(
+          (root.mod || "baseGame") + " " + specPath + ": " + error.message,
+          { cause: error }
+        );
       }
       return { mod: root.mod, spec };
     }
