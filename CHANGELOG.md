@@ -4,6 +4,7 @@
 
 ### Bugfix
 
+- When a war cannot be created, the setup screen now says why and what to do, and the seed goes back to the one entered; only a galaxy too small for every enemy faction is retried with a new seed
 - Go To War waits for the installed races to load, so a quick click no longer starts a war with only MLA enemies and the player's race reset to MLA
 - A Legion, Bugs, or Exiles player's first tech deal can no longer offer cards for units their race does not have
 - A war saved before v5.52.2 now repairs every enemy Cluster faction's Sub Commanders when it loads, not only the first

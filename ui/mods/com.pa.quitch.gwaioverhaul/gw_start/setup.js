@@ -61,6 +61,11 @@
     var sharedSystemsForGalacticWarActive = false;
     var defaultNewGameName = model.newGameName();
     var warGenerationFailed;
+    // Set only when an enemy faction found no home system, the one failure a
+    // new seed can fix.
+    var spawnShortage;
+    // Shown above Go To War once generation gives up.
+    model.gwoWarGenerationError = ko.observable("");
 
     // War generation reads model.gwoRaceInfo, which race_picker.js fills
     // once the installed races resolve, so an earlier Go To War would
@@ -292,17 +297,26 @@
     var warGenerationAttempts = 0;
     // The seed the player actually asked for, captured on the first attempt of a run.
     var warGenerationBaseSeed;
+    // gw_start/war_generation_failure.js, set once the modules below load. Only
+    // navToNewGame, which is defined there too, can fail.
+    var generationFailure;
 
-    var warGenerationFailure = function () {
+    var warGenerationFailure = function (cause) {
       model.makeGameBusy(false);
       enableGoToWar(true);
-      if (warGenerationAttempts < 5) {
+      if (generationFailure.shouldRetry(cause, warGenerationAttempts)) {
         // Derived, not re-rolled, so an entered seed reproduces the whole retry chain.
         model.newGameSeed(warGenerationBaseSeed + "-" + warGenerationAttempts);
         model.navToNewGame();
       } else {
         warGenerationAttempts = 0;
-        console.error("Failed to generate valid war");
+        // Put back, so the next click starts from the seed the player asked
+        // for rather than from the last retry's.
+        model.newGameSeed(warGenerationBaseSeed);
+        model.gwoWarGenerationError(
+          generationFailure.message(cause, warGenerationBaseSeed)
+        );
+        console.error("Failed to generate valid war: " + (cause || "error"));
       }
     };
 
@@ -369,6 +383,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/war_generation_failure.js",
       ],
       function (
         GW,
@@ -394,8 +409,10 @@
         gwoRaces,
         gwoPromise,
         gwoBrainTable,
-        gwoPersonality
+        gwoPersonality,
+        gwoGenerationFailure
       ) {
+        generationFailure = gwoGenerationFailure;
         // Replaces GWGalaxy.prototype.build, which navToNewGame below calls.
         gwoGalaxyBuild.install();
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
@@ -595,8 +612,8 @@
           return ai;
         };
 
-        // Never rejects - every failure resolves undefined. Rejecting would spend
-        // warGenerationFailure's retries on a condition no reseed can change.
+        // Never rejects - every failure resolves undefined. Rejecting would fail
+        // the war over brackets it can do without.
         var loadSystemBrackets = function () {
           var ready = $.Deferred();
 
@@ -686,6 +703,8 @@
 
           enableGoToWar(false);
           warGenerationFailed = false;
+          spawnShortage = false;
+          model.gwoWarGenerationError("");
           warGenerationAttempts++;
           if (warGenerationAttempts === 1) {
             warGenerationBaseSeed = model.newGameSeed();
@@ -1016,6 +1035,7 @@
                     ", terminating war generation"
                 );
                 warGenerationFailed = true;
+                spawnShortage = true;
                 return;
               }
 
@@ -1468,7 +1488,9 @@
 
           var onSetupFinished = function () {
             if (warGenerationFailed === true) {
-              warGenerationFailure();
+              warGenerationFailure(
+                spawnShortage ? generationFailure.SPAWN_SHORTAGE : undefined
+              );
               return;
             }
 
