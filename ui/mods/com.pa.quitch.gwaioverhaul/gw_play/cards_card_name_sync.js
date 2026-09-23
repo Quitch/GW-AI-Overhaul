@@ -110,7 +110,7 @@ define(function () {
               "[GW COOP] card summarize() threw for id=" +
                 payload.card_id +
                 ": " +
-                e
+                ((e && e.stack) || e)
             );
             result.reject("Card summarize threw for " + payload.card_id);
             return;

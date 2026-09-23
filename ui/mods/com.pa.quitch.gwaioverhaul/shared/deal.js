@@ -102,7 +102,10 @@ define([
           card.releaseContext && card.releaseContext(context);
         } catch (e) {
           console.error(
-            "GWO card threw while being dealt: " + params.id + ": " + e
+            "GWO card threw while being dealt: " +
+              params.id +
+              ": " +
+              ((e && e.stack) || e)
           );
           result.reject(e);
           return;

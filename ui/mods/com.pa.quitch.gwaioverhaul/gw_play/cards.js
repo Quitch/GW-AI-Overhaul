@@ -368,7 +368,10 @@
                   );
               } catch (e) {
                 console.error(
-                  "Tech card deal() threw, skipping " + card.id + ": " + e
+                  "Tech card deal() threw, skipping " +
+                    card.id +
+                    ": " +
+                    ((e && e.stack) || e)
                 );
                 return undefined;
               }
@@ -431,7 +434,7 @@
                     "Tech card getContext() threw, skipping " +
                       card.id +
                       ": " +
-                      e
+                      ((e && e.stack) || e)
                   );
                 }
               }

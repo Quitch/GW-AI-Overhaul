@@ -51,7 +51,9 @@ define(function () {
       try {
         config = JSON.parse(bankJson);
       } catch (e) {
-        console.warn("Ignoring unreadable loadout unlock record: " + e);
+        console.warn(
+          "Ignoring unreadable loadout unlock record: " + ((e && e.stack) || e)
+        );
       }
 
       self.startCards(

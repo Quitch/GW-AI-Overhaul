@@ -237,7 +237,7 @@ define([
           "applyAiMods: op threw, skipping mod " +
             JSON.stringify(mod) +
             ": " +
-            e
+            ((e && e.stack) || e)
         );
       }
     });

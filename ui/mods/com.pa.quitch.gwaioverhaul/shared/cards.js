@@ -198,7 +198,7 @@ define(function () {
           "Ignoring unreadable victory record for loadout " +
             loadoutId +
             ": " +
-            e
+            ((e && e.stack) || e)
         );
       }
 

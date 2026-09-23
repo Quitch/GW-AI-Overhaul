@@ -504,7 +504,10 @@
               card.releaseContext && card.releaseContext(context);
             } catch (e) {
               console.error(
-                "Start card threw while being dealt: " + params.id + ": " + e
+                "Start card threw while being dealt: " +
+                  params.id +
+                  ": " +
+                  ((e && e.stack) || e)
               );
               warGenerationFailed = true;
               result.reject("start card threw: " + params.id);
@@ -616,7 +619,10 @@
                   loading.push(option.load());
                 } catch (e) {
                   console.error(
-                    "System source failed to load: " + name + ": " + e
+                    "System source failed to load: " +
+                      name +
+                      ": " +
+                      ((e && e.stack) || e)
                   );
                 }
               }

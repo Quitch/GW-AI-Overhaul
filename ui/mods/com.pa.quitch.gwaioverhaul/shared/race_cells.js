@@ -163,7 +163,12 @@ define([
   // gw_play/races.js.
   var prime = function (raceId, units) {
     return indexFor(raceId, units).then(null, function (error) {
-      console.error("gwoRaces: cells not built for " + raceId + ": " + error);
+      console.error(
+        "gwoRaces: cells not built for " +
+          raceId +
+          ": " +
+          gameFilePaths.describeError(error)
+      );
     });
   };
 

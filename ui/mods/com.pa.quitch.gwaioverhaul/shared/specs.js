@@ -421,7 +421,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             "specs.mod: applyMod threw, skipping mod " +
               JSON.stringify(mod) +
               ": " +
-              e
+              ((e && e.stack) || e)
           );
         }
       });
