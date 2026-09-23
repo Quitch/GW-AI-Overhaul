@@ -505,7 +505,7 @@
   },
   "Armies:": {
     "message": "Armies:",
-    "description": "Row label in the \"Co-Op Settings\" table of the war-info panel on the galaxy map (gw_play); the value beside it says who controls the armies (Shared/Separate). Noun, plural; keep the trailing colon. Siblings: \"Tech:\", \"Player Slots:\", \"Scaling For:\". (gwo_panel.html:90)"
+    "description": "Row label in the \"Co-Op Settings\" table of the war-info panel on the galaxy map (gw_play); the value beside it says who controls the armies (Shared/Separate). Noun, plural; keep the trailing colon. Siblings: \"Tech:\", \"Player Slots:\", \"Scaling For:\". (gwo_panel.html:87)"
   },
   "Armor": {
     "message": "Armor",
@@ -897,7 +897,7 @@
   },
   "Co-Op Settings": {
     "message": "Co-Op Settings",
-    "description": "Sub-heading in the war-info panel on the galaxy map (gw_play), visible only in a co-op war, over the table of co-op rows (Scaling For:, Armies:, Tech:, Player Slots:). Noun phrase, plural, title case, no punctuation. (gwo_panel.html:70)"
+    "description": "Sub-heading in the war-info panel on the galaxy map (gw_play), visible only in a co-op war, over the table of co-op rows (Scaling For:, Armies:, Tech:, Player Slots:). Noun phrase, plural, title case, no punctuation. (gwo_panel.html:67)"
   },
   "Co-op host setup": {
     "message": "Co-op host setup",
@@ -1617,7 +1617,7 @@
   },
   "Incompatible Mods": {
     "message": "Incompatible Mods",
-    "description": "Sub-heading in the war-info panel on the galaxy map (gw_play), shown only when the player has client mods enabled that conflict with GWO; the list of those mods follows. Noun phrase, plural, title case, no punctuation; \"Mods\" = the modifications (things), not an action. (gwo_panel.html:117)"
+    "description": "Sub-heading in the war-info panel on the galaxy map (gw_play), shown only when the player has client mods enabled that conflict with GWO; the list of those mods follows. Noun phrase, plural, title case, no punctuation; \"Mods\" = the modifications (things), not an action. (gwo_panel.html:114)"
   },
   "Increases the speed of all Titans by 20%.": {
     "message": "Increases the speed of all Titans by 20%.",
@@ -1901,11 +1901,11 @@
   },
   "Missing Map Packs": {
     "message": "Missing Map Packs",
-    "description": "Section heading on the Galactic War Overhaul panel on the galaxy map, shown only when the war needs map pack (biome) mods that are not installed or enabled; the offending mods are listed beneath it. Noun phrase, plural, title case. (gwo_panel.html:147)"
+    "description": "Section heading on the Galactic War Overhaul panel on the galaxy map, shown only when the war needs map pack (biome) mods that are not installed or enabled; the offending mods are listed beneath it. Noun phrase, plural, title case. (gwo_panel.html:141)"
   },
   "Missing Races": {
     "message": "Missing Races",
-    "description": "Section heading on the Galactic War Overhaul panel on the galaxy map, shown only when the war uses race mods that are not installed or enabled; the races are listed beneath it. \"Races\" are the playable unit sets (MLA, Legion, Bugs, Exiles). Noun phrase, plural, title case. (gwo_panel.html:132)"
+    "description": "Section heading on the Galactic War Overhaul panel on the galaxy map, shown only when the war uses race mods that are not installed or enabled; the races are listed beneath it. \"Races\" are the playable unit sets (MLA, Legion, Bugs, Exiles). Noun phrase, plural, title case. (gwo_panel.html:126)"
   },
   "Mod:": {
     "message": "Mod:",
@@ -2285,7 +2285,7 @@
   },
   "Personality:": {
     "message": "Personality:",
-    "description": "Label, a noun with a trailing colon, used in two places: inside the body text of the 'Sub Commander' card (Data Bank, card tooltip and tech deal), and as a table-row label in the Sub Commander detail panel on the galaxy map. It is followed by a space and the AI personality name of that Sub Commander (e.g. 'Personality: Aggressive'). 'Personality' means the AI's behaviour profile. Keep the colon (or your locale's equivalent) and no trailing space; on the card it sits directly under the sibling label 'Name:', so match its style. (gwc_minion.js:41; gwo_panel.html:186)"
+    "description": "Label, a noun with a trailing colon, used in two places: inside the body text of the 'Sub Commander' card (Data Bank, card tooltip and tech deal), and as a table-row label in the Sub Commander detail panel on the galaxy map. It is followed by a space and the AI personality name of that Sub Commander (e.g. 'Personality: Aggressive'). 'Personality' means the AI's behaviour profile. Keep the colon (or your locale's equivalent) and no trailing space; on the card it sits directly under the sibling label 'Name:', so match its style. (gwc_minion.js:41; gwo_panel.html:180)"
   },
   "Phoenix Upgrade Tech": {
     "message": "Phoenix Upgrade Tech",
@@ -2353,7 +2353,7 @@
   },
   "Player Slots:": {
     "message": "Player Slots:",
-    "description": "Row label on the Galactic War Overhaul info panel shown on the galaxy map (a value follows on the same row). In the Co-Op Settings section; followed by \"Locked\" or \"Unlocked\" (whether more players may join). Noun, plural; keep the trailing colon. (gwo_panel.html:98)"
+    "description": "Row label on the Galactic War Overhaul info panel shown on the galaxy map (a value follows on the same row). In the Co-Op Settings section; followed by \"Locked\" or \"Unlocked\" (whether more players may join). Noun, plural; keep the trailing colon. (gwo_panel.html:95)"
   },
   "Players": {
     "message": "Players",
@@ -2577,7 +2577,7 @@
   },
   "Scaling For:": {
     "message": "Scaling For:",
-    "description": "Row label on the Galactic War Overhaul info panel shown on the galaxy map (a value follows on the same row). In the Co-Op Settings section; followed by a player count and word, e.g. \"Scaling For: 2 Players\" (how many players the enemy strength is scaled for). Keep the trailing colon. (gwo_panel.html:76)"
+    "description": "Row label on the Galactic War Overhaul info panel shown on the galaxy map (a value follows on the same row). In the Co-Op Settings section; followed by a player count and word, e.g. \"Scaling For: 2 Players\" (how many players the enemy strength is scaled for). Keep the trailing colon. (gwo_panel.html:73)"
   },
   "Scattered references point to the Progenitors using their most advanced technologies for some final conflict. Little more is known of the Legion, only that they were defeated.": {
     "message": "Scattered references point to the Progenitors using their most advanced technologies for some final conflict. Little more is known of the Legion, only that they were defeated.",
@@ -2909,7 +2909,7 @@
   },
   "Tech:": {
     "message": "Tech:",
-    "description": "Row label on the Galactic War Overhaul info panel shown on the galaxy map (a value follows on the same row). In the Co-Op Settings section; followed by \"Shared\" or \"Separate\" (whether players share tech cards). Noun, short for technology; keep the trailing colon. (gwo_panel.html:94)"
+    "description": "Row label on the Galactic War Overhaul info panel shown on the galaxy map (a value follows on the same row). In the Co-Op Settings section; followed by \"Shared\" or \"Separate\" (whether players share tech cards). Noun, short for technology; keep the trailing colon. (gwo_panel.html:91)"
   },
   "Technologist": {
     "message": "Technologist",
