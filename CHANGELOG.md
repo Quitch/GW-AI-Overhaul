@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- A Legion, Bugs, or Exiles player's first tech deal can no longer offer cards for units their race does not have
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed

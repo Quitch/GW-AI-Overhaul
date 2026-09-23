@@ -71,11 +71,10 @@
         model.gwoTechCardTooltip = ko.observableArray([]);
 
         // global for modder compatibility - New-GW-Cards pushes here
-        var cards = gwoCardsToUnits.cards;
         model.gwoCardsToUnits = _.isArray(model.gwoCardsToUnits)
           ? model.gwoCardsToUnits
           : [];
-        Array.prototype.push.apply(model.gwoCardsToUnits, cards);
+        gwoCardsToUnits.mergeInto(model.gwoCardsToUnits);
         // global for modder compatibility - New-GW-Cards pushes here
         model.gwoCardsWithoutTooltip = _.isArray(model.gwoCardsWithoutTooltip)
           ? model.gwoCardsWithoutTooltip
