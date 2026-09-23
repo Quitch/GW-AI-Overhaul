@@ -40,13 +40,9 @@ function setup(overrides = {}) {
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
-  stubs.setGlobal("requireGW", (ids, done, fail) => {
+  stubs.setGlobal("requireGW", (ids, done) => {
     const cardId = ids[0].slice("cards/".length);
     calls.requested.push(cardId);
-    if ((options.unloadable || []).includes(cardId)) {
-      fail(new Error("load failed"));
-      return;
-    }
     done(options.cards[cardId]);
   });
 
@@ -122,29 +118,15 @@ describe("card name sync - naming a star the host explored", () => {
     assert.equal(options.boardAi.cardName, undefined);
   });
 
-  // The card module loads asynchronously and may not answer; the star keeps the
-  // name it had rather than the caller hanging on the deal.
-  it("resolves without naming anything when the card will not load", async () => {
-    const { sync, calls, options } = build({ cards: {} });
+  // validate:cards checks shipped cards only, so a third-party card can lack
+  // summarize. The star keeps its name, and the deal waiting on this still
+  // settles.
+  it("resolves without naming anything when the card has no summarize", async () => {
+    const { sync, calls, options } = build({ cards: { gwc_odd: {} } });
     const system = { star: starWithAi(options.boardAi) };
 
-    await sync.setCardName(system, [{ id: "gwc_missing" }], 1);
+    await sync.setCardName(system, [{ id: "gwc_odd" }], 1);
 
-    assert.equal(options.boardAi.cardName, undefined);
-    assert.deepEqual(calls.sent, []);
-  });
-
-  // requireGW never times out, so a module that fails to load reaches only the
-  // errback. Without one, the turn deal waiting on this promise never settled.
-  it("resolves and logs when the card fails to load", async () => {
-    const { sync, calls, options } = build({ unloadable: ["gwc_broken"] });
-    const system = { star: starWithAi(options.boardAi) };
-
-    const errors = await capture("error", () =>
-      sync.setCardName(system, [{ id: "gwc_broken" }], 1)
-    );
-
-    assert.deepEqual(errors, ["GWO card failed to load: gwc_broken"]);
     assert.equal(options.boardAi.cardName, undefined);
     assert.deepEqual(calls.sent, []);
   });

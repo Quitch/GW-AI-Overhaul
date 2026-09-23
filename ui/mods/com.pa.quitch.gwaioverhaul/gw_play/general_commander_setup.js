@@ -16,21 +16,11 @@ define(function () {
     return needsSetup(record && record.inventory && record.inventory.cards);
   };
 
-  // A viewer asks the host once for its Sub Commanders. The request can only go
-  // once the viewer is connected and per-player tech has synced, which can land
-  // after gw_play loads, so the caller runs send() again whenever those or the
-  // record change. Once the host has answered, nothing is sent again, so a
-  // refusal cannot become an endless resend.
-  //
-  // The host sends no answer when the request is lost: a host with no handler
-  // for it only logs, and a dropped connection takes it with it. So a request
-  // unanswered after retryMs is tried again, up to maxRetries times per
-  // connection, and one sent before the viewer stopped being ready is treated
-  // as lost.
+  // See coop.md, "General Commander setup".
   var viewerRequest = function (params) {
     var pending = params.pending;
     var wait = params.wait || setTimeout;
-    var retryMs = params.retryMs || 15000;
+    var retryMs = 15000;
     var maxRetries = 3;
     var answered = false;
     var attempt = 0;

@@ -102,7 +102,6 @@ define([
       pending: model.gwoGeneralCommanderSetupPending,
       ready: function () {
         return (
-          model.isCampaignViewer() &&
           model.gwCampaignActive() &&
           model.gwCampaignPerPlayerTechCards() &&
           model.gwCampaignConnected()
