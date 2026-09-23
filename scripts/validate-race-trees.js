@@ -8,23 +8,15 @@ const fs = require("node:fs");
 const path = require("node:path");
 const util = require("node:util");
 const { ZipReader } = require("./lib/zip-read.js");
-const { loadCouiModule } = require("./lib/amd-loader.js");
+const { mediaDir, userDataDir } = require("./lib/pa-install.js");
+const { MOD_ROOT, loadCouiModule } = require("./lib/amd-loader.js");
 const { buildGame, installModel } = require("./lib/ai-path-fixtures.js");
 const { installRefereeFakes, runRefereeAi } = require("./lib/referee-fakes.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
-const MEDIA =
-  process.env.PA_MEDIA ||
-  "C:/Program Files (x86)/Steam/steamapps/common/Planetary Annihilation Titans/media";
-const USER_DATA =
-  process.env.PA_USER_DATA ||
-  path.join(
-    process.env.LOCALAPPDATA || "",
-    "Uber Entertainment",
-    "Planetary Annihilation"
-  );
+const MEDIA = mediaDir();
+const USER_DATA = userDataDir();
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 // Node has no GW Server Mods to activate add-ons, so every registered one
 // counts here, as descriptorLayers() counts them.

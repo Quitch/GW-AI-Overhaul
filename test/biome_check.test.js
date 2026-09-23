@@ -6,9 +6,8 @@
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const biomeCheck = loadCouiModule(MOD_ROOT + "/shared/biome_check.js");
 
 const ALIEN_ID = "com.pa.alienworlds.server";

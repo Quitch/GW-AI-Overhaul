@@ -4,14 +4,9 @@
 // would be offered at and what it grants. Contrast cards-contract.js, which only
 // shape-checks what define() returns. See testing.md.
 
-const path = require("node:path");
-const { loadCouiModule, registerModuleStub } = require("./amd-loader.js");
+const { registerModuleStub } = require("./amd-loader.js");
 const { createAutoStub } = require("./auto-stub.js");
-const {
-  CARDS_DIR,
-  classifyLoadFailure,
-  listCardFiles,
-} = require("./card-files.js");
+const { CARDS_DIR, listCardFiles, loadCard } = require("./card-files.js");
 const {
   createCapturingInventory,
   recordInto,
@@ -22,11 +17,12 @@ const {
 } = require("./fake-knockout.js");
 
 // A real nine-size array, not createAutoStub(): see testing.md, "Test fixtures".
-// Same table as cards.test.js.
+const NUMBER_OF_SYSTEMS = [18, 24, 36, 54, 78, 108, 144, 186, 234];
+
 const GW_COMMON_STUB = {
   balance: {
     initialCardSlots: 4,
-    numberOfSystems: [18, 24, 36, 54, 78, 108, 144, 186, 234],
+    numberOfSystems: NUMBER_OF_SYSTEMS,
   },
 };
 
@@ -64,13 +60,12 @@ function loadAllCards() {
   const byFile = new Map();
 
   for (const file of listCardFiles()) {
-    try {
-      byFile.set(file, loadCouiModule(path.join(CARDS_DIR, file)));
-    } catch (e) {
-      if (classifyLoadFailure(e)) {
-        continue;
-      }
-      throw e;
+    const loaded = loadCard(file);
+    if (loaded.error) {
+      throw loaded.error;
+    }
+    if (!loaded.skip) {
+      byFile.set(file, loaded.card);
     }
   }
 
@@ -198,6 +193,7 @@ module.exports = {
   CARDS_DIR,
   GW_COMMON_STUB,
   MAX_DISTANCE,
+  NUMBER_OF_SYSTEMS,
   TOTAL_SIZES,
   cardIdFromFile,
   grantedUnits,

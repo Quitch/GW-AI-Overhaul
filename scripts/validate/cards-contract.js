@@ -6,13 +6,7 @@
 // keep/discard are on no card today, but gw_inventory.js still calls them when
 // present, so one may reintroduce them.
 
-const path = require("node:path");
-const { loadCouiModule } = require("../lib/amd-loader.js");
-const {
-  CARDS_DIR,
-  classifyLoadFailure,
-  listCardFiles,
-} = require("../lib/card-files.js");
+const { listCardFiles, loadCard } = require("../lib/card-files.js");
 const { reportFailures } = require("../lib/report-failures.js");
 
 const REQUIRED_FIELDS = [
@@ -70,18 +64,6 @@ function checkShape(file, card) {
   return problems;
 }
 
-// Discriminates on the reason: a bare catch also swallows syntax errors and
-// genuine breakage, reporting them as excluded with the run still green. A skip
-// stays distinct from a failure because the summary counts it separately.
-function loadCard(file) {
-  try {
-    return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
-  } catch (e) {
-    const skip = classifyLoadFailure(e);
-    return skip ? { skip } : { error: "failed to load: " + e.message };
-  }
-}
-
 function main() {
   const files = listCardFiles();
 
@@ -96,7 +78,10 @@ function main() {
       continue;
     }
     if (loaded.error) {
-      failures.push({ file, problems: [loaded.error] });
+      failures.push({
+        file,
+        problems: ["failed to load: " + loaded.error.message],
+      });
       continue;
     }
 

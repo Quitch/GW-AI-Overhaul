@@ -6,6 +6,7 @@ const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { NUMBER_OF_SYSTEMS } = require("../scripts/lib/card-probe.js");
 
 const cards = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
@@ -298,7 +299,7 @@ describe("travelledShort", () => {
 describe("farForSize", () => {
   // A distinct-per-tier thresholds array, so these test the tier lookup itself
   // rather than the shipped values, which are free to be retuned.
-  const numberOfSystems = [18, 24, 36, 54, 78, 108, 144, 186, 234];
+  const numberOfSystems = NUMBER_OF_SYSTEMS;
   const thresholds = [10, 20, 30, 40, 50, 60, 70, 80, 90];
 
   function systemAt(dist) {
@@ -350,7 +351,7 @@ describe("travelled* distance wrappers", () => {
   // The wrappers keep their tables private, so the short <= moderate <= far
   // ordering is verified behaviourally: a stricter tier can only fire once the
   // looser ones already have.
-  const numberOfSystems = [18, 24, 36, 54, 78, 108, 144, 186, 234];
+  const numberOfSystems = NUMBER_OF_SYSTEMS;
 
   function systemAt(dist) {
     return { distance: () => dist };
