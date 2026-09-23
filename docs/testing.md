@@ -50,8 +50,8 @@ depend on `shared/gw_common`. Some sweeps would test nothing if they skipped
 those cards. For those sweeps, `registerModuleStub` is an opt-in escape hatch.
 It does **not** weaken the default.
 
-`scripts/lib/card-probe.js` takes that hatch. With `shared/gw_common` stubbed,
-every card loads. That sits oddly beside
+`scripts/lib/card-probe.js` takes that hatch, and so does `validate:ai-mods`.
+With `shared/gw_common` stubbed, every card loads. That sits oddly beside
 `validate:cards`'s `MIN_CHECKED` floor until you notice that they answer
 different questions. The validator refuses the hatch on purpose. Its number is
 therefore what can be checked with no stand-in at all.
@@ -83,6 +83,12 @@ Several are worth understanding rather than just running.
 **`validate:ai-mods` works by execution, not inspection.** AI-mod descriptors have
 no static JSON form. The only way to check their shape is to call every card's
 `buff()`/`dull()` against a mock inventory.
+
+A loadout adds its AI mods only as the war's start card, the first card in the
+hand on its first buff. Anywhere else its `buff()` only banks it. The validator
+therefore runs a loadout down that path, with both banks stubbed to accept and
+keep nothing. `MIN_CARDS_CHECKED` fails the run when fewer cards add AI mods
+than do today, and an excluded card is listed by name.
 
 `scripts/lib/auto-stub.js` provides that mock. It is a Proxy that answers any
 property access or call with another instance of itself. The check therefore
