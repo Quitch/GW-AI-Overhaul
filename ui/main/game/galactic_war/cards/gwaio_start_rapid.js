@@ -164,7 +164,7 @@ define([
           value: "WL_LandHorizontal",
         },
         {
-          file: "/pa/units/orbital/base_orbital/base_orbital.json",
+          file: gwoUnit.baseOrbital,
           path: "spawn_layers",
           op: "replace",
           value: "WL_Orbital",
