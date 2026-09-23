@@ -34,6 +34,7 @@ function makeObservable(initial, hooks) {
       },
     };
   };
+  observable.peek = () => value;
   observable.extend = () => observable;
   observable.valueHasMutated = () => {
     if (opts.onMutate) {
