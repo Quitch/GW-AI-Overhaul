@@ -178,7 +178,7 @@ define(function () {
       var settle = function (deferred) {
         return deferred.then(null, function (error) {
           failed = true;
-          console.error("GWO cheats.testCards deal failed:", error);
+          console.error("GWO cheats.testCards deal failed: " + error);
           return $.Deferred().resolve().promise();
         });
       };
