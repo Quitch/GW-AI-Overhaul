@@ -209,7 +209,7 @@ define([
       });
     },
     // GWO - nothing uses this but we keep it for compatibility with other mods that might use it
-    // or in case the game itself uses it in the future. No idea why id() is a function here.
+    // or in case the game itself uses it in the future. test is a CardViewModel, whose id is a computed.
     hasCardLike: function (test) {
       var ok = test && test.id;
       if (!ok) {
