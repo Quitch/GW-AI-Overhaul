@@ -68,8 +68,10 @@ define([
       return done.promise();
     }
 
-    // A throw here would escape into GW Server Mods' manifest load unlogged.
+    // A throw here, the consumers' included, would reach GW Server Mods'
+    // manifest load and surface only as a reason-less unhandled rejection.
     $.when(mfst.load()).always(function () {
+      var settle;
       try {
         var known = !_.isFunction(mfst.listed) || !!mfst.listed();
         var active = mfst.activeServerMods();
@@ -96,20 +98,36 @@ define([
           );
         };
 
-        done.resolve({
+        var result = {
           races: detected,
           mods: modsOf(detected),
           addons: detectedAddons,
           addonMods: modsOf(detectedAddons),
           known: known,
           gwsm: true,
-        });
+        };
+        settle = function () {
+          done.resolve(result);
+        };
       } catch (e) {
         console.error(
           "gwoRaceMods: installed races not read: " +
             (e.stack || e.message || e)
         );
-        done.reject(e);
+        settle = function () {
+          done.reject(e);
+        };
+      }
+      // A try of its own: jQuery 2 runs .then and .fail callbacks inside
+      // resolve() and reject(), so a consumer's throw lands here, and is not
+      // a failed read.
+      try {
+        settle();
+      } catch (e) {
+        console.error(
+          "gwoRaceMods: a consumer of installed races threw: " +
+            (e.stack || e.message || e)
+        );
       }
     });
 

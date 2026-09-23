@@ -2,9 +2,8 @@
 // race. Only shown when GW Server Mods has a race's server mod active. The
 // AI brains are per race, in ai_picker.js's modal. See races.md.
 (function () {
-  // A throw in the async callbacks below would otherwise escape into
-  // RequireJS or GW Server Mods' manifest load unlogged, and Go To War would
-  // stay blocked with nothing to say why.
+  // A throw in the requireGW callback below would otherwise escape into
+  // RequireJS with no GWO prefix, and Go To War would stay blocked.
   var logError = function (e) {
     console.error(
       "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
@@ -206,6 +205,15 @@
         } catch (e) {
           logError(e);
         }
+      },
+      // Go To War stays blocked: gwoRaceInfo is never filled.
+      function (err) {
+        logError(
+          "race modules not loaded: " +
+            err.requireModules +
+            ": " +
+            (err.stack || err.message || err)
+        );
       }
     );
   } catch (e) {

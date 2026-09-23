@@ -135,6 +135,15 @@
             });
           });
         });
+      },
+      // No picker is shown, and under Separate races gwoViewerRace stays MLA.
+      function (err) {
+        console.error(
+          "Galactic War Overhaul (GWO): race modules not loaded: " +
+            err.requireModules +
+            ": " +
+            (err.stack || err.message || err)
+        );
       }
     );
   } catch (e) {
