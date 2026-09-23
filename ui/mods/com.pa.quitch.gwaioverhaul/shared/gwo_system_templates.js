@@ -339,6 +339,14 @@ define([
           var extendedPlanet = _.cloneDeep(planet);
           _.assign(extendedPlanet, _.cloneDeep(plnt));
           plnt.fromRandomList = sourceList;
+          // GWO - titans-easy gives Position/Velocity, which the isExplicit return
+          // below would pass on unread; the server accepts only the lowercase keys
+          if (_.isUndefined(extendedPlanet.position)) {
+            extendedPlanet.position = extendedPlanet.Position;
+          }
+          if (_.isUndefined(extendedPlanet.velocity)) {
+            extendedPlanet.velocity = extendedPlanet.Velocity;
+          }
 
           plnt = extendedPlanet;
         }

@@ -6,6 +6,7 @@
 
 - A tech card, loadout, or loadout bank from another mod that fails to load no longer stops Explore, Go To War, or joining a co-op war; the failure is logged and only that card or bank is missing
 - A tech card from another mod that fails while it is applied no longer stops co-op star cards from being dealt, or stops loadouts being unlocked, for the rest of the session; the failure is logged
+- With Easy Systems, a battle on some systems no longer hangs on the landing screen and returns every player to the menu
 
 ## v7.4.0 - 2026-09-22
 
