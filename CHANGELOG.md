@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- A tech card tooltip now lists its units in alphabetical order, rather than the units the player does not own first
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed

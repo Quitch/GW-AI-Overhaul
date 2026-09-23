@@ -163,9 +163,9 @@
             }
           });
 
-          return _.map(names, function (name) {
+          return _.map(names.sort(), function (name) {
             return ownedByName[name] ? name : highlightUnitName(name);
-          }).sort();
+          });
         };
 
         var makeCardTooltip = function (card, hoverIndex) {
