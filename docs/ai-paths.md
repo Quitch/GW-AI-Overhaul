@@ -6,8 +6,9 @@ page explains how GWO chooses that directory for each AI in each battle.
 Two modules do the work:
 
 - **`ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js`**: this
-  module is pure string arithmetic. It has no engine globals, no `model`, and no
-  dependencies. The tests drive this module directly.
+  module is pure string arithmetic. It has no engine globals and no `model`. Its
+  one dependency is `shared/races.js`, for a race's tree root. The tests drive
+  this module directly.
 - **`ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js`**: this module is the
   engine-coupled wrapper. It reads `model.game()` to decide what to pass to the
   pure module.

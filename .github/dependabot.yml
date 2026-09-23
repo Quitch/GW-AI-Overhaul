@@ -15,9 +15,8 @@ updates:
       # harness (scripts/lib/amd-loader.js) - never shipped to players, so
       # upstream lodash CVEs don't apply here. See dismissed alerts for detail.
       - dependency-name: "lodash"
-      # eslint, @eslint/js and eslint-plugin-es-x are held on 9.x: eslint-plugin-lodash
-      # calls context.getSourceCode, which ESLint 10 removed, and es-x 10.x requires
-      # ESLint >= 10.6. A major bump of any of the three breaks lint.
+      # eslint, @eslint/js and eslint-plugin-es-x are held on 9.x. Why:
+      # docs/constraints.md.
       - dependency-name: "eslint"
         update-types: ["version-update:semver-major"]
       - dependency-name: "@eslint/js"

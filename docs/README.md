@@ -110,7 +110,7 @@ clean release.
 
 `validate:docs` (part of `validate`) checks the inventories these docs carry by
 hand against the tree. Those inventories are the scene table, the shadowed-file
-and `pa/` tables, and the validator table. So adding a file without its row
+and `pa/` tables, the AI-path tree table, and the validator table. So adding a file without its row
 fails `verify`.
 
 Nothing here starts PA. Anything that can only fail at runtime needs the game

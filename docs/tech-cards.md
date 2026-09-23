@@ -26,11 +26,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 | Field                                                              | Required?                                                                                                                                                                      |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` | Always functions, on every card.                                                                                                                                               |
-| `audio`, `getContext`                                              | On every card except one legacy exception.                                                                                                                                     |
+| `audio`, `getContext`                                              | On every tech card except one legacy exception. Loadout cards have neither: `gwoCard.loadout()` returns only `buff` and `dull`, and only `gwc_start_subcdr` adds `getContext`. |
 | `keep`, `discard`                                                  | Optional. No card carries either today.                                                                                                                                        |
 | `hint`                                                             | Optional, loadout cards only: the icon and text of the locked-loadout hover, read by stock `gw_start.js` and `gw_coop_per_player_loadout.js`. `gwoCard.lockedHint` builds one. |
 
-The `audio`/`getContext` exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
+The tech-card exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
 save-compatibility with GWO v5.9.0 and earlier. The card is deliberately invisible
 and undiscardable. It exists only so that old saves that reference it still load.
 
@@ -353,6 +353,8 @@ silently discards everything the mod registered.
 | `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
 | `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |
+| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`       |
+| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`      |
 
 The public API goes beyond the globals. The helper names that `shared/cards.js`
 returns are equally published. So are the **key** names in `shared/units.js` and
