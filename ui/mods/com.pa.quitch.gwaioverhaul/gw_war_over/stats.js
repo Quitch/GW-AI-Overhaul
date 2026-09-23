@@ -47,8 +47,8 @@
           }
         );
 
-        // Custom carries no difficulty rating, so it ranks against nothing -
-        // recording it yields an index of -2, which no badge matches.
+        // Custom carries no difficulty rating, so it ranks against nothing and
+        // records no badge.
         if (tierIndex === -1) {
           return;
         }

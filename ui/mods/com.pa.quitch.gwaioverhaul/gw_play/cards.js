@@ -549,7 +549,8 @@
               }
             });
 
-            // $.when() doesn't wait for setCardName() to return
+            // Not $.when(deferredQueue): it takes an array as one value and
+            // resolves at once. It would need $.when.apply.
             Promise.all(deferredQueue)
               .then(function () {
                 // The one caller that replaces cards viewers already hold, so
