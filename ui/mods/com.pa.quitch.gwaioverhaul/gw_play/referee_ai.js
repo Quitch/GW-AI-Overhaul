@@ -807,7 +807,7 @@ define([
     var game = model.game();
     var ai = gwoAI.currentStarAi(game);
     var guardians = ai.mirrorMode;
-    var connectedClients = refereeCoop.getConnectedViewers();
+    var connectedClients = refereeCoop.getConnectedClients();
     var playerAiModInventory = guardians
       ? getInventoryWithAllPlayerAiMods(
           game.inventory(),

@@ -321,18 +321,14 @@
         _.forEach(loadouts.allCards, function (card) {
           // A third-party loadout whose module fails to load or returns nothing
           // still has to count towards the tally, or `loaded` never resolves
-          // and Go To War spins with no reseed. The guard stops a second errback counting it twice.
-          var counted = false;
-          var count = function () {
-            if (counted) {
-              return;
-            }
-            counted = true;
+          // and Go To War spins with no reseed.
+          // No timeout (waitSeconds: 0), and an errback can fire twice.
+          var count = _.once(function () {
             --loadCount;
             if (loadCount === 0) {
               loaded.resolve();
             }
-          };
+          });
 
           requireGW(
             ["cards/" + card.id],

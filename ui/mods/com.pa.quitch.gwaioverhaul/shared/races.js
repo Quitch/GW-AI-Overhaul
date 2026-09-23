@@ -597,10 +597,6 @@ define([
     };
   };
 
-  var inAnyRaceLayer = function (filePath) {
-    return raceLayerTest()(filePath);
-  };
-
   // The race's unit map files for a brain, its add-ons' included, absolute.
   // None for MLA: an MLA army's unit_maps/ is the live listing, where an
   // add-on's map already sits untagged, so nothing is merged for it.
@@ -758,7 +754,6 @@ define([
     commanderFor: commanderFor,
     treeFilter: treeFilter,
     raceLayerFilter: raceLayerFilter,
-    inAnyRaceLayer: inAnyRaceLayer,
     raceLayerTest: raceLayerTest,
     unitMapsFor: unitMapsFor,
     assign: assign,

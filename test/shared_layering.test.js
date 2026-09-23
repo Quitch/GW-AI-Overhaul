@@ -8,16 +8,20 @@ const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { REPO_ROOT } = require("../scripts/lib/amd-loader.js");
+const {
+  MOD_ROOT,
+  REPO_ROOT,
+  couiToFsPath,
+} = require("../scripts/lib/amd-loader.js");
 
-const MOD_ROOT = "ui/mods/com.pa.quitch.gwaioverhaul";
-const SHARED_DIR = path.join(REPO_ROOT, MOD_ROOT, "shared");
+const MOD_DIR = couiToFsPath(MOD_ROOT);
+const SHARED_DIR = path.join(MOD_DIR, "shared");
 
 const modinfo = JSON.parse(
   fs.readFileSync(path.join(REPO_ROOT, "modinfo.json"), "utf8")
 );
 const sceneFolders = Object.keys(modinfo.scenes).filter((scene) =>
-  fs.existsSync(path.join(REPO_ROOT, MOD_ROOT, scene))
+  fs.existsSync(path.join(MOD_DIR, scene))
 );
 
 const sharedModules = fs
@@ -25,8 +29,7 @@ const sharedModules = fs
   .filter((file) => file.endsWith(".js"));
 
 const sceneModuleUrl = new RegExp(
-  "coui://" +
-    MOD_ROOT.replaceAll(".", "\\.") +
+  MOD_ROOT.replaceAll(".", "\\.") +
     "/(" +
     sceneFolders.join("|") +
     ")/[^\"']+\\.js",

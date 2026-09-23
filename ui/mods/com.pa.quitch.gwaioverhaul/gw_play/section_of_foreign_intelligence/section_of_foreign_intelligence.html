@@ -66,13 +66,14 @@
   <ul data-bind="foreach: $root.gwoAis">
     <h3>
       <span data-bind="text: faction"></span>
-      <!-- ko if: cluster && tooltip -->
-      <span class="info_tip" data-placement="right" data-bind="tooltip: tooltip"
+      <!-- ko if: tooltip -->
+      <!-- attr comes before tooltip: Bootstrap reads data-placement once, when
+      the tooltip binding initialises. -->
+      <span
+        class="info_tip"
+        data-bind="attr: { 'data-placement': cluster ? 'right' : undefined }, tooltip: tooltip"
         >?</span
       >
-      <!-- /ko -->
-      <!-- ko if: !cluster && tooltip -->
-      <span class="info_tip" data-bind="tooltip: tooltip">?</span>
       <!-- /ko -->
     </h3>
     <li class="commander">

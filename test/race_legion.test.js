@@ -10,6 +10,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { userDataDir } = require("../scripts/lib/pa-install.js");
 
 const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
@@ -44,13 +45,7 @@ function legionIndex() {
 function legionZip() {
   const candidates = [
     process.env.GWO_LEGION_ZIP,
-    path.join(
-      process.env.LOCALAPPDATA || "",
-      "Uber Entertainment",
-      "Planetary Annihilation",
-      "download",
-      "com.pa.legion-expansion-server.zip"
-    ),
+    path.join(userDataDir(), "download", "com.pa.legion-expansion-server.zip"),
   ];
   return candidates.find((candidate) => candidate && fs.existsSync(candidate));
 }

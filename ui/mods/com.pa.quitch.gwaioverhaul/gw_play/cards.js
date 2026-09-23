@@ -340,11 +340,7 @@
         requireGW(
           ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js"],
           function (cardUnits) {
-            // global for modder compatibility - New-GW-Cards pushes here
-            model.gwoCardsToUnits = _.isArray(model.gwoCardsToUnits)
-              ? model.gwoCardsToUnits
-              : [];
-            cardUnits.mergeInto(model.gwoCardsToUnits);
+            cardUnits.mergeInto();
             cardUnitsLoaded.resolve();
           },
           function () {

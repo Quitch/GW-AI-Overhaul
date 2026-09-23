@@ -169,12 +169,14 @@ being dropped from every tree.
 CI has none of those files, so the unit tests pin the same contract on mocked
 listings (`test/races.test.js`, `test/referee_ai_file_processing.test.js`). Run
 it after a PA, race or add-on patch. Also run it after you change
-`races.treeFilter`, `races.inAnyRaceLayer` or `referee_ai.js`'s tree writing.
+`races.treeFilter`, `races.raceLayerTest` or `referee_ai.js`'s tree writing.
 
 The local-only scripts find the PA install through `scripts/lib/pa-install.js`.
 The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
 data folder, which holds `download/` and `server_mods/`, is `PA_USER_DATA`,
 else `Uber Entertainment/Planetary Annihilation` under `%LOCALAPPDATA%`.
+They read files through `scripts/lib/mod-roots.js`. A server mod mounts as its
+`download/` zip, then any `server_mods/` build, which shadows the zip.
 
 `npm run minify:json -- <dir>` is the one data script that is not a check. It
 rewrites every `.json` under `<dir>` onto one line, which is how `pa/**` is

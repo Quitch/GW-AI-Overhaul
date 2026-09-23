@@ -4,18 +4,16 @@
 // files on disk. Local-only: CI has neither the PA install nor the mods. What
 // each pass checks: testing.md, "The validators".
 
-const fs = require("node:fs");
 const path = require("node:path");
 const util = require("node:util");
-const { ZipReader } = require("./lib/zip-read.js");
 const { mediaDir, userDataDir } = require("./lib/pa-install.js");
+const { byCodePoint, folderRoot, modRoots } = require("./lib/mod-roots.js");
 const { MOD_ROOT, loadCouiModule } = require("./lib/amd-loader.js");
 const { buildGame, installModel } = require("./lib/ai-path-fixtures.js");
 const { installRefereeFakes, runRefereeAi } = require("./lib/referee-fakes.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const MEDIA = mediaDir();
-const USER_DATA = userDataDir();
 
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 // Node has no GW Server Mods to activate add-ons, so every registered one
@@ -26,66 +24,6 @@ const refereeAi = loadCouiModule(MOD_ROOT + "/gw_play/referee_ai.js");
 const MLA = races.MLA_ID;
 const GUARDIANS_ROOT = "/pa/ai/player_guardians/";
 
-// A root serves the "ai/..." relative paths it holds. Folder roots walk the
-// tree; zip roots read the archive's index.
-function folderRoot(dir) {
-  return {
-    name: dir,
-    list: () => {
-      const aiDir = path.join(dir, "ai");
-      if (!fs.existsSync(aiDir)) {
-        return [];
-      }
-      const results = [];
-      const visit = (current) => {
-        for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
-          const fullPath = path.join(current, entry.name);
-          if (entry.isDirectory()) {
-            visit(fullPath);
-          } else {
-            results.push(path.relative(dir, fullPath).replaceAll("\\", "/"));
-          }
-        }
-      };
-      visit(aiDir);
-      return results;
-    },
-    read: (rel) => fs.readFileSync(path.join(dir, rel), "utf8"),
-  };
-}
-
-function zipRoot(file) {
-  const zip = new ZipReader(file);
-  return {
-    name: file,
-    list: () =>
-      zip
-        .names()
-        .filter((name) => name.startsWith("pa/ai/"))
-        .map((name) => name.slice("pa/".length)),
-    read: (rel) => zip.read("pa/" + rel).toString("utf8"),
-  };
-}
-
-// A descriptor's server mods as the runtime mounts them: the store zip
-// under download/, then any local build under server_mods/ shadowing it.
-function modRoots(identifiers) {
-  const roots = [];
-  for (const id of identifiers) {
-    const zip = path.join(USER_DATA, "download", id + ".zip");
-    if (fs.existsSync(zip)) {
-      roots.push(zipRoot(zip));
-    }
-    for (const dir of [id, id + "-dev"]) {
-      const folder = path.join(USER_DATA, "server_mods", dir, "pa");
-      if (fs.existsSync(folder)) {
-        roots.push(folderRoot(folder));
-      }
-    }
-  }
-  return roots;
-}
-
 function baseRoots() {
   return [
     folderRoot(path.join(MEDIA, "pa")),
@@ -94,21 +32,12 @@ function baseRoots() {
   ];
 }
 
-// Code-point order, what an argument-less sort gives strings: the report must
-// not depend on the machine's locale.
-function byCodePoint(a, b) {
-  if (a < b) {
-    return -1;
-  }
-  return a > b ? 1 : 0;
-}
-
 // The mount-order merge: every "ai/..." path any root holds, read from the
 // last root holding it.
 function mergeRoots(roots) {
   const byRel = new Map();
   for (const root of roots) {
-    for (const rel of root.list()) {
+    for (const rel of root.list("ai")) {
       byRel.set(rel, root);
     }
   }
@@ -347,7 +276,7 @@ async function main() {
     .addons()
     .filter((addon) => modRoots(addon.serverMods).length);
   if (!candidates.length) {
-    console.error("No race server mods found under " + USER_DATA);
+    console.error("No race server mods found under " + userDataDir());
     process.exitCode = 1;
     return;
   }

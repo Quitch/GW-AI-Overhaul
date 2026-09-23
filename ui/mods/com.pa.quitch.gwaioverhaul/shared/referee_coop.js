@@ -2,7 +2,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   gwoCard
 ) {
   // One implementation, shared with shared/cards.js, so the two cannot drift.
-  var getConnectedViewers = gwoCard.getConnectedClients;
+  var getConnectedClients = gwoCard.getConnectedClients;
 
   // An unauthenticated viewer can have an empty client id, so a client is keyed
   // by id and name together.
@@ -27,7 +27,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 
   // Returns {client, inventory} pairs for connected viewer-role clients.
   var getConnectedViewerInventories = function (game, connectedClients) {
-    var clients = connectedClients || getConnectedViewers();
+    var clients = connectedClients || getConnectedClients();
 
     return _.reduce(
       viewersOf(clients),
@@ -110,7 +110,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     viewersOf: viewersOf,
     recordForClient: recordForClient,
     clientKey: clientKey,
-    getConnectedViewers: getConnectedViewers,
+    getConnectedClients: getConnectedClients,
     getConnectedViewerInventories: getConnectedViewerInventories,
     getOrderedSubcommanders: getOrderedSubcommanders,
     alliedColourIndex: alliedColourIndex,

@@ -4,18 +4,24 @@
 // model.gwoCardsToUnits, which card mods also push to. The list itself is
 // checked against the deck in card_deal_unit_gate.test.js.
 
-const { describe, it } = require("node:test");
+const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 
 const cardUnits = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js"
 );
 
-describe("mergeInto", () => {
-  it("adds every GWO entry to an empty list", () => {
-    const target = cardUnits.mergeInto([]);
+const { setGlobal, restoreGlobals } = createGlobalStubs();
+afterEach(restoreGlobals);
 
+describe("mergeInto", () => {
+  it("creates the list with every GWO entry when no card mod has", () => {
+    setGlobal("model", {});
+    const target = cardUnits.mergeInto();
+
+    assert.equal(target, global.model.gwoCardsToUnits);
     assert.deepEqual(
       target.map((entry) => entry.id),
       cardUnits.cards.map((entry) => entry.id)
@@ -24,10 +30,11 @@ describe("mergeInto", () => {
 
   // cards.js and card_tooltips.js each merge the list, in either order.
   it("adds nothing the second time", () => {
-    const target = cardUnits.mergeInto([]);
+    setGlobal("model", { gwoCardsToUnits: [] });
+    const target = cardUnits.mergeInto();
     const length = target.length;
 
-    cardUnits.mergeInto(target);
+    cardUnits.mergeInto();
 
     assert.equal(target.length, length);
   });
@@ -36,8 +43,9 @@ describe("mergeInto", () => {
     const modEntry = { id: "mym_card", units: ["/pa/units/mym/unit.json"] };
     const override = { id: cardUnits.cards[0].id, units: [] };
     const target = [modEntry, override];
+    setGlobal("model", { gwoCardsToUnits: target });
 
-    cardUnits.mergeInto(target);
+    assert.equal(cardUnits.mergeInto(), target);
 
     assert.equal(target[0], modEntry);
     assert.equal(target[1], override);

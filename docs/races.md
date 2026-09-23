@@ -237,7 +237,7 @@ distinct (source, destination):
   to a scoped destination (`/pa/ai/player_guardians/`, a viewer's Sub
   Commanders). That tree is the base layer plus MLA's own add-on layer, by the
   same rule. It drops every file a race's layer claims and MLA's does not
-  (`races.inAnyRaceLayer`), so an MLA army's `unit_maps/` never lists a
+  (`races.raceLayerTest`), so an MLA army's `unit_maps/` never lists a
   race's map. An add-on's MLA map, and a map both MLA and a race claim, ride
   along untagged, as the live `/pa/ai/` listing has them.
 
@@ -538,7 +538,7 @@ MLA a layer too. An inactive add-on's files are not on disk, and
 `unitMapsFor` names files the referee reads: before activation existed, a
 Legion player could not Fight while Second Wave was disabled, because the
 hire tried to read `second_wave_legion.json` and failed. That table is what
-`treeFilter`, `inAnyRaceLayer` and `unitMapsFor`
+`treeFilter`, `raceLayerTest` and `unitMapsFor`
 read. A race tree keeps its own layer and subtracts every other, MLA's
 included, so a Legion tree holds Second Wave's `factory_builds/legion/` files
 and none of its `mla/` ones, and its merged map carries the
