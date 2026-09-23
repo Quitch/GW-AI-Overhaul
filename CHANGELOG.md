@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- A war saved before v5.52.2 now repairs every enemy Cluster faction's Sub Commanders when it loads, not only the first
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed
