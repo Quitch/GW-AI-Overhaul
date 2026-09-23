@@ -93,8 +93,8 @@ plays still produces this evidence.
 `newGameName`, `newGameSizeIndex`, `newGameCoopPlayers`,
 `newGamePerPlayerTechCards`) and the fields of `model.gwoDifficultySettings`,
 then call `model.navToNewGame()`. GWO generates the galaxy on that call and
-retries a failed generation, so wait for the `gw_play` scene and not for a
-return value. The new war becomes the profile's `gw_active_game`. That
+retries a spawn shortage, so wait for the `gw_play` scene and not for a return
+value. A generation that gives up sets `model.gwoWarGenerationError()`. The new war becomes the profile's `gw_active_game`. That
 `localStorage` value is a JSON string: a bare number makes `gw_play` log
 `failed to load game` and exit.
 

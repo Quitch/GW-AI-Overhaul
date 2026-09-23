@@ -19,36 +19,82 @@ define(function () {
       .value();
   };
 
+  // modules are the bank modules in paths() order. A path with no module, or
+  // one whose module returns nothing, is dropped rather than throwing: one
+  // broken mod must not take out the loadout list.
+  //
+  // Both halves of the documented contract are required, not just the one read
+  // first: a bank that can answer hasStartCard but not record an addStartCard
+  // would otherwise pass here and throw at award time, after the player had
+  // already beaten the treasure planet. See tech-cards.md.
+  var resolveBanks = function (modules) {
+    var byPath = _.zipObject(paths(), modules || []);
+
+    resolved = _.filter(
+      _.map(entries(), function (entry) {
+        var bank = entry && byPath[entry.path];
+        if (
+          !bank ||
+          !_.isFunction(bank.hasStartCard) ||
+          !_.isFunction(bank.addStartCard)
+        ) {
+          return undefined;
+        }
+        return { prefix: entry.prefix, bank: bank };
+      })
+    );
+
+    return resolved;
+  };
+
   return {
     paths: paths,
 
-    // modules are what requireGW(paths()) handed back, in the same order. A path
-    // that failed to load arrives undefined and is dropped rather than throwing:
-    // one broken mod must not take out the loadout list.
-    //
-    // Both halves of the documented contract are required, not just the one read
-    // first: a bank that can answer hasStartCard but not record an addStartCard
-    // would otherwise pass here and throw at award time, after the player had
-    // already beaten the treasure planet. See tech-cards.md.
-    resolve: function (modules) {
-      var byPath = _.zipObject(paths(), modules || []);
+    // Each path is requested on its own, because one requireGW for all of them
+    // never calls back if any one fails, and every bank would be lost.
+    // requireGW never times out (waitSeconds: 0), so a failed load reaches only
+    // the errback, and the guard stops a second errback counting it twice.
+    load: function () {
+      var result = $.Deferred();
+      var bankPaths = paths();
+      var modules = [];
+      var remaining = bankPaths.length;
 
-      resolved = _.filter(
-        _.map(entries(), function (entry) {
-          var bank = entry && byPath[entry.path];
-          if (
-            !bank ||
-            !_.isFunction(bank.hasStartCard) ||
-            !_.isFunction(bank.addStartCard)
-          ) {
-            return undefined;
+      if (!remaining) {
+        result.resolve(resolveBanks([]));
+        return result.promise();
+      }
+
+      _.forEach(bankPaths, function (path, index) {
+        var counted = false;
+        var count = function (bank) {
+          if (counted) {
+            return;
           }
-          return { prefix: entry.prefix, bank: bank };
-        })
-      );
+          counted = true;
+          modules[index] = bank;
+          --remaining;
+          if (remaining === 0) {
+            result.resolve(resolveBanks(modules));
+          }
+        };
 
-      return resolved;
+        requireGW(
+          [path],
+          function (bank) {
+            count(bank);
+          },
+          function () {
+            console.error("Loadout bank failed to load: " + path);
+            count(undefined);
+          }
+        );
+      });
+
+      return result.promise();
     },
+
+    resolve: resolveBanks,
 
     banks: function () {
       return resolved;
@@ -62,7 +108,12 @@ define(function () {
         try {
           return entry.bank.hasStartCard(card);
         } catch (e) {
-          console.error("Loadout bank hasStartCard() threw:", entry.prefix, e);
+          console.error(
+            "Loadout bank hasStartCard() threw: " +
+              entry.prefix +
+              ": " +
+              ((e && e.stack) || e)
+          );
           return false;
         }
       });
@@ -91,7 +142,12 @@ define(function () {
           try {
             return entry.bank.startCards();
           } catch (e) {
-            console.error("Loadout bank startCards() threw:", entry.prefix, e);
+            console.error(
+              "Loadout bank startCards() threw: " +
+                entry.prefix +
+                ": " +
+                ((e && e.stack) || e)
+            );
             return [];
           }
         })

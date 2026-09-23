@@ -21,15 +21,8 @@ const {
   makeInertObservable,
 } = require("./fake-knockout.js");
 
-// A real array, not createAutoStub(): farForSize walks
-// `Math.min(numberOfSystems.length, thresholds.length) - 1`, and a stub makes that
-// NaN, so the tier loop never runs and every card scores at tier 0. The sweep would
-// still pass while testing almost nothing.
-//
-// The base game ships five sizes; these are the nine that shared/cards.js's own
-// distances tables are cut for, which is the five plus the four Bigger Galactic War
-// adds. Nine makes every tier reachable, and its thresholds are a superset of the
-// five-size ones. Same table as cards.test.js.
+// A real nine-size array, not createAutoStub(): see testing.md, "Test fixtures".
+// Same table as cards.test.js.
 const GW_COMMON_STUB = {
   balance: {
     initialCardSlots: 4,

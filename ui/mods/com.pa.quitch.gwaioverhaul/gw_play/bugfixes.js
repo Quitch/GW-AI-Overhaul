@@ -50,55 +50,6 @@
       }
     };
 
-    var fixClusterType = function (mod, security) {
-      // Worker needs two fixes but each fix is applied in a separate mod
-      if (mod.path === "buildable_types") {
-        mod.value = mod.value + " & Custom58";
-        return mod.file;
-      } else if (mod.file === security && mod.path === "unit_types") {
-        mod.value.push("UNITTYPE_Custom58");
-        return mod.file;
-      }
-      return null;
-    };
-
-    var fixClusterCommanderTypes = function (ai) {
-      // A war that records typeOfBuffs builds its spec mods at launch from the
-      // live Cluster mods, so only a baked inventory needs repairing.
-      if (!_.isArray(ai.inventory)) {
-        return;
-      }
-      var securityFix = false;
-      var workerFix = 0;
-      var security =
-        "/pa/units/land/bot_support_commander/bot_support_commander.json";
-      var worker = "/pa/units/air/support_platform/support_platform.json";
-
-      for (var mod of ai.inventory) {
-        var isSecurityCandidate = securityFix !== true && mod.file === security;
-        var isWorkerCandidate = workerFix < 2 && mod.file === worker;
-
-        if (!isSecurityCandidate && !isWorkerCandidate) {
-          continue;
-        }
-
-        var result = fixClusterType(mod, security);
-        switch (result) {
-          case security:
-            securityFix = true;
-            break;
-          case worker:
-            workerFix += 1;
-            break;
-        }
-
-        if (securityFix === true && workerFix >= 2) {
-          gwoSettings.clusterFixed = true;
-          break;
-        }
-      }
-    };
-
     var fixLuckyCommanderLocalStorageVariable = function (gwoBank) {
       var unlockedVanillaStartCards = ko
         .observableArray()
@@ -147,17 +98,15 @@
       }
     };
 
-    var applyFixes = function (gwoTreasure, gwoBank) {
+    var applyFixes = function (gwoTreasure, gwoBank, clusterRepair) {
       for (var star of galaxy.stars()) {
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
         }
+      }
 
-        // A neutral star's ai() is undefined.
-        var ai = star.ai();
-        if (!gwoSettings.clusterFixed && ai && ai.isCluster) {
-          fixClusterCommanderTypes(ai);
-        }
+      if (!gwoSettings.clusterFixed) {
+        clusterRepair.repairStars(galaxy.stars());
       }
 
       if (!gwoSettings.treasureLoadoutDerived) {
@@ -178,11 +127,12 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cluster_repair.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
       ],
-      function (gwoSave, gwoTreasure, gwoBank, gwoCard) {
+      function (gwoSave, gwoTreasure, gwoBank, clusterRepair, gwoCard) {
         checkIfPatchesNeeded(gwoCard);
-        applyFixes(gwoTreasure, gwoBank);
+        applyFixes(gwoTreasure, gwoBank, clusterRepair);
         gwoSave(game, true);
       }
     );

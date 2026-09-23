@@ -2,6 +2,15 @@
 // race. Only shown when GW Server Mods has a race's server mod active. The
 // AI brains are per race, in ai_picker.js's modal. See races.md.
 (function () {
+  // A throw in the async callbacks below would otherwise escape into
+  // RequireJS or GW Server Mods' manifest load unlogged, and Go To War would
+  // stay blocked with nothing to say why.
+  var logError = function (e) {
+    console.error(
+      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+    );
+  };
+
   try {
     var settings = model.gwoDifficultySettings;
     // The race the last war was started with, read before the bindings run:
@@ -100,89 +109,100 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
       ],
       function (raceMods, races, pickerOptions, gwoAI) {
-        raceMods.registerAll();
+        try {
+          raceMods.registerAll();
 
-        // A commander read before its zip is mounted caches a failure, and the
-        // name never recovers, so the list stays MLA's until the mount
-        // settles. See races.md.
-        var mounted = ko.observable(false);
+          // A commander read before its zip is mounted caches a failure, and the
+          // name never recovers, so the list stays MLA's until the mount
+          // settles. See races.md.
+          var mounted = ko.observable(false);
 
-        // The commander list follows the race; a race's list is its own, and
-        // so is the paint its preview art ships in.
-        ko.computed(function () {
-          var playerRace = settings.playerRace();
-          var shownRace = mounted() ? playerRace : races.MLA_ID;
-          var choices = pickerOptions.commanderChoices(
-            races.byId(shownRace),
-            model.commanders(),
-            races.MLA_ID
-          );
-          model.gwoCommanderChoices(choices);
-          model.gwoCommanderTintFilter(
-            pickerOptions.commanderTint(
-              model.playerColor()[0],
-              races.commanderArtHue(shownRace)
-            )
-          );
-          if (
-            choices.length &&
-            !_.includes(choices, model.selectedCommander.peek())
-          ) {
-            model.selectedCommander(choices[0]);
-          }
-        });
+          // The commander list follows the race; a race's list is its own, and
+          // so is the paint its preview art ships in.
+          ko.computed(function () {
+            var playerRace = settings.playerRace();
+            var shownRace = mounted() ? playerRace : races.MLA_ID;
+            var choices = pickerOptions.commanderChoices(
+              races.byId(shownRace),
+              model.commanders(),
+              races.MLA_ID
+            );
+            model.gwoCommanderChoices(choices);
+            model.gwoCommanderTintFilter(
+              pickerOptions.commanderTint(
+                model.playerColor()[0],
+                races.commanderArtHue(shownRace)
+              )
+            );
+            if (
+              choices.length &&
+              !_.includes(choices, model.selectedCommander.peek())
+            ) {
+              model.selectedCommander(choices[0]);
+            }
+          });
 
-        // Cluster fields Angels and Colonels, which only MLA has. See races.md.
-        ko.computed(function () {
-          var cluster = model.playerFactionIndex() === gwoAI.CLUSTER_FACTION;
-          model.gwoRaceSelectDisabled(cluster);
-          if (cluster) {
-            settings.playerRace(races.MLA_ID);
-          }
-          $(raceSelectId).prop("disabled", cluster).selectpicker("refresh");
-        });
+          // Cluster fields Angels and Colonels, which only MLA has. See races.md.
+          ko.computed(function () {
+            var cluster = model.playerFactionIndex() === gwoAI.CLUSTER_FACTION;
+            model.gwoRaceSelectDisabled(cluster);
+            if (cluster) {
+              settings.playerRace(races.MLA_ID);
+            }
+            $(raceSelectId).prop("disabled", cluster).selectpicker("refresh");
+          });
 
-        // One mount covers every race: the zips are the same set whichever
-        // race is picked.
-        settings.playerRace.subscribe(function () {
-          if (_.isFunction(model.gwoRebuildStartCards)) {
-            model.gwoRebuildStartCards();
-          }
-        });
+          // One mount covers every race: the zips are the same set whichever
+          // race is picked.
+          settings.playerRace.subscribe(function () {
+            if (_.isFunction(model.gwoRebuildStartCards)) {
+              model.gwoRebuildStartCards();
+            }
+          });
 
-        raceMods.installedRaces().then(function (info) {
-          var installed = _.pluck(info.races, "id");
+          raceMods.installedRaces().then(function (info) {
+            try {
+              var installed = _.pluck(info.races, "id");
 
-          model.gwoRaceInfo(info);
-          model.gwoRaceOptions(
-            _.map(info.races, function (race) {
-              return { id: race.id, name: loc(race.name) };
-            })
-          );
-          $(raceSelectId).html(pickerOptions.optionsHtml(info.races));
+              model.gwoRaceOptions(
+                _.map(info.races, function (race) {
+                  return { id: race.id, name: loc(race.name) };
+                })
+              );
+              $(raceSelectId).html(pickerOptions.optionsHtml(info.races));
 
-          // Cluster's lock has already been applied by the time this
-          // resolves, and it outranks the remembered race.
-          var wanted = model.gwoRaceSelectDisabled() ? races.MLA_ID : savedRace;
-          settings.playerRace(
-            _.includes(installed, wanted) ? wanted : races.MLA_ID
-          );
-          $(raceSelectId).selectpicker("val", settings.playerRace());
-          $(raceSelectId).selectpicker("refresh");
+              // Cluster's lock has already been applied by the time this
+              // resolves, and it outranks the remembered race.
+              var wanted = model.gwoRaceSelectDisabled()
+                ? races.MLA_ID
+                : savedRace;
+              settings.playerRace(
+                _.includes(installed, wanted) ? wanted : races.MLA_ID
+              );
+              $(raceSelectId).selectpicker("val", settings.playerRace());
+              $(raceSelectId).selectpicker("refresh");
 
-          // Zip mounts only, no content remount. Always, not done: a failed
-          // mount must not leave a race's player on MLA's commanders.
-          if (model.gwoRacesAvailable()) {
-            raceMods.mountRoot().always(function () {
-              mounted(true);
-            });
-          }
-        });
+              // Last, as it unblocks Go To War: a throw above leaves the war
+              // blocked rather than started on a half-applied race.
+              model.gwoRaceInfo(info);
+
+              // Zip mounts only, no content remount. Always, not done: a failed
+              // mount must not leave a race's player on MLA's commanders.
+              if (model.gwoRacesAvailable()) {
+                raceMods.mountRoot().always(function () {
+                  mounted(true);
+                });
+              }
+            } catch (e) {
+              logError(e);
+            }
+          });
+        } catch (e) {
+          logError(e);
+        }
       }
     );
   } catch (e) {
-    console.error(
-      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
-    );
+    logError(e);
   }
 })();

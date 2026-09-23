@@ -246,10 +246,20 @@ is therefore only reached for boss systems built from a `systemTemplate`.
 
 ### Retries
 
+Only a spawn shortage is retried: an enemy faction with no boss, because the breeder
+found no home system for it. A new seed lays the galaxy out again and can fix that.
+Nothing else is retried, because a new seed cannot fix it.
+`gw_start/war_generation_failure.js` makes that decision and writes the message.
+
 `warGenerationFailure` used to re-roll the seed at random, which discarded what the
 player typed. It now derives `<base>-<attempt>`, and `gwaio.seed` records whichever
 link succeeded. The string the panel shows is therefore the string to re-enter to get
 that war back on the first attempt.
+
+When generation gives up, the seed is put back to `<base>`, and a message appears
+above Go To War. For a spawn shortage it says to choose a larger galaxy or to turn
+on Faction Scaling. Anything else is a bug, so the message asks the player to report
+it with the seed and the PA log.
 
 ## System scaling
 
@@ -360,7 +370,7 @@ channels. `referee_config.js` then treats its biomes as unservable and switches 
 planets to `earth`. The mod is not a dependency of the war. Once its zip cannot be
 read, the planet falls to `earth` and nothing more happens. (Disabling alone does not
 do that. The stamp mounts the zip by path, so a disabled mod whose zip is still in
-`download/` keeps serving, verified 2026-09-04.)
+`download/` keeps serving.)
 
 A **GW Server Mods-served** mod goes through neither channel. GW Server Mods mounts
 every active server mod at `/server_mods/<id>/` before the local server spawns. It
@@ -391,15 +401,9 @@ resolution per system, just deferred. Only a biome that no enabled text-only mod
 provides falls to `earth`. Such a system is re-checked each launch, so installing the
 mod later is enough.
 
-Verified live (PA 124673, 2026-08-25): a "Rolling Hills 2v2 NS" battle on tetctree's
-`mountain` biome reached `live_game` in 18 seconds. The server log showed
-`Mounted zip file /download/uk.pa.tetctree.server.zip as /server_mods/uk.pa.tetctree.server/`,
-and the client reported the planet as `mountain`. With that zip removed, the same star
-logged the two warnings above, launched on `earth`, and loaded in the same time. A
-co-op viewer with no biome mod installed at all (`gwo_viewer`: GWO and no_gw_video
-only) joined that battle. It reported `arePlanetsReady` true and the planet as
-`mountain`, and could fetch `coui://pa/terrain/mountain.json`, the cooked copy from
-`gw_config`. `api.file.zip.catalog` returns `[{name, crc32, size}]`.
+A co-op viewer needs no biome mod installed to join such a battle. It reads the
+cooked copy from `gw_config`, at `coui://pa/terrain/<biome>.json`.
+`api.file.zip.catalog` returns `[{name, crc32, size}]`.
 
 The quantity is armies, not humans. Map makers use `players` to count humans, and
 humans share an army, so a declared `[2,10]` on two landing zones is two armies of
@@ -641,9 +645,10 @@ which is what keeps a seed's enemies reproducible.
   for Easy Systems to swap to, so `galaxy_build.js` asks for the lowest bracket
   instead, after System Scaling and Large Planets have had their say. GWO also changes
   how it watches `model.ready()` so the mod's lobby is not broken. System Scaling and
-  Large Planets both stay, served by the brackets above. Map-pack systems
-  whose biome comes from a server mod are kept only when that mod ships JSON alone.
-  Otherwise they are excluded, because the GW server never mounts server mods.
+  Large Planets both stay, served by the brackets above. Map-pack systems whose
+  biome comes from a server mod follow the provider rule in "Biome mods in a GW
+  battle": a mod that ships JSON alone always serves, and any other only with GW
+  Server Mods active.
 - **New-GW-Cards** is the template that third-party card mods are written from, rather
   than a mod itself. It is the reason the `model.gwo*` globals are additive and the
   `shared/cards.js` helper names are fixed. See [`tech-cards.md`](tech-cards.md),

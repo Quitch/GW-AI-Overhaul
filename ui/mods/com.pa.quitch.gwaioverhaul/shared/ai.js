@@ -292,8 +292,10 @@ define([
 
     raceOf: races.raceOf,
 
-    getAIPathSource: function (type, race) {
-      var inventory = model.game().inventory();
+    // inventory is whose Sub Commander Tactics decides a Queller tier: a co-op
+    // viewer's own, or the host's when none is given.
+    getAIPathSource: function (type, race, inventory) {
+      inventory = inventory || model.game().inventory();
       var currentAiInUse = aiInUse(type, race);
 
       return refereeAIPaths.getAIPathSource(

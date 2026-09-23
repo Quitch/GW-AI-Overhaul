@@ -1,24 +1,8 @@
 "use strict";
 
-// Validates the referee's Titans trees against a manual mount-order merge of
-// the real files on disk: media/pa/ai -> media/pa_ex1/ai -> GWO's own pa/ai
-// -> the race's server mod(s) -> every add-on's server mod, later layers
-// overwriting duplicates, which is the order the runtime virtual filesystem
-// mounts them. The real referee_ai.js runs against that merge served through
-// the test fakes.
-//
-// One pass per race: its tree must match the merge exactly, minus the
-// unit_maps and neural_networks rules the engine forces and minus every
-// other layer (another race's files, MLA's add-on files). One MLA pass: the
-// sweep into /pa/ai/player_guardians/ must carry the base files and MLA's
-// add-on files, untagged add-on maps included, and no race layer. Then every
-// mod is mounted at once, to prove no other layer leaks into any tree, and
-// each mounted descriptor's `unitMaps` and `sources` are checked against the
-// merge, so a stale descriptor fails here rather than silently claiming
-// nothing. The reverse is checked too: every AI file an add-on's own mods
-// ship is claimed by one of its layers, so a layer the mod grew upstream
-// fails here rather than being dropped from every tree. Local-only: CI has
-// neither the PA install nor the mods. See testing.md.
+// Validates the referee's race trees against a mount-order merge of the real
+// files on disk. Local-only: CI has neither the PA install nor the mods. What
+// each pass checks: testing.md, "The validators".
 
 const fs = require("node:fs");
 const path = require("node:path");
