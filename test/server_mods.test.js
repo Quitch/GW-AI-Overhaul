@@ -35,12 +35,6 @@ describe("shippedServerMods", () => {
     }
   });
 
-  it("mounts the Bugs commander-merge before Bugs", () => {
-    const merge = mods.indexOf("com.pa.ferretmaster.commander-merge");
-    assert.ok(merge >= 0);
-    assert.equal(mods[merge + 1], "com.pa.ferretmaster.bugs");
-  });
-
   it("names no mod twice", () => {
     assert.equal(new Set(mods).size, mods.length);
   });

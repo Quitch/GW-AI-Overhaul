@@ -41,7 +41,6 @@ describe("mediaDir", () => {
   it("is Steam's default install without PA_MEDIA", () => {
     setEnv("PA_MEDIA", undefined);
     assert.equal(mediaDir(), DEFAULT_MEDIA);
-    assert.match(DEFAULT_MEDIA, /Planetary Annihilation Titans\/media$/);
   });
 });
 

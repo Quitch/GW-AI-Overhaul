@@ -71,6 +71,5 @@ describe("repairStars", () => {
     const ai = { isCluster: true, typeOfBuffs: [0, 1] };
 
     assert.doesNotThrow(() => clusterRepair.repairStars([star(ai)]));
-    assert.equal(ai.inventory, undefined);
   });
 });

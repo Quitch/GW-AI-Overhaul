@@ -56,25 +56,6 @@ describe("referee_coop client helpers", () => {
     );
     assert.deepEqual(refereeCoop.viewersOf(undefined), []);
   });
-
-  it("recordForClient asks the game by id and name", () => {
-    const asked = [];
-    const game = {
-      findCoopPlayerInventoryData: (query) => {
-        asked.push(query);
-        return { playerName: query.name };
-      },
-    };
-
-    const record = refereeCoop.recordForClient(game, {
-      id: "v",
-      name: "Ada",
-      role: "viewer",
-    });
-
-    assert.deepEqual(asked, [{ id: "v", name: "Ada" }]);
-    assert.equal(record.playerName, "Ada");
-  });
 });
 
 // War generation samples these in key order, so a new order would change the

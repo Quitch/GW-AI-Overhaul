@@ -137,10 +137,11 @@ that name and key a unit, and grouped by the mod that ships each spec. A
 spec that does not parse stops the harvest with the mod and spec path, so a
 broken unit cannot drop out of a table unseen.
 `unit_types.json` cannot stand in for it: it carries no display names and no
-parts. `test/race_tables.test.js` runs `scripts/generate-race-tables.js` in
-memory and requires every `race/` and `addon/` file to come out byte for
-byte as committed. After a re-harvest, `npm run generate:race-tables`
-rewrites the tables, and the diff is the review. See
+parts. `test/race_tables.test.js` calls `generateAll` from
+`scripts/lib/race-tables.js`, the generator behind
+`scripts/generate-race-tables.js`, in memory and requires every `race/` and
+`addon/` file to come out byte for byte as committed. After a re-harvest,
+`npm run generate:race-tables` rewrites the tables, and the diff is the review. See
 [races.md](races.md), "Unit tables".
 
 **`i18n:missing` and `i18n:glossary` are local-only for the same reason.** They

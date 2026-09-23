@@ -1,11 +1,12 @@
 "use strict";
 
 // Per shipped locale, the catalog keys the game's own tables do not translate.
-// Local-only: reads the PA install (PA_MEDIA or --pa). Prints counts; --out
-// writes work lists to scripts/i18n/out/missing.<L>.<n>.json in --chunk sized
-// pieces; --all writes every key instead, with PA's current text as `existing`,
-// for reviewing shipped translations; --report lists entries in GWO's own files
-// that override a PA entry. See docs/translations.md.
+// Local-only: reads the PA install (--pa, else PA_MEDIA, else the default).
+// Prints counts; --out writes work lists to
+// scripts/i18n/out/missing.<L>.<n>.json in --chunk sized pieces; --all writes
+// every key instead, with PA's current text as `existing`, for reviewing
+// shipped translations; --report lists entries in GWO's own files that
+// override a PA entry. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");

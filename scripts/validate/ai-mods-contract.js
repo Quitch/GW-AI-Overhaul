@@ -276,8 +276,7 @@ function checkFile(file) {
 }
 
 function main() {
-  // Stubs shared/gw_common, which nearly every card requires. Without it the
-  // cards were skipped as excluded, nine of them AI-mod authors.
+  // Stubs shared/gw_common, which nearly every card requires.
   installCardHarness();
   registerModuleStub(
     "shared/gw_common",
