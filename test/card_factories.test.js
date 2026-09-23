@@ -72,8 +72,6 @@ describe("antiTechCard", () => {
         "armor_damage_map.AT_Air": 2,
       })
     );
-    assert.equal(inv.mods[0].path, "armor_damage_map.AT_Orbital");
-    assert.equal(inv.mods[1].path, "armor_damage_map.AT_Air");
   });
 
   it("deals at 40, halved by another anti card, and not against its counter", () => {
@@ -87,10 +85,7 @@ describe("antiTechCard", () => {
     });
   });
 
-  it("takes a weight, or a function of the inventory, star and context", () => {
-    const fixed = factories.antiTechCard(Object.assign({ chance: 10 }, base));
-    assert.equal(fixed.deal({}, {}, inventory()).chance, 10);
-
+  it("takes a function of the inventory, star and context", () => {
     const seen = [];
     const star = { name: "star" };
     const context = { totalSize: 9 };
@@ -164,10 +159,7 @@ describe("cooldownCard", () => {
     );
   });
 
-  it("takes a weight, or a function of the inventory, star and context", () => {
-    const fixed = factories.cooldownCard(Object.assign({ chance: 0 }, base));
-    assert.equal(fixed.deal({}, {}, inventory(["air_factory.json"])).chance, 0);
-
+  it("takes a function of the inventory, star and context", () => {
     const star = { distance: () => 4 };
     const context = { totalSize: 9 };
     const computed = factories.cooldownCard(

@@ -54,11 +54,7 @@
     // Explicit planets drawn into stock titans-easy slots were saved with only
     // Position/Velocity, which the server rejects with "No position".
     var fixPlanetPositions = function (star) {
-      var system = star.system();
-      if (!system || !_.isArray(system.planets)) {
-        return;
-      }
-      for (var planet of system.planets) {
+      for (var planet of star.system().planets) {
         if (_.isUndefined(planet.position) && !_.isUndefined(planet.Position)) {
           planet.position = planet.Position;
         }

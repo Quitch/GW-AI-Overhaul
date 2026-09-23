@@ -3,10 +3,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (gwoCard, gwoGroup) {
   var weight = function (chance, fallback, inventory, system, context) {
-    if (_.isFunction(chance)) {
-      return chance(inventory, system, context);
-    }
-    return _.isUndefined(chance) ? fallback : chance;
+    return chance ? chance(inventory, system, context) : fallback;
   };
 
   return {

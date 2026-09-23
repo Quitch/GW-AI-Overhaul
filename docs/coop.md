@@ -210,6 +210,26 @@ The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat. That delay is
 scheduled but not awaited.
 
+## General Commander setup
+
+Under per-player tech, a viewer who picked the General Commander loadout asks
+the host once for its Sub Commanders. The request is the
+`gwo_setup_general_commander` operator, and the host replies with
+`gwo_setup_general_commander_result`. `gw_play/cards_start_subcdr.js` wires the
+two operators, and `viewerRequest` in `gw_play/general_commander_setup.js` decides
+when to send.
+
+The request can go only once the viewer is connected and per-player tech has
+synced. Either can land after `gw_play` loads, so the caller runs `send()`
+again whenever those or the viewer's record change. Once the host has answered,
+nothing is sent again, so a refusal cannot become an endless resend.
+
+The host sends no answer when the request is lost. A host with no handler for it
+only logs, and a dropped connection takes the request with it. So a request
+unanswered after `retryMs` (15 seconds) is tried again, up to `maxRetries` (3)
+times per connection. A request sent before the viewer stopped being ready is
+treated as lost.
+
 ## Whose selection is whose
 
 A viewer's selection follows the host's moves. That is right until the viewer

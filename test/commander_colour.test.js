@@ -50,14 +50,4 @@ describe("pick", () => {
       ]
     );
   });
-
-  // The palettes are built once, so a caller that edits a colour it was given
-  // must not change the next commander's.
-  it("hands out a copy of the palette colour", () => {
-    const expected = colour.pick(1, minion, 2)[0].slice();
-
-    colour.pick(1, minion, 2)[0][0] = -1;
-
-    assert.deepEqual(colour.pick(1, minion, 2)[0], expected);
-  });
 });

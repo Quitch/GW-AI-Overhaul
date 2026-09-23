@@ -335,15 +335,13 @@
 
         var measureThreat = function (ai, commanders) {
           var totalThreat = 0;
-          if (ai.foes) {
-            _.forEach(ai.foes, function (army) {
-              var commanderCount = gwoAI.commanderCount(army);
-              totalThreat +=
-                gwoAI.aiEconRateWithFloor(army.econ_rate) *
-                0.4 *
-                (commanderCount - 1);
-            });
-          }
+          _.forEach(ai.foes, function (army) {
+            var commanderCount = gwoAI.commanderCount(army);
+            totalThreat +=
+              gwoAI.aiEconRateWithFloor(army.econ_rate) *
+              0.4 *
+              (commanderCount - 1);
+          });
           _.times(commanders.length, function (n) {
             totalThreat += commanders[n].eco;
           });
@@ -382,8 +380,7 @@
           return toFixedIfNecessary(totalThreat, 2);
         };
 
-        var createAIIntelligence = function (ai, starCommanderList) {
-          var commanders = starCommanderList.slice();
+        var createAIIntelligence = function (ai, commanders) {
           if (ai.ally) {
             var game = model.game();
             var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(

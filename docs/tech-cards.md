@@ -72,9 +72,9 @@ this file).
 `upgradeCard` and `loadout` are in `shared/cards.js`, so they are part of the
 published API. `antiTechCard` and `cooldownCard` are in `shared/card_factories.js`,
 which is not published. Both of them take `name`, `description`, and `icon`. They
-also take a `chance`, which is a weight or a function of
-`(inventory, system, context)`. The anti-tech default is 40, and the cooldown
-default is 70. An anti-tech card names its `counter` card and its `armour` map, for
+also take an optional `chance`, which is a function of
+`(inventory, system, context)`. Without one, the anti-tech weight is 40, and the
+cooldown weight is 70. An anti-tech card names its `counter` card and its `armour` map, for
 example `{ AT_Air: 2, AT_Orbital: 0.5 }`. A cooldown card names its `audio`, its
 `factories`, and optionally `requires`, which replaces `factories` as the ownership
 gate.
