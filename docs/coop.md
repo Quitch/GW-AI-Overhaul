@@ -328,7 +328,8 @@ star. The host deals it from that viewer's inventory
 explore. `star.cardList()` remains the host's own. A viewer never sees it.
 
 The transport is a top-level `gwaioStarCards` field on the co-op player
-inventory record, `{turn, cards: {"<star>": card}}`. Three things rule out the
+inventory record, `{turn, cards: {"<star>": card}, redealOwed}`. `redealOwed` is
+present only while a re-deal is owed (see below). Three things rule out the
 alternatives:
 
 - Host→viewer operators reach only **connected** clients and are never replayed.
@@ -355,6 +356,39 @@ the host's cards are re-dealt only after a win. A refresh keyed on the turn
 would therefore change what a star advertises to a viewer while the host was
 merely travelling to it. The card would then no longer be the one in their hand
 on arrival.
+
+A re-deal the gate below turns away is **owed**, not dropped. So is one made
+while no viewer is connected, and one that fails. The next refresh the gate
+allows pays it. This matters because the host re-deals after a win, which is
+exactly when viewers hold `pendingTechCards`. A dropped re-deal left them with
+last turn's cards, which could duplicate cards they had just taken.
+
+The debt is kept **on each viewer's record**, as `gwaioStarCards.redealOwed`.
+A re-deal sets it on every viewer record, connected or not, before the gate is
+consulted. The write that stores a viewer's new cards drops it, so each debt
+clears only when that viewer's own re-deal succeeds. A viewer with nothing left
+to re-deal has the flag dropped on its own. Otherwise the first gap-filling
+refresh of the next turn would re-deal them.
+
+The record is where the debt belongs for three reasons:
+
+- **It survives a gw_play reload.** Records are in the game save, and every
+  caller of `refresh({redeal: true})` saves afterwards. Held in memory, the
+  debt was lost on a reload between the refused re-deal and the viewer's
+  choice, while the viewer's `pendingTechCards` survived.
+- **It reaches a viewer who was away.** A viewer disconnected when the host
+  re-deals is owed the re-deal like any other, and is paid on their return.
+- **It is per viewer.** A single war-wide flag would not work: after one viewer
+  failed, it would owe the re-deal again to viewers already re-dealt. Their
+  record write triggers the next refresh, so each such viewer would get a new
+  card on every refresh for as long as the other viewer kept failing.
+
+A failed save does not create a debt, because the re-deal already happened in
+memory. `refresh` starts `runRefresh` on a later tick for the same reason the
+records matter: owing a re-deal writes records, and `cards.js` refreshes on
+every record write. Run synchronously, that refresh would start before
+`refreshInFlight` is set, run alongside this one, and re-deal the same viewer
+twice.
 
 The refresh depends on two ordering rules:
 

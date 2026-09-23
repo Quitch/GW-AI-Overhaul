@@ -8,19 +8,26 @@ assignees: Quitch
 
 ## Attestation
 
-[ ] I have verified this bug with all other mods disabled
-
-[ ] I am not running any [incompatible mods](https://github.com/Quitch/GW-AI-Overhaul#incompatible-mods)
-
-[ ] I am not running any [incompatible software](https://wiki.palobby.com/wiki/Windows_Incompatible_Software)
-
-[ ] I have confirmed this happens after [verifying the game's files](https://support.planetaryannihilation.com/kb/faq.php?id=188)
-
-[ ] I was using the latest [graphics drivers](https://support.planetaryannihilation.com/kb/faq.php?id=218)
+- [ ] I searched [existing issues](https://github.com/Quitch/GW-AI-Overhaul/issues?q=is%3Aissue) and this bug is not already reported
+- [ ] I am not running any [incompatible mods](https://github.com/Quitch/GW-AI-Overhaul#incompatible-mods)
+- [ ] I tried it with only GWO, its dependencies, and client and server mods (races, maps, etc.) required by this war. All other mods were disabled.
+- [ ] I am not running any [incompatible software](https://wiki.palobby.com/wiki/Windows_Incompatible_Software)
+- [ ] I have confirmed this happens after [verifying the game's files](https://support.planetaryannihilation.com/kb/faq.php?id=188)
+- [ ] I was using the latest [graphics drivers](https://support.planetaryannihilation.com/kb/faq.php?id=218)
 
 ## Describe the bug
 
 A clear and concise description of what the bug is.
+
+## Where it happened
+
+- [ ] War setup
+- [ ] Galaxy map
+- [ ] Exploring a system
+- [ ] Launching a battle
+- [ ] During a battle
+- [ ] Returning from a battle
+- [ ] Other:
 
 ## To Reproduce
 
@@ -41,15 +48,41 @@ If applicable, add screenshots to help explain your problem.
 
 ## GWO Info
 
-Taken from the top-right GWO panel:
+Please attach a screenshot of the top-right GWO panel, including any Co-Op Settings, Incompatible Mods, Missing Races, or Missing Map Packs sections. Then copy the values below from it:
 
-- Version:
+- Mod:
+- War:
 - Seed:
 - Difficulty:
 - Size:
-- Enemy AI:
-- Allied AI:
+- Opponent AI:
+- Ally AI:
+- Deck:
 - Options:
+- Faction:
+- Personality:
+
+## Co-op
+
+Leave blank if this was a solo war.
+
+- Were you the host or a viewer?
+- Number of players in the war:
+- Number of players the war was created for:
+- Shared Armies?
+- Per-Player Tech?
+- Player Slots:
+
+## Mods
+
+List every enabled client mod and every server mod, including those run through Galactic War Server Mods. Mark which ones are race or add-on mods (e.g. Legion Expansion, Bug Faction, Exiles, Second Wave).
+
+- Client mods:
+- Server mods:
+
+## Game language
+
+If not English:
 
 ## Additional context
 

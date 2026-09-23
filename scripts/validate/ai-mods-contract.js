@@ -26,13 +26,13 @@ const {
 const { reportFailures } = require("../lib/report-failures.js");
 const { GW_COMMON_STUB, installCardHarness } = require("../lib/card-probe.js");
 
-// A loadout card banks itself in buff(), into the base game's bank and GWO's.
-// Only the AI mods buff() adds matter here, so both banks take the call and
-// keep nothing.
 // The cards that add AI mods today. A harness change that silently skipped
 // cards would otherwise leave the run green while checking less.
 const MIN_CARDS_CHECKED = 24;
 
+// A loadout card banks itself in buff(), into the base game's bank and GWO's.
+// Only the AI mods buff() adds matter here, so both banks take the call and
+// keep nothing.
 const INERT_BANK = {
   addStartCard: () => false,
   hasStartCard: () => false,

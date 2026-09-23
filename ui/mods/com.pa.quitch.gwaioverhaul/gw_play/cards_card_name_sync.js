@@ -107,8 +107,10 @@ define(function () {
             cardName = loc(data.summarize());
           } catch (e) {
             console.error(
-              "[GW COOP] card summarize() threw for id=" + payload.card_id,
-              e
+              "[GW COOP] card summarize() threw for id=" +
+                payload.card_id +
+                ": " +
+                ((e && e.stack) || e)
             );
             result.reject("Card summarize threw for " + payload.card_id);
             return;
@@ -141,13 +143,22 @@ define(function () {
         return deferred.promise();
       }
 
-      requireGW(["cards/" + firstCard.id], function (data) {
-        if (data && _.isFunction(data.summarize)) {
-          system.star.ai().cardName = loc(data.summarize());
-          sendSyncedStarCardName(starIndex, firstCard.id);
+      requireGW(
+        ["cards/" + firstCard.id],
+        function (data) {
+          if (data && _.isFunction(data.summarize)) {
+            system.star.ai().cardName = loc(data.summarize());
+            sendSyncedStarCardName(starIndex, firstCard.id);
+          }
+          deferred.resolve();
+        },
+        // Resolved, not rejected: the turn deal waits on this through
+        // Promise.all, and a rejection would stop it as surely as a hang.
+        function () {
+          console.error("GWO card failed to load: " + firstCard.id);
+          deferred.resolve();
         }
-        deferred.resolve();
-      });
+      );
 
       return deferred.promise();
     };

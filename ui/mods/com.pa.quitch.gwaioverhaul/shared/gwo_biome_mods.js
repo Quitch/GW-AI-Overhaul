@@ -3,15 +3,10 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
-], function (gwoBiomes, gwoPromise) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwsm.js",
+], function (gwoBiomes, gwoPromise, gwsm) {
   var modRecord = gwoBiomes.recordFrom;
-
-  var manifest = function () {
-    var gwsm = window.GwServerMods;
-    return gwsm && gwsm.manifest && _.isFunction(gwsm.manifest.load)
-      ? gwsm.manifest
-      : undefined;
-  };
+  var manifest = gwsm.manifest;
 
   var isZipMod = function (mod) {
     return !!(mod && !mod.fileSystem && mod.installedPath);

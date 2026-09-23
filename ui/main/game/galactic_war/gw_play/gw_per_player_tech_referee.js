@@ -73,7 +73,7 @@ define([
     var raceMaps = gwoRaces.unitMapsFor(
       race,
       brain,
-      gwoAI.getAIPathSource("subcommander", race)
+      gwoAI.getAIPathSource("subcommander", race, inventory)
     );
     var loadMap = gameFilePaths.loadMap;
     var loads = [
@@ -211,7 +211,12 @@ define([
     // spec fetch that fails rejects through fail.
     cellsLoad
       .then(null, function (error) {
-        console.error("gwoRaces: cells not built for " + race, error);
+        console.error(
+          "gwoRaces: cells not built for " +
+            race +
+            ": " +
+            gameFilePaths.describeError(error)
+        );
         return undefined;
       })
       .then(function (cells) {

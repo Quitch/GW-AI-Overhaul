@@ -33,6 +33,15 @@ describe("optionsHtml", () => {
     );
   });
 
+  // Race and deck ids come from public registries, and are only trimmed and
+  // lower-cased, so an id can carry markup characters.
+  it("escapes the id as well as the name", () => {
+    assert.equal(
+      pickerOptions.optionsHtml([{ id: 'odd"id<x>', name: "Odd & Co" }]),
+      '<option value="odd&quot;id&lt;x&gt;">Odd &amp; Co</option>'
+    );
+  });
+
   it("is empty for an empty list", () => {
     assert.equal(pickerOptions.optionsHtml([]), "");
   });

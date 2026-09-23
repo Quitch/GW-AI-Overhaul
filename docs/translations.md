@@ -143,6 +143,10 @@ Conventions the notes and the translations follow:
 
 ## Contributing a corrected translation
 
+Players translate GWO's text on Playglot (see the README), and accepted work
+reaches the files here through `npm run i18n:merge`. This section is for a
+developer's change in the repo.
+
 If the game's own translation of a GWO string is wrong, the fix goes in the
 language's file here and overrides the game's entry at runtime. Add the entry
 under its English key, run `npm run validate:translations`, and note the override

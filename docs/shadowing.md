@@ -83,7 +83,7 @@ Two hijacking traps are worth knowing. Both are recorded at their call sites:
 
 ## The complete shadowing inventory
 
-`validate:docs` checks the four tables below against the tree. A file added or
+`validate:docs` checks the five tables below against the tree. A file added or
 removed without its row therefore fails `npm run verify`.
 
 ### `ui/main/` — everything but the cards
@@ -213,8 +213,8 @@ A shadowed file usually cannot load under the Node AMD harness. Its `define()`
 depends on base-game modules that this repo does not ship (`shared/gw_common`
 above all). The pattern is to extract the testable logic into a **measured sibling
 module** in the mod's own namespace. The glue file then requires that sibling. The
-same split serves two files in GWO's own namespace that are not shadows but depend
-on `shared/gw_common` all the same:
+same split serves files in GWO's own namespace that are not shadows but depend on
+base-game modules all the same:
 
 | Glue file                                   | Measured sibling                                                                    |
 | ------------------------------------------- | ----------------------------------------------------------------------------------- |
@@ -222,6 +222,7 @@ on `shared/gw_common` all the same:
 | `gw_faction_*.js` (shadows)                 | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js` |
 | `gw_play/referee_game_files.js` (GWO's own) | `gw_play/referee_game_file_paths.js`                                                |
 | `gw_play/referee_config.js` (GWO's own)     | `gw_play/referee_config_setup.js`                                                   |
+| `gw_play/cards_start_subcdr.js` (GWO's own) | `gw_play/general_commander_setup.js`                                                |
 
 The glue file keeps only the `model`/`ko`/`api` glue and is coverage-excluded.
 The sibling holds the logic and is unit-tested. Do **not** instead hoist helpers to
@@ -262,4 +263,4 @@ An intermediate star is traversable when explored, or when visited at all under
 
 - [`architecture.md`](architecture.md): how scenes and entry points work.
 - [`testing.md`](testing.md): the harness, and why some files cannot load in it.
-- CONTRIBUTING.md's "Test coverage and new code".
+- [`testing.md`](testing.md), "Coverage".

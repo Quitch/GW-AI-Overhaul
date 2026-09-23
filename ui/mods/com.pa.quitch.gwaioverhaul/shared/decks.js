@@ -3,16 +3,15 @@
 // See tech-cards.md, "Third-party decks".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deck_ids.js",
-], function (deckIds) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js",
+], function (deckIds, ids) {
   var BASIC_ID = "Basic";
   var EXPANDED_ID = "Expanded";
 
   var registry = {}; // normalized id -> compiled descriptor
   var order = []; // normalized ids in registration order, built-ins first
 
-  var normalizeId = function (id) {
-    return _.isString(id) ? id.trim().toLowerCase() : "";
-  };
+  var normalizeId = ids.normalize;
 
   // The canonical id (as given, trimmed) is what gets persisted into the war
   // save, so the built-ins keep writing exactly "Basic"/"Expanded" as every

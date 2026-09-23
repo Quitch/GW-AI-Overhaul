@@ -40,7 +40,7 @@
     <!-- ko if: $root.selection.system().star.ai() -->
     <div data-bind="foreach: $root.gwoGameModifiers">
       <ul>
-        <li data-bind="text: $root.gwoGameModifiers()[$index()]"></li>
+        <li data-bind="text: $data"></li>
       </ul>
     </div>
     <!-- /ko -->
@@ -58,7 +58,7 @@
     <!-- ko if: $root.selection.system().star.ai() -->
     <div data-bind="foreach: $root.gwoAIBuffs">
       <ul>
-        <li data-bind="text: $root.gwoAIBuffs()[$index()]"></li>
+        <li data-bind="text: $data"></li>
       </ul>
     </div>
     <!-- /ko -->
@@ -66,12 +66,12 @@
   <ul data-bind="foreach: $root.gwoAis">
     <h3>
       <span data-bind="text: faction"></span>
-      <!-- ko if: faction === "Cluster" && tooltip -->
+      <!-- ko if: cluster && tooltip -->
       <span class="info_tip" data-placement="right" data-bind="tooltip: tooltip"
         >?</span
       >
       <!-- /ko -->
-      <!-- ko if: faction !== "Cluster" && tooltip -->
+      <!-- ko if: !cluster && tooltip -->
       <span class="info_tip" data-bind="tooltip: tooltip">?</span>
       <!-- /ko -->
     </h3>

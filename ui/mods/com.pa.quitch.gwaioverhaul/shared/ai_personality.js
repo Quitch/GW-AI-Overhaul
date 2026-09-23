@@ -93,7 +93,7 @@ define([
   var quellerTags = function (faction) {
     var tags = QUELLER_TAGS[faction];
     if (!tags) {
-      console.error("Undefined faction:", faction);
+      console.error("Undefined faction: " + faction);
       return [];
     }
     return tags.slice();

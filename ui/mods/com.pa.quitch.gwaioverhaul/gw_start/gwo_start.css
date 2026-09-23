@@ -24,6 +24,11 @@
   width: 520px;
 }
 
+.gwo-war-generation-error {
+  margin: 0 20px 10px;
+  color: #f36a6a;
+}
+
 .gwo-game-options-body {
   margin-bottom: 20px;
 }
