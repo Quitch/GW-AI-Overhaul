@@ -16,6 +16,7 @@
       gwoSettings.treasurePlanetFixed &&
       gwoSettings.clusterFixed &&
       gwoSettings.treasureLoadoutDerived &&
+      gwoSettings.planetPositionFixed &&
       luckyCommanderFixed();
 
     if (!gwoSettings || allFixesApplied) {
@@ -47,6 +48,23 @@
         : undefined;
       if (star && !midExplore && star.cardList().length) {
         star.cardList([]);
+      }
+    };
+
+    // Explicit planets drawn into stock titans-easy slots were saved with only
+    // Position/Velocity, which the server rejects with "No position".
+    var fixPlanetPositions = function (star) {
+      var system = star.system();
+      if (!system || !_.isArray(system.planets)) {
+        return;
+      }
+      for (var planet of system.planets) {
+        if (_.isUndefined(planet.position) && !_.isUndefined(planet.Position)) {
+          planet.position = planet.Position;
+        }
+        if (_.isUndefined(planet.velocity) && !_.isUndefined(planet.Velocity)) {
+          planet.velocity = planet.Velocity;
+        }
       }
     };
 
@@ -134,6 +152,8 @@
       var playerIsCluster =
         model.game().inventory().getTag("global", "playerFaction") === 4;
 
+      // No version sets planetPositionFixed: Shared Systems for GW generates
+      // the systems of any war, so a new war can still need it.
       if (atLeastVersion("6.8.0")) {
         gwoSettings.treasureLoadoutDerived = true;
       }
@@ -154,6 +174,10 @@
           fixTreasurePlanetCardList(star);
         }
 
+        if (!gwoSettings.planetPositionFixed) {
+          fixPlanetPositions(star);
+        }
+
         // A neutral star's ai() is undefined.
         var ai = star.ai();
         if (!gwoSettings.clusterFixed && ai && ai.isCluster) {
@@ -168,6 +192,7 @@
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
       gwoSettings.clusterFixed = true; // Cluster might not exist
       gwoSettings.treasureLoadoutDerived = true;
+      gwoSettings.planetPositionFixed = true;
 
       if (luckyCommanderFixed() !== "true") {
         fixLuckyCommanderLocalStorageVariable(gwoBank);

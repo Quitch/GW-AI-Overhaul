@@ -239,7 +239,10 @@ stock pool is `isExplicit`, so the drawn planet takes the `isExplicit` return wi
 `position` or `velocity`. Only the generated path maps the capitalised keys, and the
 server rejects a planet without the lowercase ones ("No position"), so the battle
 never starts. GWO's copy fills in `position` and `velocity` from the capitalised keys
-when the drawn planet lacks them.
+when the drawn planet lacks them. That fixes only systems GWO's copy generates, so
+`gw_play/bugfixes.js` makes the same repair once on each war's saved systems. It covers
+wars saved before the fix and systems from Shared Systems for Galactic War, which
+replaces the loader.
 
 ### Shared Systems for Galactic War
 
