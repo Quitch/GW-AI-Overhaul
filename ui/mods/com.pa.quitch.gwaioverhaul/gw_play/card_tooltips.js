@@ -163,6 +163,9 @@
           });
 
           names.sort(function (a, b) {
+            if (ownedByName[a] !== ownedByName[b]) {
+              return ownedByName[a] ? 1 : -1;
+            }
             return a.localeCompare(b);
           });
           return _.map(names, function (name) {
