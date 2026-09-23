@@ -201,8 +201,9 @@
           treeCache = treeCache || gwoGenerateAI.createTreeCache();
           ref.treeCache = treeCache;
           // installedRaces activates the add-ons whose mods are enabled, so a
-          // hire never depends on scene-load ordering. It never rejects, and
-          // resolves at once without GW Server Mods.
+          // hire never depends on scene-load ordering. It resolves at once
+          // without GW Server Mods, and rejects if the installed races cannot
+          // be read.
           return raceMods
             .installedRaces()
             .then(function () {

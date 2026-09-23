@@ -246,12 +246,18 @@
         var myToken = loadToken;
         var cardId = self.id();
         if (cardId) {
-          requireGW(["cards/" + cardId], function (card) {
-            if (loadToken !== myToken) {
-              return;
+          requireGW(
+            ["cards/" + cardId],
+            function (card) {
+              if (loadToken !== myToken) {
+                return;
+              }
+              loadCard(card, data);
+            },
+            function () {
+              console.error("GWO card failed to load: " + cardId);
             }
-            loadCard(card, data);
-          });
+          );
         } else {
           loadCard({}, data);
         }
@@ -301,9 +307,7 @@
         globals.CardViewModel = gwoCardViewModel;
         // Nothing reads the banks until the player explores, so resolving them
         // alongside setup is early enough and keeps this callback synchronous.
-        requireGW(gwoLoadoutBanks.paths(), function () {
-          gwoLoadoutBanks.resolve(_.toArray(arguments));
-        });
+        gwoLoadoutBanks.load();
         restoreExploreSaveRerolls();
         var inventory = game.inventory();
         var playerFaction = inventory.getTag("global", "playerFaction");
@@ -321,9 +325,34 @@
         var cards = [];
         var deck = [];
         var numberOfCards = model.gwoCards.length;
-        var loaded = $.Deferred();
+        var deckLoaded = $.Deferred();
+        var cardUnitsLoaded = $.Deferred();
 
-        gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
+        gwoDeal.setupGwoDeck(cards, deck, numberOfCards, deckLoaded);
+
+        // The race gates read model.gwoCardsToUnits, which card_tooltips.js
+        // also fills in a load of its own. The deal waits for this one, so no
+        // deal runs before the gates exist. Without the list a race player is
+        // gated on MLA-only cards alone, so a failed load is logged.
+        requireGW(
+          ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js"],
+          function (cardUnits) {
+            // global for modder compatibility - New-GW-Cards pushes here
+            model.gwoCardsToUnits = _.isArray(model.gwoCardsToUnits)
+              ? model.gwoCardsToUnits
+              : [];
+            cardUnits.mergeInto(model.gwoCardsToUnits);
+            cardUnitsLoaded.resolve();
+          },
+          function () {
+            console.error(
+              "GWO failed to load card_units.js: tech cards deal without their race gates"
+            );
+            cardUnitsLoaded.resolve();
+          }
+        );
+
+        var loaded = $.when(deckLoaded, cardUnitsLoaded);
 
         // dealer.chooseCards() replacement - use our deck
         var chooseCards = function (params) {
@@ -567,14 +596,19 @@
         };
 
         // The turn deal above covers the ordinary case. This covers a viewer
-        // joining, and a rejoining viewer finishing its catch-up deals - neither
-        // of which passes through a turn. It deliberately does not read
-        // stats().turns(): a move must not disturb an offer already advertised.
+        // joining, a rejoining viewer finishing its catch-up deals, and a
+        // re-deal the gate turned away - none of which passes through a turn.
+        // turnState is read because refresh returns early mid-exploration, and
+        // its end is what retries. refresh's own reads also subscribe this, so
+        // any of them changing refreshes too; refresh only fills gaps unless a
+        // re-deal is owed. stats().turns() is not read: a move must not disturb
+        // an offer already advertised.
         ko.computed(function () {
           model.gwCampaignConnectedClients();
           model.gwCampaignPlayerSetupBlocked();
           game.coopPlayerInventoryData();
           game.hostTechCardDealCount();
+          game.turnState();
           coopStarCards.refresh();
         });
 
@@ -590,6 +624,9 @@
               inventory: inventory,
             });
             setupGeneralCommander();
+          },
+          function () {
+            console.error("GWO failed to load cards_start_subcdr.js");
           }
         );
 

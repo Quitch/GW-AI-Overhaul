@@ -327,7 +327,8 @@ self-invoking and never calls `define()`, so the harness cannot load it in
 place. Its pure logic is extracted into sibling `define()` modules:
 `cards_deal_helpers.js`, `cards_coop_deal.js`, `cards_coop_reroll.js`,
 `cards_card_name_sync.js` and `cards_cheats.js`. Each returns a factory that
-`cards.js` calls with its collaborators.
+`cards.js` calls with its collaborators. `gw_play/bugfixes.js` is self-invoking
+too, and its Cluster repair lives in `cluster_repair.js`.
 
 Where a helper inside such a module is not reachable through the returned
 factory, it is re-exported through:
