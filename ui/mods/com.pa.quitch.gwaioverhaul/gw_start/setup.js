@@ -64,11 +64,11 @@
 
     // War generation reads model.gwoRaceInfo, which race_picker.js fills
     // once the installed races resolve, so an earlier Go To War would
-    // generate an MLA-only war. race_picker.js loads after this file, and if
-    // it failed to install there is nothing to wait for.
+    // generate an MLA-only war. race_picker.js loads after this file; if it
+    // failed to install, the war stays blocked rather than going MLA-only.
     var racesResolved = function () {
       return (
-        !ko.isObservable(model.gwoRaceInfo) ||
+        ko.isObservable(model.gwoRaceInfo) &&
         model.gwoRaceInfo().races.length > 0
       );
     };
