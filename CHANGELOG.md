@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- When a war cannot be created, the setup screen now says why and what to do, and the seed goes back to the one entered; only a galaxy too small for every enemy faction is retried with a new seed
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed

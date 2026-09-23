@@ -246,10 +246,20 @@ is therefore only reached for boss systems built from a `systemTemplate`.
 
 ### Retries
 
+Only a spawn shortage is retried: an enemy faction with no boss, because the breeder
+found no home system for it. A new seed lays the galaxy out again and can fix that.
+Nothing else is retried, because a new seed cannot fix it.
+`gw_start/war_generation_failure.js` makes that decision and writes the message.
+
 `warGenerationFailure` used to re-roll the seed at random, which discarded what the
 player typed. It now derives `<base>-<attempt>`, and `gwaio.seed` records whichever
 link succeeded. The string the panel shows is therefore the string to re-enter to get
 that war back on the first attempt.
+
+When generation gives up, the seed is put back to `<base>`, and a message appears
+above Go To War. For a spawn shortage it says to choose a larger galaxy or to turn
+on Faction Scaling. Anything else is a bug, so the message asks the player to report
+it with the seed and the PA log.
 
 ## System scaling
 
