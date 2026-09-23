@@ -72,8 +72,12 @@ otherwise-> /pa/ai/
 Source and destination take the same `smartSubcommanders` flag, so a Smart
 Subcommander reads the tier it writes to. Earlier, the source function passed a
 hardcoded `false`. That meant the tech copied `q_bronze/` into the `q_silver/`
-path, and the game never loaded silver's own build data at all. The source is
-never scoped, though. No `player_…/` suffix is ever appended to it.
+path, and the game never loaded silver's own build data at all. The flag comes
+from the inventory whose tree is being written. A co-op viewer's pass reads its
+own inventory for the source as well as the destination. Earlier, the source
+used the host's card, so the tiers did not match whenever the host and a viewer
+differed on Sub Commander Tactics. The source is never scoped, though. No
+`player_…/` suffix is ever appended to it.
 
 **`getAIPathDestination(type, aiInUse, options)`** returns the path that the
 modified result is _written to_. First match wins:
@@ -208,7 +212,8 @@ another mod, has no blob. If the brain has no build orders for the given `race`,
 the function also returns `"Titans"` (`races.brainFor`). Titans is the only
 brain that knows every race.
 
-`getAIPathSource(type)` supplies `smartSubcommanders` from the tech cards held.
+`getAIPathSource(type, race, inventory)` supplies `smartSubcommanders` from the
+tech cards in `inventory`, or in the host's inventory when none is given.
 `getAIPathDestination(type, options)` supplies the settings the pure module needs
 from live game state:
 
@@ -219,11 +224,11 @@ from live game state:
 
 Callers can override any of it, because `options` is `_.assign`ed last.
 
-`getSubcommanderPathForViewer(inventory, playerTag)` hardcodes `guardians: false`.
-This is asymmetric with the wrapper above, and it is intentional. The function
-has no guardians parameter and cannot react to the real fight's state. The
-per-viewer `player_.playerN/` scope already gives each viewer the isolation that
-would otherwise be needed.
+`getSubcommanderPathForViewer(inventory, playerTag, race)` hardcodes
+`guardians: false`. This is asymmetric with the wrapper above, and it is
+intentional. The function has no guardians parameter and cannot react to the
+real fight's state. The per-viewer `player_.playerN/` scope already gives each
+viewer the isolation that would otherwise be needed.
 
 `gw_play/per_player_tech.js`'s `getViewerSubcommanderAiPath` follows the same
 rule. For the same reason, it also never routes a Cluster-faction viewer to the

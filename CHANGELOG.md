@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- In co-op with per-player tech and Queller Sub Commanders, a viewer's Sub Commanders now follow the viewer's own Sub Commander Tactics card rather than the host's
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed
