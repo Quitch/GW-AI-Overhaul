@@ -106,8 +106,9 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_options.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
       ],
-      function (raceMods, races, pickerOptions) {
+      function (raceMods, races, pickerOptions, gwoAI) {
         try {
           raceMods.registerAll();
 
@@ -143,7 +144,7 @@
 
           // Cluster fields Angels and Colonels, which only MLA has. See races.md.
           ko.computed(function () {
-            var cluster = model.playerFaction().name === "Cluster";
+            var cluster = model.playerFactionIndex() === gwoAI.CLUSTER_FACTION;
             model.gwoRaceSelectDisabled(cluster);
             if (cluster) {
               settings.playerRace(races.MLA_ID);

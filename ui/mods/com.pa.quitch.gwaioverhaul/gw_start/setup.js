@@ -148,14 +148,15 @@
       return minionCount + Math.floor(bossCommanders / 2);
     };
 
-    var selectMinion = function (rng, minions, faction, minionName) {
-      var isCluster = minionName === "Worker" || minionName === "Security";
+    // clusterRole is given only for a Cluster faction, whose minions are
+    // picked by role.
+    var selectMinion = function (rng, minions, faction, clusterRole) {
       var selectedMinion;
-      if (isCluster) {
+      if (clusterRole) {
         selectedMinion = _.cloneDeep(
           rng.pick(
             _.filter(minions, {
-              name: minionName,
+              name: clusterRole,
             })
           )
         );

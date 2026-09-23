@@ -16,6 +16,7 @@
 - A tech card from another mod that fails while it is applied no longer stops co-op star cards from being dealt, or stops loadouts being unlocked, for the rest of the session; the failure is logged
 - In co-op with per-player tech, a viewer who is still choosing a tech card, or is away, when the host takes one now gets new star cards once they choose or return, even if the war is reloaded in between, rather than keeping last turn's
 - In co-op with per-player tech, a viewer who picks the General Commander loadout now always gets its Sub Commanders, including when it connects after the war has loaded
+- The intelligence panel places an allied Cluster faction's tooltip the way it places every other Cluster tooltip
 
 ## v7.4.0 - 2026-09-22
 

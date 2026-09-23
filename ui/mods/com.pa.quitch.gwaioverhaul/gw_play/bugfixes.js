@@ -81,9 +81,8 @@
       return checkVersion(version) >= 0;
     };
 
-    var checkIfPatchesNeeded = function () {
-      var playerIsCluster =
-        model.game().inventory().getTag("global", "playerFaction") === 4;
+    var checkIfPatchesNeeded = function (gwoCard) {
+      var playerIsCluster = gwoCard.playerIsCluster(model.game().inventory());
 
       if (atLeastVersion("6.8.0")) {
         gwoSettings.treasureLoadoutDerived = true;
@@ -123,16 +122,16 @@
       }
     };
 
-    checkIfPatchesNeeded();
-
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cluster_repair.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
       ],
-      function (gwoSave, gwoTreasure, gwoBank, clusterRepair) {
+      function (gwoSave, gwoTreasure, gwoBank, clusterRepair, gwoCard) {
+        checkIfPatchesNeeded(gwoCard);
         applyFixes(gwoTreasure, gwoBank, clusterRepair);
         gwoSave(game, true);
       }

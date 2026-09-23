@@ -11,6 +11,8 @@ define([
   races,
   brainTable
 ) {
+  var CLUSTER_FACTION = 4;
+
   // The host's inventory is the live GWInventory, where aiMods is an observable;
   // a co-op viewer's arrives deserialised from the war record, where it is a
   // plain array. Both reach the referee, so both shapes are read here.
@@ -338,6 +340,9 @@ define([
       );
     },
 
+    // The faction index of Cluster, for AIs and players alike.
+    CLUSTER_FACTION: CLUSTER_FACTION,
+
     // An MLA Cluster AI: faction 4 fielding its Angel and Colonel Sub
     // Commanders. A Cluster of any other race is an ordinary faction. The
     // Guardians of a Cluster star carry faction 4 too. See races.md.
@@ -346,7 +351,7 @@ define([
       if (guardians) {
         return false;
       }
-      return factionIndex(ai) === 4 && races.isMla(ai.race);
+      return factionIndex(ai) === CLUSTER_FACTION && races.isMla(ai.race);
     },
 
     // rng is optional. War creation passes the AI's own stream; the play-scene

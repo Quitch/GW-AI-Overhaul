@@ -4,9 +4,6 @@
 (function () {
   try {
     var raceSelectId = "#gwo-viewer-race-select";
-    // A viewer shares the host's faction, and Cluster fields Angels and
-    // Colonels, which only MLA has. See races.md.
-    var CLUSTER_FACTION = 4;
 
     // The observables the markup binds to exist before the bindings are
     // applied; what fills them arrives later. See shadowing.md.
@@ -53,8 +50,9 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_options.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
       ],
-      function (hostWar, raceMods, races, pickerOptions) {
+      function (hostWar, raceMods, races, pickerOptions, gwoAI) {
         raceMods.registerAll();
 
         hostWar.load().then(function (host) {
@@ -72,11 +70,13 @@
           });
 
           // Nothing at all unless the host asked for it: no control, no mount,
-          // and gwo_loadouts.js goes on stamping the host's race.
+          // and gwo_loadouts.js goes on stamping the host's race. A viewer
+          // shares the host's faction, and Cluster fields Angels and Colonels,
+          // which only MLA has. See races.md.
           if (
             !host.perPlayerRace ||
             host.races.length < 2 ||
-            host.faction === CLUSTER_FACTION
+            host.faction === gwoAI.CLUSTER_FACTION
           ) {
             return;
           }
