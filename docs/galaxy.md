@@ -393,7 +393,7 @@ active. It catalogs the live manifest row (the stamp's `installedPath` is stale 
 a reinstall) and adds their biomes to `biomeServed`. A stamped mod it no longer lists
 falls to `earth` like an unreadable cooked one.
 
-Such a mod **is** a dependency of the war. `gw_start/setup.js` records the ones
+Such a mod **is** a dependency of the war. `gw_start/war_record.js` records the ones
 stamped on any placed star as
 `originSystem.gwaio.biomeMods = [{ identifier, displayName, version }]`.
 

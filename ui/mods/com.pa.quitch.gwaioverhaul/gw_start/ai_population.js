@@ -1,5 +1,4 @@
 // Fills in the AIs the breeder placed, then the Guardians and the system lore.
-// The measured sibling of gw_start/setup.js - see galaxy.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
@@ -62,6 +61,9 @@ define([
     } else {
       selectedMinion = _.cloneDeep(rng.pick(minions));
     }
+    // Call sites must check the result. These run inside jQuery deferred
+    // callbacks, where a throw escapes .fail() instead of rejecting, so a
+    // TypeError here hangs Go To War with no seed retry.
     if (_.isUndefined(selectedMinion)) {
       console.error("No minion found for faction " + faction);
     }
@@ -191,10 +193,8 @@ define([
     }
   };
 
-  // Every AI in teamInfo, the breeder's result. war carries what the war was
-  // generated with. Returns the outcome setup.js acts on: failed, whether the
-  // failure was a faction without a home system (spawnShortage), and the
-  // Guardians' star index.
+  // Every AI in teamInfo, the breeder's result. Returns the outcome setup.js
+  // acts on.
   var populate = function (war, teamInfo) {
     var outcome = {
       failed: false,
@@ -258,15 +258,16 @@ define([
         teamBrain
       );
 
-      // One minion per stream index off the parent's rng. An MLA Cluster AI
-      // takes one minion carrying commanderCount commanders instead.
+      // One minion per stream index off the parent's rng. Given a clusterRole,
+      // each is picked by that role and carries commanderCount commanders;
+      // only MLA Cluster callers pass one.
       var addMinions = function (
         parent,
         parentRng,
         count,
         dist,
-        commanderCount,
-        clusterRole
+        clusterRole,
+        commanderCount
       ) {
         parent.minions = [];
         _.times(count, function (minionIndex) {
@@ -283,7 +284,7 @@ define([
           giveRace(minionRng, minion, parent.race, false);
           personalise(minionRng, minion, parent.faction);
           minion.econ_rate = aiEconRate(minionRng, settings, dist, playerCount);
-          if (gwoAI.isCluster(parent)) {
+          if (clusterRole) {
             minion.commanderCount = commanderCount;
           }
           parent.minions.push(minion);
@@ -303,15 +304,11 @@ define([
       var bossMinions = countMinions(mandatoryMinions, minionMod, maxDist);
 
       if (bossMinions > 0) {
-        var bossIsCluster = gwoAI.isCluster(boss);
-        addMinions(
-          boss,
-          bossRng,
-          bossIsCluster ? 1 : bossMinions,
-          maxDist,
-          bossMinions,
-          bossIsCluster ? "Security" : ""
-        );
+        if (gwoAI.isCluster(boss)) {
+          addMinions(boss, bossRng, 1, maxDist, "Security", bossMinions);
+        } else {
+          addMinions(boss, bossRng, bossMinions, maxDist);
+        }
       }
 
       _.forEach(workerPool, function (worker, workerIndex) {
@@ -338,25 +335,24 @@ define([
         ai.typeOfBuffs = workerBuffs;
 
         if (numMinions > 0) {
-          ai.minions = [];
-
-          var workerIsCluster = gwoAI.isCluster(ai);
-          var clusterWorkers = workerIsCluster
-            ? clusterCommanderCount(numMinions, bossCommanders)
-            : 0;
-
-          // MLA Cluster Workers get additional commanders in place of
-          // minions
-          if (workerIsCluster && ai.name === "Worker") {
-            ai.commanderCount = Math.max(clusterWorkers, 2);
+          if (!gwoAI.isCluster(ai)) {
+            addMinions(ai, aiRng, numMinions, dist);
+          } else if (ai.name === "Worker") {
+            // MLA Cluster Workers get additional commanders in place of
+            // minions
+            ai.minions = [];
+            ai.commanderCount = Math.max(
+              clusterCommanderCount(numMinions, bossCommanders),
+              2
+            );
           } else {
             addMinions(
               ai,
               aiRng,
-              workerIsCluster ? 1 : numMinions,
+              1,
               dist,
-              clusterWorkers,
-              workerIsCluster ? "Worker" : ""
+              "Worker",
+              clusterCommanderCount(numMinions, bossCommanders)
             );
           }
         }

@@ -600,8 +600,8 @@ hire never depends on scene-load ordering and an add-on disabled mid-session
 drops out of the next Fight. It does no I/O while Community Mods is present.
 
 **Recording.** `installedRaces` reports `addons` and `addonMods` too; `mods`
-stays race-only, since `race_check`, `host_war.js` and `setup.js` read it as
-the race mods. The war records `gwaio.races.addons`, the identifier, name
+stays race-only, since `race_check`, `host_war.js` and `war_record.js` read it
+as the race mods. The war records `gwaio.races.addons`, the identifier, name
 and version of each add-on server mod active at creation. On resume
 `race_check.evaluate` **warns** for each one no longer active, and never
 blocks: every inventory holds vanilla paths, so the add-on's units simply

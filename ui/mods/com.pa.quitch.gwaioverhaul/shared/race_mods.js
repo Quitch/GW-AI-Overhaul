@@ -44,8 +44,8 @@ define([
   // server mod is active, the identifier, name and version of each such mod
   // for the war to record, the same pair for add-ons, whether the installed
   // mods could be read at all, and whether GW Server Mods is here to mount
-  // them. `mods` stays race-only: race_check, host_war.js and setup.js read
-  // it as the race mods. `known` false is "cannot tell" - Community Mods
+  // them. `mods` stays race-only: race_check, host_war.js and war_record.js
+  // read it as the race mods. `known` false is "cannot tell" - Community Mods
   // absent and nothing in the IndexedDB fallback - which a resume check must
   // not mistake for "not installed". `gwsm` false is not that: no race can be
   // mounted whatever is installed, so the answer is a definite none, and it

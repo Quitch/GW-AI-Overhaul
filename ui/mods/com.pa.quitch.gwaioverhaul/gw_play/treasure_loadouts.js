@@ -38,9 +38,9 @@ define([
   };
 
   // gw_game.js's winTurn passes the Guardians' ai.team to defeatTeam, and
-  // gw_start/setup.js deletes that field, so defeatTeam(undefined) matches the
-  // treasure star itself and clears its ai(). Nothing on the star survives the
-  // fight; the recorded index is what identifies it afterwards.
+  // gw_start/ai_population.js deletes that field, so defeatTeam(undefined)
+  // matches the treasure star itself and clears its ai(). Nothing on the star
+  // survives the fight; the recorded index is what identifies it afterwards.
   var isTreasureStar = function (gwoSettings, starIndex) {
     return (
       !!gwoSettings &&

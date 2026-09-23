@@ -69,7 +69,8 @@ define(function () {
       rng();
     }
 
-    // Both bounds inclusive, matching _.random; setup.js's gameModeEnabled depends on it.
+    // Both bounds inclusive, matching _.random; ai_population.js's
+    // gameModeEnabled depends on it.
     rng.int = function (min, max) {
       return min + Math.floor(rng() * (max - min + 1));
     };
