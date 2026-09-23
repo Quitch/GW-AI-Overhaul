@@ -255,8 +255,8 @@ merges the race's map over the brain's map
 `spec_id` the race map left resolves to a race unit of its cell. The referee
 writes the result as the army's tagged `ai_unit_map[_x1].json.<tag>`. It also
 copies the brain's untagged map, so the engine has a name to derive the tagged
-one from. This was measured live: with only the tagged file present, the engine
-looked for `ai_unit_map.json.ai0.ai0` and found nothing.
+one from. With only the tagged file present, the engine looks for
+`ai_unit_map.json.ai0.ai0` and finds nothing.
 
 No AI mod (`addAIMods`) is applied to a race tree in this pass. The descriptors
 name MLA build entries, which a race tree does not have. An AI's stat tech

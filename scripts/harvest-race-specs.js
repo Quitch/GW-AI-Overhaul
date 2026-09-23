@@ -14,6 +14,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const prettier = require("prettier");
 const { ZipReader } = require("./lib/zip-read.js");
+const { mediaDir, userDataDir } = require("./lib/pa-install.js");
 const { TABLES } = require("./lib/race-table-inputs.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -21,16 +22,8 @@ const OUT =
   process.env.GWO_HARVEST_OUT ||
   path.join(REPO_ROOT, "test", "fixtures", "race_specs.json");
 
-const MEDIA =
-  process.env.PA_MEDIA ||
-  "C:/Program Files (x86)/Steam/steamapps/common/Planetary Annihilation Titans/media";
-const USER_DATA =
-  process.env.PA_USER_DATA ||
-  path.join(
-    process.env.LOCALAPPDATA || "",
-    "Uber Entertainment",
-    "Planetary Annihilation"
-  );
+const MEDIA = mediaDir();
+const USER_DATA = userDataDir();
 
 function folderRoot(mod, dir) {
   return {

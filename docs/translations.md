@@ -87,8 +87,9 @@ names themselves (Legion, Bugs, Exiles) stay in.
 | `npm run i18n:merge`            | no               | Assembles `scripts/i18n/out/<lang>.*.json` into `translations/<lang>.json`: empty messages and descriptions dropped, keys sorted, Prettier-identical, idempotent.                                               |
 | `npm run validate:translations` | no               | The file contract (below). Runs in `verify`.                                                                                                                                                                    |
 
-The install is named with `PA_MEDIA=<path to media>` or `--pa <path>`; CI has none,
-so the two scripts that need it are local-only, like `validate:race-trees`.
+The install is named with `PA_MEDIA=<path to media>` or `--pa <path>`, and
+Steam's default Windows path is tried without either; CI has none, so the two
+scripts that need it are local-only, like `validate:race-trees`.
 `scripts/i18n/out/` is gitignored.
 
 ## The catalog's descriptions
@@ -141,6 +142,10 @@ Conventions the notes and the translations follow:
    (every panel, not only GWO's scenes), ahead of the scene's own scripts.
 
 ## Contributing a corrected translation
+
+Players translate GWO's text on Playglot (see the README), and accepted work
+reaches the files here through `npm run i18n:merge`. This section is for a
+developer's change in the repo.
 
 If the game's own translation of a GWO string is wrong, the fix goes in the
 language's file here and overrides the game's entry at runtime. Add the entry

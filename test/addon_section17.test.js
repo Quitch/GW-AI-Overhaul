@@ -8,14 +8,13 @@
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   zipsFor,
   fixtureIndex,
   inFixture,
 } = require("../scripts/lib/addon-fixture.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const section17 = loadCouiModule(MOD_ROOT + "/addon/section17.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");

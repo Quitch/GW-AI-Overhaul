@@ -163,11 +163,19 @@ define([
           ["cards/" + cardId],
           function (card) {
             curCard = cardId;
-            card[op](self, cardParams);
+            // GWO - a card that throws still finishes, or done and the unlock
+            // resume never run. The loader does not catch a throw here.
+            try {
+              card[op](self, cardParams);
+            } catch (e) {
+              console.error(
+                "GWO card " + cardId + " threw in " + op + ": " + e
+              );
+            }
             finishCard();
           },
           function (error) {
-            console.error("Failed loading card " + cardId, " : " + error);
+            console.error("Failed loading card " + cardId + " : " + error);
             finishCard();
           }
         );
@@ -201,7 +209,7 @@ define([
       });
     },
     // GWO - nothing uses this but we keep it for compatibility with other mods that might use it
-    // or in case the game itself uses it in the future. No idea why id() is a function here.
+    // or in case the game itself uses it in the future. test is a CardViewModel, whose id is a computed.
     hasCardLike: function (test) {
       var ok = test && test.id;
       if (!ok) {

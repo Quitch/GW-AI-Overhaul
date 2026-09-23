@@ -1,31 +1,15 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
-], function (gwoCard, gwoGroup) {
-  return {
-    visible: _.constant(true),
-    describe: _.constant(
-      "!LOC:Anti-Air Ammo Tech doubles all damage you deal to air units but halves damage to orbital units."
-    ),
-    summarize: _.constant("!LOC:Anti-Air Ammo Tech"),
-    icon: _.constant(
-      "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png"
-    ),
-    audio: _.constant({
-      found: "/VO/Computer/gw/board_tech_available_ammunition",
-    }),
-    getContext: gwoCard.getContext,
-    deal: function (system, context, inventory) {
-      return gwoCard.antiTechDeal(inventory, 40, "gwaio_anti_orbital");
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/card_factories.js",
+], function (gwoCardFactories) {
+  return gwoCardFactories.antiTechCard({
+    name: "!LOC:Anti-Air Ammo Tech",
+    description:
+      "!LOC:Anti-Air Ammo Tech doubles all damage you deal to air units but halves damage to orbital units.",
+    icon: "coui://ui/main/game/galactic_war/gw_play/img/tech/gwc_combat_air.png",
+    counter: "gwaio_anti_orbital",
+    armour: {
+      AT_Orbital: 0.5,
+      AT_Air: 2,
     },
-    buff: function (inventory) {
-      inventory.addMods(
-        gwoCard.flatMapMods(gwoGroup.ammo, "multiplyOrCreate", {
-          "armor_damage_map.AT_Orbital": 0.5,
-          "armor_damage_map.AT_Air": 2,
-        })
-      );
-    },
-    dull: function () {},
-  };
+  });
 });

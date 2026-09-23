@@ -25,7 +25,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_game_file_paths.js",
       ],
       function (
         GW,
@@ -201,8 +201,9 @@
           treeCache = treeCache || gwoGenerateAI.createTreeCache();
           ref.treeCache = treeCache;
           // installedRaces activates the add-ons whose mods are enabled, so a
-          // hire never depends on scene-load ordering. It never rejects, and
-          // resolves at once without GW Server Mods.
+          // hire never depends on scene-load ordering. It resolves at once
+          // without GW Server Mods, and rejects if the installed races cannot
+          // be read.
           return raceMods
             .installedRaces()
             .then(function () {

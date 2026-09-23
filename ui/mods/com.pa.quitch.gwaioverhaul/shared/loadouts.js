@@ -3,7 +3,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
 ], function (GW, gwoBank, gwoLoadoutIds, gwoLoadoutBanks, helpers) {
   var asCards = function (ids) {
     return _.map(ids, function (id) {

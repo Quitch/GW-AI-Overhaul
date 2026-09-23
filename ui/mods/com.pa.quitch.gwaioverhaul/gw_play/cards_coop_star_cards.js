@@ -3,7 +3,8 @@
 // the campaign snapshot. See coop.md, "Per-player pre-dealt cards".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
-], function (coopHost) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+], function (coopHost, refereeCoop) {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.
   var starCardForRecord = function (record, starIndex) {
@@ -27,11 +28,17 @@ define([
     return kept;
   };
 
+  // Leaves redealOwed off, so the write that stores a viewer's new cards is
+  // also the one that settles their debt.
   var buildStarCardsField = function (existing, updates, turn) {
     return {
       turn: turn,
       cards: _.assign({}, existing, updates),
     };
+  };
+
+  var redealOwed = function (record) {
+    return !!_.get(record, "gwaioStarCards.redealOwed");
   };
 
   var starNeedsViewerCard = function (params) {
@@ -104,20 +111,11 @@ define([
     var refreshPending;
 
     var connectedViewers = function () {
-      var clients = _.isArray(model.gwCampaignConnectedClients())
-        ? model.gwCampaignConnectedClients()
-        : [];
-
-      return _.filter(clients, function (client) {
-        return client && client.role === "viewer";
-      });
+      return refereeCoop.viewersOf(model.gwCampaignConnectedClients());
     };
 
     var findRecord = function (client) {
-      return game.findCoopPlayerInventoryData({
-        id: client.id,
-        name: client.name,
-      });
+      return refereeCoop.recordForClient(game, client);
     };
 
     var starsNeedingCards = function (record, redeal) {
@@ -165,7 +163,7 @@ define([
     // Resolves with whether the record changed. The record is re-read at write
     // time: chooseCards is async, so a catch-up deal can have landed
     // pendingTechCards on it since this viewer's work began.
-    var refreshViewer = function (client, redeal) {
+    var refreshViewer = function (client) {
       var record = findRecord(client);
       if (!record || !record.inventory) {
         return Promise.resolve(false);
@@ -173,9 +171,16 @@ define([
 
       // Decided before the inventory is built, so a refresh with nothing to do
       // costs a walk of the galaxy rather than an applyCards per viewer.
-      var targets = starsNeedingCards(record, redeal);
+      var targets = starsNeedingCards(record, redealOwed(record));
       if (!targets.length) {
-        return Promise.resolve(false);
+        // A debt with nothing to re-deal is settled, or it would re-deal this
+        // viewer on the first refresh of the next turn.
+        return Promise.resolve(
+          redealOwed(record) &&
+            !!coopHost.upsertRecord(game, record, {
+              gwaioStarCards: _.omit(record.gwaioStarCards, "redealOwed"),
+            })
+        );
       }
 
       var playerKey = gwoStreams.coopPlayerKey(record, client);
@@ -220,6 +225,7 @@ define([
           var next = buildStarCardsField(pruned, updates, game.stats().turns());
 
           if (
+            !redealOwed(fresh) &&
             _.isEqual(
               next.cards,
               fresh.gwaioStarCards && fresh.gwaioStarCards.cards
@@ -234,22 +240,22 @@ define([
 
     // A refresh calls deal() on every card of the deck once per star per viewer,
     // which is too much for one frame, so each viewer yields before starting.
-    var refreshViewerLater = function (client, redeal) {
+    var refreshViewerLater = function (client) {
       return new Promise(function (resolve) {
         _.defer(function () {
-          resolve(refreshViewer(client, redeal));
+          resolve(refreshViewer(client));
         });
       });
     };
 
-    var refreshEachViewer = function (viewers, redeal) {
+    var refreshEachViewer = function (viewers) {
       var changedAny = false;
 
       return _.reduce(
         viewers,
         function (chain, client) {
           return chain
-            .then(refreshViewerLater.bind(null, client, redeal))
+            .then(refreshViewerLater.bind(null, client))
             .then(function (changed) {
               changedAny = changedAny || changed;
             });
@@ -260,7 +266,25 @@ define([
       });
     };
 
+    // Every viewer record, connected or not, so a viewer away when the host
+    // re-deals is re-dealt on their return. See coop.md.
+    var oweRedealToEveryViewer = function () {
+      _.forEach(game.coopPlayerInventoryData(), function (record) {
+        if (record && !redealOwed(record)) {
+          coopHost.upsertRecord(game, record, {
+            gwaioStarCards: _.assign({}, record.gwaioStarCards, {
+              redealOwed: true,
+            }),
+          });
+        }
+      });
+    };
+
     var runRefresh = function (redeal) {
+      if (redeal && !(gwoSettings && gwoSettings.staticTech)) {
+        oweRedealToEveryViewer();
+      }
+
       var viewers = connectedViewers();
       if (!viewers.length) {
         return Promise.resolve();
@@ -281,7 +305,7 @@ define([
         return Promise.resolve();
       }
 
-      return refreshEachViewer(viewers, redeal).then(function (changed) {
+      return refreshEachViewer(viewers).then(function (changed) {
         if (!changed) {
           return undefined;
         }
@@ -314,7 +338,14 @@ define([
         return refreshInFlight;
       }
 
-      refreshInFlight = runRefresh(redeal)
+      // runRefresh starts on a later tick: owing a re-deal writes records, and
+      // cards.js refreshes on every record write. Run synchronously, that
+      // refresh would start before refreshInFlight is set and run alongside
+      // this one.
+      refreshInFlight = Promise.resolve()
+        .then(function () {
+          return runRefresh(redeal);
+        })
         .then(null, function (reason) {
           console.error(
             "[GW COOP] failed to refresh co-op player star cards: " + reason
@@ -332,7 +363,7 @@ define([
 
     return {
       refresh: refresh,
-      starCardForClient: starCardForRecord,
+      starCardForRecord: starCardForRecord,
     };
   };
 

@@ -74,6 +74,7 @@ define({
   barracuda: "/pa/units/sea/attack_sub/attack_sub.json",
   barracudaAmmo: "/pa/units/sea/attack_sub/attack_sub_ammo.json",
   barracudaWeapon: "/pa/units/sea/attack_sub/attack_sub_tool_weapon.json",
+  baseOrbital: "/pa/units/orbital/base_orbital/base_orbital.json",
   bluehawk: "/pa/units/land/bot_tactical_missile/bot_tactical_missile.json",
   bluehawkAmmo:
     "/pa/units/land/bot_tactical_missile/bot_tactical_missile_ammo.json",

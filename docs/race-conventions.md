@@ -41,11 +41,12 @@ race needs something new.
    `shared/races.js` if a brain gains a race. The AI modal's per-race cells
    (`shared/brain_table.js`) offer it from there automatically.
 
-4. **Fixture.** Add the server mod (and any companion that supplies base
-   specs) to `SERVER_MODS` in `scripts/harvest-unit-types.js`, in mount
-   order. Then re-run the script, so `test/fixtures/unit_types.json` carries
-   the race's units and `buildable_types`. Commit
-   `test/fixtures/race_specs.json` from step 2 with it.
+4. **Fixture.** Add any companion mod that supplies base specs to
+   `COMPANIONS` in `scripts/lib/server-mods.js`. The race's own `serverMods`
+   are read from its descriptor. Then run `npm run harvest:unit-types`, so
+   `test/fixtures/unit_types.json` carries the race's units and
+   `buildable_types`. Commit `test/fixtures/race_specs.json` from step 2 with
+   it.
 5. **Tests** in `test/race_<id>.test.js` cover four things. They check the
    descriptor shape. They check that the cells the starter set and the `gwc_`
    cards open all hold a race unit. They check any race-specific grant rule
@@ -79,9 +80,9 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
    other tree subtracts. A flat file is matched by its full name
    (`{ dir: "/pa/ai/factory_builds/", match: "dolfin.json" }`); check that no
    base file starts with it. A map two layers share is listed under both.
-4. **Fixture.** Add the server mod to `SERVER_MODS` in
-   `scripts/harvest-unit-types.js`, in mount order, and re-run it. Commit
-   `test/fixtures/race_specs.json` from step 2 with it.
+4. **Fixture.** Run `npm run harvest:unit-types` with the zip in
+   `download/`. The script reads the add-on's `serverMods` from its
+   descriptor. Commit `test/fixtures/race_specs.json` from step 2 with it.
 5. **Tests** in `test/addon_<id>.test.js` check the descriptor shape, that
    every harvested unit is in the table, that the zip ships every path and
    every layer entry (skipped without the zip), and the cells: a held vanilla

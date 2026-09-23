@@ -21,7 +21,7 @@ const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
 );
 const gwoDifficulty = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/difficulty_levels.js"
 );
 
 const installModel = useModel();

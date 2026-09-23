@@ -3,11 +3,12 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
   "shared/gw_inventory",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/general_commander_setup.js",
 ], function (
   GWFactions,
   gwoAI,
@@ -17,7 +18,8 @@ define([
   gwoStreams,
   gwoCard,
   coopHost,
-  gwoRaces
+  gwoRaces,
+  setup
 ) {
   return function (params) {
     var game = params.game;
@@ -29,16 +31,6 @@ define([
 
     var setupGeneralCommanderRequest = "gwo_setup_general_commander";
     var setupGeneralCommanderResult = "gwo_setup_general_commander_result";
-
-    var inventoryNeedsGeneralCommanderSetup = function (cards) {
-      return !!(
-        _.isArray(cards) &&
-        cards.length === 1 &&
-        cards[0] &&
-        cards[0].id === "gwc_start_subcdr" &&
-        !cards[0].minions
-      );
-    };
 
     var resolveFactionMinions = function (factionIndex) {
       var chosenFaction = GWFactions[factionIndex];
@@ -86,7 +78,7 @@ define([
       raceInventory
     ) {
       var minions;
-      if (!inventoryNeedsGeneralCommanderSetup(cards)) {
+      if (!setup.needsSetup(cards)) {
         return false;
       }
 
@@ -106,9 +98,33 @@ define([
       return true;
     };
 
+    var viewerRequest = setup.viewerRequest({
+      pending: model.gwoGeneralCommanderSetupPending,
+      ready: function () {
+        return (
+          model.isCampaignViewer() &&
+          model.gwCampaignActive() &&
+          model.gwCampaignPerPlayerTechCards() &&
+          model.gwCampaignConnected()
+        );
+      },
+      record: function () {
+        return model.currentCoopPlayerInventoryData();
+      },
+      transmit: function () {
+        return model.sendCampaignViewerOperator(
+          setupGeneralCommanderRequest,
+          {},
+          {
+            request_id: _.uniqueId("gwo_setup_general_commander_"),
+          }
+        );
+      },
+    });
+
     var applyGeneralCommanderSetupResult = function (operator) {
       var payload = operator && operator.payload ? operator.payload : {};
-      model.gwoGeneralCommanderSetupPending(false);
+      viewerRequest.answer();
 
       if (payload.error) {
         console.error(
@@ -120,42 +136,6 @@ define([
       if (payload.changed) {
         return model.prepareCoopPlayerInventories();
       }
-    };
-
-    var setupGeneralCommanderForViewer = function () {
-      var record;
-      var recordInventory;
-      var cards;
-
-      if (
-        !model.isCampaignViewer() ||
-        !model.gwCampaignActive() ||
-        !model.gwCampaignPerPlayerTechCards() ||
-        !model.gwCampaignConnected()
-      ) {
-        return false;
-      }
-
-      if (model.gwoGeneralCommanderSetupPending()) {
-        return false;
-      }
-
-      record = model.currentCoopPlayerInventoryData();
-      recordInventory = record && record.inventory;
-      cards = recordInventory && recordInventory.cards;
-      if (!inventoryNeedsGeneralCommanderSetup(cards)) {
-        return false;
-      }
-
-      model.gwoGeneralCommanderSetupPending(true);
-      model.sendCampaignViewerOperator(
-        setupGeneralCommanderRequest,
-        {},
-        {
-          request_id: _.uniqueId("gwo_setup_general_commander_"),
-        }
-      );
-      return true;
     };
 
     var setupGeneralCommanderForCoopPlayer = function (operator) {
@@ -212,21 +192,25 @@ define([
         return result.promise();
       }
 
-      if (!inventoryNeedsGeneralCommanderSetup(cards)) {
+      if (!setup.needsSetup(cards)) {
         return replyUnchanged();
       }
 
-      recordFaction =
-        recordInventory &&
-        recordInventory.tags &&
-        recordInventory.tags.global &&
-        recordInventory.tags.global.playerFaction;
+      recordFaction = _.get(recordInventory, "tags.global.playerFaction");
       factionIndex = _.isNumber(recordFaction) ? recordFaction : playerFaction;
       playerInventory = new GWInventory();
       playerInventory.load(recordInventory);
 
       finish = function () {
-        var nextRecord = coopHost.upsertRecord(game, record, {
+        // Re-read: applyCards is async, and a star-card refresh can have
+        // written this record since it was read above.
+        var fresh = coopHost.recordFor(game, operator);
+        if (!setup.recordNeedsSetup(fresh)) {
+          replyUnchanged();
+          return;
+        }
+
+        var nextRecord = coopHost.upsertRecord(game, fresh, {
           inventory: playerInventory.save(),
         });
         if (!nextRecord) {
@@ -282,11 +266,11 @@ define([
     return function setupGeneralCommander() {
       var cards;
 
-      if (
-        model.isCampaignViewer() &&
-        model.gwCampaignPerPlayerTechCards() &&
-        setupGeneralCommanderForViewer()
-      ) {
+      // A viewer's inventory is a copy of the host's, so a viewer never takes
+      // the host path below. Its own request waits on the connection and the
+      // per-player tech sync, either of which can arrive after this runs.
+      if (model.isCampaignViewer()) {
+        ko.computed(viewerRequest.send);
         return;
       }
 

@@ -4,8 +4,8 @@
   }
 
   try {
-    var getMenuString = function (boolean, stringIfTrue, stringIfFalse) {
-      return boolean ? stringIfTrue : stringIfFalse;
+    var getMenuString = function (condition, stringIfTrue, stringIfFalse) {
+      return condition ? stringIfTrue : stringIfFalse;
     };
 
     requireGW(["shared/gw_common"], function (GW) {
@@ -33,8 +33,8 @@
           "!LOC:Surrender"
         );
 
-        var getMenuAction = function (boolean) {
-          if (boolean) {
+        var getMenuAction = function (lost) {
+          if (lost) {
             return "menuReturnToWar";
           }
           return getMenuString(hardcore(), "menuAbandonWar", "menuSurrender");

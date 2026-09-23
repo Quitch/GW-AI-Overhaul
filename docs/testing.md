@@ -50,8 +50,8 @@ depend on `shared/gw_common`. Some sweeps would test nothing if they skipped
 those cards. For those sweeps, `registerModuleStub` is an opt-in escape hatch.
 It does **not** weaken the default.
 
-`scripts/lib/card-probe.js` takes that hatch. With `shared/gw_common` stubbed,
-every card loads. That sits oddly beside
+`scripts/lib/card-probe.js` takes that hatch, and so does `validate:ai-mods`.
+With `shared/gw_common` stubbed, every card loads. That sits oddly beside
 `validate:cards`'s `MIN_CHECKED` floor until you notice that they answer
 different questions. The validator refuses the hatch on purpose. Its number is
 therefore what can be checked with no stand-in at all.
@@ -75,7 +75,7 @@ described separately below.
 | `validate:schemas`      | AI build-order JSON and difficulty/personality data: type consistency.                                                                                                                                                      |
 | `validate:refs`         | Cross-references: loadout ids against card files, unit keys, AI builder roles against `unit_map`.                                                                                                                           |
 | `validate:sonar`        | `sonar-project.properties`: no stale exclusion paths, every analysed file is UTF-8.                                                                                                                                         |
-| `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree and validator tables) against the tree and `package.json`.                                                                                     |
+| `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree, AI-path tree and validator tables) against the tree and `package.json`.                                                                       |
 | `validate:translations` | The translation files under `translations/`: PA locale names, PA's table shape, sorted unique keys, the en-US catalog equal to the tree's `!LOC:` keys, other files a subset of it, placeholders and style codes preserved. |
 
 Several are worth understanding rather than just running.
@@ -83,6 +83,12 @@ Several are worth understanding rather than just running.
 **`validate:ai-mods` works by execution, not inspection.** AI-mod descriptors have
 no static JSON form. The only way to check their shape is to call every card's
 `buff()`/`dull()` against a mock inventory.
+
+A loadout adds its AI mods only as the war's start card, the first card in the
+hand on its first buff. Anywhere else its `buff()` only banks it. The validator
+therefore runs a loadout down that path, with both banks stubbed to accept and
+keep nothing. `MIN_CARDS_CHECKED` fails the run when fewer cards add AI mods
+than do today, and an excluded card is listed by name.
 
 `scripts/lib/auto-stub.js` provides that mock. It is a Proxy that answers any
 property access or call with another instance of itself. The check therefore
@@ -102,11 +108,14 @@ a PA patch adds tests.** `UnitCountonPlanet` is a base-game spelling variant. It
 stays in the list because the engine accepts what its own data ships.
 
 **`test/fixtures/unit_types.json` is harvested the same way.**
-`scripts/harvest-unit-types.js` writes it. It holds every listed unit's
+`npm run harvest:unit-types` writes it. It holds every listed unit's
 effective `unit_types`, with their `buildable_types`. The sources are the
 installed game (`pa_ex1` over `pa`) and the race and add-on server mods on
 disk. A server mod on disk is a `download/` zip or a `server_mods/` folder.
-The mods are read in mount order.
+The mods are the shipped descriptors' `serverMods`, every race's and then
+every add-on's, as `validate:race-trees` layers them. A companion mod that a
+descriptor does not list, such as the Bugs commander-merge, is in
+`scripts/lib/server-mods.js`. The mods are read in that order.
 
 With that fixture, `test/unit_groups_cells.test.js` can check the cell
 classifier against `unit_groups.js` in CI, `test/race_legion.test.js` can see
@@ -129,8 +138,8 @@ rewrites the tables, and the diff is the review. See
 [races.md](races.md), "Unit tables".
 
 **`i18n:missing` and `i18n:glossary` are local-only for the same reason.** They
-read the game's own translation tables from the PA install (`PA_MEDIA` or
-`--pa <path>`) to list what each language still lacks and how the stock UI renders
+read the game's own translation tables from the PA install (`--pa <path>`, or
+as below) to list what each language still lacks and how the stock UI renders
 shared terms. `validate:translations` needs no install and runs in `verify`. See
 [translations.md](translations.md).
 
@@ -155,6 +164,16 @@ CI has none of those files, so the unit tests pin the same contract on mocked
 listings (`test/races.test.js`, `test/referee_ai_file_processing.test.js`). Run
 it after a PA, race or add-on patch. Also run it after you change
 `races.treeFilter`, `races.inAnyRaceLayer` or `referee_ai.js`'s tree writing.
+
+The local-only scripts find the PA install through `scripts/lib/pa-install.js`.
+The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
+data folder, which holds `download/` and `server_mods/`, is `PA_USER_DATA`,
+else `Uber Entertainment/Planetary Annihilation` under `%LOCALAPPDATA%`.
+
+`npm run minify:json -- <dir>` is the one data script that is not a check. It
+rewrites every `.json` under `<dir>` onto one line, which is how `pa/**` is
+kept ([architecture.md](architecture.md)). It skips `.git`, `node_modules`
+and `coverage`, and exits non-zero on a file that does not parse.
 
 **`validate:schemas` checks whatever files it finds, which is why
 `test/ai_source_files.test.js` exists alongside it.** The walk covers `pa/ai`,
@@ -319,9 +338,42 @@ have grown one.
 
 ## Coverage
 
-The Sonar quality gate requires ~80% coverage on **new code only**. Files that are
-pure `model`/`ko`/`api` glue are coverage-excluded. Their testable logic is
-extracted into measured sibling modules. See [`shadowing.md`](shadowing.md).
+CI runs SonarCloud's default quality gate, which requires **≥ 80% coverage on
+_new code_** (the lines a change adds or edits) - not on the whole repo, so the
+large body of pre-existing untested `ui/**` is not retroactively measured. The
+aim is honest coverage, never padding to hit the number:
+
+- **New/changed logic gets a unit test.** Add coverage under `test/**` for the
+  branching you introduce in the measured logic layer (`shared/**` helpers,
+  `gw_play/referee_*.js`, `gw_start/ai_tech.js`, and similar). Follow the
+  existing harness in `test/*.test.js` (`node:test` +
+  `scripts/lib/amd-loader.js`, engine globals stubbed only where a function
+  reads them).
+- **Keep non-trivial logic in a measured `shared/` helper, not inline in a tech
+  card.** Tech cards (`cards/**`) are excluded from the coverage metric because
+  their contract and AI-mod behaviour are already enforced by
+  `validate:cards`/`validate:ai-mods`; that exclusion is only honest while cards
+  stay thin, so real logic belongs in a `shared/` module where it is both
+  testable and tested.
+- **Genuinely-untestable new code is excluded, not faked.**
+  DOM/knockout/createjs glue and pure `define({...})` data blobs (whose
+  correctness is guarded by `validate:schemas`/`validate:refs`) belong in
+  `sonar.coverage.exclusions` in `sonar-project.properties` - each with a
+  one-line rationale matching the categories already documented there - rather
+  than being given assertionless "tests" just to move coverage.
+- **Renaming or deleting an excluded file means updating its exclusion.**
+  Nothing in the game or the rest of the tooling reads
+  `sonar-project.properties`, so a path left pointing at a file that no longer
+  exists looks deliberate and silently puts that file back into analysis - which
+  is how a GBK-encoded readme reintroduced SonarCloud's "problems with file
+  encoding" warning. `validate:sonar` (part of `npm run validate`) fails on any
+  exclusion pattern matching no tracked file, and on any file still in analysis
+  that isn't valid UTF-8; a genuinely non-UTF-8 asset needs an exclusion rather
+  than a re-encode.
+
+Files that are pure `model`/`ko`/`api` glue are coverage-excluded. Their testable
+logic is extracted into measured sibling modules. See
+[`shadowing.md`](shadowing.md).
 
 Each sibling is a plain `define()` over lodash and `console` only. It has no
 engine globals and no dependency the repo does not ship, so it loads under the
@@ -337,10 +389,12 @@ this page is not a second copy of it.
 
 Several scene scripts are not modules at all. `gw_play/cards.js` is
 self-invoking and never calls `define()`, so the harness cannot load it in
-place. Its pure logic is extracted into sibling `define()` modules:
-`cards_deal_helpers.js`, `cards_coop_deal.js`, `cards_coop_reroll.js`,
-`cards_card_name_sync.js` and `cards_cheats.js`. Each returns a factory that
-`cards.js` calls with its collaborators.
+place. Its pure logic is extracted into `define()` modules. The siblings
+`cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_card_name_sync.js` and
+`cards_cheats.js` each return a factory that `cards.js` calls with its
+collaborators. `shared/cards_deal_helpers.js` returns its helpers directly, and
+`shared/loadouts.js` requires it too. `gw_play/bugfixes.js` is self-invoking
+too, and its Cluster repair lives in `cluster_repair.js`.
 
 Where a helper inside such a module is not reachable through the returned
 factory, it is re-exported through:
@@ -356,8 +410,9 @@ if (typeof module !== "undefined" && module.exports) {
 runtime. The branch is therefore dead in production and exists purely for the
 test suite. The suite reaches it with `requireShippedModule`. The global is
 deliberately absent from these files' configured globals. That is why each
-occurrence carries an `eslint-disable-next-line no-undef`. The same hook appears
-in `gw_play/referee_ai.js` for `applyAiMods`, which `define()` never returns.
+occurrence carries an `eslint-disable-next-line no-undef`. Many modules carry the
+hook, among them `gw_play/referee_ai.js` for `applyAiMods`, which `define()`
+never returns. A search for `typeof module` under `ui/` lists them all.
 
 **A test file is named for the module it loads, not the feature it belongs to.**
 Once the pure logic is extracted, the bootstrap that is left has nothing the

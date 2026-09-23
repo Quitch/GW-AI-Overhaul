@@ -66,7 +66,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       // No descriptor at all: the race's client mod is gone, or the mod that
       // registered it no longer does. A registry fact, so it holds whether or
       // not the installed server mods could be listed.
-      if (!race || race.id === races.MLA_ID) {
+      if (!race) {
         blocked.push({ reason: "descriptor", race: id, name: id });
         return;
       }

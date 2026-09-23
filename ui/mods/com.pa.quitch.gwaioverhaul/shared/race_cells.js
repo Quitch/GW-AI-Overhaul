@@ -5,7 +5,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_game_file_paths.js",
 ], function (specCache, unitCells, gwoRaces, gameFilePaths) {
   var deps = { fetch: gameFilePaths.specFetch };
   // Keyed by the unit list read: the list grows as race zips mount, so a read
@@ -13,8 +13,10 @@ define([
   var specsLoads = {};
   var indexes = {};
 
+  // The whole list, not a digest of it: two lists of the same count and total
+  // length would otherwise share one entry.
   var signatureOf = function (units) {
-    return units.length + ":" + units.join("|").length;
+    return units.join("|");
   };
 
   // coui:, not spec: - spec: pins the first read of a path for the process,
@@ -53,7 +55,13 @@ define([
           return Promise.all(_.map(specCache.references(raw), visit));
         },
         function (error) {
-          console.log("error loading spec:", item, error);
+          console.log(
+            "error loading spec: " +
+              item +
+              " (" +
+              gameFilePaths.describeError(error) +
+              ")"
+          );
         }
       );
     };
@@ -157,9 +165,21 @@ define([
   // gw_play/races.js.
   var prime = function (raceId, units) {
     return indexFor(raceId, units).then(null, function (error) {
-      console.error("gwoRaces: cells not built for " + raceId, error);
+      console.error(
+        "gwoRaces: cells not built for " +
+          raceId +
+          ": " +
+          gameFilePaths.describeError(error)
+      );
     });
   };
+
+  // Test-only hook - see testing.md.
+  // eslint-disable-next-line no-undef
+  if (typeof module !== "undefined" && module.exports) {
+    // eslint-disable-next-line no-undef
+    module.exports = { signatureOf: signatureOf };
+  }
 
   return {
     load: load,
