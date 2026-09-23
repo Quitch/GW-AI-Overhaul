@@ -260,6 +260,56 @@ describe("gw_inventory - holding the bank for another player's cards", () => {
   });
 });
 
+// A third-party card's buff or dull runs inside the requireGW success callback,
+// which does not catch. Without the catch, finishCard never ran: done and the
+// unlock resume were lost for the session.
+describe("gw_inventory - a card that throws", () => {
+  it("still reaches done, and resumes unlocks", () => {
+    const errorMock = mock.method(console, "error", () => {});
+    cardModules.gwc_thrower = {
+      buff: () => {
+        throw new Error("buff exploded");
+      },
+      dull: () => {},
+    };
+    cardModules.gwc_start_orbital = { buff: () => {}, dull: () => {} };
+    raise("viewer");
+    let done = 0;
+
+    inventoryHolding([
+      { id: "gwc_thrower" },
+      { id: "gwc_start_orbital" },
+    ]).applyCards(() => {
+      done++;
+    });
+    timers.delayed.shift().fn();
+
+    assert.equal(done, 1);
+    assert.deepEqual(bank, [["suspend", stockBank], "resume"]);
+    assert.deepEqual(
+      errorMock.mock.calls.map((call) => call.arguments),
+      [["GWO card gwc_thrower threw in buff: Error: buff exploded"]]
+    );
+  });
+
+  it("removes the pass's getTag and setTag overrides", () => {
+    mock.method(console, "error", () => {});
+    cardModules.gwc_thrower = {
+      buff: () => {},
+      dull: () => {
+        throw new Error("dull exploded");
+      },
+    };
+    const inventory = inventoryHolding([{ id: "gwc_thrower" }]);
+
+    inventory.applyCards();
+
+    assert.equal(Object.hasOwn(inventory, "getTag"), false);
+    assert.equal(Object.hasOwn(inventory, "setTag"), false);
+    assert.equal(Object.hasOwn(inventory, "applyCards"), false);
+  });
+});
+
 describe("gw_inventory - the inventory itself", () => {
   it("loads an absent config as an empty inventory", () => {
     const inventory = new GWInventory();

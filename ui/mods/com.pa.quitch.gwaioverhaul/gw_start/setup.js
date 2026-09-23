@@ -442,8 +442,7 @@
           }
           built = true;
         };
-        requireGW(gwoLoadoutBanks.paths(), function () {
-          gwoLoadoutBanks.resolve(_.toArray(arguments));
+        gwoLoadoutBanks.load().then(function () {
           model.gwoRebuildStartCards();
         });
         var processedStartCards = {};
@@ -451,21 +450,40 @@
         var loaded = $.Deferred();
 
         _.forEach(loadouts.allCards, function (card) {
-          requireGW(["cards/" + card.id], function (cardFile) {
-            // A third-party loadout whose module returns nothing still has to
-            // count towards the tally, or `loaded` never resolves and Go To War
-            // spins with no reseed - see selectMinion's note below.
-            if (cardFile) {
-              cardFile.id = card.id;
-              processedStartCards[card.id] = cardFile;
-            } else {
-              console.error("Start card loaded but returned nothing:", card.id);
+          // A third-party loadout whose module fails to load or returns nothing
+          // still has to count towards the tally, or `loaded` never resolves
+          // and Go To War spins with no reseed - see selectMinion's note above.
+          // The guard stops a second errback counting it twice.
+          var counted = false;
+          var count = function () {
+            if (counted) {
+              return;
             }
+            counted = true;
             --loadCount;
             if (loadCount === 0) {
               loaded.resolve();
             }
-          });
+          };
+
+          requireGW(
+            ["cards/" + card.id],
+            function (cardFile) {
+              if (cardFile) {
+                cardFile.id = card.id;
+                processedStartCards[card.id] = cardFile;
+              } else {
+                console.error(
+                  "Start card loaded but returned nothing: " + card.id
+                );
+              }
+              count();
+            },
+            function () {
+              console.error("Start card failed to load: " + card.id);
+              count();
+            }
+          );
         });
 
         var gwoDealStartCard = function (params) {

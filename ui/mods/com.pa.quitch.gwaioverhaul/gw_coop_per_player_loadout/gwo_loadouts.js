@@ -156,8 +156,7 @@
 
         // A viewer picking their own loadout must see the mod ones they have
         // unlocked, so the banks are resolved before the list is built.
-        requireGW(gwoLoadoutBanks.paths(), function () {
-          gwoLoadoutBanks.resolve(_.toArray(arguments));
+        gwoLoadoutBanks.load().then(function () {
           banksResolved = true;
           model.gwoRebuildStartCards();
         });
