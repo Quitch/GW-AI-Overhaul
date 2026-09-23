@@ -2,26 +2,22 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_inventory.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/cluster_setup.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-], function (inventory, gwoCluster, gwoAI) {
-  var AMMUNITION_TECH = 1;
-  var ARMOUR_TECH = 2;
-  var COMBAT_TECH = 6;
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+], function (inventory, gwoCluster, gwoAI, gwoCard) {
+  var BUFF = gwoAI.BUFF_TYPES;
+
+  // Path by path, each over every unit: the order the stored mods have always
+  // been in.
   var multiply = function (units, multiplier, paths) {
-    var outputArray = [];
-    if (!_.isArray(paths)) {
-      paths = [paths];
-    }
-    _.forEach(paths, function (path) {
-      _.forEach(units, function (unit) {
-        outputArray.push({
-          file: unit,
-          path: path,
-          op: "multiply",
-          value: multiplier,
-        });
-      });
-    });
-    return outputArray;
+    return _.flatten(
+      _.map(_.isArray(paths) ? paths : [paths], function (path) {
+        return _.flatten(
+          _.map(units, function (unit) {
+            return gwoCard.mods(unit, "multiply", [path], multiplier);
+          })
+        );
+      })
+    );
   };
 
   var legonisTech = [];
@@ -43,12 +39,7 @@ define([
     inventory.commanderUnits, // Revenants
     inventory.clusterCommanderUnits,
   ];
-  var speedPaths = [
-    "navigation.move_speed",
-    "navigation.brake",
-    "navigation.acceleration",
-    "navigation.turn_speed",
-  ];
+  var speedPaths = gwoCard.paths.navigation;
 
   var setupAITech0FabricationTech = function () {
     var factionUnits = [
@@ -78,8 +69,8 @@ define([
       inventory.revenantsWeapons,
       inventory.clusterWeapons,
     ];
-    var ammoPaths = ["damage", "splash_damage"];
-    var weaponPaths = ["ammo_capacity", "ammo_demand", "ammo_per_shot"];
+    var ammoPaths = gwoCard.paths.damage;
+    var weaponPaths = gwoCard.paths.energyWeapon;
     _.forEach(factionAmmo, function (ammos, i) {
       factionTechs[i][1] = multiply(ammos, 1.25, ammoPaths);
     });
@@ -166,9 +157,9 @@ define([
       multiply(inventory.foundationUnitsMobileAir, 1.25, speedPaths)
     );
     _.forEach(factionTechs, function (faction) {
-      faction[COMBAT_TECH] = faction[COMBAT_TECH].concat(
-        faction[AMMUNITION_TECH],
-        faction[ARMOUR_TECH]
+      faction[BUFF.combat] = faction[BUFF.combat].concat(
+        faction[BUFF.damage],
+        faction[BUFF.health]
       );
     });
   };

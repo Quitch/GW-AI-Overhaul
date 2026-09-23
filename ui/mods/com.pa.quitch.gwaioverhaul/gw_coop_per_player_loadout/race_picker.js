@@ -3,7 +3,7 @@
 // host is not running has no units in the battle. See coop.md and races.md.
 (function () {
   try {
-    var raceSelectId = "#gwo-viewer-race-select";
+    var raceSelectId = "#gwo-race-select";
 
     // The observables the markup binds to exist before the bindings are
     // applied; what fills them arrives later. See shadowing.md.
@@ -35,14 +35,20 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/commander_display.html"
       )
     );
+    // What the shared race picker markup binds to.
+    model.gwoRacePicker = {
+      available: model.gwoViewerRacesAvailable,
+      tooltip: model.gwoViewerRaceTooltip,
+      value: model.gwoViewerRace,
+    };
     $("#commander-select")
       .closest(".form-group")
       .after(
         loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/race_select.html"
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_select.html"
         )
       );
-    locTree($("#gwo-viewer-race-group"));
+    locTree($("#gwo-race-group"));
 
     requireGW(
       [

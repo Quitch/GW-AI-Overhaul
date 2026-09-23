@@ -622,8 +622,9 @@ Two modules are involved:
   those descriptors multiply over, so each faction's tech hits only what that
   faction fields.
 
-`setup.js`'s `aiBuffType` names the tech indices: cost 0, damage 1, health 2,
-speed 3, build 4, combat 6, cooldown 7. **Index 5 is deliberately absent**: that
+`shared/ai.js`'s `BUFF_TYPES` names the tech indices, for war generation, AI tech,
+and the intelligence panel alike: cost 0, damage 1, health 2, speed 3, build 4,
+combat 6, cooldown 7. **Index 5 is deliberately absent**: that
 tech was removed, and the gap is preserved rather than closed so existing saves
 keep meaning what they meant. A contributor who renumbered it to tidy the sequence
 would silently repoint every war already carrying a 6 or a 7.

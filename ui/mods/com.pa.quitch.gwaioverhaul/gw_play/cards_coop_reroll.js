@@ -102,10 +102,7 @@ define([
         return;
       }
 
-      var record = game.findCoopPlayerInventoryData({
-        id: payload.client_id,
-        name: payload.client_name,
-      });
+      var record = coopHost.recordFor(game, payload);
       if (!record || !record.inventory) {
         console.error(
           "[GW COOP] missing inventory for pending tech reroll result"

@@ -343,6 +343,23 @@ define([
     // The faction index of Cluster, for AIs and players alike.
     CLUSTER_FACTION: CLUSTER_FACTION,
 
+    // Indices into ai_tech.js's factionTechs[faction][n], as ai.typeOfBuffs
+    // records them. 5 is absent: that tech was removed, and only v5.11.0 and
+    // earlier saves carry it. Key order is the order war generation samples.
+    BUFF_TYPES: {
+      cost: 0,
+      damage: 1,
+      health: 2,
+      speed: 3,
+      build: 4,
+      combat: 6,
+      cooldown: 7,
+    },
+
+    // The eradication modes an AI can carry, in the order war generation
+    // samples them. Each is the suffix of an ai.eradicationMode<name> flag.
+    ERADICATION_MODES: ["SubCommanders", "Factories", "Fabbers"],
+
     // An MLA Cluster AI: faction 4 fielding its Angel and Colonel Sub
     // Commanders. A Cluster of any other race is an ordinary faction. The
     // Guardians of a Cluster star carry faction 4 too. See races.md.

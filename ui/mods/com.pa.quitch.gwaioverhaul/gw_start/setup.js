@@ -8,6 +8,10 @@
     // are bindable before the requireGW call sets these.
     var gwoFavourites;
     var gwoFavouriteLoadouts;
+    // From shared/ai.js and shared/ai_personality.js, once they load.
+    var aiBuffTypes;
+    var eradicationModes;
+    var ffaTags;
 
     model.gwoIsFavourite = function (card) {
       return !!gwoFavourites && gwoFavourites.has(cardId(card));
@@ -115,23 +119,10 @@
 
     var foundationFaction = 1;
 
-    // Index into ai_tech.js's factionTechs[faction][n]. 5 is absent because that
-    // tech was removed; see the note in ai_tech.js where the setupAITech*
-    // functions are called.
-    var aiBuffType = {
-      cost: 0,
-      damage: 1,
-      health: 2,
-      speed: 3,
-      build: 4,
-      combat: 6,
-      cooldown: 7,
-    };
-
     // Drawing helpers take an rng parameter rather than closing over one: the
     // seed is only known inside navToNewGame. See galaxy.md.
     var selectAIBuffs = function (rng, numberOfBuffs) {
-      return rng.sample(_.values(aiBuffType), numberOfBuffs);
+      return rng.sample(_.values(aiBuffTypes), numberOfBuffs);
     };
 
     var setupAIBuffs = function (rng, distance, buffDistanceDelay) {
@@ -231,7 +222,7 @@
 
     var enableAnEradicationModeTypes = function (rng, ai) {
       var numberOfModes = rng.int(1, 3);
-      var modes = ["SubCommanders", "Factories", "Fabbers"];
+      var modes = eradicationModes;
 
       _.forEach(rng.sample(modes, numberOfModes), function (mode) {
         ai["eradicationMode" + mode] = true;
@@ -260,7 +251,7 @@
         return;
       }
 
-      var ffa = ["ffa", "platoon"];
+      var ffa = ffaTags;
 
       if (_.isArray(ais)) {
         _.forEach(ais, function (ai) {
@@ -418,6 +409,9 @@
         gwoGalaxyBuild.install();
         gwoFavouriteLoadouts = favouriteLoadoutsModule;
         gwoFavourites = favouritesModule;
+        aiBuffTypes = gwoAI.BUFF_TYPES;
+        eradicationModes = gwoAI.ERADICATION_MODES;
+        ffaTags = gwoPersonality.FFA_TAGS;
 
         // Resolved before the list is built so a mod loadout the player has
         // earned shows as unlocked rather than as a locked hint.

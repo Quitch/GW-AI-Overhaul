@@ -2,15 +2,11 @@
 // has active, and the root mount that makes their files readable. Every
 // function copes with GW Server Mods being absent - then there are no races.
 // See races.md.
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
-  races
-) {
-  var manifest = function () {
-    var gwsm = window.GwServerMods;
-    return gwsm && gwsm.manifest && _.isFunction(gwsm.manifest.load)
-      ? gwsm.manifest
-      : undefined;
-  };
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwsm.js",
+], function (races, gwsm) {
+  var manifest = gwsm.manifest;
 
   var gwsmActive = function () {
     return !!manifest();
