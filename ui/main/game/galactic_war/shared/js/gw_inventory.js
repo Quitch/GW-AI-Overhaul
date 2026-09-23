@@ -187,18 +187,11 @@ define([
         resetCardCount();
         finishPhase = finishApplyCards;
         _.forEach(cards, _.bind(applyCardOp, self, "dull"));
-        // GWO - with no cards, no finishCard call ends the phase
-        if (!cards.length) {
-          finishPhase();
-        }
       };
       var applyBuffs = function () {
         resetCardCount();
         finishPhase = applyDulls;
         _.forEach(cards, _.bind(applyCardOp, self, "buff"));
-        if (!cards.length) {
-          finishPhase();
-        }
       };
 
       self.units([]);

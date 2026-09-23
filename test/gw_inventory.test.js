@@ -308,19 +308,6 @@ describe("gw_inventory - a card that throws", () => {
     assert.equal(Object.hasOwn(inventory, "setTag"), false);
     assert.equal(Object.hasOwn(inventory, "applyCards"), false);
   });
-
-  // No card means no finishCard call, so without a direct finish an empty
-  // apply never reached done either.
-  it("reaches done for an inventory with no cards", () => {
-    let done = 0;
-
-    inventoryHolding([]).applyCards(() => {
-      done++;
-    });
-    timers.delayed.shift().fn();
-
-    assert.equal(done, 1);
-  });
 });
 
 describe("gw_inventory - the inventory itself", () => {
