@@ -35,22 +35,40 @@ define([
       }
 
       _.forEach(ids, function (cardId, index) {
-        requireGW(["cards/" + cardId], function (card) {
-          // A third-party id whose module is missing or returns nothing must
-          // still count towards the tally: leaving it outstanding would hang
-          // every deal in the war rather than costing one card.
-          if (card) {
-            card.id = cardId;
-            cards[index] = card;
-            deck[index] = cardId;
-          } else {
-            console.error("GWO card loaded but returned nothing:", cardId);
+        // A third-party id whose module fails to load or returns nothing must
+        // still count towards the tally: leaving it outstanding would hang
+        // every deal in the war rather than costing one card. requireGW never
+        // times out (waitSeconds: 0), so a failed load reaches only the
+        // errback, and the guard stops a second errback counting it twice.
+        var counted = false;
+        var count = function () {
+          if (counted) {
+            return;
           }
+          counted = true;
           --cardsRemaining;
           if (cardsRemaining === 0) {
             promise.resolve();
           }
-        });
+        };
+
+        requireGW(
+          ["cards/" + cardId],
+          function (card) {
+            if (card) {
+              card.id = cardId;
+              cards[index] = card;
+              deck[index] = cardId;
+            } else {
+              console.error("GWO card loaded but returned nothing: " + cardId);
+            }
+            count();
+          },
+          function () {
+            console.error("GWO card failed to load: " + cardId);
+            count();
+          }
+        );
       });
     },
 
