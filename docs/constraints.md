@@ -100,7 +100,9 @@ jQuery 2.x has a trap that has bitten this repo three times. **It does not
 convert a `throw` inside a deferred callback into a rejection.** A `TypeError`
 there escapes `.fail()` entirely. There is no retry, and the caller hangs.
 Callbacks that can fail must `reject` explicitly rather than throw or fall
-through.
+through. Where a chain of steps needs a fail handler that runs for any of them,
+`shared/gwo_promise.js`'s `steps` wraps each step so a synchronous throw rejects
+the chain; `GWReferee.hire` is built on it.
 
 Also, `$.when()` and `deferred.then` identify a promise by a `promise`
 **method**. An engine promise (what every `api.*` call returns) has no such

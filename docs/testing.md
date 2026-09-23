@@ -245,22 +245,31 @@ file reinvents its own list. Two things about it are load-bearing:
   `useModel()` is the same installer with the `afterEach` restore built in. A
   suite therefore does not track the restore itself.
 
-`scripts/lib/fake-jquery.js` covers exactly the `$`/`api` subset `referee_ai.js`
-uses. A request for a URL with no configured resolver rejects. A test's fixtures
-therefore cannot silently drift from what the code actually asks for.
+`scripts/lib/fake-jquery.js` covers only the `$`/`api` subset the shipped code
+under test uses. A request for a URL with no configured resolver rejects. A
+test's fixtures therefore cannot silently drift from what the code actually asks
+for.
 
-It returns the Promise itself rather than an object with a `then` property. That
-keeps `.then` the real inherited `Promise.prototype.then`. An object with its
-own `then` property is the shape that SonarLint's "objects should not have a
-then property" rule warns about. What `.then` gives back also carries
-`promise`/`done`/`fail`/`always`, as jQuery's does.
+By default it returns the Promise itself rather than an object with a `then`
+property. That keeps `.then` the real inherited `Promise.prototype.then`. An
+object with its own `then` property is the shape that SonarLint's "objects
+should not have a then property" rule warns about. What `.then` gives back also
+carries `promise`/`done`/`fail`/`always`, as jQuery's does.
 
-Its `when` keeps jQuery 2's shape: one argument resolves to that value, and
-several arguments resolve to the array. It identifies a promise by a `promise`
-**method**. An argument without one therefore passes straight through, and
-`when` never waits for it, exactly as `constraints.md` describes. That is why it
-is hand-built rather than wrapped around `Promise.all`. A native promise
-resolved with a thenable adopts it, which would wait after all.
+The default `when` keeps jQuery 2's shape: one argument resolves to that value,
+and several arguments resolve to the array. It identifies a promise by a
+`promise` **method**. An argument without one therefore passes straight
+through, and `when` never waits for it, exactly as `constraints.md` describes.
+That is why it is hand-built rather than wrapped around `Promise.all`. A native
+promise resolved with a thenable adopts it, which would wait after all.
+
+`installFakeJQuery(stubs, { sync: true })` swaps in a Deferred that models
+jQuery 2.1.4 itself, and a `when` that takes exactly one argument. Its callbacks
+run inside `resolve()` and `reject()`, a callback's throw escapes through the
+call that settled it, and the Deferred is stuck afterwards. The default fake
+runs callbacks a tick later and turns a callback's throw into a rejection, so it
+cannot show a bug that depends on either. Use the sync mode for such code, as
+`race_mods.test.js` and `gwo_promise.test.js` do.
 
 Modelling thenables is the file's whole job. `sonar-project.properties`
 therefore scopes Sonar's `javascript:S7739` ("Do not add `then` to an object")
