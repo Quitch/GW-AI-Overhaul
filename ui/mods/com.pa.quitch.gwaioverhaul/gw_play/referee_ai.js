@@ -675,12 +675,12 @@ define([
     var playerRace = gwoRaces.raceOf(inventory);
     var jobs = {};
 
-    var add = function (type, race, destination) {
+    var add = function (type, race, destination, sourceInventory) {
       if (gwoRaces.isMla(race)) {
         return;
       }
       var brain = gwoAI.aiInUse(type, race);
-      var source = gwoAI.getAIPathSource(type, race);
+      var source = gwoAI.getAIPathSource(type, race, sourceInventory);
       var target =
         destination || gwoAI.getAIPathDestination(type, { race: race });
       jobs[source + "|" + target] = {
@@ -716,7 +716,8 @@ define([
             viewer.inventory,
             ".player" + viewerIndex,
             viewerRace
-          )
+          ),
+          viewer.inventory
         );
       }
     );
@@ -839,17 +840,25 @@ define([
           viewerPlayerTag,
           viewerPlayerTag
         );
+        // Read from the viewer's own tier, which its destination is built
+        // from too: the host's Sub Commander Tactics is not the viewer's.
+        var viewerSubCommanderSource = gwoAI.getAIPathSource(
+          "subcommander",
+          undefined,
+          viewerInventory
+        );
         var viewerSubCommanderDestination = gwoAI.getSubcommanderPathForViewer(
           viewerInventory,
           viewerPlayerTag
         );
         var viewerAiPaths = _.assign({}, aiPaths, {
+          subCommanderSource: viewerSubCommanderSource,
           subCommanderDestination: viewerSubCommanderDestination,
         });
 
         promises.push(
           processDirectories(
-            aiPaths.subCommanderSource,
+            viewerSubCommanderSource,
             _.assign({}, launch, {
               aiPaths: viewerAiPaths,
               inventory: viewerInventory,
