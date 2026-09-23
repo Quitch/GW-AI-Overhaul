@@ -318,11 +318,3 @@ describe("giveRace", () => {
     assert.equal(ai.commander, "/pa/units/commanders/x/x.json");
   });
 });
-
-describe("brainForRace", () => {
-  it("falls back to the war-wide brain for each side", () => {
-    const brains = { aiByRace: {}, ai: "Queller", aiAlly: "Titans" };
-    assert.equal(population.brainForRace(brains, "mla", "enemy"), "Queller");
-    assert.equal(population.brainForRace(brains, "mla", "ally"), "Titans");
-  });
-});

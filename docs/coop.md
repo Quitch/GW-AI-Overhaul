@@ -536,13 +536,13 @@ suspended at each of those call sites (`cards_coop_deal.js`,
 
 **The star is identified by index, not by `ai.treasurePlanet`.** Beating the
 Guardians runs `winTurn`'s boss branch, which calls `defeatTeam(ai.team)`.
-`gw_start/setup.js` deletes `ai.team` for the treasure planet, so
+`gw_start/ai_population.js` deletes `ai.team` for the treasure planet, so
 `defeatTeam(undefined)` matches the star itself and clears its `ai()`. By the
 time the star is explored, nothing on it still says "treasure planet".
 Exploration is the whole point, since a star is fought first and its cards
 offered afterwards.
 
-`gw_start/setup.js` therefore records `originSystem.gwaio.treasureStar`, and
+`gw_start/war_record.js` therefore records `originSystem.gwaio.treasureStar`, and
 `isTreasureStar` is the only test any caller should use. Wars generated before
 that field existed recover it from `findTreasureStar`. That function looks for a
 live `ai.treasurePlanet`, and otherwise for the pre-dealt loadout the old war

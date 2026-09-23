@@ -223,6 +223,7 @@ base-game modules all the same:
 | `gw_play/referee_game_files.js` (GWO's own) | `shared/referee_game_file_paths.js`                                                 |
 | `gw_play/referee_config.js` (GWO's own)     | `gw_play/referee_config_setup.js`                                                   |
 | `gw_play/cards_start_subcdr.js` (GWO's own) | `gw_play/general_commander_setup.js`                                                |
+| `gw_start/setup.js` (GWO's own)             | `gw_start/ai_population.js`, `gw_start/war_record.js`                               |
 
 The glue file keeps only the `model`/`ko`/`api` glue and is coverage-excluded.
 The sibling holds the logic and is unit-tested. Do **not** instead hoist helpers to

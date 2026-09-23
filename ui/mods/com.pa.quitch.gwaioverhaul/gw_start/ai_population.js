@@ -1,5 +1,5 @@
 // Fills in the AIs the breeder placed, then the Guardians and the system lore.
-// The measured sibling of gw_start/setup.js - see galaxy.md.
+// Split from gw_start/setup.js to be testable - see shadowing.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
@@ -191,10 +191,8 @@ define([
     }
   };
 
-  // Every AI in teamInfo, the breeder's result. war carries what the war was
-  // generated with. Returns the outcome setup.js acts on: failed, whether the
-  // failure was a faction without a home system (spawnShortage), and the
-  // Guardians' star index.
+  // Runs inside a jQuery deferred callback, where a throw hangs Go To War, so
+  // failures are reported through the returned outcome.
   var populate = function (war, teamInfo) {
     var outcome = {
       failed: false,
@@ -303,15 +301,11 @@ define([
       var bossMinions = countMinions(mandatoryMinions, minionMod, maxDist);
 
       if (bossMinions > 0) {
-        var bossIsCluster = gwoAI.isCluster(boss);
-        addMinions(
-          boss,
-          bossRng,
-          bossIsCluster ? 1 : bossMinions,
-          maxDist,
-          bossMinions,
-          bossIsCluster ? "Security" : ""
-        );
+        if (gwoAI.isCluster(boss)) {
+          addMinions(boss, bossRng, 1, maxDist, bossMinions, "Security");
+        } else {
+          addMinions(boss, bossRng, bossMinions, maxDist, 0, "");
+        }
       }
 
       _.forEach(workerPool, function (worker, workerIndex) {
@@ -339,25 +333,19 @@ define([
 
         if (numMinions > 0) {
           ai.minions = [];
+          var clusterCommanders = clusterCommanderCount(
+            numMinions,
+            bossCommanders
+          );
 
-          var workerIsCluster = gwoAI.isCluster(ai);
-          var clusterWorkers = workerIsCluster
-            ? clusterCommanderCount(numMinions, bossCommanders)
-            : 0;
-
-          // MLA Cluster Workers get additional commanders in place of
-          // minions
-          if (workerIsCluster && ai.name === "Worker") {
-            ai.commanderCount = Math.max(clusterWorkers, 2);
+          if (!gwoAI.isCluster(ai)) {
+            addMinions(ai, aiRng, numMinions, dist, 0, "");
+          } else if (ai.name === "Worker") {
+            // MLA Cluster Workers get additional commanders in place of
+            // minions
+            ai.commanderCount = Math.max(clusterCommanders, 2);
           } else {
-            addMinions(
-              ai,
-              aiRng,
-              workerIsCluster ? 1 : numMinions,
-              dist,
-              clusterWorkers,
-              workerIsCluster ? "Worker" : ""
-            );
+            addMinions(ai, aiRng, 1, dist, clusterCommanders, "Worker");
           }
         }
 

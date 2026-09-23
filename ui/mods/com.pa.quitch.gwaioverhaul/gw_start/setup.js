@@ -787,7 +787,7 @@
               .then(returnTeamInfo);
           };
 
-          var populate = moveIn.then(onMovedIn);
+          var aisPlaced = moveIn.then(onMovedIn);
 
           var treasurePlanetStar;
 
@@ -824,7 +824,7 @@
             treasurePlanetStar = outcome.treasureStar;
           };
 
-          var finishAis = populate.then(onPopulated);
+          var finishAis = aisPlaced.then(onPopulated);
 
           var onAisFinished = function () {
             if (warGenerationFailed === true) {

@@ -1,11 +1,10 @@
 // The war settings stamped onto originSystem.gwaio for the gw_play scene to
-// read. The measured sibling of gw_start/setup.js - see galaxy.md.
+// read. Split from gw_start/setup.js to be testable - see shadowing.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
 ], function (gwoBrainTable, gwoBiomes, gwoVersion) {
-  // war carries what the war was generated with.
   var build = function (war) {
     var settings = war.settings;
     var brains = war.brains;
