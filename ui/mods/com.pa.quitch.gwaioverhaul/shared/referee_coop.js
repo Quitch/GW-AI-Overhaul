@@ -10,21 +10,29 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return String(clientId || "") + "::" + String(clientName || "");
   };
 
+  // The viewer-role clients in a client list.
+  var viewersOf = function (clients) {
+    return _.filter(_.isArray(clients) ? clients : [], function (client) {
+      return client && client.role === "viewer";
+    });
+  };
+
+  // A connected client's co-op record. The game keys records by id and name.
+  var recordForClient = function (game, client) {
+    return game.findCoopPlayerInventoryData({
+      id: client.id,
+      name: client.name,
+    });
+  };
+
   // Returns {client, inventory} pairs for connected viewer-role clients.
   var getConnectedViewerInventories = function (game, connectedClients) {
     var clients = connectedClients || getConnectedViewers();
 
     return _.reduce(
-      clients,
+      viewersOf(clients),
       function (viewers, client) {
-        if (!client || client.role !== "viewer") {
-          return viewers;
-        }
-
-        var playerData = game.findCoopPlayerInventoryData({
-          id: client.id,
-          name: client.name,
-        });
+        var playerData = recordForClient(game, client);
 
         if (!playerData || !playerData.inventory) {
           return viewers;
@@ -99,6 +107,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   return {
+    viewersOf: viewersOf,
+    recordForClient: recordForClient,
     clientKey: clientKey,
     getConnectedViewers: getConnectedViewers,
     getConnectedViewerInventories: getConnectedViewerInventories,

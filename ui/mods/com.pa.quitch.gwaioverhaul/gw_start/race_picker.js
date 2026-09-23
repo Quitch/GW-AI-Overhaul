@@ -72,11 +72,17 @@
     model.gwoUniqueRacesTooltip =
       "!LOC:No enemy faction shares a race with you or another enemy faction until every race in play has been used.";
 
+    // What the shared race picker markup binds to.
+    model.gwoRacePicker = {
+      available: model.gwoRacesAvailable,
+      tooltip: model.gwoRaceTooltip,
+      value: settings.playerRace,
+    };
     $("#faction-select")
       .closest(".form-group")
       .after(
         loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/race_select.html"
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_select.html"
         )
       );
     locTree($("#gwo-race-group"));

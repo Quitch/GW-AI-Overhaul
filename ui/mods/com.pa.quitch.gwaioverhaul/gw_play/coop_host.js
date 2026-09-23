@@ -2,7 +2,9 @@
 // to the viewer that asked, look up that viewer's record, and write it back.
 // A reply always names its client, so the server can route it - see coop.md,
 // "Addressing a host's reply".
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+], function (refereeCoop) {
   var reply = function (type, operator, payload) {
     model.sendCampaignHostOperator(
       type,
@@ -26,8 +28,9 @@ define(function () {
     reply(type, operator, { error: reason });
   };
 
+  // An operator names its client as client_id/client_name.
   var recordFor = function (game, operator) {
-    return game.findCoopPlayerInventoryData({
+    return refereeCoop.recordForClient(game, {
       id: operator.client_id,
       name: operator.client_name,
     });

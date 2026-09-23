@@ -3,7 +3,8 @@
 // the campaign snapshot. See coop.md, "Per-player pre-dealt cards".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
-], function (coopHost) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+], function (coopHost, refereeCoop) {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.
   var starCardForRecord = function (record, starIndex) {
@@ -104,20 +105,11 @@ define([
     var refreshPending;
 
     var connectedViewers = function () {
-      var clients = _.isArray(model.gwCampaignConnectedClients())
-        ? model.gwCampaignConnectedClients()
-        : [];
-
-      return _.filter(clients, function (client) {
-        return client && client.role === "viewer";
-      });
+      return refereeCoop.viewersOf(model.gwCampaignConnectedClients());
     };
 
     var findRecord = function (client) {
-      return game.findCoopPlayerInventoryData({
-        id: client.id,
-        name: client.name,
-      });
+      return refereeCoop.recordForClient(game, client);
     };
 
     var starsNeedingCards = function (record, redeal) {

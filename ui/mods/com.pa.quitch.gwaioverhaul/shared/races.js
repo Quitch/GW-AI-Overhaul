@@ -5,7 +5,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races_shipped.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/addons_shipped.js",
-], function (unitCells, shipped, shippedAddons) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js",
+], function (unitCells, shipped, shippedAddons, ids) {
   var MLA_ID = "mla";
   var TITANS = "Titans";
 
@@ -36,9 +37,7 @@ define([
   // are read. See unit_cells.js.
   var cellsById = {};
 
-  var normalizeId = function (id) {
-    return _.isString(id) ? id.trim().toLowerCase() : "";
-  };
+  var normalizeId = ids.normalize;
 
   // `unitNames` names units by the keys of `units` and is compiled to
   // path -> name.

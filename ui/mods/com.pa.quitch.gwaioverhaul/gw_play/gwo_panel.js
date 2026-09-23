@@ -395,10 +395,7 @@
             commander.color(coopColour(client));
 
             if (!commander.loadoutResolved || !commander.raceResolved) {
-              record = game.findCoopPlayerInventoryData({
-                id: client.id,
-                name: client.name,
-              });
+              record = gwoRefereeCoop.recordForClient(game, client);
               loadoutCardId = record && record.loadoutCardId;
 
               if (loadoutCardId && !commander.loadoutResolved) {

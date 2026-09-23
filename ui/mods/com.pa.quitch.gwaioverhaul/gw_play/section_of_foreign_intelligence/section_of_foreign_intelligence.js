@@ -7,17 +7,14 @@
     return;
   }
 
-  // The buff indices gw_start/setup.js writes into ai.typeOfBuffs. `commanders` is
-  // only present in v5.11.0 and earlier saves.
-  var gwoBuffType = {
-    cost: 0,
-    damage: 1,
-    health: 2,
-    speed: 3,
-    build: 4,
-    commanders: 5,
-    combat: 6,
-    cooldown: 7,
+  // shared/ai.js's BUFF_TYPES, filled once it loads, plus `commanders`, which
+  // only v5.11.0 and earlier saves carry.
+  var gwoBuffType = {};
+  var eradicationModes = [];
+  var eradicationModeNames = {
+    SubCommanders: "!LOC:Colonel",
+    Factories: "!LOC:Factory",
+    Fabbers: "!LOC:Fabber",
   };
 
   try {
@@ -144,15 +141,11 @@
     var eradicatorModeNameBuilder = function (ai) {
       var commander = loc("!LOC:Commander");
       var modes = [commander];
-      if (ai.eradicationModeSubCommanders) {
-        modes.push(loc("!LOC:Colonel"));
-      }
-      if (ai.eradicationModeFactories) {
-        modes.push(loc("!LOC:Factory"));
-      }
-      if (ai.eradicationModeFabbers) {
-        modes.push(loc("!LOC:Fabber"));
-      }
+      _.forEach(eradicationModes, function (mode) {
+        if (ai["eradicationMode" + mode]) {
+          modes.push(loc(eradicationModeNames[mode]));
+        }
+      });
 
       var append = "";
 
@@ -226,6 +219,8 @@
         gwoRaces
       ) {
         var starCardsView = gwoStarCardsView();
+        _.assign(gwoBuffType, gwoAI.BUFF_TYPES, { commanders: 5 });
+        eradicationModes = gwoAI.ERADICATION_MODES;
 
         var getNumberOfCommanders = function (commander) {
           return gwoAI.commanderCount(commander);
