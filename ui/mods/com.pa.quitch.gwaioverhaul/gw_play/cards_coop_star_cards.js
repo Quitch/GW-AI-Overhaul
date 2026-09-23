@@ -27,11 +27,17 @@ define([
     return kept;
   };
 
+  // Leaves redealOwed off, so the write that stores a viewer's new cards is
+  // also the one that settles their debt.
   var buildStarCardsField = function (existing, updates, turn) {
     return {
       turn: turn,
       cards: _.assign({}, existing, updates),
     };
+  };
+
+  var redealOwed = function (record) {
+    return !!_.get(record, "gwaioStarCards.redealOwed");
   };
 
   var starNeedsViewerCard = function (params) {
@@ -102,10 +108,6 @@ define([
 
     var refreshInFlight;
     var refreshPending;
-    // Re-deals the gate turned away or that failed, per viewer by coopPlayerKey.
-    // See coop.md.
-    var redealOwedToAll = false;
-    var redealOwedTo = {};
 
     var connectedViewers = function () {
       var clients = _.isArray(model.gwCampaignConnectedClients())
@@ -169,7 +171,7 @@ define([
     // Resolves with whether the record changed. The record is re-read at write
     // time: chooseCards is async, so a catch-up deal can have landed
     // pendingTechCards on it since this viewer's work began.
-    var refreshViewer = function (client, redeal) {
+    var refreshViewer = function (client) {
       var record = findRecord(client);
       if (!record || !record.inventory) {
         return Promise.resolve(false);
@@ -177,9 +179,16 @@ define([
 
       // Decided before the inventory is built, so a refresh with nothing to do
       // costs a walk of the galaxy rather than an applyCards per viewer.
-      var targets = starsNeedingCards(record, redeal);
+      var targets = starsNeedingCards(record, redealOwed(record));
       if (!targets.length) {
-        return Promise.resolve(false);
+        // A debt with nothing to re-deal is settled, or it would re-deal this
+        // viewer on the first refresh of the next turn.
+        return Promise.resolve(
+          redealOwed(record) &&
+            !!coopHost.upsertRecord(game, record, {
+              gwaioStarCards: _.omit(record.gwaioStarCards, "redealOwed"),
+            })
+        );
       }
 
       var playerKey = gwoStreams.coopPlayerKey(record, client);
@@ -224,6 +233,7 @@ define([
           var next = buildStarCardsField(pruned, updates, game.stats().turns());
 
           if (
+            !redealOwed(fresh) &&
             _.isEqual(
               next.cards,
               fresh.gwaioStarCards && fresh.gwaioStarCards.cards
@@ -238,16 +248,12 @@ define([
 
     // A refresh calls deal() on every card of the deck once per star per viewer,
     // which is too much for one frame, so each viewer yields before starting.
-    var refreshViewerLater = function (client, redeal) {
+    var refreshViewerLater = function (client) {
       return new Promise(function (resolve) {
         _.defer(function () {
-          resolve(refreshViewer(client, redeal));
+          resolve(refreshViewer(client));
         });
       });
-    };
-
-    var viewerKey = function (client) {
-      return gwoStreams.coopPlayerKey(findRecord(client), client);
     };
 
     var refreshEachViewer = function (viewers) {
@@ -256,13 +262,9 @@ define([
       return _.reduce(
         viewers,
         function (chain, client) {
-          var key = viewerKey(client);
           return chain
-            .then(function () {
-              return refreshViewerLater(client, !!redealOwedTo[key]);
-            })
+            .then(refreshViewerLater.bind(null, client))
             .then(function (changed) {
-              delete redealOwedTo[key];
               changedAny = changedAny || changed;
             });
         },
@@ -272,10 +274,27 @@ define([
       });
     };
 
+    // Every viewer record, connected or not, so a viewer away when the host
+    // re-deals is re-dealt on their return. See coop.md.
+    var oweRedealToEveryViewer = function () {
+      _.forEach(game.coopPlayerInventoryData(), function (record) {
+        if (record && !redealOwed(record)) {
+          coopHost.upsertRecord(game, record, {
+            gwaioStarCards: _.assign({}, record.gwaioStarCards, {
+              redealOwed: true,
+            }),
+          });
+        }
+      });
+    };
+
     var runRefresh = function (redeal) {
+      if (redeal && !(gwoSettings && gwoSettings.staticTech)) {
+        oweRedealToEveryViewer();
+      }
+
       var viewers = connectedViewers();
       if (!viewers.length) {
-        redealOwedToAll = redealOwedToAll || redeal;
         return Promise.resolve();
       }
 
@@ -291,15 +310,7 @@ define([
           turnState: game.turnState(),
         })
       ) {
-        redealOwedToAll = redealOwedToAll || redeal;
         return Promise.resolve();
-      }
-
-      if (redeal || redealOwedToAll) {
-        _.forEach(viewers, function (client) {
-          redealOwedTo[viewerKey(client)] = true;
-        });
-        redealOwedToAll = false;
       }
 
       return refreshEachViewer(viewers).then(function (changed) {
@@ -335,7 +346,14 @@ define([
         return refreshInFlight;
       }
 
-      refreshInFlight = runRefresh(redeal)
+      // runRefresh starts on a later tick: owing a re-deal writes records, and
+      // cards.js refreshes on every record write. Run synchronously, that
+      // refresh would start before refreshInFlight is set and run alongside
+      // this one.
+      refreshInFlight = Promise.resolve()
+        .then(function () {
+          return runRefresh(redeal);
+        })
         .then(null, function (reason) {
           console.error(
             "[GW COOP] failed to refresh co-op player star cards: " + reason

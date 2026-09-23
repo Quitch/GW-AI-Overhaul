@@ -67,6 +67,8 @@ function setup(overrides = {}) {
       perPlayerTech: true,
       onApply: null,
       onDeal: null,
+      onUpsert: null,
+      slowDeals: false,
       saveFails: false,
     },
     overrides
@@ -92,8 +94,12 @@ function setup(overrides = {}) {
     upsertCoopPlayerInventoryData: (record) => {
       calls.upserts.push(record);
       options.records[record.id] = record;
+      if (options.onUpsert) {
+        options.onUpsert(record);
+      }
       return true;
     },
+    coopPlayerInventoryData: () => Object.values(options.records),
     stats: () => ({ turns: () => options.turn }),
     hostTechCardDealCount: () => options.hostDealCount,
     turnState: () => options.turnState,
@@ -109,7 +115,12 @@ function setup(overrides = {}) {
       if (options.onDeal) {
         options.onDeal(options);
       }
-      return Promise.resolve([{ id: "card_for_" + request.rng.starIndex }]);
+      const cards = [{ id: "card_for_" + request.rng.starIndex }];
+      // The real deal can span ticks; a microtask-only stub finishes one
+      // viewer's write before any other refresh gets to read the record.
+      return options.slowDeals
+        ? new Promise((resolve) => setTimeout(resolve, 5, cards))
+        : Promise.resolve(cards);
     },
     GWInventory: inventoryClass({ onApply: options.onApply }),
     gwoStreams: {
@@ -653,6 +664,91 @@ describe("coop star cards refresh - coalescing", () => {
     await coopStarCards.refresh();
     assert.equal(dealtWhileQueued, 0);
     assert.deepEqual(starsDealt(calls), [0]);
+  });
+
+  // The debt sits on the record, so it rides the save. Held in memory, a
+  // gw_play reload between the refused re-deal and the viewer's choice lost it,
+  // and the viewer kept last turn's cards.
+  it("keeps a re-deal owed across a gw_play reload", async () => {
+    const first = build({ stars: [{}] });
+    await first.coopStarCards.refresh();
+    first.options.turnState = "explore";
+    await first.coopStarCards.refresh({ redeal: true });
+    const records = first.options.records;
+    release();
+
+    const { coopStarCards, calls, options } = build({ stars: [{}], records });
+    await coopStarCards.refresh();
+
+    assert.deepEqual(starsDealt(calls), [0]);
+    assert.equal(options.records.alice.gwaioStarCards.redealOwed, undefined);
+  });
+
+  it("owes a re-deal to a viewer away when the host re-deals", async () => {
+    const { coopStarCards, calls, options } = build({
+      stars: [{}],
+      viewers: [viewer("alice"), viewer("bob")],
+      records: {
+        alice: { id: "alice", inventory: { cards: [] } },
+        bob: { id: "bob", inventory: { cards: [] } },
+      },
+    });
+
+    await coopStarCards.refresh();
+    options.viewers = [viewer("alice")];
+    calls.deals.length = 0;
+    await coopStarCards.refresh({ redeal: true });
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.playerKey),
+      ["alice"]
+    );
+
+    options.viewers = [viewer("alice"), viewer("bob")];
+    calls.deals.length = 0;
+    await coopStarCards.refresh();
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.playerKey),
+      ["bob"]
+    );
+  });
+
+  // Left in place, the debt would re-deal the viewer on the first refresh of
+  // the next turn - one that should only fill gaps.
+  it("settles a debt that has nothing left to re-deal", async () => {
+    const { coopStarCards, calls, options } = build({ stars: [{}] });
+
+    await coopStarCards.refresh();
+    options.turnState = "explore";
+    await coopStarCards.refresh({ redeal: true });
+    options.stars = [{ ai: null }];
+    options.turnState = "begin";
+    calls.deals.length = 0;
+    await coopStarCards.refresh();
+
+    assert.deepEqual(starsDealt(calls), []);
+    assert.equal(options.records.alice.gwaioStarCards.redealOwed, undefined);
+  });
+
+  // cards.js refreshes on every record write, and owing a re-deal writes
+  // records. The refresh that write starts must join this one, not run
+  // alongside it and re-deal the same viewer twice.
+  it("coalesces the refresh its own debt writes trigger", async () => {
+    let coopStarCards;
+    const built = build({
+      stars: [{}],
+      slowDeals: true,
+      onUpsert: () => {
+        coopStarCards.refresh();
+      },
+    });
+    coopStarCards = built.coopStarCards;
+
+    await coopStarCards.refresh();
+    built.calls.deals.length = 0;
+    await coopStarCards.refresh({ redeal: true });
+    await coopStarCards.refresh();
+
+    assert.deepEqual(starsDealt(built.calls), [0]);
   });
 
   it("runs a later refresh normally once the queue has drained", async () => {
