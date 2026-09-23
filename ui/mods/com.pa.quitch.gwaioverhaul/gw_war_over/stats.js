@@ -16,7 +16,28 @@
         : defeatedDifficulties;
     };
 
-    var loadoutId = game.inventory().cards()[0].id;
+    // A co-op viewer's badge follows its own loadout: game.inventory() is the
+    // host's. The record is found the way gw_play finds it, by the session's
+    // identity. With shared tech there may be no record, and the loadouts match.
+    var ownLoadoutId = function () {
+      var session = function (name) {
+        return ko.observable().extend({ session: name })();
+      };
+      var viewer =
+        session("gw_campaign_enabled") &&
+        session("gw_campaign_role") === "viewer";
+      var record =
+        viewer &&
+        _.isFunction(game.findCoopPlayerInventoryData) &&
+        game.findCoopPlayerInventoryData({
+          id: session("uberId"),
+          name: session("displayName"),
+        });
+      var cards = _.get(record, "inventory.cards");
+      return cards && cards[0] ? cards[0].id : game.inventory().cards()[0].id;
+    };
+
+    var loadoutId = ownLoadoutId();
     var defeatedDifficulties = ko
       .observable()
       .extend({ local: "gwaio_victory_" + loadoutId });

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Unreleased
+
+### Bugfix
+
+- The war information panel's co-op Tech and Slots rows now show the current settings rather than those at load
+- The AI settings window shows a removed race's stored Ally AI, not its Enemy AI, in the Ally column
+- A co-op viewer's victory badge is now recorded against the viewer's own loadout under per-player tech, not the host's
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed
