@@ -80,7 +80,7 @@ function startCardAnswers() {
   };
 }
 
-// gwoAI.CLUSTER_FACTION, which gwoCard.playerIsCluster() compares against.
+// Cluster's faction index, which shared/cards.js's playerIsCluster() tests for.
 const CLUSTER_FACTION = 4;
 
 // The stub alone takes one side of each fork: playerIsCluster() is never true

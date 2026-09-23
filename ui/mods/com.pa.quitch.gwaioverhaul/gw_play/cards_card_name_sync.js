@@ -82,8 +82,7 @@ define(function () {
 
       // card_id is the host's, so it can name a card mod this viewer does not
       // have. This promise gates gwCampaignStateApplyTail, so it must settle:
-      // the errback covers a module that fails to load. requireGW is configured
-      // waitSeconds: 0, so one that never resolves at all cannot be detected.
+      // the errback covers a failed load. No timeout (waitSeconds: 0).
       var onCardUnavailable = function (reason) {
         console.error(
           "[GW COOP] card summarize unavailable for synced card name id=" +

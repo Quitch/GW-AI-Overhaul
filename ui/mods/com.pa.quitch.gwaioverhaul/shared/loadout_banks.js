@@ -52,8 +52,7 @@ define(function () {
 
     // Each path is requested on its own, because one requireGW for all of them
     // never calls back if any one fails, and every bank would be lost.
-    // requireGW never times out (waitSeconds: 0), so a failed load reaches only
-    // the errback, and the guard stops a second errback counting it twice.
+    // No timeout (waitSeconds: 0), and an errback can fire twice.
     load: function () {
       var result = $.Deferred();
       var bankPaths = paths();
@@ -66,29 +65,18 @@ define(function () {
       }
 
       _.forEach(bankPaths, function (path, index) {
-        var counted = false;
-        var count = function (bank) {
-          if (counted) {
-            return;
-          }
-          counted = true;
+        var count = _.once(function (bank) {
           modules[index] = bank;
           --remaining;
           if (remaining === 0) {
             result.resolve(resolveBanks(modules));
           }
-        };
+        });
 
-        requireGW(
-          [path],
-          function (bank) {
-            count(bank);
-          },
-          function () {
-            console.error("Loadout bank failed to load: " + path);
-            count(undefined);
-          }
-        );
+        requireGW([path], count, function () {
+          console.error("Loadout bank failed to load: " + path);
+          count(undefined);
+        });
       });
 
       return result.promise();

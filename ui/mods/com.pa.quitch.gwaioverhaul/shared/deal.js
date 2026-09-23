@@ -37,20 +37,14 @@ define([
       _.forEach(ids, function (cardId, index) {
         // A third-party id whose module fails to load or returns nothing must
         // still count towards the tally: leaving it outstanding would hang
-        // every deal in the war rather than costing one card. requireGW never
-        // times out (waitSeconds: 0), so a failed load reaches only the
-        // errback, and the guard stops a second errback counting it twice.
-        var counted = false;
-        var count = function () {
-          if (counted) {
-            return;
-          }
-          counted = true;
+        // every deal in the war rather than costing one card.
+        // No timeout (waitSeconds: 0), and an errback can fire twice.
+        var count = _.once(function () {
           --cardsRemaining;
           if (cardsRemaining === 0) {
             promise.resolve();
           }
-        };
+        });
 
         requireGW(
           ["cards/" + cardId],

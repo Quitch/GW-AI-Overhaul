@@ -303,11 +303,10 @@
             character: getCommanderCharacter(commander),
             eco: eco,
             faction: faction.name,
-            // By index, not name: an ally's name carries a suffix. String()
-            // matches a pre-v5.44.0 save's ["4"] as factionInfo's lookup does.
+            // By index, not name: an ally's name carries a suffix.
             cluster:
               !commander.mirrorMode &&
-              String(commander.faction) === String(gwoAI.CLUSTER_FACTION),
+              gwoAI.factionIndex(commander) === gwoAI.CLUSTER_FACTION,
             tooltip: faction.tooltip,
             iconFill: icon.fill,
             iconOutline: icon.outline,

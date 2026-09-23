@@ -14,6 +14,7 @@ const ids = loadCouiModule(MOD + "shared/ids.js");
 const gwsm = loadCouiModule(MOD + "shared/gwsm.js");
 const refereeCoop = loadCouiModule(MOD + "shared/referee_coop.js");
 const gwoAI = loadCouiModule(MOD + "shared/ai.js");
+const gwoCard = loadCouiModule(MOD + "shared/cards.js");
 
 const stubs = createGlobalStubs();
 afterEach(() => stubs.restoreGlobals());
@@ -101,7 +102,14 @@ describe("shared/ai.js war-generation constants", () => {
     ]);
   });
 
-  it("names Cluster's faction index", () => {
-    assert.equal(gwoAI.CLUSTER_FACTION, 4);
+  // shared/cards.js restates the index rather than importing shared/ai.js.
+  it("agrees with shared/cards.js on Cluster's faction index", () => {
+    const inventory = {
+      getTag: (context, name) =>
+        context === "global" && name === "playerFaction"
+          ? gwoAI.CLUSTER_FACTION
+          : undefined,
+    };
+    assert.equal(gwoCard.playerIsCluster(inventory), true);
   });
 });
