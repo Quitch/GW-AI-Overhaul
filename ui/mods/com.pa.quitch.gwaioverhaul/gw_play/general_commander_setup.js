@@ -21,13 +21,31 @@ define(function () {
   // after gw_play loads, so the caller runs send() again whenever those or the
   // record change. Once the host has answered, nothing is sent again, so a
   // refusal cannot become an endless resend.
+  //
+  // The host sends no answer when the request is lost: a host with no handler
+  // for it only logs, and a dropped connection takes it with it. So a request
+  // unanswered after retryMs is tried again, up to maxRetries times per
+  // connection, and one sent before the viewer stopped being ready is treated
+  // as lost.
   var viewerRequest = function (params) {
     var pending = params.pending;
+    var wait = params.wait || setTimeout;
+    var retryMs = params.retryMs || 15000;
+    var maxRetries = 3;
     var answered = false;
+    var attempt = 0;
+    var retries = 0;
 
-    return {
+    var request = {
       send: function () {
-        if (!params.ready() || !recordNeedsSetup(params.record())) {
+        var sent;
+
+        if (!params.ready()) {
+          pending(false);
+          retries = 0;
+          return false;
+        }
+        if (!recordNeedsSetup(params.record())) {
           return false;
         }
         if (answered || pending.peek()) {
@@ -39,6 +57,19 @@ define(function () {
           pending(false);
           return false;
         }
+
+        attempt += 1;
+        sent = attempt;
+        wait(function () {
+          if (sent !== attempt || answered || !pending.peek()) {
+            return;
+          }
+          pending(false);
+          if (retries < maxRetries) {
+            retries += 1;
+            request.send();
+          }
+        }, retryMs);
         return true;
       },
 
@@ -47,6 +78,8 @@ define(function () {
         answered = true;
       },
     };
+
+    return request;
   };
 
   return {

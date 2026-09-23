@@ -54,9 +54,11 @@ describe("viewerRequest", () => {
       overrides
     );
     const sent = [];
+    const timers = [];
     const pending = makeObservable(false);
     const request = setup.viewerRequest({
       pending,
+      wait: (fn) => timers.push(fn),
       ready: () => state.ready,
       record: () => state.record,
       transmit: () => {
@@ -64,7 +66,8 @@ describe("viewerRequest", () => {
         return state.transmits;
       },
     });
-    return { state, sent, pending, request };
+    const fireTimers = () => timers.splice(0).forEach((fn) => fn());
+    return { state, sent, pending, request, fireTimers };
   }
 
   it("sends once the viewer is ready and its record needs setup", () => {
@@ -124,5 +127,92 @@ describe("viewerRequest", () => {
     assert.equal(pending(), false);
     assert.equal(request.send(), false);
     assert.equal(sent.length, 1);
+  });
+
+  // A host with no handler registered yet only logs the request, so no answer
+  // comes back to lower pending.
+  it("sends again when the host never answers", () => {
+    const { sent, pending, request, fireTimers } = viewer();
+
+    request.send();
+    fireTimers();
+    assert.equal(sent.length, 2);
+    assert.equal(pending(), true);
+  });
+
+  it("does not resend once the host has answered", () => {
+    const { sent, request, fireTimers } = viewer();
+
+    request.send();
+    request.answer();
+    fireTimers();
+    assert.equal(sent.length, 1);
+  });
+
+  it("does not resend when the viewer is no longer ready at the timeout", () => {
+    const { state, sent, pending, request, fireTimers } = viewer();
+
+    request.send();
+    state.ready = false;
+    fireTimers();
+    assert.equal(sent.length, 1);
+    assert.equal(pending(), false);
+  });
+
+  // A request sent before a disconnect went with the connection, so the
+  // reconnect must be free to send it again.
+  it("treats a request as lost when the viewer stops being ready", () => {
+    const { state, sent, pending, request } = viewer();
+
+    request.send();
+    state.ready = false;
+    assert.equal(request.send(), false);
+    assert.equal(pending(), false);
+    state.ready = true;
+    assert.equal(request.send(), true);
+    assert.equal(sent.length, 2);
+  });
+
+  it("ignores the timer of a request that was already replaced", () => {
+    const { state, sent, request, fireTimers } = viewer();
+
+    request.send();
+    state.ready = false;
+    request.send();
+    state.ready = true;
+    request.send();
+    fireTimers();
+    assert.equal(sent.length, 3, "only the newest request's timer resends");
+  });
+
+  // A host that never handles the request, such as one on an older GWO, would
+  // otherwise be sent it every retryMs for as long as the viewer stays.
+  it("stops resending after three unanswered retries", () => {
+    const { sent, pending, request, fireTimers } = viewer();
+
+    request.send();
+    fireTimers();
+    fireTimers();
+    fireTimers();
+    fireTimers();
+    fireTimers();
+    assert.equal(sent.length, 4);
+    assert.equal(pending(), false);
+  });
+
+  it("gives a reconnect a fresh set of retries", () => {
+    const { state, sent, request, fireTimers } = viewer();
+
+    request.send();
+    fireTimers();
+    fireTimers();
+    fireTimers();
+    fireTimers();
+    state.ready = false;
+    request.send();
+    state.ready = true;
+    request.send();
+    fireTimers();
+    assert.equal(sent.length, 6);
   });
 });
