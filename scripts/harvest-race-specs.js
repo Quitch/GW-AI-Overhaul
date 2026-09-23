@@ -100,18 +100,6 @@ function lookup(roots, specPath) {
   return undefined;
 }
 
-function ammoIds(ammo) {
-  if (typeof ammo === "string") {
-    return ammo;
-  }
-  if (Array.isArray(ammo)) {
-    return ammo
-      .filter((entry) => entry && typeof entry.id === "string")
-      .map((entry) => entry.id);
-  }
-  return undefined;
-}
-
 // The fields the generator reads, and the paths they reach.
 function trim(spec) {
   const out = {};
@@ -132,10 +120,14 @@ function trim(spec) {
       .filter((id) => typeof id === "string");
     reached.push(...out.tools);
   }
-  const ammo = ammoIds(spec.ammo_id);
-  if (ammo !== undefined) {
-    out.ammo_id = ammo;
-    reached.push(...[ammo].flat());
+  if (typeof spec.ammo_id === "string") {
+    out.ammo_id = spec.ammo_id;
+    reached.push(spec.ammo_id);
+  } else if (Array.isArray(spec.ammo_id)) {
+    out.ammo_id = spec.ammo_id
+      .filter((entry) => entry && typeof entry.id === "string")
+      .map((entry) => entry.id);
+    reached.push(...out.ammo_id);
   }
   const death = spec.death_weapon;
   if (death && typeof death === "object") {
