@@ -163,7 +163,10 @@
             }
           });
 
-          return _.map(names.sort(), function (name) {
+          names.sort(function (a, b) {
+            return a.localeCompare(b);
+          });
+          return _.map(names, function (name) {
             return ownedByName[name] ? name : highlightUnitName(name);
           });
         };
