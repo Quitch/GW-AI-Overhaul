@@ -216,7 +216,7 @@ define([
   var applyAiMods = function (json, mods) {
     _.forEach(mods, function (mod) {
       if (!Object.prototype.hasOwnProperty.call(aiModOps, mod.op)) {
-        console.error("Invalid AI mod operation:", mod);
+        console.error("Invalid AI mod operation: " + JSON.stringify(mod));
         return;
       }
       // Descriptors come from third-party cards, and this runs inside a
@@ -233,7 +233,12 @@ define([
           mod.matchAll
         );
       } catch (e) {
-        console.error("applyAiMods: op threw, skipping mod", mod, e);
+        console.error(
+          "applyAiMods: op threw, skipping mod " +
+            JSON.stringify(mod) +
+            ": " +
+            ((e && e.stack) || e)
+        );
       }
     });
   };
@@ -324,7 +329,9 @@ define([
       _.forEach(aiLoadMods, function (file) {
         var directory = managerPath(file.type);
         if (_.isUndefined(directory)) {
-          console.error("Invalid AI file type in load mod:", file);
+          console.error(
+            "Invalid AI file type in load mod: " + JSON.stringify(file)
+          );
           return;
         }
         fileList.push("/pa/ai_tech/" + directory + file.value);

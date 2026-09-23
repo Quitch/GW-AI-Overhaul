@@ -2,7 +2,7 @@
 
 // Unit tests for shared/cards.js, the helpers nearly every card delegates to.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
@@ -12,7 +12,10 @@ const cards = loadCouiModule(
 );
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
-afterEach(restoreGlobals);
+afterEach(() => {
+  restoreGlobals();
+  mock.restoreAll();
+});
 
 // A host holding cards the player being dealt to does not, so a helper that
 // reaches for model.game().inventory() fails rather than coincidentally
@@ -875,6 +878,21 @@ describe("loadoutIcon", () => {
   it("falls back to the red commander for an unrecognised tier", () => {
     withVictory("x", 99);
     assert.equal(cards.loadoutIcon("x"), fallback);
+  });
+
+  it("warns with the parse error and falls back for a corrupt record", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    setGlobal("window", { localStorage: { gwaio_victory_x: "{not json" } });
+
+    assert.equal(cards.loadoutIcon("x"), fallback);
+    assert.deepEqual(
+      warnMock.mock.calls.map((call) => call.arguments.length),
+      [1]
+    );
+    assert.match(
+      warnMock.mock.calls[0].arguments[0],
+      /^Ignoring unreadable victory record for loadout x: SyntaxError/
+    );
   });
 });
 

@@ -55,7 +55,13 @@ define([
           return Promise.all(_.map(specCache.references(raw), visit));
         },
         function (error) {
-          console.log("error loading spec:", item, error);
+          console.log(
+            "error loading spec: " +
+              item +
+              " (" +
+              gameFilePaths.describeError(error) +
+              ")"
+          );
         }
       );
     };
@@ -159,7 +165,12 @@ define([
   // gw_play/races.js.
   var prime = function (raceId, units) {
     return indexFor(raceId, units).then(null, function (error) {
-      console.error("gwoRaces: cells not built for " + raceId, error);
+      console.error(
+        "gwoRaces: cells not built for " +
+          raceId +
+          ": " +
+          gameFilePaths.describeError(error)
+      );
     });
   };
 

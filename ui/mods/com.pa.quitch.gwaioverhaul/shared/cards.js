@@ -195,8 +195,10 @@ define(function () {
         decoded = raw ? JSON.parse(raw) : undefined;
       } catch (e) {
         console.warn(
-          "Ignoring unreadable victory record for loadout " + loadoutId,
-          e
+          "Ignoring unreadable victory record for loadout " +
+            loadoutId +
+            ": " +
+            ((e && e.stack) || e)
         );
       }
 

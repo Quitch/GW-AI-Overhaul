@@ -211,7 +211,12 @@ define([
     // spec fetch that fails rejects through fail.
     cellsLoad
       .then(null, function (error) {
-        console.error("gwoRaces: cells not built for " + race, error);
+        console.error(
+          "gwoRaces: cells not built for " +
+            race +
+            ": " +
+            gameFilePaths.describeError(error)
+        );
         return undefined;
       })
       .then(function (cells) {
