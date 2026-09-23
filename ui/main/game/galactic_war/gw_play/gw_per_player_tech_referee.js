@@ -73,7 +73,7 @@ define([
     var raceMaps = gwoRaces.unitMapsFor(
       race,
       brain,
-      gwoAI.getAIPathSource("subcommander", race)
+      gwoAI.getAIPathSource("subcommander", race, inventory)
     );
     var loadMap = gameFilePaths.loadMap;
     var loads = [
