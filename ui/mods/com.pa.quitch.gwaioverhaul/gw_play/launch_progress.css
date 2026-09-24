@@ -13,10 +13,11 @@
   -webkit-animation: uifadein 0.2s ease-in-out;
 }
 
+/* 0.8 keeps 7:1 even with a white galaxy behind the backdrop and panel. */
 .gwo-launch-progress-steps {
   margin-top: 8px;
   font-size: 12px;
   font-weight: normal;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.8);
   text-shadow: none;
 }

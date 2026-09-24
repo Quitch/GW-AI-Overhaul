@@ -2,7 +2,7 @@
   <!-- attr comes before tooltip: Bootstrap reads data-placement once, when the
   tooltip binding initialises. -->
   <div
-    class="div-planet"
+    class="div-planet gwo-tip"
     data-bind="attr: { 'data-placement': $index() <= 3 || ($index() > 8 && $index() <= 12) ? 'right' : 'left' }, tooltip: $root.gwoPlanetData[$index()]"
   >
     <img

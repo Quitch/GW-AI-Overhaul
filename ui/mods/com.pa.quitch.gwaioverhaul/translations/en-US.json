@@ -1217,7 +1217,11 @@
   },
   "Delete Tech": {
     "message": "Delete Tech",
-    "description": "Button label under a card in the tech-card inventory on the galaxy map (gw_play): discards the selected Tech card from the Data Bank. Imperative verb + noun; \"Tech\" = tech card, use the base game's word. Title case, no punctuation. (cards_inventory.html:22)"
+    "description": "Button label under a card in the tech-card inventory on the galaxy map (gw_play): discards the selected Tech card from the Data Bank. Imperative verb + noun; \"Tech\" = tech card, use the base game's word. Title case, no punctuation. (cards.js:22)"
+  },
+  "Delete this Tech?": {
+    "message": "Delete this Tech?",
+    "description": "Button label under a card in the tech-card inventory on the galaxy map (gw_play). It replaces \"Delete Tech\" after the first press and asks the player to press again to confirm, because a deleted card cannot be recovered. A question; keep the question mark. Follow the game's own \"Delete this system?\" and \"Delete Tech\" translations: same verb, same word for Tech. (cards.js:21)"
   },
   "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
     "message": "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.",

@@ -45,7 +45,7 @@
     // Injected before ko.applyBindings runs (gw_start.js calls loadMods first),
     // so foreach clones it per unlocked loadout. .card_locked is excluded.
     $("#start-cards .card").prepend(
-      '<div class="gwo-favourite-btn" data-bind="' +
+      '<div class="gwo-favourite-btn gwo-tip" data-bind="' +
         "click: function () { model.gwoToggleFavourite($data); }, " +
         "clickBubble: false, " +
         "css: { on: model.gwoIsFavourite($data) }, " +

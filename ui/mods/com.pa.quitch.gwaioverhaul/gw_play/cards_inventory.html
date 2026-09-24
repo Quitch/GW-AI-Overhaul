@@ -12,15 +12,17 @@
     <!-- /ko -->
     <!-- ko if: !isEmpty() -->
     <span
-      class="info_tip"
+      class="info_tip gwo-tip"
       data-bind="visible: $root.gwoTechCardTooltip()[0] !== undefined, tooltip: $root.gwoTechCardTooltip()[0]"
       ><loc>Which Units?</loc></span
     >
     <div class="card_action">
-      <div class="btn_neg discard" data-bind="click: $root.discardHoverCard">
-        <div class="btn_label" style="font-size: 16px">
-          <loc>Delete Tech</loc>
-        </div>
+      <div class="btn_neg discard" data-bind="click: $root.gwoDiscardHoverCard">
+        <div
+          class="btn_label"
+          style="font-size: 16px"
+          data-bind="text: $root.gwoDiscardLabel"
+        ></div>
       </div>
     </div>
     <!-- /ko -->

@@ -14,6 +14,25 @@
     );
     locTree($("#hover-card"));
 
+    // Deleting a card cannot be undone, so the button asks once before it acts.
+    model.gwoConfirmDiscard = ko.observable(false);
+    model.gwoDiscardLabel = ko.computed(function () {
+      return model.gwoConfirmDiscard()
+        ? loc("!LOC:Delete this Tech?")
+        : loc("!LOC:Delete Tech");
+    });
+    model.gwoDiscardHoverCard = function (card) {
+      if (!model.gwoConfirmDiscard()) {
+        model.gwoConfirmDiscard(true);
+        return;
+      }
+      model.gwoConfirmDiscard(false);
+      return model.discardHoverCard(card);
+    };
+    model.hoverCard.subscribe(function () {
+      model.gwoConfirmDiscard(false);
+    });
+
     // Used by cards checking for T2 access - global for modders,
     // New-GW-Cards pushes here - see tech-cards.md
     model.gwoCardsGrantingAdvancedTech = _.isArray(

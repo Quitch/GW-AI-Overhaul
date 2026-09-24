@@ -245,6 +245,9 @@
   "Delay in creating new bases.": {
     "message": "建立新基地的延迟。"
   },
+  "Delete this Tech?": {
+    "message": "删除此科技？"
+  },
   "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
     "message": "它们由 Hegemony 的秘密部队在 Century War 期间部署。从它们如今的扩散程度来看，它们要么在战争结束后自行获得了在星球上播种的能力，要么是 Xziphid 为避免战败而孤注一掷的产物。"
   },

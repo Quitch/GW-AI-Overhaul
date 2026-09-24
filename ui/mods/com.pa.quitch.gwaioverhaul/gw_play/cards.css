@@ -11,6 +11,23 @@
   max-width: 400px;
 }
 
+/* A 44px target for the 24px close button, grown into the card rather than
+   past its corner. */
+#hover-card .close::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: -20px;
+  left: -20px;
+}
+
+/* Reroll Tech and Dismiss Tech, from cards_system_reroll.html: stock styles
+   them 33px high, short of a 44px target. */
+.tech > .div_options_bar input[type="button"] {
+  min-height: 44px;
+}
+
 .highlight {
   color: #00b3ff;
 }

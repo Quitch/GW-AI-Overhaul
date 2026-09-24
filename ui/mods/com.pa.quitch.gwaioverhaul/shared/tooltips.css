@@ -1,0 +1,19 @@
+/* Bootstrap inserts a tooltip straight after its trigger. */
+.gwo-tip + .tooltip .tooltip-inner {
+  line-height: 1.5;
+}
+
+/* A 24px target for the 15px "?". It grows upwards and sideways only: the
+   control the "?" explains usually starts 2px below it. */
+.info_tip.gwo-tip {
+  position: relative;
+}
+
+.info_tip.gwo-tip::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  right: -5px;
+  bottom: 0;
+  left: -5px;
+}

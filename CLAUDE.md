@@ -39,6 +39,7 @@ the traps that have actually caused bugs here.
 | The Node AMD harness, the validators, coverage                              | [`docs/testing.md`](docs/testing.md)                   |
 | Translation files, the i18n tooling, the catalog and the scope rule         | [`docs/translations.md`](docs/translations.md)         |
 | Checking a change in a running game: test clients, logs, console recipes    | [`docs/live-testing.md`](docs/live-testing.md)         |
+| WCAG audit results, what the engine rules out, rules for new markup         | [`docs/accessibility.md`](docs/accessibility.md)       |
 
 These are worth knowing before you touch anything, each covered in full by the doc
 named:

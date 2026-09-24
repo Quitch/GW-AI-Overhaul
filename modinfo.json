@@ -23,7 +23,9 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/race_picker.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/deck_picker.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_picker.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_picker.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.js"
     ],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/races.js",
@@ -45,7 +47,9 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/systems.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory_wait.css",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory_wait.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/victory_wait.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.js"
     ],
     "gw_war_over": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
@@ -69,7 +73,9 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/race_picker.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/gwo_loadouts.js"
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/gwo_loadouts.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.css",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/tooltips.js"
     ]
   },
   "priority": 200,

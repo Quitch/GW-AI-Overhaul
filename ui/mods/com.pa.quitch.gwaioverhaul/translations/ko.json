@@ -245,6 +245,9 @@
   "Delay in creating new bases.": {
     "message": "새 기지 생성의 지연 시간입니다."
   },
+  "Delete this Tech?": {
+    "message": "이 기술을 삭제하시겠습니까?"
+  },
   "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
     "message": "세기 전쟁 동안 헤게모니의 비밀 부대가 투입한 존재로, 현재의 확산 수준을 보면 전쟁이 끝난 뒤 스스로 행성에 퍼지는 능력을 발달시켰거나, 크지피드가 패배를 막으려는 필사적인 시도로 퍼뜨린 것으로 보입니다."
   },
