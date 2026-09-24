@@ -142,13 +142,33 @@ define(function () {
         return deferred.promise();
       }
 
-      requireGW(["cards/" + firstCard.id], function (data) {
-        if (data && _.isFunction(data.summarize)) {
-          system.star.ai().cardName = loc(data.summarize());
-          sendSyncedStarCardName(starIndex, firstCard.id);
+      // The turn deal waits on this, so it must settle: RequireJS runs the
+      // success callback without a try, and waitSeconds is 0.
+      requireGW(
+        ["cards/" + firstCard.id],
+        function (data) {
+          try {
+            if (data && _.isFunction(data.summarize)) {
+              system.star.ai().cardName = loc(data.summarize());
+              sendSyncedStarCardName(starIndex, firstCard.id);
+            }
+          } catch (e) {
+            console.error(
+              "GWO failed to name star after card " +
+                firstCard.id +
+                ": " +
+                ((e && e.stack) || e)
+            );
+          }
+          deferred.resolve();
+        },
+        function () {
+          console.error(
+            "GWO card failed to load for star name: " + firstCard.id
+          );
+          deferred.resolve();
         }
-        deferred.resolve();
-      });
+      );
 
       return deferred.promise();
     };

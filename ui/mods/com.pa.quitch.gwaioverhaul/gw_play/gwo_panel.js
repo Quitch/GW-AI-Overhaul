@@ -1,6 +1,22 @@
 (function () {
   var gwoWarInfoPanelLoaded;
 
+  // A third-party card's summarize() is arbitrary code; an empty name beats an
+  // uncaught throw in the requireGW callback.
+  var cardName = function (card, cardId) {
+    try {
+      return card && _.isFunction(card.summarize) ? loc(card.summarize()) : "";
+    } catch (e) {
+      console.error(
+        "GWO card summarize() threw for " +
+          cardId +
+          ": " +
+          ((e && e.stack) || e)
+      );
+      return "";
+    }
+  };
+
   function gwoWarInfoPanel(gwoSettings) {
     try {
       var deckName = function (deckName) {
@@ -322,7 +338,7 @@
           var loadoutId = cards[0].id;
           model.gwoLoadout = ko.observable("");
           requireGW(["cards/" + loadoutId], function (card) {
-            model.gwoLoadout(loc(card.summarize()));
+            model.gwoLoadout(cardName(card, loadoutId));
           });
 
           var intelligence = function (subcommanderData, index) {
@@ -404,7 +420,7 @@
               if (loadoutCardId && !commander.loadoutResolved) {
                 commander.loadoutResolved = true;
                 requireGW(["cards/" + loadoutCardId], function (card) {
-                  commander.character(loc(card.summarize()));
+                  commander.character(cardName(card, loadoutCardId));
                 });
               }
 

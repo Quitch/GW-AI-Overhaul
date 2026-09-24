@@ -230,14 +230,27 @@
           self.iconPlaceholder(undefined);
           self.visible(true);
         } else {
-          self.desc(card.describe && card.describe(data));
-          self.summary(card.summarize && card.summarize(data));
-          self.icon(card.icon && card.icon(data));
-          self.iconPlaceholder(!self.icon() && (self.summary() || self.desc()));
-          self.audio(card.audio && card.audio(data));
-          self.visible(
-            card.visible === true || !!(card.visible && card.visible(data))
-          );
+          // Stock waits on self.card, so a throwing third-party card must not
+          // stop it resolving.
+          try {
+            self.desc(card.describe && card.describe(data));
+            self.summary(card.summarize && card.summarize(data));
+            self.icon(card.icon && card.icon(data));
+            self.iconPlaceholder(
+              !self.icon() && (self.summary() || self.desc())
+            );
+            self.audio(card.audio && card.audio(data));
+            self.visible(
+              card.visible === true || !!(card.visible && card.visible(data))
+            );
+          } catch (e) {
+            console.error(
+              "GWO card threw while loading its view: " +
+                self.id() +
+                ": " +
+                ((e && e.stack) || e)
+            );
+          }
         }
         completed.resolve(card);
       };

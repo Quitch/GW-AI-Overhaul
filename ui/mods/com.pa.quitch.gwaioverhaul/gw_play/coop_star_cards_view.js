@@ -33,8 +33,20 @@ define([
         requested[cardId] = true;
         requireGW(["cards/" + cardId], function (card) {
           var next = _.assign({}, names());
-          next[cardId] =
-            card && _.isFunction(card.summarize) ? loc(card.summarize()) : "";
+          var name = "";
+          try {
+            if (card && _.isFunction(card.summarize)) {
+              name = loc(card.summarize());
+            }
+          } catch (e) {
+            console.error(
+              "GWO card summarize() threw for " +
+                cardId +
+                ": " +
+                ((e && e.stack) || e)
+            );
+          }
+          next[cardId] = name;
           names(next);
         });
       }

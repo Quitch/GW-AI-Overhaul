@@ -40,9 +40,13 @@ function setup(overrides = {}) {
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
-  stubs.setGlobal("requireGW", (ids, done) => {
+  stubs.setGlobal("requireGW", (ids, done, fail) => {
     const cardId = ids[0].slice("cards/".length);
     calls.requested.push(cardId);
+    if (options.failLoad) {
+      fail(new Error("load failed"));
+      return;
+    }
     done(options.cards[cardId]);
   });
 
@@ -129,6 +133,65 @@ describe("card name sync - naming a star the host explored", () => {
 
     assert.equal(options.boardAi.cardName, undefined);
     assert.deepEqual(calls.sent, []);
+  });
+
+  // The turn deal waits on this, and a throw in a requireGW success callback
+  // would leave it waiting forever.
+  it("resolves and logs when the card's summarize throws", async () => {
+    const { sync, calls, options } = build({
+      cards: {
+        gwc_broken: {
+          summarize: () => {
+            throw new Error("summarize exploded");
+          },
+        },
+      },
+    });
+    const system = { star: starWithAi(options.boardAi) };
+
+    const errors = await capture("error", () =>
+      sync.setCardName(system, [{ id: "gwc_broken" }], 1)
+    );
+
+    assert.equal(options.boardAi.cardName, undefined);
+    assert.deepEqual(calls.sent, []);
+    assert.match(
+      errors[0],
+      /^GWO failed to name star after card gwc_broken: Error: summarize exploded/
+    );
+  });
+
+  it("resolves and logs when the star has no AI", async () => {
+    const { sync, calls } = build();
+
+    const errors = await capture("error", () =>
+      sync.setCardName(
+        { star: starWithAi(null) },
+        [{ id: "gwc_combat_bots" }],
+        1
+      )
+    );
+
+    assert.deepEqual(calls.sent, []);
+    assert.match(
+      errors[0],
+      /^GWO failed to name star after card gwc_combat_bots/
+    );
+  });
+
+  it("resolves and logs when the card fails to load", async () => {
+    const { sync, calls, options } = build({ failLoad: true });
+    const system = { star: starWithAi(options.boardAi) };
+
+    const errors = await capture("error", () =>
+      sync.setCardName(system, [{ id: "gwc_combat_bots" }], 1)
+    );
+
+    assert.equal(options.boardAi.cardName, undefined);
+    assert.deepEqual(calls.sent, []);
+    assert.deepEqual(errors, [
+      "GWO card failed to load for star name: gwc_combat_bots",
+    ]);
   });
 });
 
