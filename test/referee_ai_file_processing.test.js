@@ -11,6 +11,7 @@ const {
   buildGame,
   useModel,
   makeInventory,
+  withTwoViewers,
 } = require("../scripts/lib/ai-path-fixtures.js");
 const {
   installRefereeFakes,
@@ -208,16 +209,11 @@ describe("per-player-tech viewer processing", () => {
     });
     const viewer1Inventory = makeInventory({ aiModsList: [] });
     const viewer2Inventory = makeInventory({ aiModsList: [] });
-    fixture.game.findCoopPlayerInventoryData = (client) => {
-      if (client.id === "v1") return { inventory: viewer1Inventory };
-      if (client.id === "v2") return { inventory: viewer2Inventory };
-      return undefined;
-    };
-    const connectedClients = [
-      { id: "host", name: "Host", role: "host" },
-      { id: "v1", name: "Viewer1", role: "viewer" },
-      { id: "v2", name: "Viewer2", role: "viewer" },
-    ];
+    const connectedClients = withTwoViewers(
+      fixture.game,
+      viewer1Inventory,
+      viewer2Inventory
+    );
     installModel(fixture.game, connectedClients);
     installFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },

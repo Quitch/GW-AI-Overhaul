@@ -13,6 +13,7 @@ const {
   useModel,
   makeInventory,
   SCENARIO_AXES,
+  withTwoViewers,
 } = require("../scripts/lib/ai-path-fixtures.js");
 const {
   installRefereeFakes,
@@ -211,16 +212,12 @@ describe("referee_ai.js integration: every configFiles key it writes is well-for
       aiModsList: [{ op: "load", type: "fabber", value: "extra_load.json" }],
     });
     const viewer2Inventory = makeInventory({ aiModsList: [] });
-    fixture.game.findCoopPlayerInventoryData = (client) => {
-      if (client.id === "v1") return { inventory: viewer1Inventory };
-      if (client.id === "v2") return { inventory: viewer2Inventory };
-      return undefined;
-    };
-    const connectedClients = [
-      { id: "host", name: "Host", role: "host" },
-      { id: "v1", name: "../../../etc/passwd", role: "viewer" },
-      { id: "v2", name: "<script>alert(1)</script>", role: "viewer" },
-    ];
+    const connectedClients = withTwoViewers(
+      fixture.game,
+      viewer1Inventory,
+      viewer2Inventory,
+      ["../../../etc/passwd", "<script>alert(1)</script>"]
+    );
     installModel(fixture.game, connectedClients);
     installFakes();
 

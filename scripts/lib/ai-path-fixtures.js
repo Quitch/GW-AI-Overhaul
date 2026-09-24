@@ -198,6 +198,24 @@ function buildGame(options) {
   return { game: game, star: star, ai: ai, inventory: inventory };
 }
 
+// A host and two viewers, v1 and v2, holding the given inventories: sets
+// findCoopPlayerInventoryData on the game to answer for them and returns the
+// connected clients for installModel(). `names` overrides the viewers' display
+// names.
+function withTwoViewers(game, viewer1Inventory, viewer2Inventory, names) {
+  var inventories = { v1: viewer1Inventory, v2: viewer2Inventory };
+  var viewerNames = names || ["Viewer1", "Viewer2"];
+  game.findCoopPlayerInventoryData = function (client) {
+    var inventory = inventories[client.id];
+    return inventory ? { inventory: inventory } : undefined;
+  };
+  return [
+    { id: "host", name: "Host", role: "host" },
+    { id: "v1", name: viewerNames[0], role: "viewer" },
+    { id: "v2", name: viewerNames[1], role: "viewer" },
+  ];
+}
+
 // Call restore() in afterEach or the stub leaks into the next test.
 function installModel(game, connectedClients) {
   var previousModel = global.model;
@@ -243,5 +261,6 @@ module.exports = {
   makeAiDescriptor: makeAiDescriptor,
   buildGame: buildGame,
   installModel: installModel,
+  withTwoViewers: withTwoViewers,
   useModel: useModel,
 };
