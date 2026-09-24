@@ -45,7 +45,6 @@ function setup(overrides = {}) {
       isViewer: false,
       maxCards: 10,
       startingCards: [],
-      duplicate: true,
       currentStar: 2,
       playerFaction: 0,
       commanderNames: {},
@@ -60,7 +59,6 @@ function setup(overrides = {}) {
     saves: [],
     aiDeals: [],
     penchants: [],
-    duplicateChecks: [],
   };
 
   const inventory = makeInventory(options.maxCards, options.startingCards);
@@ -110,10 +108,6 @@ function setup(overrides = {}) {
       return Promise.resolve();
     },
     helpers: {
-      doNotDealCard: (...args) => {
-        calls.duplicateChecks.push(args);
-        return options.duplicate;
-      },
       // The real one rewrites the sub-commander in place, which is what makes
       // the clone in dealSubCommander load-bearing.
       applyRaceToSubcommander: (subcommander) => subcommander,
@@ -225,37 +219,6 @@ describe("cheats testCards", () => {
     assert.deepEqual(calls.saves, [true]);
   });
 
-  // The point of the cheat: every card is checked against the duplicate rules
-  // on the way in, and a card that fails is named.
-  it("reports a card that fails the duplication test", async () => {
-    const { calls } = build({ duplicate: false });
-
-    const errors = await capture("error", async () => {
-      testCards();
-      await flush();
-    });
-
-    assert.deepEqual(errors, [
-      "gwc_combat_bots failed duplication test",
-      "gwc_orbital failed duplication test",
-    ]);
-    assert.deepEqual(dealtIds(calls), ["gwc_combat_bots", "gwc_orbital"]);
-  });
-
-  // With nothing dealt and no system cards, only the inventory can match, so a
-  // card that was just applied must be caught there.
-  it("tests each card against the inventory alone", async () => {
-    const { calls, inventory } = build();
-
-    testCards();
-    await flush();
-
-    assert.deepEqual(calls.duplicateChecks, [
-      [inventory, { id: "gwc_combat_bots" }, [], false, []],
-      [inventory, { id: "gwc_orbital" }, [], false, []],
-    ]);
-  });
-
   it("checks every faction's minion commanders without touching the hand", async () => {
     const { inventory } = build({ gwoCards: ["gwc_minion"] });
     let pushes = 0;
@@ -295,7 +258,7 @@ describe("cheats testCards", () => {
   });
 
   // A slot card is stamped unique, so it stacks rather than being rejected as a
-  // duplicate of the last one - and is therefore not duplicate-tested.
+  // duplicate of the last one.
   it("stamps a card slot unique and lets it overflow", async () => {
     const { inventory } = build({ gwoCards: ["gwc_add_card_slot"] });
 

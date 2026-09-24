@@ -169,8 +169,7 @@ define(function () {
       if (_.isEqual(minionColour[0], guardianColour)) {
         return [guardianColour, secondaryColour];
       }
-      // A copy, as each call used to build its own palette.
-      return [palette[count].slice(), secondaryColour];
+      return [palette[count], secondaryColour];
     },
   };
 });

@@ -322,27 +322,21 @@
         // threat and the panel. The order matters: intelligence() carries the
         // faction from one call to the next.
         var starCommanders = function (ai) {
-          var commanders = [intelligence(ai, 0)];
-          if (ai.minions) {
-            commanders = commanders.concat(_.map(ai.minions, intelligenceOf));
-          }
-          if (ai.foes) {
-            commanders = commanders.concat(_.map(ai.foes, intelligenceOf));
-          }
-          return commanders;
+          return [intelligence(ai, 0)].concat(
+            _.map(ai.minions, intelligenceOf),
+            _.map(ai.foes, intelligenceOf)
+          );
         };
 
         var measureThreat = function (ai, commanders) {
           var totalThreat = 0;
-          if (ai.foes) {
-            _.forEach(ai.foes, function (army) {
-              var commanderCount = gwoAI.commanderCount(army);
-              totalThreat +=
-                gwoAI.aiEconRateWithFloor(army.econ_rate) *
-                0.4 *
-                (commanderCount - 1);
-            });
-          }
+          _.forEach(ai.foes, function (army) {
+            var commanderCount = gwoAI.commanderCount(army);
+            totalThreat +=
+              gwoAI.aiEconRateWithFloor(army.econ_rate) *
+              0.4 *
+              (commanderCount - 1);
+          });
           _.times(commanders.length, function (n) {
             totalThreat += commanders[n].eco;
           });
@@ -381,15 +375,16 @@
           return toFixedIfNecessary(totalThreat, 2);
         };
 
-        var createAIIntelligence = function (ai, starCommanderList) {
-          var commanders = starCommanderList.slice();
+        var createAIIntelligence = function (ai, commanders) {
           if (ai.ally) {
             var game = model.game();
             var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
               game.inventory(),
               game
             );
-            commanders.push(intelligence(ai.ally, 0, subcommanders.length));
+            return commanders.concat([
+              intelligence(ai.ally, 0, subcommanders.length),
+            ]);
           }
           return commanders;
         };

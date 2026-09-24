@@ -28,7 +28,6 @@
         session("gw_campaign_role") === "viewer";
       var record =
         viewer &&
-        _.isFunction(game.findCoopPlayerInventoryData) &&
         game.findCoopPlayerInventoryData({
           id: session("uberId"),
           name: session("displayName"),

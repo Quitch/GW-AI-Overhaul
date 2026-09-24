@@ -1,6 +1,6 @@
 // GWO dev cheats. testCards deals one of every card in the deck, validating
-// minions and duplicate handling on the way; giveCard deals the one named in
-// model.cheats.giveCardId(). Both use GWO's deck, not the base game's.
+// minions on the way. giveCard deals the one model.cheats.giveCardId() names.
+// Both use GWO's deck, not the base game's.
 define(function () {
   return function (params) {
     var game = params.game;
@@ -17,20 +17,6 @@ define(function () {
     var dealCardToSelectableAI = params.dealCardToSelectableAI;
     var helpers = params.helpers;
     var races = params.races;
-
-    var testCardForMatches = function (inventory, card) {
-      var duplicate = helpers.doNotDealCard(inventory, card, [], false, []);
-
-      if (!duplicate) {
-        console.error(card.id + " failed duplication test");
-      }
-    };
-
-    // Applied once per cheat, not per card: each applyCards re-applies every
-    // card held.
-    var addCheatCard = function (product, inventory) {
-      inventory.cards.push(product);
-    };
 
     var setupNewCardSlot = function (product) {
       product.allowOverflow = true;
@@ -140,8 +126,7 @@ define(function () {
               cards
             )
             .then(function (product) {
-              product = setupNewCardSlot(product);
-              addCheatCard(product, inventory);
+              inventory.cards.push(setupNewCardSlot(product));
             })
         );
       });
@@ -188,11 +173,7 @@ define(function () {
                 cards
               )
               .then(function (product) {
-                product = prepareProduct(product, inventory, true);
-                addCheatCard(product, inventory);
-                if (!product.unique) {
-                  testCardForMatches(inventory, product);
-                }
+                inventory.cards.push(prepareProduct(product, inventory, true));
               })
           )
         );
@@ -202,6 +183,8 @@ define(function () {
       );
 
       $.when.apply($, deferredQueue).then(function () {
+        // Once per cheat, not per card: each applyCards re-applies every card
+        // held.
         inventory.applyCards();
         if (!failed) {
           finishCheat("gwo_cheat_test_cards");
@@ -233,7 +216,7 @@ define(function () {
             cards
           )
           .then(function (product) {
-            addCheatCard(prepareProduct(product, inventory), inventory);
+            inventory.cards.push(prepareProduct(product, inventory));
             inventory.applyCards();
             finishCheat("gwo_cheat_give_card");
           });
