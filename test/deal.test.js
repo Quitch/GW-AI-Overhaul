@@ -423,8 +423,8 @@ describe("setupGwoDeck", () => {
     );
   });
 
-  // RequireJS can call an errback once per failed dependency, so a card must not
-  // count twice and resolve the deck before the other cards arrive.
+  // After an error listener on its module throws, RequireJS reruns the errback
+  // at the next require. Counted twice, a card would resolve the deck early.
   it("counts a failed card once however often its errback fires", () => {
     mock.method(console, "error", () => {});
     const { pending, requireGW } = deferredRequireGW();

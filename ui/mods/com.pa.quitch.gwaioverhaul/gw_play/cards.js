@@ -600,14 +600,8 @@
           return deferred.promise();
         };
 
-        // The turn deal above covers the ordinary case. This covers a viewer
-        // joining, a rejoining viewer finishing its catch-up deals, and a
-        // re-deal the gate turned away - none of which passes through a turn.
-        // turnState is read because refresh returns early mid-exploration, and
-        // its end is what retries. refresh's own reads also subscribe this, so
-        // any of them changing refreshes too; refresh only fills gaps unless a
-        // re-deal is owed. stats().turns() is not read: a move must not disturb
-        // an offer already advertised.
+        // runRefresh reads the gate a tick late, so its inputs are read here.
+        // See coop.md, "Per-player pre-dealt cards".
         ko.computed(function () {
           model.gwCampaignConnectedClients();
           model.gwCampaignPlayerSetupBlocked();

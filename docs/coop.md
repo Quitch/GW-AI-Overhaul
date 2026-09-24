@@ -377,6 +377,21 @@ would therefore change what a star advertises to a viewer while the host was
 merely travelling to it. The card would then no longer be the one in their hand
 on arrival.
 
+**What triggers a gap-filling refresh.** A computed in `gw_play/cards.js` calls
+`refresh()` whenever one of its reads changes. The turn deal covers the
+ordinary case. The computed covers the cases that do not pass through a turn: a
+viewer joining, a rejoining viewer finishing its catch-up deals, and a re-deal
+the gate below turned away. `refresh()` itself reads `gwCampaignActive`,
+`isCampaignHost`, and `gwCampaignPerPlayerTechCards` before it returns, so those
+subscribe the computed. The gate's inputs are read by `runRefresh`, which
+starts a tick later, too late to subscribe it, so the computed reads them
+itself. `game.turnState()` is among them because the gate refuses every refresh
+during exploration, so the end of exploration is what retries.
+`game.stats().turns()` is deliberately not read: it changes on every hop, and a
+move must not disturb an offer already advertised. The first hop out of `end`
+still refreshes, through `turnState`, but that refresh only fills gaps unless a
+re-deal is owed.
+
 A re-deal the gate below turns away is **owed**, not dropped. So is one made
 while no viewer is connected, and one that fails. The next refresh the gate
 allows pays it. This matters because the host re-deals after a win, which is
