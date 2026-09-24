@@ -41,10 +41,13 @@ Two groups of criteria are out of scope, because the engine cannot support them:
 - **A control's outline is 3:1** against its background (1.4.11).
 - **A click target is 44 × 44px** (2.5.5). To reach that without changing a
   stock-styled control's look, give it a transparent `::before` hit area, and
-  check that the area does not overlap the next target. Stock's switch rows sit
-  on a 44px pitch, so a switch can grow 7px up and down and no further. Stock
-  sets `box-sizing: border-box` globally, so padding added to reach 44px needs
-  `content-box`.
+  check that the area does not overlap the next target. A `::before` is placed
+  from the padding edge, so an offset must include the control's border: a 30px
+  switch with a 1px border needs `-8px` above and below, not `-7px`. Stock's
+  switch rows sit on a 44px pitch, so that is as far as a switch can grow.
+  Stock sets `box-sizing: border-box` globally, so padding added to reach 44px
+  needs `content-box`. Measure a hit area by hit-testing points with
+  `elementFromPoint`, not by adding the offsets to the element's size.
 - **An action that cannot be undone asks first** (3.3.6). Delete Tech changes
   to "Delete this Tech?" on the first press, and deletes on the second.
 

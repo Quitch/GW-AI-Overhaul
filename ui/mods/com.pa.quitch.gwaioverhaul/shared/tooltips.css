@@ -13,7 +13,8 @@
 }
 
 /* A 24px target for the 15px "?". It grows upwards and sideways only: the
-   control the "?" explains usually starts 2px below it. */
+   control the "?" explains usually starts 2px below it. The offsets include
+   its 1px border, since a ::before is placed from the padding edge. */
 .info_tip.gwo-tip {
   position: relative;
 }
@@ -21,8 +22,8 @@
 .info_tip.gwo-tip::before {
   content: "";
   position: absolute;
-  top: -9px;
-  right: -5px;
+  top: -10px;
+  right: -6px;
   bottom: 0;
-  left: -5px;
+  left: -6px;
 }

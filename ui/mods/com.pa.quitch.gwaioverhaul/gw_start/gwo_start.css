@@ -292,13 +292,14 @@
 }
 
 /* Stretches the 21px-high button to a 44px target. It only overlaps the card
-   it sits on. */
+   it sits on, and grows mostly downwards: the card clips its overflow inside
+   its border, 8px above the button. */
 .gwo-favourite-btn::before {
   content: "";
   position: absolute;
-  top: -12px;
+  top: -8px;
   right: 0;
-  bottom: -11px;
+  bottom: -15px;
   left: 0;
 }
 
@@ -314,7 +315,9 @@
 /* 44px pointer targets for GWO's own instances of stock controls. Each is an
    invisible hit area, so the stock look is unchanged, and each stays clear of
    the next target: the switch rows sit on stock's 44px pitch, and the AI
-   Settings dropdowns grow downwards only, away from the "?" above them. */
+   Settings dropdowns grow downwards only, away from the "?" above them. A
+   ::before is placed from the padding edge, so each offset includes the
+   control's 1px border. */
 #gwo-game-options-panel .coop-setup-configure,
 #gwo-commander-panel .coop-setup-configure,
 #gwo-ai-panel .coop-setup-configure,
@@ -328,9 +331,9 @@
 #gwo-ai-panel .coop-setup-configure::before {
   content: "";
   position: absolute;
-  top: -5px;
+  top: -6px;
   right: 0;
-  bottom: -5px;
+  bottom: -6px;
   left: 0;
 }
 
@@ -338,9 +341,9 @@
 #gwo-per-player-race-row .gw-start-square-switch::before {
   content: "";
   position: absolute;
-  top: -7px;
+  top: -8px;
   right: 0;
-  bottom: -7px;
+  bottom: -8px;
   left: 0;
 }
 
@@ -349,18 +352,18 @@
 #gwo-ai-modal .gw-start-coop-settings-close::before {
   content: "";
   position: absolute;
-  top: -7px;
-  right: -7px;
-  bottom: -7px;
-  left: -7px;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
 }
 
 #gwo-ai-table .bootstrap-select .btn::before {
   content: "";
   position: absolute;
-  top: -5px;
+  top: -6px;
   right: 0;
-  bottom: -5px;
+  bottom: -6px;
   left: 0;
 }
 
@@ -369,6 +372,6 @@
   position: absolute;
   top: 0;
   right: 0;
-  bottom: -10px;
+  bottom: -11px;
   left: 0;
 }
