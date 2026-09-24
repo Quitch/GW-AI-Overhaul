@@ -54,7 +54,8 @@
         '"></div>'
     );
 
-    model.makeGame = function () {}; // Prevent changes to settings causing creation of new galaxies
+    // Prevent changes to settings causing creation of new galaxies
+    model.makeGame = function () {};
 
     var enableGoToWar = ko.observable(true);
     var gwoReady = ko.observable(false); // the modules below have loaded
@@ -783,7 +784,7 @@
               .then(returnTeamInfo);
           };
 
-          var populate = moveIn.then(onMovedIn);
+          var aisPlaced = moveIn.then(onMovedIn);
 
           var treasurePlanetStar;
 
@@ -820,7 +821,7 @@
             treasurePlanetStar = outcome.treasureStar;
           };
 
-          var finishAis = populate.then(onPopulated);
+          var finishAis = aisPlaced.then(onPopulated);
 
           var onAisFinished = function () {
             if (warGenerationFailed === true) {

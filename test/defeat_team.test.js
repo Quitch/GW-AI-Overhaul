@@ -83,8 +83,8 @@ describe("defeat_team - winning the war", () => {
 });
 
 describe("defeat_team - the defeated team's stars", () => {
-  // gw_start/setup.js gives a foe a faction but no team, and team indices
-  // differ from faction indices.
+  // gw_start/ai_population.js gives a foe a faction but no team, and team
+  // indices differ from faction indices.
   it("promotes the first foe onto its faction's team, and drops the old owner's minions", () => {
     const foes = [
       { name: "First", faction: 2 },
@@ -194,8 +194,8 @@ describe("defeat_team - the defeated team's stars", () => {
     assert.equal(game.gameState(), "active");
   });
 
-  // gw_start/setup.js converts a worker into the Guardians in place, so they
-  // keep its faction.
+  // gw_start/ai_population.js converts a worker into the Guardians in place,
+  // so they keep its faction.
   it("leaves the Guardians alone when their faction's boss falls", () => {
     const guardians = { faction: 2, mirrorMode: true, boss: true };
     const stars = [
@@ -225,8 +225,8 @@ describe("defeat_team - the defeated team's stars", () => {
     assert.deepEqual(stars[1].cardList(), [{ id: "gwc_other_team" }]);
   });
 
-  // gw_start/setup.js deletes the Guardians' team, so their win arrives as
-  // defeatTeam(undefined) and must match their star alone.
+  // gw_start/ai_population.js deletes the Guardians' team, so their win
+  // arrives as defeatTeam(undefined) and must match their star alone.
   it("clears only the Guardians' star for an undefined team, keeping its cards", () => {
     const stars = [
       makeStar({ mirrorMode: true, boss: true }, [{ id: "gwc_treasure" }]),

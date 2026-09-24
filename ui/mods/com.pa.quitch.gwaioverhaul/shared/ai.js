@@ -25,7 +25,7 @@ define([
   };
 
   // The origin star's system carries the war's GWO settings as `gwaio` - see
-  // gw_start/setup.js. A stock war has no such field.
+  // gw_start/war_record.js. A stock war has no such field.
   var originSystem = function (game) {
     var galaxy = game.galaxy();
     return galaxy.stars()[galaxy.origin()].system();

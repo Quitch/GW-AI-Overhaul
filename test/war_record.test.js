@@ -71,8 +71,9 @@ function war(overrides) {
 }
 
 describe("build", () => {
-  it("records the war's settings in the order the save has always had", () => {
+  it("records the war's settings", () => {
     const record = warRecord.build(war());
+    // In save order: a reorder changes the saved JSON byte for byte.
     assert.deepEqual(Object.keys(record), [
       "version",
       "seed",
@@ -97,6 +98,9 @@ describe("build", () => {
       "races",
       "biomeMods",
     ]);
+    assert.equal(record.treasurePlanetFixed, true);
+    assert.equal(record.clusterFixed, true);
+    assert.equal(record.treasureLoadoutDerived, true);
     assert.equal(record.version, gwoVersion);
     assert.equal(record.seed, "abc");
     assert.equal(record.difficulty, "!LOC:Gold");
@@ -122,6 +126,12 @@ describe("build", () => {
         perPlayerTechCards: true,
       })
     );
+    const keys = Object.keys(record);
+    assert.equal(
+      keys.indexOf("customDifficulty"),
+      keys.indexOf("difficulty") + 1
+    );
+    assert.equal(keys.indexOf("cheatsUsed"), keys.indexOf("easierStart") + 1);
     assert.deepEqual(record.customDifficulty, { econBase: 1 });
     assert.equal(record.cheatsUsed, true);
     assert.equal(record.races.perPlayerRace, true);
