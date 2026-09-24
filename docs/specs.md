@@ -91,10 +91,14 @@ whole thing.
 
 `multiplyOrCreate` is a GWO addition, but the behaviour it provides is not new. It
 is what the base game's `multiply` did: `attribute !== undefined ? attribute * value : value`.
-GWO's `multiply` no longer creates. A missing or non-numeric target now warns and is
-left alone. A card that wants creation therefore has to ask for it by name. The
-split turns a typo'd path into a warning rather than a silently invented stat. The
-split is also why `multiplyOrCreate` runs before `multiply` in the op ordering.
+GWO's `multiply` no longer creates. A missing target is skipped. A target that is
+present but not a number, including `null`, warns and is left alone. A card that
+wants creation therefore has to ask for it by name. The split stops a typo'd path
+from silently inventing a stat. It does not report the typo: cards routinely
+multiply paths that a unit lacks, such as `navigation.*` leaves and vanilla
+attributes on faction units. A missing target therefore cannot be told apart from a
+mistake, and a typo'd or stale path fails silently. The split is also why
+`multiplyOrCreate` runs before `multiply` in the op ordering.
 
 `eval` is theoretically unsafe. It is also pointless to worry about it: mods can run
 whatever code they like anyway, so the risk is not meaningful.
@@ -104,8 +108,8 @@ whatever code they like anyway, so the risk is not meaningful.
 No op ever learns whether the attribute was there. The path walker creates the leaf
 key _before_ it calls the op. The key is created as `undefined`, or as an empty
 container for `push`, `pull` and `merge`. An op therefore branches only on the value
-it was handed. A missing attribute and one that explicitly holds `null` reach the op
-looking the same. That distinction only appears in one place, noted under the table.
+it was handed. Most ops treat a missing attribute and one that explicitly holds
+`null` alike. The two exceptions, `multiply` and `merge`, are noted under the table.
 
 The walker creates missing intermediate segments too. A path that goes several
 levels deeper than the stock spec therefore still lands. `replace` writes whatever it
@@ -119,16 +123,17 @@ derived from the old one.
 | `add`                     | Writes the value.                             | Writes the value.                 |
 | `push`, `prepend`, `pull` | Creates the array.                            | Creates the array.                |
 | `wipe`                    | Creates the string.                           | Creates the string.               |
-| `multiply`                | **Warns, writes nothing.**                    | **Warns, writes nothing.**        |
+| `multiply`                | **Writes nothing, silently.**                 | **Warns, writes nothing.**        |
 | `merge`                   | Creates the object. The walker seeds it `{}`. | **Warns, writes nothing.**        |
 
-`multiply` is the one to watch. It deliberately does not create (see above). A card
-that wants creation asks for `multiplyOrCreate` by name.
+`multiply` is the one to watch. It deliberately does not create (see above), and it
+skips a missing target without a warning. A card that wants creation asks for
+`multiplyOrCreate` by name.
 
-`merge` is the exception: for it, a missing attribute and a `null` value do not
-behave alike. It needs a plain object to `_.assign` into, and a `null` is not one.
-The two cases therefore diverge. To seed over an explicit `null`, use a `replace`
-first, or a `replace` alone.
+For `multiply` and `merge`, a missing attribute and a `null` value do not behave
+alike. `multiply` skips a missing target but warns on a `null` one. `merge` needs a
+plain object to `_.assign` into, and a `null` is not one. To seed over an explicit
+`null`, use a `replace` first, or a `replace` alone.
 
 ### Writing a spec reference
 
