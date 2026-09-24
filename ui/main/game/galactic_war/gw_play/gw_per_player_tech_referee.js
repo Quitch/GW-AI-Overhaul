@@ -8,16 +8,16 @@ define([
   "shared/gw_inventory",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/spec_cache.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
 ], function (
@@ -73,7 +73,7 @@ define([
     var raceMaps = gwoRaces.unitMapsFor(
       race,
       brain,
-      gwoAI.getAIPathSource("subcommander", race)
+      gwoAI.getAIPathSource("subcommander", race, inventory)
     );
     var loadMap = gameFilePaths.loadMap;
     var loads = [
@@ -211,7 +211,12 @@ define([
     // spec fetch that fails rejects through fail.
     cellsLoad
       .then(null, function (error) {
-        console.error("gwoRaces: cells not built for " + race, error);
+        console.error(
+          "gwoRaces: cells not built for " +
+            race +
+            ": " +
+            gameFilePaths.describeError(error)
+        );
         return undefined;
       })
       .then(function (cells) {

@@ -11,76 +11,25 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { ZipReader } = require("./lib/zip-read.js");
+const { mediaDir } = require("./lib/pa-install.js");
+const { byCodePoint, folderRoot, modRoots } = require("./lib/mod-roots.js");
+const { shippedServerMods } = require("./lib/server-mods.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const OUT =
   process.env.GWO_HARVEST_OUT ||
   path.join(REPO_ROOT, "test", "fixtures", "unit_types.json");
 
-const MEDIA =
-  process.env.PA_MEDIA ||
-  "C:/Program Files (x86)/Steam/steamapps/common/Planetary Annihilation Titans/media";
-const USER_DATA =
-  process.env.PA_USER_DATA ||
-  path.join(
-    process.env.LOCALAPPDATA || "",
-    "Uber Entertainment",
-    "Planetary Annihilation"
-  );
+const MEDIA = mediaDir();
 
-// The race and add-on server mods GWO knows, in the order GW Server Mods
-// mounts them (each shadows the ones before it). A folder build beside a zip
-// wins.
-const SERVER_MODS = [
-  "com.pa.legion-expansion-server",
-  "com.pa.ferretmaster.commander-merge",
-  "com.pa.ferretmaster.bugs",
-  "com.pa.nik.exiles",
-  "com.pa.loloares.thorosmen",
-  "pa.mla.unit.addon",
-  "com.pa.daedelus.experimentals",
-];
-
-function folderRoot(dir) {
-  return {
-    name: dir,
-    has: (rel) => fs.existsSync(path.join(dir, rel)),
-    read: (rel) => fs.readFileSync(path.join(dir, rel), "utf8"),
-  };
-}
-
-function zipRoot(file) {
-  const zip = new ZipReader(file);
-  return {
-    name: file,
-    has: (rel) => zip.has("pa/" + rel),
-    read: (rel) => zip.read("pa/" + rel).toString("utf8"),
-  };
-}
-
-function modRoots() {
-  const roots = [];
-  for (const id of SERVER_MODS) {
-    const zip = path.join(USER_DATA, "download", id + ".zip");
-    if (fs.existsSync(zip)) {
-      roots.push(zipRoot(zip));
-    }
-    for (const dir of [id, id + "-dev"]) {
-      const folder = path.join(USER_DATA, "server_mods", dir, "pa");
-      if (fs.existsSync(folder)) {
-        roots.push(folderRoot(folder));
-      }
-    }
-  }
-  return roots;
-}
+// A folder build beside a zip wins.
+const SERVER_MODS = shippedServerMods();
 
 const ROOTS = [
   folderRoot(path.join(MEDIA, "pa")),
   folderRoot(path.join(MEDIA, "pa_ex1")),
 ]
-  .concat(modRoots())
+  .concat(modRoots(SERVER_MODS))
   .concat(
     (process.env.GWO_RACE_ROOTS || "")
       .split(path.delimiter)
@@ -97,15 +46,6 @@ function readJson(specPath) {
     }
   }
   return undefined;
-}
-
-// Code-point order, what an argument-less sort gives strings: the committed
-// fixture must not churn with the machine's locale.
-function byCodePoint(a, b) {
-  if (a < b) {
-    return -1;
-  }
-  return a > b ? 1 : 0;
 }
 
 function unitList() {

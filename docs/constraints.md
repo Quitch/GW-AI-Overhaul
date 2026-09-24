@@ -100,7 +100,9 @@ jQuery 2.x has a trap that has bitten this repo three times. **It does not
 convert a `throw` inside a deferred callback into a rejection.** A `TypeError`
 there escapes `.fail()` entirely. There is no retry, and the caller hangs.
 Callbacks that can fail must `reject` explicitly rather than throw or fall
-through.
+through. Where a chain of steps needs a fail handler that runs for any of them,
+`shared/gwo_promise.js`'s `steps` wraps each step so a synchronous throw rejects
+the chain; `GWReferee.hire` is built on it.
 
 Also, `$.when()` and `deferred.then` identify a promise by a `promise`
 **method**. An engine promise (what every `api.*` call returns) has no such
@@ -153,7 +155,7 @@ Two shapes satisfy this rather than scattering checks. The first is a **named
 pre-flight gate** that refuses the whole operation with a diagnostic
 (`gw_play/per_player_tech.js`). The second is a **per-item `try`/`catch`**, so
 one bad entry in a batch is skipped rather than aborting the rest
-(`shared/specs.js`).
+(`gw_play/specs.js`).
 
 That second shape is not optional where third-party code is _called_ rather
 than read, because of the jQuery trap above. Every such call site in this mod
@@ -179,6 +181,17 @@ Sharing between scene scripts goes through `model.gwo*`, never `window`.
 When a base-game-shadowed module needs its logic tested, extract that logic into
 a measured sibling module. Do not hoist helpers to file top level. See
 [`shadowing.md`](shadowing.md).
+
+## Log one string
+
+PA's log file keeps only the **first** argument of a `console` call.
+`console.error("failed:", path, error)` reaches the log as `failed:`, with no
+path. Build one string, with `JSON.stringify` for a descriptor or spec and
+`+ error` for an error. ESLint's `no-restricted-syntax` rule fails any `ui/**`
+call with more than one argument.
+
+Do not add a logging wrapper instead. PA prefixes each log line with the file
+and line of the `console` call, so every line would name the wrapper.
 
 ## CSS
 
@@ -309,20 +322,9 @@ Three rules follow from that, and GWO's HTML applies each:
 
 ### Where GWO's translations come from
 
-The game merges only its own `ui/main/_i18n/locales/<lang>/*.json` tables, natively,
-before any mod script runs, and a mod file at one of those paths would shadow a
-stock table wholesale. GWO therefore ships its translations as
-`ui/mods/com.pa.quitch.gwaioverhaul/translations/<lang>.json` and hands them to the
-**Mod Translations** mod, which adds them to the same i18next store `loc()` reads.
-`shared/mod_translations.js` is the sole `global_mod_list` entry in `modinfo.json`,
-and in no scene list, so the strings are in place before the stock scene's
-`document.ready` and its model constructor, which translate eagerly; a scene-list
-registration is too late for those and leaves them English. Where a key is in both
-a GWO file and a stock table the GWO entry wins; the shipped files hold only keys
-the stock tables lack, so nothing is overridden today. `en-US.json` is the catalog
-for translators and is never loaded. Without Mod Translations the shim does nothing
-and GWO's text is English, as it always was. Details and tooling:
-[`translations.md`](translations.md).
+GWO ships `translations/<lang>.json` in its own namespace and hands them to the
+**Mod Translations** mod, which adds them to the store `loc()` reads. How they are
+loaded, and the tooling that builds them: [`translations.md`](translations.md).
 
 ## HTML
 

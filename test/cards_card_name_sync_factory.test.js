@@ -40,9 +40,13 @@ function setup(overrides = {}) {
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
-  stubs.setGlobal("requireGW", (ids, done) => {
+  stubs.setGlobal("requireGW", (ids, done, fail) => {
     const cardId = ids[0].slice("cards/".length);
     calls.requested.push(cardId);
+    if (options.failLoad) {
+      fail(new Error("load failed"));
+      return;
+    }
     done(options.cards[cardId]);
   });
 
@@ -118,16 +122,76 @@ describe("card name sync - naming a star the host explored", () => {
     assert.equal(options.boardAi.cardName, undefined);
   });
 
-  // The card module loads asynchronously and may not answer; the star keeps the
-  // name it had rather than the caller hanging on the deal.
-  it("resolves without naming anything when the card will not load", async () => {
-    const { sync, calls, options } = build({ cards: {} });
+  // validate:cards checks shipped cards only, so a third-party card can lack
+  // summarize. The star keeps its name, and the deal waiting on this still
+  // settles.
+  it("resolves without naming anything when the card has no summarize", async () => {
+    const { sync, calls, options } = build({ cards: { gwc_odd: {} } });
     const system = { star: starWithAi(options.boardAi) };
 
-    await sync.setCardName(system, [{ id: "gwc_missing" }], 1);
+    await sync.setCardName(system, [{ id: "gwc_odd" }], 1);
 
     assert.equal(options.boardAi.cardName, undefined);
     assert.deepEqual(calls.sent, []);
+  });
+
+  // The turn deal waits on this, and a throw in a requireGW success callback
+  // would leave it waiting forever.
+  it("resolves and logs when the card's summarize throws", async () => {
+    const { sync, calls, options } = build({
+      cards: {
+        gwc_broken: {
+          summarize: () => {
+            throw new Error("summarize exploded");
+          },
+        },
+      },
+    });
+    const system = { star: starWithAi(options.boardAi) };
+
+    const errors = await capture("error", () =>
+      sync.setCardName(system, [{ id: "gwc_broken" }], 1)
+    );
+
+    assert.equal(options.boardAi.cardName, undefined);
+    assert.deepEqual(calls.sent, []);
+    assert.match(
+      errors[0],
+      /^GWO failed to name star after card gwc_broken: Error: summarize exploded/
+    );
+  });
+
+  it("resolves and logs when the star has no AI", async () => {
+    const { sync, calls } = build();
+
+    const errors = await capture("error", () =>
+      sync.setCardName(
+        { star: starWithAi(null) },
+        [{ id: "gwc_combat_bots" }],
+        1
+      )
+    );
+
+    assert.deepEqual(calls.sent, []);
+    assert.match(
+      errors[0],
+      /^GWO failed to name star after card gwc_combat_bots/
+    );
+  });
+
+  it("resolves and logs when the card fails to load", async () => {
+    const { sync, calls, options } = build({ failLoad: true });
+    const system = { star: starWithAi(options.boardAi) };
+
+    const errors = await capture("error", () =>
+      sync.setCardName(system, [{ id: "gwc_combat_bots" }], 1)
+    );
+
+    assert.equal(options.boardAi.cardName, undefined);
+    assert.deepEqual(calls.sent, []);
+    assert.deepEqual(errors, [
+      "GWO card failed to load for star name: gwc_combat_bots",
+    ]);
   });
 });
 
@@ -217,6 +281,32 @@ describe("card name sync - applying a name a viewer received", () => {
     });
 
     assert.match(errors[0], /card summarize unavailable/);
+  });
+
+  it("rejects and logs the stack when the card's summarize throws", async () => {
+    const { handlers } = build({
+      cards: {
+        gwc_broken: {
+          summarize: () => {
+            throw new Error("summarize exploded");
+          },
+        },
+      },
+    });
+
+    const errors = await capture("error", async () => {
+      assert.match(
+        await rejection(
+          handlers[OPERATOR]({ payload: { star: 1, card_id: "gwc_broken" } })
+        ),
+        /Card summarize threw for gwc_broken/
+      );
+    });
+
+    assert.match(
+      errors[0],
+      /^\[GW COOP\] card summarize\(\) threw for id=gwc_broken: Error: summarize exploded/
+    );
   });
 
   it("warns and rejects when neither graph holds the star", async () => {

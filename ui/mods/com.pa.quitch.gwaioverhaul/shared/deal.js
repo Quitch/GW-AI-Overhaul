@@ -35,22 +35,34 @@ define([
       }
 
       _.forEach(ids, function (cardId, index) {
-        requireGW(["cards/" + cardId], function (card) {
-          // A third-party id whose module is missing or returns nothing must
-          // still count towards the tally: leaving it outstanding would hang
-          // every deal in the war rather than costing one card.
-          if (card) {
-            card.id = cardId;
-            cards[index] = card;
-            deck[index] = cardId;
-          } else {
-            console.error("GWO card loaded but returned nothing:", cardId);
-          }
+        // A third-party id whose module fails to load or returns nothing must
+        // still count towards the tally: leaving it outstanding would hang
+        // every deal in the war rather than costing one card.
+        // No timeout (waitSeconds: 0), and an errback can fire twice.
+        var count = _.once(function () {
           --cardsRemaining;
           if (cardsRemaining === 0) {
             promise.resolve();
           }
         });
+
+        requireGW(
+          ["cards/" + cardId],
+          function (card) {
+            if (card) {
+              card.id = cardId;
+              cards[index] = card;
+              deck[index] = cardId;
+            } else {
+              console.error("GWO card loaded but returned nothing: " + cardId);
+            }
+            count();
+          },
+          function () {
+            console.error("GWO card failed to load: " + cardId);
+            count();
+          }
+        );
       });
     },
 
@@ -83,7 +95,12 @@ define([
           card.keep && card.keep(deal, context);
           card.releaseContext && card.releaseContext(context);
         } catch (e) {
-          console.error("GWO card threw while being dealt:", params.id, e);
+          console.error(
+            "GWO card threw while being dealt: " +
+              params.id +
+              ": " +
+              ((e && e.stack) || e)
+          );
           result.reject(e);
           return;
         }

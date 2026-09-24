@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
 ], function (gwoAI, gwoCard, refereeAIPaths, refereeCoop, gwoRaces) {
   // The walk append, prepend and replace share. A build entry for toBuild that
@@ -216,12 +216,12 @@ define([
   var applyAiMods = function (json, mods) {
     _.forEach(mods, function (mod) {
       if (!Object.prototype.hasOwnProperty.call(aiModOps, mod.op)) {
-        console.error("Invalid AI mod operation:", mod);
+        console.error("Invalid AI mod operation: " + JSON.stringify(mod));
         return;
       }
       // Descriptors come from third-party cards, and this runs inside a
       // deferred callback where a throw is swallowed rather than rejected, so
-      // one bad mod would hang the launch. Matches shared/specs.js.
+      // one bad mod would hang the launch. Matches gw_play/specs.js.
       try {
         aiModOps[mod.op](
           json,
@@ -233,7 +233,12 @@ define([
           mod.matchAll
         );
       } catch (e) {
-        console.error("applyAiMods: op threw, skipping mod", mod, e);
+        console.error(
+          "applyAiMods: op threw, skipping mod " +
+            JSON.stringify(mod) +
+            ": " +
+            ((e && e.stack) || e)
+        );
       }
     });
   };
@@ -324,12 +329,21 @@ define([
       _.forEach(aiLoadMods, function (file) {
         var directory = managerPath(file.type);
         if (_.isUndefined(directory)) {
-          console.error("Invalid AI file type in load mod:", file);
+          console.error(
+            "Invalid AI file type in load mod: " + JSON.stringify(file)
+          );
           return;
         }
         fileList.push("/pa/ai_tech/" + directory + file.value);
       });
     }
+  };
+
+  var pathTypeMap = {
+    "/fabber_builds/": "fabber",
+    "/factory_builds/": "factory",
+    "/platoon_builds/": "platoon",
+    "/platoon_templates/": "template",
   };
 
   var processFilesInDirectory = function (filePath, context) {
@@ -368,12 +382,6 @@ define([
         return [];
       }
 
-      var pathTypeMap = {
-        "/fabber_builds/": "fabber",
-        "/factory_builds/": "factory",
-        "/platoon_builds/": "platoon",
-        "/platoon_templates/": "template",
-      };
       var aiManager =
         _(pathTypeMap)
           .keys()
@@ -643,11 +651,12 @@ define([
           treeCache: request.treeCache,
         };
 
+        var inRaceLayer = gwoRaces.raceLayerTest();
         var promises = _.map(fileList, function (filePath) {
           if (
             !_.endsWith(filePath, ".json") ||
             _.includes(filePath, "/neural_networks/") || // AIs fall back to /pa/ai/neural_networks/
-            gwoRaces.inAnyRaceLayer(filePath) // a race's files belong to its own tree - see races.md
+            inRaceLayer(filePath) // a race's files belong to its own tree - see races.md
           ) {
             return;
           }
@@ -675,12 +684,12 @@ define([
     var playerRace = gwoRaces.raceOf(inventory);
     var jobs = {};
 
-    var add = function (type, race, destination) {
+    var add = function (type, race, destination, sourceInventory) {
       if (gwoRaces.isMla(race)) {
         return;
       }
       var brain = gwoAI.aiInUse(type, race);
-      var source = gwoAI.getAIPathSource(type, race);
+      var source = gwoAI.getAIPathSource(type, race, sourceInventory);
       var target =
         destination || gwoAI.getAIPathDestination(type, { race: race });
       jobs[source + "|" + target] = {
@@ -716,7 +725,8 @@ define([
             viewer.inventory,
             ".player" + viewerIndex,
             viewerRace
-          )
+          ),
+          viewer.inventory
         );
       }
     );
@@ -797,7 +807,7 @@ define([
     var game = model.game();
     var ai = gwoAI.currentStarAi(game);
     var guardians = ai.mirrorMode;
-    var connectedClients = refereeCoop.getConnectedViewers();
+    var connectedClients = refereeCoop.getConnectedClients();
     var playerAiModInventory = guardians
       ? getInventoryWithAllPlayerAiMods(
           game.inventory(),
@@ -839,17 +849,25 @@ define([
           viewerPlayerTag,
           viewerPlayerTag
         );
+        // Read from the viewer's own tier, which its destination is built
+        // from too: the host's Sub Commander Tactics is not the viewer's.
+        var viewerSubCommanderSource = gwoAI.getAIPathSource(
+          "subcommander",
+          undefined,
+          viewerInventory
+        );
         var viewerSubCommanderDestination = gwoAI.getSubcommanderPathForViewer(
           viewerInventory,
           viewerPlayerTag
         );
         var viewerAiPaths = _.assign({}, aiPaths, {
+          subCommanderSource: viewerSubCommanderSource,
           subCommanderDestination: viewerSubCommanderDestination,
         });
 
         promises.push(
           processDirectories(
-            aiPaths.subCommanderSource,
+            viewerSubCommanderSource,
             _.assign({}, launch, {
               aiPaths: viewerAiPaths,
               inventory: viewerInventory,

@@ -114,7 +114,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_check.js",
       ],
       function (raceMods, gwoAI, gwoRaces, raceCells, raceCheck) {
@@ -177,7 +177,10 @@
                 });
               },
               function (error) {
-                console.error("gwoRaces: unit list not read", error);
+                console.error(
+                  "gwoRaces: unit list not read: " +
+                    ((error && error.stack) || error)
+                );
               }
             );
           });
@@ -218,7 +221,14 @@
         raceMods.installedRaces().then(function (info) {
           // Priming is not behind the warRaceIds gate: an all-MLA war under
           // Separate races still primes the offer for a viewer joining later.
-          primeRaces(info);
+          // A priming throw must not skip the race check below.
+          try {
+            primeRaces(info);
+          } catch (e) {
+            console.error(
+              "gwoRaces: race offer not primed: " + (e.stack || e.message || e)
+            );
+          }
 
           // An all-MLA war has nothing to block on, but may have begun with
           // add-ons it should mention losing.
@@ -267,6 +277,15 @@
           model.gwoRaceBlock(missing);
           showBlockPopUp();
         });
+      },
+      // No race check runs, so Fight is not blocked for a missing race mod.
+      function (err) {
+        console.error(
+          "Galactic War Overhaul (GWO): race modules not loaded: " +
+            err.requireModules +
+            ": " +
+            (err.stack || err.message || err)
+        );
       }
     );
   } catch (e) {

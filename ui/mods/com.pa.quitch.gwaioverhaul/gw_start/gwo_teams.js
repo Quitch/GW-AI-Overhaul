@@ -5,7 +5,7 @@
 // makeWorker is deliberately absent; gw_start/setup.js supplies its own.
 define([
   "main/game/galactic_war/shared/js/systems/template-loader",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_system_templates.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_system_templates.js",
   "shared/gw_factions",
 ], function (activeStarSystemTemplates, gwoSystemTemplates, GWFactions) {
   return {

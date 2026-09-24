@@ -34,7 +34,7 @@ const makeFactory = loadCouiModule(
 // Injected in place of the cardsOfferedCount stub where the subject is the hand
 // size itself rather than the deal it feeds.
 const realHelpers = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js"
 );
 
 // Hung off the game stub as a trap. model.game().inventory() is always the
@@ -130,7 +130,7 @@ function setup(overrides = {}) {
       }),
     },
     coopStarCards: {
-      starCardForClient: (rec, starIndex) =>
+      starCardForRecord: (rec, starIndex) =>
         rec.gwaioStarCards && rec.gwaioStarCards.cards[String(starIndex)],
     },
     gwoSettings: { treasureStar: options.treasureStar },

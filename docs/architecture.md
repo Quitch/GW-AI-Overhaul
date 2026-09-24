@@ -72,6 +72,12 @@ Base-game modules use bare relative ids instead (`"shared/gw_common"`,
 does not ship is a base-game module. The test harness reports such an id
 distinctly. See [`testing.md`](testing.md).
 
+A module in `shared/` never requires a module from a scene folder (`gw_start/`,
+`gw_play/` and the other `scenes` keys). Several scenes load `shared/`, so such a
+require pulls one scene's code into the others. A module that a scene and
+`shared/` both need lives in `shared/`. `test/shared_layering.test.js` enforces
+this.
+
 Every mod gets **one shared JS scope per scene**. Stock UI code and mod scripts
 share a namespace. That is why several GWO values are deliberately globals.
 Other mods hook them, and that is a supported contract, not an accident. The
@@ -90,11 +96,11 @@ base referee and installs GWO's referee. The hire of GWO's referee runs these
 steps in order:
 
 1. `gw_play/referee_game_files.js` generates unit specs per army tag. It
-   applies the AI tech that `gw_start/ai_tech.js` builds from the buffs the war
+   applies the AI tech that `gw_play/ai_tech.js` builds from the buffs the war
    recorded. See galaxy.md, "AI tech".
 2. `gw_play/referee_ai.js` walks the AI build trees, applies AI-mod descriptors
    from every card held, and writes the results into the config.
-3. The `gwoGenerateBiomes` function in `referee.js` mounts the text-only server
+3. `gw_play/referee_biomes.js` mounts the text-only server
    mods stamped on the battle's system. It cooks their JSON into the config's
    files. A stamped mod that GW Server Mods serves is already mounted. For such
    a mod, the function collects only its biomes. See galaxy.md, "Biome mods in
@@ -145,7 +151,9 @@ fail handler. A hire that never settles leaves `launchingFight` true, forever.
 It also leaves the panel open on the last stage it reported, and the Fight
 button dead. So `referee_game_files.js` routes every path that can throw into
 one `fail` that rejects its deferred. Those paths are the synchronous prelude
-and each nested spec-fetch chain. The hire's own fail handler in `referee.js`
+and each nested spec-fetch chain. `referee_biomes.js` runs each callback as a
+`gwoPromise.steps` step instead, so a rejection or a throw after an engine call
+rejects the step. The hire's own fail handler in `referee.js`
 logs the error through `gameFilePaths.describeError`, which formats a jqXHR
 as its HTTP status rather than `[object Object]`, and clears
 `launchingFight`, which closes the panel.
@@ -246,13 +254,16 @@ fixed.
 Know the shape before you add a fix to it:
 
 - **A flag, not a version alone, gates a fix.** `treasurePlanetFixed`,
-  `clusterFixed` and `treasureLoadoutDerived` live on `originSystem.gwaio`.
+  `clusterFixed`, `treasureLoadoutDerived` and `planetPositionFixed` live on
+  `originSystem.gwaio`.
   `gwaio_lucky_commander_fixed` lives in `localStorage`. Once a repair runs, or
   is ruled unnecessary, the flag says so. The file then skips the scan for good.
 - **`checkIfPatchesNeeded` sets those flags from `gwoSettings.version`** via
   `atLeastVersion`. So a war created after a fix shipped never pays for the
   scan. A war with no recorded version compares as older than everything. That
-  is the safe direction.
+  is the safe direction. `planetPositionFixed` has no version: its defect also
+  comes from Shared Systems for GW, which replaces GWO's system loader, so a war
+  of any version can need it. Each war pays for one sweep of its planets.
 - **`applyFixes` sets the flags unconditionally after the sweep.** The reason is
   that "the thing this fix targets does not exist in this war" and "it has been
   fixed" want the same outcome. A war with no treasure planet should not re-scan
@@ -280,8 +291,8 @@ would write a war it does not own.
 - **`localStorage`** holds start-card unlocks, victory badges and favourited
   loadouts. They sit under `gwaio_`-prefixed keys, so that uninstalling GWO does
   not corrupt the base game's loadout list with 404s. See `shared/bank.js` and
-  `shared/favourites.js`, which reads `gwaio_favourite_loadouts`.
-  `shared/favourite_loadouts.js` is the id arithmetic behind that key:
+  `gw_start/favourites.js`, which reads `gwaio_favourite_loadouts`.
+  `gw_start/favourite_loadouts.js` is the id arithmetic behind that key:
   `isFavourite`, `toggleId` and `sortCardsByFavourite`, kept free of engine
   globals so it is testable. Its sort puts favourites in the order they were
   favourited, not the order the cards happen to be in.
@@ -296,7 +307,8 @@ CONTRIBUTING.md covers them in full. The load-bearing ones are:
 
 - Shipped `ui/**` code must be ES5 / Chrome 40 safe. See
   [`constraints.md`](constraints.md).
-- Use camelCase in JS, kebab-case in CSS, and a 2-space indent. Put HTML in its
+- Use camelCase in JS, lower-case kebab-case or snake_case in CSS, and a
+  2-space indent. Put HTML in its
   own file (never inline in JS).
 - `pa/**` JSON is intentionally minified to one line, matching the base game. It
   is excluded from Prettier.

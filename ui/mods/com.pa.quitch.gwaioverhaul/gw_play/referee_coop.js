@@ -2,7 +2,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   gwoCard
 ) {
   // One implementation, shared with shared/cards.js, so the two cannot drift.
-  var getConnectedViewers = gwoCard.getConnectedClients;
+  var getConnectedClients = gwoCard.getConnectedClients;
 
   // An unauthenticated viewer can have an empty client id, so a client is keyed
   // by id and name together.
@@ -10,21 +10,29 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return String(clientId || "") + "::" + String(clientName || "");
   };
 
+  // The viewer-role clients in a client list.
+  var viewersOf = function (clients) {
+    return _.filter(_.isArray(clients) ? clients : [], function (client) {
+      return client && client.role === "viewer";
+    });
+  };
+
+  // A connected client's co-op record. The game keys records by id and name.
+  var recordForClient = function (game, client) {
+    return game.findCoopPlayerInventoryData({
+      id: client.id,
+      name: client.name,
+    });
+  };
+
   // Returns {client, inventory} pairs for connected viewer-role clients.
   var getConnectedViewerInventories = function (game, connectedClients) {
-    var clients = connectedClients || getConnectedViewers();
+    var clients = connectedClients || getConnectedClients();
 
     return _.reduce(
-      clients,
+      viewersOf(clients),
       function (viewers, client) {
-        if (!client || client.role !== "viewer") {
-          return viewers;
-        }
-
-        var playerData = game.findCoopPlayerInventoryData({
-          id: client.id,
-          name: client.name,
-        });
+        var playerData = recordForClient(game, client);
 
         if (!playerData || !playerData.inventory) {
           return viewers;
@@ -99,8 +107,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   return {
+    viewersOf: viewersOf,
+    recordForClient: recordForClient,
     clientKey: clientKey,
-    getConnectedViewers: getConnectedViewers,
+    getConnectedClients: getConnectedClients,
     getConnectedViewerInventories: getConnectedViewerInventories,
     getOrderedSubcommanders: getOrderedSubcommanders,
     alliedColourIndex: alliedColourIndex,

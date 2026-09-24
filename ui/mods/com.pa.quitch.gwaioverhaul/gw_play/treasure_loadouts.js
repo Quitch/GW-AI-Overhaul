@@ -2,7 +2,7 @@
 // than pre-dealt at war creation. See coop.md, "Treasure loadouts".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
 ], function (gwoLoadoutIds, helpers, gwoLoadoutBanks, coopHost) {
@@ -38,9 +38,9 @@ define([
   };
 
   // gw_game.js's winTurn passes the Guardians' ai.team to defeatTeam, and
-  // gw_start/setup.js deletes that field, so defeatTeam(undefined) matches the
-  // treasure star itself and clears its ai(). Nothing on the star survives the
-  // fight; the recorded index is what identifies it afterwards.
+  // gw_start/ai_population.js deletes that field, so defeatTeam(undefined)
+  // matches the treasure star itself and clears its ai(). Nothing on the star
+  // survives the fight; the recorded index is what identifies it afterwards.
   var isTreasureStar = function (gwoSettings, starIndex) {
     return (
       !!gwoSettings &&
@@ -113,9 +113,9 @@ define([
     var ids = _.uniq(
       gwoLoadoutIds.lockedBase.concat(gwoLoadoutIds.unlockable, modLoadoutIds())
     );
-    if (race && race !== "mla") {
-      ids = _.reject(ids, helpers.mlaOnlyCard);
-    }
+    ids = _.reject(ids, function (id) {
+      return helpers.raceLocksLoadout(race, id);
+    });
     return _.map(ids, function (id) {
       return { id: id };
     });
@@ -197,10 +197,7 @@ define([
       }
     );
 
-    var record = game.findCoopPlayerInventoryData({
-      id: operator.client_id,
-      name: operator.client_name,
-    });
+    var record = coopHost.recordFor(game, operator);
     if (!record) {
       console.warn(
         "[GW COOP] no record for reported loadout unlocks client=" +
@@ -272,7 +269,7 @@ define([
     };
   };
 
-  var api = {
+  var treasureLoadouts = {
     isTreasureStar: isTreasureStar,
     findTreasureStar: findTreasureStar,
     isBaseLoadoutCardId: isBaseLoadoutCardId,
@@ -290,8 +287,8 @@ define([
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = api;
+    module.exports = treasureLoadouts;
   }
 
-  return api;
+  return treasureLoadouts;
 });

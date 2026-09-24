@@ -152,12 +152,15 @@
         model.gwoRerollPending(false);
       });
 
-      $(".div_options_bar").replaceWith(
+      // launch_progress.html and victory_wait.html carry the class too.
+      var systemOptionsBar =
+        ".div_panel_bar_background.tech > .div_options_bar";
+      $(systemOptionsBar).replaceWith(
         loadHtml(
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html"
         )
       );
-      locTree($(".div_options_bar"));
+      locTree($(systemOptionsBar));
     };
     setupTechRerolls();
 
@@ -215,6 +218,17 @@
       var completed = $.Deferred();
       self.card = completed.promise();
 
+      // Stock reuses a view model through params(), so a card that fails must
+      // not leave the previous card showing.
+      var clearView = function () {
+        self.desc(undefined);
+        self.summary(undefined);
+        self.icon(undefined);
+        self.iconPlaceholder(undefined);
+        self.audio(undefined);
+        self.visible(false);
+      };
+
       var loadCard = function (card, data) {
         if (_.isEmpty(card)) {
           self.desc(
@@ -227,14 +241,28 @@
           self.iconPlaceholder(undefined);
           self.visible(true);
         } else {
-          self.desc(card.describe && card.describe(data));
-          self.summary(card.summarize && card.summarize(data));
-          self.icon(card.icon && card.icon(data));
-          self.iconPlaceholder(!self.icon() && (self.summary() || self.desc()));
-          self.audio(card.audio && card.audio(data));
-          self.visible(
-            card.visible === true || !!(card.visible && card.visible(data))
-          );
+          // Stock waits on self.card, so a throwing third-party card must not
+          // stop it resolving.
+          try {
+            self.desc(card.describe && card.describe(data));
+            self.summary(card.summarize && card.summarize(data));
+            self.icon(card.icon && card.icon(data));
+            self.iconPlaceholder(
+              !self.icon() && (self.summary() || self.desc())
+            );
+            self.audio(card.audio && card.audio(data));
+            self.visible(
+              card.visible === true || !!(card.visible && card.visible(data))
+            );
+          } catch (e) {
+            console.error(
+              "GWO card threw while loading its view: " +
+                self.id() +
+                ": " +
+                ((e && e.stack) || e)
+            );
+            clearView();
+          }
         }
         completed.resolve(card);
       };
@@ -246,12 +274,23 @@
         var myToken = loadToken;
         var cardId = self.id();
         if (cardId) {
-          requireGW(["cards/" + cardId], function (card) {
-            if (loadToken !== myToken) {
-              return;
+          requireGW(
+            ["cards/" + cardId],
+            function (card) {
+              if (loadToken !== myToken) {
+                return;
+              }
+              loadCard(card, data);
+            },
+            function () {
+              console.error("GWO card failed to load: " + cardId);
+              if (loadToken !== myToken) {
+                return;
+              }
+              clearView();
+              completed.resolve({});
             }
-            loadCard(card, data);
-          });
+          );
         } else {
           loadCard({}, data);
         }
@@ -267,7 +306,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
         "shared/gw_inventory",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deal.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_deal_helpers.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_card_name_sync.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_deal.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js",
@@ -301,9 +340,7 @@
         globals.CardViewModel = gwoCardViewModel;
         // Nothing reads the banks until the player explores, so resolving them
         // alongside setup is early enough and keeps this callback synchronous.
-        requireGW(gwoLoadoutBanks.paths(), function () {
-          gwoLoadoutBanks.resolve(_.toArray(arguments));
-        });
+        gwoLoadoutBanks.load();
         restoreExploreSaveRerolls();
         var inventory = game.inventory();
         var playerFaction = inventory.getTag("global", "playerFaction");
@@ -321,9 +358,30 @@
         var cards = [];
         var deck = [];
         var numberOfCards = model.gwoCards.length;
-        var loaded = $.Deferred();
+        var deckLoaded = $.Deferred();
+        var cardUnitsLoaded = $.Deferred();
 
-        gwoDeal.setupGwoDeck(cards, deck, numberOfCards, loaded);
+        gwoDeal.setupGwoDeck(cards, deck, numberOfCards, deckLoaded);
+
+        // The race gates read model.gwoCardsToUnits, which card_tooltips.js
+        // also fills in a load of its own. The deal waits for this one, so no
+        // deal runs before the gates exist. Without the list a race player is
+        // gated on MLA-only cards alone, so a failed load is logged.
+        requireGW(
+          ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js"],
+          function (cardUnits) {
+            cardUnits.mergeInto();
+            cardUnitsLoaded.resolve();
+          },
+          function () {
+            console.error(
+              "GWO failed to load card_units.js: tech cards deal without their race gates"
+            );
+            cardUnitsLoaded.resolve();
+          }
+        );
+
+        var loaded = $.when(deckLoaded, cardUnitsLoaded);
 
         // dealer.chooseCards() replacement - use our deck
         var chooseCards = function (params) {
@@ -363,7 +421,12 @@
                     gwoStreams.cardRng(iterationRng, card.id)
                   );
               } catch (e) {
-                console.error("Tech card deal() threw, skipping", card.id, e);
+                console.error(
+                  "Tech card deal() threw, skipping " +
+                    card.id +
+                    ": " +
+                    ((e && e.stack) || e)
+                );
                 return undefined;
               }
 
@@ -373,7 +436,6 @@
                   card,
                   list,
                   dealAddSlot,
-                  false,
                   systemCards
                 ) ||
                 !helpers.raceCanDeal(
@@ -422,9 +484,10 @@
                   );
                 } catch (e) {
                   console.error(
-                    "Tech card getContext() threw, skipping",
-                    card.id,
-                    e
+                    "Tech card getContext() threw, skipping " +
+                      card.id +
+                      ": " +
+                      ((e && e.stack) || e)
                   );
                 }
               }
@@ -549,7 +612,8 @@
               }
             });
 
-            // $.when() doesn't wait for setCardName() to return
+            // Not $.when(deferredQueue): it takes an array as one value and
+            // resolves at once. It would need $.when.apply.
             Promise.all(deferredQueue)
               .then(function () {
                 // The one caller that replaces cards viewers already hold, so
@@ -566,15 +630,14 @@
           return deferred.promise();
         };
 
-        // The turn deal above covers the ordinary case. This covers a viewer
-        // joining, and a rejoining viewer finishing its catch-up deals - neither
-        // of which passes through a turn. It deliberately does not read
-        // stats().turns(): a move must not disturb an offer already advertised.
+        // runRefresh reads the gate a tick late, so its inputs are read here.
+        // See coop.md, "Per-player pre-dealt cards".
         ko.computed(function () {
           model.gwCampaignConnectedClients();
           model.gwCampaignPlayerSetupBlocked();
           game.coopPlayerInventoryData();
           game.hostTechCardDealCount();
+          game.turnState();
           coopStarCards.refresh();
         });
 
@@ -590,6 +653,9 @@
               inventory: inventory,
             });
             setupGeneralCommander();
+          },
+          function () {
+            console.error("GWO failed to load cards_start_subcdr.js");
           }
         );
 
@@ -899,7 +965,9 @@
 
           return game.winTurn(wonIndex).then(function (didWin) {
             if (!didWin) {
-              console.error("Failed winning turn", game);
+              console.error(
+                "Failed winning turn at star " + game.currentStar()
+              );
               return $.Deferred().reject("Failed winning turn").promise();
             }
 

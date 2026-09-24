@@ -5,7 +5,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races_shipped.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/addons_shipped.js",
-], function (unitCells, shipped, shippedAddons) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js",
+], function (unitCells, shipped, shippedAddons, ids) {
   var MLA_ID = "mla";
   var TITANS = "Titans";
 
@@ -36,9 +37,7 @@ define([
   // are read. See unit_cells.js.
   var cellsById = {};
 
-  var normalizeId = function (id) {
-    return _.isString(id) ? id.trim().toLowerCase() : "";
-  };
+  var normalizeId = ids.normalize;
 
   // `unitNames` names units by the keys of `units` and is compiled to
   // path -> name.
@@ -572,23 +571,30 @@ define([
   // rest - an add-on map both MLA and a race claim rides along untagged. A
   // relative unit map names a file the brain ships itself, never a race
   // mod's, and matches nothing here.
-  var inAnyRaceLayer = function (filePath) {
-    var mla = false;
-    var other = false;
+  //
+  // raceLayerTest builds the layers once, for a caller testing a whole file
+  // list: nothing it reads changes during one sweep.
+  var raceLayerTest = function () {
+    var layerSets = _.map(brainKeys(), layersFor);
 
-    _.forEach(brainKeys(), function (brainKey) {
-      _.forEach(layersFor(brainKey), function (layer, raceId) {
-        if (layerClaims(layer, filePath)) {
-          if (raceId === MLA_ID) {
-            mla = true;
-          } else {
-            other = true;
+    return function (filePath) {
+      var mla = false;
+      var other = false;
+
+      _.forEach(layerSets, function (layers) {
+        _.forEach(layers, function (layer, raceId) {
+          if (layerClaims(layer, filePath)) {
+            if (raceId === MLA_ID) {
+              mla = true;
+            } else {
+              other = true;
+            }
           }
-        }
+        });
       });
-    });
 
-    return other && !mla;
+      return other && !mla;
+    };
   };
 
   // The race's unit map files for a brain, its add-ons' included, absolute.
@@ -748,7 +754,7 @@ define([
     commanderFor: commanderFor,
     treeFilter: treeFilter,
     raceLayerFilter: raceLayerFilter,
-    inAnyRaceLayer: inAnyRaceLayer,
+    raceLayerTest: raceLayerTest,
     unitMapsFor: unitMapsFor,
     assign: assign,
     // Test-only: a registered race outlives the module, and the harness loads

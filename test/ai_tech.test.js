@@ -1,6 +1,6 @@
 "use strict";
 
-// gw_start/ai_tech.js builds the faction tech tables at define() time and exports
+// gw_play/ai_tech.js builds the faction tech tables at define() time and exports
 // only factionTechs, so these assert against that. The contract worth pinning is
 // the ordering: tech6 concatenates the already-built tech1 and tech2 onto its tail.
 
@@ -9,7 +9,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const aiTech = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_tech.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/ai_tech.js"
 );
 
 // Tech slots that are populated (tech5 was removed and is intentionally left absent).

@@ -34,7 +34,7 @@ define([
     return _.isString(cardId) && _.includes(cardId, "_start_");
   };
 
-  return {
+  var helpers = {
     // The base count, plus one for a full hand and one for the Lucky start card.
     // A falsy inventory yields the base count.
     cardsOfferedCount: function (offer, inventory) {
@@ -66,7 +66,6 @@ define([
       card,
       cardsDealt,
       dealAddSlot,
-      testRun,
       systemCards
     ) {
       var cardsInSystem = _.isArray(systemCards) ? systemCards : [];
@@ -85,14 +84,6 @@ define([
       // Never deal Additional Data Bank as a system's pre-dealt card
       if (card.id === "gwc_add_card_slot" && dealAddSlot === false) {
         return true;
-      }
-
-      if (testRun) {
-        return (
-          inventory.hasCard(card.id) &&
-          _.some(cardsDealt, { id: card.id }) &&
-          systemHasCard
-        );
       }
 
       return (
@@ -277,7 +268,6 @@ define([
       var gwoAI = params.gwoAI;
       var gwoCard = params.gwoCard;
       var rng = params.rng;
-      var self = this;
       var minions = [];
 
       if (!minionPool.length) {
@@ -297,14 +287,14 @@ define([
         // Every reader gives a Sub Commander its own rate, so the card carries
         // no rate the template may hold.
         delete subcommander.econ_rate;
-        self.applyPenchantToSubcommander(
+        helpers.applyPenchantToSubcommander(
           subcommander,
           gwoSettings,
           gwoAI,
           minionRng,
           params.race
         );
-        self.applyRaceToSubcommander(
+        helpers.applyRaceToSubcommander(
           subcommander,
           params.races,
           params.race,
@@ -320,4 +310,6 @@ define([
       return minions;
     },
   };
+
+  return helpers;
 });

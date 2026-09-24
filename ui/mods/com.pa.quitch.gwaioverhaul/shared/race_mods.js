@@ -2,15 +2,11 @@
 // has active, and the root mount that makes their files readable. Every
 // function copes with GW Server Mods being absent - then there are no races.
 // See races.md.
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
-  races
-) {
-  var manifest = function () {
-    var gwsm = window.GwServerMods;
-    return gwsm && gwsm.manifest && _.isFunction(gwsm.manifest.load)
-      ? gwsm.manifest
-      : undefined;
-  };
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwsm.js",
+], function (races, gwsm) {
+  var manifest = gwsm.manifest;
 
   var gwsmActive = function () {
     return !!manifest();
@@ -48,8 +44,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   // server mod is active, the identifier, name and version of each such mod
   // for the war to record, the same pair for add-ons, whether the installed
   // mods could be read at all, and whether GW Server Mods is here to mount
-  // them. `mods` stays race-only: race_check, host_war.js and setup.js read
-  // it as the race mods. `known` false is "cannot tell" - Community Mods
+  // them. `mods` stays race-only: race_check, host_war.js and war_record.js
+  // read it as the race mods. `known` false is "cannot tell" - Community Mods
   // absent and nothing in the IndexedDB fallback - which a resume check must
   // not mistake for "not installed". `gwsm` false is not that: no race can be
   // mounted whatever is installed, so the answer is a definite none, and it
@@ -72,40 +68,67 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       return done.promise();
     }
 
+    // A throw here, the consumers' included, would reach GW Server Mods'
+    // manifest load and surface only as a reason-less unhandled rejection.
     $.when(mfst.load()).always(function () {
-      var known = !_.isFunction(mfst.listed) || !!mfst.listed();
-      var active = mfst.activeServerMods();
-      var identifiers = _.map(active, "identifier");
-      var detected = races.detect(identifiers);
-      var detectedAddons = races.detectAddons(identifiers);
-      races.activateAddons(_.pluck(detectedAddons, "id"));
-      var modsOf = function (descriptors) {
-        var wanted = _.flatten(_.pluck(descriptors, "serverMods"));
+      var settle;
+      try {
+        var known = !_.isFunction(mfst.listed) || !!mfst.listed();
+        var active = mfst.activeServerMods();
+        var identifiers = _.map(active, "identifier");
+        var detected = races.detect(identifiers);
+        var detectedAddons = races.detectAddons(identifiers);
+        races.activateAddons(_.pluck(detectedAddons, "id"));
+        var modsOf = function (descriptors) {
+          var wanted = _.flatten(_.pluck(descriptors, "serverMods"));
 
-        return _.map(
-          _.filter(active, function (mod) {
-            return _.includes(wanted, mod.identifier);
-          }),
-          function (mod) {
-            return {
-              identifier: mod.identifier,
-              // GW Server Mods falls back to the identifier when a mod ships no
-              // display name, so this is always something to show a player.
-              displayName: mod.displayName || mod.identifier,
-              version: mod.version,
-            };
-          }
+          return _.map(
+            _.filter(active, function (mod) {
+              return _.includes(wanted, mod.identifier);
+            }),
+            function (mod) {
+              return {
+                identifier: mod.identifier,
+                // GW Server Mods falls back to the identifier when a mod ships no
+                // display name, so this is always something to show a player.
+                displayName: mod.displayName || mod.identifier,
+                version: mod.version,
+              };
+            }
+          );
+        };
+
+        var result = {
+          races: detected,
+          mods: modsOf(detected),
+          addons: detectedAddons,
+          addonMods: modsOf(detectedAddons),
+          known: known,
+          gwsm: true,
+        };
+        settle = function () {
+          done.resolve(result);
+        };
+      } catch (e) {
+        console.error(
+          "gwoRaceMods: installed races not read: " +
+            (e.stack || e.message || e)
         );
-      };
-
-      done.resolve({
-        races: detected,
-        mods: modsOf(detected),
-        addons: detectedAddons,
-        addonMods: modsOf(detectedAddons),
-        known: known,
-        gwsm: true,
-      });
+        settle = function () {
+          done.reject(e);
+        };
+      }
+      // A try of its own: jQuery 2 runs .then and .fail callbacks inside
+      // resolve() and reject(), so a consumer's throw lands here, and is not
+      // a failed read.
+      try {
+        settle();
+      } catch (e) {
+        console.error(
+          "gwoRaceMods: a consumer of installed races threw: " +
+            (e.stack || e.message || e)
+        );
+      }
     });
 
     return done.promise();

@@ -9,15 +9,17 @@ const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { userDataDir } = require("../scripts/lib/pa-install.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
-const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
-const cardUnits = loadCouiModule(MOD_ROOT + "/gw_play/card_units.js");
-const helpers = loadCouiModule(MOD_ROOT + "/gw_play/cards_deal_helpers.js");
-const unitNames = loadCouiModule(MOD_ROOT + "/gw_play/unit_names.js");
+const {
+  harvestedIndex,
+  withheldCards,
+  expectedWithheld,
+  unnamedCardUnits,
+} = require("../scripts/lib/harvested-race.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
 // Cards a Legion player is never dealt beyond the MLA-only set every race
@@ -30,28 +32,10 @@ const legionUnits = Object.keys(fixture).filter((unit) =>
   fixture[unit].includes("UNITTYPE_Custom1")
 );
 
-function legionIndex() {
-  const specs = {};
-  for (const [unit, types] of Object.entries(fixture)) {
-    specs[unit] = { unit_types: types };
-  }
-  const units = Object.keys(specs);
-  return {
-    vanilla: cells.buildIndex(units, specs, cells.vanillaMember),
-    race: cells.buildIndex(units, specs, cells.raceMember("Custom1")),
-  };
-}
-
 function legionZip() {
   const candidates = [
     process.env.GWO_LEGION_ZIP,
-    path.join(
-      process.env.LOCALAPPDATA || "",
-      "Uber Entertainment",
-      "Planetary Annihilation",
-      "download",
-      "com.pa.legion-expansion-server.zip"
-    ),
+    path.join(userDataDir(), "download", "com.pa.legion-expansion-server.zip"),
   ];
   return candidates.find((candidate) => candidate && fs.existsSync(candidate));
 }
@@ -80,8 +64,9 @@ describe("the Legion descriptor", () => {
   });
 
   it("names units by Legion key, each in the table", () => {
-    for (const key of Object.keys(legion.unitNames)) {
+    for (const [key, name] of Object.entries(legion.unitNames)) {
       assert.ok(key in legion.units, key + " is named but not in units");
+      assert.match(name, /^!LOC:/, key);
     }
     assert.equal(legion.unitNames.shank, "!LOC:Shank");
     assert.equal(
@@ -113,7 +98,7 @@ describe("the Legion descriptor", () => {
 describe("Legion under capability cells", () => {
   before(() => {
     if (legionUnits.length) {
-      races.setCells("legion", legionIndex());
+      races.setCells("legion", harvestedIndex(fixture, undefined, "Custom1"));
     }
   });
   after(() => {
@@ -158,20 +143,9 @@ describe("Legion under capability cells", () => {
       t.skip("fixture harvested without Legion");
       return;
     }
-    const inventory = { getTag: () => "legion" };
-    const withheld = cardUnits.cards
-      .filter(
-        (card) =>
-          !helpers.raceCanDeal(races, inventory, card.id, cardUnits.cards)
-      )
-      .map((card) => card.id)
-      .sort();
-    const expected = cardUnits.cards
-      .map((card) => card.id)
-      .filter((id) => helpers.mlaOnlyCard(id) || WITHHELD_BY_CELLS.includes(id))
-      .sort();
+    const withheld = withheldCards("legion");
 
-    assert.deepEqual(withheld, expected);
+    assert.deepEqual(withheld, expectedWithheld(WITHHELD_BY_CELLS));
     assert.ok(withheld.includes("gwaio_upgrade_ant"));
     assert.ok(!withheld.includes("gwaio_upgrade_ubercannon_structure"));
     assert.ok(!withheld.includes("gwc_combat_bots"));
@@ -183,31 +157,6 @@ describe("Legion under capability cells", () => {
       t.skip("fixture harvested without Legion");
       return;
     }
-    const index = races.cellsOf("legion");
-    // As card_tooltips.js names them: the race's table, any add-on's, then
-    // unit_names.js.
-    const named = {};
-    for (const entry of unitNames.units) {
-      named[entry.path] = entry.name;
-    }
-    const isNamed = (unit) =>
-      races.unitName("legion", unit) !== undefined ||
-      Object.prototype.hasOwnProperty.call(named, unit);
-    const unnamed = [];
-    for (const card of cardUnits.cards) {
-      if (helpers.mlaOnlyCard(card.id)) {
-        continue;
-      }
-      for (const unit of cells.cardUnitsFor(
-        card.units || [],
-        index.vanilla,
-        index.race
-      )) {
-        if (!isNamed(unit)) {
-          unnamed.push(card.id + ": " + unit);
-        }
-      }
-    }
-    assert.deepEqual(unnamed, []);
+    assert.deepEqual(unnamedCardUnits("legion"), []);
   });
 });

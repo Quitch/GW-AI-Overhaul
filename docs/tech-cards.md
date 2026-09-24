@@ -26,11 +26,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 | Field                                                              | Required?                                                                                                                                                                      |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` | Always functions, on every card.                                                                                                                                               |
-| `audio`, `getContext`                                              | On every card except one legacy exception.                                                                                                                                     |
+| `audio`, `getContext`                                              | On every tech card except one legacy exception. Loadout cards have neither: `gwoCard.loadout()` returns only `buff` and `dull`, and only `gwc_start_subcdr` adds `getContext`. |
 | `keep`, `discard`                                                  | Optional. No card carries either today.                                                                                                                                        |
 | `hint`                                                             | Optional, loadout cards only: the icon and text of the locked-loadout hover, read by stock `gw_start.js` and `gw_coop_per_player_loadout.js`. `gwoCard.lockedHint` builds one. |
 
-The `audio`/`getContext` exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
+The tech-card exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
 save-compatibility with GWO v5.9.0 and earlier. The card is deliberately invisible
 and undiscardable. It exists only so that old saves that reference it still load.
 
@@ -49,25 +49,41 @@ cards. It stubs `shared/gw_common` and so loads every card. See
 
 ## Which shape to write a card in
 
-There are three shapes. The card's family decides which one to use:
+The card's family decides which shape to use:
 
-| Family                            | Shape                       |
-| --------------------------------- | --------------------------- |
-| Unit upgrades (`gwaio_upgrade_*`) | `gwoCard.upgradeCard({})`   |
-| Loadouts (`*_start_*`)            | `gwoCard.loadout(CARD, {})` |
-| Everything else                   | The object literal above    |
+| Family                                 | Shape                               |
+| -------------------------------------- | ----------------------------------- |
+| Unit upgrades (`gwaio_upgrade_*`)      | `gwoCard.upgradeCard({})`           |
+| Loadouts (`*_start_*`)                 | `gwoCard.loadout(CARD, {})`         |
+| Anti-tech ammo (`gwaio_anti_*`)        | `gwoCardFactories.antiTechCard({})` |
+| Factory cooldowns (`gwaio_cooldown_*`) | `gwoCardFactories.cooldownCard({})` |
+| Everything else                        | The object literal above            |
 
-The first two families each have a rigid frame that every member repeats. For an
+The first four families each have a rigid frame that every member repeats. For an
 upgrade, the frame is a slot and a `requires` gate. For a loadout, the frame is the
-`buffCount` bank dance. The factory carries the frame, and the card supplies only
-what differs. **Write a new card of either family through its factory**. A card that
-cannot fit the frame stays a literal, and several do (see the factory's options, and
-the notes at the end of this file).
+`buffCount` bank dance. An anti-tech card multiplies armour entries on every ammo
+spec and deals through `antiTechDeal`. A cooldown card halves
+`factory_cooldown_time` on a factory group and deals while one is held. The factory
+carries the frame, and the card supplies only what differs. **Write a new card of
+any of these families through its factory**. A card that cannot fit the frame stays
+a literal, and several do (see the factory's options, and the notes at the end of
+this file).
+
+`upgradeCard` and `loadout` are in `shared/cards.js`, so they are part of the
+published API. `antiTechCard` and `cooldownCard` are in `shared/card_factories.js`,
+which is not published. Both of them take `name`, `description`, and `icon`. They
+also take an optional `chance`, which is a function of
+`(inventory, system, context)`. Without one, the anti-tech weight is 40, and the
+cooldown weight is 70. An anti-tech card names its `counter` card and its `armour` map, for
+example `{ AT_Air: 2, AT_Orbital: 0.5 }`. A cooldown card names its `audio`, its
+`factories`, and optionally `requires`, which replaces `factories` as the ownership
+gate.
 
 Everything else is a literal because there is no shared frame to lift. The variety of
 those cards lives in their `deal` weighting. A factory for them would need an
-override for nearly every field. Apply that test to a fourth family if one appears:
-a factory is worth it when the members differ in _data_, not in _logic_.
+override for nearly every field. Apply that test to a new family if one appears:
+a factory is worth it when the members differ in _data_, not in _logic_. The titan
+cards fail it: `gwaio_combat_titans` chains three `flatMapMods` calls.
 
 ## `buff` and `dull`
 
@@ -353,6 +369,8 @@ silently discards everything the mod registered.
 | `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
 | `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |
+| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`       |
+| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`      |
 
 The public API goes beyond the globals. The helper names that `shared/cards.js`
 returns are equally published. So are the **key** names in `shared/units.js` and
@@ -383,8 +401,9 @@ model.gwoDecks.push({
 ```
 
 - `cards` takes **any** card id without naming a whole deck: the mod's own ids, or
-  cherry-picked stock `gwc_*`/`gwaio_*` ids. A missing module costs one card at
-  deal time, never a hang.
+  cherry-picked stock `gwc_*`/`gwaio_*` ids. A module that fails to load, or
+  that returns nothing, costs one card at deal time and is logged by id. It does
+  not stop the deal.
 - `include` takes the id of any **already registered** deck: `Basic`, `Expanded`,
   or another mod's. Registration order is mod `priority` order (ascending). A mod
   that includes another mod's deck therefore declares that mod under
@@ -419,11 +438,12 @@ model.gwoLoadoutBanks.push({
 
 The entry carries the bank's **path**, not the loaded module. The reason is that a
 mod that `requireGW`d its own bank before it registered would resolve after the
-loadout list was already built. `shared/loadout_banks.js` resolves the paths once.
-Every later reader reads the result: the unlock test in `shared/loadouts.js`,
-`startCardUnlocked` in `gw_play/cards.js`, and `bankStartCard` /
-`localUnlockedLoadoutIds` in `treasure_loadouts.js`. The module at `path` need only
-expose `hasStartCard` and `addStartCard`.
+loadout list was already built. `shared/loadout_banks.js` loads each path on its
+own and resolves them once. A path that fails to load is logged and costs only its
+own bank. Every later reader reads the result: the unlock test in
+`shared/loadouts.js`, `startCardUnlocked` in `gw_play/cards.js`, and
+`bankStartCard` / `localUnlockedLoadoutIds` in `treasure_loadouts.js`. The module
+at `path` need only expose `hasStartCard` and `addStartCard`.
 
 `prefix` routes a won loadout back to the mod that shipped it. Ids that begin
 `gwc_start` are tested first and always go to the base game's bank. The base game

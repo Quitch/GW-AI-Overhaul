@@ -29,8 +29,8 @@ Then read the doc for the subsystem you are changing.
 | [tech-cards.md](tech-cards.md)             | The card contract, `buff`/`dull`, deal weighting, loadouts              | `shared/cards.js`            |
 | [ai-pipeline.md](ai-pipeline.md)           | How a card changes what an AI builds                                    | `gw_play/referee_ai.js`      |
 | [ai-paths.md](ai-paths.md)                 | Which AI reads which directory                                          | `shared/referee_ai_paths.js` |
-| [coop.md](coop.md)                         | Host/viewer, per-player tech, colour allocation                         | `shared/referee_coop.js`     |
-| [specs.md](specs.md)                       | Unit spec modification and caching                                      | `shared/specs.js`            |
+| [coop.md](coop.md)                         | Host/viewer, per-player tech, colour allocation                         | `gw_play/referee_coop.js`    |
+| [specs.md](specs.md)                       | Unit spec modification and caching                                      | `gw_play/specs.js`           |
 | [galaxy.md](galaxy.md)                     | Galaxy generation, factions, difficulty tiers                           | `gw_start/setup.js`          |
 | [races.md](races.md)                       | Unit factions (Legion, Bugs, Exiles): registry, translation, race trees | `shared/races.js`            |
 | [race-conventions.md](race-conventions.md) | The checklist for adding a race, and the rules the race code relies on  | `shared/races_shipped.js`    |
@@ -110,7 +110,7 @@ clean release.
 
 `validate:docs` (part of `validate`) checks the inventories these docs carry by
 hand against the tree. Those inventories are the scene table, the shadowed-file
-and `pa/` tables, and the validator table. So adding a file without its row
+and `pa/` tables, the AI-path tree table, and the validator table. So adding a file without its row
 fails `verify`.
 
 Nothing here starts PA. Anything that can only fail at runtime needs the game

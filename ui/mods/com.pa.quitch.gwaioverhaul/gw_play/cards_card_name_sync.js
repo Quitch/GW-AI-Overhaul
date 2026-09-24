@@ -82,8 +82,7 @@ define(function () {
 
       // card_id is the host's, so it can name a card mod this viewer does not
       // have. This promise gates gwCampaignStateApplyTail, so it must settle:
-      // the errback covers a module that fails to load. requireGW is configured
-      // waitSeconds: 0, so one that never resolves at all cannot be detected.
+      // the errback covers a failed load. No timeout (waitSeconds: 0).
       var onCardUnavailable = function (reason) {
         console.error(
           "[GW COOP] card summarize unavailable for synced card name id=" +
@@ -107,8 +106,10 @@ define(function () {
             cardName = loc(data.summarize());
           } catch (e) {
             console.error(
-              "[GW COOP] card summarize() threw for id=" + payload.card_id,
-              e
+              "[GW COOP] card summarize() threw for id=" +
+                payload.card_id +
+                ": " +
+                ((e && e.stack) || e)
             );
             result.reject("Card summarize threw for " + payload.card_id);
             return;
@@ -141,13 +142,33 @@ define(function () {
         return deferred.promise();
       }
 
-      requireGW(["cards/" + firstCard.id], function (data) {
-        if (data && _.isFunction(data.summarize)) {
-          system.star.ai().cardName = loc(data.summarize());
-          sendSyncedStarCardName(starIndex, firstCard.id);
+      // The turn deal waits on this, so it must settle: RequireJS runs the
+      // success callback without a try, and waitSeconds is 0.
+      requireGW(
+        ["cards/" + firstCard.id],
+        function (data) {
+          try {
+            if (data && _.isFunction(data.summarize)) {
+              system.star.ai().cardName = loc(data.summarize());
+              sendSyncedStarCardName(starIndex, firstCard.id);
+            }
+          } catch (e) {
+            console.error(
+              "GWO failed to name star after card " +
+                firstCard.id +
+                ": " +
+                ((e && e.stack) || e)
+            );
+          }
+          deferred.resolve();
+        },
+        function () {
+          console.error(
+            "GWO card failed to load for star name: " + firstCard.id
+          );
+          deferred.resolve();
         }
-        deferred.resolve();
-      });
+      );
 
       return deferred.promise();
     };

@@ -4,12 +4,6 @@
 // model.cheats.giveCard. Both deal from GWO's deck rather than the base game's,
 // which is the whole reason they are overridden - so what these pin is that the
 // deck, the slot bookkeeping and the co-op guards are GWO's.
-//
-// testMinions is deliberately not covered: it calls the AMD global require(),
-// and a file loaded through the Node harness gets CommonJS's own module-local
-// require instead, which cannot be stubbed from outside. Every test here keeps
-// gwc_minion out of testCards for that reason; giveCard reaches the same
-// sub-commander draw without going through it.
 
 const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
@@ -32,7 +26,6 @@ function makeInventory(maxCards, initial) {
     return list;
   };
   cards.push = (card) => list.push(card);
-  cards.pop = () => list.pop();
 
   return {
     cards,
@@ -50,11 +43,14 @@ function setup(overrides = {}) {
       gwoCards: ["gwc_combat_bots", "gwc_orbital"],
       giveCardId: "gwc_combat_bots",
       isViewer: false,
+      isHost: true,
+      campaignActive: true,
       maxCards: 10,
       startingCards: [],
-      duplicate: true,
       currentStar: 2,
       playerFaction: 0,
+      commanderNames: {},
+      missing: [],
     },
     overrides
   );
@@ -75,9 +71,17 @@ function setup(overrides = {}) {
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
+  stubs.setGlobal("requireGW", (ids, done) =>
+    done({ colonel: "/pa/units/colonel.json", angel: "/pa/units/angel.json" })
+  );
+  stubs.setGlobal("CommanderUtility", {
+    bySpec: { getObjectName: (spec) => options.commanderNames[spec] },
+  });
   stubs.setGlobal("model", {
     cheats: { giveCardId: () => options.giveCardId },
     isCampaignViewer: () => options.isViewer,
+    isCampaignHost: () => options.isHost,
+    gwCampaignActive: () => options.campaignActive,
     gwoCards: options.gwoCards,
     sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
   });
@@ -91,6 +95,9 @@ function setup(overrides = {}) {
     gwoDeal: {
       dealCard: (request) => {
         calls.dealt.push(request);
+        if (options.missing.includes(request.id)) {
+          return Promise.reject(new Error("GWO card not found: " + request.id));
+        }
         return Promise.resolve({ id: request.id });
       },
     },
@@ -105,7 +112,6 @@ function setup(overrides = {}) {
       return Promise.resolve();
     },
     helpers: {
-      doNotDealCard: () => options.duplicate,
       // The real one rewrites the sub-commander in place, which is what makes
       // the clone in dealSubCommander load-bearing.
       applyRaceToSubcommander: (subcommander) => subcommander,
@@ -170,7 +176,7 @@ describe("cheats testCards", () => {
     assert.equal(calls.dealt[0].inventory, current().inventory);
   });
 
-  it("applies each dealt card to the inventory", async () => {
+  it("adds each dealt card and applies the inventory once", async () => {
     const { inventory } = build();
 
     testCards();
@@ -180,7 +186,30 @@ describe("cheats testCards", () => {
       inventory.cards().map((card) => card.id),
       ["gwc_combat_bots", "gwc_orbital"]
     );
-    assert.equal(inventory.applied, 2);
+    assert.equal(inventory.applied, 1);
+  });
+
+  // $.when rejects on the first failed deal, so without settling each one the
+  // cards already pushed into the hand would never be applied.
+  it("applies the cards that dealt when another deal fails", async () => {
+    const { inventory, calls } = build({
+      gwoCards: ["gwc_combat_bots", "gwc_missing", "gwc_orbital"],
+      missing: ["gwc_missing"],
+    });
+
+    const errors = await capture("error", async () => {
+      testCards();
+      await flush();
+    });
+
+    assert.deepEqual(
+      inventory.cards().map((card) => card.id),
+      ["gwc_combat_bots", "gwc_orbital"]
+    );
+    assert.equal(inventory.applied, 1);
+    assert.match(errors[0], /GWO card not found: gwc_missing/);
+    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(calls.saves, []);
   });
 
   it("re-deals to the selectable AI, broadcasts and saves once", async () => {
@@ -194,10 +223,36 @@ describe("cheats testCards", () => {
     assert.deepEqual(calls.saves, [true]);
   });
 
-  // The point of the cheat: every card is checked against the duplicate rules
-  // on the way in, and a card that fails is named.
-  it("reports a card that fails the duplication test", async () => {
-    const { calls } = build({ duplicate: false });
+  // The base game logs an error for a snapshot sent with no co-op session to
+  // receive it.
+  it("saves without broadcasting in a solo war", async () => {
+    const { calls } = build({ isHost: false, campaignActive: false });
+
+    testCards();
+    await flush();
+
+    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(calls.saves, [true]);
+  });
+
+  it("saves without broadcasting while the host is disconnected", async () => {
+    const { calls } = build({ campaignActive: false });
+
+    testCards();
+    await flush();
+
+    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(calls.saves, [true]);
+  });
+
+  it("checks every faction's minion commanders without touching the hand", async () => {
+    const { inventory } = build({ gwoCards: ["gwc_minion"] });
+    let pushes = 0;
+    const push = inventory.cards.push;
+    inventory.cards.push = (card) => {
+      pushes += 1;
+      return push(card);
+    };
 
     const errors = await capture("error", async () => {
       testCards();
@@ -205,14 +260,31 @@ describe("cheats testCards", () => {
     });
 
     assert.deepEqual(errors, [
-      "gwc_combat_bots failed duplication test",
-      "gwc_orbital failed duplication test",
+      "Minion commander unit spec /pa/units/x.json invalid",
     ]);
-    assert.deepEqual(dealtIds(calls), ["gwc_combat_bots", "gwc_orbital"]);
+    assert.equal(pushes, 1);
+    assert.deepEqual(
+      inventory.cards().map((card) => card.id),
+      ["gwc_minion"]
+    );
+  });
+
+  it("accepts a minion commander the game knows", async () => {
+    build({
+      gwoCards: ["gwc_minion"],
+      commanderNames: { "/pa/units/x.json": "X" },
+    });
+
+    const errors = await capture("error", async () => {
+      testCards();
+      await flush();
+    });
+
+    assert.deepEqual(errors, []);
   });
 
   // A slot card is stamped unique, so it stacks rather than being rejected as a
-  // duplicate of the last one - and is therefore not duplicate-tested.
+  // duplicate of the last one.
   it("stamps a card slot unique and lets it overflow", async () => {
     const { inventory } = build({ gwoCards: ["gwc_add_card_slot"] });
 
@@ -292,6 +364,16 @@ describe("cheats giveCard", () => {
     assert.equal(inventory.applied, 1);
     assert.deepEqual(calls.aiDeals, [false]);
     assert.deepEqual(calls.snapshots, [["gwo_cheat_give_card", true]]);
+    assert.deepEqual(calls.saves, [true]);
+  });
+
+  it("saves without broadcasting in a solo war", async () => {
+    const { calls } = build({ isHost: false, campaignActive: false });
+
+    giveCard();
+    await flush();
+
+    assert.deepEqual(calls.snapshots, []);
     assert.deepEqual(calls.saves, [true]);
   });
 

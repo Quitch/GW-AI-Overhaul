@@ -1,7 +1,6 @@
 import js from "@eslint/js";
 import esX from "eslint-plugin-es-x";
-// Holds eslint and eslint-plugin-es-x on 9.x: the plugin calls context.getSourceCode,
-// which ESLint 10 removed (es-x 10.x in turn needs ESLint >= 10.6).
+// ESLint and eslint-plugin-es-x stay on 9.x for this plugin: docs/constraints.md.
 import lodash from "eslint-plugin-lodash";
 import prettier from "eslint-config-prettier/flat";
 import globals from "globals";
@@ -121,6 +120,22 @@ export default defineConfig([
       // rather than throwing. Use _.startsWith / _.endsWith.
       "es-x/no-string-prototype-startswith": "error",
       "es-x/no-string-prototype-endswith": "error",
+    },
+  },
+  {
+    // PA prefixes each log line with the file and line of the console call, so
+    // a logging wrapper would name itself on every line. The rule is the guard.
+    files: ["ui/**/*.js"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "CallExpression[callee.object.name='console'][arguments.length>1]",
+          message:
+            "PA's log keeps only the first console argument; build one string.",
+        },
+      ],
     },
   },
   {

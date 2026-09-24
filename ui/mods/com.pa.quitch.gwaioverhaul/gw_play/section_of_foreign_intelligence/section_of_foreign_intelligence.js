@@ -7,17 +7,14 @@
     return;
   }
 
-  // The buff indices gw_start/setup.js writes into ai.typeOfBuffs. `commanders` is
-  // only present in v5.11.0 and earlier saves.
-  var gwoBuffType = {
-    cost: 0,
-    damage: 1,
-    health: 2,
-    speed: 3,
-    build: 4,
-    commanders: 5,
-    combat: 6,
-    cooldown: 7,
+  // shared/ai.js's BUFF_TYPES, filled once it loads, plus `commanders`, which
+  // only v5.11.0 and earlier saves carry.
+  var gwoBuffType = {};
+  var eradicationModes = [];
+  var eradicationModeNames = {
+    SubCommanders: "!LOC:Colonel",
+    Factories: "!LOC:Factory",
+    Fabbers: "!LOC:Fabber",
   };
 
   try {
@@ -144,15 +141,11 @@
     var eradicatorModeNameBuilder = function (ai) {
       var commander = loc("!LOC:Commander");
       var modes = [commander];
-      if (ai.eradicationModeSubCommanders) {
-        modes.push(loc("!LOC:Colonel"));
-      }
-      if (ai.eradicationModeFactories) {
-        modes.push(loc("!LOC:Factory"));
-      }
-      if (ai.eradicationModeFabbers) {
-        modes.push(loc("!LOC:Fabber"));
-      }
+      _.forEach(eradicationModes, function (mode) {
+        if (ai["eradicationMode" + mode]) {
+          modes.push(loc(eradicationModeNames[mode]));
+        }
+      });
 
       var append = "";
 
@@ -213,7 +206,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],
@@ -226,6 +219,8 @@
         gwoRaces
       ) {
         var starCardsView = gwoStarCardsView();
+        _.assign(gwoBuffType, gwoAI.BUFF_TYPES, { commanders: 5 });
+        eradicationModes = gwoAI.ERADICATION_MODES;
 
         var getNumberOfCommanders = function (commander) {
           return gwoAI.commanderCount(commander);
@@ -308,6 +303,10 @@
             character: getCommanderCharacter(commander),
             eco: eco,
             faction: faction.name,
+            // By index, not name: an ally's name carries a suffix.
+            cluster:
+              !commander.mirrorMode &&
+              gwoAI.factionIndex(commander) === gwoAI.CLUSTER_FACTION,
             tooltip: faction.tooltip,
             iconFill: icon.fill,
             iconOutline: icon.outline,
@@ -319,23 +318,25 @@
           return intelligence(commander, index);
         };
 
-        var measureThreat = function (ai) {
-          var commanders = [];
+        // The star's AI, its minions and its foes, built once for both the
+        // threat and the panel. The order matters: intelligence() carries the
+        // faction from one call to the next.
+        var starCommanders = function (ai) {
+          return [intelligence(ai, 0)].concat(
+            _.map(ai.minions, intelligenceOf),
+            _.map(ai.foes, intelligenceOf)
+          );
+        };
+
+        var measureThreat = function (ai, commanders) {
           var totalThreat = 0;
-          commanders.push(intelligence(ai, 0));
-          if (ai.minions) {
-            commanders = commanders.concat(_.map(ai.minions, intelligenceOf));
-          }
-          if (ai.foes) {
-            commanders = commanders.concat(_.map(ai.foes, intelligenceOf));
-            _.forEach(ai.foes, function (army) {
-              var commanderCount = gwoAI.commanderCount(army);
-              totalThreat +=
-                gwoAI.aiEconRateWithFloor(army.econ_rate) *
-                0.4 *
-                (commanderCount - 1);
-            });
-          }
+          _.forEach(ai.foes, function (army) {
+            var commanderCount = gwoAI.commanderCount(army);
+            totalThreat +=
+              gwoAI.aiEconRateWithFloor(army.econ_rate) *
+              0.4 *
+              (commanderCount - 1);
+          });
           _.times(commanders.length, function (n) {
             totalThreat += commanders[n].eco;
           });
@@ -374,24 +375,16 @@
           return toFixedIfNecessary(totalThreat, 2);
         };
 
-        var createAIIntelligence = function (ai) {
-          var commanders = [];
-          commanders.push(intelligence(ai, 0));
-          if (ai.minions) {
-            var minions = _.map(ai.minions, intelligenceOf);
-            commanders = commanders.concat(minions);
-          }
-          if (ai.foes) {
-            var foes = _.map(ai.foes, intelligenceOf);
-            commanders = commanders.concat(foes);
-          }
+        var createAIIntelligence = function (ai, commanders) {
           if (ai.ally) {
             var game = model.game();
             var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
               game.inventory(),
               game
             );
-            commanders.push(intelligence(ai.ally, 0, subcommanders.length));
+            return commanders.concat([
+              intelligence(ai.ally, 0, subcommanders.length),
+            ]);
           }
           return commanders;
         };
@@ -418,11 +411,12 @@
             model.gwoAis([]);
             return;
           }
-          model.gwoSystemThreat(measureThreat(ai));
+          var commanders = starCommanders(ai);
+          model.gwoSystemThreat(measureThreat(ai, commanders));
           model.gwoAvailableTech(availableTech(star, starIndex, starCardsView));
           model.gwoAIBuffs(convertBuffNumberToName(ai));
           model.gwoGameModifiers(convertGameModifiersToName(ai, inventory));
-          model.gwoAis(createAIIntelligence(ai));
+          model.gwoAis(createAIIntelligence(ai, commanders));
         });
       }
     );

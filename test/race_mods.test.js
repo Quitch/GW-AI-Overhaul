@@ -6,12 +6,11 @@
 
 const { describe, it, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const raceMods = loadCouiModule(MOD_ROOT + "/shared/race_mods.js");
 
@@ -117,6 +116,84 @@ describe("installedRaces", () => {
       ["mla"]
     );
     assert.deepEqual(info.mods, []);
+  });
+});
+
+// With jQuery 2's synchronous Deferred, a consumer's .then runs inside
+// installedRaces' own resolve(), so its throw arrives in race_mods.js.
+describe("installedRaces under jQuery 2's Deferred", () => {
+  let errors;
+  let previous;
+
+  beforeEach(() => {
+    installFakeJQuery(stubs, { sync: true });
+    previous = console.error;
+    errors = [];
+    console.error = (message) => errors.push(message);
+  });
+
+  afterEach(() => {
+    console.error = previous;
+  });
+
+  const pendingManifest = (overrides) => {
+    const load = $.Deferred();
+    window.GwServerMods = {
+      manifest: Object.assign(fakeManifest(overrides), {
+        load: () => load.promise(),
+      }),
+    };
+    return load;
+  };
+
+  it("logs a consumer's throw as the consumer's, not as a failed read", () => {
+    const load = pendingManifest({ active: [FIXTURE_MOD] });
+
+    raceMods.installedRaces().then(() => {
+      throw new Error("consumer broke");
+    });
+    load.resolve(true);
+
+    assert.equal(errors.length, 1);
+    assert.match(errors[0], /a consumer of installed races threw/);
+    assert.match(errors[0], /consumer broke/);
+  });
+
+  it("logs and rejects a read that throws", () => {
+    const load = pendingManifest();
+    window.GwServerMods.manifest.activeServerMods = () => {
+      throw new Error("manifest broke");
+    };
+    let reason;
+
+    raceMods.installedRaces().fail((e) => {
+      reason = e;
+    });
+    load.resolve(true);
+
+    assert.equal(errors.length, 1);
+    assert.match(errors[0], /installed races not read/);
+    assert.match(errors[0], /manifest broke/);
+    assert.equal(reason.message, "manifest broke");
+  });
+
+  // reject() runs .fail callbacks the same way, so a fail handler's throw
+  // must be caught and logged like a .then callback's.
+  it("logs a fail handler's throw as the consumer's, after the failed read", () => {
+    const load = pendingManifest();
+    window.GwServerMods.manifest.activeServerMods = () => {
+      throw new Error("manifest broke");
+    };
+
+    raceMods.installedRaces().fail(() => {
+      throw new Error("fail handler broke");
+    });
+    load.resolve(true);
+
+    assert.equal(errors.length, 2);
+    assert.match(errors[0], /installed races not read/);
+    assert.match(errors[1], /a consumer of installed races threw/);
+    assert.match(errors[1], /fail handler broke/);
   });
 });
 

@@ -1,13 +1,13 @@
 "use strict";
 
-// Unit tests for shared/spec_cache.js, driven with an injected mock fetch.
+// Unit tests for gw_play/spec_cache.js, driven with an injected mock fetch.
 
 const { describe, it, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const specCache = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/spec_cache.js"
 );
 
 // Records every id asked for and returns a fresh copy, so a mutating caller cannot

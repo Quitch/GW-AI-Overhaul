@@ -1,6 +1,6 @@
 "use strict";
 
-// Tests for shared/gw_system_brackets.js, which derives how many armies a real .pas
+// Tests for gw_start/gw_system_brackets.js, which derives how many armies a real .pas
 // system seats and groups a Shared Systems pool into brackets.
 
 const { describe, it, afterEach, mock } = require("node:test");
@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const brackets = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_system_brackets.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gw_system_brackets.js"
 );
 
 function spots(count) {

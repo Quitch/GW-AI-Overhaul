@@ -3,7 +3,7 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",

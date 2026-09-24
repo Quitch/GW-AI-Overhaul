@@ -9,6 +9,8 @@ const path = require("node:path");
 
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
 const COUI_PREFIX = "coui://";
+// The mod's own tree, as shipped code and tests address it.
+const MOD_ROOT = COUI_PREFIX + "ui/mods/com.pa.quitch.gwaioverhaul";
 const GW_ROOT = path.join(REPO_ROOT, "ui", "main", "game", "galactic_war");
 
 // Namespace -> directory under GW_ROOT, where the two differ. Bare ids are the
@@ -217,6 +219,7 @@ function requireShippedModule(entry) {
 }
 
 module.exports = {
+  MOD_ROOT: MOD_ROOT,
   REPO_ROOT: REPO_ROOT,
   couiToFsPath: couiToFsPath,
   installGlobals: installGlobals,

@@ -1,6 +1,6 @@
 "use strict";
 
-// Unit tests for shared/favourite_loadouts.js: id lookup, toggling the persisted
+// Unit tests for gw_start/favourite_loadouts.js: id lookup, toggling the persisted
 // list, and the favourites-first reorder.
 
 const { describe, it } = require("node:test");
@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const favouriteLoadouts = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/favourite_loadouts.js"
 );
 
 describe("isFavourite", () => {

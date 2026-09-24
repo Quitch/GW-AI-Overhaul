@@ -125,7 +125,7 @@ own Cluster in `faction/cluster_faction.js`. The base game treats the array as
 optional: a faction without one silently drops to the generic lobby palette.
 
 Subcommander colours are a separate system and still GWO's own. See
-`gw_play/commander_colour.js`. `shared/referee_coop.js` provides the ordering:
+`gw_play/commander_colour.js`. `gw_play/referee_coop.js` provides the ordering:
 
 - `getOrderedSubcommanders(inventory, game, connectedClients)` returns every
   allied AI commander that draws from the player faction's palette. The list is
@@ -209,6 +209,26 @@ offered cards.
 The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat. That delay is
 scheduled but not awaited.
+
+## General Commander setup
+
+Under per-player tech, a viewer who picked the General Commander loadout asks
+the host once for its Sub Commanders. The request is the
+`gwo_setup_general_commander` operator, and the host replies with
+`gwo_setup_general_commander_result`. `gw_play/cards_start_subcdr.js` wires the
+two operators, and `viewerRequest` in `gw_play/general_commander_setup.js` decides
+when to send.
+
+The request can go only once the viewer is connected and per-player tech has
+synced. Either can land after `gw_play` loads, so the caller runs `send()`
+again whenever those or the viewer's record change. Once the host has answered,
+nothing is sent again, so a refusal cannot become an endless resend.
+
+The host sends no answer when the request is lost. A host with no handler for it
+only logs, and a dropped connection takes the request with it. So a request
+unanswered after `retryMs` (15 seconds) is tried again, up to `maxRetries` (3)
+times per connection. A request sent before the viewer stopped being ready is
+treated as lost.
 
 ## Whose selection is whose
 
@@ -328,7 +348,8 @@ star. The host deals it from that viewer's inventory
 explore. `star.cardList()` remains the host's own. A viewer never sees it.
 
 The transport is a top-level `gwaioStarCards` field on the co-op player
-inventory record, `{turn, cards: {"<star>": card}}`. Three things rule out the
+inventory record, `{turn, cards: {"<star>": card}, redealOwed}`. `redealOwed` is
+present only while a re-deal is owed (see below). Three things rule out the
 alternatives:
 
 - Host→viewer operators reach only **connected** clients and are never replayed.
@@ -355,6 +376,54 @@ the host's cards are re-dealt only after a win. A refresh keyed on the turn
 would therefore change what a star advertises to a viewer while the host was
 merely travelling to it. The card would then no longer be the one in their hand
 on arrival.
+
+**What triggers a gap-filling refresh.** A computed in `gw_play/cards.js` calls
+`refresh()` whenever one of its reads changes. The turn deal covers the
+ordinary case. The computed covers the cases that do not pass through a turn: a
+viewer joining, a rejoining viewer finishing its catch-up deals, and a re-deal
+the gate below turned away. `refresh()` itself reads `gwCampaignActive`,
+`isCampaignHost`, and `gwCampaignPerPlayerTechCards` before it returns, so those
+subscribe the computed. The gate's inputs are read by `runRefresh`, which
+starts a tick later, too late to subscribe it, so the computed reads them
+itself. `game.turnState()` is among them because the gate refuses every refresh
+during exploration, so the end of exploration is what retries.
+`game.stats().turns()` is deliberately not read: it changes on every hop, and a
+move must not disturb an offer already advertised. The first hop out of `end`
+still refreshes, through `turnState`, but that refresh only fills gaps unless a
+re-deal is owed.
+
+A re-deal the gate below turns away is **owed**, not dropped. So is one made
+while no viewer is connected, and one that fails. The next refresh the gate
+allows pays it. This matters because the host re-deals after a win, which is
+exactly when viewers hold `pendingTechCards`. A dropped re-deal left them with
+last turn's cards, which could duplicate cards they had just taken.
+
+The debt is kept **on each viewer's record**, as `gwaioStarCards.redealOwed`.
+A re-deal sets it on every viewer record, connected or not, before the gate is
+consulted. The write that stores a viewer's new cards drops it, so each debt
+clears only when that viewer's own re-deal succeeds. A viewer with nothing left
+to re-deal has the flag dropped on its own. Otherwise the first gap-filling
+refresh of the next turn would re-deal them.
+
+The record is where the debt belongs for three reasons:
+
+- **It survives a gw_play reload.** Records are in the game save, and every
+  caller of `refresh({redeal: true})` saves afterwards. Held in memory, the
+  debt was lost on a reload between the refused re-deal and the viewer's
+  choice, while the viewer's `pendingTechCards` survived.
+- **It reaches a viewer who was away.** A viewer disconnected when the host
+  re-deals is owed the re-deal like any other, and is paid on their return.
+- **It is per viewer.** A single war-wide flag would not work: after one viewer
+  failed, it would owe the re-deal again to viewers already re-dealt. Their
+  record write triggers the next refresh, so each such viewer would get a new
+  card on every refresh for as long as the other viewer kept failing.
+
+A failed save does not create a debt, because the re-deal already happened in
+memory. `refresh` starts `runRefresh` on a later tick for the same reason the
+records matter: owing a re-deal writes records, and `cards.js` refreshes on
+every record write. Run synchronously, that refresh would start before
+`refreshInFlight` is set, run alongside this one, and re-deal the same viewer
+twice.
 
 The refresh depends on two ordering rules:
 
@@ -502,13 +571,14 @@ suspended at each of those call sites (`cards_coop_deal.js`,
 
 **The star is identified by index, not by `ai.treasurePlanet`.** Beating the
 Guardians runs `winTurn`'s boss branch, which calls `defeatTeam(ai.team)`.
-`gw_start/setup.js` deletes `ai.team` for the treasure planet, so
+`gw_start/ai_population.js` deletes `ai.team` for the treasure planet, so
 `defeatTeam(undefined)` matches the star itself and clears its `ai()`. By the
 time the star is explored, nothing on it still says "treasure planet".
 Exploration is the whole point, since a star is fought first and its cards
 offered afterwards.
 
-`gw_start/setup.js` therefore records `originSystem.gwaio.treasureStar`, and
+`gw_start/ai_population.js` therefore picks the star by index, and
+`gw_start/war_record.js` records it as `originSystem.gwaio.treasureStar`.
 `isTreasureStar` is the only test any caller should use. Wars generated before
 that field existed recover it from `findTreasureStar`. That function looks for a
 live `ai.treasurePlanet`, and otherwise for the pre-dealt loadout the old war

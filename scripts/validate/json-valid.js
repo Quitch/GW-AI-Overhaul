@@ -5,6 +5,7 @@
 
 const fs = require("node:fs");
 const { REPO_ROOT } = require("../lib/amd-loader.js");
+const { reportFailures } = require("../lib/report-failures.js");
 const { walkFiles } = require("../lib/walk.js");
 
 function main() {
@@ -15,7 +16,7 @@ function main() {
     try {
       JSON.parse(fs.readFileSync(file, "utf8"));
     } catch (e) {
-      failures.push({ file, error: e.message });
+      failures.push({ file, problems: [e.message] });
     }
   }
 
@@ -27,13 +28,7 @@ function main() {
       " invalid."
   );
 
-  if (failures.length) {
-    console.error("");
-    for (const failure of failures) {
-      console.error(failure.file + ": " + failure.error);
-    }
-    process.exitCode = 1;
-  }
+  reportFailures(failures);
 }
 
 main();

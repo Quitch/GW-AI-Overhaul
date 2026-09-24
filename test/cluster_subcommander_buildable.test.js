@@ -14,14 +14,9 @@
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const path = require("node:path");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { matches } = require("../scripts/lib/build-types.js");
-const {
-  CARDS_DIR,
-  classifyLoadFailure,
-  listCardFiles,
-} = require("../scripts/lib/card-files.js");
+const { listCardFiles, loadCard } = require("../scripts/lib/card-files.js");
 const {
   createCapturingInventory,
   recordInto,
@@ -132,17 +127,6 @@ function collectMods(card, hasCard) {
   return captured;
 }
 
-function loadCard(file) {
-  try {
-    return { card: loadCouiModule(path.join(CARDS_DIR, file)) };
-  } catch (e) {
-    if (classifyLoadFailure(e)) {
-      return { excluded: true };
-    }
-    throw e;
-  }
-}
-
 // Both branches of a hasCard fork are real in-game states, so take each card down
 // both rather than whichever a fixed answer picks.
 function collectAllCardMods() {
@@ -151,7 +135,10 @@ function collectAllCardMods() {
 
   for (const file of listCardFiles()) {
     const loaded = loadCard(file);
-    if (loaded.excluded) {
+    if (loaded.error) {
+      throw loaded.error;
+    }
+    if (loaded.skip) {
       continue;
     }
     cards.push(file);

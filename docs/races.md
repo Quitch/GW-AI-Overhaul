@@ -49,9 +49,45 @@ a card written for that race alone address the specs. Nobody writes anything
 else about the race's units by hand. What a race player fields follows from
 **capability cells**.
 
+## Unit tables
+
+`units` and `unitNames` in every `race/` and `addon/` file are generated.
+Everything above them in the file is hand-written.
+`scripts/generate-race-tables.js` (`npm run generate:race-tables`) builds
+the two tables from `test/fixtures/race_specs.json` and splices them in,
+formatted as Prettier formats the repo. `npm run harvest:race-specs` writes that fixture
+from the race and add-on mods on disk. `test/race_tables.test.js` runs the
+generator in memory, calling `generateAll` from `scripts/lib/race-tables.js`,
+the generator behind `scripts/generate-race-tables.js`. It requires every file
+to come out byte for byte as committed, so a hand edit to a table fails the
+suite.
+
+The rules are in `scripts/lib/race-tables.js`, and the mods each table reads
+are in `scripts/lib/race-table-inputs.js`:
+
+- A race keys each unit that its own mod lists and ships and that carries its
+  bit. The key is the display name, less the race's prefix, with "Advanced"
+  moved last. A name two units share takes the unit's directory. A part is
+  keyed by its owner's key plus the role its file name gives (`shankAmmo`,
+  `crusherWeapon`). Bugs keys a research factory `<x>Research` and its
+  token `<x>Unlock`.
+- An add-on keys each unit its list has and the base game's lists do not. A
+  name two units share takes the race word of each one's bit, then the unit's
+  directory. Each unit is followed by its tools, ammo and death weapons.
+- Every name is written as a `!LOC:` key. The tooltips pass it through
+  `loc()`, so the English name shows wherever no table translates it.
+
+What no rule derives is written in the inputs, each with its reason: Legion's
+keys for the units it names twice and for its storage, and the entries its
+first, hand-mapped table carried that no rule reaches; the Bugs rule that reads only a unit's own
+types; and Exiles' Jelly, held under its first key and name after the mod
+renamed it Navigator. A key is what a race-only card addresses, so a table
+changes after a mod update on purpose, not as a side effect: re-harvest, run
+the generator, and review the diff.
+
 ## Capability cells
 
-Every card, `gw_start/ai_tech.js`, `shared/ai_inventory.js` and
+Every card, `gw_play/ai_tech.js`, `shared/ai_inventory.js` and
 `gw_play/card_units.js` name vanilla units. None of them changes. A race
 player's inventory holds vanilla paths. The referee converts them once, at
 battle launch, by a rule rather than a table.
@@ -81,7 +117,7 @@ harvests. The test pins the deviations. Each deviation is a balance choice of
 the group, such as the Anchor, which sits in `structuresDefencesBasic` while
 typed Advanced.
 
-At launch `shared/race_cells.js` reads the merged unit list and every spec it
+At launch `gw_play/race_cells.js` reads the merged unit list and every spec it
 reaches. It reads through `spec_cache`, so `genUnitSpecs` fetches nothing
 twice. From those it builds two indexes: vanilla (`Custom58` or no faction bit)
 and the race (`UNITTYPE_<bit>`). Then it applies these rules:
@@ -203,7 +239,7 @@ distinct (source, destination):
   to a scoped destination (`/pa/ai/player_guardians/`, a viewer's Sub
   Commanders). That tree is the base layer plus MLA's own add-on layer, by the
   same rule. It drops every file a race's layer claims and MLA's does not
-  (`races.inAnyRaceLayer`), so an MLA army's `unit_maps/` never lists a
+  (`races.raceLayerTest`), so an MLA army's `unit_maps/` never lists a
   race's map. An add-on's MLA map, and a map both MLA and a race claim, ride
   along untagged, as the live `/pa/ai/` listing has them.
 
@@ -221,8 +257,8 @@ merges the race's map over the brain's map
 `spec_id` the race map left resolves to a race unit of its cell. The referee
 writes the result as the army's tagged `ai_unit_map[_x1].json.<tag>`. It also
 copies the brain's untagged map, so the engine has a name to derive the tagged
-one from. This was measured live: with only the tagged file present, the engine
-looked for `ai_unit_map.json.ai0.ai0` and found nothing.
+one from. With only the tagged file present, the engine looks for
+`ai_unit_map.json.ai0.ai0` and finds nothing.
 
 No AI mod (`addAIMods`) is applied to a race tree in this pass. The descriptors
 name MLA build entries, which a race tree does not have. An AI's stat tech
@@ -258,7 +294,7 @@ the pre-table fallback.
 ## Commanders
 
 A race army fields one of the race's commanders, drawn at war creation
-(`setup.js`'s `giveRace`). Two armies keep a vanilla one and are **retagged**
+(`ai_population.js`'s `giveRace`). Two armies keep a vanilla one and are **retagged**
 instead. The boss keeps its Pumpkin and the Guardians keep the Unicorn.
 `races.commanderRetagMods` swaps `UNITTYPE_Custom58` for the race's bit and
 replaces `buildable_types` with the race's. That is exactly the shape every
@@ -504,7 +540,7 @@ MLA a layer too. An inactive add-on's files are not on disk, and
 `unitMapsFor` names files the referee reads: before activation existed, a
 Legion player could not Fight while Second Wave was disabled, because the
 hire tried to read `second_wave_legion.json` and failed. That table is what
-`treeFilter`, `inAnyRaceLayer` and `unitMapsFor`
+`treeFilter`, `raceLayerTest` and `unitMapsFor`
 read. A race tree keeps its own layer and subtracts every other, MLA's
 included, so a Legion tree holds Second Wave's `factory_builds/legion/` files
 and none of its `mla/` ones, and its merged map carries the
@@ -566,8 +602,8 @@ hire never depends on scene-load ordering and an add-on disabled mid-session
 drops out of the next Fight. It does no I/O while Community Mods is present.
 
 **Recording.** `installedRaces` reports `addons` and `addonMods` too; `mods`
-stays race-only, since `race_check`, `host_war.js` and `setup.js` read it as
-the race mods. The war records `gwaio.races.addons`, the identifier, name
+stays race-only, since `race_check`, `host_war.js` and `war_record.js` read it
+as the race mods. The war records `gwaio.races.addons`, the identifier, name
 and version of each add-on server mod active at creation. On resume
 `race_check.evaluate` **warns** for each one no longer active, and never
 blocks: every inventory holds vanilla paths, so the add-on's units simply

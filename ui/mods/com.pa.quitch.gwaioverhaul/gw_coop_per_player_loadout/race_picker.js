@@ -3,10 +3,7 @@
 // host is not running has no units in the battle. See coop.md and races.md.
 (function () {
   try {
-    var raceSelectId = "#gwo-viewer-race-select";
-    // A viewer shares the host's faction, and Cluster fields Angels and
-    // Colonels, which only MLA has. See races.md.
-    var CLUSTER_FACTION = 4;
+    var raceSelectId = "#gwo-race-select";
 
     // The observables the markup binds to exist before the bindings are
     // applied; what fills them arrives later. See shadowing.md.
@@ -38,14 +35,20 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/commander_display.html"
       )
     );
+    // What the shared race picker markup binds to.
+    model.gwoRacePicker = {
+      available: model.gwoViewerRacesAvailable,
+      tooltip: model.gwoViewerRaceTooltip,
+      value: model.gwoViewerRace,
+    };
     $("#commander-select")
       .closest(".form-group")
       .after(
         loadHtml(
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/race_select.html"
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_select.html"
         )
       );
-    locTree($("#gwo-viewer-race-group"));
+    locTree($("#gwo-race-group"));
 
     requireGW(
       [
@@ -53,8 +56,9 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_options.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
       ],
-      function (hostWar, raceMods, races, pickerOptions) {
+      function (hostWar, raceMods, races, pickerOptions, gwoAI) {
         raceMods.registerAll();
 
         hostWar.load().then(function (host) {
@@ -72,11 +76,13 @@
           });
 
           // Nothing at all unless the host asked for it: no control, no mount,
-          // and gwo_loadouts.js goes on stamping the host's race.
+          // and gwo_loadouts.js goes on stamping the host's race. A viewer
+          // shares the host's faction, and Cluster fields Angels and Colonels,
+          // which only MLA has. See races.md.
           if (
             !host.perPlayerRace ||
             host.races.length < 2 ||
-            host.faction === CLUSTER_FACTION
+            host.faction === gwoAI.CLUSTER_FACTION
           ) {
             return;
           }
@@ -129,6 +135,15 @@
             });
           });
         });
+      },
+      // No picker is shown, and under Separate races gwoViewerRace stays MLA.
+      function (err) {
+        console.error(
+          "Galactic War Overhaul (GWO): race modules not loaded: " +
+            err.requireModules +
+            ": " +
+            (err.stack || err.message || err)
+        );
       }
     );
   } catch (e) {

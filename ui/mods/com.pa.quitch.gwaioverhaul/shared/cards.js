@@ -2,6 +2,9 @@
 // them directly, and the New-GW-Cards template documents every one. Renaming
 // or dropping one breaks those cards silently. See tech-cards.md.
 define(function () {
+  // Mirrors gwoAI.CLUSTER_FACTION; this module stays dependency-free.
+  var CLUSTER_FACTION = 4;
+
   var getConnectedClients = function () {
     return _.isFunction(model.gwCampaignConnectedClients) &&
       _.isArray(model.gwCampaignConnectedClients())
@@ -105,7 +108,7 @@ define(function () {
   };
 
   var playerIsCluster = function (inventory) {
-    return inventory.getTag("global", "playerFaction") === 4;
+    return inventory.getTag("global", "playerFaction") === CLUSTER_FACTION;
   };
 
   // Must run inside inventory.applyCards()'s dull phase: relies on
@@ -195,8 +198,10 @@ define(function () {
         decoded = raw ? JSON.parse(raw) : undefined;
       } catch (e) {
         console.warn(
-          "Ignoring unreadable victory record for loadout " + loadoutId,
-          e
+          "Ignoring unreadable victory record for loadout " +
+            loadoutId +
+            ": " +
+            ((e && e.stack) || e)
         );
       }
 
@@ -445,8 +450,6 @@ define(function () {
         return "recon.observer.items." + i + "." + field;
       });
     },
-
-    // { path: value } for every path, for mods() and flatMapMods().
 
     // mods() over every file, flattened: one file's entries before the next's.
     flatMapMods: function (files, op, props, value) {

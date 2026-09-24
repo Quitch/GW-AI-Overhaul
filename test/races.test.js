@@ -5,14 +5,13 @@
 
 const { describe, it, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   FIXTURE_RACE,
   fixtureIndex,
   predictableRng,
 } = require("../scripts/lib/race-fixture.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 
@@ -455,7 +454,7 @@ describe("raceLayerFilter", () => {
   });
 });
 
-describe("inAnyRaceLayer", () => {
+describe("raceLayerTest", () => {
   it("claims every registered race's Titans files and unit map, and nothing of the base tree", () => {
     races.register({
       id: "rival",
@@ -466,7 +465,7 @@ describe("inAnyRaceLayer", () => {
         },
       },
     });
-    const claimed = races.inAnyRaceLayer;
+    const claimed = races.raceLayerTest();
 
     assert.equal(claimed("/pa/ai/unit_maps/fixture.json"), true);
     assert.equal(claimed("/pa/ai/factory_builds/fixture_air.json"), true);
@@ -493,7 +492,7 @@ describe("inAnyRaceLayer", () => {
         queller: { unitMaps: ["unit_maps/carried.json"], exclude: ["/mla/"] },
       },
     });
-    const claimed = races.inAnyRaceLayer;
+    const claimed = races.raceLayerTest();
 
     assert.equal(
       claimed("/pa/ai_queller/q_uber/unit_maps/carried.json"),
@@ -787,13 +786,13 @@ describe("treeFilter with add-ons", () => {
   });
 });
 
-describe("inAnyRaceLayer with add-ons", () => {
+describe("raceLayerTest with add-ons", () => {
   const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
 
   it("claims an add-on's race files and maps, not MLA's, and not a map MLA claims too", () => {
     races.registerAddon(FIXTURE_ADDON);
     races.activateAddons(["fixture_addon"]);
-    const claimed = races.inAnyRaceLayer;
+    const claimed = races.raceLayerTest();
 
     assert.equal(
       claimed("/pa/ai/factory_builds/fixture/factory_2w.json"),

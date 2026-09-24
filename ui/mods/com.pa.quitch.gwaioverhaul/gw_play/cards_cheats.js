@@ -1,6 +1,6 @@
 // GWO dev cheats. testCards deals one of every card in the deck, validating
-// minions and duplicate handling on the way; giveCard deals the one named in
-// model.cheats.giveCardId(). Both use GWO's deck, not the base game's.
+// minions on the way. giveCard deals the one model.cheats.giveCardId() names.
+// Both use GWO's deck, not the base game's.
 define(function () {
   return function (params) {
     var game = params.game;
@@ -18,27 +18,6 @@ define(function () {
     var helpers = params.helpers;
     var races = params.races;
 
-    var testCardForMatches = function (inventory, card) {
-      var cardsDealt = [card];
-      var duplicate = helpers.doNotDealCard(
-        inventory,
-        card,
-        cardsDealt,
-        false,
-        true,
-        [card]
-      );
-
-      if (!duplicate) {
-        console.error(card.id, "failed duplication test");
-      }
-    };
-
-    var applyCheatCards = function (product, inventory) {
-      inventory.cards.push(product);
-      inventory.applyCards();
-    };
-
     var setupNewCardSlot = function (product) {
       product.allowOverflow = true;
       product.unique = Math.random();
@@ -46,7 +25,7 @@ define(function () {
       return product;
     };
 
-    var testMinions = function (product, inventory) {
+    var testMinions = function (product) {
       // Flattened up front, so units.js is required once rather than per minion.
       requireGW(
         ["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"],
@@ -65,8 +44,6 @@ define(function () {
           _.forEach(allMinions, function (minion) {
             var minionStock = _.cloneDeep(product);
             minionStock.minion = minion;
-            inventory.cards.push(minionStock);
-            inventory.cards.pop();
 
             if (!minionStock.minion.commander) {
               // This will use the player's commander
@@ -115,7 +92,7 @@ define(function () {
     var prepareProduct = function (product, inventory, testing) {
       if (product.id === "gwc_minion") {
         if (testing) {
-          testMinions(product, inventory);
+          testMinions(product);
         }
         return dealSubCommander(product);
       }
@@ -127,7 +104,9 @@ define(function () {
 
     var finishCheat = function (snapshotName) {
       return dealCardToSelectableAI(false).then(function () {
-        model.sendCampaignSnapshot(snapshotName, true);
+        if (model.gwCampaignActive() && model.isCampaignHost()) {
+          model.sendCampaignSnapshot(snapshotName, true);
+        }
         gwoSave(game, true);
       });
     };
@@ -149,8 +128,7 @@ define(function () {
               cards
             )
             .then(function (product) {
-              product = setupNewCardSlot(product);
-              applyCheatCards(product, inventory);
+              inventory.cards.push(setupNewCardSlot(product));
             })
         );
       });
@@ -169,35 +147,50 @@ define(function () {
       var star = galaxy.stars()[game.currentStar()];
       var maxCards = inventory.maxCards() + 1; // start card doesn't use a slot
       var deferredQueue = [];
+      var failed = false;
+      // $.when rejects on the first failure, before the other deals settle, so
+      // each is settled here and the cards that did deal are still applied.
+      // jQuery 2 keeps a rejection rejected unless the handler returns a
+      // resolved promise.
+      var settle = function (deferred) {
+        return deferred.then(null, function (error) {
+          failed = true;
+          console.error("GWO cheats.testCards deal failed: " + error);
+          return $.Deferred().resolve().promise();
+        });
+      };
 
       _.forEach(model.gwoCards, function (cardId) {
         deferredQueue.push(
-          gwoDeal
-            .dealCard(
-              {
-                id: cardId,
-                galaxy: galaxy,
-                inventory: inventory,
-                star: star,
-              },
-              loaded,
-              cards
-            )
-            .then(function (product) {
-              product = prepareProduct(product, inventory, true);
-              applyCheatCards(product, inventory);
-              if (!product.unique) {
-                testCardForMatches(inventory, product);
-              }
-            })
+          settle(
+            gwoDeal
+              .dealCard(
+                {
+                  id: cardId,
+                  galaxy: galaxy,
+                  inventory: inventory,
+                  star: star,
+                },
+                loaded,
+                cards
+              )
+              .then(function (product) {
+                inventory.cards.push(prepareProduct(product, inventory, true));
+              })
+          )
         );
       });
       deferredQueue.push(
-        expandInventorySize(galaxy, inventory, star, maxCards)
+        settle(expandInventorySize(galaxy, inventory, star, maxCards))
       );
 
       $.when.apply($, deferredQueue).then(function () {
-        finishCheat("gwo_cheat_test_cards");
+        // Once per cheat, not per card: each applyCards re-applies every card
+        // held.
+        inventory.applyCards();
+        if (!failed) {
+          finishCheat("gwo_cheat_test_cards");
+        }
       });
     };
 
@@ -225,7 +218,8 @@ define(function () {
             cards
           )
           .then(function (product) {
-            applyCheatCards(prepareProduct(product, inventory), inventory);
+            inventory.cards.push(prepareProduct(product, inventory));
+            inventory.applyCards();
             finishCheat("gwo_cheat_give_card");
           });
       } else {

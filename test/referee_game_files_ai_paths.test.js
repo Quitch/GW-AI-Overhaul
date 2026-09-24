@@ -27,7 +27,7 @@ const gwoAI = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
 );
 const gwoSpecs = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js"
 );
 
 const installModel = useModel();

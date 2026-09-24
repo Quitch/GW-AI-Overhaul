@@ -1,6 +1,19 @@
 define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   gwoCard
 ) {
+  var navalCards = [
+    "gwaio_anti_sea",
+    "gwaio_cooldown_sea",
+    "gwc_combat_sea",
+    "gwc_cost_sea",
+    "gwc_damage_sea",
+    "gwc_enable_sea_all",
+    "gwc_enable_sea_t1",
+    "gwc_enable_sea_t2",
+    "gwc_health_sea",
+    "gwc_speed_sea",
+  ];
+
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -20,7 +33,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
         return { chance: 0 };
       }
       var navalBonuses = _.filter(inventory.cards(), function (card) {
-        return _.includes(card.id, "_sea");
+        return _.includes(navalCards, card.id);
       }).length;
       return { chance: Math.min(30 + navalBonuses * 15, 90) };
     },

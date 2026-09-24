@@ -8,10 +8,10 @@ define([
   "shared/Graph",
   "shared/gw_star",
   "main/game/galactic_war/shared/js/systems/template-loader",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_connect.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_system_brackets.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gw_galaxy_connect.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gw_system_brackets.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_system_templates.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_system_templates.js",
 ], function (
   GWGalaxy,
   GalaxyBuilder,
@@ -54,7 +54,7 @@ define([
 
     // Must run before anything reads the graph. Can push a neighbour one
     // connection past config.maxConnections, which beats an unreachable star.
-    // See shared/gw_galaxy_connect.js.
+    // See gw_start/gw_galaxy_connect.js.
     var reconnect = gwoGalaxyConnect.reconnectingEdges(
       builder.stars.length,
       builder.graph.getEdges(),
@@ -142,7 +142,7 @@ define([
     });
 
     // GWO - a seeded copy of the stock loader, unless Shared Systems for Galactic War
-    // has replaced it; see shared/gwo_system_templates.js.
+    // has replaced it; see gw_start/gwo_system_templates.js.
     var StarSystemTemplates = gwoSystemTemplates.chooseFor(
       chooseStarSystemTemplates,
       config.content,

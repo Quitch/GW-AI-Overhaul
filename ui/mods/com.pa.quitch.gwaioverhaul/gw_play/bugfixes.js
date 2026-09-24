@@ -16,6 +16,7 @@
       gwoSettings.treasurePlanetFixed &&
       gwoSettings.clusterFixed &&
       gwoSettings.treasureLoadoutDerived &&
+      gwoSettings.planetPositionFixed &&
       luckyCommanderFixed();
 
     if (!gwoSettings || allFixesApplied) {
@@ -50,51 +51,15 @@
       }
     };
 
-    var fixClusterType = function (mod, security) {
-      // Worker needs two fixes but each fix is applied in a separate mod
-      if (mod.path === "buildable_types") {
-        mod.value = mod.value + " & Custom58";
-        return mod.file;
-      } else if (mod.file === security && mod.path === "unit_types") {
-        mod.value.push("UNITTYPE_Custom58");
-        return mod.file;
-      }
-      return null;
-    };
-
-    var fixClusterCommanderTypes = function (ai) {
-      // A war that records typeOfBuffs builds its spec mods at launch from the
-      // live Cluster mods, so only a baked inventory needs repairing.
-      if (!_.isArray(ai.inventory)) {
-        return;
-      }
-      var securityFix = false;
-      var workerFix = 0;
-      var security =
-        "/pa/units/land/bot_support_commander/bot_support_commander.json";
-      var worker = "/pa/units/air/support_platform/support_platform.json";
-
-      for (var mod of ai.inventory) {
-        var isSecurityCandidate = securityFix !== true && mod.file === security;
-        var isWorkerCandidate = workerFix < 2 && mod.file === worker;
-
-        if (!isSecurityCandidate && !isWorkerCandidate) {
-          continue;
+    // Explicit planets drawn into stock titans-easy slots were saved with only
+    // Position/Velocity, which the server rejects with "No position".
+    var fixPlanetPositions = function (star) {
+      for (var planet of star.system().planets) {
+        if (_.isUndefined(planet.position) && !_.isUndefined(planet.Position)) {
+          planet.position = planet.Position;
         }
-
-        var result = fixClusterType(mod, security);
-        switch (result) {
-          case security:
-            securityFix = true;
-            break;
-          case worker:
-            workerFix += 1;
-            break;
-        }
-
-        if (securityFix === true && workerFix >= 2) {
-          gwoSettings.clusterFixed = true;
-          break;
+        if (_.isUndefined(planet.velocity) && !_.isUndefined(planet.Velocity)) {
+          planet.velocity = planet.Velocity;
         }
       }
     };
@@ -130,10 +95,11 @@
       return checkVersion(version) >= 0;
     };
 
-    var checkIfPatchesNeeded = function () {
-      var playerIsCluster =
-        model.game().inventory().getTag("global", "playerFaction") === 4;
+    var checkIfPatchesNeeded = function (gwoCard) {
+      var playerIsCluster = gwoCard.playerIsCluster(model.game().inventory());
 
+      // No version sets planetPositionFixed: Shared Systems for GW generates
+      // the systems of any war, so a new war can still need it.
       if (atLeastVersion("6.8.0")) {
         gwoSettings.treasureLoadoutDerived = true;
       }
@@ -148,17 +114,19 @@
       }
     };
 
-    var applyFixes = function (gwoTreasure, gwoBank) {
+    var applyFixes = function (gwoTreasure, gwoBank, clusterRepair) {
       for (var star of galaxy.stars()) {
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
         }
 
-        // A neutral star's ai() is undefined.
-        var ai = star.ai();
-        if (!gwoSettings.clusterFixed && ai && ai.isCluster) {
-          fixClusterCommanderTypes(ai);
+        if (!gwoSettings.planetPositionFixed) {
+          fixPlanetPositions(star);
         }
+      }
+
+      if (!gwoSettings.clusterFixed) {
+        clusterRepair.repairStars(galaxy.stars());
       }
 
       if (!gwoSettings.treasureLoadoutDerived) {
@@ -168,22 +136,24 @@
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
       gwoSettings.clusterFixed = true; // Cluster might not exist
       gwoSettings.treasureLoadoutDerived = true;
+      gwoSettings.planetPositionFixed = true;
 
       if (luckyCommanderFixed() !== "true") {
         fixLuckyCommanderLocalStorageVariable(gwoBank);
       }
     };
 
-    checkIfPatchesNeeded();
-
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cluster_repair.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
       ],
-      function (gwoSave, gwoTreasure, gwoBank) {
-        applyFixes(gwoTreasure, gwoBank);
+      function (gwoSave, gwoTreasure, gwoBank, clusterRepair, gwoCard) {
+        checkIfPatchesNeeded(gwoCard);
+        applyFixes(gwoTreasure, gwoBank, clusterRepair);
         gwoSave(game, true);
       }
     );

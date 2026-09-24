@@ -2,8 +2,8 @@
 
 // Per shipped locale, how the game's own tables render the terms GWO's text
 // shares with the stock UI, so a translation agrees with the screen it sits
-// on. Local-only (PA_MEDIA or --pa). Writes scripts/i18n/out/glossary.<L>.md.
-// See docs/translations.md.
+// on. Local-only: reads the PA install (--pa, else PA_MEDIA, else the
+// default). Writes scripts/i18n/out/glossary.<L>.md. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");

@@ -54,6 +54,118 @@ function makeDeferred() {
   return deferred;
 }
 
+// jQuery 2.1.4's own Deferred, for code whose behaviour depends on it: callbacks
+// run inside resolve() and reject(), so a callback's throw escapes through the
+// call that settled it, and .then does not turn a throw into a rejection. After
+// a throw the Deferred is stuck, as 2.1.4's is (Callbacks.fire never clears
+// `firing`, so add() only queues): the callbacks after the thrower never run,
+// and neither does one attached later. It differs from 2.1.4 in three ways: a
+// callback added while the list fires runs at once rather than after the rest,
+// only the first settled value is passed on, and promise() returns the
+// Deferred itself, resolve() included.
+function makeSyncDeferred() {
+  var state = "pending";
+  var stuck = false;
+  var value;
+  var lists = { resolved: [], rejected: [] };
+
+  var settle = function (to, settledValue) {
+    if (state !== "pending") {
+      return;
+    }
+    state = to;
+    value = settledValue;
+    var list = lists[to];
+    lists = { resolved: [], rejected: [] };
+    for (const callback of list) {
+      try {
+        callback(value);
+      } catch (e) {
+        stuck = true;
+        throw e;
+      }
+    }
+  };
+
+  var on = function (when, fn) {
+    if (stuck) {
+      return;
+    }
+    if (state === when) {
+      try {
+        fn(value);
+      } catch (e) {
+        stuck = true;
+        throw e;
+      }
+    } else if (state === "pending") {
+      lists[when].push(fn);
+    }
+  };
+
+  var deferred = {
+    resolve: function (resolvedValue) {
+      settle("resolved", resolvedValue);
+      return deferred;
+    },
+    reject: function (reason) {
+      settle("rejected", reason);
+      return deferred;
+    },
+    done: function (fn) {
+      on("resolved", fn);
+      return deferred;
+    },
+    fail: function (fn) {
+      on("rejected", fn);
+      return deferred;
+    },
+    always: function (fn) {
+      on("resolved", fn);
+      on("rejected", fn);
+      return deferred;
+    },
+    then: function (onDone, onFail) {
+      var next = makeSyncDeferred();
+      var forward = function (fn, settleNext) {
+        return function (settledValue) {
+          if (!fn) {
+            settleNext(settledValue);
+            return;
+          }
+          var returned = fn(settledValue);
+          if (returned && typeof returned.promise === "function") {
+            returned.promise().done(next.resolve).fail(next.reject);
+          } else {
+            settleNext(returned);
+          }
+        };
+      };
+      on("resolved", forward(onDone, next.resolve));
+      on("rejected", forward(onFail, next.reject));
+      return next.promise();
+    },
+    promise: function () {
+      return deferred;
+    },
+  };
+
+  return deferred;
+}
+
+// $.when for makeSyncDeferred: one argument, waited on without a tick. More
+// than one is refused rather than waited on partially, so a $.when(a, b) under
+// test can't pass with b never waited for.
+function syncWhen(arg) {
+  if (arguments.length !== 1) {
+    throw new Error("syncWhen waits on one argument, not " + arguments.length);
+  }
+  if (isJqueryPromise(arg)) {
+    return arg.promise();
+  }
+  return makeSyncDeferred().resolve(arg).promise();
+}
+
 // What every api.* call hands back: `then` and nothing jQuery recognises. Hold
 // one pending to prove the code under test waits for it.
 function enginePromise() {
@@ -164,13 +276,14 @@ function when() {
 }
 
 // Requesting a URL with no configured resolver rejects, so a test's fixtures can't
-// silently drift from what the code under test actually asks for.
+// silently drift from what the code under test actually asks for. `sync` swaps
+// in makeSyncDeferred and syncWhen.
 function createFakeJQuery(options) {
   var opts = options || {};
 
   return {
-    Deferred: makeDeferred,
-    when: when,
+    Deferred: opts.sync ? makeSyncDeferred : makeDeferred,
+    when: opts.sync ? syncWhen : when,
     getJSON: function (url) {
       return Promise.resolve()
         .then(function () {

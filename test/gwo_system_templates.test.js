@@ -1,6 +1,6 @@
 "use strict";
 
-// Tests for shared/gwo_system_templates.js. Two things are pinned: chooseFor's
+// Tests for gw_start/gwo_system_templates.js. Two things are pinned: chooseFor's
 // dispatch, since shadowing this path once broke Shared Systems' own panel; and the
 // per-planet streams, drained in both resolution orders to require the same system.
 
@@ -238,6 +238,38 @@ TEMPLATES.push(
       },
     ],
   },
+  {
+    // Stock titans-easy's slot shape: capitalised keys onto an explicit draw.
+    Players: [25, 26],
+    Systems: [
+      {
+        Planets: [
+          {
+            fromRandomList: EXPLICIT_POOL,
+            isExplicit: true,
+            Position: [300, 0],
+            Velocity: [0, 50],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    Players: [27, 28],
+    Systems: [
+      {
+        Planets: [
+          {
+            fromRandomList: EXPLICIT_POOL,
+            isExplicit: true,
+            position: [400, 0],
+            Position: [300, 0],
+            Velocity: [0, 50],
+          },
+        ],
+      },
+    ],
+  },
   // Last on purpose: it is what a player count matching no template falls back to.
   {
     Players: [21, 22],
@@ -332,7 +364,7 @@ before(() => {
 after(() => stubs.restoreGlobals());
 
 const templates = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_system_templates.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_system_templates.js"
 );
 
 // Drains `pending` repeatedly, since each round can queue more, until the system settles.
@@ -553,6 +585,22 @@ describe("gwo_system_templates fromRandomList", () => {
     assert.equal(system.planets[0].isExplicit, true);
     // Verbatim: the drawn template's own fields, not a generated planet.
     assert.deepEqual(system.planets[0].Radius, [300, 600]);
+  });
+
+  // The server reads only the lowercase keys; an explicit planet without them
+  // fails validation with "No position" and the battle never starts (#293).
+  it("gives an explicit draw the slot's Position and Velocity", async () => {
+    const system = await generate(loader(), { players: 25, seed: "caps" });
+    assert.equal(system.planets.length, 1);
+    assert.equal(system.planets[0].isExplicit, true);
+    assert.deepEqual(system.planets[0].position, [300, 0]);
+    assert.deepEqual(system.planets[0].velocity, [0, 50]);
+  });
+
+  it("keeps a lowercase position over the capitalised one", async () => {
+    const system = await generate(loader(), { players: 27, seed: "caps" });
+    assert.deepEqual(system.planets[0].position, [400, 0]);
+    assert.deepEqual(system.planets[0].velocity, [0, 50]);
   });
 
   // Stock's _.where discarded this predicate under lodash 3; GWO's copy uses

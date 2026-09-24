@@ -16,7 +16,7 @@ define([
     gwoUnit.vehicleFabberAdvanced
   );
 
-  return {
+  var cardUnits = {
     cards: [
       { id: "gwc_bld_efficiency_cdr", units: [gwoUnit.commander] },
       {
@@ -524,4 +524,23 @@ define([
       },
     ],
   };
+
+  // model.gwoCardsToUnits is shared: card mods push their own entries, and
+  // cards.js and card_tooltips.js each load this list. Only ids not already
+  // there are added, so neither load duplicates the other or a mod's entry.
+  cardUnits.mergeInto = function () {
+    // global for modder compatibility - New-GW-Cards pushes here
+    model.gwoCardsToUnits = _.isArray(model.gwoCardsToUnits)
+      ? model.gwoCardsToUnits
+      : [];
+    var target = model.gwoCardsToUnits;
+    _.forEach(cardUnits.cards, function (entry) {
+      if (!_.some(target, { id: entry.id })) {
+        target.push(entry);
+      }
+    });
+    return target;
+  };
+
+  return cardUnits;
 });

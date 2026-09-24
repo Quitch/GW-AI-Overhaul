@@ -1,8 +1,9 @@
 "use strict";
 
-// shared/version.js and modinfo.json both carry the version and neither can derive
-// the other, so a half-finished bump is invisible until a save claims the wrong one.
-// This also keeps the release commit's one-line change covered - see testing.md.
+// shared/version.js, modinfo.json and sonar-project.properties all carry the
+// version and none can derive another, so a half-finished bump is invisible until
+// a save or the Sonar dashboard claims the wrong one. See CONTRIBUTING.md,
+// "Releasing".
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -20,6 +21,16 @@ const modinfo = JSON.parse(
 describe("mod version", () => {
   it("matches modinfo.json, which is what the game itself reads", () => {
     assert.equal(version, modinfo.version);
+  });
+
+  it("matches sonar.projectVersion, which labels the Sonar analysis", () => {
+    const properties = fs.readFileSync(
+      path.join(REPO_ROOT, "sonar-project.properties"),
+      "utf8"
+    );
+    const match = properties.match(/^sonar\.projectVersion=(.*)$/m);
+    assert.ok(match, "sonar-project.properties sets sonar.projectVersion");
+    assert.equal(match[1].trim(), modinfo.version);
   });
 
   it("is a bare dotted string, as both consumers concatenate it directly", () => {

@@ -22,10 +22,11 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_files.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_biomes.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biomes.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
       ],
       function (
         GW,
@@ -33,10 +34,11 @@
         gwoGenerateGameFiles,
         gwoGenerateAI,
         gwoGenerateConfig,
+        gwoGenerateBiomes,
         gwoBiomeMods,
-        gwoBiomes,
         raceMods,
-        gameFilePaths
+        gameFilePaths,
+        gwoPromise
       ) {
         var hiresThisLaunch = 0;
         // The AI tree cache lives one launch: a co-op host's two hires share
@@ -69,62 +71,6 @@
               text;
           }
           progress.stage(text);
-        };
-
-        // A war saved before the stamp existed resolves it here instead, once,
-        // and writes it onto the star's system so later launches read it.
-        var stampedMods = function (system) {
-          var done = $.Deferred();
-
-          if (!system) {
-            return done.resolve([]).promise();
-          }
-          if (system.gwoBiomeMods || !gwoBiomes.unservableBiome(system)) {
-            return done.resolve(system.gwoBiomeMods || []).promise();
-          }
-          gwoBiomeMods.providers().then(function (providers) {
-            var mods = gwoBiomes.modsFor(system, providers);
-            if (mods.length) {
-              system.gwoBiomeMods = mods;
-            }
-            done.resolve(mods);
-          });
-          return done.promise();
-        };
-
-        // A cooked stamp is mounted here only to read from; its server-facing
-        // mount happens in mountFiles, after the unmount there. A stamp GW
-        // Server Mods serves is already mounted, and only its biomes are
-        // collected. See galaxy.md, "Biome mods in a GW battle".
-        var gwoGenerateBiomes = function () {
-          var self = this;
-          var done = $.Deferred();
-          var game = self.game();
-          var system = game.galaxy().stars()[game.currentStar()].system();
-
-          self.biomeMods = [];
-          self.biomeServed = {};
-          stampedMods(system).then(function (mods) {
-            if (!mods.length) {
-              done.resolve();
-              return;
-            }
-            var split = _.partition(mods, gwoBiomes.isGwsmServed);
-            var cooked = split[1];
-
-            self.stage("!LOC:Processing biome mods");
-            gwoBiomeMods.mount(cooked).always(function () {
-              gwoBiomeMods.cook(cooked).then(function (result) {
-                self.files(_.assign({}, self.files(), result.files));
-                self.biomeMods = result.mods;
-                gwoBiomeMods.serve(split[0]).then(function (served) {
-                  self.biomeServed = _.assign({}, result.served, served.served);
-                  done.resolve();
-                });
-              });
-            });
-          });
-          return done.promise();
         };
 
         gwoReferee.prototype.stripSystems = function () {
@@ -201,27 +147,27 @@
           treeCache = treeCache || gwoGenerateAI.createTreeCache();
           ref.treeCache = treeCache;
           // installedRaces activates the add-ons whose mods are enabled, so a
-          // hire never depends on scene-load ordering. It never rejects, and
-          // resolves at once without GW Server Mods.
-          return raceMods
-            .installedRaces()
-            .then(function () {
-              return _.bind(gwoGenerateGameFiles, ref)();
-            })
-            .then(function () {
-              ref.stage("!LOC:Processing AI mods");
-            })
-            .then(_.bind(gwoGenerateAI, ref))
-            .then(_.bind(gwoGenerateBiomes, ref))
-            .then(function () {
-              ref.stage("!LOC:Processing game config");
-            })
-            .then(_.bind(gwoGenerateConfig, ref))
-            .then(function () {
-              // Later stages (mountFiles) belong to the launch, not a pass.
-              ref.pass = 0;
-              return ref;
-            })
+          // hire never depends on scene-load ordering. It resolves at once
+          // without GW Server Mods, and rejects if the installed races cannot
+          // be read.
+          return gwoPromise
+            .steps(raceMods.installedRaces(), [
+              _.bind(gwoGenerateGameFiles, ref),
+              function () {
+                ref.stage("!LOC:Processing AI mods");
+              },
+              _.bind(gwoGenerateAI, ref),
+              _.bind(gwoGenerateBiomes, ref),
+              function () {
+                ref.stage("!LOC:Processing game config");
+              },
+              _.bind(gwoGenerateConfig, ref),
+              function () {
+                // Later stages (mountFiles) belong to the launch, not a pass.
+                ref.pass = 0;
+                return ref;
+              },
+            ])
             .then(null, function (error) {
               // Stock waits on the hire with no fail handler, so a rejected
               // one would leave launchingFight set and the Fight button dead.
@@ -233,6 +179,16 @@
               return $.Deferred().reject(error).promise();
             });
         };
+      },
+      // Stock's referee stays hired, so battles are fought without GWO's
+      // game files.
+      function (err) {
+        console.error(
+          "Galactic War Overhaul (GWO): referee modules not loaded: " +
+            err.requireModules +
+            ": " +
+            (err.stack || err.message || err)
+        );
       }
     );
   } catch (e) {

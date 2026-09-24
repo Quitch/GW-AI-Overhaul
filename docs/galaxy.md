@@ -1,7 +1,8 @@
 # Galaxy, factions and difficulty
 
-War creation happens in `gw_start/setup.js`. It generates the galaxy, places AIs,
-assigns personalities and minions, and stamps GWO's settings onto the save.
+War creation happens in `gw_start/setup.js`. It generates the galaxy and places
+AIs. `gw_start/ai_population.js` assigns their personalities and minions, and
+`gw_start/war_record.js` builds the settings GWO stamps onto the save.
 
 ## Generation order
 
@@ -39,7 +40,7 @@ The consequences are silent, not loud:
   is always a hull star, because the code chooses it as an extreme point (min of
   `x - y`). It is therefore drawn from exactly the population at risk.
 
-`shared/gw_galaxy_connect.js` repairs this. An isolated star's incident Delaunay
+`gw_start/gw_galaxy_connect.js` repairs this. An isolated star's incident Delaunay
 edges are precisely the hull edges the strip removed. Restoring them reconnects the
 star to both hull neighbours. Two isolated stars can share a hull edge, so the repair
 restores each edge only once.
@@ -193,26 +194,26 @@ and would make a hand depend on the order in which cards were acquired.
 
 ### What had to change
 
-| Where                                                                    | Was                                                                                                                                                                                                                                                                                                                               |
-| ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GalaxyBuilder.buildGraph`                                               | `reduceConnections(max)` with no seed → `Math.seedrandom(undefined)` → autoseeded from `crypto`. Gate topology re-rolled every build, and with it every star's `distance()`. Hijacked on the prototype from `gw_start/galaxy_build.js`. See [`shadowing.md`](shadowing.md).                                                       |
-| `template-loader.js`                                                     | System name and biome were `_.sample`. Worse, each planet's eight generator values were drawn from a shared stream _inside_ `$.when(biomeGet, nameGet).then(...)`, so a seeded stream was consumed in an unseeded order. Now keyed per planet, taken synchronously, in `shared/gwo_system_templates.js`, not a shadow. See below. |
-| `gw_breeder.js`, `gw_teams.js`                                           | Spawn placement, team pick, and a `makeBoss` that generated its system with no seed at all. Copied into `gw_start/gwo_breeder.js` and `gw_start/gwo_teams.js` rather than shadowed. See below.                                                                                                                                    |
-| `gw_faction_*.js`, `cluster_faction.js`, `cluster_planets.js`, `lore.js` | Sampled at `define()` time, so they re-rolled on every entry into `gw_start` rather than following the seed.                                                                                                                                                                                                                      |
-| `shared/deal.js setupGwoDeck`                                            | Appended each card as `requireGW` resolved it, so the deck's array order was the loader's rather than `model.gwoCards`'. A deal walks the deck in array order subtracting each chance, so the same roll picked a different card run to run. Seeding the roll alone would have changed nothing.                                    |
-| `gw_play/cards.js chooseCards`                                           | Built its own `Math.seedrandom` and no caller ever passed one, so every hand the player was offered and every card on an enemy star came from entropy.                                                                                                                                                                            |
-| `gw_play/referee_config_setup.js`                                        | `setupAIArmy` shuffled the three landing policies with `_.shuffle` at every battle launch, so replaying the same battle from the same save gave the AI different landing behaviour.                                                                                                                                               |
+| Where                                                                    | Was                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GalaxyBuilder.buildGraph`                                               | `reduceConnections(max)` with no seed → `Math.seedrandom(undefined)` → autoseeded from `crypto`. Gate topology re-rolled every build, and with it every star's `distance()`. Hijacked on the prototype from `gw_start/galaxy_build.js`. See [`shadowing.md`](shadowing.md).                                                         |
+| `template-loader.js`                                                     | System name and biome were `_.sample`. Worse, each planet's eight generator values were drawn from a shared stream _inside_ `$.when(biomeGet, nameGet).then(...)`, so a seeded stream was consumed in an unseeded order. Now keyed per planet, taken synchronously, in `gw_start/gwo_system_templates.js`, not a shadow. See below. |
+| `gw_breeder.js`, `gw_teams.js`                                           | Spawn placement, team pick, and a `makeBoss` that generated its system with no seed at all. Copied into `gw_start/gwo_breeder.js` and `gw_start/gwo_teams.js` rather than shadowed. See below.                                                                                                                                      |
+| `gw_faction_*.js`, `cluster_faction.js`, `cluster_planets.js`, `lore.js` | Sampled at `define()` time, so they re-rolled on every entry into `gw_start` rather than following the seed.                                                                                                                                                                                                                        |
+| `shared/deal.js setupGwoDeck`                                            | Appended each card as `requireGW` resolved it, so the deck's array order was the loader's rather than `model.gwoCards`'. A deal walks the deck in array order subtracting each chance, so the same roll picked a different card run to run. Seeding the roll alone would have changed nothing.                                      |
+| `gw_play/cards.js chooseCards`                                           | Built its own `Math.seedrandom` and no caller ever passed one, so every hand the player was offered and every card on an enemy star came from entropy.                                                                                                                                                                              |
+| `gw_play/referee_config_setup.js`                                        | `setupAIArmy` shuffled the three landing policies with `_.shuffle` at every battle launch, so replaying the same battle from the same save gave the AI different landing behaviour.                                                                                                                                                 |
 
 ### Copies, not shadows
 
 Three base-game modules are **copied into GWO's namespace** rather than shadowed. The
 call site chooses between the copy and the original:
 
-| GWO module                       | Replaces                     | Why not a shadow                                                                                                                                 |
-| -------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `shared/gwo_system_templates.js` | `systems/template-loader.js` | Shared Systems for Galactic War replaces the same path, and a shadowed path can only have one owner                                              |
-| `gw_start/gwo_teams.js`          | `pages/gw_start/gw_teams`    | The base game calls `getTeam` as `_.map(aiFactions, GWTeams.getTeam)`, so a shadow adding an `rng` parameter would receive the array index there |
-| `gw_start/gwo_breeder.js`        | `pages/gw_start/gw_breeder`  | Nothing else needs GWO's version, and the base module stays available                                                                            |
+| GWO module                         | Replaces                     | Why not a shadow                                                                                                                                 |
+| ---------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `gw_start/gwo_system_templates.js` | `systems/template-loader.js` | Shared Systems for Galactic War replaces the same path, and a shadowed path can only have one owner                                              |
+| `gw_start/gwo_teams.js`            | `pages/gw_start/gw_teams`    | The base game calls `getTeam` as `_.map(aiFactions, GWTeams.getTeam)`, so a shadow adding an `rng` parameter would receive the array index there |
+| `gw_start/gwo_breeder.js`          | `pages/gw_start/gw_breeder`  | Nothing else needs GWO's version, and the base module stays available                                                                            |
 
 Each copy stays line-for-line close to its original, with every change marked `GWO -`.
 A diff against the base file after a PA patch therefore stays readable. That discipline
@@ -221,7 +222,7 @@ the `$.Deferred` wrapper around `getRandomPlanetName()`. `$.when` does not wait 
 engine promise (see [`constraints.md`](constraints.md)), so every war on the vanilla
 path failed with "no usable star system".
 
-Stock's own bugs are kept too, with one correction. `fromRandomList` reads as
+Stock's own bugs are kept too, with two corrections. `fromRandomList` reads as
 filtering the pool by `isExplicit` and by the entries already drawn, but lodash 3's
 `_.where` takes a source object, not a predicate, so stock's filter was inert. GWO's
 copy uses `_.filter` there, marked `GWO -` like every other change, so a pool is drawn
@@ -233,10 +234,21 @@ the candidate list is the same either way and the same seed draws the same plane
 The correction is there for third-party templates that do either.
 `test/gwo_system_templates.test.js` pins both behaviours.
 
+The second correction does change what ships. Stock `titans-easy.js` gives its
+`fromRandomList` slots a capitalised `Position` and `Velocity`, and every entry in the
+stock pool is `isExplicit`, so the drawn planet takes the `isExplicit` return with no
+`position` or `velocity`. Only the generated path maps the capitalised keys, and the
+server rejects a planet without the lowercase ones ("No position"), so the battle
+never starts. GWO's copy fills in `position` and `velocity` from the capitalised keys
+when the drawn planet lacks them. That fixes only systems GWO's copy generates, so
+`gw_play/bugfixes.js` makes the same repair once on each war's saved systems. It covers
+wars saved before the fix and systems from Shared Systems for Galactic War, which
+replaces the loader.
+
 ### Shared Systems for Galactic War
 
 That mod replaces `systems/template-loader.js` wholesale, so GWO's seeded loader lives at
-`shared/gwo_system_templates.js` instead. Its `chooseFor()` returns the base module
+`gw_start/gwo_system_templates.js` instead. Its `chooseFor()` returns the base module
 whenever that module carries `loadOptions`, and GWO's seeded copy otherwise. That is the
 same capability check `loadSystemBrackets` uses.
 
@@ -246,10 +258,20 @@ is therefore only reached for boss systems built from a `systemTemplate`.
 
 ### Retries
 
+Only a spawn shortage is retried: an enemy faction with no boss, because the breeder
+found no home system for it. A new seed lays the galaxy out again and can fix that.
+Nothing else is retried, because a new seed cannot fix it.
+`gw_start/war_generation_failure.js` makes that decision and writes the message.
+
 `warGenerationFailure` used to re-roll the seed at random, which discarded what the
 player typed. It now derives `<base>-<attempt>`, and `gwaio.seed` records whichever
 link succeeded. The string the panel shows is therefore the string to re-enter to get
 that war back on the first attempt.
+
+When generation gives up, the seed is put back to `<base>`, and a message appears
+above Go To War. For a spawn shortage it says to choose a larger galaxy or to turn
+on Faction Scaling. Anything else is a bug, so the message asks the player to report
+it with the seed and the PA log.
 
 ## System scaling
 
@@ -287,7 +309,7 @@ a compact six-army map reads as early-game and a sprawling duel map reads as lat
 At the origin the window is empty and every system is equally likely. System Scaling
 had nothing real to scale, which is why GWO used to remove it from the DOM.
 
-`shared/gw_system_brackets.js` replaces that. Each system resolves to an **army**
+`gw_start/gw_system_brackets.js` replaces that. Each system resolves to an **army**
 range, and systems that share a range become one bracket. The range is resolved in
 this order:
 
@@ -349,7 +371,7 @@ them. `referee.js`'s `mountFiles` does the same for the stamped mods. It runs af
 the `unmountAllMemoryFiles` there (which Community Mods turns into a client-mod
 remount) and before `gw_play` navigates to `connect_to_game`.
 
-Clients get the same files through `config.files`. `gwoGenerateBiomes` mounts the
+Clients get the same files through `config.files`. `gw_play/referee_biomes.js` mounts the
 stamped mods and reads every `pa/**/*.json` they ship through `spec:`, the only scheme
 that resolves a `/server_mods/` mount client-side. It adds the text to `self.files()`,
 which the host mounts and the `gw_config` payload hands to every joiner. That is why
@@ -360,22 +382,22 @@ channels. `referee_config.js` then treats its biomes as unservable and switches 
 planets to `earth`. The mod is not a dependency of the war. Once its zip cannot be
 read, the planet falls to `earth` and nothing more happens. (Disabling alone does not
 do that. The stamp mounts the zip by path, so a disabled mod whose zip is still in
-`download/` keeps serving, verified 2026-09-04.)
+`download/` keeps serving.)
 
 A **GW Server Mods-served** mod goes through neither channel. GW Server Mods mounts
 every active server mod at `/server_mods/<id>/` before the local server spawns. It
 wraps `model.fight` so the mount precedes the referee, and its connect gate excludes a
-co-op viewer lacking any client-relevant server mod. `gwoGenerateBiomes` therefore only
+co-op viewer lacking any client-relevant server mod. `referee_biomes.js` therefore only
 asks `gwo_biome_mods.js`'s `serve` which of the stamped mods GW Server Mods lists as
 active. It catalogs the live manifest row (the stamp's `installedPath` is stale after
 a reinstall) and adds their biomes to `biomeServed`. A stamped mod it no longer lists
 falls to `earth` like an unreadable cooked one.
 
-Such a mod **is** a dependency of the war. `gw_start/setup.js` records the ones
+Such a mod **is** a dependency of the war. `gw_start/war_record.js` records the ones
 stamped on any placed star as
 `originSystem.gwaio.biomeMods = [{ identifier, displayName, version }]`.
 
-On resume, `gw_play/biomes.js` asks `shared/biome_check.js` what the stars are stamped
+On resume, `gw_play/biomes.js` asks `gw_play/biome_check.js` what the stars are stamped
 with. The stamps carry names and versions, and the recorded list substitutes for a
 star whose system lost its stamp. `gw_play/biomes.js` compares that with `installedBiomeMods`
 and blocks the war through the same gate `gw_play/races.js` built for races. That gate
@@ -385,21 +407,15 @@ unreadable mod list decides nothing, and a version change only warns. A war save
 before the record existed has neither stamp nor list, so nothing blocks.
 
 A war saved before the stamp existed has none. A system there with a modded biome
-resolves providers at launch instead (`stampedMods` in `referee.js`). It writes the
+resolves providers at launch instead (`stampedMods` in `referee_biomes.js`). It writes the
 result onto the star's system, and the save then carries it. That is still one
 resolution per system, just deferred. Only a biome that no enabled text-only mod
 provides falls to `earth`. Such a system is re-checked each launch, so installing the
 mod later is enough.
 
-Verified live (PA 124673, 2026-08-25): a "Rolling Hills 2v2 NS" battle on tetctree's
-`mountain` biome reached `live_game` in 18 seconds. The server log showed
-`Mounted zip file /download/uk.pa.tetctree.server.zip as /server_mods/uk.pa.tetctree.server/`,
-and the client reported the planet as `mountain`. With that zip removed, the same star
-logged the two warnings above, launched on `earth`, and loaded in the same time. A
-co-op viewer with no biome mod installed at all (`gwo_viewer`: GWO and no_gw_video
-only) joined that battle. It reported `arePlanetsReady` true and the planet as
-`mountain`, and could fetch `coui://pa/terrain/mountain.json`, the cooked copy from
-`gw_config`. `api.file.zip.catalog` returns `[{name, crc32, size}]`.
+A co-op viewer needs no biome mod installed to join such a battle. It reads the
+cooked copy from `gw_config`, at `coui://pa/terrain/<biome>.json`.
+`api.file.zip.catalog` returns `[{name, crc32, size}]`.
 
 The quantity is armies, not humans. Map makers use `players` to count humans, and
 humans share an army, so a declared `[2,10]` on two landing zones is two armies of
@@ -464,9 +480,21 @@ These consequences surface elsewhere:
 
 - Cards must exclude `NoBuild` when writing fabber `buildable_types`, or Cluster
   gets a buildable Sub Commander. See [`tech-cards.md`](tech-cards.md).
-- An MLA Cluster gets additional commanders in place of minions, and in place of
-  armies. A Cluster of any other race gets regular minions. See
-  [`races.md`](races.md).
+- An MLA Cluster fields commander stacks in place of minions. A Cluster of any
+  other race gets regular minions. See [`races.md`](races.md).
+- An MLA Cluster Worker fields `floor(bossCommanders / 2)` more commanders than
+  the minion count (`clusterCommanderCount` in `gw_start/ai_population.js`),
+  because Workers have no weapon to defend their base. The bonus applies
+  wherever a Worker is fielded:
+  - as a system's own AI, with a minimum of 2
+  - as the one Worker minion of a Security system AI
+  - as an FFA foe
+
+  Security is armed, so it gets no bonus. The boss's Security escort keeps
+  `bossMinions`, the same as every other faction's boss escort, so it can field
+  fewer commanders than a Worker further in. A Security FFA foe takes the
+  ordinary foe count. Both are intended.
+
 - Commander stat cards are worth less to Cluster, because its subcommanders do not
   inherit `base_commander`.
 - An MLA Cluster resolves its AI build orders through `/pa/ai_cluster/`, which
@@ -493,7 +521,7 @@ choice is recorded as `originSystem.gwaio.races`. See [`races.md`](races.md).
 
 ## Difficulty
 
-`gw_start/difficulty_levels.js` is a `difficulties` array of tiers (Beginner,
+`shared/difficulty_levels.js` is a `difficulties` array of tiers (Beginner,
 Casual, Iron, Bronze, Silver, Gold, Platinum, Diamond, Uber), plus a minimal
 `Custom` sentinel.
 
@@ -562,7 +590,7 @@ once per `gw_start` load (it starts before any mod script exists). Its difficult
 ramp writes into the templates' shared `personality` objects, so the templates are
 dirty by the time GWO generates.
 
-`setAIPersonality` therefore assigns `ai.personality = gwoPersonality.resolve(ai, …)`,
+`ai_population.js`'s `setAIPersonality` therefore assigns `ai.personality = gwoPersonality.resolve(ai, …)`,
 a fresh object. That object is the template `personalityId` names, with the tier's
 AI settings written over it (`applyTier()`). Its `personality_tags` are the tier's
 tags followed by the brain's. The brain's tags are `Default` for TITANS, the
@@ -578,7 +606,7 @@ at all, since every reader gives them the Sub Commander rate. The clone paths st
 ramp writes one onto the template minions it samples.
 
 A dealt Sub Commander records its penchant as `penchantName` alone
-(`gw_play/cards_deal_helpers.js`, `gwc_minion.js`), as an enemy does. Its
+(`shared/cards_deal_helpers.js`, `gwc_minion.js`), as an enemy does. Its
 `character` stays the template's, and the war panel, the minion card and the
 referee's display name show the penchant after it. A Sub Commander dealt before
 this carries the penchant's name inside `character` and its tags in its stored
@@ -600,7 +628,7 @@ Sub Commander record carries none.
 This is distinct from the player's tech cards, and from `/pa/ai_tech/`. It is the
 AI's own stat tech, drawn at war creation and applied as **unit-spec mods** when the
 battle is launched. The war records only the draw: `typeOfBuffs`, the buff indices,
-on every boss, worker and foe. `gw_start/ai_tech.js`'s `loadoutFor()` builds the
+on every boss, worker and foe. `gw_play/ai_tech.js`'s `loadoutFor()` builds the
 descriptors from the live tables at launch (`referee_game_file_paths.js`'s
 `armyInventory()`), so a rebalance reaches wars in progress.
 
@@ -612,14 +640,15 @@ the Cluster commander mods. They field the Unicorn, which those mods do not name
 
 Two modules are involved:
 
-- `gw_start/ai_tech.js` returns `factionTechs[faction][tech]`: arrays of
+- `gw_play/ai_tech.js` returns `factionTechs[faction][tech]`: arrays of
   `addMods`-shaped descriptors, the same shape [`specs.md`](specs.md) documents.
 - `shared/ai_inventory.js` holds the per-faction unit, ammo and weapon groupings
   those descriptors multiply over, so each faction's tech hits only what that
   faction fields.
 
-`setup.js`'s `aiBuffType` names the tech indices: cost 0, damage 1, health 2,
-speed 3, build 4, combat 6, cooldown 7. **Index 5 is deliberately absent**: that
+`shared/ai.js`'s `BUFF_TYPES` names the tech indices, for war generation, AI tech,
+and the intelligence panel alike: cost 0, damage 1, health 2, speed 3, build 4,
+combat 6, cooldown 7. **Index 5 is deliberately absent**: that
 tech was removed, and the gap is preserved rather than closed so existing saves
 keep meaning what they meant. A contributor who renumbered it to tidy the sequence
 would silently repoint every war already carrying a 6 or a 7.
@@ -641,9 +670,10 @@ which is what keeps a seed's enemies reproducible.
   for Easy Systems to swap to, so `galaxy_build.js` asks for the lowest bracket
   instead, after System Scaling and Large Planets have had their say. GWO also changes
   how it watches `model.ready()` so the mod's lobby is not broken. System Scaling and
-  Large Planets both stay, served by the brackets above. Map-pack systems
-  whose biome comes from a server mod are kept only when that mod ships JSON alone.
-  Otherwise they are excluded, because the GW server never mounts server mods.
+  Large Planets both stay, served by the brackets above. Map-pack systems whose
+  biome comes from a server mod follow the provider rule in "Biome mods in a GW
+  battle": a mod that ships JSON alone always serves, and any other only with GW
+  Server Mods active.
 - **New-GW-Cards** is the template that third-party card mods are written from, rather
   than a mod itself. It is the reason the `model.gwo*` globals are additive and the
   `shared/cards.js` helper names are fixed. See [`tech-cards.md`](tech-cards.md),

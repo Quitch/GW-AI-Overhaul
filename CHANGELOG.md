@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## v7.4.1 - 2026-09-24
+
+### Bugfix
+
+- The war information panel's co-op Tech and Slots rows now show the current settings rather than those at load
+- The AI settings window shows a removed race's stored Ally AI, not its Enemy AI, in the Ally column
+- A co-op viewer's victory badge is now recorded against the viewer's own loadout under per-player tech, not the host's
+- When a war cannot be created, the setup screen now says why and what to do
+- Go To War waits for the installed races to load
+- A Legion, Bugs, or Exiles player's first tech deal can no longer offer cards for units their race does not have
+- A war saved before v5.52.2 now repairs every enemy Cluster faction's Sub Commanders when it loads, not only the first
+- A viewer's Queller Sub Commanders now follow the viewer's own Sub Commander Tactics card rather than the host's
+- A tech card, loadout, or loadout bank from another mod that fails to load no longer stops Explore, Go To War, or joining a co-op war
+- A tech card from another mod that fails while it is applied no longer stops co-op star cards from being dealt, or stops loadouts being unlocked
+- A viewer who is still choosing a tech card, or is away, when the host takes one now gets new star cards once they choose or return, even if the war is reloaded in between, rather than keeping last turn's
+- A viewer who picks the General Commander loadout now always gets their Sub Commanders
+- The intelligence panel places an allied Cluster faction's tooltip the way it places every other Cluster tooltip
+- With Easy Systems, systems no longer hang on the landing screen
+- A tech card from another mod that fails to show its name or description no longer stops the next turn's cards from being dealt, or breaks card displays and the war information panel; one that fails to load no longer leaves the previous card on display
+- An error while a battle's biome mods are prepared no longer leaves the Fight button stuck
+
 ## v7.4.0 - 2026-09-22
 
 ### Changed

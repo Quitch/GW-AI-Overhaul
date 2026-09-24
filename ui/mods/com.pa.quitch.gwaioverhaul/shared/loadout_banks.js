@@ -19,36 +19,70 @@ define(function () {
       .value();
   };
 
+  // modules are the bank modules in paths() order. A path with no module, or
+  // one whose module returns nothing, is dropped rather than throwing: one
+  // broken mod must not take out the loadout list.
+  //
+  // Both halves of the documented contract are required, not just the one read
+  // first: a bank that can answer hasStartCard but not record an addStartCard
+  // would otherwise pass here and throw at award time, after the player had
+  // already beaten the treasure planet. See tech-cards.md.
+  var resolveBanks = function (modules) {
+    var byPath = _.zipObject(paths(), modules || []);
+
+    resolved = _.filter(
+      _.map(entries(), function (entry) {
+        var bank = entry && byPath[entry.path];
+        if (
+          !bank ||
+          !_.isFunction(bank.hasStartCard) ||
+          !_.isFunction(bank.addStartCard)
+        ) {
+          return undefined;
+        }
+        return { prefix: entry.prefix, bank: bank };
+      })
+    );
+
+    return resolved;
+  };
+
   return {
     paths: paths,
 
-    // modules are what requireGW(paths()) handed back, in the same order. A path
-    // that failed to load arrives undefined and is dropped rather than throwing:
-    // one broken mod must not take out the loadout list.
-    //
-    // Both halves of the documented contract are required, not just the one read
-    // first: a bank that can answer hasStartCard but not record an addStartCard
-    // would otherwise pass here and throw at award time, after the player had
-    // already beaten the treasure planet. See tech-cards.md.
-    resolve: function (modules) {
-      var byPath = _.zipObject(paths(), modules || []);
+    // Each path is requested on its own, because one requireGW for all of them
+    // never calls back if any one fails, and every bank would be lost.
+    // No timeout (waitSeconds: 0), and an errback can fire twice.
+    load: function () {
+      var result = $.Deferred();
+      var bankPaths = paths();
+      var modules = [];
+      var remaining = bankPaths.length;
 
-      resolved = _.filter(
-        _.map(entries(), function (entry) {
-          var bank = entry && byPath[entry.path];
-          if (
-            !bank ||
-            !_.isFunction(bank.hasStartCard) ||
-            !_.isFunction(bank.addStartCard)
-          ) {
-            return undefined;
+      if (!remaining) {
+        result.resolve(resolveBanks([]));
+        return result.promise();
+      }
+
+      _.forEach(bankPaths, function (path, index) {
+        var count = _.once(function (bank) {
+          modules[index] = bank;
+          --remaining;
+          if (remaining === 0) {
+            result.resolve(resolveBanks(modules));
           }
-          return { prefix: entry.prefix, bank: bank };
-        })
-      );
+        });
 
-      return resolved;
+        requireGW([path], count, function () {
+          console.error("Loadout bank failed to load: " + path);
+          count(undefined);
+        });
+      });
+
+      return result.promise();
     },
+
+    resolve: resolveBanks,
 
     banks: function () {
       return resolved;
@@ -62,7 +96,12 @@ define(function () {
         try {
           return entry.bank.hasStartCard(card);
         } catch (e) {
-          console.error("Loadout bank hasStartCard() threw:", entry.prefix, e);
+          console.error(
+            "Loadout bank hasStartCard() threw: " +
+              entry.prefix +
+              ": " +
+              ((e && e.stack) || e)
+          );
           return false;
         }
       });
@@ -91,7 +130,12 @@ define(function () {
           try {
             return entry.bank.startCards();
           } catch (e) {
-            console.error("Loadout bank startCards() threw:", entry.prefix, e);
+            console.error(
+              "Loadout bank startCards() threw: " +
+                entry.prefix +
+                ": " +
+                ((e && e.stack) || e)
+            );
             return [];
           }
         })

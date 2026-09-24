@@ -1,15 +1,14 @@
 "use strict";
 
-// shared/biome_check.js: whether a saved war can still load its map packs. A
+// gw_play/biome_check.js: whether a saved war can still load its map packs. A
 // missing one blocks; a version change is only said out loud; an unreadable
 // mod list decides nothing. See galaxy.md, "Biome mods in a GW battle".
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
-const biomeCheck = loadCouiModule(MOD_ROOT + "/shared/biome_check.js");
+const biomeCheck = loadCouiModule(MOD_ROOT + "/gw_play/biome_check.js");
 
 const ALIEN_ID = "com.pa.alienworlds.server";
 

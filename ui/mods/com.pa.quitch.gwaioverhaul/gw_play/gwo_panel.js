@@ -1,6 +1,22 @@
 (function () {
   var gwoWarInfoPanelLoaded;
 
+  // A third-party card's summarize() is arbitrary code; an empty name beats an
+  // uncaught throw in the requireGW callback.
+  var cardName = function (card, cardId) {
+    try {
+      return card && _.isFunction(card.summarize) ? loc(card.summarize()) : "";
+    } catch (e) {
+      console.error(
+        "GWO card summarize() threw for " +
+          cardId +
+          ": " +
+          ((e && e.stack) || e)
+      );
+      return "";
+    }
+  };
+
   function gwoWarInfoPanel(gwoSettings) {
     try {
       var deckName = function (deckName) {
@@ -141,7 +157,7 @@
         [
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
@@ -236,14 +252,17 @@
           model.gwoCoopArmyControl = ko.computed(function () {
             return coopText(model.gwCampaignSharedControl());
           });
-          model.gwoCoopTechControl = coopText(
-            !model.gwCampaignPerPlayerTechCards()
-          );
+          // Computed, because stock writes both settings later, from server data.
+          model.gwoCoopTechControl = ko.pureComputed(function () {
+            return coopText(!model.gwCampaignPerPlayerTechCards());
+          });
           // LOCKED, not Locked: case-sensitive i18n, and that casing reaches four
           // more locales. Unlocked has no entry under any casing.
-          model.gwoCoopLockedSlots = model.gwCampaignMaxClientsLocked()
-            ? loc("!LOC:LOCKED")
-            : loc("!LOC:Unlocked");
+          model.gwoCoopLockedSlots = ko.pureComputed(function () {
+            return model.gwCampaignMaxClientsLocked()
+              ? loc("!LOC:LOCKED")
+              : loc("!LOC:Unlocked");
+          });
 
           model.gwoIncompatibleMods = ko.observableArray([]);
           api.mods.getMounted("client").then(function (mods) {
@@ -319,7 +338,7 @@
           var loadoutId = cards[0].id;
           model.gwoLoadout = ko.observable("");
           requireGW(["cards/" + loadoutId], function (card) {
-            model.gwoLoadout(loc(card.summarize()));
+            model.gwoLoadout(cardName(card, loadoutId));
           });
 
           var intelligence = function (subcommanderData, index) {
@@ -395,16 +414,13 @@
             commander.color(coopColour(client));
 
             if (!commander.loadoutResolved || !commander.raceResolved) {
-              record = game.findCoopPlayerInventoryData({
-                id: client.id,
-                name: client.name,
-              });
+              record = gwoRefereeCoop.recordForClient(game, client);
               loadoutCardId = record && record.loadoutCardId;
 
               if (loadoutCardId && !commander.loadoutResolved) {
                 commander.loadoutResolved = true;
                 requireGW(["cards/" + loadoutCardId], function (card) {
-                  commander.character(loc(card.summarize()));
+                  commander.character(cardName(card, loadoutCardId));
                 });
               }
 

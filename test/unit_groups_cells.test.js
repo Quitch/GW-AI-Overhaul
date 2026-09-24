@@ -8,10 +8,11 @@
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
+const os = require("node:os");
 const path = require("node:path");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { mediaDir } = require("../scripts/lib/pa-install.js");
 
-const MOD_ROOT = "coui://ui/mods/com.pa.quitch.gwaioverhaul";
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoGroup = loadCouiModule(MOD_ROOT + "/shared/unit_groups.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
@@ -117,24 +118,29 @@ describe("the cell classifier against unit_groups.js", () => {
 });
 
 describe("the harvested fixture", () => {
-  const media =
-    process.env.PA_MEDIA ||
-    "C:/Program Files (x86)/Steam/steamapps/common/Planetary Annihilation Titans/media";
+  const media = mediaDir();
 
   it("matches the installed game (skipped without one)", (t) => {
     if (!fs.existsSync(path.join(media, "pa", "units", "unit_list.json"))) {
       t.skip("no PA install");
       return;
     }
-    const tmp = path.join(__dirname, "fixtures", "unit_types.tmp.json");
-    const { execFileSync } = require("node:child_process");
-    execFileSync(
-      process.execPath,
-      [path.join(__dirname, "..", "scripts", "harvest-unit-types.js")],
-      { env: Object.assign({}, process.env, { GWO_HARVEST_OUT: tmp }) }
+    const tmp = path.join(
+      os.tmpdir(),
+      "gwo-unit-types-" + process.pid + ".json"
     );
-    const fresh = JSON.parse(fs.readFileSync(tmp, "utf8")).units;
-    fs.unlinkSync(tmp);
+    const { execFileSync } = require("node:child_process");
+    let fresh;
+    try {
+      execFileSync(
+        process.execPath,
+        [path.join(__dirname, "..", "scripts", "harvest-unit-types.js")],
+        { env: Object.assign({}, process.env, { GWO_HARVEST_OUT: tmp }) }
+      );
+      fresh = JSON.parse(fs.readFileSync(tmp, "utf8")).units;
+    } finally {
+      fs.rmSync(tmp, { force: true });
+    }
     assert.deepEqual(
       fixture,
       fresh,
