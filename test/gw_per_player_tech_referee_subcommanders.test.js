@@ -19,7 +19,7 @@ const gwoColour = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"
 );
 const refereeCoop = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js"
 );
 const gwoPersonality = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js"

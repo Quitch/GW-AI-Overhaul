@@ -2,10 +2,10 @@
 // capability-cell index for a race. The rules are in shared/unit_cells.js;
 // only the fetching lives here. See races.md, "Capability cells".
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/spec_cache.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/spec_cache.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_game_file_paths.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
 ], function (specCache, unitCells, gwoRaces, gameFilePaths) {
   var deps = { fetch: gameFilePaths.specFetch };
   // Keyed by the unit list read: the list grows as race zips mount, so a read

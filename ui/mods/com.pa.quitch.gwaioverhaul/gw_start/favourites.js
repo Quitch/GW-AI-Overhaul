@@ -1,5 +1,5 @@
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/favourite_loadouts.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/favourite_loadouts.js",
 ], function (favouriteLoadouts) {
   // gwaio_-prefixed so this survives mod updates/uninstalls without colliding
   // with base-game or other mods' localStorage keys (see shared/bank.js).

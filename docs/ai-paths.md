@@ -45,7 +45,7 @@ it when a card's AI mod carries a `load`. It is also a place where
 `referee_ai.js` writes generated output. See [`ai-pipeline.md`](ai-pipeline.md),
 "The op table".
 
-`/pa/ai_tech/` is also not `gw_start/ai_tech.js`. That file shares the name and
+`/pa/ai_tech/` is also not `gw_play/ai_tech.js`. That file shares the name and
 nothing else. It is the AI's own stat tech, applied as unit-spec mods at war
 creation. See [`galaxy.md`](galaxy.md), "AI tech".
 

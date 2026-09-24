@@ -1,6 +1,6 @@
 "use strict";
 
-// Tests for shared/gw_galaxy_connect.js, the repair for stars buildGraph() leaves
+// Tests for gw_start/gw_galaxy_connect.js, the repair for stars buildGraph() leaves
 // with no gates when it strips the convex-hull edges.
 
 const { describe, it } = require("node:test");
@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const galaxyConnect = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gw_galaxy_connect.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gw_galaxy_connect.js"
 );
 
 // getConnections() is sparse: a star with no surviving edge has no entry at all.

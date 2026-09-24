@@ -1,6 +1,6 @@
 "use strict";
 
-// Tests for shared/gwo_system_templates.js. Two things are pinned: chooseFor's
+// Tests for gw_start/gwo_system_templates.js. Two things are pinned: chooseFor's
 // dispatch, since shadowing this path once broke Shared Systems' own panel; and the
 // per-planet streams, drained in both resolution orders to require the same system.
 
@@ -364,7 +364,7 @@ before(() => {
 after(() => stubs.restoreGlobals());
 
 const templates = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_system_templates.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_system_templates.js"
 );
 
 // Drains `pending` repeatedly, since each round can queue more, until the system settles.

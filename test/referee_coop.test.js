@@ -1,6 +1,6 @@
 "use strict";
 
-// Unit tests for shared/referee_coop.js's allied-commander ordering - the single
+// Unit tests for gw_play/referee_coop.js's allied-commander ordering - the single
 // source of truth for which palette entry each player-faction ally gets. Four places
 // number colours from it (referee_config.js and its setup module, the per-player-tech
 // referee, gwo_panel.js and the intelligence panel), and all four are coverage-excluded
@@ -15,7 +15,7 @@ const {
 } = require("../scripts/lib/ai-path-fixtures.js");
 
 const refereeCoop = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js"
 );
 
 const HOST = { id: "host-1", name: "Grace", role: "host" };

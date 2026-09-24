@@ -118,7 +118,7 @@ Never removed, because they are not prose:
   reinstate it ([`constraints.md`](docs/constraints.md)).
 - Stock's own comments inside a deliberate copy of a base-game file - today
   `gw_start/gwo_breeder.js`, `gw_start/gwo_teams.js` and
-  `shared/gwo_system_templates.js`. Those copies are kept line-for-line close to
+  `gw_start/gwo_system_templates.js`. Those copies are kept line-for-line close to
   stock so the diff after a PA patch stays readable, which covers stock's
   comments, its dead branches, and its one `TODO` (in `gwo_breeder.js`). Sonar
   flags that TODO; leave it.

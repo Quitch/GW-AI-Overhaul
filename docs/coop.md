@@ -125,7 +125,7 @@ own Cluster in `faction/cluster_faction.js`. The base game treats the array as
 optional: a faction without one silently drops to the generic lobby palette.
 
 Subcommander colours are a separate system and still GWO's own. See
-`gw_play/commander_colour.js`. `shared/referee_coop.js` provides the ordering:
+`gw_play/commander_colour.js`. `gw_play/referee_coop.js` provides the ordering:
 
 - `getOrderedSubcommanders(inventory, game, connectedClients)` returns every
   allied AI commander that draws from the player faction's palette. The list is

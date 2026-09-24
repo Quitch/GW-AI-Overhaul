@@ -6,7 +6,7 @@
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/biome_check.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/biome_check.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
       ],
       function (gwoBiomeMods, biomeCheck, gwoAI) {

@@ -1,7 +1,7 @@
 // Host-side co-op pending-tech deal. Stock gw_play.js always deals each viewer
 // exactly 3 cards; this honours the bonus-card rules and per-player loadouts.
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
 ], function (refereeCoop) {
   // Short-circuits on the first validation problem.
   var collectPendingTechTargets = function (params) {

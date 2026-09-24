@@ -87,7 +87,7 @@ the generator, and review the diff.
 
 ## Capability cells
 
-Every card, `gw_start/ai_tech.js`, `shared/ai_inventory.js` and
+Every card, `gw_play/ai_tech.js`, `shared/ai_inventory.js` and
 `gw_play/card_units.js` name vanilla units. None of them changes. A race
 player's inventory holds vanilla paths. The referee converts them once, at
 battle launch, by a rule rather than a table.
@@ -117,7 +117,7 @@ harvests. The test pins the deviations. Each deviation is a balance choice of
 the group, such as the Anchor, which sits in `structuresDefencesBasic` while
 typed Advanced.
 
-At launch `shared/race_cells.js` reads the merged unit list and every spec it
+At launch `gw_play/race_cells.js` reads the merged unit list and every spec it
 reaches. It reads through `spec_cache`, so `genUnitSpecs` fetches nothing
 twice. From those it builds two indexes: vanilla (`Custom58` or no faction bit)
 and the race (`UNITTYPE_<bit>`). Then it applies these rules:
