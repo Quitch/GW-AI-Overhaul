@@ -218,6 +218,17 @@
       var completed = $.Deferred();
       self.card = completed.promise();
 
+      // Stock reuses a view model through params(), so a card that fails must
+      // not leave the previous card showing.
+      var clearView = function () {
+        self.desc(undefined);
+        self.summary(undefined);
+        self.icon(undefined);
+        self.iconPlaceholder(undefined);
+        self.audio(undefined);
+        self.visible(false);
+      };
+
       var loadCard = function (card, data) {
         if (_.isEmpty(card)) {
           self.desc(
@@ -230,14 +241,28 @@
           self.iconPlaceholder(undefined);
           self.visible(true);
         } else {
-          self.desc(card.describe && card.describe(data));
-          self.summary(card.summarize && card.summarize(data));
-          self.icon(card.icon && card.icon(data));
-          self.iconPlaceholder(!self.icon() && (self.summary() || self.desc()));
-          self.audio(card.audio && card.audio(data));
-          self.visible(
-            card.visible === true || !!(card.visible && card.visible(data))
-          );
+          // Stock waits on self.card, so a throwing third-party card must not
+          // stop it resolving.
+          try {
+            self.desc(card.describe && card.describe(data));
+            self.summary(card.summarize && card.summarize(data));
+            self.icon(card.icon && card.icon(data));
+            self.iconPlaceholder(
+              !self.icon() && (self.summary() || self.desc())
+            );
+            self.audio(card.audio && card.audio(data));
+            self.visible(
+              card.visible === true || !!(card.visible && card.visible(data))
+            );
+          } catch (e) {
+            console.error(
+              "GWO card threw while loading its view: " +
+                self.id() +
+                ": " +
+                ((e && e.stack) || e)
+            );
+            clearView();
+          }
         }
         completed.resolve(card);
       };
@@ -259,6 +284,11 @@
             },
             function () {
               console.error("GWO card failed to load: " + cardId);
+              if (loadToken !== myToken) {
+                return;
+              }
+              clearView();
+              completed.resolve({});
             }
           );
         } else {

@@ -5,7 +5,7 @@
 // module's test-only hook; the factory's name cache is driven against a minimal
 // ko.observable and requireGW below.
 
-const { describe, it } = require("node:test");
+const { describe, it, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const {
   loadCouiModule,
@@ -167,6 +167,30 @@ describe("coop star cards view model - cardName", () => {
     assert.equal(viewModel.cardName("gwc_mystery"), "");
 
     assert.deepEqual(calls.requested, ["gwc_mystery"]);
+  });
+
+  it("caches an empty name and logs when the card's summarize throws", () => {
+    const { viewModel, calls } = build({
+      cards: {
+        gwc_broken: {
+          summarize: () => {
+            throw new Error("summarize exploded");
+          },
+        },
+      },
+    });
+    const logged = mock.method(console, "error", () => {});
+
+    assert.equal(viewModel.cardName("gwc_broken"), "");
+    assert.equal(viewModel.cardName("gwc_broken"), "");
+    logged.mock.restore();
+
+    assert.deepEqual(calls.requested, ["gwc_broken"]);
+    assert.equal(logged.mock.callCount(), 1);
+    assert.match(
+      logged.mock.calls[0].arguments[0],
+      /^GWO card summarize\(\) threw for gwc_broken: Error: summarize exploded/
+    );
   });
 
   it("caches an empty name for a card that failed to load", () => {
