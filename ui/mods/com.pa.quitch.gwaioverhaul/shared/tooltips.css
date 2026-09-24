@@ -3,6 +3,15 @@
   line-height: 1.5;
 }
 
+/* Stock gives every tooltip pointer-events: none, which would stop
+   tooltips.js keeping one open under the pointer. Only a showing one takes
+   the pointer: a hidden tooltip stays in the page, and would block clicks.
+   Planet tooltips are left out: each covers the next planets in its row, and
+   catching the pointer there would make a sweep along the row skip them. */
+.gwo-tip:not(.div-planet) + .tooltip.in {
+  pointer-events: auto;
+}
+
 /* A 24px target for the 15px "?". It grows upwards and sideways only: the
    control the "?" explains usually starts 2px below it. */
 .info_tip.gwo-tip {
