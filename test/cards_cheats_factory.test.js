@@ -43,6 +43,8 @@ function setup(overrides = {}) {
       gwoCards: ["gwc_combat_bots", "gwc_orbital"],
       giveCardId: "gwc_combat_bots",
       isViewer: false,
+      isHost: true,
+      campaignActive: true,
       maxCards: 10,
       startingCards: [],
       currentStar: 2,
@@ -78,6 +80,8 @@ function setup(overrides = {}) {
   stubs.setGlobal("model", {
     cheats: { giveCardId: () => options.giveCardId },
     isCampaignViewer: () => options.isViewer,
+    isCampaignHost: () => options.isHost,
+    gwCampaignActive: () => options.campaignActive,
     gwoCards: options.gwoCards,
     sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
   });
@@ -219,6 +223,28 @@ describe("cheats testCards", () => {
     assert.deepEqual(calls.saves, [true]);
   });
 
+  // The base game logs an error for a snapshot sent with no co-op session to
+  // receive it.
+  it("saves without broadcasting in a solo war", async () => {
+    const { calls } = build({ isHost: false, campaignActive: false });
+
+    testCards();
+    await flush();
+
+    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(calls.saves, [true]);
+  });
+
+  it("saves without broadcasting while the host is disconnected", async () => {
+    const { calls } = build({ campaignActive: false });
+
+    testCards();
+    await flush();
+
+    assert.deepEqual(calls.snapshots, []);
+    assert.deepEqual(calls.saves, [true]);
+  });
+
   it("checks every faction's minion commanders without touching the hand", async () => {
     const { inventory } = build({ gwoCards: ["gwc_minion"] });
     let pushes = 0;
@@ -338,6 +364,16 @@ describe("cheats giveCard", () => {
     assert.equal(inventory.applied, 1);
     assert.deepEqual(calls.aiDeals, [false]);
     assert.deepEqual(calls.snapshots, [["gwo_cheat_give_card", true]]);
+    assert.deepEqual(calls.saves, [true]);
+  });
+
+  it("saves without broadcasting in a solo war", async () => {
+    const { calls } = build({ isHost: false, campaignActive: false });
+
+    giveCard();
+    await flush();
+
+    assert.deepEqual(calls.snapshots, []);
     assert.deepEqual(calls.saves, [true]);
   });
 
