@@ -70,7 +70,7 @@ gwoCard.mods(
 
 | Op                 | Behaviour                                                                                        |
 | ------------------ | ------------------------------------------------------------------------------------------------ |
-| `multiply`         | Numeric multiply. Warns and leaves unchanged if the target is missing or not a number.           |
+| `multiply`         | Numeric multiply. Skips a missing target. Warns and leaves unchanged if it is not a number.      |
 | `add`              | Numeric add or string concat. A nullish target becomes the value.                                |
 | `replace`          | Overwrites outright.                                                                             |
 | `merge`            | `_.assign` into a plain object. Warns if the target is not one.                                  |
