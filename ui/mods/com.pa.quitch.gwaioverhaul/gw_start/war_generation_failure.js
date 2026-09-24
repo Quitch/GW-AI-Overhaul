@@ -7,8 +7,19 @@ define(function () {
   var MAX_ATTEMPTS = 5;
 
   var ISSUES_URL = "https://github.com/Quitch/GW-AI-Overhaul/issues";
-  var LOG_FOLDER =
-    "%LOCALAPPDATA%\\Uber Entertainment\\Planetary Annihilation\\log";
+
+  // Where PA keeps its logs on each operating system, per the PA FAQ:
+  // https://support.planetaryannihilation.com/kb/faq.php?id=176
+  var logFolder = function () {
+    var platform = navigator.platform.toLowerCase();
+    if (_.startsWith(platform, "mac")) {
+      return "~/Library/Application Support/Uber Entertainment/Planetary Annihilation/log";
+    }
+    if (_.startsWith(platform, "linux")) {
+      return "~/.local/Uber Entertainment/Planetary Annihilation/log";
+    }
+    return "%LOCALAPPDATA%\\Uber Entertainment\\Planetary Annihilation\\log";
+  };
 
   return {
     SPAWN_SHORTAGE: SPAWN_SHORTAGE,
@@ -27,7 +38,7 @@ define(function () {
       }
       return loc(
         "!LOC:The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.",
-        { url: ISSUES_URL, seed: seed, folder: LOG_FOLDER }
+        { url: ISSUES_URL, seed: seed, folder: logFolder() }
       );
     },
   };
