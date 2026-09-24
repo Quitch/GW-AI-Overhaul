@@ -244,7 +244,9 @@ file reinvents its own list. Two things about it are load-bearing:
 - A suite passes connected clients separately to
   `installModel(game, connectedClients)`, **not** through `buildGame`'s options.
   `useModel()` is the same installer with the `afterEach` restore built in. A
-  suite therefore does not track the restore itself.
+  suite therefore does not track the restore itself. `withTwoViewers()` builds
+  the usual list, a host and viewers `v1` and `v2`. It also sets the game's
+  `findCoopPlayerInventoryData` to return each viewer's inventory.
 
 `scripts/lib/fake-jquery.js` covers only the `$`/`api` subset the shipped code
 under test uses. A request for a URL with no configured resolver rejects. A
@@ -341,6 +343,12 @@ record's saved cards, counts them and applies them. It holds `rejection`,
 because those host handlers reject with a plain string that `assert.rejects`
 will not take as an error. The `HOST_CARDS` trap stays in each file. It hangs
 off that test's own game stub.
+
+`scripts/lib/harvested-race.js` holds what the `race_*.test.js` files share.
+`harvestedIndex` builds a shipped race's cell index from `unit_types.json`.
+`withheldCards` and `expectedWithheld` compare the cards the race is not dealt
+with the MLA-only cards plus the race's own list. `unnamedCardUnits` lists each
+tooltip unit that has no name. What each race expects stays in its own file.
 
 `scripts/lib/fake-lodash-timers.js` captures `_.delay` and `_.debounce`.
 `node:test`'s timer mocks cannot reach them, because lodash 3 binds

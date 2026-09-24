@@ -11,10 +11,12 @@ const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const exiles = loadCouiModule(MOD_ROOT + "/race/exiles.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
-const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
-const cardUnits = loadCouiModule(MOD_ROOT + "/gw_play/card_units.js");
-const helpers = loadCouiModule(MOD_ROOT + "/shared/cards_deal_helpers.js");
-const unitNames = loadCouiModule(MOD_ROOT + "/gw_play/unit_names.js");
+const {
+  harvestedIndex,
+  withheldCards,
+  expectedWithheld,
+  unnamedCardUnits,
+} = require("../scripts/lib/harvested-race.js");
 const fixture = require("./fixtures/unit_types.json");
 
 // Exiles fields no orbital unit beyond its launcher, so every card naming
@@ -33,21 +35,6 @@ const WITHHELD_BY_CELLS = [
 const exilesUnits = Object.keys(fixture.units).filter((unit) =>
   fixture.units[unit].includes("UNITTYPE_Custom6")
 );
-
-function exilesIndex() {
-  const specs = {};
-  for (const [unit, types] of Object.entries(fixture.units)) {
-    specs[unit] = { unit_types: types };
-    if (fixture.buildable && fixture.buildable[unit]) {
-      specs[unit].buildable_types = fixture.buildable[unit];
-    }
-  }
-  const units = Object.keys(specs);
-  return {
-    vanilla: cells.buildIndex(units, specs, cells.vanillaMember),
-    race: cells.buildIndex(units, specs, cells.raceMember("Custom6")),
-  };
-}
 
 describe("the Exiles descriptor", () => {
   it("is registered as shipped, with four commanders and the Titans layout only", () => {
@@ -82,7 +69,10 @@ describe("the Exiles descriptor", () => {
 describe("Exiles under capability cells", () => {
   before(() => {
     if (exilesUnits.length) {
-      races.setCells("exiles", exilesIndex());
+      races.setCells(
+        "exiles",
+        harvestedIndex(fixture.units, fixture.buildable, "Custom6")
+      );
     }
   });
   after(() => {
@@ -127,20 +117,9 @@ describe("Exiles under capability cells", () => {
       t.skip("fixture harvested without Exiles");
       return;
     }
-    const inventory = { getTag: () => "exiles" };
-    const withheld = cardUnits.cards
-      .filter(
-        (card) =>
-          !helpers.raceCanDeal(races, inventory, card.id, cardUnits.cards)
-      )
-      .map((card) => card.id)
-      .sort();
-    const expected = cardUnits.cards
-      .map((card) => card.id)
-      .filter((id) => helpers.mlaOnlyCard(id) || WITHHELD_BY_CELLS.includes(id))
-      .sort();
+    const withheld = withheldCards("exiles");
 
-    assert.deepEqual(withheld, expected);
+    assert.deepEqual(withheld, expectedWithheld(WITHHELD_BY_CELLS));
     assert.ok(!withheld.includes("gwc_combat_bots"));
   });
 
@@ -149,31 +128,6 @@ describe("Exiles under capability cells", () => {
       t.skip("fixture harvested without Exiles");
       return;
     }
-    const index = races.cellsOf("exiles");
-    // As card_tooltips.js names them: the race's table, any add-on's, then
-    // unit_names.js.
-    const named = {};
-    for (const entry of unitNames.units) {
-      named[entry.path] = entry.name;
-    }
-    const isNamed = (unit) =>
-      races.unitName("exiles", unit) !== undefined ||
-      Object.prototype.hasOwnProperty.call(named, unit);
-    const unnamed = [];
-    for (const card of cardUnits.cards) {
-      if (helpers.mlaOnlyCard(card.id)) {
-        continue;
-      }
-      for (const unit of cells.cardUnitsFor(
-        card.units || [],
-        index.vanilla,
-        index.race
-      )) {
-        if (!isNamed(unit)) {
-          unnamed.push(card.id + ": " + unit);
-        }
-      }
-    }
-    assert.deepEqual(unnamed, []);
+    assert.deepEqual(unnamedCardUnits("exiles"), []);
   });
 });

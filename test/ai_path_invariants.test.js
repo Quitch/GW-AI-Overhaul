@@ -17,6 +17,7 @@ const {
   useModel,
   makeInventory,
   SCENARIO_AXES,
+  withTwoViewers,
 } = require("../scripts/lib/ai-path-fixtures.js");
 const {
   installRefereeFakes,
@@ -388,16 +389,11 @@ describe("invariant: Guardians + matching brains + per-player tech never leaks o
         },
       ],
     });
-    fixture.game.findCoopPlayerInventoryData = (client) => {
-      if (client.id === "v1") return { inventory: viewer1Inventory };
-      if (client.id === "v2") return { inventory: viewer2Inventory };
-      return undefined;
-    };
-    const connectedClients = [
-      { id: "host", name: "Host", role: "host" },
-      { id: "v1", name: "Viewer1", role: "viewer" },
-      { id: "v2", name: "Viewer2", role: "viewer" },
-    ];
+    const connectedClients = withTwoViewers(
+      fixture.game,
+      viewer1Inventory,
+      viewer2Inventory
+    );
     installModel(fixture.game, connectedClients);
     installAiProcessingFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
