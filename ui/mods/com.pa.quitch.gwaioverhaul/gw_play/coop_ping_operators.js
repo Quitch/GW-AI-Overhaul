@@ -2,7 +2,7 @@
 // star; the host validates it and relays it to every viewer
 // (gwo_ping_star_broadcast). See coop.md.
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
 ], function (refereeCoop) {
   var PING_REQUEST = "gwo_ping_star";
   var PING_BROADCAST = "gwo_ping_star_broadcast";

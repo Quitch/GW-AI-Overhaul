@@ -25,7 +25,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_biomes.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_biome_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_game_file_paths.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
       ],
       function (

@@ -206,7 +206,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
       ],

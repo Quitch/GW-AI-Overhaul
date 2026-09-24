@@ -364,7 +364,7 @@ aim is honest coverage, never padding to hit the number:
 
 - **New/changed logic gets a unit test.** Add coverage under `test/**` for the
   branching you introduce in the measured logic layer (`shared/**` helpers,
-  `gw_play/referee_*.js`, `gw_start/ai_tech.js`, and similar). Follow the
+  `gw_play/referee_*.js`, `gw_play/ai_tech.js`, and similar). Follow the
   existing harness in `test/*.test.js` (`node:test` +
   `scripts/lib/amd-loader.js`, engine globals stubbed only where a function
   reads them).

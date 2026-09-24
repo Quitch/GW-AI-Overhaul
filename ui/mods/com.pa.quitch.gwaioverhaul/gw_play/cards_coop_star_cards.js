@@ -3,7 +3,7 @@
 // the campaign snapshot. See coop.md, "Per-player pre-dealt cards".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
 ], function (coopHost, refereeCoop) {
   // Star indices are String()d throughout: they are object keys, and survive the
   // save's JSON round trip only as strings.

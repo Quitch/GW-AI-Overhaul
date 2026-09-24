@@ -1,6 +1,6 @@
 "use strict";
 
-// shared/race_cells.js signatureOf: the cache key for a unit list read, which
+// gw_play/race_cells.js signatureOf: the cache key for a unit list read, which
 // decides whether a later caller may reuse an earlier read's specs and cells.
 // The rest of the file is fetch glue.
 
@@ -9,7 +9,7 @@ const assert = require("node:assert/strict");
 const { requireShippedModule } = require("../scripts/lib/amd-loader.js");
 
 const { signatureOf } = requireShippedModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js"
 );
 
 describe("signatureOf", () => {

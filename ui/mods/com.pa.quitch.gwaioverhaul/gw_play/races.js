@@ -114,7 +114,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_cells.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_check.js",
       ],
       function (raceMods, gwoAI, gwoRaces, raceCells, raceCheck) {

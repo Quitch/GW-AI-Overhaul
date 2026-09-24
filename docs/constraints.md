@@ -155,7 +155,7 @@ Two shapes satisfy this rather than scattering checks. The first is a **named
 pre-flight gate** that refuses the whole operation with a diagnostic
 (`gw_play/per_player_tech.js`). The second is a **per-item `try`/`catch`**, so
 one bad entry in a batch is skipped rather than aborting the rest
-(`shared/specs.js`).
+(`gw_play/specs.js`).
 
 That second shape is not optional where third-party code is _called_ rather
 than read, because of the jQuery trap above. Every such call site in this mod

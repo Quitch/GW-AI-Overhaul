@@ -2,7 +2,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
 ], function (gwoAI, gwoCard, refereeAIPaths, refereeCoop, gwoRaces) {
   // The walk append, prepend and replace share. A build entry for toBuild that
@@ -221,7 +221,7 @@ define([
       }
       // Descriptors come from third-party cards, and this runs inside a
       // deferred callback where a throw is swallowed rather than rejected, so
-      // one bad mod would hang the launch. Matches shared/specs.js.
+      // one bad mod would hang the launch. Matches gw_play/specs.js.
       try {
         aiModOps[mod.op](
           json,

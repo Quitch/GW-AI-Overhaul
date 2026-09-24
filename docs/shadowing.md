@@ -34,7 +34,7 @@ GWO hit this with `systems/template-loader.js`. Shared Systems for Galactic War
 replaces that file wholesale to add `loadOptions`/`useSources`. GWO's shadow of the
 same path won. That mod's whole Systems panel then rendered as a bare header, because
 its `loadOptions()` call threw. The seeded loader now lives at
-`shared/gwo_system_templates.js` in GWO's own namespace. When the base path carries
+`gw_start/gwo_system_templates.js` in GWO's own namespace. When the base path carries
 `loadOptions`, the loader defers to whatever owns that path.
 
 The general shape is this. Where a mod might reasonably contend for a base path, put
@@ -220,7 +220,7 @@ base-game modules all the same:
 | ------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | `gw_per_player_tech_referee.js` (shadow)    | `gw_play/per_player_tech.js`                                                                |
 | `gw_faction_*.js` (shadows)                 | `faction/faction_builder.js`, `faction/faction_seed.js`, `shared/ai_personality.js`         |
-| `gw_play/referee_game_files.js` (GWO's own) | `shared/referee_game_file_paths.js`                                                         |
+| `gw_play/referee_game_files.js` (GWO's own) | `gw_play/referee_game_file_paths.js`                                                        |
 | `gw_play/referee_config.js` (GWO's own)     | `gw_play/referee_config_setup.js`                                                           |
 | `gw_play/referee.js` (GWO's own)            | `gw_play/referee_biomes.js`                                                                 |
 | `gw_play/cards_start_subcdr.js` (GWO's own) | `gw_play/general_commander_setup.js`                                                        |
@@ -245,7 +245,7 @@ file to the base game.
 
 The consequence is that **star routing is no longer GWO's code and is no longer unit
 tested**. `shared/gw_galaxy` cannot load under the Node harness, so there is nothing
-to load directly. `shared/gw_galaxy_connect.js` and `shared/gw_system_brackets.js`
+to load directly. `gw_start/gw_galaxy_connect.js` and `gw_start/gw_system_brackets.js`
 remain measured and tested. `build` calls them, not the constructor.
 
 This was measured on a live client rather than reasoned about. One seed built the

@@ -1,6 +1,6 @@
 # Unit spec modification
 
-`ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js` applies a card's
+`ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js` applies a card's
 `inventory.addMods()` descriptors to unit specs before a battle launches.
 
 ## Descriptor shape
@@ -250,20 +250,20 @@ at least one value survives it.
 
 Galactic War calls the base game's `GW.specs.genUnitSpecs(units, tag)` once per AI
 faction **and** once for the player. Each call re-fetches and re-parses every spec
-file it walks. `shared/spec_cache.js` is a drop-in replacement that fetches and
+file it walks. `gw_play/spec_cache.js` is a drop-in replacement that fetches and
 parses each file at most once and reuses it across every tag.
 
 The invariant that makes it safe is this: **tag a clone, never the cached pristine
 copy.** A failed fetch is deliberately not cached. A later tag can therefore retry
 rather than inherit a permanent failure. `fetchRaw` hands a caller the pristine
 parsed spec through the same cache. `references` lists a spec's untagged references
-without touching it. `shared/race_cells.js` uses both to read every spec ahead of
+without touching it. `gw_play/race_cells.js` uses both to read every spec ahead of
 the referee, which then fetches nothing twice.
 
 The per-player tech referee generates each viewer's specs through the same cache
 too. A co-op launch therefore fetches a spec file once, however many players hold
 it. The stock `GW.specs.genUnitSpecs` that it replaced re-fetched all of them per
-viewer. `shared/referee_game_file_paths.js` does the same for AI unit maps with
+viewer. `gw_play/referee_game_file_paths.js` does the same for AI unit maps with
 `loadMap`, which both referees share. `loadMap` drops a failed read from its
 cache and rejects with an `Error` naming the file, so the next Fight reads the
 file again instead of inheriting the rejection.

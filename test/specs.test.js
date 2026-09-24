@@ -1,6 +1,6 @@
 "use strict";
 
-// Unit tests for shared/specs.js. Only `mod` and `additionalSpecs` are exposed, so
+// Unit tests for gw_play/specs.js. Only `mod` and `additionalSpecs` are exposed, so
 // flattenBaseSpecs and orderOfOperations are reached through mod()'s behaviour.
 
 const { describe, it, mock, afterEach } = require("node:test");
@@ -8,7 +8,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const specs = loadCouiModule(
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/specs.js"
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js"
 );
 
 afterEach(() => {

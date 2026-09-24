@@ -1,7 +1,7 @@
 "use strict";
 
 // The small shared helpers several modules route through: shared/ids.js,
-// shared/gwsm.js, referee_coop.js's client helpers, and the constants
+// shared/gwsm.js, gw_play/referee_coop.js's client helpers, and the constants
 // shared/ai.js publishes for war generation.
 
 const { describe, it, afterEach } = require("node:test");
@@ -12,7 +12,7 @@ const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const MOD = "coui://ui/mods/com.pa.quitch.gwaioverhaul/";
 const ids = loadCouiModule(MOD + "shared/ids.js");
 const gwsm = loadCouiModule(MOD + "shared/gwsm.js");
-const refereeCoop = loadCouiModule(MOD + "shared/referee_coop.js");
+const refereeCoop = loadCouiModule(MOD + "gw_play/referee_coop.js");
 const gwoAI = loadCouiModule(MOD + "shared/ai.js");
 const gwoCard = loadCouiModule(MOD + "shared/cards.js");
 

@@ -3,7 +3,7 @@
 // A reply always names its client, so the server can route it - see coop.md,
 // "Addressing a host's reply".
 define([
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_coop.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
 ], function (refereeCoop) {
   var reply = function (type, operator, payload) {
     model.sendCampaignHostOperator(

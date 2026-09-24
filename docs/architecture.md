@@ -96,7 +96,7 @@ base referee and installs GWO's referee. The hire of GWO's referee runs these
 steps in order:
 
 1. `gw_play/referee_game_files.js` generates unit specs per army tag. It
-   applies the AI tech that `gw_start/ai_tech.js` builds from the buffs the war
+   applies the AI tech that `gw_play/ai_tech.js` builds from the buffs the war
    recorded. See galaxy.md, "AI tech".
 2. `gw_play/referee_ai.js` walks the AI build trees, applies AI-mod descriptors
    from every card held, and writes the results into the config.
@@ -291,8 +291,8 @@ would write a war it does not own.
 - **`localStorage`** holds start-card unlocks, victory badges and favourited
   loadouts. They sit under `gwaio_`-prefixed keys, so that uninstalling GWO does
   not corrupt the base game's loadout list with 404s. See `shared/bank.js` and
-  `shared/favourites.js`, which reads `gwaio_favourite_loadouts`.
-  `shared/favourite_loadouts.js` is the id arithmetic behind that key:
+  `gw_start/favourites.js`, which reads `gwaio_favourite_loadouts`.
+  `gw_start/favourite_loadouts.js` is the id arithmetic behind that key:
   `isFavourite`, `toggleId` and `sortCardsByFavourite`, kept free of engine
   globals so it is testable. Its sort puts favourites in the order they were
   favourited, not the order the cards happen to be in.
