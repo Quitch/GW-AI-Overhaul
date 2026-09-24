@@ -40,18 +40,37 @@ describe("message", () => {
     assert.match(text, /Faction Scaling/);
   });
 
-  it("asks for a bug report with the seed and the log for anything else", () => {
+  // Node 21+ defines navigator as a getter, so it is redefined, not assigned.
+  const bugReport = (platform) => {
     const calls = [];
-    const previous = global.loc;
+    const previousLoc = global.loc;
+    const previousNavigator = Object.getOwnPropertyDescriptor(
+      globalThis,
+      "navigator"
+    );
     global.loc = (text, options) => {
       calls.push([text, options]);
       return text;
     };
+    Object.defineProperty(globalThis, "navigator", {
+      value: { platform: platform },
+      configurable: true,
+    });
     try {
       failure.message(undefined, "b-seed");
     } finally {
-      global.loc = previous;
+      global.loc = previousLoc;
+      if (previousNavigator) {
+        Object.defineProperty(globalThis, "navigator", previousNavigator);
+      } else {
+        delete globalThis.navigator;
+      }
     }
+    return calls;
+  };
+
+  it("asks for a bug report with the seed and the log for anything else", () => {
+    const calls = bugReport("Win32");
 
     assert.equal(calls.length, 1);
     assert.match(calls[0][0], /__url__/);
@@ -62,5 +81,29 @@ describe("message", () => {
       seed: "b-seed",
       folder: "%LOCALAPPDATA%\\Uber Entertainment\\Planetary Annihilation\\log",
     });
+  });
+
+  it("names the log folder for the player's operating system", () => {
+    const cases = [
+      [
+        "Win32",
+        "%LOCALAPPDATA%\\Uber Entertainment\\Planetary Annihilation\\log",
+      ],
+      [
+        "MacIntel",
+        "~/Library/Application Support/Uber Entertainment/Planetary Annihilation/log",
+      ],
+      [
+        "Linux x86_64",
+        "~/.local/Uber Entertainment/Planetary Annihilation/log",
+      ],
+      [
+        "SunOS",
+        "%LOCALAPPDATA%\\Uber Entertainment\\Planetary Annihilation\\log",
+      ],
+    ];
+    for (const [platform, folder] of cases) {
+      assert.equal(bugReport(platform)[0][1].folder, folder, platform);
+    }
   });
 });
