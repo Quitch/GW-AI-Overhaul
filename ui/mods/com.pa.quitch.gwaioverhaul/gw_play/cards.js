@@ -218,6 +218,17 @@
       var completed = $.Deferred();
       self.card = completed.promise();
 
+      // Stock reuses a view model through params(), so a card that fails must
+      // not leave the previous card showing.
+      var clearView = function () {
+        self.desc(undefined);
+        self.summary(undefined);
+        self.icon(undefined);
+        self.iconPlaceholder(undefined);
+        self.audio(undefined);
+        self.visible(false);
+      };
+
       var loadCard = function (card, data) {
         if (_.isEmpty(card)) {
           self.desc(
@@ -231,8 +242,7 @@
           self.visible(true);
         } else {
           // Stock waits on self.card, so a throwing third-party card must not
-          // stop it resolving. Stock also reuses a view model through params(),
-          // so a throw must not leave the previous card showing.
+          // stop it resolving.
           try {
             self.desc(card.describe && card.describe(data));
             self.summary(card.summarize && card.summarize(data));
@@ -251,12 +261,7 @@
                 ": " +
                 ((e && e.stack) || e)
             );
-            self.desc(undefined);
-            self.summary(undefined);
-            self.icon(undefined);
-            self.iconPlaceholder(undefined);
-            self.audio(undefined);
-            self.visible(false);
+            clearView();
           }
         }
         completed.resolve(card);
@@ -279,6 +284,11 @@
             },
             function () {
               console.error("GWO card failed to load: " + cardId);
+              if (loadToken !== myToken) {
+                return;
+              }
+              clearView();
+              completed.resolve({});
             }
           );
         } else {

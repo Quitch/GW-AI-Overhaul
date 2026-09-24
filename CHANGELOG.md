@@ -18,7 +18,7 @@
 - A viewer who picks the General Commander loadout now always gets their Sub Commanders
 - The intelligence panel places an allied Cluster faction's tooltip the way it places every other Cluster tooltip
 - With Easy Systems, systems no longer hang on the landing screen
-- A tech card from another mod whose name or description fails no longer stops the next turn's cards from being dealt, and no longer breaks card displays or the war information panel
+- A tech card from another mod that fails to show its name or description no longer stops the next turn's cards from being dealt, or breaks card displays and the war information panel; one that fails to load no longer leaves the previous card on display
 
 ## v7.4.0 - 2026-09-22
 
