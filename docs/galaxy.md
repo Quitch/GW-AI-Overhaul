@@ -480,9 +480,21 @@ These consequences surface elsewhere:
 
 - Cards must exclude `NoBuild` when writing fabber `buildable_types`, or Cluster
   gets a buildable Sub Commander. See [`tech-cards.md`](tech-cards.md).
-- An MLA Cluster gets additional commanders in place of minions, and in place of
-  armies. A Cluster of any other race gets regular minions. See
-  [`races.md`](races.md).
+- An MLA Cluster fields commander stacks in place of minions. A Cluster of any
+  other race gets regular minions. See [`races.md`](races.md).
+- An MLA Cluster Worker fields `floor(bossCommanders / 2)` more commanders than
+  the minion count (`clusterCommanderCount` in `gw_start/ai_population.js`),
+  because Workers have no weapon to defend their base. The bonus applies
+  wherever a Worker is fielded:
+  - as a system's own AI, with a minimum of 2
+  - as the one Worker minion of a Security system AI
+  - as an FFA foe
+
+  Security is armed, so it gets no bonus. The boss's Security escort keeps
+  `bossMinions`, the same as every other faction's boss escort, so it can field
+  fewer commanders than a Worker further in. A Security FFA foe takes the
+  ordinary foe count. Both are intended.
+
 - Commander stat cards are worth less to Cluster, because its subcommanders do not
   inherit `base_commander`.
 - An MLA Cluster resolves its AI build orders through `/pa/ai_cluster/`, which
