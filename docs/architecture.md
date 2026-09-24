@@ -100,7 +100,7 @@ steps in order:
    recorded. See galaxy.md, "AI tech".
 2. `gw_play/referee_ai.js` walks the AI build trees, applies AI-mod descriptors
    from every card held, and writes the results into the config.
-3. The `gwoGenerateBiomes` function in `referee.js` mounts the text-only server
+3. `gw_play/referee_biomes.js` mounts the text-only server
    mods stamped on the battle's system. It cooks their JSON into the config's
    files. A stamped mod that GW Server Mods serves is already mounted. For such
    a mod, the function collects only its biomes. See galaxy.md, "Biome mods in
@@ -151,7 +151,9 @@ fail handler. A hire that never settles leaves `launchingFight` true, forever.
 It also leaves the panel open on the last stage it reported, and the Fight
 button dead. So `referee_game_files.js` routes every path that can throw into
 one `fail` that rejects its deferred. Those paths are the synchronous prelude
-and each nested spec-fetch chain. The hire's own fail handler in `referee.js`
+and each nested spec-fetch chain. `referee_biomes.js` runs each callback as a
+`gwoPromise.steps` step instead, so a rejection or a throw after an engine call
+rejects the step. The hire's own fail handler in `referee.js`
 logs the error through `gameFilePaths.describeError`, which formats a jqXHR
 as its HTTP status rather than `[object Object]`, and clears
 `launchingFight`, which closes the panel.
