@@ -104,7 +104,9 @@ define(function () {
 
     var finishCheat = function (snapshotName) {
       return dealCardToSelectableAI(false).then(function () {
-        model.sendCampaignSnapshot(snapshotName, true);
+        if (model.gwCampaignActive() && model.isCampaignHost()) {
+          model.sendCampaignSnapshot(snapshotName, true);
+        }
         gwoSave(game, true);
       });
     };
