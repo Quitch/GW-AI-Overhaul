@@ -24,7 +24,9 @@
   <div data-bind="visible: $root.gwoAvailableTech">
     <h3>
       <loc>Available Tech</loc
-      ><span class="info_tip" data-bind="tooltip: $root.gwoAvailableTechTooltip"
+      ><span
+        class="info_tip gwo-tip"
+        data-bind="tooltip: $root.gwoAvailableTechTooltip"
         >?</span
       >
     </h3>
@@ -33,7 +35,9 @@
   <div data-bind="visible: $root.gwoGameModifiers().length > 0">
     <h3>
       <loc>Game Modifiers</loc
-      ><span class="info_tip" data-bind="tooltip: $root.gwoGameModifiersTooltip"
+      ><span
+        class="info_tip gwo-tip"
+        data-bind="tooltip: $root.gwoGameModifiersTooltip"
         >?</span
       >
     </h3>
@@ -49,7 +53,7 @@
     <h3>
       <loc>AI Tech</loc
       ><span
-        class="info_tip"
+        class="info_tip gwo-tip"
         data-placement="right"
         data-bind="tooltip: $root.gwoAIBuffsTooltip"
         >?</span
@@ -70,7 +74,7 @@
       <!-- attr comes before tooltip: Bootstrap reads data-placement once, when
       the tooltip binding initialises. -->
       <span
-        class="info_tip"
+        class="info_tip gwo-tip"
         data-bind="attr: { 'data-placement': cluster ? 'right' : undefined }, tooltip: tooltip"
         >?</span
       >

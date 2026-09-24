@@ -245,6 +245,9 @@
   "Delay in creating new bases.": {
     "message": "Verzögerung beim Errichten neuer Basen."
   },
+  "Delete this Tech?": {
+    "message": "Diese Technologie zerstören?"
+  },
   "Deployed by covert Hegemony forces for the duration of the Century War, their current level of proliferation indicates that they developed the ability to seed planets on their own after the war ended, or as a desperate attempt by the Xziphid to stave off defeat.": {
     "message": "Von verdeckten Kräften der Hegemony für die Dauer des Century War eingesetzt, deutet ihre heutige Verbreitung darauf hin, dass sie nach Kriegsende die Fähigkeit entwickelten, Planeten selbstständig zu besiedeln, oder dass es ein verzweifelter Versuch der Xziphid war, die Niederlage abzuwenden."
   },

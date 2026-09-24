@@ -1,7 +1,7 @@
 #gwo-panel {
   width: 280px;
   text-align: left;
-  background: rgba(11, 26, 31, 0.9);
+  background: rgba(11, 26, 31, 0.95);
   padding: 0 0 0 9px;
   box-shadow: 0 0 100px rgb(0, 0, 0);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -20,9 +20,11 @@
   color: white;
 }
 
+/* 7:1 against the panel even over a white backdrop, which is why the panel
+   is 95% opaque. */
 #incompatible-mods,
 #missing-races {
-  color: red;
+  color: #f99;
 }
 
 /* A race mod that has merely changed version: worth reading, not worth alarm.
@@ -34,7 +36,7 @@
 }
 
 .gwo-info .data.gwo-race-missing {
-  color: red;
+  color: #f99;
   width: auto;
 }
 

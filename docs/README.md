@@ -24,19 +24,20 @@ Then read the doc for the subsystem you are changing.
 
 ## Subsystems
 
-| Doc                                        | Covers                                                                  | Entry file                   |
-| ------------------------------------------ | ----------------------------------------------------------------------- | ---------------------------- |
-| [tech-cards.md](tech-cards.md)             | The card contract, `buff`/`dull`, deal weighting, loadouts              | `shared/cards.js`            |
-| [ai-pipeline.md](ai-pipeline.md)           | How a card changes what an AI builds                                    | `gw_play/referee_ai.js`      |
-| [ai-paths.md](ai-paths.md)                 | Which AI reads which directory                                          | `shared/referee_ai_paths.js` |
-| [coop.md](coop.md)                         | Host/viewer, per-player tech, colour allocation                         | `gw_play/referee_coop.js`    |
-| [specs.md](specs.md)                       | Unit spec modification and caching                                      | `gw_play/specs.js`           |
-| [galaxy.md](galaxy.md)                     | Galaxy generation, factions, difficulty tiers                           | `gw_start/setup.js`          |
-| [races.md](races.md)                       | Unit factions (Legion, Bugs, Exiles): registry, translation, race trees | `shared/races.js`            |
-| [race-conventions.md](race-conventions.md) | The checklist for adding a race, and the rules the race code relies on  | `shared/races_shipped.js`    |
-| [testing.md](testing.md)                   | The Node AMD harness and the validators                                 | `scripts/lib/amd-loader.js`  |
-| [translations.md](translations.md)         | Translation files, the i18n tooling, the catalog and the scope rule     | `scripts/lib/loc-keys.js`    |
-| [live-testing.md](live-testing.md)         | Checking a change in a running game: clients, logs, and console recipes | -                            |
+| Doc                                        | Covers                                                                          | Entry file                   |
+| ------------------------------------------ | ------------------------------------------------------------------------------- | ---------------------------- |
+| [tech-cards.md](tech-cards.md)             | The card contract, `buff`/`dull`, deal weighting, loadouts                      | `shared/cards.js`            |
+| [ai-pipeline.md](ai-pipeline.md)           | How a card changes what an AI builds                                            | `gw_play/referee_ai.js`      |
+| [ai-paths.md](ai-paths.md)                 | Which AI reads which directory                                                  | `shared/referee_ai_paths.js` |
+| [coop.md](coop.md)                         | Host/viewer, per-player tech, colour allocation                                 | `gw_play/referee_coop.js`    |
+| [specs.md](specs.md)                       | Unit spec modification and caching                                              | `gw_play/specs.js`           |
+| [galaxy.md](galaxy.md)                     | Galaxy generation, factions, difficulty tiers                                   | `gw_start/setup.js`          |
+| [races.md](races.md)                       | Unit factions (Legion, Bugs, Exiles): registry, translation, race trees         | `shared/races.js`            |
+| [race-conventions.md](race-conventions.md) | The checklist for adding a race, and the rules the race code relies on          | `shared/races_shipped.js`    |
+| [testing.md](testing.md)                   | The Node AMD harness and the validators                                         | `scripts/lib/amd-loader.js`  |
+| [translations.md](translations.md)         | Translation files, the i18n tooling, the catalog and the scope rule             | `scripts/lib/loc-keys.js`    |
+| [live-testing.md](live-testing.md)         | Checking a change in a running game: clients, logs, and console recipes         | -                            |
+| [accessibility.md](accessibility.md)       | The WCAG 2.2 AAA audit, what the engine rules out, and the rules for new markup | `shared/tooltips.js`         |
 
 ## Things that surprise people
 

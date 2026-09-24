@@ -1,9 +1,10 @@
 <div class="all-planets" data-bind="foreach: selection.system().planets()">
   <!-- attr comes before tooltip: Bootstrap reads data-placement once, when the
-  tooltip binding initialises. -->
+  tooltip binding initialises. A row holds five 44px planets (planets.css); the
+  first three open right, as there is no room to their left. -->
   <div
-    class="div-planet"
-    data-bind="attr: { 'data-placement': $index() <= 3 || ($index() > 8 && $index() <= 12) ? 'right' : 'left' }, tooltip: $root.gwoPlanetData[$index()]"
+    class="div-planet gwo-tip"
+    data-bind="attr: { 'data-placement': $index() % 5 < 3 ? 'right' : 'left' }, tooltip: $root.gwoPlanetData[$index()]"
   >
     <img
       style="height: 20px; width: 20px"

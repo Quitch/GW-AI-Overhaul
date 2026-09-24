@@ -24,9 +24,10 @@
   width: 520px;
 }
 
+/* 7:1 or better over the scene's dark background image. */
 .gwo-war-generation-error {
   margin: 0 20px 10px;
-  color: #f36a6a;
+  color: #f99;
 }
 
 .gwo-game-options-body {
@@ -189,10 +190,10 @@
   text-transform: uppercase;
 }
 
-/* global.css's .btn_std_ix border precedent: the commander picker's blue.
-   Qualified so it wins over the stock .btn border regardless of order. */
+/* global.css's .btn_std_ix border precedent: the commander picker's blue, at
+   the 3:1 a control's outline needs against the panel. Qualified so it wins over the stock .btn border regardless of order. */
 #gwo-ai-table .btn.dropdown-toggle {
-  border: 1px solid rgba(0, 179, 255, 0.5);
+  border: 1px solid rgba(0, 179, 255, 0.6);
 }
 
 .gwo-ai-table-stale {
@@ -252,7 +253,7 @@
   display: inline-block;
   box-sizing: content-box;
   width: 150px;
-  border: 1px solid rgba(0, 179, 255, 0.5);
+  border: 1px solid rgba(0, 179, 255, 0.6);
   background: #0b1a1f;
   text-align: left;
   vertical-align: top;
@@ -290,6 +291,18 @@
   z-index: 2;
 }
 
+/* Stretches the 21px-high button to a 44px target. It only overlaps the card
+   it sits on, and grows mostly downwards: the card clips its overflow inside
+   its border, 8px above the button. */
+.gwo-favourite-btn::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 0;
+  bottom: -15px;
+  left: 0;
+}
+
 .gwo-favourite-btn:hover {
   /* PA's Chrome 40 only knows the prefixed form; unprefixed filter does nothing. */
   -webkit-filter: brightness(1.2);
@@ -297,4 +310,68 @@
 
 .gwo-favourite-btn.on {
   background-image: url("coui://ui/main/game/leaderboard/img/slot_bground_uber.png");
+}
+
+/* 44px pointer targets for GWO's own instances of stock controls. Each is an
+   invisible hit area, so the stock look is unchanged, and each stays clear of
+   the next target: the switch rows sit on stock's 44px pitch, and the AI
+   Settings dropdowns grow downwards only, away from the "?" above them. A
+   ::before is placed from the padding edge, so each offset includes the
+   control's 1px border. */
+#gwo-game-options-panel .coop-setup-configure,
+#gwo-commander-panel .coop-setup-configure,
+#gwo-ai-panel .coop-setup-configure,
+#gwo-game-options-modal .gw-start-square-switch,
+#gwo-per-player-race-row .gw-start-square-switch {
+  position: relative;
+}
+
+#gwo-game-options-panel .coop-setup-configure::before,
+#gwo-commander-panel .coop-setup-configure::before,
+#gwo-ai-panel .coop-setup-configure::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 0;
+  bottom: -6px;
+  left: 0;
+}
+
+#gwo-game-options-modal .gw-start-square-switch::before,
+#gwo-per-player-race-row .gw-start-square-switch::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+}
+
+#gwo-game-options-modal .gw-start-coop-settings-close::before,
+#gwo-commander-modal .gw-start-coop-settings-close::before,
+#gwo-ai-modal .gw-start-coop-settings-close::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
+}
+
+#gwo-ai-table .bootstrap-select .btn::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 0;
+  bottom: -6px;
+  left: 0;
+}
+
+#custom-difficulty-settings .bootstrap-select .btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: -11px;
+  left: 0;
 }
