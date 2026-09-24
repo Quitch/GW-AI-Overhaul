@@ -97,7 +97,10 @@ wants creation therefore has to ask for it by name. The split stops a typo'd pat
 from silently inventing a stat. It does not report the typo: cards routinely
 multiply paths that a unit lacks, such as `navigation.*` leaves and vanilla
 attributes on faction units. A missing target therefore cannot be told apart from a
-mistake, and a typo'd or stale path fails silently. The split is also why
+mistake. When `multiply` warned on one, a normal Legion war with Bugs, Exiles, and
+three add-ons logged 119 such warnings per referee hire, none of them a real fault.
+Noise at that volume buries any real typo, so a typo'd or stale path now fails
+silently instead. The split is also why
 `multiplyOrCreate` runs before `multiply` in the op ordering.
 
 `eval` is theoretically unsafe. It is also pointless to worry about it: mods can run
