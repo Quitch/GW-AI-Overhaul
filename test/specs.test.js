@@ -48,6 +48,32 @@ describe("specs.mod - basic ops", () => {
     assert.equal(warnMock.mock.callCount(), 1);
   });
 
+  it("multiply on null logs a warning and leaves the value unchanged", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "unit.json": { hp: null } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "hp", op: "multiply", value: 2 }],
+      ""
+    );
+    assert.equal(data["unit.json"].hp, null);
+    assert.equal(warnMock.mock.callCount(), 1);
+  });
+
+  it("multiply on a missing path leaves it missing without a warning", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "unit.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "armor", op: "multiply", value: 2 }],
+      ""
+    );
+    assert.deepEqual(JSON.parse(JSON.stringify(data["unit.json"])), {
+      hp: 100,
+    });
+    assert.equal(warnMock.mock.callCount(), 0);
+  });
+
   it("add sums a numeric value", () => {
     const data = { "unit.json": { hp: 100 } };
     specs.mod(
@@ -496,12 +522,11 @@ describe("specs.mod - navigation pruning", () => {
     // undefined - which serialises to navigation: {} - so navigation is stripped.
     assert.equal("navigation" in data["struct.json"], false);
     assert.equal(data["struct.json"].hp, 100);
-    // the multiply-on-missing warning still fires; pruning doesn't suppress it.
-    assert.ok(warnMock.mock.callCount() >= 1);
+    // multiply on a missing leaf is silent.
+    assert.equal(warnMock.mock.callCount(), 0);
   });
 
   it("removes navigation after several navigation.* mods all resolve to undefined", () => {
-    mock.method(console, "warn", () => {});
     const data = { "struct.json": { hp: 100 } };
     specs.mod(
       data,
@@ -555,7 +580,6 @@ describe("specs.mod - navigation pruning", () => {
   });
 
   it("keeps navigation when a replace sets a real value alongside an undefined leaf", () => {
-    mock.method(console, "warn", () => {});
     const data = { "struct.json": { hp: 100 } };
     specs.mod(
       data,

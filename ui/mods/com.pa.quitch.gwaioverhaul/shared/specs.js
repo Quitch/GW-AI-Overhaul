@@ -146,6 +146,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
       var ops = {
         multiply: function (attribute, value) {
+          if (attribute === undefined) {
+            return attribute;
+          }
           if (!_.isNumber(attribute)) {
             console.warn(
               "multiply: attribute is not a number. Leaving unchanged: " +
