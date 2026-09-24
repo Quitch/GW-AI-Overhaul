@@ -18,6 +18,7 @@
 - A viewer who picks the General Commander loadout now always gets their Sub Commanders
 - The intelligence panel places an allied Cluster faction's tooltip the way it places every other Cluster tooltip
 - With Easy Systems, systems no longer hang on the landing screen
+- An error while a battle's biome mods are prepared no longer leaves the Fight button stuck
 
 ## v7.4.0 - 2026-09-22
 

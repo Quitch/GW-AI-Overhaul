@@ -371,7 +371,7 @@ them. `referee.js`'s `mountFiles` does the same for the stamped mods. It runs af
 the `unmountAllMemoryFiles` there (which Community Mods turns into a client-mod
 remount) and before `gw_play` navigates to `connect_to_game`.
 
-Clients get the same files through `config.files`. `gwoGenerateBiomes` mounts the
+Clients get the same files through `config.files`. `gw_play/referee_biomes.js` mounts the
 stamped mods and reads every `pa/**/*.json` they ship through `spec:`, the only scheme
 that resolves a `/server_mods/` mount client-side. It adds the text to `self.files()`,
 which the host mounts and the `gw_config` payload hands to every joiner. That is why
@@ -387,7 +387,7 @@ do that. The stamp mounts the zip by path, so a disabled mod whose zip is still 
 A **GW Server Mods-served** mod goes through neither channel. GW Server Mods mounts
 every active server mod at `/server_mods/<id>/` before the local server spawns. It
 wraps `model.fight` so the mount precedes the referee, and its connect gate excludes a
-co-op viewer lacking any client-relevant server mod. `gwoGenerateBiomes` therefore only
+co-op viewer lacking any client-relevant server mod. `referee_biomes.js` therefore only
 asks `gwo_biome_mods.js`'s `serve` which of the stamped mods GW Server Mods lists as
 active. It catalogs the live manifest row (the stamp's `installedPath` is stale after
 a reinstall) and adds their biomes to `biomeServed`. A stamped mod it no longer lists
@@ -407,7 +407,7 @@ unreadable mod list decides nothing, and a version change only warns. A war save
 before the record existed has neither stamp nor list, so nothing blocks.
 
 A war saved before the stamp existed has none. A system there with a modded biome
-resolves providers at launch instead (`stampedMods` in `referee.js`). It writes the
+resolves providers at launch instead (`stampedMods` in `referee_biomes.js`). It writes the
 result onto the star's system, and the save then carries it. That is still one
 resolution per system, just deferred. Only a biome that no enabled text-only mod
 provides falls to `earth`. Such a system is re-checked each launch, so installing the
