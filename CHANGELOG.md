@@ -5,6 +5,7 @@
 ### Added
 
 - Card mods can target Legion, Bugs, Exiles, Second Wave, Section 17, and Osmech units; such cards are dealt only to players who field them - see the `New-GW-Cards` template
+- Card mods can put a group of units inside a list of units, when adding, removing, or changing units
 
 ### Changed
 

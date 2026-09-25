@@ -249,6 +249,128 @@ describe("cardUsable for race and add-on units", () => {
   });
 });
 
+describe("what a race player fields, and the mods that reach it", () => {
+  const {
+    FIXTURE_SPECS,
+    FIXTURE_UNITS,
+  } = require("../scripts/lib/race-fixture.js");
+  const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
+  const FX_TANK = FIXTURE_RACE.units.fxTank;
+  const OTHER_TANK = "/pa/units/land/o_tank/o_tank.json";
+  const STALE = "/pa/units/land/fx_gone/fx_gone.json";
+  // A race file that carries no faction bit: the vanilla index holds it in
+  // the Ant's cell.
+  const BITLESS = "/pa/units/land/fx_bitless/fx_bitless.json";
+  const mod = (file) => ({
+    file,
+    path: "max_health",
+    op: "multiply",
+    value: 2,
+  });
+
+  beforeEach(() => {
+    races.reset();
+    races.register(
+      Object.assign({}, FIXTURE_RACE, {
+        units: Object.assign({}, FIXTURE_RACE.units, {
+          fxGone: STALE,
+          fxBitless: BITLESS,
+        }),
+      })
+    );
+    races.register({
+      id: "other",
+      unitTypeBit: "Custom9",
+      units: { oTank: OTHER_TANK },
+    });
+  });
+
+  const bitlessIndex = () => {
+    const units = FIXTURE_UNITS.concat(BITLESS);
+    const specs = Object.assign({}, FIXTURE_SPECS, {
+      [BITLESS]: {
+        unit_types: ["Basic", "Land", "Mobile", "Offense", "Tank"].map(
+          (tag) => "UNITTYPE_" + tag
+        ),
+      },
+    });
+    return {
+      vanilla: unitCells.buildIndex(units, specs, unitCells.vanillaMember),
+      race: unitCells.buildIndex(units, specs, unitCells.raceMember("Custom7")),
+    };
+  };
+
+  it("keeps stock paths and the race's own, and drops another race's", () => {
+    const held = [gwoUnit.ant, FX_TANK, OTHER_TANK];
+
+    assert.deepEqual(races.fieldedFor("fixture", held), [gwoUnit.ant, FX_TANK]);
+    assert.deepEqual(races.fieldedFor("mla", held), [gwoUnit.ant]);
+
+    const index = fixtureIndex();
+    races.setCells("fixture", index);
+    const fielded = races.fieldedFor("fixture", held.concat(STALE), index);
+    assert.ok(fielded.includes(FX_TANK));
+    assert.ok(fielded.includes(STALE));
+    assert.equal(fielded.includes(OTHER_TANK), false);
+  });
+
+  it("drops a mod on another race's path, and keeps stock, own, and file-less mods", () => {
+    const evalMod = { path: "x", op: "eval", value: "1" };
+    const mods = [
+      mod(gwoUnit.dox),
+      mod(FX_TANK),
+      mod(OTHER_TANK),
+      mod(STALE),
+      evalMod,
+    ];
+
+    assert.deepEqual(races.modsFor("fixture", mods), [
+      mod(gwoUnit.dox),
+      mod(FX_TANK),
+      mod(STALE),
+      evalMod,
+    ]);
+    assert.deepEqual(races.modsFor("mla", mods), [mod(gwoUnit.dox), evalMod]);
+  });
+
+  it("changes a race file as named once the cells are built, never re-aimed by cell", () => {
+    const index = bitlessIndex();
+    races.setCells("fixture", index);
+
+    assert.equal(
+      index.vanilla.cellOf[BITLESS],
+      index.vanilla.cellOf[gwoUnit.ant]
+    );
+    assert.deepEqual(
+      unitCells.expandMods([mod(BITLESS)], index.vanilla, index.race),
+      [mod(FX_TANK)]
+    );
+    assert.deepEqual(races.modsFor("fixture", [mod(BITLESS)], index), [
+      mod(BITLESS),
+    ]);
+    assert.deepEqual(races.modsFor("fixture", [mod(gwoUnit.ant)], index), [
+      mod(FX_TANK),
+    ]);
+  });
+
+  it("lists a card's units for the tooltip: fielded race units, and stock units by cell", () => {
+    const index = fixtureIndex();
+    races.setCells("fixture", index);
+
+    assert.deepEqual(
+      races.cardUnitsFor(
+        "fixture",
+        [gwoUnit.ant, [gwoUnit.dox, OTHER_TANK], FX_TANK],
+        index
+      ),
+      [FX_TANK]
+    );
+    assert.deepEqual(races.cardUnitsFor("mla", [gwoUnit.ant, FX_TANK]), [
+      gwoUnit.ant,
+    ]);
+  });
+});
+
 describe("raceOf", () => {
   it("reads an AI's race, an inventory's tag, and defaults to MLA", () => {
     assert.equal(races.raceOf({ race: "Fixture" }), "fixture");

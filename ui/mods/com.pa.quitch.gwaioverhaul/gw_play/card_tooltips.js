@@ -39,9 +39,8 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_units.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
       ],
-      function (gwoUnitToNames, gwoCardsToUnits, gwoRaces, unitCells) {
+      function (gwoUnitToNames, gwoCardsToUnits, gwoRaces) {
         // Build once per tooltip, not once per unit in it - a card covering
         // most of the unit list would otherwise rescan the inventory on every
         // hover. A race player owns what the referee would field for the
@@ -54,15 +53,7 @@
           var held = heldUnits(inventory).concat(
             "/pa/units/commanders/base_commander/base_commander.json"
           );
-          var fielded = held;
-          if (cells) {
-            fielded = (
-              gwoRaces.isMla(race)
-                ? unitCells.addonUnitsFor
-                : unitCells.raceUnitsFor
-            )(held, cells.vanilla, cells.race);
-          }
-          _.forEach(fielded, function (unit) {
+          _.forEach(gwoRaces.fieldedFor(race, held, cells), function (unit) {
             owned[unit] = true;
           });
           return owned;
@@ -209,21 +200,8 @@
             var inventory = ownInventory();
             var race = gwoRaces.raceOf(inventory);
             var cells = gwoRaces.cellsOf(race);
-            var shown = unitCells.unitList(units);
-            if (cells) {
-              shown = (
-                gwoRaces.isMla(race)
-                  ? unitCells.addonCardUnitsFor
-                  : unitCells.cardUnitsFor
-              )(units, cells.vanilla, cells.race);
-            }
-            // A card naming several races' units names only the player's.
-            var foreign = gwoRaces.foreignUnitPaths();
-            shown = _.reject(shown, function (unit) {
-              return foreign[unit] && !gwoRaces.fieldsUnit(race, unit);
-            });
             var affectedUnits = sortUnitNames(
-              shown,
+              gwoRaces.cardUnitsFor(race, units, cells),
               race,
               playerUnitLookup(inventory, race, cells)
             );

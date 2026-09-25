@@ -575,6 +575,28 @@ describe("expandMods", () => {
   });
 });
 
+describe("unitList", () => {
+  it("flattens nested lists, drops repeats, ignores a table, and keeps a typo", () => {
+    assert.deepEqual(cells.unitList([ANT, [DOX, [ANT]], { x: SKITTER }]), [
+      ANT,
+      DOX,
+    ]);
+    assert.deepEqual(cells.unitList(ANT), [ANT]);
+    assert.deepEqual(cells.unitList(undefined), []);
+    assert.deepEqual(cells.unitList([undefined]), [undefined]);
+  });
+});
+
+describe("expandMods pass-through", () => {
+  it("changes a pass-through file as named, never re-aimed by cell", () => {
+    const antMod = { file: ANT, path: "max_health", op: "multiply", value: 2 };
+    assert.deepEqual(
+      cells.expandMods([antMod], vanilla, race, undefined, { [ANT]: true }),
+      [antMod]
+    );
+  });
+});
+
 describe("cardUsable", () => {
   it("is true when the race owns something in a cell the card names", () => {
     assert.equal(cells.cardUsable([ANT, DOX], vanilla, race), true);

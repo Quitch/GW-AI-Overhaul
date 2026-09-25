@@ -393,6 +393,10 @@ describe("gw_inventory - the inventory itself", () => {
     inventory.removeUnits([["b"], "d"]);
     inventory.removeUnits("e");
     assert.deepEqual(inventory.units(), ["a", "c"]);
+
+    inventory.addUnits([{ table: "f" }, "g"]);
+    inventory.removeUnits({ table: "a" });
+    assert.deepEqual(inventory.units(), ["a", "c", "g"]);
   });
 
   it("finds a held card, but not a unique one", () => {

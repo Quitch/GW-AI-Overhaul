@@ -98,36 +98,39 @@ define([
 
   var fieldedMemo = {};
 
-  // The paths held plus the race or add-on units they bring at launch, as
-  // the referee fields them. The held paths alone until the cells are built.
   // See races.md, "Capability cells".
   var fieldedUnits = function (inventory) {
     var held = inventory.units();
     var race = races.raceOf(inventory);
     var cells = races.cellsOf(race);
+    var memo = fieldedMemo;
 
-    if (!cells) {
-      return held;
+    if (
+      memo.race === race &&
+      memo.cells === cells &&
+      memo.held === held &&
+      memo.length === held.length
+    ) {
+      return memo.units;
     }
 
     var key = held.join("|");
-    if (
-      fieldedMemo.race !== race ||
-      fieldedMemo.cells !== cells ||
-      fieldedMemo.key !== key
-    ) {
-      var brought = (
-        races.isMla(race) ? unitCells.addonUnitsFor : unitCells.raceUnitsFor
-      )(held, cells.vanilla, cells.race);
-      fieldedMemo = {
+    if (memo.race !== race || memo.cells !== cells || memo.key !== key) {
+      var owned = races.fieldedFor(race, held);
+      memo = {
         race: race,
         cells: cells,
         key: key,
-        units: _.union(held, brought),
+        units: cells
+          ? _.union(owned, races.fieldedFor(race, held, cells))
+          : owned,
       };
     }
+    memo.held = held;
+    memo.length = held.length;
+    fieldedMemo = memo;
 
-    return fieldedMemo.units;
+    return memo.units;
   };
 
   // The two states that flood every planet fought on. See tech-cards.md.
@@ -354,10 +357,10 @@ define([
     upgradeDeal: upgradeDeal,
 
     // The whole of an upgrade card: visible, one slot, dealt through
-    // upgradeDeal once `requires` is held (and `unless` is not), `description`
-    // wrapped by withSlot. `describe`, `available`, `deal` and `chance` (a
-    // weight or a function of the inventory) override those parts; `slot:
-    // false` skips the slot. See tech-cards.md.
+    // upgradeDeal once `requires` is fielded (and `unless` is not held),
+    // `description` wrapped by withSlot. `describe`, `available`, `deal` and
+    // `chance` (a weight or a function of the inventory) override those parts;
+    // `slot: false` skips the slot. See tech-cards.md.
     upgradeCard: function (options) {
       var available =
         options.available ||
@@ -487,7 +490,9 @@ define([
     // mods() over every file, flattened: one file's entries before the next's.
     // `files` may nest groups.
     flatMapMods: function (files, op, props, value) {
-      return _(unitCells.unitList(files))
+      return _([files])
+        .flattenDeep()
+        .reject(_.isPlainObject)
         .map(function (file) {
           return mods(file, op, props, value);
         })

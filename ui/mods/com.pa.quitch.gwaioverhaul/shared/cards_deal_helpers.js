@@ -2,7 +2,8 @@
 // at define time - see testing.md, "Coverage".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
-], function (brainTable) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (brainTable, unitCells) {
   // Cards a race player is never offered: unit upgrades are tuned to the MLA
   // unit they name (the commander's excepted - every race has one), these
   // loadouts and protocols are built on hand-picked unit lists no cell reads,
@@ -28,6 +29,39 @@ define([
   // `race`. An MLA or unknown race locks nothing.
   var raceLocksLoadout = function (race, cardId) {
     return !!race && race !== "mla" && mlaOnlyCard(cardId);
+  };
+
+  // Every deal asks for every card's entry: indexed by id, each flattened once.
+  // A push or a new list rebuilds the index.
+  var entries = { list: undefined, length: -1, byId: {}, flat: {} };
+
+  var entryUnits = function (cardsToUnits, cardId) {
+    var list = cardsToUnits || [];
+
+    if (entries.list !== list || entries.length !== list.length) {
+      var byId = {};
+      _.forEachRight(list, function (entry) {
+        if (entry) {
+          byId[entry.id] = entry;
+        }
+      });
+      entries = { list: list, length: list.length, byId: byId, flat: {} };
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(entries.byId, cardId)) {
+      return undefined;
+    }
+
+    var entry = entries.byId[cardId];
+    var cached = entries.flat[cardId];
+    if (!cached || cached.units !== entry.units) {
+      cached = entries.flat[cardId] = {
+        units: entry.units,
+        list: unitCells.unitList(entry.units),
+      };
+    }
+
+    return cached.list;
   };
 
   var isStartLoadoutCardId = function (cardId) {
@@ -228,18 +262,15 @@ define([
     mlaOnlyCard: mlaOnlyCard,
     raceLocksLoadout: raceLocksLoadout,
 
-    // A card the player's race can own nothing of is not worth a hand slot.
-    // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes. A
-    // card whose entry names a race or add-on unit is written for whoever
-    // fields one, MLA included, whatever its id. See races.md.
+    // cardsToUnits is model.gwoCardsToUnits. See races.md, "Capability cells".
     raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
       if (!races) {
         return true;
       }
       var race = races.raceOf(inventory);
-      var entry = _.find(cardsToUnits || [], { id: cardId });
-      if (entry && races.namesForeignUnit(entry.units)) {
-        return races.cardUsable(race, entry.units);
+      var units = entryUnits(cardsToUnits, cardId);
+      if (units && races.namesForeignUnit(units)) {
+        return races.cardUsable(race, units);
       }
       if (races.isMla(race)) {
         return true;
@@ -247,7 +278,7 @@ define([
       if (mlaOnlyCard(cardId)) {
         return false;
       }
-      return !entry || races.cardUsable(race, entry.units);
+      return !units || races.cardUsable(race, units);
     },
 
     // A Sub Commander fights as the player's race, with one of its commanders.

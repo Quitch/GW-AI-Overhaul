@@ -194,7 +194,7 @@ return gwoCard.upgradeCard({
 ```
 
 That card is visible. The dealer deals it through `upgradeDeal` once `requires` is
-held. `withSlot` describes it. It is buffed with the extra slot before `buff` runs.
+fielded (`gwoCard.fieldedUnits`: held, or brought by a held unit for a race). `withSlot` describes it. It is buffed with the extra slot before `buff` runs.
 The other options are:
 
 - `unless` names a card that withholds it.
@@ -232,9 +232,9 @@ entry names no unit in a cell the race fills. It also withholds every card in
 `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards keep naming
 vanilla units, and the unit's capability cell decides.
 
-A card whose entry names a race or add-on unit is dealt only to a player who
-fields one, MLA players included, and `MLA_ONLY` and the `_upgrade_` rule do
-not apply to it. See [`races.md`](races.md), "Capability cells".
+A card whose entry names only race or add-on units is dealt only to a player who
+fields one, MLA players included, and `MLA_ONLY` and the `_upgrade_` rule do not
+apply to it. An entry that also names a stock unit is dealt through either half. See [`races.md`](races.md), "Capability cells".
 
 The tooltip shows that same entry translated by cell: the race units of each cell a
 named vanilla unit occupies. It never shows a second, race-written list. See
@@ -384,9 +384,11 @@ returns are equally published. So are the **key** names in `shared/units.js` and
 published. Re-point a unit path whenever the base game moves a file.
 
 `shared/units.js` also publishes each shipped race's and add-on's `units` table
-under a key of its own: `gwoUnit.legion.shank`, `gwoUnit.osmech.aegis`. The
+under a key of its own: `gwoUnit.legion.shank`, `gwoUnit.osmech.aegis`. A table
+leaves out the stock files its units share, which keep their stock keys. The
 keys inside those tables are generated, and a mod update can change them
-([`races.md`](races.md), "Unit tables"). A race or add-on a third-party mod
+([`races.md`](races.md), "Unit tables"). A whole table is not a unit list:
+every reader ignores one, and `validate:refs` fails a GWO file that names one. A race or add-on a third-party mod
 registers is not there. A card names such a unit and lists it in
 `gwoCardsToUnits`, which ties the card to the players who field it. In `deal`
 it checks `gwoCard.fieldedUnits(inventory)`, the held paths plus the race or

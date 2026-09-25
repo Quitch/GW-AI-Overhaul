@@ -1,7 +1,8 @@
 // The keys are a published API - third-party cards written from the
 // New-GW-Cards template name them directly, so renaming one breaks those cards
 // silently. The paths are not: re-point them freely when the base game moves a
-// file. Each race and add-on table sits under its own key. See tech-cards.md.
+// file. Each race and add-on table sits under its own key, less the stock
+// files its units share. See tech-cards.md.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/race/legion.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/race/bugs.js",
@@ -10,7 +11,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/addon/section17.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/addon/osmech.js",
 ], function (legion, bugs, exiles, secondWave, section17, osmech) {
-  return {
+  var units = {
     airFabber: "/pa/units/air/fabrication_aircraft/fabrication_aircraft.json",
     airFabberAdvanced:
       "/pa/units/air/fabrication_aircraft_adv/fabrication_aircraft_adv.json",
@@ -477,12 +478,21 @@ define([
     zeusAmmo: "/pa/units/air/titan_air/titan_air_ammo.json",
     zeusDeath: "/pa/units/air/titan_air/titan_air_ammo_death.json",
     zeusWeapon: "/pa/units/air/titan_air/titan_air_tool_weapon.json",
-
-    legion: legion.units,
-    bugs: bugs.units,
-    exiles: exiles.units,
-    secondWave: secondWave.units,
-    section17: section17.units,
-    osmech: osmech.units,
   };
+
+  var stock = _.invert(units);
+  var raceTable = function (table) {
+    return _.omit(table, function (path) {
+      return _.has(stock, path);
+    });
+  };
+
+  return _.assign(units, {
+    legion: raceTable(legion.units),
+    bugs: raceTable(bugs.units),
+    exiles: raceTable(exiles.units),
+    secondWave: raceTable(secondWave.units),
+    section17: raceTable(section17.units),
+    osmech: raceTable(osmech.units),
+  });
 });

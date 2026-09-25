@@ -28,6 +28,11 @@ define([
     return stockPatch.apply(this, arguments);
   };
 
+  // GWO - see addUnits
+  var unitPaths = function (units) {
+    return _([units]).flattenDeep().reject(_.isPlainObject).value();
+  };
+
   var GWInventory = function () {
     var self = this;
     self.units = ko.observableArray();
@@ -58,16 +63,17 @@ define([
     save: function () {
       return ko.toJS(this);
     },
-    // GWO - a card's own group may sit inside the list
+    // GWO - a card's own group may sit inside the list; a whole gwoUnit race
+    // table is not a list and names nothing
     addUnits: function (add) {
       var self = this;
-      self.units(self.units().concat(_.flattenDeep([add])));
+      self.units(self.units().concat(unitPaths(add)));
     },
     // GWO - updated to remove multiple copies of a unit, from a list that may
     // hold groups
     removeUnits: function (remove) {
       var self = this;
-      _.forEach(_.flattenDeep([remove]), function (unit) {
+      _.forEach(unitPaths(remove), function (unit) {
         self.units.remove(unit);
       });
     },

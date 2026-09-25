@@ -120,13 +120,8 @@ define([
       var held = inventory.units().concat(model.gwoSpecs);
       // A race viewer fields the race's units of the cells the vanilla ones
       // held occupy; an MLA viewer keeps everything held and gains the
-      // add-on units of those cells.
-      var playerSpecs = held;
-      if (cells) {
-        playerSpecs = (
-          isMla ? unitCells.addonUnitsFor : unitCells.raceUnitsFor
-        )(held, cells.vanilla, cells.race);
-      }
+      // add-on units of those cells. Neither keeps another race's units.
+      var playerSpecs = gwoRaces.fieldedFor(race, held, cells);
       // A viewer that picked no race commander is on the stock list, so its
       // vanilla commander (and its Sub Commanders') is retagged the way the
       // Guardians' Unicorn is; a kept vanilla Commander-class unit likewise.
@@ -191,14 +186,7 @@ define([
               file + playerTag
             );
           };
-          var mods = cells
-            ? unitCells.expandMods(
-                inventory.mods(),
-                cells.vanilla,
-                cells.race,
-                has
-              )
-            : inventory.mods();
+          var mods = gwoRaces.modsFor(race, inventory.mods(), cells, has);
           gwoSpecs.mod(playerFiles, mods.concat(retagMods), playerTag);
           done.resolve(playerFiles);
         });

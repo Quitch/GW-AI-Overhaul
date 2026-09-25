@@ -461,7 +461,9 @@ define([
     return files;
   };
 
-  var expandMods = function (mods, vanilla, race, has) {
+  // `passThrough` ({ path: true }) names files changed as named, never
+  // re-aimed: a race's own files, some of which carry no faction bit.
+  var expandMods = function (mods, vanilla, race, has, passThrough) {
     var passes = {};
     var out = [];
     var remade = remadeFiles(mods || []);
@@ -472,7 +474,10 @@ define([
         return;
       }
 
-      var targets = targetsFor(mod.file, vanilla, race);
+      var targets =
+        passThrough && passThrough[mod.file]
+          ? undefined
+          : targetsFor(mod.file, vanilla, race);
       if (_.isUndefined(targets)) {
         out.push(mod);
         return;
@@ -497,10 +502,14 @@ define([
     return out;
   };
 
-  // A card's unit list as paths: one path, a list, or lists nested in a list
-  // (a card's own group beside gwoUnit paths).
+  // One path, a list, or groups nested in a list; a whole gwoUnit race table
+  // names nothing. See races.md, "Capability cells".
   var unitList = function (units) {
-    return _.uniq(_.flattenDeep([units || []]));
+    return _([units || []])
+      .flattenDeep()
+      .reject(_.isPlainObject)
+      .uniq()
+      .value();
   };
 
   // A card is worth offering when the race owns something in a cell it names.

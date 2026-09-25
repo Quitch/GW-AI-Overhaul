@@ -3,9 +3,10 @@
 // Cross-reference checks within this repo only, so they run in CI:
 //
 //   1. Every loadout card id has a file under ui/main/game/galactic_war/cards/.
-//   2. Every `<unitsParam>.someKey` (or `.table.someKey`) reference in a card
-//      resolves against units.js.
-//      A typo there is `undefined` at runtime, with no error.
+//   2. Every `<unitsParam>.someKey` (or `.table.someKey`) reference in a card,
+//      card_units.js or unit_groups.js resolves against units.js, and none
+//      names a whole race table. A typo there is `undefined` at runtime, with
+//      no error.
 //   3. Every `builders` role in AI build-order JSON resolves against the unit map,
 //      bar the literals in KNOWN_BUILDER_NAMES.
 
@@ -19,6 +20,16 @@ const { aiDataFiles } = require("../lib/walk.js");
 const LOADOUT_IDS_COUI =
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js";
 const UNITS_COUI = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js";
+const MOD_DIR = path.join(
+  REPO_ROOT,
+  "ui",
+  "mods",
+  "com.pa.quitch.gwaioverhaul"
+);
+const UNIT_LIST_FILES = [
+  path.join(MOD_DIR, "gw_play", "card_units.js"),
+  path.join(MOD_DIR, "shared", "unit_groups.js"),
+];
 const UNIT_MAP_PATH = path.join(
   REPO_ROOT,
   "pa",
@@ -99,12 +110,17 @@ function checkUnitReferencesInCards() {
   const units = loadCouiModule(UNITS_COUI);
   const unitKeys = new Set(Object.keys(units));
 
-  const cardFiles = fs.readdirSync(CARDS_DIR).filter((f) => f.endsWith(".js"));
+  const files = fs
+    .readdirSync(CARDS_DIR)
+    .filter((f) => f.endsWith(".js"))
+    .map((f) => path.join(CARDS_DIR, f))
+    .concat(UNIT_LIST_FILES);
   let checkedCards = 0;
   let checkedRefs = 0;
 
-  for (const file of cardFiles) {
-    const src = fs.readFileSync(path.join(CARDS_DIR, file), "utf8");
+  for (const filePath of files) {
+    const file = path.relative(REPO_ROOT, filePath);
+    const src = fs.readFileSync(filePath, "utf8");
     const paramName = findUnitsParamName(src);
     if (!paramName) {
       continue;
@@ -125,7 +141,17 @@ function checkUnitReferencesInCards() {
     for (const key of referenced) {
       checkedRefs++;
       const [table, unit] = key.split(".");
-      if (
+      if (!unit && typeof units[table] === "object") {
+        fail(
+          "cross-refs: " +
+            file +
+            " names the whole table " +
+            paramName +
+            "." +
+            table +
+            " - a card names one unit of it"
+        );
+      } else if (
         !unitKeys.has(table) ||
         (unit && !Object.hasOwn(units[table], unit))
       ) {
@@ -147,7 +173,7 @@ function checkUnitReferencesInCards() {
       checkedRefs +
       " unit references across " +
       checkedCards +
-      " cards checked against units.js (" +
+      " files checked against units.js (" +
       unitKeys.size +
       " known units)."
   );

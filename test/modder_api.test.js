@@ -15,6 +15,7 @@
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
+const { isDeepStrictEqual } = require("node:util");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -329,10 +330,20 @@ describe("the unit and group ids cards are written against", () => {
     });
   }
 
+  // A race table also names the stock files its units share; those keep
+  // their stock keys alone.
+  const stockPaths = new Set(
+    Object.values(gwoUnit).filter((value) => typeof value === "string")
+  );
+  const withoutStock = (units) =>
+    Object.fromEntries(
+      Object.entries(units).filter(([, unitPath]) => !stockPaths.has(unitPath))
+    );
+
   for (const [name, descriptor] of Object.entries(TABLE_IDS)) {
-    it(`gwoUnit.${name} is that descriptor's unit table`, () => {
+    it(`gwoUnit.${name} is that descriptor's unit table, less its stock files`, () => {
       const table = loadCouiModule("coui://" + MOD_ROOT + "/" + descriptor);
-      assert.equal(gwoUnit[name], table.units);
+      assert.deepEqual(gwoUnit[name], withoutStock(table.units));
       assert.ok(Object.keys(gwoUnit[name]).length > 0);
     });
   }
@@ -344,7 +355,12 @@ describe("the unit and group ids cards are written against", () => {
     ];
     const published = Object.keys(TABLE_IDS).map((name) => gwoUnit[name]);
     for (const descriptor of shipped) {
-      assert.ok(published.includes(descriptor.units), descriptor.id);
+      assert.ok(
+        published.some((table) =>
+          isDeepStrictEqual(table, withoutStock(descriptor.units))
+        ),
+        descriptor.id
+      );
     }
   });
 

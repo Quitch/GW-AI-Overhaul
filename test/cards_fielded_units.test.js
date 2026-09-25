@@ -21,6 +21,7 @@ const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 
 const FX_TANK = FIXTURE_RACE.units.fxTank;
 const FX_ADDON_TANK = FIXTURE_ADDON.units.fxAddonTank;
+const oTank = "/pa/units/land/o_tank/o_tank.json";
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
 
@@ -43,11 +44,28 @@ afterEach(() => {
 });
 
 describe("fieldedUnits", () => {
-  it("is the held paths until the player's cells are built", () => {
-    const held = [gwoUnit.ant];
+  it("is the held paths the race owns until its cells are built", () => {
+    races.register({ id: "other", unitTypeBit: "Custom9", units: { oTank } });
+    const held = [gwoUnit.ant, FX_TANK, oTank];
 
-    assert.equal(cards.fieldedUnits(inventoryOf("mla", held)), held);
-    assert.equal(cards.fieldedUnits(inventoryOf("fixture", held)), held);
+    assert.deepEqual(cards.fieldedUnits(inventoryOf("mla", held)), [
+      gwoUnit.ant,
+    ]);
+    assert.deepEqual(cards.fieldedUnits(inventoryOf("fixture", held)), [
+      gwoUnit.ant,
+      FX_TANK,
+    ]);
+  });
+
+  it("drops another race's unit held once the cells are built", () => {
+    races.register({ id: "other", unitTypeBit: "Custom9", units: { oTank } });
+    races.setCells("fixture", fixtureIndex());
+    const fielded = cards.fieldedUnits(
+      inventoryOf("fixture", [gwoUnit.ant, oTank])
+    );
+
+    assert.ok(fielded.includes(FX_TANK));
+    assert.equal(fielded.includes(oTank), false);
   });
 
   it("adds the race units the held paths bring, keeping the held ones", () => {

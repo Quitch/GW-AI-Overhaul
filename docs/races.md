@@ -195,20 +195,30 @@ sits in every race's index, so it counts only when the race could build it
 holding every vanilla unit (Section 17's `Custom17` units for MLA and Legion,
 never for Bugs). Before the index exists only the race's own table counts: an
 add-on table mixes races (Second Wave ships MLA, Legion, and Bugs units), and
-only the index knows whose each unit is. Such a card is dealt when any foreign unit it names counts, or when any other unit it
-names passes the rule above. That applies to MLA too, and `raceCanDeal` skips
+only the index knows whose each unit is. A unit no faction bit marks (Section
+17's drones, the Horntail larva) is in MLA's add-on index, so it counts for MLA
+alone. The gate reads units: a weapon or ammo counts only where the index lists
+it as a part of a unit the race fields, which an exclusive unit's parts and a
+projectile spec never are. Such a card is dealt when any foreign unit it names
+counts, or when any other unit it names passes the rule above. That applies to MLA too, and `raceCanDeal` skips
 `MLA_ONLY` and the `_upgrade_` rule for it: a third-party `mym_upgrade_shank`
 naming a Legion unit is dealt to Legion players only. A card with no foreign
 unit is gated exactly as before. The entry may nest lists (a card's own group
-beside single paths); every reader flattens it (`unit_cells.unitList`). So do
-the unit lists a card hands `inventory.addUnits`, `inventory.removeUnits`,
-`gwoCard.flatMapMods`, and the has/missing helpers.
+beside single paths); every reader flattens it (`unit_cells.unitList`) and
+ignores a whole `gwoUnit` race table in it. So do the unit lists a card hands
+`inventory.addUnits`, `inventory.removeUnits`, `gwoCard.flatMapMods`, and the
+has/missing helpers.
 
-`gwoCard.fieldedUnits(inventory)` gives a card's `deal` the same view: the
-paths held plus what `raceUnitsFor`, or `addonUnitsFor` for MLA, brings for
-them. `upgradeCard` reads it, so `requires` may name a race unit. A mod on a
-foreign path the player does not field has no file to land on, and
-`gw_play/specs.js` skips it without a warning.
+One boundary serves the referees, the tooltips, and the deal. A held race or
+add-on path, or a spec mod on one, reaches a player only when the race fields it
+or its own table lists it (`races.fieldedFor`, `races.modsFor`), so a Bugs unit a
+mixed card adds never reaches a Legion army, and a stale key of the race's own
+still warns in `specs.js`. A mod on a race or add-on path is applied as named,
+never re-aimed by cell: some race files carry no faction bit and sit in the
+vanilla index. `gwoCard.fieldedUnits(inventory)` gives a card's `deal` the same
+view: the paths held that the race owns, plus what `raceUnitsFor`, or
+`addonUnitsFor` for MLA, brings for them. `upgradeCard` reads it, so `requires`
+may name a race unit.
 `gw_play/races.js` starts building them as the scene loads. Deals are
 synchronous and gate on the cells, so the cells are built as soon as the
 installed list is read. That is once GW Server Mods has the race zip mounted,
@@ -602,12 +612,13 @@ that is: Section 17's Big Bill, Pineapple, Floater and Horntail are
 `Custom17`, built only by its gantries (`buildable_types: "Mobile &
 FactoryBuild & Custom17"`). `unit_cells.exclusiveMember(races.knownBits())`
 marks them in every index. They get a cell, tags and a build list, but sit in
-`index.exclusive` rather than `units` or `unitsByCell`, so no cell grant, no
-card and no mod ever reaches them. They arrive only through the build rule,
+`index.exclusive` rather than `units` or `unitsByCell`, so no cell grant and
+no mod on a vanilla file reaches them. They arrive only through the build rule,
 from any granted unit whose `buildable_types` matches, whatever their cell
 holds. Both gantries reach them: the MLA one from a held advanced fabber, the
 Legion one from Legion's. A cell whose vanilla occupants are all `NoBuild`
-counts as unfilled for that rule.
+counts as unfilled for that rule. A card that names one directly is dealt to a
+race that can build it (`races.fieldsUnit`, "Capability cells").
 
 **The fallback set.** A unit-map `spec_id` a race's maps left on a vanilla
 unit still falls back to a race unit of its cell, but `unitMapFallback` now

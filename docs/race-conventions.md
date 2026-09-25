@@ -106,8 +106,10 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   and they are kept out of the vanilla index. An add-on's Legion or Bugs
   units carry that race's bit and are the race's by the ordinary rule.
 - **An exclusive bit belongs to nobody.** A unit under a `Custom` bit no
-  registered race owns (Section 17's `Custom17`) has no cell grant, no card
-  and no mod, and arrives only through a builder's `buildable_types`. A
+  registered race owns (Section 17's `Custom17`) has no cell grant and takes
+  no mod aimed at a vanilla file, and arrives only through a builder's
+  `buildable_types`. A card that names one directly is dealt to the races
+  that can build it. A
   third-party race registering `Custom17` would claim those units by the bit
   rule instead.
 

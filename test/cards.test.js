@@ -813,6 +813,17 @@ describe("flatMapMods", () => {
       cards.flatMapMods(["a.json", "b.json"], "replace", { x: 1 })
     );
   });
+
+  it("keeps a file named twice, and ignores a table", () => {
+    assert.deepEqual(
+      cards.flatMapMods(["a.json", ["a.json"], { t: "b.json" }], "replace", {
+        x: 1,
+      }),
+      cards
+        .mods("a.json", "replace", { x: 1 })
+        .concat(cards.mods("a.json", "replace", { x: 1 }))
+    );
+  });
 });
 
 describe("isEnglish", () => {
