@@ -308,6 +308,8 @@ The other lines are rarer, and most of them mean that something went wrong:
   (its cards kept changing under the decision), `refused`, `failed`, or
   `stalled` (the campaign queue did not run the write within 60 seconds).
 - `<name> loadout <id> not built: <error>`: that candidate was skipped.
+- `add failed: Error: AI build timed out after 60000ms`: the new AI's build did
+  not settle within 60 seconds, so the add failed and the slot was given back.
 - `<card id> deal() threw: <error>`: the card's own `deal()` threw while an AI
   judged its floor, so it scored no chance.
 - `unit specs not in after 8 s: judging by unit groups until they are`, or
