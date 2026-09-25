@@ -462,6 +462,8 @@
               var dealt = module.deal(star, context, dealInventory);
               return dealt && _.isNumber(dealt.chance) ? dealt.chance : 0;
             } catch (e) {
+              // A deal() that throws could never offer its card, so the card
+              // has no chance to score.
               return 0;
             }
           };

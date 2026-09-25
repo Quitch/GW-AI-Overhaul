@@ -152,6 +152,13 @@ define(function () {
     return total + WEIGHTS.domain * _.keys(domains).length;
   };
 
+  var sign = function (value) {
+    if (value > 0) {
+      return 1;
+    }
+    return value < 0 ? -1 : 0;
+  };
+
   var modDirection = function (mod) {
     var value = mod.value;
     var direction = WEIGHTS.otherOp;
@@ -159,7 +166,7 @@ define(function () {
     if (mod.op === "multiply" && _.isNumber(value)) {
       direction = value - 1;
     } else if (mod.op === "add" && _.isNumber(value)) {
-      direction = value === 0 ? 0 : WEIGHTS.addStep * (value > 0 ? 1 : -1);
+      direction = WEIGHTS.addStep * sign(value);
     }
     if (
       (mod.op === "multiply" || mod.op === "add") &&
