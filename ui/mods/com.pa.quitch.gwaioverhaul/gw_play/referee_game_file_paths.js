@@ -227,6 +227,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return army.inventory || [];
   };
 
+  // A file map as mountMemoryFiles takes it: every file as JSON text.
+  var cookFiles = function (files) {
+    return _.mapValues(files, function (value) {
+      return _.isString(value) ? value : JSON.stringify(value);
+    });
+  };
+
   // What a rejection carries, for a log line: an Error's stack or message, a
   // jqXHR's status, else the value itself.
   var describeError = function (error) {
@@ -271,6 +278,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   return {
+    cookFiles: cookFiles,
     describeError: describeError,
     loadMap: loadMap,
     armyInventory: armyInventory,

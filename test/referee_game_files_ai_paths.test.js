@@ -646,6 +646,39 @@ describe("loadMap", () => {
   });
 });
 
+describe("cookFiles", () => {
+  it("gives every file as JSON text, and leaves text as it is", () => {
+    const script = "var x = 1;";
+    const cooked = refereeGameFiles.cookFiles({
+      "/pa/units/bot.json.player": {
+        max_health: 10,
+        tools: [{ spec_id: "a" }],
+      },
+      "/ui/main/game/live_game/live_game.js": script,
+    });
+
+    assert.deepEqual(cooked, {
+      "/pa/units/bot.json.player": JSON.stringify({
+        max_health: 10,
+        tools: [{ spec_id: "a" }],
+      }),
+      "/ui/main/game/live_game/live_game.js": script,
+    });
+  });
+
+  // Stock deep-clones a co-op host's own files before mounting them, and a
+  // string copies at no cost however much a file holds.
+  it("leaves no object for a deep clone to walk", () => {
+    const cooked = refereeGameFiles.cookFiles({
+      "/a.json": { nested: { deep: [1, 2, 3] } },
+      "/b.json": [],
+    });
+    assert.ok(
+      Object.values(cooked).every((value) => typeof value === "string")
+    );
+  });
+});
+
 describe("describeError", () => {
   const describeError = refereeGameFiles.describeError;
 

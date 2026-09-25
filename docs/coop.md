@@ -62,6 +62,13 @@ of that:
    the same way the host's are built: through `shared/ai_personality.js`, from
    each minion's recorded id and penchant.
 
+The local referee's files are mounted on the host alone. Stock deep-clones them
+first with lodash 3's `cloneDeep`, whose cost is quadratic in the objects it
+copies: a battle's 2,000 or so files took 11.5 s, and the 9,800 of a battle with
+11 per-player AI players took 136 s. So the host's own pass hands its files over
+as JSON text (`gameFilePaths.cookFiles`), which clones in milliseconds.
+`mountFiles` would have made that text anyway.
+
 Only the host hires a referee. A viewer runs GWO's readers on the war snapshot
 the host broadcasts. The war panel and the intelligence panel derive what they
 show (commander counts, eco) from the snapshot's recorded fields on the viewer's
@@ -529,7 +536,8 @@ inventory. Each AI has:
   allocation").
 
 Each AI adds some 630 to 750 files to a battle. A battle with the 11 AI players
-that the slot limit allows beside the host mounts about 9,800.
+that the slot limit allows beside the host mounts about 9,800, which is why the
+host's own pass hands its files over as JSON text ("The two referees").
 
 An AI's cards count wherever GWO asks what any player holds, while a session is
 active: `anyPlayerHasCard` and `getAllConnectedPlayerCards` in `shared/cards.js`

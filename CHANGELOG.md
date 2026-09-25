@@ -10,6 +10,7 @@
 ### Changed
 
 - Deleting a tech card now asks you to press Delete Tech a second time to confirm
+- Co-op battles start sooner for the host
 - Tooltips stay open while the pointer is over them, close with Escape, and have more space between lines
 - Warning and progress text is easier to read against the background
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover

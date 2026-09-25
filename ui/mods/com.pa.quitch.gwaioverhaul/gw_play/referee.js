@@ -117,13 +117,7 @@
             _.assign(allFiles, self.localFiles());
           }
 
-          var cookedFiles = _.mapValues(allFiles, function (value) {
-            if (_.isString(value)) {
-              return value;
-            } else {
-              return JSON.stringify(value);
-            }
-          });
+          var cookedFiles = gameFilePaths.cookFiles(allFiles);
 
           // community mods will hook unmountAllMemoryFiles to remount client mods
           api.file.unmountAllMemoryFiles().always(function () {
@@ -181,6 +175,18 @@
               },
               _.bind(gwoGenerateConfig, ref),
               function () {
+                // A co-op host's own pass is mounted on this client alone, and
+                // stock deep-clones its files first. lodash 3's cloneDeep is
+                // quadratic in the objects it copies, so they go as JSON text.
+                // See coop.md, "The two referees".
+                if (
+                  ref.pass === 2 &&
+                  model.launchingFight() &&
+                  model.gwCampaignActive() &&
+                  model.isCampaignHost()
+                ) {
+                  ref.files(gameFilePaths.cookFiles(ref.files()));
+                }
                 // Later stages (mountFiles) belong to the launch, not a pass.
                 ref.pass = 0;
                 return ref;
