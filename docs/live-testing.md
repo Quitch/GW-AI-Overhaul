@@ -340,6 +340,25 @@ The other lines are rarer, and most of them mean that something went wrong:
    tree under `player_coopai_<serial>/`. Each AI adds some 630 to 750 files in
    all.
 
+**Read the ping lines.** In either tech mode, each AI logs one line per window
+([coop.md](coop.md), "AI pings"), a few seconds after the war settles from a
+move, a won star, or a deal:
+
+```text
+[GW COOP AI] <name> ping window <turns>:<star>:<deals> candidates: <star>=<score> (<card id> <value>, threat <t>, hops <h>), ... -> <outcome>
+```
+
+The outcome is one of:
+
+- `ping <star> (wants)` or `ping <star> (lead)`: the AI pinged, and why. Host
+  and viewers get the marker and the chat line "`<name>`: Ping! `<star>`".
+- `no ping (indifferent)`, or `no ping (no star)` when it has nothing to ping.
+- `no ping (<name> pinged <star>)`: another AI pinged that star this window.
+- `no ping (pinged <star> already)` or `no ping (pinged <star> too recently)`.
+- `no ping (refused)`: the host's checks turned it down.
+
+`<name> ping failed: <error>` is a throw while it judged its stars.
+
 ## Proving that a change alters nothing
 
 For a refactor, generate the same war on both sides and compare:

@@ -693,6 +693,9 @@ nothing left there to ask the host for. That observable travels in
 `syncViewerStarsFromGame`'s copy list, so a viewer's own copy is maintained
 rather than inferred.
 
+Every check but the connected viewer's lives in `starOpenForPing`, which the
+host's pings for its AI players share ("AI pings").
+
 It also refuses while the turn state is `explore` or `fight`. Once the host
 commits to a destination, where to go next is no longer a question. Testing for
 those two rather than for `begin` is deliberate. **The state only returns to
@@ -717,6 +720,57 @@ single `ko.applyBindings`. It takes its dependency on `model.selection.star`
 inside a `_.defer`. `systems.js` replaces `model.selection` wholesale, and a
 computed built at load time would subscribe to the observable that the
 replacement orphans.
+
+### AI pings
+
+A co-op AI player pings too, in either tech mode, so the players can see where
+it wants to go next. It has no client to send from, so the host pings for it.
+`gw_play/coop_ai_pings.js` holds the rules, and `setupCoopAiPings` in
+`gw_play/cards.js` is the glue.
+
+**When.** An AI considers a ping once in each window. A window is keyed by the
+host's turn count, the current star, and the host's deal count, so a move, a won
+star, or a deal opens a new one. It is open while the host holds a session with
+an AI in it and the unit lookup is in, the current star is explored, the turn
+state is neither `explore` nor `fight`, nothing is scanning, no player is
+choosing tech, no AI is settling its deals, the star-card refresh is idle, and
+the war is not over. The AIs settle in slot order, the first 1.5 seconds after
+the window opens and each after it 1.2 seconds later, so their pings do not
+land together. Judging takes time, so each checks the window again before it
+pings. A window that closes before an AI has settled reopens for it.
+
+**Which star.** The candidates are the unexplored AI stars the host can move
+to, other than the current one, and the treasure planet only when it is the
+only one. Each star's card is the one the AI would find there: its own
+pre-dealt card under per-player tech, and the star's card under shared tech.
+The AI judges that card as it would in a hand
+([`tech-cards.md`](tech-cards.md), "How AI players judge a card"), against its
+own inventory under per-player tech and the host's under shared tech. A star's
+threat is the intelligence panel's own measure, `shared/star_threat.js`, which
+the panel reads too, so an AI weighs what the players see. A star scores its
+card's value as a share of the best card's, less 0.6 of its threat as a share
+of the worst threat's. The best score wins, then the nearer star, then the
+lower index.
+
+**Only when it cares.** An AI pings when it **wants** its best star's card,
+which is worth 10 or more, about a factory's unlock. It also pings when its
+best star leads the runner-up by 0.25 or more, a clear **lead**. A lone
+candidate counts as a lead only when its threat is below the median of every
+AI star's. Otherwise it stays silent. It stays silent too for a star another
+AI pinged in the same window, for the star it pinged last, and for any new star
+within 20 seconds of its last ping.
+
+**Sending.** `pingStarAs(star, sender)` in `coop_ping_operators.js` is the
+host's send on another's behalf. `canPingAs` makes the viewer's checks of the
+war and the star (`starOpenForPing`), and asks that this client be a connected
+host rather than a viewer. The host's cooldown keys on the AI, as it does on a
+viewer. The broadcast is the viewer's own `gwo_ping_star_broadcast`, naming the
+AI as its sender, and the host shows the ping locally. So every client gets the
+marker and the chat line "`<AI name>`: Ping! `<star>`". `gw_play/coop_ping.js`
+exposes the send as `model.gwoPingStarAs` and `model.gwoCanPingStarAs`.
+
+Each settle logs one line ([`live-testing.md`](live-testing.md), "AI
+players").
 
 ## Per-player pre-dealt cards
 

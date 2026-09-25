@@ -144,16 +144,9 @@ define([
       );
     };
 
-    // Drives both the button's visibility and the send, so a click that lands as
-    // the war moves on cannot get past it.
-    var canPing = function (star) {
-      if (
-        !model.isCampaignViewer() ||
-        !model.gwCampaignConnected() ||
-        model.canShowCampaignActionButtons() ||
-        model.hidingUI() ||
-        starValidationError(star, starCount())
-      ) {
+    // Whether the war and the star take a ping now, whoever sends it.
+    var starOpenForPing = function (star) {
+      if (starValidationError(star, starCount())) {
         return false;
       }
 
@@ -173,6 +166,54 @@ define([
       // host for.
       var system = systemFor(star);
       return !!system && !system.star.explored();
+    };
+
+    // Drives both the button's visibility and the send, so a click that lands as
+    // the war moves on cannot get past it.
+    var canPing = function (star) {
+      if (
+        !model.isCampaignViewer() ||
+        !model.gwCampaignConnected() ||
+        model.canShowCampaignActionButtons() ||
+        model.hidingUI()
+      ) {
+        return false;
+      }
+
+      return starOpenForPing(star);
+    };
+
+    // A co-op AI player has no client to ping from, so the host pings for it.
+    // See coop.md, "AI pings".
+    var canPingAs = function (star) {
+      return (
+        model.isCampaignHost() &&
+        model.gwCampaignConnected() &&
+        starOpenForPing(star)
+      );
+    };
+
+    // sender: { id, name }. Returns whether the ping went out: the host's
+    // cooldown is kept per sender, as for a viewer.
+    var pingStarAs = function (star, sender) {
+      if (!sender || !canPingAs(star)) {
+        return false;
+      }
+
+      if (!hostCooldown.allow(clientKey(sender.id, sender.name), _.now())) {
+        return false;
+      }
+
+      // No target: the relay reads that as every connected viewer.
+      model.sendCampaignHostOperator(PING_BROADCAST, {
+        star: star,
+        ping_id: nextPingId(),
+        client_id: sender.id,
+        client_name: sender.name,
+      });
+
+      showPing(star, sender.name);
+      return true;
     };
 
     // The pinger renders locally rather than waiting for the relay to come back,
@@ -257,7 +298,12 @@ define([
       applyPingBroadcast
     );
 
-    return { canPing: canPing, pingStar: pingStar };
+    return {
+      canPing: canPing,
+      pingStar: pingStar,
+      canPingAs: canPingAs,
+      pingStarAs: pingStarAs,
+    };
   };
 
   // Test-only hook - see testing.md.

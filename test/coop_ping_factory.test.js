@@ -476,3 +476,74 @@ describe("sending a ping", () => {
     assert.equal(timers.delayed.length, 0);
   });
 });
+
+describe("pinging for a co-op AI player", () => {
+  const AI = { id: "gwo_ai_1", name: "Sorian" };
+
+  it("needs no viewer: the host alone may ping for an AI", () => {
+    const { api } = build({ isViewer: false });
+    assert.equal(api.canPingAs(1), true);
+  });
+
+  it("refuses anyone but a connected host", () => {
+    for (const off of [{ isHost: false }, { connected: false }]) {
+      const { api } = build(off);
+      assert.equal(api.canPingAs(1), false, JSON.stringify(off));
+      release();
+    }
+  });
+
+  it("makes the same checks of the war and the star as a viewer's ping", () => {
+    for (const off of [
+      { explored: true },
+      { turnState: "explore" },
+      { turnState: "fight" },
+      { scanning: true },
+      { pendingTechRecords: [{ pendingTechCards: { star: 2, cards: [] } }] },
+    ]) {
+      const { api } = build(off);
+      assert.equal(api.canPingAs(1), false, JSON.stringify(off));
+      release();
+    }
+    const { api } = build();
+    assert.equal(api.canPingAs(-1), false);
+  });
+
+  it("sends the ping to every viewer, and shows it on the host under the AI's name", () => {
+    const { api, calls } = build({ isViewer: false });
+
+    assert.equal(api.pingStarAs(1, AI), true);
+
+    assert.equal(calls.hostOperators.length, 1);
+    const [name, payload, target] = calls.hostOperators[0];
+    assert.equal(name, BROADCAST);
+    assert.equal(payload.star, 1);
+    assert.equal(payload.client_id, "gwo_ai_1");
+    assert.equal(payload.client_name, "Sorian");
+    assert.equal(typeof payload.ping_id, "string");
+    assert.equal(target, undefined);
+    assert.deepEqual(calls.raised, [1]);
+    assert.deepEqual(calls.chat, [["Sorian", "!LOC:Ping! System 1", true]]);
+  });
+
+  it("keeps a cooldown for each AI", () => {
+    const { api, calls } = build({ isViewer: false });
+
+    assert.equal(api.pingStarAs(1, AI), true);
+    assert.equal(api.pingStarAs(2, AI), false);
+    assert.equal(api.pingStarAs(2, { id: "gwo_ai_2", name: "Tank" }), true);
+    assert.equal(calls.hostOperators.length, 2);
+  });
+
+  it("sends nothing it would refuse, or for nobody", () => {
+    const refused = build({ explored: true });
+    assert.equal(refused.api.pingStarAs(1, AI), false);
+    assert.deepEqual(refused.calls.hostOperators, []);
+    release();
+
+    const anonymous = build();
+    assert.equal(anonymous.api.pingStarAs(1), false);
+    assert.deepEqual(anonymous.calls.hostOperators, []);
+    assert.deepEqual(anonymous.calls.raised, []);
+  });
+});

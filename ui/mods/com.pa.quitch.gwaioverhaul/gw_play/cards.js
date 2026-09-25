@@ -319,11 +319,133 @@
     // Co-op AI players' tech under per-player tech: the driver that settles
     // their deals, and a new one's starting loadout. Glue - the logic is
     // gw_play/coop_ai_driver.js. See coop.md, "AI players' tech".
+    // The co-op AI players' pings, in either tech mode. See coop.md, "AI
+    // pings".
+    var setupCoopAiPings = function (params) {
+      var game = model.game();
+      var galaxy = params.galaxy;
+      var coopAiPings = params.coopAiPings;
+      var starThreat = params.starThreat;
+
+      var commanderOf = function (record) {
+        return (
+          _.get(record, "inventory.tags.global.commander") ||
+          (record && record.commander)
+        );
+      };
+
+      var windowOpen = function () {
+        var star = galaxy.stars()[game.currentStar()];
+        var turn = game.turnState();
+        return (
+          params.hostingSession() &&
+          model.gwoCoopAi.count() > 0 &&
+          !!params.lookup() &&
+          turn !== "explore" &&
+          turn !== "fight" &&
+          !!star &&
+          star.explored() &&
+          !model.scanning() &&
+          !model.gwCampaignPlayerSetupBlocked() &&
+          !(model.gwoCoopAiDeciding && model.gwoCoopAiDeciding()) &&
+          !params.starCardsBusy() &&
+          !model.gameOver()
+        );
+      };
+
+      var pings = coopAiPings({
+        ais: function () {
+          return _.map(model.gwoCoopAi.records(), function (record) {
+            return {
+              id: record.playerId,
+              name: record.gwaioAi.name,
+              record: record,
+            };
+          });
+        },
+        windowKey: function () {
+          return coopAiPings.windowKey(
+            game.stats().turns(),
+            game.currentStar(),
+            game.hostTechCardDealCount()
+          );
+        },
+        windowOpen: windowOpen,
+        candidates: function () {
+          var current = game.currentStar();
+          var candidates = [];
+          _.forEach(galaxy.stars(), function (star, index) {
+            var ai = star.ai();
+            if (index === current || !ai || star.explored()) {
+              return;
+            }
+            var path = model.canSelect(index);
+            if (path && path.length) {
+              candidates.push({
+                star: index,
+                hops: path.length - 1,
+                threat: starThreat.measure(ai),
+                treasure: !!ai.treasurePlanet,
+              });
+            }
+          });
+          return coopAiPings.pickCandidates(candidates);
+        },
+        allThreats: function () {
+          var threats = [];
+          _.forEach(galaxy.stars(), function (star) {
+            var ai = star.ai();
+            if (ai && !star.explored()) {
+              threats.push(starThreat.measure(ai));
+            }
+          });
+          return threats;
+        },
+        // Under per-player tech an AI's own card for the star; under shared
+        // tech the star's, which every player shares.
+        cardFor: function (ai, star) {
+          if (model.gwCampaignPerPlayerTechCards()) {
+            return _.get(ai.record, "gwaioStarCards.cards." + star);
+          }
+          var cards = galaxy.stars()[star].cardList();
+          return cards && cards[0];
+        },
+        valueOf: function (ai, card, star) {
+          var holder = model.gwCampaignPerPlayerTechCards()
+            ? {
+                playerId: ai.id,
+                inventory: ai.record.inventory,
+                commander: commanderOf(ai.record),
+              }
+            : {
+                playerId: ai.id,
+                inventory: params.plain(params.inventory.save()),
+                commander: params.inventory.getTag("global", "commander"),
+              };
+          return coopAiPings.valueOfCard(params.judge, holder, card, star);
+        },
+        ping: function (star, sender) {
+          return !!model.gwoPingStarAs && model.gwoPingStarAs(star, sender);
+        },
+      });
+
+      // Anything a window depends on opens or closes one.
+      ko.computed(function () {
+        windowOpen();
+        game.stats().turns();
+        game.currentStar();
+        game.hostTechCardDealCount();
+        model.gwoCoopAi.records();
+        _.defer(pings.update);
+      });
+    };
+
     var setupCoopAiTech = function (params) {
       var game = model.game();
-      if (!model.gwoCoopAi || !game.perPlayerTechCards()) {
+      if (!model.gwoCoopAi) {
         return;
       }
+      var perPlayer = game.perPlayerTechCards();
 
       requireGW(
         [
@@ -339,6 +461,8 @@
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/starting_inventory.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_pings.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
         ],
         function (
           coopAiDriver,
@@ -352,7 +476,9 @@
           coopHost,
           refereeCoop,
           startingInventory,
-          gwoLoadoutIds
+          gwoLoadoutIds,
+          coopAiPings,
+          starThreat
         ) {
           var galaxy = params.galaxy;
           var inventory = params.inventory;
@@ -361,12 +487,11 @@
           var warRng = params.warRng;
           var LOOKUP_WAIT_MS = 8000;
 
+          var hostingSession = function () {
+            return model.isCampaignHost() && model.gwCampaignActive();
+          };
           var hosting = function () {
-            return (
-              model.gwCampaignPerPlayerTechCards() &&
-              model.isCampaignHost() &&
-              model.gwCampaignActive()
-            );
+            return model.gwCampaignPerPlayerTechCards() && hostingSession();
           };
 
           // The unit specs, read once the host opens a session; unit-group
@@ -406,8 +531,13 @@
               );
             });
           };
+          // Under shared tech the lookup serves the pings alone, so it waits
+          // for an AI.
           ko.computed(function () {
-            if (!prefetching && hosting()) {
+            if (
+              !prefetching &&
+              (hosting() || (hostingSession() && model.gwoCoopAi.count() > 0))
+            ) {
               prefetch();
             }
           });
@@ -473,6 +603,29 @@
               return 0;
             }
           };
+
+          setupCoopAiPings({
+            coopAiPings: coopAiPings,
+            starThreat: starThreat,
+            galaxy: galaxy,
+            inventory: inventory,
+            hostingSession: hostingSession,
+            lookup: lookup,
+            starCardsBusy: params.starCardsBusy,
+            plain: coopAiEffects.plain,
+            judge: {
+              effects: effects,
+              lookup: lookup,
+              teamDomains: teamDomains,
+              namesUnits: namesUnits,
+              chanceOf: chanceOf,
+              isLoadout: helpers.isStartLoadoutCardId,
+            },
+          });
+
+          if (!perPlayer) {
+            return;
+          }
 
           var driver = coopAiDriver({
             records: function () {
