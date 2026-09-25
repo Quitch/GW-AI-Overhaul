@@ -230,6 +230,39 @@ describe("rowsFor", () => {
     assert.equal(pinned[0].coop, "Queller");
   });
 
+  // resolve gives a race with no stored row the war-wide co-op brain, so the
+  // cell shows that brain rather than following the race's opponent.
+  it("gives an unstored race row the war-wide co-op brain once one is picked", () => {
+    const pinned = brainTable.rowsFor(
+      undefined,
+      ["mla", "legion"],
+      "Titans",
+      "Titans",
+      "Queller"
+    );
+    assert.equal(pinned[1].coopFollows, false);
+    assert.equal(pinned[1].coop, "Queller");
+    assert.equal(
+      pinned[1].coop,
+      brainTable.resolve(
+        undefined,
+        "Titans",
+        "Titans",
+        "coop",
+        "legion",
+        "Queller"
+      )
+    );
+
+    const following = brainTable.rowsFor(
+      undefined,
+      ["legion"],
+      "Titans",
+      "Titans"
+    );
+    assert.equal(following[0].coopFollows, true);
+  });
+
   it("follows the opponent where a stored co-op brain cannot run the race", () => {
     const rows = brainTable.rowsFor(
       { legion: { enemy: "Titans", ally: "Titans", coop: "Penchant" } },

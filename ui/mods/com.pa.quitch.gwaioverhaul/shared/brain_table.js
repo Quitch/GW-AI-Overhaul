@@ -30,7 +30,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   // still offerable, the seeded default otherwise. Stored races no longer in
   // the list follow as disabled rows, so a remembered choice stays visible.
   // coopFollows says the co-op cell has no brain of its own and follows the
-  // row's opponent: MLA's with no aiCoop, a race's with no offerable coop.
+  // row's opponent: MLA's with no aiCoop, a stored race row's with no
+  // offerable coop, and an unstored race row's with no aiCoop, since resolve
+  // gives that row the war-wide co-op brain.
   var rowsFor = function (stored, raceIds, ai, aiAlly, aiCoop) {
     var table = stored || {};
     var listed = _.map(raceIds || [], races.normalizeId);
@@ -45,9 +47,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
         options: options,
         allyOptions: options,
         coopOptions: options,
-        coopFollows: races.isMla(id)
-          ? !aiCoop
-          : !pick(row && row.coop, options),
+        coopFollows:
+          races.isMla(id) || !row ? !aiCoop : !pick(row.coop, options),
       };
 
       _.forEach(SIDES, function (side) {
