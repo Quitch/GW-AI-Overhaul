@@ -266,7 +266,9 @@ meanwhile has taken the slot, and the server keeps `max_clients` at the number
 connected. The record is written through `enqueueGwCampaignStateApply`, so it
 cannot interleave with a viewer's queued record write. Under a lock the same
 count is sent again after the write, so the lock's limit leaves the new AI out.
-A failure after the server answered gives the slot back.
+A failure after the server answered gives the slot back, unless the record was
+stored: the records' subscribers run inside the write, so one that throws does
+so after the AI is in, and the AI keeps its slot.
 
 Kicking is the only way an AI leaves, and it deletes the AI and its record for
 good. So its Kick asks first, like Delete Tech

@@ -48,6 +48,7 @@ function setup(overrides) {
       ready: true,
       records: [],
       refuseUpsert: false,
+      upsertThrows: false,
       createThrows: false,
       saveFails: false,
       saveThrows: false,
@@ -140,6 +141,10 @@ function setup(overrides) {
         return false;
       }
       records.push(record);
+      // As a throwing subscriber of the records would, after the write.
+      if (options.upsertThrows) {
+        throw new Error("subscriber failed");
+      }
       return true;
     },
   };
@@ -381,6 +386,24 @@ describe("addAi", () => {
     assert.equal(run.records().length, 1);
     assert.ok(
       run.calls.log.includes("[GW COOP AI] war not saved after add: disk full"),
+      JSON.stringify(run.calls.log)
+    );
+  });
+
+  it("keeps the slot for an AI whose write a subscriber threw on", () => {
+    const run = active.build({ upsertThrows: true });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+
+    assert.equal(run.records().length, 1);
+    assert.equal(run.calls.sent.length, 1);
+    assert.equal(run.state.busy(), false);
+    assert.ok(
+      run.calls.log.some((line) =>
+        line.startsWith(
+          "[GW COOP AI] added with an error: Error: subscriber failed"
+        )
+      ),
       JSON.stringify(run.calls.log)
     );
   });

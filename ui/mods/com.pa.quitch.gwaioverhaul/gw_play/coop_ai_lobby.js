@@ -151,13 +151,20 @@ define([
       busy(false);
     };
 
+    var stored = function (playerId) {
+      return _.some(game.coopPlayerInventoryData(), function (record) {
+        return roster.isAiRecord(record) && record.playerId === playerId;
+      });
+    };
+
     // Runs in the campaign state queue, after the server shrank max_clients.
     // extraSeat: the AI filled a seat beyond those the war was made with.
     var writeNewAi = function (target, extraSeat) {
+      var record;
       try {
         var gwaio = params.gwaio();
         var identity = roster.nextAiIdentity(gwaio);
-        var record = params.createRecord(identity);
+        record = params.createRecord(identity);
         if (extraSeat) {
           record.gwaioAi.extraSeat = true;
         }
@@ -166,14 +173,19 @@ define([
         if (!game.upsertCoopPlayerInventoryData(record)) {
           throw new Error("record refused for " + identity.playerId);
         }
-
-        console.log(
-          LOG + "added " + record.gwaioAi.name + " as " + record.playerId
-        );
       } catch (error) {
-        failAdd(error, target);
-        return;
+        // The records' subscribers run inside the write, so a throw from one
+        // comes after the record is stored: that AI is in, and keeps its slot.
+        if (!record || !stored(record.playerId)) {
+          failAdd(error, target);
+          return;
+        }
+        console.error(LOG + "added with an error: " + describe(error));
       }
+
+      console.log(
+        LOG + "added " + record.gwaioAi.name + " as " + record.playerId
+      );
 
       saveWar("add", true);
       try {
