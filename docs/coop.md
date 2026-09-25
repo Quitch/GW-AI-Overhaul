@@ -197,10 +197,13 @@ open seeds `max_clients` from it, and so does a locked war's slot limit, so an
 AI's slot never reopens to a human. An AI the host added into a slot opened
 with "+", past the seats the war was made with, is marked `gwaioAi.extraSeat`
 and takes none of the war's seats, so the human it sat beside keeps theirs at
-the next session. The wrap is made synchronously at scene load, because a
-module callback can land after the session's saved settings apply. Until the
-roster loads it counts every AI as holding a war seat; `roster.humanSeats` is
-the rule.
+the next session. Which kind of seat an add fills is counted, not tracked: the
+open slots and the AIs in the war's seats, against the war's seats. An AI in a
+"+" seat is left out of that count, so the seat a player left is still the
+war's, and an AI that takes it holds it. The wrap is made synchronously at
+scene load, because a module callback lands after a new session's saved
+settings apply, so until the roster loads the wrap makes `roster.humanSeats`'
+count itself.
 
 `gwCampaignSlots` becomes stock's rows plus one row per AI. An AI row carries
 every field a stock row has, so the stock markup binds it unchanged. Its

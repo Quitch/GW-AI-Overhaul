@@ -209,7 +209,7 @@ define([
       var target = maxClients() - 1;
       var extraSeat = roster.takesExtraSeat(
         target + 1,
-        roster.aiRecords(game.coopPlayerInventoryData()).length,
+        game.coopPlayerInventoryData(),
         params.warSeats()
       );
       busy(true);

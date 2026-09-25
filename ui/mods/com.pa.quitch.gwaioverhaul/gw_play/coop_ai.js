@@ -9,21 +9,26 @@
   try {
     var game = model.game();
 
-    // coop_ai_roster.js's rule, needed before any module can load.
+    // coop_ai_roster.js's rules, needed before any module can load.
     var isAiRecord = function (record) {
       return !!record && _.isPlainObject(record.gwaioAi);
     };
     var savedAiCount = function () {
       return _.filter(game.coopPlayerInventoryData(), isAiRecord).length;
     };
+    // roster.humanSeats' count: the AIs in the war's own seats.
+    var seatedAiCount = function () {
+      return _.filter(game.coopPlayerInventoryData(), function (record) {
+        return isAiRecord(record) && !record.gwaioAi.extraSeat;
+      }).length;
+    };
 
     var mods = ko.observable();
 
     // Every session open seeds max_clients from this, and a locked war's slot
     // limit, so an AI's slot never reopens to a human. Wrapped here rather than
-    // in a module callback, which can land after the saved settings apply;
-    // until the roster loads, every AI counts as holding one of the war's
-    // seats, as roster.humanSeats counts one the host did not open for it.
+    // in a module callback, which lands after a new session's saved settings
+    // apply, so until the roster loads the count is made here.
     var savedCoopPlayers = model.savedCoopPlayers;
     var warSeats = function () {
       return savedCoopPlayers.apply(model, arguments);
@@ -32,7 +37,7 @@
       var all = game.coopPlayerInventoryData();
       return mods()
         ? mods().roster.humanSeats(warSeats(), all)
-        : Math.max(1, warSeats() - savedAiCount());
+        : Math.max(1, warSeats() - seatedAiCount());
     };
 
     // A session that came back from a battle waits for the humans who fought

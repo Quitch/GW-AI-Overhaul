@@ -229,12 +229,22 @@ describe("humanCapacity / roomForSlot", () => {
 
 describe("takesExtraSeat / humanSeats", () => {
   it("knows an AI added past the war's seats from one filling them", () => {
+    const seated = aiRecord(1);
+    const extra = aiRecord(2, {
+      gwaioAi: { serial: 2, name: "AI2", extraSeat: true },
+    });
+
     // War for 2: the host alone, a slot open for the second player.
-    assert.equal(roster.takesExtraSeat(2, 0, 2), false);
+    assert.equal(roster.takesExtraSeat(2, [], 2), false);
     // The host pressed "+" for a third seat.
-    assert.equal(roster.takesExtraSeat(3, 0, 2), true);
+    assert.equal(roster.takesExtraSeat(3, [], 2), true);
     // One AI already holds a war seat, and one slot is left.
-    assert.equal(roster.takesExtraSeat(1, 1, 2), false);
+    assert.equal(roster.takesExtraSeat(1, [seated], 2), false);
+    // One AI sits in a seat opened with "+", and the second player left: the
+    // slot they left is still the war's.
+    assert.equal(roster.takesExtraSeat(2, [extra], 2), false);
+    // Both AIs are in, and the host pressed "+" again.
+    assert.equal(roster.takesExtraSeat(2, [seated, extra], 2), true);
   });
 
   it("opens the war's seats less those its AIs hold, at least one", () => {

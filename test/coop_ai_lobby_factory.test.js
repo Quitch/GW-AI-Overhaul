@@ -436,6 +436,27 @@ describe("addAi", () => {
     assert.equal("extraSeat" in run.records()[0].gwaioAi, false);
   });
 
+  // An AI in a seat opened with "+" holds none of the war's, so the seat a
+  // player left is still one of them.
+  it("leaves unmarked an AI taking the seat a player left beside an AI in a seat opened past the war's", () => {
+    const run = active.build({
+      warSeats: 2,
+      max: 2,
+      control: { max_clients: 2 },
+      records: [
+        aiRecord(5, { gwaioAi: { serial: 5, name: "AI5", extraSeat: true } }),
+      ],
+    });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 1 });
+
+    const added = run
+      .records()
+      .find((record) => record.playerId !== "gwo_ai_5");
+    assert.ok(added, JSON.stringify(run.records()));
+    assert.equal("extraSeat" in added.gwaioAi, false);
+  });
+
   // The serial lives on the origin system; a kick changes records only.
   it("saves the stars with an add and not with a kick", () => {
     const run = active.build();

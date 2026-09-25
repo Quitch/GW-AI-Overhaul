@@ -83,19 +83,25 @@ define([
     return maxClients < humanCapacity(limit, locked, aiCount);
   };
 
+  // The AIs that hold one of the war's own seats.
+  var seatedAis = function (records) {
+    return _.filter(aiRecords(records), function (record) {
+      return !record.gwaioAi.extraSeat;
+    });
+  };
+
   // Whether an AI added now fills a seat beyond those the war was made with:
-  // one the host opened with "+". maxClients is the count before the add.
-  var takesExtraSeat = function (maxClients, aiCount, warSeats) {
-    return maxClients + aiCount > warSeats;
+  // one the host opened with "+". maxClients is the count before the add. An
+  // AI in such a seat holds none of the war's, so a seat a player left is
+  // still one of them.
+  var takesExtraSeat = function (maxClients, records, warSeats) {
+    return maxClients + seatedAis(records).length > warSeats;
   };
 
   // The human seats a new session opens with: the war's own, less those its
   // AIs hold. An AI in a seat the host opened for it takes none of them.
   var humanSeats = function (warSeats, records) {
-    var seated = _.filter(aiRecords(records), function (record) {
-      return !record.gwaioAi.extraSeat;
-    });
-    return Math.max(1, warSeats - seated.length);
+    return Math.max(1, warSeats - seatedAis(records).length);
   };
 
   // Every name a new AI must not take: the connected players', the records'
