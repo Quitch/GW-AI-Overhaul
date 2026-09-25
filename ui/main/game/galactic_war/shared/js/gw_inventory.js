@@ -1,15 +1,5 @@
-// GWO - a viewer applies the host's inventory every time the campaign loads, and
-// each loadout card's buff() banks, so without this a viewer collects the host's
-// loadouts as its own. The campaign half of `model` does not exist yet when that
-// first apply runs, so the signals are the session role and the game handed to
-// GWGamePatches.patch, which GWGame.load calls immediately beforehand with
-// perPlayerTechCards already set. gw_bank and gw_game_patches are both
-// dependency-free, so requiring them here cannot close the cycle that
-// shared/gw_common or shared/gw_game would. See coop.md.
-// Also GWO's: aiMods and addAIMods, setTag deleted after a pass beside getTag,
-// removeUnits removing every copy, tags.valueHasMutated() from getTag and setTag
-// so tag readers update, and the same patch hijack installing GWO's defeatTeam
-// before gw_play.js applies a battle result. See architecture.md.
+// GWO - changes are listed in shadowing.md; the viewer banking guard is in
+// coop.md, "Whose unlocks are whose".
 define([
   "shared/gw_bank",
   "shared/gw_game_patches",
@@ -28,6 +18,7 @@ define([
     }
   };
 
+  // GWO - GWGame.load calls patch immediately before the first applyCards.
   var stockPatch = gwoGamePatches.patch;
   gwoGamePatches.patch = function (game) {
     loadingAnotherPlayersCards = !!(
@@ -78,6 +69,7 @@ define([
         self.units.remove(unit);
       });
     },
+    // GWO
     addAIMods: function (aiMods) {
       var self = this;
       self.aiMods(self.aiMods().concat(aiMods));
@@ -112,7 +104,7 @@ define([
       var dirty = false;
       var finishApplyCards = function () {
         delete self.getTag;
-        delete self.setTag;
+        delete self.setTag; // GWO
         delete self.applyCards;
         delete self.isApplyingCards;
         if (foreignCards) {
@@ -262,6 +254,7 @@ define([
         mutated = true;
       }
 
+      // GWO - notify tag readers
       if (mutated) {
         self.tags.valueHasMutated();
       }
@@ -288,6 +281,7 @@ define([
         mutated = true;
       }
 
+      // GWO - notify tag readers
       if (mutated) {
         self.tags.valueHasMutated();
       }
