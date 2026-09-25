@@ -121,13 +121,24 @@ const fakeEffects = (options) => {
       : Promise.resolve(applyFake(saved));
   return {
     apply,
-    withCard: (saved, card, loadout) =>
-      options.failScoring
-        ? Promise.reject(new Error("scratch apply failed"))
-        : Promise.all([
-            apply(saved),
-            apply(coopAiEffects.addCard(saved, card, loadout)),
-          ]),
+    withCard: (saved, card, loadout) => {
+      if (options.failScoring) {
+        return Promise.reject(new Error("scratch apply failed"));
+      }
+      const pair = Promise.all([
+        apply(saved),
+        apply(coopAiEffects.addCard(saved, card, loadout)),
+      ]);
+      if (!options.slowScoringMs) {
+        return pair;
+      }
+      return pair.then(
+        (both) =>
+          new Promise((resolve) => {
+            setTimeout(() => resolve(both), options.slowScoringMs);
+          })
+      );
+    },
     withoutCard: (saved, index) =>
       Promise.all([
         apply(coopAiEffects.removeCard(saved, index)),
@@ -428,6 +439,26 @@ describe("coop_ai_driver.run", () => {
     assert.equal(run.calls.writes[0].patch.inventory, undefined);
   });
 
+  // A thin deck deals a short hand, and cards_coop_reroll.js counts each
+  // missing card as a reroll spent, so it would refuse this reroll.
+  it("counts a short hand's missing cards as rerolls spent, as the reroll code does", async () => {
+    const run = setup({
+      hands: { 1: [hand(["junk"])] },
+      rerolled: [hand(["air"])],
+    });
+    await run.driver.run();
+
+    assert.equal(run.calls.rerolls.length, 0);
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot"]);
+    assert.equal(record.techCardDealCount, 1);
+    assert.ok(
+      lines.some((line) => /-> declined \(nothing worth a slot\)/.test(line)),
+      JSON.stringify(lines)
+    );
+    assert.ok(!lines.some((line) => /fell back/.test(line)));
+  });
+
   it("declines a hand holding a loadout, which it would bank", async () => {
     const run = setup({ hands: { 1: [hand(["gwc_start_air"])] } });
     await run.driver.run();
@@ -513,6 +544,28 @@ describe("coop_ai_driver bounds", () => {
       JSON.stringify(lines)
     );
     assert.deepEqual(run.calls.running, [true, false]);
+  });
+
+  it("stops a timed-out decision before its next step, and logs no choice for it", async () => {
+    const run = setup({
+      decisionTimeoutMs: 20,
+      slowScoringMs: 60,
+      hands: { 1: [hand(["junk", "junk2", "junk3"])] },
+      rerolled: [hand(["air", "junk"])],
+    });
+    await run.driver.run();
+    // Past the moment the abandoned scoring lands.
+    await new Promise((resolve) => setTimeout(resolve, 120));
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_bot",
+      "junk",
+    ]);
+    assert.equal(run.calls.rerolls.length, 0);
+    assert.ok(
+      !lines.some((line) => /deal=1 star=0 hand=3/.test(line)),
+      JSON.stringify(lines)
+    );
   });
 
   it("declines when the hand never arrives, and counts the deal", async () => {

@@ -417,7 +417,9 @@ host's history, yielding between them. For each deal it:
    loadout: a loadout is banked, never held, and an AI never banks. It rerolls
    while its best card is poor and a reroll remains, through
    `cards_coop_reroll.js`'s `rerollHandForRecord`, a viewer's reroll that
-   stores, sends, and saves nothing. It declines a best card worth nothing or
+   stores, sends, and saves nothing. It counts the rerolls spent from the
+   hand's length, as that reroll does, so a thin deck's short hand has fewer
+   left. It declines a best card worth nothing or
    less, and takes one the bank has room for. With a full bank it deletes its
    weakest held card for a card clearly better, but never the loadout in first
    place, and otherwise declines.
@@ -447,7 +449,9 @@ Each step is bounded. A deal not settled within 20 seconds falls back to a
 quick pick: the first card of the hand in play that is not a loadout, if the
 bank has room and its apply lands. Otherwise the deal is declined, and still
 counted. An error falls back the same way, but only a timeout counts against
-the AI. An AI whose deals time out twice declines the rest of its deals without
+the AI. The decision a timeout abandons stops at its next step, so it queues no
+applies ahead of the next deal's and logs no choice that is never written. An
+AI whose deals time out twice declines the rest of its deals without
 dealing them, until `gw_play` next loads, because the driver keeps that count
 in memory. A write the queue has not run within 60 seconds is no longer waited
 for, and a later pass takes the deal up again. The write may still run, but

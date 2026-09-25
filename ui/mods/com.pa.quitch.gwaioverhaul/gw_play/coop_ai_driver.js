@@ -219,16 +219,31 @@ define([
 
     // The hand the AI settles on, rerolled while its best card is poor.
     // Resolves the outcome to write. progress.hand tracks the hand in play,
-    // for the fallback.
+    // for the fallback, and progress.abandoned ends a decision that is over.
     var decideDeal = function (record, entry, lookup, progress) {
       var star = params.starAt(entry.star);
       var client = clientOf(record);
       var context;
       var applied;
 
+      // A decision that timed out stops at its next step, so it queues no
+      // apply or reroll ahead of the next deal's, and logs no choice that is
+      // never written.
+      var live = function () {
+        if (progress.abandoned) {
+          throw new Error("deal " + entry.dealIndex + " abandoned");
+        }
+      };
+
       var judge = function (hand) {
+        live();
         progress.hand = hand;
-        var rerollsUsed = hand.rerollsUsed || 0;
+        // As cards_coop_reroll.js counts them: a thin deck deals a short
+        // hand, and each card it lacks counts as a reroll spent.
+        var rerollsUsed = Math.max(
+          hand.rerollsUsed || 0,
+          (hand.cardsOffered || 0) - (hand.cards || []).length
+        );
         var decide = function (scored, held) {
           return coopAiCards.decide({
             scored: scored,
@@ -248,6 +263,7 @@ define([
         };
 
         return scoreHand(record, hand, context, star).then(function (scored) {
+          live();
           var first = decide(scored, []);
           var decided =
             first.action === "decline" && first.reason === "bank full"
@@ -257,6 +273,7 @@ define([
               : Promise.resolve(first);
 
           return decided.then(function (decision) {
+            live();
             console.log(
               coopAiCards.describeHand({
                 name: client.name,
@@ -288,6 +305,7 @@ define([
       return params.effects
         .apply(record.inventory)
         .then(function (inventory) {
+          live();
           applied = inventory;
           context = contextFor(record, lookup);
           return params.dealHand({
@@ -358,6 +376,7 @@ define([
         decisionTimeoutMs,
         "deal " + entry.dealIndex
       ).then(null, function (error) {
+        progress.abandoned = true;
         if (timedOut(error)) {
           timeouts[record.playerId] = (timeouts[record.playerId] || 0) + 1;
         }

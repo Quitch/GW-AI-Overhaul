@@ -534,7 +534,9 @@ factory, a combat unit, a fabber, or a titan there.
 2. The best card is chosen, and a tie goes to the AI's decision stream.
 3. While a reroll remains and the best card scores under the threshold, the AI
    rerolls. The threshold is 4, plus 6 times the share of slots in use, less 3
-   for each reroll already spent.
+   for each reroll already spent. The rerolls spent are counted from the hand's
+   length, as a viewer's reroll counts them, so a thin deck's short hand has
+   fewer left.
 4. A best card worth 0 or less is declined, since nothing is worth a slot.
 5. A best card that the bank has room for is taken.
 6. With a full bank, the weakest held card that can go is deleted for the best
