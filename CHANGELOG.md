@@ -4,7 +4,7 @@
 
 ### Added
 
-- The host of a co-op war can add AI players to open slots; they fight beside the human players and can be kicked from their slot
+- The host of a co-op war can add AI players to open slots; they fight beside the human players, can be kicked from their slot, and with per-player tech each choose their own loadout and tech cards
 - The AI settings choose which AI brain the co-op AI players use, per race
 
 ### Changed

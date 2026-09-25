@@ -352,6 +352,22 @@
             model.gwoLoadout(cardName(card, loadoutId));
           });
 
+          // A co-op AI player's own loadout name under per-player tech, one
+          // lookup per loadout.
+          var aiLoadouts = {};
+          var aiLoadout = function (aiLoadoutId) {
+            if (!aiLoadoutId) {
+              return model.gwoLoadout;
+            }
+            if (!aiLoadouts[aiLoadoutId]) {
+              aiLoadouts[aiLoadoutId] = ko.observable("");
+              requireGW(["cards/" + aiLoadoutId], function (card) {
+                aiLoadouts[aiLoadoutId](cardName(card, aiLoadoutId));
+              });
+            }
+            return aiLoadouts[aiLoadoutId];
+          };
+
           var intelligence = function (subcommanderData, index) {
             var subcommander = subcommanderData.subcommander;
             // avoid modifying the original name to prevent duplication of addendum
@@ -468,7 +484,7 @@
               });
 
               // Co-op AI players, after the humans. Under shared tech they
-              // field the host's loadout.
+              // field the host's loadout, under per-player tech their own.
               _.forEach(
                 model.gwoCoopAi ? model.gwoCoopAi.panel() : [],
                 function (entry) {
@@ -478,7 +494,7 @@
                     color: entry.colour
                       ? gwoColour.rgb(entry.colour)
                       : playerColour,
-                    character: model.gwoLoadout,
+                    character: aiLoadout(entry.loadoutCardId),
                     iconFill: icon.fill,
                     iconOutline: icon.outline,
                   });

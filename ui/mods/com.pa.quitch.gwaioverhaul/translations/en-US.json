@@ -3819,9 +3819,13 @@
     "message": "Vehicle Factory Upgrade Tech enables the building of advanced units by basic vehicle manufacturing.",
     "description": "Description of the upgrade tech card 'Vehicle Factory Upgrade Tech', shown in the Data Bank card list, the card tooltip on the galaxy map and the tech deal after a battle. The card upgrades the basic Vehicle Factory: the advanced armour tank, artillery vehicle, laser tank and flak tank are added to the basic factory's build list (and to the AI's), so no advanced factory is needed. The leading card name must match the translation of the card name 'Vehicle Factory Upgrade Tech' exactly. Rendered as body text under the card name; the game appends a second paragraph about a new technology slot, so end the sentence with the same punctuation as the source. 'basic vehicle manufacturing' is a roundabout way of saying the basic vehicle factory. (gwaio_upgrade_vehiclefactory.js:9)"
   },
+  "View loadout and tech cards": {
+    "message": "View loadout and tech cards",
+    "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), under per-player tech, once the AI's loadout and tech cards can be shown. Stock's rows show the same tooltip for a human player, in English, since no locale of the game translates it; \"loadout\" and \"tech cards\" as in \"Waiting for loadout\" and \"Processing tech cards\". Imperative verb phrase, no full stop. (coop_ai_roster.js:166)"
+  },
   "Waiting for loadout": {
     "message": "Waiting for loadout",
-    "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), while that player's loadout and tech cards cannot be shown. Stock's rows show the same tooltip for a human player, in English, since no locale of the game translates it. No full stop. (coop_ai_roster.js:150)"
+    "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), while that player's loadout and tech cards cannot be shown. Stock's rows show the same tooltip for a human player, in English, since no locale of the game translates it. No full stop. (coop_ai_roster.js:167)"
   },
   "Waiting for players": {
     "message": "Waiting for players",

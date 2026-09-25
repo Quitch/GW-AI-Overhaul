@@ -70,11 +70,20 @@ function setup(overrides = {}) {
       onUpsert: null,
       slowDeals: false,
       saveFails: false,
+      aiClients: [],
+      aiDeciding: false,
     },
     overrides
   );
 
-  const calls = { upserts: [], deals: [], saves: [], snapshots: [], bank: [] };
+  const calls = {
+    upserts: [],
+    deals: [],
+    saves: [],
+    snapshots: [],
+    bank: [],
+    busy: [],
+  };
 
   const stubs = createGlobalStubs();
   stubs.setGlobal("model", {
@@ -148,6 +157,9 @@ function setup(overrides = {}) {
       isTreasureStar: (settings, starIndex) =>
         settings.treasureStar === starIndex,
     },
+    aiClients: () => options.aiClients,
+    aiDeciding: () => options.aiDeciding,
+    busy: (value) => calls.busy.push(value),
   });
 
   return {
@@ -228,6 +240,76 @@ describe("coop star cards refresh - when it runs at all", () => {
     const { coopStarCards, calls } = build({ turnState: "explore" });
     await coopStarCards.refresh();
     assert.deepEqual(starsDealt(calls), []);
+  });
+});
+
+describe("coop star cards refresh - co-op AI players", () => {
+  const AI = { id: "gwo_ai_1", name: "AI1", role: "ai" };
+
+  it("deals an AI player its own card on each star, with no viewer connected", async () => {
+    const { coopStarCards, calls, options } = build({
+      viewers: [],
+      aiClients: [AI],
+      records: { gwo_ai_1: { id: "gwo_ai_1", inventory: { cards: [] } } },
+      stars: [{}, {}],
+    });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(starsDealt(calls), [0, 1]);
+    assert.deepEqual(
+      calls.deals.map((request) => request.rng.playerKey),
+      ["gwo_ai_1", "gwo_ai_1"]
+    );
+    assert.deepEqual(cardIndexes(options.records.gwo_ai_1), ["0", "1"]);
+  });
+
+  it("waits while an AI player settles its deals", async () => {
+    const { coopStarCards, calls } = build({
+      aiClients: [AI],
+      aiDeciding: true,
+      records: {
+        alice: { id: "alice", inventory: { cards: [] } },
+        gwo_ai_1: { id: "gwo_ai_1", inventory: { cards: [] } },
+      },
+    });
+
+    await coopStarCards.refresh();
+    assert.deepEqual(starsDealt(calls), []);
+  });
+
+  // A re-deal owes every record, the AIs' included; the refresh settles an
+  // AI's debt as it does a viewer's.
+  it("settles an AI player's re-deal debt", async () => {
+    const { coopStarCards, options } = build({
+      viewers: [],
+      aiClients: [AI],
+      records: {
+        gwo_ai_1: {
+          id: "gwo_ai_1",
+          inventory: { cards: [] },
+          gwaioStarCards: {
+            turn: 6,
+            cards: { 0: { id: "old" } },
+            redealOwed: true,
+          },
+        },
+      },
+    });
+
+    await coopStarCards.refresh();
+
+    const field = options.records.gwo_ai_1.gwaioStarCards;
+    assert.equal(field.redealOwed, undefined);
+    assert.deepEqual(field.cards, { 0: { id: "card_for_0" } });
+  });
+
+  it("says it is busy while a refresh runs", async () => {
+    const { coopStarCards, calls } = build();
+    const running = coopStarCards.refresh();
+    assert.deepEqual(calls.busy, [true]);
+    await running;
+    assert.deepEqual(calls.busy, [true, false]);
   });
 });
 

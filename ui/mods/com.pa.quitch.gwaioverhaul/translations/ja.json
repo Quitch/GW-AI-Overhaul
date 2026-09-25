@@ -767,6 +767,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "陸戦車両クールダウンテクノは、全陸戦車両工場の建造間のクールダウン時間を半減させる。"
   },
+  "View loadout and tech cards": {
+    "message": "装備とテクノカードを表示"
+  },
   "Waiting for loadout": {
     "message": "装備を待機中"
   },

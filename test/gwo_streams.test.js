@@ -81,6 +81,8 @@ describe("gwo_streams fallback contract", () => {
     assert.equal(streams.coopRerollRng(undefined, "p", 1, 0), undefined);
     assert.equal(streams.battleRng(undefined, 1, 2), undefined);
     assert.equal(streams.coopAiPlayerRng(undefined, 1), undefined);
+    assert.equal(streams.coopAiLoadoutRng(undefined, 1), undefined);
+    assert.equal(streams.coopAiDecisionRng(undefined, 1, 2, 0), undefined);
     assert.equal(streams.iterationRng(undefined, 0), undefined);
     assert.equal(streams.cardRng(undefined, "gwc_minion"), undefined);
   });
@@ -99,6 +101,8 @@ describe("gwo_streams determinism", () => {
         treasure: draws(streams.treasureLoadoutRng(war, "uber-1", 3)),
         battle: draws(streams.battleRng(war, 3, 5)),
         coopAi: draws(streams.coopAiPlayerRng(war, 2)),
+        coopAiLoadout: draws(streams.coopAiLoadoutRng(war, 2)),
+        coopAiDecision: draws(streams.coopAiDecisionRng(war, 2, 3, 1)),
       };
     };
     assert.deepEqual(build(), build());
@@ -145,6 +149,22 @@ describe("gwo_streams determinism", () => {
     assert.notDeepEqual(
       draws(streams.coopAiPlayerRng(war, 1)),
       draws(streams.coopAiPlayerRng(war, 2))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiLoadoutRng(war, 1)),
+      draws(streams.coopAiLoadoutRng(war, 2))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiDecisionRng(war, 1, 3, 0)),
+      draws(streams.coopAiDecisionRng(war, 2, 3, 0))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiDecisionRng(war, 1, 3, 0)),
+      draws(streams.coopAiDecisionRng(war, 1, 4, 0))
+    );
+    assert.notDeepEqual(
+      draws(streams.coopAiDecisionRng(war, 1, 3, 0)),
+      draws(streams.coopAiDecisionRng(war, 1, 3, 1))
     );
   });
 

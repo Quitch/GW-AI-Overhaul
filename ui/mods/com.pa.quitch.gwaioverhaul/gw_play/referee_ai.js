@@ -245,14 +245,18 @@ define([
 
   var getRefereeInventoryAiMods = gwoAI.getInventoryAiMods;
 
+  // Every other player's AI mods: the connected viewers' and, under
+  // per-player tech, the co-op AI players'.
   var getConnectedClientAiMods = function (game, connectedClients) {
     var connectedClientAiMods = [];
 
     _.forEach(
-      refereeCoop.getConnectedViewerInventories(game, connectedClients),
-      function (viewer) {
+      refereeCoop
+        .getConnectedViewerInventories(game, connectedClients)
+        .concat(refereeCoop.getCoopAiInventories(game)),
+      function (player) {
         connectedClientAiMods = connectedClientAiMods.concat(
-          getRefereeInventoryAiMods(viewer.inventory)
+          getRefereeInventoryAiMods(player.inventory)
         );
       }
     );
@@ -730,9 +734,22 @@ define([
         );
       }
     );
-    // A race co-op AI player's own tree, on its co-op brain. See coop.md.
+    // A race co-op AI player's own tree, on its co-op brain, and under
+    // per-player tech its Sub Commanders' as a viewer's. See coop.md.
     _.forEach(coopAis, function (coopAi) {
       add("coop", coopAi.race, coopAi.path, coopAi.inventory);
+      if (coopAi.perPlayer) {
+        add(
+          "subcommander",
+          coopAi.race,
+          gwoAI.getSubcommanderPathForViewer(
+            coopAi.inventory,
+            coopAi.tag,
+            coopAi.race
+          ),
+          coopAi.inventory
+        );
+      }
     });
 
     return _.values(jobs);
@@ -741,11 +758,36 @@ define([
   // An MLA co-op AI player's tree: the source copied to its own scoped path
   // with its AI mods, as a viewer's Sub Commanders' is. Nothing else is
   // written: the scope is its isolation, so no Cluster routing either. AIs
-  // sharing a tree share one walk.
+  // sharing a tree share one walk. Under per-player tech its Sub Commanders
+  // get a tree of their own too, exactly as a viewer's do.
   var coopAiTreeRequests = function (coopAis, launch) {
     var requests = {};
 
     _.forEach(coopAis, function (coopAi) {
+      if (coopAi.perPlayer) {
+        var source = gwoAI.getAIPathSource(
+          "subcommander",
+          undefined,
+          coopAi.inventory
+        );
+        var destination = gwoAI.getSubcommanderPathForViewer(
+          coopAi.inventory,
+          coopAi.tag
+        );
+        requests[destination] = {
+          source: source,
+          request: _.assign({}, launch, {
+            aiPaths: _.assign({}, launch.aiPaths, {
+              subCommanderSource: source,
+              subCommanderDestination: destination,
+            }),
+            inventory: coopAi.inventory,
+            scopeToken: refereeAIPaths.getScopeToken(coopAi.tag, coopAi.tag),
+            forceSubCommanderScope: true,
+          }),
+        };
+      }
+
       if (!gwoRaces.isMla(coopAi.race) || requests[coopAi.path]) {
         return;
       }

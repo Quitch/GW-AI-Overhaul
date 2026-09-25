@@ -767,6 +767,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "Technologia odnowienia fabryk pojazdów skraca o połowę czas odnowienia między kolejnymi jednostkami we wszystkich fabrykach pojazdów."
   },
+  "View loadout and tech cards": {
+    "message": "Pokaż wyposażenie i karty technologii"
+  },
   "Waiting for loadout": {
     "message": "Oczekiwanie na wyposażenie"
   },

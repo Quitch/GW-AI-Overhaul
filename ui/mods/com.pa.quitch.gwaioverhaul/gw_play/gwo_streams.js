@@ -114,6 +114,23 @@ define([
       return warRng && warRng.stream("coop_ai_player", index(serial));
     },
 
+    // Ties between a new AI's equally scored starting loadouts.
+    coopAiLoadoutRng: function (warRng, serial) {
+      return warRng && warRng.stream("coop_ai_loadout", index(serial));
+    },
+
+    // Ties in an AI's choice on one deal, by the rerolls spent on it, so a
+    // reload mid-decision settles the same way.
+    coopAiDecisionRng: function (warRng, serial, dealIndex, rerollsUsed) {
+      return (
+        warRng &&
+        warRng
+          .stream("coop_ai_decision", index(serial))
+          .stream("deal", index(dealIndex))
+          .stream("reroll", counter(rerollsUsed))
+      );
+    },
+
     battleRng: function (warRng, starIndex, turns) {
       return (
         warRng &&

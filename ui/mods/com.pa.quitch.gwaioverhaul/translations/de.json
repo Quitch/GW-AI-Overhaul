@@ -767,6 +767,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "Die Fahrzeug-Abklingzeit-Technologie halbiert die Abklingzeit zwischen Bauaufträgen für alle Fahrzeugfabriken."
   },
+  "View loadout and tech cards": {
+    "message": "Waffenladung und Technologiekarten ansehen"
+  },
   "Waiting for loadout": {
     "message": "Warten auf Waffenladung"
   },

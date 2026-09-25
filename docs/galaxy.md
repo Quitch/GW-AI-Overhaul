@@ -136,22 +136,25 @@ That scene re-derives the root from the seed stamped on the save:
 Every parent key lives in `gw_play/gwo_streams.js`, so a reader can check this table
 against one place. Some children are minted where they are drawn: `minion.<n>` in
 `cards_deal_helpers.js`'s `buildGeneralCommanderMinions`, the `landing_*` streams in
-`referee_config_setup.js`, and a co-op AI player's `name`, `commander` and `penchant`
-in `coop_ai_roster.js`'s `buildAiRecord`.
+`referee_config_setup.js`, a co-op AI player's `name`, `commander`, and
+`penchant` in `coop_ai_roster.js`'s `buildAiRecord`, and its `race` in
+`coop_ai.js`'s `createRecord`.
 
-| Stream                                                      | Consumers                                          |
-| ----------------------------------------------------------- | -------------------------------------------------- |
-| `general_commander.<player>` → `minion.<n>`                 | the General Commander loadout's two Sub Commanders |
-| `explore.<star>` → `turn.<n>` → `reroll.<n>`                | the host's own tech offer at that star             |
-| `ai_star.<star>` → `turn.<n>`                               | the card shown on a selectable AI star that turn   |
-| `coop_ai_star.<player>` → `star.<n>` → `turn.<n>`           | that star's card for one co-op viewer              |
-| `treasure_loadout.<player>` → `star.<n>`                    | that player's treasure-planet loadout offer        |
-| `coop_deal.<player>` → `deal.<index>`                       | a co-op viewer's pending offer                     |
-| ↳ `reroll.<n>`                                              | that viewer's rerolled offer                       |
-| ↳ `iteration.<i>`                                           | the roll picking the i-th card of a hand           |
-| ↳↳ `<cardId>`                                               | that card's own draws inside `deal()`              |
-| `battle.<star>` → `turn.<n>` → `landing_*`                  | each army's landing policy                         |
-| `coop_ai_player.<serial>` → `name`, `commander`, `penchant` | a co-op AI player's name, commander and penchant   |
+| Stream                                                              | Consumers                                               |
+| ------------------------------------------------------------------- | ------------------------------------------------------- |
+| `general_commander.<player>` → `minion.<n>`                         | the General Commander loadout's two Sub Commanders      |
+| `explore.<star>` → `turn.<n>` → `reroll.<n>`                        | the host's own tech offer at that star                  |
+| `ai_star.<star>` → `turn.<n>`                                       | the card shown on a selectable AI star that turn        |
+| `coop_ai_star.<player>` → `star.<n>` → `turn.<n>`                   | that star's card for one co-op viewer or AI player      |
+| `treasure_loadout.<player>` → `star.<n>`                            | that player's treasure-planet loadout offer             |
+| `coop_deal.<player>` → `deal.<index>`                               | a co-op viewer's pending offer, or an AI player's hand  |
+| ↳ `reroll.<n>`                                                      | that player's rerolled offer                            |
+| ↳ `iteration.<i>`                                                   | the roll picking the i-th card of a hand                |
+| ↳↳ `<cardId>`                                                       | that card's own draws inside `deal()`                   |
+| `battle.<star>` → `turn.<n>` → `landing_*`                          | each army's landing policy                              |
+| `coop_ai_player.<serial>` → `name`, `commander`, `penchant`, `race` | a co-op AI player's name, commander, penchant, and race |
+| `coop_ai_loadout.<serial>`                                          | a tie between a new AI player's best starting loadouts  |
+| `coop_ai_decision.<serial>` → `deal.<index>` → `reroll.<n>`         | a tie between the best cards of an AI player's hand     |
 
 The goal is a war that reproduces **only when it is played the same way**. That
 means the same seed, visiting the same stars, in the same order, winning at the same
@@ -184,12 +187,22 @@ The rest of the components are:
 - **`<player>`**: this is `record.playerId`, the uberId, not `client_id`. A viewer who
   reconnects must get their own minions and offers back. Whitespace in any label is
   squashed to `_`, because `gwo_rng` joins a label and index with a space. Otherwise
-  `stream("a b")` would collide with `stream("a", "b")`.
+  `stream("a b")` would collide with `stream("a", "b")`. A co-op AI player's
+  `record.playerId` is its `gwo_ai_<serial>`, so under per-player tech its
+  hands, star cards, and General Commander Sub Commanders come from streams of
+  its own.
 - **`coop_ai_player.<serial>`**: `gw_play/coop_ai_roster.js` draws a co-op AI
   player's identity from it when the host adds one, each part from its own
   child. The serial never repeats, so an AI added after a kick draws from a
   stream of its own. It can still land on the kicked AI's name or commander:
-  the kick returned both to the pool the draw picks from.
+  the kick returned both to the pool the draw picks from. Under Separate races
+  its race comes from the `race` child, drawn in `gw_play/coop_ai.js`.
+- **`coop_ai_loadout.<serial>`** and **`coop_ai_decision.<serial>`**: under
+  per-player tech a co-op AI player chooses its starting loadout and its cards
+  by score ([`coop.md`](coop.md), "AI players' tech"). These streams only break
+  a tie between equal scores. The decision stream is keyed by the deal and the
+  rerolls spent on it, like the hand it judges, so a reload mid-decision settles
+  the same way.
 - **`<cardId>`**: a deal calls `deal()` on every card in the deck and keeps one result.
   A shared sequential rng would therefore couple every card's draws to every other
   card's draw count. With a key per card id, adding or removing a draw inside one card

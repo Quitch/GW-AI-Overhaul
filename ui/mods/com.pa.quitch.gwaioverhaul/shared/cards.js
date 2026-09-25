@@ -40,8 +40,19 @@ define(function () {
     });
   };
 
-  // The saved inventories of every connected co-op player bar the host, whose
-  // own is the live GWInventory.
+  // A co-op AI player's record (gwaioAi marks one) counts while a session is
+  // active: an AI sits out a war played without one.
+  var isActiveAiPlayer = function (data) {
+    return (
+      _.isPlainObject(data.gwaioAi) &&
+      _.isFunction(model.gwCampaignActive) &&
+      !!model.gwCampaignActive()
+    );
+  };
+
+  // The saved inventories of every co-op player in the session bar the host,
+  // whose own is the live GWInventory: the connected viewers, and the AI
+  // players.
   var connectedPlayerInventories = function (game) {
     var activeGame = game || model.game();
     var connectedClients = getConnectedClients();
@@ -52,7 +63,9 @@ define(function () {
 
     return _.filter(
       _.map(records, function (data) {
-        return isConnectedPlayerInventory(data, connectedClients)
+        return data &&
+          (isActiveAiPlayer(data) ||
+            isConnectedPlayerInventory(data, connectedClients))
           ? data.inventory
           : undefined;
       }),

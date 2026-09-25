@@ -113,6 +113,10 @@ Ordering matters and is not obvious:
   behaviour. A `dull()` that removes a whole group can therefore wipe units that
   other cards granted.
 
+A card's `buff()` and `dull()` also run speculatively, on the host, whenever a
+co-op AI player judges the card. See "How AI players judge a card" for what that
+asks of them.
+
 ## Referee-time cards
 
 The three `gwaio_upgrade_subcommander_*` cards carry an empty `buff`/`dull`. They
@@ -449,6 +453,150 @@ at `path` need only expose `hasStartCard` and `addStartCard`.
 `gwc_start` are tested first and always go to the base game's bank. The base game
 reads that bank directly, so a mod cannot capture them. This is also why a mod's
 loadout ids must contain `_start_` but must not begin `gwc_start`.
+
+## How AI players judge a card
+
+Under per-player tech the host chooses a co-op AI player's cards for it
+([`coop.md`](coop.md), "AI players' tech"). The AI judges a card by what the
+card observably does to its inventory, never by its id. A card from any mod is
+therefore judged like one of GWO's own, and needs nothing registered to be
+judged.
+
+### Applying the card
+
+`gw_play/coop_ai_effects.js` finds a card's effect by applying it. It builds a
+scratch inventory from the AI's saved one with the card added: a loadout first,
+as the war's start card is, and anything else last. It runs the real
+`GWInventory.applyCards` over that, so every card's `buff()` and `dull()` run in
+their usual order, with GWO's and the base game's banks held shut
+(`bank.applyInventoryHeld`). The inventory with the card is then compared with
+the inventory without it. A held card is valued the other way round, for a
+swap: the inventory without it against the inventory with it.
+
+Three rules keep this affordable and safe:
+
+- **One apply runs at a time.** The bank hold and the card modules are shared.
+- **Each apply has a timeout**, 5 seconds, set in `gw_play/cards.js`. An apply
+  that never finishes is abandoned, and its hold is released.
+- **An apply is cached by what it applies**: the cards and their tags, from
+  which `applyCards` rebuilds everything else. A failed apply is dropped from
+  the cache.
+
+### Scoring
+
+`shared/coop_ai_cards.js` turns the difference into a score. It is pure, and
+its parts carry the names the debug lines print
+([`live-testing.md`](live-testing.md), "AI players"):
+
+- **`unlock`**: the worth of the units the AI holds after the card, less their
+  worth before it. A unit is worth its class's weight: 10 for a factory or a
+  titan, 6 for a superweapon or a combat unit, 4 for a fabber, 3 for a defence,
+  2 for metal or energy, nothing for a commander, and 1 for anything else. An
+  advanced unit is worth 1.3 times as much. Each further unit of the same cell
+  is worth 0.6 of the one before, a unit the AI's commander cannot reach a
+  quarter, and a unit in a domain that no teammate fields 1.5 times as much.
+  Each domain the AI fields adds 8, so opening one is worth it on its own.
+- **`mods`**: stat mods, one file at a time. A file's value is the mean
+  direction of its mods, times the worth of the fielded units that own the file.
+  A multiplier's direction is its gain, an add's is 0.25 with the add's sign,
+  and any other op counts 0.25. A multiplier's or an add's direction is reversed
+  on a cost, cooldown, delay, build time, demand, consumption, or reload path.
+  Every direction is held between −1 and 2. Mods on the domain the AI fields
+  most count 1.2 times. Copies of the same mods already held divide the value,
+  and a file that no fielded unit owns is worth nothing. Mods a card removes
+  count against it.
+- **`minions`**: 12 for the AI's first Sub Commander, and 0.7 of the one before
+  for each after it.
+- **`aiMods`**: 0.5 for each AI mod added, up to 1.5.
+- **`slots`**: the slots the card adds, less the one it takes, priced by how
+  full the bank is: 0.5 plus 6 times the share of slots in use.
+- **`floor`**: for a card whose effect shows only in battle. When its `unlock`,
+  `mods`, `minions`, and `aiMods` parts are all 0, and it takes one slot without
+  adding one, a card without units in `model.gwoCardsToUnits` scores 4 times its
+  own deal chance out of 100. Its `deal()` runs on a fresh inventory loaded from
+  the AI's applied inventory without the card, with no `rng`, and a throw counts
+  as a chance of 0.
+
+The score is the sum, rounded to one decimal place, and the debug line prints
+every part. A new AI's starting loadouts are scored the same way, each against
+the base start card alone.
+
+The team is everyone who fights beside the AI: the host, the connected viewers,
+and the other AI players. A teammate fields a domain when it can reach a
+factory, a combat unit, a fabber, or a titan there.
+
+### Deciding
+
+`decide` turns a scored hand into an action:
+
+1. A hand that holds a loadout is declined whole. A loadout is banked, never
+   held, and an AI never banks.
+2. The best card is chosen, and a tie goes to the AI's decision stream.
+3. While a reroll remains and the best card scores under the threshold, the AI
+   rerolls. The threshold is 4, plus 6 times the share of slots in use, less 3
+   for each reroll already spent.
+4. A best card worth 0 or less is declined, since nothing is worth a slot.
+5. A best card that the bank has room for is taken.
+6. With a full bank, the weakest held card that can go is deleted for the best
+   card, when the best card beats it by more than 3. The loadout in first place
+   never goes, and nor does a card whose removal would not free a slot.
+7. Otherwise the hand is declined, the bank being full.
+
+The numbers here are `WEIGHTS` in `shared/coop_ai_cards.js`. They are tuning,
+set from the debug lines, so `test/coop_ai_cards.test.js` pins orderings and
+policies rather than values. Change a weight there, and this section with it.
+
+### Units
+
+The scorer asks three questions of the AI's units: each unit's cell (its
+domain, tier, and class), which units own the file a mod names, and which held
+units the AI's commander can reach. `shared/coop_ai_units.js` answers them in
+two ways, and every debug line names the one it used:
+
+- **From the specs** (`via=specs`). These are `race_cells.load()`'s specs, read
+  once the host opens a session, and each unit's cell comes from
+  `unit_cells.buildIndex`. A file's owners are the unit it is, the units that
+  carry it as a part, and the units that inherit it through `base_spec`, or
+  failing all three, the units in its directory. Reach follows the build lists:
+  what the commander builds, what that builds, and so on. A commander the
+  lookup does not know reaches everything, because an unknown builder is no
+  reason to value a unit at a quarter.
+- **From the unit groups** (`via=groups`). This is membership in
+  `shared/unit_groups.js`, most specific group first. It knows vanilla units
+  only, since a race's units are in no group. It has no build lists either, so
+  a combat unit or a fabber counts as reached while a factory of its domain is
+  held, and anything else always does.
+
+The groups stand in when the specs are not in within 8 seconds of the session
+opening, or fail to load. The specs replace them when they land.
+
+### What this asks of a card
+
+Every card in every hand an AI is offered is applied on the host, and so is
+every held card when the AI's bank is full. A card's `buff()` and `dull()`
+therefore run far more often than the card is taken, on inventories that are
+not the host's. So a card must:
+
+- **Be deterministic.** The same cards and tags must give the same result. The
+  effect is cached by exactly those, and after a take the inventory the AI
+  keeps is the one the judging apply produced. A random choice belongs in
+  `deal()`'s `params`, which travel with the card.
+- **Be fast.** Each apply has 5 seconds, and each deal 20. A deal that fails or
+  runs out falls back to a quick pick, and an AI whose deals run out twice
+  stops choosing until `gw_play` next loads.
+- **Touch only the inventory it is passed.** GWO's and the base game's banks
+  are held shut during the apply, and nothing else is. Anything else a `buff()`
+  writes, such as `model.game().inventory()`, `localStorage`, or a mod's own
+  state, is written on the host whenever an AI considers the card.
+- **Never throw.** The shadowed `gw_inventory.js` catches the throw, logs it,
+  and finishes the apply. A card that throws before it changes anything shows
+  no effect, and so earns at most its floor.
+
+Register a card in `model.gwoCardsToUnits` only for the units it affects. A
+card that names units there, yet changes nothing the AI can see, is taken to
+affect units the AI does not field, so it gets no floor. A card whose effect
+shows only in battle, registered with units, therefore scores as the cost of
+its slot alone, and an AI never chooses it.
 
 ## Cluster and buildable types
 

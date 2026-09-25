@@ -776,6 +776,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "La Tecnologia Ricarica Veicoli dimezza il tempo di ricarica tra una costruzione e l'altra per tutte le fabbriche di veicoli."
   },
+  "View loadout and tech cards": {
+    "message": "Visualizza l'equipaggiamento e le carte tecnologia"
+  },
   "Waiting for loadout": {
     "message": "In attesa dell'equipaggiamento"
   },

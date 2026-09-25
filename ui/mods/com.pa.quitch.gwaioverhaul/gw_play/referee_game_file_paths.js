@@ -134,6 +134,65 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return files;
   };
 
+  // The units a player's specs are built for, and the retag mods its
+  // commanders need. A race player fields the race's units of the cells the
+  // vanilla ones held occupy, and a kept vanilla unit (the Colonel) is
+  // retagged so the race can build it; an MLA player keeps everything held and
+  // gains the add-on units of those cells. params: held, cells, race, isMla,
+  // commanders, unitCells, gwoRaces. See races.md.
+  var specPlan = function (params) {
+    var cells = params.cells;
+    var unitCells = params.unitCells;
+    var gwoRaces = params.gwoRaces;
+    var specs = params.held;
+    if (cells) {
+      specs = (params.isMla ? unitCells.addonUnitsFor : unitCells.raceUnitsFor)(
+        params.held,
+        cells.vanilla,
+        cells.race
+      );
+    }
+    var keptVanilla =
+      cells && !params.isMla
+        ? _.difference(
+            unitCells.heldCommanderUnits(params.held, cells.vanilla),
+            params.commanders
+          )
+        : [];
+
+    return {
+      specs: specs,
+      retagMods: _.flatten(
+        _.map(params.commanders, function (commander) {
+          return gwoRaces.commanderModsFor(params.race, commander);
+        }).concat(
+          _.map(keptVanilla, function (unit) {
+            return gwoRaces.unitRetagMods(params.race, unit);
+          })
+        )
+      ),
+    };
+  };
+
+  // A per-player co-op AI player's own files: its specs with its tech
+  // applied, and the unit maps its Sub Commanders' tree reads. params: tag,
+  // specFiles, subcommanderPath, maps ({ classic, x1 }), genAIUnitMap, mods,
+  // extraMods, gwoSpecs. See coop.md, "AI players' tech".
+  var buildCoopAiFiles = function (params) {
+    var tag = params.tag;
+    var files = _.assign({}, params.specFiles);
+    files[params.subcommanderPath + "unit_maps/ai_unit_map.json" + tag] =
+      params.genAIUnitMap(params.maps.classic, tag);
+    files[params.subcommanderPath + "unit_maps/ai_unit_map_x1.json" + tag] =
+      params.genAIUnitMap(params.maps.x1, tag);
+
+    var mods = (params.mods || []).concat(params.extraMods || []);
+    if (mods.length) {
+      params.gwoSpecs.mod(files, mods, tag);
+    }
+    return files;
+  };
+
   // Mirrors the fetch, parse and error handling the base game's genUnitSpecs
   // does internally.
   var specFetch = function (item) {
@@ -222,6 +281,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     resolveAiUnitMapPaths: resolveAiUnitMapPaths,
     buildPlayerFiles: buildPlayerFiles,
     coopAiMapFiles: coopAiMapFiles,
+    specPlan: specPlan,
+    buildCoopAiFiles: buildCoopAiFiles,
     specFetch: specFetch,
   };
 });

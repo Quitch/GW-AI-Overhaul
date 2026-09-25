@@ -42,9 +42,11 @@ define([
 
     var mods = hostMods;
     _.forEach(
-      refereeCoop.getConnectedViewerInventories(game),
-      function (viewer) {
-        mods = mods.concat(viewer.inventory.mods);
+      refereeCoop
+        .getConnectedViewerInventories(game)
+        .concat(refereeCoop.getCoopAiInventories(game)),
+      function (player) {
+        mods = mods.concat(player.inventory.mods || []);
       }
     );
 
@@ -179,6 +181,13 @@ define([
         var coopAiFileGen = $.Deferred();
         var filesToProcess = [playerFileGen, coopAiFileGen];
         var coopAis = self.coopAis || [];
+        // Under per-player tech each co-op AI player fields its own units on
+        // its own tag, as a viewer does. See coop.md, "AI players' tech".
+        var ownFileAis = _.filter(coopAis, "perPlayer");
+        var ownFileGens = _.map(ownFileAis, function () {
+          return $.Deferred();
+        });
+        filesToProcess = filesToProcess.concat(ownFileGens);
 
         var inventory = game.inventory();
         var playerRace = gwoRaces.raceOf(inventory);
@@ -349,39 +358,86 @@ define([
               })
               .then(null, fail);
 
+            // A per-player AI's own specs and its Sub Commanders' maps, which
+            // read the ally brain as the host's do.
+            _.forEach(ownFileAis, function (coopAi, index) {
+              var saved = coopAi.inventory;
+              var race = coopAi.race;
+              var isMla = gwoRaces.isMla(race);
+              var commanders = [
+                _.get(saved, "tags.global.commander") || coopAi.commander,
+              ].concat(_.pluck(saved.minions || [], "commander"));
+
+              cellsFor(race)
+                .then(function (cells) {
+                  var plan = gameFilePaths.specPlan({
+                    held: (saved.units || []).concat(model.gwoSpecs),
+                    cells: cells,
+                    race: race,
+                    isMla: isMla,
+                    commanders: commanders,
+                    unitCells: unitCells,
+                    gwoRaces: gwoRaces,
+                  });
+                  var maps = isMla
+                    ? { classic: aiUnitMap, x1: aiX1UnitMap }
+                    : armyMaps("subcommander", race, cells);
+
+                  return Promise.resolve(maps).then(function (unitMaps) {
+                    return genUnitSpecs(plan.specs, coopAi.tag).then(
+                      function (specFiles) {
+                        var has = function (file) {
+                          return Object.prototype.hasOwnProperty.call(
+                            specFiles,
+                            file + coopAi.tag
+                          );
+                        };
+                        ownFileGens[index].resolve(
+                          gameFilePaths.buildCoopAiFiles({
+                            tag: coopAi.tag,
+                            specFiles: specFiles,
+                            subcommanderPath:
+                              gwoAI.getSubcommanderPathForViewer(
+                                saved,
+                                coopAi.tag,
+                                race
+                              ),
+                            maps: unitMaps,
+                            genAIUnitMap: GW.specs.genAIUnitMap,
+                            mods: cells
+                              ? unitCells.expandMods(
+                                  saved.mods || [],
+                                  cells.vanilla,
+                                  cells.race,
+                                  has
+                                )
+                              : saved.mods || [],
+                            extraMods: plan.retagMods,
+                            gwoSpecs: gwoSpecs,
+                          })
+                        );
+                      }
+                    );
+                  });
+                })
+                .then(null, fail);
+            });
+
             var playerIsMla = gwoRaces.isMla(playerRace);
 
             cellsFor(playerRace)
               .then(function (cells) {
-                // A race player fields the race's units of the cells the
-                // vanilla ones held occupy; a kept vanilla unit (the Colonel)
-                // is retagged so the race can build it. An MLA player keeps
-                // everything held and gains the add-on units of those cells.
-                // See races.md.
-                var playerSpecs = held;
-                if (cells) {
-                  playerSpecs = (
-                    playerIsMla
-                      ? unitCells.addonUnitsFor
-                      : unitCells.raceUnitsFor
-                  )(held, cells.vanilla, cells.race);
-                }
-                var keptVanilla =
-                  cells && !playerIsMla
-                    ? _.difference(
-                        unitCells.heldCommanderUnits(held, cells.vanilla),
-                        playerCommanders
-                      )
-                    : [];
-                var playerExtraMods = _.flatten(
-                  _.map(playerCommanders, function (commander) {
-                    return gwoRaces.commanderModsFor(playerRace, commander);
-                  }).concat(
-                    _.map(keptVanilla, function (unit) {
-                      return gwoRaces.unitRetagMods(playerRace, unit);
-                    })
-                  )
-                );
+                var plan = gameFilePaths.specPlan({
+                  held: held,
+                  cells: cells,
+                  race: playerRace,
+                  isMla: playerIsMla,
+                  commanders: playerCommanders,
+                  unitCells: unitCells,
+                  gwoRaces: gwoRaces,
+                });
+                var playerSpecs = plan.specs;
+                var playerExtraMods = plan.retagMods;
                 // MLA keeps the enemy brain's map for the player, as it always has.
                 var playerMaps = gwoRaces.isMla(playerRace)
                   ? { classic: aiUnitMap, x1: aiX1UnitMap }

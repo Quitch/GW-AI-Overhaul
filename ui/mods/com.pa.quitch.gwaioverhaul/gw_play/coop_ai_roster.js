@@ -131,11 +131,26 @@ define([
     return sharedArmy ? 1 : Math.max(1, connectedCount);
   };
 
+  // Whether a record holds what the stock inventory modal shows, as
+  // gw_play.js's validateGwCampaignInventoryRecord asks.
+  var inventoryReady = function (record) {
+    var inventory = record && record.inventory;
+    return !!(
+      inventory &&
+      _.isArray(inventory.cards) &&
+      _.isNumber(inventory.maxCards) &&
+      inventory.maxCards >= 0 &&
+      _.isString(record.loadoutCardId) &&
+      record.loadoutCardId.length
+    );
+  };
+
   // An AI's row in the slot list, with every field a stock row carries, so the
   // stock markup binds it unchanged. canKick is false: GWO's own Kick removes
-  // an AI.
-  var slotRows = function (records, firstIndex, loadingTooltip) {
+  // an AI. Under per-player tech its Inventory button opens its record, by id.
+  var slotRows = function (records, firstIndex, loadingTooltip, perPlayer) {
     return _.map(records, function (record, index) {
+      var available = !!perPlayer && inventoryReady(record);
       return {
         index: firstIndex + index,
         id: record.playerId,
@@ -145,9 +160,11 @@ define([
         loadingStatus: "",
         loadingTooltip: loadingTooltip,
         empty: false,
-        showInventory: false,
-        inventoryAvailable: false,
-        inventoryTooltip: "!LOC:Waiting for loadout",
+        showInventory: !!perPlayer,
+        inventoryAvailable: available,
+        inventoryTooltip: available
+          ? "!LOC:View loadout and tech cards"
+          : "!LOC:Waiting for loadout",
         canRemove: false,
         canKick: false,
         gwoAi: true,
@@ -238,6 +255,44 @@ define([
     return chosen || params.fallback;
   };
 
+  // Under Separate races, the race a new AI fields: one the war offers that no
+  // player fields yet, else any it offers, else the fallback.
+  var pickAiRace = function (offer, fielded, rng, fallback) {
+    var free = _.difference(offer || [], fielded || []);
+    var pool = free.length ? free : offer || [];
+    var picked = rng ? rng.pick(pool) : _.sample(pool);
+    return picked || fallback;
+  };
+
+  // The loadouts a new AI may start with under per-player tech: the always-open
+  // starting ones and the host's unlocked ones, less any its race may not field.
+  // params: starting and locked (ids), unlocked(id), raceLocks(id).
+  var loadoutCandidates = function (params) {
+    var ids = _.uniq(
+      (params.starting || []).concat(
+        _.filter(params.locked || [], params.unlocked)
+      )
+    );
+    return _.reject(ids, params.raceLocks);
+  };
+
+  // The units and commander of each of an AI's teammates, from a GWInventory
+  // or a saved inventory, for the team factor in its card scores.
+  var teammates = function (inventories) {
+    return _.map(_.compact(inventories), function (inventory) {
+      var saved = _.isFunction(inventory.units)
+        ? {
+            units: inventory.units(),
+            commander: inventory.getTag("global", "commander"),
+          }
+        : {
+            units: inventory.units,
+            commander: _.get(inventory, "tags.global.commander"),
+          };
+      return { units: saved.units || [], commander: saved.commander };
+    });
+  };
+
   // A new AI's record. It carries no playerName and no inventory: under shared
   // tech it fields the host's. params: identity (nextAiIdentity's), rng (the
   // AI's coopAiPlayerRng, or undefined in a war without a seed), race, names,
@@ -280,21 +335,36 @@ define([
     };
   };
 
+  // Under per-player tech, the record a new AI is written with: its own
+  // loadout and starting inventory, and no deal yet, so its first catch-up is
+  // its fresh deal. start: { loadoutCardId, inventory }.
+  var withStartingTech = function (record, start, race) {
+    return _.assign({}, record, {
+      loadoutCardId: start.loadoutCardId,
+      inventory: start.inventory,
+      techCardDealCount: 0,
+      gwaioAi: _.assign({}, record.gwaioAi, { race: race }),
+    });
+  };
+
   // The AI players of one battle, in slot order. None outside an active
   // session: an AI sits out a war played without one. Under per-player tech
-  // none either, until that support lands.
+  // each fields its own inventory and race, on a tag and tree of its own.
   var launchAis = function (params) {
-    if (!params.active || params.perPlayerTech) {
+    if (!params.active) {
       return [];
     }
 
-    var records = aiRecords(params.records);
+    var perPlayer = !!params.perPlayerTech;
+    var records = _.filter(aiRecords(params.records), function (record) {
+      return !perPlayer || !!record.inventory;
+    });
     var colours = params.colours(records.length);
 
     return _.map(records, function (record, index) {
-      var race = params.hostRace;
-      var inventory = params.hostInventory;
-      var scopeToken = scopeTokenFor(record, false);
+      var inventory = perPlayer ? record.inventory : params.hostInventory;
+      var race = perPlayer ? gwoRaces.raceOf(inventory) : params.hostRace;
+      var scopeToken = scopeTokenFor(record, perPlayer);
       var personalityId = record.gwaioAi.personalityId;
 
       return {
@@ -302,7 +372,7 @@ define([
         serial: record.gwaioAi.serial,
         name: record.gwaioAi.name,
         slot: index,
-        tag: aiTag(index, false, params.humanCount),
+        tag: aiTag(index, perPlayer, params.humanCount),
         scopeToken: scopeToken,
         race: race,
         brain: gwoAI.aiInUse("coop", race),
@@ -314,19 +384,28 @@ define([
         penchantName: record.gwaioAi.penchantName,
         character: CHARACTERS[personalityId],
         inventory: inventory,
+        perPlayer: perPlayer,
       };
     });
   };
 
   // The war panel's line for each AI, after the humans': its name, battle
-  // colour and race. Under shared tech every AI fields the host's race.
-  var panelEntries = function (records, colours, race) {
+  // colour and race. Under shared tech every AI fields the host's race and
+  // loadout; under per-player tech its own.
+  var panelEntries = function (records, colours, race, perPlayer) {
     return _.map(records, function (record, index) {
-      return {
+      var own = !!perPlayer && !!record.inventory;
+      var entry = {
         name: record.gwaioAi.name,
         colour: colours[index],
-        race: gwoRaces.raceOf({ race: race }),
+        race: own
+          ? gwoRaces.raceOf(record.inventory)
+          : gwoRaces.raceOf({ race: race }),
       };
+      if (own) {
+        entry.loadoutCardId = record.loadoutCardId;
+      }
+      return entry;
     });
   };
 
@@ -348,12 +427,17 @@ define([
     takenNames: takenNames,
     fieldedCommanders: fieldedCommanders,
     humanArmies: humanArmies,
+    inventoryReady: inventoryReady,
     slotRows: slotRows,
     parseAiNames: parseAiNames,
     pickAiName: pickAiName,
     mlaCommanders: mlaCommanders,
     pickAiCommander: pickAiCommander,
+    pickAiRace: pickAiRace,
+    loadoutCandidates: loadoutCandidates,
+    teammates: teammates,
     buildAiRecord: buildAiRecord,
+    withStartingTech: withStartingTech,
     launchAis: launchAis,
     panelEntries: panelEntries,
   };

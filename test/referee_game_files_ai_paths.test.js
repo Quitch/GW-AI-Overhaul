@@ -340,6 +340,109 @@ describe("coopAiMapFiles", () => {
   });
 });
 
+describe("specPlan", () => {
+  const unitCells = {
+    raceUnitsFor: (held) => held.map((unit) => "race:" + unit),
+    addonUnitsFor: (held) => held.concat("addon"),
+    heldCommanderUnits: (held) => held.filter((unit) => unit.includes("cdr")),
+  };
+  const gwoRaces = {
+    commanderModsFor: (race, commander) => [race + " retags " + commander],
+    unitRetagMods: (race, unit) => [race + " keeps " + unit],
+  };
+  const plan = (overrides) =>
+    refereeGameFiles.specPlan(
+      Object.assign(
+        {
+          held: ["bot.json", "colonel_cdr.json"],
+          cells: undefined,
+          race: "mla",
+          isMla: true,
+          commanders: ["ai_cdr.json"],
+          unitCells,
+          gwoRaces,
+        },
+        overrides
+      )
+    );
+
+  it("keeps everything held while no cells are built", () => {
+    assert.deepEqual(plan(), {
+      specs: ["bot.json", "colonel_cdr.json"],
+      retagMods: ["mla retags ai_cdr.json"],
+    });
+  });
+
+  it("gives an MLA player the add-on units of its cells", () => {
+    assert.deepEqual(plan({ cells: {} }).specs, [
+      "bot.json",
+      "colonel_cdr.json",
+      "addon",
+    ]);
+  });
+
+  // The Colonel stays vanilla, so the race is taught to build it.
+  it("gives a race player its race's units and retags a kept vanilla commander unit", () => {
+    const result = plan({ cells: {}, race: "legion", isMla: false });
+    assert.deepEqual(result.specs, ["race:bot.json", "race:colonel_cdr.json"]);
+    assert.deepEqual(result.retagMods, [
+      "legion retags ai_cdr.json",
+      "legion keeps colonel_cdr.json",
+    ]);
+  });
+});
+
+describe("buildCoopAiFiles", () => {
+  it("adds the AI's Sub Commanders' tagged maps and mods its files on its tag", () => {
+    const modded = [];
+    const files = refereeGameFiles.buildCoopAiFiles({
+      tag: ".player2",
+      specFiles: { "/pa/units/bot.json.player2": { spec: 1 } },
+      subcommanderPath: "/pa/ai/player2/",
+      maps: { classic: "c", x1: "x" },
+      genAIUnitMap: (map, tag) => ({ from: map, tag }),
+      mods: ["own"],
+      extraMods: ["retag"],
+      gwoSpecs: {
+        mod: (target, mods, tag) =>
+          modded.push([Object.keys(target), mods, tag]),
+      },
+    });
+
+    assert.deepEqual(files, {
+      "/pa/units/bot.json.player2": { spec: 1 },
+      "/pa/ai/player2/unit_maps/ai_unit_map.json.player2": {
+        from: "c",
+        tag: ".player2",
+      },
+      "/pa/ai/player2/unit_maps/ai_unit_map_x1.json.player2": {
+        from: "x",
+        tag: ".player2",
+      },
+    });
+    assert.deepEqual(modded, [
+      [Object.keys(files), ["own", "retag"], ".player2"],
+    ]);
+  });
+
+  it("mods nothing when the AI holds no mods", () => {
+    let called = false;
+    refereeGameFiles.buildCoopAiFiles({
+      tag: ".player1",
+      specFiles: {},
+      subcommanderPath: "/pa/ai/player1/",
+      maps: { classic: "c", x1: "x" },
+      genAIUnitMap: (map) => map,
+      gwoSpecs: {
+        mod: () => {
+          called = true;
+        },
+      },
+    });
+    assert.equal(called, false);
+  });
+});
+
 describe("specFetch", () => {
   // Drives specFetch with a fake $.ajax that invokes success/error synchronously, so we
   // can pin its parse-on-success, parse-fallback, and reject-on-error behaviour without

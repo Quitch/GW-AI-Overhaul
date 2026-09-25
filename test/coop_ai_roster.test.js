@@ -337,6 +337,163 @@ describe("slotRows", () => {
   });
 });
 
+describe("slotRows under per-player tech", () => {
+  const complete = aiRecord(1, {
+    loadoutCardId: "gwc_start_bot",
+    inventory: { cards: [{ id: "gwc_start_bot" }], maxCards: 5 },
+  });
+
+  it("opens an AI's inventory once its record is complete", () => {
+    const rows = roster.slotRows([complete, aiRecord(2)], 2, "", true);
+
+    assert.equal(rows[0].showInventory, true);
+    assert.equal(rows[0].inventoryAvailable, true);
+    assert.equal(rows[0].inventoryTooltip, "!LOC:View loadout and tech cards");
+    assert.equal(rows[1].showInventory, true);
+    assert.equal(rows[1].inventoryAvailable, false);
+    assert.equal(rows[1].inventoryTooltip, "!LOC:Waiting for loadout");
+  });
+
+  it("shows no Inventory button under shared tech", () => {
+    const rows = roster.slotRows([complete], 2, "", false);
+    assert.equal(rows[0].showInventory, false);
+    assert.equal(rows[0].inventoryAvailable, false);
+  });
+
+  it("asks of a record what the stock modal asks", () => {
+    const without = (patch) => Object.assign({}, complete, patch);
+    assert.equal(roster.inventoryReady(complete), true);
+    assert.equal(roster.inventoryReady(without({ loadoutCardId: "" })), false);
+    assert.equal(
+      roster.inventoryReady(
+        without({ inventory: { cards: [], maxCards: -1 } })
+      ),
+      false
+    );
+    assert.equal(
+      roster.inventoryReady(without({ inventory: { maxCards: 3 } })),
+      false
+    );
+    assert.equal(roster.inventoryReady(undefined), false);
+  });
+});
+
+describe("pickAiRace", () => {
+  it("prefers a race no player fields", () => {
+    assert.equal(
+      roster.pickAiRace(
+        ["mla", "legion"],
+        ["mla"],
+        gwoRng.create("race").stream("race"),
+        "mla"
+      ),
+      "legion"
+    );
+  });
+
+  it("picks from the whole offer once every race is fielded", () => {
+    const picked = roster.pickAiRace(
+      ["mla", "legion"],
+      ["legion", "mla"],
+      gwoRng.create("race").stream("race"),
+      "mla"
+    );
+    assert.ok(["mla", "legion"].includes(picked), picked);
+  });
+
+  it("draws the same race from the same stream", () => {
+    const pick = () =>
+      roster.pickAiRace(
+        ["legion", "bugs", "exiles"],
+        ["mla"],
+        gwoRng.create("seed").stream("race"),
+        "mla"
+      );
+    assert.equal(pick(), pick());
+  });
+
+  it("falls back when the war offers nothing", () => {
+    assert.equal(
+      roster.pickAiRace([], ["mla"], gwoRng.create("r"), "mla"),
+      "mla"
+    );
+    assert.equal(
+      roster.pickAiRace(undefined, undefined, undefined, "legion"),
+      "legion"
+    );
+  });
+});
+
+describe("loadoutCandidates", () => {
+  it("offers the starting loadouts and the host's unlocked ones, less the race's locks", () => {
+    assert.deepEqual(
+      roster.loadoutCandidates({
+        starting: ["gwc_start_vehicle", "gwc_start_bot"],
+        locked: ["gwc_start_artillery", "gwc_start_subcdr", "nem_start_nuke"],
+        unlocked: (id) => id !== "gwc_start_artillery",
+        raceLocks: (id) => id === "nem_start_nuke",
+      }),
+      ["gwc_start_vehicle", "gwc_start_bot", "gwc_start_subcdr"]
+    );
+  });
+
+  it("lists a loadout named twice once", () => {
+    assert.deepEqual(
+      roster.loadoutCandidates({
+        starting: ["mod_start_x"],
+        locked: ["mod_start_x"],
+        unlocked: () => true,
+        raceLocks: () => false,
+      }),
+      ["mod_start_x"]
+    );
+  });
+});
+
+describe("teammates", () => {
+  it("reads the units and commander of a GWInventory or a saved inventory", () => {
+    const live = {
+      units: () => ["/u/a"],
+      getTag: (context, name) => (name === "commander" ? "/c/host" : undefined),
+    };
+    const saved = {
+      units: ["/u/b"],
+      tags: { global: { commander: "/c/ai" } },
+    };
+
+    assert.deepEqual(roster.teammates([live, saved, undefined]), [
+      { units: ["/u/a"], commander: "/c/host" },
+      { units: ["/u/b"], commander: "/c/ai" },
+    ]);
+  });
+
+  it("reads a saved inventory with no units as fielding none", () => {
+    assert.deepEqual(roster.teammates([{ tags: {} }]), [
+      { units: [], commander: undefined },
+    ]);
+  });
+});
+
+describe("withStartingTech", () => {
+  it("completes a record with its loadout, inventory and race, owing every deal", () => {
+    const record = aiRecord(1);
+    const start = {
+      loadoutCardId: "gwc_start_bot",
+      inventory: { cards: [{ id: "gwc_start_bot" }], maxCards: 5 },
+    };
+    const complete = roster.withStartingTech(record, start, "legion");
+
+    assert.equal(complete.loadoutCardId, "gwc_start_bot");
+    assert.equal(complete.inventory, start.inventory);
+    assert.equal(complete.techCardDealCount, 0);
+    assert.equal(complete.gwaioAi.race, "legion");
+    assert.equal(complete.gwaioAi.name, record.gwaioAi.name);
+    assert.equal(complete.playerName, undefined);
+    assert.equal(record.gwaioAi.race, undefined);
+    assert.equal(record.inventory, undefined);
+  });
+});
+
 describe("parseAiNames", () => {
   it("reads every quoted string once, in order", () => {
     const text = [
@@ -689,8 +846,43 @@ describe("launchAis", () => {
     assert.deepEqual(launch({ active: false }), []);
   });
 
-  it("fields nobody under per-player tech yet", () => {
+  // A record from before its tech was built never reaches a battle.
+  it("leaves out an AI with no inventory of its own under per-player tech", () => {
     assert.deepEqual(launch({ perPlayerTech: true }), []);
+  });
+
+  it("fields each AI's own inventory on its own tag and tree under per-player tech", () => {
+    const own = (serial) =>
+      aiRecord(serial, {
+        inventory: {
+          cards: [{ id: "gwc_start_bot" }],
+          tags: { global: { commander: COMMANDER } },
+          aiMods: [],
+        },
+      });
+    const records = [own(2), own(1)];
+    const ais = launch({ perPlayerTech: true, records: records });
+
+    assert.deepEqual(
+      ais.map((ai) => [ai.id, ai.tag, ai.scopeToken, ai.path]),
+      [
+        [
+          "gwo_ai_1",
+          ".player1",
+          "coopai_1",
+          "/pa/ai_queller/q_uber/player_coopai_1/",
+        ],
+        [
+          "gwo_ai_2",
+          ".player2",
+          "coopai_2",
+          "/pa/ai_queller/q_uber/player_coopai_2/",
+        ],
+      ]
+    );
+    assert.equal(ais[0].inventory, records[1].inventory);
+    assert.equal(ais[0].race, "mla");
+    assert.equal(ais[0].perPlayer, true);
   });
 
   it("fields every AI in slot order, on one shared tree under shared tech", () => {
@@ -720,6 +912,27 @@ describe("launchAis", () => {
     const fixture = buildGame({});
     const ais = launch({ hostInventory: fixture.inventory });
     assert.equal(ais[0].inventory, fixture.inventory);
+  });
+});
+
+describe("panelEntries under per-player tech", () => {
+  it("lists each AI's own race and loadout", () => {
+    const own = aiRecord(1, {
+      loadoutCardId: "gwc_start_bot",
+      inventory: { cards: [], tags: { global: { playerRace: "mla" } } },
+    });
+    assert.deepEqual(
+      roster.panelEntries([own, aiRecord(2)], ["pair0", "pair1"], "mla", true),
+      [
+        {
+          name: "AI1",
+          colour: "pair0",
+          race: "mla",
+          loadoutCardId: "gwc_start_bot",
+        },
+        { name: "AI2", colour: "pair1", race: "mla" },
+      ]
+    );
   });
 });
 

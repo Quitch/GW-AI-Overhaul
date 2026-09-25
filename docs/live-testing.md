@@ -253,12 +253,88 @@ calling `model.gwoCoopAi.kick(row)` twice with that row. The records are
 
 A hire from the console includes the AI players, because its first step reads
 `model.gwoCoopAi.launchRoster()`. `referee.config().armies` then ends with one
-army per AI, and `referee.files()` has the AI tree under the co-op brain's
-`player_coopai/`. In a real battle with `--ai-log`, the server log's
-`Army: <AI name>` lines show the AI loading its unit map from that tree. Like
-every allied army on the player's specs, a Sub Commander included, it also
+army per AI, and under shared tech `referee.files()` has the AI tree under the
+co-op brain's `player_coopai/`. In a real battle with `--ai-log`, the server
+log's `Army: <AI name>` lines show the AI loading its unit map from that tree.
+Like every allied army on the player's specs, a Sub Commander included, it also
 logs `Control module name did not resolved to a spec` while no player holds
 the Catalyst, since only held units get specs. That line is not a fault.
+
+Under per-player tech, `canAdd()` also waits for the AI tech modules and a unit
+lookup, and an Add takes seconds. The AI's loadout is scored before its record
+is written, and it then settles every deal it owes. With four deals to catch
+up, an Add took 5 to 6 seconds. `model.gwoCoopAiDeciding()` stays true until
+every AI is level with the host, and `model.gwoCoopAi.driving()` while a pass
+runs ([coop.md](coop.md), "AI players' tech").
+
+**Read the `[GW COOP AI]` lines.** They are the host's record of every choice
+an AI makes, in the host's client log. A new AI logs one loadout line:
+
+```text
+[GW COOP AI] <name> loadout via=specs candidates: <id>=<score> (unlock u mods m minions n aiMods a slots s floor f), ... -> chose <id>
+```
+
+Each deal logs one line per hand the AI judged, so a reroll adds a line:
+
+```text
+[GW COOP AI] <name> deal=<n> star=<s> hand=<k> via=specs offered: <id>=<score> (unlock u mods m minions n aiMods a slots s floor f), ... -> <action>
+```
+
+`deal` is the host's deal index and `star` the star it was dealt at. `hand`
+counts the cards offered. Each card shows its score and then the parts it came
+from ([tech-cards.md](tech-cards.md), "How AI players judge a card"). The
+action is one of:
+
+- `took <id>`.
+- `reroll (best <b> < threshold <t>)`.
+- `deleted <held id> took <id>`: a swap, made with a full bank.
+- `declined (<reason>)`: `loadout`, `nothing worth a slot`, `bank full`, or
+  `no cards`.
+
+`via` names the unit lookup, and should read `specs`. `via=groups` means that
+the specs were not in within 8 seconds or failed to load, and a line saying so
+comes first. A card with a `floor` above 0 is one whose effect the AI could not
+see. Expect the loadout that unlocks the most to win by a wide margin: in an MLA
+war with Hoarder Commander unlocked, every AI chose it.
+
+The other lines are rarer, and most of them mean that something went wrong:
+
+- `<name> deal=<n> fell back: <error> -> <outcome>`: the deal timed out or
+  failed, and the quick pick decided it.
+- `<name> deal=<n> -> declined (timed out 2 times this session)`: the AI has
+  stopped choosing until `gw_play` next loads.
+- `<name> deal=<n> is not in the host's history -> declined`.
+- `<name> deal=<n> not written: <result>`: `gone` (the AI was kicked), `stale`
+  (its cards kept changing under the decision), `refused`, `failed`, or
+  `stalled` (the campaign queue did not run the write within 60 seconds).
+- `<name> loadout <id> not built: <error>`: that candidate was skipped.
+- `unit specs not in after 8 s: judging by unit groups until they are`, or
+  `unit specs not read: <error>`: the unit groups stand in.
+- `write failed: <error>` or `pass failed: <error>`: a throw inside a write,
+  or anywhere in a pass.
+- `fight refused: an AI is choosing its tech`: Fight was called while an AI
+  was deciding.
+- `Galactic War Overhaul (GWO): co-op AI tech not loaded: <modules>`: nothing
+  settles an AI's deals, and Add AI is never offered. While any AI owes a deal,
+  Fight stays blocked with "Waiting for players".
+
+**Check a per-player AI** in a war with per-player tech:
+
+1. Host: add an AI to an empty slot with `model.gwoCoopAi.add()`, and wait for
+   `model.gwoCoopAiDeciding()` to turn false.
+2. Find its record in `model.gwoCoopAi.records()`.
+   `model.getCoopPlayerTechCardDealCount(record)` should equal
+   `model.game().hostTechCardDealCount()`. The log should hold one loadout line
+   for it, and at least one deal line for each deal it caught up on.
+3. Open its inventory. Take its row from `model.gwCampaignSlots()`, the one with
+   `gwoAi: true`, check `inventoryAvailable`, and call
+   `model.openGwCampaignInventoryModal(row)`. A viewer opens it the same way.
+4. Hire the referee from the console, as above. The AI's army has the
+   `spec_tag` `.player<N>`, the next player tag after the humans'. Its Sub
+   Commanders' armies come after every AI's army, on the same tag.
+   `referee.files()` has its specs under keys that end in that tag, and its AI
+   tree under `player_coopai_<serial>/`. Each AI adds some 630 to 750 files in
+   all.
 
 ## Proving that a change alters nothing
 

@@ -806,6 +806,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "La tecnología de enfriamiento de vehículos reduce a la mitad el tiempo de enfriamiento entre construcciones de todas las fábricas de vehículos."
   },
+  "View loadout and tech cards": {
+    "message": "Ver el armamento y las cartas de tecnología"
+  },
   "Waiting for loadout": {
     "message": "Esperando el armamento"
   },

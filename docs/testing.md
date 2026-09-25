@@ -50,11 +50,11 @@ depend on `shared/gw_common`. Some sweeps would test nothing if they skipped
 those cards. For those sweeps, `registerModuleStub` is an opt-in escape hatch.
 It does **not** weaken the default.
 
-`scripts/lib/card-probe.js` takes that hatch, and so does `validate:ai-mods`.
-With `shared/gw_common` stubbed, every card loads. That sits oddly beside
-`validate:cards`'s `MIN_CHECKED` floor until you notice that they answer
-different questions. The validator refuses the hatch on purpose. Its number is
-therefore what can be checked with no stand-in at all.
+`scripts/lib/card-probe.js` takes that hatch, and so do `validate:ai-mods` and
+`test/coop_ai_effects.test.js`. With `shared/gw_common` stubbed, every card
+loads. That sits oddly beside `validate:cards`'s `MIN_CHECKED` floor until you
+notice that they answer different questions. The validator refuses the hatch on
+purpose. Its number is therefore what can be checked with no stand-in at all.
 
 A bare `catch` around a load also swallows syntax errors and genuine breakage.
 The validators therefore discriminate on the reason. A bare catch once reported
@@ -248,6 +248,12 @@ file reinvents its own list. Two things about it are load-bearing:
   the usual list, a host and viewers `v1` and `v2`. It also sets the game's
   `findCoopPlayerInventoryData` to return each viewer's inventory.
 
+The game from `buildGame()` answers `coopPlayerInventoryData()` from its
+`coopRecords` option, which is empty by default, so a test can put co-op AI
+players' records in the war. `installModel()` answers `gwCampaignActive()` too,
+true while any client is connected, because an AI player counts only in a
+session.
+
 `scripts/lib/fake-jquery.js` covers only the `$`/`api` subset the shipped code
 under test uses. A request for a URL with no configured resolver rejects. A
 test's fixtures therefore cannot silently drift from what the code actually asks
@@ -351,6 +357,21 @@ game's `resolvePlayerColorPairs`. Where the PA install is present,
 `test/coop_ai_roster.test.js` also runs against the stock resolver and the stock
 AI name list.
 
+The tests of a co-op AI player's tech pin behaviour rather than weights.
+`test/coop_ai_cards.test.js` asserts orderings and policies, because the
+weights in `shared/coop_ai_cards.js` are tuning. `test/coop_ai_driver.test.js`
+drives the driver through a fake apply over a small unit table, so each test
+reads off what the AI did. `test/coop_ai_effects.test.js` is the one that
+applies for real. It loads the shadowed `gw_inventory.js` with the shipped cards
+and bank, and stubs only `shared/gw_common`, `shared/gw_bank`, and
+`shared/gw_game_patches`. Its `ko.toJS` copies the prototype's methods as
+knockout's does, so a save carries `GWInventory`'s methods as it does in the
+game. Two fixture cards stand in for a card mod: one grants a unit that it
+names nowhere else, and one throws. `test/coop_ai_units.test.js` checks the
+spec lookup on a small spec table and the group lookup on the shipped unit
+groups. `test/starting_inventory.test.js` covers the build that the per-player
+loadout scene and the host share.
+
 `scripts/lib/harvested-race.js` holds what the `race_*.test.js` files share.
 `harvestedIndex` builds a shipped race's cell index from `unit_types.json`.
 `withheldCards` and `expectedWithheld` compare the cards the race is not dealt
@@ -424,11 +445,15 @@ this page is not a second copy of it.
 Several scene scripts are not modules at all. `gw_play/cards.js` is
 self-invoking and never calls `define()`, so the harness cannot load it in
 place. Its pure logic is extracted into `define()` modules. The siblings
-`cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_card_name_sync.js` and
-`cards_cheats.js` each return a factory that `cards.js` calls with its
-collaborators. `shared/cards_deal_helpers.js` returns its helpers directly, and
+`cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_card_name_sync.js`,
+`cards_cheats.js`, `coop_ai_driver.js`, and `coop_ai_effects.js` each return a
+factory that `cards.js` calls with its collaborators.
+`shared/cards_deal_helpers.js` returns its helpers directly, and
 `shared/loadouts.js` requires it too. `gw_play/bugfixes.js` is self-invoking
-too, and its Cluster repair lives in `cluster_repair.js`.
+too, and its Cluster repair lives in `cluster_repair.js`. So is the per-player
+loadout scene's `gwo_loadouts.js`, and the starting inventory it builds lives
+in `shared/starting_inventory.js`, which `cards.js` uses for a co-op AI
+player's.
 
 Where a helper inside such a module is not reachable through the returned
 factory, it is re-exported through:

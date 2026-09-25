@@ -121,10 +121,16 @@ define([
     });
   };
 
+  // A co-op AI player owns every loadout: it banks nothing, so it is dealt an
+  // ordinary hand at the treasure star and never holds up the war's end. The
+  // test is coop_ai_roster.js's isAiRecord. See coop.md, "AI players' tech".
   var recordHasUnlockedLoadout = function (record, card) {
     var id = cardId(card);
     if (!helpers.isStartLoadoutCardId(id)) {
       return false;
+    }
+    if (record && _.isPlainObject(record.gwaioAi)) {
+      return true;
     }
 
     return _.includes(unlockedIds(record), id);

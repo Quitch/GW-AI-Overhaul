@@ -32,6 +32,12 @@ const gwoPersonality = loadCouiModule(
 const gwoRng = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
 );
+const gwoColour = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js"
+);
+const refereeCoop = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js"
+);
 
 const installModel = useModel();
 const GOLD = gwoAI.warTier({ difficulty: "!LOC:Gold" });
@@ -53,6 +59,91 @@ function armiesFor(entries, options) {
   );
   return armies;
 }
+
+describe("setupCoopAiSubcommanders", () => {
+  const MINION = "/pa/units/commanders/imperial_alpha/imperial_alpha.json";
+  const PLAYER_COLOUR = [
+    [0, 176, 255],
+    [192, 192, 192],
+  ];
+
+  function subcommanderArmies(entries, colourStart) {
+    const fixture = buildGame({ aiInUse: "Titans" });
+    installModel(fixture.game);
+    const armies = [];
+    configSetup.setupCoopAiSubcommanders(entries, armies, {
+      playerFaction: 0,
+      playerColor: PLAYER_COLOUR,
+      colourStart: colourStart,
+    });
+    return armies;
+  }
+
+  const ownEntry = (tag, minions, cards) =>
+    coopAiEntry({
+      tag: tag,
+      perPlayer: true,
+      inventory: {
+        cards: cards || [{ id: "gwc_start_subcdr" }],
+        minions: minions,
+        aiMods: [],
+      },
+    });
+
+  it("builds a per-player AI's Sub Commanders on its tag, reading its own tree", () => {
+    const entry = ownEntry(".player2", [{ name: "Alpha", commander: MINION }]);
+    const armies = subcommanderArmies([coopAiEntry(), entry], 3);
+
+    assert.equal(armies.length, 1);
+    const army = armies[0];
+    assert.equal(army.spec_tag, ".player2");
+    assert.equal(army.alliance_group, 1);
+    assert.equal(army.slots[0].ai, true);
+    assert.equal(army.slots[0].name, "Alpha");
+    assert.equal(army.slots[0].commander, MINION + ".player2");
+    assert.equal(
+      army.personality.ai_path,
+      gwoAI.getSubcommanderPathForViewer(entry.inventory, ".player2", "mla")
+    );
+    assert.deepEqual(
+      army.color,
+      gwoColour.pick(0, PLAYER_COLOUR, refereeCoop.alliedColourIndex(3))
+    );
+  });
+
+  // The humans' Sub Commanders come first in the colour sequence, then each
+  // AI's in slot order.
+  it("carries the colour sequence on from one AI to the next", () => {
+    const armies = subcommanderArmies(
+      [
+        ownEntry(".player1", [{ name: "Alpha", commander: MINION }]),
+        ownEntry(".player2", [
+          { name: "Beta", commander: MINION },
+          { name: "Gamma", commander: MINION },
+        ]),
+      ],
+      2
+    );
+
+    assert.deepEqual(
+      armies.map((army) => army.color),
+      [2, 3, 4].map((position) =>
+        gwoColour.pick(
+          0,
+          PLAYER_COLOUR,
+          refereeCoop.alliedColourIndex(position)
+        )
+      )
+    );
+  });
+
+  it("builds nothing for an AI under shared tech, or one with no Sub Commanders", () => {
+    assert.deepEqual(
+      subcommanderArmies([coopAiEntry(), ownEntry(".player1", [])], 0),
+      []
+    );
+  });
+});
 
 describe("setupCoopAiArmies", () => {
   it("builds an allied AI army per entry", () => {

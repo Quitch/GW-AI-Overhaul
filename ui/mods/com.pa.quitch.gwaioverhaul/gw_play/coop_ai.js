@@ -65,6 +65,10 @@
     var lobbyChanging = function () {
       return busy() || settingsInFlight() > 0;
     };
+    // Under per-player tech: cards.js's AI tech, once its modules are in, and
+    // whether its driver is settling deals.
+    var tech = ko.observable();
+    var driving = ko.observable(false);
     var names = [];
     var ownedCommanders = [];
 
@@ -79,6 +83,29 @@
 
     records.subscribe(function () {
       armed(undefined);
+    });
+
+    var perPlayer = function () {
+      return model.gwCampaignPerPlayerTechCards();
+    };
+
+    // Fight, explore and the star-card refresh wait while an AI is settling
+    // its deals, or owes one it has yet to start. See coop.md, "AI players'
+    // tech".
+    model.gwoCoopAiDeciding = ko.computed(function () {
+      if (driving()) {
+        return true;
+      }
+      if (!perPlayer() || !model.isCampaignHost()) {
+        return false;
+      }
+      var hostCount = game.hostTechCardDealCount();
+      return _.some(records(), function (record) {
+        return (
+          !!record.inventory &&
+          model.getCoopPlayerTechCardDealCount(record) < hostCount
+        );
+      });
     });
 
     // The colour pairs the battle gives the AIs: the players' sequence
@@ -123,7 +150,20 @@
     model.gwoCoopAi = {
       ready: ready,
       busy: busy,
+      tech: tech,
+      driving: driving,
       records: records,
+      // The AIs as the star-card refresh walks clients.
+      clients: function () {
+        return _.map(records(), function (record) {
+          return { id: record.playerId, name: record.gwaioAi.name, role: "ai" };
+        });
+      },
+      publish: function (reason) {
+        if (lobby()) {
+          lobby().publish(reason);
+        }
+      },
       count: ko.computed(function () {
         return records().length;
       }),
@@ -149,7 +189,8 @@
         return !!row && armed() === row.id;
       },
       launchRoster: launchRoster,
-      // The war panel's line per AI: its name, battle colour and race.
+      // The war panel's line per AI: its name, battle colour and race, and
+      // under per-player tech its own loadout.
       panel: ko.computed(function () {
         var list = records();
         if (!mods() || !list.length) {
@@ -158,7 +199,8 @@
         return mods().roster.panelEntries(
           list,
           aiColours(list.length),
-          mods().races.raceOf(game.inventory())
+          mods().races.raceOf(game.inventory()),
+          perPlayer()
         );
       }),
     };
@@ -187,9 +229,24 @@
           loaded.roster.slotRows(
             records(),
             rows.length + 1,
-            model.getGwCampaignLoadingTooltip()
+            model.getGwCampaignLoadingTooltip(),
+            perPlayer()
           )
         );
+      });
+
+      // An AI settling its deals holds the Fight button as a viewer choosing
+      // tech does.
+      var stockBlocked = model.gwCampaignFightBlocked;
+      var stockTooltip = model.gwCampaignFightTooltip;
+      model.gwCampaignFightBlocked = ko.computed(function () {
+        return stockBlocked() || model.gwoCoopAiDeciding();
+      });
+      model.gwCampaignFightTooltip = ko.computed(function () {
+        var reason = stockTooltip();
+        return !reason && model.gwoCoopAiDeciding()
+          ? "!LOC:Waiting for players"
+          : reason;
       });
 
       // Stock's "+" and "-" send an absolute count read from
@@ -276,6 +333,12 @@
               );
               return;
             }
+            if (model.gwoCoopAiDeciding()) {
+              console.log(
+                "[GW COOP AI] " + name + " refused: an AI is choosing its tech"
+              );
+              return;
+            }
           }
           return stock.apply(this, arguments);
         };
@@ -326,6 +389,10 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
         "shared/gw_coop_player_colors",
         "shared/gw_factions",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_check.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
       ],
       function (
         roster,
@@ -337,20 +404,52 @@
         specCache,
         gameFilePaths,
         colours,
-        factions
+        factions,
+        raceMods,
+        raceCheck,
+        coopStarCards,
+        refereeCoop
       ) {
-        var createRecord = function (identity) {
+        var warRng = function () {
+          return gwoStreams.warRng(gwoAI.originSettings(game));
+        };
+
+        // Under Separate races the AI picks from the races the war offers,
+        // preferring one no player fields; otherwise it fields the host's.
+        var raceFor = function (rng) {
+          var hostRace = gwoRaces.raceOf(game.inventory());
+          var recorded = gwoAI.originSettings(game).races;
+          if (!(recorded && recorded.perPlayerRace)) {
+            return Promise.resolve(hostRace);
+          }
+          var fielded = [hostRace].concat(
+            _.map(game.coopPlayerInventoryData(), function (record) {
+              return gwoRaces.raceOf(record && record.inventory);
+            })
+          );
+          return Promise.resolve(raceMods.installedRaces()).then(
+            function (info) {
+              var offer = _.pluck(
+                raceCheck.activeRaces(
+                  gwoRaces.detect(_.pluck(recorded.mods, "identifier")),
+                  info
+                ),
+                "id"
+              );
+              return roster.pickAiRace(offer, fielded, rng, hostRace);
+            }
+          );
+        };
+
+        var buildRecord = function (identity, rng, race) {
           var inventory = game.inventory();
           var all = game.coopPlayerInventoryData();
           var hostCommander = inventory.getTag("global", "commander");
 
           return roster.buildAiRecord({
             identity: identity,
-            rng: gwoStreams.coopAiPlayerRng(
-              gwoStreams.warRng(gwoAI.originSettings(game)),
-              identity.serial
-            ),
-            race: gwoRaces.raceOf(inventory),
+            rng: rng,
+            race: race,
             names: names,
             taken: roster.takenNames(
               model.gwCampaignConnectedClients(),
@@ -365,6 +464,26 @@
             ),
             hostCommander: hostCommander,
             now: _.now(),
+          });
+        };
+
+        var createRecord = function (identity) {
+          var rng = gwoStreams.coopAiPlayerRng(warRng(), identity.serial);
+          if (!perPlayer()) {
+            return buildRecord(
+              identity,
+              rng,
+              gwoRaces.raceOf(game.inventory())
+            );
+          }
+
+          return raceFor(rng && rng.stream("race")).then(function (race) {
+            var record = buildRecord(identity, rng, race);
+            return tech()
+              .startingTech({ record: record, race: race })
+              .then(function (start) {
+                return roster.withStartingTech(record, start, race);
+              });
           });
         };
 
@@ -390,9 +509,41 @@
             busy: busy,
             armed: armed,
             inFlight: settingsInFlight,
+            perPlayerReady: function () {
+              return !!tech() && tech().ready();
+            },
+            // The star-card refresh's own test, over the connected viewers.
+            publishReady: function () {
+              return coopStarCards.viewersReadyForStarRefresh({
+                viewers: refereeCoop.viewersOf(
+                  model.gwCampaignConnectedClients()
+                ),
+                findRecord: function (client) {
+                  return refereeCoop.recordForClient(game, client);
+                },
+                getDealCount: model.getCoopPlayerTechCardDealCount,
+                hostDealCount: game.hostTechCardDealCount(),
+                setupBlocked: model.gwCampaignPlayerSetupBlocked(),
+                turnState: game.turnState(),
+                aiDeciding: model.gwoCoopAiDeciding(),
+              });
+            },
           })
         );
         ready(true);
+
+        // A roster change held for the viewers goes out once they are level.
+        ko.computed(function () {
+          model.gwCampaignConnectedClients();
+          game.coopPlayerInventoryData();
+          game.hostTechCardDealCount();
+          game.turnState();
+          model.gwCampaignPlayerSetupBlocked();
+          model.gwoCoopAiDeciding();
+          _.defer(function () {
+            lobby().settleDebt();
+          });
+        });
 
         // An AI falls back to the host's commander if none could be checked.
         var specDeps = { fetch: gameFilePaths.specFetch };

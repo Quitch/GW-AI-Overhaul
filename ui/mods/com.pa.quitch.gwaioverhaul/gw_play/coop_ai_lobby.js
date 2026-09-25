@@ -43,11 +43,14 @@ define([
   };
 
   // params: game, gwaio() (the war's originSystem.gwaio), createRecord(identity)
-  // (builds the new AI's record), save(withStars) (a promise), warSeats() (the
-  // seats the war was made with, stock's savedCoopPlayers), expectedBack()
-  // (the humans still due back from the last battle, 0 once none are), and
-  // the observables ready, busy, armed (the AI whose Kick was pressed once)
-  // and inFlight (the modify_settings requests the server has not answered).
+  // (builds the new AI's record, or a promise of it), save(withStars) (a
+  // promise), warSeats() (the seats the war was made with, stock's
+  // savedCoopPlayers), expectedBack() (the humans still due back from the last
+  // battle, 0 once none are), and the observables ready, busy, armed (the AI
+  // whose Kick was pressed once) and inFlight (the modify_settings requests the
+  // server has not answered). Under per-player tech, perPlayerReady() says the
+  // modules that build an AI's tech are in, and publishReady() that every
+  // viewer is level with the host.
   var factory = function (params) {
     var game = params.game;
     var ready = params.ready;
@@ -56,6 +59,10 @@ define([
     // While one is out, gwCampaignMaxClients may be stale: stock's own restart
     // re-apply sends one with no callback.
     var inFlight = params.inFlight;
+    var perPlayerReady = params.perPlayerReady || _.constant(false);
+    var publishReady = params.publishReady || _.constant(true);
+    // A roster change viewers have yet to be sent.
+    var debt;
 
     // initialCoopSettingsApplied is a plain field, so a computed reading this
     // does not track it. gwCampaignControl is read first, and unconditionally:
@@ -94,7 +101,7 @@ define([
         hostCanEdit() &&
         // A war without GWO's settings has nowhere to keep the AI's serial.
         _.isPlainObject(params.gwaio()) &&
-        !model.gwCampaignPerPlayerTechCards() &&
+        (!model.gwCampaignPerPlayerTechCards() || perPlayerReady()) &&
         hasEmptySlot() &&
         humansBack() &&
         !model.gwCampaignPlayerSetupBlocked() &&
@@ -111,12 +118,31 @@ define([
     };
 
     // Viewers hold no tech state under shared tech, so a roster change goes out
-    // at once. With nobody to tell, a joiner's initial sync asks for a snapshot
-    // of its own.
-    var publish = function (reason) {
-      if (hasViewer()) {
-        model.sendCampaignSnapshot("gwo_coop_ai_" + reason, true);
+    // at once. Under per-player tech a viewer's newest choices reach the host
+    // after the server has them, and a snapshot would overwrite them there, so
+    // the change waits until every viewer is level. With nobody to tell, a
+    // joiner's initial sync asks for a snapshot of its own.
+    var settleDebt = function () {
+      if (!debt) {
+        return false;
       }
+      if (!hasViewer()) {
+        debt = undefined;
+        return false;
+      }
+      if (model.gwCampaignPerPlayerTechCards() && !publishReady()) {
+        return false;
+      }
+
+      var reason = debt;
+      debt = undefined;
+      model.sendCampaignSnapshot("gwo_coop_ai_" + reason, true);
+      return true;
+    };
+
+    var publish = function (reason) {
+      debt = reason;
+      return settleDebt();
     };
 
     // Only an add changes the stars: the serial lives on the origin system.
@@ -151,24 +177,25 @@ define([
       busy(false);
     };
 
+    // Runs in the campaign state queue, after the server shrank max_clients
+    // and the record was built. extraSeat: the AI filled a seat beyond those
+    // the war was made with.
     var stored = function (playerId) {
-      return _.some(game.coopPlayerInventoryData(), function (record) {
-        return roster.isAiRecord(record) && record.playerId === playerId;
+      return _.some(game.coopPlayerInventoryData(), function (entry) {
+        return roster.isAiRecord(entry) && entry.playerId === playerId;
       });
     };
 
-    // Runs in the campaign state queue, after the server shrank max_clients.
-    // extraSeat: the AI filled a seat beyond those the war was made with.
-    var writeNewAi = function (target, extraSeat) {
-      var record;
+    var writeNewAi = function (target, identity, record, extraSeat) {
       try {
         var gwaio = params.gwaio();
-        var identity = roster.nextAiIdentity(gwaio);
-        record = params.createRecord(identity);
         if (extraSeat) {
           record.gwaioAi.extraSeat = true;
         }
-        gwaio.coopAiSerial = identity.serial;
+        gwaio.coopAiSerial = Math.max(
+          _.isNumber(gwaio.coopAiSerial) ? gwaio.coopAiSerial : 0,
+          identity.serial
+        );
 
         if (!game.upsertCoopPlayerInventoryData(record)) {
           throw new Error("record refused for " + identity.playerId);
@@ -176,7 +203,7 @@ define([
       } catch (error) {
         // The records' subscribers run inside the write, so a throw from one
         // comes after the record is stored: that AI is in, and keeps its slot.
-        if (!record || !stored(record.playerId)) {
+        if (!stored(record.playerId)) {
           failAdd(error, target);
           return;
         }
@@ -228,9 +255,32 @@ define([
           failAdd(error, target);
           return;
         }
-        model.enqueueGwCampaignStateApply("gwo_coop_ai_add", function () {
-          writeNewAi(target, extraSeat);
-        });
+
+        // The serial is taken now, as the loadout's stream is keyed by it,
+        // and written with the record.
+        var identity = roster.nextAiIdentity(params.gwaio());
+        var queueWrite = function (record) {
+          model.enqueueGwCampaignStateApply("gwo_coop_ai_add", function () {
+            writeNewAi(target, identity, record, extraSeat);
+          });
+        };
+        var failBuild = function (error) {
+          failAdd(error, target);
+        };
+        var built;
+        try {
+          built = params.createRecord(identity);
+        } catch (error) {
+          failBuild(error);
+          return;
+        }
+        // A per-player record takes seconds to build, so it is built before
+        // the queue rather than holding it.
+        if (built && _.isFunction(built.then)) {
+          built.then(queueWrite, failBuild);
+        } else {
+          queueWrite(built);
+        }
       });
       return true;
     };
@@ -301,6 +351,8 @@ define([
       canKickAi: canKickAi,
       kickAi: kickAi,
       lobbySettled: lobbySettled,
+      publish: publish,
+      settleDebt: settleDebt,
     };
   };
 
