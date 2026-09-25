@@ -450,6 +450,24 @@ describe("expandMods", () => {
     );
   });
 
+  it("changes a race unit once when a card names it beside its vanilla cell-mate", () => {
+    const oneCard = [
+      mod(ANT, "max_health", 1.5),
+      mod(FX_TANK, "max_health", 1.5),
+    ];
+    assert.deepEqual(cells.expandMods(oneCard, vanilla, race), [
+      mod(FX_TANK, "max_health", 1.5),
+    ]);
+    assert.deepEqual(
+      cells.expandMods(oneCard.slice().reverse(), vanilla, race),
+      [mod(FX_TANK, "max_health", 1.5)]
+    );
+    assert.deepEqual(cells.expandMods(oneCard.concat(oneCard), vanilla, race), [
+      mod(FX_TANK, "max_health", 1.5),
+      mod(FX_TANK, "max_health", 1.5),
+    ]);
+  });
+
   it("applies a group card once per pass, and stacks a second card", () => {
     const oneCard = [
       mod(ANT_AMMO, "damage", 1.25),

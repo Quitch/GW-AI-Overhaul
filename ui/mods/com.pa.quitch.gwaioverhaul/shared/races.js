@@ -261,12 +261,39 @@ define([
     return _.includes(_.values(units), path);
   };
 
+  // What a player of this race could field holding every vanilla unit: an
+  // exclusive unit is in every race's index, but only some races can build it.
+  // Kept per race until its index is replaced.
+  var reachable = {};
+  var reachableUnits = function (raceId, index) {
+    var id = normalizeId(raceId) || MLA_ID;
+
+    if (!reachable[id] || reachable[id].index !== index) {
+      reachable[id] = {
+        index: index,
+        units: (isMla(raceId)
+          ? unitCells.addonUnitsFor
+          : unitCells.raceUnitsFor)(
+          index.vanilla.units,
+          index.vanilla,
+          index.race
+        ),
+      };
+    }
+
+    return reachable[id].units;
+  };
+
   // Whether a player of this race can field a race or add-on path: the
   // race's index (for MLA, the add-on index) once the cells are built. Before
   // that only the race's own table counts - an add-on table mixes races, and
   // only the index knows which of its units are whose.
   var fieldsUnit = function (raceId, path) {
     var index = cellsOf(raceId);
+
+    if (index && index.race.exclusive[path]) {
+      return _.includes(reachableUnits(raceId, index), path);
+    }
 
     if (index) {
       return (
@@ -857,6 +884,7 @@ define([
       activeAddonIds = [];
       cellsById = {};
       foreignCache = undefined;
+      reachable = {};
     },
     registerShipped: registerShipped,
   };

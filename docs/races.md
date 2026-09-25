@@ -158,7 +158,9 @@ it the same way. An empty expression is false.
 A group card names several vanilla files of one cell (`gwoGroup.botsAmmo`
 names eight). It must land once on a race ammo, not eight times. `expandMods`
 emits a race target set once per **pass**. A pass ends when a vanilla source
-already seen recurs. One card is one pass, and two copies stack. A mod whose
+already seen recurs. One card is one pass, and two copies stack. A mod on a
+race path is a source of its own in the same passes, so a card naming the Ant
+and the race tank of its cell changes that tank once. A mod whose
 `path` a race file lacks is the no-op it always was in `specs.mod`.
 
 A single-unit grant opens its whole cell: `gwc_start_subcdr`'s Ant brings every
@@ -186,11 +188,12 @@ A card whose entry names a race or add-on unit is written for that race or
 add-on. A foreign unit is any path in a registered `units` table that is not a
 `shared/units.js` stock path: a table also names the vanilla ammo and tools its
 units reuse, and those stay stock. `races.fieldsUnit` counts a foreign unit
-when the player's index holds it (for MLA, the add-on index). Before the index
-exists only the race's own table counts: an add-on table mixes races (Second
-Wave ships MLA, Legion, and Bugs units), and only the index knows whose each
-unit is. Such a
-card is dealt when any foreign unit it names counts, or when any other unit it
+when the player's index holds it (for MLA, the add-on index). An exclusive unit
+sits in every race's index, so it counts only when the race could build it
+holding every vanilla unit (Section 17's `Custom17` units for MLA and Legion,
+never for Bugs). Before the index exists only the race's own table counts: an
+add-on table mixes races (Second Wave ships MLA, Legion, and Bugs units), and
+only the index knows whose each unit is. Such a card is dealt when any foreign unit it names counts, or when any other unit it
 names passes the rule above. That applies to MLA too, and `raceCanDeal` skips
 `MLA_ONLY` and the `_upgrade_` rule for it: a third-party `mym_upgrade_shank`
 naming a Legion unit is dealt to Legion players only. A card with no foreign

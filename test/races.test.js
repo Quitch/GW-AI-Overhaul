@@ -214,6 +214,39 @@ describe("cardUsable for race and add-on units", () => {
     assert.equal(races.cardUsable("mla", [FX_ADDON_TANK]), true);
     assert.equal(races.cardUsable("fixture", [FX_ADDON_TANK]), false);
   });
+
+  it("counts an exclusive unit only for a race that can build it", () => {
+    const {
+      FIXTURE_ADDON_SPECS,
+      FIXTURE_ADDON_UNITS,
+      FIXTURE_SPECS,
+      FIXTURE_UNITS,
+    } = require("../scripts/lib/race-fixture.js");
+    const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
+    const units = FIXTURE_UNITS.concat(FIXTURE_ADDON_UNITS);
+    const specs = Object.assign({}, FIXTURE_SPECS, FIXTURE_ADDON_SPECS);
+    const exclusive = FIXTURE_ADDON.units.fxExclusive;
+    races.registerAddon(FIXTURE_ADDON);
+    races.setCells("mla", fixtureAddonIndex());
+    const addonPaths = races.addonUnitPaths();
+    races.setCells("fixture", {
+      vanilla: unitCells.buildIndex(
+        units,
+        specs,
+        (types, path) => unitCells.vanillaMember(types) && !addonPaths[path]
+      ),
+      race: unitCells.buildIndex(
+        units,
+        specs,
+        unitCells.raceMember("Custom7"),
+        unitCells.exclusiveMember(races.knownBits())
+      ),
+    });
+
+    assert.equal(races.cellsOf("fixture").race.exclusive[exclusive], true);
+    assert.equal(races.fieldsUnit("fixture", exclusive), false);
+    assert.equal(races.fieldsUnit("mla", exclusive), true);
+  });
 });
 
 describe("raceOf", () => {
