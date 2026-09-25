@@ -349,6 +349,7 @@
           !model.gwCampaignPlayerSetupBlocked() &&
           !(model.gwoCoopAiDeciding && model.gwoCoopAiDeciding()) &&
           !params.starCardsBusy() &&
+          !params.aiStarDealing() &&
           !model.gameOver()
         );
       };
@@ -612,6 +613,7 @@
             hostingSession: hostingSession,
             lookup: lookup,
             starCardsBusy: params.starCardsBusy,
+            aiStarDealing: params.aiStarDealing,
             plain: coopAiEffects.plain,
             judge: {
               effects: effects,
@@ -1076,6 +1078,11 @@
           stockBank: GW.bank,
         });
 
+        // Deals of the selectable AI stars' cards in flight, from their start to
+        // the star-card refresh they end with, so the AI players' pings judge
+        // the cards the stars will offer.
+        var aiStarDealing = ko.observable(0);
+
         var dealCardToSelectableAI = function (win, turnState) {
           if (model.isCampaignViewer()) {
             return $.when().promise();
@@ -1086,6 +1093,10 @@
           // Avoid running twice after winning a fight
           if (!win || turnState === "end") {
             var deferredQueue = [];
+            aiStarDealing(aiStarDealing() + 1);
+            var dealt = function () {
+              aiStarDealing(Math.max(0, aiStarDealing() - 1));
+            };
 
             _.forEach(model.galaxy.systems(), function (system, starIndex) {
               var ai = system.star.ai();
@@ -1139,8 +1150,9 @@
                 return coopStarCards.refresh({ redeal: true });
               })
               .then(function () {
+                dealt();
                 deferred.resolve();
-              });
+              }, dealt);
           } else {
             deferred.resolve();
           }
@@ -1415,6 +1427,7 @@
           coopDeal: coopDeal,
           coopReroll: coopReroll,
           starCardsBusy: starCardsBusy,
+          aiStarDealing: aiStarDealing,
           startCardUnlocked: startCardUnlocked,
           generalCommander: generalCommander.promise(),
         });

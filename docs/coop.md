@@ -733,11 +733,14 @@ host's turn count, the current star, and the host's deal count, so a move, a won
 star, or a deal opens a new one. It is open while the host holds a session with
 an AI in it and the unit lookup is in, the current star is explored, the turn
 state is neither `explore` nor `fight`, nothing is scanning, no player is
-choosing tech, no AI is settling its deals, the star-card refresh is idle, and
-the war is not over. The AIs settle in slot order, the first 1.5 seconds after
-the window opens and each after it 1.2 seconds later, so their pings do not
-land together. Judging takes time, so each checks the window again before it
-pings. A window that closes before an AI has settled reopens for it.
+choosing tech, no AI is settling its deals, the war is not over, and nothing is
+re-dealing the stars' cards: neither the deal of the selectable AI stars'
+cards, which a won star starts, nor the star-card refresh it ends with. An AI
+therefore judges the cards the stars will offer. The AIs settle in slot order,
+the first 1.5 seconds after the window opens and each after it 1.2 seconds
+later, so their pings do not land together. Judging takes time, so each checks
+the window again before it pings. A window that closes before an AI has settled
+reopens for it.
 
 **Which star.** The candidates are the unexplored AI stars the host can move
 to, other than the current one, and the treasure planet only when it is the
