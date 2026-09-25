@@ -466,20 +466,6 @@ define([
     var out = [];
     var remade = remadeFiles(mods || []);
 
-    // A mod on a race path is a pass of its own source, so a card naming a
-    // vanilla unit and the race unit of its cell changes that unit once.
-    var emit = function (mod, target) {
-      var key = [target, mod.path, mod.op, JSON.stringify(mod.value)].join("|");
-      var pass = passes[key];
-      if (!pass || pass[mod.file]) {
-        pass = passes[key] = {};
-        out.push(
-          target === mod.file ? mod : _.assign({}, mod, { file: target })
-        );
-      }
-      pass[mod.file] = true;
-    };
-
     _.forEach(mods || [], function (mod) {
       if (!mod || !_.isString(mod.file) || remade[mod.file]) {
         out.push(mod);
@@ -488,7 +474,7 @@ define([
 
       var targets = targetsFor(mod.file, vanilla, race);
       if (_.isUndefined(targets)) {
-        emit(mod, mod.file);
+        out.push(mod);
         return;
       }
 
@@ -496,8 +482,15 @@ define([
         out.push(mod);
       }
 
+      var change = [mod.path, mod.op, JSON.stringify(mod.value)].join("|");
       _.forEach(targets, function (target) {
-        emit(mod, target);
+        var key = target + "|" + change;
+        var pass = passes[key];
+        if (!pass || pass[mod.file]) {
+          pass = passes[key] = {};
+          out.push(_.assign({}, mod, { file: target }));
+        }
+        pass[mod.file] = true;
       });
     });
 

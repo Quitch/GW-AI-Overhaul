@@ -159,8 +159,10 @@ A group card names several vanilla files of one cell (`gwoGroup.botsAmmo`
 names eight). It must land once on a race ammo, not eight times. `expandMods`
 emits a race target set once per **pass**. A pass ends when a vanilla source
 already seen recurs. One card is one pass, and two copies stack. A mod on a
-race path is a source of its own in the same passes, so a card naming the Ant
-and the race tank of its cell changes that tank once. A mod whose
+race path is passed through, so a card that makes one change to the Ant and to
+the race tank of its cell changes that tank twice. The passes carry no card, so
+they cannot tell that case from two cards. The New-GW-Cards README tells
+authors to name one or the other. A mod whose
 `path` a race file lacks is the no-op it always was in `specs.mod`.
 
 A single-unit grant opens its whole cell: `gwc_start_subcdr`'s Ant brings every
