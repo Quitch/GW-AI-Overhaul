@@ -244,16 +244,14 @@ define([
     };
 
     // Called whenever anything the window depends on changes. A window runs
-    // once for each AI; one closed before an AI settled reopens for it.
+    // once for each AI, an AI added while it is open included; one closed
+    // before an AI settled reopens for it.
     var update = function () {
       if (!params.windowOpen()) {
         current = undefined;
         return;
       }
       var key = params.windowKey();
-      if (key === current) {
-        return;
-      }
       if (claimedWindow !== key) {
         claimed = {};
         claimedWindow = key;

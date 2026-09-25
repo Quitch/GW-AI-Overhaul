@@ -328,6 +328,20 @@ describe("the ping window", () => {
     assert.equal(calls.log.length, 1);
   });
 
+  it("gives an AI added while the window is open its turn", async () => {
+    const { pings, state, calls, flush } = setup();
+    pings.update();
+    await flush();
+
+    state.ais = [TANK, SORIAN];
+    pings.update();
+    assert.equal(calls.delays.length, 1);
+    await flush();
+
+    assert.equal(calls.log.length, 2);
+    assert.match(calls.log[1], /^\[GW COOP AI\] Sorian ping window 1:0:1 /);
+  });
+
   it("leaves a star another AI pinged this window alone", async () => {
     const { pings, calls, flush } = setup({ ais: [TANK, SORIAN] });
     pings.update();
