@@ -514,8 +514,8 @@ its parts carry the names the debug lines print
   `mods`, `minions`, and `aiMods` parts are all 0, and it takes one slot without
   adding one, a card without units in `model.gwoCardsToUnits` scores 4 times its
   own deal chance out of 100. Its `deal()` runs on a fresh inventory loaded from
-  the AI's applied inventory without the card, with no `rng`, and a throw counts
-  as a chance of 0.
+  the AI's applied inventory without the card, with no `rng`, and a throw is
+  logged and counts as a chance of 0.
 
 The score is the sum, rounded to one decimal place, and the debug line prints
 every part. A new AI's starting loadouts are scored the same way, each against

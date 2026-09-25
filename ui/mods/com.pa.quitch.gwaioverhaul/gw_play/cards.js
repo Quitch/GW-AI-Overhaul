@@ -464,6 +464,12 @@
             } catch (e) {
               // A deal() that throws could never offer its card, so the card
               // has no chance to score.
+              console.error(
+                "[GW COOP AI] " +
+                  card.id +
+                  " deal() threw: " +
+                  ((e && e.message) || e)
+              );
               return 0;
             }
           };

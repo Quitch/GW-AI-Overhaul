@@ -308,6 +308,8 @@ The other lines are rarer, and most of them mean that something went wrong:
   (its cards kept changing under the decision), `refused`, `failed`, or
   `stalled` (the campaign queue did not run the write within 60 seconds).
 - `<name> loadout <id> not built: <error>`: that candidate was skipped.
+- `<card id> deal() threw: <error>`: the card's own `deal()` threw while an AI
+  judged its floor, so it scored no chance.
 - `unit specs not in after 8 s: judging by unit groups until they are`, or
   `unit specs not read: <error>`: the unit groups stand in.
 - `write failed: <error>` or `pass failed: <error>`: a throw inside a write,
