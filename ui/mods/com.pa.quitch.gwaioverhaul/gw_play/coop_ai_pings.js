@@ -20,6 +20,10 @@ define([
   var STAGGER_MS = 1200;
   // An AI pings a new star only this long after its last ping.
   var REPING_MS = 20000;
+  // A refused ping is tried again this much later, and a settle is retried
+  // at most this often in one window.
+  var REFUSED_RETRY_MS = 5000;
+  var MAX_RETRIES = 3;
 
   var round = function (value) {
     return Math.round(value * 100) / 100;
@@ -179,8 +183,9 @@ define([
     var now = params.now || _.now;
     // Per AI: the window it last settled, and its last ping's star and time.
     var last = {};
-    // Per AI, the window it is settling.
+    // Per AI, the window it is settling, and the retries it has made in it.
     var settling = {};
+    var retries = {};
     // The stars pinged in a window, and by whom.
     var claimed = {};
     var claimedWindow;
@@ -213,26 +218,32 @@ define([
       var mine = last[ai.id] || {};
 
       if (!best) {
-        return "no ping (no star)";
+        return { text: "no ping (no star)" };
       }
       if (!reason) {
-        return "no ping (indifferent)";
+        return { text: "no ping (indifferent)" };
       }
       if (claimed[best.star]) {
-        return "no ping (" + claimed[best.star] + " pinged " + best.star + ")";
+        return {
+          text: "no ping (" + claimed[best.star] + " pinged " + best.star + ")",
+        };
       }
       if (mine.star === best.star) {
-        return "no ping (pinged " + best.star + " already)";
+        return { text: "no ping (pinged " + best.star + " already)" };
       }
+      // Tried again once the wait is over, in the same window.
       if (_.isNumber(mine.at) && now() - mine.at < REPING_MS) {
-        return "no ping (pinged " + mine.star + " too recently)";
+        return {
+          text: "no ping (pinged " + mine.star + " too recently)",
+          retryIn: mine.at + REPING_MS - now(),
+        };
       }
       if (!params.ping(best.star, { id: ai.id, name: ai.name })) {
-        return "no ping (refused)";
+        return { text: "no ping (refused)", retryIn: REFUSED_RETRY_MS };
       }
       claimed[best.star] = ai.name;
       last[ai.id] = { star: best.star, at: now(), window: key };
-      return "ping " + best.star + " (" + reason + ")";
+      return { text: "ping " + best.star + " (" + reason + ")" };
     };
 
     var stillOpen = function (key) {
@@ -243,7 +254,8 @@ define([
 
     // A promise throughout, so a throw anywhere is logged, not left loose in a
     // timer. The AI is read again when it settles: its record may have been
-    // rewritten, or the AI kicked, since the settle was scheduled.
+    // rewritten, or the AI kicked, since the settle was scheduled. Resolves
+    // with how long to wait before trying again, if the AI is to.
     var settle = function (scheduled, key) {
       return Promise.resolve().then(function () {
         var ai = _.find(params.ais(), { id: scheduled.id });
@@ -253,13 +265,40 @@ define([
         return judge(ai).then(function (ranked) {
           // Judging takes time, and the war may have moved on meanwhile.
           if (!stillOpen(key)) {
-            return;
+            return undefined;
           }
-          var outcome = decide(ai, ranked, key);
+          var decision = decide(ai, ranked, key);
+          console.log(describe(ai.name, key, ranked, decision.text));
+
+          var tried = retries[ai.id];
+          var count = tried && tried.window === key ? tried.count : 0;
+          if (_.isNumber(decision.retryIn) && count < MAX_RETRIES) {
+            retries[ai.id] = { window: key, count: count + 1 };
+            return decision.retryIn;
+          }
           last[ai.id] = _.assign({}, last[ai.id], { window: key });
-          console.log(describe(ai.name, key, ranked, outcome));
+          return undefined;
         });
       });
+    };
+
+    var schedule = function (ai, key, wait) {
+      settling[ai.id] = key;
+      delay(function () {
+        settle(ai, key)
+          .then(null, function (error) {
+            console.error(
+              LOG + ai.name + " ping failed: " + describeError(error)
+            );
+          })
+          .then(function (retryIn) {
+            if (_.isNumber(retryIn)) {
+              schedule(ai, key, retryIn);
+            } else if (settling[ai.id] === key) {
+              delete settling[ai.id];
+            }
+          });
+      }, wait);
     };
 
     // Called whenever anything the window depends on changes. A window runs
@@ -282,23 +321,7 @@ define([
         if ((mine && mine.window === key) || settling[ai.id] === key) {
           return;
         }
-        settling[ai.id] = key;
-        delay(
-          function () {
-            settle(ai, key)
-              .then(null, function (error) {
-                console.error(
-                  LOG + ai.name + " ping failed: " + describeError(error)
-                );
-              })
-              .then(function () {
-                if (settling[ai.id] === key) {
-                  delete settling[ai.id];
-                }
-              });
-          },
-          FIRST_DELAY_MS + STAGGER_MS * index
-        );
+        schedule(ai, key, FIRST_DELAY_MS + STAGGER_MS * index);
       });
     };
 
@@ -311,6 +334,8 @@ define([
   factory.FIRST_DELAY_MS = FIRST_DELAY_MS;
   factory.STAGGER_MS = STAGGER_MS;
   factory.REPING_MS = REPING_MS;
+  factory.REFUSED_RETRY_MS = REFUSED_RETRY_MS;
+  factory.MAX_RETRIES = MAX_RETRIES;
   factory.pickCandidates = pickCandidates;
   factory.rank = rank;
   factory.median = median;

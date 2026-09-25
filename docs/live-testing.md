@@ -354,8 +354,11 @@ The outcome is one of:
   and viewers get the marker and the chat line "`<name>`: Ping! `<star>`".
 - `no ping (indifferent)`, or `no ping (no star)` when it has nothing to ping.
 - `no ping (<name> pinged <star>)`: another AI pinged that star this window.
-- `no ping (pinged <star> already)` or `no ping (pinged <star> too recently)`.
-- `no ping (refused)`: the host's checks turned it down.
+- `no ping (pinged <star> already)`.
+- `no ping (pinged <star> too recently)`: the AI tries again, in the same
+  window, once 20 seconds have passed since its last ping.
+- `no ping (refused)`: the host's checks turned it down. The AI tries again 5
+  seconds later, up to three times in a window.
 
 `<name> ping failed: <error>` is a throw while it judged its stars.
 

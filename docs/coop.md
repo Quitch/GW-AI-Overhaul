@@ -762,8 +762,10 @@ which is worth 10 or more, about a factory's unlock. It also pings when its
 best star leads the runner-up by 0.25 or more, a clear **lead**. A lone
 candidate counts as a lead only when its threat is below the median of every
 AI star's. Otherwise it stays silent. It stays silent too for a star another
-AI pinged in the same window, for the star it pinged last, and for any new star
-within 20 seconds of its last ping.
+AI pinged in the same window, and for the star it pinged last. A new star
+within 20 seconds of its last ping waits: the AI tries again once the 20
+seconds are up, in the same window. A ping the host refuses is tried again 5
+seconds later. Either retry happens three times at most in one window.
 
 **Sending.** `pingStarAs(star, sender)` in `coop_ping_operators.js` is the
 host's send on another's behalf. `canPingAs` makes the viewer's checks of the

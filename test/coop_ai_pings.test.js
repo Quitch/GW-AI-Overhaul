@@ -389,6 +389,44 @@ describe("the ping window", () => {
     ]);
   });
 
+  it("pings a new star once the wait is over, in the same window", async () => {
+    const { pings, state, calls, flush } = setup();
+    pings.update();
+    await flush();
+
+    state.key = "2:0:1";
+    state.values = { 2: 1, 3: 20 };
+    state.now += 5000;
+    pings.update();
+    await flush();
+    assert.match(calls.log[1], /-> no ping \(pinged 2 too recently\)$/);
+    assert.equal(calls.delays.length, 1);
+    assert.equal(calls.delays[0].ms, coopAiPings.REPING_MS - 5000);
+
+    state.now += coopAiPings.REPING_MS - 5000;
+    await flush();
+    assert.deepEqual(calls.pings, [
+      [2, "Tank"],
+      [3, "Tank"],
+    ]);
+  });
+
+  it("tries a refused ping again, a few times at most", async () => {
+    const { pings, calls, flush } = setup({ pingResult: false });
+    pings.update();
+    for (let tries = 0; tries <= coopAiPings.MAX_RETRIES + 1; tries++) {
+      await flush();
+    }
+
+    assert.equal(calls.pings.length, coopAiPings.MAX_RETRIES + 1);
+    assert.equal(calls.log.length, coopAiPings.MAX_RETRIES + 1);
+    assert.deepEqual(calls.delays, []);
+
+    // The window is spent: it is not tried again.
+    pings.update();
+    assert.deepEqual(calls.delays, []);
+  });
+
   it("says so when the host refuses the ping, and does not count it", async () => {
     const { pings, state, calls, flush } = setup({ pingResult: false });
     pings.update();
