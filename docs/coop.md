@@ -313,10 +313,9 @@ Each AI is one army. Its slot is `ai: true` with a commander, it has
 the army joins after `referee_config.js`'s tagging loop. It fights at the war's
 difficulty tier, with the players' economy: `setAdvEcoMod` is the enemy's eco
 cheat and is not applied. The personality template is `uber` under Queller and
-`absurd` otherwise. It also carries the `GWAlly` tag the build files test for a
-Galactic War ally, so it stays off the builds meant for the enemy alone, such
-as the Annihilaser's Catalysts. Its colour continues the players' sequence: the
-AIs take
+`absurd` otherwise. It takes no `GWAlly` tag: the build files use that to mark
+a Sub Commander, and an AI player plays as a player would. Its colour continues
+the players' sequence: the AIs take
 `resolvePlayerColorPairs(humanArmies + AIs).slice(humanArmies)`, and the stock
 resolver builds its pairs in order, so no human's colour moves.
 
