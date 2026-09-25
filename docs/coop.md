@@ -729,8 +729,10 @@ it wants to go next. It has no client to send from, so the host pings for it.
 `gw_play/cards.js` is the glue.
 
 **When.** An AI considers a ping once in each window. A window is keyed by the
-host's turn count, the current star, and the host's deal count, so a move, a won
-star, or a deal opens a new one. It is open while the host holds a session with
+host's turn count, the current star, the host's deal count, and a digest of the
+cards every AI would find at every AI star. So a move, a won star, a deal, or a
+re-deal of the stars' cards opens a new one, and a judgement made on cards
+since replaced is dropped. It is open while the host holds a session with
 an AI in it and the unit lookup is in, the current star is explored, the turn
 state is neither `explore` nor `fight`, nothing is scanning, no player is
 choosing tech, no AI is settling its deals, the war is not over, and nothing is

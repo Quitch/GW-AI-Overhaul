@@ -112,8 +112,17 @@ describe("reasonToPing", () => {
 });
 
 describe("windowKey and describe", () => {
-  it("keys a window by the turn, the star, and the deal count", () => {
+  it("keys a window by the turn, the star, the deal count, and the cards", () => {
     assert.equal(coopAiPings.windowKey(5, 2, 3), "5:2:3");
+    assert.equal(coopAiPings.windowKey(5, 2, 3, "k1"), "5:2:3:k1");
+  });
+
+  it("digests the cards the stars offer, the same cards the same way", () => {
+    const digest = coopAiPings.cardsDigest(["2=gwc_a", "3=gwc_b"]);
+    assert.match(digest, /^[0-9a-z]+$/);
+    assert.equal(coopAiPings.cardsDigest(["2=gwc_a", "3=gwc_b"]), digest);
+    assert.notEqual(coopAiPings.cardsDigest(["2=gwc_a", "3=gwc_c"]), digest);
+    assert.notEqual(coopAiPings.cardsDigest([]), digest);
   });
 
   it("formats one line per AI and window", () => {

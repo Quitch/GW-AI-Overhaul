@@ -345,7 +345,7 @@ The other lines are rarer, and most of them mean that something went wrong:
 move, a won star, or a deal:
 
 ```text
-[GW COOP AI] <name> ping window <turns>:<star>:<deals> candidates: <star>=<score> (<card id> <value>, threat <t>, hops <h>), ... -> <outcome>
+[GW COOP AI] <name> ping window <turns>:<star>:<deals>:<cards> candidates: <star>=<score> (<card id> <value>, threat <t>, hops <h>), ... -> <outcome>
 ```
 
 The outcome is one of:

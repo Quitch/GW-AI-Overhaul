@@ -79,9 +79,28 @@ define([
     return best.threat < median(allThreats) ? "lead" : undefined;
   };
 
-  // A window is the quiet stretch after a turn, a move, or a deal.
-  var windowKey = function (turns, currentStar, hostDealCount) {
-    return turns + ":" + currentStar + ":" + hostDealCount;
+  // A short, stable digest of the cards the AIs would find, so that a
+  // re-deal of the stars' cards opens a new window. entries: strings.
+  var cardsDigest = function (entries) {
+    var text = entries.join("|");
+    var hash = 5381;
+    for (var i = 0; i < text.length; i++) {
+      hash = (hash * 33 + text.charCodeAt(i)) % 4294967296;
+    }
+    return hash.toString(36);
+  };
+
+  // A window is the quiet stretch after a turn, a move, a deal, or a re-deal
+  // of the stars' cards.
+  var windowKey = function (turns, currentStar, hostDealCount, cards) {
+    return (
+      turns +
+      ":" +
+      currentStar +
+      ":" +
+      hostDealCount +
+      (cards ? ":" + cards : "")
+    );
   };
 
   // One line: PA's log keeps a console call's first argument only.
@@ -296,6 +315,7 @@ define([
   factory.rank = rank;
   factory.median = median;
   factory.reasonToPing = reasonToPing;
+  factory.cardsDigest = cardsDigest;
   factory.windowKey = windowKey;
   factory.describe = describe;
   factory.valueOfCard = valueOfCard;

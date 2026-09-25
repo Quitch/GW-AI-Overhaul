@@ -364,11 +364,36 @@
             };
           });
         },
+        // The cards every AI would find at every AI star are part of the key,
+        // so a re-deal outside a turn - a cheat's, say - opens a new window.
         windowKey: function () {
+          var perPlayerNow = model.gwCampaignPerPlayerTechCards();
+          var records = model.gwoCoopAi.records();
+          var entries = [];
+          _.forEach(galaxy.stars(), function (star, index) {
+            if (!star.ai() || star.explored()) {
+              return;
+            }
+            if (!perPlayerNow) {
+              var cards = star.cardList();
+              entries.push(index + "=" + _.get(cards, "0.id", ""));
+              return;
+            }
+            _.forEach(records, function (record) {
+              entries.push(
+                record.playerId +
+                  "@" +
+                  index +
+                  "=" +
+                  _.get(record, "gwaioStarCards.cards." + index + ".id", "")
+              );
+            });
+          });
           return coopAiPings.windowKey(
             game.stats().turns(),
             game.currentStar(),
-            game.hostTechCardDealCount()
+            game.hostTechCardDealCount(),
+            coopAiPings.cardsDigest(entries)
           );
         },
         windowOpen: windowOpen,
