@@ -176,12 +176,16 @@ define([
       }
 
       saveWar("add", true);
-      // The first request carried the lock limit from before this AI, so it is
-      // sent again with the one that leaves it out.
-      if (model.savedCoopPlayersLocked()) {
-        sendSettings(target);
+      try {
+        // The first request carried the lock limit from before this AI, so it
+        // is sent again with the one that leaves it out.
+        if (model.savedCoopPlayersLocked()) {
+          sendSettings(target);
+        }
+        publish("add");
+      } catch (error) {
+        console.error(LOG + "add not published: " + describe(error));
       }
-      publish("add");
       busy(false);
     };
 
@@ -223,8 +227,7 @@ define([
       return !!(row && row.gwoAi && hostCanEdit());
     };
 
-    // Runs in the campaign state queue. Whatever throws, the slot is offered
-    // back once the record is gone, and busy is released.
+    // Runs in the campaign state queue; kickAi releases busy if it throws.
     var removeAi = function (row) {
       var records = game.coopPlayerInventoryData();
       var kept = _.reject(records, function (record) {

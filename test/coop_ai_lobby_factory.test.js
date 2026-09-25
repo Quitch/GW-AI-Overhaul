@@ -52,6 +52,7 @@ function setup(overrides) {
       saveFails: false,
       saveThrows: false,
       applyThrows: false,
+      snapshotThrows: false,
       noGwaio: false,
       // The seats the war was made with, and the humans due back from a
       // battle.
@@ -122,6 +123,9 @@ function setup(overrides) {
       return apply();
     },
     sendCampaignSnapshot: (reason, force) => {
+      if (options.snapshotThrows) {
+        throw new Error("snapshot failed");
+      }
       calls.snapshots.push({ reason, force });
       return true;
     },
@@ -432,6 +436,26 @@ describe("addAi", () => {
       run.calls.log.some((line) =>
         line.startsWith(
           "[GW COOP AI] war not saved after add: Error: database closed"
+        )
+      ),
+      JSON.stringify(run.calls.log)
+    );
+  });
+
+  it("keeps the AI and releases the lobby when the viewers cannot be told", () => {
+    const run = active.build({
+      connected: [HOST, VIEWER],
+      snapshotThrows: true,
+    });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+
+    assert.equal(run.records().length, 1);
+    assert.equal(run.state.busy(), false);
+    assert.ok(
+      run.calls.log.some((line) =>
+        line.startsWith(
+          "[GW COOP AI] add not published: Error: snapshot failed"
         )
       ),
       JSON.stringify(run.calls.log)

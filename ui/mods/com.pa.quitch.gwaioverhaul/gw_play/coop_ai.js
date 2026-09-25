@@ -221,6 +221,27 @@
       holdWhileChanging("addGwCampaignSlot");
       holdWhileChanging("removeGwCampaignSlot");
 
+      // Stock's lobby push (Share Army, public or private, the title and
+      // password) sends the count too. One asked for while the count is
+      // changing goes out once it settles, with the settings as they are then.
+      var stockPush = model.pushCampaignLobbySettings;
+      var pushOwed = false;
+      model.pushCampaignLobbySettings = function () {
+        if (lobbyChanging()) {
+          pushOwed = true;
+          return;
+        }
+        return stockPush.apply(this, arguments);
+      };
+      ko.computed(function () {
+        if (!lobbyChanging() && pushOwed) {
+          pushOwed = false;
+          _.defer(function () {
+            model.pushCampaignLobbySettings();
+          });
+        }
+      });
+
       // Stock's own Kick only disconnects a client; an AI row has none.
       var stockKick = model.kickGwCampaignClient;
       model.kickGwCampaignClient = function (slot) {
