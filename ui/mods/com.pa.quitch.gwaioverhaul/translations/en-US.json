@@ -45,7 +45,7 @@
   },
   "ALLY": {
     "message": "ALLY",
-    "description": "Column header \"ALLY\" in the AI modal table on the war setup screen (Race / Opponent / ALLY / Co-op, the AI brain used for allied commanders), and in the war-info panel where it is displayed sentence-cased before \"AI:\" (\"Ally AI:\"). Also appended in brackets to a faction name in the Planetary Intelligence panel: \"<Faction> (ALLY)\" for the faction that fights on the player's side. Noun, singular. Uses the base game's existing \"ALLY\" entry, so match that translation. (gwo_panel.html:39, section_of_foreign_intelligence.js:81, ai_modal.html:42)"
+    "description": "Column header \"ALLY\" in the AI modal table on the war setup screen (Race / Opponent / ALLY / Co-op, the AI brain used for allied commanders), and in the war-info panel where it is displayed sentence-cased before \"AI:\" (\"Ally AI:\"). Also appended in brackets to a faction name in the Planetary Intelligence panel: \"<Faction> (ALLY)\" for the faction that fights on the player's side. Noun, singular. Uses the base game's existing \"ALLY\" entry, so match that translation. (gwo_panel.html:39, section_of_foreign_intelligence.js:86, ai_modal.html:42)"
   },
   "ALLY CHANCE:": {
     "message": "ALLY CHANCE:",
@@ -925,7 +925,7 @@
   },
   "CO-OP: the AI players a host adds to a co-op session": {
     "message": "CO-OP: the AI players a host adds to a co-op session",
-    "description": "One line of the intro in the AI picker dialog on the war setup screen (gw_start), explaining the dialog's \"Co-op\" column: the brain that runs the AI players a co-op host adds to the war's session. The lines read \"LABEL: what it means\" and sit beside \"TITANS: base game AI\", \"QUELLER: greater challenge at the cost of performance\" and \"PENCHANT: increased personality\"; the code joins them with <br>. Keep the upper-case label and the colon after it; no full stop. (ai_picker.js:61)"
+    "description": "One line of the intro in the AI picker dialog on the war setup screen (gw_start), explaining the dialog's \"Co-op\" column: the brain that runs the AI players a co-op host adds to the war's session. The lines read \"LABEL: what it means\" and sit beside \"TITANS: base game AI\", \"QUELLER: greater challenge at the cost of performance\" and \"PENCHANT: increased personality\"; the code joins them with <br>. Keep the upper-case label and the colon after it; no full stop. (ai_picker.js:79)"
   },
   "COMMANDER TRANSPORT:": {
     "message": "COMMANDER TRANSPORT:",
@@ -3821,7 +3821,7 @@
   },
   "Waiting for loadout": {
     "message": "Waiting for loadout",
-    "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), while that player's loadout and tech cards cannot be shown. Stock's rows show the same tooltip for a human player, in English, since no locale of the game translates it. No full stop. (coop_ai_roster.js:101)"
+    "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), while that player's loadout and tech cards cannot be shown. Stock's rows show the same tooltip for a human player, in English, since no locale of the game translates it. No full stop. (coop_ai_roster.js:150)"
   },
   "Waiting for players": {
     "message": "Waiting for players",
