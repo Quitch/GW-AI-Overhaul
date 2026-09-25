@@ -59,24 +59,18 @@ define(function () {
         "/pa/units/l_addon/adv_mass_generator/adv_mass_generator.json",
       advancedMassGeneratorDeathRangeWeapon:
         "/pa/units/addon/adv_metal_generator/death_range.json",
-      advancedMassGeneratorAmmo:
-        "/pa/units/land/assault_bot/assault_bot_ammo.json",
       advancedMassGeneratorBoomDeathAmmo:
         "/pa/units/addon/adv_metal_generator/adv_metal_generator_boom_ammo.json",
       advancedMetalGenerator:
         "/pa/units/addon/adv_metal_generator/adv_metal_generator.json",
       advancedMetalGeneratorDeathRangeWeapon:
         "/pa/units/addon/adv_metal_generator/death_range.json",
-      advancedMetalGeneratorAmmo:
-        "/pa/units/land/assault_bot/assault_bot_ammo.json",
       advancedMetalGeneratorBoomDeathAmmo:
         "/pa/units/addon/adv_metal_generator/adv_metal_generator_boom_ammo.json",
       advancedMetalGeneratorBugs:
         "/pa/units/b_addon/adv_metal_generator/adv_metal_generator.json",
       advancedMetalGeneratorBugsDeathRangeWeapon:
         "/pa/units/addon/adv_metal_generator/death_range.json",
-      advancedMetalGeneratorBugsAmmo:
-        "/pa/units/land/assault_bot/assault_bot_ammo.json",
       advancedMetalGeneratorBugsBoomDeathAmmo:
         "/pa/units/addon/adv_metal_generator/adv_metal_generator_boom_ammo.json",
       advancedMetalStorage:
@@ -157,21 +151,17 @@ define(function () {
       massGenerator: "/pa/units/l_addon/mass_generator/mass_generator.json",
       massGeneratorDeathRangeWeapon:
         "/pa/units/addon/metal_generator/death_range.json",
-      massGeneratorAmmo: "/pa/units/land/assault_bot/assault_bot_ammo.json",
       massGeneratorBoomDeathAmmo:
         "/pa/units/addon/metal_generator/metal_generator_boom_ammo.json",
       metalGenerator: "/pa/units/addon/metal_generator/metal_generator.json",
       metalGeneratorDeathRangeWeapon:
         "/pa/units/addon/metal_generator/death_range.json",
-      metalGeneratorAmmo: "/pa/units/land/assault_bot/assault_bot_ammo.json",
       metalGeneratorBoomDeathAmmo:
         "/pa/units/addon/metal_generator/metal_generator_boom_ammo.json",
       metalGeneratorBugs:
         "/pa/units/b_addon/metal_generator/metal_generator.json",
       metalGeneratorBugsDeathRangeWeapon:
         "/pa/units/addon/metal_generator/death_range.json",
-      metalGeneratorBugsAmmo:
-        "/pa/units/land/assault_bot/assault_bot_ammo.json",
       metalGeneratorBugsBoomDeathAmmo:
         "/pa/units/addon/metal_generator/metal_generator_boom_ammo.json",
       orbitalAntiNukeCannon:

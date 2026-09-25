@@ -15,8 +15,11 @@ race needs something new.
 2. **Unit table.** `units` keys every spec the race ships by a name of the
    race's own (`shank`, `crusher`). It keys parts by owner plus role
    (`shankAmmo`, `crusherWeapon`, `hiveBuildArm`), research factories as
-   `<x>Research`, and unlock tokens as `<x>Unlock`. The table exists for cards
-   written for that race alone. Nothing in the referee reads it. Add the race
+   `<x>Research`, and unlock tokens as `<x>Unlock`. It holds only the files the
+   race's own mod ships; a base-game file its units reuse keeps its stock key.
+   The table is for cards written for that race alone, and it marks those
+   files as the race's: the deal gate, the referees and the vanilla index all
+   read it ([`races.md`](races.md), "Capability cells"). Add the race
    to `scripts/lib/race-table-inputs.js` (its mods, bit and name prefixes),
    then run `npm run harvest:race-specs` and `npm run generate:race-tables`.
    Do not hand-write it. Publish it to cards under the race's own key in
@@ -142,10 +145,12 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   cost, health, storage) stays with it too. This rule was found the hard way.
   The Guardians of a Cluster war carry the Angel-to-commander mods, and by cell
   they turned Exiles' Heron into a broken commander.
-- **Cards never change.** They name vanilla units. The race's units follow at
-  launch. A card that cannot work by cell goes in
+- **Cards never change.** GWO's own cards name vanilla units. The race's units
+  follow at launch. A card that cannot work by cell goes in
   `cards_deal_helpers.MLA_ONLY`, with a comment that says why. Every
-  `_upgrade_` card is MLA-only except the commander's.
+  `_upgrade_` card is MLA-only except the commander's, unless its
+  `card_units.js` entry names race or add-on units: such a card is written for
+  that race and dealt to whoever fields one.
 - **The race tag travels with every inventory** (`global:playerRace`), the
   host's and each co-op viewer's. Every referee function takes the race per
   army. Never read a race from `model.game().inventory()` when the thing being

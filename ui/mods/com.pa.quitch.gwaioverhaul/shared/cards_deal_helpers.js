@@ -4,8 +4,9 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
 ], function (brainTable, unitCells) {
-  // Cards a race player is never offered: unit upgrades are tuned to the MLA
-  // unit they name (the commander's excepted - every race has one), these
+  // Cards a race player is not offered unless their entry names race units:
+  // unit upgrades are tuned to the MLA unit they name (the commander's
+  // excepted - every race has one), these
   // loadouts and protocols are built on hand-picked unit lists no cell reads,
   // and the Deepspace Radar is a TITANS stub only its card brings back. A
   // race gets its own. See races.md.
@@ -31,37 +32,35 @@ define([
     return !!race && race !== "mla" && mlaOnlyCard(cardId);
   };
 
-  // Every deal asks for every card's entry: indexed by id, each flattened once.
-  // A push or a new list rebuilds the index.
-  var entries = { list: undefined, length: -1, byId: {}, flat: {} };
+  // Every deal asks for every card's entry, so the list is indexed by
+  // position, rebuilt when the list, its length or an indexed entry changes.
+  var entryIndex = { list: undefined, length: -1, at: {} };
 
-  var entryUnits = function (cardsToUnits, cardId) {
+  var entryFor = function (cardsToUnits, cardId) {
     var list = cardsToUnits || [];
+    var indexed = function () {
+      return Object.prototype.hasOwnProperty.call(entryIndex.at, cardId);
+    };
+    var moved = function () {
+      var entry = list[entryIndex.at[cardId]];
+      return !entry || entry.id !== cardId;
+    };
 
-    if (entries.list !== list || entries.length !== list.length) {
-      var byId = {};
-      _.forEachRight(list, function (entry) {
+    if (
+      entryIndex.list !== list ||
+      entryIndex.length !== list.length ||
+      (indexed() && moved())
+    ) {
+      var at = {};
+      _.forEachRight(list, function (entry, position) {
         if (entry) {
-          byId[entry.id] = entry;
+          at[entry.id] = position;
         }
       });
-      entries = { list: list, length: list.length, byId: byId, flat: {} };
+      entryIndex = { list: list, length: list.length, at: at };
     }
 
-    if (!Object.prototype.hasOwnProperty.call(entries.byId, cardId)) {
-      return undefined;
-    }
-
-    var entry = entries.byId[cardId];
-    var cached = entries.flat[cardId];
-    if (!cached || cached.units !== entry.units) {
-      cached = entries.flat[cardId] = {
-        units: entry.units,
-        list: unitCells.unitList(entry.units),
-      };
-    }
-
-    return cached.list;
+    return indexed() ? list[entryIndex.at[cardId]] : undefined;
   };
 
   var isStartLoadoutCardId = function (cardId) {
@@ -268,7 +267,8 @@ define([
         return true;
       }
       var race = races.raceOf(inventory);
-      var units = entryUnits(cardsToUnits, cardId);
+      var entry = entryFor(cardsToUnits, cardId);
+      var units = entry && unitCells.unitList(entry.units);
       if (units && races.namesForeignUnit(units)) {
         return races.cardUsable(race, units);
       }

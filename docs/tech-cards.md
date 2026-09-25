@@ -214,8 +214,9 @@ routes:
 1. Every affected unit is in the guaranteed set that `gwc_start.js` grants. This is
    why the naval, radar, teleporter and basic-defence cards need no gate at all.
 2. `deal()` gates on ownership. It uses `gwoCard.hasUnit(inventory.units(), …)`
-   through `conditionalDeal`/`upgradeDeal`, or an early `missingAllUnits` test that
-   returns `chance: 0`.
+   through `conditionalDeal`, `upgradeCard` (which reads `gwoCard.fieldedUnits`, so
+   a race unit counts), or an early `missingAllUnits` test that returns
+   `chance: 0`.
 3. The card's own `buff()` grants them. This is what exempts the `gwc_enable_*`
    unlock cards. Their whole purpose is to be offered to a player who has none of
    the units.
@@ -232,13 +233,16 @@ entry names no unit in a cell the race fills. It also withholds every card in
 `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards keep naming
 vanilla units, and the unit's capability cell decides.
 
-A card whose entry names only race or add-on units is dealt only to a player who
-fields one, MLA players included, and `MLA_ONLY` and the `_upgrade_` rule do not
-apply to it. An entry that also names a stock unit is dealt through either half. See [`races.md`](races.md), "Capability cells".
+A card whose entry names only race or add-on units is dealt only to players whose
+race fields one, MLA players included, and `MLA_ONLY` and the `_upgrade_` rule do
+not apply to it. An entry that also names a stock unit is dealt through either
+half. The gate reads the race; whether the player holds the unit is the card's
+`deal` to test, with `gwoCard.fieldedUnits`. See [`races.md`](races.md),
+"Capability cells".
 
 The tooltip shows that same entry translated by cell: the race units of each cell a
-named vanilla unit occupies. It never shows a second, race-written list. See
-[`races.md`](races.md).
+named vanilla unit occupies, and the race or add-on units it names that the race
+fields. It never shows a second, race-written list. See [`races.md`](races.md).
 
 `test/card_deal_unit_gate.test.js` enforces this in both directions. A card must not
 be dealable to a player who owns none of its units. A card must be dealable to a
@@ -388,11 +392,12 @@ under a key of its own: `gwoUnit.legion.shank`, `gwoUnit.osmech.aegis`. A table
 leaves out the stock files its units share, which keep their stock keys. The
 keys inside those tables are generated, and a mod update can change them
 ([`races.md`](races.md), "Unit tables"). A whole table is not a unit list:
-every reader ignores one, and `validate:refs` fails a GWO file that names one. A race or add-on a third-party mod
-registers is not there. A card names such a unit and lists it in
-`gwoCardsToUnits`, which ties the card to the players who field it. In `deal`
-it checks `gwoCard.fieldedUnits(inventory)`, the held paths plus the race or
-add-on units they bring, rather than `inventory.units()`.
+every reader ignores one, and `validate:refs` fails a card, `card_units.js` or
+`unit_groups.js` that names one. A race or add-on a third-party mod registers is
+not there. A card names such a unit and lists it in `gwoCardsToUnits`, which
+ties the card to the races that field it. In `deal` it checks
+`gwoCard.fieldedUnits(inventory)`, the held paths the race owns plus the race
+or add-on units they bring, rather than `inventory.units()`.
 
 **Register in every scene the data is read in.** `model` is a fresh page per scene.
 A mod that pushes its loadouts only in `gw_start` is therefore missing from the

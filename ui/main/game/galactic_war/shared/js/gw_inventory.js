@@ -5,7 +5,8 @@ define([
   "shared/gw_game_patches",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/defeat_team.js",
-], function (stockBank, gwoGamePatches, gwoBank, gwoDefeatTeam) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (stockBank, gwoGamePatches, gwoBank, gwoDefeatTeam, unitCells) {
   var loadingAnotherPlayersCards = false;
 
   var isCampaignViewerSession = function () {
@@ -26,11 +27,6 @@ define([
     );
     gwoDefeatTeam.install(game);
     return stockPatch.apply(this, arguments);
-  };
-
-  // GWO - see addUnits
-  var unitPaths = function (units) {
-    return _([units]).flattenDeep().reject(_.isPlainObject).value();
   };
 
   var GWInventory = function () {
@@ -67,13 +63,13 @@ define([
     // table is not a list and names nothing
     addUnits: function (add) {
       var self = this;
-      self.units(self.units().concat(unitPaths(add)));
+      self.units(self.units().concat(unitCells.unitPaths(add)));
     },
     // GWO - updated to remove multiple copies of a unit, from a list that may
     // hold groups
     removeUnits: function (remove) {
       var self = this;
-      _.forEach(unitPaths(remove), function (unit) {
+      _.forEach(unitCells.unitPaths(remove), function (unit) {
         self.units.remove(unit);
       });
     },

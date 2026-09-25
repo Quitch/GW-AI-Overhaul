@@ -95,23 +95,28 @@ describe("fieldedUnits", () => {
     assert.ok(fielded.includes(FX_ADDON_TANK));
   });
 
-  it("reuses its answer until the race, held paths or cells change", () => {
+  it("hands out a new list each call, and follows the cells, the held list and the registry", () => {
     races.setCells("fixture", fixtureIndex());
-    const first = cards.fieldedUnits(inventoryOf("fixture", [gwoUnit.ant]));
+    const held = [gwoUnit.ant, oTank];
+    const inventory = inventoryOf("fixture", held);
 
+    const first = cards.fieldedUnits(inventory);
+    assert.ok(first.includes(FX_TANK));
+    assert.ok(first.includes(oTank));
+    first.push("changed by a card");
     assert.equal(
-      cards.fieldedUnits(inventoryOf("fixture", [gwoUnit.ant])),
-      first
-    );
-    assert.notEqual(
-      cards.fieldedUnits(inventoryOf("fixture", [gwoUnit.ant, gwoUnit.dox])),
-      first
+      cards.fieldedUnits(inventory).includes("changed by a card"),
+      false
     );
 
-    races.setCells("fixture", fixtureIndex());
-    const rebuilt = cards.fieldedUnits(inventoryOf("fixture", [gwoUnit.ant]));
-    assert.notEqual(rebuilt, first);
-    assert.deepEqual(rebuilt, first);
+    races.register({ id: "other", unitTypeBit: "Custom9", units: { oTank } });
+    assert.equal(cards.fieldedUnits(inventory).includes(oTank), false);
+
+    held.push(gwoUnit.dox);
+    assert.ok(cards.fieldedUnits(inventory).includes(gwoUnit.dox));
+
+    races.setCells("fixture", undefined);
+    assert.deepEqual(cards.fieldedUnits(inventory), [gwoUnit.ant, gwoUnit.dox]);
   });
 });
 

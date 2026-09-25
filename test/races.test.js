@@ -300,18 +300,44 @@ describe("what a race player fields, and the mods that reach it", () => {
     };
   };
 
-  it("keeps stock paths and the race's own, and drops another race's", () => {
+  it("owns stock paths and the race's own, never another race's", () => {
     const held = [gwoUnit.ant, FX_TANK, OTHER_TANK];
 
-    assert.deepEqual(races.fieldedFor("fixture", held), [gwoUnit.ant, FX_TANK]);
-    assert.deepEqual(races.fieldedFor("mla", held), [gwoUnit.ant]);
+    assert.deepEqual(races.ownedPaths("fixture", held), [gwoUnit.ant, FX_TANK]);
+    assert.deepEqual(races.ownedPaths("mla", held), [gwoUnit.ant]);
+    assert.deepEqual(races.fieldedFor("fixture", held), held);
 
     const index = fixtureIndex();
-    races.setCells("fixture", index);
-    const fielded = races.fieldedFor("fixture", held.concat(STALE), index);
+    const owned = races.ownedPaths("fixture", held.concat(STALE), index);
+    const fielded = races.fieldedFor("fixture", owned, index);
     assert.ok(fielded.includes(FX_TANK));
     assert.ok(fielded.includes(STALE));
     assert.equal(fielded.includes(OTHER_TANK), false);
+  });
+
+  it("reads the index it is handed, not only the published one", () => {
+    const {
+      FIXTURE_ADDON,
+      fixtureAddonIndex,
+    } = require("../scripts/lib/race-fixture.js");
+    const addonTank = FIXTURE_ADDON.units.fxAddonTank;
+    races.registerAddon(FIXTURE_ADDON);
+    const index = fixtureAddonIndex();
+
+    assert.equal(races.cellsOf("mla"), undefined);
+    assert.equal(races.fieldsUnit("mla", addonTank), false);
+    assert.equal(races.fieldsUnit("mla", addonTank, index), true);
+    assert.deepEqual(races.ownedPaths("mla", [addonTank], index), [addonTank]);
+  });
+
+  it("keeps a mod on a file the player's specs hold, whoever's table lists it", () => {
+    const has = (file) => file === OTHER_TANK;
+
+    assert.deepEqual(
+      races.modsFor("fixture", [mod(OTHER_TANK)], undefined, has),
+      [mod(OTHER_TANK)]
+    );
+    assert.deepEqual(races.modsFor("fixture", [mod(OTHER_TANK)]), []);
   });
 
   it("drops a mod on another race's path, and keeps stock, own, and file-less mods", () => {

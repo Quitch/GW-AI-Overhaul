@@ -53,7 +53,12 @@
           var held = heldUnits(inventory).concat(
             "/pa/units/commanders/base_commander/base_commander.json"
           );
-          _.forEach(gwoRaces.fieldedFor(race, held, cells), function (unit) {
+          var fielded = gwoRaces.fieldedFor(
+            race,
+            gwoRaces.ownedPaths(race, held, cells),
+            cells
+          );
+          _.forEach(fielded, function (unit) {
             owned[unit] = true;
           });
           return owned;

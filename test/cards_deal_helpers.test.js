@@ -644,6 +644,13 @@ describe("races", () => {
     assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), false);
     list[1].units = [gwoUnit.ant];
     assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    list[1] = { id: "late_card", units: [gwoUnit.dox] };
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), false);
+    list[1].units.push(gwoUnit.ant);
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    list[0] = { id: "swapped_card", units: [gwoUnit.ant] };
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    assert.equal(helpers.raceCanDeal(races, fixture, "bot_card", list), true);
     assert.equal(
       helpers.raceCanDeal(races, fixture, "constructor", list),
       true

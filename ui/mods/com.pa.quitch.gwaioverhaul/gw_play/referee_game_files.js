@@ -315,7 +315,13 @@ define([
                 // is retagged so the race can build it. An MLA player keeps
                 // everything held and gains the add-on units of those cells.
                 // Neither keeps another race's units. See races.md.
-                var playerSpecs = gwoRaces.fieldedFor(playerRace, held, cells);
+                var playerSpecs = gwoRaces.fieldedFor(
+                  playerRace,
+                  gwoRaces
+                    .ownedPaths(playerRace, inventory.units(), cells)
+                    .concat(additionalPlayerSpecs),
+                  cells
+                );
                 var keptVanilla =
                   cells && !playerIsMla
                     ? _.difference(

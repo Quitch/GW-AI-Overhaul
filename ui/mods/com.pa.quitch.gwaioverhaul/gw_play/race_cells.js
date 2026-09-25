@@ -101,7 +101,8 @@ define([
   //
   // The `vanilla` half is the base game's units alone: an add-on's
   // vanilla-typed units are kept out of it, or they would fill the cells its
-  // gantries and towers sit in and no builder could ever reach those. For
+  // gantries and towers sit in and no builder could ever reach those, and so
+  // is every file a race's table lists, some of which carry no bit. For
   // MLA the `race` half is the add-on index: exactly those add-on units. No
   // add-on registered means no crawl, and a list with no add-on unit in it
   // (none mounted - the usual case) resolves undefined without a word. See
@@ -119,6 +120,7 @@ define([
         var isAddon = function (path) {
           return !!addonPaths[path];
         };
+        var foreign = gwoRaces.foreignUnitPaths();
         var member = isMla
           ? function (types, path) {
               return unitCells.vanillaMember(types) && isAddon(path);
@@ -129,7 +131,11 @@ define([
             loaded.units,
             loaded.specs,
             function (types, path) {
-              return unitCells.vanillaMember(types) && !isAddon(path);
+              return (
+                unitCells.vanillaMember(types) &&
+                !isAddon(path) &&
+                !foreign[path]
+              );
             }
           ),
           race: unitCells.buildIndex(
@@ -160,7 +166,8 @@ define([
   };
 
   // Deals are synchronous, so the player's index is built ahead of the first
-  // one; until it lands, races.cardUsable deals everything. `units` is passed
+  // one; until it lands, races.cardUsable deals every card that names a stock
+  // unit, and a race card by the race's own table. `units` is passed
   // when several races are primed together, so they share one list read - see
   // gw_play/races.js.
   var prime = function (raceId, units) {

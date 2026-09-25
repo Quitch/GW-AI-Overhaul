@@ -814,6 +814,10 @@ describe("flatMapMods", () => {
     );
   });
 
+  it("emits nothing for a missing list", () => {
+    assert.deepEqual(cards.flatMapMods(undefined, "replace", { x: 1 }), []);
+  });
+
   it("keeps a file named twice, and ignores a table", () => {
     assert.deepEqual(
       cards.flatMapMods(["a.json", ["a.json"], { t: "b.json" }], "replace", {

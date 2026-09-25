@@ -85,13 +85,13 @@ define([
   };
 
   var hasUnit = function (inventoryUnits, units) {
-    return _.some(unitCells.unitList(units), function (unit) {
+    return _.some(unitCells.unitPaths(units), function (unit) {
       return _.includes(inventoryUnits, unit);
     });
   };
 
   var hasAllUnits = function (inventoryUnits, units) {
-    return _.every(unitCells.unitList(units), function (unit) {
+    return _.every(unitCells.unitPaths(units), function (unit) {
       return _.includes(inventoryUnits, unit);
     });
   };
@@ -99,38 +99,36 @@ define([
   var fieldedMemo = {};
 
   // See races.md, "Capability cells".
+  // A new list each call; the memo notices a new held list or a new length.
   var fieldedUnits = function (inventory) {
     var held = inventory.units();
     var race = races.raceOf(inventory);
     var cells = races.cellsOf(race);
+    var foreign = races.foreignUnitPaths();
     var memo = fieldedMemo;
+    var same =
+      memo.race === race && memo.cells === cells && memo.foreign === foreign;
 
-    if (
-      memo.race === race &&
-      memo.cells === cells &&
-      memo.held === held &&
-      memo.length === held.length
-    ) {
-      return memo.units;
+    if (!same || memo.held !== held || memo.length !== held.length) {
+      var key = held.join("|");
+      if (!same || memo.key !== key) {
+        var owned = races.ownedPaths(race, held, cells);
+        memo = {
+          race: race,
+          cells: cells,
+          foreign: foreign,
+          key: key,
+          units: cells
+            ? _.union(owned, races.fieldedFor(race, owned, cells))
+            : owned,
+        };
+      }
+      memo.held = held;
+      memo.length = held.length;
+      fieldedMemo = memo;
     }
 
-    var key = held.join("|");
-    if (memo.race !== race || memo.cells !== cells || memo.key !== key) {
-      var owned = races.fieldedFor(race, held);
-      memo = {
-        race: race,
-        cells: cells,
-        key: key,
-        units: cells
-          ? _.union(owned, races.fieldedFor(race, held, cells))
-          : owned,
-      };
-    }
-    memo.held = held;
-    memo.length = held.length;
-    fieldedMemo = memo;
-
-    return memo.units;
+    return memo.units.slice();
   };
 
   // The two states that flood every planet fought on. See tech-cards.md.
@@ -490,9 +488,7 @@ define([
     // mods() over every file, flattened: one file's entries before the next's.
     // `files` may nest groups.
     flatMapMods: function (files, op, props, value) {
-      return _([files])
-        .flattenDeep()
-        .reject(_.isPlainObject)
+      return _(unitCells.unitPaths(files))
         .map(function (file) {
           return mods(file, op, props, value);
         })

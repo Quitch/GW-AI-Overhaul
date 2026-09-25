@@ -68,6 +68,13 @@ define([
   // written for the race alone.
   var compile = function (descriptor) {
     var units = descriptor.units || {};
+    var unitPaths = {};
+
+    _.forEach(units, function (path) {
+      if (_.isString(path)) {
+        unitPaths[path] = true;
+      }
+    });
 
     return _.assign({}, descriptor, {
       id: normalizeId(descriptor.id),
@@ -75,6 +82,7 @@ define([
       commanders: descriptor.commanders || [],
       ai: descriptor.ai || {},
       units: units,
+      unitPaths: unitPaths,
       unitNames: compileNames(units, descriptor.unitNames),
     });
   };
@@ -255,11 +263,21 @@ define([
     return foreignCache;
   };
 
-  var tableHas = function (units, path) {
-    return _.includes(_.values(units), path);
+  var hasOwn = function (object, key) {
+    return Object.prototype.hasOwnProperty.call(object, key);
   };
 
-  var fieldFork = function (raceId, held, cells) {
+  var ownTable = function (raceId, path) {
+    return !isMla(raceId) && hasOwn(byId(raceId).unitPaths, path);
+  };
+
+  // What a player of this race fields for the paths held, through its cells.
+  // See races.md, "Capability cells".
+  var fieldedFor = function (raceId, held, cells) {
+    if (!cells) {
+      return held || [];
+    }
+
     return (isMla(raceId) ? unitCells.addonUnitsFor : unitCells.raceUnitsFor)(
       held,
       cells.vanilla,
@@ -274,67 +292,66 @@ define([
 
     if (!reachable[id] || reachable[id].index !== index) {
       var units = {};
-      _.forEach(fieldFork(raceId, index.vanilla.units, index), function (path) {
-        units[path] = true;
-      });
+      _.forEach(
+        fieldedFor(raceId, index.vanilla.units, index),
+        function (path) {
+          units[path] = true;
+        }
+      );
       reachable[id] = { index: index, units: units };
     }
 
     return reachable[id].units;
   };
 
-  // See races.md, "Capability cells".
-  var fieldsUnit = function (raceId, path) {
-    var index = cellsOf(raceId);
-
-    if (index && index.race.exclusive[path]) {
-      return !!reachableUnits(raceId, index)[path];
+  // `index` defaults to the race's published cells. See races.md,
+  // "Capability cells".
+  var fieldsUnit = function (raceId, path, index) {
+    if (ownTable(raceId, path)) {
+      return true;
     }
 
-    if (index) {
-      return (
-        _.has(index.race.cellOf, path) || _.has(index.race.partIndex, path)
-      );
+    var cells = index || cellsOf(raceId);
+    if (!cells) {
+      return false;
     }
 
-    return !isMla(raceId) && tableHas(byId(raceId).units, path);
-  };
+    if (cells.race.exclusive[path]) {
+      return !!reachableUnits(raceId, cells)[path];
+    }
 
-  // A stale key in the race's own table still reaches the referee, which warns.
-  var ownsPath = function (raceId, path) {
     return (
-      !foreignUnitPaths()[path] ||
-      fieldsUnit(raceId, path) ||
-      (!isMla(raceId) && tableHas(byId(raceId).units, path))
+      hasOwn(cells.race.cellOf, path) || hasOwn(cells.race.partIndex, path)
     );
   };
 
   // See races.md, "Capability cells".
-  var fieldedFor = function (raceId, held, cells) {
-    var owned = _.filter(held || [], function (path) {
-      return ownsPath(raceId, path);
-    });
+  var ownedPaths = function (raceId, paths, cells) {
+    var foreign = foreignUnitPaths();
 
-    return cells ? fieldFork(raceId, owned, cells) : owned;
+    return _.filter(paths || [], function (path) {
+      return !foreign[path] || fieldsUnit(raceId, path, cells);
+    });
   };
 
   // See races.md, "Capability cells".
   var modsFor = function (raceId, mods, cells, has) {
+    var foreign = foreignUnitPaths();
     var owned = _.filter(mods || [], function (mod) {
-      return !mod || !_.isString(mod.file) || ownsPath(raceId, mod.file);
+      var file = mod && mod.file;
+      return (
+        !_.isString(file) ||
+        !foreign[file] ||
+        (_.isFunction(has) && has(file)) ||
+        fieldsUnit(raceId, file, cells)
+      );
     });
 
     if (!cells) {
       return owned;
     }
 
-    return unitCells.expandMods(
-      owned,
-      cells.vanilla,
-      cells.race,
-      has,
-      foreignUnitPaths()
-    );
+    return unitCells.expandMods(owned, cells.vanilla, cells.race, has, foreign);
   };
 
   var hasName = function (descriptor, path) {
@@ -450,7 +467,7 @@ define([
       return !!foreign[path];
     });
     var fielded = _.filter(split[0], function (path) {
-      return fieldsUnit(raceId, path);
+      return fieldsUnit(raceId, path, cells);
     });
     var stock = split[1];
 
@@ -905,6 +922,7 @@ define([
     foreignUnitPaths: foreignUnitPaths,
     namesForeignUnit: namesForeignUnit,
     fieldsUnit: fieldsUnit,
+    ownedPaths: ownedPaths,
     fieldedFor: fieldedFor,
     modsFor: modsFor,
     cardUnitsFor: cardUnitsFor,

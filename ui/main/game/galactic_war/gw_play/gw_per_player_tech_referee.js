@@ -121,7 +121,13 @@ define([
       // A race viewer fields the race's units of the cells the vanilla ones
       // held occupy; an MLA viewer keeps everything held and gains the
       // add-on units of those cells. Neither keeps another race's units.
-      var playerSpecs = gwoRaces.fieldedFor(race, held, cells);
+      var playerSpecs = gwoRaces.fieldedFor(
+        race,
+        gwoRaces
+          .ownedPaths(race, inventory.units(), cells)
+          .concat(model.gwoSpecs),
+        cells
+      );
       // A viewer that picked no race commander is on the stock list, so its
       // vanilla commander (and its Sub Commanders') is retagged the way the
       // Guardians' Unicorn is; a kept vanilla Commander-class unit likewise.

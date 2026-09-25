@@ -502,14 +502,23 @@ define([
     return out;
   };
 
-  // One path, a list, or groups nested in a list; a whole gwoUnit race table
-  // names nothing. See races.md, "Capability cells".
-  var unitList = function (units) {
+  // One path, a list, or groups nested in a list, in order, as a new list; a
+  // whole gwoUnit race table names nothing. See races.md, "Capability cells".
+  var unitPaths = function (units) {
+    if (_.isString(units)) {
+      return [units];
+    }
+    if (_.isArray(units) && _.every(units, _.isString)) {
+      return units.slice();
+    }
     return _([units || []])
       .flattenDeep()
       .reject(_.isPlainObject)
-      .uniq()
       .value();
+  };
+
+  var unitList = function (units) {
+    return _.uniq(unitPaths(units));
   };
 
   // A card is worth offering when the race owns something in a cell it names.
@@ -598,6 +607,7 @@ define([
     addonUnitsFor: addonUnitsFor,
     heldCommanderUnits: heldCommanderUnits,
     expandMods: expandMods,
+    unitPaths: unitPaths,
     unitList: unitList,
     cardUsable: cardUsable,
     cardUnitsFor: cardUnitsFor,
