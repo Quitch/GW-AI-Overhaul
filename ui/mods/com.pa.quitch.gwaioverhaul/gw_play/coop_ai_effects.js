@@ -39,10 +39,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
     return JSON.parse(JSON.stringify(saved));
   };
 
+  // Applies kept for reuse. Enough for a deal's or a ping window's; older ones
+  // are dropped, so a long war does not keep every inventory it judged.
+  var MAX_CACHED = 64;
+
   // params: GWInventory, stockBank, timeoutMs.
   var factory = function (params) {
     var tail = Promise.resolve();
     var cache = {};
+    // Digests in the order they were cached, oldest first.
+    var order = [];
 
     var applyOnce = function (saved) {
       return new Promise(function (resolve, reject) {
@@ -81,8 +87,15 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
         });
         tail = result.then(_.noop, _.noop);
         cache[digest] = result;
+        order.push(digest);
+        if (order.length > MAX_CACHED) {
+          delete cache[order.shift()];
+        }
         result.then(null, function () {
-          delete cache[digest];
+          if (cache[digest] === result) {
+            delete cache[digest];
+            _.pull(order, digest);
+          }
         });
       }
       return cache[digest];
@@ -103,10 +116,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
       },
       clear: function () {
         cache = {};
+        order = [];
       },
     };
   };
 
+  factory.MAX_CACHED = MAX_CACHED;
   factory.digestOf = digestOf;
   factory.plain = plain;
   factory.addCard = withCard;

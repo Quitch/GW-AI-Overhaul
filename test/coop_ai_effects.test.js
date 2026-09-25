@@ -166,6 +166,25 @@ describe("coop_ai_effects", () => {
     );
   });
 
+  // A long war judges thousands of inventories; only the latest are kept.
+  it("keeps only the latest applies", async () => {
+    const run = effects();
+    const variant = (n) => ({
+      cards: BOT_AI.cards,
+      tags: { global: Object.assign({ n: n }, BOT_AI.tags.global) },
+    });
+
+    const first = run.apply(variant(0));
+    let last;
+    for (let n = 1; n <= makeEffects.MAX_CACHED; n++) {
+      last = run.apply(variant(n));
+    }
+    await last;
+
+    assert.equal(run.apply(variant(makeEffects.MAX_CACHED)), last);
+    assert.notEqual(run.apply(variant(0)), first);
+  });
+
   // The AI fields bots, so a bot damage card is worth more to it than an air
   // one, whose units it cannot build.
   it("values bot damage above air damage for a bot AI", async () => {
