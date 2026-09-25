@@ -123,7 +123,8 @@ define([
   // judge: effects (a coop_ai_effects.js instance), lookup(),
   // teamDomains(playerId, lookup), namesUnits(cardId), chanceOf(card,
   // applied, star), isLoadout(cardId). holder: { playerId, inventory,
-  // commander }, the saved inventory the card is judged against.
+  // commander }, the saved inventory the card is judged against. star: the
+  // galaxy star itself, which a card's deal() takes.
   var valueOfCard = function (judge, holder, card, star) {
     var lookup = judge.lookup();
     if (!lookup || !holder.inventory) {
@@ -222,10 +223,12 @@ define([
     };
 
     // A promise throughout, so a throw anywhere is logged, not left loose in a
-    // timer.
-    var settle = function (ai, key) {
+    // timer. The AI is read again when it settles: its record may have been
+    // rewritten, or the AI kicked, since the settle was scheduled.
+    var settle = function (scheduled, key) {
       return Promise.resolve().then(function () {
-        if (!stillOpen(key)) {
+        var ai = _.find(params.ais(), { id: scheduled.id });
+        if (!ai || !stillOpen(key)) {
           return undefined;
         }
         return judge(ai).then(function (ranked) {

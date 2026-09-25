@@ -423,7 +423,13 @@
                 inventory: params.plain(params.inventory.save()),
                 commander: params.inventory.getTag("global", "commander"),
               };
-          return coopAiPings.valueOfCard(params.judge, holder, card, star);
+          // deal() takes the star itself, as in a hand.
+          return coopAiPings.valueOfCard(
+            params.judge,
+            holder,
+            card,
+            galaxy.stars()[star]
+          );
         },
         ping: function (star, sender) {
           return !!model.gwoPingStarAs && model.gwoPingStarAs(star, sender);

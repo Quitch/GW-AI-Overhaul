@@ -245,7 +245,7 @@ describe("the ping window", () => {
       },
       allThreats: () => state.allThreats,
       cardFor: (ai, star) =>
-        state.noCard ? undefined : { id: "card_" + star },
+        state.noCard ? undefined : { id: (ai.card || "card") + "_" + star },
       valueOf: (ai, card, star) => {
         if (state.valueThrows) {
           throw new Error("apply failed");
@@ -434,6 +434,27 @@ describe("the ping window", () => {
     await failing.flush();
     assert.match(failing.calls.log[0], /2=-0.6 \(card_2 0,/);
     assert.deepEqual(failing.calls.pings, []);
+  });
+
+  // A deal or a star-card refresh may rewrite the AI's record between the
+  // window opening and its settle.
+  it("judges with the AI as it is when it settles", async () => {
+    const { pings, state, calls, flush } = setup();
+    pings.update();
+    state.ais = [Object.assign({}, TANK, { card: "fresh" })];
+    await flush();
+
+    assert.match(calls.log[0], /2=\S+ \(fresh_2 /);
+  });
+
+  it("drops the settle of an AI kicked meanwhile", async () => {
+    const { pings, state, calls, flush } = setup();
+    pings.update();
+    state.ais = [];
+    await flush();
+
+    assert.deepEqual(calls.log, []);
+    assert.deepEqual(calls.pings, []);
   });
 
   it("logs a settle that throws, and carries on", async () => {
