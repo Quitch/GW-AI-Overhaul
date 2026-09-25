@@ -217,6 +217,11 @@
                   : unitCells.cardUnitsFor
               )(units, cells.vanilla, cells.race);
             }
+            // A card naming several races' units names only the player's.
+            var foreign = gwoRaces.foreignUnitPaths();
+            shown = _.reject(shown, function (unit) {
+              return foreign[unit] && !gwoRaces.fieldsUnit(race, unit);
+            });
             var affectedUnits = sortUnitNames(
               shown,
               race,

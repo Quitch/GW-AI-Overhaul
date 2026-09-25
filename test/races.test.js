@@ -221,15 +221,12 @@ describe("cardUsable for race and add-on units", () => {
     assert.equal(races.cardUsable("fixture", [[gwoUnit.dox]]), false);
   });
 
-  it("offers an add-on card while the add-on is active, by its tables until the cells are built", () => {
+  it("offers an add-on card only once the player's index holds the unit", () => {
     races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons(["fixture_addon"]);
 
     assert.equal(races.cardUsable("mla", [FX_ADDON_TANK]), false);
     assert.equal(races.cardUsable("fixture", [FX_ADDON_TANK]), false);
-
-    races.activateAddons(["fixture_addon"]);
-    assert.equal(races.cardUsable("mla", [FX_ADDON_TANK]), true);
-    assert.equal(races.cardUsable("fixture", [FX_ADDON_TANK]), true);
 
     races.setCells("mla", mlaAddonIndex());
     races.setCells("fixture", fixtureIndex());

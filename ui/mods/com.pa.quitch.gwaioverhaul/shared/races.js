@@ -261,9 +261,10 @@ define([
     return _.includes(_.values(units), path);
   };
 
-  // Whether a player of this race can field a race or add-on path. Once the
-  // cells are built that is the race's index (for MLA, the add-on index);
-  // before, the race's own table and every active add-on's.
+  // Whether a player of this race can field a race or add-on path: the
+  // race's index (for MLA, the add-on index) once the cells are built. Before
+  // that only the race's own table counts - an add-on table mixes races, and
+  // only the index knows which of its units are whose.
   var fieldsUnit = function (raceId, path) {
     var index = cellsOf(raceId);
 
@@ -273,12 +274,7 @@ define([
       );
     }
 
-    return (
-      (!isMla(raceId) && tableHas(byId(raceId).units, path)) ||
-      _.some(activeAddons(), function (addon) {
-        return tableHas(addon.units, path);
-      })
-    );
+    return !isMla(raceId) && tableHas(byId(raceId).units, path);
   };
 
   var hasName = function (descriptor, path) {
