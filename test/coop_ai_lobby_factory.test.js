@@ -174,9 +174,15 @@ function setup(overrides) {
       }
       if (options.asyncRecord) {
         calls.builds = (calls.builds || []).concat(identity.serial);
-        return options.asyncRecord === "reject"
-          ? Promise.reject(new Error("no loadout could be built"))
-          : Promise.resolve(aiRecord(identity.serial));
+        if (options.asyncRecord === "reject") {
+          return Promise.reject(new Error("no loadout could be built"));
+        }
+        if (options.asyncRecord === "late") {
+          return new Promise((resolve) => {
+            setTimeout(() => resolve(aiRecord(identity.serial)), 60);
+          });
+        }
+        return Promise.resolve(aiRecord(identity.serial));
       }
       return aiRecord(identity.serial);
     },
@@ -194,6 +200,7 @@ function setup(overrides) {
     busy: state.busy,
     armed: state.armed,
     inFlight: state.inFlight,
+    buildTimeoutMs: options.buildTimeoutMs,
   });
 
   // The server's answer to the last modify_settings sent.
@@ -586,6 +593,33 @@ describe("addAi under per-player tech", () => {
     assert.equal(run.calls.sent[1].payload.max_clients, 3);
     assert.equal(run.gwaio.coopAiSerial, undefined);
     assert.equal(run.state.busy(), false);
+  });
+
+  // A build that never settles would hold the lobby: Add, Kick, and Fight.
+  it("gives the slot back when the build runs out of time, and drops its late result", async () => {
+    const run = active.build({
+      perPlayerTech: true,
+      asyncRecord: "late",
+      buildTimeoutMs: 20,
+    });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+    await new Promise((resolve) => setTimeout(resolve, 40));
+
+    assert.equal(run.calls.sent[1].payload.max_clients, 3);
+    assert.equal(run.state.busy(), false);
+    assert.ok(
+      run.calls.log.some((line) =>
+        /add failed: .*AI build timed out after 20ms/.test(line)
+      ),
+      JSON.stringify(run.calls.log)
+    );
+
+    // The build lands after all: nothing is written.
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    assert.equal(run.records().length, 0);
+    assert.deepEqual(run.calls.queued, []);
+    assert.equal(run.gwaio.coopAiSerial, undefined);
   });
 
   // Between snapshots the server holds viewers' newer choices; a snapshot

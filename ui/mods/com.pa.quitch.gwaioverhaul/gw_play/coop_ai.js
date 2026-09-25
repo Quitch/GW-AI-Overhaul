@@ -235,6 +235,21 @@
         );
       });
 
+      // Explore is held too (cards.js's model.explore), so it greys as it does
+      // while a player sets up. gw_play.html binds that look to
+      // gwCampaignPlayerSetupBlocked, and this runs before the binding.
+      model.gwoExploreBlocked = ko.computed(function () {
+        return (
+          model.gwCampaignPlayerSetupBlocked() || model.gwoCoopAiDeciding()
+        );
+      });
+      $(".btn_hero.explore").attr("data-bind", function (index, bind) {
+        return bind.replace(
+          "btn_hero_disabled: gwCampaignPlayerSetupBlocked",
+          "btn_hero_disabled: gwoExploreBlocked"
+        );
+      });
+
       // An AI settling its deals holds the Fight button as a viewer choosing
       // tech does.
       var stockBlocked = model.gwCampaignFightBlocked;

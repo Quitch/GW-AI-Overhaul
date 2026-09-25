@@ -7,9 +7,32 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
 ], function (roster) {
   var LOG = "[GW COOP AI] ";
+  // A per-player build not settled in this long fails the add, since the
+  // lobby is held until it is. A build takes a few seconds.
+  var BUILD_TIMEOUT_MS = 60000;
 
   var describe = function (error) {
     return (error && (error.stack || error.message)) || String(error);
+  };
+
+  // The build, or a rejection once ms pass with it unsettled. A result that
+  // lands later is dropped.
+  var settleWithin = function (build, ms) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () {
+        reject(new Error("AI build timed out after " + ms + "ms"));
+      }, ms);
+      build.then(
+        function (record) {
+          clearTimeout(timer);
+          resolve(record);
+        },
+        function (error) {
+          clearTimeout(timer);
+          reject(error);
+        }
+      );
+    });
   };
 
   var maxClients = function () {
@@ -50,9 +73,10 @@ define([
   // whose Kick was pressed once) and inFlight (the modify_settings requests the
   // server has not answered). Under per-player tech, perPlayerReady() says the
   // modules that build an AI's tech are in, and publishReady() that every
-  // viewer is level with the host.
+  // viewer is level with the host. buildTimeoutMs is for tests.
   var factory = function (params) {
     var game = params.game;
+    var buildTimeoutMs = params.buildTimeoutMs || BUILD_TIMEOUT_MS;
     var ready = params.ready;
     var busy = params.busy;
     var armed = params.armed;
@@ -275,9 +299,11 @@ define([
           return;
         }
         // A per-player record takes seconds to build, so it is built before
-        // the queue rather than holding it.
+        // the queue rather than holding it. A build that never settles - a
+        // loadout module that never arrives, say - would hold the lobby, so
+        // it has a limit.
         if (built && _.isFunction(built.then)) {
-          built.then(queueWrite, failBuild);
+          settleWithin(built, buildTimeoutMs).then(queueWrite, failBuild);
         } else {
           queueWrite(built);
         }

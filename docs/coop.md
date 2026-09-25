@@ -393,7 +393,9 @@ be built, the add fails and gives the slot back.
 
 That build takes seconds, so the lobby makes it after the server has answered
 and before the campaign state queue, which it would otherwise hold. It takes the
-serial first, because the loadout's stream is keyed by it. Add AI is offered
+serial first, because the loadout's stream is keyed by it. A build not settled
+within 60 seconds fails the add and gives the slot back, since the lobby is held
+until then, and a result that lands later is dropped. Add AI is offered
 under per-player tech only once the AI tech modules have loaded and a unit
 lookup is in.
 
@@ -467,7 +469,9 @@ saves the war, and owes the viewers a snapshot ("Publishing to viewers").
 owes a deal it has yet to start. It holds what a viewer choosing tech holds.
 Fight is blocked, with the tooltip "Waiting for players", and `fight` and
 `restartFight` refuse. `model.explore` refuses too, unless it is a replayed host
-action or a forced host reroll. The star-card refresh waits as well
+action or a forced host reroll, and the Explore button greys as it does while a
+player sets up: `coop_ai.js` rebinds its disabled look to
+`model.gwoExploreBlocked` before `gw_play.js` binds it. The star-card refresh waits as well
 ("Per-player pre-dealt cards").
 
 ### Publishing to viewers
