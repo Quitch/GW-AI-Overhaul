@@ -16,10 +16,10 @@ race needs something new.
    race's own (`shank`, `crusher`). It keys parts by owner plus role
    (`shankAmmo`, `crusherWeapon`, `hiveBuildArm`), research factories as
    `<x>Research`, and unlock tokens as `<x>Unlock`. It holds only the files the
-   race's own mod ships; a base-game file its units reuse keeps its stock key.
-   The table is for cards written for that race alone, and it marks those
-   files as the race's: the deal gate, the referees and the vanilla index all
-   read it ([`races.md`](races.md), "Capability cells"). Add the race
+   race's own mod ships; a base-game file its units reuse is left out and stays
+   stock. The table is for cards written for that race alone, and it marks its
+   non-stock files as the race's: the deal gate, the referees and the vanilla
+   index all read it ([`races.md`](races.md), "Capability cells"). Add the race
    to `scripts/lib/race-table-inputs.js` (its mods, bit and name prefixes),
    then run `npm run harvest:race-specs` and `npm run generate:race-tables`.
    Do not hand-write it. Publish it to cards under the race's own key in

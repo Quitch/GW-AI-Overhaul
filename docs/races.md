@@ -75,8 +75,15 @@ are in `scripts/lib/race-table-inputs.js`:
   name two units share takes the race word of each one's bit, then the unit's
   directory. Each unit is followed by its tools, ammo and death weapons.
 - A table holds only the files the race's or add-on's own mod ships. A
-  base-game file its units reuse (the Havoc fires the Gil-E's beam ammo) keeps
-  its stock key, and the generator refuses an input that pins one.
+  base-game file its units reuse (the Havoc fires the Gil-E's beam ammo) is
+  left out: a card reaches it by its stock key where `shared/units.js` has one,
+  otherwise by its path, and changes it as a stock file. The generator refuses
+  an input that pins a base-game file the harvest read (a `baseGame` table's).
+- A file the race's mod ships over a base-game path stays in the table, but it
+  is a stock path to everything else: `shared/units.js` leaves it out of the
+  published table, and it is never foreign. Keep base-game paths out of a
+  third-party table too: one that `shared/units.js` does not key would become
+  foreign in every war, and drop out of every other race's army.
 - Every name is written as a `!LOC:` key. The tooltips pass it through
   `loc()`, so the English name shows wherever no table translates it.
 
@@ -233,9 +240,13 @@ unfiltered. `races.modsFor` drops a spec mod on a race or add-on path the
 player neither owns nor holds a spec for, so a Bugs unit a mixed card adds
 never reaches a Legion army, while a stale key of the race's own still warns in
 `specs.js`. A mod on a race or add-on path is applied as named, never re-aimed
-by cell, and `gw_play/race_cells.js` keeps every file a race's table lists out
-of the vanilla index, as it keeps add-on units out: some of those files carry
-no faction bit. Each helper reads the index its caller holds.
+by cell, and `gw_play/race_cells.js` keeps every foreign unit out of the
+vanilla index, as it keeps add-on units out: some carry no faction bit. A
+foreign part can still reach the vanilla index through a bitless helper unit a
+race ships but does not list (Bugs' Matriarch death unit), which is why
+`modsFor` passes foreign files through rather than trusting the index. Each
+helper reads the index its caller holds, and `fieldsUnit` falls back to the
+published one when the caller holds none.
 `gwoCard.fieldedUnits(inventory)` gives a card's `deal` the same view: the paths
 held that the race owns, plus what `raceUnitsFor`, or `addonUnitsFor` for MLA,
 brings for them. `upgradeCard` reads it, so `requires` may name a race unit.

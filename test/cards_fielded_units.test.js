@@ -1,7 +1,7 @@
 "use strict";
 
-// gwoCard.fieldedUnits: the paths held plus the race or add-on units they
-// bring at launch, which a card's deal() reads to see race units. See
+// gwoCard.fieldedUnits: the held paths the race owns, plus the race or add-on
+// units they bring at launch, which a card's deal() reads to see race units. See
 // races.md, "Capability cells".
 
 const { describe, it, beforeEach, afterEach } = require("node:test");

@@ -102,7 +102,7 @@ define([
   // The `vanilla` half is the base game's units alone: an add-on's
   // vanilla-typed units are kept out of it, or they would fill the cells its
   // gantries and towers sit in and no builder could ever reach those, and so
-  // is every file a race's table lists, some of which carry no bit. For
+  // is every foreign unit a race's table lists, some of which carry no bit. For
   // MLA the `race` half is the add-on index: exactly those add-on units. No
   // add-on registered means no crawl, and a list with no add-on unit in it
   // (none mounted - the usual case) resolves undefined without a word. See

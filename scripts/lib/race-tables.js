@@ -192,8 +192,8 @@ function raceRows(input, source, reader) {
   });
 }
 
-// A table holds the files the race's or add-on's own mod ships. A base-game
-// file its units reuse keeps its stock key. See races.md, "Unit tables".
+// A table holds the files the race's or add-on's own mod ships; a base-game
+// file its units reuse is left out. See races.md, "Unit tables".
 function isBaseGame(reader, specPath) {
   const spec = reader.read(specPath);
   return Boolean(spec) && spec.mod === undefined;

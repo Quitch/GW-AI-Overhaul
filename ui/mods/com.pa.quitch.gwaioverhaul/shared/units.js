@@ -483,7 +483,7 @@ define([
   var stock = _.invert(units);
   var raceTable = function (table) {
     return _.omit(table, function (path) {
-      return _.has(stock, path);
+      return Object.prototype.hasOwnProperty.call(stock, path);
     });
   };
 

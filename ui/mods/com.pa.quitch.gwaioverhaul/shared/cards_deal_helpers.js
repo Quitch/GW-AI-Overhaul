@@ -2,8 +2,7 @@
 // at define time - see testing.md, "Coverage".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
-  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
-], function (brainTable, unitCells) {
+], function (brainTable) {
   // Cards a race player is not offered unless their entry names race units:
   // unit upgrades are tuned to the MLA unit they name (the commander's
   // excepted - every race has one), these
@@ -268,17 +267,15 @@ define([
       }
       var race = races.raceOf(inventory);
       var entry = entryFor(cardsToUnits, cardId);
-      var units = entry && unitCells.unitList(entry.units);
-      if (units && races.namesForeignUnit(units)) {
-        return races.cardUsable(race, units);
-      }
-      if (races.isMla(race)) {
-        return true;
-      }
-      if (mlaOnlyCard(cardId)) {
+      var units = entry ? entry.units : undefined;
+      if (
+        !races.isMla(race) &&
+        mlaOnlyCard(cardId) &&
+        !races.namesForeignUnit(units)
+      ) {
         return false;
       }
-      return !units || races.cardUsable(race, units);
+      return races.cardUsable(race, units);
     },
 
     // A Sub Commander fights as the player's race, with one of its commanders.

@@ -106,6 +106,13 @@ function findUnitsParamName(src) {
   return index === -1 ? null : params[index] || null;
 }
 
+// A bare table followed by `,`, `]` or `)` is an element or an argument - a
+// table handed over as a unit list. A guard (`&&`) or a bracketed key is not.
+function handedOverAsList(code, end) {
+  const next = code.slice(end).match(/^\s*(\S)/);
+  return Boolean(next) && ",])".includes(next[1]);
+}
+
 function checkUnitReferencesInCards() {
   const units = loadCouiModule(UNITS_COUI);
   const unitKeys = new Set(Object.keys(units));
@@ -132,11 +139,16 @@ function checkUnitReferencesInCards() {
       String.raw`\b${escaped}\.([A-Za-z_$][A-Za-z0-9_$]*)(?:\.([A-Za-z_$][A-Za-z0-9_$]*))?`,
       "g"
     );
-    const referenced = new Set(
-      [...stripComments(src).matchAll(refPattern)].map((m) =>
-        m[2] && typeof units[m[1]] === "object" ? m[1] + "." + m[2] : m[1]
-      )
-    );
+    const code = stripComments(src);
+    const referenced = new Set();
+    for (const m of code.matchAll(refPattern)) {
+      const isTable = typeof units[m[1]] === "object";
+      if (!isTable || m[2]) {
+        referenced.add(isTable ? m[1] + "." + m[2] : m[1]);
+      } else if (handedOverAsList(code, m.index + m[0].length)) {
+        referenced.add(m[1]);
+      }
+    }
 
     for (const key of referenced) {
       checkedRefs++;

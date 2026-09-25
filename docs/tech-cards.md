@@ -233,10 +233,10 @@ entry names no unit in a cell the race fills. It also withholds every card in
 `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards keep naming
 vanilla units, and the unit's capability cell decides.
 
-A card whose entry names only race or add-on units is dealt only to players whose
-race fields one, MLA players included, and `MLA_ONLY` and the `_upgrade_` rule do
-not apply to it. An entry that also names a stock unit is dealt through either
-half. The gate reads the race; whether the player holds the unit is the card's
+A card whose entry names a race or add-on unit is written for that race:
+`MLA_ONLY` and the `_upgrade_` rule do not apply to it. When the entry names only
+such units, the card is dealt only to players whose race fields one, MLA players
+included. An entry that also names a stock unit is dealt through either half. The gate reads the race; whether the player holds the unit is the card's
 `deal` to test, with `gwoCard.fieldedUnits`. See [`races.md`](races.md),
 "Capability cells".
 
@@ -389,13 +389,17 @@ published. Re-point a unit path whenever the base game moves a file.
 
 `shared/units.js` also publishes each shipped race's and add-on's `units` table
 under a key of its own: `gwoUnit.legion.shank`, `gwoUnit.osmech.aegis`. A table
-leaves out the stock files its units share, which keep their stock keys. The
+leaves out the stock files its units share. A card reaches one of those by its
+stock key where there is one, else by its path, and changes it as a stock file:
+in a race army that change also reaches the race files of the same role in the
+cell of the base-game unit that uses it. The
 keys inside those tables are generated, and a mod update can change them
 ([`races.md`](races.md), "Unit tables"). A whole table is not a unit list:
 every reader ignores one, and `validate:refs` fails a card, `card_units.js` or
 `unit_groups.js` that names one. A race or add-on a third-party mod registers is
 not there. A card names such a unit and lists it in `gwoCardsToUnits`, which
-ties the card to the races that field it. In `deal` it checks
+ties the card to the races that field it when the race or add-on registers a
+`units` table that lists it; without one the path counts as stock. In `deal` it checks
 `gwoCard.fieldedUnits(inventory)`, the held paths the race owns plus the race
 or add-on units they bring, rather than `inventory.units()`.
 

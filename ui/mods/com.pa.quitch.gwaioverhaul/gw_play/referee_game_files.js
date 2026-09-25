@@ -119,7 +119,7 @@ define([
         // The AI's tech names vanilla files; a race army's land on the race
         // files of the same cell too, and an MLA army's on the add-on files.
         // Its spec set holds every listed unit, so the originals stay as
-        // well. A mod on another race's file is dropped. See races.md.
+        // well. A mod on a race file the specs lack is dropped. See races.md.
         aiInventory = gwoRaces.modsFor(
           race,
           aiInventory,
