@@ -50,6 +50,13 @@ function setup(overrides) {
       refuseUpsert: false,
       createThrows: false,
       saveFails: false,
+      saveThrows: false,
+      applyThrows: false,
+      noGwaio: false,
+      // The seats the war was made with, and the humans due back from a
+      // battle.
+      warSeats: 3,
+      expectedBack: 0,
     },
     overrides
   );
@@ -60,6 +67,7 @@ function setup(overrides) {
     queued: [],
     snapshots: [],
     saves: 0,
+    saveStars: [],
     log: [],
   };
 
@@ -103,6 +111,9 @@ function setup(overrides) {
       });
     },
     applyCampaignLobbyControl: (response) => {
+      if (options.applyThrows) {
+        throw new Error("control not applied");
+      }
       calls.applied.push(response);
       max(response.max_clients);
     },
@@ -134,19 +145,26 @@ function setup(overrides) {
     busy: observable(false),
     armed: observable(),
     inFlight: observable(0),
+    expectedBack: observable(options.expectedBack),
   };
 
   const lobby = makeLobby({
     game: game,
-    gwaio: () => gwaio,
+    gwaio: () => (options.noGwaio ? undefined : gwaio),
+    warSeats: () => options.warSeats,
+    expectedBack: state.expectedBack,
     createRecord: (identity) => {
       if (options.createThrows) {
         throw new Error("no commander");
       }
       return aiRecord(identity.serial);
     },
-    save: () => {
+    save: (withStars) => {
       calls.saves += 1;
+      calls.saveStars.push(withStars);
+      if (options.saveThrows) {
+        throw new Error("database closed");
+      }
       return options.saveFails ? rejected("disk full") : resolved();
     },
     ready: state.ready,
@@ -199,6 +217,8 @@ describe("canAddAi", () => {
     "the saved settings not applied yet": { initialApplied: false },
     "no max_clients from the server yet": { control: {} },
     "the AI modules not loaded": { ready: false },
+    "a war without GWO's settings": { noGwaio: true },
+    "the last battle's humans still reconnecting": { expectedBack: 2 },
   };
   for (const [reason, overrides] of Object.entries(REFUSALS)) {
     it(`refuses with ${reason}`, () => {
@@ -220,6 +240,19 @@ describe("canAddAi", () => {
     const run = active.build();
     run.state.busy(true);
     assert.equal(run.lobby.canAddAi(), false);
+  });
+
+  // An empty slot after a battle can be a viewer's who has not reconnected.
+  it("offers a slot once the last battle's humans are back, or the wait is over", () => {
+    const run = active.build({ expectedBack: 2 });
+    assert.equal(run.lobby.canAddAi(), false);
+
+    run.options.connected = [HOST, VIEWER];
+    assert.equal(run.lobby.canAddAi(), true);
+
+    run.options.connected = [HOST];
+    run.state.expectedBack(0);
+    assert.equal(run.lobby.canAddAi(), true);
   });
 });
 
@@ -358,6 +391,64 @@ describe("addAi", () => {
     assert.equal(run.state.busy(), false);
   });
 
+  // A seat the host opened with "+" past the war's own is the AI's alone, so
+  // the next session still opens every seat the war was made with.
+  it("marks an AI that fills a seat the host opened past the war's", () => {
+    const run = active.build({ warSeats: 2 });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+
+    assert.equal(run.records()[0].gwaioAi.extraSeat, true);
+  });
+
+  it("leaves an AI in one of the war's own seats unmarked", () => {
+    const run = active.build({ warSeats: 3 });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+
+    assert.equal("extraSeat" in run.records()[0].gwaioAi, false);
+  });
+
+  // The serial lives on the origin system; a kick changes records only.
+  it("saves the stars with an add and not with a kick", () => {
+    const run = active.build();
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+    const row = { id: "gwo_ai_1", name: "AI1", gwoAi: true };
+    run.lobby.kickAi(row);
+    run.lobby.kickAi(row);
+
+    assert.deepEqual(run.calls.saveStars, [true, false]);
+  });
+
+  it("keeps the AI and says so when the save throws", () => {
+    const run = active.build({ saveThrows: true });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+
+    assert.equal(run.records().length, 1);
+    assert.equal(run.state.busy(), false);
+    assert.ok(
+      run.calls.log.some((line) =>
+        line.startsWith(
+          "[GW COOP AI] war not saved after add: Error: database closed"
+        )
+      ),
+      JSON.stringify(run.calls.log)
+    );
+  });
+
+  it("gives the slot back when the lobby control cannot be applied", () => {
+    const run = active.build({ applyThrows: true });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+
+    assert.equal(run.records().length, 0);
+    assert.equal(run.calls.sent.length, 2);
+    assert.equal(run.calls.sent[1].payload.max_clients, 3);
+    assert.equal(run.state.busy(), false);
+  });
+
   it("numbers each AI with a fresh serial", () => {
     const run = active.build({ max: 4, connected: [HOST] });
     run.lobby.addAi();
@@ -424,6 +515,18 @@ describe("kickAi", () => {
     ]);
     assert.equal(run.state.busy(), true);
 
+    run.reply(true, { max_clients: 3 });
+    assert.equal(run.state.busy(), false);
+  });
+
+  it("still returns the slot and clears busy when the save throws", () => {
+    const run = withAi({ saveThrows: true });
+    run.lobby.kickAi(ROW);
+    run.lobby.kickAi(ROW);
+
+    assert.equal(run.records().length, 1);
+    assert.equal(run.calls.sent.length, 1);
+    assert.equal(run.calls.sent[0].payload.max_clients, 3);
     run.reply(true, { max_clients: 3 });
     assert.equal(run.state.busy(), false);
   });

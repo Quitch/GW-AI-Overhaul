@@ -134,9 +134,10 @@ That scene re-derives the root from the seed stamped on the save:
 `gwoRng.create(originSystem.gwaio.seed)`.
 
 Every parent key lives in `gw_play/gwo_streams.js`, so a reader can check this table
-against one place. Two children are minted where they are drawn: `minion.<n>` in
-`cards_deal_helpers.js`'s `buildGeneralCommanderMinions`, and the `landing_*` streams in
-`referee_config_setup.js`.
+against one place. Some children are minted where they are drawn: `minion.<n>` in
+`cards_deal_helpers.js`'s `buildGeneralCommanderMinions`, the `landing_*` streams in
+`referee_config_setup.js`, and a co-op AI player's `name`, `commander` and `penchant`
+in `coop_ai_roster.js`'s `buildAiRecord`.
 
 | Stream                                                      | Consumers                                          |
 | ----------------------------------------------------------- | -------------------------------------------------- |
@@ -186,8 +187,9 @@ The rest of the components are:
   `stream("a b")` would collide with `stream("a", "b")`.
 - **`coop_ai_player.<serial>`**: `gw_play/coop_ai_roster.js` draws a co-op AI
   player's identity from it when the host adds one, each part from its own
-  child. The serial never repeats, so an AI added after a kick does not draw
-  the kicked one's name or commander again.
+  child. The serial never repeats, so an AI added after a kick draws from a
+  stream of its own. It can still land on the kicked AI's name or commander:
+  the kick returned both to the pool the draw picks from.
 - **`<cardId>`**: a deal calls `deal()` on every card in the deck and keeps one result.
   A shared sequential rng would therefore couple every card's draws to every other
   card's draw count. With a key per card id, adding or removing a draw inside one card

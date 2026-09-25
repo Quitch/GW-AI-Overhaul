@@ -25,7 +25,7 @@
   },
   "AI": {
     "message": "AI",
-    "description": "Title of the AI picker dialog on the war setup screen (gw_start), and the label of the button in the co-op setup strip that opens it, beside \"Commander\" and \"Game Options\". The dialog holds the Race / Opponent / ALLY table of AI brains. Noun, singular, the initialism for artificial intelligence; no punctuation. The same word as the game's \"AI:\" label with the colon removed, so use that translation without the colon (KI, IA, SI, ИИ, 电脑, or AI where the game keeps the English). (ai_modal.html:6, ai_modal.html:23)"
+    "description": "Title of the AI picker dialog on the war setup screen (gw_start), and the label of the button in the co-op setup strip that opens it, beside \"Commander\" and \"Game Options\". The dialog holds the Race / Opponent / ALLY / Co-op table of AI brains. Noun, singular, the initialism for artificial intelligence; no punctuation. The same word as the game's \"AI:\" label with the colon removed, so use that translation without the colon (KI, IA, SI, ИИ, 电脑, or AI where the game keeps the English). (ai_modal.html:6, ai_modal.html:23)"
   },
   "AI Commander": {
     "message": "AI Commander",
@@ -41,11 +41,11 @@
   },
   "AI:": {
     "message": "AI:",
-    "description": "Label in the war-info panel of the galaxy map (gw_play), used twice: after \"Opponent\" (\"Opponent AI:\") and after \"ALLY\" (\"Ally AI:\", the CSS lower-cases ALLY) and followed by the AI brain name (Titans, Queller, Penchant). \"AI\" is a noun (the AI brain), singular; keep the trailing colon. The preceding words are separate strings, so the phrase is assembled by juxtaposition in that order. (gwo_panel.html:34)"
+    "description": "Label in the war-info panel of the galaxy map (gw_play), used three times: after \"Opponent\" (\"Opponent AI:\"), after \"ALLY\" (\"Ally AI:\", the CSS lower-cases ALLY), and in a co-op session after \"Co-op\" (\"Co-op AI:\"), and followed by the AI brain name (Titans, Queller, Penchant). \"AI\" is a noun (the AI brain), singular; keep the trailing colon. The preceding words are separate strings, so the phrase is assembled by juxtaposition in that order. (gwo_panel.html:34, gwo_panel.html:45)"
   },
   "ALLY": {
     "message": "ALLY",
-    "description": "Column header \"ALLY\" in the AI modal table on the war setup screen (Race / Opponent / ALLY, the AI brain used for allied commanders), and in the war-info panel where it is displayed sentence-cased before \"AI:\" (\"Ally AI:\"). Also appended in brackets to a faction name in the Planetary Intelligence panel: \"<Faction> (ALLY)\" for the faction that fights on the player's side. Noun, singular. Uses the base game's existing \"ALLY\" entry, so match that translation. (gwo_panel.html:39, section_of_foreign_intelligence.js:81, ai_modal.html:42)"
+    "description": "Column header \"ALLY\" in the AI modal table on the war setup screen (Race / Opponent / ALLY / Co-op, the AI brain used for allied commanders), and in the war-info panel where it is displayed sentence-cased before \"AI:\" (\"Ally AI:\"). Also appended in brackets to a faction name in the Planetary Intelligence panel: \"<Faction> (ALLY)\" for the faction that fights on the player's side. Noun, singular. Uses the base game's existing \"ALLY\" entry, so match that translation. (gwo_panel.html:39, section_of_foreign_intelligence.js:81, ai_modal.html:42)"
   },
   "ALLY CHANCE:": {
     "message": "ALLY CHANCE:",
@@ -997,7 +997,7 @@
   },
   "Co-op": {
     "message": "Co-op",
-    "description": "Heading of the third column in the AI picker dialog on the war setup screen (gw_start), beside \"Opponent\" and \"ALLY\": the brain of the AI players a co-op host adds to the session. Also the first word of the \"Co-op AI:\" row in the war-info panel on the galaxy map (gw_play), where \"AI:\" is a separate string that follows it. Short adjective used as a label (co-operative play), no punctuation; the dialog shows it upper-case through CSS. (ai_modal.html:39, gwo_panel.html:45)"
+    "description": "Heading of the third column in the AI picker dialog on the war setup screen (gw_start), beside \"Opponent\" and \"ALLY\": the brain of the AI players a co-op host adds to the session. Also the first word of the \"Co-op AI:\" row in the war-info panel on the galaxy map (gw_play), where \"AI:\" is a separate string that follows it. Short adjective used as a label (co-operative play), no punctuation; the dialog shows it upper-case through CSS. (ai_modal.html:43, gwo_panel.html:45)"
   },
   "Co-op host setup": {
     "message": "Co-op host setup",
@@ -1893,7 +1893,7 @@
   },
   "Kick this AI?": {
     "message": "Kick this AI?",
-    "description": "The Kick button on an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), after the host has pressed it once. A second press removes the AI player and its tech for good, which cannot be undone, so the button asks first. Short question; keep the question mark. Sibling of \"Kick\", the game's own button text. (coop_ai_slot.html:18)"
+    "description": "The Kick button on an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), after the host has pressed it once. A second press removes the AI player for good, which cannot be undone, so the button asks first. Short question; keep the question mark. Sibling of \"Kick\", the game's own button text. (coop_ai_slot.html:18)"
   },
   "Known by one name, Blogar was a giant of a man. From unknown origins, Blogar rose through the ranks of the criminal world to become the Progenitor Coalition's first criminal overlord. Gaining a reputation for killing people with one punch, Blogar used fear of violence to get what he wanted. Before he knew it, he had built a criminal empire that spanned the galaxy. Using his now infamous strong-arm tactics, Blogar was able to seize control of a sparsely populated system and make it his own. During the Century War, Blogar was reported to have punched through a Xziphid Hegemony warrior's exosuit. As a result, Blogar became the first human to discover what the aliens really looked like under the insect appearance of their armor.": {
     "message": "Known by one name, Blogar was a giant of a man. From unknown origins, Blogar rose through the ranks of the criminal world to become the Progenitor Coalition's first criminal overlord. Gaining a reputation for killing people with one punch, Blogar used fear of violence to get what he wanted. Before he knew it, he had built a criminal empire that spanned the galaxy. Using his now infamous strong-arm tactics, Blogar was able to seize control of a sparsely populated system and make it his own. During the Century War, Blogar was reported to have punched through a Xziphid Hegemony warrior's exosuit. As a result, Blogar became the first human to discover what the aliens really looked like under the insect appearance of their armor.",
@@ -3821,7 +3821,7 @@
   },
   "Waiting for loadout": {
     "message": "Waiting for loadout",
-    "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), while that player's loadout and tech cards cannot be shown. The game's own string, the same tooltip on a human player's row; use the game's translation. No full stop. (coop_ai_roster.js:101)"
+    "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), while that player's loadout and tech cards cannot be shown. Stock's rows show the same tooltip for a human player, in English, since no locale of the game translates it. No full stop. (coop_ai_roster.js:101)"
   },
   "Waiting for players": {
     "message": "Waiting for players",

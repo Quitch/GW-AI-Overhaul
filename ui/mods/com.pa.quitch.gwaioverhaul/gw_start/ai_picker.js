@@ -33,6 +33,9 @@
 
       return _.map(rows, function (row) {
         var descriptor = races.byId(row.id);
+        var enemy = ko.observable(row.enemy);
+        var chosenCoop = ko.observable(row.coop);
+        var coopFollows = ko.observable(row.coopFollows);
         return {
           id: row.id,
           stale: row.stale,
@@ -43,9 +46,24 @@
           options: row.options,
           allyOptions: row.allyOptions,
           coopOptions: row.coopOptions,
-          enemy: ko.observable(row.enemy),
+          enemy: enemy,
           ally: ko.observable(row.ally),
-          coop: ko.observable(row.coop),
+          // Until a brain is picked for it, the co-op cell shows and keeps
+          // following the opponent's. The picker writes back what it shows,
+          // so only a different brain breaks the link.
+          coop: ko.computed({
+            read: function () {
+              return coopFollows() ? enemy() : chosenCoop();
+            },
+            write: function (value) {
+              if (coopFollows() && value === enemy()) {
+                return;
+              }
+              chosenCoop(value);
+              coopFollows(false);
+            },
+          }),
+          coopFollows: coopFollows,
         };
       });
     };
@@ -84,18 +102,20 @@
         if (row.stale) {
           return;
         }
+        // A co-op cell that follows its opponent stores nothing, so it goes
+        // on following whatever the opponent becomes.
+        var coop = row.coopFollows() ? undefined : row.coop();
         if (row.id === races.MLA_ID) {
           // The war-wide observables ARE the MLA row. See races.md.
           settings.ai(row.enemy());
           settings.aiAlly(row.ally());
-          settings.aiCoop(row.coop());
+          settings.aiCoop(coop);
           return;
         }
-        stored[row.id] = {
-          enemy: row.enemy(),
-          ally: row.ally(),
-          coop: row.coop(),
-        };
+        stored[row.id] = { enemy: row.enemy(), ally: row.ally() };
+        if (coop) {
+          stored[row.id].coop = coop;
+        }
       });
       settings.aiByRace(stored);
       model.gwoAiModalVisible(false);

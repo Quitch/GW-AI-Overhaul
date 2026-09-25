@@ -223,8 +223,8 @@
             var descriptor = gwoRaces.byId(id);
             return descriptor ? loc(descriptor.name) : id;
           };
-          var brainSummary = function (side) {
-            var entries = _.map(warRaceIds, function (id) {
+          var brainSummary = function (side, raceIds) {
+            var entries = _.map(raceIds || warRaceIds, function (id) {
               return {
                 id: id,
                 brain: gwoBrainTable.resolve(
@@ -248,7 +248,10 @@
           };
           model.gwoAI = brainSummary("enemy");
           model.gwoAIAlly = brainSummary("ally");
-          model.gwoAICoop = brainSummary("coop");
+          // Under shared tech every co-op AI player fields the host's race.
+          model.gwoAICoop = brainSummary("coop", [
+            gwoRaces.raceOf(model.game().inventory()),
+          ]);
 
           var coopText = function (setting) {
             if (setting) {

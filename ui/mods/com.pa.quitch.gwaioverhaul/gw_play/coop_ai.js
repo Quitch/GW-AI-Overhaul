@@ -17,18 +17,37 @@
       return _.filter(game.coopPlayerInventoryData(), isAiRecord).length;
     };
 
+    var mods = ko.observable();
+
     // Every session open seeds max_clients from this, and a locked war's slot
     // limit, so an AI's slot never reopens to a human. Wrapped here rather than
-    // in a module callback, which can land after the saved settings apply.
+    // in a module callback, which can land after the saved settings apply;
+    // until the roster loads, every AI counts as holding one of the war's
+    // seats, as roster.humanSeats counts one the host did not open for it.
     var savedCoopPlayers = model.savedCoopPlayers;
+    var warSeats = function () {
+      return savedCoopPlayers.apply(model, arguments);
+    };
     model.savedCoopPlayers = function () {
-      return Math.max(
-        1,
-        savedCoopPlayers.apply(this, arguments) - savedAiCount()
-      );
+      var all = game.coopPlayerInventoryData();
+      return mods()
+        ? mods().roster.humanSeats(warSeats(), all)
+        : Math.max(1, warSeats() - savedAiCount());
     };
 
-    var mods = ko.observable();
+    // A session that came back from a battle waits for the humans who fought
+    // it: until they have rejoined, or a minute has passed, their empty slots
+    // stay theirs. Stock re-applies this restart context once, on connecting.
+    var RETURN_WINDOW_MS = 60000;
+    var expectedBack = ko.observable(0);
+    var restart = model.gwCampaignRestartContext();
+    if (restart && restart.pending_reapply && restart.settings) {
+      expectedBack(parseInt(restart.settings.battle_launch_clients, 10) || 0);
+      setTimeout(function () {
+        expectedBack(0);
+      }, RETURN_WINDOW_MS);
+    }
+
     var lobby = ko.observable();
     // The modules are in: an AI can fight.
     var ready = ko.observable(false);
@@ -38,6 +57,9 @@
     var busy = ko.observable(false);
     var armed = ko.observable();
     var settingsInFlight = ko.observable(0);
+    var lobbyChanging = function () {
+      return busy() || settingsInFlight() > 0;
+    };
     var names = [];
     var ownedCommanders = [];
 
@@ -59,14 +81,13 @@
     var aiColours = function (aiCount) {
       var loaded = mods();
       var inventory = game.inventory();
-      var shared =
-        model.gwCampaignSharedControl() &&
-        !model.gwCampaignPerPlayerTechCards();
       return loaded.roster.colourPairs({
         resolve: loaded.colours.resolvePlayerColorPairs,
-        humanArmies: shared
-          ? 1
-          : Math.max(1, model.gwCampaignConnectedClients().length),
+        humanArmies: loaded.roster.humanArmies(
+          model.gwCampaignSharedControl() &&
+            !model.gwCampaignPerPlayerTechCards(),
+          model.gwCampaignConnectedClients().length
+        ),
         aiCount: aiCount,
         faction: loaded.factions[inventory.getTag("global", "playerFaction")],
         factionColour: inventory.getTag("global", "playerColor"),
@@ -129,15 +150,11 @@
         if (!mods() || !list.length) {
           return [];
         }
-        var colours = aiColours(list.length);
-        var race = mods().races.raceOf(game.inventory());
-        return _.map(list, function (record, index) {
-          return {
-            name: record.gwaioAi.name,
-            colour: colours[index],
-            race: race,
-          };
-        });
+        return mods().roster.panelEntries(
+          list,
+          aiColours(list.length),
+          mods().races.raceOf(game.inventory())
+        );
       }),
     };
 
@@ -170,11 +187,15 @@
         );
       });
 
+      // Stock's "+" and "-" send an absolute count read from
+      // gwCampaignMaxClients, which is stale while an add, a kick, or another
+      // count is in flight: one sent then would undo it.
       var stockCanAdd = model.canAddGwCampaignSlot;
       model.canAddGwCampaignSlot = ko.computed(function () {
         var loaded = mods();
         return (
           stockCanAdd() &&
+          !lobbyChanging() &&
           (!loaded ||
             loaded.roster.roomForSlot(
               parseInt(model.gwCampaignMaxClients(), 10),
@@ -184,6 +205,21 @@
             ))
         );
       });
+
+      var holdWhileChanging = function (name) {
+        var stock = model[name];
+        model[name] = function () {
+          if (lobbyChanging()) {
+            console.log(
+              "[GW COOP AI] " + name + " held: the slot count is changing"
+            );
+            return;
+          }
+          return stock.apply(this, arguments);
+        };
+      };
+      holdWhileChanging("addGwCampaignSlot");
+      holdWhileChanging("removeGwCampaignSlot");
 
       // Stock's own Kick only disconnects a client; an AI row has none.
       var stockKick = model.kickGwCampaignClient;
@@ -277,10 +313,6 @@
           var inventory = game.inventory();
           var all = game.coopPlayerInventoryData();
           var hostCommander = inventory.getTag("global", "commander");
-          var taken = _.pluck(model.gwCampaignConnectedClients(), "name")
-            .concat(_.pluck(all, "playerName"))
-            .concat(_.map(roster.aiRecords(all), "gwaioAi.name"))
-            .concat(["Player", model.displayName()]);
 
           return roster.buildAiRecord({
             identity: identity,
@@ -290,12 +322,16 @@
             ),
             race: gwoRaces.raceOf(inventory),
             names: names,
-            taken: _.compact(taken),
+            taken: roster.takenNames(
+              model.gwCampaignConnectedClients(),
+              all,
+              model.displayName()
+            ),
             owned: ownedCommanders,
-            fielded: _.compact(
-              [hostCommander]
-                .concat(_.pluck(all, "commander"))
-                .concat(_.pluck(inventory.minions(), "commander"))
+            fielded: roster.fieldedCommanders(
+              hostCommander,
+              all,
+              inventory.minions()
             ),
             hostCommander: hostCommander,
             now: _.now(),
@@ -315,11 +351,11 @@
               return gwoAI.originSettings(game);
             },
             createRecord: createRecord,
-            // The serial lives on the origin star's system, so the stars
-            // are saved too.
-            save: function () {
-              return gwoSave(game, true);
+            save: function (withStars) {
+              return gwoSave(game, withStars);
             },
+            warSeats: warSeats,
+            expectedBack: expectedBack,
             ready: ready,
             busy: busy,
             armed: armed,

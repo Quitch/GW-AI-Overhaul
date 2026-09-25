@@ -125,8 +125,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     },
 
     // A co-op AI player's tree. Always scoped, so it never shares a path with
-    // the enemy, a Sub Commander or another co-op AI, and never routed to the
-    // Cluster or subcommander trees. See ai-paths.md.
+    // the enemy or a Sub Commander, and never routed to the Cluster or
+    // subcommander trees. AIs share a path only by sharing a scope token, as
+    // every AI does under shared tech. See ai-paths.md.
     getCoopAiPath: function (aiInUse, scopeToken, race) {
       return getAIPathDestination("coop", aiInUse, {
         scopeToken: getScopeToken(scopeToken, "coop"),

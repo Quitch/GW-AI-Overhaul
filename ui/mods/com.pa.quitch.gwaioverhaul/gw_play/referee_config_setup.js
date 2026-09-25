@@ -355,6 +355,8 @@ define([
   // cheat, which is the enemy's. The commander carries its tag already, since
   // these join the config after referee_config.js tags the rest. See coop.md,
   // "AI players".
+  var ALLY_TAG = "GWAlly";
+
   var setupCoopAiArmies = function (coopAis, armies, battleRng, options) {
     var landingOptions = [
       "off_player_planet",
@@ -368,12 +370,19 @@ define([
         penchantName: entry.penchantName,
         character: entry.character,
       };
+      // The enemy side's template, so it plays at the war's tier, marked as
+      // an ally for the build files: GWAlly keeps it off the builds meant for
+      // the enemy alone, such as the Annihilaser's Catalysts, and on the Sub
+      // Commander fallbacks.
       var personality = resolvePersonality(
         ai,
         "enemy",
         entry.brain,
         options.playerFaction,
         options.ffa
+      );
+      personality.personality_tags = _.uniq(
+        (personality.personality_tags || []).concat(ALLY_TAG)
       );
       personality.ai_path = entry.path;
       personality.display_name = getAIPersonalityName(ai); // support Show AI Personality Names mod

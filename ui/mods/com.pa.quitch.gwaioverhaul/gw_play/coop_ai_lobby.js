@@ -8,6 +8,10 @@ define([
 ], function (roster) {
   var LOG = "[GW COOP AI] ";
 
+  var describe = function (error) {
+    return (error && (error.stack || error.message)) || String(error);
+  };
+
   var maxClients = function () {
     return parseInt(model.gwCampaignMaxClients(), 10);
   };
@@ -39,9 +43,11 @@ define([
   };
 
   // params: game, gwaio() (the war's originSystem.gwaio), createRecord(identity)
-  // (builds the new AI's record), save() (a promise), and the observables ready,
-  // busy, armed (the AI whose Kick was pressed once) and inFlight (the
-  // modify_settings requests the server has not answered).
+  // (builds the new AI's record), save(withStars) (a promise), warSeats() (the
+  // seats the war was made with, stock's savedCoopPlayers), expectedBack()
+  // (the humans still due back from the last battle, 0 once none are), and
+  // the observables ready, busy, armed (the AI whose Kick was pressed once)
+  // and inFlight (the modify_settings requests the server has not answered).
   var factory = function (params) {
     var game = params.game;
     var ready = params.ready;
@@ -52,16 +58,17 @@ define([
     var inFlight = params.inFlight;
 
     // initialCoopSettingsApplied is a plain field, so a computed reading this
-    // does not track it. Stock flips it only beside a modify_settings, which
-    // moves inFlight, so the computed re-evaluates anyway.
+    // does not track it. gwCampaignControl is read first, and unconditionally:
+    // the server broadcasts it before answering the modify_settings that stock
+    // sends beside the flag, so the computed re-evaluates after the flip.
     var lobbySettled = function () {
       var control = model.gwCampaignControl();
       return !!(
+        control &&
+        _.has(control, "max_clients") &&
         model.initialCoopSettingsApplied &&
         !restartPending() &&
-        inFlight() === 0 &&
-        control &&
-        _.has(control, "max_clients")
+        inFlight() === 0
       );
     };
 
@@ -76,11 +83,20 @@ define([
       );
     };
 
+    // A slot left by a human still on their way back from the last battle is
+    // theirs: filling it would turn them away with "No room".
+    var humansBack = function () {
+      return connectedClients().length >= (params.expectedBack() || 0);
+    };
+
     var canAddAi = function () {
       return (
         hostCanEdit() &&
+        // A war without GWO's settings has nowhere to keep the AI's serial.
+        _.isPlainObject(params.gwaio()) &&
         !model.gwCampaignPerPlayerTechCards() &&
         hasEmptySlot() &&
+        humansBack() &&
         !model.gwCampaignPlayerSetupBlocked() &&
         !victoryWaiting()
       );
@@ -103,14 +119,24 @@ define([
       }
     };
 
-    var saveWar = function (reason) {
-      $.when(params.save()).then(null, function (error) {
-        console.error(LOG + "war not saved after " + reason + ": " + error);
-      });
+    // Only an add changes the stars: the serial lives on the origin system.
+    var saveWar = function (reason, withStars) {
+      var failed = function (error) {
+        console.error(
+          LOG + "war not saved after " + reason + ": " + describe(error)
+        );
+      };
+      try {
+        $.when(params.save(withStars)).then(null, failed);
+      } catch (error) {
+        failed(error);
+      }
     };
 
-    var giveSlotBack = function () {
-      sendSettings(maxClients() + 1, function (success, response) {
+    // The server holds target once it has answered an add, whatever the
+    // local count reads.
+    var giveSlotBack = function (target) {
+      sendSettings(target + 1, function (success, response) {
         if (!success) {
           console.error(
             LOG + "slot not restored: " + JSON.stringify(response || {})
@@ -119,12 +145,22 @@ define([
       });
     };
 
+    var failAdd = function (error, target) {
+      console.error(LOG + "add failed: " + describe(error));
+      giveSlotBack(target);
+      busy(false);
+    };
+
     // Runs in the campaign state queue, after the server shrank max_clients.
-    var writeNewAi = function (target) {
+    // extraSeat: the AI filled a seat beyond those the war was made with.
+    var writeNewAi = function (target, extraSeat) {
       try {
         var gwaio = params.gwaio();
         var identity = roster.nextAiIdentity(gwaio);
         var record = params.createRecord(identity);
+        if (extraSeat) {
+          record.gwaioAi.extraSeat = true;
+        }
         gwaio.coopAiSerial = identity.serial;
 
         if (!game.upsertCoopPlayerInventoryData(record)) {
@@ -135,17 +171,11 @@ define([
           LOG + "added " + record.gwaioAi.name + " as " + record.playerId
         );
       } catch (error) {
-        console.error(
-          LOG +
-            "add failed: " +
-            ((error && (error.stack || error.message)) || error)
-        );
-        giveSlotBack();
-        busy(false);
+        failAdd(error, target);
         return;
       }
 
-      saveWar("add");
+      saveWar("add", true);
       // The first request carried the lock limit from before this AI, so it is
       // sent again with the one that leaves it out.
       if (model.savedCoopPlayersLocked()) {
@@ -161,6 +191,11 @@ define([
       }
 
       var target = maxClients() - 1;
+      var extraSeat = roster.takesExtraSeat(
+        target + 1,
+        roster.aiRecords(game.coopPlayerInventoryData()).length,
+        params.warSeats()
+      );
       busy(true);
       sendSettings(target, function (success, response) {
         // A human who joined meanwhile fills the slot, and the server keeps
@@ -171,9 +206,14 @@ define([
           return;
         }
 
-        model.applyCampaignLobbyControl(response);
+        try {
+          model.applyCampaignLobbyControl(response);
+        } catch (error) {
+          failAdd(error, target);
+          return;
+        }
         model.enqueueGwCampaignStateApply("gwo_coop_ai_add", function () {
-          writeNewAi(target);
+          writeNewAi(target, extraSeat);
         });
       });
       return true;
@@ -181,6 +221,40 @@ define([
 
     var canKickAi = function (row) {
       return !!(row && row.gwoAi && hostCanEdit());
+    };
+
+    // Runs in the campaign state queue. Whatever throws, the slot is offered
+    // back once the record is gone, and busy is released.
+    var removeAi = function (row) {
+      var records = game.coopPlayerInventoryData();
+      var kept = _.reject(records, function (record) {
+        return roster.isAiRecord(record) && record.playerId === row.id;
+      });
+
+      if (kept.length === records.length) {
+        busy(false);
+        return;
+      }
+
+      // Before the slot comes back, so a lock's limit counts it.
+      game.coopPlayerInventoryData(kept);
+      console.log(LOG + "kicked " + row.name + " (" + row.id + ")");
+      saveWar("kick", false);
+      try {
+        publish("kick");
+      } catch (error) {
+        console.error(LOG + "kick not published: " + describe(error));
+      }
+      sendSettings(maxClients() + 1, function (success, response) {
+        if (!success) {
+          console.error(
+            LOG +
+              "slot not returned after kick: " +
+              JSON.stringify(response || {})
+          );
+        }
+        busy(false);
+      });
     };
 
     // Kicking deletes the AI and its record for good, so it takes two presses.
@@ -196,31 +270,12 @@ define([
       armed(undefined);
       busy(true);
       model.enqueueGwCampaignStateApply("gwo_coop_ai_kick", function () {
-        var records = game.coopPlayerInventoryData();
-        var kept = _.reject(records, function (record) {
-          return roster.isAiRecord(record) && record.playerId === row.id;
-        });
-
-        if (kept.length === records.length) {
+        try {
+          removeAi(row);
+        } catch (error) {
+          console.error(LOG + "kick failed: " + describe(error));
           busy(false);
-          return;
         }
-
-        // Before the slot comes back, so a lock's limit counts it.
-        game.coopPlayerInventoryData(kept);
-        console.log(LOG + "kicked " + row.name + " (" + row.id + ")");
-        saveWar("kick");
-        sendSettings(maxClients() + 1, function (success, response) {
-          if (!success) {
-            console.error(
-              LOG +
-                "slot not returned after kick: " +
-                JSON.stringify(response || {})
-            );
-          }
-          busy(false);
-        });
-        publish("kick");
       });
       return true;
     };

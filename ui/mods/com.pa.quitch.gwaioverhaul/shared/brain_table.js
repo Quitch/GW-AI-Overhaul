@@ -29,6 +29,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   // The modal's rows, in the caller's race order: the stored cell where it is
   // still offerable, the seeded default otherwise. Stored races no longer in
   // the list follow as disabled rows, so a remembered choice stays visible.
+  // coopFollows says the co-op cell has no brain of its own and follows the
+  // row's opponent: MLA's with no aiCoop, a race's with no offerable coop.
   var rowsFor = function (stored, raceIds, ai, aiAlly, aiCoop) {
     var table = stored || {};
     var listed = _.map(raceIds || [], races.normalizeId);
@@ -43,6 +45,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
         options: options,
         allyOptions: options,
         coopOptions: options,
+        coopFollows: races.isMla(id)
+          ? !aiCoop
+          : !pick(row && row.coop, options),
       };
 
       _.forEach(SIDES, function (side) {
@@ -80,6 +85,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
           enemy: row.enemy || races.TITANS,
           ally: row.ally || races.TITANS,
           coop: coop,
+          coopFollows: !row.coop,
         };
       })
     );

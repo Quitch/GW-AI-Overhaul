@@ -191,11 +191,16 @@ client's `gwCampaignHasEmptySlots` greys Fight while one is open, and the
 server refuses `launch_gw_battle`. So an AI **takes a slot by shrinking
 `max_clients` by one**, and GWO keeps the AI slots itself, as co-op records.
 
-`gw_play/coop_ai.js` wraps `model.savedCoopPlayers` to leave the AIs out, as
-`max(1, stock − AIs)`. Every session open seeds `max_clients` from it, and so
-does a locked war's slot limit, so an AI's slot never reopens to a human. The
-wrap is made synchronously at scene load. A module callback can land after the
-session's saved settings apply.
+`gw_play/coop_ai.js` wraps `model.savedCoopPlayers` to leave out the AIs that
+hold one of the war's own seats, as `max(1, stock − those AIs)`. Every session
+open seeds `max_clients` from it, and so does a locked war's slot limit, so an
+AI's slot never reopens to a human. An AI the host added into a slot opened
+with "+", past the seats the war was made with, is marked `gwaioAi.extraSeat`
+and takes none of the war's seats, so the human it sat beside keeps theirs at
+the next session. The wrap is made synchronously at scene load, because a
+module callback can land after the session's saved settings apply. Until the
+roster loads it counts every AI as holding a war seat; `roster.humanSeats` is
+the rule.
 
 `gwCampaignSlots` becomes stock's rows plus one row per AI. An AI row carries
 every field a stock row has, so the stock markup binds it unchanged. Its
@@ -212,7 +217,9 @@ the serial, the name, the personality template and a Penchant AI's penchant,
 and is also the marker: a record is an AI's if and only if `gwaioAi` is a plain
 object. The id is `gwo_ai_<serial>`, and the serial comes from
 `originSystem.gwaio.coopAiSerial`, which only grows. An AI added after a kick
-therefore draws its own name and commander.
+therefore draws from a stream of its own, though the kicked AI's name and
+commander are free to be drawn again. A war without GWO's settings has nowhere
+to keep the serial, so it offers no Add AI.
 
 The record has **no `playerName`**. Stock finds a record by `playerId`, then by
 exact `playerName`, on the client and the server alike, so no human's lookup
@@ -241,6 +248,17 @@ the server answers it, the count still reads the fresh server's default.
 `modify_settings` in flight, and Add AI waits for none. It also waits for the
 saved settings to have applied, for no player to be mid-setup, for no battle to
 be launching, and for the victory wait to be closed.
+
+After a battle, the humans who fought it come back one at a time, and each
+one's slot reads as empty until they do. So a session that came back from a
+battle offers Add AI only once `battle_launch_clients` humans are connected
+again, or a minute has passed. Without that, an AI could take the slot of a
+viewer still reconnecting, and turn them away with "No room".
+
+Stock's "+" and "−" send an absolute count read from `gwCampaignMaxClients`.
+While an add, a kick, or any other `modify_settings` is in flight that count is
+stale, and a "+" sent then would undo the add. Both are held until the count
+settles.
 
 The add asks the server for one slot fewer, and writes nothing before it
 answers. An answer with any other count abandons it. A human who joined
@@ -281,7 +299,10 @@ Each AI is one army. Its slot is `ai: true` with a commander, it has
 the army joins after `referee_config.js`'s tagging loop. It fights at the war's
 difficulty tier, with the players' economy: `setAdvEcoMod` is the enemy's eco
 cheat and is not applied. The personality template is `uber` under Queller and
-`absurd` otherwise. Its colour continues the players' sequence: the AIs take
+`absurd` otherwise. It also carries the `GWAlly` tag the build files test for a
+Galactic War ally, so it stays off the builds meant for the enemy alone, such
+as the Annihilaser's Catalysts. Its colour continues the players' sequence: the
+AIs take
 `resolvePlayerColorPairs(humanArmies + AIs).slice(humanArmies)`, and the stock
 resolver builds its pairs in order, so no human's colour moves.
 

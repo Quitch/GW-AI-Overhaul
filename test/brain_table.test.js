@@ -117,6 +117,7 @@ describe("rowsFor", () => {
       enemy: "Titans",
       ally: "Titans",
       coop: "Titans",
+      coopFollows: true,
     });
   });
 
@@ -189,11 +190,55 @@ describe("rowsFor", () => {
       options: ["Titans", "Queller", "Penchant"],
       allyOptions: ["Titans", "Queller", "Penchant"],
       coopOptions: ["Titans", "Queller", "Penchant"],
+      coopFollows: true,
       enemy: "Penchant",
       ally: "Titans",
       coop: "Penchant",
     });
     assert.equal(rows[1].enemy, "Titans"); // Penchant does not know Legion
+  });
+
+  // An unset co-op cell follows the opponent, so the modal must not pin it
+  // to whatever the opponent was when it opened.
+  it("says which co-op cells follow their opponent", () => {
+    const rows = brainTable.rowsFor(
+      {
+        legion: { enemy: "Queller", ally: "Titans", coop: "Titans" },
+        bugs: { enemy: "Titans", ally: "Titans" },
+      },
+      ["mla", "legion", "bugs"],
+      "Titans",
+      "Titans"
+    );
+    assert.deepEqual(
+      rows.map((row) => [row.id, row.coopFollows]),
+      [
+        ["mla", true],
+        ["legion", false],
+        ["bugs", true],
+      ]
+    );
+
+    const pinned = brainTable.rowsFor(
+      undefined,
+      ["mla"],
+      "Titans",
+      "Titans",
+      "Queller"
+    );
+    assert.equal(pinned[0].coopFollows, false);
+    assert.equal(pinned[0].coop, "Queller");
+  });
+
+  it("follows the opponent where a stored co-op brain cannot run the race", () => {
+    const rows = brainTable.rowsFor(
+      { legion: { enemy: "Titans", ally: "Titans", coop: "Penchant" } },
+      ["legion"],
+      "Titans",
+      "Titans"
+    );
+    assert.equal(rows[0].coopFollows, true);
+    assert.equal(rows[0].coop, "Titans");
   });
 });
 

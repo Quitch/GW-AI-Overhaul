@@ -227,6 +227,61 @@ describe("humanCapacity / roomForSlot", () => {
   });
 });
 
+describe("takesExtraSeat / humanSeats", () => {
+  it("knows an AI added past the war's seats from one filling them", () => {
+    // War for 2: the host alone, a slot open for the second player.
+    assert.equal(roster.takesExtraSeat(2, 0, 2), false);
+    // The host pressed "+" for a third seat.
+    assert.equal(roster.takesExtraSeat(3, 0, 2), true);
+    // One AI already holds a war seat, and one slot is left.
+    assert.equal(roster.takesExtraSeat(1, 1, 2), false);
+  });
+
+  it("opens the war's seats less those its AIs hold, at least one", () => {
+    const seated = aiRecord(1);
+    const extra = aiRecord(2, {
+      gwaioAi: { serial: 2, name: "AI2", extraSeat: true },
+    });
+    const human = { playerId: "uber-1", playerName: "Alice" };
+
+    assert.equal(roster.humanSeats(3, [seated, human]), 2);
+    assert.equal(roster.humanSeats(2, [seated, extra]), 1);
+    assert.equal(roster.humanSeats(1, [seated]), 1);
+    assert.equal(roster.humanSeats(2, undefined), 2);
+  });
+});
+
+describe("takenNames / fieldedCommanders / humanArmies", () => {
+  it("takes every name already in the war, the host's and Player among them", () => {
+    assert.deepEqual(
+      roster.takenNames(
+        [{ name: "Grace" }, { name: "Ada" }],
+        [{ playerName: "Alan" }, aiRecord(1)],
+        "Grace"
+      ),
+      ["Grace", "Ada", "Alan", "AI1", "Player", "Grace"]
+    );
+    assert.deepEqual(roster.takenNames([], [], undefined), ["Player"]);
+  });
+
+  it("counts the host's, its Sub Commanders' and every player's commanders as fielded", () => {
+    assert.deepEqual(
+      roster.fieldedCommanders(
+        "host.json",
+        [{ commander: "viewer.json" }, aiRecord(1, { commander: "ai.json" })],
+        [{ commander: "minion.json" }, {}]
+      ),
+      ["host.json", "viewer.json", "ai.json", "minion.json"]
+    );
+  });
+
+  it("counts one army for shared control, else one per client", () => {
+    assert.equal(roster.humanArmies(true, 3), 1);
+    assert.equal(roster.humanArmies(false, 3), 3);
+    assert.equal(roster.humanArmies(false, 0), 1);
+  });
+});
+
 describe("slotRows", () => {
   const STOCK_FIELDS = [
     "index",
@@ -540,16 +595,21 @@ describe("launchAis", () => {
 });
 
 describe("panelEntries", () => {
-  it("lists each AI's name, colour and race", () => {
+  it("lists each AI's name and colour, on the host's race", () => {
     assert.deepEqual(
-      roster.panelEntries([
-        { name: "Sorian", colour: "pair0", race: "mla" },
-        { name: "Garat", colour: "pair1", race: undefined },
-      ]),
+      roster.panelEntries(
+        [aiRecord(1), aiRecord(2)],
+        ["pair0", "pair1"],
+        "mla"
+      ),
       [
-        { name: "Sorian", colour: "pair0", race: "mla" },
-        { name: "Garat", colour: "pair1", race: "mla" },
+        { name: "AI1", colour: "pair0", race: "mla" },
+        { name: "AI2", colour: "pair1", race: "mla" },
       ]
+    );
+    assert.equal(
+      roster.panelEntries([aiRecord(1)], [], undefined)[0].race,
+      "mla"
     );
   });
 });

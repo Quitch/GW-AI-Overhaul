@@ -82,6 +82,48 @@ define([
     return maxClients < humanCapacity(limit, locked, aiCount);
   };
 
+  // Whether an AI added now fills a seat beyond those the war was made with:
+  // one the host opened with "+". maxClients is the count before the add.
+  var takesExtraSeat = function (maxClients, aiCount, warSeats) {
+    return maxClients + aiCount > warSeats;
+  };
+
+  // The human seats a new session opens with: the war's own, less those its
+  // AIs hold. An AI in a seat the host opened for it takes none of them.
+  var humanSeats = function (warSeats, records) {
+    var seated = _.filter(aiRecords(records), function (record) {
+      return !record.gwaioAi.extraSeat;
+    });
+    return Math.max(1, warSeats - seated.length);
+  };
+
+  // Every name a new AI must not take: the connected players', the records'
+  // players', the other AIs', the host's, and the stock "Player".
+  var takenNames = function (connected, records, hostName) {
+    return _.compact(
+      _.pluck(connected, "name")
+        .concat(_.pluck(records, "playerName"))
+        .concat(_.map(aiRecords(records), "gwaioAi.name"))
+        .concat(["Player", hostName])
+    );
+  };
+
+  // Every commander already on the field: the host's, its Sub Commanders',
+  // and every co-op player's.
+  var fieldedCommanders = function (hostCommander, records, minions) {
+    return _.compact(
+      [hostCommander]
+        .concat(_.pluck(records, "commander"))
+        .concat(_.pluck(minions, "commander"))
+    );
+  };
+
+  // The human armies a battle fields, as stock's gwCoopPlayerColors counts
+  // them: one shared army, else one per connected client.
+  var humanArmies = function (sharedArmy, connectedCount) {
+    return sharedArmy ? 1 : Math.max(1, connectedCount);
+  };
+
   // An AI's row in the slot list, with every field a stock row carries, so the
   // stock markup binds it unchanged. canKick is false: GWO's own Kick removes
   // an AI.
@@ -229,13 +271,14 @@ define([
     });
   };
 
-  // The war panel's line for each AI, after the humans'.
-  var panelEntries = function (roster) {
-    return _.map(roster, function (entry) {
+  // The war panel's line for each AI, after the humans': its name, battle
+  // colour and race. Under shared tech every AI fields the host's race.
+  var panelEntries = function (records, colours, race) {
+    return _.map(records, function (record, index) {
       return {
-        name: entry.name,
-        colour: entry.colour,
-        race: gwoRaces.raceOf({ race: entry.race }),
+        name: record.gwaioAi.name,
+        colour: colours[index],
+        race: gwoRaces.raceOf({ race: race }),
       };
     });
   };
@@ -253,6 +296,11 @@ define([
     colourPairs: colourPairs,
     humanCapacity: humanCapacity,
     roomForSlot: roomForSlot,
+    takesExtraSeat: takesExtraSeat,
+    humanSeats: humanSeats,
+    takenNames: takenNames,
+    fieldedCommanders: fieldedCommanders,
+    humanArmies: humanArmies,
     slotRows: slotRows,
     parseAiNames: parseAiNames,
     pickAiName: pickAiName,

@@ -1,17 +1,15 @@
-/* Co-op AI players' slot-row controls. They keep the stock Kick button's shape;
-   the colours reach 7:1 text and 3:1 outline contrast over the settings panel
-   with a white galaxy behind it. See accessibility.md. */
+/* Co-op AI players' slot-row controls wear the stock row's own look: Kick is
+   stock's Kick, and Add AI takes the colours of stock's "+" and "-". Their text
+   marks them as buttons, at 7:1 over the settings panel with a white galaxy
+   behind it. The padding keeps the longer labels off the border. See
+   accessibility.md. */
 .gw-campaign-slot-row .gwo-slot-button {
   position: relative;
-}
-
-.gw-campaign-slot-row .gwo-slot-kick-ai {
-  border-color: rgba(255, 176, 176, 0.7);
+  padding: 0 10px;
 }
 
 .gw-campaign-slot-row .gwo-slot-add-ai {
   color: #88dbff;
-  border-color: rgba(136, 219, 255, 0.7);
   background: rgba(0, 0, 0, 0.35);
 }
 

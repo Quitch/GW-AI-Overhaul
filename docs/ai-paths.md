@@ -291,9 +291,11 @@ it:
   the rule that matters, rather than "nothing nests".
   `test/ai_path_invariants.test.js` sweeps it over the full option matrix, and
   over the file paths `referee_ai.js` really writes.
-- **A co-op AI player's path is its own.** It never equals the enemy's, a Sub
-  Commander's, a viewer's or another co-op AI's, for every pair of brains.
-  `test/ai_path_invariants.test.js` sweeps it, and
+- **A co-op AI player's path is apart from every other army's.** It never
+  equals the enemy's, a Sub Commander's or a viewer's, for every pair of
+  brains. Co-op AIs with distinct scope tokens never share a path either;
+  under shared tech every AI takes the one token `coopai`, so they share
+  `player_coopai/` by design. `test/ai_path_invariants.test.js` sweeps it, and
   `test/referee_ai_coop_trees.test.js` checks that the co-op pass writes only
   under that path.
 

@@ -109,7 +109,7 @@ define([
     },
 
     // A co-op AI player's own draws, keyed by its serial, which is never
-    // reused: a new AI never replays a kicked one's name or commander.
+    // reused, so a new AI draws from a stream no earlier AI drew from.
     coopAiPlayerRng: function (warRng, serial) {
       return warRng && warRng.stream("coop_ai_player", index(serial));
     },

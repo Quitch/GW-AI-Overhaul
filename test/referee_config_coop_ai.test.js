@@ -85,20 +85,21 @@ describe("setupCoopAiArmies", () => {
     assert.equal(armies[1].slots[0].commander, COMMANDER + ".player3");
   });
 
-  it("fights at the war's tier on its own brain's tags", () => {
+  // GWAlly is what the build files test to tell a Galactic War ally.
+  it("fights at the war's tier on its own brain's tags, as an ally", () => {
     const queller = armiesFor([
       coopAiEntry({ brain: "Queller", personalityId: "uber" }),
     ])[0].personality;
     assert.deepEqual(
       queller.personality_tags,
-      GOLD.personality_tags.concat(["tank", "queller"])
+      GOLD.personality_tags.concat(["tank", "queller", "GWAlly"])
     );
     assert.equal(queller.micro_type, GOLD.microType);
 
     const titans = armiesFor([coopAiEntry()])[0].personality;
     assert.deepEqual(
       titans.personality_tags,
-      GOLD.personality_tags.concat(["Default"])
+      GOLD.personality_tags.concat(["Default", "GWAlly"])
     );
 
     const penchant = armiesFor([
@@ -106,7 +107,7 @@ describe("setupCoopAiArmies", () => {
     ])[0].personality;
     assert.deepEqual(
       penchant.personality_tags,
-      GOLD.personality_tags.concat(["Artillery", "Default"])
+      GOLD.personality_tags.concat(["Artillery", "Default", "GWAlly"])
     );
     assert.equal(penchant.display_name, "!LOC:Absurd !LOC:Artillery");
   });
@@ -118,7 +119,13 @@ describe("setupCoopAiArmies", () => {
     )[0].personality;
     assert.deepEqual(
       personality.personality_tags,
-      GOLD.personality_tags.concat(["air", "queller", "ffa", "platoon"])
+      GOLD.personality_tags.concat([
+        "air",
+        "queller",
+        "ffa",
+        "platoon",
+        "GWAlly",
+      ])
     );
   });
 
