@@ -113,6 +113,50 @@ function handedOverAsList(code, end) {
   return Boolean(next) && ",])".includes(next[1]);
 }
 
+// Every `<paramName>.key` and `<paramName>.table.key` in a file's code, and a
+// bare table where it is handed over as a list.
+function unitReferences(code, paramName, units) {
+  const escaped = paramName.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+  const refPattern = new RegExp(
+    String.raw`\b${escaped}\.([A-Za-z_$][A-Za-z0-9_$]*)(?:\.([A-Za-z_$][A-Za-z0-9_$]*))?`,
+    "g"
+  );
+  const referenced = new Set();
+  for (const m of code.matchAll(refPattern)) {
+    const isTable = typeof units[m[1]] === "object";
+    if (!isTable || m[2]) {
+      referenced.add(isTable ? m[1] + "." + m[2] : m[1]);
+    } else if (handedOverAsList(code, m.index + m[0].length)) {
+      referenced.add(m[1]);
+    }
+  }
+  return referenced;
+}
+
+// What is wrong with one reference, or undefined.
+function referenceProblem(units, unitKeys, paramName, key) {
+  const [table, unit] = key.split(".");
+  if (!unit && typeof units[table] === "object") {
+    return (
+      "names the whole table " +
+      paramName +
+      "." +
+      table +
+      " - a card names one unit of it"
+    );
+  }
+  if (!unitKeys.has(table) || (unit && !Object.hasOwn(units[table], unit))) {
+    return (
+      "references " +
+      paramName +
+      "." +
+      key +
+      ", which does not exist in units.js"
+    );
+  }
+  return undefined;
+}
+
 function checkUnitReferencesInCards() {
   const units = loadCouiModule(UNITS_COUI);
   const unitKeys = new Set(Object.keys(units));
@@ -126,7 +170,6 @@ function checkUnitReferencesInCards() {
   let checkedRefs = 0;
 
   for (const filePath of files) {
-    const file = path.relative(REPO_ROOT, filePath);
     const src = fs.readFileSync(filePath, "utf8");
     const paramName = findUnitsParamName(src);
     if (!paramName) {
@@ -134,47 +177,12 @@ function checkUnitReferencesInCards() {
     }
     checkedCards++;
 
-    const escaped = paramName.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-    const refPattern = new RegExp(
-      String.raw`\b${escaped}\.([A-Za-z_$][A-Za-z0-9_$]*)(?:\.([A-Za-z_$][A-Za-z0-9_$]*))?`,
-      "g"
-    );
-    const code = stripComments(src);
-    const referenced = new Set();
-    for (const m of code.matchAll(refPattern)) {
-      const isTable = typeof units[m[1]] === "object";
-      if (!isTable || m[2]) {
-        referenced.add(isTable ? m[1] + "." + m[2] : m[1]);
-      } else if (handedOverAsList(code, m.index + m[0].length)) {
-        referenced.add(m[1]);
-      }
-    }
-
-    for (const key of referenced) {
+    for (const key of unitReferences(stripComments(src), paramName, units)) {
       checkedRefs++;
-      const [table, unit] = key.split(".");
-      if (!unit && typeof units[table] === "object") {
+      const problem = referenceProblem(units, unitKeys, paramName, key);
+      if (problem) {
         fail(
-          "cross-refs: " +
-            file +
-            " names the whole table " +
-            paramName +
-            "." +
-            table +
-            " - a card names one unit of it"
-        );
-      } else if (
-        !unitKeys.has(table) ||
-        (unit && !Object.hasOwn(units[table], unit))
-      ) {
-        fail(
-          "cross-refs: " +
-            file +
-            " references " +
-            paramName +
-            "." +
-            key +
-            ", which does not exist in units.js"
+          "cross-refs: " + path.relative(REPO_ROOT, filePath) + " " + problem
         );
       }
     }
