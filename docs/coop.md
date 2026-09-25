@@ -176,6 +176,126 @@ Minion counting deliberately includes players who are not currently in the game.
 The minions of a player who leaves and rejoins therefore do not vanish and
 reappear.
 
+## AI players
+
+A co-op host can drop an AI player into an open slot, so a war made for more
+players than turned up can still be fought. The AI fights beside the humans as
+an allied AI army. The logic is `gw_play/coop_ai_roster.js` and
+`gw_play/coop_ai_lobby.js`; `gw_play/coop_ai.js` is the scene glue. Under
+per-player tech the Add AI button is hidden for now.
+
+### A slot is a count
+
+Stock keeps no list of slots. A slot is only `connected < max_clients`: the
+client's `gwCampaignHasEmptySlots` greys Fight while one is open, and the
+server refuses `launch_gw_battle`. So an AI **takes a slot by shrinking
+`max_clients` by one**, and GWO keeps the AI slots itself, as co-op records.
+
+`gw_play/coop_ai.js` wraps `model.savedCoopPlayers` to leave the AIs out, as
+`max(1, stock − AIs)`. Every session open seeds `max_clients` from it, and so
+does a locked war's slot limit, so an AI's slot never reopens to a human. The
+wrap is made synchronously at scene load. A module callback can land after the
+session's saved settings apply.
+
+`gwCampaignSlots` becomes stock's rows plus one row per AI. An AI row carries
+every field a stock row has, so the stock markup binds it unchanged. Its
+`canKick` and `canRemove` are false, so stock's own buttons never act on it;
+GWO's Kick does. `canAddGwCampaignSlot` counts the AIs against the server's
+limit. An open lobby's limit counts every slot, and a lock's already leaves the
+AIs out. Both are read from the server, not from the war, because stock's
+restart after a battle never re-sends the lock.
+
+### An AI is a record
+
+The AI's record is `{playerId, commander, updatedAt, gwaioAi}`. `gwaioAi` holds
+the serial, the name, the personality template and a Penchant AI's penchant,
+and is also the marker: a record is an AI's if and only if `gwaioAi` is a plain
+object. The id is `gwo_ai_<serial>`, and the serial comes from
+`originSystem.gwaio.coopAiSerial`, which only grows. An AI added after a kick
+therefore draws its own name and commander.
+
+The record has **no `playerName`**. Stock finds a record by `playerId`, then by
+exact `playerName`, on the client and the server alike, so no human's lookup
+can land on an AI's record. A departed human's record is never touched either,
+which is what keeps their rejoin and their fresh-deal rules intact.
+
+Records are in the war's save and in every snapshot, so a viewer sees the rows
+too. Under shared tech viewers hold no tech state, so the host publishes a
+snapshot as soon as the roster changes. With no viewer connected, it publishes
+nothing: a viewer who joins asks for a snapshot as its first step.
+
+The name is drawn from the skirmish lobby's own list,
+`server-script/ai_names_table.js`, which the client reads as text. It is never a
+connected player's name, a record's `playerName`, another AI's, or `Player`,
+case ignored. An AI whose name cannot be drawn is named by its serial. The
+commander is one of the host's owned commanders that nobody fields yet, or one
+of the race's own for a race war.
+
+### Adding and kicking
+
+The host adds an AI from an empty slot's Add AI button. The lobby first has to
+be settled, because `gwCampaignMaxClients` can be stale. Stock's restart
+re-apply after a battle sends a `modify_settings` with no callback, and until
+the server answers it, the count still reads the fresh server's default.
+`gw_play/coop_ai.js` therefore wraps `model.send_message` and counts every
+`modify_settings` in flight, and Add AI waits for none. It also waits for the
+saved settings to have applied, for no player to be mid-setup, for no battle to
+be launching, and for the victory wait to be closed.
+
+The add asks the server for one slot fewer, and writes nothing before it
+answers. An answer with any other count abandons it. A human who joined
+meanwhile has taken the slot, and the server keeps `max_clients` at the number
+connected. The record is written through `enqueueGwCampaignStateApply`, so it
+cannot interleave with a viewer's queued record write. Under a lock the same
+count is sent again after the write, so the lock's limit leaves the new AI out.
+A failure after the server answered gives the slot back.
+
+Kicking is the only way an AI leaves, and it deletes the AI and its record for
+good. So its Kick asks first, like Delete Tech
+([`accessibility.md`](accessibility.md), 3.3.6). The record goes before the slot
+comes back, so a lock's limit counts it.
+
+A human whose slot an AI took is refused with "No room" when they come back,
+until the host kicks the AI or adds a slot. Stock has no hook that could tell
+them why.
+
+### Sitting out
+
+An AI is added only inside a session, but its record stays in the war's save.
+When the war is played without a session, the AI takes no part: the roster is
+empty outside an active session. That covers a host who resumes from the main
+menu without Call for Reinforcements, and a viewer who left and plays their
+local copy. When a session opens again, the wrap keeps the AI's slot, and the AI
+fights again.
+
+### In a battle
+
+The first step of every hire (`gw_play/referee.js`) fixes the battle's roster
+as `ref.coopAis`, from `model.gwoCoopAi.launchRoster()`. A session whose war
+has AI records but whose AI modules did not load fails the hire, rather than
+fighting without its AI players. Fight is refused for the same reason, and
+while an add or kick is under way.
+
+Each AI is one army. Its slot is `ai: true` with a commander, it has
+`alliance_group: 1`, and its commander carries its spec tag already, because
+the army joins after `referee_config.js`'s tagging loop. It fights at the war's
+difficulty tier, with the players' economy: `setAdvEcoMod` is the enemy's eco
+cheat and is not applied. The personality template is `uber` under Queller and
+`absurd` otherwise. Its colour continues the players' sequence: the AIs take
+`resolvePlayerColorPairs(humanArmies + AIs).slice(humanArmies)`, and the stock
+resolver builds its pairs in order, so no human's colour moves.
+
+Under shared tech every AI fields the host's units under `.player`. Each AI's
+commander joins the `.player` specs, as the star's ally's does. The AIs share
+one AI tree on the war's Co-op brain, written with the host's AI mods. The tree
+is identical for every AI, because they share the brain, race, AI mods and tag.
+See [`ai-paths.md`](ai-paths.md), "Co-op AI players".
+
+**The per-player tech referee is untouched.** An AI army has an `ai` slot, and
+stock's co-op referee and the server's lobby map humans onto non-AI armies only.
+So the per-player referee's player count and human armies still match, and it
+keeps the main referee's files and armies as they are.
+
 ## Addressing a host's reply
 
 A host→viewer operator that carries one player's result is addressed with

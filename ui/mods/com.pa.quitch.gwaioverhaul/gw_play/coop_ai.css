@@ -1,0 +1,27 @@
+/* Co-op AI players' slot-row controls. They keep the stock Kick button's shape;
+   the colours reach 7:1 text and 3:1 outline contrast over the settings panel
+   with a white galaxy behind it. See accessibility.md. */
+.gw-campaign-slot-row .gwo-slot-button {
+  position: relative;
+}
+
+.gw-campaign-slot-row .gwo-slot-kick-ai {
+  border-color: rgba(255, 176, 176, 0.7);
+}
+
+.gw-campaign-slot-row .gwo-slot-add-ai {
+  color: #88dbff;
+  border-color: rgba(136, 219, 255, 0.7);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* A hit area as tall as the row pitch (34px row, 6px gap) and half the 8px
+   gap to each side, offset past the 1px border. */
+.gw-campaign-slot-row .gwo-slot-button::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: -5px;
+  bottom: -6px;
+  left: -5px;
+}

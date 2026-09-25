@@ -224,6 +224,7 @@ base-game modules all the same:
 | `gw_play/referee_config.js` (GWO's own)     | `gw_play/referee_config_setup.js`                                                           |
 | `gw_play/referee.js` (GWO's own)            | `gw_play/referee_biomes.js`                                                                 |
 | `gw_play/cards_start_subcdr.js` (GWO's own) | `gw_play/general_commander_setup.js`                                                        |
+| `gw_play/coop_ai.js` (GWO's own)            | `gw_play/coop_ai_roster.js`, `gw_play/coop_ai_lobby.js`                                     |
 | `gw_start/setup.js` (GWO's own)             | `gw_start/ai_population.js`, `gw_start/war_record.js`, `gw_start/war_generation_failure.js` |
 
 The glue file keeps only the `model`/`ko`/`api` glue and is coverage-excluded.

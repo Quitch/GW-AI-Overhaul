@@ -39,10 +39,18 @@ define([
     return game.galaxy().stars()[game.currentStar()].ai();
   };
 
+  var sideOf = function (alignment) {
+    if (alignment === "subcommander") {
+      return "ally";
+    }
+    return alignment === "coop" ? "coop" : "enemy";
+  };
+
   // The war's brain for that side and race: the race's row of the recorded
   // aiByRace table, else the war-wide string - a war saved before the table
   // existed behaves exactly as it always did. "subcommander" is the ally
-  // side; every other alignment fights the player.
+  // side and "coop" a co-op AI player's; every other alignment fights the
+  // player.
   var warBrain = function (alignment, race) {
     var gwoSettings = originSettings(model.game());
     if (gwoSettings) {
@@ -50,8 +58,9 @@ define([
         gwoSettings.aiByRace,
         gwoSettings.ai,
         gwoSettings.aiAlly,
-        alignment === "subcommander" ? "ally" : "enemy",
-        race
+        sideOf(alignment),
+        race,
+        gwoSettings.aiCoop
       );
     }
     return "Titans";
@@ -336,6 +345,14 @@ define([
         getInventoryAiMods(inventory),
         subcommanderTech.hasSmartSubcommanders(inventory),
         playerTag,
+        race
+      );
+    },
+
+    getCoopAiPath: function (race, scopeToken) {
+      return refereeAIPaths.getCoopAiPath(
+        aiInUse("coop", race),
+        scopeToken,
         race
       );
     },

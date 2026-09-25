@@ -170,6 +170,9 @@
   "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
     "message": "CLUSTER：陆军。以 Angel 和 Colonel 作为副指挥官，且无法建造它们。"
   },
+  "CO-OP: the AI players a host adds to a co-op session": {
+    "message": "合作：主机加入合作会话的电脑玩家"
+  },
   "COMMANDER TRANSPORT:": {
     "message": "指挥官运输："
   },
@@ -199,6 +202,9 @@
   },
   "Co-Op Settings": {
     "message": "合作设置"
+  },
+  "Co-op": {
+    "message": "合作"
   },
   "Co-op host setup": {
     "message": "合作主机设置"
@@ -352,6 +358,9 @@
   },
   "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
     "message": "Kessler 升级科技可使轨道地雷在不自毁的条件下爆炸。"
+  },
+  "Kick this AI?": {
+    "message": "踢出此电脑？"
   },
   "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
     "message": "北海巨妖升级科技可使这种高级潜艇的导弹攻击范围扩大200%。"
@@ -757,6 +766,9 @@
   },
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "载具冷却科技可使所有载具工厂在两次建造之间的冷却时间减半。"
+  },
+  "Waiting for loadout": {
+    "message": "正在等待配装"
   },
   "Waiting for players": {
     "message": "正在等待玩家"

@@ -86,6 +86,7 @@ describe("build", () => {
       "easierStart",
       "ai",
       "aiAlly",
+      "aiCoop",
       "aiByRace",
       "aiMods",
       "techCardDeck",
@@ -115,6 +116,27 @@ describe("build", () => {
       mods: [],
       addons: [],
       perPlayerRace: false,
+    });
+  });
+
+  it("records the co-op brain, which follows the opponent's until set", () => {
+    assert.equal(warRecord.build(war()).aiCoop, "Queller");
+
+    const record = warRecord.build(
+      war({
+        brains: {
+          aiByRace: { legion: { enemy: "Titans", ally: "Titans" } },
+          ai: "Titans",
+          aiAlly: "Titans",
+          aiCoop: "Queller",
+        },
+        installedRaces: ["mla", "legion"],
+      })
+    );
+    assert.equal(record.aiCoop, "Queller");
+    // A stored row without a co-op cell follows its own opponent.
+    assert.deepEqual(record.aiByRace, {
+      legion: { enemy: "Titans", ally: "Titans", coop: "Titans" },
     });
   });
 

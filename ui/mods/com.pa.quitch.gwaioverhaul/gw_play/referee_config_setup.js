@@ -350,11 +350,61 @@ define([
     });
   };
 
+  // The co-op AI players' armies, one per roster entry: an allied AI at the
+  // war's tier on its own brain and tree, with the players' economy - no eco
+  // cheat, which is the enemy's. The commander carries its tag already, since
+  // these join the config after referee_config.js tags the rest. See coop.md,
+  // "AI players".
+  var setupCoopAiArmies = function (coopAis, armies, battleRng, options) {
+    var landingOptions = [
+      "off_player_planet",
+      "on_player_planet",
+      "no_restriction",
+    ];
+
+    _.forEach(coopAis, function (entry) {
+      var ai = {
+        personalityId: entry.personalityId,
+        penchantName: entry.penchantName,
+        character: entry.character,
+      };
+      var personality = resolvePersonality(
+        ai,
+        "enemy",
+        entry.brain,
+        options.playerFaction,
+        options.ffa
+      );
+      personality.ai_path = entry.path;
+      personality.display_name = getAIPersonalityName(ai); // support Show AI Personality Names mod
+      var rng = battleRng && battleRng.stream("landing_coop_ai", entry.slot);
+
+      armies.push({
+        slots: [
+          {
+            ai: true,
+            name: entry.name,
+            commander: entry.commander + entry.tag,
+            landing_policy: (rng
+              ? rng.shuffle(landingOptions)
+              : _.shuffle(landingOptions))[0],
+          },
+        ],
+        color: _.cloneDeep(entry.colour),
+        econ_rate: gwoAI.subcommanderEconRate,
+        personality: personality,
+        spec_tag: entry.tag,
+        alliance_group: 1,
+      });
+    });
+  };
+
   return {
     getAIPersonalityName: getAIPersonalityName,
     setAIPath: setAIPath,
     setupAlliedCommanders: setupAlliedCommanders,
     setupPrimaryAiAndMinions: setupPrimaryAiAndMinions,
     setupFfaAis: setupFfaAis,
+    setupCoopAiArmies: setupCoopAiArmies,
   };
 });

@@ -29,11 +29,13 @@
     ],
     "gw_play": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/races.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/biomes.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/bugfixes.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/card_tooltips.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ping.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_selection.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/galaxy_map_perf.js",

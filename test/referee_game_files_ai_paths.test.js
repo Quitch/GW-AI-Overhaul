@@ -281,6 +281,65 @@ describe("buildPlayerFiles", () => {
   });
 });
 
+describe("coopAiMapFiles", () => {
+  // Stands in for GW.specs.genAIUnitMap, which tags every spec path.
+  const genAIUnitMap = (map, tag) => ({ from: map, tag });
+
+  it("writes each AI's tagged maps into its own tree's unit_maps/", () => {
+    const maps = {
+      "/pa/ai/player_coopai_1/": { classic: "q1", x1: "q1x" },
+      "/pa/ai_penchant/player_coopai_2/": { classic: "p", x1: "px" },
+    };
+    const files = refereeGameFiles.coopAiMapFiles(
+      [
+        { path: "/pa/ai/player_coopai_1/", tag: ".player1" },
+        { path: "/pa/ai_penchant/player_coopai_2/", tag: ".player2" },
+      ],
+      (coopAi) => maps[coopAi.path],
+      genAIUnitMap
+    );
+
+    assert.deepEqual(files, {
+      "/pa/ai/player_coopai_1/unit_maps/ai_unit_map.json.player1": {
+        from: "q1",
+        tag: ".player1",
+      },
+      "/pa/ai/player_coopai_1/unit_maps/ai_unit_map_x1.json.player1": {
+        from: "q1x",
+        tag: ".player1",
+      },
+      "/pa/ai_penchant/player_coopai_2/unit_maps/ai_unit_map.json.player2": {
+        from: "p",
+        tag: ".player2",
+      },
+      "/pa/ai_penchant/player_coopai_2/unit_maps/ai_unit_map_x1.json.player2": {
+        from: "px",
+        tag: ".player2",
+      },
+    });
+  });
+
+  it("writes one pair for AIs sharing a tree and a tag", () => {
+    const shared = { path: "/pa/ai/player_coopai/", tag: ".player" };
+    const files = refereeGameFiles.coopAiMapFiles(
+      [shared, Object.assign({}, shared)],
+      () => ({ classic: "c", x1: "x" }),
+      genAIUnitMap
+    );
+    assert.deepEqual(Object.keys(files).sort(), [
+      "/pa/ai/player_coopai/unit_maps/ai_unit_map.json.player",
+      "/pa/ai/player_coopai/unit_maps/ai_unit_map_x1.json.player",
+    ]);
+  });
+
+  it("writes nothing without AI players", () => {
+    assert.deepEqual(
+      refereeGameFiles.coopAiMapFiles([], () => undefined, genAIUnitMap),
+      {}
+    );
+  });
+});
+
 describe("specFetch", () => {
   // Drives specFetch with a fake $.ajax that invokes success/error synchronously, so we
   // can pin its parse-on-success, parse-fallback, and reject-on-error behaviour without

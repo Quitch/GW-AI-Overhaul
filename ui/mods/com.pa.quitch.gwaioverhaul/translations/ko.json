@@ -170,6 +170,9 @@
   "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
     "message": "클러스터: 지상. Angel과 Colonel을 부관으로 사용하며 이들을 생산할 수 없습니다."
   },
+  "CO-OP: the AI players a host adds to a co-op session": {
+    "message": "협동: 호스트가 협동 세션에 추가하는 AI 플레이어"
+  },
   "COMMANDER TRANSPORT:": {
     "message": "지휘관 수송:"
   },
@@ -199,6 +202,9 @@
   },
   "Co-Op Settings": {
     "message": "협동 설정"
+  },
+  "Co-op": {
+    "message": "협동"
   },
   "Co-op host setup": {
     "message": "협동 호스트 설정"
@@ -352,6 +358,9 @@
   },
   "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
     "message": "Kessler 업그레이드 기술은 궤도 기뢰가 폭발해도 제거되지 않게 해줍니다."
+  },
+  "Kick this AI?": {
+    "message": "이 AI를 강제 퇴장시키겠습니까?"
   },
   "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
     "message": "크라켄 업그레이드 기술은 상급 잠수함 미사일의 사거리를 200% 증가시킵니다."
@@ -757,6 +766,9 @@
   },
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "차량 쿨다운 기술은 모든 차량 공장의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
+  },
+  "Waiting for loadout": {
+    "message": "로드아웃 대기 중"
   },
   "Waiting for players": {
     "message": "플레이어 대기 중"

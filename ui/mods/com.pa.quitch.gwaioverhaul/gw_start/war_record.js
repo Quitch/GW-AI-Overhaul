@@ -29,13 +29,16 @@ define([
     }
     gwaio.ai = brains.ai;
     gwaio.aiAlly = brains.aiAlly;
+    // Co-op AI players follow the opponent until the player picks otherwise.
+    gwaio.aiCoop = brains.aiCoop || brains.ai;
     // One coerced row per installed race, so the save never carries a brain a
     // race cannot run and co-op viewers read the same answers.
     gwaio.aiByRace = gwoBrainTable.recordFor(
       brains.aiByRace,
       war.installedRaces,
       brains.ai,
-      brains.aiAlly
+      brains.aiAlly,
+      gwaio.aiCoop
     );
     gwaio.aiMods = [];
     gwaio.techCardDeck = settings.techCardDeck();

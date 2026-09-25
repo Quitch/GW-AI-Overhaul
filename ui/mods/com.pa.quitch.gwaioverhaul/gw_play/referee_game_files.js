@@ -176,7 +176,9 @@ define([
         });
 
         var playerFileGen = $.Deferred();
-        var filesToProcess = [playerFileGen];
+        var coopAiFileGen = $.Deferred();
+        var filesToProcess = [playerFileGen, coopAiFileGen];
+        var coopAis = self.coopAis || [];
 
         var inventory = game.inventory();
         var playerRace = gwoRaces.raceOf(inventory);
@@ -300,13 +302,52 @@ define([
             });
 
             var playerTag = ".player";
-            var additionalPlayerSpecs = _.isUndefined(ai.ally)
-              ? model.gwoSpecs
-              : model.gwoSpecs.concat(ai.ally.commander);
+            // Under shared tech a co-op AI fields the host's units, its
+            // commander among them, as the star's ally does.
+            var coopAiCommanders = _.pluck(
+              _.filter(coopAis, { tag: playerTag }),
+              "commander"
+            );
+            var additionalPlayerSpecs = (
+              _.isUndefined(ai.ally)
+                ? model.gwoSpecs
+                : model.gwoSpecs.concat(ai.ally.commander)
+            ).concat(coopAiCommanders);
             var held = inventory.units().concat(additionalPlayerSpecs);
             var playerCommanders = [inventory.getTag("global", "commander")]
               .concat(_.pluck(inventory.minions(), "commander"))
-              .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander]);
+              .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander])
+              .concat(coopAiCommanders);
+
+            // Each co-op AI reads its own brain's maps: MLA's as its tree
+            // lists them, a race's merged as the player's are.
+            Promise.all(
+              _.map(coopAis, function (coopAi) {
+                if (gwoRaces.isMla(coopAi.race)) {
+                  return Promise.all([
+                    loadMap(getAIUnitMapPath(false, coopAi.brain)),
+                    loadMap(getAIUnitMapPath(true, coopAi.brain)),
+                  ]).then(function (maps) {
+                    return { classic: maps[0], x1: maps[1] };
+                  });
+                }
+                return cellsFor(coopAi.race).then(function (cells) {
+                  return armyMaps("coop", coopAi.race, cells);
+                });
+              })
+            )
+              .then(function (coopAiMaps) {
+                coopAiFileGen.resolve(
+                  gameFilePaths.coopAiMapFiles(
+                    coopAis,
+                    function (coopAi) {
+                      return coopAiMaps[_.indexOf(coopAis, coopAi)];
+                    },
+                    GW.specs.genAIUnitMap
+                  )
+                );
+              })
+              .then(null, fail);
 
             var playerIsMla = gwoRaces.isMla(playerRace);
 

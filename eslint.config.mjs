@@ -36,6 +36,7 @@ export default defineConfig([
         locTree: "readonly",
         globals: "readonly",
         CommanderUtility: "readonly",
+        PlayFab: "readonly",
         Build: "readonly",
         i18n: "readonly",
       },

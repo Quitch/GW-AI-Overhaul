@@ -42,6 +42,52 @@ describe("aiInUse", () => {
     assert.equal(gwoAI.aiInUse("enemy"), "Titans");
     assert.equal(gwoAI.aiInUse("subcommander"), "Queller");
   });
+
+  it("uses gwaio.aiCoop for a co-op AI player", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      aiAllyInUse: "Penchant",
+      aiCoopInUse: "Queller",
+    });
+    installModel(fixture.game);
+    assert.equal(gwoAI.aiInUse("coop"), "Queller");
+    assert.equal(gwoAI.aiInUse("enemy"), "Titans");
+  });
+
+  it("a war saved before the co-op brain runs its co-op AIs on the enemy's", () => {
+    const fixture = buildGame({ aiInUse: "Penchant", aiAllyInUse: "Titans" });
+    installModel(fixture.game);
+    assert.equal(gwoAI.aiInUse("coop"), "Penchant");
+  });
+});
+
+describe("getCoopAiPath", () => {
+  it("scopes the co-op brain's tree", () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      aiCoopInUse: "Queller",
+      aiMods: [{ op: "load" }],
+      smartSubcommanders: true,
+    });
+    installModel(fixture.game);
+    assert.equal(
+      gwoAI.getCoopAiPath(undefined, "coopai"),
+      "/pa/ai_queller/q_uber/player_coopai/"
+    );
+    assert.equal(
+      gwoAI.getAIPathSource("coop", undefined),
+      "/pa/ai_queller/q_uber/"
+    );
+  });
+
+  it("follows the enemy's brain in a war saved before the co-op brain", () => {
+    const fixture = buildGame({ aiInUse: "Penchant" });
+    installModel(fixture.game);
+    assert.equal(
+      gwoAI.getCoopAiPath(undefined, "coopai_1"),
+      "/pa/ai_penchant/player_coopai_1/"
+    );
+  });
 });
 
 describe("getAIPathSource / getAIPathDestination", () => {
@@ -557,6 +603,32 @@ describe("aiInUse with a race", () => {
       assert.equal(
         gwoAI.getAIPathSource("enemy", "legion"),
         "/pa/ai_queller/q_uber/"
+      );
+    } finally {
+      races.reset();
+    }
+  });
+
+  it("answers a co-op AI player from the race's co-op cell, or its opponent's", () => {
+    races.register({ id: "legion" });
+    races.register(FIXTURE_RACE);
+    try {
+      const fixture = buildGame({
+        aiInUse: "Titans",
+        aiCoopInUse: "Penchant",
+        aiByRace: {
+          legion: { enemy: "Titans", ally: "Titans", coop: "Queller" },
+          fixture: { enemy: "Titans", ally: "Titans" },
+        },
+      });
+      installModel(fixture.game);
+
+      assert.equal(gwoAI.aiInUse("coop", "legion"), "Queller");
+      assert.equal(gwoAI.aiInUse("coop", "fixture"), "Titans");
+      assert.equal(gwoAI.aiInUse("coop", "mla"), "Penchant");
+      assert.equal(
+        gwoAI.getCoopAiPath("legion", "coopai"),
+        "/pa/ai_queller_race_legion/q_uber/player_coopai/"
       );
     } finally {
       races.reset();

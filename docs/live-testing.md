@@ -125,7 +125,10 @@ player can reach this.
 
 **Leave a battle** with `model.abandon()` and then `model.navToGalacticWar()`.
 `model.exitGame()` closes PA. A surrendered solo battle is a loss, and it moves
-`currentStar` back to the previous star.
+`currentStar` back to the previous star. In co-op, wait for `model.gameOver()`
+after the surrender and call `model.menuReturnToWar()` instead: every client
+comes back into the session through the coordinated restart.
+`navToGalacticWar()` takes the host back alone and ends the session.
 
 **Fake a win.** Nothing in `live_game` can win a Galactic War battle, because
 the server ignores the control cheats unless the game is a sandbox. Surrender,
@@ -238,6 +241,24 @@ interception of that offer. A viewer leaves through the menu:
 
 With GW Server Mods active, `model.fight` returns before `launchingFight` turns
 true, because the stock launch waits on the mount.
+
+### AI players
+
+The host adds an AI into an open slot with `model.gwoCoopAi.add()`, and
+`model.gwoCoopAi.canAdd()` says whether the lobby lets it. The AI's row appears
+once the server has answered, at the end of `model.gwCampaignSlots()` with
+`gwoAi: true`, and `model.gwCampaignMaxClients()` drops by one. Kick it by
+calling `model.gwoCoopAi.kick(row)` twice with that row. The records are
+`model.gwoCoopAi.records()`, which is empty outside a session.
+
+A hire from the console includes the AI players, because its first step reads
+`model.gwoCoopAi.launchRoster()`. `referee.config().armies` then ends with one
+army per AI, and `referee.files()` has the AI tree under the co-op brain's
+`player_coopai/`. In a real battle with `--ai-log`, the server log's
+`Army: <AI name>` lines show the AI loading its unit map from that tree. Like
+every allied army on the player's specs, a Sub Commander included, it also
+logs `Control module name did not resolved to a spec` while no player holds
+the Catalyst, since only held units get specs. That line is not a fault.
 
 ## Proving that a change alters nothing
 

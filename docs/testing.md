@@ -344,6 +344,13 @@ because those host handlers reject with a plain string that `assert.rejects`
 will not take as an error. The `HOST_CARDS` trap stays in each file. It hangs
 off that test's own game stub.
 
+`scripts/lib/coop-ai-fixtures.js` holds what the co-op AI player tests share:
+an AI's co-op record as the lobby writes it, one entry of the battle roster
+`coop_ai_roster.launchAis` builds, and a colour resolver shaped like the base
+game's `resolvePlayerColorPairs`. Where the PA install is present,
+`test/coop_ai_roster.test.js` also runs against the stock resolver and the stock
+AI name list.
+
 `scripts/lib/harvested-race.js` holds what the `race_*.test.js` files share.
 `harvestedIndex` builds a shipped race's cell index from `unit_types.json`.
 `withheldCards` and `expectedWithheld` compare the cards the race is not dealt

@@ -49,10 +49,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     return basePath + "player_" + scopeToken + "/";
   };
 
+  // A co-op AI player fights at the enemy's tier, whatever Sub Commander
+  // Tactics its host holds.
   var getQuellerPath = function (type, smartSubcommanders) {
     if (type === "all") {
       return quellerPath;
-    } else if (type === "enemy") {
+    } else if (type === "enemy" || type === "coop") {
       return quellerPath + "q_uber/";
     } else if (type === "subcommander" && smartSubcommanders) {
       return quellerPath + "q_silver/";
@@ -118,6 +120,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
         aiMods: aiMods,
         smartSubcommanders: smartSubcommanders,
         scopeToken: playerTag === ".player" ? undefined : playerTag,
+        race: race,
+      });
+    },
+
+    // A co-op AI player's tree. Always scoped, so it never shares a path with
+    // the enemy, a Sub Commander or another co-op AI, and never routed to the
+    // Cluster or subcommander trees. See ai-paths.md.
+    getCoopAiPath: function (aiInUse, scopeToken, race) {
+      return getAIPathDestination("coop", aiInUse, {
+        scopeToken: getScopeToken(scopeToken, "coop"),
         race: race,
       });
     },

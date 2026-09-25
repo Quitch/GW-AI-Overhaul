@@ -36,6 +36,8 @@
       model.gwoAI = model.gwoSettings.ai || "Titans";
       model.gwoAIAlly =
         model.gwoSettings.aiAlly || model.gwoSettings.ai || "Titans";
+      model.gwoAICoop =
+        model.gwoSettings.aiCoop || model.gwoSettings.ai || "Titans";
       model.gwoDeck = deckName(model.gwoSettings.techCardDeck);
       // Wars created before seeds were recorded have none.
       model.gwoSeed = model.gwoSettings.seed || loc("!LOC:Unknown");
@@ -50,13 +52,17 @@
         "GWO Co-op - " + loc("!LOC:Difficulty:") + " " + model.gwoDifficulty;
       model.setDefaultGwCoopLobbyTitle(lobbyTitle);
 
-      model.gwCampaignConnectedClients.subscribe(function () {
+      // Co-op AI players count as players here.
+      ko.computed(function () {
         var playerScaling = gwoSettings.coopPlayerScalingCount;
+        var players =
+          model.gwCampaignConnectedClients().length +
+          (model.gwoCoopAi ? model.gwoCoopAi.count() : 0);
         if (
           // A latch - without it the save is rewritten on every join and leave.
           !gwoSettings.tooManyPlayers &&
           playerScaling &&
-          model.gwCampaignConnectedClients().length > playerScaling
+          players > playerScaling
         ) {
           gwoSettings.tooManyPlayers = true;
           requireGW(
@@ -226,7 +232,8 @@
                   gwoSettings.ai,
                   gwoSettings.aiAlly,
                   side,
-                  id
+                  id,
+                  gwoSettings.aiCoop
                 ),
               };
             });
@@ -241,6 +248,7 @@
           };
           model.gwoAI = brainSummary("enemy");
           model.gwoAIAlly = brainSummary("ally");
+          model.gwoAICoop = brainSummary("coop");
 
           var coopText = function (setting) {
             if (setting) {
@@ -455,6 +463,24 @@
                 activeCommanderKeys[cacheKey] = true;
                 return updateCoopCommander(client, human);
               });
+
+              // Co-op AI players, after the humans. Under shared tech they
+              // field the host's loadout.
+              _.forEach(
+                model.gwoCoopAi ? model.gwoCoopAi.panel() : [],
+                function (entry) {
+                  var icon = raceIcon(entry.race);
+                  commanders.push({
+                    name: entry.name,
+                    color: entry.colour
+                      ? gwoColour.rgb(entry.colour)
+                      : playerColour,
+                    character: model.gwoLoadout,
+                    iconFill: icon.fill,
+                    iconOutline: icon.outline,
+                  });
+                }
+              );
 
               // Leaving the campaign refreshes the page, so that case needs no cleanup.
               _.forEach(_.keys(coopCommanderCache), function (cacheKey) {

@@ -170,6 +170,9 @@
   "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
     "message": "CLUSTER: наземные. Использует Angel и Colonel как Коммандеров Помощников и не может их строить."
   },
+  "CO-OP: the AI players a host adds to a co-op session": {
+    "message": "КООПЕРАТИВ: ИИ-игроки, которых хост добавляет в сессию кооператива"
+  },
   "COMMANDER TRANSPORT:": {
     "message": "ТРАНСПОРТ КОММАНДЕРА:"
   },
@@ -199,6 +202,9 @@
   },
   "Co-Op Settings": {
     "message": "Настройки кооператива"
+  },
+  "Co-op": {
+    "message": "Кооператив"
   },
   "Co-op host setup": {
     "message": "Подготовка хоста кооператива"
@@ -352,6 +358,9 @@
   },
   "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
     "message": "Технология модернизации Kessler позволяет орбитальным минам взрываться без самоуничтожения."
+  },
+  "Kick this AI?": {
+    "message": "Выгнать этот ИИ?"
   },
   "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
     "message": "Технология модернизации \"Кракена\" увеличивает дальность ракет продвинутой подводной лодки на 200%."
@@ -757,6 +766,9 @@
   },
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "Технология перезарядки автозаводов вдвое сокращает время перезарядки между постройками для всех автозаводов."
+  },
+  "Waiting for loadout": {
+    "message": "Ожидание снаряжения"
   },
   "Waiting for players": {
     "message": "Ожидание игроков"

@@ -11,6 +11,7 @@ define([
   var setupAlliedCommanders = configSetup.setupAlliedCommanders;
   var setupPrimaryAiAndMinions = configSetup.setupPrimaryAiAndMinions;
   var setupFfaAis = configSetup.setupFfaAis;
+  var setupCoopAiArmies = configSetup.setupCoopAiArmies;
 
   // The system came from another mod, so this is a trust boundary: a biome the
   // server cannot load hangs every player at loading. See galaxy.md.
@@ -189,6 +190,10 @@ define([
       });
     });
     config.player.commander += playerTag;
+    setupCoopAiArmies(self.coopAis || [], config.armies, battleRng, {
+      playerFaction: inventory.getTag("global", "playerFaction"),
+      ffa: !_.isEmpty(ai.foes),
+    });
     // Store the game in the config for diagnostic purposes.
     config.gw = game.save();
     self.config(config);

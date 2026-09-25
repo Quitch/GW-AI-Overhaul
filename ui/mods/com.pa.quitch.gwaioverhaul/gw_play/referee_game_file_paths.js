@@ -116,6 +116,24 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return playerFiles;
   };
 
+  // Each co-op AI's unit maps, tagged with its spec tag and written into its own
+  // tree's unit_maps/, beside the untagged maps its tree copy carries. AIs
+  // sharing a tree and a tag share the files. mapsFor(ai) is { classic, x1 };
+  // genAIUnitMap is GW.specs.genAIUnitMap.
+  var coopAiMapFiles = function (coopAis, mapsFor, genAIUnitMap) {
+    var files = {};
+
+    _.forEach(coopAis, function (coopAi) {
+      var maps = mapsFor(coopAi);
+      files[getAIUnitMapDestinationPath(false, coopAi.path) + coopAi.tag] =
+        genAIUnitMap(maps.classic, coopAi.tag);
+      files[getAIUnitMapDestinationPath(true, coopAi.path) + coopAi.tag] =
+        genAIUnitMap(maps.x1, coopAi.tag);
+    });
+
+    return files;
+  };
+
   // Mirrors the fetch, parse and error handling the base game's genUnitSpecs
   // does internally.
   var specFetch = function (item) {
@@ -203,6 +221,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     clusterArmyIndex: clusterArmyIndex,
     resolveAiUnitMapPaths: resolveAiUnitMapPaths,
     buildPlayerFiles: buildPlayerFiles,
+    coopAiMapFiles: coopAiMapFiles,
     specFetch: specFetch,
   };
 });

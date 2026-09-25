@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+- The host of a co-op war can add AI players to open slots; they fight beside the human players and can be kicked from their slot
+- The AI settings choose which AI brain the co-op AI players use, per race
+
 ### Changed
 
 - Deleting a tech card now asks you to press Delete Tech a second time to confirm

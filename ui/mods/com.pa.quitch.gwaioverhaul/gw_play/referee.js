@@ -27,6 +27,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
       ],
       function (
         GW,
@@ -38,7 +39,8 @@
         gwoBiomeMods,
         raceMods,
         gameFilePaths,
-        gwoPromise
+        gwoPromise,
+        coopAiRoster
       ) {
         var hiresThisLaunch = 0;
         // The AI tree cache lives one launch: a co-op host's two hires share
@@ -152,6 +154,22 @@
           // be read.
           return gwoPromise
             .steps(raceMods.installedRaces(), [
+              // The co-op AI players this battle fields, fixed for the hire. A
+              // throw fails the hire: a battle is not fought without the AI
+              // players its session has. See coop.md.
+              function () {
+                if (model.gwoCoopAi) {
+                  ref.coopAis = model.gwoCoopAi.launchRoster();
+                  return;
+                }
+                if (
+                  model.gwCampaignActive() &&
+                  coopAiRoster.aiRecords(game.coopPlayerInventoryData()).length
+                ) {
+                  throw new Error("co-op AI players are not loaded");
+                }
+                ref.coopAis = [];
+              },
               _.bind(gwoGenerateGameFiles, ref),
               function () {
                 ref.stage("!LOC:Processing AI mods");

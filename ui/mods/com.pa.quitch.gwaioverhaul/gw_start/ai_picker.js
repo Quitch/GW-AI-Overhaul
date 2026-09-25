@@ -1,5 +1,5 @@
-// The per-race AI brain table: a modal with one row per race and an Opponent
-// and Ally brain per row, replacing the two war-wide AI dropdowns. Each cell
+// The per-race AI brain table: a modal with one row per race and an Opponent,
+// Ally and Co-op brain per row, replacing the war-wide AI dropdowns. Each cell
 // offers only the brains that know its race, so no coercion is needed at
 // pick time. Cells are the scene's usual selectpicker dropdowns; the rows are
 // rebuilt wholesale on every change, so each select is initialised once with
@@ -27,7 +27,8 @@
         settings.aiByRace(),
         _.pluck(raceOptions, "id"),
         settings.ai(),
-        settings.aiAlly()
+        settings.aiAlly(),
+        settings.aiCoop()
       );
 
       return _.map(rows, function (row) {
@@ -41,8 +42,10 @@
             namesById[row.id] || (descriptor ? loc(descriptor.name) : row.id),
           options: row.options,
           allyOptions: row.allyOptions,
+          coopOptions: row.coopOptions,
           enemy: ko.observable(row.enemy),
           ally: ko.observable(row.ally),
+          coop: ko.observable(row.coop),
         };
       });
     };
@@ -55,6 +58,7 @@
       loc("!LOC:TITANS: base game AI"),
       loc("!LOC:QUELLER: greater challenge at the cost of performance"),
       loc("!LOC:PENCHANT: increased personality"),
+      loc("!LOC:CO-OP: the AI players a host adds to a co-op session"),
       loc("!LOC:An AI that does not know a race is not offered for it."),
     ].join("<br>");
 
@@ -84,9 +88,14 @@
           // The war-wide observables ARE the MLA row. See races.md.
           settings.ai(row.enemy());
           settings.aiAlly(row.ally());
+          settings.aiCoop(row.coop());
           return;
         }
-        stored[row.id] = { enemy: row.enemy(), ally: row.ally() };
+        stored[row.id] = {
+          enemy: row.enemy(),
+          ally: row.ally(),
+          coop: row.coop(),
+        };
       });
       settings.aiByRace(stored);
       model.gwoAiModalVisible(false);

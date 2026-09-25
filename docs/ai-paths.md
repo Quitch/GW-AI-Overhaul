@@ -109,13 +109,14 @@ and shares the enemy's path.
 | `type`                                    | Result                            |
 | ----------------------------------------- | --------------------------------- |
 | `"all"`                                   | `/pa/ai_queller/` (the bare root) |
-| `"enemy"`                                 | `/pa/ai_queller/q_uber/`          |
+| `"enemy"` or `"coop"`                     | `/pa/ai_queller/q_uber/`          |
 | `"subcommander"` with Smart Subcommanders | `/pa/ai_queller/q_silver/`        |
 | anything else                             | `/pa/ai_queller/q_bronze/`        |
 
 Queller therefore structurally never hits the "enemy and subcommander share a
 path" case that Titans and Penchant can hit. The enemy is always `q_uber/`. The
-subcommander is always `q_bronze/` or `q_silver/`.
+subcommander is always `q_bronze/` or `q_silver/`. A co-op AI player fights at
+the enemy's tier, whatever Sub Commander Tactics its host holds.
 
 The tree ships six tiers (`q_bronze`, `q_casual`, `q_silver`, `q_gold`,
 `q_platinum`, `q_uber`). There is no iron or diamond tier, although those exist
@@ -162,6 +163,28 @@ them. So this is not a live bug. But it is a real inconsistency, and the tests
 pin it deliberately. `getScopeToken` sanitises. `getAIPathDestination` does not.
 A refactor that "fixes" the asymmetry silently changes shipped mount paths.
 
+## Co-op AI players
+
+A co-op AI player ([`coop.md`](coop.md), "AI players") reads its own tree.
+`getCoopAiPath(aiInUse, scopeToken, race)` is `getAIPathDestination("coop", …)`
+with the token sanitised, and a missing token becomes `coop`, so the path is
+always scoped. The `coop` type takes neither the Cluster branch nor the
+subcommander branch, so the tree is the co-op brain's root (a race's own root
+for a race) plus `player_<token>/`. Under shared tech every AI shares one tree,
+`player_coopai/`: the AIs share the brain, the race, the host's AI mods and the
+`.player` tag, so a copy per AI would be identical.
+
+Its source is `getAIPathSource("coop", …)`, the co-op brain's own root.
+`referee_ai.js` copies that whole tree to the AI's path with the AI's mods, as
+it does a viewer's Sub Commanders' tree. It writes nothing else: the scope is
+the tree's isolation, so there is no Cluster routing and no Cluster AI op, as
+for a viewer. A race AI's tree is a race tree job instead, with no AI mods.
+
+The brain is `aiInUse("coop", race)`. It reads the race's `coop` cell, then its
+`enemy` cell, then the war-wide `gwaio.aiCoop`, then `gwaio.ai`. A war saved
+before the co-op column therefore runs its co-op AIs exactly as it runs its
+enemy.
+
 ## Why scoped trees can nest safely
 
 Scoping nests one `ai_path` inside another. A Guardians fight on the Titans brain
@@ -199,8 +222,9 @@ no unit cap.
 holds the settings that `gw_start/setup.js` attaches to the galaxy at war
 creation. The brain is per race and per side (`shared/brain_table.js`). The
 function reads the race's `gwaio.aiByRace` row: `ally` for
-`alignment === "subcommander"`, and `enemy` otherwise. It falls back to the
-war-wide `gwaio.aiAlly`/`gwaio.ai` strings in three cases:
+`alignment === "subcommander"`, `coop` for a co-op AI player's `"coop"`, and
+`enemy` otherwise. It falls back to the war-wide `gwaio.aiAlly`/`gwaio.aiCoop`/
+`gwaio.ai` strings in three cases:
 
 - for MLA,
 - for a race with no row, and
@@ -267,6 +291,11 @@ it:
   the rule that matters, rather than "nothing nests".
   `test/ai_path_invariants.test.js` sweeps it over the full option matrix, and
   over the file paths `referee_ai.js` really writes.
+- **A co-op AI player's path is its own.** It never equals the enemy's, a Sub
+  Commander's, a viewer's or another co-op AI's, for every pair of brains.
+  `test/ai_path_invariants.test.js` sweeps it, and
+  `test/referee_ai_coop_trees.test.js` checks that the co-op pass writes only
+  under that path.
 
 ## Where to look next
 

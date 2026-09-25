@@ -67,6 +67,8 @@
       personalityTags: ko.observableArray(),
       eradicationModeChance: koNumeric(0, 0),
       aiAlly: ko.observable("Titans"),
+      // Co-op AI players' brain; undefined follows the opponent's. See coop.md.
+      aiCoop: ko.observable(),
       staticTech: ko.observable(false),
       largePlanets: ko.observable(false),
       // Race id; see races.md.
@@ -74,9 +76,9 @@
       uniqueRaces: ko.observable(false),
       // Co-op only, and only alongside per-player tech. See coop.md.
       perPlayerRace: ko.observable(false),
-      // { raceId: { enemy, ally } } for non-MLA races; ai/aiAlly above are
-      // the MLA row. Stale ids are kept so a reinstalled race remembers its
-      // brains. See races.md.
+      // { raceId: { enemy, ally, coop } } for non-MLA races; ai/aiAlly/aiCoop
+      // above are the MLA row. Stale ids are kept so a reinstalled race
+      // remembers its brains. See races.md.
       aiByRace: ko.observable({}),
     };
 

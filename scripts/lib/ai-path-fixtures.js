@@ -82,7 +82,7 @@ function makeAiDescriptor(overrides) {
 // The origin star's system: its gwaio settings block only when a brain is
 // recorded, as a war saved before GWO existed carries none.
 function buildSystem(opts, aiInUse, aiAllyInUse) {
-  if (!aiInUse && !aiAllyInUse && !opts.aiByRace) {
+  if (!aiInUse && !aiAllyInUse && !opts.aiByRace && !opts.aiCoopInUse) {
     return {};
   }
   var gwaio = {};
@@ -91,6 +91,11 @@ function buildSystem(opts, aiInUse, aiAllyInUse) {
   }
   if (aiAllyInUse) {
     gwaio.aiAlly = aiAllyInUse;
+  }
+  // The co-op AI players' war-wide brain. Absent means a war saved before it
+  // existed, whose co-op side follows the enemy's.
+  if (opts.aiCoopInUse) {
+    gwaio.aiCoop = opts.aiCoopInUse;
   }
   // The per-race brain table as gw_start records it:
   // { raceId: { enemy, ally } }. Absent means a war saved before it existed.

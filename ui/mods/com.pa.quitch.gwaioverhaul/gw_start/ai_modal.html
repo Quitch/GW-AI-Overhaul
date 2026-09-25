@@ -40,6 +40,7 @@
              from live_game - and the CSS uppercases them to suit this table. -->
         <div class="gwo-ai-table-cell"><loc>Opponent</loc></div>
         <div class="gwo-ai-table-cell"><loc>ALLY</loc></div>
+        <div class="gwo-ai-table-cell"><loc>Co-op</loc></div>
       </div>
       <!-- ko foreach: gwoAiTableRows -->
       <div
@@ -63,6 +64,13 @@
             class="form-control"
             data-width="100%"
             data-bind="options: allyOptions, disable: stale, selectPicker: ally"
+          ></select>
+        </div>
+        <div class="gwo-ai-table-cell">
+          <select
+            class="form-control"
+            data-width="100%"
+            data-bind="options: coopOptions, disable: stale, selectPicker: coop"
           ></select>
         </div>
       </div>

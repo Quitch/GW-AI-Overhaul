@@ -404,6 +404,7 @@
             aiByRace: settings.aiByRace(),
             ai: settings.ai(),
             aiAlly: settings.aiAlly(),
+            aiCoop: settings.aiCoop(),
           };
         };
 
