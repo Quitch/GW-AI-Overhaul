@@ -601,6 +601,40 @@ describe("races", () => {
     );
   });
 
+  it("deals a card naming a race unit to that race alone, whatever its id", () => {
+    const shank = [
+      {
+        id: "mym_upgrade_shank",
+        units: [[FIXTURE_RACE.units.fxTank]],
+      },
+    ];
+
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "mym_upgrade_shank",
+        shank
+      ),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("mla"),
+        "mym_upgrade_shank",
+        shank
+      ),
+      false
+    );
+    assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("fixture"), "bot_card", [
+        { id: "bot_card", units: [[gwoUnit.dox], gwoUnit.ant] },
+      ]),
+      true
+    );
+  });
+
   it("withholds the MLA-only cards from a race, the commander upgrades excepted", () => {
     for (const id of helpers.MLA_ONLY) {
       assert.equal(helpers.mlaOnlyCard(id), true, id);

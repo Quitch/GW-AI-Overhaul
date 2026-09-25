@@ -229,20 +229,24 @@ define([
     raceLocksLoadout: raceLocksLoadout,
 
     // A card the player's race can own nothing of is not worth a hand slot.
-    // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes.
-    // See races.md.
+    // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes. A
+    // card whose entry names a race or add-on unit is written for whoever
+    // fields one, MLA included, whatever its id. See races.md.
     raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
       if (!races) {
         return true;
       }
       var race = races.raceOf(inventory);
+      var entry = _.find(cardsToUnits || [], { id: cardId });
+      if (entry && races.namesForeignUnit(entry.units)) {
+        return races.cardUsable(race, entry.units);
+      }
       if (races.isMla(race)) {
         return true;
       }
       if (mlaOnlyCard(cardId)) {
         return false;
       }
-      var entry = _.find(cardsToUnits || [], { id: cardId });
       return !entry || races.cardUsable(race, entry.units);
     },
 

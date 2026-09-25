@@ -235,6 +235,7 @@ const CARD_HELPERS = [
   "commanderWeight",
   "conditionalDeal",
   "farForSize",
+  "fieldedUnits",
   "flatMapMods",
   "floodsPlanets",
   "getAllConnectedPlayerCards",
@@ -295,6 +296,15 @@ const UNIT_IDS = [
   "doxWeapon",
 ];
 
+const TABLE_IDS = {
+  legion: "race/legion.js",
+  bugs: "race/bugs.js",
+  exiles: "race/exiles.js",
+  secondWave: "addon/second_wave.js",
+  section17: "addon/section17.js",
+  osmech: "addon/osmech.js",
+};
+
 const GROUP_IDS = [
   "botsBasicMobile",
   "commanderPrimaryWeapons",
@@ -318,6 +328,25 @@ describe("the unit and group ids cards are written against", () => {
       assert.ok(gwoUnit[name].endsWith(".json"));
     });
   }
+
+  for (const [name, descriptor] of Object.entries(TABLE_IDS)) {
+    it(`gwoUnit.${name} is that descriptor's unit table`, () => {
+      const table = loadCouiModule("coui://" + MOD_ROOT + "/" + descriptor);
+      assert.equal(gwoUnit[name], table.units);
+      assert.ok(Object.keys(gwoUnit[name]).length > 0);
+    });
+  }
+
+  it("publishes every shipped race and add-on table", () => {
+    const shipped = [
+      ...loadCouiModule("coui://" + MOD_ROOT + "/shared/races_shipped.js"),
+      ...loadCouiModule("coui://" + MOD_ROOT + "/shared/addons_shipped.js"),
+    ];
+    const published = Object.keys(TABLE_IDS).map((name) => gwoUnit[name]);
+    for (const descriptor of shipped) {
+      assert.ok(published.includes(descriptor.units), descriptor.id);
+    }
+  });
 
   for (const name of GROUP_IDS) {
     it(`gwoGroup.${name} resolves to a list of units`, () => {

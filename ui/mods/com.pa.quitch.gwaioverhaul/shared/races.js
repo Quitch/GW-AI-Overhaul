@@ -6,7 +6,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races_shipped.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/addons_shipped.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js",
-], function (unitCells, shipped, shippedAddons, ids) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (unitCells, shipped, shippedAddons, ids, gwoUnit) {
   var MLA_ID = "mla";
   var TITANS = "Titans";
 
@@ -36,8 +37,19 @@ define([
   // Capability-cell indexes by race id, built by race_cells.js once the specs
   // are read. See unit_cells.js.
   var cellsById = {};
+  // foreignUnitPaths, rebuilt after any registration.
+  var foreignCache;
 
   var normalizeId = ids.normalize;
+
+  // A race table names the vanilla ammo and tools its units reuse; those stay
+  // stock. See races.md, "Capability cells".
+  var stockPaths = {};
+  _.forEach(gwoUnit, function (path) {
+    if (_.isString(path)) {
+      stockPaths[path] = true;
+    }
+  });
 
   // `unitNames` names units by the keys of `units` and is compiled to
   // path -> name.
@@ -108,6 +120,7 @@ define([
     }
 
     registry[id] = compile(descriptor);
+    foreignCache = undefined;
 
     return registry[id];
   };
@@ -164,6 +177,7 @@ define([
     }
 
     addonRegistry[id] = compileAddon(descriptor);
+    foreignCache = undefined;
 
     return addonRegistry[id];
   };
@@ -220,6 +234,51 @@ define([
     });
 
     return paths;
+  };
+
+  // Every path in a registered race's or add-on's `units` table that is not
+  // stock, as { path: true }: what a card names to be written for a race or
+  // add-on. See races.md, "Capability cells".
+  var foreignUnitPaths = function () {
+    if (!foreignCache) {
+      foreignCache = {};
+      _.forEach(
+        _.map(all(), "units").concat(_.map(addons(), "units")),
+        function (units) {
+          _.forEach(units, function (path) {
+            if (_.isString(path) && !stockPaths[path]) {
+              foreignCache[path] = true;
+            }
+          });
+        }
+      );
+    }
+
+    return foreignCache;
+  };
+
+  var tableHas = function (units, path) {
+    return _.includes(_.values(units), path);
+  };
+
+  // Whether a player of this race can field a race or add-on path. Once the
+  // cells are built that is the race's index (for MLA, the add-on index);
+  // before, the race's own table and every active add-on's.
+  var fieldsUnit = function (raceId, path) {
+    var index = cellsOf(raceId);
+
+    if (index) {
+      return (
+        _.has(index.race.cellOf, path) || _.has(index.race.partIndex, path)
+      );
+    }
+
+    return (
+      (!isMla(raceId) && tableHas(byId(raceId).units, path)) ||
+      _.some(activeAddons(), function (addon) {
+        return tableHas(addon.units, path);
+      })
+    );
   };
 
   var hasName = function (descriptor, path) {
@@ -280,11 +339,43 @@ define([
     return cellsById[normalizeId(raceId)];
   };
 
-  // A card is worth offering when the race owns something in a cell it names.
-  // Until the race's cells are built, everything is offered rather than
-  // nothing. See races.md.
+  var namesForeignUnit = function (cardUnits) {
+    var foreign = foreignUnitPaths();
+
+    return _.some(unitCells.unitList(cardUnits), function (path) {
+      return !!foreign[path];
+    });
+  };
+
+  // A card is worth offering when the race owns something in a cell it names,
+  // or fields a race or add-on unit it names. Until the race's cells are
+  // built, every card naming a stock unit is offered rather than nothing. See
+  // races.md.
   var cardUsable = function (raceId, cardUnits) {
-    if (isMla(raceId) || _.isEmpty(cardUnits)) {
+    var units = unitCells.unitList(cardUnits);
+
+    if (_.isEmpty(units)) {
+      return true;
+    }
+
+    var foreign = foreignUnitPaths();
+    var split = _.partition(units, function (path) {
+      return !!foreign[path];
+    });
+
+    if (
+      _.some(split[0], function (path) {
+        return fieldsUnit(raceId, path);
+      })
+    ) {
+      return true;
+    }
+
+    if (_.isEmpty(split[1])) {
+      return false;
+    }
+
+    if (isMla(raceId)) {
       return true;
     }
 
@@ -293,7 +384,7 @@ define([
     return (
       !index ||
       !index.race.units.length ||
-      unitCells.cardUsable(cardUnits, index.vanilla, index.race)
+      unitCells.cardUsable(split[1], index.vanilla, index.race)
     );
   };
 
@@ -736,6 +827,9 @@ define([
     activeAddons: activeAddons,
     knownBits: knownBits,
     addonUnitPaths: addonUnitPaths,
+    foreignUnitPaths: foreignUnitPaths,
+    namesForeignUnit: namesForeignUnit,
+    fieldsUnit: fieldsUnit,
     unitName: unitName,
     layersFor: layersFor,
     supportedBy: supportedBy,
@@ -766,6 +860,7 @@ define([
       addonOrder = [];
       activeAddonIds = [];
       cellsById = {};
+      foreignCache = undefined;
     },
     registerShipped: registerShipped,
   };

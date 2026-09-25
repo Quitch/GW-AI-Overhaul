@@ -3,7 +3,8 @@
 // Cross-reference checks within this repo only, so they run in CI:
 //
 //   1. Every loadout card id has a file under ui/main/game/galactic_war/cards/.
-//   2. Every `<unitsParam>.someKey` reference in a card resolves against units.js.
+//   2. Every `<unitsParam>.someKey` (or `.table.someKey`) reference in a card
+//      resolves against units.js.
 //      A typo there is `undefined` at runtime, with no error.
 //   3. Every `builders` role in AI build-order JSON resolves against the unit map,
 //      bar the literals in KNOWN_BUILDER_NAMES.
@@ -112,16 +113,22 @@ function checkUnitReferencesInCards() {
 
     const escaped = paramName.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const refPattern = new RegExp(
-      String.raw`\b${escaped}\.([A-Za-z_$][A-Za-z0-9_$]*)`,
+      String.raw`\b${escaped}\.([A-Za-z_$][A-Za-z0-9_$]*)(?:\.([A-Za-z_$][A-Za-z0-9_$]*))?`,
       "g"
     );
     const referenced = new Set(
-      [...stripComments(src).matchAll(refPattern)].map((m) => m[1])
+      [...stripComments(src).matchAll(refPattern)].map((m) =>
+        m[2] && typeof units[m[1]] === "object" ? m[1] + "." + m[2] : m[1]
+      )
     );
 
     for (const key of referenced) {
       checkedRefs++;
-      if (!unitKeys.has(key)) {
+      const [table, unit] = key.split(".");
+      if (
+        !unitKeys.has(table) ||
+        (unit && !Object.hasOwn(units[table], unit))
+      ) {
         fail(
           "cross-refs: " +
             file +

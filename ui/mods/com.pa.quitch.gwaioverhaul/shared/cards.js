@@ -1,8 +1,11 @@
 // The helper names this returns are a published API: third-party cards call
 // them directly, and the New-GW-Cards template documents every one. Renaming
 // or dropping one breaks those cards silently. See tech-cards.md.
-define(function () {
-  // Mirrors gwoAI.CLUSTER_FACTION; this module stays dependency-free.
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (races, unitCells) {
+  // Mirrors gwoAI.CLUSTER_FACTION; this module imports only pure modules.
   var CLUSTER_FACTION = 4;
 
   var getConnectedClients = function () {
@@ -82,21 +85,49 @@ define(function () {
   };
 
   var hasUnit = function (inventoryUnits, units) {
-    if (_.isString(units)) {
-      return _.includes(inventoryUnits, units);
-    }
-    return _.some(units, function (unit) {
+    return _.some(unitCells.unitList(units), function (unit) {
       return _.includes(inventoryUnits, unit);
     });
   };
 
   var hasAllUnits = function (inventoryUnits, units) {
-    if (_.isString(units)) {
-      return _.includes(inventoryUnits, units);
-    }
-    return _.every(units, function (unit) {
+    return _.every(unitCells.unitList(units), function (unit) {
       return _.includes(inventoryUnits, unit);
     });
+  };
+
+  var fieldedMemo = {};
+
+  // The paths held plus the race or add-on units they bring at launch, as
+  // the referee fields them. The held paths alone until the cells are built.
+  // See races.md, "Capability cells".
+  var fieldedUnits = function (inventory) {
+    var held = inventory.units();
+    var race = races.raceOf(inventory);
+    var cells = races.cellsOf(race);
+
+    if (!cells) {
+      return held;
+    }
+
+    var key = held.join("|");
+    if (
+      fieldedMemo.race !== race ||
+      fieldedMemo.cells !== cells ||
+      fieldedMemo.key !== key
+    ) {
+      var brought = (
+        races.isMla(race) ? unitCells.addonUnitsFor : unitCells.raceUnitsFor
+      )(held, cells.vanilla, cells.race);
+      fieldedMemo = {
+        race: race,
+        cells: cells,
+        key: key,
+        units: _.union(held, brought),
+      };
+    }
+
+    return fieldedMemo.units;
   };
 
   // The two states that flood every planet fought on. See tech-cards.md.
@@ -168,6 +199,8 @@ define(function () {
     hasUnit: hasUnit,
 
     hasAllUnits: hasAllUnits,
+
+    fieldedUnits: fieldedUnits,
 
     missingUnit: function (inventoryUnits, units) {
       return !hasAllUnits(inventoryUnits, units);
@@ -331,7 +364,7 @@ define(function () {
         function (inventory) {
           return (
             (!options.unless || !inventory.hasCard(options.unless)) &&
-            hasUnit(inventory.units(), options.requires)
+            hasUnit(fieldedUnits(inventory), options.requires)
           );
         };
       return {
@@ -406,7 +439,7 @@ define(function () {
     playerIsCluster: playerIsCluster,
 
     // Prefer the wrappers below, which keep the tables private. numberOfSystems
-    // is a parameter, not an import: this module must stay dependency-free, as
+    // is a parameter, not an import: this module imports only pure modules, as
     // every card transitively depends on it. See tech-cards.md.
     farForSize: farForSize,
 

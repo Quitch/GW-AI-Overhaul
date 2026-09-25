@@ -497,9 +497,15 @@ define([
     return out;
   };
 
+  // A card's unit list as paths: one path, a list, or lists nested in a list
+  // (a card's own group beside gwoUnit paths).
+  var unitList = function (units) {
+    return _.uniq(_.flattenDeep([units || []]));
+  };
+
   // A card is worth offering when the race owns something in a cell it names.
   var cardUsable = function (cardUnits, vanilla, race) {
-    return _.some(cardUnits || [], function (unit) {
+    return _.some(unitList(cardUnits), function (unit) {
       var cell = vanilla.cellOf[unit];
       return !!cell && !_.isEmpty(race.unitsByCell[cell]);
     });
@@ -510,7 +516,7 @@ define([
   // cell, is kept as raceUnitsFor keeps it. No build reach: a factory card
   // lists factories, not what they build.
   var cardUnitsFor = function (cardUnits, vanilla, race) {
-    return _(cardUnits || [])
+    return _(unitList(cardUnits))
       .map(function (unit) {
         var cell = vanilla.cellOf[unit];
         if (_.isUndefined(cell) || isCommanderCell(cell)) {
@@ -527,7 +533,7 @@ define([
   // vanilla units and the add-on units of their cells.
   var addonCardUnitsFor = function (cardUnits, vanilla, addon) {
     return _.uniq(
-      (cardUnits || []).concat(cardUnitsFor(cardUnits, vanilla, addon))
+      unitList(cardUnits).concat(cardUnitsFor(cardUnits, vanilla, addon))
     );
   };
 
@@ -583,6 +589,7 @@ define([
     addonUnitsFor: addonUnitsFor,
     heldCommanderUnits: heldCommanderUnits,
     expandMods: expandMods,
+    unitList: unitList,
     cardUsable: cardUsable,
     cardUnitsFor: cardUnitsFor,
     addonCardUnitsFor: addonCardUnitsFor,

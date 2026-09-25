@@ -209,7 +209,7 @@
             var inventory = ownInventory();
             var race = gwoRaces.raceOf(inventory);
             var cells = gwoRaces.cellsOf(race);
-            var shown = units;
+            var shown = unitCells.unitList(units);
             if (cells) {
               shown = (
                 gwoRaces.isMla(race)

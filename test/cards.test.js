@@ -48,12 +48,24 @@ describe("hasUnit", () => {
     assert.equal(cards.hasUnit(["a", "b"], ["c", "b"]), true);
     assert.equal(cards.hasUnit(["a", "b"], ["c", "d"]), false);
   });
+
+  it("reads a group nested in the list", () => {
+    assert.equal(cards.hasUnit(["a", "b"], [["c", ["b"]], "d"]), true);
+    assert.equal(cards.hasUnit(["a", "b"], [["c"], "d"]), false);
+  });
 });
 
 describe("hasAllUnits", () => {
   it("matches a single unit passed as a string", () => {
     assert.equal(cards.hasAllUnits(["a", "b"], "b"), true);
     assert.equal(cards.hasAllUnits(["a", "b"], "c"), false);
+  });
+
+  it("reads a group nested in the list", () => {
+    assert.equal(cards.hasAllUnits(["a", "b", "c"], [["a", ["c"]], "b"]), true);
+    assert.equal(cards.hasAllUnits(["a", "b"], [["a", "c"]]), false);
+    assert.equal(cards.missingUnit(["a"], [["a", "c"]]), true);
+    assert.equal(cards.missingAllUnits(["a"], [["b", ["a"]]]), false);
   });
 
   it("requires every unit of an array to be present", () => {

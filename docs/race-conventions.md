@@ -19,8 +19,11 @@ race needs something new.
    written for that race alone. Nothing in the referee reads it. Add the race
    to `scripts/lib/race-table-inputs.js` (its mods, bit and name prefixes),
    then run `npm run harvest:race-specs` and `npm run generate:race-tables`.
-   Do not hand-write it. [`races.md`](races.md), "Unit tables", has the
-   rules.
+   Do not hand-write it. Publish it to cards under the race's own key in
+   `shared/units.js` (`gwoUnit.legion`), and pin that key in
+   `test/modder_api.test.js`. [`races.md`](races.md), "Unit tables", has the
+   rules. A race-only card is tied to the race by its `card_units.js` entry
+   naming the race's units; nothing else marks it.
 
    `unitNames` has one consumer: the card tooltips name a race unit from it,
    and they use `gw_play/unit_names.js` when it has no name. So every race
@@ -73,7 +76,9 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
    camel-cased from `display_name`, parts by owner plus role from
    `tools[].spec_id` / `ammo_id` / `death_weapon`, and every name as a
    `!LOC:` key. For MLA the table _is_ the membership rule, so every unit the
-   mod adds must be in it.
+   mod adds must be in it. Publish it under the add-on's own key in
+   `shared/units.js` (`gwoUnit.secondWave`), and pin that key in
+   `test/modder_api.test.js`.
 3. **Layers.** `layers[raceId].titans` carries `unitMaps` and `sources` for
    each race the mod ships AI data for, `mla` included. `sources` must cover
    everything the add-on ships under `/pa/ai/`, because it is what every

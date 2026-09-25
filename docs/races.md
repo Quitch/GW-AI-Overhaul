@@ -81,7 +81,8 @@ What no rule derives is written in the inputs, each with its reason: Legion's
 keys for the units it names twice and for its storage, and the entries its
 first, hand-mapped table carried that no rule reaches; the Bugs rule that reads only a unit's own
 types; and Exiles' Jelly, held under its first key and name after the mod
-renamed it Navigator. A key is what a race-only card addresses, so a table
+renamed it Navigator. A key is what a race-only card addresses, as
+`gwoUnit.<race or add-on>.<key>` through `shared/units.js`, so a table
 changes after a mod update on purpose, not as a side effect: re-harvest, run
 the generator, and review the diff.
 
@@ -180,6 +181,25 @@ unusable prize.
 The deal gives any other card when `races.cardUsable` finds a race unit in a
 cell its `card_units.js` entry names. A card with no entry passes, and every
 loadout has no entry. Everything passes until the race's cells are built.
+
+A card whose entry names a race or add-on unit is written for that race or
+add-on. A foreign unit is any path in a registered `units` table that is not a
+`shared/units.js` stock path: a table also names the vanilla ammo and tools its
+units reuse, and those stay stock. `races.fieldsUnit` counts a foreign unit
+when the player's index holds it (for MLA, the add-on index), and before the
+index exists when the race's own table or an active add-on's names it. Such a
+card is dealt when any foreign unit it names counts, or when any other unit it
+names passes the rule above. That applies to MLA too, and `raceCanDeal` skips
+`MLA_ONLY` and the `_upgrade_` rule for it: a third-party `mym_upgrade_shank`
+naming a Legion unit is dealt to Legion players only. A card with no foreign
+unit is gated exactly as before. The entry may nest lists (a card's own group
+beside single paths); every reader flattens it (`unit_cells.unitList`).
+
+`gwoCard.fieldedUnits(inventory)` gives a card's `deal` the same view: the
+paths held plus what `raceUnitsFor`, or `addonUnitsFor` for MLA, brings for
+them. `upgradeCard` reads it, so `requires` may name a race unit. A mod on a
+foreign path the player does not field has no file to land on, and
+`gw_play/specs.js` skips it without a warning.
 `gw_play/races.js` starts building them as the scene loads. Deals are
 synchronous and gate on the cells, so the cells are built as soon as the
 installed list is read. That is once GW Server Mods has the race zip mounted,

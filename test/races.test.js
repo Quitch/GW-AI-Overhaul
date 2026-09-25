@@ -141,6 +141,108 @@ describe("cardUsable", () => {
   });
 });
 
+describe("cardUsable for race and add-on units", () => {
+  const {
+    FIXTURE_ADDON,
+    FIXTURE_ADDON_SPECS,
+    FIXTURE_ADDON_UNITS,
+    FIXTURE_SPECS,
+    FIXTURE_UNITS,
+  } = require("../scripts/lib/race-fixture.js");
+  const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
+  const FX_TANK = FIXTURE_RACE.units.fxTank;
+  const FX_ADDON_TANK = FIXTURE_ADDON.units.fxAddonTank;
+  const OTHER_TANK = "/pa/units/land/o_tank/o_tank.json";
+
+  // The add-on index race_cells.js builds for MLA.
+  const mlaAddonIndex = () => {
+    const units = FIXTURE_UNITS.concat(FIXTURE_ADDON_UNITS);
+    const specs = Object.assign({}, FIXTURE_SPECS, FIXTURE_ADDON_SPECS);
+    const addonPaths = races.addonUnitPaths();
+    return {
+      vanilla: unitCells.buildIndex(
+        units,
+        specs,
+        (types, path) => unitCells.vanillaMember(types) && !addonPaths[path]
+      ),
+      race: unitCells.buildIndex(
+        units,
+        specs,
+        (types, path) => unitCells.vanillaMember(types) && !!addonPaths[path],
+        unitCells.exclusiveMember(races.knownBits())
+      ),
+    };
+  };
+
+  it("counts every non-stock path of a race or add-on table as foreign", () => {
+    races.register({
+      id: "other",
+      unitTypeBit: "Custom9",
+      units: { oTank: OTHER_TANK, sharedAmmo: gwoUnit.antAmmo },
+    });
+    races.registerAddon(FIXTURE_ADDON);
+
+    const foreign = races.foreignUnitPaths();
+    assert.equal(foreign[FX_TANK], true);
+    assert.equal(foreign[OTHER_TANK], true);
+    assert.equal(foreign[FX_ADDON_TANK], true);
+    assert.equal(foreign[gwoUnit.antAmmo], undefined);
+    assert.equal(foreign[gwoUnit.ant], undefined);
+    assert.equal(races.namesForeignUnit([gwoUnit.ant, [FX_TANK]]), true);
+    assert.equal(races.namesForeignUnit([gwoUnit.antAmmo]), false);
+    assert.equal(races.cardUsable("mla", [gwoUnit.antAmmo]), true);
+    races.reset();
+    assert.deepEqual(races.foreignUnitPaths(), {});
+  });
+
+  it("offers a race-only card to that race alone, before and after its cells", () => {
+    races.register({ id: "other", unitTypeBit: "Custom9", units: {} });
+
+    assert.equal(races.cardUsable("fixture", [FX_TANK]), true);
+    assert.equal(races.cardUsable("mla", [FX_TANK]), false);
+    assert.equal(races.cardUsable("other", [FX_TANK]), false);
+
+    races.setCells("fixture", fixtureIndex());
+    assert.equal(races.cardUsable("fixture", [FX_TANK]), true);
+    assert.equal(
+      races.cardUsable("fixture", [FIXTURE_RACE.units.fxTankAmmo]),
+      true
+    );
+    assert.equal(races.cardUsable("mla", [FX_TANK]), false);
+  });
+
+  it("offers a mixed card by either half, and reads a nested group", () => {
+    races.setCells("fixture", fixtureIndex());
+
+    assert.equal(races.cardUsable("mla", [FX_TANK, gwoUnit.dox]), true);
+    assert.equal(races.cardUsable("fixture", [FX_TANK, gwoUnit.dox]), true);
+    assert.equal(races.cardUsable("fixture", [[FX_TANK], gwoUnit.dox]), true);
+    assert.equal(races.cardUsable("mla", [[[FX_TANK]]]), false);
+    assert.equal(races.cardUsable("fixture", [[gwoUnit.dox]]), false);
+  });
+
+  it("offers an add-on card while the add-on is active, by its tables until the cells are built", () => {
+    races.registerAddon(FIXTURE_ADDON);
+
+    assert.equal(races.cardUsable("mla", [FX_ADDON_TANK]), false);
+    assert.equal(races.cardUsable("fixture", [FX_ADDON_TANK]), false);
+
+    races.activateAddons(["fixture_addon"]);
+    assert.equal(races.cardUsable("mla", [FX_ADDON_TANK]), true);
+    assert.equal(races.cardUsable("fixture", [FX_ADDON_TANK]), true);
+
+    races.setCells("mla", mlaAddonIndex());
+    races.setCells("fixture", fixtureIndex());
+    assert.equal(races.fieldsUnit("mla", FX_ADDON_TANK), true);
+    assert.equal(
+      races.fieldsUnit("mla", FIXTURE_ADDON.units.fxExclusive),
+      true
+    );
+    assert.equal(races.cardUsable("mla", [FX_ADDON_TANK]), true);
+    assert.equal(races.cardUsable("fixture", [FX_ADDON_TANK]), false);
+  });
+});
+
 describe("raceOf", () => {
   it("reads an AI's race, an inventory's tag, and defaults to MLA", () => {
     assert.equal(races.raceOf({ race: "Fixture" }), "fixture");

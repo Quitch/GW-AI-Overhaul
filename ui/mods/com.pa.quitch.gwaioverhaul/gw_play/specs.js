@@ -1,6 +1,7 @@
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
-  gwoUnit
-) {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+], function (gwoUnit, gwoRaces) {
   var orderOfOperations = function (mods) {
     var operationsContainer = {};
     operationsContainer.otherOperations = [];
@@ -290,6 +291,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
       var applyMod = function (mod) {
         var spec = load(mod.file);
+        // A card naming several races' units reaches only the player's own.
+        if (!spec && gwoRaces.foreignUnitPaths()[mod.file]) {
+          return undefined;
+        }
         if (!spec) {
           return console.warn(
             "Warning: File not found in mod " + JSON.stringify(mod)
