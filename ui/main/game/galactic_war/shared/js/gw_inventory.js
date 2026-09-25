@@ -58,14 +58,16 @@ define([
     save: function () {
       return ko.toJS(this);
     },
+    // GWO - a card's own group may sit inside the list
     addUnits: function (add) {
       var self = this;
-      self.units(self.units().concat(add));
+      self.units(self.units().concat(_.flattenDeep([add])));
     },
-    // GWO - updated to remove multiple copies of a unit
+    // GWO - updated to remove multiple copies of a unit, from a list that may
+    // hold groups
     removeUnits: function (remove) {
       var self = this;
-      _.forEach(remove, function (unit) {
+      _.forEach(_.flattenDeep([remove]), function (unit) {
         self.units.remove(unit);
       });
     },

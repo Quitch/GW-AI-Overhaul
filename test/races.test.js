@@ -144,35 +144,11 @@ describe("cardUsable", () => {
 describe("cardUsable for race and add-on units", () => {
   const {
     FIXTURE_ADDON,
-    FIXTURE_ADDON_SPECS,
-    FIXTURE_ADDON_UNITS,
-    FIXTURE_SPECS,
-    FIXTURE_UNITS,
+    fixtureAddonIndex,
   } = require("../scripts/lib/race-fixture.js");
-  const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
   const FX_TANK = FIXTURE_RACE.units.fxTank;
   const FX_ADDON_TANK = FIXTURE_ADDON.units.fxAddonTank;
   const OTHER_TANK = "/pa/units/land/o_tank/o_tank.json";
-
-  // The add-on index race_cells.js builds for MLA.
-  const mlaAddonIndex = () => {
-    const units = FIXTURE_UNITS.concat(FIXTURE_ADDON_UNITS);
-    const specs = Object.assign({}, FIXTURE_SPECS, FIXTURE_ADDON_SPECS);
-    const addonPaths = races.addonUnitPaths();
-    return {
-      vanilla: unitCells.buildIndex(
-        units,
-        specs,
-        (types, path) => unitCells.vanillaMember(types) && !addonPaths[path]
-      ),
-      race: unitCells.buildIndex(
-        units,
-        specs,
-        (types, path) => unitCells.vanillaMember(types) && !!addonPaths[path],
-        unitCells.exclusiveMember(races.knownBits())
-      ),
-    };
-  };
 
   it("counts every non-stock path of a race or add-on table as foreign", () => {
     races.register({
@@ -228,7 +204,7 @@ describe("cardUsable for race and add-on units", () => {
     assert.equal(races.cardUsable("mla", [FX_ADDON_TANK]), false);
     assert.equal(races.cardUsable("fixture", [FX_ADDON_TANK]), false);
 
-    races.setCells("mla", mlaAddonIndex());
+    races.setCells("mla", fixtureAddonIndex());
     races.setCells("fixture", fixtureIndex());
     assert.equal(races.fieldsUnit("mla", FX_ADDON_TANK), true);
     assert.equal(

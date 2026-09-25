@@ -289,16 +289,17 @@ define([
         clone: true,
       };
 
+      // A card naming several races' units reaches only the player's own.
+      var warnMissing = function (mod) {
+        if (!gwoRaces.foreignUnitPaths()[mod.file]) {
+          console.warn("Warning: File not found in mod " + JSON.stringify(mod));
+        }
+      };
+
       var applyMod = function (mod) {
         var spec = load(mod.file);
-        // A card naming several races' units reaches only the player's own.
-        if (!spec && gwoRaces.foreignUnitPaths()[mod.file]) {
-          return undefined;
-        }
         if (!spec) {
-          return console.warn(
-            "Warning: File not found in mod " + JSON.stringify(mod)
-          );
+          return warnMissing(mod);
         }
         if (!Object.prototype.hasOwnProperty.call(ops, mod.op)) {
           return console.error(

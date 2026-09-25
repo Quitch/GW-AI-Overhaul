@@ -11,16 +11,12 @@ const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
   FIXTURE_RACE,
   FIXTURE_ADDON,
-  FIXTURE_ADDON_SPECS,
-  FIXTURE_ADDON_UNITS,
-  FIXTURE_SPECS,
-  FIXTURE_UNITS,
   fixtureIndex,
+  fixtureAddonIndex,
 } = require("../scripts/lib/race-fixture.js");
 
 const cards = loadCouiModule(MOD_ROOT + "/shared/cards.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
-const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 
 const FX_TANK = FIXTURE_RACE.units.fxTank;
@@ -35,26 +31,6 @@ const inventoryOf = (race, units) => ({
   getTag: (ns, key) =>
     ns === "global" && key === "playerRace" ? race : undefined,
 });
-
-// The add-on index race_cells.js builds for MLA.
-const mlaAddonIndex = () => {
-  const units = FIXTURE_UNITS.concat(FIXTURE_ADDON_UNITS);
-  const specs = Object.assign({}, FIXTURE_SPECS, FIXTURE_ADDON_SPECS);
-  const addonPaths = races.addonUnitPaths();
-  return {
-    vanilla: unitCells.buildIndex(
-      units,
-      specs,
-      (types, path) => unitCells.vanillaMember(types) && !addonPaths[path]
-    ),
-    race: unitCells.buildIndex(
-      units,
-      specs,
-      (types, path) => unitCells.vanillaMember(types) && !!addonPaths[path],
-      unitCells.exclusiveMember(races.knownBits())
-    ),
-  };
-};
 
 beforeEach(() => {
   races.reset();
@@ -94,7 +70,7 @@ describe("fieldedUnits", () => {
 
   it("adds an MLA player's add-on units once the add-on index is built", () => {
     races.registerAddon(FIXTURE_ADDON);
-    races.setCells("mla", mlaAddonIndex());
+    races.setCells("mla", fixtureAddonIndex());
 
     const fielded = cards.fieldedUnits(inventoryOf("mla", [gwoUnit.ant]));
     assert.ok(fielded.includes(gwoUnit.ant));

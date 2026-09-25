@@ -195,7 +195,9 @@ names passes the rule above. That applies to MLA too, and `raceCanDeal` skips
 `MLA_ONLY` and the `_upgrade_` rule for it: a third-party `mym_upgrade_shank`
 naming a Legion unit is dealt to Legion players only. A card with no foreign
 unit is gated exactly as before. The entry may nest lists (a card's own group
-beside single paths); every reader flattens it (`unit_cells.unitList`).
+beside single paths); every reader flattens it (`unit_cells.unitList`). So do
+the unit lists a card hands `inventory.addUnits`, `inventory.removeUnits`,
+`gwoCard.flatMapMods`, and the has/missing helpers.
 
 `gwoCard.fieldedUnits(inventory)` gives a card's `deal` the same view: the
 paths held plus what `raceUnitsFor`, or `addonUnitsFor` for MLA, brings for

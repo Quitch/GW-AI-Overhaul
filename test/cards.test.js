@@ -806,6 +806,13 @@ describe("flatMapMods", () => {
   it("returns an empty array for no files", () => {
     assert.deepEqual(cards.flatMapMods([], "replace", { x: 1 }), []);
   });
+
+  it("reads a group nested in the list", () => {
+    assert.deepEqual(
+      cards.flatMapMods([["a.json"], "b.json"], "replace", { x: 1 }),
+      cards.flatMapMods(["a.json", "b.json"], "replace", { x: 1 })
+    );
+  });
 });
 
 describe("isEnglish", () => {

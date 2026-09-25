@@ -485,12 +485,14 @@ define([
     },
 
     // mods() over every file, flattened: one file's entries before the next's.
+    // `files` may nest groups.
     flatMapMods: function (files, op, props, value) {
-      return _.flatten(
-        _.map(_.isString(files) ? [files] : files, function (file) {
+      return _(unitCells.unitList(files))
+        .map(function (file) {
           return mods(file, op, props, value);
         })
-      );
+        .flatten()
+        .value();
     },
 
     // The gwaio_anti_* shape: zero against its counter card, half once any other

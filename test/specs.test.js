@@ -60,6 +60,30 @@ describe("specs.mod - basic ops", () => {
     assert.equal(warnMock.mock.callCount(), 1);
   });
 
+  it("warns about a missing file, but not a race unit the player does not field", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "unit.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [
+        {
+          file: "/pa/units/land/l_tank_shank/l_tank_shank.json",
+          path: "max_health",
+          op: "multiply",
+          value: 2,
+        },
+      ],
+      ""
+    );
+    assert.equal(warnMock.mock.callCount(), 0);
+    specs.mod(
+      data,
+      [{ file: "missing.json", path: "hp", op: "multiply", value: 2 }],
+      ""
+    );
+    assert.equal(warnMock.mock.callCount(), 1);
+  });
+
   it("multiply on a missing path leaves it missing without a warning", () => {
     const warnMock = mock.method(console, "warn", () => {});
     const data = { "unit.json": { hp: 100 } };
