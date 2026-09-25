@@ -396,7 +396,8 @@ cell of the base-game unit that uses it. The
 keys inside those tables are generated, and a mod update can change them
 ([`races.md`](races.md), "Unit tables"). A whole table is not a unit list:
 every reader ignores one, and `validate:refs` fails a card, `card_units.js` or
-`unit_groups.js` that names one. A race or add-on a third-party mod registers is
+`unit_groups.js` that hands one straight to a list or a call (`[gwoUnit.legion]`,
+`f(gwoUnit.legion)`). A race or add-on a third-party mod registers is
 not there. A card names such a unit and lists it in `gwoCardsToUnits`, which
 ties the card to the races that field it when the race or add-on registers a
 `units` table that lists it; without one the path counts as stock. In `deal` it checks
