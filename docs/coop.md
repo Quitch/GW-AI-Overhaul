@@ -235,8 +235,17 @@ The name is drawn from the skirmish lobby's own list,
 `server-script/ai_names_table.js`, which the client reads as text. It is never a
 connected player's name, a record's `playerName`, another AI's, or `Player`,
 case ignored. An AI whose name cannot be drawn is named by its serial. The
-commander is one of the host's owned commanders that nobody fields yet, or one
-of the race's own for a race war.
+commander is one of the host's owned MLA commanders that nobody fields yet, or
+one of the race's own for a race war.
+
+An MLA commander is one that builds what MLA's base commander builds, read up
+its `base_spec` chain, so `gw_play` reads each owned commander's chain before
+the Add AI button turns on. Ownership alone lets other factions' commanders in:
+commander-merge lists every supported faction's commanders and gives several of
+them the catalog name of a commander everyone owns, and a client that is not
+signed in owns everything. A faction's commander builds only that faction's
+units, and without that faction's mod it has no model, which crashes every
+client when it lands.
 
 ### Adding and kicking
 

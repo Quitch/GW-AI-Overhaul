@@ -401,6 +401,125 @@ describe("pickAiName", () => {
   });
 });
 
+describe("mlaCommanders", () => {
+  const BASE = "/pa/units/commanders/base_commander/base_commander.json";
+  const MLA = "CmdBuild & Custom58";
+  // Shaped as commander-merge's: each faction's base sets its own build.
+  const SPECS = {
+    [BASE]: { buildable_types: MLA },
+    "/quad_base.json": { base_spec: BASE },
+    "/osiris.json": { base_spec: "/quad_base.json" },
+    "/own_mla.json": { base_spec: BASE, buildable_types: MLA },
+    "/l_base.json": { base_spec: BASE, buildable_types: "CmdBuild & Custom1" },
+    "/l_quad.json": { base_spec: "/l_base.json" },
+    "/exiles.json": { base_spec: BASE, buildable_types: "CmdBuild & Custom6" },
+    "/replicate.json": {
+      base_spec: "/quad_base.json",
+      buildable_types: "Custom5 - Bot - NoBuild",
+    },
+    "/base_vehicle.json": {},
+    "/scenario.json": { base_spec: "/base_vehicle.json" },
+    "/orphan.json": { base_spec: "/missing_base.json" },
+    "/loop.json": { base_spec: "/loop.json" },
+  };
+
+  const fetchFrom = (specs, log) => (spec) => {
+    if (log) {
+      log.push(spec);
+    }
+    return Object.hasOwn(specs, spec)
+      ? Promise.resolve(specs[spec])
+      : Promise.reject(new Error("404 " + spec));
+  };
+
+  it("keeps the commanders that build what MLA's base commander builds", async () => {
+    assert.deepEqual(
+      await roster.mlaCommanders(
+        [
+          "/osiris.json",
+          "/l_quad.json",
+          "/exiles.json",
+          "/replicate.json",
+          "/scenario.json",
+          "/own_mla.json",
+        ],
+        fetchFrom(SPECS)
+      ),
+      ["/osiris.json", "/own_mla.json"]
+    );
+  });
+
+  it("drops a commander whose chain will not load or never ends", async () => {
+    assert.deepEqual(
+      await roster.mlaCommanders(
+        ["/osiris.json", "/unknown.json", "/orphan.json", "/loop.json"],
+        fetchFrom(SPECS)
+      ),
+      ["/osiris.json"]
+    );
+  });
+
+  it("drops a commander whose fetch throws", async () => {
+    const fetch = (spec) => {
+      if (spec === "/l_quad.json") {
+        throw new Error("boom");
+      }
+      return fetchFrom(SPECS)(spec);
+    };
+    assert.deepEqual(
+      await roster.mlaCommanders(["/osiris.json", "/l_quad.json"], fetch),
+      ["/osiris.json"]
+    );
+  });
+
+  it("reads each spec once, however many chains share it", async () => {
+    const log = [];
+    await roster.mlaCommanders(
+      ["/osiris.json", "/replicate.json", "/l_quad.json", "/exiles.json"],
+      fetchFrom(SPECS, log)
+    );
+    assert.equal(log.length, new Set(log).size, JSON.stringify(log));
+  });
+
+  it("keeps none when MLA's base commander cannot be read", async () => {
+    const specs = Object.assign({}, SPECS);
+    delete specs[BASE];
+    assert.deepEqual(
+      await roster.mlaCommanders(["/osiris.json"], fetchFrom(specs)),
+      []
+    );
+  });
+
+  it("keeps none of none", async () => {
+    assert.deepEqual(
+      await roster.mlaCommanders(undefined, fetchFrom(SPECS)),
+      []
+    );
+  });
+
+  it("keeps every stock commander", async (t) => {
+    const list =
+      stockFile("pa_ex1/units/commanders/commander_list.json") ||
+      stockFile("pa/units/commanders/commander_list.json");
+    if (!list) {
+      t.skip("no PA install");
+      return;
+    }
+
+    // TITANS' copy first, as the game mounts it over pa/.
+    const fetch = (spec) => {
+      const relative = spec.replace(/^\//, "");
+      const text =
+        stockFile(relative.replace(/^pa\//, "pa_ex1/")) || stockFile(relative);
+      return text
+        ? Promise.resolve(JSON.parse(text))
+        : Promise.reject(new Error("missing " + spec));
+    };
+    const commanders = JSON.parse(list).commanders;
+    assert.deepEqual(await roster.mlaCommanders(commanders, fetch), commanders);
+  });
+});
+
 describe("pickAiCommander", () => {
   const OWNED = ["a.json", "b.json", "c.json"];
 

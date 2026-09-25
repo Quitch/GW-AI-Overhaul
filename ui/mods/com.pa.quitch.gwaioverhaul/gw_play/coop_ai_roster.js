@@ -5,7 +5,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
-], function (gwoAI, gwoRaces, perPlayerTech) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (gwoAI, gwoRaces, perPlayerTech, unitCells) {
   var ID_PREFIX = "gwo_ai_";
   var SHARED_SCOPE = "coopai";
   // Stock's gwCampaignMaxClientsLimit before the server reports its own.
@@ -181,8 +182,48 @@ define([
     return rng ? rng.pick(free) : _.sample(free);
   };
 
-  // A race's own commanders for a race AI, the host's owned ones for MLA, less
-  // those already fielded; the host's own when none is left.
+  var BASE_COMMANDER =
+    "/pa/units/commanders/base_commander/base_commander.json";
+
+  // Every spec on each path's base_spec chain, by path. A spec that fails to
+  // load ends its chain.
+  var loadChains = function (paths, fetch) {
+    var specs = {};
+    var visit = function (path) {
+      if (!_.isString(path) || _.has(specs, path)) {
+        return Promise.resolve();
+      }
+      specs[path] = undefined;
+      return new Promise(function (resolve) {
+        resolve(fetch(path));
+      }).then(function (spec) {
+        specs[path] = spec;
+        return visit(spec && spec.base_spec);
+      }, _.noop);
+    };
+    return Promise.all(_.map(paths, visit)).then(function () {
+      return specs;
+    });
+  };
+
+  // The commanders an MLA AI can field: those that build what MLA's base
+  // commander builds. See coop.md, "AI players".
+  var mlaCommanders = function (commanders, fetch) {
+    return loadChains([BASE_COMMANDER].concat(commanders || []), fetch).then(
+      function (specs) {
+        var builds = function (path) {
+          return unitCells.chainValue(path, specs, "buildable_types");
+        };
+        var mla = builds(BASE_COMMANDER);
+        return _.filter(commanders, function (commander) {
+          return !!mla && builds(commander) === mla;
+        });
+      }
+    );
+  };
+
+  // A race's own commanders for a race AI, the host's owned MLA ones for MLA,
+  // less those already fielded; the host's own when none is left.
   var pickAiCommander = function (params) {
     var raceCommanders = params.raceCommanders || [];
     var pool = raceCommanders.length ? raceCommanders : params.owned || [];
@@ -194,7 +235,7 @@ define([
   // A new AI's record. It carries no playerName and no inventory: under shared
   // tech it fields the host's. params: identity (nextAiIdentity's), rng (the
   // AI's coopAiPlayerRng, or undefined in a war without a seed), race, names,
-  // taken (every name already in the war), owned (the host's commanders),
+  // taken (every name already in the war), owned (the host's MLA commanders),
   // fielded, hostCommander, now.
   var buildAiRecord = function (params) {
     var identity = params.identity;
@@ -304,6 +345,7 @@ define([
     slotRows: slotRows,
     parseAiNames: parseAiNames,
     pickAiName: pickAiName,
+    mlaCommanders: mlaCommanders,
     pickAiCommander: pickAiCommander,
     buildAiRecord: buildAiRecord,
     launchAis: launchAis,

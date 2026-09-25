@@ -297,16 +297,16 @@
       };
     });
 
-    CommanderUtility.afterCommandersLoaded(function () {
-      ownedCommanders = _.filter(
-        CommanderUtility.getKnownCommanders(),
-        function (commander) {
-          return PlayFab.isCommanderOwned(
-            CommanderUtility.bySpec.getObjectName(commander)
-          );
-        }
-      );
-      commandersReady(true);
+    var ownedLoad = new Promise(function (resolve) {
+      CommanderUtility.afterCommandersLoaded(function () {
+        resolve(
+          _.filter(CommanderUtility.getKnownCommanders(), function (commander) {
+            return PlayFab.isCommanderOwned(
+              CommanderUtility.bySpec.getObjectName(commander)
+            );
+          })
+        );
+      });
     });
 
     requireGW(
@@ -317,6 +317,8 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/spec_cache.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
         "shared/gw_coop_player_colors",
         "shared/gw_factions",
       ],
@@ -327,6 +329,8 @@
         gwoAI,
         gwoRaces,
         gwoSave,
+        specCache,
+        gameFilePaths,
         colours,
         factions
       ) {
@@ -384,6 +388,35 @@
           })
         );
         ready(true);
+
+        // An AI falls back to the host's commander if none could be checked.
+        var specDeps = { fetch: gameFilePaths.specFetch };
+        ownedLoad
+          .then(function (owned) {
+            return roster
+              .mlaCommanders(owned, function (path) {
+                return specCache.fetchRaw(path, specDeps);
+              })
+              .then(function (commanders) {
+                console.log(
+                  "[GW COOP AI] MLA commanders: " +
+                    commanders.length +
+                    " of " +
+                    owned.length +
+                    " owned"
+                );
+                ownedCommanders = commanders;
+              });
+          })
+          .then(null, function (error) {
+            console.error(
+              "[GW COOP AI] commanders not checked: " +
+                (error && (error.message || error))
+            );
+          })
+          .then(function () {
+            commandersReady(true);
+          });
 
         // The skirmish lobby's own AI name list, read as text: jQuery would
         // otherwise run it as a script. A war never depends on it: an AI whose
