@@ -20,7 +20,7 @@
 
 ### Bugfix
 
-- Tech that changes no units, such as Sub Commander Tech, and your loadout no longer show "Which Units?" when you select them in your Data Bank
+- Tech that changes no units, such as Sub Commander Tech, and your loadout no longer show "Which Units?" when you select them in your Tech Bank
 
 ## v7.4.1 - 2026-09-24
 
