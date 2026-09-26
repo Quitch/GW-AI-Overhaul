@@ -461,7 +461,9 @@ define([
     return files;
   };
 
-  var expandMods = function (mods, vanilla, race, has) {
+  // `passThrough` ({ path: true }) names files changed as named, never
+  // re-aimed: a race's own files, some of which carry no faction bit.
+  var expandMods = function (mods, vanilla, race, has, passThrough) {
     var passes = {};
     var out = [];
     var remade = remadeFiles(mods || []);
@@ -472,7 +474,10 @@ define([
         return;
       }
 
-      var targets = targetsFor(mod.file, vanilla, race);
+      var targets =
+        passThrough && passThrough[mod.file]
+          ? undefined
+          : targetsFor(mod.file, vanilla, race);
       if (_.isUndefined(targets)) {
         out.push(mod);
         return;
@@ -497,9 +502,28 @@ define([
     return out;
   };
 
+  // One path, a list, or groups nested in a list, in order, as a new list; a
+  // whole gwoUnit race table names nothing. See races.md, "Capability cells".
+  var unitPaths = function (units) {
+    if (_.isString(units)) {
+      return [units];
+    }
+    if (_.isArray(units) && _.every(units, _.isString)) {
+      return units.slice();
+    }
+    return _([units || []])
+      .flattenDeep()
+      .reject(_.isPlainObject)
+      .value();
+  };
+
+  var unitList = function (units) {
+    return _.uniq(unitPaths(units));
+  };
+
   // A card is worth offering when the race owns something in a cell it names.
   var cardUsable = function (cardUnits, vanilla, race) {
-    return _.some(cardUnits || [], function (unit) {
+    return _.some(unitList(cardUnits), function (unit) {
       var cell = vanilla.cellOf[unit];
       return !!cell && !_.isEmpty(race.unitsByCell[cell]);
     });
@@ -510,7 +534,7 @@ define([
   // cell, is kept as raceUnitsFor keeps it. No build reach: a factory card
   // lists factories, not what they build.
   var cardUnitsFor = function (cardUnits, vanilla, race) {
-    return _(cardUnits || [])
+    return _(unitList(cardUnits))
       .map(function (unit) {
         var cell = vanilla.cellOf[unit];
         if (_.isUndefined(cell) || isCommanderCell(cell)) {
@@ -527,7 +551,7 @@ define([
   // vanilla units and the add-on units of their cells.
   var addonCardUnitsFor = function (cardUnits, vanilla, addon) {
     return _.uniq(
-      (cardUnits || []).concat(cardUnitsFor(cardUnits, vanilla, addon))
+      unitList(cardUnits).concat(cardUnitsFor(cardUnits, vanilla, addon))
     );
   };
 
@@ -585,6 +609,8 @@ define([
     addonUnitsFor: addonUnitsFor,
     heldCommanderUnits: heldCommanderUnits,
     expandMods: expandMods,
+    unitPaths: unitPaths,
+    unitList: unitList,
     cardUsable: cardUsable,
     cardUnitsFor: cardUnitsFor,
     addonCardUnitsFor: addonCardUnitsFor,

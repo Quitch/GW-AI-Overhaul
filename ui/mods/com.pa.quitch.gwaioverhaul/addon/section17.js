@@ -39,7 +39,6 @@ define(function () {
       crotalidAmmo: "/pa/units/paeiou/ligma/drone_fighter/ammo.json",
       dolfin: "/pa/units/paeiou/dolfin/dolfin.json",
       dolfinSurfaceWeapon: "/pa/units/paeiou/dolfin/surface_weapon.json",
-      dolfinAmmo: "/pa/units/sea/battleship/battleship_ammo.json",
       dolfinAaWeapon: "/pa/units/paeiou/dolfin/aa_weapon.json",
       dolfinAaAmmo: "/pa/units/paeiou/dolfin/aa_ammo.json",
       doxMaterializer:
@@ -89,7 +88,6 @@ define(function () {
         "/pa/units/paeiou/poseidon/pos_air_drone/pos_air_drone.json",
       oceanicTwoWingFlyingfishWeapon:
         "/pa/units/paeiou/poseidon/pos_air_drone/weapon.json",
-      oceanicTwoWingFlyingfishAmmo: "/pa/units/air/fighter/fighter_ammo.json",
       orangeFinnedZebraDanio:
         "/pa/units/paeiou/poseidon/pos_torp_drone/pos_torp_drone.json",
       orangeFinnedZebraDanioWeapon:

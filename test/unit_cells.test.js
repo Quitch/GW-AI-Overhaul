@@ -575,6 +575,41 @@ describe("expandMods", () => {
   });
 });
 
+describe("unitList", () => {
+  it("flattens nested lists, drops repeats, ignores a table, and keeps a typo", () => {
+    assert.deepEqual(cells.unitList([ANT, [DOX, [ANT]], { x: SKITTER }]), [
+      ANT,
+      DOX,
+    ]);
+    assert.deepEqual(cells.unitList(ANT), [ANT]);
+    assert.deepEqual(cells.unitList(undefined), []);
+    assert.deepEqual(cells.unitList([undefined]), [undefined]);
+  });
+});
+
+describe("unitPaths", () => {
+  it("keeps order and repeats, copies a flat list, and ignores a table", () => {
+    const flat = [ANT, DOX, ANT];
+    const paths = cells.unitPaths(flat);
+
+    assert.deepEqual(paths, flat);
+    assert.notEqual(paths, flat);
+    assert.deepEqual(cells.unitPaths([ANT, [DOX], { x: SKITTER }]), [ANT, DOX]);
+    assert.deepEqual(cells.unitPaths(undefined), []);
+    assert.deepEqual(cells.unitPaths(null), []);
+  });
+});
+
+describe("expandMods pass-through", () => {
+  it("changes a pass-through file as named, never re-aimed by cell", () => {
+    const antMod = { file: ANT, path: "max_health", op: "multiply", value: 2 };
+    assert.deepEqual(
+      cells.expandMods([antMod], vanilla, race, undefined, { [ANT]: true }),
+      [antMod]
+    );
+  });
+});
+
 describe("cardUsable", () => {
   it("is true when the race owns something in a cell the card names", () => {
     assert.equal(cells.cardUsable([ANT, DOX], vanilla, race), true);

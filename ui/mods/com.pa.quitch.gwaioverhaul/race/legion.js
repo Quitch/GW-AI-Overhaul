@@ -223,7 +223,6 @@ define(function () {
       hammerheadWeapon: "/pa/units/sea/l_sea_tank/l_sea_tank_tool_weapon.json",
       havoc: "/pa/units/land/l_tank_swarm/l_tank_swarm.json",
       havocAmmo: "/pa/units/land/l_tank_swarm/l_tank_swarm_ammo.json",
-      havocBeamAmmo: "/pa/units/land/bot_sniper/bot_sniper_beam_ammo.json",
       havocBeamWeapon:
         "/pa/units/land/bot_sniper/bot_sniper_beam_tool_weapon.json",
       havocWeapon: "/pa/units/land/l_tank_swarm/l_tank_swarm_tool_weapon.json",
@@ -231,10 +230,6 @@ define(function () {
       hiveAmmo: "/pa/units/land/l_swarm_hive/l_swarm_hive_ammo.json",
       hiveWeapon: "/pa/units/land/l_swarm_hive/l_swarm_hive_tool_weapon.json",
       holocene: "/pa/units/land/l_titan_structure/l_titan_structure.json",
-      holocenePbaoe:
-        "/pa/units/land/titan_structure/titan_structure_pbaoe.json",
-      holoceneWeapon:
-        "/pa/units/land/titan_structure/titan_structure_tool_weapon.json",
       imperator:
         "/pa/units/orbital/l_orbital_battleship/l_orbital_battleship.json",
       imperatorAmmo:
@@ -265,8 +260,6 @@ define(function () {
       infiltratorVisionWeapon:
         "/pa/units/air/l_air_scout_adv/l_air_scout_adv_vision_tool_weapon.json",
       investigator: "/pa/units/land/l_scout_bot/l_scout_bot.json",
-      investigatorDummyAmmo:
-        "/pa/units/land/land_scout/land_scout_dummy_ammo.json",
       investigatorLandAmmo:
         "/pa/units/land/l_scout_bot/l_scout_bot_land_ammo.json",
       investigatorRadar:
@@ -281,17 +274,11 @@ define(function () {
         "/pa/units/land/l_scout_bot/l_scout_bot_radar_mode_land_ammo.json",
       investigatorRadarWeapon:
         "/pa/units/land/l_scout_bot/l_scout_bot_radar_mode_tool_weapon.json",
-      investigatorToolDummyWeapon:
-        "/pa/units/land/land_scout/land_scout_tool_dummy_weapon.json",
       investigatorWeapon:
         "/pa/units/land/l_scout_bot/l_scout_bot_tool_weapon.json",
       ironDome: "/pa/units/land/l_anti_nuke_launcher/l_anti_nuke_launcher.json",
       ironDomeAmmo:
         "/pa/units/land/l_anti_nuke_launcher/l_anti_nuke_launcher_ammo.json",
-      ironDomeAmmo2:
-        "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_ammo.json",
-      ironDomeBuildArm:
-        "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_build_arm.json",
       ironDomeWeapon:
         "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_tool_weapon.json",
       jackal: "/pa/units/land/l_t1_turret_basic/l_t1_turret_basic.json",
@@ -566,8 +553,6 @@ define(function () {
         "/pa/units/orbital/l_orbital_factory/l_orbital_factory_build_arm.json",
       starshipProjector:
         "/pa/units/orbital/l_orbital_launcher/l_orbital_launcher.json",
-      starshipProjectorBuildArm:
-        "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json",
       stoke: "/pa/units/land/l_mortar_tank/l_mortar_tank.json",
       stokeAmmo: "/pa/units/land/l_mortar_tank/l_mortar_tank_ammo.json",
       stokeTorpedoWaterAmmo:

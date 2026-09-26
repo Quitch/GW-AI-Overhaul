@@ -57,6 +57,7 @@ function fixtureIndex(raceId) {
   const units = Object.keys(specs);
   const addonPaths = races.addonUnitPaths();
   const isAddon = (unit) => !!addonPaths[unit];
+  const foreign = races.foreignUnitPaths();
   const race = races.byId(raceId);
   const member = races.isMla(raceId)
     ? (types, unit) => unitCells.vanillaMember(types) && isAddon(unit)
@@ -65,7 +66,8 @@ function fixtureIndex(raceId) {
     vanilla: unitCells.buildIndex(
       units,
       specs,
-      (types, unit) => unitCells.vanillaMember(types) && !isAddon(unit)
+      (types, unit) =>
+        unitCells.vanillaMember(types) && !isAddon(unit) && !foreign[unit]
     ),
     race: unitCells.buildIndex(
       units,
