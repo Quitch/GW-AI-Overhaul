@@ -29,13 +29,16 @@ define([
     }
     gwaio.ai = brains.ai;
     gwaio.aiAlly = brains.aiAlly;
+    // Co-op AI players follow the opponent until the player picks otherwise.
+    gwaio.aiCoop = brains.aiCoop || brains.ai;
     // One coerced row per installed race, so the save never carries a brain a
     // race cannot run and co-op viewers read the same answers.
     gwaio.aiByRace = gwoBrainTable.recordFor(
       brains.aiByRace,
       war.installedRaces,
       brains.ai,
-      brains.aiAlly
+      brains.aiAlly,
+      gwaio.aiCoop
     );
     gwaio.aiMods = [];
     gwaio.techCardDeck = settings.techCardDeck();
@@ -60,6 +63,8 @@ define([
       // without it never claims one. See coop.md.
       perPlayerRace: settings.perPlayerRace() && !!war.perPlayerTechCards,
     };
+    // Only an AI player under per-player tech draws a loadout.
+    gwaio.uniqueAiLoadouts = !!war.uniqueAiLoadouts && !!war.perPlayerTechCards;
     // The map packs GW Server Mods must mount for this war. The resume check
     // reads the stars' own stamps first; this stands in for a star whose
     // system lost its stamp. See galaxy.md, "Biome mods in a GW battle".

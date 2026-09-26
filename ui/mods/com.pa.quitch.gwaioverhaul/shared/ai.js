@@ -4,14 +4,29 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (
   refereeAIPaths,
   gwoDifficulty,
   subcommanderTech,
   races,
-  brainTable
+  brainTable,
+  gwoUnit,
+  gwoGroup
 ) {
   var CLUSTER_FACTION = 4;
+  var EXTRACTORS = [
+    gwoUnit.metalExtractorAdvanced,
+    gwoUnit.metalExtractor,
+    gwoUnit.jig,
+  ];
+
+  var holdsAny = function (units, wanted) {
+    return _.some(wanted, function (unit) {
+      return _.includes(units, unit);
+    });
+  };
 
   // The host's inventory is the live GWInventory, where aiMods is an observable;
   // a co-op viewer's arrives deserialised from the war record, where it is a
@@ -39,10 +54,18 @@ define([
     return game.galaxy().stars()[game.currentStar()].ai();
   };
 
+  var sideOf = function (alignment) {
+    if (alignment === "subcommander") {
+      return "ally";
+    }
+    return alignment === "coop" ? "coop" : "enemy";
+  };
+
   // The war's brain for that side and race: the race's row of the recorded
   // aiByRace table, else the war-wide string - a war saved before the table
   // existed behaves exactly as it always did. "subcommander" is the ally
-  // side; every other alignment fights the player.
+  // side and "coop" a co-op AI player's; every other alignment fights the
+  // player.
   var warBrain = function (alignment, race) {
     var gwoSettings = originSettings(model.game());
     if (gwoSettings) {
@@ -50,8 +73,9 @@ define([
         gwoSettings.aiByRace,
         gwoSettings.ai,
         gwoSettings.aiAlly,
-        alignment === "subcommander" ? "ally" : "enemy",
-        race
+        sideOf(alignment),
+        race,
+        gwoSettings.aiCoop
       );
     }
     return "Titans";
@@ -340,6 +364,14 @@ define([
       );
     },
 
+    getCoopAiPath: function (race, scopeToken) {
+      return refereeAIPaths.getCoopAiPath(
+        aiInUse("coop", race),
+        scopeToken,
+        race
+      );
+    },
+
     // The faction index of Cluster, for AIs and players alike.
     CLUSTER_FACTION: CLUSTER_FACTION,
 
@@ -402,6 +434,34 @@ define([
       });
 
       return Math.max(aiEconRate, getAIEconFloor(warTier(gwoSettings)));
+    },
+
+    // What an army lacks to fight, by the rule gwc_minion.js deals a Sub
+    // Commander by: "extractor", else "landFactory", else undefined. The
+    // extractor comes first because no card closes that gap. See coop.md,
+    // "AI players' tech".
+    armyGap: function (units) {
+      if (!holdsAny(units, EXTRACTORS)) {
+        return "extractor";
+      }
+      return holdsAny(units, gwoGroup.landFactoriesBasic)
+        ? undefined
+        : "landFactory";
+    },
+
+    // Whether a card can close the gap: a factory card can, unless a dull
+    // strips every basic land factory it would grant. grants: that card's
+    // units; any card's when not given.
+    armyGapClosable: function (gap, strippedUnits, grants) {
+      var factories = grants
+        ? _.intersection(gwoGroup.landFactoriesBasic, grants)
+        : gwoGroup.landFactoriesBasic;
+      return (
+        gap === "landFactory" &&
+        _.some(factories, function (unit) {
+          return !_.includes(strippedUnits || [], unit);
+        })
+      );
     },
 
     quellerCompatibleMinions: function (minions) {

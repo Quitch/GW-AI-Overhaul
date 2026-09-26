@@ -41,6 +41,10 @@
           </div>
           <div class="data" data-bind="text: $root.gwoAIAlly"></div>
         </div>
+        <div class="tr" data-bind="visible: $root.gwCampaignEnabled()">
+          <div class="td"><loc>Co-op</loc> <loc>AI:</loc></div>
+          <div class="data" data-bind="text: $root.gwoAICoop"></div>
+        </div>
         <div class="tr">
           <div class="td"><loc>Deck:</loc></div>
           <div class="data" data-bind="text: $root.gwoDeck"></div>

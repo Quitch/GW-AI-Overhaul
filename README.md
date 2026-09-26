@@ -34,7 +34,8 @@ This mod works with Planetary Annihilation: TITANS only. It changes the followin
 - Fixes all the errors in the tech cards
 - Over 150 new tech cards
 - Every feature is supported in co-op, including per-player loadouts and per-player tech
-- Three AI brains, chosen per race and separately for your enemies and your allies:
+- AI players can fill the open slots of a co-op war: they fight beside you, ping the star they want next, and with per-player tech each one has its own loadout and tech
+- Three AI brains, chosen per race and separately for your enemies, your allies, and co-op AI players:
   - Titans: the base game AI, which knows every race
   - Queller: a greater challenge at the cost of performance
   - Penchant: increased personality

@@ -81,7 +81,7 @@ function setup(overrides = {}) {
     sendCampaignAction: (name, payload) => calls.actions.push([name, payload]),
   });
 
-  makeFactory({
+  const handle = makeFactory({
     game: {
       findCoopPlayerInventoryData: (query) => options.records[query.id],
       hostTechCardDealCount: () => 4,
@@ -142,10 +142,70 @@ function setup(overrides = {}) {
     },
   });
 
-  return { calls, options, restore: () => stubs.restoreGlobals() };
+  return { calls, options, handle, restore: () => stubs.restoreGlobals() };
 }
 
 const { build, release } = trackActive(setup);
+
+// The same deal for a player the host deals itself: a co-op AI player. See
+// coop.md, "AI players' tech".
+describe("pendingHandForRecord", () => {
+  const AI = { id: "gwo_ai_1", name: "AI1" };
+
+  it("deals from the AI's own inventory, keyed by its id and the deal, its star card last", async () => {
+    const run = build({
+      records: {
+        gwo_ai_1: record("gwo_ai_1", {
+          gwaioStarCards: { cards: { 5: { id: "star_card" } } },
+        }),
+      },
+    });
+    const aiRecord = run.options.records.gwo_ai_1;
+    const star = { index: 5 };
+
+    const hand = await run.handle.pendingHandForRecord({
+      client: AI,
+      record: aiRecord,
+      dealIndex: 3,
+      starIndex: 5,
+      star: star,
+    });
+
+    assert.deepEqual(_.pluck(hand.cards, "id"), [
+      "dealt_0",
+      "dealt_1",
+      "star_card",
+    ]);
+    assert.equal(hand.star, 5);
+    assert.equal(hand.dealIndex, 3);
+    assert.equal(hand.cardsOffered, 3);
+    const request = run.calls.deals[0];
+    assert.deepEqual(request.rng, { playerKey: "gwo_ai_1", dealIndex: 3 });
+    assert.equal(request.star, star);
+    assert.notEqual(request.inventory.cards(), HOST_CARDS);
+    // Nothing is sent: the host keeps the hand.
+    assert.deepEqual(run.calls.sent, []);
+    assert.deepEqual(run.calls.actions, []);
+  });
+
+  it("deals a full hand when the AI holds no card for the star", async () => {
+    const run = build({ records: { gwo_ai_1: record("gwo_ai_1") } });
+
+    const hand = await run.handle.pendingHandForRecord({
+      client: AI,
+      record: run.options.records.gwo_ai_1,
+      dealIndex: 1,
+      starIndex: 2,
+      star: {},
+    });
+
+    assert.deepEqual(_.pluck(hand.cards, "id"), [
+      "dealt_0",
+      "dealt_1",
+      "dealt_2",
+    ]);
+  });
+});
 
 const deal = (starIndex, star, options) =>
   global.model.dealCoopPlayerPendingTechCards(

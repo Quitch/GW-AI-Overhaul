@@ -182,6 +182,9 @@
   "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.": {
     "message": "CLUSTER: terrestre. Usa Angel y Colonel como subcomandantes y no puede construirlos."
   },
+  "CO-OP: the AI players a host adds to a co-op session": {
+    "message": "COOPERATIVO: los jugadores IA que un anfitrión añade a una sesión cooperativa"
+  },
   "COMMANDER TRANSPORT:": {
     "message": "TRANSPORTE DEL COMANDANTE:"
   },
@@ -211,6 +214,9 @@
   },
   "Co-Op Settings": {
     "message": "Ajustes cooperativos"
+  },
+  "Co-op": {
+    "message": "Cooperativo"
   },
   "Co-op host setup": {
     "message": "Configuración del anfitrión cooperativo"
@@ -376,6 +382,9 @@
   },
   "Kessler Upgrade Tech allows orbital mines to explode without self-destructing.": {
     "message": "La mejora tecnológica de Kessler permite que las minas orbitales exploten sin autodestruirse."
+  },
+  "Kick this AI?": {
+    "message": "¿Quieres expulsar a esta IA?"
   },
   "Kraken Upgrade Tech increases the range of the advanced submarine's missiles by 200%.": {
     "message": "La mejora tecnológica de Kraken aumenta un 200% el alcance de los misiles del submarino avanzado."
@@ -796,6 +805,12 @@
   },
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "La tecnología de enfriamiento de vehículos reduce a la mitad el tiempo de enfriamiento entre construcciones de todas las fábricas de vehículos."
+  },
+  "View loadout and tech cards": {
+    "message": "Ver el armamento y las cartas de tecnología"
+  },
+  "Waiting for loadout": {
+    "message": "Esperando el armamento"
   },
   "Waiting for players": {
     "message": "Esperando a los jugadores"

@@ -116,6 +116,84 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return playerFiles;
   };
 
+  // Each co-op AI's unit maps, tagged with its spec tag and written into its own
+  // tree's unit_maps/, beside the untagged maps its tree copy carries. AIs
+  // sharing a tree and a tag share the files. mapsFor(ai) is { classic, x1 };
+  // genAIUnitMap is GW.specs.genAIUnitMap.
+  var coopAiMapFiles = function (coopAis, mapsFor, genAIUnitMap) {
+    var files = {};
+
+    _.forEach(coopAis, function (coopAi) {
+      var maps = mapsFor(coopAi);
+      files[getAIUnitMapDestinationPath(false, coopAi.path) + coopAi.tag] =
+        genAIUnitMap(maps.classic, coopAi.tag);
+      files[getAIUnitMapDestinationPath(true, coopAi.path) + coopAi.tag] =
+        genAIUnitMap(maps.x1, coopAi.tag);
+    });
+
+    return files;
+  };
+
+  // The units a player's specs are built for, and the retag mods its
+  // commanders need. A race player fields the race's units of the cells the
+  // vanilla ones held occupy, and a kept vanilla unit (the Colonel) is
+  // retagged so the race can build it; an MLA player keeps everything held and
+  // gains the add-on units of those cells. Neither keeps another race's units
+  // from `units`; `extra` is kept whole. params: units, extra, cells, race,
+  // isMla, commanders, unitCells, gwoRaces. See races.md.
+  var specPlan = function (params) {
+    var cells = params.cells;
+    var gwoRaces = params.gwoRaces;
+    var extra = params.extra || [];
+    var specs = gwoRaces.fieldedFor(
+      params.race,
+      gwoRaces.ownedPaths(params.race, params.units, cells).concat(extra),
+      cells
+    );
+    var keptVanilla =
+      cells && !params.isMla
+        ? _.difference(
+            params.unitCells.heldCommanderUnits(
+              params.units.concat(extra),
+              cells.vanilla
+            ),
+            params.commanders
+          )
+        : [];
+
+    return {
+      specs: specs,
+      retagMods: _.flatten(
+        _.map(params.commanders, function (commander) {
+          return gwoRaces.commanderModsFor(params.race, commander);
+        }).concat(
+          _.map(keptVanilla, function (unit) {
+            return gwoRaces.unitRetagMods(params.race, unit);
+          })
+        )
+      ),
+    };
+  };
+
+  // A per-player co-op AI player's own files: its specs with its tech
+  // applied, and the unit maps its Sub Commanders' tree reads. params: tag,
+  // specFiles, subcommanderPath, maps ({ classic, x1 }), genAIUnitMap, mods,
+  // extraMods, gwoSpecs. See coop.md, "AI players' tech".
+  var buildCoopAiFiles = function (params) {
+    var tag = params.tag;
+    var files = _.assign({}, params.specFiles);
+    files[params.subcommanderPath + "unit_maps/ai_unit_map.json" + tag] =
+      params.genAIUnitMap(params.maps.classic, tag);
+    files[params.subcommanderPath + "unit_maps/ai_unit_map_x1.json" + tag] =
+      params.genAIUnitMap(params.maps.x1, tag);
+
+    var mods = (params.mods || []).concat(params.extraMods || []);
+    if (mods.length) {
+      params.gwoSpecs.mod(files, mods, tag);
+    }
+    return files;
+  };
+
   // Mirrors the fetch, parse and error handling the base game's genUnitSpecs
   // does internally.
   var specFetch = function (item) {
@@ -148,6 +226,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       );
     }
     return army.inventory || [];
+  };
+
+  // A file map as mountMemoryFiles takes it: every file as JSON text.
+  var cookFiles = function (files) {
+    return _.mapValues(files, function (value) {
+      return _.isString(value) ? value : JSON.stringify(value);
+    });
   };
 
   // What a rejection carries, for a log line: an Error's stack or message, a
@@ -194,6 +279,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   return {
+    cookFiles: cookFiles,
     describeError: describeError,
     loadMap: loadMap,
     armyInventory: armyInventory,
@@ -203,6 +289,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     clusterArmyIndex: clusterArmyIndex,
     resolveAiUnitMapPaths: resolveAiUnitMapPaths,
     buildPlayerFiles: buildPlayerFiles,
+    coopAiMapFiles: coopAiMapFiles,
+    specPlan: specPlan,
+    buildCoopAiFiles: buildCoopAiFiles,
     specFetch: specFetch,
   };
 });

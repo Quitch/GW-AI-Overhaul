@@ -102,6 +102,9 @@
         return applyBindings.apply(this, arguments);
       };
     };
+    // For the gw_play scripts after this one. A later caller's install runs
+    // first, so each install reads what it wraps when it runs.
+    model.gwoWhenBound = whenBound;
 
     whenBound(function () {
       gateButton();

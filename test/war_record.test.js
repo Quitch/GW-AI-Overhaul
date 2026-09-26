@@ -64,6 +64,7 @@ function war(overrides) {
       raceByFaction: { 0: "mla" },
       raceInfo: { mods: [], addonMods: [] },
       perPlayerTechCards: false,
+      uniqueAiLoadouts: true,
       galaxy: { stars: () => stars },
     },
     overrides
@@ -86,6 +87,7 @@ describe("build", () => {
       "easierStart",
       "ai",
       "aiAlly",
+      "aiCoop",
       "aiByRace",
       "aiMods",
       "techCardDeck",
@@ -96,6 +98,7 @@ describe("build", () => {
       "treasureStar",
       "coopPlayerScalingCount",
       "races",
+      "uniqueAiLoadouts",
       "biomeMods",
     ]);
     assert.equal(record.treasurePlanetFixed, true);
@@ -115,6 +118,42 @@ describe("build", () => {
       mods: [],
       addons: [],
       perPlayerRace: false,
+    });
+  });
+
+  // Only an AI under per-player tech draws a loadout.
+  it("records Unique AI loadouts only alongside per-player tech", () => {
+    assert.equal(warRecord.build(war()).uniqueAiLoadouts, false);
+    assert.equal(
+      warRecord.build(war({ perPlayerTechCards: true })).uniqueAiLoadouts,
+      true
+    );
+    assert.equal(
+      warRecord.build(
+        war({ perPlayerTechCards: true, uniqueAiLoadouts: false })
+      ).uniqueAiLoadouts,
+      false
+    );
+  });
+
+  it("records the co-op brain, which follows the opponent's until set", () => {
+    assert.equal(warRecord.build(war()).aiCoop, "Queller");
+
+    const record = warRecord.build(
+      war({
+        brains: {
+          aiByRace: { legion: { enemy: "Titans", ally: "Titans" } },
+          ai: "Titans",
+          aiAlly: "Titans",
+          aiCoop: "Queller",
+        },
+        installedRaces: ["mla", "legion"],
+      })
+    );
+    assert.equal(record.aiCoop, "Queller");
+    // A stored row without a co-op cell follows its own opponent.
+    assert.deepEqual(record.aiByRace, {
+      legion: { enemy: "Titans", ally: "Titans", coop: "Titans" },
     });
   });
 

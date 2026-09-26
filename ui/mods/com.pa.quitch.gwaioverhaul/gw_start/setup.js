@@ -404,6 +404,7 @@
             aiByRace: settings.aiByRace(),
             ai: settings.ai(),
             aiAlly: settings.aiAlly(),
+            aiCoop: settings.aiCoop(),
           };
         };
 
@@ -845,6 +846,8 @@
               raceByFaction: raceByFaction,
               raceInfo: raceInfo,
               perPlayerTechCards: model.newGamePerPlayerTechCards(),
+              uniqueAiLoadouts:
+                !!model.gwoUniqueAiLoadouts && model.gwoUniqueAiLoadouts(),
               galaxy: game.galaxy(),
             });
           };

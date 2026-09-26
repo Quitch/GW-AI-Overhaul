@@ -281,6 +281,191 @@ describe("buildPlayerFiles", () => {
   });
 });
 
+describe("coopAiMapFiles", () => {
+  // Stands in for GW.specs.genAIUnitMap, which tags every spec path.
+  const genAIUnitMap = (map, tag) => ({ from: map, tag });
+
+  it("writes each AI's tagged maps into its own tree's unit_maps/", () => {
+    const maps = {
+      "/pa/ai/player_coopai_1/": { classic: "q1", x1: "q1x" },
+      "/pa/ai_penchant/player_coopai_2/": { classic: "p", x1: "px" },
+    };
+    const files = refereeGameFiles.coopAiMapFiles(
+      [
+        { path: "/pa/ai/player_coopai_1/", tag: ".player1" },
+        { path: "/pa/ai_penchant/player_coopai_2/", tag: ".player2" },
+      ],
+      (coopAi) => maps[coopAi.path],
+      genAIUnitMap
+    );
+
+    assert.deepEqual(files, {
+      "/pa/ai/player_coopai_1/unit_maps/ai_unit_map.json.player1": {
+        from: "q1",
+        tag: ".player1",
+      },
+      "/pa/ai/player_coopai_1/unit_maps/ai_unit_map_x1.json.player1": {
+        from: "q1x",
+        tag: ".player1",
+      },
+      "/pa/ai_penchant/player_coopai_2/unit_maps/ai_unit_map.json.player2": {
+        from: "p",
+        tag: ".player2",
+      },
+      "/pa/ai_penchant/player_coopai_2/unit_maps/ai_unit_map_x1.json.player2": {
+        from: "px",
+        tag: ".player2",
+      },
+    });
+  });
+
+  it("writes one pair for AIs sharing a tree and a tag", () => {
+    const shared = { path: "/pa/ai/player_coopai/", tag: ".player" };
+    const files = refereeGameFiles.coopAiMapFiles(
+      [shared, Object.assign({}, shared)],
+      () => ({ classic: "c", x1: "x" }),
+      genAIUnitMap
+    );
+    assert.deepEqual(Object.keys(files).sort(), [
+      "/pa/ai/player_coopai/unit_maps/ai_unit_map.json.player",
+      "/pa/ai/player_coopai/unit_maps/ai_unit_map_x1.json.player",
+    ]);
+  });
+
+  it("writes nothing without AI players", () => {
+    assert.deepEqual(
+      refereeGameFiles.coopAiMapFiles([], () => undefined, genAIUnitMap),
+      {}
+    );
+  });
+});
+
+describe("specPlan", () => {
+  const unitCells = {
+    heldCommanderUnits: (held) => held.filter((unit) => unit.includes("cdr")),
+  };
+  const gwoRaces = {
+    ownedPaths: (race, paths) =>
+      paths.filter((unit) => !unit.startsWith("foreign")),
+    fieldedFor: (race, held, cells) => {
+      if (!cells) {
+        return held;
+      }
+      return race === "mla"
+        ? held.concat("addon")
+        : held.map((unit) => "race:" + unit);
+    },
+    commanderModsFor: (race, commander) => [race + " retags " + commander],
+    unitRetagMods: (race, unit) => [race + " keeps " + unit],
+  };
+  const plan = (overrides) =>
+    refereeGameFiles.specPlan(
+      Object.assign(
+        {
+          units: ["bot.json", "colonel_cdr.json"],
+          cells: undefined,
+          race: "mla",
+          isMla: true,
+          commanders: ["ai_cdr.json"],
+          unitCells,
+          gwoRaces,
+        },
+        overrides
+      )
+    );
+
+  it("keeps everything held while no cells are built", () => {
+    assert.deepEqual(plan(), {
+      specs: ["bot.json", "colonel_cdr.json"],
+      retagMods: ["mla retags ai_cdr.json"],
+    });
+  });
+
+  it("gives an MLA player the add-on units of its cells", () => {
+    assert.deepEqual(plan({ cells: {} }).specs, [
+      "bot.json",
+      "colonel_cdr.json",
+      "addon",
+    ]);
+  });
+
+  // The Colonel stays vanilla, so the race is taught to build it.
+  it("gives a race player its race's units and retags a kept vanilla commander unit", () => {
+    const result = plan({ cells: {}, race: "legion", isMla: false });
+    assert.deepEqual(result.specs, ["race:bot.json", "race:colonel_cdr.json"]);
+    assert.deepEqual(result.retagMods, [
+      "legion retags ai_cdr.json",
+      "legion keeps colonel_cdr.json",
+    ]);
+  });
+
+  it("drops another race's units from the inventory but keeps every extra spec", () => {
+    const result = plan({
+      units: ["bot.json", "foreign_bot.json"],
+      extra: ["foreign_cdr.json"],
+      cells: {},
+      race: "legion",
+      isMla: false,
+    });
+    assert.deepEqual(result.specs, ["race:bot.json", "race:foreign_cdr.json"]);
+    assert.deepEqual(result.retagMods, [
+      "legion retags ai_cdr.json",
+      "legion keeps foreign_cdr.json",
+    ]);
+  });
+});
+
+describe("buildCoopAiFiles", () => {
+  it("adds the AI's Sub Commanders' tagged maps and mods its files on its tag", () => {
+    const modded = [];
+    const files = refereeGameFiles.buildCoopAiFiles({
+      tag: ".player2",
+      specFiles: { "/pa/units/bot.json.player2": { spec: 1 } },
+      subcommanderPath: "/pa/ai/player2/",
+      maps: { classic: "c", x1: "x" },
+      genAIUnitMap: (map, tag) => ({ from: map, tag }),
+      mods: ["own"],
+      extraMods: ["retag"],
+      gwoSpecs: {
+        mod: (target, mods, tag) =>
+          modded.push([Object.keys(target), mods, tag]),
+      },
+    });
+
+    assert.deepEqual(files, {
+      "/pa/units/bot.json.player2": { spec: 1 },
+      "/pa/ai/player2/unit_maps/ai_unit_map.json.player2": {
+        from: "c",
+        tag: ".player2",
+      },
+      "/pa/ai/player2/unit_maps/ai_unit_map_x1.json.player2": {
+        from: "x",
+        tag: ".player2",
+      },
+    });
+    assert.deepEqual(modded, [
+      [Object.keys(files), ["own", "retag"], ".player2"],
+    ]);
+  });
+
+  it("mods nothing when the AI holds no mods", () => {
+    let called = false;
+    refereeGameFiles.buildCoopAiFiles({
+      tag: ".player1",
+      specFiles: {},
+      subcommanderPath: "/pa/ai/player1/",
+      maps: { classic: "c", x1: "x" },
+      genAIUnitMap: (map) => map,
+      gwoSpecs: {
+        mod: () => {
+          called = true;
+        },
+      },
+    });
+    assert.equal(called, false);
+  });
+});
+
 describe("specFetch", () => {
   // Drives specFetch with a fake $.ajax that invokes success/error synchronously, so we
   // can pin its parse-on-success, parse-fallback, and reject-on-error behaviour without
@@ -481,6 +666,39 @@ describe("loadMap", () => {
     } finally {
       stubs.restoreGlobals();
     }
+  });
+});
+
+describe("cookFiles", () => {
+  it("gives every file as JSON text, and leaves text as it is", () => {
+    const script = "var x = 1;";
+    const cooked = refereeGameFiles.cookFiles({
+      "/pa/units/bot.json.player": {
+        max_health: 10,
+        tools: [{ spec_id: "a" }],
+      },
+      "/ui/main/game/live_game/live_game.js": script,
+    });
+
+    assert.deepEqual(cooked, {
+      "/pa/units/bot.json.player": JSON.stringify({
+        max_health: 10,
+        tools: [{ spec_id: "a" }],
+      }),
+      "/ui/main/game/live_game/live_game.js": script,
+    });
+  });
+
+  // Stock deep-clones a co-op host's own files before mounting them, and a
+  // string copies at no cost however much a file holds.
+  it("leaves no object for a deep clone to walk", () => {
+    const cooked = refereeGameFiles.cookFiles({
+      "/a.json": { nested: { deep: [1, 2, 3] } },
+      "/b.json": [],
+    });
+    assert.ok(
+      Object.values(cooked).every((value) => typeof value === "string")
+    );
   });
 });
 

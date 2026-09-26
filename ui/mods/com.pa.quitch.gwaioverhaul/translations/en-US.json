@@ -25,7 +25,11 @@
   },
   "AI": {
     "message": "AI",
-    "description": "Title of the AI picker dialog on the war setup screen (gw_start), and the label of the button in the co-op setup strip that opens it, beside \"Commander\" and \"Game Options\". The dialog holds the Race / Opponent / ALLY table of AI brains. Noun, singular, the initialism for artificial intelligence; no punctuation. The same word as the game's \"AI:\" label with the colon removed, so use that translation without the colon (KI, IA, SI, ИИ, 电脑, or AI where the game keeps the English). (ai_modal.html:6, ai_modal.html:23)"
+    "description": "Title of the AI picker dialog on the war setup screen (gw_start), and the label of the button in the co-op setup strip that opens it, beside \"Commander\" and \"Game Options\". The dialog holds the Race / Opponent / ALLY / Co-op table of AI brains. Noun, singular, the initialism for artificial intelligence; no punctuation. The same word as the game's \"AI:\" label with the colon removed, so use that translation without the colon (KI, IA, SI, ИИ, 电脑, or AI where the game keeps the English). (ai_modal.html:6, ai_modal.html:23)"
+  },
+  "AI Commander": {
+    "message": "AI Commander",
+    "description": "Marker after an AI player's name in the co-op lobby's slot list on the galaxy map (gw_play), read as \"<name> - AI Commander\", the way the host's own row reads \"<name> - Host\". The game's own string, from the skirmish lobby's AI slots; use the game's translation. Noun phrase, singular, no punctuation. (coop_ai_slot.html:2)"
   },
   "AI Settings": {
     "message": "AI Settings",
@@ -37,11 +41,11 @@
   },
   "AI:": {
     "message": "AI:",
-    "description": "Label in the war-info panel of the galaxy map (gw_play), used twice: after \"Opponent\" (\"Opponent AI:\") and after \"ALLY\" (\"Ally AI:\", the CSS lower-cases ALLY) and followed by the AI brain name (Titans, Queller, Penchant). \"AI\" is a noun (the AI brain), singular; keep the trailing colon. The preceding words are separate strings, so the phrase is assembled by juxtaposition in that order. (gwo_panel.html:34)"
+    "description": "Label in the war-info panel of the galaxy map (gw_play), used three times: after \"Opponent\" (\"Opponent AI:\"), after \"ALLY\" (\"Ally AI:\", the CSS lower-cases ALLY), and in a co-op session after \"Co-op\" (\"Co-op AI:\"), and followed by the AI brain name (Titans, Queller, Penchant). \"AI\" is a noun (the AI brain), singular; keep the trailing colon. The preceding words are separate strings, so the phrase is assembled by juxtaposition in that order. (gwo_panel.html:34, gwo_panel.html:45)"
   },
   "ALLY": {
     "message": "ALLY",
-    "description": "Column header \"ALLY\" in the AI modal table on the war setup screen (Race / Opponent / ALLY, the AI brain used for allied commanders), and in the war-info panel where it is displayed sentence-cased before \"AI:\" (\"Ally AI:\"). Also appended in brackets to a faction name in the Planetary Intelligence panel: \"<Faction> (ALLY)\" for the faction that fights on the player's side. Noun, singular. Uses the base game's existing \"ALLY\" entry, so match that translation. (gwo_panel.html:39, section_of_foreign_intelligence.js:81, ai_modal.html:42)"
+    "description": "Column header \"ALLY\" in the AI modal table on the war setup screen (Race / Opponent / ALLY / Co-op, the AI brain used for allied commanders), and in the war-info panel where it is displayed sentence-cased before \"AI:\" (\"Ally AI:\"). Also appended in brackets to a faction name in the Planetary Intelligence panel: \"<Faction> (ALLY)\" for the faction that fights on the player's side. Noun, singular. Uses the base game's existing \"ALLY\" entry, so match that translation. (gwo_panel.html:39, section_of_foreign_intelligence.js:86, ai_modal.html:42)"
   },
   "ALLY CHANCE:": {
     "message": "ALLY CHANCE:",
@@ -74,6 +78,10 @@
   "Activates the Tech to build artillery structures.": {
     "message": "Activates the Tech to build artillery structures.",
     "description": "Card description, shown in the card tooltip in the Data Bank and when the card is dealt. The card unlocks the artillery structures (Pelter, Holkins and similar static artillery) so the player can build them. 'Tech' is the game's own term for a Galactic War technology. Must agree with the card name 'Artillery Tech'. (gwc_enable_artillery.js:8)"
+  },
+  "Add AI": {
+    "message": "Add AI",
+    "description": "Button on an empty slot row in the co-op lobby's slot list on the galaxy map (gw_play), shown only to the host: fills the slot with an AI player that fights beside the human players. The game's own string, from the skirmish lobby; use the game's translation. Verb phrase, no punctuation. (coop_ai_slot.html:8)"
   },
   "Add-on mods this war began with are no longer enabled:": {
     "message": "Add-on mods this war began with are no longer enabled:",
@@ -410,6 +418,10 @@
   "Also known by merchant captains as the 'Icebox', Riazuddiv was a popular stopping point for traders along the Hudson Trade Lane. With its countless taverns and brothels, popularity was not surprising, so much so it eventually attracted the attention of many of the major crime syndicates throughout the Progenitor Coalition. Many held to the belief that Riazuddiv single handedly helped support the majority of illegal activities in the region.": {
     "message": "Also known by merchant captains as the 'Icebox', Riazuddiv was a popular stopping point for traders along the Hudson Trade Lane. With its countless taverns and brothels, popularity was not surprising, so much so it eventually attracted the attention of many of the major crime syndicates throughout the Progenitor Coalition. Many held to the belief that Riazuddiv single handedly helped support the majority of illegal activities in the region.",
     "description": "Lore text: the description of a system an AI holds, shown in the star detail card on the galaxy map when the war's \"System Lore\" option is on (the original pre-release Galactic War lore). Full paragraph. Progenitor(s), the Progenitor Coalition, the Machine Liberation Army (MLA), Loyalist, the Pro-Com War and the Century War, and the people, companies, ships and places it names are proper nouns from PA's fiction; keep them. (lore.js:78)"
+  },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.",
+    "description": "Tooltip on the \"Unique AI loadouts\" switch in the co-op settings modal on the war setup screen (gw_start). \"AI player\" = a computer-controlled co-op player the host adds; \"loadout\" = starting tech card; \"holds\" = has as its loadout. \"Separate loadout & tech\" is the name of the base game's co-op option this depends on, so match that translation. Keep \"&amp;\" as written (it renders as \"&\"). Two sentences; keep the full stops. (race_picker.js, gwoUniqueAiLoadoutsTooltip)"
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "An AI that does not know a race is not offered for it.",
@@ -915,6 +927,10 @@
     "message": "CLUSTER: land. Uses Angels and Colonels as Sub Commanders and cannot build them.",
     "description": "One line of the faction tooltip on the war setup screen (gw_start), shown beside the Faction dropdown. Lines read \"FACTION NAME: preferred unit class\", joined with <br> by the code. The upper-case name before the colon is one of the game's enemy factions (a proper noun; render it as the game's own translation does, uppercased) and the word after the colon is the unit class that faction favours (vehicles, air/navy, bots, orbital, land), using the game's stock wording for that class. Keep the colon; no line break in the string. (ui.js, gwoFactionTooltip) The Cluster is a TITANS-only faction; \"land\" means ground units. Angel and Colonel are unit names (proper nouns: keep untranslated in Latin, Cyrillic and Chinese locales, transliterate in ja/ko as the game does); the Cluster fields them as Sub Commanders but cannot build more."
   },
+  "CO-OP: the AI players a host adds to a co-op session": {
+    "message": "CO-OP: the AI players a host adds to a co-op session",
+    "description": "One line of the intro in the AI picker dialog on the war setup screen (gw_start), explaining the dialog's \"Co-op\" column: the brain that runs the AI players a co-op host adds to the war's session. The lines read \"LABEL: what it means\" and sit beside \"TITANS: base game AI\", \"QUELLER: greater challenge at the cost of performance\" and \"PENCHANT: increased personality\"; the code joins them with <br>. Keep the upper-case label and the colon after it; no full stop. (ai_picker.js:79)"
+  },
   "COMMANDER TRANSPORT:": {
     "message": "COMMANDER TRANSPORT:",
     "description": "Label on the AI Settings panel on the war setup screen (gw_start), which appears when the Custom difficulty is chosen. Sits before an on/off dropdown; tooltip: \"Allow Commanders to travel by orbital transport and teleporter.\" Noun phrase, singular, upper-case; keep the trailing colon. (ai_settings.html:344)"
@@ -982,6 +998,10 @@
   "Co-Op Settings": {
     "message": "Co-Op Settings",
     "description": "Sub-heading in the war-info panel on the galaxy map (gw_play), visible only in a co-op war, over the table of co-op rows (Scaling For:, Armies:, Tech:, Player Slots:). Noun phrase, plural, title case, no punctuation. (gwo_panel.html:67)"
+  },
+  "Co-op": {
+    "message": "Co-op",
+    "description": "Heading of the third column in the AI picker dialog on the war setup screen (gw_start), beside \"Opponent\" and \"ALLY\": the brain of the AI players a co-op host adds to the session. Also the first word of the \"Co-op AI:\" row in the war-info panel on the galaxy map (gw_play), where \"AI:\" is a separate string that follows it. Short adjective used as a label (co-operative play), no punctuation; the dialog shows it upper-case through CSS. (ai_modal.html:43, gwo_panel.html:45)"
   },
   "Co-op host setup": {
     "message": "Co-op host setup",
@@ -1870,6 +1890,14 @@
   "Kestrel Upgrade Tech replaces the gunship's bullet weapons with flamethrowers.": {
     "message": "Kestrel Upgrade Tech replaces the gunship's bullet weapons with flamethrowers.",
     "description": "Body text of a tech card. Shown in the Data Bank card list, in the card tooltip on the galaxy map, and in the tech deal offered after a battle. The Kestrel is the air gunship; the card changes its ammo to a flame beam with five times the damage and one third the range. 'gunship' is a description, not a unit name. The opening 'Kestrel Upgrade Tech' must match the card name. The game appends a blank line and the sentence 'Adds a new slot for another technology.' after this text, so end it as a complete sentence. (gwaio_upgrade_kestrel.js:8)"
+  },
+  "Kick": {
+    "message": "Kick",
+    "description": "Button on an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), shown only to the host: removes that AI player from the war. The game's own string, the Kick button on every other player's row; use the game's translation. Verb, imperative, no punctuation. After one press the button reads \"Kick this AI?\". (coop_ai_slot.html:15)"
+  },
+  "Kick this AI?": {
+    "message": "Kick this AI?",
+    "description": "The Kick button on an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), after the host has pressed it once. A second press removes the AI player for good, which cannot be undone, so the button asks first. Short question; keep the question mark. Sibling of \"Kick\", the game's own button text. (coop_ai_slot.html:18)"
   },
   "Known by one name, Blogar was a giant of a man. From unknown origins, Blogar rose through the ranks of the criminal world to become the Progenitor Coalition's first criminal overlord. Gaining a reputation for killing people with one punch, Blogar used fear of violence to get what he wanted. Before he knew it, he had built a criminal empire that spanned the galaxy. Using his now infamous strong-arm tactics, Blogar was able to seize control of a sparsely populated system and make it his own. During the Century War, Blogar was reported to have punched through a Xziphid Hegemony warrior's exosuit. As a result, Blogar became the first human to discover what the aliens really looked like under the insect appearance of their armor.": {
     "message": "Known by one name, Blogar was a giant of a man. From unknown origins, Blogar rose through the ranks of the criminal world to become the Progenitor Coalition's first criminal overlord. Gaining a reputation for killing people with one punch, Blogar used fear of violence to get what he wanted. Before he knew it, he had built a criminal empire that spanned the galaxy. Using his now infamous strong-arm tactics, Blogar was able to seize control of a sparsely populated system and make it his own. During the Century War, Blogar was reported to have punched through a Xziphid Hegemony warrior's exosuit. As a result, Blogar became the first human to discover what the aliens really looked like under the insect appearance of their armor.",
@@ -3675,6 +3703,10 @@
     "message": "Unable To Expand Delay",
     "description": "Label on the AI Settings dialog opened from the war setup screen (Galactic War start). Row label (CSS uppercases it; a colon follows outside the tag, do not add one): the delay before the AI realises it cannot expand further. Noun phrase. Must agree with its tooltip \"Delay before AI realises it cannot expand.\" (ai_settings.html:253)"
   },
+  "Unique AI loadouts": {
+    "message": "Unique AI loadouts",
+    "description": "Label of a switch in the co-op settings on the war setup screen: when on, no co-op AI player starts with a loadout (starting tech card) that another player already has. Noun phrase, plural, sentence case like the modal's other rows; \"AI\" is a computer-controlled co-op player the host adds. (coop_ai_loadouts_row.html)"
+  },
   "Unique Races": {
     "message": "Unique Races",
     "description": "Label of the \"Unique Races\" switch in the Game Options dialog on the war setup screen (shown only when race mods are installed): no two enemy factions share a race until all are used. Title case noun phrase, plural. Its lowercase twin \"Unique races\" is the same option on the GWO panel; translate both the same apart from casing. Must agree with its tooltip \"No enemy faction shares a race with you...\". (difficulty_options.html:181)"
@@ -3794,6 +3826,14 @@
   "Vehicle Factory Upgrade Tech enables the building of advanced units by basic vehicle manufacturing.": {
     "message": "Vehicle Factory Upgrade Tech enables the building of advanced units by basic vehicle manufacturing.",
     "description": "Description of the upgrade tech card 'Vehicle Factory Upgrade Tech', shown in the Data Bank card list, the card tooltip on the galaxy map and the tech deal after a battle. The card upgrades the basic Vehicle Factory: the advanced armour tank, artillery vehicle, laser tank and flak tank are added to the basic factory's build list (and to the AI's), so no advanced factory is needed. The leading card name must match the translation of the card name 'Vehicle Factory Upgrade Tech' exactly. Rendered as body text under the card name; the game appends a second paragraph about a new technology slot, so end the sentence with the same punctuation as the source. 'basic vehicle manufacturing' is a roundabout way of saying the basic vehicle factory. (gwaio_upgrade_vehiclefactory.js:9)"
+  },
+  "View loadout and tech cards": {
+    "message": "View loadout and tech cards",
+    "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), under per-player tech, once the AI's loadout and tech cards can be shown. Stock's rows show the same tooltip for a human player, in English, since no locale of the game translates it; \"loadout\" and \"tech cards\" as in \"Waiting for loadout\" and \"Processing tech cards\". Imperative verb phrase, no full stop. (coop_ai_roster.js:166)"
+  },
+  "Waiting for loadout": {
+    "message": "Waiting for loadout",
+    "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), while that player's loadout and tech cards cannot be shown. Stock's rows show the same tooltip for a human player, in English, since no locale of the game translates it. No full stop. (coop_ai_roster.js:167)"
   },
   "Waiting for players": {
     "message": "Waiting for players",

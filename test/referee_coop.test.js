@@ -6,8 +6,9 @@
 // referee, gwo_panel.js and the intelligence panel), and all four are coverage-excluded
 // glue, so this is where that arithmetic is actually pinned down.
 
-const { describe, it } = require("node:test");
+const { describe, it, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
+const _ = require("lodash");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   makeInventory,
@@ -32,7 +33,16 @@ function makeGame(options) {
     perPlayerTechCards: () => !!settings.perPlayerTechCards,
     findCoopPlayerInventoryData: (client) =>
       client ? records[client.id] : undefined,
+    coopPlayerInventoryData: () =>
+      _.values(records).concat(settings.aiRecords || []),
   };
+}
+
+function makeAiRecord(serial, minionNames) {
+  return Object.assign(makeRecord(minionNames), {
+    playerId: "gwo_ai_" + serial,
+    gwaioAi: { serial: serial },
+  });
 }
 
 function makeRecord(minionNames, cards) {
@@ -62,6 +72,8 @@ describe("referee_coop.getOrderedSubcommanders", () => {
     minionsList: [{ name: "Alpha" }, { name: "Beta" }],
     cardsList: [{ id: "host_card" }],
   });
+
+  beforeEach(() => installModel(makeGame(), [HOST]));
 
   it("is the host's own subcommanders when per-player tech is off", () => {
     const game = makeGame({
@@ -205,6 +217,63 @@ describe("referee_coop.getOrderedSubcommanders", () => {
       refereeCoop.alliedColourIndex(ordered.length),
       hostInventory.minions().length + 1
     );
+  });
+});
+
+describe("referee_coop co-op AI players", () => {
+  const hostInventory = makeInventory({ minionsList: [{ name: "Alpha" }] });
+
+  // Host, then viewers, then AIs in slot order; the star's ally follows all.
+  it("numbers the AI players' Sub Commanders after every viewer's", () => {
+    const game = makeGame({
+      perPlayerTechCards: true,
+      records: { "view-1": makeRecord(["Beta"]) },
+      aiRecords: [makeAiRecord(2, ["Delta"]), makeAiRecord(1, ["Gamma"])],
+    });
+    installModel(game, [HOST, VIEWER_ONE]);
+
+    assert.deepEqual(
+      names(
+        refereeCoop.getOrderedSubcommanders(hostInventory, game, [
+          HOST,
+          VIEWER_ONE,
+        ])
+      ),
+      ["Alpha", "Beta", "Gamma", "Delta"]
+    );
+    assert.deepEqual(
+      _.map(refereeCoop.getCoopAiInventories(game), "record.playerId"),
+      ["gwo_ai_1", "gwo_ai_2"]
+    );
+  });
+
+  it("leaves AI players out under shared tech, and outside a session", () => {
+    const shared = makeGame({
+      perPlayerTechCards: false,
+      aiRecords: [makeAiRecord(1, ["Gamma"])],
+    });
+    installModel(shared, [HOST]);
+    assert.deepEqual(refereeCoop.getCoopAiInventories(shared), []);
+
+    const solo = makeGame({
+      perPlayerTechCards: true,
+      aiRecords: [makeAiRecord(1, ["Gamma"])],
+    });
+    installModel(solo, []);
+    assert.deepEqual(refereeCoop.getCoopAiInventories(solo), []);
+    assert.deepEqual(
+      names(refereeCoop.getOrderedSubcommanders(hostInventory, solo, [])),
+      ["Alpha"]
+    );
+  });
+
+  it("skips an AI record with no inventory", () => {
+    const game = makeGame({
+      perPlayerTechCards: true,
+      aiRecords: [{ playerId: "gwo_ai_1", gwaioAi: { serial: 1 } }],
+    });
+    installModel(game, [HOST]);
+    assert.deepEqual(refereeCoop.getCoopAiInventories(game), []);
   });
 });
 

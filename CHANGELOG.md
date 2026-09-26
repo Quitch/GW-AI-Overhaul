@@ -6,10 +6,14 @@
 
 - Card mods can target Legion, Bugs, Exiles, Second Wave, Section 17, and Osmech units; a card that names only such units is dealt only to players whose race fields them - see the `New-GW-Cards` template
 - Card mods can put a group of units inside a list of units, when adding, removing, or changing units
+- The host of a co-op war can add AI players to open slots; they fight beside the human players, can be kicked from their slot, and with per-player tech each choose their own loadout and tech cards
+- The AI settings choose which AI brain the co-op AI players use, per race
+- Co-op AI players ping the star they want to go to next
 
 ### Changed
 
 - Deleting a tech card now asks you to press Delete Tech a second time to confirm
+- Co-op battles start sooner for the host
 - Tooltips stay open while the pointer is over them, close with Escape, and have more space between lines
 - Warning and progress text is easier to read against the background
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover

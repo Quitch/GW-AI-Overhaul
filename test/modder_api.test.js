@@ -98,6 +98,14 @@ describe("the modder globals are adopted, not overwritten", () => {
       /_\.isArray\(\s*model\.gwoStarCardsWhichBreakAllies\s*\)/
     );
   });
+
+  // Read the same way, when an AI is added.
+  it("gwoLoadoutsAiCannotUse is read from the mod's own array", () => {
+    assert.match(
+      source(MOD_ROOT + "/gw_play/cards.js"),
+      /_\.isArray\(\s*model\.gwoLoadoutsAiCannotUse\s*\)/
+    );
+  });
 });
 
 // The battle-preparation screen other mods report into. GW Server Mods calls

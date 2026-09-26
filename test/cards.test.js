@@ -1060,6 +1060,69 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
     );
   });
 
+  // A co-op AI player has no connection, yet fights in the session's battles.
+  describe("co-op AI players", () => {
+    function installAiModel(active) {
+      const hostInventory = { cards: () => [], hasCard: () => false };
+      const game = {
+        coopPlayerInventoryData: () => [
+          {
+            playerId: "gwo_ai_1",
+            gwaioAi: { serial: 1 },
+            inventory: { cards: [{ id: "ai_card" }] },
+          },
+          { playerId: "gwo_ai_2", gwaioAi: { serial: 2 } },
+        ],
+      };
+      setGlobal("model", {
+        game: () => game,
+        gwCampaignConnectedClients: () => [],
+        gwCampaignActive: () => active,
+      });
+      return { hostInventory, game };
+    }
+
+    it("counts an AI player's cards while a session is active", () => {
+      const { hostInventory, game } = installAiModel(true);
+      assert.deepEqual(cards.getAllConnectedPlayerCards(hostInventory, game), [
+        { id: "ai_card" },
+      ]);
+      assert.equal(
+        cards.anyPlayerHasCard(hostInventory, "ai_card", game),
+        true
+      );
+    });
+
+    it("leaves an AI player out of a war played without a session", () => {
+      const { hostInventory, game } = installAiModel(false);
+      assert.deepEqual(
+        cards.getAllConnectedPlayerCards(hostInventory, game),
+        []
+      );
+      assert.equal(
+        cards.anyPlayerHasCard(hostInventory, "ai_card", game),
+        false
+      );
+    });
+
+    it("leaves an AI player out in a scene with no session at all", () => {
+      const hostInventory = { cards: () => [] };
+      const game = {
+        coopPlayerInventoryData: () => [
+          { gwaioAi: {}, inventory: { cards: [{ id: "ai_card" }] } },
+        ],
+      };
+      setGlobal("model", {
+        game: () => game,
+        gwCampaignConnectedClients: () => [],
+      });
+      assert.deepEqual(
+        cards.getAllConnectedPlayerCards(hostInventory, game),
+        []
+      );
+    });
+  });
+
   // section_of_foreign_intelligence.js calls anyPlayerHasCard with two
   // arguments, so the `game || model.game()` fallback is the live path there
   // while referee_config.js always passes one.

@@ -41,7 +41,9 @@ nothing else. `validate:docs` checks this table against that block:
 `gwo_panel.js` builds GWO's own war panel. That panel shows the seed, the
 difficulty, the AI brains, the war's game options, and each client's colour for
 the next battle. `section_of_foreign_intelligence/` is the intel panel. It is
-vendored code under its own licence, so the attribution at its head stays.
+vendored code under its own licence, so the attribution at its head stays. Its
+threat measure lives in `shared/star_threat.js`, under the same attribution,
+because co-op AI players weigh it too.
 
 `shared/mod_translations.js` is the sole `global_mod_list` entry and is in no scene
 list: it registers GWO's translation files with the Mod Translations mod before the
@@ -95,6 +97,9 @@ This sequence ties most of the above together. `gw_play/referee.js` hijacks the
 base referee and installs GWO's referee. The hire of GWO's referee runs these
 steps in order:
 
+0. `gw_play/referee.js` fixes the battle's co-op AI players as `ref.coopAis`,
+   from `model.gwoCoopAi.launchRoster()`. The steps below read the roster from
+   there, never from the war. See [`coop.md`](coop.md), "AI players".
 1. `gw_play/referee_game_files.js` generates unit specs per army tag. It
    applies the AI tech that `gw_play/ai_tech.js` builds from the buffs the war
    recorded. See galaxy.md, "AI tech".

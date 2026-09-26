@@ -38,15 +38,29 @@ describe("seedRow", () => {
     assert.deepEqual(brainTable.seedRow("legion", "Queller", "Penchant"), {
       enemy: "Queller",
       ally: "Titans",
+      coop: "Queller",
     });
     assert.deepEqual(brainTable.seedRow("fixture", "Queller", "Penchant"), {
       enemy: "Titans",
       ally: "Titans",
+      coop: "Titans",
     });
     assert.deepEqual(brainTable.seedRow("mla", "Penchant", "Queller"), {
       enemy: "Penchant",
       ally: "Queller",
+      coop: "Penchant",
     });
+  });
+
+  it("seeds the co-op cell from its own choice when one is set", () => {
+    assert.deepEqual(
+      brainTable.seedRow("legion", "Titans", "Titans", "Queller"),
+      { enemy: "Titans", ally: "Titans", coop: "Queller" }
+    );
+    assert.equal(
+      brainTable.seedRow("fixture", "Titans", "Titans", "Queller").coop,
+      "Titans"
+    );
   });
 });
 
@@ -99,8 +113,11 @@ describe("rowsFor", () => {
       stale: true,
       options: ["Titans"],
       allyOptions: ["Titans"],
+      coopOptions: ["Titans"],
       enemy: "Titans",
       ally: "Titans",
+      coop: "Titans",
+      coopFollows: true,
     });
   });
 
@@ -117,6 +134,46 @@ describe("rowsFor", () => {
     assert.deepEqual(rows[1].options, ["Queller"]);
     assert.deepEqual(rows[1].allyOptions, ["Penchant"]);
     assert.equal(rows[1].ally, "Penchant");
+    // Stored before the co-op column: it follows the opponent.
+    assert.deepEqual(rows[1].coopOptions, ["Queller"]);
+    assert.equal(rows[1].coop, "Queller");
+  });
+
+  it("lists a stale row's own stored co-op brain", () => {
+    const rows = brainTable.rowsFor(
+      { bugs: { enemy: "Queller", ally: "Penchant", coop: "Titans" } },
+      ["mla"],
+      "Titans",
+      "Titans"
+    );
+
+    assert.deepEqual(rows[1].coopOptions, ["Titans"]);
+    assert.equal(rows[1].coop, "Titans");
+  });
+
+  it("keeps a stored co-op cell, and follows the stored opponent without one", () => {
+    const rows = brainTable.rowsFor(
+      {
+        legion: { enemy: "Titans", ally: "Titans", coop: "Queller" },
+        fixture: { enemy: "Titans", ally: "Titans" },
+      },
+      ["mla", "legion", "fixture"],
+      "Penchant",
+      "Titans",
+      "Queller"
+    );
+
+    assert.equal(rows[0].coop, "Queller"); // MLA: the war-wide co-op choice
+    assert.equal(rows[1].coop, "Queller"); // stored
+    assert.equal(rows[2].coop, "Titans"); // the stored opponent
+    assert.deepEqual(rows[1].coopOptions, ["Titans", "Queller"]);
+  });
+
+  it("seeds an unstored co-op cell from the opponent's choice when none is set", () => {
+    const rows = brainTable.rowsFor(undefined, ["mla", "legion"], "Queller");
+
+    assert.equal(rows[0].coop, "Queller");
+    assert.equal(rows[1].coop, "Queller");
   });
 
   it("seeds every row from nothing stored", () => {
@@ -132,10 +189,89 @@ describe("rowsFor", () => {
       stale: false,
       options: ["Titans", "Queller", "Penchant"],
       allyOptions: ["Titans", "Queller", "Penchant"],
+      coopOptions: ["Titans", "Queller", "Penchant"],
+      coopFollows: true,
       enemy: "Penchant",
       ally: "Titans",
+      coop: "Penchant",
     });
     assert.equal(rows[1].enemy, "Titans"); // Penchant does not know Legion
+  });
+
+  // An unset co-op cell follows the opponent, so the modal must not pin it
+  // to whatever the opponent was when it opened.
+  it("says which co-op cells follow their opponent", () => {
+    const rows = brainTable.rowsFor(
+      {
+        legion: { enemy: "Queller", ally: "Titans", coop: "Titans" },
+        bugs: { enemy: "Titans", ally: "Titans" },
+      },
+      ["mla", "legion", "bugs"],
+      "Titans",
+      "Titans"
+    );
+    assert.deepEqual(
+      rows.map((row) => [row.id, row.coopFollows]),
+      [
+        ["mla", true],
+        ["legion", false],
+        ["bugs", true],
+      ]
+    );
+
+    const pinned = brainTable.rowsFor(
+      undefined,
+      ["mla"],
+      "Titans",
+      "Titans",
+      "Queller"
+    );
+    assert.equal(pinned[0].coopFollows, false);
+    assert.equal(pinned[0].coop, "Queller");
+  });
+
+  // resolve gives a race with no stored row the war-wide co-op brain, so the
+  // cell shows that brain rather than following the race's opponent.
+  it("gives an unstored race row the war-wide co-op brain once one is picked", () => {
+    const pinned = brainTable.rowsFor(
+      undefined,
+      ["mla", "legion"],
+      "Titans",
+      "Titans",
+      "Queller"
+    );
+    assert.equal(pinned[1].coopFollows, false);
+    assert.equal(pinned[1].coop, "Queller");
+    assert.equal(
+      pinned[1].coop,
+      brainTable.resolve(
+        undefined,
+        "Titans",
+        "Titans",
+        "coop",
+        "legion",
+        "Queller"
+      )
+    );
+
+    const following = brainTable.rowsFor(
+      undefined,
+      ["legion"],
+      "Titans",
+      "Titans"
+    );
+    assert.equal(following[0].coopFollows, true);
+  });
+
+  it("follows the opponent where a stored co-op brain cannot run the race", () => {
+    const rows = brainTable.rowsFor(
+      { legion: { enemy: "Titans", ally: "Titans", coop: "Penchant" } },
+      ["legion"],
+      "Titans",
+      "Titans"
+    );
+    assert.equal(rows[0].coopFollows, true);
+    assert.equal(rows[0].coop, "Titans");
   });
 });
 
@@ -184,6 +320,57 @@ describe("resolve", () => {
     );
   });
 
+  it("answers the co-op side from the race's co-op cell", () => {
+    const withCoop = {
+      legion: { enemy: "Titans", ally: "Titans", coop: "Queller" },
+    };
+
+    assert.equal(
+      brainTable.resolve(withCoop, "Titans", "Titans", "coop", "legion"),
+      "Queller"
+    );
+    assert.equal(
+      brainTable.resolve(withCoop, "Titans", "Titans", "enemy", "legion"),
+      "Titans"
+    );
+  });
+
+  // A war saved before the co-op column resolves its co-op side exactly like
+  // its enemy side, row by row and for MLA.
+  it("resolves a war saved before the co-op column like its enemy side", () => {
+    for (const race of ["mla", "legion", "fixture", "bugs"]) {
+      assert.equal(
+        brainTable.resolve(table, "Penchant", "Titans", "coop", race),
+        brainTable.resolve(table, "Penchant", "Titans", "enemy", race),
+        race
+      );
+    }
+  });
+
+  it("routes MLA's co-op side to the war-wide co-op string", () => {
+    assert.equal(
+      brainTable.resolve(table, "Penchant", "Titans", "coop", "mla", "Queller"),
+      "Queller"
+    );
+    // A race with no co-op cell follows its opponent, not the MLA string.
+    assert.equal(
+      brainTable.resolve(
+        table,
+        "Penchant",
+        "Titans",
+        "coop",
+        "legion",
+        "Titans"
+      ),
+      "Queller"
+    );
+    // A race with no row takes the co-op string.
+    assert.equal(
+      brainTable.resolve({}, "Titans", "Titans", "coop", "legion", "Queller"),
+      "Queller"
+    );
+  });
+
   it("falls back to the strings for a race with no row, then to Titans", () => {
     assert.equal(
       brainTable.resolve({}, "Queller", undefined, "enemy", "legion"),
@@ -210,8 +397,29 @@ describe("recordFor", () => {
     );
 
     assert.deepEqual(record, {
-      legion: { enemy: "Queller", ally: "Titans" },
-      fixture: { enemy: "Titans", ally: "Titans" },
+      legion: { enemy: "Queller", ally: "Titans", coop: "Queller" },
+      fixture: { enemy: "Titans", ally: "Titans", coop: "Titans" },
+    });
+  });
+
+  it("records each race's co-op cell, coerced, beside the other two", () => {
+    races.register({ id: "bugs" });
+    const record = brainTable.recordFor(
+      {
+        legion: { enemy: "Titans", ally: "Titans", coop: "Queller" },
+        fixture: { enemy: "Titans", ally: "Titans", coop: "Queller" },
+      },
+      ["legion", "fixture", "bugs"],
+      "Titans",
+      "Titans",
+      "Queller"
+    );
+
+    assert.deepEqual(record, {
+      legion: { enemy: "Titans", ally: "Titans", coop: "Queller" },
+      fixture: { enemy: "Titans", ally: "Titans", coop: "Titans" },
+      // No row: the war-wide co-op choice, coerced for the race.
+      bugs: { enemy: "Titans", ally: "Titans", coop: "Titans" },
     });
   });
 

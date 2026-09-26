@@ -1,5 +1,5 @@
-// The per-race AI brain table: a modal with one row per race and an Opponent
-// and Ally brain per row, replacing the two war-wide AI dropdowns. Each cell
+// The per-race AI brain table: a modal with one row per race and an Opponent,
+// Ally and Co-op brain per row, replacing the war-wide AI dropdowns. Each cell
 // offers only the brains that know its race, so no coercion is needed at
 // pick time. Cells are the scene's usual selectpicker dropdowns; the rows are
 // rebuilt wholesale on every change, so each select is initialised once with
@@ -27,11 +27,15 @@
         settings.aiByRace(),
         _.pluck(raceOptions, "id"),
         settings.ai(),
-        settings.aiAlly()
+        settings.aiAlly(),
+        settings.aiCoop()
       );
 
       return _.map(rows, function (row) {
         var descriptor = races.byId(row.id);
+        var enemy = ko.observable(row.enemy);
+        var chosenCoop = ko.observable(row.coop);
+        var coopFollows = ko.observable(row.coopFollows);
         return {
           id: row.id,
           stale: row.stale,
@@ -41,8 +45,25 @@
             namesById[row.id] || (descriptor ? loc(descriptor.name) : row.id),
           options: row.options,
           allyOptions: row.allyOptions,
-          enemy: ko.observable(row.enemy),
+          coopOptions: row.coopOptions,
+          enemy: enemy,
           ally: ko.observable(row.ally),
+          // Until a brain is picked for it, the co-op cell shows and keeps
+          // following the opponent's. The picker writes back what it shows,
+          // so only a different brain breaks the link.
+          coop: ko.computed({
+            read: function () {
+              return coopFollows() ? enemy() : chosenCoop();
+            },
+            write: function (value) {
+              if (coopFollows() && value === enemy()) {
+                return;
+              }
+              chosenCoop(value);
+              coopFollows(false);
+            },
+          }),
+          coopFollows: coopFollows,
         };
       });
     };
@@ -55,6 +76,7 @@
       loc("!LOC:TITANS: base game AI"),
       loc("!LOC:QUELLER: greater challenge at the cost of performance"),
       loc("!LOC:PENCHANT: increased personality"),
+      loc("!LOC:CO-OP: the AI players a host adds to a co-op session"),
       loc("!LOC:An AI that does not know a race is not offered for it."),
     ].join("<br>");
 
@@ -80,13 +102,20 @@
         if (row.stale) {
           return;
         }
+        // A co-op cell that follows its opponent stores nothing, so it goes
+        // on following whatever the opponent becomes.
+        var coop = row.coopFollows() ? undefined : row.coop();
         if (row.id === races.MLA_ID) {
           // The war-wide observables ARE the MLA row. See races.md.
           settings.ai(row.enemy());
           settings.aiAlly(row.ally());
+          settings.aiCoop(coop);
           return;
         }
         stored[row.id] = { enemy: row.enemy(), ally: row.ally() };
+        if (coop) {
+          stored[row.id].coop = coop;
+        }
       });
       settings.aiByRace(stored);
       model.gwoAiModalVisible(false);

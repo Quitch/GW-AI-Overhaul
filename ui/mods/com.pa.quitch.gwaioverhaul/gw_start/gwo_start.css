@@ -142,7 +142,7 @@
 
 /* Qualified for the same injection-order reason as the game-options panel. */
 .gw-start-coop-settings-panel.gwo-ai-modal-panel {
-  width: 520px;
+  width: 680px;
 }
 
 .gwo-ai-modal-body {
@@ -322,7 +322,8 @@
 #gwo-commander-panel .coop-setup-configure,
 #gwo-ai-panel .coop-setup-configure,
 #gwo-game-options-modal .gw-start-square-switch,
-#gwo-per-player-race-row .gw-start-square-switch {
+#gwo-per-player-race-row .gw-start-square-switch,
+#gwo-unique-ai-loadouts-row .gw-start-square-switch {
   position: relative;
 }
 
@@ -338,7 +339,8 @@
 }
 
 #gwo-game-options-modal .gw-start-square-switch::before,
-#gwo-per-player-race-row .gw-start-square-switch::before {
+#gwo-per-player-race-row .gw-start-square-switch::before,
+#gwo-unique-ai-loadouts-row .gw-start-square-switch::before {
   content: "";
   position: absolute;
   top: -8px;

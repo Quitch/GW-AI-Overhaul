@@ -262,7 +262,23 @@ define([
       applyGeneralCommanderSetupResult
     );
 
-    return function setupGeneralCommander() {
+    // A co-op AI player's starting inventory with the General Commander's Sub
+    // Commanders appended, unapplied, drawn as a viewer's are. Any other
+    // loadout comes back as it was. See coop.md, "AI players' tech".
+    var appendRecordMinions = function (savedInventory, playerKey) {
+      var next = _.cloneDeep(savedInventory);
+      var recordFaction = _.get(next, "tags.global.playerFaction");
+
+      appendGeneralCommanderMinions(
+        next.cards,
+        _.isNumber(recordFaction) ? recordFaction : playerFaction,
+        playerKey,
+        next
+      );
+      return next;
+    };
+
+    var setupGeneralCommander = function () {
       var cards;
 
       // A viewer's inventory is a copy of the host's, so a viewer never takes
@@ -280,6 +296,11 @@ define([
           gwoSave(game, false);
         });
       }
+    };
+
+    return {
+      setupGeneralCommander: setupGeneralCommander,
+      appendRecordMinions: appendRecordMinions,
     };
   };
 });

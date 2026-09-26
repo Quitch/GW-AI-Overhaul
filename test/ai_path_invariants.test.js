@@ -4,6 +4,7 @@
 //   1. Enemies and subcommanders never share an ai_path.
 //   2. Subcommanders never share one with each other under per-player tech.
 //   3. No ai_path root sits inside another's engine-scanned directories.
+//   4. A co-op AI player shares an ai_path with no other AI.
 //
 // The first two have one intentional exception each, pinned below as named tests
 // rather than silently excluded. Simultaneous player/enemy Cluster is not swept:
@@ -78,8 +79,15 @@ const ENGINE_SCANNED_DIRECTORIES = [
 function everyResolvableAiPath() {
   const paths = new Set();
   // "all" is unreachable from live code, but is part of the module's surface.
-  const types = ["enemy", "subcommander", "cluster", "all"];
-  const scopeTokens = [undefined, "guardians", ".player0", "player0"];
+  const types = ["enemy", "subcommander", "cluster", "coop", "all"];
+  const scopeTokens = [
+    undefined,
+    "guardians",
+    ".player0",
+    "player0",
+    "coopai",
+    "coopai_1",
+  ];
 
   for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
     for (const type of types) {
@@ -254,6 +262,55 @@ describe("documented behavior: guardians is ignored by per-player-tech viewer sc
     installModel(fixture.game);
     assert.equal(refereeConfig.setAIPath(false, true), "/pa/ai/");
   });
+});
+
+describe("invariant: a co-op AI player's path is its own", () => {
+  // Every brain on both sides, every enemy type and tech state: the co-op
+  // tree never meets the enemy's, a Sub Commander's or a viewer's.
+  for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
+    for (const aiCoopInUse of SCENARIO_AXES.AI_BRAINS) {
+      for (const enemyType of SCENARIO_AXES.ENEMY_TYPES) {
+        for (const techState of SCENARIO_AXES.SUBCOMMANDER_TECH_STATES) {
+          it(`enemy=${aiInUse}/coop=${aiCoopInUse}, enemyType=${enemyType}, subcommander tech=${techState}: paths differ`, () => {
+            const aiMods = techState === "active" ? [{ op: "load" }] : [];
+            const fixture = buildGame({
+              aiInUse: aiInUse,
+              aiCoopInUse: aiCoopInUse,
+              enemyType: enemyType,
+              aiMods: aiMods,
+            });
+            installModel(fixture.game);
+
+            const coopPaths = [
+              gwoAI.getCoopAiPath(undefined, "coopai"),
+              gwoAI.getCoopAiPath(undefined, "coopai_1"),
+              gwoAI.getCoopAiPath(undefined, "coopai_2"),
+            ];
+            const others = [
+              refereeConfig.setAIPath(gwoAI.isCluster(fixture.ai), false),
+              refereeConfig.setAIPath(false, true),
+              refereeConfig.setAIPath(true, true),
+              gwoAI.getSubcommanderPathForViewer(
+                makeInventory({ aiModsList: aiMods }),
+                ".player0"
+              ),
+              refereeAIPaths.getAIPathDestination("cluster", aiInUse, {
+                scopeToken: "player0",
+              }),
+            ];
+
+            assert.equal(new Set(coopPaths).size, coopPaths.length);
+            for (const coopPath of coopPaths) {
+              assert.ok(
+                !others.includes(coopPath),
+                `${coopPath} is also another AI's path: ${others}`
+              );
+            }
+          });
+        }
+      }
+    }
+  }
 });
 
 describe("invariant: mixed-brain fights (aiAlly differs from ai) never collide", () => {
@@ -491,33 +548,47 @@ describe("invariant: no ai_path root sits inside another ai_path's scanned direc
     });
 
     const filesObj = {};
-    return runRefereeAiHere(filesObj).then(() => {
-      const written = Object.keys(filesObj);
-      const roots = [...new Set(written.map(aiPathRootOf).filter(Boolean))];
+    const coopAis = [
+      {
+        race: "mla",
+        source: "/pa/ai/",
+        path: gwoAI.getCoopAiPath(undefined, "coopai"),
+        scopeToken: "coopai",
+        inventory: fixture.inventory,
+      },
+    ];
+    return refereeAi
+      .call({ files: () => filesObj, coopAis: coopAis })
+      .then(() => {
+        const written = Object.keys(filesObj);
+        const roots = [...new Set(written.map(aiPathRootOf).filter(Boolean))];
 
-      assert.ok(
-        roots.length > 1,
-        `expected several distinct roots in the write set, got: ${roots}`
-      );
-      assertNoRootInsideAnothersScannedDirectory(roots);
+        assert.ok(
+          roots.length > 1,
+          `expected several distinct roots in the write set, got: ${roots}`
+        );
+        assertNoRootInsideAnothersScannedDirectory(roots);
 
-      // Nesting is only safe because a nested tree is self-contained. ai_config.json
-      // has no fallback, so a tree omitting it runs with no unit cap.
-      const guardiansRoot = "/pa/ai/player_guardians/";
-      assert.deepEqual(
-        written
-          .filter((path) => path.startsWith(guardiansRoot))
-          .map((path) => path.slice(guardiansRoot.length))
-          .sort(),
-        [
-          "ai_config.json",
-          "fabber_builds/fabber_land_builds.json",
-          "factory_builds/factory_bot_builds.json",
-          "platoon_builds/platoon_land_builds.json",
-          "platoon_templates/platoon_templates.json",
-          "unit_maps/ai_unit_map.json",
-        ]
-      );
-    });
+        // Nesting is only safe because a nested tree is self-contained. ai_config.json
+        // has no fallback, so a tree omitting it runs with no unit cap.
+        const guardiansRoot = "/pa/ai/player_guardians/";
+        const coopRoot = "/pa/ai/player_coopai/";
+        assert.ok(written.includes(coopRoot + "ai_config.json"));
+        assert.ok(roots.includes(coopRoot), `no co-op AI root in ${roots}`);
+        assert.deepEqual(
+          written
+            .filter((path) => path.startsWith(guardiansRoot))
+            .map((path) => path.slice(guardiansRoot.length))
+            .sort(),
+          [
+            "ai_config.json",
+            "fabber_builds/fabber_land_builds.json",
+            "factory_builds/factory_bot_builds.json",
+            "platoon_builds/platoon_land_builds.json",
+            "platoon_templates/platoon_templates.json",
+            "unit_maps/ai_unit_map.json",
+          ]
+        );
+      });
   });
 });

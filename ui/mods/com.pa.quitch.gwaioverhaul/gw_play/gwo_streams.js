@@ -108,6 +108,40 @@ define([
       );
     },
 
+    // A co-op AI player's own draws, keyed by its serial, which is never
+    // reused, so a new AI draws from a stream no earlier AI drew from.
+    coopAiPlayerRng: function (warRng, serial) {
+      return warRng && warRng.stream("coop_ai_player", index(serial));
+    },
+
+    // A new AI's starting loadout, drawn by score.
+    coopAiLoadoutRng: function (warRng, serial) {
+      return warRng && warRng.stream("coop_ai_loadout", index(serial));
+    },
+
+    // The T1 factory card an AI with no basic land factory is assigned at a
+    // deal, so a reload assigns the same one.
+    coopAiFactoryRng: function (warRng, serial, dealIndex) {
+      return (
+        warRng &&
+        warRng
+          .stream("coop_ai_factory", index(serial))
+          .stream("deal", index(dealIndex))
+      );
+    },
+
+    // Ties in an AI's choice on one deal, by the rerolls spent on it, so a
+    // reload mid-decision settles the same way.
+    coopAiDecisionRng: function (warRng, serial, dealIndex, rerollsUsed) {
+      return (
+        warRng &&
+        warRng
+          .stream("coop_ai_decision", index(serial))
+          .stream("deal", index(dealIndex))
+          .stream("reroll", counter(rerollsUsed))
+      );
+    },
+
     battleRng: function (warRng, starIndex, turns) {
       return (
         warRng &&

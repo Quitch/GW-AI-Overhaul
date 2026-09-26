@@ -338,11 +338,14 @@ so do the Guardians' borrowed player mods.
 
 The player picks the brain **per race and per side** in `gw_start`'s AI modal
 (`ai_picker.js` + `shared/brain_table.js`). The modal has one row per
-installed race, and an Opponent and an Ally cell per row. Each cell offers only
-`brainsFor([race])`. The MLA row is the
-war-wide `gwoDifficultySettings.ai`/`aiAlly` pair. The other rows live in
+installed race, and an Opponent, an Ally and a Co-op cell per row. The Co-op
+cell is the brain of the AI players a co-op host adds
+([`coop.md`](coop.md), "AI players"). Each cell offers only
+`brainsFor([race])`. The MLA row is the war-wide
+`gwoDifficultySettings.ai`/`aiAlly`/`aiCoop` trio. The other rows live in
 `gwoDifficultySettings.aiByRace`, and the war records them, coerced, as
-`gwaio.aiByRace` beside the strings.
+`gwaio.aiByRace` beside the strings. An unset co-op brain follows the
+opponent's, and so does a row stored before the column.
 
 `shared/ai.js`'s `warBrain(alignment, race)` reads the race's row, and
 otherwise uses the strings. So a war saved before the table behaves exactly as

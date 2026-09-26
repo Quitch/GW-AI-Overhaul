@@ -11,6 +11,8 @@ define([
   var setupAlliedCommanders = configSetup.setupAlliedCommanders;
   var setupPrimaryAiAndMinions = configSetup.setupPrimaryAiAndMinions;
   var setupFfaAis = configSetup.setupFfaAis;
+  var setupCoopAiArmies = configSetup.setupCoopAiArmies;
+  var setupCoopAiSubcommanders = configSetup.setupCoopAiSubcommanders;
 
   // The system came from another mod, so this is a trust boundary: a biome the
   // server cannot load hangs every player at loading. See galaxy.md.
@@ -189,6 +191,25 @@ define([
       });
     });
     config.player.commander += playerTag;
+    setupCoopAiArmies(self.coopAis || [], config.armies, battleRng, {
+      playerFaction: inventory.getTag("global", "playerFaction"),
+      ffa: !_.isEmpty(ai.foes),
+    });
+    // After every human's in the colour sequence, before the star's ally.
+    var aiSubcommanderCount = _.sum(
+      _.map(refereeCoop.getCoopAiInventories(game), function (player) {
+        return _.isArray(player.inventory.minions)
+          ? player.inventory.minions.length
+          : 0;
+      })
+    );
+    setupCoopAiSubcommanders(self.coopAis || [], config.armies, {
+      playerFaction: inventory.getTag("global", "playerFaction"),
+      playerColor: inventory.getTag("global", "playerColor"),
+      colourStart:
+        refereeCoop.getOrderedSubcommanders(inventory, game).length -
+        aiSubcommanderCount,
+    });
     // Store the game in the config for diagnostic purposes.
     config.gw = game.save();
     self.config(config);

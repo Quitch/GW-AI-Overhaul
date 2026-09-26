@@ -245,14 +245,18 @@ define([
 
   var getRefereeInventoryAiMods = gwoAI.getInventoryAiMods;
 
+  // Every other player's AI mods: the connected viewers' and, under
+  // per-player tech, the co-op AI players'.
   var getConnectedClientAiMods = function (game, connectedClients) {
     var connectedClientAiMods = [];
 
     _.forEach(
-      refereeCoop.getConnectedViewerInventories(game, connectedClients),
-      function (viewer) {
+      refereeCoop
+        .getConnectedViewerInventories(game, connectedClients)
+        .concat(refereeCoop.getCoopAiInventories(game)),
+      function (player) {
         connectedClientAiMods = connectedClientAiMods.concat(
-          getRefereeInventoryAiMods(viewer.inventory)
+          getRefereeInventoryAiMods(player.inventory)
         );
       }
     );
@@ -678,7 +682,7 @@ define([
   // Every race tree a battle needs: one per distinct (source, destination),
   // the race's files layered over the brain's base files, written to the
   // race's own root. AI mods are not applied to a race tree - see races.md.
-  var raceTreeJobs = function (game, connectedClients) {
+  var raceTreeJobs = function (game, connectedClients, coopAis) {
     var inventory = game.inventory();
     var ai = gwoAI.currentStarAi(game);
     var playerRace = gwoRaces.raceOf(inventory);
@@ -730,8 +734,79 @@ define([
         );
       }
     );
+    // A race co-op AI player's own tree, on its co-op brain, and under
+    // per-player tech its Sub Commanders' as a viewer's. See coop.md.
+    _.forEach(coopAis, function (coopAi) {
+      add("coop", coopAi.race, coopAi.path, coopAi.inventory);
+      if (coopAi.perPlayer) {
+        add(
+          "subcommander",
+          coopAi.race,
+          gwoAI.getSubcommanderPathForViewer(
+            coopAi.inventory,
+            coopAi.tag,
+            coopAi.race
+          ),
+          coopAi.inventory
+        );
+      }
+    });
 
     return _.values(jobs);
+  };
+
+  // An MLA co-op AI player's tree: the source copied to its own scoped path
+  // with its AI mods, as a viewer's Sub Commanders' is. Nothing else is
+  // written: the scope is its isolation, so no Cluster routing either. AIs
+  // sharing a tree share one walk. Under per-player tech its Sub Commanders
+  // get a tree of their own too, exactly as a viewer's do.
+  var coopAiTreeRequests = function (coopAis, launch) {
+    var requests = {};
+
+    _.forEach(coopAis, function (coopAi) {
+      if (coopAi.perPlayer) {
+        var source = gwoAI.getAIPathSource(
+          "subcommander",
+          undefined,
+          coopAi.inventory
+        );
+        var destination = gwoAI.getSubcommanderPathForViewer(
+          coopAi.inventory,
+          coopAi.tag
+        );
+        requests[destination] = {
+          source: source,
+          request: _.assign({}, launch, {
+            aiPaths: _.assign({}, launch.aiPaths, {
+              subCommanderSource: source,
+              subCommanderDestination: destination,
+            }),
+            inventory: coopAi.inventory,
+            scopeToken: refereeAIPaths.getScopeToken(coopAi.tag, coopAi.tag),
+            forceSubCommanderScope: true,
+          }),
+        };
+      }
+
+      if (!gwoRaces.isMla(coopAi.race) || requests[coopAi.path]) {
+        return;
+      }
+      requests[coopAi.path] = {
+        source: coopAi.source,
+        request: _.assign({}, launch, {
+          aiPaths: _.assign({}, launch.aiPaths, {
+            subCommanderSource: coopAi.source,
+            subCommanderDestination: coopAi.path,
+          }),
+          clusterPresence: "None",
+          inventory: coopAi.inventory,
+          scopeToken: coopAi.scopeToken,
+          forceSubCommanderScope: true,
+        }),
+      };
+    });
+
+    return _.values(requests);
   };
 
   var writeRaceTree = function (job, treeCache, configFiles) {
@@ -781,7 +856,11 @@ define([
   // eslint-disable-next-line no-undef
   if (typeof module !== "undefined" && module.exports) {
     // eslint-disable-next-line no-undef
-    module.exports = { applyAiMods: applyAiMods, raceTreeJobs: raceTreeJobs };
+    module.exports = {
+      applyAiMods: applyAiMods,
+      raceTreeJobs: raceTreeJobs,
+      coopAiTreeRequests: coopAiTreeRequests,
+    };
   }
 
   // parse AI files, apply AI mods, and load the results into self.files()
@@ -879,7 +958,12 @@ define([
       }
     );
 
-    _.forEach(raceTreeJobs(game, connectedClients), function (job) {
+    var coopAis = self.coopAis || [];
+    _.forEach(coopAiTreeRequests(coopAis, launch), function (tree) {
+      promises.push(processDirectories(tree.source, tree.request));
+    });
+
+    _.forEach(raceTreeJobs(game, connectedClients, coopAis), function (job) {
       promises.push(writeRaceTree(job, treeCache, configFiles));
     });
 

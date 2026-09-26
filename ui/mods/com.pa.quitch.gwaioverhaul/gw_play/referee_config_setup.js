@@ -11,6 +11,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
 ], function (
   gwoColour,
   gwoAI,
@@ -18,7 +19,8 @@ define([
   refereeCoop,
   subcommanderTech,
   gwoRaces,
-  gwoPersonality
+  gwoPersonality,
+  perPlayerTech
 ) {
   var applySubcommanderTacticsTech =
     subcommanderTech.applySubcommanderTacticsTech;
@@ -350,11 +352,113 @@ define([
     });
   };
 
+  // The co-op AI players' armies, one per roster entry: an allied AI at the
+  // war's tier on its own brain and tree, with the players' economy - no eco
+  // cheat, which is the enemy's. The commander carries its tag already, since
+  // these join the config after referee_config.js tags the rest. See coop.md,
+  // "AI players".
+  var setupCoopAiArmies = function (coopAis, armies, battleRng, options) {
+    var landingOptions = [
+      "off_player_planet",
+      "on_player_planet",
+      "no_restriction",
+    ];
+
+    _.forEach(coopAis, function (entry) {
+      var ai = {
+        personalityId: entry.personalityId,
+        penchantName: entry.penchantName,
+        character: entry.character,
+      };
+      // The enemy side's template, so it plays at the war's tier. It is no
+      // Sub Commander, so it takes no GWAlly tag: it plays as a player would.
+      var personality = resolvePersonality(
+        ai,
+        "enemy",
+        entry.brain,
+        options.playerFaction,
+        options.ffa
+      );
+      personality.ai_path = entry.path;
+      personality.display_name = getAIPersonalityName(ai); // support Show AI Personality Names mod
+      var rng = battleRng && battleRng.stream("landing_coop_ai", entry.slot);
+
+      armies.push({
+        slots: [
+          {
+            ai: true,
+            name: entry.name,
+            commander: entry.commander + entry.tag,
+            landing_policy: (rng
+              ? rng.shuffle(landingOptions)
+              : _.shuffle(landingOptions))[0],
+          },
+        ],
+        color: _.cloneDeep(entry.colour),
+        econ_rate: gwoAI.subcommanderEconRate,
+        personality: personality,
+        spec_tag: entry.tag,
+        alliance_group: 1,
+      });
+    });
+  };
+
+  // Under per-player tech, each co-op AI player's Sub Commanders, built as a
+  // viewer's are, on its tag and reading its own tree. Coloured after every
+  // human's: options.colourStart is the first one's place in
+  // referee_coop.getOrderedSubcommanders. options: playerFaction,
+  // playerColor, colourStart. See coop.md, "AI players' tech".
+  var setupCoopAiSubcommanders = function (coopAis, armies, options) {
+    var colourPosition = options.colourStart;
+
+    _.forEach(coopAis, function (entry) {
+      if (!entry.perPlayer) {
+        return;
+      }
+
+      var saved = entry.inventory;
+      var built = perPlayerTech.buildViewerSubcommanderArmies({
+        subcommanderTech: subcommanderTech,
+        gwoColour: gwoColour,
+        refereeCoop: refereeCoop,
+        playerInventory: {
+          cards: _.constant(saved.cards || []),
+          minions: _.constant(saved.minions || []),
+        },
+        playerTag: entry.tag,
+        playerCommander: entry.commander,
+        playerFaction: options.playerFaction,
+        playerColor: options.playerColor,
+        viewerAiPath: gwoAI.getSubcommanderPathForViewer(
+          saved,
+          entry.tag,
+          entry.race
+        ),
+        subcommanderEconRate: gwoAI.subcommanderEconRate,
+        colourPosition: colourPosition,
+        resolvePersonality: function (minion) {
+          return gwoPersonality.resolve(minion, {
+            side: "ally",
+            faction: options.playerFaction,
+            penchantTags: gwoAI.penchantTags(minion.penchantName),
+          });
+        },
+      });
+
+      colourPosition = built.colourPosition;
+      _.forEach(built.armies, function (army) {
+        armies.push(army);
+      });
+    });
+  };
+
   return {
     getAIPersonalityName: getAIPersonalityName,
     setAIPath: setAIPath,
     setupAlliedCommanders: setupAlliedCommanders,
     setupPrimaryAiAndMinions: setupPrimaryAiAndMinions,
     setupFfaAis: setupFfaAis,
+    setupCoopAiArmies: setupCoopAiArmies,
+    setupCoopAiSubcommanders: setupCoopAiSubcommanders,
   };
 });

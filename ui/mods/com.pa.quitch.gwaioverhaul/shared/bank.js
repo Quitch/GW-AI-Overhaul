@@ -124,6 +124,43 @@ define(function () {
       return inventory;
     },
 
+    // As applyRecordInventory, from a saved inventory, and abandonable: the
+    // hold is released only when the apply finishes, so a caller that stops
+    // waiting for a hung one calls abandon() to release it, and done never
+    // runs. Returns { inventory, abandon }.
+    applyInventoryHeld: function (GWInventory, saved, stockBank, done) {
+      var inventory = new GWInventory();
+      var held = false;
+      var release = function () {
+        if (held) {
+          held = false;
+          self.resumeUnlocks();
+        }
+      };
+
+      inventory.load(_.cloneDeep(saved));
+      if (!inventory.cards().length) {
+        done(inventory);
+        return { inventory: inventory, abandon: release };
+      }
+
+      self.suspendUnlocks(stockBank);
+      held = true;
+      try {
+        inventory.applyCards(function () {
+          if (!held) {
+            return;
+          }
+          release();
+          done(inventory);
+        });
+      } catch (e) {
+        release();
+        throw e;
+      }
+      return { inventory: inventory, abandon: release };
+    },
+
     addStartCard: function (card) {
       if (suspended || self.hasStartCard(card)) {
         return false;

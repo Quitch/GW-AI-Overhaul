@@ -23,96 +23,6 @@
       return !!card.gwoRaceLocked;
     };
 
-    var validateStartingInventory = function (savedInventory, loadoutCardId) {
-      var cards = savedInventory.cards || [];
-      if (
-        !cards.length ||
-        cards[0].id !== loadoutCardId ||
-        !_.isNumber(savedInventory.maxCards) ||
-        savedInventory.maxCards <= cards.length
-      ) {
-        console.error(
-          "[GW COOP] Co-op loadout inventory did not produce empty tech banks loadout=" +
-            loadoutCardId +
-            " maxCards=" +
-            savedInventory.maxCards +
-            " cards=" +
-            JSON.stringify(cards)
-        );
-        return false;
-      }
-
-      return true;
-    };
-
-    // The deal gate reads the race off each inventory, so the tag travels with
-    // the viewer's: their own pick under Separate races, the host's otherwise.
-    // See races.md.
-    var buildGlobalTags = function (commander, playerFaction, playerRace) {
-      var globalTags = {
-        commander: commander,
-      };
-
-      if (_.isNumber(playerFaction)) {
-        globalTags.playerFaction = playerFaction;
-      }
-      if (_.isString(playerRace) && playerRace.length) {
-        globalTags.playerRace = playerRace;
-      }
-
-      return globalTags;
-    };
-
-    var dealStartingCard = function (
-      gwoDeal,
-      loaded,
-      loadedCards,
-      loadoutCardId,
-      dealInventory,
-      galaxy,
-      star
-    ) {
-      return gwoDeal.dealCard(
-        {
-          id: loadoutCardId,
-          inventory: dealInventory,
-          galaxy: galaxy,
-          star: star,
-        },
-        loaded,
-        loadedCards
-      );
-    };
-
-    var applyStartingInventory = function (
-      GWInventory,
-      loadoutCardId,
-      globalTags,
-      startCardProduct,
-      result
-    ) {
-      var inventory = new GWInventory();
-
-      inventory.load({
-        cards: [startCardProduct || { id: loadoutCardId }],
-        tags: {
-          global: globalTags,
-        },
-      });
-
-      inventory.applyCards(function () {
-        var savedInventory = inventory.save();
-        if (!validateStartingInventory(savedInventory, loadoutCardId)) {
-          result.reject(
-            "Co-op loadout inventory did not produce empty tech banks."
-          );
-          return;
-        }
-
-        result.resolve(savedInventory);
-      });
-    };
-
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.js",
@@ -121,6 +31,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_coop_per_player_loadout/host_war.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_selection.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/starting_inventory.js",
       ],
       function (
         loadouts,
@@ -128,7 +39,8 @@
         gwoDeal,
         gwoLoadoutBanks,
         hostWar,
-        loadoutSelection
+        loadoutSelection,
+        startingInventory
       ) {
         var banksResolved = false;
 
@@ -189,42 +101,26 @@
           var result = $.Deferred();
           // This scene's view model has no player faction, but Cluster start
           // cards read global.playerFaction, so it comes from the campaign
-          // game - and the race with it.
+          // game - and the race with it: the viewer's own pick under
+          // Separate races, the host's otherwise.
           hostWar.load().then(function (host) {
-            var dealInventory = new GWInventory();
             var viewerRace = model.gwoViewerRace();
-            var globalTags = buildGlobalTags(
-              commander,
-              host && host.faction,
-              (host && host.perPlayerRace && viewerRace) || (host && host.race)
-            );
-
-            _.forEach(globalTags, function (value, name) {
-              dealInventory.setTag("global", name, value);
-            });
-
-            dealStartingCard(
-              gwoDeal,
-              loaded,
-              cards,
-              loadoutCardId,
-              dealInventory,
-              galaxy,
-              star
-            ).then(
-              function (startCardProduct) {
-                applyStartingInventory(
-                  GWInventory,
-                  loadoutCardId,
-                  globalTags,
-                  startCardProduct,
-                  result
-                );
-              },
-              function (err) {
-                result.reject(err);
-              }
-            );
+            startingInventory
+              .build({
+                GWInventory: GWInventory,
+                gwoDeal: gwoDeal,
+                loaded: loaded,
+                loadedCards: cards,
+                loadoutCardId: loadoutCardId,
+                commander: commander,
+                playerFaction: host && host.faction,
+                playerRace:
+                  (host && host.perPlayerRace && viewerRace) ||
+                  (host && host.race),
+                galaxy: galaxy,
+                star: star,
+              })
+              .then(result.resolve, result.reject);
           });
 
           return result.promise();
