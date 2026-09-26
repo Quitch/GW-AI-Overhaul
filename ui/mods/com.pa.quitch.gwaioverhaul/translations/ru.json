@@ -767,6 +767,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "Технология перезарядки автозаводов вдвое сокращает время перезарядки между постройками для всех автозаводов."
   },
+  "View loadout and tech cards": {
+    "message": "Просмотреть снаряжение и карты технологий"
+  },
   "Waiting for loadout": {
     "message": "Ожидание снаряжения"
   },

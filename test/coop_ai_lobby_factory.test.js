@@ -55,6 +55,12 @@ function setup(overrides) {
       applyThrows: false,
       snapshotThrows: false,
       noGwaio: false,
+      // Per-player tech: the AI tech modules are in, and every viewer is
+      // level with the host.
+      perPlayerReady: true,
+      publishReady: true,
+      // createRecord answers with a promise, as a per-player build does.
+      asyncRecord: false,
       // The seats the war was made with, and the humans due back from a
       // battle.
       warSeats: 3,
@@ -166,8 +172,22 @@ function setup(overrides) {
       if (options.createThrows) {
         throw new Error("no commander");
       }
+      if (options.asyncRecord) {
+        calls.builds = (calls.builds || []).concat(identity.serial);
+        if (options.asyncRecord === "reject") {
+          return Promise.reject(new Error("no loadout could be built"));
+        }
+        if (options.asyncRecord === "late") {
+          return new Promise((resolve) => {
+            setTimeout(() => resolve(aiRecord(identity.serial)), 60);
+          });
+        }
+        return Promise.resolve(aiRecord(identity.serial));
+      }
       return aiRecord(identity.serial);
     },
+    perPlayerReady: () => options.perPlayerReady,
+    publishReady: () => options.publishReady,
     save: (withStars) => {
       calls.saves += 1;
       calls.saveStars.push(withStars);
@@ -180,6 +200,7 @@ function setup(overrides) {
     busy: state.busy,
     armed: state.armed,
     inFlight: state.inFlight,
+    buildTimeoutMs: options.buildTimeoutMs,
   });
 
   // The server's answer to the last modify_settings sent.
@@ -217,7 +238,10 @@ describe("canAddAi", () => {
   const REFUSALS = {
     "a viewer": { isHost: false },
     "no session": { active: false },
-    "per-player tech, until it is supported": { perPlayerTech: true },
+    "per-player tech before its AI modules are in": {
+      perPlayerTech: true,
+      perPlayerReady: false,
+    },
     "no open slot": { connected: [HOST, VIEWER, VIEWER], max: 3 },
     "a battle launching": { launching: true },
     "a player mid-setup": { setupBlocked: true },
@@ -529,6 +553,113 @@ describe("addAi", () => {
       ["gwo_ai_1", "gwo_ai_2"]
     );
     assert.equal(run.gwaio.coopAiSerial, 2);
+  });
+});
+
+describe("addAi under per-player tech", () => {
+  const settle = () => new Promise((resolve) => setImmediate(resolve));
+
+  it("offers Add AI once the AI tech modules are in", () => {
+    assert.equal(active.build({ perPlayerTech: true }).lobby.canAddAi(), true);
+  });
+
+  // A per-player record takes seconds to build; the queue is not held.
+  it("builds the record after the server answers, and queues the write only then", async () => {
+    const run = active.build({ perPlayerTech: true, asyncRecord: true });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+
+    assert.deepEqual(run.calls.builds, [1]);
+    assert.deepEqual(run.calls.queued, []);
+    assert.equal(run.state.busy(), true);
+
+    await settle();
+    assert.deepEqual(run.calls.queued, ["gwo_coop_ai_add"]);
+    assert.deepEqual(
+      run.records().map((record) => record.playerId),
+      ["gwo_ai_1"]
+    );
+    assert.equal(run.gwaio.coopAiSerial, 1);
+    assert.equal(run.state.busy(), false);
+  });
+
+  it("gives the slot back when the record cannot be built", async () => {
+    const run = active.build({ perPlayerTech: true, asyncRecord: "reject" });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+    await settle();
+
+    assert.equal(run.records().length, 0);
+    assert.equal(run.calls.sent[1].payload.max_clients, 3);
+    assert.equal(run.gwaio.coopAiSerial, undefined);
+    assert.equal(run.state.busy(), false);
+  });
+
+  // A build that never settles would hold the lobby: Add, Kick, and Fight.
+  it("gives the slot back when the build runs out of time, and drops its late result", async () => {
+    const run = active.build({
+      perPlayerTech: true,
+      asyncRecord: "late",
+      buildTimeoutMs: 20,
+    });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+    await new Promise((resolve) => setTimeout(resolve, 40));
+
+    assert.equal(run.calls.sent[1].payload.max_clients, 3);
+    assert.equal(run.state.busy(), false);
+    assert.ok(
+      run.calls.log.some((line) =>
+        /add failed: .*AI build timed out after 20ms/.test(line)
+      ),
+      JSON.stringify(run.calls.log)
+    );
+
+    // The build lands after all: nothing is written.
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    assert.equal(run.records().length, 0);
+    assert.deepEqual(run.calls.queued, []);
+    assert.equal(run.gwaio.coopAiSerial, undefined);
+  });
+
+  // Between snapshots the server holds viewers' newer choices; a snapshot
+  // sent then would overwrite them.
+  it("holds the viewers' snapshot until every viewer is level", () => {
+    const run = active.build({
+      perPlayerTech: true,
+      connected: [HOST, VIEWER],
+      publishReady: false,
+    });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+
+    assert.equal(run.records().length, 1);
+    assert.deepEqual(run.calls.snapshots, []);
+
+    assert.equal(run.lobby.settleDebt(), false);
+    run.options.publishReady = true;
+    assert.equal(run.lobby.settleDebt(), true);
+    assert.deepEqual(run.calls.snapshots, [
+      { reason: "gwo_coop_ai_add", force: true },
+    ]);
+    assert.equal(run.lobby.settleDebt(), false);
+  });
+
+  it("drops the snapshot it owes once no viewer is left to tell", () => {
+    const run = active.build({
+      perPlayerTech: true,
+      connected: [HOST, VIEWER],
+      publishReady: false,
+    });
+    run.lobby.addAi();
+    run.reply(true, { max_clients: 2 });
+
+    run.options.connected = [HOST];
+    run.options.publishReady = true;
+    assert.equal(run.lobby.settleDebt(), false);
+    run.options.connected = [HOST, VIEWER];
+    assert.equal(run.lobby.settleDebt(), false);
+    assert.deepEqual(run.calls.snapshots, []);
   });
 });
 

@@ -81,6 +81,58 @@ define([
     var rerollPendingTechRequest = "gwo_reroll_pending_tech";
     var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
 
+    // A player's rerolled hand, weighed on their own applied inventory: one card
+    // fewer, from the stream of the deal it replaces. Resolves { pendingTechCards,
+    // rerollsUsed, cardsOffered }, or rejects when no reroll remains.
+    var rerolledHandFor = function (params) {
+      var result = $.Deferred();
+      var pendingTechCards = params.pendingTechCards;
+      var cardsOffered = helpers.cardsOfferedCount(
+        numCardsToOffer,
+        params.inventory
+      );
+      var rerollState = computeRerollDeal(
+        cardsOffered,
+        pendingTechCards.cards.length
+      );
+
+      if (rerollState.exhausted) {
+        result.reject("no pending tech rerolls remain");
+        return result.promise();
+      }
+
+      var nextRerollsUsed = rerollState.nextRerollsUsed;
+      chooseCards({
+        inventory: params.inventory,
+        count: rerollState.cardCount,
+        star: params.star,
+        systemCards: [],
+        rng: pendingTechRerollRng({
+          gwoStreams: gwoStreams,
+          warRng: warRng,
+          record: params.record,
+          client: params.client,
+          pendingTechCards: pendingTechCards,
+          rerollsUsed: nextRerollsUsed,
+        }),
+      }).then(function (cards) {
+        result.resolve({
+          pendingTechCards: {
+            star: pendingTechCards.star,
+            cards: cards || [],
+            dealIndex: pendingTechCards.dealIndex,
+            cardsOffered: cardsOffered,
+            rerollsUsed: nextRerollsUsed,
+            updatedAt: _.now(),
+          },
+          rerollsUsed: nextRerollsUsed,
+          cardsOffered: cardsOffered,
+        });
+      });
+
+      return result.promise();
+    };
+
     var applyPendingTechRerollResult = function (operator) {
       var payload = (operator && operator.payload) || {};
       model.gwoRerollPending(false);
@@ -199,44 +251,15 @@ define([
       }
 
       var dealCards = function (playerInventory) {
-        var cardsOffered = helpers.cardsOfferedCount(
-          numCardsToOffer,
-          playerInventory
-        );
-        var rerollState = computeRerollDeal(
-          cardsOffered,
-          pendingTechCards.cards.length
-        );
-
-        if (rerollState.exhausted) {
-          failReroll("no pending tech rerolls remain");
-          return;
-        }
-
-        var nextRerollsUsed = rerollState.nextRerollsUsed;
-        chooseCards({
+        rerolledHandFor({
+          record: record,
+          client: { id: operator.client_id, name: operator.client_name },
+          pendingTechCards: pendingTechCards,
           inventory: playerInventory,
-          count: rerollState.cardCount,
           star: star,
-          systemCards: [],
-          rng: pendingTechRerollRng({
-            gwoStreams: gwoStreams,
-            warRng: warRng,
-            record: record,
-            client: { id: operator.client_id, name: operator.client_name },
-            pendingTechCards: pendingTechCards,
-            rerollsUsed: nextRerollsUsed,
-          }),
-        }).then(function (cards) {
-          var updatedAt = _.now();
-          var nextPendingTechCards = {
-            star: pendingTechCards.star,
-            cards: cards || [],
-            dealIndex: pendingTechCards.dealIndex,
-            cardsOffered: cardsOffered,
-            rerollsUsed: nextRerollsUsed,
-            updatedAt: updatedAt,
-          };
+        }).then(function (rerolled) {
+          var nextPendingTechCards = rerolled.pendingTechCards;
+          var updatedAt = nextPendingTechCards.updatedAt;
           var stored = coopHost.upsertRecord(game, record, {
             pendingTechCards: nextPendingTechCards,
             updatedAt: updatedAt,
@@ -249,15 +272,15 @@ define([
           model.sendCampaignSnapshot("gwo_reroll_pending_tech", true);
           coopHost.reply(rerollPendingTechResult, operator, {
             pendingTechCards: nextPendingTechCards,
-            rerolls_used: nextRerollsUsed,
+            rerolls_used: rerolled.rerollsUsed,
             offer_rerolls: dealHelpers.rerollsRemain(
-              nextRerollsUsed,
-              cardsOffered
+              rerolled.rerollsUsed,
+              rerolled.cardsOffered
             ),
             updated_at: updatedAt,
           });
           gwoSave(game, false).then(resolveResult, rejectResult);
-        });
+        }, failReroll);
       };
 
       gwoBank.applyRecordInventory(GWInventory, record, stockBank, dealCards);
@@ -274,6 +297,26 @@ define([
       rerollPendingTechResult,
       applyPendingTechRerollResult
     );
+
+    // The same reroll for a player the host deals itself - a co-op AI player -
+    // storing, sending and saving nothing. params: record, client,
+    // pendingTechCards (the hand held in memory), star.
+    return {
+      rerollHandForRecord: function (params) {
+        var result = $.Deferred();
+        gwoBank.applyRecordInventory(
+          GWInventory,
+          params.record,
+          stockBank,
+          function (inventory) {
+            rerolledHandFor(
+              _.assign({}, params, { inventory: inventory })
+            ).then(result.resolve, result.reject);
+          }
+        );
+        return result.promise();
+      },
+    };
   };
 
   // Test-only hook - see testing.md.

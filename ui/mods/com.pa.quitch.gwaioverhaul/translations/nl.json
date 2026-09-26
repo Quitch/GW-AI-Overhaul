@@ -767,6 +767,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "Afkoeltechnologie voor voertuigfabrieken halveert de afkoeltijd tussen bouwopdrachten voor alle voertuigfabrieken."
   },
+  "View loadout and tech cards": {
+    "message": "Uitrusting en technologiekaarten bekijken"
+  },
   "Waiting for loadout": {
     "message": "Wachten op uitrusting"
   },

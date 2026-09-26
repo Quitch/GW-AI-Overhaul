@@ -18,6 +18,9 @@ const gwoAI = loadCouiModule(
 const gwoRng = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
 );
+const gwoUnit = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+);
 
 const installModel = useModel();
 
@@ -670,5 +673,86 @@ describe("aiInUse with a race", () => {
     } finally {
       races.reset();
     }
+  });
+});
+
+// gwc_minion.js's rule for an army that can fight, which co-op AI players'
+// loadouts and first deals are held to. See coop.md, "AI players' tech".
+describe("armyGap", () => {
+  const COMMANDER = "/pa/units/commanders/imperial_able/imperial_able.json";
+
+  it("finds nothing lacking in an army with a basic land factory and an extractor", () => {
+    assert.equal(
+      gwoAI.armyGap([COMMANDER, gwoUnit.botFactory, gwoUnit.metalExtractor]),
+      undefined
+    );
+  });
+
+  it("names the land factory an army lacks", () => {
+    assert.equal(
+      gwoAI.armyGap([COMMANDER, gwoUnit.navalFactory, gwoUnit.metalExtractor]),
+      "landFactory"
+    );
+  });
+
+  // Tourist Commander lacks both, and no card grants an extractor.
+  it("names a missing extractor first", () => {
+    assert.equal(gwoAI.armyGap([COMMANDER]), "extractor");
+    assert.equal(
+      gwoAI.armyGap([COMMANDER, gwoUnit.vehicleFactory]),
+      "extractor"
+    );
+  });
+
+  it("takes the advanced extractor or the Jig as an extractor", () => {
+    for (const extractor of [gwoUnit.metalExtractorAdvanced, gwoUnit.jig]) {
+      assert.equal(
+        gwoAI.armyGap([gwoUnit.airFactory, extractor]),
+        undefined,
+        extractor
+      );
+    }
+  });
+});
+
+describe("armyGapClosable", () => {
+  const landFactories = [
+    gwoUnit.airFactory,
+    gwoUnit.botFactory,
+    gwoUnit.vehicleFactory,
+  ];
+
+  it("closes a land factory gap with a card, unless a dull strips every basic land factory", () => {
+    assert.equal(gwoAI.armyGapClosable("landFactory", undefined), true);
+    assert.equal(
+      gwoAI.armyGapClosable("landFactory", landFactories.slice(1)),
+      true
+    );
+    assert.equal(gwoAI.armyGapClosable("landFactory", landFactories), false);
+  });
+
+  it("never closes an extractor gap", () => {
+    assert.equal(gwoAI.armyGapClosable("extractor", []), false);
+  });
+
+  // A factory card whose own factory a dull strips cannot close the gap,
+  // though another card's could.
+  it("judges one card by the land factories it grants", () => {
+    const stripped = [gwoUnit.botFactory];
+    assert.equal(
+      gwoAI.armyGapClosable("landFactory", stripped, [
+        gwoUnit.botFactory,
+        gwoUnit.dox,
+      ]),
+      false
+    );
+    assert.equal(
+      gwoAI.armyGapClosable("landFactory", stripped, [gwoUnit.airFactory]),
+      true
+    );
+    assert.equal(
+      gwoAI.armyGapClosable("landFactory", [], [gwoUnit.dox]),
+      false
+    );
   });
 });

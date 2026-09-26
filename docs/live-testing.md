@@ -253,12 +253,141 @@ calling `model.gwoCoopAi.kick(row)` twice with that row. The records are
 
 A hire from the console includes the AI players, because its first step reads
 `model.gwoCoopAi.launchRoster()`. `referee.config().armies` then ends with one
-army per AI, and `referee.files()` has the AI tree under the co-op brain's
-`player_coopai/`. In a real battle with `--ai-log`, the server log's
-`Army: <AI name>` lines show the AI loading its unit map from that tree. Like
-every allied army on the player's specs, a Sub Commander included, it also
+army per AI, and under shared tech `referee.files()` has the AI tree under the
+co-op brain's `player_coopai/`. In a real battle with `--ai-log`, the server
+log's `Army: <AI name>` lines show the AI loading its unit map from that tree.
+Like every allied army on the player's specs, a Sub Commander included, it also
 logs `Control module name did not resolved to a spec` while no player holds
 the Catalyst, since only held units get specs. That line is not a fault.
+
+Under per-player tech, `canAdd()` also waits for the AI tech modules and a unit
+lookup, and an Add takes seconds. The AI's loadout is drawn before its record
+is written, and it then settles every deal it owes. With four deals to catch
+up, an Add took 3.6 to 6 seconds in testing. `model.gwoCoopAiDeciding()` stays
+true until every AI is level with the host, and `model.gwoCoopAi.driving()`
+while a pass runs ([coop.md](coop.md), "AI players' tech").
+
+**Read the `[GW COOP AI]` lines.** They are the host's record of every choice
+an AI makes, in the host's client log. A new AI logs one loadout line:
+
+```text
+[GW COOP AI] <name> loadout via=specs candidates: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f extra e chance p%), ... dropped: <id> (<gap>), ... used: <ids> -> chose <id>
+```
+
+`extra` is the flat part a loadout earns for doing what no other part sizes,
+such as Lucky Commander's extra card per offer. A hand's cards always show
+`extra 0`. `chance` is the candidate's chance of being drawn. `dropped` lists the
+candidates the AI could never fight with, each with the gap no card closes
+(`extractor` or `landFactory`), and is left out when there are none. `used`
+appears only under Unique AI loadouts: it lists the loadouts in use, whose
+chance is 0%, and ends `(all in use: full pool)` when that left nothing worth a
+slot, so the draw took from every candidate.
+
+Each deal logs one line per hand the AI judged, so a reroll adds a line. A deal
+that finds the AI without a basic land factory logs an assignment instead:
+
+```text
+[GW COOP AI] <name> deal=<n> star=<s> -> assigned <id> (no basic land factory)
+```
+
+Otherwise a hand line follows:
+
+```text
+[GW COOP AI] <name> deal=<n> star=<s> hand=<k> via=specs offered: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f extra e), ... -> <action>
+```
+
+`deal` is the host's deal index and `star` the star it was dealt at. `hand`
+counts the cards offered. Each card shows its score and then the parts it came
+from ([tech-cards.md](tech-cards.md), "How AI players judge a card"). `mods` is
+what the card's stat mods are worth on the units the AI fields and on its
+commanders, and `later` what they are worth on units it could field later. A
+stat card for a domain the AI has not opened scores in `later` alone. The
+action is one of:
+
+- `took <id>`.
+- `reroll (best <b> < threshold <t>)`.
+- `deleted <held id> took <id>`: a swap, made with a full bank.
+- `declined (<reason>)`: `loadout`, `nothing worth a slot`, `bank full`, or
+  `no cards`.
+
+`via` names the unit lookup, and should read `specs`. `via=groups` means that
+the specs were not in within 8 seconds or failed to load, and a line saying so
+comes first. A card with a `floor` above 0 is one whose effect the AI could not
+see. In an MLA war with every loadout unlocked, expect Terminal Commander about
+one draw in three, Hoarder Commander and Swarm Commander about one in seven each,
+and Tourist Commander dropped. With only the starting loadouts, each is drawn in
+16 to 24% of adds, and the Naval and Orbital ones are then assigned a factory
+card at their first deal.
+
+The other lines are rarer, and most of them mean that something went wrong:
+
+- `<name> deal=<n> fell back: <error> -> <outcome>`: the deal timed out or
+  failed, and the quick pick decided it.
+- `<name> deal=<n> -> declined (timed out 2 times this session)`: the AI has
+  stopped choosing until `gw_play` next loads.
+- `<name> deal=<n> is not in the host's history -> declined`.
+- `<name> deal=<n> star=<s> no basic land factory, <why>: dealing a hand`: the
+  AI was not given a factory card, and was dealt a hand instead. `<why>` is `no
+factory card to assign` (none is in the deck that its race can use), `no room
+for <id>`, `still none with <id>` (a `dull` strips the factory), or `<id> not
+dealt: <error>`.
+- `<name> deal=<n> not written: <result>`: `gone` (the AI was kicked), `stale`
+  (its cards kept changing under the decision), `refused`, `failed`, or
+  `stalled` (the campaign queue did not run the write within 60 seconds).
+- `<name> loadout <id> not built: <error>`: that candidate was skipped.
+- `add failed: Error: AI build timed out after 60000ms`: the new AI's build did
+  not settle within 60 seconds, so the add failed and the slot was given back.
+- `<card id> deal() threw: <error>`: the card's own `deal()` threw while an AI
+  judged its floor, so it scored no chance.
+- `unit specs not in after 8 s: judging by unit groups until they are`, or
+  `unit specs not read: <error>`: the unit groups stand in.
+- `write failed: <error>` or `pass failed: <error>`: a throw inside a write,
+  or anywhere in a pass.
+- `fight refused: an AI is choosing its tech`: Fight was called while an AI
+  was deciding.
+- `Galactic War Overhaul (GWO): co-op AI tech not loaded: <modules>`: nothing
+  settles an AI's deals, and Add AI is never offered. While any AI owes a deal,
+  Fight stays blocked with "Waiting for players".
+
+**Check a per-player AI** in a war with per-player tech:
+
+1. Host: add an AI to an empty slot with `model.gwoCoopAi.add()`, and wait for
+   `model.gwoCoopAiDeciding()` to turn false.
+2. Find its record in `model.gwoCoopAi.records()`.
+   `model.getCoopPlayerTechCardDealCount(record)` should equal
+   `model.game().hostTechCardDealCount()`. The log should hold one loadout line
+   for it, and at least one deal line for each deal it caught up on.
+3. Open its inventory. Take its row from `model.gwCampaignSlots()`, the one with
+   `gwoAi: true`, check `inventoryAvailable`, and call
+   `model.openGwCampaignInventoryModal(row)`. A viewer opens it the same way.
+4. Hire the referee from the console, as above. The AI's army has the
+   `spec_tag` `.player<N>`, the next player tag after the humans'. Its Sub
+   Commanders' armies come after every AI's army, on the same tag.
+   `referee.files()` has its specs under keys that end in that tag, and its AI
+   tree under `player_coopai_<serial>/`. Each AI adds some 630 to 750 files in
+   all.
+
+**Read the ping lines.** In either tech mode, each AI logs one line per window
+([coop.md](coop.md), "AI pings"), a few seconds after the war settles from a
+move, a won star, or a deal:
+
+```text
+[GW COOP AI] <name> ping window <turns>:<star>:<deals>:<cards> candidates: <star>=<score> (<card id> <value>, threat <t>, hops <h>), ... -> <outcome>
+```
+
+The outcome is one of:
+
+- `ping <star> (wants)` or `ping <star> (lead)`: the AI pinged, and why. Host
+  and viewers get the marker and the chat line "`<name>`: Ping! `<star>`".
+- `no ping (indifferent)`, or `no ping (no star)` when it has nothing to ping.
+- `no ping (<name> pinged <star>)`: another AI pinged that star this window.
+- `no ping (pinged <star> already)`.
+- `no ping (pinged <star> too recently)`: the AI tries again, in the same
+  window, once 20 seconds have passed since its last ping.
+- `no ping (refused)`: the host's checks turned it down. The AI tries again 5
+  seconds later, up to three times in a window.
+
+`<name> ping failed: <error>` is a throw while it judged its stars.
 
 ## Proving that a change alters nothing
 

@@ -198,6 +198,10 @@ function buildGame(options) {
     findCoopPlayerInventoryData: function (client) {
       return viewerInventoryData[client && client.id];
     },
+    // The co-op records a war's AI players keep; none unless a test adds them.
+    coopPlayerInventoryData: function () {
+      return opts.coopRecords || [];
+    },
   };
 
   return { game: game, star: star, ai: ai, inventory: inventory };
@@ -221,7 +225,8 @@ function withTwoViewers(game, viewer1Inventory, viewer2Inventory, names) {
   ];
 }
 
-// Call restore() in afterEach or the stub leaks into the next test.
+// Call restore() in afterEach or the stub leaks into the next test. A session
+// is active while any client is connected.
 function installModel(game, connectedClients) {
   var previousModel = global.model;
   global.model = {
@@ -230,6 +235,9 @@ function installModel(game, connectedClients) {
     },
     gwCampaignConnectedClients: function () {
       return connectedClients || [];
+    },
+    gwCampaignActive: function () {
+      return !!(connectedClients && connectedClients.length);
     },
   };
   return function restore() {

@@ -172,7 +172,11 @@ always scoped. The `coop` type takes neither the Cluster branch nor the
 subcommander branch, so the tree is the co-op brain's root (a race's own root
 for a race) plus `player_<token>/`. Under shared tech every AI shares one tree,
 `player_coopai/`: the AIs share the brain, the race, the host's AI mods and the
-`.player` tag, so a copy per AI would be identical.
+`.player` tag, so a copy per AI would be identical. Under per-player tech each
+AI takes a token of its own, `coopai_<serial>`, and so a tree of its own,
+`player_coopai_<serial>/`, because its AI mods and its tag are its own. Its Sub
+Commanders read a tree scoped by its player tag, as a viewer's do
+([`coop.md`](coop.md), "AI players' tech").
 
 Its source is `getAIPathSource("coop", …)`, the co-op brain's own root.
 `referee_ai.js` copies that whole tree to the AI's path with the AI's mods, as

@@ -286,3 +286,100 @@ describe("bank suspendUnlocks", () => {
     assert.equal(stockBank.addStartCard, patchedByAnotherMod);
   });
 });
+
+describe("bank applyInventoryHeld", () => {
+  const stock = () => ({
+    added: [],
+    addStartCard(card) {
+      this.added.push(card);
+      return true;
+    },
+  });
+
+  // applyCards hands its callback to the test, which finishes the apply when
+  // it chooses - or never, as a hung card would.
+  const inventoryClass = (finishers, options) =>
+    function GWInventory() {
+      let loaded = { cards: [] };
+      this.load = (saved) => {
+        loaded = saved;
+      };
+      this.cards = () => loaded.cards || [];
+      this.applyCards = (done) => {
+        if (options && options.throws) {
+          throw new Error("card threw");
+        }
+        finishers.push(done);
+      };
+    };
+
+  it("holds both banks for the apply and hands over the inventory after", () => {
+    const finishers = [];
+    const done = [];
+    const stockBank = stock();
+    const held = bank.applyInventoryHeld(
+      inventoryClass(finishers),
+      { cards: [{ id: "gwc_start_air" }] },
+      stockBank,
+      (inventory) => done.push(inventory)
+    );
+
+    assert.equal(stockBank.addStartCard({ id: "x" }), false);
+    assert.equal(done.length, 0);
+
+    finishers[0]();
+    assert.deepEqual(done, [held.inventory]);
+    assert.equal(stockBank.addStartCard({ id: "x" }), true);
+  });
+
+  it("hands over an empty inventory at once, holding nothing", () => {
+    const finishers = [];
+    const done = [];
+    const stockBank = stock();
+    bank.applyInventoryHeld(
+      inventoryClass(finishers),
+      { cards: [] },
+      stockBank,
+      (inventory) => done.push(inventory)
+    );
+
+    assert.equal(done.length, 1);
+    assert.equal(finishers.length, 0);
+    assert.equal(stockBank.addStartCard({ id: "x" }), true);
+  });
+
+  // A caller that gave up on a hung apply must not leave every bank shut.
+  it("releases the hold when abandoned, and never calls done after", () => {
+    const finishers = [];
+    const done = [];
+    const stockBank = stock();
+    const held = bank.applyInventoryHeld(
+      inventoryClass(finishers),
+      { cards: [{ id: "gwc_start_air" }] },
+      stockBank,
+      () => done.push("late")
+    );
+
+    held.abandon();
+    assert.equal(stockBank.addStartCard({ id: "x" }), true);
+    finishers[0]();
+    held.abandon();
+    assert.deepEqual(done, []);
+    assert.equal(stockBank.addStartCard({ id: "y" }), true);
+  });
+
+  it("releases the hold and throws when the apply throws", () => {
+    const stockBank = stock();
+    assert.throws(
+      () =>
+        bank.applyInventoryHeld(
+          inventoryClass([], { throws: true }),
+          { cards: [{ id: "gwc_start_air" }] },
+          stockBank,
+          () => {}
+        ),
+      /card threw/
+    );
+    assert.equal(stockBank.addStartCard({ id: "x" }), true);
+  });
+});

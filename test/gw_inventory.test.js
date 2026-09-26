@@ -382,6 +382,23 @@ describe("gw_inventory - the inventory itself", () => {
     assert.deepEqual(inventory.units(), ["bot"]);
   });
 
+  it("adds and removes a group nested in the list, and a single unit", () => {
+    const inventory = new GWInventory();
+    inventory.load({ units: ["a"] });
+
+    inventory.addUnits([["b", ["c"]], "d"]);
+    inventory.addUnits("e");
+    assert.deepEqual(inventory.units(), ["a", "b", "c", "d", "e"]);
+
+    inventory.removeUnits([["b"], "d"]);
+    inventory.removeUnits("e");
+    assert.deepEqual(inventory.units(), ["a", "c"]);
+
+    inventory.addUnits([{ table: "f" }, "g"]);
+    inventory.removeUnits({ table: "a" });
+    assert.deepEqual(inventory.units(), ["a", "c", "g"]);
+  });
+
   it("finds a held card, but not a unique one", () => {
     const inventory = new GWInventory();
     inventory.load({ cards: [{ id: "gwc_a" }, { id: "gwc_u", unique: true }] });

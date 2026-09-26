@@ -767,6 +767,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "La Technologie de recharge des véhicules divise par deux le temps de recharge entre deux constructions pour toutes les usines de véhicules."
   },
+  "View loadout and tech cards": {
+    "message": "Voir l'arsenal et les cartes technologiques"
+  },
   "Waiting for loadout": {
     "message": "En attente de l'arsenal"
   },

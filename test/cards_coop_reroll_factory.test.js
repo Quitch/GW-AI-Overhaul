@@ -133,7 +133,7 @@ function setup(overrides = {}) {
     inventory: () => ({ cards: () => HOST_CARDS }),
   };
 
-  makeFactory({
+  const handle = makeFactory({
     game,
     galaxy: { stars: () => options.stars },
     chooseCards: (request) => {
@@ -183,11 +183,62 @@ function setup(overrides = {}) {
     calls,
     options,
     game,
+    handle,
     restore: () => stubs.restoreGlobals(),
   };
 }
 
 const { build, release } = trackActive(setup);
+
+// The same reroll for a player the host deals itself: a co-op AI player.
+// Nothing is stored, sent or saved; the driver writes the settled result.
+describe("rerollHandForRecord", () => {
+  const AI = { id: "gwo_ai_1", name: "AI1" };
+  const aiRecord = () => ({
+    id: "gwo_ai_1",
+    playerId: "gwo_ai_1",
+    inventory: { cards: [] },
+  });
+
+  it("deals one card fewer from the reroll's stream, and keeps it in memory", async () => {
+    const run = build();
+    const rerolled = await run.handle.rerollHandForRecord({
+      record: aiRecord(),
+      client: AI,
+      pendingTechCards: pendingTechCards(),
+      star: { id: 2 },
+    });
+
+    assert.equal(rerolled.rerollsUsed, 1);
+    assert.equal(rerolled.pendingTechCards.cards.length, 2);
+    assert.equal(rerolled.pendingTechCards.rerollsUsed, 1);
+    assert.deepEqual(run.calls.deals[0].rng, {
+      playerKey: "gwo_ai_1",
+      dealIndex: 4,
+      rerollsUsed: 1,
+    });
+    assert.deepEqual(run.calls.upserts, []);
+    assert.deepEqual(run.calls.hostOperators, []);
+    assert.deepEqual(run.calls.snapshots, []);
+    assert.deepEqual(run.calls.saves, []);
+  });
+
+  it("refuses once no reroll remains", async () => {
+    const run = build({ cardsOffered: 3 });
+    await assert.rejects(
+      run.handle.rerollHandForRecord({
+        record: aiRecord(),
+        client: AI,
+        pendingTechCards: Object.assign(pendingTechCards(), {
+          cards: [{ id: "last" }],
+          rerollsUsed: 2,
+        }),
+        star: { id: 2 },
+      }),
+      /no pending tech rerolls remain/
+    );
+  });
+});
 
 const operator = (extra) =>
   Object.assign(

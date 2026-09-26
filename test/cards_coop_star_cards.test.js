@@ -24,8 +24,45 @@ function ready(overrides = {}) {
     hostDealCount: "hostDealCount" in overrides ? overrides.hostDealCount : 4,
     setupBlocked: overrides.setupBlocked || false,
     turnState: overrides.turnState || "begin",
+    aiDeciding: overrides.aiDeciding || false,
   });
 }
+
+const aiClient = (id, extra) =>
+  Object.assign({ id: id, name: id, role: "ai" }, extra);
+
+describe("viewersReadyForStarRefresh with co-op AI players", () => {
+  // The driver settles an AI's deals; a refresh meanwhile would deal from an
+  // inventory about to change.
+  it("is not ready while an AI player settles its deals", () => {
+    assert.equal(ready({ aiDeciding: true }), false);
+  });
+
+  it("waits for an AI player to be level with the host, as for a viewer", () => {
+    const records = {
+      alice: { techCardDealCount: 4 },
+      gwo_ai_1: { techCardDealCount: 3 },
+    };
+    const viewers = [viewer("alice"), aiClient("gwo_ai_1")];
+    assert.equal(ready({ viewers, records }), false);
+
+    records.gwo_ai_1.techCardDealCount = 4;
+    assert.equal(ready({ viewers, records }), true);
+  });
+
+  // An AI has no connection, so nothing about loading applies to it.
+  it("asks an AI player nothing about loading", () => {
+    const records = { gwo_ai_1: { techCardDealCount: 4 } };
+    const viewers = [
+      aiClient("gwo_ai_1", {
+        requires_loadout: true,
+        loading: true,
+        loading_status: "picking_tech_cards",
+      }),
+    ];
+    assert.equal(ready({ viewers, records }), true);
+  });
+});
 
 describe("viewersReadyForStarRefresh", () => {
   it("is ready when every viewer is level with the host", () => {

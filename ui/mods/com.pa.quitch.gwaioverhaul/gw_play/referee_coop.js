@@ -45,9 +45,32 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     );
   };
 
+  // The co-op AI players' records that field tech of their own: those with an
+  // inventory, under per-player tech, in a session. Slot order. A record is an
+  // AI's iff it carries gwaioAi - coop_ai_roster.js's isAiRecord. See coop.md,
+  // "AI players' tech".
+  var getCoopAiInventories = function (game) {
+    if (!game.perPlayerTechCards() || !model.gwCampaignActive()) {
+      return [];
+    }
+
+    return _(game.coopPlayerInventoryData())
+      .filter(function (record) {
+        return (
+          !!record && _.isPlainObject(record.gwaioAi) && !!record.inventory
+        );
+      })
+      .sortBy("gwaioAi.serial")
+      .map(function (record) {
+        return { record: record, inventory: record.inventory };
+      })
+      .value();
+  };
+
   // {subcommander, cards} pairs for every allied AI commander drawing from the
-  // player faction's palette, in battle-config colour order. The cards are the
-  // owning player's, since a subcommander's tech comes from its own player.
+  // player faction's palette, in battle-config colour order: the host's, each
+  // viewer's, then each co-op AI player's. The cards are the owning player's,
+  // since a subcommander's tech comes from its own player.
   //
   // Order in equals order out, so a caller that cares which colour lands where
   // must pass clients host-first. See coop.md for what is excluded and why.
@@ -66,19 +89,21 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     }
 
     _.forEach(
-      getConnectedViewerInventories(game, connectedClients),
-      function (viewer) {
-        if (!_.isArray(viewer.inventory.minions)) {
+      getConnectedViewerInventories(game, connectedClients).concat(
+        getCoopAiInventories(game)
+      ),
+      function (player) {
+        if (!_.isArray(player.inventory.minions)) {
           return;
         }
 
-        var viewerCards = _.isArray(viewer.inventory.cards)
-          ? viewer.inventory.cards
+        var playerCards = _.isArray(player.inventory.cards)
+          ? player.inventory.cards
           : [];
 
         subcommanders = subcommanders.concat(
-          _.map(viewer.inventory.minions, function (minion) {
-            return { subcommander: minion, cards: viewerCards };
+          _.map(player.inventory.minions, function (minion) {
+            return { subcommander: minion, cards: playerCards };
           })
         );
       }
@@ -112,6 +137,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     clientKey: clientKey,
     getConnectedClients: getConnectedClients,
     getConnectedViewerInventories: getConnectedViewerInventories,
+    getCoopAiInventories: getCoopAiInventories,
     getOrderedSubcommanders: getOrderedSubcommanders,
     alliedColourIndex: alliedColourIndex,
     clientsInPlayerOrder: clientsInPlayerOrder,

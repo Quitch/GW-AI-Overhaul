@@ -48,12 +48,24 @@ describe("hasUnit", () => {
     assert.equal(cards.hasUnit(["a", "b"], ["c", "b"]), true);
     assert.equal(cards.hasUnit(["a", "b"], ["c", "d"]), false);
   });
+
+  it("reads a group nested in the list", () => {
+    assert.equal(cards.hasUnit(["a", "b"], [["c", ["b"]], "d"]), true);
+    assert.equal(cards.hasUnit(["a", "b"], [["c"], "d"]), false);
+  });
 });
 
 describe("hasAllUnits", () => {
   it("matches a single unit passed as a string", () => {
     assert.equal(cards.hasAllUnits(["a", "b"], "b"), true);
     assert.equal(cards.hasAllUnits(["a", "b"], "c"), false);
+  });
+
+  it("reads a group nested in the list", () => {
+    assert.equal(cards.hasAllUnits(["a", "b", "c"], [["a", ["c"]], "b"]), true);
+    assert.equal(cards.hasAllUnits(["a", "b"], [["a", "c"]]), false);
+    assert.equal(cards.missingUnit(["a"], [["a", "c"]]), true);
+    assert.equal(cards.missingAllUnits(["a"], [["b", ["a"]]]), false);
   });
 
   it("requires every unit of an array to be present", () => {
@@ -794,6 +806,28 @@ describe("flatMapMods", () => {
   it("returns an empty array for no files", () => {
     assert.deepEqual(cards.flatMapMods([], "replace", { x: 1 }), []);
   });
+
+  it("reads a group nested in the list", () => {
+    assert.deepEqual(
+      cards.flatMapMods([["a.json"], "b.json"], "replace", { x: 1 }),
+      cards.flatMapMods(["a.json", "b.json"], "replace", { x: 1 })
+    );
+  });
+
+  it("emits nothing for a missing list", () => {
+    assert.deepEqual(cards.flatMapMods(undefined, "replace", { x: 1 }), []);
+  });
+
+  it("keeps a file named twice, and ignores a table", () => {
+    assert.deepEqual(
+      cards.flatMapMods(["a.json", ["a.json"], { t: "b.json" }], "replace", {
+        x: 1,
+      }),
+      cards
+        .mods("a.json", "replace", { x: 1 })
+        .concat(cards.mods("a.json", "replace", { x: 1 }))
+    );
+  });
 });
 
 describe("isEnglish", () => {
@@ -1024,6 +1058,69 @@ describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
       cards.anyPlayerHasCard(hostInventory, "bob_card", game),
       false
     );
+  });
+
+  // A co-op AI player has no connection, yet fights in the session's battles.
+  describe("co-op AI players", () => {
+    function installAiModel(active) {
+      const hostInventory = { cards: () => [], hasCard: () => false };
+      const game = {
+        coopPlayerInventoryData: () => [
+          {
+            playerId: "gwo_ai_1",
+            gwaioAi: { serial: 1 },
+            inventory: { cards: [{ id: "ai_card" }] },
+          },
+          { playerId: "gwo_ai_2", gwaioAi: { serial: 2 } },
+        ],
+      };
+      setGlobal("model", {
+        game: () => game,
+        gwCampaignConnectedClients: () => [],
+        gwCampaignActive: () => active,
+      });
+      return { hostInventory, game };
+    }
+
+    it("counts an AI player's cards while a session is active", () => {
+      const { hostInventory, game } = installAiModel(true);
+      assert.deepEqual(cards.getAllConnectedPlayerCards(hostInventory, game), [
+        { id: "ai_card" },
+      ]);
+      assert.equal(
+        cards.anyPlayerHasCard(hostInventory, "ai_card", game),
+        true
+      );
+    });
+
+    it("leaves an AI player out of a war played without a session", () => {
+      const { hostInventory, game } = installAiModel(false);
+      assert.deepEqual(
+        cards.getAllConnectedPlayerCards(hostInventory, game),
+        []
+      );
+      assert.equal(
+        cards.anyPlayerHasCard(hostInventory, "ai_card", game),
+        false
+      );
+    });
+
+    it("leaves an AI player out in a scene with no session at all", () => {
+      const hostInventory = { cards: () => [] };
+      const game = {
+        coopPlayerInventoryData: () => [
+          { gwaioAi: {}, inventory: { cards: [{ id: "ai_card" }] } },
+        ],
+      };
+      setGlobal("model", {
+        game: () => game,
+        gwCampaignConnectedClients: () => [],
+      });
+      assert.deepEqual(
+        cards.getAllConnectedPlayerCards(hostInventory, game),
+        []
+      );
+    });
   });
 
   // section_of_foreign_intelligence.js calls anyPlayerHasCard with two

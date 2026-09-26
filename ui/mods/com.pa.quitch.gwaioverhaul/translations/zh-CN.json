@@ -767,6 +767,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "载具冷却科技可使所有载具工厂在两次建造之间的冷却时间减半。"
   },
+  "View loadout and tech cards": {
+    "message": "查看配装和科技卡"
+  },
   "Waiting for loadout": {
     "message": "正在等待配装"
   },

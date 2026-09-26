@@ -767,6 +767,9 @@
   "Vehicle Cooldown Tech halves the cooldown time between builds for all vehicle factories.": {
     "message": "차량 쿨다운 기술은 모든 차량 공장의 생산 사이 쿨다운 시간을 절반으로 줄입니다."
   },
+  "View loadout and tech cards": {
+    "message": "로드아웃 및 기술 카드 보기"
+  },
   "Waiting for loadout": {
     "message": "로드아웃 대기 중"
   },

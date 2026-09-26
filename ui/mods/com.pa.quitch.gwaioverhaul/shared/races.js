@@ -6,7 +6,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races_shipped.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/addons_shipped.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ids.js",
-], function (unitCells, shipped, shippedAddons, ids) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+], function (unitCells, shipped, shippedAddons, ids, gwoUnit) {
   var MLA_ID = "mla";
   var TITANS = "Titans";
 
@@ -36,8 +37,18 @@ define([
   // Capability-cell indexes by race id, built by race_cells.js once the specs
   // are read. See unit_cells.js.
   var cellsById = {};
+  // foreignUnitPaths, rebuilt after any registration.
+  var foreignCache;
 
   var normalizeId = ids.normalize;
+
+  // See races.md, "Capability cells".
+  var stockPaths = {};
+  _.forEach(gwoUnit, function (path) {
+    if (_.isString(path)) {
+      stockPaths[path] = true;
+    }
+  });
 
   // `unitNames` names units by the keys of `units` and is compiled to
   // path -> name.
@@ -57,6 +68,13 @@ define([
   // written for the race alone.
   var compile = function (descriptor) {
     var units = descriptor.units || {};
+    var unitPaths = {};
+
+    _.forEach(units, function (path) {
+      if (_.isString(path)) {
+        unitPaths[path] = true;
+      }
+    });
 
     return _.assign({}, descriptor, {
       id: normalizeId(descriptor.id),
@@ -64,6 +82,7 @@ define([
       commanders: descriptor.commanders || [],
       ai: descriptor.ai || {},
       units: units,
+      unitPaths: unitPaths,
       unitNames: compileNames(units, descriptor.unitNames),
     });
   };
@@ -108,6 +127,7 @@ define([
     }
 
     registry[id] = compile(descriptor);
+    foreignCache = undefined;
 
     return registry[id];
   };
@@ -164,6 +184,7 @@ define([
     }
 
     addonRegistry[id] = compileAddon(descriptor);
+    foreignCache = undefined;
 
     return addonRegistry[id];
   };
@@ -220,6 +241,117 @@ define([
     });
 
     return paths;
+  };
+
+  // Every path in a registered race's or add-on's `units` table that is not
+  // stock, as { path: true }. See races.md, "Capability cells".
+  var foreignUnitPaths = function () {
+    if (!foreignCache) {
+      foreignCache = {};
+      _.forEach(
+        _.map(all(), "units").concat(_.map(addons(), "units")),
+        function (units) {
+          _.forEach(units, function (path) {
+            if (_.isString(path) && !stockPaths[path]) {
+              foreignCache[path] = true;
+            }
+          });
+        }
+      );
+    }
+
+    return foreignCache;
+  };
+
+  var hasOwn = function (object, key) {
+    return Object.prototype.hasOwnProperty.call(object, key);
+  };
+
+  var ownTable = function (raceId, path) {
+    return !isMla(raceId) && hasOwn(byId(raceId).unitPaths, path);
+  };
+
+  // What a player of this race fields for the paths held, through its cells.
+  // See races.md, "Capability cells".
+  var fieldedFor = function (raceId, held, cells) {
+    if (!cells) {
+      return held || [];
+    }
+
+    return (isMla(raceId) ? unitCells.addonUnitsFor : unitCells.raceUnitsFor)(
+      held,
+      cells.vanilla,
+      cells.race
+    );
+  };
+
+  // Kept per race until its index is replaced.
+  var reachable = {};
+  var reachableUnits = function (raceId, index) {
+    var id = normalizeId(raceId) || MLA_ID;
+
+    if (!reachable[id] || reachable[id].index !== index) {
+      var units = {};
+      _.forEach(
+        fieldedFor(raceId, index.vanilla.units, index),
+        function (path) {
+          units[path] = true;
+        }
+      );
+      reachable[id] = { index: index, units: units };
+    }
+
+    return reachable[id].units;
+  };
+
+  // `index` defaults to the race's published cells. See races.md,
+  // "Capability cells".
+  var fieldsUnit = function (raceId, path, index) {
+    if (ownTable(raceId, path)) {
+      return true;
+    }
+
+    var cells = index || cellsOf(raceId);
+    if (!cells) {
+      return false;
+    }
+
+    if (cells.race.exclusive[path]) {
+      return !!reachableUnits(raceId, cells)[path];
+    }
+
+    return (
+      hasOwn(cells.race.cellOf, path) || hasOwn(cells.race.partIndex, path)
+    );
+  };
+
+  // See races.md, "Capability cells".
+  var ownedPaths = function (raceId, paths, cells) {
+    var foreign = foreignUnitPaths();
+
+    return _.filter(paths || [], function (path) {
+      return !foreign[path] || fieldsUnit(raceId, path, cells);
+    });
+  };
+
+  // See races.md, "Capability cells".
+  var modsFor = function (raceId, mods, cells, has) {
+    var foreign = foreignUnitPaths();
+    var owned = _.filter(mods || [], function (mod) {
+      var file = mod && mod.file;
+      return (
+        !_.isString(file) ||
+        !foreign[file] ||
+        (_.isFunction(has) && has(file)) ||
+        fieldsUnit(raceId, file, cells)
+      );
+    });
+
+    if (!cells) {
+      return owned;
+    }
+
+    return unitCells.expandMods(owned, cells.vanilla, cells.race, has, foreign);
   };
 
   var hasName = function (descriptor, path) {
@@ -280,11 +412,41 @@ define([
     return cellsById[normalizeId(raceId)];
   };
 
-  // A card is worth offering when the race owns something in a cell it names.
-  // Until the race's cells are built, everything is offered rather than
-  // nothing. See races.md.
+  var namesForeignUnit = function (cardUnits) {
+    var foreign = foreignUnitPaths();
+
+    return _.some(unitCells.unitList(cardUnits), function (path) {
+      return !!foreign[path];
+    });
+  };
+
+  // Until the race's cells are built, every card naming a stock unit is
+  // offered rather than nothing. See races.md, "Capability cells".
   var cardUsable = function (raceId, cardUnits) {
-    if (isMla(raceId) || _.isEmpty(cardUnits)) {
+    var units = unitCells.unitList(cardUnits);
+
+    if (_.isEmpty(units)) {
+      return true;
+    }
+
+    var foreign = foreignUnitPaths();
+    var split = _.partition(units, function (path) {
+      return !!foreign[path];
+    });
+
+    if (
+      _.some(split[0], function (path) {
+        return fieldsUnit(raceId, path);
+      })
+    ) {
+      return true;
+    }
+
+    if (_.isEmpty(split[1])) {
+      return false;
+    }
+
+    if (isMla(raceId)) {
       return true;
     }
 
@@ -293,8 +455,29 @@ define([
     return (
       !index ||
       !index.race.units.length ||
-      unitCells.cardUsable(cardUnits, index.vanilla, index.race)
+      unitCells.cardUsable(split[1], index.vanilla, index.race)
     );
+  };
+
+  // The units a card's entry reaches for a player of this race, for the
+  // tooltips. See races.md, "Capability cells".
+  var cardUnitsFor = function (raceId, cardUnits, cells) {
+    var foreign = foreignUnitPaths();
+    var split = _.partition(unitCells.unitList(cardUnits), function (path) {
+      return !!foreign[path];
+    });
+    var fielded = _.filter(split[0], function (path) {
+      return fieldsUnit(raceId, path, cells);
+    });
+    var stock = split[1];
+
+    if (cells) {
+      stock = (
+        isMla(raceId) ? unitCells.addonCardUnitsFor : unitCells.cardUnitsFor
+      )(stock, cells.vanilla, cells.race);
+    }
+
+    return _.uniq(stock.concat(fielded));
   };
 
   // An AI descriptor carries `race`; an inventory carries the global tag,
@@ -736,6 +919,13 @@ define([
     activeAddons: activeAddons,
     knownBits: knownBits,
     addonUnitPaths: addonUnitPaths,
+    foreignUnitPaths: foreignUnitPaths,
+    namesForeignUnit: namesForeignUnit,
+    fieldsUnit: fieldsUnit,
+    ownedPaths: ownedPaths,
+    fieldedFor: fieldedFor,
+    modsFor: modsFor,
+    cardUnitsFor: cardUnitsFor,
     unitName: unitName,
     layersFor: layersFor,
     supportedBy: supportedBy,
@@ -766,6 +956,8 @@ define([
       addonOrder = [];
       activeAddonIds = [];
       cellsById = {};
+      foreignCache = undefined;
+      reachable = {};
     },
     registerShipped: registerShipped,
   };

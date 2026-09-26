@@ -3,8 +3,9 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
 ], function (brainTable) {
-  // Cards a race player is never offered: unit upgrades are tuned to the MLA
-  // unit they name (the commander's excepted - every race has one), these
+  // Cards a race player is not offered unless their entry names race units:
+  // unit upgrades are tuned to the MLA unit they name (the commander's
+  // excepted - every race has one), these
   // loadouts and protocols are built on hand-picked unit lists no cell reads,
   // and the Deepspace Radar is a TITANS stub only its card brings back. A
   // race gets its own. See races.md.
@@ -28,6 +29,37 @@ define([
   // `race`. An MLA or unknown race locks nothing.
   var raceLocksLoadout = function (race, cardId) {
     return !!race && race !== "mla" && mlaOnlyCard(cardId);
+  };
+
+  // Every deal asks for every card's entry, so the list is indexed by
+  // position, rebuilt when the list, its length or an indexed entry changes.
+  var entryIndex = { list: undefined, length: -1, at: {} };
+
+  var entryFor = function (cardsToUnits, cardId) {
+    var list = cardsToUnits || [];
+    var indexed = function () {
+      return Object.prototype.hasOwnProperty.call(entryIndex.at, cardId);
+    };
+    var moved = function () {
+      var entry = list[entryIndex.at[cardId]];
+      return !entry || entry.id !== cardId;
+    };
+
+    if (
+      entryIndex.list !== list ||
+      entryIndex.length !== list.length ||
+      (indexed() && moved())
+    ) {
+      var at = {};
+      _.forEachRight(list, function (entry, position) {
+        if (entry) {
+          at[entry.id] = position;
+        }
+      });
+      entryIndex = { list: list, length: list.length, at: at };
+    }
+
+    return indexed() ? list[entryIndex.at[cardId]] : undefined;
   };
 
   var isStartLoadoutCardId = function (cardId) {
@@ -228,22 +260,22 @@ define([
     mlaOnlyCard: mlaOnlyCard,
     raceLocksLoadout: raceLocksLoadout,
 
-    // A card the player's race can own nothing of is not worth a hand slot.
-    // cardsToUnits is model.gwoCardsToUnits; a card with no entry passes.
-    // See races.md.
+    // cardsToUnits is model.gwoCardsToUnits. See races.md, "Capability cells".
     raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
       if (!races) {
         return true;
       }
       var race = races.raceOf(inventory);
-      if (races.isMla(race)) {
-        return true;
-      }
-      if (mlaOnlyCard(cardId)) {
+      var entry = entryFor(cardsToUnits, cardId);
+      var units = entry ? entry.units : undefined;
+      if (
+        !races.isMla(race) &&
+        mlaOnlyCard(cardId) &&
+        !races.namesForeignUnit(units)
+      ) {
         return false;
       }
-      var entry = _.find(cardsToUnits || [], { id: cardId });
-      return !entry || races.cardUsable(race, entry.units);
+      return races.cardUsable(race, units);
     },
 
     // A Sub Commander fights as the player's race, with one of its commanders.

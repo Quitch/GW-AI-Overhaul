@@ -5,7 +5,8 @@ define([
   "shared/gw_game_patches",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/defeat_team.js",
-], function (stockBank, gwoGamePatches, gwoBank, gwoDefeatTeam) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (stockBank, gwoGamePatches, gwoBank, gwoDefeatTeam, unitCells) {
   var loadingAnotherPlayersCards = false;
 
   var isCampaignViewerSession = function () {
@@ -58,14 +59,17 @@ define([
     save: function () {
       return ko.toJS(this);
     },
+    // GWO - a card's own group may sit inside the list; a whole gwoUnit race
+    // table is not a list and names nothing
     addUnits: function (add) {
       var self = this;
-      self.units(self.units().concat(add));
+      self.units(self.units().concat(unitCells.unitPaths(add)));
     },
-    // GWO - updated to remove multiple copies of a unit
+    // GWO - updated to remove multiple copies of a unit, from a list that may
+    // hold groups
     removeUnits: function (remove) {
       var self = this;
-      _.forEach(remove, function (unit) {
+      _.forEach(unitCells.unitPaths(remove), function (unit) {
         self.units.remove(unit);
       });
     },

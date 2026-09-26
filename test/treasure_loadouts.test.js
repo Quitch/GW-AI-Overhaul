@@ -405,6 +405,20 @@ describe("recordHasUnlockedLoadout", () => {
     assert.equal(treasure.recordHasUnlockedLoadout(record, undefined), false);
   });
 
+  // An AI player banks nothing, so every loadout counts as its own.
+  it("gives a co-op AI player every loadout", () => {
+    const ai = { playerId: "gwo_ai_1", gwaioAi: { serial: 1 } };
+    assert.equal(
+      treasure.recordHasUnlockedLoadout(ai, "gwc_start_subcdr"),
+      true
+    );
+    assert.equal(treasure.recordHasUnlockedLoadout(ai, "nem_start_nuke"), true);
+    assert.equal(
+      treasure.recordHasUnlockedLoadout(ai, "gwaio_upgrade_airfactory"),
+      false
+    );
+  });
+
   it("survives a record with no unlock metadata at all", () => {
     assert.equal(
       treasure.recordHasUnlockedLoadout(undefined, "gwc_start_subcdr"),
@@ -520,6 +534,27 @@ describe("anyPlayerCanUnlockLoadout", () => {
         perPlayerTech: true,
       }),
       true
+    );
+  });
+
+  it("never holds the war open for a co-op AI player", () => {
+    assert.equal(
+      treasure.anyPlayerCanUnlockLoadout({
+        localUnlockedIds: everyLoadout(),
+        records: [{ playerId: "gwo_ai_1", gwaioAi: { serial: 1 } }],
+        perPlayerTech: true,
+      }),
+      false
+    );
+  });
+
+  it("deals a co-op AI player no loadout at the treasure star", () => {
+    const ai = { playerId: "gwo_ai_1", gwaioAi: { serial: 1 } };
+    assert.equal(
+      treasure.pickTreasureLoadout({
+        isUnlocked: (card) => treasure.recordHasUnlockedLoadout(ai, card),
+      }),
+      undefined
     );
   });
 

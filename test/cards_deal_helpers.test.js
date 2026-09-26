@@ -601,6 +601,62 @@ describe("races", () => {
     );
   });
 
+  it("deals a card naming a race unit to that race alone, whatever its id", () => {
+    const shank = [
+      {
+        id: "mym_upgrade_shank",
+        units: [[FIXTURE_RACE.units.fxTank]],
+      },
+    ];
+
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("fixture"),
+        "mym_upgrade_shank",
+        shank
+      ),
+      true
+    );
+    assert.equal(
+      helpers.raceCanDeal(
+        races,
+        inventoryOf("mla"),
+        "mym_upgrade_shank",
+        shank
+      ),
+      false
+    );
+    assert.equal(
+      helpers.raceCanDeal(races, inventoryOf("fixture"), "bot_card", [
+        { id: "bot_card", units: [[gwoUnit.dox], gwoUnit.ant] },
+      ]),
+      true
+    );
+  });
+
+  it("sees an entry pushed, or changed, after an earlier deal", () => {
+    const list = [{ id: "bot_card", units: [gwoUnit.dox] }];
+    const fixture = inventoryOf("fixture");
+
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    list.push({ id: "late_card", units: [gwoUnit.dox] });
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), false);
+    list[1].units = [gwoUnit.ant];
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    list[1] = { id: "late_card", units: [gwoUnit.dox] };
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), false);
+    list[1].units.push(gwoUnit.ant);
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    list[0] = { id: "swapped_card", units: [gwoUnit.ant] };
+    assert.equal(helpers.raceCanDeal(races, fixture, "late_card", list), true);
+    assert.equal(helpers.raceCanDeal(races, fixture, "bot_card", list), true);
+    assert.equal(
+      helpers.raceCanDeal(races, fixture, "constructor", list),
+      true
+    );
+  });
+
   it("withholds the MLA-only cards from a race, the commander upgrades excepted", () => {
     for (const id of helpers.MLA_ONLY) {
       assert.equal(helpers.mlaOnlyCard(id), true, id);
