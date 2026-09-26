@@ -504,6 +504,18 @@ describe("expandMods", () => {
       mod(FX_COMMANDER_AMMO, "damage", 1.25),
       mod(AA_AMMO, "damage", 1.25),
     ]);
+
+    // The documented limit (races.md): the passes carry no card. One card
+    // naming the main gun's ammo and another naming the AA ammo with the same
+    // change give the list above, so the AA ammo takes the change once, as
+    // every race part in the pass does.
+    const twoCards = [mod(MAIN_AMMO, "damage", 1.25)].concat([
+      mod(AA_AMMO, "damage", 1.25),
+    ]);
+    assert.deepEqual(cells.expandMods(twoCards, v, r, has), [
+      mod(FX_COMMANDER_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+    ]);
   });
 
   it("applies a group card once per pass, and stacks a second card", () => {

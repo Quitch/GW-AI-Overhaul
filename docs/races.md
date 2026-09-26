@@ -173,13 +173,18 @@ already seen recurs. One card is one pass, and two copies stack. A mod on a
 race path is passed through, so a card that makes one change to the Ant and to
 the race tank of its cell changes that tank twice. The passes carry no card, so
 they cannot tell that case from two cards. The New-GW-Cards README tells
-authors to name one or the other. A race can mount a vanilla part itself:
-Legion's commanders mount the stock commander main gun, AA, and torpedo
-weapons, so they fire the stock ammo. Such a file is both a file the army holds and one of the
-race's parts. A mod on it that is kept, because the army holds the file, joins
-the pass for that file. So the file takes the change once, whether the mod
-reaches it first as itself or as another file's race part. A mod whose
-`path` a race file lacks is the no-op it always was in `specs.mod`.
+authors to name one or the other. A mod whose `path` a race file lacks is the
+no-op it always was in `specs.mod`.
+
+A race can mount a vanilla part itself. Legion's commanders mount the stock
+commander main gun, AA, and torpedo weapons, so they fire the stock ammo. Such a
+file is both a file the army holds and one of the race's parts. A mod on it that
+is kept, because the army holds the file, joins the pass for that file, like any
+race part. One card that names the file and a cell-mate therefore changes the
+file once, whichever it reaches first. The limit above applies to the file too:
+a card that changes a cell-mate, and a second card that makes the same change to
+the file, change it once, as they change every race part of that pass once.
+`test/unit_cells.test.js` pins both.
 
 A single-unit grant opens its whole cell: `gwc_start_subcdr`'s Ant brings every
 basic race tank. That is accepted. What no cell can carry is a hand-picked
