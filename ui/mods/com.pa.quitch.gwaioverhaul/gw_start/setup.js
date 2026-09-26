@@ -846,6 +846,8 @@
               raceByFaction: raceByFaction,
               raceInfo: raceInfo,
               perPlayerTechCards: model.newGamePerPlayerTechCards(),
+              uniqueAiLoadouts:
+                !!model.gwoUniqueAiLoadouts && model.gwoUniqueAiLoadouts(),
               galaxy: game.galaxy(),
             });
           };

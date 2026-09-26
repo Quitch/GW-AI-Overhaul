@@ -342,11 +342,19 @@ describe("coopAiMapFiles", () => {
 
 describe("specPlan", () => {
   const unitCells = {
-    raceUnitsFor: (held) => held.map((unit) => "race:" + unit),
-    addonUnitsFor: (held) => held.concat("addon"),
     heldCommanderUnits: (held) => held.filter((unit) => unit.includes("cdr")),
   };
   const gwoRaces = {
+    ownedPaths: (race, paths) =>
+      paths.filter((unit) => !unit.startsWith("foreign")),
+    fieldedFor: (race, held, cells) => {
+      if (!cells) {
+        return held;
+      }
+      return race === "mla"
+        ? held.concat("addon")
+        : held.map((unit) => "race:" + unit);
+    },
     commanderModsFor: (race, commander) => [race + " retags " + commander],
     unitRetagMods: (race, unit) => [race + " keeps " + unit],
   };
@@ -354,7 +362,7 @@ describe("specPlan", () => {
     refereeGameFiles.specPlan(
       Object.assign(
         {
-          held: ["bot.json", "colonel_cdr.json"],
+          units: ["bot.json", "colonel_cdr.json"],
           cells: undefined,
           race: "mla",
           isMla: true,
@@ -388,6 +396,21 @@ describe("specPlan", () => {
     assert.deepEqual(result.retagMods, [
       "legion retags ai_cdr.json",
       "legion keeps colonel_cdr.json",
+    ]);
+  });
+
+  it("drops another race's units from the inventory but keeps every extra spec", () => {
+    const result = plan({
+      units: ["bot.json", "foreign_bot.json"],
+      extra: ["foreign_cdr.json"],
+      cells: {},
+      race: "legion",
+      isMla: false,
+    });
+    assert.deepEqual(result.specs, ["race:bot.json", "race:foreign_cdr.json"]);
+    assert.deepEqual(result.retagMods, [
+      "legion retags ai_cdr.json",
+      "legion keeps foreign_cdr.json",
     ]);
   });
 });

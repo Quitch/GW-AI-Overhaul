@@ -114,9 +114,20 @@ define([
       return warRng && warRng.stream("coop_ai_player", index(serial));
     },
 
-    // Ties between a new AI's equally scored starting loadouts.
+    // A new AI's starting loadout, drawn by score.
     coopAiLoadoutRng: function (warRng, serial) {
       return warRng && warRng.stream("coop_ai_loadout", index(serial));
+    },
+
+    // The T1 factory card an AI with no basic land factory is assigned at a
+    // deal, so a reload assigns the same one.
+    coopAiFactoryRng: function (warRng, serial, dealIndex) {
+      return (
+        warRng &&
+        warRng
+          .stream("coop_ai_factory", index(serial))
+          .stream("deal", index(dealIndex))
+      );
     },
 
     // Ties in an AI's choice on one deal, by the rerolls spent on it, so a

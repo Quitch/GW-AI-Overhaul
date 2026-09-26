@@ -1,9 +1,12 @@
 // How a co-op AI player values a tech card, and what it does with a hand: by
-// what the card observably does to its inventory, never by its id. Pure: the
-// effect comes from gw_play/coop_ai_effects.js and the units from
+// what the card observably does to its inventory, never by its id. Pure, as
+// is shared/cards_deal_helpers.js, whose weighted draw it shares: the effect
+// comes from gw_play/coop_ai_effects.js and the units from
 // shared/coop_ai_units.js. The weights are tuned from the debug lines this
 // module formats. See tech-cards.md, "How AI players judge a card".
-define(function () {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
+], function (cardsDealHelpers) {
   var WEIGHTS = {
     // A unit's worth by class, and by tier.
     classes: {
@@ -53,6 +56,12 @@ define(function () {
     slotFull: 6,
     // A card whose effect shows only in battle, at a full deal chance.
     floor: 4,
+    // A starting loadout that does what no other part sizes: deals more cards,
+    // or changes its units in ways only known to change.
+    extra: 30,
+    // What a starting loadout's units keep of their worth when a card could
+    // grant them later: the head start alone.
+    headStart: 0.25,
     // Reroll while the best card is under this; it rises as the bank fills
     // and falls with each reroll spent.
     rerollBase: 4,
@@ -66,6 +75,11 @@ define(function () {
   var INVERTED =
     /cost|cooldown|delay|build_time|_demand|consumption|reload|per_shot/i;
   var STAT_OPS = ["multiply", "add"];
+  // Paths whose unknown-size mods earn no extra: build lists, which reach
+  // sizes, and where a built unit spawns; orders, which an AI never gives;
+  // and text and looks.
+  var NO_EXTRA =
+    /^(unit_types|buildable_types|spawn_layers|command_caps|description|display_name|model|si_name)(\.|$)/;
 
   var key = function (value) {
     return JSON.stringify(value);
@@ -115,13 +129,15 @@ define(function () {
     return worth * (cell.tier === "Advanced" ? WEIGHTS.advanced : 1);
   };
 
-  // The worth of a set of held units: a cell's units worth less the more of
+  // The worth of an inventory's units: a cell's units worth less the more of
   // them there are, a unit the commander cannot reach a quarter, a domain no
-  // teammate fields more, plus a bonus per domain fielded. context: lookup,
-  // commander, teamDomains. boost(unit), if given, scales a unit's worth.
-  var setValue = function (units, context, boost) {
+  // teammate fields more, plus a bonus per domain fielded. inventory: units,
+  // and mods, whose build types decide reach. context: lookup, commander,
+  // teamDomains. boost(unit), if given, scales a unit's worth.
+  var setValue = function (inventory, context, boost) {
     var lookup = context.lookup;
-    var reached = lookup.reachable(units, context.commander);
+    var units = inventory.units || [];
+    var reached = lookup.reachable(units, context.commander, inventory.mods);
     var cells = {};
     var domains = {};
     var total = 0;
@@ -322,7 +338,7 @@ define(function () {
       return cells[unit];
     };
     var fielded = _.filter(
-      _.uniq(lookup.reachable(units, context.commander)),
+      _.uniq(lookup.reachable(units, context.commander, inventory.mods)),
       cellOf
     );
     var later = _.difference(
@@ -405,12 +421,12 @@ define(function () {
   var FIELDING = ["Factory", "Combat", "Fabber", "Titan"];
 
   // Every domain the given players field between them, for the team factor.
-  // players: { units, commander } each.
+  // players: { units, commander, mods } each.
   var teamDomains = function (players, lookup) {
     var domains = [];
     _.forEach(players, function (player) {
       _.forEach(
-        lookup.reachable(player.units || [], player.commander),
+        lookup.reachable(player.units || [], player.commander, player.mods),
         function (unit) {
           var cell = lookup.classOf(unit);
           if (cell && _.includes(FIELDING, cell.cls)) {
@@ -426,12 +442,19 @@ define(function () {
     return Math.round(value * 10) / 10;
   };
 
-  // A card's value, by part. before and after are the saved inventories either
-  // side of the card; context: lookup, commander, teamDomains, memo (shared
-  // by the cards of a hand), and for a card with no effect to see, namesUnits
-  // (it registers units in gwoCardsToUnits) and chance (its own deal() weight
-  // for this inventory). The held-tech boost is before's on both sides.
-  var scoreCard = function (before, after, context) {
+  var PARTS = [
+    "unlock",
+    "mods",
+    "later",
+    "minions",
+    "aiMods",
+    "slots",
+    "floor",
+    "extra",
+  ];
+
+  // A card's value by part, unrounded. See scoreCard.
+  var partsOf = function (before, after, context) {
     var effect = effectOf(before, after);
     var fullness = before.maxCards ? before.cards.length / before.maxCards : 1;
     var heldTech = heldTechFor(before, context);
@@ -445,14 +468,15 @@ define(function () {
     var held = before.minions || [];
     var parts = {
       unlock:
-        setValue(after.units, context, heldTech.unit) -
-        setValue(before.units, context, heldTech.unit),
+        setValue(after, context, heldTech.unit) -
+        setValue(before, context, heldTech.unit),
       mods: added.now - removed.now,
       later: added.later - removed.later,
       minions: 0,
       aiMods: Math.min(WEIGHTS.aiModCap, effect.addedAiMods) * WEIGHTS.aiMod,
       slots: effect.netSlots * (WEIGHTS.slotBase + WEIGHTS.slotFull * fullness),
       floor: 0,
+      extra: 0,
     };
 
     _.forEach(_.drop(after.minions || [], held.length), function (minion, i) {
@@ -479,7 +503,11 @@ define(function () {
       parts.floor =
         (WEIGHTS.floor * Math.min(Math.max(chance || 0, 0), 100)) / 100;
     }
+    return parts;
+  };
 
+  // The total, then each part, rounded.
+  var rounded = function (parts) {
     parts.total = round(
       parts.unlock +
         parts.mods +
@@ -487,15 +515,73 @@ define(function () {
         parts.minions +
         parts.aiMods +
         parts.slots +
-        parts.floor
+        parts.floor +
+        parts.extra
     );
-    _.forEach(
-      ["unlock", "mods", "later", "minions", "aiMods", "slots", "floor"],
-      function (part) {
-        parts[part] = round(parts[part]);
-      }
-    );
+    _.forEach(PARTS, function (part) {
+      parts[part] = round(parts[part]);
+    });
     return parts;
+  };
+
+  // A card's value, by part. before and after are the saved inventories either
+  // side of the card; context: lookup, commander, teamDomains, memo (shared
+  // by the cards of a hand), and for a card with no effect to see, namesUnits
+  // (it registers units in gwoCardsToUnits) and chance (its own deal() weight
+  // for this inventory). The held-tech boost is before's on both sides.
+  var scoreCard = function (before, after, context) {
+    return rounded(partsOf(before, after, context));
+  };
+
+  // Whether after is offered more cards a deal than before.
+  var dealsMore = function (before, after) {
+    var view = function (inventory) {
+      var ids = _.pluck(inventory.cards || [], "id");
+      return {
+        hasCard: function (id) {
+          return _.includes(ids, id);
+        },
+      };
+    };
+    return (
+      cardsDealHelpers.cardsOfferedCount(1, view(after)) >
+      cardsDealHelpers.cardsOfferedCount(1, view(before))
+    );
+  };
+
+  // A mod modDirection counts at WEIGHTS.otherOp: known to change, not by
+  // how much.
+  var unsized = function (mod) {
+    return (
+      !(_.includes(STAT_OPS, mod.op) && _.isNumber(mod.value)) &&
+      !NO_EXTRA.test(mod.path || "")
+    );
+  };
+
+  // A starting loadout's value: scoreCard's parts, less what its units are
+  // worth beyond a head start where a card could grant them later, plus the
+  // extra for doing what no part sizes. Its other parts stack with cards, so
+  // they stand, and its mods decide what reaches the units a card could grant.
+  var scoreLoadout = function (before, after, context) {
+    var parts = partsOf(before, after, context);
+    var boost = heldTechFor(before, context).unit;
+    var effect = effectOf(before, after);
+    var grantable = _.intersection(
+      effect.addedUnits,
+      context.lookup.obtainable || []
+    );
+    var held = before.units || [];
+    var replaceable =
+      setValue(
+        { units: held.concat(grantable), mods: after.mods },
+        context,
+        boost
+      ) - setValue({ units: held, mods: after.mods }, context, boost);
+    parts.unlock -= (1 - WEIGHTS.headStart) * replaceable;
+    if (dealsMore(before, after) || _.some(effect.addedMods, unsized)) {
+      parts.extra = WEIGHTS.extra;
+    }
+    return rounded(parts);
   };
 
   var rerollThreshold = function (fullness, rerollsUsed) {
@@ -514,10 +600,30 @@ define(function () {
     return rng ? rng.pick(tied) : tied[0];
   };
 
+  var drawWeight = function (entry) {
+    return Math.max(entry.total, 0);
+  };
+
+  // A starting loadout drawn from scored ones, each with a chance in
+  // proportion to its total; one at 0 or less is never drawn. undefined when
+  // none is above 0. rng is the AI's loadout stream, or undefined in a war
+  // without a seed.
+  var chooseLoadout = function (scored, rng) {
+    var index = cardsDealHelpers.chooseDealIndex(
+      _.map(scored, function (entry) {
+        return { chance: drawWeight(entry) };
+      }),
+      rng ? rng() : Math.random()
+    );
+    return _.isUndefined(index) ? undefined : scored[index];
+  };
+
   // What to do with a hand. params: scored ({ index, id, total, loadout }),
   // rerollsLeft, rerollsUsed, fullness, roomFor(card) (whether the bank takes
   // it without a deletion), held ({ index, id, total }, removable cards only),
-  // rng. Returns { action, index, deleteIndex, best, threshold, reason }.
+  // rng. Returns { action, index, deleteIndex, best, threshold, reason }; a
+  // decline for a full bank carries the best card's index, to judge the held
+  // cards against.
   var decide = function (params) {
     var scored = params.scored || [];
 
@@ -559,7 +665,7 @@ define(function () {
       };
     }
 
-    return { action: "decline", reason: "bank full" };
+    return { action: "decline", reason: "bank full", index: choice.index };
   };
 
   var formatParts = function (parts) {
@@ -577,7 +683,9 @@ define(function () {
       " slots " +
       parts.slots +
       " floor " +
-      parts.floor
+      parts.floor +
+      " extra " +
+      parts.extra
     );
   };
 
@@ -624,8 +732,31 @@ define(function () {
     );
   };
 
-  // The same for the starting loadout: every candidate and its score.
+  var percent = function (share) {
+    return Math.round(share * 1000) / 10;
+  };
+
+  // The same for the starting loadout: every candidate, its score, and its
+  // chance of being drawn from the pool (all of them unless given); the
+  // candidates dropped, with the gap no card closes; and under Unique AI
+  // loadouts, the loadouts in use and whether the draw fell back to the whole
+  // pool.
   var describeLoadouts = function (params) {
+    var pool = params.pool || params.scored;
+    var weight = _.sum(_.map(pool, drawWeight));
+    var chanceOf = function (card) {
+      return weight && _.includes(pool, card)
+        ? percent(drawWeight(card) / weight)
+        : 0;
+    };
+    var dropped = _.map(params.dropped, function (entry) {
+      return entry.id + " (" + entry.gap + ")";
+    });
+    var fallback = params.fullPool ? " (all in use: full pool)" : "";
+    var used = params.used
+      ? " used: " + (params.used.join(", ") || "none") + fallback
+      : "";
+
     return (
       "[GW COOP AI] " +
       params.name +
@@ -633,8 +764,19 @@ define(function () {
       params.via +
       " candidates: " +
       _.map(params.scored, function (card) {
-        return card.id + "=" + card.total + " (" + formatParts(card) + ")";
+        return (
+          card.id +
+          "=" +
+          card.total +
+          " (" +
+          formatParts(card) +
+          " chance " +
+          chanceOf(card) +
+          "%)"
+        );
       }).join(", ") +
+      (dropped.length ? " dropped: " + dropped.join(", ") : "") +
+      used +
       " -> " +
       (params.chosen ? "chose " + params.chosen : "none")
     );
@@ -649,8 +791,10 @@ define(function () {
     focusDomain: focusDomain,
     teamDomains: teamDomains,
     scoreCard: scoreCard,
+    scoreLoadout: scoreLoadout,
     rerollThreshold: rerollThreshold,
     best: best,
+    chooseLoadout: chooseLoadout,
     decide: decide,
     describeHand: describeHand,
     describeLoadouts: describeLoadouts,

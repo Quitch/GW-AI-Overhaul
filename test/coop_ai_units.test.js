@@ -14,6 +14,9 @@ const coopAiUnits = loadCouiModule(
 const groups = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js"
 );
+const gwoSpecs = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js"
+);
 const gwoUnit = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
 );
@@ -211,6 +214,115 @@ describe("fromSpecs", () => {
   it("lists the obtainable units it knows, commanders aside", () => {
     assert.deepEqual(commanders.obtainable, [BOT_FACTORY, DOX]);
     assert.deepEqual(lookup.obtainable, []);
+  });
+});
+
+// Build-type mods as a battle applies them: a pushed unit type or a longer
+// build list reaches more, a replaced build list may reach less.
+describe("fromSpecs reach under build-type mods", () => {
+  const LOB =
+    "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json";
+  const BUILD_SPECS = Object.assign({}, COMMANDER_SPECS, {
+    [BASE_COMMANDER]: Object.assign({}, COMMANDER_SPECS[BASE_COMMANDER], {
+      buildable_types: "Factory & Basic | CmdBuild",
+    }),
+    [LOB]: { unit_types: types("Structure", "Land", "Basic", "Offense") },
+  });
+  const UNITS = [
+    BASE_COMMANDER,
+    IMPERIAL,
+    RACE_COMMANDER,
+    BOT_FACTORY,
+    DOX,
+    BUMBLEBEE,
+    LOB,
+  ];
+  const withMods = (modSpecs) =>
+    coopAiUnits.fromSpecs({ units: UNITS, specs: BUILD_SPECS }, [], modSpecs);
+  const reach = withMods(gwoSpecs.mod);
+  const mod = (file, path, op, value) => ({ file, path, op, value });
+  const cmdBuild = mod(LOB, "unit_types", "push", "UNITTYPE_CmdBuild");
+
+  it("reaches a unit a pushed type puts on the commander's build list", () => {
+    assert.deepEqual(reach.reachable([LOB], IMPERIAL), []);
+    assert.deepEqual(reach.reachable([LOB], IMPERIAL, [cmdBuild]), [LOB]);
+  });
+
+  it("reaches what a factory's longer build list adds", () => {
+    const air = mod(BOT_FACTORY, "buildable_types", "add", " | Air & Mobile");
+    assert.deepEqual(reach.reachable([BOT_FACTORY, BUMBLEBEE], IMPERIAL), [
+      BOT_FACTORY,
+    ]);
+    assert.deepEqual(
+      reach.reachable([BOT_FACTORY, BUMBLEBEE], IMPERIAL, [air]),
+      [BOT_FACTORY, BUMBLEBEE]
+    );
+  });
+
+  it("reaches less when a build list is replaced", () => {
+    const fabbers = mod(BOT_FACTORY, "buildable_types", "replace", "Fabber");
+    assert.deepEqual(reach.reachable([BOT_FACTORY, DOX], IMPERIAL, [fabbers]), [
+      BOT_FACTORY,
+    ]);
+  });
+
+  // The Dox and every commander inherit their types and build lists.
+  it("reaches through a mod on a base spec for the units that inherit it", () => {
+    const botsByHand = mod(BASE_BOT, "unit_types", "push", "UNITTYPE_CmdBuild");
+    const air = mod(BASE_COMMANDER, "buildable_types", "add", " | Air");
+    assert.deepEqual(reach.reachable([DOX], IMPERIAL, [botsByHand]), [DOX]);
+    assert.deepEqual(reach.reachable([BUMBLEBEE], IMPERIAL, [air]), [
+      BUMBLEBEE,
+    ]);
+    // A race commander builds from the base commander's list.
+    assert.deepEqual(reach.reachable([BUMBLEBEE], RACE_COMMANDER), []);
+    assert.deepEqual(reach.reachable([BUMBLEBEE], RACE_COMMANDER, [air]), [
+      BUMBLEBEE,
+    ]);
+  });
+
+  it("ignores stat mods, mods on files it does not hold, and every mod without the op engine", () => {
+    const others = [
+      mod(LOB, "max_health", "multiply", 2),
+      mod("/pa/units/elsewhere/x.json", "unit_types", "push", "UNITTYPE_Bot"),
+    ];
+    assert.deepEqual(reach.reachable([LOB], IMPERIAL, others), []);
+    assert.deepEqual(withMods().reachable([LOB], IMPERIAL, [cmdBuild]), []);
+  });
+
+  it("leaves the specs it read unchanged", () => {
+    const before = JSON.parse(JSON.stringify(BUILD_SPECS));
+    reach.reachable([LOB, DOX, BUMBLEBEE], IMPERIAL, [
+      cmdBuild,
+      mod(BASE_BOT, "unit_types", "push", "UNITTYPE_CmdBuild"),
+      mod(BASE_COMMANDER, "buildable_types", "add", " | Air"),
+    ]);
+    assert.deepEqual(BUILD_SPECS, before);
+  });
+
+  it("remakes a mod list's build lists once, and keeps the latest 64", () => {
+    let calls = 0;
+    const counted = withMods((specs, mods, tag) => {
+      calls += 1;
+      gwoSpecs.mod(specs, mods, tag);
+    });
+    const listFor = (index) => [
+      mod(LOB, "unit_types", "push", "UNITTYPE_Custom" + index),
+    ];
+
+    counted.reachable([LOB], IMPERIAL, [cmdBuild]);
+    counted.reachable([LOB], IMPERIAL, [cmdBuild]);
+    counted.reachable([LOB], IMPERIAL, []);
+    assert.equal(calls, 1);
+
+    for (let index = 0; index < 64; index++) {
+      counted.reachable([LOB], IMPERIAL, listFor(index));
+    }
+    assert.equal(calls, 65);
+    counted.reachable([LOB], IMPERIAL, listFor(63));
+    assert.equal(calls, 65);
+    counted.reachable([LOB], IMPERIAL, [cmdBuild]);
+    assert.equal(calls, 66);
   });
 });
 

@@ -207,6 +207,27 @@ const FIXTURE_ADDON_UNITS = [
   FX_EXCLUSIVE,
 ];
 
+// The add-on index race_cells.js builds for MLA over the fixture race and
+// add-on: the add-on's vanilla-typed units, its exclusive unit apart.
+function fixtureAddonIndex() {
+  const units = FIXTURE_UNITS.concat(FIXTURE_ADDON_UNITS);
+  const specs = Object.assign({}, FIXTURE_SPECS, FIXTURE_ADDON_SPECS);
+  const addonPaths = new Set(Object.values(FIXTURE_ADDON.units));
+  return {
+    vanilla: unitCells.buildIndex(
+      units,
+      specs,
+      (types, path) => unitCells.vanillaMember(types) && !addonPaths.has(path)
+    ),
+    race: unitCells.buildIndex(
+      units,
+      specs,
+      (types, path) => unitCells.vanillaMember(types) && addonPaths.has(path),
+      unitCells.exclusiveMember(["Custom58", "Custom7"])
+    ),
+  };
+}
+
 // A stand-in for gwo_rng: pick takes the first entry, shuffle reverses, so a
 // test can predict every draw.
 function predictableRng() {
@@ -228,5 +249,6 @@ module.exports = {
   FIXTURE_ADDON_SPECS,
   FIXTURE_ADDON_UNITS,
   fixtureIndex,
+  fixtureAddonIndex,
   predictableRng,
 };

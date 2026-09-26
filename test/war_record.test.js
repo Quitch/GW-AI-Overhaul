@@ -64,6 +64,7 @@ function war(overrides) {
       raceByFaction: { 0: "mla" },
       raceInfo: { mods: [], addonMods: [] },
       perPlayerTechCards: false,
+      uniqueAiLoadouts: true,
       galaxy: { stars: () => stars },
     },
     overrides
@@ -97,6 +98,7 @@ describe("build", () => {
       "treasureStar",
       "coopPlayerScalingCount",
       "races",
+      "uniqueAiLoadouts",
       "biomeMods",
     ]);
     assert.equal(record.treasurePlanetFixed, true);
@@ -117,6 +119,21 @@ describe("build", () => {
       addons: [],
       perPlayerRace: false,
     });
+  });
+
+  // Only an AI under per-player tech draws a loadout.
+  it("records Unique AI loadouts only alongside per-player tech", () => {
+    assert.equal(warRecord.build(war()).uniqueAiLoadouts, false);
+    assert.equal(
+      warRecord.build(war({ perPlayerTechCards: true })).uniqueAiLoadouts,
+      true
+    );
+    assert.equal(
+      warRecord.build(
+        war({ perPlayerTechCards: true, uniqueAiLoadouts: false })
+      ).uniqueAiLoadouts,
+      false
+    );
   });
 
   it("records the co-op brain, which follows the opponent's until set", () => {

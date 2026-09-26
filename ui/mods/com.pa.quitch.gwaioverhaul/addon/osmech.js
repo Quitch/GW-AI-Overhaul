@@ -93,7 +93,6 @@ define(function () {
         "/pa/units/thorosmen/bot_drone/boombot_air/boombot_air_life_tool_weapon.json",
       flyingSpiderLifePbaoeAmmo:
         "/pa/units/thorosmen/bot_drone/boombot_air/boombot_air_life_pbaoe.json",
-      flyingSpiderDeathAmmo: "/pa/ammo/air_pbaoe/air_pbaoe.json",
       freezer: "/pa/units/thorosmen/bot_freeze/bot_freeze.json",
       freezerWeapon:
         "/pa/units/thorosmen/bot_freeze/bot_freeze_tool_weapon.json",
@@ -136,8 +135,6 @@ define(function () {
       knalhaZxAmmo: "/pa/units/thorosmen/cuzeta/cuzeta_ammo.json",
       knalhaZxTorpedoWeapon:
         "/pa/units/thorosmen/cuzeta/cuzeta_torpedo_tool_weapon.json",
-      knalhaZxAmmo2:
-        "/pa/units/sea/torpedo_launcher/torpedo_launcher_ammo.json",
       lawnmower: "/pa/units/thorosmen/st_lawnmower/st_lawnmower.json",
       lawnmowerWeapon:
         "/pa/units/thorosmen/st_lawnmower/st_lawnmower_weapon.json",
@@ -195,14 +192,9 @@ define(function () {
       skyBreaker: "/pa/units/thorosmen/maciota/maciota.json",
       skyBreakerWeapon: "/pa/units/thorosmen/maciota/maciota_tool_weapon.json",
       skyBreakerAmmo: "/pa/units/thorosmen/maciota/maciota_ammo.json",
-      skyBreakerToolAntidropWeapon:
-        "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json",
-      skyBreakerAntidropAmmo:
-        "/pa/units/orbital/ion_defense/ion_defense_antidrop_ammo.json",
       spartak: "/pa/units/thorosmen/bot_tp/bot_tp.json",
       spartakWeapon: "/pa/units/thorosmen/bot_tp/bot_tp_tool_weapon.json",
       spartakAmmo: "/pa/units/thorosmen/bot_tp/bot_tp_ammo.json",
-      spartakWeapon2: "/pa/units/land/bot_tesla/bot_tesla_tool_weapon.json",
       spartakAmmo2: "/pa/units/land/bot_tesla/bot_tesla_ammo.json",
       stGgspider:
         "/pa/units/thorosmen/st_ggspider_build/st_ggspider/st_ggspider.json",
@@ -279,7 +271,6 @@ define(function () {
       tripodDeathAmmo: "/pa/ammo/st_ammo_death/st_ammo_death.json",
       usedSpartak:
         "/pa/units/thorosmen/bot_tp/bot_tesla_tped/bot_tesla_tped.json",
-      usedSpartakWeapon: "/pa/units/land/bot_tesla/bot_tesla_tool_weapon.json",
       usedSpartakAmmo: "/pa/units/land/bot_tesla/bot_tesla_ammo.json",
       voltar: "/pa/units/thorosmen/healer/healer/healer.json",
       wallF: "/pa/units/thorosmen/bot_shield_wall/bot_shield_wall.json",

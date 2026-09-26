@@ -331,8 +331,10 @@ to make a run pass.
 `buff()`/`dull()`. The caller's explicit answers steer a card down the branch
 under test. A recorder captures the calls the sweep is collecting. Everything
 else is auto-stubbed, so a new call a card makes needs no fixture update.
-`recordInto` is the recorder for `addMods`/`addAIMods`/`addUnits`. Those methods
-concat, and so they take a bare descriptor as readily as an array.
+`recordInto` is the recorder for `addMods`/`addAIMods`. Those methods concat, and
+so they take a bare descriptor as readily as an array. `recordUnitsInto` records
+`addUnits` as `gw_inventory.js` reads it: a group nested in the list flattened,
+and a whole race table ignored.
 
 `scripts/lib/fake-knockout.js` is enough knockout for what shipped code does with
 an observable. That is read, write, subscribe, `push`/`remove`,

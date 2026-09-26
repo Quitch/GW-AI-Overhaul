@@ -121,20 +121,18 @@ define([
         // The AI's tech names vanilla files; a race army's land on the race
         // files of the same cell too, and an MLA army's on the add-on files.
         // Its spec set holds every listed unit, so the originals stay as
-        // well. See races.md.
-        if (cells) {
-          aiInventory = unitCells.expandMods(
-            aiInventory,
-            cells.vanilla,
-            cells.race,
-            function (file) {
-              return Object.prototype.hasOwnProperty.call(
-                aiSpecFiles,
-                file + aiTag[currentCount]
-              );
-            }
-          );
-        }
+        // well. A mod on a race file the specs lack is dropped. See races.md.
+        aiInventory = gwoRaces.modsFor(
+          race,
+          aiInventory,
+          cells,
+          function (file) {
+            return Object.prototype.hasOwnProperty.call(
+              aiSpecFiles,
+              file + aiTag[currentCount]
+            );
+          }
+        );
         _.forEach(commanders, function (commander) {
           aiInventory = aiInventory.concat(
             gwoRaces.commanderModsFor(race, commander)
@@ -322,7 +320,6 @@ define([
                 ? model.gwoSpecs
                 : model.gwoSpecs.concat(ai.ally.commander)
             ).concat(coopAiCommanders);
-            var held = inventory.units().concat(additionalPlayerSpecs);
             var playerCommanders = [inventory.getTag("global", "commander")]
               .concat(_.pluck(inventory.minions(), "commander"))
               .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander])
@@ -371,7 +368,8 @@ define([
               cellsFor(race)
                 .then(function (cells) {
                   var plan = gameFilePaths.specPlan({
-                    held: (saved.units || []).concat(model.gwoSpecs),
+                    units: saved.units || [],
+                    extra: model.gwoSpecs,
                     cells: cells,
                     race: race,
                     isMla: isMla,
@@ -404,14 +402,12 @@ define([
                               ),
                             maps: unitMaps,
                             genAIUnitMap: GW.specs.genAIUnitMap,
-                            mods: cells
-                              ? unitCells.expandMods(
-                                  saved.mods || [],
-                                  cells.vanilla,
-                                  cells.race,
-                                  has
-                                )
-                              : saved.mods || [],
+                            mods: gwoRaces.modsFor(
+                              race,
+                              saved.mods || [],
+                              cells,
+                              has
+                            ),
                             extraMods: plan.retagMods,
                             gwoSpecs: gwoSpecs,
                           })
@@ -428,7 +424,8 @@ define([
             cellsFor(playerRace)
               .then(function (cells) {
                 var plan = gameFilePaths.specPlan({
-                  held: held,
+                  units: inventory.units(),
+                  extra: additionalPlayerSpecs,
                   cells: cells,
                   race: playerRace,
                   isMla: playerIsMla,
@@ -452,14 +449,12 @@ define([
                           file + playerTag
                         );
                       };
-                      var playerMods = cells
-                        ? unitCells.expandMods(
-                            inventory.mods(),
-                            cells.vanilla,
-                            cells.race,
-                            has
-                          )
-                        : inventory.mods();
+                      var playerMods = gwoRaces.modsFor(
+                        playerRace,
+                        inventory.mods(),
+                        cells,
+                        has
+                      );
                       playerFileGen.resolve(
                         buildPlayerFiles(
                           {
