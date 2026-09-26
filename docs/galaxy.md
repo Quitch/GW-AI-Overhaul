@@ -153,7 +153,8 @@ against one place. Some children are minted where they are drawn: `minion.<n>` i
 | ↳↳ `<cardId>`                                                       | that card's own draws inside `deal()`                   |
 | `battle.<star>` → `turn.<n>` → `landing_*`                          | each army's landing policy                              |
 | `coop_ai_player.<serial>` → `name`, `commander`, `penchant`, `race` | a co-op AI player's name, commander, penchant, and race |
-| `coop_ai_loadout.<serial>`                                          | a tie between a new AI player's best starting loadouts  |
+| `coop_ai_loadout.<serial>`                                          | a new AI player's starting loadout, drawn by score      |
+| `coop_ai_factory.<serial>` → `deal.<index>`                         | the T1 factory card an AI player without one is given   |
 | `coop_ai_decision.<serial>` → `deal.<index>` → `reroll.<n>`         | a tie between the best cards of an AI player's hand     |
 
 The goal is a war that reproduces **only when it is played the same way**. That
@@ -197,12 +198,16 @@ The rest of the components are:
   stream of its own. It can still land on the kicked AI's name or commander:
   the kick returned both to the pool the draw picks from. Under Separate races
   its race comes from the `race` child, drawn in `gw_play/coop_ai.js`.
-- **`coop_ai_loadout.<serial>`** and **`coop_ai_decision.<serial>`**: under
-  per-player tech a co-op AI player chooses its starting loadout and its cards
-  by score ([`coop.md`](coop.md), "AI players' tech"). These streams only break
-  a tie between equal scores. The decision stream is keyed by the deal and the
-  rerolls spent on it, like the hand it judges, so a reload mid-decision settles
-  the same way.
+- **`coop_ai_loadout.<serial>`**, **`coop_ai_decision.<serial>`**, and
+  **`coop_ai_factory.<serial>`**: under per-player tech a co-op AI player
+  chooses its starting loadout and its cards by score ([`coop.md`](coop.md),
+  "AI players' tech"). The loadout stream draws the loadout, each with a chance
+  in proportion to its score, so the draw differs by war and by AI. The
+  decision stream only breaks a tie between equal scores. It is keyed by the
+  deal and the rerolls spent on it, like the hand it judges, so a reload
+  mid-decision settles the same way. The factory stream picks the T1 factory
+  card an AI without a basic land factory is given in place of a hand, keyed by
+  the deal, so a reload gives the same card.
 - **`<cardId>`**: a deal calls `deal()` on every card in the deck and keeps one result.
   A shared sequential rng would therefore couple every card's draws to every other
   card's draw count. With a key per card id, adding or removing a draw inside one card

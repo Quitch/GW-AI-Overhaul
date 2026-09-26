@@ -87,8 +87,10 @@ cards fail it: `gwaio_combat_titans` chains three `flatMapMods` calls.
 
 ## `buff` and `dull`
 
-`buff(inventory)` applies the card's effect. `dull(inventory)` reverses it. Two
-mechanisms are available. A card may use either or both:
+`buff(inventory)` applies the card's effect. `dull(inventory)` runs after every
+card's `buff` and removes the units the card forbids. It must not name the units
+its own `buff` grants, or it strips them. It cannot undo a mod. Two mod mechanisms
+are available. A card may use either or both:
 
 - `inventory.addMods([...])`: unit-spec stat changes. See [`specs.md`](specs.md).
 - `inventory.addAIMods([...])`: AI build-order changes. See
@@ -198,7 +200,7 @@ return gwoCard.upgradeCard({
 ```
 
 That card is visible. The dealer deals it through `upgradeDeal` once `requires` is
-held. `withSlot` describes it. It is buffed with the extra slot before `buff` runs.
+fielded (`gwoCard.fieldedUnits`: held, or brought by a held unit for a race). `withSlot` describes it. It is buffed with the extra slot before `buff` runs.
 The other options are:
 
 - `unless` names a card that withholds it.
@@ -218,8 +220,9 @@ routes:
 1. Every affected unit is in the guaranteed set that `gwc_start.js` grants. This is
    why the naval, radar, teleporter and basic-defence cards need no gate at all.
 2. `deal()` gates on ownership. It uses `gwoCard.hasUnit(inventory.units(), …)`
-   through `conditionalDeal`/`upgradeDeal`, or an early `missingAllUnits` test that
-   returns `chance: 0`.
+   through `conditionalDeal`, `upgradeCard` (which reads `gwoCard.fieldedUnits`, so
+   a race unit counts), or an early `missingAllUnits` test that returns
+   `chance: 0`.
 3. The card's own `buff()` grants them. This is what exempts the `gwc_enable_*`
    unlock cards. Their whole purpose is to be offered to a player who has none of
    the units.
@@ -236,9 +239,16 @@ entry names no unit in a cell the race fills. It also withholds every card in
 `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards keep naming
 vanilla units, and the unit's capability cell decides.
 
+A card whose entry names a race or add-on unit is written for that race:
+`MLA_ONLY` and the `_upgrade_` rule do not apply to it. When the entry names only
+such units, the card is dealt only to players whose race fields one, MLA players
+included. An entry that also names a stock unit is dealt through either half. The gate reads the race; whether the player holds the unit is the card's
+`deal` to test, with `gwoCard.fieldedUnits`. See [`races.md`](races.md),
+"Capability cells".
+
 The tooltip shows that same entry translated by cell: the race units of each cell a
-named vanilla unit occupies. It never shows a second, race-written list. See
-[`races.md`](races.md).
+named vanilla unit occupies, and the race or add-on units it names that the race
+fields. It never shows a second, race-written list. See [`races.md`](races.md).
 
 `test/card_deal_unit_gate.test.js` enforces this in both directions. A card must not
 be dealable to a player who owns none of its units. A card must be dealable to a
@@ -291,9 +301,10 @@ roughly consistent share of stars at every size (short ~45%, moderate ~30%, far
 
 `farForSize` is exported for cards that need a bespoke table, but no card needs one
 today. Prefer the wrappers, which keep the tables private. `numberOfSystems` is
-passed in rather than imported so that this module stays dependency-free. Every card
-transitively depends on `shared/cards.js`. An import of `shared/gw_common` here
-would make the whole card set unloadable under the test harness.
+passed in rather than imported so that this module imports only pure modules
+(`shared/races.js` and `shared/unit_cells.js`). Every card transitively depends on
+`shared/cards.js`. An import of `shared/gw_common` here would make the whole card
+set unloadable under the test harness.
 
 ## Loadouts
 
@@ -364,13 +375,14 @@ silently discards everything the mod registered.
 | Global                         | Scene                     | Read by                                         |
 | ------------------------------ | ------------------------- | ----------------------------------------------- |
 | `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                |
-| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`                      |
+| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate       |
 | `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                      |
 | `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                 |
 | `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee |
 | `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`    |
 | `gwoStartingCards`             | start, coop loadout       | `shared/loadouts.js`                            |
 | `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
+| `gwoLoadoutsAiCannotUse`       | play                      | `gw_play/cards.js`, when an AI is added         |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
 | `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |
 | `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`       |
@@ -381,6 +393,23 @@ returns are equally published. So are the **key** names in `shared/units.js` and
 `shared/unit_groups.js`, and the signature of
 `deal(system, context, inventory, rng)`. The values behind those keys are not
 published. Re-point a unit path whenever the base game moves a file.
+
+`shared/units.js` also publishes each shipped race's and add-on's `units` table
+under a key of its own: `gwoUnit.legion.shank`, `gwoUnit.osmech.aegis`. A table
+leaves out the stock files its units share. A card reaches one of those by its
+stock key where there is one, else by its path, and changes it as a stock file:
+in a race army that change also reaches the race files of the same role in the
+cell of the base-game unit that uses it. The
+keys inside those tables are generated, and a mod update can change them
+([`races.md`](races.md), "Unit tables"). A whole table is not a unit list:
+every reader ignores one, and `validate:refs` fails a card, `card_units.js` or
+`unit_groups.js` that hands one straight to a list or a call (`[gwoUnit.legion]`,
+`f(gwoUnit.legion)`). A race or add-on a third-party mod registers is
+not there. A card names such a unit and lists it in `gwoCardsToUnits`, which
+ties the card to the races that field it when the race or add-on registers a
+`units` table that lists it; without one the path counts as stock. In `deal` it checks
+`gwoCard.fieldedUnits(inventory)`, the held paths the race owns plus the race
+or add-on units they bring, rather than `inventory.units()`.
 
 **Register in every scene the data is read in.** `model` is a fresh page per scene.
 A mod that pushes its loadouts only in `gw_start` is therefore missing from the
@@ -471,7 +500,8 @@ as the war's start card is, and anything else last. It runs the real
 their usual order, with GWO's and the base game's banks held shut
 (`bank.applyInventoryHeld`). The inventory with the card is then compared with
 the inventory without it. A held card is valued the other way round, for a
-swap: the inventory without it against the inventory with it.
+swap, with the hand's best card already in: the inventory with the best card
+and without the held one, against the inventory with both.
 
 Three rules keep this affordable and safe:
 
@@ -481,6 +511,12 @@ Three rules keep this affordable and safe:
 - **An apply is cached by what it applies**: the cards and their tags, from
   which `applyCards` rebuilds everything else. A failed apply is dropped from
   the cache.
+
+The apply also notes every unit that a card's `removeUnits` takes away. Those
+that no card grants back are the inventory's **stripped** units: the units a
+loadout's `dull()` forbids, such as Tourist Commander's extractors and Jig. They
+ride on the applied inventory as `strippedUnits`, which is not enumerable, so no
+copy, save, or stored record carries them.
 
 ### Scoring
 
@@ -495,31 +531,97 @@ its parts carry the names the debug lines print
   advanced unit is worth 1.3 times as much. Each further unit of the same cell
   is worth 0.6 of the one before, a unit the AI's commander cannot reach a
   quarter, and a unit in a domain that no teammate fields 1.5 times as much.
-  Each domain the AI fields adds 8, so opening one is worth it on its own.
-- **`mods`**: stat mods, one file at a time. A file's value is the mean
-  direction of its mods, times the worth of the fielded units that own the file.
-  A multiplier's direction is its gain, an add's is 0.25 with the add's sign,
-  and any other op counts 0.25. A multiplier's or an add's direction is reversed
-  on a cost, cooldown, delay, build time, demand, consumption, or reload path.
-  Every direction is held between −1 and 2. Mods on the domain the AI fields
-  most count 1.2 times. Copies of the same mods already held divide the value,
-  and a file that no fielded unit owns is worth nothing. Mods a card removes
-  count against it.
+  Each unit's worth is then scaled by its held-tech boost (below). Each domain
+  the AI fields adds 8, so opening one is worth it on its own.
+- **`mods`**: stat mods on the units the AI fields, and on its commanders. The
+  card's mods on one file are a list, and a list's direction is the mean
+  direction of its mods. A unit's direction is the sum over the distinct lists
+  on the files it owns, so a card that writes the same change into each of a
+  unit's weapons changes the unit once. A multiplier's direction is its gain,
+  an add's is 0.25 with the add's sign, and any other op counts 0.25. A
+  multiplier's or an add's direction is reversed on a cost, cooldown, delay,
+  build time, demand, consumption, reload, or per-shot path. Every direction is
+  held between −1 and 2. Each fielded unit adds its direction times its worth
+  and its boost, 1.2 times on the domain the AI fields most. Each commander, the
+  AI's own and each Sub Commander's, adds its direction times 10 and its boost.
+  Mods a card removes count against it, on the inventory before the card.
+- **`later`**: the same for the units the AI does not field yet, at a quarter of
+  their worth. These are every unit a card can grant (`unit_groups.units`,
+  commanders aside) and every held unit its commander cannot reach, less the
+  inventory's stripped units. In each cell, the later units the card touches
+  are taken in path order and counted on from the units fielded there, each
+  worth 0.6 of the one before. That bounds a card that touches a whole family.
 - **`minions`**: 12 for the AI's first Sub Commander, and 0.7 of the one before
-  for each after it.
+  for each after it, each times the boost of its own commander.
 - **`aiMods`**: 0.5 for each AI mod added, up to 1.5.
 - **`slots`**: the slots the card adds, less the one it takes, priced by how
   full the bank is: 0.5 plus 6 times the share of slots in use.
 - **`floor`**: for a card whose effect shows only in battle. When its `unlock`,
-  `mods`, `minions`, and `aiMods` parts are all 0, and it takes one slot without
-  adding one, a card without units in `model.gwoCardsToUnits` scores 4 times its
-  own deal chance out of 100. Its `deal()` runs on a fresh inventory loaded from
-  the AI's applied inventory without the card, with no `rng`, and a throw is
-  logged and counts as a chance of 0.
+  `mods`, `later`, `minions`, and `aiMods` parts are all 0, and it takes one
+  slot without adding one, a card without units in `model.gwoCardsToUnits`
+  scores 4 times its own deal chance out of 100. Its `deal()` runs on a fresh
+  inventory loaded from the AI's applied inventory without the card, with no
+  `rng`, and a throw is logged and counts as a chance of 0.
+- **`extra`**: for a starting loadout only, 30 once when the loadout does what
+  no other part sizes. It earns it when it is dealt more cards per offer, found
+  by asking `cardsOfferedCount` of the inventory with it and without it, as
+  Lucky Commander is. It also earns it when it adds a mod that counts 0.25
+  because only the change is known, not its size: Nomad Commander's mobile
+  structures, Planetary Excavation Commander's extractors anywhere, Space
+  Excavation Commander's Jig anywhere, and Paratrooper Commander's Manhattan in a Unit
+  Cannon. Mods on `unit_types` and `buildable_types` do not count, since reach
+  sizes them, and nor do those on `spawn_layers`, which place what a changed
+  build list builds (Rapid Deployment Commander's). Nor do orders
+  (`command_caps`), since an AI gives none, or text and looks (`description`,
+  `display_name`, `model`, and `si_name`). A card in a hand never earns it.
 
 The score is the sum, rounded to one decimal place, and the debug line prints
-every part. A new AI's starting loadouts are scored the same way, each against
-the base start card alone.
+every part.
+
+A new AI's starting loadouts are scored against the base start card alone, by
+`scoreLoadout`. It gives every part as above but `unlock`, which counts in full
+only what cards cannot give. A card can grant any unit of `lookup.obtainable`
+later, so a loadout's head start on those units is all it adds: of what they
+are worth, with the same boost and team, the loadout keeps a quarter
+(`headStart`). A unit no card grants, such as a third-party loadout's own, keeps
+its full worth, and so do the units a loadout's `dull` strips, since losing them
+is no head start. The other parts stack with cards, so they stand. A unit
+loadout's lean towards the domain its team lacks therefore stays, but counts for
+a quarter as much against a loadout of stat mods. With everything unlocked,
+Hoarder Commander falls from 414 to 104, level with Swarm Commander, while Terminal
+Commander, whose worth is all stat mods, keeps its 224.
+
+The loadout's mods stand as well, so the units a card could grant are reached,
+on both sides of the discount, as the loadout leaves the build lists.
+Paratrooper Commander's commander builds its Unit Cannon, which builds the land
+units, so the discount takes those at their reached worth, and the loadout
+scores 61 with its `extra`. Judged by the base start card's mods instead, the
+discount would take them at a quarter, and Paratrooper would score 109, above
+Hoarder and Swarm, for units that the T1 factory card it is assigned
+([`coop.md`](coop.md), "Settling deals") partly reaches anyway. With `extra` at
+30, Lucky, Space Excavation, Nomad, and Planetary Excavation score 30 to 44,
+from the median of the pool to its mean, and Paratrooper above them.
+
+The **held-tech boost** is what makes an AI build around its tech. It comes from
+the inventory before the card, and is worked out once for all the cards of a
+hand. For each unit it adds up the direction of every `multiply` or `add` mod
+the AI holds on a file the unit owns, and files that carry an identical list
+count once. The boost is 1 + 0.5 × tanh(total), so it stays between 0.5 and
+1.5. Vehicle Ammunition Tech (damage and splash ×1.25) gives each vehicle a
+total of 0.5 and a boost of 1.23, so the next vehicle unlock or vehicle stat
+card outscores its bot twin by 23%. With two such cards held the boost is 1.38.
+A held debuff counts against the total, as Terminal Commander's commander regen
+of −15 does. A commander's boost comes from the files it owns, so a buffed
+commander lifts `gwc_minion` too. The Cluster's Angel and Colonel do not inherit
+`base_commander`, so a commander card does not lift them, as it does not in the
+game. The same boost serves both sides of the card, so a stat card changes no
+`unlock`. Nothing discounts a mod the AI already holds.
+
+Two kinds of card are misjudged, and are left so. The three
+`gwaio_upgrade_subcommander_*` markers have no effect to see, and keep their
+floor, whose chance already rises with Sub Commanders. A `removeUnits` in a
+`buff()` also reads as forbidding the units, if nothing grants them back. Only
+the base game's legacy `gwc_start_allfactory` does that.
 
 The team is everyone who fights beside the AI: the host, the connected viewers,
 and the other AI players. A teammate fields a domain when it can reach a
@@ -539,9 +641,18 @@ factory, a combat unit, a fabber, or a titan there.
    fewer left.
 4. A best card worth 0 or less is declined, since nothing is worth a slot.
 5. A best card that the bank has room for is taken.
-6. With a full bank, the weakest held card that can go is deleted for the best
-   card, when the best card beats it by more than 3. The loadout in first place
-   never goes, and nor does a card whose removal would not free a slot.
+6. With a full bank, each held card that can go is judged with the best card
+   already in: by what the bank after the swap would lose without it. The
+   weakest is deleted for the best card when the best card beats it by more
+   than 3, so the test measures the swap itself. A held card the best card makes
+   redundant is worth about the price of its slot, below 0, so it goes first:
+   Basic Vehicle Tech for Complete Vehicle Tech, say. Both sides pay the same slot
+   price, a full bank's. The loadout in first place never goes. Nor does a card
+   whose deletion frees no slot for the best card, such as one that brought its
+   own slot, or whose deletion would leave the AI without a basic land factory
+   or an extractor that it has now. So an AI keeps the T1 factory card it was
+   assigned ([`coop.md`](coop.md), "Settling deals") only until another card
+   gives it a land factory.
 7. Otherwise the hand is declined, the bank being full.
 
 The numbers here are `WEIGHTS` in `shared/coop_ai_cards.js`. They are tuning,
@@ -550,24 +661,44 @@ policies rather than values. Change a weight there, and this section with it.
 
 ### Units
 
-The scorer asks three questions of the AI's units: each unit's cell (its
-domain, tier, and class), which units own the file a mod names, and which held
-units the AI's commander can reach. `shared/coop_ai_units.js` answers them in
-two ways, and every debug line names the one it used:
+The scorer asks these questions of the AI's units: each unit's cell (its
+domain, tier, and class), which units own the file a mod names, whether a
+commander owns it, which held units the AI's commander can reach, and which
+units it could get at all. `shared/coop_ai_units.js` answers them in two ways,
+and every debug line names the one it used:
 
 - **From the specs** (`via=specs`). These are `race_cells.load()`'s specs, read
   once the host opens a session, and each unit's cell comes from
-  `unit_cells.buildIndex`. A file's owners are the unit it is, the units that
-  carry it as a part, and the units that inherit it through `base_spec`, or
-  failing all three, the units in its directory. Reach follows the build lists:
-  what the commander builds, what that builds, and so on. A commander the
-  lookup does not know reaches everything, because an unknown builder is no
-  reason to value a unit at a quarter.
+  `unit_cells.buildIndex`. A file's owners are the unit it is, the units whose
+  tools or death weapon carry it, and the units that inherit it through
+  `base_spec`. Failing all three, they are the units in its directory. Each
+  unit brings the units that inherit it. A unit's tools, and its death weapon,
+  come from the nearest spec up its chain that declares them, so a commander
+  that declares its own tools carries none of `base_commander`'s. The owners
+  are worked out once per file. Reach follows the build lists as the
+  inventory's `unit_types` and `buildable_types` mods leave them: what the
+  commander builds, what that builds, and so on. Those mods are applied to a
+  copy of the files they name with the battle's own op engine
+  (`gw_play/specs.js`'s `mod`, passed in by `gw_play/cards.js`), and the
+  resulting types and build lists are kept for the last 64 mod lists. A commander the lookup does
+  not know reaches everything, because an unknown builder is no reason to value
+  a unit at a quarter. The units it could get are those of
+  `unit_groups.units` that the specs index, commanders aside.
 - **From the unit groups** (`via=groups`). This is membership in
   `shared/unit_groups.js`, most specific group first. It knows vanilla units
   only, since a race's units are in no group. It has no build lists either, so
   a combat unit or a fabber counts as reached while a factory of its domain is
-  held, and anything else always does.
+  held, and anything else always does. It has no `base_spec` chains, so a file
+  that `base_commander.json` owns counts as every commander's, any unit under
+  `/pa/units/commanders/`. The units it could get are those of
+  `unit_groups.units` that have a cell.
+
+A race AI's inventory holds vanilla paths ([`races.md`](races.md), "Capability
+cells"), so its commander is judged as the base commander. A commander whose
+tags carry a faction bit other than `Custom58` reaches what
+`base_commander.json` builds, and owns the files that it owns, since the
+referee moves those mods to the race's commander. Without `base_commander.json`
+in the specs, such a commander reaches everything.
 
 The groups stand in when the specs are not in within 8 seconds of the session
 opening, or fail to load. The specs replace them when they land.
@@ -593,6 +724,10 @@ not the host's. So a card must:
 - **Never throw.** The shadowed `gw_inventory.js` catches the throw, logs it,
   and finishes the apply. A card that throws before it changes anything shows
   no effect, and so earns at most its floor.
+- **Forbid units in `dull()`.** The units a card's `removeUnits` takes away,
+  and that nothing grants back, are the ones an AI treats as forbidden: it
+  never counts a stat mod on them as worth something later. All `buff()`s run
+  before any `dull()`, so a `dull()` that removes units forbids them for good.
 
 Register a card in `model.gwoCardsToUnits` only for the units it affects. A
 card that names units there, yet changes nothing the AI can see, is taken to

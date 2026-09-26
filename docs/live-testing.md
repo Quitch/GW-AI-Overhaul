@@ -261,28 +261,47 @@ logs `Control module name did not resolved to a spec` while no player holds
 the Catalyst, since only held units get specs. That line is not a fault.
 
 Under per-player tech, `canAdd()` also waits for the AI tech modules and a unit
-lookup, and an Add takes seconds. The AI's loadout is scored before its record
+lookup, and an Add takes seconds. The AI's loadout is drawn before its record
 is written, and it then settles every deal it owes. With four deals to catch
-up, an Add took 5 to 6 seconds. `model.gwoCoopAiDeciding()` stays true until
-every AI is level with the host, and `model.gwoCoopAi.driving()` while a pass
-runs ([coop.md](coop.md), "AI players' tech").
+up, an Add took 3.6 to 6 seconds in testing. `model.gwoCoopAiDeciding()` stays
+true until every AI is level with the host, and `model.gwoCoopAi.driving()`
+while a pass runs ([coop.md](coop.md), "AI players' tech").
 
 **Read the `[GW COOP AI]` lines.** They are the host's record of every choice
 an AI makes, in the host's client log. A new AI logs one loadout line:
 
 ```text
-[GW COOP AI] <name> loadout via=specs candidates: <id>=<score> (unlock u mods m minions n aiMods a slots s floor f), ... -> chose <id>
+[GW COOP AI] <name> loadout via=specs candidates: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f extra e chance p%), ... dropped: <id> (<gap>), ... used: <ids> -> chose <id>
 ```
 
-Each deal logs one line per hand the AI judged, so a reroll adds a line:
+`extra` is the flat part a loadout earns for doing what no other part sizes,
+such as Lucky Commander's extra card per offer. A hand's cards always show
+`extra 0`. `chance` is the candidate's chance of being drawn. `dropped` lists the
+candidates the AI could never fight with, each with the gap no card closes
+(`extractor` or `landFactory`), and is left out when there are none. `used`
+appears only under Unique AI loadouts: it lists the loadouts in use, whose
+chance is 0%, and ends `(all in use: full pool)` when that left nothing worth a
+slot, so the draw took from every candidate.
+
+Each deal logs one line per hand the AI judged, so a reroll adds a line. A deal
+that finds the AI without a basic land factory logs an assignment instead:
 
 ```text
-[GW COOP AI] <name> deal=<n> star=<s> hand=<k> via=specs offered: <id>=<score> (unlock u mods m minions n aiMods a slots s floor f), ... -> <action>
+[GW COOP AI] <name> deal=<n> star=<s> -> assigned <id> (no basic land factory)
+```
+
+Otherwise a hand line follows:
+
+```text
+[GW COOP AI] <name> deal=<n> star=<s> hand=<k> via=specs offered: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f extra e), ... -> <action>
 ```
 
 `deal` is the host's deal index and `star` the star it was dealt at. `hand`
 counts the cards offered. Each card shows its score and then the parts it came
-from ([tech-cards.md](tech-cards.md), "How AI players judge a card"). The
+from ([tech-cards.md](tech-cards.md), "How AI players judge a card"). `mods` is
+what the card's stat mods are worth on the units the AI fields and on its
+commanders, and `later` what they are worth on units it could field later. A
+stat card for a domain the AI has not opened scores in `later` alone. The
 action is one of:
 
 - `took <id>`.
@@ -294,8 +313,11 @@ action is one of:
 `via` names the unit lookup, and should read `specs`. `via=groups` means that
 the specs were not in within 8 seconds or failed to load, and a line saying so
 comes first. A card with a `floor` above 0 is one whose effect the AI could not
-see. Expect the loadout that unlocks the most to win by a wide margin: in an MLA
-war with Hoarder Commander unlocked, every AI chose it.
+see. In an MLA war with every loadout unlocked, expect Terminal Commander about
+one draw in three, Hoarder Commander and Swarm Commander about one in seven each,
+and Tourist Commander dropped. With only the starting loadouts, each is drawn in
+16 to 24% of adds, and the Naval and Orbital ones are then assigned a factory
+card at their first deal.
 
 The other lines are rarer, and most of them mean that something went wrong:
 
@@ -304,6 +326,11 @@ The other lines are rarer, and most of them mean that something went wrong:
 - `<name> deal=<n> -> declined (timed out 2 times this session)`: the AI has
   stopped choosing until `gw_play` next loads.
 - `<name> deal=<n> is not in the host's history -> declined`.
+- `<name> deal=<n> star=<s> no basic land factory, <why>: dealing a hand`: the
+  AI was not given a factory card, and was dealt a hand instead. `<why>` is `no
+factory card to assign` (none is in the deck that its race can use), `no room
+for <id>`, `still none with <id>` (a `dull` strips the factory), or `<id> not
+dealt: <error>`.
 - `<name> deal=<n> not written: <result>`: `gone` (the AI was kicked), `stale`
   (its cards kept changing under the decision), `refused`, `failed`, or
   `stalled` (the campaign queue did not run the write within 60 seconds).

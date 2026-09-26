@@ -147,8 +147,9 @@ define([
   // teamDomains(playerId, lookup), namesUnits(cardId), chanceOf(card,
   // applied, star), isLoadout(cardId). holder: { playerId, inventory,
   // commander }, the saved inventory the card is judged against. star: the
-  // galaxy star itself, which a card's deal() takes.
-  var valueOfCard = function (judge, holder, card, star) {
+  // galaxy star itself, which a card's deal() takes. memo: shared by the
+  // cards an AI judges in one window.
+  var valueOfCard = function (judge, holder, card, star, memo) {
     var lookup = judge.lookup();
     if (!lookup || !holder.inventory) {
       return Promise.resolve(0);
@@ -160,6 +161,7 @@ define([
           lookup: lookup,
           commander: holder.commander,
           teamDomains: judge.teamDomains(holder.playerId, lookup),
+          memo: memo || {},
           namesUnits: judge.namesUnits(card.id),
           chance: function () {
             return judge.chanceOf(card, pair[0], star);
@@ -175,7 +177,7 @@ define([
   // - candidates() - [{ star, hops, threat }], the stars an AI may ping
   // - allThreats() - every AI star's threat
   // - cardFor(ai, star) - the card the AI would find there, if any
-  // - valueOf(ai, card, star) - its worth to the AI, or a promise of it
+  // - valueOf(ai, card, star, memo) - its worth to the AI, or a promise of it
   // - ping(star, sender) - true when the ping went out
   // - delay(fn, ms), now() - for tests
   var factory = function (params) {
@@ -192,6 +194,7 @@ define([
     var current;
 
     var judge = function (ai) {
+      var memo = {};
       return Promise.all(
         _.map(params.candidates(), function (candidate) {
           var card = params.cardFor(ai, candidate.star);
@@ -203,7 +206,7 @@ define([
           };
           return Promise.resolve()
             .then(function () {
-              return params.valueOf(ai, card, candidate.star);
+              return params.valueOf(ai, card, candidate.star, memo);
             })
             .then(scored, function () {
               return scored(0);

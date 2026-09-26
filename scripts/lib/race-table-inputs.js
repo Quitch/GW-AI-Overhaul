@@ -45,8 +45,6 @@ const TABLES = [
     parts: {
       infiltratorAmmo:
         "/pa/units/air/l_air_scout_adv/l_air_scout_adv_ammo.json",
-      investigatorDummyAmmo:
-        "/pa/units/land/land_scout/land_scout_dummy_ammo.json",
       investigatorLandAmmo:
         "/pa/units/land/l_scout_bot/l_scout_bot_land_ammo.json",
       investigatorRadarCollisionCheckLandAmmo:

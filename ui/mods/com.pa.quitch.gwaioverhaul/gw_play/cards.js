@@ -436,7 +436,7 @@
           var cards = galaxy.stars()[star].cardList();
           return cards && cards[0];
         },
-        valueOf: function (ai, card, star) {
+        valueOf: function (ai, card, star, memo) {
           var holder = model.gwCampaignPerPlayerTechCards()
             ? {
                 playerId: ai.id,
@@ -453,7 +453,8 @@
             params.judge,
             holder,
             card,
-            galaxy.stars()[star]
+            galaxy.stars()[star],
+            memo
           );
         },
         ping: function (star, sender) {
@@ -495,6 +496,7 @@
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_pings.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js",
         ],
         function (
           coopAiDriver,
@@ -510,7 +512,8 @@
           startingInventory,
           gwoLoadoutIds,
           coopAiPings,
-          starThreat
+          starThreat,
+          gwoSpecs
         ) {
           var galaxy = params.galaxy;
           var inventory = params.inventory;
@@ -548,7 +551,13 @@
               raceCells.load().then(
                 function (loaded) {
                   clearTimeout(fallback);
-                  lookup(coopAiUnits.fromSpecs(loaded));
+                  lookup(
+                    coopAiUnits.fromSpecs(
+                      loaded,
+                      unitGroups.units,
+                      gwoSpecs.mod
+                    )
+                  );
                 },
                 function (error) {
                   clearTimeout(fallback);
@@ -636,6 +645,51 @@
             }
           };
 
+          // The T1 factory cards an AI with no basic land factory may be
+          // assigned: those in the war's deck that its race can use, less
+          // any whose factory its cards strip.
+          var FACTORY_CARDS = [
+            "gwc_enable_air_t1",
+            "gwc_enable_bots_t1",
+            "gwc_enable_vehicles_t1",
+          ];
+          var factoryCards = function (record, applied) {
+            return _.filter(FACTORY_CARDS, function (id) {
+              var entry = _.find(model.gwoCardsToUnits || [], { id: id });
+              return (
+                _.includes(model.gwoCards, id) &&
+                helpers.raceCanDeal(
+                  params.races,
+                  record.inventory,
+                  id,
+                  model.gwoCardsToUnits
+                ) &&
+                (!entry ||
+                  params.gwoAI.armyGapClosable(
+                    "landFactory",
+                    applied.strippedUnits,
+                    entry.units
+                  ))
+              );
+            });
+          };
+
+          // A card as the dealer deals it to the AI, its params included.
+          var dealCard = function (cardId, applied, star) {
+            var dealInventory = new params.GWInventory();
+            dealInventory.load(_.cloneDeep(applied));
+            return params.gwoDeal.dealCard(
+              {
+                id: cardId,
+                galaxy: galaxy,
+                inventory: dealInventory,
+                star: star,
+              },
+              params.loaded,
+              params.cards
+            );
+          };
+
           setupCoopAiPings({
             coopAiPings: coopAiPings,
             starThreat: starThreat,
@@ -682,12 +736,23 @@
             chanceOf: chanceOf,
             isLoadout: helpers.isStartLoadoutCardId,
             rerollsRemain: helpers.rerollsRemain,
+            armyGap: params.gwoAI.armyGap,
+            armyGapClosable: params.gwoAI.armyGapClosable,
+            factoryCards: factoryCards,
+            dealCard: dealCard,
             decisionRng: function (record, dealIndex, rerollsUsed) {
               return gwoStreams.coopAiDecisionRng(
                 warRng,
                 record.gwaioAi.serial,
                 dealIndex,
                 rerollsUsed
+              );
+            },
+            factoryRng: function (record, dealIndex) {
+              return gwoStreams.coopAiFactoryRng(
+                warRng,
+                record.gwaioAi.serial,
+                dealIndex
               );
             },
             enqueue: model.enqueueGwCampaignStateApply,
@@ -751,9 +816,19 @@
             loadoutIds
           );
 
+          // The loadouts no AI is given: GWO's, and any a mod adds to
+          // model.gwoLoadoutsAiCannotUse, which GWO reads and never creates.
+          var loadoutsAiCannotUse = function () {
+            return _.isArray(model.gwoLoadoutsAiCannotUse)
+              ? roster.LOADOUTS_AI_CANNOT_USE.concat(
+                  model.gwoLoadoutsAiCannotUse
+                )
+              : roster.LOADOUTS_AI_CANNOT_USE;
+          };
+
           // A new AI's loadout and starting inventory: every loadout the host
-          // has unlocked that its race may field, scored. options: record
-          // (commander and serial set), race.
+          // has unlocked that its race may field and an AI can use, scored.
+          // options: record (commander and serial set), race.
           var startingTech = function (options) {
             var record = options.record;
             var race = options.race;
@@ -764,6 +839,14 @@
               race
             );
             var star = galaxy.stars()[game.currentStar()];
+            var used = params.gwoAI.originSettings(game).uniqueAiLoadouts
+              ? roster.loadoutsInUse(
+                  [inventory].concat(
+                    _.pluck(game.coopPlayerInventoryData(), "inventory")
+                  ),
+                  helpers.isStartLoadoutCardId
+                )
+              : undefined;
 
             return Promise.resolve(params.generalCommander).then(
               function (handle) {
@@ -778,6 +861,7 @@
                     raceLocks: function (id) {
                       return helpers.raceLocksLoadout(race, id);
                     },
+                    aiCannotUse: loadoutsAiCannotUse(),
                   }),
                   baseline: {
                     cards: [{ id: "gwc_start" }],
@@ -789,6 +873,7 @@
                     warRng,
                     record.gwaioAi.serial
                   ),
+                  used: used,
                   build: function (loadoutCardId) {
                     return Promise.resolve(
                       startingInventory.build({
@@ -1447,6 +1532,7 @@
         setupCoopAiTech({
           GW: GW,
           GWInventory: GWInventory,
+          gwoAI: gwoAI,
           gwoDeal: gwoDeal,
           gwoSave: gwoSave,
           gwoStreams: gwoStreams,
@@ -1454,6 +1540,8 @@
           galaxy: galaxy,
           inventory: inventory,
           cards: cards,
+          loaded: loaded,
+          races: gwoRaces,
           helpers: helpers,
           coopDeal: coopDeal,
           coopReroll: coopReroll,

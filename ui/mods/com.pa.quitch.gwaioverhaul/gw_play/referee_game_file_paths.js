@@ -68,8 +68,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   // params.race is optional: without it the player is MLA. params.mods, when
-  // given, is the inventory's mods already expanded onto the race's files
-  // (unit_cells.expandMods); otherwise the mods land as they always have.
+  // given, is the inventory's mods already fitted to the player's race
+  // (races.modsFor); otherwise the mods land as they always have.
   var buildPlayerFiles = function (params, gwoAI, gwoSpecs) {
     var playerAIUnitMap = params.playerAIUnitMap;
     var playerX1AIUnitMap = params.playerX1AIUnitMap;
@@ -138,24 +138,25 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   // commanders need. A race player fields the race's units of the cells the
   // vanilla ones held occupy, and a kept vanilla unit (the Colonel) is
   // retagged so the race can build it; an MLA player keeps everything held and
-  // gains the add-on units of those cells. params: held, cells, race, isMla,
-  // commanders, unitCells, gwoRaces. See races.md.
+  // gains the add-on units of those cells. Neither keeps another race's units
+  // from `units`; `extra` is kept whole. params: units, extra, cells, race,
+  // isMla, commanders, unitCells, gwoRaces. See races.md.
   var specPlan = function (params) {
     var cells = params.cells;
-    var unitCells = params.unitCells;
     var gwoRaces = params.gwoRaces;
-    var specs = params.held;
-    if (cells) {
-      specs = (params.isMla ? unitCells.addonUnitsFor : unitCells.raceUnitsFor)(
-        params.held,
-        cells.vanilla,
-        cells.race
-      );
-    }
+    var extra = params.extra || [];
+    var specs = gwoRaces.fieldedFor(
+      params.race,
+      gwoRaces.ownedPaths(params.race, params.units, cells).concat(extra),
+      cells
+    );
     var keptVanilla =
       cells && !params.isMla
         ? _.difference(
-            unitCells.heldCommanderUnits(params.held, cells.vanilla),
+            params.unitCells.heldCommanderUnits(
+              params.units.concat(extra),
+              cells.vanilla
+            ),
             params.commanders
           )
         : [];

@@ -11,6 +11,9 @@ define([
   var SHARED_SCOPE = "coopai";
   // Stock's gwCampaignMaxClientsLimit before the server reports its own.
   var SLOT_LIMIT = 12;
+  // Loadouts whose effect an AI cannot use: Warp's is an order, mass
+  // teleport, and an AI gives none. model.gwoLoadoutsAiCannotUse adds more.
+  var LOADOUTS_AI_CANNOT_USE = ["gwaio_start_warp"];
 
   // The display word for each personality template an AI can be given.
   var CHARACTERS = {
@@ -265,31 +268,58 @@ define([
   };
 
   // The loadouts a new AI may start with under per-player tech: the always-open
-  // starting ones and the host's unlocked ones, less any its race may not field.
-  // params: starting and locked (ids), unlocked(id), raceLocks(id).
+  // starting ones and the host's unlocked ones, less any its race may not field
+  // and any an AI cannot use. params: starting and locked (ids), unlocked(id),
+  // raceLocks(id), aiCannotUse (ids).
   var loadoutCandidates = function (params) {
     var ids = _.uniq(
       (params.starting || []).concat(
         _.filter(params.locked || [], params.unlocked)
       )
     );
-    return _.reject(ids, params.raceLocks);
+    return _.reject(
+      _.difference(ids, params.aiCannotUse || []),
+      params.raceLocks
+    );
   };
 
-  // The units and commander of each of an AI's teammates, from a GWInventory
-  // or a saved inventory, for the team factor in its card scores.
+  // The loadouts the war's players hold, for Unique AI loadouts: the first
+  // card of each inventory, a GWInventory or a saved one, if it is still a
+  // loadout, since any card can be deleted.
+  var loadoutsInUse = function (inventories, isLoadout) {
+    return _(inventories)
+      .compact()
+      .map(function (inventory) {
+        var cards = _.isFunction(inventory.cards)
+          ? inventory.cards()
+          : inventory.cards;
+        return _.get(cards, "0.id");
+      })
+      .filter(isLoadout)
+      .uniq()
+      .value();
+  };
+
+  // The units, commander and mods of each of an AI's teammates, from a
+  // GWInventory or a saved inventory, for the team factor in its card scores.
   var teammates = function (inventories) {
     return _.map(_.compact(inventories), function (inventory) {
       var saved = _.isFunction(inventory.units)
         ? {
             units: inventory.units(),
             commander: inventory.getTag("global", "commander"),
+            mods: inventory.mods(),
           }
         : {
             units: inventory.units,
             commander: _.get(inventory, "tags.global.commander"),
+            mods: inventory.mods,
           };
-      return { units: saved.units || [], commander: saved.commander };
+      return {
+        units: saved.units || [],
+        commander: saved.commander,
+        mods: saved.mods || [],
+      };
     });
   };
 
@@ -434,7 +464,9 @@ define([
     mlaCommanders: mlaCommanders,
     pickAiCommander: pickAiCommander,
     pickAiRace: pickAiRace,
+    LOADOUTS_AI_CANNOT_USE: LOADOUTS_AI_CANNOT_USE,
     loadoutCandidates: loadoutCandidates,
+    loadoutsInUse: loadoutsInUse,
     teammates: teammates,
     buildAiRecord: buildAiRecord,
     withStartingTech: withStartingTech,

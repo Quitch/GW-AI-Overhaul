@@ -14,6 +14,9 @@ const coopAiUnits = loadCouiModule(
 const groups = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js"
 );
+const gwoSpecs = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js"
+);
 const gwoUnit = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
 );
@@ -51,6 +54,47 @@ const lookup = coopAiUnits.fromSpecs({
   units: [COMMANDER, BOT_FACTORY, DOX, BUMBLEBEE],
   specs: SPECS,
 });
+
+// Commanders as TITANS ships them: most inherit the base commander whole,
+// some redeclare its tools, and a race's builds only the race's units.
+const BASE_COMMANDER = gwoUnit.commander;
+const BASE_COMMANDER_WEAPON =
+  "/pa/units/commanders/base_commander/base_commander_tool_bullet_weapon.json";
+const BASE_COMMANDER_AMMO =
+  "/pa/units/commanders/base_commander/base_commander_ammo_bullet.json";
+const IMPERIAL = "/pa/units/commanders/imperial_able/imperial_able.json";
+const QUAD = "/pa/units/commanders/quad_osiris/quad_osiris.json";
+const QUAD_WEAPON =
+  "/pa/units/commanders/base_commander/base_commander_tool_missile_weapon.json";
+const RACE_COMMANDER = "/pa/units/commanders/l_cyclops/l_cyclops.json";
+const NUKE = "/pa/ammo/nuke_pbaoe/nuke_pbaoe.json";
+
+const COMMANDER_SPECS = Object.assign({}, SPECS, {
+  [BASE_COMMANDER]: {
+    unit_types: types("Custom58", "Commander", "Mobile", "Land"),
+    buildable_types: "Factory & Basic",
+    tools: [{ spec_id: BASE_COMMANDER_WEAPON }],
+    death_weapon: { ground_ammo_spec: NUKE },
+  },
+  [NUKE]: {},
+  [BASE_COMMANDER_WEAPON]: { ammo_id: BASE_COMMANDER_AMMO },
+  [BASE_COMMANDER_AMMO]: {},
+  [IMPERIAL]: { base_spec: BASE_COMMANDER },
+  [QUAD]: { base_spec: BASE_COMMANDER, tools: [{ spec_id: QUAD_WEAPON }] },
+  [QUAD_WEAPON]: {},
+  [RACE_COMMANDER]: {
+    unit_types: types("Custom1", "Commander", "Mobile", "Land"),
+    buildable_types: "Custom1",
+  },
+});
+
+const commanders = coopAiUnits.fromSpecs(
+  {
+    units: [BASE_COMMANDER, IMPERIAL, QUAD, RACE_COMMANDER, BOT_FACTORY, DOX],
+    specs: COMMANDER_SPECS,
+  },
+  [BASE_COMMANDER, BOT_FACTORY, DOX, BUMBLEBEE]
+);
 
 describe("fromSpecs", () => {
   it("classifies a unit through its base_spec chain", () => {
@@ -91,6 +135,195 @@ describe("fromSpecs", () => {
       [DOX, BUMBLEBEE]
     );
   });
+
+  it("owns a unit's file for the units that inherit it", () => {
+    assert.deepEqual(commanders.ownersOf(BASE_COMMANDER).sort(), [
+      BASE_COMMANDER,
+      IMPERIAL,
+      QUAD,
+    ]);
+  });
+
+  // base_spec replaces a key whole: a commander that declares its own tools
+  // carries none of the base commander's.
+  it("owns a part for the units that inherit it, not those that redeclare it", () => {
+    assert.deepEqual(commanders.ownersOf(BASE_COMMANDER_WEAPON).sort(), [
+      BASE_COMMANDER,
+      IMPERIAL,
+    ]);
+    assert.deepEqual(commanders.ownersOf(BASE_COMMANDER_AMMO).sort(), [
+      BASE_COMMANDER,
+      IMPERIAL,
+    ]);
+    assert.deepEqual(commanders.ownersOf(QUAD_WEAPON), [QUAD]);
+    // Its death weapon it still inherits.
+    assert.deepEqual(commanders.ownersOf(NUKE).sort(), [
+      BASE_COMMANDER,
+      IMPERIAL,
+      QUAD,
+    ]);
+  });
+
+  it("owns an unread file of a unit's directory for the units that inherit it", () => {
+    assert.deepEqual(
+      commanders
+        .ownersOf(
+          "/pa/units/commanders/base_commander/base_commander_ammo.json"
+        )
+        .sort(),
+      [BASE_COMMANDER, IMPERIAL, QUAD]
+    );
+  });
+
+  it("works out a file's owners once", () => {
+    assert.equal(lookup.ownersOf(DOX_AMMO), lookup.ownersOf(DOX_AMMO));
+  });
+
+  it("tells whether a commander owns a file", () => {
+    assert.equal(commanders.ownedBy(BASE_COMMANDER_WEAPON, IMPERIAL), true);
+    assert.equal(commanders.ownedBy(BASE_COMMANDER_WEAPON, QUAD), false);
+    assert.equal(commanders.ownedBy(DOX, IMPERIAL), false);
+  });
+
+  // An inventory holds vanilla paths, and the referee moves the base
+  // commander's mods to a race's, so a race commander stands in for it.
+  it("judges a race commander as the base commander", () => {
+    assert.deepEqual(commanders.reachable([BOT_FACTORY, DOX], RACE_COMMANDER), [
+      BOT_FACTORY,
+      DOX,
+    ]);
+    assert.equal(commanders.ownedBy(BASE_COMMANDER, RACE_COMMANDER), true);
+    assert.equal(
+      commanders.ownedBy(BASE_COMMANDER_WEAPON, RACE_COMMANDER),
+      true
+    );
+    assert.equal(commanders.ownedBy(QUAD_WEAPON, RACE_COMMANDER), false);
+  });
+
+  it("reaches everything held from a race commander without the base one", () => {
+    const noBase = coopAiUnits.fromSpecs({
+      units: [RACE_COMMANDER, BOT_FACTORY, DOX, BUMBLEBEE],
+      specs: COMMANDER_SPECS,
+    });
+    assert.deepEqual(noBase.reachable([DOX, BUMBLEBEE], RACE_COMMANDER), [
+      DOX,
+      BUMBLEBEE,
+    ]);
+  });
+
+  it("lists the obtainable units it knows, commanders aside", () => {
+    assert.deepEqual(commanders.obtainable, [BOT_FACTORY, DOX]);
+    assert.deepEqual(lookup.obtainable, []);
+  });
+});
+
+// Build-type mods as a battle applies them: a pushed unit type or a longer
+// build list reaches more, a replaced build list may reach less.
+describe("fromSpecs reach under build-type mods", () => {
+  const LOB =
+    "/pa/units/land/artillery_unit_launcher/artillery_unit_launcher.json";
+  const BUILD_SPECS = Object.assign({}, COMMANDER_SPECS, {
+    [BASE_COMMANDER]: Object.assign({}, COMMANDER_SPECS[BASE_COMMANDER], {
+      buildable_types: "Factory & Basic | CmdBuild",
+    }),
+    [LOB]: { unit_types: types("Structure", "Land", "Basic", "Offense") },
+  });
+  const UNITS = [
+    BASE_COMMANDER,
+    IMPERIAL,
+    RACE_COMMANDER,
+    BOT_FACTORY,
+    DOX,
+    BUMBLEBEE,
+    LOB,
+  ];
+  const withMods = (modSpecs) =>
+    coopAiUnits.fromSpecs({ units: UNITS, specs: BUILD_SPECS }, [], modSpecs);
+  const reach = withMods(gwoSpecs.mod);
+  const mod = (file, path, op, value) => ({ file, path, op, value });
+  const cmdBuild = mod(LOB, "unit_types", "push", "UNITTYPE_CmdBuild");
+
+  it("reaches a unit a pushed type puts on the commander's build list", () => {
+    assert.deepEqual(reach.reachable([LOB], IMPERIAL), []);
+    assert.deepEqual(reach.reachable([LOB], IMPERIAL, [cmdBuild]), [LOB]);
+  });
+
+  it("reaches what a factory's longer build list adds", () => {
+    const air = mod(BOT_FACTORY, "buildable_types", "add", " | Air & Mobile");
+    assert.deepEqual(reach.reachable([BOT_FACTORY, BUMBLEBEE], IMPERIAL), [
+      BOT_FACTORY,
+    ]);
+    assert.deepEqual(
+      reach.reachable([BOT_FACTORY, BUMBLEBEE], IMPERIAL, [air]),
+      [BOT_FACTORY, BUMBLEBEE]
+    );
+  });
+
+  it("reaches less when a build list is replaced", () => {
+    const fabbers = mod(BOT_FACTORY, "buildable_types", "replace", "Fabber");
+    assert.deepEqual(reach.reachable([BOT_FACTORY, DOX], IMPERIAL, [fabbers]), [
+      BOT_FACTORY,
+    ]);
+  });
+
+  // The Dox and every commander inherit their types and build lists.
+  it("reaches through a mod on a base spec for the units that inherit it", () => {
+    const botsByHand = mod(BASE_BOT, "unit_types", "push", "UNITTYPE_CmdBuild");
+    const air = mod(BASE_COMMANDER, "buildable_types", "add", " | Air");
+    assert.deepEqual(reach.reachable([DOX], IMPERIAL, [botsByHand]), [DOX]);
+    assert.deepEqual(reach.reachable([BUMBLEBEE], IMPERIAL, [air]), [
+      BUMBLEBEE,
+    ]);
+    // A race commander builds from the base commander's list.
+    assert.deepEqual(reach.reachable([BUMBLEBEE], RACE_COMMANDER), []);
+    assert.deepEqual(reach.reachable([BUMBLEBEE], RACE_COMMANDER, [air]), [
+      BUMBLEBEE,
+    ]);
+  });
+
+  it("ignores stat mods, mods on files it does not hold, and every mod without the op engine", () => {
+    const others = [
+      mod(LOB, "max_health", "multiply", 2),
+      mod("/pa/units/elsewhere/x.json", "unit_types", "push", "UNITTYPE_Bot"),
+    ];
+    assert.deepEqual(reach.reachable([LOB], IMPERIAL, others), []);
+    assert.deepEqual(withMods().reachable([LOB], IMPERIAL, [cmdBuild]), []);
+  });
+
+  it("leaves the specs it read unchanged", () => {
+    const before = JSON.parse(JSON.stringify(BUILD_SPECS));
+    reach.reachable([LOB, DOX, BUMBLEBEE], IMPERIAL, [
+      cmdBuild,
+      mod(BASE_BOT, "unit_types", "push", "UNITTYPE_CmdBuild"),
+      mod(BASE_COMMANDER, "buildable_types", "add", " | Air"),
+    ]);
+    assert.deepEqual(BUILD_SPECS, before);
+  });
+
+  it("remakes a mod list's build lists once, and keeps the latest 64", () => {
+    let calls = 0;
+    const counted = withMods((specs, mods, tag) => {
+      calls += 1;
+      gwoSpecs.mod(specs, mods, tag);
+    });
+    const listFor = (index) => [
+      mod(LOB, "unit_types", "push", "UNITTYPE_Custom" + index),
+    ];
+
+    counted.reachable([LOB], IMPERIAL, [cmdBuild]);
+    counted.reachable([LOB], IMPERIAL, [cmdBuild]);
+    counted.reachable([LOB], IMPERIAL, []);
+    assert.equal(calls, 1);
+
+    for (let index = 0; index < 64; index++) {
+      counted.reachable([LOB], IMPERIAL, listFor(index));
+    }
+    assert.equal(calls, 65);
+    counted.reachable([LOB], IMPERIAL, listFor(63));
+    assert.equal(calls, 65);
+    counted.reachable([LOB], IMPERIAL, [cmdBuild]);
+    assert.equal(calls, 66);
+  });
 });
 
 describe("fromGroups", () => {
@@ -126,6 +359,26 @@ describe("fromGroups", () => {
     assert.deepEqual(
       byGroups.reachable([gwoUnit.botFactory, gwoUnit.dox, gwoUnit.bumblebee]),
       [gwoUnit.botFactory, gwoUnit.dox]
+    );
+  });
+
+  // Groups know no base_spec chains.
+  it("takes a file of the base commander's to be every commander's", () => {
+    assert.equal(byGroups.ownedBy(gwoUnit.commanderAmmo, IMPERIAL), true);
+    assert.equal(
+      byGroups.ownedBy(gwoUnit.commanderAmmo, gwoUnit.colonel),
+      false
+    );
+    assert.equal(byGroups.ownedBy(gwoUnit.dox, IMPERIAL), false);
+    assert.equal(byGroups.ownedBy(gwoUnit.dox, gwoUnit.dox), true);
+  });
+
+  it("lists every grouped unit as obtainable, commanders aside", () => {
+    assert.ok(byGroups.obtainable.includes(gwoUnit.dox));
+    assert.ok(!byGroups.obtainable.includes(gwoUnit.commander));
+    assert.ok(
+      byGroups.obtainable.every((unit) => byGroups.classOf(unit)),
+      "every one has a cell"
     );
   });
 });

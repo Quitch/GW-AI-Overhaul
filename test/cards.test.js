@@ -48,12 +48,24 @@ describe("hasUnit", () => {
     assert.equal(cards.hasUnit(["a", "b"], ["c", "b"]), true);
     assert.equal(cards.hasUnit(["a", "b"], ["c", "d"]), false);
   });
+
+  it("reads a group nested in the list", () => {
+    assert.equal(cards.hasUnit(["a", "b"], [["c", ["b"]], "d"]), true);
+    assert.equal(cards.hasUnit(["a", "b"], [["c"], "d"]), false);
+  });
 });
 
 describe("hasAllUnits", () => {
   it("matches a single unit passed as a string", () => {
     assert.equal(cards.hasAllUnits(["a", "b"], "b"), true);
     assert.equal(cards.hasAllUnits(["a", "b"], "c"), false);
+  });
+
+  it("reads a group nested in the list", () => {
+    assert.equal(cards.hasAllUnits(["a", "b", "c"], [["a", ["c"]], "b"]), true);
+    assert.equal(cards.hasAllUnits(["a", "b"], [["a", "c"]]), false);
+    assert.equal(cards.missingUnit(["a"], [["a", "c"]]), true);
+    assert.equal(cards.missingAllUnits(["a"], [["b", ["a"]]]), false);
   });
 
   it("requires every unit of an array to be present", () => {
@@ -793,6 +805,28 @@ describe("flatMapMods", () => {
 
   it("returns an empty array for no files", () => {
     assert.deepEqual(cards.flatMapMods([], "replace", { x: 1 }), []);
+  });
+
+  it("reads a group nested in the list", () => {
+    assert.deepEqual(
+      cards.flatMapMods([["a.json"], "b.json"], "replace", { x: 1 }),
+      cards.flatMapMods(["a.json", "b.json"], "replace", { x: 1 })
+    );
+  });
+
+  it("emits nothing for a missing list", () => {
+    assert.deepEqual(cards.flatMapMods(undefined, "replace", { x: 1 }), []);
+  });
+
+  it("keeps a file named twice, and ignores a table", () => {
+    assert.deepEqual(
+      cards.flatMapMods(["a.json", ["a.json"], { t: "b.json" }], "replace", {
+        x: 1,
+      }),
+      cards
+        .mods("a.json", "replace", { x: 1 })
+        .concat(cards.mods("a.json", "replace", { x: 1 }))
+    );
   });
 });
 

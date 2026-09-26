@@ -39,6 +39,29 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
     return JSON.parse(JSON.stringify(saved));
   };
 
+  // A GWInventory that notes every unit its cards remove.
+  var recording = function (GWInventory, removed) {
+    return function () {
+      var inventory = new GWInventory();
+      var removeUnits = inventory.removeUnits;
+      inventory.removeUnits = function (units) {
+        if (_.isArray(units)) {
+          removed.push.apply(removed, _.filter(units, _.isString));
+        }
+        return removeUnits.apply(inventory, arguments);
+      };
+      return inventory;
+    };
+  };
+
+  // Non-enumerable, so no copy or save of the result carries it.
+  var withStripped = function (applied, removed) {
+    Object.defineProperty(applied, "strippedUnits", {
+      value: _.difference(_.uniq(removed), applied.units || []),
+    });
+    return applied;
+  };
+
   // Applies kept for reuse. Enough for a deal's or a ping window's; older ones
   // are dropped, so a long war does not keep every inventory it judged.
   var MAX_CACHED = 64;
@@ -53,6 +76,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
     var applyOnce = function (saved) {
       return new Promise(function (resolve, reject) {
         var held;
+        var removed = [];
         var timer = setTimeout(function () {
           if (held) {
             held.abandon();
@@ -62,12 +86,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
 
         try {
           held = gwoBank.applyInventoryHeld(
-            params.GWInventory,
+            recording(params.GWInventory, removed),
             saved,
             params.stockBank,
             function (inventory) {
               clearTimeout(timer);
-              resolve(plain(inventory.save()));
+              resolve(withStripped(plain(inventory.save()), removed));
             }
           );
         } catch (error) {
@@ -109,10 +133,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
           apply(saved),
           apply(withCard(saved, card, loadout)),
         ]);
-      },
-      // The inventory without a held card, and with it: what it is worth now.
-      withoutCard: function (saved, index) {
-        return Promise.all([apply(withoutCard(saved, index)), apply(saved)]);
       },
       clear: function () {
         cache = {};
