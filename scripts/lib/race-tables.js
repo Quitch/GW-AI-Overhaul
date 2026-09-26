@@ -192,6 +192,24 @@ function raceRows(input, source, reader) {
   });
 }
 
+// A table holds the files the race's or add-on's own mod ships; a base-game
+// file its units reuse is left out. See races.md, "Unit tables".
+function isBaseGame(reader, specPath) {
+  const spec = reader.read(specPath);
+  return Boolean(spec) && spec.mod === undefined;
+}
+
+function pinned(input, reader, entries) {
+  for (const [key, specPath] of entries) {
+    if (isBaseGame(reader, specPath)) {
+      throw new Error(
+        input.id + ": " + key + " pins the base-game file " + specPath
+      );
+    }
+  }
+  return entries;
+}
+
 function sortedEntries(object) {
   return Object.keys(object)
     .sort(byCodePoint)
@@ -265,7 +283,7 @@ function keyClash(id, key, unit) {
 function addRaceParts(input, reader, table, { key, unit, stem }) {
   const parts = raceParts(input, reader.read(unit), reader.read);
   for (const part of parts) {
-    if (reader.read(part) && !table.has(part)) {
+    if (reader.read(part) && !isBaseGame(reader, part) && !table.has(part)) {
       const free = freeKey(key + raceSuffix(input, stem, part), (candidate) =>
         table.taken(candidate, part)
       );
@@ -280,10 +298,18 @@ function addRaceParts(input, reader, table, { key, unit, stem }) {
 function buildRaceTable(input, source) {
   const reader = specsReader(source);
   const table = raceTableBuilder(input, reader);
-  for (const [key, specPath] of Object.entries(input.units || {})) {
+  for (const [key, specPath] of pinned(
+    input,
+    reader,
+    Object.entries(input.units || {})
+  )) {
     table.addUnit(key, specPath);
   }
-  for (const [key, specPath] of Object.entries(input.parts || {})) {
+  for (const [key, specPath] of pinned(
+    input,
+    reader,
+    Object.entries(input.parts || {})
+  )) {
     table.addPart(key, specPath);
   }
 
@@ -424,6 +450,9 @@ function buildAddonTable(id, source, baseUnits) {
       entry.spec,
       reader.chain
     )) {
+      if (isBaseGame(reader, partPath)) {
+        continue;
+      }
       const key = freeKey(
         addonPartKey(entry, partPath, role),
         (candidate) => units[candidate]

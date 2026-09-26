@@ -394,8 +394,11 @@ race.
 
 Its loadout is drawn by what each loadout does. The candidates are the starting
 loadouts and every locked loadout the host has unlocked, less those the AI's
-race may not field. A loadout that another mod registers in `gw_play` counts
-too. Each candidate is built as the per-player loadout scene builds a viewer's
+race may not field and those an AI cannot use. An AI cannot use Warp
+Commander, whose mass teleport is an order, and an AI gives none; a mod adds
+its own to `model.gwoLoadoutsAiCannotUse` ([`tech-cards.md`](tech-cards.md),
+"Third-party card mods"). These are left out before any is built. A loadout
+that another mod registers in `gw_play` counts too. Each candidate is built as the per-player loadout scene builds a viewer's
 (`shared/starting_inventory.js`), with the General Commander's Sub Commanders
 drawn as a viewer's are (`cards_start_subcdr.js`'s `appendRecordMinions`), and
 applied. Then:

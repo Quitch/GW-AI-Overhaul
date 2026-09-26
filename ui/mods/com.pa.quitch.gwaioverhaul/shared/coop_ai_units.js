@@ -11,6 +11,9 @@ define([
 ], function (unitCells, buildTypes, gwoUnit) {
   var MAX_CHAIN = 16;
   var COMMANDERS = "/pa/units/commanders/";
+  var BUILD_PATH = /^(unit_types|buildable_types)(\.|$)/;
+  // Build lists remade by mods, kept for reuse; older ones are dropped.
+  var MAX_CACHED = 64;
 
   var parseCell = function (key) {
     var parts = key.split("/");
@@ -74,8 +77,10 @@ define([
   };
 
   // loaded is race_cells.load()'s { units, specs }. obtainable is every unit
-  // a card can grant, as vanilla paths.
-  var fromSpecs = function (loaded, obtainable) {
+  // a card can grant, as vanilla paths. modSpecs is gw_play/specs.js's mod,
+  // which applies an inventory's unit_types and buildable_types mods for
+  // reach as a battle does; without it they are ignored.
+  var fromSpecs = function (loaded, obtainable, modSpecs) {
     var specs = loaded.specs || {};
     var index = unitCells.buildIndex(loaded.units, specs, _.constant(true));
 
@@ -179,16 +184,79 @@ define([
       );
     };
 
-    var reachable = function (held, commander) {
+    var buildModsOf = function (mods) {
+      if (!_.isFunction(modSpecs)) {
+        return [];
+      }
+      return _.filter(mods || [], function (mod) {
+        return (
+          !!mod &&
+          _.isString(mod.path) &&
+          BUILD_PATH.test(mod.path) &&
+          Object.prototype.hasOwnProperty.call(specs, mod.file)
+        );
+      });
+    };
+
+    // The tags and build lists of the files the mods name, and of the units
+    // that inherit them, as the mods leave them. specs.mod flattens a file
+    // it loads and changes it in place, so it gets a copy of each.
+    var remake = function (buildMods) {
+      var copy = _.clone(specs);
+      var files = _.uniq(_.pluck(buildMods, "file"));
+      _.forEach(files, function (file) {
+        copy[file] = _.cloneDeep(specs[file]);
+      });
+      modSpecs(copy, buildMods, "");
+      var remade = { tagsOf: {}, buildableOf: {} };
+      _.forEach(withDescendants(files), function (unit) {
+        remade.tagsOf[unit] = _.map(
+          unitCells.effectiveTypes(unit, copy),
+          unitCells.bare
+        );
+        var buildable = unitCells.chainValue(unit, copy, "buildable_types");
+        remade.buildableOf[unit] =
+          _.isString(buildable) && buildable.length ? buildable : undefined;
+      });
+      return remade;
+    };
+
+    var remadeCache = {};
+    // Keys in the order they were cached, oldest first.
+    var remadeOrder = [];
+    var remadeFor = function (buildMods) {
+      var cacheKey = JSON.stringify(buildMods);
+      if (!Object.prototype.hasOwnProperty.call(remadeCache, cacheKey)) {
+        remadeCache[cacheKey] = remake(buildMods);
+        remadeOrder.push(cacheKey);
+        if (remadeOrder.length > MAX_CACHED) {
+          delete remadeCache[remadeOrder.shift()];
+        }
+      }
+      return remadeCache[cacheKey];
+    };
+
+    // mods: the inventory's, whose unit_types and buildable_types mods
+    // change what builds what.
+    var reachable = function (held, commander, mods) {
       var from = isRaceUnit(commander) ? gwoUnit.commander : commander;
+      var buildMods = buildModsOf(mods);
+      var remade = buildMods.length
+        ? remadeFor(buildMods)
+        : { tagsOf: {}, buildableOf: {} };
+      var read = function (field, unit) {
+        return _.has(remade[field], unit)
+          ? remade[field][unit]
+          : index[field][unit];
+      };
       return reachFrom(
         held,
         commander,
         function (unit) {
-          return index.buildableOf[unit === commander ? from : unit];
+          return read("buildableOf", unit === commander ? from : unit);
         },
         function (unit) {
-          return index.tagsOf[unit];
+          return read("tagsOf", unit);
         }
       );
     };

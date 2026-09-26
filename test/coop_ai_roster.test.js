@@ -437,6 +437,21 @@ describe("loadoutCandidates", () => {
     );
   });
 
+  // Rejected before any is built or scored.
+  it("leaves out the loadouts an AI cannot use", () => {
+    assert.deepEqual(
+      roster.loadoutCandidates({
+        starting: ["gwc_start_vehicle", "mod_start_x"],
+        locked: ["gwaio_start_warp", "gwc_start_subcdr"],
+        unlocked: () => true,
+        raceLocks: () => false,
+        aiCannotUse: ["gwaio_start_warp", "mod_start_x"],
+      }),
+      ["gwc_start_vehicle", "gwc_start_subcdr"]
+    );
+    assert.deepEqual(roster.LOADOUTS_AI_CANNOT_USE, ["gwaio_start_warp"]);
+  });
+
   it("lists a loadout named twice once", () => {
     assert.deepEqual(
       roster.loadoutCandidates({
@@ -481,25 +496,29 @@ describe("loadoutsInUse", () => {
 });
 
 describe("teammates", () => {
-  it("reads the units and commander of a GWInventory or a saved inventory", () => {
+  it("reads the units, commander and mods of a GWInventory or a saved inventory", () => {
+    const hostMod = { file: "/u/a", path: "unit_types", op: "push" };
+    const aiMod = { file: "/u/b", path: "buildable_types", op: "add" };
     const live = {
       units: () => ["/u/a"],
+      mods: () => [hostMod],
       getTag: (context, name) => (name === "commander" ? "/c/host" : undefined),
     };
     const saved = {
       units: ["/u/b"],
+      mods: [aiMod],
       tags: { global: { commander: "/c/ai" } },
     };
 
     assert.deepEqual(roster.teammates([live, saved, undefined]), [
-      { units: ["/u/a"], commander: "/c/host" },
-      { units: ["/u/b"], commander: "/c/ai" },
+      { units: ["/u/a"], commander: "/c/host", mods: [hostMod] },
+      { units: ["/u/b"], commander: "/c/ai", mods: [aiMod] },
     ]);
   });
 
-  it("reads a saved inventory with no units as fielding none", () => {
+  it("reads a saved inventory with no units or mods as fielding none", () => {
     assert.deepEqual(roster.teammates([{ tags: {} }]), [
-      { units: [], commander: undefined },
+      { units: [], commander: undefined, mods: [] },
     ]);
   });
 });

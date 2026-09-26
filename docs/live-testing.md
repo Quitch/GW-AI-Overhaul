@@ -271,10 +271,12 @@ while a pass runs ([coop.md](coop.md), "AI players' tech").
 an AI makes, in the host's client log. A new AI logs one loadout line:
 
 ```text
-[GW COOP AI] <name> loadout via=specs candidates: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f chance p%), ... dropped: <id> (<gap>), ... used: <ids> -> chose <id>
+[GW COOP AI] <name> loadout via=specs candidates: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f extra e chance p%), ... dropped: <id> (<gap>), ... used: <ids> -> chose <id>
 ```
 
-`chance` is the candidate's chance of being drawn. `dropped` lists the
+`extra` is the flat part a loadout earns for doing what no other part sizes,
+such as Lucky Commander's extra card per offer. A hand's cards always show
+`extra 0`. `chance` is the candidate's chance of being drawn. `dropped` lists the
 candidates the AI could never fight with, each with the gap no card closes
 (`extractor` or `landFactory`), and is left out when there are none. `used`
 appears only under Unique AI loadouts: it lists the loadouts in use, whose
@@ -291,7 +293,7 @@ that finds the AI without a basic land factory logs an assignment instead:
 Otherwise a hand line follows:
 
 ```text
-[GW COOP AI] <name> deal=<n> star=<s> hand=<k> via=specs offered: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f), ... -> <action>
+[GW COOP AI] <name> deal=<n> star=<s> hand=<k> via=specs offered: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f extra e), ... -> <action>
 ```
 
 `deal` is the host's deal index and `star` the star it was dealt at. `hand`
