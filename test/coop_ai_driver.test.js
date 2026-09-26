@@ -43,6 +43,9 @@ const makeDriver = loadCouiModule(
 const coopAiEffects = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_effects.js"
 );
+const coopAiCards = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js"
+);
 
 const COMMANDER = "/u/commander";
 
@@ -69,7 +72,9 @@ const LOOKUP = {
     );
   },
   ownersOf: (file) => [file],
+  ownedBy: (file, unit) => file === unit,
   reachable: (units) => units.slice(),
+  obtainable: [],
 };
 
 // What each card id does when applied.
@@ -521,6 +526,63 @@ describe("coop_ai_driver.run", () => {
     assert.ok(
       lines.some((line) => /deal=1 is not in the host's history/.test(line))
     );
+  });
+});
+
+// The memo each scoreCard call is given, in call order.
+async function memosOf(action) {
+  const memos = [];
+  const scoreCard = coopAiCards.scoreCard;
+  const spy = mock.method(
+    coopAiCards,
+    "scoreCard",
+    (before, after, context) => {
+      memos.push(context.memo);
+      return scoreCard(before, after, context);
+    }
+  );
+  try {
+    await action();
+  } finally {
+    spy.mock.restore();
+  }
+  return memos;
+}
+
+describe("coop_ai_driver memo", () => {
+  // A hand's cards share the inventory before them, so its held tech is
+  // worked out once.
+  it("judges a deal's cards on one memo, and each deal on its own", async () => {
+    const run = setup({
+      history: history(2),
+      hands: { 1: [hand(["air", "junk"])], 2: [hand(["naval", "junk"])] },
+    });
+    const memos = await memosOf(() => run.driver.run());
+
+    assert.equal(memos.length, 4);
+    assert.ok(memos[0] && memos[0] === memos[1]);
+    assert.ok(memos[2] === memos[3] && memos[2] !== memos[0]);
+  });
+
+  it("judges every starting loadout on one memo", async () => {
+    const run = setup();
+    const memos = await memosOf(() =>
+      run.driver.chooseStartingLoadout({
+        name: "AI1",
+        candidates: ["gwc_start_air", "gwc_start_naval"],
+        build: (id) =>
+          Promise.resolve({
+            cards: [{ id: id }],
+            tags: { global: { commander: COMMANDER } },
+          }),
+        baseline: { cards: [{ id: "gwc_start" }], tags: {} },
+        commander: COMMANDER,
+        teamDomains: [],
+      })
+    );
+
+    assert.equal(memos.length, 2);
+    assert.ok(memos[0] && memos[0] === memos[1]);
   });
 });
 

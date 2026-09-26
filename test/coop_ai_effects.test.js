@@ -95,6 +95,9 @@ const gwoUnit = loadCouiModule(
 const gwoCard = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
 );
+const coopAiDriver = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_driver.js"
+);
 
 // Third-party tech cards as the New-GW-Cards template writes them: one unlocks
 // the Slammer and names it nowhere else, so a co-op AI player can only judge it
@@ -248,6 +251,53 @@ describe("coop_ai_effects", () => {
       typeof GWInventory.prototype.getTag,
       "function",
       "the fixture's GWInventory has methods to leak"
+    );
+  });
+
+  // Tourist Commander's dull removes its forbidden units on every apply,
+  // whether or not anything granted them.
+  it("lists the units the cards strip, and no copy of the result carries them", async () => {
+    const run = effects();
+    const start = await run.apply(BOT_AI);
+    const tourist = await run.apply({
+      cards: [{ id: "gwaio_start_tourist" }],
+      tags: BOT_AI.tags,
+    });
+
+    assert.ok(start.units.includes(gwoUnit.metalExtractor));
+    assert.ok(!start.units.includes(gwoUnit.jig));
+    assert.deepEqual(start.strippedUnits, []);
+    assert.deepEqual(
+      tourist.strippedUnits.slice().sort(),
+      [
+        gwoUnit.metalExtractor,
+        gwoUnit.metalExtractorAdvanced,
+        gwoUnit.jig,
+      ].sort()
+    );
+
+    assert.ok(!JSON.stringify(tourist).includes("strippedUnits"));
+    assert.equal(_.cloneDeep(tourist).strippedUnits, undefined);
+    assert.equal(
+      coopAiDriver.storedInventory(tourist).strippedUnits,
+      undefined
+    );
+  });
+
+  it("values an upgrade for a unit the AI's loadout forbids at nothing later", async () => {
+    const run = effects();
+    const tourist = {
+      cards: [{ id: "gwaio_start_tourist" }],
+      tags: BOT_AI.tags,
+    };
+    const jig = { id: "gwaio_upgrade_jig" };
+    const [botBefore, botAfter] = await run.withCard(BOT_AI, jig);
+    const [touristBefore, touristAfter] = await run.withCard(tourist, jig);
+
+    assert.ok(coopAiCards.scoreCard(botBefore, botAfter, context()).later > 0);
+    assert.equal(
+      coopAiCards.scoreCard(touristBefore, touristAfter, context()).later,
+      0
     );
   });
 

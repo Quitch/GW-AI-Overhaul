@@ -132,6 +132,7 @@ define([
         lookup: lookup,
         commander: commanderOf(record),
         teamDomains: params.teamDomains(record.playerId, lookup),
+        memo: {},
       };
     };
 
@@ -564,6 +565,7 @@ define([
         lookup: lookup,
         commander: options.commander,
         teamDomains: options.teamDomains,
+        memo: {},
       };
 
       var scoreCandidate = function (before, id) {

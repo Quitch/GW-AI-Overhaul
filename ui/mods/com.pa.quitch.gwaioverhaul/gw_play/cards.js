@@ -436,7 +436,7 @@
           var cards = galaxy.stars()[star].cardList();
           return cards && cards[0];
         },
-        valueOf: function (ai, card, star) {
+        valueOf: function (ai, card, star, memo) {
           var holder = model.gwCampaignPerPlayerTechCards()
             ? {
                 playerId: ai.id,
@@ -453,7 +453,8 @@
             params.judge,
             holder,
             card,
-            galaxy.stars()[star]
+            galaxy.stars()[star],
+            memo
           );
         },
         ping: function (star, sender) {
@@ -548,7 +549,7 @@
               raceCells.load().then(
                 function (loaded) {
                   clearTimeout(fallback);
-                  lookup(coopAiUnits.fromSpecs(loaded));
+                  lookup(coopAiUnits.fromSpecs(loaded, unitGroups.units));
                 },
                 function (error) {
                   clearTimeout(fallback);

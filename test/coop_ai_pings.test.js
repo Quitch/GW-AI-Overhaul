@@ -199,6 +199,36 @@ describe("valueOfCard", () => {
     assert.equal(typeof value, "number");
   });
 
+  // Every card an AI judges in a window is judged against the same
+  // inventory, whose held mods can run to hundreds of files.
+  it("works out the held tech once on the memo it is given", async () => {
+    let asked = 0;
+    const counting = {
+      reachable: (units) => units,
+      ownersOf: () => {
+        asked += 1;
+        return [];
+      },
+    };
+    const held = [{ file: "f", path: "damage", op: "multiply", value: 2 }];
+    const before = { cards: [], units: [], mods: held, maxCards: 3 };
+    const { judge: j } = judge({
+      lookup: () => counting,
+      effects: {
+        withCard: (inventory, dealt) =>
+          Promise.resolve([
+            before,
+            { cards: [dealt], units: [], mods: held, maxCards: 3 },
+          ]),
+      },
+    });
+    const memo = {};
+
+    await coopAiPings.valueOfCard(j, holder, card, 4, memo);
+    await coopAiPings.valueOfCard(j, holder, { id: "gwc_y" }, 4, memo);
+    assert.equal(asked, 1);
+  });
+
   it("is worth nothing before the unit lookup is in, or with no inventory", async () => {
     const { judge: j, calls } = judge({ lookup: () => undefined });
     assert.equal(await coopAiPings.valueOfCard(j, holder, card, 4), 0);
@@ -238,7 +268,7 @@ describe("the ping window", () => {
       },
       overrides
     );
-    const calls = { delays: [], pings: [], log: [] };
+    const calls = { delays: [], pings: [], log: [], memos: [] };
     mock.method(console, "log", (line) => calls.log.push(line));
     mock.method(console, "error", (line) => calls.log.push(line));
 
@@ -255,7 +285,8 @@ describe("the ping window", () => {
       allThreats: () => state.allThreats,
       cardFor: (ai, star) =>
         state.noCard ? undefined : { id: (ai.card || "card") + "_" + star },
-      valueOf: (ai, card, star) => {
+      valueOf: (ai, card, star, memo) => {
+        calls.memos.push(memo);
         if (state.valueThrows) {
           throw new Error("apply failed");
         }
@@ -281,6 +312,20 @@ describe("the ping window", () => {
 
     return { pings, state, calls, flush };
   }
+
+  it("judges an AI's candidates on one memo per settle", async () => {
+    const { pings, state, calls, flush } = setup();
+    pings.update();
+    await flush();
+    state.key = "2:0:1";
+    pings.update();
+    await flush();
+
+    assert.equal(calls.memos.length, 4);
+    assert.ok(calls.memos[0] && calls.memos[0] === calls.memos[1]);
+    assert.ok(calls.memos[2] === calls.memos[3]);
+    assert.notEqual(calls.memos[2], calls.memos[0]);
+  });
 
   it("staggers the AIs in slot order", () => {
     const { pings, calls } = setup({ ais: [TANK, SORIAN] });

@@ -271,18 +271,21 @@ runs ([coop.md](coop.md), "AI players' tech").
 an AI makes, in the host's client log. A new AI logs one loadout line:
 
 ```text
-[GW COOP AI] <name> loadout via=specs candidates: <id>=<score> (unlock u mods m minions n aiMods a slots s floor f), ... -> chose <id>
+[GW COOP AI] <name> loadout via=specs candidates: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f), ... -> chose <id>
 ```
 
 Each deal logs one line per hand the AI judged, so a reroll adds a line:
 
 ```text
-[GW COOP AI] <name> deal=<n> star=<s> hand=<k> via=specs offered: <id>=<score> (unlock u mods m minions n aiMods a slots s floor f), ... -> <action>
+[GW COOP AI] <name> deal=<n> star=<s> hand=<k> via=specs offered: <id>=<score> (unlock u mods m later l minions n aiMods a slots s floor f), ... -> <action>
 ```
 
 `deal` is the host's deal index and `star` the star it was dealt at. `hand`
 counts the cards offered. Each card shows its score and then the parts it came
-from ([tech-cards.md](tech-cards.md), "How AI players judge a card"). The
+from ([tech-cards.md](tech-cards.md), "How AI players judge a card"). `mods` is
+what the card's stat mods are worth on the units the AI fields and on its
+commanders, and `later` what they are worth on units it could field later. A
+stat card for a domain the AI has not opened scores in `later` alone. The
 action is one of:
 
 - `took <id>`.

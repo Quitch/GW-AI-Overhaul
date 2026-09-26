@@ -30,11 +30,16 @@ define(function () {
     domain: 8,
     // A domain no teammate fields.
     teamDomain: 1.5,
-    // A stat mod: its direction times the worth of the fielded units it
-    // touches.
+    // A stat mod: its direction times the worth of the units it touches.
     modScale: 1,
     // The same, on the domain the AI fields most.
     focus: 1.2,
+    // A commander's worth, for stat mods alone.
+    commander: 10,
+    // A unit the AI does not field yet, against 1 for one it fields.
+    future: 0.25,
+    // The most the AI's held stat mods on a unit raise its worth, or lower it.
+    heldTech: 0.5,
     // An add or a replace: known to change, not by how much.
     addStep: 0.25,
     otherOp: 0.25,
@@ -58,7 +63,9 @@ define(function () {
   };
 
   // Cost and delay grow worse as they grow.
-  var INVERTED = /cost|cooldown|delay|build_time|_demand|consumption|reload/i;
+  var INVERTED =
+    /cost|cooldown|delay|build_time|_demand|consumption|reload|per_shot/i;
+  var STAT_OPS = ["multiply", "add"];
 
   var key = function (value) {
     return JSON.stringify(value);
@@ -111,8 +118,8 @@ define(function () {
   // The worth of a set of held units: a cell's units worth less the more of
   // them there are, a unit the commander cannot reach a quarter, a domain no
   // teammate fields more, plus a bonus per domain fielded. context: lookup,
-  // commander, teamDomains.
-  var setValue = function (units, context) {
+  // commander, teamDomains. boost(unit), if given, scales a unit's worth.
+  var setValue = function (units, context, boost) {
     var lookup = context.lookup;
     var reached = lookup.reachable(units, context.commander);
     var cells = {};
@@ -142,7 +149,8 @@ define(function () {
           worth *
           Math.pow(WEIGHTS.decay, index) *
           (live ? 1 : WEIGHTS.unreachable) *
-          team;
+          team *
+          (boost ? boost(unit) : 1);
         if (live && worth > 0) {
           domains[entry.cell.domain] = true;
         }
@@ -195,35 +203,202 @@ define(function () {
     return best;
   };
 
-  // Stat mods, one file at a time: the mean direction of the mods on the file,
-  // times the worth of the fielded units that own it, less for each copy of
-  // those mods the inventory holds already. Nothing for a file no fielded unit
-  // owns.
-  var modsValue = function (mods, context, fielded, held) {
-    var lookup = context.lookup;
-    var focus = focusDomain(fielded, lookup);
+  var meanDirection = function (mods) {
+    return _(mods).map(modDirection).sum() / mods.length;
+  };
 
-    return _(mods)
-      .groupBy("file")
-      .map(function (fileMods, file) {
-        var owners = _.intersection(lookup.ownersOf(file), fielded);
-        if (!owners.length) {
-          return 0;
-        }
-        var cells = _.compact(_.map(owners, lookup.classOf));
-        var worth = _(cells).map(unitWorth).sum();
-        var direction = _(fileMods).map(modDirection).sum() / fileMods.length;
-        var paths = _.pluck(fileMods, "path");
-        var stacked = _.filter(held, function (mod) {
-          return mod.file === file && _.includes(paths, mod.path);
-        }).length;
-        var onFocus = _.some(cells, { domain: focus }) ? WEIGHTS.focus : 1;
-        return (
-          (direction * worth * WEIGHTS.modScale * onFocus) /
-          (1 + stacked / fileMods.length)
-        );
+  var totalDirection = function (mods) {
+    return _(mods).map(modDirection).sum();
+  };
+
+  // A mod list by what it changes, whichever file it is on.
+  var changesOf = function (mods) {
+    return key(
+      _.map(mods, function (mod) {
+        return [mod.path, mod.op, mod.value];
       })
-      .sum();
+    );
+  };
+
+  // Per unit, the distinct mod lists on the files it owns: the same change
+  // written into each of a unit's weapons changes the unit once. byFile:
+  // mods grouped by file.
+  var listsByUnit = function (byFile, lookup) {
+    var lists = {};
+    _.forEach(byFile, function (mods, file) {
+      var changes = changesOf(mods);
+      _.forEach(lookup.ownersOf(file), function (unit) {
+        lists[unit] = lists[unit] || {};
+        lists[unit][changes] = mods;
+      });
+    });
+    return lists;
+  };
+
+  var commanderLists = function (byFile, lookup, commander) {
+    var lists = {};
+    _.forEach(byFile, function (mods, file) {
+      if (lookup.ownedBy(file, commander)) {
+        lists[changesOf(mods)] = mods;
+      }
+    });
+    return lists;
+  };
+
+  var boostOf = function (total) {
+    return 1 + WEIGHTS.heldTech * Math.tanh(total);
+  };
+
+  // What the stat mods an inventory holds make of each unit's worth, and each
+  // commander's.
+  var heldTechOf = function (inventory, lookup) {
+    var byFile = _.groupBy(
+      _.filter(inventory.mods || [], function (mod) {
+        return _.includes(STAT_OPS, mod.op);
+      }),
+      "file"
+    );
+    var totals = _.mapValues(listsByUnit(byFile, lookup), function (lists) {
+      return _(lists).map(totalDirection).sum();
+    });
+    var commanders = {};
+
+    return {
+      unit: function (unit) {
+        return boostOf(totals[unit] || 0);
+      },
+      commander: function (commander) {
+        if (!_.has(commanders, commander)) {
+          commanders[commander] = boostOf(
+            _(commanderLists(byFile, lookup, commander))
+              .map(totalDirection)
+              .sum()
+          );
+        }
+        return commanders[commander];
+      },
+    };
+  };
+
+  // Kept on context.memo: a hand's cards share the inventory before them.
+  var heldTechFor = function (inventory, context) {
+    var memo = context.memo;
+    var cached =
+      memo &&
+      _.find(
+        memo.heldTech,
+        // Not the value shorthand: lodash 3 compares an object value by deep
+        // equality, and this lookup must be by instance.
+        // eslint-disable-next-line lodash/matches-prop-shorthand
+        function (entry) {
+          return entry.inventory === inventory;
+        }
+      );
+    if (cached) {
+      return cached.heldTech;
+    }
+    var heldTech = heldTechOf(inventory, context.lookup);
+    if (memo) {
+      memo.heldTech = (memo.heldTech || []).concat({
+        inventory: inventory,
+        heldTech: heldTech,
+      });
+    }
+    return heldTech;
+  };
+
+  // The units a stat mod meets in an inventory: those the AI fields, its
+  // commanders (its own and each Sub Commander's, one each), and those it
+  // could field later - held out of reach, or obtainable and not stripped.
+  var profileOf = function (inventory, context) {
+    var lookup = context.lookup;
+    var units = inventory.units || [];
+    var cells = {};
+    var cellOf = function (unit) {
+      if (!_.has(cells, unit)) {
+        var cell = lookup.classOf(unit);
+        cells[unit] = cell && cell.cls !== "Commander" ? cell : undefined;
+      }
+      return cells[unit];
+    };
+    var fielded = _.filter(
+      _.uniq(lookup.reachable(units, context.commander)),
+      cellOf
+    );
+    var later = _.difference(
+      _.uniq((lookup.obtainable || []).concat(units)),
+      fielded.concat(inventory.strippedUnits || [])
+    ).sort();
+
+    return {
+      fielded: fielded,
+      later: _.filter(later, cellOf),
+      cellOf: cellOf,
+      commanders: _.filter(
+        [context.commander].concat(_.pluck(inventory.minions, "commander")),
+        _.isString
+      ),
+    };
+  };
+
+  // A card's stat mods on a profile, each unit's direction scaled by its
+  // held-tech boost. now: each fielded unit's worth, and WEIGHTS.commander
+  // per commander. later: each later unit's worth at WEIGHTS.future, the
+  // units the mods touch in a cell decaying on from the cell's fielded ones.
+  var modsParts = function (mods, profile, context, heldTech) {
+    var lookup = context.lookup;
+    var byFile = _.groupBy(mods, "file");
+    var directions = _.mapValues(listsByUnit(byFile, lookup), function (lists) {
+      return _(lists).map(meanDirection).sum();
+    });
+    var commanderDirection = _.memoize(function (commander) {
+      return _(commanderLists(byFile, lookup, commander))
+        .map(meanDirection)
+        .sum();
+    });
+    var focus = focusDomain(profile.fielded, lookup);
+    var cellKey = function (unit) {
+      return profile.cellOf(unit).key;
+    };
+    var fieldedInCell = _.countBy(profile.fielded, cellKey);
+    var worth = function (unit) {
+      return (
+        directions[unit] *
+        unitWorth(profile.cellOf(unit)) *
+        WEIGHTS.modScale *
+        heldTech.unit(unit)
+      );
+    };
+    var parts = { now: 0, later: 0 };
+
+    _.forEach(profile.fielded, function (unit) {
+      if (directions[unit]) {
+        parts.now +=
+          worth(unit) *
+          (profile.cellOf(unit).domain === focus ? WEIGHTS.focus : 1);
+      }
+    });
+    _.forEach(profile.commanders, function (commander) {
+      var direction = commanderDirection(commander);
+      if (direction) {
+        parts.now +=
+          direction * WEIGHTS.commander * heldTech.commander(commander);
+      }
+    });
+
+    var touched = _.filter(profile.later, function (unit) {
+      return !!directions[unit];
+    });
+    _.forEach(_.groupBy(touched, cellKey), function (units, cell) {
+      _.forEach(units, function (unit, index) {
+        parts.later +=
+          worth(unit) *
+          WEIGHTS.future *
+          Math.pow(WEIGHTS.decay, (fieldedInCell[cell] || 0) + index);
+      });
+    });
+
+    return parts;
   };
 
   // The classes a player fields a domain with.
@@ -252,38 +427,47 @@ define(function () {
   };
 
   // A card's value, by part. before and after are the saved inventories either
-  // side of the card; context: lookup, commander, teamDomains, and for a card
-  // with no effect to see, namesUnits (it registers units in gwoCardsToUnits)
-  // and chance (its own deal() weight for this inventory).
+  // side of the card; context: lookup, commander, teamDomains, memo (shared
+  // by the cards of a hand), and for a card with no effect to see, namesUnits
+  // (it registers units in gwoCardsToUnits) and chance (its own deal() weight
+  // for this inventory). The held-tech boost is before's on both sides.
   var scoreCard = function (before, after, context) {
     var effect = effectOf(before, after);
     var fullness = before.maxCards ? before.cards.length / before.maxCards : 1;
-    var fielded = context.lookup.reachable(after.units, context.commander);
+    var heldTech = heldTechFor(before, context);
+    var modsOn = function (mods, inventory) {
+      return mods.length
+        ? modsParts(mods, profileOf(inventory, context), context, heldTech)
+        : { now: 0, later: 0 };
+    };
+    var added = modsOn(effect.addedMods, after);
+    var removed = modsOn(effect.removedMods, before);
+    var held = before.minions || [];
     var parts = {
-      unlock: setValue(after.units, context) - setValue(before.units, context),
-      mods:
-        modsValue(effect.addedMods, context, fielded, before.mods) -
-        modsValue(
-          effect.removedMods,
-          context,
-          context.lookup.reachable(before.units, context.commander),
-          after.mods
-        ),
+      unlock:
+        setValue(after.units, context, heldTech.unit) -
+        setValue(before.units, context, heldTech.unit),
+      mods: added.now - removed.now,
+      later: added.later - removed.later,
       minions: 0,
       aiMods: Math.min(WEIGHTS.aiModCap, effect.addedAiMods) * WEIGHTS.aiMod,
       slots: effect.netSlots * (WEIGHTS.slotBase + WEIGHTS.slotFull * fullness),
       floor: 0,
     };
 
-    for (var i = 0; i < effect.addedMinions; i++) {
+    _.forEach(_.drop(after.minions || [], held.length), function (minion, i) {
       parts.minions +=
         WEIGHTS.minion *
-        Math.pow(WEIGHTS.minionDecay, (before.minions || []).length + i);
-    }
+        Math.pow(WEIGHTS.minionDecay, held.length + i) *
+        (minion && _.isString(minion.commander)
+          ? heldTech.commander(minion.commander)
+          : 1);
+    });
 
     var seen =
       parts.unlock !== 0 ||
       parts.mods !== 0 ||
+      parts.later !== 0 ||
       parts.minions !== 0 ||
       parts.aiMods !== 0 ||
       effect.netSlots !== -1;
@@ -299,13 +483,14 @@ define(function () {
     parts.total = round(
       parts.unlock +
         parts.mods +
+        parts.later +
         parts.minions +
         parts.aiMods +
         parts.slots +
         parts.floor
     );
     _.forEach(
-      ["unlock", "mods", "minions", "aiMods", "slots", "floor"],
+      ["unlock", "mods", "later", "minions", "aiMods", "slots", "floor"],
       function (part) {
         parts[part] = round(parts[part]);
       }
@@ -383,6 +568,8 @@ define(function () {
       parts.unlock +
       " mods " +
       parts.mods +
+      " later " +
+      parts.later +
       " minions " +
       parts.minions +
       " aiMods " +
@@ -460,7 +647,6 @@ define(function () {
     setValue: setValue,
     modDirection: modDirection,
     focusDomain: focusDomain,
-    modsValue: modsValue,
     teamDomains: teamDomains,
     scoreCard: scoreCard,
     rerollThreshold: rerollThreshold,

@@ -87,8 +87,11 @@ cards fail it: `gwaio_combat_titans` chains three `flatMapMods` calls.
 
 ## `buff` and `dull`
 
-`buff(inventory)` applies the card's effect. `dull(inventory)` reverses it. Two
-mechanisms are available. A card may use either or both:
+`buff(inventory)` applies the card's effect. `dull(inventory)` runs once every
+card has buffed, and takes away what the card forbids, such as the units a
+loadout rules out. It does not undo the `buff()`: a `dull()` that did would
+leave the card granting nothing. Two mechanisms are available. A card may use
+either or both:
 
 - `inventory.addMods([...])`: unit-spec stat changes. See [`specs.md`](specs.md).
 - `inventory.addAIMods([...])`: AI build-order changes. See
@@ -482,6 +485,12 @@ Three rules keep this affordable and safe:
   which `applyCards` rebuilds everything else. A failed apply is dropped from
   the cache.
 
+The apply also notes every unit that a card's `removeUnits` takes away. Those
+that no card grants back are the inventory's **stripped** units: the units a
+loadout's `dull()` forbids, such as Tourist Commander's extractors and Jig. They
+ride on the applied inventory as `strippedUnits`, which is not enumerable, so no
+copy, save, or stored record carries them.
+
 ### Scoring
 
 `shared/coop_ai_cards.js` turns the difference into a score. It is pure, and
@@ -495,31 +504,62 @@ its parts carry the names the debug lines print
   advanced unit is worth 1.3 times as much. Each further unit of the same cell
   is worth 0.6 of the one before, a unit the AI's commander cannot reach a
   quarter, and a unit in a domain that no teammate fields 1.5 times as much.
-  Each domain the AI fields adds 8, so opening one is worth it on its own.
-- **`mods`**: stat mods, one file at a time. A file's value is the mean
-  direction of its mods, times the worth of the fielded units that own the file.
-  A multiplier's direction is its gain, an add's is 0.25 with the add's sign,
-  and any other op counts 0.25. A multiplier's or an add's direction is reversed
-  on a cost, cooldown, delay, build time, demand, consumption, or reload path.
-  Every direction is held between −1 and 2. Mods on the domain the AI fields
-  most count 1.2 times. Copies of the same mods already held divide the value,
-  and a file that no fielded unit owns is worth nothing. Mods a card removes
-  count against it.
+  Each unit's worth is then scaled by its held-tech boost (below). Each domain
+  the AI fields adds 8, so opening one is worth it on its own.
+- **`mods`**: stat mods on the units the AI fields, and on its commanders. The
+  card's mods on one file are a list, and a list's direction is the mean
+  direction of its mods. A unit's direction is the sum over the distinct lists
+  on the files it owns, so a card that writes the same change into each of a
+  unit's weapons changes the unit once. A multiplier's direction is its gain,
+  an add's is 0.25 with the add's sign, and any other op counts 0.25. A
+  multiplier's or an add's direction is reversed on a cost, cooldown, delay,
+  build time, demand, consumption, reload, or per-shot path. Every direction is
+  held between −1 and 2. Each fielded unit adds its direction times its worth
+  and its boost, 1.2 times on the domain the AI fields most. Each commander, the
+  AI's own and each Sub Commander's, adds its direction times 10 and its boost.
+  Mods a card removes count against it, on the inventory before the card.
+- **`later`**: the same for the units the AI does not field yet, at a quarter of
+  their worth. These are every unit a card can grant (`unit_groups.units`,
+  commanders aside) and every held unit its commander cannot reach, less the
+  inventory's stripped units. In each cell, the later units the card touches
+  are taken in path order and counted on from the units fielded there, each
+  worth 0.6 of the one before. That bounds a card that touches a whole family.
 - **`minions`**: 12 for the AI's first Sub Commander, and 0.7 of the one before
-  for each after it.
+  for each after it, each times the boost of its own commander.
 - **`aiMods`**: 0.5 for each AI mod added, up to 1.5.
 - **`slots`**: the slots the card adds, less the one it takes, priced by how
   full the bank is: 0.5 plus 6 times the share of slots in use.
 - **`floor`**: for a card whose effect shows only in battle. When its `unlock`,
-  `mods`, `minions`, and `aiMods` parts are all 0, and it takes one slot without
-  adding one, a card without units in `model.gwoCardsToUnits` scores 4 times its
-  own deal chance out of 100. Its `deal()` runs on a fresh inventory loaded from
-  the AI's applied inventory without the card, with no `rng`, and a throw is
-  logged and counts as a chance of 0.
+  `mods`, `later`, `minions`, and `aiMods` parts are all 0, and it takes one
+  slot without adding one, a card without units in `model.gwoCardsToUnits`
+  scores 4 times its own deal chance out of 100. Its `deal()` runs on a fresh
+  inventory loaded from the AI's applied inventory without the card, with no
+  `rng`, and a throw is logged and counts as a chance of 0.
 
 The score is the sum, rounded to one decimal place, and the debug line prints
 every part. A new AI's starting loadouts are scored the same way, each against
 the base start card alone.
+
+The **held-tech boost** is what makes an AI build around its tech. It comes from
+the inventory before the card, and is worked out once for all the cards of a
+hand. For each unit it adds up the direction of every `multiply` or `add` mod
+the AI holds on a file the unit owns, and files that carry an identical list
+count once. The boost is 1 + 0.5 × tanh(total), so it stays between 0.5 and
+1.5. Vehicle Ammunition Tech (damage and splash ×1.25) gives each vehicle a
+total of 0.5 and a boost of 1.23, so the next vehicle unlock or vehicle stat
+card outscores its bot twin by 23%. With two such cards held the boost is 1.38.
+A held debuff counts against the total, as Terminal Commander's commander regen
+of −15 does. A commander's boost comes from the files it owns, so a buffed
+commander lifts `gwc_minion` too. The Cluster's Angel and Colonel do not inherit
+`base_commander`, so a commander card does not lift them, as it does not in the
+game. The same boost serves both sides of the card, so a stat card changes no
+`unlock`. Nothing discounts a mod the AI already holds.
+
+Two kinds of card are misjudged, and are left so. The three
+`gwaio_upgrade_subcommander_*` markers have no effect to see, and keep their
+floor, whose chance already rises with Sub Commanders. A `removeUnits` in a
+`buff()` also reads as forbidding the units, if nothing grants them back. Only
+the base game's legacy `gwc_start_allfactory` does that.
 
 The team is everyone who fights beside the AI: the host, the connected viewers,
 and the other AI players. A teammate fields a domain when it can reach a
@@ -550,24 +590,40 @@ policies rather than values. Change a weight there, and this section with it.
 
 ### Units
 
-The scorer asks three questions of the AI's units: each unit's cell (its
-domain, tier, and class), which units own the file a mod names, and which held
-units the AI's commander can reach. `shared/coop_ai_units.js` answers them in
-two ways, and every debug line names the one it used:
+The scorer asks these questions of the AI's units: each unit's cell (its
+domain, tier, and class), which units own the file a mod names, whether a
+commander owns it, which held units the AI's commander can reach, and which
+units it could get at all. `shared/coop_ai_units.js` answers them in two ways,
+and every debug line names the one it used:
 
 - **From the specs** (`via=specs`). These are `race_cells.load()`'s specs, read
   once the host opens a session, and each unit's cell comes from
-  `unit_cells.buildIndex`. A file's owners are the unit it is, the units that
-  carry it as a part, and the units that inherit it through `base_spec`, or
-  failing all three, the units in its directory. Reach follows the build lists:
-  what the commander builds, what that builds, and so on. A commander the
-  lookup does not know reaches everything, because an unknown builder is no
-  reason to value a unit at a quarter.
+  `unit_cells.buildIndex`. A file's owners are the unit it is, the units whose
+  tools or death weapon carry it, and the units that inherit it through
+  `base_spec`. Failing all three, they are the units in its directory. Each
+  unit brings the units that inherit it. A unit's tools, and its death weapon,
+  come from the nearest spec up its chain that declares them, so a commander
+  that declares its own tools carries none of `base_commander`'s. The owners
+  are worked out once per file. Reach follows the build lists: what the
+  commander builds, what that builds, and so on. A commander the lookup does
+  not know reaches everything, because an unknown builder is no reason to value
+  a unit at a quarter. The units it could get are those of
+  `unit_groups.units` that the specs index, commanders aside.
 - **From the unit groups** (`via=groups`). This is membership in
   `shared/unit_groups.js`, most specific group first. It knows vanilla units
   only, since a race's units are in no group. It has no build lists either, so
   a combat unit or a fabber counts as reached while a factory of its domain is
-  held, and anything else always does.
+  held, and anything else always does. It has no `base_spec` chains, so a file
+  that `base_commander.json` owns counts as every commander's, any unit under
+  `/pa/units/commanders/`. The units it could get are those of
+  `unit_groups.units` that have a cell.
+
+A race AI's inventory holds vanilla paths ([`races.md`](races.md), "Capability
+cells"), so its commander is judged as the base commander. A commander whose
+tags carry a faction bit other than `Custom58` reaches what
+`base_commander.json` builds, and owns the files that it owns, since the
+referee moves those mods to the race's commander. Without `base_commander.json`
+in the specs, such a commander reaches everything.
 
 The groups stand in when the specs are not in within 8 seconds of the session
 opening, or fail to load. The specs replace them when they land.
@@ -593,6 +649,10 @@ not the host's. So a card must:
 - **Never throw.** The shadowed `gw_inventory.js` catches the throw, logs it,
   and finishes the apply. A card that throws before it changes anything shows
   no effect, and so earns at most its floor.
+- **Forbid units in `dull()`.** The units a card's `removeUnits` takes away,
+  and that nothing grants back, are the ones an AI treats as forbidden: it
+  never counts a stat mod on them as worth something later. All `buff()`s run
+  before any `dull()`, so a `dull()` that removes units forbids them for good.
 
 Register a card in `model.gwoCardsToUnits` only for the units it affects. A
 card that names units there, yet changes nothing the AI can see, is taken to
