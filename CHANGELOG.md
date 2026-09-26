@@ -18,6 +18,10 @@
 - Warning and progress text is easier to read against the background
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover
 
+### Bugfix
+
+- In a Galactic War battle, every player's units on your screen now match the ones the game runs, including the tech that changes weapon lists or armour damage, such as Stryker and Pelican upgrades and the anti tech
+
 ## v7.4.1 - 2026-09-24
 
 ### Bugfix

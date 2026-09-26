@@ -274,6 +274,45 @@ and `references` are both walks over it, so the two cannot disagree about what
 counts as a reference. Projectiles such as Lob ammo can spawn units when they
 expire, so `spawn_unit_on_death` is one of them.
 
+## The lobby overlay
+
+Every client of a Galactic War battle passes through stock's `gw_lobby`, which
+mounts the files the referee sent. A client that rejoins a battle passes
+through `gw_reconnect_loading`, which does the same with the files the server
+sends again. Before it mounts them, each scene's `buildLocalClientOverlayFiles`
+rebuilds every player tag (`.player`, and each `.player<N>` of per-player tech)
+from local files. It reads the war's saved inventory, fetches fresh specs with
+stock `GW.specs.genUnitSpecs`, and applies the inventory's mods with stock
+`GW.specs.modSpecs`. The result is mounted over the referee's files.
+
+Stock's `modSpecs` has no `wipe`, `prepend` or `multiplyOrCreate`, and it logs
+`Invalid operation in mod` for each of them. It has no op order, and it never
+lands a mod on race or add-on units. Its `tag` also tags a reference a second
+time after a skipped `prepend` (`.player.player`). So a client mounted specs
+that differed from the ones the referee built and the server ran.
+
+`gw_lobby/specs.js`, listed in both scenes, wraps the handler that receives
+the files (`gw_config` in `gw_lobby`, `memory_files` in
+`gw_reconnect_loading`). It holds the stock handler until it has swapped
+`GW.specs.genUnitSpecs` and `modSpecs` for the stand-ins in
+`shared/lobby_specs.js`. Stock looks both up on the module when it calls them,
+through the loader it chooses (`requireGW` when defined), so the script uses
+the same loader. If the modules fail to load, stock runs unchanged.
+
+- For a player tag whose `/pa/units/unit_list.json<tag>` the referee sent,
+  `genUnitSpecs` resolves `{}` at once, so nothing is fetched. `modSpecs` then
+  deletes every file the referee also sent, so the referee's copy is the one
+  mounted. What is left is the tag's AI unit maps that stock builds and the
+  referee did not send, as before.
+- Any other tag (the enemy AIs' `.ai<N>`) goes to stock's `genUnitSpecs`,
+  unchanged. A player tag the referee did not send takes GWO's
+  `gw_play/specs.js` `mod` in place of stock's `modSpecs`: GWO's ops and their
+  order, with no race expansion.
+
+The client therefore mounts exactly what the server runs for every player. A
+co-op viewer's client-only skin mods no longer apply to other players' units:
+the host's referee files win.
+
 ## Where to look next
 
 - [`tech-cards.md`](tech-cards.md): where `addMods` gets called from.
