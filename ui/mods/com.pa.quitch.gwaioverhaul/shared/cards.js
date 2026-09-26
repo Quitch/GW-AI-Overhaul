@@ -1,8 +1,11 @@
 // The helper names this returns are a published API: third-party cards call
 // them directly, and the New-GW-Cards template documents every one. Renaming
 // or dropping one breaks those cards silently. See tech-cards.md.
-define(function () {
-  // Mirrors gwoAI.CLUSTER_FACTION; this module stays dependency-free.
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (races, unitCells) {
+  // Mirrors gwoAI.CLUSTER_FACTION; this module imports only pure modules.
   var CLUSTER_FACTION = 4;
 
   var getConnectedClients = function () {
@@ -95,21 +98,50 @@ define(function () {
   };
 
   var hasUnit = function (inventoryUnits, units) {
-    if (_.isString(units)) {
-      return _.includes(inventoryUnits, units);
-    }
-    return _.some(units, function (unit) {
+    return _.some(unitCells.unitPaths(units), function (unit) {
       return _.includes(inventoryUnits, unit);
     });
   };
 
   var hasAllUnits = function (inventoryUnits, units) {
-    if (_.isString(units)) {
-      return _.includes(inventoryUnits, units);
-    }
-    return _.every(units, function (unit) {
+    return _.every(unitCells.unitPaths(units), function (unit) {
       return _.includes(inventoryUnits, unit);
     });
+  };
+
+  var fieldedMemo = {};
+
+  // See races.md, "Capability cells".
+  // A new list each call; the memo notices a new held list or a new length.
+  var fieldedUnits = function (inventory) {
+    var held = inventory.units();
+    var race = races.raceOf(inventory);
+    var cells = races.cellsOf(race);
+    var foreign = races.foreignUnitPaths();
+    var memo = fieldedMemo;
+    var same =
+      memo.race === race && memo.cells === cells && memo.foreign === foreign;
+
+    if (!same || memo.held !== held || memo.length !== held.length) {
+      var key = held.join("|");
+      if (!same || memo.key !== key) {
+        var owned = races.ownedPaths(race, held, cells);
+        memo = {
+          race: race,
+          cells: cells,
+          foreign: foreign,
+          key: key,
+          units: cells
+            ? _.union(owned, races.fieldedFor(race, owned, cells))
+            : owned,
+        };
+      }
+      memo.held = held;
+      memo.length = held.length;
+      fieldedMemo = memo;
+    }
+
+    return memo.units.slice();
   };
 
   // The two states that flood every planet fought on. See tech-cards.md.
@@ -181,6 +213,8 @@ define(function () {
     hasUnit: hasUnit,
 
     hasAllUnits: hasAllUnits,
+
+    fieldedUnits: fieldedUnits,
 
     missingUnit: function (inventoryUnits, units) {
       return !hasAllUnits(inventoryUnits, units);
@@ -334,17 +368,17 @@ define(function () {
     upgradeDeal: upgradeDeal,
 
     // The whole of an upgrade card: visible, one slot, dealt through
-    // upgradeDeal once `requires` is held (and `unless` is not), `description`
-    // wrapped by withSlot. `describe`, `available`, `deal` and `chance` (a
-    // weight or a function of the inventory) override those parts; `slot:
-    // false` skips the slot. See tech-cards.md.
+    // upgradeDeal once `requires` is fielded (and `unless` is not held),
+    // `description` wrapped by withSlot. `describe`, `available`, `deal` and
+    // `chance` (a weight or a function of the inventory) override those parts;
+    // `slot: false` skips the slot. See tech-cards.md.
     upgradeCard: function (options) {
       var available =
         options.available ||
         function (inventory) {
           return (
             (!options.unless || !inventory.hasCard(options.unless)) &&
-            hasUnit(inventory.units(), options.requires)
+            hasUnit(fieldedUnits(inventory), options.requires)
           );
         };
       return {
@@ -419,7 +453,7 @@ define(function () {
     playerIsCluster: playerIsCluster,
 
     // Prefer the wrappers below, which keep the tables private. numberOfSystems
-    // is a parameter, not an import: this module must stay dependency-free, as
+    // is a parameter, not an import: this module imports only pure modules, as
     // every card transitively depends on it. See tech-cards.md.
     farForSize: farForSize,
 
@@ -465,12 +499,14 @@ define(function () {
     },
 
     // mods() over every file, flattened: one file's entries before the next's.
+    // `files` may nest groups.
     flatMapMods: function (files, op, props, value) {
-      return _.flatten(
-        _.map(_.isString(files) ? [files] : files, function (file) {
+      return _(unitCells.unitPaths(files))
+        .map(function (file) {
           return mods(file, op, props, value);
         })
-      );
+        .flatten()
+        .value();
     },
 
     // The gwaio_anti_* shape: zero against its counter card, half once any other

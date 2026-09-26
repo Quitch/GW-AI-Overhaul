@@ -41,7 +41,9 @@ nothing else. `validate:docs` checks this table against that block:
 `gwo_panel.js` builds GWO's own war panel. That panel shows the seed, the
 difficulty, the AI brains, the war's game options, and each client's colour for
 the next battle. `section_of_foreign_intelligence/` is the intel panel. It is
-vendored code under its own licence, so the attribution at its head stays.
+vendored code under its own licence, so the attribution at its head stays. Its
+threat measure lives in `shared/star_threat.js`, under the same attribution,
+because co-op AI players weigh it too.
 
 `shared/mod_translations.js` is the sole `global_mod_list` entry and is in no scene
 list: it registers GWO's translation files with the Mod Translations mod before the

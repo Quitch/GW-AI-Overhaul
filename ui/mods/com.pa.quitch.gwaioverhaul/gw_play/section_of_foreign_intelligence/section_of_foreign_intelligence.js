@@ -112,11 +112,6 @@
       return formattedString(area);
     };
 
-    var toFixedIfNecessary = function (value, decimals) {
-      // + converts the string output of toFixed() back to a float
-      return +Number.parseFloat(value).toFixed(decimals);
-    };
-
     // Under per-player tech a viewer is shown their own offer, and nothing at
     // all until the host has dealt them one - ai.cardName is the host's card,
     // which is the thing this exists to stop advertising to them.
@@ -209,6 +204,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
       ],
       function (
         gwoColour,
@@ -216,7 +212,8 @@
         gwoAI,
         gwoRefereeCoop,
         gwoStarCardsView,
-        gwoRaces
+        gwoRaces,
+        gwoStarThreat
       ) {
         var starCardsView = gwoStarCardsView();
         _.assign(gwoBuffType, gwoAI.BUFF_TYPES, { commanders: 5 });
@@ -328,53 +325,6 @@
           );
         };
 
-        var measureThreat = function (ai, commanders) {
-          var totalThreat = 0;
-          _.forEach(ai.foes, function (army) {
-            var commanderCount = gwoAI.commanderCount(army);
-            totalThreat +=
-              gwoAI.aiEconRateWithFloor(army.econ_rate) *
-              0.4 *
-              (commanderCount - 1);
-          });
-          _.times(commanders.length, function (n) {
-            totalThreat += commanders[n].eco;
-          });
-          if (ai.ally) {
-            // Not ai.ally.econ_rate - the battle overrides it with this
-            // (referee_config_setup.js).
-            totalThreat /= gwoAI.subcommanderEconRate + 1;
-          }
-          _.forEach(ai.typeOfBuffs, function (buff) {
-            switch (buff) {
-              case gwoBuffType.cost:
-              case gwoBuffType.build:
-                totalThreat *= 1.3;
-                break;
-              case gwoBuffType.damage:
-              case gwoBuffType.health:
-              case gwoBuffType.cooldown:
-                totalThreat *= 1.2;
-                break;
-              case gwoBuffType.speed:
-                totalThreat *= 1.1;
-                break;
-              case gwoBuffType.combat:
-                totalThreat *= 1.5;
-                break;
-              case gwoBuffType.commanders:
-                break;
-              default:
-                console.warn("Undefined buff type: " + buff);
-            }
-          });
-          var guardians = ai.mirrorMode;
-          if (guardians) {
-            totalThreat *= 3;
-          }
-          return toFixedIfNecessary(totalThreat, 2);
-        };
-
         var createAIIntelligence = function (ai, commanders) {
           if (ai.ally) {
             var game = model.game();
@@ -412,7 +362,7 @@
             return;
           }
           var commanders = starCommanders(ai);
-          model.gwoSystemThreat(measureThreat(ai, commanders));
+          model.gwoSystemThreat(gwoStarThreat.measure(ai));
           model.gwoAvailableTech(availableTech(star, starIndex, starCardsView));
           model.gwoAIBuffs(convertBuffNumberToName(ai));
           model.gwoGameModifiers(convertGameModifiersToName(ai, inventory));

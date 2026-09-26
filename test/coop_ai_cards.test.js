@@ -28,20 +28,39 @@ const cell = (domain, tier, cls) => ({
 // mobile units.
 const CLASSES = {
   commander: cell("Land", "Basic", "Commander"),
+  subCommander: cell("Land", "Basic", "Commander"),
   botFactory: cell("Bot", "Basic", "Factory"),
   airFactory: cell("Air", "Basic", "Factory"),
+  vehicleFactory: cell("Vehicle", "Basic", "Factory"),
   dox: cell("Bot", "Basic", "Combat"),
   grenadier: cell("Bot", "Basic", "Combat"),
+  boom: cell("Bot", "Basic", "Combat"),
   slammer: cell("Bot", "Advanced", "Combat"),
   bumblebee: cell("Air", "Basic", "Combat"),
+  hornet: cell("Air", "Basic", "Combat"),
+  ant: cell("Vehicle", "Basic", "Combat"),
+  leveler: cell("Vehicle", "Basic", "Combat"),
   wall: cell("Land", "Basic", "Defense"),
 };
-const FACTORY_OF = { Bot: "botFactory", Air: "airFactory" };
+const FACTORY_OF = {
+  Bot: "botFactory",
+  Air: "airFactory",
+  Vehicle: "vehicleFactory",
+};
+// Files that are no unit's own, and the units that own each: every
+// commander, Sub Commanders included, owns the base commander's.
+const PARTS = {
+  bot_ammo: ["dox", "grenadier"],
+  dox_weapon: ["dox"],
+  dox_other_weapon: ["dox"],
+  base_commander: ["commander", "subCommander"],
+};
+const ownersOf = (file) => (CLASSES[file] ? [file] : PARTS[file] || []);
 
 const lookup = {
   classOf: (unit) => CLASSES[unit],
-  ownersOf: (file) =>
-    CLASSES[file] ? [file] : file === "bot_ammo" ? ["dox", "grenadier"] : [],
+  ownersOf,
+  ownedBy: (file, unit) => ownersOf(file).includes(unit),
   reachable: (held) =>
     held.filter((unit) => {
       const c = CLASSES[unit];
@@ -50,6 +69,16 @@ const lookup = {
       }
       return held.includes(FACTORY_OF[c.domain]);
     }),
+  obtainable: [
+    "botFactory",
+    "airFactory",
+    "dox",
+    "grenadier",
+    "boom",
+    "slammer",
+    "bumblebee",
+    "wall",
+  ],
 };
 
 function inventory(overrides) {
@@ -80,6 +109,21 @@ function withCard(before, changes) {
   after.maxCards += changes.slots || 0;
   return after;
 }
+
+const mod = (file, path, op, value) => ({ file, path, op, value });
+
+// The fake lookup, with a unit a unit_types mod names reached by hand.
+const modLookup = Object.assign({}, lookup, {
+  reachable: (held, commander, mods) => {
+    const byHand = (mods || [])
+      .filter((one) => one.path === "unit_types")
+      .map((one) => one.file);
+    const reached = lookup.reachable(held);
+    return reached.concat(
+      held.filter((unit) => byHand.includes(unit) && !reached.includes(unit))
+    );
+  },
+});
 
 const context = (overrides) =>
   Object.assign(
@@ -137,6 +181,10 @@ describe("modDirection", () => {
     assert.ok(direction("add", -1, "reload_time") > 0);
     assert.equal(direction("add", 0), 0);
     assert.ok(direction("replace", "flame.json") > 0);
+  });
+
+  it("reads a cheaper shot as a gain", () => {
+    assert.equal(direction("multiply", 0.25, "ammo_per_shot"), 0.75);
   });
 });
 
@@ -198,11 +246,176 @@ describe("scoreCard orderings", () => {
     assert.equal(shared.mods, bots.mods);
   });
 
-  it("values a mod stacked on one already held less", () => {
+  it("does not discount a stat the AI already buffs", () => {
     const mod = { file: "dox", path: "damage", op: "multiply", value: 1.5 };
     const fresh = score(inventory(), { mods: [mod] });
     const stacked = score(inventory({ mods: [mod] }), { mods: [mod] });
-    assert.ok(fresh.mods > stacked.mods && stacked.mods > 0);
+    assert.ok(stacked.mods >= fresh.mods && fresh.mods > 0);
+  });
+
+  // A unit it could get later is worth a stat mod too, though less.
+  it("values a buff to fielded units above one to units it may field later", () => {
+    const health = (file) => ({
+      file,
+      path: "max_health",
+      op: "multiply",
+      value: 1.5,
+    });
+    const fielded = score(inventory(), { mods: [health("dox")] });
+    const later = score(inventory(), { mods: [health("grenadier")] });
+
+    assert.ok(fielded.total > later.total, JSON.stringify(later));
+    assert.equal(later.mods, 0);
+    assert.ok(later.later > 0);
+  });
+
+  it("adds nothing later for a unit the inventory strips", () => {
+    const before = inventory();
+    const after = withCard(before, {
+      mods: [
+        { file: "grenadier", path: "max_health", op: "multiply", value: 1.5 },
+      ],
+    });
+    after.strippedUnits = ["grenadier"];
+
+    assert.equal(coopAiCards.scoreCard(before, after, context()).later, 0);
+  });
+
+  // A family-wide card is bounded: its later units decay within their cell,
+  // counting on from the units fielded there.
+  it("values each further later unit of a cell less", () => {
+    const health = (...files) =>
+      files.map((file) => ({
+        file,
+        path: "max_health",
+        op: "multiply",
+        value: 1.5,
+      }));
+    const one = score(inventory(), { mods: health("grenadier") });
+    const two = score(inventory(), { mods: health("grenadier", "boom") });
+    const emptyCell = score(inventory(), { mods: health("bumblebee") });
+
+    assert.ok(two.later > one.later && two.later < 2 * one.later);
+    assert.ok(emptyCell.later > one.later);
+  });
+
+  it("counts one change written into several of a unit's files once", () => {
+    const rateOfFire = (file) => ({
+      file,
+      path: "rate_of_fire",
+      op: "multiply",
+      value: 2,
+    });
+    const once = score(inventory(), { mods: [rateOfFire("dox_weapon")] });
+    const twice = score(inventory(), {
+      mods: [rateOfFire("dox_weapon"), rateOfFire("dox_other_weapon")],
+    });
+    assert.equal(twice.mods, once.mods);
+  });
+
+  // Held tech makes the AI build around it: the same card is worth more on
+  // the domain it has buffed. Vehicles are the focus, so bots and air differ
+  // in name alone.
+  it("values an unlock and a stat card more on the domain its tech buffs", () => {
+    const twins = inventory({
+      units: [
+        COMMANDER,
+        "botFactory",
+        "airFactory",
+        "vehicleFactory",
+        "dox",
+        "bumblebee",
+        "ant",
+        "leveler",
+      ],
+    });
+    const buffed = inventory({
+      units: twins.units,
+      mods: [{ file: "bot_ammo", path: "damage", op: "multiply", value: 1.5 }],
+    });
+    const team = { teamDomains: ["Air", "Bot", "Land", "Vehicle"] };
+    const health = (file) => ({
+      mods: [{ file, path: "max_health", op: "multiply", value: 1.5 }],
+    });
+
+    assert.equal(
+      score(twins, { units: ["grenadier"] }, team).total,
+      score(twins, { units: ["hornet"] }, team).total
+    );
+    assert.equal(
+      score(twins, health("dox"), team).total,
+      score(twins, health("bumblebee"), team).total
+    );
+
+    const botUnlock = score(buffed, { units: ["grenadier"] }, team);
+    const botStat = score(buffed, health("dox"), team);
+    assert.ok(
+      botUnlock.total > score(buffed, { units: ["hornet"] }, team).total
+    );
+    assert.ok(botStat.total > score(buffed, health("bumblebee"), team).total);
+    // The boost is before's on both sides, so a stat card unlocks nothing.
+    assert.equal(botStat.unlock, 0);
+  });
+
+  it("values a commander buff, and counts a commander debuff against a card", () => {
+    const buff = score(inventory(), {
+      mods: [
+        {
+          file: "base_commander",
+          path: "max_health",
+          op: "multiply",
+          value: 2,
+        },
+      ],
+    });
+    const debuff = score(inventory(), {
+      mods: [
+        {
+          file: "base_commander",
+          path: "passive_health_regen",
+          op: "add",
+          value: -15,
+        },
+      ],
+    });
+    assert.ok(buff.mods > 0);
+    assert.ok(debuff.mods < 0);
+  });
+
+  it("counts a commander card once for each commander, Sub Commanders included", () => {
+    const mod = {
+      file: "base_commander",
+      path: "max_health",
+      op: "multiply",
+      value: 2,
+    };
+    const alone = score(inventory(), { mods: [mod] });
+    const withSubs = score(
+      inventory({
+        minions: [{ commander: "subCommander" }, { commander: "subCommander" }],
+      }),
+      { mods: [mod] }
+    );
+    assert.equal(withSubs.mods, 3 * alone.mods);
+  });
+
+  it("values a Sub Commander more once the commander is buffed", () => {
+    const minion = { minions: [{ commander: "subCommander" }] };
+    const plain = score(inventory(), minion);
+    const buffed = score(
+      inventory({
+        mods: [
+          {
+            file: "base_commander",
+            path: "max_health",
+            op: "multiply",
+            value: 2,
+          },
+        ],
+      }),
+      minion
+    );
+    assert.ok(buffed.minions > plain.minions && plain.minions > 0);
   });
 
   it("values each further Sub Commander less", () => {
@@ -242,6 +455,253 @@ describe("scoreCard orderings", () => {
     assert.ok(battleOnly.floor > unlikely.floor && unlikely.floor > 0);
     assert.equal(namesUnits.floor, 0);
     assert.ok(namesUnits.total < 0);
+  });
+});
+
+describe("scoreLoadout", () => {
+  // The base start card alone, which every loadout is judged against.
+  const baseline = inventory({ units: [COMMANDER] });
+  const loadout = (changes, overrides) =>
+    coopAiCards.scoreLoadout(
+      baseline,
+      withCard(baseline, changes),
+      context(overrides)
+    );
+
+  // Cards grant the air units later; a commander buff no card stacks with
+  // is the loadout's own.
+  it("values stat mods above units a card could grant later", () => {
+    const units = { units: ["airFactory", "bumblebee"] };
+    const stats = {
+      mods: [
+        {
+          file: "base_commander",
+          path: "max_health",
+          op: "multiply",
+          value: 3,
+        },
+      ],
+    };
+    const asCards = [
+      score(baseline, units).total,
+      score(baseline, stats).total,
+    ];
+
+    assert.ok(asCards[0] > asCards[1], JSON.stringify(asCards));
+    assert.ok(loadout(stats).total > loadout(units).total);
+    assert.equal(loadout(stats).total, asCards[1]);
+  });
+
+  it("keeps the full worth of a unit no card grants", () => {
+    const unique = { units: ["vehicleFactory", "ant"] };
+    assert.equal(loadout(unique).unlock, score(baseline, unique).unlock);
+    assert.ok(loadout(unique).unlock > 0);
+  });
+
+  it("keeps a head start's worth of the units a card could grant", () => {
+    const grantable = { units: ["airFactory", "bumblebee"] };
+    const full = score(baseline, grantable).unlock;
+    const kept = loadout(grantable).unlock;
+
+    assert.ok(kept > 0 && kept < full, kept + " of " + full);
+    assert.ok(
+      Math.abs(kept - coopAiCards.WEIGHTS.headStart * full) <= 0.1,
+      kept + " of " + full
+    );
+  });
+
+  // A dull that strips base units loses them for good, so the loss is no
+  // head start and keeps its whole weight.
+  it("counts units the loadout strips at their full worth", () => {
+    const withWall = inventory({ units: [COMMANDER, "wall"] });
+    const lost =
+      coopAiCards.setValue({ units: [COMMANDER, "wall"] }, context()) -
+      coopAiCards.setValue({ units: [COMMANDER] }, context());
+    const gains = { units: ["airFactory", "bumblebee"] };
+    const plain = coopAiCards.scoreLoadout(
+      withWall,
+      withCard(withWall, gains),
+      context()
+    );
+    const stripping = coopAiCards.scoreLoadout(
+      withWall,
+      withCard(withWall, Object.assign({ removeUnits: ["wall"] }, gains)),
+      context()
+    );
+
+    assert.ok(lost > 0);
+    assert.ok(
+      Math.abs(plain.unlock - stripping.unlock - lost) <= 0.1,
+      JSON.stringify([plain.unlock, stripping.unlock, lost])
+    );
+  });
+
+  // The discount scales the team-weighted worth, so a domain no teammate
+  // fields still counts for more.
+  it("still leans towards the domain its team lacks", () => {
+    const air = { units: ["airFactory", "bumblebee"] };
+    assert.ok(
+      loadout(air, { teamDomains: ["Land"] }).total >
+        loadout(air, { teamDomains: ["Land", "Air"] }).total
+    );
+  });
+
+  // Found by the deal's own count, not by the card's id.
+  it("adds the extra for a loadout dealt more cards", () => {
+    assert.equal(
+      loadout({ id: "gwaio_start_lucky" }).extra,
+      coopAiCards.WEIGHTS.extra
+    );
+    assert.equal(loadout({ id: "gwaio_start_plain" }).extra, 0);
+  });
+
+  it("adds the extra once for mods known to change, not by how much", () => {
+    const nomad = loadout({
+      mods: [
+        mod("wall", "navigation.type", "replace", "amphibious"),
+        mod("wall", "physics.push_class", "replace", 5),
+        mod("pelican", "transporter.transportable_unit_types", "add", " - X"),
+      ],
+    });
+    assert.equal(nomad.extra, coopAiCards.WEIGHTS.extra);
+  });
+
+  // Reach sizes a build list and where the unit it builds spawns, an AI gives
+  // no orders, and text and looks change nothing in battle.
+  it("adds no extra for build types, orders, text, or stat mods", () => {
+    const aside = [
+      mod("wall", "unit_types", "push", "UNITTYPE_CmdBuild"),
+      mod("botFactory", "buildable_types", "add", " | Air"),
+      mod("botFactory", "buildable_types", "replace", "Fabber"),
+      mod("dox", "spawn_layers", "replace", "WL_DeepWater"),
+      mod("dox", "command_caps", "push", "ORDER_Use"),
+      mod("dox", "description", "replace", "!LOC:Mobile"),
+      mod("dox", "display_name", "replace", "!LOC:Dox"),
+      mod("dox", "model.filename", "replace", "/pa/units/x.papa"),
+      mod("dox", "si_name", "replace", "x"),
+      mod("dox", "max_health", "multiply", 1.25),
+      mod("dox", "max_health", "add", 1),
+    ];
+    aside.forEach((one) => {
+      assert.equal(loadout({ mods: [one] }).extra, 0, JSON.stringify(one));
+    });
+  });
+
+  it("reaches the units a card could grant as the loadout's mods leave them", () => {
+    const byHand = mod("bumblebee", "unit_types", "push", "UNITTYPE_CmdBuild");
+    const changes = { units: ["bumblebee"], mods: [byHand] };
+    const full = score(baseline, changes, { lookup: modLookup }).unlock;
+    const kept = loadout(changes, { lookup: modLookup }).unlock;
+
+    // Reached on both sides of the discount, so a head start's worth of it.
+    assert.ok(full > 0);
+    assert.ok(
+      Math.abs(kept - coopAiCards.WEIGHTS.headStart * full) <= 0.1,
+      kept + " of " + full
+    );
+  });
+});
+
+describe("reach under an inventory's mods", () => {
+  it("hands each inventory's mods to reachable", () => {
+    const seen = [];
+    const recording = Object.assign({}, lookup, {
+      reachable: (held, commander, mods) => {
+        seen.push(mods);
+        return lookup.reachable(held);
+      },
+    });
+    const held = [mod("dox", "max_health", "multiply", 1.5)];
+    const added = [mod("dox", "damage", "multiply", 2)];
+    const before = inventory({ mods: held });
+
+    coopAiCards.setValue(before, context({ lookup: recording }));
+    assert.deepEqual(seen, [held]);
+
+    seen.length = 0;
+    score(before, { mods: added }, { lookup: recording });
+    assert.ok(seen.some((mods) => mods === before.mods));
+    assert.ok(
+      seen.some(
+        (mods) => JSON.stringify(mods) === JSON.stringify(held.concat(added))
+      ),
+      "after's mods, for its units and its profile"
+    );
+
+    seen.length = 0;
+    coopAiCards.teamDomains(
+      [{ units: ["dox"], commander: COMMANDER, mods: held }],
+      recording
+    );
+    assert.deepEqual(seen, [held]);
+  });
+
+  it("values a unit a card's build-type mod lets the commander reach", () => {
+    const byHand = mod("bumblebee", "unit_types", "push", "UNITTYPE_CmdBuild");
+    const before = inventory();
+    const out = score(before, { units: ["bumblebee"] }, { lookup: modLookup });
+    const reached = score(
+      before,
+      { units: ["bumblebee"], mods: [byHand] },
+      { lookup: modLookup }
+    );
+    assert.ok(reached.unlock > out.unlock, reached.unlock + " > " + out.unlock);
+  });
+
+  it("gives a card in a hand no extra", () => {
+    const before = inventory();
+    assert.equal(score(before, { id: "gwaio_start_lucky" }).extra, 0);
+    assert.equal(
+      score(before, {
+        mods: [mod("wall", "navigation.type", "replace", "amphibious")],
+      }).extra,
+      0
+    );
+  });
+});
+
+describe("chooseLoadout", () => {
+  const scored = [
+    { id: "strong", total: 30 },
+    { id: "weak", total: 10 },
+    { id: "nothing", total: 0 },
+    { id: "harmful", total: -5 },
+  ];
+
+  it("draws each loadout in proportion to its total", () => {
+    const counts = {};
+    const war = gwoRng.create("draws");
+    for (let serial = 1; serial <= 4000; serial++) {
+      const pick = coopAiCards.chooseLoadout(
+        scored,
+        war.stream("serial", serial)
+      );
+      counts[pick.id] = (counts[pick.id] || 0) + 1;
+    }
+
+    assert.deepEqual(Object.keys(counts).sort(), ["strong", "weak"]);
+    assert.ok(Math.abs(counts.strong / 4000 - 0.75) < 0.03, counts.strong);
+    assert.ok(Math.abs(counts.weak / 4000 - 0.25) < 0.03, counts.weak);
+  });
+
+  it("draws the same loadout from the same stream", () => {
+    const pick = () =>
+      coopAiCards.chooseLoadout(scored, gwoRng.create("same").stream("ai", 3))
+        .id;
+    assert.equal(pick(), pick());
+  });
+
+  it("draws nothing when no loadout is above 0", () => {
+    assert.equal(
+      coopAiCards.chooseLoadout(scored.slice(2), gwoRng.create("none")),
+      undefined
+    );
+    assert.equal(coopAiCards.chooseLoadout([]), undefined);
+  });
+
+  it("rolls Math.random in a war without a seed", (t) => {
+    t.mock.method(Math, "random", () => 0.99);
+    assert.equal(coopAiCards.chooseLoadout(scored).id, "weak");
   });
 });
 
@@ -292,6 +752,41 @@ describe("scoreCard's deal chance", () => {
     const floored = score(before, {}, { chance });
     assert.equal(asked, 1);
     assert.equal(floored.floor, coopAiCards.WEIGHTS.floor / 2);
+  });
+});
+
+describe("scoreCard's held tech", () => {
+  // Every card of a hand is judged against the same inventory, whose held
+  // mods can run to hundreds of files.
+  it("works out the held tech once per inventory on a shared memo", () => {
+    let asked = 0;
+    const counting = Object.assign({}, lookup, {
+      ownersOf: (file) => {
+        asked += file === "bot_ammo" ? 1 : 0;
+        return ownersOf(file);
+      },
+    });
+    const before = inventory({
+      mods: [{ file: "bot_ammo", path: "damage", op: "multiply", value: 1.5 }],
+    });
+    const judge = (overrides) => {
+      const shared = context(Object.assign({ lookup: counting }, overrides));
+      coopAiCards.scoreCard(
+        before,
+        withCard(before, { units: ["grenadier"] }),
+        shared
+      );
+      coopAiCards.scoreCard(
+        before,
+        withCard(before, { units: ["airFactory"] }),
+        shared
+      );
+    };
+
+    judge({ memo: {} });
+    assert.equal(asked, 1);
+    judge({});
+    assert.equal(asked, 3);
   });
 });
 
@@ -383,7 +878,11 @@ describe("decide", () => {
       roomFor: full,
       held: held,
     });
-    assert.deepEqual(close, { action: "decline", reason: "bank full" });
+    assert.deepEqual(close, {
+      action: "decline",
+      reason: "bank full",
+      index: 0,
+    });
   });
 
   it("breaks a tie the same way from the same stream", () => {
@@ -411,10 +910,12 @@ describe("describeHand / describeLoadouts", () => {
   const parts = {
     unlock: 4,
     mods: 1.5,
+    later: 0.3,
     minions: 0,
     aiMods: 0.5,
     slots: -0.5,
     floor: 0,
+    extra: 0,
   };
   const scored = [
     Object.assign({ index: 0, id: "gwc_a", total: 5 }, parts),
@@ -433,8 +934,8 @@ describe("describeHand / describeLoadouts", () => {
     assert.equal(
       line,
       "[GW COOP AI] Sorian deal=3 star=7 hand=2 via=specs offered: " +
-        "gwc_a=5 (unlock 4 mods 1.5 minions 0 aiMods 0.5 slots -0.5 floor 0), " +
-        "gwc_b=2 (unlock 4 mods 1.5 minions 0 aiMods 0.5 slots -0.5 floor 0) -> took gwc_a"
+        "gwc_a=5 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0), " +
+        "gwc_b=2 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0) -> took gwc_a"
     );
   });
 
@@ -465,7 +966,7 @@ describe("describeHand / describeLoadouts", () => {
     );
   });
 
-  it("formats the starting loadout's candidates", () => {
+  it("formats the starting loadout's candidates, each with its chance", () => {
     assert.equal(
       coopAiCards.describeLoadouts({
         name: "Sorian",
@@ -474,8 +975,38 @@ describe("describeHand / describeLoadouts", () => {
         chosen: "gwc_a",
       }),
       "[GW COOP AI] Sorian loadout via=specs candidates: " +
-        "gwc_a=5 (unlock 4 mods 1.5 minions 0 aiMods 0.5 slots -0.5 floor 0), " +
-        "gwc_b=2 (unlock 4 mods 1.5 minions 0 aiMods 0.5 slots -0.5 floor 0) -> chose gwc_a"
+        "gwc_a=5 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0 chance 71.4%), " +
+        "gwc_b=2 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0 chance 28.6%) -> chose gwc_a"
+    );
+  });
+
+  it("names the dropped loadouts, and those in use", () => {
+    const line = coopAiCards.describeLoadouts({
+      name: "Sorian",
+      via: "specs",
+      scored: scored,
+      pool: [scored[1]],
+      dropped: [{ id: "gwaio_start_tourist", gap: "extractor" }],
+      used: ["gwc_a"],
+      chosen: "gwc_b",
+    });
+    assert.match(line, /gwc_a=5 \(.* chance 0%\), gwc_b=2 \(.* chance 100%\)/);
+    assert.match(
+      line,
+      / dropped: gwaio_start_tourist \(extractor\) used: gwc_a -> chose gwc_b$/
+    );
+
+    const fallback = coopAiCards.describeLoadouts({
+      name: "Sorian",
+      via: "specs",
+      scored: scored,
+      used: ["gwc_a", "gwc_b"],
+      fullPool: true,
+      chosen: "gwc_a",
+    });
+    assert.match(
+      fallback,
+      / used: gwc_a, gwc_b \(all in use: full pool\) -> chose gwc_a$/
     );
   });
 });

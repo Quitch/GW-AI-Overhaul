@@ -331,8 +331,10 @@ to make a run pass.
 `buff()`/`dull()`. The caller's explicit answers steer a card down the branch
 under test. A recorder captures the calls the sweep is collecting. Everything
 else is auto-stubbed, so a new call a card makes needs no fixture update.
-`recordInto` is the recorder for `addMods`/`addAIMods`/`addUnits`. Those methods
-concat, and so they take a bare descriptor as readily as an array.
+`recordInto` is the recorder for `addMods`/`addAIMods`. Those methods concat, and
+so they take a bare descriptor as readily as an array. `recordUnitsInto` records
+`addUnits` as `gw_inventory.js` reads it: a group nested in the list flattened,
+and a whole race table ignored.
 
 `scripts/lib/fake-knockout.js` is enough knockout for what shipped code does with
 an observable. That is read, write, subscribe, `push`/`remove`,
@@ -370,7 +372,9 @@ game. Two fixture cards stand in for a card mod: one grants a unit that it
 names nowhere else, and one throws. `test/coop_ai_units.test.js` checks the
 spec lookup on a small spec table and the group lookup on the shipped unit
 groups. `test/starting_inventory.test.js` covers the build that the per-player
-loadout scene and the host share.
+loadout scene and the host share. `test/coop_ai_pings.test.js` drives an AI's
+ping windows through fake timers and values, and `test/star_threat.test.js`
+pins the threat the intelligence panel and the pings share.
 
 `scripts/lib/harvested-race.js` holds what the `race_*.test.js` files share.
 `harvestedIndex` builds a shipped race's cell index from `unit_types.json`.

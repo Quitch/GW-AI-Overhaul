@@ -319,11 +319,166 @@
     // Co-op AI players' tech under per-player tech: the driver that settles
     // their deals, and a new one's starting loadout. Glue - the logic is
     // gw_play/coop_ai_driver.js. See coop.md, "AI players' tech".
+    // The co-op AI players' pings, in either tech mode. See coop.md, "AI
+    // pings".
+    var setupCoopAiPings = function (params) {
+      var game = model.game();
+      var galaxy = params.galaxy;
+      var coopAiPings = params.coopAiPings;
+      var starThreat = params.starThreat;
+
+      var commanderOf = function (record) {
+        return (
+          _.get(record, "inventory.tags.global.commander") ||
+          (record && record.commander)
+        );
+      };
+
+      var windowOpen = function () {
+        var star = galaxy.stars()[game.currentStar()];
+        var turn = game.turnState();
+        return (
+          params.hostingSession() &&
+          model.gwoCoopAi.count() > 0 &&
+          !!params.lookup() &&
+          turn !== "explore" &&
+          turn !== "fight" &&
+          !!star &&
+          star.explored() &&
+          !model.scanning() &&
+          !model.gwCampaignPlayerSetupBlocked() &&
+          !(model.gwoCoopAiDeciding && model.gwoCoopAiDeciding()) &&
+          !params.starCardsBusy() &&
+          !params.aiStarDealing() &&
+          !model.gameOver()
+        );
+      };
+
+      var pings = coopAiPings({
+        ais: function () {
+          return _.map(model.gwoCoopAi.records(), function (record) {
+            return {
+              id: record.playerId,
+              name: record.gwaioAi.name,
+              record: record,
+            };
+          });
+        },
+        // The cards every AI would find at every AI star are part of the key,
+        // so a re-deal outside a turn - a cheat's, say - opens a new window.
+        windowKey: function () {
+          var perPlayerNow = model.gwCampaignPerPlayerTechCards();
+          var records = model.gwoCoopAi.records();
+          var entries = [];
+          _.forEach(galaxy.stars(), function (star, index) {
+            if (!star.ai() || star.explored()) {
+              return;
+            }
+            if (!perPlayerNow) {
+              var cards = star.cardList();
+              entries.push(index + "=" + _.get(cards, "0.id", ""));
+              return;
+            }
+            _.forEach(records, function (record) {
+              entries.push(
+                record.playerId +
+                  "@" +
+                  index +
+                  "=" +
+                  _.get(record, "gwaioStarCards.cards." + index + ".id", "")
+              );
+            });
+          });
+          return coopAiPings.windowKey(
+            game.stats().turns(),
+            game.currentStar(),
+            game.hostTechCardDealCount(),
+            coopAiPings.cardsDigest(entries)
+          );
+        },
+        windowOpen: windowOpen,
+        candidates: function () {
+          var current = game.currentStar();
+          var candidates = [];
+          _.forEach(galaxy.stars(), function (star, index) {
+            var ai = star.ai();
+            if (index === current || !ai || star.explored()) {
+              return;
+            }
+            var path = model.canSelect(index);
+            if (path && path.length) {
+              candidates.push({
+                star: index,
+                hops: path.length - 1,
+                threat: starThreat.measure(ai),
+                treasure: !!ai.treasurePlanet,
+              });
+            }
+          });
+          return coopAiPings.pickCandidates(candidates);
+        },
+        allThreats: function () {
+          var threats = [];
+          _.forEach(galaxy.stars(), function (star) {
+            var ai = star.ai();
+            if (ai && !star.explored()) {
+              threats.push(starThreat.measure(ai));
+            }
+          });
+          return threats;
+        },
+        // Under per-player tech an AI's own card for the star; under shared
+        // tech the star's, which every player shares.
+        cardFor: function (ai, star) {
+          if (model.gwCampaignPerPlayerTechCards()) {
+            return _.get(ai.record, "gwaioStarCards.cards." + star);
+          }
+          var cards = galaxy.stars()[star].cardList();
+          return cards && cards[0];
+        },
+        valueOf: function (ai, card, star, memo) {
+          var holder = model.gwCampaignPerPlayerTechCards()
+            ? {
+                playerId: ai.id,
+                inventory: ai.record.inventory,
+                commander: commanderOf(ai.record),
+              }
+            : {
+                playerId: ai.id,
+                inventory: params.plain(params.inventory.save()),
+                commander: params.inventory.getTag("global", "commander"),
+              };
+          // deal() takes the star itself, as in a hand.
+          return coopAiPings.valueOfCard(
+            params.judge,
+            holder,
+            card,
+            galaxy.stars()[star],
+            memo
+          );
+        },
+        ping: function (star, sender) {
+          return !!model.gwoPingStarAs && model.gwoPingStarAs(star, sender);
+        },
+      });
+
+      // Anything a window depends on opens or closes one.
+      ko.computed(function () {
+        windowOpen();
+        game.stats().turns();
+        game.currentStar();
+        game.hostTechCardDealCount();
+        model.gwoCoopAi.records();
+        _.defer(pings.update);
+      });
+    };
+
     var setupCoopAiTech = function (params) {
       var game = model.game();
-      if (!model.gwoCoopAi || !game.perPlayerTechCards()) {
+      if (!model.gwoCoopAi) {
         return;
       }
+      var perPlayer = game.perPlayerTechCards();
 
       requireGW(
         [
@@ -339,6 +494,9 @@
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/starting_inventory.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_pings.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js",
         ],
         function (
           coopAiDriver,
@@ -352,7 +510,10 @@
           coopHost,
           refereeCoop,
           startingInventory,
-          gwoLoadoutIds
+          gwoLoadoutIds,
+          coopAiPings,
+          starThreat,
+          gwoSpecs
         ) {
           var galaxy = params.galaxy;
           var inventory = params.inventory;
@@ -361,12 +522,11 @@
           var warRng = params.warRng;
           var LOOKUP_WAIT_MS = 8000;
 
+          var hostingSession = function () {
+            return model.isCampaignHost() && model.gwCampaignActive();
+          };
           var hosting = function () {
-            return (
-              model.gwCampaignPerPlayerTechCards() &&
-              model.isCampaignHost() &&
-              model.gwCampaignActive()
-            );
+            return model.gwCampaignPerPlayerTechCards() && hostingSession();
           };
 
           // The unit specs, read once the host opens a session; unit-group
@@ -391,7 +551,13 @@
               raceCells.load().then(
                 function (loaded) {
                   clearTimeout(fallback);
-                  lookup(coopAiUnits.fromSpecs(loaded));
+                  lookup(
+                    coopAiUnits.fromSpecs(
+                      loaded,
+                      unitGroups.units,
+                      gwoSpecs.mod
+                    )
+                  );
                 },
                 function (error) {
                   clearTimeout(fallback);
@@ -406,8 +572,13 @@
               );
             });
           };
+          // Under shared tech the lookup serves the pings alone, so it waits
+          // for an AI.
           ko.computed(function () {
-            if (!prefetching && hosting()) {
+            if (
+              !prefetching &&
+              (hosting() || (hostingSession() && model.gwoCoopAi.count() > 0))
+            ) {
               prefetch();
             }
           });
@@ -474,6 +645,75 @@
             }
           };
 
+          // The T1 factory cards an AI with no basic land factory may be
+          // assigned: those in the war's deck that its race can use, less
+          // any whose factory its cards strip.
+          var FACTORY_CARDS = [
+            "gwc_enable_air_t1",
+            "gwc_enable_bots_t1",
+            "gwc_enable_vehicles_t1",
+          ];
+          var factoryCards = function (record, applied) {
+            return _.filter(FACTORY_CARDS, function (id) {
+              var entry = _.find(model.gwoCardsToUnits || [], { id: id });
+              return (
+                _.includes(model.gwoCards, id) &&
+                helpers.raceCanDeal(
+                  params.races,
+                  record.inventory,
+                  id,
+                  model.gwoCardsToUnits
+                ) &&
+                (!entry ||
+                  params.gwoAI.armyGapClosable(
+                    "landFactory",
+                    applied.strippedUnits,
+                    entry.units
+                  ))
+              );
+            });
+          };
+
+          // A card as the dealer deals it to the AI, its params included.
+          var dealCard = function (cardId, applied, star) {
+            var dealInventory = new params.GWInventory();
+            dealInventory.load(_.cloneDeep(applied));
+            return params.gwoDeal.dealCard(
+              {
+                id: cardId,
+                galaxy: galaxy,
+                inventory: dealInventory,
+                star: star,
+              },
+              params.loaded,
+              params.cards
+            );
+          };
+
+          setupCoopAiPings({
+            coopAiPings: coopAiPings,
+            starThreat: starThreat,
+            galaxy: galaxy,
+            inventory: inventory,
+            hostingSession: hostingSession,
+            lookup: lookup,
+            starCardsBusy: params.starCardsBusy,
+            aiStarDealing: params.aiStarDealing,
+            plain: coopAiEffects.plain,
+            judge: {
+              effects: effects,
+              lookup: lookup,
+              teamDomains: teamDomains,
+              namesUnits: namesUnits,
+              chanceOf: chanceOf,
+              isLoadout: helpers.isStartLoadoutCardId,
+            },
+          });
+
+          if (!perPlayer) {
+            return;
+          }
+
           var driver = coopAiDriver({
             records: function () {
               return hosting() ? model.gwoCoopAi.records() : [];
@@ -496,12 +736,23 @@
             chanceOf: chanceOf,
             isLoadout: helpers.isStartLoadoutCardId,
             rerollsRemain: helpers.rerollsRemain,
+            armyGap: params.gwoAI.armyGap,
+            armyGapClosable: params.gwoAI.armyGapClosable,
+            factoryCards: factoryCards,
+            dealCard: dealCard,
             decisionRng: function (record, dealIndex, rerollsUsed) {
               return gwoStreams.coopAiDecisionRng(
                 warRng,
                 record.gwaioAi.serial,
                 dealIndex,
                 rerollsUsed
+              );
+            },
+            factoryRng: function (record, dealIndex) {
+              return gwoStreams.coopAiFactoryRng(
+                warRng,
+                record.gwaioAi.serial,
+                dealIndex
               );
             },
             enqueue: model.enqueueGwCampaignStateApply,
@@ -565,9 +816,19 @@
             loadoutIds
           );
 
+          // The loadouts no AI is given: GWO's, and any a mod adds to
+          // model.gwoLoadoutsAiCannotUse, which GWO reads and never creates.
+          var loadoutsAiCannotUse = function () {
+            return _.isArray(model.gwoLoadoutsAiCannotUse)
+              ? roster.LOADOUTS_AI_CANNOT_USE.concat(
+                  model.gwoLoadoutsAiCannotUse
+                )
+              : roster.LOADOUTS_AI_CANNOT_USE;
+          };
+
           // A new AI's loadout and starting inventory: every loadout the host
-          // has unlocked that its race may field, scored. options: record
-          // (commander and serial set), race.
+          // has unlocked that its race may field and an AI can use, scored.
+          // options: record (commander and serial set), race.
           var startingTech = function (options) {
             var record = options.record;
             var race = options.race;
@@ -578,6 +839,14 @@
               race
             );
             var star = galaxy.stars()[game.currentStar()];
+            var used = params.gwoAI.originSettings(game).uniqueAiLoadouts
+              ? roster.loadoutsInUse(
+                  [inventory].concat(
+                    _.pluck(game.coopPlayerInventoryData(), "inventory")
+                  ),
+                  helpers.isStartLoadoutCardId
+                )
+              : undefined;
 
             return Promise.resolve(params.generalCommander).then(
               function (handle) {
@@ -592,6 +861,7 @@
                     raceLocks: function (id) {
                       return helpers.raceLocksLoadout(race, id);
                     },
+                    aiCannotUse: loadoutsAiCannotUse(),
                   }),
                   baseline: {
                     cards: [{ id: "gwc_start" }],
@@ -603,6 +873,7 @@
                     warRng,
                     record.gwaioAi.serial
                   ),
+                  used: used,
                   build: function (loadoutCardId) {
                     return Promise.resolve(
                       startingInventory.build({
@@ -923,6 +1194,11 @@
           stockBank: GW.bank,
         });
 
+        // Deals of the selectable AI stars' cards in flight, from their start to
+        // the star-card refresh they end with, so the AI players' pings judge
+        // the cards the stars will offer.
+        var aiStarDealing = ko.observable(0);
+
         var dealCardToSelectableAI = function (win, turnState) {
           if (model.isCampaignViewer()) {
             return $.when().promise();
@@ -933,6 +1209,10 @@
           // Avoid running twice after winning a fight
           if (!win || turnState === "end") {
             var deferredQueue = [];
+            aiStarDealing(aiStarDealing() + 1);
+            var dealt = function () {
+              aiStarDealing(Math.max(0, aiStarDealing() - 1));
+            };
 
             _.forEach(model.galaxy.systems(), function (system, starIndex) {
               var ai = system.star.ai();
@@ -986,8 +1266,9 @@
                 return coopStarCards.refresh({ redeal: true });
               })
               .then(function () {
+                dealt();
                 deferred.resolve();
-              });
+              }, dealt);
           } else {
             deferred.resolve();
           }
@@ -1251,6 +1532,7 @@
         setupCoopAiTech({
           GW: GW,
           GWInventory: GWInventory,
+          gwoAI: gwoAI,
           gwoDeal: gwoDeal,
           gwoSave: gwoSave,
           gwoStreams: gwoStreams,
@@ -1258,10 +1540,13 @@
           galaxy: galaxy,
           inventory: inventory,
           cards: cards,
+          loaded: loaded,
+          races: gwoRaces,
           helpers: helpers,
           coopDeal: coopDeal,
           coopReroll: coopReroll,
           starCardsBusy: starCardsBusy,
+          aiStarDealing: aiStarDealing,
           startCardUnlocked: startCardUnlocked,
           generalCommander: generalCommander.promise(),
         });

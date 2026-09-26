@@ -25,6 +25,14 @@
       }
     };
 
+    // The host's pings for its co-op AI players. sender: { id, name }.
+    model.gwoCanPingStarAs = function (star) {
+      return !!ping() && ping().canPingAs(star);
+    };
+    model.gwoPingStarAs = function (star, sender) {
+      return !!ping() && ping().pingStarAs(star, sender);
+    };
+
     // systems.js replaces model.selection outright, so the dependency on its
     // star observable can only be taken once every gw_play mod has loaded.
     _.defer(function () {

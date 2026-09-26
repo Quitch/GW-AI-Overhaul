@@ -437,6 +437,21 @@ describe("loadoutCandidates", () => {
     );
   });
 
+  // Rejected before any is built or scored.
+  it("leaves out the loadouts an AI cannot use", () => {
+    assert.deepEqual(
+      roster.loadoutCandidates({
+        starting: ["gwc_start_vehicle", "mod_start_x"],
+        locked: ["gwaio_start_warp", "gwc_start_subcdr"],
+        unlocked: () => true,
+        raceLocks: () => false,
+        aiCannotUse: ["gwaio_start_warp", "mod_start_x"],
+      }),
+      ["gwc_start_vehicle", "gwc_start_subcdr"]
+    );
+    assert.deepEqual(roster.LOADOUTS_AI_CANNOT_USE, ["gwaio_start_warp"]);
+  });
+
   it("lists a loadout named twice once", () => {
     assert.deepEqual(
       roster.loadoutCandidates({
@@ -450,26 +465,60 @@ describe("loadoutCandidates", () => {
   });
 });
 
+// Unique AI loadouts: whatever the first card of each player's inventory is,
+// if it is still a loadout.
+describe("loadoutsInUse", () => {
+  const isLoadout = (id) => typeof id === "string" && id.includes("_start_");
+
+  it("lists each player's loadout once, from a GWInventory or a saved inventory", () => {
+    const host = { cards: () => [{ id: "gwc_start_bot" }, { id: "x" }] };
+    const records = [
+      { cards: [{ id: "gwaio_start_hoarder" }] },
+      { cards: [{ id: "gwc_start_bot" }] },
+      undefined,
+    ];
+    assert.deepEqual(roster.loadoutsInUse([host].concat(records), isLoadout), [
+      "gwc_start_bot",
+      "gwaio_start_hoarder",
+    ]);
+  });
+
+  // Any card can be deleted, the loadout included.
+  it("skips an inventory whose first card is no longer a loadout, or that has none", () => {
+    assert.deepEqual(
+      roster.loadoutsInUse(
+        [{ cards: [{ id: "gwc_damage_bots" }] }, { cards: [] }, {}],
+        isLoadout
+      ),
+      []
+    );
+  });
+});
+
 describe("teammates", () => {
-  it("reads the units and commander of a GWInventory or a saved inventory", () => {
+  it("reads the units, commander and mods of a GWInventory or a saved inventory", () => {
+    const hostMod = { file: "/u/a", path: "unit_types", op: "push" };
+    const aiMod = { file: "/u/b", path: "buildable_types", op: "add" };
     const live = {
       units: () => ["/u/a"],
+      mods: () => [hostMod],
       getTag: (context, name) => (name === "commander" ? "/c/host" : undefined),
     };
     const saved = {
       units: ["/u/b"],
+      mods: [aiMod],
       tags: { global: { commander: "/c/ai" } },
     };
 
     assert.deepEqual(roster.teammates([live, saved, undefined]), [
-      { units: ["/u/a"], commander: "/c/host" },
-      { units: ["/u/b"], commander: "/c/ai" },
+      { units: ["/u/a"], commander: "/c/host", mods: [hostMod] },
+      { units: ["/u/b"], commander: "/c/ai", mods: [aiMod] },
     ]);
   });
 
-  it("reads a saved inventory with no units as fielding none", () => {
+  it("reads a saved inventory with no units or mods as fielding none", () => {
     assert.deepEqual(roster.teammates([{ tags: {} }]), [
-      { units: [], commander: undefined },
+      { units: [], commander: undefined, mods: [] },
     ]);
   });
 });

@@ -95,6 +95,12 @@ const gwoUnit = loadCouiModule(
 const gwoCard = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
 );
+const coopAiDriver = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_driver.js"
+);
+const gwoAI = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
+);
 
 // Third-party tech cards as the New-GW-Cards template writes them: one unlocks
 // the Slammer and names it nowhere else, so a co-op AI player can only judge it
@@ -251,6 +257,53 @@ describe("coop_ai_effects", () => {
     );
   });
 
+  // Tourist Commander's dull removes its forbidden units on every apply,
+  // whether or not anything granted them.
+  it("lists the units the cards strip, and no copy of the result carries them", async () => {
+    const run = effects();
+    const start = await run.apply(BOT_AI);
+    const tourist = await run.apply({
+      cards: [{ id: "gwaio_start_tourist" }],
+      tags: BOT_AI.tags,
+    });
+
+    assert.ok(start.units.includes(gwoUnit.metalExtractor));
+    assert.ok(!start.units.includes(gwoUnit.jig));
+    assert.deepEqual(start.strippedUnits, []);
+    assert.deepEqual(
+      tourist.strippedUnits.slice().sort(),
+      [
+        gwoUnit.metalExtractor,
+        gwoUnit.metalExtractorAdvanced,
+        gwoUnit.jig,
+      ].sort()
+    );
+
+    assert.ok(!JSON.stringify(tourist).includes("strippedUnits"));
+    assert.equal(_.cloneDeep(tourist).strippedUnits, undefined);
+    assert.equal(
+      coopAiDriver.storedInventory(tourist).strippedUnits,
+      undefined
+    );
+  });
+
+  it("values an upgrade for a unit the AI's loadout forbids at nothing later", async () => {
+    const run = effects();
+    const tourist = {
+      cards: [{ id: "gwaio_start_tourist" }],
+      tags: BOT_AI.tags,
+    };
+    const jig = { id: "gwaio_upgrade_jig" };
+    const [botBefore, botAfter] = await run.withCard(BOT_AI, jig);
+    const [touristBefore, touristAfter] = await run.withCard(tourist, jig);
+
+    assert.ok(coopAiCards.scoreCard(botBefore, botAfter, context()).later > 0);
+    assert.equal(
+      coopAiCards.scoreCard(touristBefore, touristAfter, context()).later,
+      0
+    );
+  });
+
   it("runs one apply at a time", async () => {
     const run = effects();
     const order = [];
@@ -265,14 +318,49 @@ describe("coop_ai_effects", () => {
     assert.deepEqual(order, ["bot", "air"]);
   });
 
-  it("values a held card by what the inventory loses without it", async () => {
+  it("values a held card by what a swap's bank loses without it", async () => {
     const saved = {
       cards: [{ id: "gwc_start_bot" }, { id: "gwc_damage_bots" }],
       tags: BOT_AI.tags,
     };
-    const [without, withIt] = await effects().withoutCard(saved, 1);
-    assert.equal(without.cards.length, 1);
-    assert.ok(coopAiCards.scoreCard(without, withIt, context()).mods > 0);
+    const incoming = { id: "gwc_enable_air_t1" };
+    const run = effects();
+    const swapped = await run.apply(
+      makeEffects.addCard(makeEffects.removeCard(saved, 1), incoming)
+    );
+    const withIt = await run.apply(makeEffects.addCard(saved, incoming));
+
+    assert.deepEqual(
+      swapped.cards.map((card) => card.id),
+      ["gwc_start_bot", "gwc_enable_air_t1"]
+    );
+    assert.ok(coopAiCards.scoreCard(swapped, withIt, context()).mods > 0);
+  });
+
+  // gwc_minion.js's rule, on the shipped loadouts: Tourist strips every
+  // extractor on each apply, while a T1 factory card gives Naval a factory.
+  it("tells a loadout no card can make fight from one a factory card can", async () => {
+    const run = effects();
+    const loadout = (id) =>
+      run.apply({ cards: [{ id: id }], tags: BOT_AI.tags });
+    const tourist = await loadout("gwaio_start_tourist");
+    const naval = await loadout("gwaio_start_naval");
+    const navalWithFactory = await run.apply({
+      cards: [{ id: "gwaio_start_naval" }, { id: "gwc_enable_bots_t1" }],
+      tags: BOT_AI.tags,
+    });
+
+    assert.equal(gwoAI.armyGap(tourist.units), "extractor");
+    assert.equal(
+      gwoAI.armyGapClosable("extractor", tourist.strippedUnits),
+      false
+    );
+    assert.equal(gwoAI.armyGap(naval.units), "landFactory");
+    assert.equal(
+      gwoAI.armyGapClosable("landFactory", naval.strippedUnits),
+      true
+    );
+    assert.equal(gwoAI.armyGap(navalWithFactory.units), undefined);
   });
 
   it("puts a loadout first and a tech card last", () => {
