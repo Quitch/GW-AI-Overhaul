@@ -261,11 +261,11 @@ logs `Control module name did not resolved to a spec` while no player holds
 the Catalyst, since only held units get specs. That line is not a fault.
 
 Under per-player tech, `canAdd()` also waits for the AI tech modules and a unit
-lookup, and an Add takes seconds. The AI's loadout is scored before its record
+lookup, and an Add takes seconds. The AI's loadout is drawn before its record
 is written, and it then settles every deal it owes. With four deals to catch
-up, an Add took 5 to 6 seconds. `model.gwoCoopAiDeciding()` stays true until
-every AI is level with the host, and `model.gwoCoopAi.driving()` while a pass
-runs ([coop.md](coop.md), "AI players' tech").
+up, an Add took 3.6 to 6 seconds in testing. `model.gwoCoopAiDeciding()` stays
+true until every AI is level with the host, and `model.gwoCoopAi.driving()`
+while a pass runs ([coop.md](coop.md), "AI players' tech").
 
 **Read the `[GW COOP AI]` lines.** They are the host's record of every choice
 an AI makes, in the host's client log. A new AI logs one loadout line:

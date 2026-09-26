@@ -76,7 +76,6 @@
       uniqueRaces: ko.observable(false),
       // Co-op only, and only alongside per-player tech. See coop.md.
       perPlayerRace: ko.observable(false),
-      uniqueAiLoadouts: ko.observable(false),
       // { raceId: { enemy, ally, coop } } for non-MLA races; ai/aiAlly/aiCoop
       // above are the MLA row. Stale ids are kept so a reinstalled race
       // remembers its brains. See races.md.

@@ -50,7 +50,9 @@
       model.gwoDraftPerPlayerRace(!model.gwoDraftPerPlayerRace());
     };
     // Co-op: an AI player never draws a loadout another player holds. Only
-    // per-player tech gives an AI a loadout of its own. See coop.md.
+    // per-player tech gives an AI a loadout of its own. Unsaved, like stock's
+    // co-op options, so it is not in gwoDifficultySettings. See coop.md.
+    model.gwoUniqueAiLoadouts = ko.observable(false);
     model.gwoDraftUniqueAiLoadouts = ko.observable(false);
     model.gwoUniqueAiLoadoutsSwitchText = ko.computed(function () {
       return model.gwoDraftUniqueAiLoadouts() &&
@@ -67,6 +69,7 @@
     model.draftNewGamePerPlayerTechCards.subscribe(function (value) {
       if (!value) {
         model.gwoDraftPerPlayerRace(false);
+        model.gwoDraftUniqueAiLoadouts(false);
       }
     });
 
@@ -79,9 +82,9 @@
       model.gwoDraftPerPlayerRace(
         settings.perPlayerRace() && model.draftNewGamePerPlayerTechCards()
       );
-      // Kept whatever per-player tech is drafted: stock never remembers that
-      // option, and the war records this one only alongside it.
-      model.gwoDraftUniqueAiLoadouts(settings.uniqueAiLoadouts());
+      model.gwoDraftUniqueAiLoadouts(
+        model.gwoUniqueAiLoadouts() && model.draftNewGamePerPlayerTechCards()
+      );
     };
     var applyCoopSettingsModal = model.applyCoopSettingsModal;
     model.applyCoopSettingsModal = function () {
@@ -89,7 +92,10 @@
         model.gwoDraftPerPlayerRace() &&
           !!model.draftNewGamePerPlayerTechCards()
       );
-      settings.uniqueAiLoadouts(model.gwoDraftUniqueAiLoadouts());
+      model.gwoUniqueAiLoadouts(
+        model.gwoDraftUniqueAiLoadouts() &&
+          !!model.draftNewGamePerPlayerTechCards()
+      );
       applyCoopSettingsModal.apply(this, arguments);
     };
 

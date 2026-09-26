@@ -24,7 +24,6 @@ function settings() {
     staticTech: false,
     uniqueRaces: true,
     perPlayerRace: true,
-    uniqueAiLoadouts: true,
   };
   const result = {};
   Object.keys(values).forEach((key) => {
@@ -65,6 +64,7 @@ function war(overrides) {
       raceByFaction: { 0: "mla" },
       raceInfo: { mods: [], addonMods: [] },
       perPlayerTechCards: false,
+      uniqueAiLoadouts: true,
       galaxy: { stars: () => stars },
     },
     overrides
@@ -128,11 +128,10 @@ describe("build", () => {
       warRecord.build(war({ perPlayerTechCards: true })).uniqueAiLoadouts,
       true
     );
-    const off = settings();
-    off.uniqueAiLoadouts = () => false;
     assert.equal(
-      warRecord.build(war({ perPlayerTechCards: true, settings: off }))
-        .uniqueAiLoadouts,
+      warRecord.build(
+        war({ perPlayerTechCards: true, uniqueAiLoadouts: false })
+      ).uniqueAiLoadouts,
       false
     );
   });

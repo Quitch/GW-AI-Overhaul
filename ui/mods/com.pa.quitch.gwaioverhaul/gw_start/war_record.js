@@ -64,8 +64,7 @@ define([
       perPlayerRace: settings.perPlayerRace() && !!war.perPlayerTechCards,
     };
     // Only an AI player under per-player tech draws a loadout.
-    gwaio.uniqueAiLoadouts =
-      settings.uniqueAiLoadouts() && !!war.perPlayerTechCards;
+    gwaio.uniqueAiLoadouts = !!war.uniqueAiLoadouts && !!war.perPlayerTechCards;
     // The map packs GW Server Mods must mount for this war. The resume check
     // reads the stars' own stamps first; this stands in for a star whose
     // system lost its stamp. See galaxy.md, "Biome mods in a GW battle".

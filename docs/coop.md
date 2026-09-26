@@ -53,12 +53,12 @@ in the war already has, unless every loadout it could take is in use ("AI
 players' tech"). The row always shows, but it reads OFF and cannot be set
 unless Separate loadout & tech is on, because an AI has a loadout of its own
 only under per-player tech. The draft is seeded and committed through the same
-two hijacks as Separate races (`gw_start/race_picker.js`). Unlike Separate
-races, it is kept whatever per-player tech is drafted: stock does not remember
-that option between wars, and the war records this one only alongside it. So
-`gwo_previous_settings` carries the choice to the next war. The war records it
-as `originSystem.gwaio.uniqueAiLoadouts`. A war saved before the setting
-existed has no field, which reads as off.
+two hijacks as Separate races (`gw_start/race_picker.js`). Like stock's own
+options in that panel, the choice is not saved between wars, so it lives in
+`model.gwoUniqueAiLoadouts` rather than in `gwoDifficultySettings`, which
+`gwo_previous_settings` saves. The war records it as
+`originSystem.gwaio.uniqueAiLoadouts`. A war saved before the setting existed
+has no field, which reads as off.
 
 ## The two referees
 
