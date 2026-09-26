@@ -88,9 +88,9 @@ cards fail it: `gwaio_combat_titans` chains three `flatMapMods` calls.
 ## `buff` and `dull`
 
 `buff(inventory)` applies the card's effect. `dull(inventory)` runs after every
-card's `buff` and removes the units the card forbids, never the units its own
-`buff` grants. It cannot undo a mod. Two mod mechanisms are available. A card may
-use either or both:
+card's `buff` and removes the units the card forbids. It must not name the units
+its own `buff` grants, or it strips them. It cannot undo a mod. Two mod mechanisms
+are available. A card may use either or both:
 
 - `inventory.addMods([...])`: unit-spec stat changes. See [`specs.md`](specs.md).
 - `inventory.addAIMods([...])`: AI build-order changes. See
