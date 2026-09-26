@@ -18,6 +18,10 @@
 - Warning and progress text is easier to read against the background
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover
 
+### Bugfix
+
+- A tech card with no unit list no longer shows the "Which Units?" tooltip of the card hovered before it
+
 ## v7.4.1 - 2026-09-24
 
 ### Bugfix

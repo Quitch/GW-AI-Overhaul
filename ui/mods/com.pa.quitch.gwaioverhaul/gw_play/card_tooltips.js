@@ -165,23 +165,17 @@
           });
         };
 
-        var makeCardTooltip = function (card, hoverIndex) {
+        // The card's "Which Units?" list, or undefined when it has none.
+        var unitsTooltip = function (card) {
           if (card.isLoadout()) {
-            return;
+            return undefined;
           }
 
           var cardId = card.id();
           var noTooltip = _.includes(model.gwoCardsWithoutTooltip, cardId);
 
           if (noTooltip) {
-            return;
-          }
-
-          // Ensure inventory hovers work at the same time as the new tech display
-          if (_.isUndefined(hoverIndex)) {
-            hoverIndex = 0;
-          } else {
-            hoverIndex += 1;
+            return undefined;
           }
 
           var cardUnitsIndex = _.findIndex(model.gwoCardsToUnits, {
@@ -194,37 +188,48 @@
                 cardId + " is invalid or missing from model.gwoCardsToUnits"
               );
             }
-            return;
+            return undefined;
           }
 
           var units = model.gwoCardsToUnits[cardUnitsIndex].units;
-          var tooltip;
-          if (units) {
-            // Resolved per tooltip, not once: a third-party race registers
-            // in gw_play/races.js's own callback, and its cells land later.
-            var inventory = ownInventory();
-            var race = gwoRaces.raceOf(inventory);
-            var cells = gwoRaces.cellsOf(race);
-            var affectedUnits = sortUnitNames(
-              gwoRaces.cardUnitsFor(race, units, cells),
-              race,
-              playerUnitLookup(inventory, race, cells)
-            );
-            tooltip = _.map(affectedUnits, function (unitName, index) {
-              if (affectedUnits.length < 13) {
-                return unitName.concat("<br>");
-              } else if (index < affectedUnits.length - 1) {
-                return unitName.concat(" | ");
-              } else {
-                return unitName;
-              }
-            });
+          if (!units) {
+            return undefined;
           }
+          // Resolved per tooltip, not once: a third-party race registers
+          // in gw_play/races.js's own callback, and its cells land later.
+          var inventory = ownInventory();
+          var race = gwoRaces.raceOf(inventory);
+          var cells = gwoRaces.cellsOf(race);
+          var affectedUnits = sortUnitNames(
+            gwoRaces.cardUnitsFor(race, units, cells),
+            race,
+            playerUnitLookup(inventory, race, cells)
+          );
+          if (_.isEmpty(affectedUnits)) {
+            return undefined;
+          }
+          return _.map(affectedUnits, function (unitName, index) {
+            if (affectedUnits.length < 13) {
+              return unitName.concat("<br>");
+            } else if (index < affectedUnits.length - 1) {
+              return unitName.concat(" | ");
+            } else {
+              return unitName;
+            }
+          });
+        };
+
+        // Slot 0 is the Data Bank hover and slot i + 1 the star's card i, so
+        // both show at once. Every call writes its slot, so a card with no
+        // list clears the list the slot held for the card before it.
+        var makeCardTooltip = function (card, hoverIndex) {
+          var slot = _.isUndefined(hoverIndex) ? 0 : hoverIndex + 1;
+          var tooltip = unitsTooltip(card);
 
           // Write through the observableArray. Assigning into the array it returns
           // skips valueHasMutated, so nothing is notified.
           var tooltips = model.gwoTechCardTooltip().slice();
-          tooltips[hoverIndex] = tooltip;
+          tooltips[slot] = tooltip;
           model.gwoTechCardTooltip(tooltips);
         };
 
