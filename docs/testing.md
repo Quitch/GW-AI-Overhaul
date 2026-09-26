@@ -371,7 +371,9 @@ knockout's does, so a save carries `GWInventory`'s methods as it does in the
 game. Two fixture cards stand in for a card mod: one grants a unit that it
 names nowhere else, and one throws. `test/coop_ai_units.test.js` checks the
 spec lookup on a small spec table and the group lookup on the shipped unit
-groups. `test/starting_inventory.test.js` covers the build that the per-player
+groups. `test/coop_ai_fielded.test.js` checks a race AI's view of what its army
+fields on the harvested fixture's specs and cells, through
+`scripts/lib/addon-fixture.js`'s `fixtureIndex`, and scores with it. `test/starting_inventory.test.js` covers the build that the per-player
 loadout scene and the host share. `test/coop_ai_pings.test.js` drives an AI's
 ping windows through fake timers and values, and `test/star_threat.test.js`
 pins the threat the intelligence panel and the pings share.

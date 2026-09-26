@@ -129,15 +129,37 @@ define([
     return worth * (cell.tier === "Advanced" ? WEIGHTS.advanced : 1);
   };
 
+  // A saved inventory as the AI's army fields it, when the context carries
+  // its race's view (shared/coop_ai_fielded.js); as saved otherwise.
+  var fieldedOf = function (inventory, context) {
+    return context.fielded ? context.fielded.inventory(inventory) : inventory;
+  };
+
+  // The units a card could grant.
+  var obtainableOf = function (context) {
+    return context.fielded
+      ? context.fielded.obtainable
+      : context.lookup.obtainable || [];
+  };
+
+  var reachedOf = function (inventory, context) {
+    return (context.fielded || context.lookup).reachable(
+      inventory.units || [],
+      context.commander,
+      inventory.mods
+    );
+  };
+
   // The worth of an inventory's units: a cell's units worth less the more of
   // them there are, a unit the commander cannot reach a quarter, a domain no
   // teammate fields more, plus a bonus per domain fielded. inventory: units,
-  // and mods, whose build types decide reach. context: lookup, commander,
-  // teamDomains. boost(unit), if given, scales a unit's worth.
+  // and mods, whose build types decide reach, as fielded when the context
+  // carries a view. context: lookup, commander, teamDomains, fielded.
+  // boost(unit), if given, scales a unit's worth.
   var setValue = function (inventory, context, boost) {
     var lookup = context.lookup;
     var units = inventory.units || [];
-    var reached = lookup.reachable(units, context.commander, inventory.mods);
+    var reached = reachedOf(inventory, context);
     var cells = {};
     var domains = {};
     var total = 0;
@@ -337,12 +359,9 @@ define([
       }
       return cells[unit];
     };
-    var fielded = _.filter(
-      _.uniq(lookup.reachable(units, context.commander, inventory.mods)),
-      cellOf
-    );
+    var fielded = _.filter(_.uniq(reachedOf(inventory, context)), cellOf);
     var later = _.difference(
-      _.uniq((lookup.obtainable || []).concat(units)),
+      _.uniq(obtainableOf(context).concat(units)),
       fielded.concat(inventory.strippedUnits || [])
     ).sort();
 
@@ -526,11 +545,15 @@ define([
 
   // A card's value, by part. before and after are the saved inventories either
   // side of the card; context: lookup, commander, teamDomains, memo (shared
-  // by the cards of a hand), and for a card with no effect to see, namesUnits
-  // (it registers units in gwoCardsToUnits) and chance (its own deal() weight
-  // for this inventory). The held-tech boost is before's on both sides.
+  // by the cards of a hand), fielded (a shared/coop_ai_fielded.js view, for
+  // an AI whose race or add-ons field other units than those saved), and for
+  // a card with no effect to see, namesUnits (it registers units in
+  // gwoCardsToUnits) and chance (its own deal() weight for this inventory).
+  // The held-tech boost is before's on both sides.
   var scoreCard = function (before, after, context) {
-    return rounded(partsOf(before, after, context));
+    return rounded(
+      partsOf(fieldedOf(before, context), fieldedOf(after, context), context)
+    );
   };
 
   // Whether after is offered more cards a deal than before.
@@ -562,14 +585,13 @@ define([
   // worth beyond a head start where a card could grant them later, plus the
   // extra for doing what no part sizes. Its other parts stack with cards, so
   // they stand, and its mods decide what reaches the units a card could grant.
-  var scoreLoadout = function (before, after, context) {
+  var scoreLoadout = function (saved, next, context) {
+    var before = fieldedOf(saved, context);
+    var after = fieldedOf(next, context);
     var parts = partsOf(before, after, context);
     var boost = heldTechFor(before, context).unit;
     var effect = effectOf(before, after);
-    var grantable = _.intersection(
-      effect.addedUnits,
-      context.lookup.obtainable || []
-    );
+    var grantable = _.intersection(effect.addedUnits, obtainableOf(context));
     var held = before.units || [];
     var replaceable =
       setValue(

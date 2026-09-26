@@ -318,6 +318,7 @@ function setup(overrides) {
     },
     effects: fakeEffects(options),
     lookup: () => LOOKUP,
+    fielded: options.fielded,
     teamDomains: () => ["Land", "Bot"],
     namesUnits: () => false,
     chanceOf: () => 0,
@@ -644,6 +645,93 @@ describe("coop_ai_driver memo", () => {
 
     assert.equal(memos.length, 2);
     assert.ok(memos[0] && memos[0] === memos[1]);
+  });
+});
+
+// A race AI is judged on what its army fields (shared/coop_ai_fielded.js);
+// the view here fields what the AI holds, so only its use is read off.
+describe("coop_ai_driver fielded view", () => {
+  const VIEW = {
+    inventory: (saved) => saved,
+    obtainable: [],
+    reachable: (units) => units.slice(),
+  };
+  const fieldedFor = (asked) => (saved, lookup) => {
+    asked.push({ saved, lookup });
+    return Promise.resolve(VIEW);
+  };
+  const contextsOf = async (action, scorer) => {
+    const contexts = [];
+    const score = coopAiCards[scorer];
+    const spy = mock.method(coopAiCards, scorer, (before, after, context) => {
+      contexts.push(context);
+      return score(before, after, context);
+    });
+    try {
+      await action();
+    } finally {
+      spy.mock.restore();
+    }
+    return contexts;
+  };
+
+  it("judges an AI's hands on its inventory's view, and logs it", async () => {
+    const asked = [];
+    const run = setup({ fielded: fieldedFor(asked) });
+    const record = run.store.find("gwo_ai_1");
+    const contexts = await contextsOf(() => run.driver.run(), "scoreCard");
+
+    assert.deepEqual(asked, [{ saved: record.inventory, lookup: LOOKUP }]);
+    assert.ok(contexts.length > 0);
+    assert.ok(contexts.every((context) => context.fielded === VIEW));
+    assert.match(
+      _.find(lines, (line) => /offered:/.test(line)),
+      / hand=3 via=fielded offered: /
+    );
+  });
+
+  it("judges a new AI's loadouts on its baseline's view, and logs it", async () => {
+    const asked = [];
+    const run = setup({ fielded: fieldedFor(asked) });
+    const baseline = {
+      cards: [{ id: "gwc_start" }],
+      tags: { global: { commander: COMMANDER } },
+    };
+    const contexts = await contextsOf(
+      () =>
+        run.driver.chooseStartingLoadout({
+          name: "AI1",
+          candidates: ["gwc_start_air", "gwc_start_naval"],
+          build: (id) =>
+            Promise.resolve({
+              cards: [{ id: id }],
+              tags: { global: { commander: COMMANDER } },
+            }),
+          baseline,
+          commander: COMMANDER,
+          teamDomains: [],
+        }),
+      "scoreLoadout"
+    );
+
+    assert.deepEqual(asked, [{ saved: baseline, lookup: LOOKUP }]);
+    assert.equal(contexts.length, 2);
+    assert.ok(contexts.every((context) => context.fielded === VIEW));
+    assert.match(
+      _.find(lines, (line) => / loadout via=/.test(line)),
+      / loadout via=fielded candidates: /
+    );
+  });
+
+  it("judges on the saved inventory where the AI fields what it holds", async () => {
+    const run = setup({ fielded: () => Promise.resolve(undefined) });
+    const contexts = await contextsOf(() => run.driver.run(), "scoreCard");
+
+    assert.ok(contexts.every((context) => context.fielded === undefined));
+    assert.match(
+      _.find(lines, (line) => /offered:/.test(line)),
+      / via=specs offered: /
+    );
   });
 });
 

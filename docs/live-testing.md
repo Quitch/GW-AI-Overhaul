@@ -310,7 +310,9 @@ action is one of:
 - `declined (<reason>)`: `loadout`, `nothing worth a slot`, `bank full`, or
   `no cards`.
 
-`via` names the unit lookup, and should read `specs`. `via=groups` means that
+`via` names the unit lookup, and should read `specs`, or `fielded` for a race
+AI, or an MLA AI with add-ons active, judged on what its army fields
+([tech-cards.md](tech-cards.md), "A race's units"). `via=groups` means that
 the specs were not in within 8 seconds or failed to load, and a line saying so
 comes first. A card with a `floor` above 0 is one whose effect the AI could not
 see. In an MLA war with every loadout unlocked, expect Terminal Commander about

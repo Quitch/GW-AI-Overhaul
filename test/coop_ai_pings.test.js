@@ -11,6 +11,9 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const coopAiPings = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_pings.js"
 );
+const coopAiCards = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js"
+);
 
 afterEach(() => {
   mock.restoreAll();
@@ -227,6 +230,33 @@ describe("valueOfCard", () => {
     await coopAiPings.valueOfCard(j, holder, card, 4, memo);
     await coopAiPings.valueOfCard(j, holder, { id: "gwc_y" }, 4, memo);
     assert.equal(asked, 1);
+  });
+
+  // A race AI is judged on what its army fields (shared/coop_ai_fielded.js).
+  it("judges the card on the holder's view when the judge has one", async () => {
+    const asked = [];
+    const view = {
+      inventory: (saved) => saved,
+      obtainable: [],
+      reachable: (units) => units,
+    };
+    const { judge: j } = judge({
+      fielded: (saved, lookup) => {
+        asked.push([saved, lookup]);
+        return Promise.resolve(view);
+      },
+    });
+    const contexts = [];
+    const score = coopAiCards.scoreCard;
+    mock.method(coopAiCards, "scoreCard", (before, after, context) => {
+      contexts.push(context);
+      return score(before, after, context);
+    });
+
+    await coopAiPings.valueOfCard(j, holder, card, 4);
+    assert.deepEqual(asked, [[holder.inventory, j.lookup()]]);
+    assert.equal(contexts.length, 1);
+    assert.equal(contexts[0].fielded, view);
   });
 
   it("is worth nothing before the unit lookup is in, or with no inventory", async () => {

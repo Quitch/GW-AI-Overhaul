@@ -497,6 +497,7 @@
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_pings.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_fielded.js",
         ],
         function (
           coopAiDriver,
@@ -513,7 +514,8 @@
           gwoLoadoutIds,
           coopAiPings,
           starThreat,
-          gwoSpecs
+          gwoSpecs,
+          coopAiFielded
         ) {
           var galaxy = params.galaxy;
           var inventory = params.inventory;
@@ -533,6 +535,8 @@
           // membership stands in if they are not in within 8 s, and is
           // replaced when they land.
           var lookup = ko.observable();
+          // The unit list the specs lookup was read from.
+          var specsUnits;
           var groupsLookup = coopAiUnits.fromGroups(unitGroups);
           var prefetching = false;
           var prefetch = function () {
@@ -549,6 +553,7 @@
             }, LOOKUP_WAIT_MS);
             var specsRead = function (loaded) {
               clearTimeout(fallback);
+              specsUnits = loaded.units;
               lookup(
                 coopAiUnits.fromSpecs(loaded, unitGroups.units, gwoSpecs.mod)
               );
@@ -577,6 +582,34 @@
               prefetch();
             }
           });
+
+          // What an AI of the saved inventory's race fields, one view per
+          // race for each specs lookup, its cells built from the same unit
+          // list as the referee's. Resolves undefined where the AI fields
+          // what it holds. See tech-cards.md, "A race's units".
+          var views = {};
+          var fielded = function (saved, current) {
+            if (!current || current.via !== "specs") {
+              return Promise.resolve();
+            }
+            var race = params.races.raceOf(saved);
+            if (!views[race] || views[race].lookup !== current) {
+              views[race] = {
+                lookup: current,
+                view: raceCells.prime(race, specsUnits).then(function (cells) {
+                  return cells && cells.race.units.length
+                    ? coopAiFielded.view({
+                        race: race,
+                        cells: cells,
+                        races: params.races,
+                        lookup: current,
+                      })
+                    : undefined;
+                }),
+              };
+            }
+            return views[race].view;
+          };
 
           var effects = coopAiEffects({
             GWInventory: params.GWInventory,
@@ -698,6 +731,7 @@
             judge: {
               effects: effects,
               lookup: lookup,
+              fielded: fielded,
               teamDomains: teamDomains,
               namesUnits: namesUnits,
               chanceOf: chanceOf,
@@ -726,6 +760,7 @@
             rerollHand: params.coopReroll.rerollHandForRecord,
             effects: effects,
             lookup: lookup,
+            fielded: fielded,
             teamDomains: teamDomains,
             namesUnits: namesUnits,
             chanceOf: chanceOf,

@@ -547,8 +547,8 @@ its parts carry the names the debug lines print
   Mods a card removes count against it, on the inventory before the card.
 - **`later`**: the same for the units the AI does not field yet, at a quarter of
   their worth. These are every unit a card can grant (`unit_groups.units`,
-  commanders aside) and every held unit its commander cannot reach, less the
-  inventory's stripped units. In each cell, the later units the card touches
+  commanders aside, or for a race AI the race's units of their cells) and every
+  held unit its commander cannot reach, less the inventory's stripped units. In each cell, the later units the card touches
   are taken in path order and counted on from the units fielded there, each
   worth 0.6 of the one before. That bounds a card that touches a whole family.
 - **`minions`**: 12 for the AI's first Sub Commander, and 0.7 of the one before
@@ -693,15 +693,54 @@ and every debug line names the one it used:
   `/pa/units/commanders/`. The units it could get are those of
   `unit_groups.units` that have a cell.
 
-A race AI's inventory holds vanilla paths ([`races.md`](races.md), "Capability
-cells"), so its commander is judged as the base commander. A commander whose
-tags carry a faction bit other than `Custom58` reaches what
-`base_commander.json` builds, and owns the files that it owns, since the
-referee moves those mods to the race's commander. Without `base_commander.json`
-in the specs, such a commander reaches everything.
-
 The groups stand in when the specs are not in within 8 seconds of the session
 opening, or fail to load. The specs replace them when they land.
+
+### A race's units
+
+A race AI's inventory holds vanilla paths ([`races.md`](races.md), "Capability
+cells"), and so does an MLA AI's with add-ons active. From the specs, such an
+AI is judged on what its army fields, as the referee builds it
+(`shared/coop_ai_fielded.js`), and its debug lines read `via=fielded`:
+
+- Its units are the race's units of the cells its vanilla units occupy
+  (`races.fieldedFor`), and its mods land on those units (`races.modsFor`).
+  Its stripped units are the race's units of the stripped units' cells, less
+  those it fields.
+- Its commander reaches by its own build list. A commander of another race's,
+  which a race AI takes once the race's own are all in use, gets the race's
+  build list, as the referee retags it.
+- The units it could get are the race's units of the cells of
+  `unit_groups.units`, commanders aside.
+
+The cells come from the specs lookup's own unit list, through
+`race_cells.indexFor`, as the referee's do, not from the cells
+`gw_play/races.js` primes on its own schedule. A decision therefore replays
+the same after a reload. Each race's view is built once per lookup.
+
+The view parts from the referee in one place. The referee keeps a mod on a
+vanilla file only when a unit it fields owns the file. The view also keeps it
+when a unit a card could grant owns the file. Otherwise a held mod would move
+onto a unit just as the card that grants the unit is scored, and count again
+beside the held-tech boost.
+
+Two results follow, both as in battle. A card that names a vanilla unit
+reaches every race unit of that unit's cell: an Ant health card reaches
+Legion's five basic vehicle combat units, and scores for all five. A card that
+grants a vanilla unit whose cell the race already fields scores no `unlock`,
+since the army gains nothing.
+
+An AI whose race has no cells built, or an MLA AI with no add-on active, is
+judged on its saved paths. So is every AI while the groups stand in. A race
+commander then reaches what `base_commander.json` builds, and owns the files
+that it owns, since the referee moves those mods to the race's commander.
+Without `base_commander.json` in the specs, such a commander reaches
+everything. The team reads its players' saved paths too: a race's units share
+their cells with the vanilla units they stand for, so the domains come out the
+same.
+
+Under shared tech, a ping judges the host's saved inventory afresh for each
+card, so neither the view nor the held-tech boost is reused between cards.
 
 ### What this asks of a card
 

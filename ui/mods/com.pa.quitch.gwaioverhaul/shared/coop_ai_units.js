@@ -237,9 +237,12 @@ define([
     };
 
     // mods: the inventory's, whose unit_types and buildable_types mods
-    // change what builds what.
-    var reachable = function (held, commander, mods) {
-      var from = isRaceUnit(commander) ? gwoUnit.commander : commander;
+    // change what builds what. fielded: held is what the army fields
+    // (shared/coop_ai_fielded.js), so a race commander reads its own build
+    // list rather than the base commander's.
+    var reachable = function (held, commander, mods, fielded) {
+      var from =
+        !fielded && isRaceUnit(commander) ? gwoUnit.commander : commander;
       var buildMods = buildModsOf(mods);
       var remade = buildMods.length
         ? remadeFor(buildMods)

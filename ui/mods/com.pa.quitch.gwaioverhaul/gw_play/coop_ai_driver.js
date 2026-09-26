@@ -114,6 +114,9 @@ define([
   //   cards_coop_reroll.js's cores
   // - effects - a coop_ai_effects.js instance
   // - lookup() - the current shared/coop_ai_units.js lookup
+  // - fielded(saved, lookup) - resolves the shared/coop_ai_fielded.js view
+  //   for the saved inventory's race, or undefined where the AI fields what
+  //   it holds; optional
   // - teamDomains(playerId, lookup) - the domains the AI's teammates field
   // - namesUnits(cardId), chanceOf(card, applied, star) - for a card with no
   //   effect to see
@@ -134,6 +137,7 @@ define([
   var factory = function (params) {
     var defer = params.defer || _.defer;
     var decisionTimeoutMs = params.decisionTimeoutMs || DECISION_TIMEOUT_MS;
+    var fieldedFor = params.fielded || _.constant(Promise.resolve());
     var writeTimeoutMs = params.writeTimeoutMs || WRITE_TIMEOUT_MS;
     var timeouts = {};
     var running;
@@ -159,13 +163,22 @@ define([
       return { id: record.playerId, name: record.gwaioAi.name };
     };
 
+    // Resolves the scoring context for the AI's hands.
     var contextFor = function (record, lookup) {
-      return {
-        lookup: lookup,
-        commander: commanderOf(record),
-        teamDomains: params.teamDomains(record.playerId, lookup),
-        memo: {},
-      };
+      return fieldedFor(record.inventory, lookup).then(function (fielded) {
+        return {
+          lookup: lookup,
+          commander: commanderOf(record),
+          teamDomains: params.teamDomains(record.playerId, lookup),
+          memo: {},
+          fielded: fielded,
+        };
+      });
+    };
+
+    // The debug lines' via: how the AI's units were judged.
+    var viaOf = function (context) {
+      return context.fielded ? "fielded" : context.lookup.via;
     };
 
     var cardContext = function (context, card, before, star) {
@@ -373,7 +386,7 @@ define([
             name: client.name,
             deal: entry.dealIndex,
             star: entry.star,
-            via: lookup.via,
+            via: viaOf(context),
             scored: scored,
             decision: decision,
           })
@@ -442,7 +455,11 @@ define([
         .then(function (inventory) {
           live();
           applied = inventory;
-          context = contextFor(record, lookup);
+          return contextFor(record, lookup);
+        })
+        .then(function (built) {
+          live();
+          context = built;
           return params.armyGap(applied.units) === "landFactory"
             ? assignFactory(record, entry, applied, star, live)
             : undefined;
@@ -707,12 +724,7 @@ define([
     // { loadoutCardId, inventory }.
     var chooseStartingLoadout = function (options) {
       var lookup = params.lookup();
-      var context = {
-        lookup: lookup,
-        commander: options.commander,
-        teamDomains: options.teamDomains,
-        memo: {},
-      };
+      var context;
       var dropped = [];
 
       var scoreCandidate = function (before, id) {
@@ -758,8 +770,17 @@ define([
         });
       };
 
-      return params.effects
-        .apply(options.baseline)
+      return fieldedFor(options.baseline, lookup)
+        .then(function (fielded) {
+          context = {
+            lookup: lookup,
+            commander: options.commander,
+            teamDomains: options.teamDomains,
+            memo: {},
+            fielded: fielded,
+          };
+          return params.effects.apply(options.baseline);
+        })
         .then(function (before) {
           return _.reduce(
             options.candidates,
@@ -775,7 +796,7 @@ define([
           console.log(
             coopAiCards.describeLoadouts({
               name: options.name,
-              via: lookup.via,
+              via: viaOf(context),
               scored: scored,
               pool: drawn.pool,
               dropped: dropped,
