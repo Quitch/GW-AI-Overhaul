@@ -18,6 +18,11 @@
 - Warning and progress text is easier to read against the background
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover
 
+### Bugfix
+
+- MLA, Legion, and Bugs armies with Second Wave, and Exiles armies, can build their basic fabrication tower without the Planetary Radar
+- A tech card from another mod that changes the Planetary Radar no longer changes the basic fabrication towers too
+
 ## v7.4.1 - 2026-09-24
 
 ### Bugfix
