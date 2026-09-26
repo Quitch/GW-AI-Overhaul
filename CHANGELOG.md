@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Added
+
+- Card mods can target Legion, Bugs, Exiles, Second Wave, Section 17, and Osmech units; a card that names only such units is dealt only to players whose race fields them - see the `New-GW-Cards` template
+- Card mods can put a group of units inside a list of units, when adding, removing, or changing units
+
 ### Changed
 
 - Deleting a tech card now asks you to press Delete Tech a second time to confirm

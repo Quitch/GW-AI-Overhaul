@@ -9,7 +9,7 @@ const { createAutoStub } = require("./auto-stub.js");
 const { CARDS_DIR, listCardFiles, loadCard } = require("./card-files.js");
 const {
   createCapturingInventory,
-  recordInto,
+  recordUnitsInto,
 } = require("./capturing-inventory.js");
 const {
   installFakeKnockout,
@@ -96,7 +96,7 @@ function recordGrantedUnits(buff, gwoUnit, hasCard) {
         return def;
       },
     },
-    capture: { addUnits: recordInto(granted) },
+    capture: { addUnits: recordUnitsInto(granted) },
   });
 
   // params is what the card's own deal() returned at runtime; a card that reads

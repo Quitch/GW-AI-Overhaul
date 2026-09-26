@@ -194,7 +194,7 @@ return gwoCard.upgradeCard({
 ```
 
 That card is visible. The dealer deals it through `upgradeDeal` once `requires` is
-held. `withSlot` describes it. It is buffed with the extra slot before `buff` runs.
+fielded (`gwoCard.fieldedUnits`: held, or brought by a held unit for a race). `withSlot` describes it. It is buffed with the extra slot before `buff` runs.
 The other options are:
 
 - `unless` names a card that withholds it.
@@ -214,8 +214,9 @@ routes:
 1. Every affected unit is in the guaranteed set that `gwc_start.js` grants. This is
    why the naval, radar, teleporter and basic-defence cards need no gate at all.
 2. `deal()` gates on ownership. It uses `gwoCard.hasUnit(inventory.units(), …)`
-   through `conditionalDeal`/`upgradeDeal`, or an early `missingAllUnits` test that
-   returns `chance: 0`.
+   through `conditionalDeal`, `upgradeCard` (which reads `gwoCard.fieldedUnits`, so
+   a race unit counts), or an early `missingAllUnits` test that returns
+   `chance: 0`.
 3. The card's own `buff()` grants them. This is what exempts the `gwc_enable_*`
    unlock cards. Their whole purpose is to be offered to a player who has none of
    the units.
@@ -232,9 +233,16 @@ entry names no unit in a cell the race fills. It also withholds every card in
 `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards keep naming
 vanilla units, and the unit's capability cell decides.
 
+A card whose entry names a race or add-on unit is written for that race:
+`MLA_ONLY` and the `_upgrade_` rule do not apply to it. When the entry names only
+such units, the card is dealt only to players whose race fields one, MLA players
+included. An entry that also names a stock unit is dealt through either half. The gate reads the race; whether the player holds the unit is the card's
+`deal` to test, with `gwoCard.fieldedUnits`. See [`races.md`](races.md),
+"Capability cells".
+
 The tooltip shows that same entry translated by cell: the race units of each cell a
-named vanilla unit occupies. It never shows a second, race-written list. See
-[`races.md`](races.md).
+named vanilla unit occupies, and the race or add-on units it names that the race
+fields. It never shows a second, race-written list. See [`races.md`](races.md).
 
 `test/card_deal_unit_gate.test.js` enforces this in both directions. A card must not
 be dealable to a player who owns none of its units. A card must be dealable to a
@@ -287,9 +295,10 @@ roughly consistent share of stars at every size (short ~45%, moderate ~30%, far
 
 `farForSize` is exported for cards that need a bespoke table, but no card needs one
 today. Prefer the wrappers, which keep the tables private. `numberOfSystems` is
-passed in rather than imported so that this module stays dependency-free. Every card
-transitively depends on `shared/cards.js`. An import of `shared/gw_common` here
-would make the whole card set unloadable under the test harness.
+passed in rather than imported so that this module imports only pure modules
+(`shared/races.js` and `shared/unit_cells.js`). Every card transitively depends on
+`shared/cards.js`. An import of `shared/gw_common` here would make the whole card
+set unloadable under the test harness.
 
 ## Loadouts
 
@@ -360,7 +369,7 @@ silently discards everything the mod registered.
 | Global                         | Scene                     | Read by                                         |
 | ------------------------------ | ------------------------- | ----------------------------------------------- |
 | `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                |
-| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`                      |
+| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate       |
 | `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                      |
 | `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                 |
 | `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee |
@@ -377,6 +386,23 @@ returns are equally published. So are the **key** names in `shared/units.js` and
 `shared/unit_groups.js`, and the signature of
 `deal(system, context, inventory, rng)`. The values behind those keys are not
 published. Re-point a unit path whenever the base game moves a file.
+
+`shared/units.js` also publishes each shipped race's and add-on's `units` table
+under a key of its own: `gwoUnit.legion.shank`, `gwoUnit.osmech.aegis`. A table
+leaves out the stock files its units share. A card reaches one of those by its
+stock key where there is one, else by its path, and changes it as a stock file:
+in a race army that change also reaches the race files of the same role in the
+cell of the base-game unit that uses it. The
+keys inside those tables are generated, and a mod update can change them
+([`races.md`](races.md), "Unit tables"). A whole table is not a unit list:
+every reader ignores one, and `validate:refs` fails a card, `card_units.js` or
+`unit_groups.js` that hands one straight to a list or a call (`[gwoUnit.legion]`,
+`f(gwoUnit.legion)`). A race or add-on a third-party mod registers is
+not there. A card names such a unit and lists it in `gwoCardsToUnits`, which
+ties the card to the races that field it when the race or add-on registers a
+`units` table that lists it; without one the path counts as stock. In `deal` it checks
+`gwoCard.fieldedUnits(inventory)`, the held paths the race owns plus the race
+or add-on units they bring, rather than `inventory.units()`.
 
 **Register in every scene the data is read in.** `model` is a fresh page per scene.
 A mod that pushes its loadouts only in `gw_start` is therefore missing from the

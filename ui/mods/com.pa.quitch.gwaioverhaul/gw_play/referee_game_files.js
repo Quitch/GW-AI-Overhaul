@@ -119,20 +119,18 @@ define([
         // The AI's tech names vanilla files; a race army's land on the race
         // files of the same cell too, and an MLA army's on the add-on files.
         // Its spec set holds every listed unit, so the originals stay as
-        // well. See races.md.
-        if (cells) {
-          aiInventory = unitCells.expandMods(
-            aiInventory,
-            cells.vanilla,
-            cells.race,
-            function (file) {
-              return Object.prototype.hasOwnProperty.call(
-                aiSpecFiles,
-                file + aiTag[currentCount]
-              );
-            }
-          );
-        }
+        // well. A mod on a race file the specs lack is dropped. See races.md.
+        aiInventory = gwoRaces.modsFor(
+          race,
+          aiInventory,
+          cells,
+          function (file) {
+            return Object.prototype.hasOwnProperty.call(
+              aiSpecFiles,
+              file + aiTag[currentCount]
+            );
+          }
+        );
         _.forEach(commanders, function (commander) {
           aiInventory = aiInventory.concat(
             gwoRaces.commanderModsFor(race, commander)
@@ -316,15 +314,14 @@ define([
                 // vanilla ones held occupy; a kept vanilla unit (the Colonel)
                 // is retagged so the race can build it. An MLA player keeps
                 // everything held and gains the add-on units of those cells.
-                // See races.md.
-                var playerSpecs = held;
-                if (cells) {
-                  playerSpecs = (
-                    playerIsMla
-                      ? unitCells.addonUnitsFor
-                      : unitCells.raceUnitsFor
-                  )(held, cells.vanilla, cells.race);
-                }
+                // Neither keeps another race's units. See races.md.
+                var playerSpecs = gwoRaces.fieldedFor(
+                  playerRace,
+                  gwoRaces
+                    .ownedPaths(playerRace, inventory.units(), cells)
+                    .concat(additionalPlayerSpecs),
+                  cells
+                );
                 var keptVanilla =
                   cells && !playerIsMla
                     ? _.difference(
@@ -355,14 +352,12 @@ define([
                           file + playerTag
                         );
                       };
-                      var playerMods = cells
-                        ? unitCells.expandMods(
-                            inventory.mods(),
-                            cells.vanilla,
-                            cells.race,
-                            has
-                          )
-                        : inventory.mods();
+                      var playerMods = gwoRaces.modsFor(
+                        playerRace,
+                        inventory.mods(),
+                        cells,
+                        has
+                      );
                       playerFileGen.resolve(
                         buildPlayerFiles(
                           {

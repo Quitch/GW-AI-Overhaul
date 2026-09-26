@@ -68,8 +68,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   // params.race is optional: without it the player is MLA. params.mods, when
-  // given, is the inventory's mods already expanded onto the race's files
-  // (unit_cells.expandMods); otherwise the mods land as they always have.
+  // given, is the inventory's mods already fitted to the player's race
+  // (races.modsFor); otherwise the mods land as they always have.
   var buildPlayerFiles = function (params, gwoAI, gwoSpecs) {
     var playerAIUnitMap = params.playerAIUnitMap;
     var playerX1AIUnitMap = params.playerX1AIUnitMap;
