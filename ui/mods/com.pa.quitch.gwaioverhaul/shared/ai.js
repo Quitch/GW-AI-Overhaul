@@ -450,12 +450,16 @@ define([
     },
 
     // Whether a card can close the gap: a factory card can, unless a dull
-    // strips every basic land factory it would grant.
-    armyGapClosable: function (gap, strippedUnits) {
+    // strips every basic land factory it would grant. grants: that card's
+    // units; any card's when not given.
+    armyGapClosable: function (gap, strippedUnits, grants) {
+      var factories = grants
+        ? _.intersection(gwoGroup.landFactoriesBasic, grants)
+        : gwoGroup.landFactoriesBasic;
       return (
         gap === "landFactory" &&
-        !_.every(gwoGroup.landFactoriesBasic, function (unit) {
-          return _.includes(strippedUnits || [], unit);
+        _.some(factories, function (unit) {
+          return !_.includes(strippedUnits || [], unit);
         })
       );
     },

@@ -734,4 +734,25 @@ describe("armyGapClosable", () => {
   it("never closes an extractor gap", () => {
     assert.equal(gwoAI.armyGapClosable("extractor", []), false);
   });
+
+  // A factory card whose own factory a dull strips cannot close the gap,
+  // though another card's could.
+  it("judges one card by the land factories it grants", () => {
+    const stripped = [gwoUnit.botFactory];
+    assert.equal(
+      gwoAI.armyGapClosable("landFactory", stripped, [
+        gwoUnit.botFactory,
+        gwoUnit.dox,
+      ]),
+      false
+    );
+    assert.equal(
+      gwoAI.armyGapClosable("landFactory", stripped, [gwoUnit.airFactory]),
+      true
+    );
+    assert.equal(
+      gwoAI.armyGapClosable("landFactory", [], [gwoUnit.dox]),
+      false
+    );
+  });
 });

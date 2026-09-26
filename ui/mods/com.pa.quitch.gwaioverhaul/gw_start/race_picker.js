@@ -67,7 +67,6 @@
     model.draftNewGamePerPlayerTechCards.subscribe(function (value) {
       if (!value) {
         model.gwoDraftPerPlayerRace(false);
-        model.gwoDraftUniqueAiLoadouts(false);
       }
     });
 
@@ -80,8 +79,8 @@
       model.gwoDraftPerPlayerRace(
         settings.perPlayerRace() && model.draftNewGamePerPlayerTechCards()
       );
-      // Not gated on the per-player draft: stock never remembers that, so
-      // the row would forget the saved choice at every new war.
+      // Kept whatever per-player tech is drafted: stock never remembers that
+      // option, and the war records this one only alongside it.
       model.gwoDraftUniqueAiLoadouts(settings.uniqueAiLoadouts());
     };
     var applyCoopSettingsModal = model.applyCoopSettingsModal;
@@ -90,10 +89,7 @@
         model.gwoDraftPerPlayerRace() &&
           !!model.draftNewGamePerPlayerTechCards()
       );
-      settings.uniqueAiLoadouts(
-        model.gwoDraftUniqueAiLoadouts() &&
-          !!model.draftNewGamePerPlayerTechCards()
-      );
+      settings.uniqueAiLoadouts(model.gwoDraftUniqueAiLoadouts());
       applyCoopSettingsModal.apply(this, arguments);
     };
 

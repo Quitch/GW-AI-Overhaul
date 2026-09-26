@@ -638,14 +638,16 @@
           };
 
           // The T1 factory cards an AI with no basic land factory may be
-          // assigned: those in the war's deck that its race can use.
+          // assigned: those in the war's deck that its race can use, less
+          // any whose factory its cards strip.
           var FACTORY_CARDS = [
             "gwc_enable_air_t1",
             "gwc_enable_bots_t1",
             "gwc_enable_vehicles_t1",
           ];
-          var factoryCards = function (record) {
+          var factoryCards = function (record, applied) {
             return _.filter(FACTORY_CARDS, function (id) {
+              var entry = _.find(model.gwoCardsToUnits || [], { id: id });
               return (
                 _.includes(model.gwoCards, id) &&
                 helpers.raceCanDeal(
@@ -653,7 +655,13 @@
                   record.inventory,
                   id,
                   model.gwoCardsToUnits
-                )
+                ) &&
+                (!entry ||
+                  params.gwoAI.armyGapClosable(
+                    "landFactory",
+                    applied.strippedUnits,
+                    entry.units
+                  ))
               );
             });
           };

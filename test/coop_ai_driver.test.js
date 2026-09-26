@@ -145,6 +145,7 @@ const EFFECTS = {
   gwc_enable_bots_t1: { units: ["/u/bot_factory", "/u/bot"] },
   gwc_enable_vehicles_t1: { units: ["/u/vehicle_factory"] },
   gwc_enable_stripped: { units: ["/u/bot_factory"], strips: LAND_FACTORIES },
+  strip_bots: { strips: ["/u/bot_factory"] },
   titan_naval: { units: ["/u/orbital_titan", "/u/naval_factory"] },
   titan_air: { units: ["/u/orbital_titan", "/u/air_factory"] },
   gwc_enable_bots_all: { units: ["/u/bot_factory", "/u/bot", "/u/bot_adv"] },
@@ -1099,6 +1100,31 @@ describe("coop_ai_driver T1 factory card", () => {
       JSON.stringify(lines)
     );
     assert.equal(run.calls.deals.length, 1);
+  });
+
+  // So the glue can leave out a card whose factory a dull strips.
+  it("hands the glue the applied inventory, with its stripped units", async () => {
+    const seen = [];
+    const run = setup({
+      records: [
+        aiRecord(1, hand(["gwc_start_naval", "strip_bots"]), {
+          loadoutCardId: "gwc_start_naval",
+        }),
+      ],
+      hands: {},
+      factoryCards: (record, applied) => {
+        seen.push({ id: record.playerId, stripped: applied.strippedUnits });
+        return T1.filter((id) => id !== "gwc_enable_bots_t1");
+      },
+      factoryRng: () => undefined,
+    });
+    await run.driver.run();
+
+    assert.deepEqual(seen, [{ id: "gwo_ai_1", stripped: ["/u/bot_factory"] }]);
+    assert.notEqual(
+      cardIds(run.store.find("gwo_ai_1"))[2],
+      "gwc_enable_bots_t1"
+    );
   });
 
   it("deals an AI with a basic land factory its hand", async () => {

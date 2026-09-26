@@ -120,7 +120,8 @@ define([
   // - isLoadout(cardId), rerollsRemain(rerollsUsed, cardsOffered)
   // - armyGap(units), armyGapClosable(gap, strippedUnits) - shared/ai.js's
   //   rule for an army that can fight
-  // - factoryCards(record) - the T1 factory card ids the AI may be assigned
+  // - factoryCards(record, applied) - the T1 factory card ids the AI may be
+  //   assigned
   // - dealCard(cardId, applied, star) - resolves that card as dealt
   // - decisionRng(record, dealIndex, rerollsUsed), factoryRng(record,
   //   dealIndex)
@@ -302,7 +303,7 @@ define([
         );
         return undefined;
       };
-      var ids = params.factoryCards(record);
+      var ids = params.factoryCards(record, applied);
       if (!ids.length) {
         return Promise.resolve(dealingHand("no factory card to assign"));
       }

@@ -53,12 +53,12 @@ in the war already has, unless every loadout it could take is in use ("AI
 players' tech"). The row always shows, but it reads OFF and cannot be set
 unless Separate loadout & tech is on, because an AI has a loadout of its own
 only under per-player tech. The draft is seeded and committed through the same
-two hijacks as Separate races (`gw_start/race_picker.js`). It is seeded from
-the saved setting even while Separate loadout & tech is off, because stock does
-not remember that option between wars, so `gwo_previous_settings` carries the
-choice to the next war. The war records it as
-`originSystem.gwaio.uniqueAiLoadouts`. A war saved before the setting existed
-has no field, which reads as off.
+two hijacks as Separate races (`gw_start/race_picker.js`). Unlike Separate
+races, it is kept whatever per-player tech is drafted: stock does not remember
+that option between wars, and the war records this one only alongside it. So
+`gwo_previous_settings` carries the choice to the next war. The war records it
+as `originSystem.gwaio.uniqueAiLoadouts`. A war saved before the setting
+existed has no field, which reads as off.
 
 ## The two referees
 
@@ -469,7 +469,9 @@ host's history, yielding between them. For each deal it:
 A deal that finds the AI without a basic land factory assigns it one in place
 of a hand. The driver picks one of `gwc_enable_air_t1`, `gwc_enable_bots_t1`,
 and `gwc_enable_vehicles_t1` with equal chance, from those in the war's deck
-(`model.gwoCards`) that the AI's race can use (`raceCanDeal`). Each gives one
+(`model.gwoCards`) that the AI's race can use (`raceCanDeal`), less any whose
+factory the AI's cards strip (`armyGapClosable` over the card's
+`model.gwoCardsToUnits` entry). Each gives one
 basic land factory and the basic units of its domain: the least the AI needs to
 fight, so no advantage. The pick comes from the AI's `coop_ai_factory` stream,
 keyed by the deal, so a reload picks the same card. The card is dealt as
