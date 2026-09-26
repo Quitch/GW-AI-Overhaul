@@ -284,9 +284,10 @@ define([
         // and written with the record.
         var identity = roster.nextAiIdentity(params.gwaio());
         var queueWrite = function (record) {
-          model.enqueueGwCampaignStateApply("gwo_coop_ai_add", function () {
-            writeNewAi(target, identity, record, extraSeat);
-          });
+          model.enqueueGwCampaignStateApply(
+            "gwo_coop_ai_add",
+            _.partial(writeNewAi, target, identity, record, extraSeat)
+          );
         };
         var failBuild = function (error) {
           failAdd(error, target);
