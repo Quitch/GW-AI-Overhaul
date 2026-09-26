@@ -144,13 +144,16 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   remakes a unit that way, every other mod on that unit in the list (its new
   cost, health, storage) stays with it too. This rule was found the hard way.
   The Guardians of a Cluster war carry the Angel-to-commander mods, and by cell
-  they turned Exiles' Heron into a broken commander.
+  they turned Exiles' Heron into a broken commander. A descriptor with
+  `stockOnly: true`, which a card mod sets on one change, stays on its unit
+  too, but it remakes nothing: the other mods on that unit still travel.
 - **Cards never change.** GWO's own cards name vanilla units. The race's units
   follow at launch. A card that cannot work by cell goes in
   `cards_deal_helpers.MLA_ONLY`, with a comment that says why. Every
   `_upgrade_` card is MLA-only except the commander's, unless its
   `card_units.js` entry names race or add-on units: such a card is written for
-  that race and dealt to whoever fields one.
+  that race and dealt to whoever fields one. An entry's `races` list overrides
+  both rules for its card.
 - **The race tag travels with every inventory** (`global:playerRace`), the
   host's and each co-op viewer's. Every referee function takes the race per
   army. Never read a race from `model.game().inventory()` when the thing being

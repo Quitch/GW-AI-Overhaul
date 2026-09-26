@@ -1244,3 +1244,25 @@ describe("uniqueValue", () => {
     }
   });
 });
+
+describe("stockOnly", () => {
+  it("flags every descriptor, as a copy, and leaves the input alone", () => {
+    const input = cards.mods(
+      "/pa/units/land/assault_bot/assault_bot.json",
+      "multiply",
+      {
+        max_health: 1.5,
+        "navigation.move_speed": 1.2,
+      }
+    );
+    const flagged = cards.stockOnly(input);
+
+    assert.deepEqual(
+      flagged,
+      input.map((mod) => Object.assign({}, mod, { stockOnly: true }))
+    );
+    assert.equal(input[0].stockOnly, undefined);
+    assert.notEqual(flagged[0], input[0]);
+    assert.deepEqual(cards.stockOnly(undefined), []);
+  });
+});

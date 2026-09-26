@@ -237,7 +237,9 @@ did nothing at all for a player without the advanced factory. Only its
 A race player narrows this further. The deal withholds a card whose `card_units.js`
 entry names no unit in a cell the race fills. It also withholds every card in
 `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards keep naming
-vanilla units, and the unit's capability cell decides.
+vanilla units, and the unit's capability cell decides. An entry's `races` list
+takes the place of `MLA_ONLY` and the `_upgrade_` rule for its card
+(["Which races a card reaches"](#which-races-a-card-reaches)).
 
 A card whose entry names a race or add-on unit is written for that race:
 `MLA_ONLY` and the `_upgrade_` rule do not apply to it. When the entry names only
@@ -415,6 +417,30 @@ or add-on units they bring, rather than `inventory.units()`.
 A mod that pushes its loadouts only in `gw_start` is therefore missing from the
 treasure pool in `gw_play`. It is also missing from the per-player loadout picker in
 co-op.
+
+### Which races a card reaches
+
+A card mod has two controls over how far a card reaches in a race or add-on
+army.
+
+- **`races` on the `gwoCardsToUnits` entry.**
+  `{ id: "mym_dox_health", units: [gwoUnit.dox], races: ["mla"] }` offers the
+  card only to players of the races listed. The ids are trimmed and compared
+  case-blind (`races.normalizeId`). The list takes the place of `MLA_ONLY` and
+  the `_upgrade_` rule for that card, so an `_upgrade_` card that lists a race
+  is offered to it. A listed race still needs a unit in a cell it fills
+  (`cardUsable`). `cards_deal_helpers.raceCanDeal` reads the list. Loadouts
+  are not affected: the loadout scenes lock a loadout by `mlaOnlyCard` alone.
+- **`stockOnly: true` on a mod.** `unit_cells.expandMods` keeps that one change
+  on the file it names, and never lands it on a race or add-on unit. It is kept
+  only where the army holds the file, so a race army without the Dox drops it
+  with no warning. Unlike `exact`, it does not remake the file, so the card's
+  other changes to the same unit still travel. It sits outside the passes
+  ([`races.md`](races.md), "Capability cells"), so no other card's change can
+  stand in for it. `gwoCard.stockOnly(list)` returns copies of the descriptors
+  with the flag set:
+  `gwoCard.stockOnly(gwoCard.mods(gwoUnit.dox, "multiply", { max_health: 1.5 }))`.
+  An army with no race cells (MLA with no add-on) applies the change as usual.
 
 ### Third-party decks
 
