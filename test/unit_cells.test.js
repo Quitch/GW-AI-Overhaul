@@ -450,6 +450,62 @@ describe("expandMods", () => {
     );
   });
 
+  it("lands a change once on a vanilla part the race also mounts", () => {
+    // Legion's commanders fire the stock commander AA ammo, so that file is
+    // both the army's own and one of the race's parts.
+    const MAIN_WEAPON =
+      "/pa/units/commanders/base_commander/base_commander_tool_laser_weapon.json";
+    const MAIN_AMMO =
+      "/pa/units/commanders/base_commander/base_commander_ammo_laser.json";
+    const AA_WEAPON =
+      "/pa/units/commanders/base_commander/base_commander_tool_aa_weapon.json";
+    const AA_AMMO =
+      "/pa/units/commanders/base_commander/base_commander_aa_ammo.json";
+    const FX_COMMANDER2 = "/pa/units/commanders/fx_beta/fx_beta.json";
+    const specs = Object.assign({}, SPECS, {
+      [COMMANDER]: Object.assign({}, SPECS[COMMANDER], {
+        tools: [{ spec_id: MAIN_WEAPON }, { spec_id: AA_WEAPON }],
+      }),
+      [MAIN_WEAPON]: { ammo_id: MAIN_AMMO },
+      [MAIN_AMMO]: { damage: 80 },
+      [AA_WEAPON]: { ammo_id: AA_AMMO },
+      [AA_AMMO]: { damage: 200 },
+      [FX_COMMANDER2]: {
+        unit_types: T("Commander Construction Land Mobile Custom7"),
+        tools: [{ spec_id: AA_WEAPON }],
+      },
+    });
+    const units = UNITS.concat([FX_COMMANDER2]);
+    const v = cells.buildIndex(units, specs, cells.vanillaMember);
+    const r = cells.buildIndex(units, specs, cells.raceMember("Custom7"));
+    const has = (file) => file === AA_AMMO;
+
+    // Kept as itself, and not landed on itself again as a race part.
+    assert.deepEqual(
+      cells.expandMods([mod(AA_AMMO, "damage", 1.25)], v, r, has),
+      [mod(AA_AMMO, "damage", 1.25), mod(FX_COMMANDER_AMMO, "damage", 1.25)]
+    );
+
+    // Reached first as a race part of the main gun's change, the kept
+    // original joins that pass.
+    const group = [
+      mod(MAIN_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+    ];
+    assert.deepEqual(cells.expandMods(group, v, r, has), [
+      mod(FX_COMMANDER_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+    ]);
+
+    // A second card still stacks.
+    assert.deepEqual(cells.expandMods(group.concat(group), v, r, has), [
+      mod(FX_COMMANDER_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+      mod(FX_COMMANDER_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+    ]);
+  });
+
   it("applies a group card once per pass, and stacks a second card", () => {
     const oneCard = [
       mod(ANT_AMMO, "damage", 1.25),

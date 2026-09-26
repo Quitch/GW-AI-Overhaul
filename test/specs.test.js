@@ -316,6 +316,45 @@ describe("specs.mod - base_spec inheritance", () => {
     assert.equal("base_spec" in data["child.json"], false);
   });
 
+  it("gives a child modded after its base the change twice on a key it inherits", () => {
+    const mods = (order) =>
+      order.map((file) => ({
+        file,
+        path: "armor_damage_map.AT_Commander",
+        op: "multiplyOrCreate",
+        value: 2,
+      }));
+    const fresh = () => ({
+      "base.json": { armor_damage_map: { AT_Commander: 1 } },
+      "child.json": { base_spec: "base.json", damage: 80 },
+    });
+
+    const childFirst = fresh();
+    specs.mod(childFirst, mods(["child.json", "base.json"]), "");
+    assert.equal(childFirst["child.json"].armor_damage_map.AT_Commander, 2);
+
+    const baseFirst = fresh();
+    specs.mod(baseFirst, mods(["base.json", "child.json"]), "");
+    assert.equal(baseFirst["child.json"].armor_damage_map.AT_Commander, 4);
+  });
+
+  it("lists the commander's main gun ammo before the base it inherits from", () => {
+    const gwoUnit = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+    );
+    const gwoGroup = loadCouiModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js"
+    );
+    for (const group of ["commanderAmmo", "ammo", "combatMobileAmmo"]) {
+      const list = gwoGroup[group];
+      const base = list.indexOf(gwoUnit.commanderAmmo);
+      for (const child of ["commanderAmmoBullet", "commanderAmmoLaser"]) {
+        const at = list.indexOf(gwoUnit[child]);
+        assert.ok(at !== -1 && at < base, group + " lists " + child + " first");
+      }
+    }
+  });
+
   it("prefers the spec-tagged base variant when one exists", () => {
     const data = {
       "base.json.mytag": { hp: 200 },

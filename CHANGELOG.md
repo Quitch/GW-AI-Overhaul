@@ -18,6 +18,11 @@
 - Warning and progress text is easier to read against the background
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover
 
+### Bugfix
+
+- Tech and loadouts that change commander weapons, such as Commander Ammunition Tech and Commander Combat Tech, now also change the main gun of MLA commanders, as do the enemy factions' commander bonuses
+- Tech that changes commander weapons no longer applies twice to the anti-air and torpedo weapons of Legion commanders
+
 ## v7.4.1 - 2026-09-24
 
 ### Bugfix
