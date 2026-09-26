@@ -496,6 +496,7 @@
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_ids.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_pings.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js",
         ],
         function (
           coopAiDriver,
@@ -511,7 +512,8 @@
           startingInventory,
           gwoLoadoutIds,
           coopAiPings,
-          starThreat
+          starThreat,
+          gwoSpecs
         ) {
           var galaxy = params.galaxy;
           var inventory = params.inventory;
@@ -549,7 +551,13 @@
               raceCells.load().then(
                 function (loaded) {
                   clearTimeout(fallback);
-                  lookup(coopAiUnits.fromSpecs(loaded, unitGroups.units));
+                  lookup(
+                    coopAiUnits.fromSpecs(
+                      loaded,
+                      unitGroups.units,
+                      gwoSpecs.mod
+                    )
+                  );
                 },
                 function (error) {
                   clearTimeout(fallback);
@@ -808,9 +816,19 @@
             loadoutIds
           );
 
+          // The loadouts no AI is given: GWO's, and any a mod adds to
+          // model.gwoLoadoutsAiCannotUse, which GWO reads and never creates.
+          var loadoutsAiCannotUse = function () {
+            return _.isArray(model.gwoLoadoutsAiCannotUse)
+              ? roster.LOADOUTS_AI_CANNOT_USE.concat(
+                  model.gwoLoadoutsAiCannotUse
+                )
+              : roster.LOADOUTS_AI_CANNOT_USE;
+          };
+
           // A new AI's loadout and starting inventory: every loadout the host
-          // has unlocked that its race may field, scored. options: record
-          // (commander and serial set), race.
+          // has unlocked that its race may field and an AI can use, scored.
+          // options: record (commander and serial set), race.
           var startingTech = function (options) {
             var record = options.record;
             var race = options.race;
@@ -843,6 +861,7 @@
                     raceLocks: function (id) {
                       return helpers.raceLocksLoadout(race, id);
                     },
+                    aiCannotUse: loadoutsAiCannotUse(),
                   }),
                   baseline: {
                     cards: [{ id: "gwc_start" }],

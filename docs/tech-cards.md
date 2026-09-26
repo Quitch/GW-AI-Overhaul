@@ -374,6 +374,7 @@ silently discards everything the mod registered.
 | `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`    |
 | `gwoStartingCards`             | start, coop loadout       | `shared/loadouts.js`                            |
 | `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
+| `gwoLoadoutsAiCannotUse`       | play                      | `gw_play/cards.js`, when an AI is added         |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
 | `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |
 | `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`       |
@@ -536,6 +537,18 @@ its parts carry the names the debug lines print
   scores 4 times its own deal chance out of 100. Its `deal()` runs on a fresh
   inventory loaded from the AI's applied inventory without the card, with no
   `rng`, and a throw is logged and counts as a chance of 0.
+- **`extra`**: for a starting loadout only, 30 once when the loadout does what
+  no other part sizes. It earns it when it is dealt more cards per offer, found
+  by asking `cardsOfferedCount` of the inventory with it and without it, as
+  Lucky Commander is. It also earns it when it adds a mod that counts 0.25
+  because only the change is known, not its size: Nomad Commander's mobile
+  structures, Planetary Excavation Commander's extractors anywhere, Space
+  Excavation Commander's Jig anywhere, and Paratrooper Commander's Manhattan in a Unit
+  Cannon. Mods on `unit_types` and `buildable_types` do not count, since reach
+  sizes them, and nor do those on `spawn_layers`, which place what a changed
+  build list builds (Rapid Deployment Commander's). Nor do orders
+  (`command_caps`), since an AI gives none, or text and looks (`description`,
+  `display_name`, `model`, and `si_name`). A card in a hand never earns it.
 
 The score is the sum, rounded to one decimal place, and the debug line prints
 every part.
@@ -552,6 +565,17 @@ loadout's lean towards the domain its team lacks therefore stays, but counts for
 a quarter as much against a loadout of stat mods. With everything unlocked,
 Hoarder Commander falls from 414 to 104, level with Swarm Commander, while Terminal
 Commander, whose worth is all stat mods, keeps its 224.
+
+The loadout's mods stand as well, so the units a card could grant are reached,
+on both sides of the discount, as the loadout leaves the build lists.
+Paratrooper Commander's commander builds its Unit Cannon, which builds the land
+units, so the discount takes those at their reached worth, and the loadout
+scores 61 with its `extra`. Judged by the base start card's mods instead, the
+discount would take them at a quarter, and Paratrooper would score 109, above
+Hoarder and Swarm, for units that the T1 factory card it is assigned
+([`coop.md`](coop.md), "Settling deals") partly reaches anyway. With `extra` at
+30, Lucky, Space Excavation, Nomad, and Planetary Excavation score 30 to 44,
+from the median of the pool to its mean, and Paratrooper above them.
 
 The **held-tech boost** is what makes an AI build around its tech. It comes from
 the inventory before the card, and is worked out once for all the cards of a
@@ -626,8 +650,12 @@ and every debug line names the one it used:
   unit brings the units that inherit it. A unit's tools, and its death weapon,
   come from the nearest spec up its chain that declares them, so a commander
   that declares its own tools carries none of `base_commander`'s. The owners
-  are worked out once per file. Reach follows the build lists: what the
-  commander builds, what that builds, and so on. A commander the lookup does
+  are worked out once per file. Reach follows the build lists as the
+  inventory's `unit_types` and `buildable_types` mods leave them: what the
+  commander builds, what that builds, and so on. Those mods are applied to a
+  copy of the files they name with the battle's own op engine
+  (`gw_play/specs.js`'s `mod`, passed in by `gw_play/cards.js`), and the
+  resulting types and build lists are kept for the last 64 mod lists. A commander the lookup does
   not know reaches everything, because an unknown builder is no reason to value
   a unit at a quarter. The units it could get are those of
   `unit_groups.units` that the specs index, commanders aside.

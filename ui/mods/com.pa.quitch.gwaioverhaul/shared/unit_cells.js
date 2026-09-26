@@ -570,6 +570,7 @@ define([
 
   return {
     COMMANDER: COMMANDER,
+    bare: bare,
     stripTypes: stripTypes,
     classify: classify,
     chainValue: chainValue,

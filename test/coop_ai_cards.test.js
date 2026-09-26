@@ -110,6 +110,21 @@ function withCard(before, changes) {
   return after;
 }
 
+const mod = (file, path, op, value) => ({ file, path, op, value });
+
+// The fake lookup, with a unit a unit_types mod names reached by hand.
+const modLookup = Object.assign({}, lookup, {
+  reachable: (held, commander, mods) => {
+    const byHand = (mods || [])
+      .filter((one) => one.path === "unit_types")
+      .map((one) => one.file);
+    const reached = lookup.reachable(held);
+    return reached.concat(
+      held.filter((unit) => byHand.includes(unit) && !reached.includes(unit))
+    );
+  },
+});
+
 const context = (overrides) =>
   Object.assign(
     { lookup, commander: COMMANDER, teamDomains: ["Bot", "Land"] },
@@ -500,8 +515,8 @@ describe("scoreLoadout", () => {
   it("counts units the loadout strips at their full worth", () => {
     const withWall = inventory({ units: [COMMANDER, "wall"] });
     const lost =
-      coopAiCards.setValue([COMMANDER, "wall"], context()) -
-      coopAiCards.setValue([COMMANDER], context());
+      coopAiCards.setValue({ units: [COMMANDER, "wall"] }, context()) -
+      coopAiCards.setValue({ units: [COMMANDER] }, context());
     const gains = { units: ["airFactory", "bumblebee"] };
     const plain = coopAiCards.scoreLoadout(
       withWall,
@@ -528,6 +543,119 @@ describe("scoreLoadout", () => {
     assert.ok(
       loadout(air, { teamDomains: ["Land"] }).total >
         loadout(air, { teamDomains: ["Land", "Air"] }).total
+    );
+  });
+
+  // Found by the deal's own count, not by the card's id.
+  it("adds the extra for a loadout dealt more cards", () => {
+    assert.equal(
+      loadout({ id: "gwaio_start_lucky" }).extra,
+      coopAiCards.WEIGHTS.extra
+    );
+    assert.equal(loadout({ id: "gwaio_start_plain" }).extra, 0);
+  });
+
+  it("adds the extra once for mods known to change, not by how much", () => {
+    const nomad = loadout({
+      mods: [
+        mod("wall", "navigation.type", "replace", "amphibious"),
+        mod("wall", "physics.push_class", "replace", 5),
+        mod("pelican", "transporter.transportable_unit_types", "add", " - X"),
+      ],
+    });
+    assert.equal(nomad.extra, coopAiCards.WEIGHTS.extra);
+  });
+
+  // Reach sizes a build list and where the unit it builds spawns, an AI gives
+  // no orders, and text and looks change nothing in battle.
+  it("adds no extra for build types, orders, text, or stat mods", () => {
+    const aside = [
+      mod("wall", "unit_types", "push", "UNITTYPE_CmdBuild"),
+      mod("botFactory", "buildable_types", "add", " | Air"),
+      mod("botFactory", "buildable_types", "replace", "Fabber"),
+      mod("dox", "spawn_layers", "replace", "WL_DeepWater"),
+      mod("dox", "command_caps", "push", "ORDER_Use"),
+      mod("dox", "description", "replace", "!LOC:Mobile"),
+      mod("dox", "display_name", "replace", "!LOC:Dox"),
+      mod("dox", "model.filename", "replace", "/pa/units/x.papa"),
+      mod("dox", "si_name", "replace", "x"),
+      mod("dox", "max_health", "multiply", 1.25),
+      mod("dox", "max_health", "add", 1),
+    ];
+    aside.forEach((one) => {
+      assert.equal(loadout({ mods: [one] }).extra, 0, JSON.stringify(one));
+    });
+  });
+
+  it("reaches the units a card could grant as the loadout's mods leave them", () => {
+    const byHand = mod("bumblebee", "unit_types", "push", "UNITTYPE_CmdBuild");
+    const changes = { units: ["bumblebee"], mods: [byHand] };
+    const full = score(baseline, changes, { lookup: modLookup }).unlock;
+    const kept = loadout(changes, { lookup: modLookup }).unlock;
+
+    // Reached on both sides of the discount, so a head start's worth of it.
+    assert.ok(full > 0);
+    assert.ok(
+      Math.abs(kept - coopAiCards.WEIGHTS.headStart * full) <= 0.1,
+      kept + " of " + full
+    );
+  });
+});
+
+describe("reach under an inventory's mods", () => {
+  it("hands each inventory's mods to reachable", () => {
+    const seen = [];
+    const recording = Object.assign({}, lookup, {
+      reachable: (held, commander, mods) => {
+        seen.push(mods);
+        return lookup.reachable(held);
+      },
+    });
+    const held = [mod("dox", "max_health", "multiply", 1.5)];
+    const added = [mod("dox", "damage", "multiply", 2)];
+    const before = inventory({ mods: held });
+
+    coopAiCards.setValue(before, context({ lookup: recording }));
+    assert.deepEqual(seen, [held]);
+
+    seen.length = 0;
+    score(before, { mods: added }, { lookup: recording });
+    assert.ok(seen.some((mods) => mods === before.mods));
+    assert.ok(
+      seen.some(
+        (mods) => JSON.stringify(mods) === JSON.stringify(held.concat(added))
+      ),
+      "after's mods, for its units and its profile"
+    );
+
+    seen.length = 0;
+    coopAiCards.teamDomains(
+      [{ units: ["dox"], commander: COMMANDER, mods: held }],
+      recording
+    );
+    assert.deepEqual(seen, [held]);
+  });
+
+  it("values a unit a card's build-type mod lets the commander reach", () => {
+    const byHand = mod("bumblebee", "unit_types", "push", "UNITTYPE_CmdBuild");
+    const before = inventory();
+    const out = score(before, { units: ["bumblebee"] }, { lookup: modLookup });
+    const reached = score(
+      before,
+      { units: ["bumblebee"], mods: [byHand] },
+      { lookup: modLookup }
+    );
+    assert.ok(reached.unlock > out.unlock, reached.unlock + " > " + out.unlock);
+  });
+
+  it("gives a card in a hand no extra", () => {
+    const before = inventory();
+    assert.equal(score(before, { id: "gwaio_start_lucky" }).extra, 0);
+    assert.equal(
+      score(before, {
+        mods: [mod("wall", "navigation.type", "replace", "amphibious")],
+      }).extra,
+      0
     );
   });
 });
@@ -787,6 +915,7 @@ describe("describeHand / describeLoadouts", () => {
     aiMods: 0.5,
     slots: -0.5,
     floor: 0,
+    extra: 0,
   };
   const scored = [
     Object.assign({ index: 0, id: "gwc_a", total: 5 }, parts),
@@ -805,8 +934,8 @@ describe("describeHand / describeLoadouts", () => {
     assert.equal(
       line,
       "[GW COOP AI] Sorian deal=3 star=7 hand=2 via=specs offered: " +
-        "gwc_a=5 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0), " +
-        "gwc_b=2 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0) -> took gwc_a"
+        "gwc_a=5 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0), " +
+        "gwc_b=2 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0) -> took gwc_a"
     );
   });
 
@@ -846,8 +975,8 @@ describe("describeHand / describeLoadouts", () => {
         chosen: "gwc_a",
       }),
       "[GW COOP AI] Sorian loadout via=specs candidates: " +
-        "gwc_a=5 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 chance 71.4%), " +
-        "gwc_b=2 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 chance 28.6%) -> chose gwc_a"
+        "gwc_a=5 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0 chance 71.4%), " +
+        "gwc_b=2 (unlock 4 mods 1.5 later 0.3 minions 0 aiMods 0.5 slots -0.5 floor 0 extra 0 chance 28.6%) -> chose gwc_a"
     );
   });
 
