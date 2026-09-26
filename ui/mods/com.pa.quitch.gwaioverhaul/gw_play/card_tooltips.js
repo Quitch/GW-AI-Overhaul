@@ -219,9 +219,10 @@
           });
         };
 
-        // Slot 0 is the Data Bank hover and slot i + 1 the star's card i, so
-        // both show at once. Every call writes its slot, so a card with no
-        // list clears the list the slot held for the card before it.
+        // Slot 0 is the Data Bank card and slot i + 1 the star's card i, so
+        // both show at once. Every call writes its slot: the Data Bank card
+        // shows "Which Units?" only while slot 0 holds a list, so a card with
+        // none must clear the list of the card before it.
         var makeCardTooltip = function (card, hoverIndex) {
           var slot = _.isUndefined(hoverIndex) ? 0 : hoverIndex + 1;
           var tooltip = unitsTooltip(card);
