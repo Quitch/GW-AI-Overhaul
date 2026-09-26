@@ -399,9 +399,7 @@ define([
                   star,
                   _.find(scored, { index: first.index }).card,
                   applied
-                ).then(function (held) {
-                  return decide(scored, held);
-                })
+                ).then(_.partial(decide, scored))
               : Promise.resolve(first);
 
           return decided.then(function (decision) {

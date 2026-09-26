@@ -703,10 +703,9 @@ define([
     var dropped = _.map(params.dropped, function (entry) {
       return entry.id + " (" + entry.gap + ")";
     });
+    var fallback = params.fullPool ? " (all in use: full pool)" : "";
     var used = params.used
-      ? " used: " +
-        (params.used.join(", ") || "none") +
-        (params.fullPool ? " (all in use: full pool)" : "")
+      ? " used: " + (params.used.join(", ") || "none") + fallback
       : "";
 
     return (
