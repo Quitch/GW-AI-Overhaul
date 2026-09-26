@@ -134,10 +134,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
           apply(withCard(saved, card, loadout)),
         ]);
       },
-      // The inventory without a held card, and with it: what it is worth now.
-      withoutCard: function (saved, index) {
-        return Promise.all([apply(withoutCard(saved, index)), apply(saved)]);
-      },
       clear: function () {
         cache = {};
         order = [];

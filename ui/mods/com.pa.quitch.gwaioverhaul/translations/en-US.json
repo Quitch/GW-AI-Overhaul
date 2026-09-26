@@ -419,6 +419,10 @@
     "message": "Also known by merchant captains as the 'Icebox', Riazuddiv was a popular stopping point for traders along the Hudson Trade Lane. With its countless taverns and brothels, popularity was not surprising, so much so it eventually attracted the attention of many of the major crime syndicates throughout the Progenitor Coalition. Many held to the belief that Riazuddiv single handedly helped support the majority of illegal activities in the region.",
     "description": "Lore text: the description of a system an AI holds, shown in the star detail card on the galaxy map when the war's \"System Lore\" option is on (the original pre-release Galactic War lore). Full paragraph. Progenitor(s), the Progenitor Coalition, the Machine Liberation Army (MLA), Loyalist, the Pro-Com War and the Century War, and the people, companies, ships and places it names are proper nouns from PA's fiction; keep them. (lore.js:78)"
   },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.",
+    "description": "Tooltip on the \"Unique AI loadouts\" switch in the co-op settings modal on the war setup screen (gw_start). \"AI player\" = a computer-controlled co-op player the host adds; \"loadout\" = starting tech card; \"holds\" = has as its loadout. \"Separate loadout & tech\" is the name of the base game's co-op option this depends on, so match that translation. Keep \"&amp;\" as written (it renders as \"&\"). Two sentences; keep the full stops. (race_picker.js, gwoUniqueAiLoadoutsTooltip)"
+  },
   "An AI that does not know a race is not offered for it.": {
     "message": "An AI that does not know a race is not offered for it.",
     "description": "Last line of the introduction text in the AI picker dialog on the war setup screen (gw_start), below the list of AIs, joined with <br> by the code. A full sentence explaining that an AI whose build data does not cover a race (Legion, Bugs, Exiles) is left out of that race's dropdown. \"Race\" here is a unit faction; use the stock translation of Race. Keep the full stop. (ai_picker.js, gwoAiModalIntro)"
@@ -3698,6 +3702,10 @@
   "Unable To Expand Delay": {
     "message": "Unable To Expand Delay",
     "description": "Label on the AI Settings dialog opened from the war setup screen (Galactic War start). Row label (CSS uppercases it; a colon follows outside the tag, do not add one): the delay before the AI realises it cannot expand further. Noun phrase. Must agree with its tooltip \"Delay before AI realises it cannot expand.\" (ai_settings.html:253)"
+  },
+  "Unique AI loadouts": {
+    "message": "Unique AI loadouts",
+    "description": "Label of a switch in the co-op settings on the war setup screen: when on, no co-op AI player starts with a loadout (starting tech card) that another player already has. Noun phrase, plural, sentence case like the modal's other rows; \"AI\" is a computer-controlled co-op player the host adds. (coop_ai_loadouts_row.html)"
   },
   "Unique Races": {
     "message": "Unique Races",

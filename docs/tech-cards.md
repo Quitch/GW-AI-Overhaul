@@ -474,7 +474,8 @@ as the war's start card is, and anything else last. It runs the real
 their usual order, with GWO's and the base game's banks held shut
 (`bank.applyInventoryHeld`). The inventory with the card is then compared with
 the inventory without it. A held card is valued the other way round, for a
-swap: the inventory without it against the inventory with it.
+swap, with the hand's best card already in: the inventory with the best card
+and without the held one, against the inventory with both.
 
 Three rules keep this affordable and safe:
 
@@ -537,8 +538,20 @@ its parts carry the names the debug lines print
   `rng`, and a throw is logged and counts as a chance of 0.
 
 The score is the sum, rounded to one decimal place, and the debug line prints
-every part. A new AI's starting loadouts are scored the same way, each against
-the base start card alone.
+every part.
+
+A new AI's starting loadouts are scored against the base start card alone, by
+`scoreLoadout`. It gives every part as above but `unlock`, which counts in full
+only what cards cannot give. A card can grant any unit of `lookup.obtainable`
+later, so a loadout's head start on those units is all it adds: of what they
+are worth, with the same boost and team, the loadout keeps a quarter
+(`headStart`). A unit no card grants, such as a third-party loadout's own, keeps
+its full worth, and so do the units a loadout's `dull` strips, since losing them
+is no head start. The other parts stack with cards, so they stand. A unit
+loadout's lean towards the domain its team lacks therefore stays, but counts for
+a quarter as much against a loadout of stat mods. With everything unlocked,
+Hoarder Commander falls from 414 to 104, level with Swarm Commander, while Terminal
+Commander, whose worth is all stat mods, keeps its 224.
 
 The **held-tech boost** is what makes an AI build around its tech. It comes from
 the inventory before the card, and is worked out once for all the cards of a
@@ -579,9 +592,18 @@ factory, a combat unit, a fabber, or a titan there.
    fewer left.
 4. A best card worth 0 or less is declined, since nothing is worth a slot.
 5. A best card that the bank has room for is taken.
-6. With a full bank, the weakest held card that can go is deleted for the best
-   card, when the best card beats it by more than 3. The loadout in first place
-   never goes, and nor does a card whose removal would not free a slot.
+6. With a full bank, each held card that can go is judged with the best card
+   already in: by what the bank after the swap would lose without it. The
+   weakest is deleted for the best card when the best card beats it by more
+   than 3, so the test measures the swap itself. A held card the best card makes
+   redundant is worth about the price of its slot, below 0, so it goes first:
+   Basic Vehicle Tech for Complete Vehicle Tech, say. Both sides pay the same slot
+   price, a full bank's. The loadout in first place never goes. Nor does a card
+   whose deletion frees no slot for the best card, such as one that brought its
+   own slot, or whose deletion would leave the AI without a basic land factory
+   or an extractor that it has now. So an AI keeps the T1 factory card it was
+   assigned ([`coop.md`](coop.md), "Settling deals") only until another card
+   gives it a land factory.
 7. Otherwise the hand is declined, the bank being full.
 
 The numbers here are `WEIGHTS` in `shared/coop_ai_cards.js`. They are tuning,

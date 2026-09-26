@@ -4,14 +4,29 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (
   refereeAIPaths,
   gwoDifficulty,
   subcommanderTech,
   races,
-  brainTable
+  brainTable,
+  gwoUnit,
+  gwoGroup
 ) {
   var CLUSTER_FACTION = 4;
+  var EXTRACTORS = [
+    gwoUnit.metalExtractorAdvanced,
+    gwoUnit.metalExtractor,
+    gwoUnit.jig,
+  ];
+
+  var holdsAny = function (units, wanted) {
+    return _.some(wanted, function (unit) {
+      return _.includes(units, unit);
+    });
+  };
 
   // The host's inventory is the live GWInventory, where aiMods is an observable;
   // a co-op viewer's arrives deserialised from the war record, where it is a
@@ -419,6 +434,30 @@ define([
       });
 
       return Math.max(aiEconRate, getAIEconFloor(warTier(gwoSettings)));
+    },
+
+    // What an army lacks to fight, by the rule gwc_minion.js deals a Sub
+    // Commander by: "extractor", else "landFactory", else undefined. The
+    // extractor comes first because no card closes that gap. See coop.md,
+    // "AI players' tech".
+    armyGap: function (units) {
+      if (!holdsAny(units, EXTRACTORS)) {
+        return "extractor";
+      }
+      return holdsAny(units, gwoGroup.landFactoriesBasic)
+        ? undefined
+        : "landFactory";
+    },
+
+    // Whether a card can close the gap: a factory card can, unless a dull
+    // strips every basic land factory it would grant.
+    armyGapClosable: function (gap, strippedUnits) {
+      return (
+        gap === "landFactory" &&
+        !_.every(gwoGroup.landFactoriesBasic, function (unit) {
+          return _.includes(strippedUnits || [], unit);
+        })
+      );
     },
 
     quellerCompatibleMinions: function (minions) {

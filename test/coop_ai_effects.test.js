@@ -98,6 +98,9 @@ const gwoCard = loadCouiModule(
 const coopAiDriver = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_driver.js"
 );
+const gwoAI = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
+);
 
 // Third-party tech cards as the New-GW-Cards template writes them: one unlocks
 // the Slammer and names it nowhere else, so a co-op AI player can only judge it
@@ -315,14 +318,49 @@ describe("coop_ai_effects", () => {
     assert.deepEqual(order, ["bot", "air"]);
   });
 
-  it("values a held card by what the inventory loses without it", async () => {
+  it("values a held card by what a swap's bank loses without it", async () => {
     const saved = {
       cards: [{ id: "gwc_start_bot" }, { id: "gwc_damage_bots" }],
       tags: BOT_AI.tags,
     };
-    const [without, withIt] = await effects().withoutCard(saved, 1);
-    assert.equal(without.cards.length, 1);
-    assert.ok(coopAiCards.scoreCard(without, withIt, context()).mods > 0);
+    const incoming = { id: "gwc_enable_air_t1" };
+    const run = effects();
+    const swapped = await run.apply(
+      makeEffects.addCard(makeEffects.removeCard(saved, 1), incoming)
+    );
+    const withIt = await run.apply(makeEffects.addCard(saved, incoming));
+
+    assert.deepEqual(
+      swapped.cards.map((card) => card.id),
+      ["gwc_start_bot", "gwc_enable_air_t1"]
+    );
+    assert.ok(coopAiCards.scoreCard(swapped, withIt, context()).mods > 0);
+  });
+
+  // gwc_minion.js's rule, on the shipped loadouts: Tourist strips every
+  // extractor on each apply, while a T1 factory card gives Naval a factory.
+  it("tells a loadout no card can make fight from one a factory card can", async () => {
+    const run = effects();
+    const loadout = (id) =>
+      run.apply({ cards: [{ id: id }], tags: BOT_AI.tags });
+    const tourist = await loadout("gwaio_start_tourist");
+    const naval = await loadout("gwaio_start_naval");
+    const navalWithFactory = await run.apply({
+      cards: [{ id: "gwaio_start_naval" }, { id: "gwc_enable_bots_t1" }],
+      tags: BOT_AI.tags,
+    });
+
+    assert.equal(gwoAI.armyGap(tourist.units), "extractor");
+    assert.equal(
+      gwoAI.armyGapClosable("extractor", tourist.strippedUnits),
+      false
+    );
+    assert.equal(gwoAI.armyGap(naval.units), "landFactory");
+    assert.equal(
+      gwoAI.armyGapClosable("landFactory", naval.strippedUnits),
+      true
+    );
+    assert.equal(gwoAI.armyGap(navalWithFactory.units), undefined);
   });
 
   it("puts a loadout first and a tech card last", () => {

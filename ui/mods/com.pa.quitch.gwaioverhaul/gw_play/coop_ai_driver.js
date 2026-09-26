@@ -2,8 +2,10 @@
 // recorded since the AI's last is settled on the host, in history order: the
 // hand dealt as a viewer's would be, each card judged by what applying it
 // does, then rerolled, taken, swapped or declined, and the result written to
-// the AI's record in one patch. Only settled results are written, so a reload
-// mid-decision reruns to the same result. See coop.md, "AI players' tech".
+// the AI's record in one patch. An AI with no basic land factory is assigned
+// a T1 factory card in place of a hand. Only settled results are written, so
+// a reload mid-decision reruns to the same result. See coop.md, "AI players'
+// tech".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_effects.js",
@@ -77,6 +79,30 @@ define([
     );
   };
 
+  // Whether a swap's bank holds its cards: the deleted card must have freed
+  // a slot, before any slot the incoming card adds.
+  var holdsCards = function (swapped, incomingSlots) {
+    return (
+      (swapped.cards || []).length <= (swapped.maxCards || 0) - incomingSlots
+    );
+  };
+
+  // The scored loadouts a draw takes from. used: under Unique AI loadouts,
+  // the loadouts in use, left out unless that leaves none above 0.
+  var loadoutPool = function (scored, used) {
+    if (!used) {
+      return { pool: scored };
+    }
+    var pool = _.reject(scored, function (entry) {
+      return _.includes(used, entry.id);
+    });
+    return _.some(pool, function (entry) {
+      return entry.total > 0;
+    })
+      ? { pool: pool }
+      : { pool: scored, fullPool: true };
+  };
+
   // params:
   // - records() - the AI records to serve now, slot order; empty outside a
   //   hosted per-player-tech session
@@ -92,7 +118,12 @@ define([
   // - namesUnits(cardId), chanceOf(card, applied, star) - for a card with no
   //   effect to see
   // - isLoadout(cardId), rerollsRemain(rerollsUsed, cardsOffered)
-  // - decisionRng(record, dealIndex, rerollsUsed)
+  // - armyGap(units), armyGapClosable(gap, strippedUnits) - shared/ai.js's
+  //   rule for an army that can fight
+  // - factoryCards(record) - the T1 factory card ids the AI may be assigned
+  // - dealCard(cardId, applied, star) - resolves that card as dealt
+  // - decisionRng(record, dealIndex, rerollsUsed), factoryRng(record,
+  //   dealIndex)
   // - enqueue(label, apply) - the campaign state queue
   // - write(record, patch) - stores a patched copy, returns it or undefined
   // - canRun() - nothing the pass must wait for is in flight
@@ -166,31 +197,66 @@ define([
       );
     };
 
-    // What each held card is worth now, for a swap: its removal must free a
-    // slot, and the loadout in first place never goes.
-    var scoreHeld = function (record, context, star) {
-      var saved = record.inventory;
-      return Promise.all(
-        _.map(cardsOf(record), function (card, index) {
-          if (index === 0 || params.isLoadout(card.id)) {
+    // One held card's worth for a swap: what deleting it loses once the
+    // incoming card is in. undefined when it cannot go: its deletion must
+    // make room, and must open no gap the AI lacks now.
+    var heldWorth = function (swap, card, index) {
+      return params.effects
+        .apply(
+          coopAiEffects.addCard(
+            coopAiEffects.removeCard(swap.saved, index),
+            swap.incoming
+          )
+        )
+        .then(function (swapped) {
+          var gap = params.armyGap(swapped.units);
+          if (
+            !holdsCards(swapped, swap.incomingSlots) ||
+            (gap && gap !== swap.gapNow)
+          ) {
             return undefined;
           }
-          return params.effects.withoutCard(saved, index).then(function (pair) {
-            if (!fits(pair[0])) {
-              return undefined;
-            }
-            return {
-              index: index,
-              id: card.id,
-              total: coopAiCards.scoreCard(
-                pair[0],
-                pair[1],
-                cardContext(context, card, pair[0], star)
-              ).total,
-            };
-          });
+          return {
+            index: index,
+            id: card.id,
+            total: coopAiCards.scoreCard(
+              swapped,
+              swap.after,
+              cardContext(swap.context, card, swapped, swap.star)
+            ).total,
+          };
+        });
+    };
+
+    // What each held card is worth for a swap with the incoming card. The
+    // loadout in first place never goes. applied: the inventory as it
+    // stands.
+    var scoreHeld = function (record, context, star, incoming, applied) {
+      var saved = record.inventory;
+      return params.effects
+        .apply(coopAiEffects.addCard(saved, incoming))
+        .then(function (after) {
+          var swap = {
+            saved: saved,
+            incoming: incoming,
+            after: after,
+            incomingSlots: Math.max(
+              0,
+              (after.maxCards || 0) - (applied.maxCards || 0)
+            ),
+            gapNow: params.armyGap(applied.units),
+            context: context,
+            star: star,
+          };
+          return Promise.all(
+            _.map(cardsOf(record), function (card, index) {
+              return index === 0 || params.isLoadout(card.id)
+                ? undefined
+                : heldWorth(swap, card, index);
+            })
+          );
         })
-      ).then(_.compact);
+        .then(_.compact);
     };
 
     // The inventory a decision leaves, applied: nothing unapplied is written.
@@ -216,6 +282,64 @@ define([
           });
       }
       return Promise.resolve({});
+    };
+
+    // A deal that finds no basic land factory assigns a T1 factory card in
+    // place of a hand: the least the AI needs to fight. Resolves the outcome,
+    // or undefined to deal a hand as usual, having logged why.
+    var assignFactory = function (record, entry, applied, star, live) {
+      var line =
+        LOG +
+        record.gwaioAi.name +
+        " deal=" +
+        entry.dealIndex +
+        " star=" +
+        entry.star +
+        " ";
+      var dealingHand = function (why) {
+        console.log(
+          line + "no basic land factory, " + why + ": dealing a hand"
+        );
+        return undefined;
+      };
+      var ids = params.factoryCards(record);
+      if (!ids.length) {
+        return Promise.resolve(dealingHand("no factory card to assign"));
+      }
+      var rng = params.factoryRng(record, entry.dealIndex);
+      var id = rng ? rng.pick(ids) : _.sample(ids);
+
+      return Promise.resolve(params.dealCard(id, applied, star)).then(
+        function (card) {
+          live();
+          if (!fits(applied, card)) {
+            return dealingHand("no room for " + id);
+          }
+          return params.effects
+            .apply(coopAiEffects.addCard(record.inventory, card))
+            .then(function (inventory) {
+              live();
+              if (params.armyGap(inventory.units) === "landFactory") {
+                return dealingHand("still none with " + id);
+              }
+              console.log(
+                line + "-> assigned " + id + " (no basic land factory)"
+              );
+              return { inventory: inventory };
+            });
+        },
+        function (error) {
+          console.error(
+            line +
+              "no basic land factory, " +
+              id +
+              " not dealt: " +
+              describe(error) +
+              ": dealing a hand"
+          );
+          return undefined;
+        }
+      );
     };
 
     // The hand the AI settles on, rerolled while its best card is poor.
@@ -268,7 +392,13 @@ define([
           var first = decide(scored, []);
           var decided =
             first.action === "decline" && first.reason === "bank full"
-              ? scoreHeld(record, context, star).then(function (held) {
+              ? scoreHeld(
+                  record,
+                  context,
+                  star,
+                  _.find(scored, { index: first.index }).card,
+                  applied
+                ).then(function (held) {
                   return decide(scored, held);
                 })
               : Promise.resolve(first);
@@ -309,15 +439,25 @@ define([
           live();
           applied = inventory;
           context = contextFor(record, lookup);
-          return params.dealHand({
-            client: client,
-            record: record,
-            dealIndex: entry.dealIndex,
-            starIndex: entry.star,
-            star: star,
-          });
+          return params.armyGap(applied.units) === "landFactory"
+            ? assignFactory(record, entry, applied, star, live)
+            : undefined;
         })
-        .then(judge);
+        .then(function (assigned) {
+          live();
+          if (assigned) {
+            return assigned;
+          }
+          return Promise.resolve(
+            params.dealHand({
+              client: client,
+              record: record,
+              dealIndex: entry.dealIndex,
+              starIndex: entry.star,
+              star: star,
+            })
+          ).then(judge);
+        });
     };
 
     // After a timeout or an error: the first card that fits, if its apply
@@ -554,11 +694,13 @@ define([
     };
 
     // The loadout a new AI starts with: every candidate built and scored
-    // against the base start card, ties broken by its loadout stream.
-    // options: name, candidates (ids), build(id) (resolves the unapplied
-    // starting inventory, General Commander's Sub Commanders included),
-    // baseline (the same with the base start card alone), commander,
-    // teamDomains, rng. Resolves { loadoutCardId, inventory }.
+    // against the base start card, less those it could never fight with,
+    // and one drawn by score from its loadout stream. options: name,
+    // candidates (ids), build(id) (resolves the unapplied starting
+    // inventory, General Commander's Sub Commanders included), baseline (the
+    // same with the base start card alone), commander, teamDomains, rng, and
+    // under Unique AI loadouts used (the loadouts in use). Resolves
+    // { loadoutCardId, inventory }.
     var chooseStartingLoadout = function (options) {
       var lookup = params.lookup();
       var context = {
@@ -567,6 +709,7 @@ define([
         teamDomains: options.teamDomains,
         memo: {},
       };
+      var dropped = [];
 
       var scoreCandidate = function (before, id) {
         return Promise.resolve()
@@ -577,9 +720,14 @@ define([
             return params.effects.apply(saved);
           })
           .then(function (after) {
+            var gap = params.armyGap(after.units);
+            if (gap && !params.armyGapClosable(gap, after.strippedUnits)) {
+              dropped.push({ id: id, gap: gap });
+              return undefined;
+            }
             return _.assign(
               { id: id, inventory: after },
-              coopAiCards.scoreCard(
+              coopAiCards.scoreLoadout(
                 before,
                 after,
                 _.assign({ namesUnits: false, chance: 0 }, context)
@@ -615,19 +763,22 @@ define([
           );
         })
         .then(function (scored) {
-          var chosen = scored.length
-            ? coopAiCards.best(scored, options.rng)
-            : undefined;
+          var drawn = loadoutPool(scored, options.used);
+          var chosen = coopAiCards.chooseLoadout(drawn.pool, options.rng);
           console.log(
             coopAiCards.describeLoadouts({
               name: options.name,
               via: lookup.via,
               scored: scored,
+              pool: drawn.pool,
+              dropped: dropped,
+              used: options.used,
+              fullPool: drawn.fullPool,
               chosen: chosen && chosen.id,
             })
           );
           if (!chosen) {
-            throw new Error("no starting loadout could be built");
+            throw new Error("no starting loadout could be chosen");
           }
           return {
             loadoutCardId: chosen.id,

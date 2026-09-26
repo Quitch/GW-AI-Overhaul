@@ -450,6 +450,36 @@ describe("loadoutCandidates", () => {
   });
 });
 
+// Unique AI loadouts: whatever the first card of each player's inventory is,
+// if it is still a loadout.
+describe("loadoutsInUse", () => {
+  const isLoadout = (id) => typeof id === "string" && id.includes("_start_");
+
+  it("lists each player's loadout once, from a GWInventory or a saved inventory", () => {
+    const host = { cards: () => [{ id: "gwc_start_bot" }, { id: "x" }] };
+    const records = [
+      { cards: [{ id: "gwaio_start_hoarder" }] },
+      { cards: [{ id: "gwc_start_bot" }] },
+      undefined,
+    ];
+    assert.deepEqual(roster.loadoutsInUse([host].concat(records), isLoadout), [
+      "gwc_start_bot",
+      "gwaio_start_hoarder",
+    ]);
+  });
+
+  // Any card can be deleted, the loadout included.
+  it("skips an inventory whose first card is no longer a loadout, or that has none", () => {
+    assert.deepEqual(
+      roster.loadoutsInUse(
+        [{ cards: [{ id: "gwc_damage_bots" }] }, { cards: [] }, {}],
+        isLoadout
+      ),
+      []
+    );
+  });
+});
+
 describe("teammates", () => {
   it("reads the units and commander of a GWInventory or a saved inventory", () => {
     const live = {

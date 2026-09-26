@@ -46,6 +46,12 @@ const coopAiEffects = loadCouiModule(
 const coopAiCards = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js"
 );
+const gwoRng = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js"
+);
+const gwoStreams = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_streams.js"
+);
 
 const COMMANDER = "/u/commander";
 
@@ -53,10 +59,31 @@ const CELLS = {
   "/u/commander": ["Land", "Basic", "Commander"],
   "/u/bot_factory": ["Bot", "Basic", "Factory"],
   "/u/bot": ["Bot", "Basic", "Combat"],
+  "/u/bot_adv": ["Bot", "Advanced", "Combat"],
   "/u/air_factory": ["Air", "Basic", "Factory"],
+  "/u/vehicle_factory": ["Vehicle", "Basic", "Factory"],
   "/u/naval_factory": ["Naval", "Basic", "Factory"],
   "/u/orbital_factory": ["Orbital", "Basic", "Factory"],
+  "/u/orbital_titan": ["Orbital", "Advanced", "Titan"],
 };
+
+// gwc_minion.js's rule, as shared/ai.js reads it, over this unit table.
+const LAND_FACTORIES = [
+  "/u/bot_factory",
+  "/u/air_factory",
+  "/u/vehicle_factory",
+];
+const armyGap = (units) => {
+  if (!units.includes("/u/extractor")) {
+    return "extractor";
+  }
+  return LAND_FACTORIES.some((unit) => units.includes(unit))
+    ? undefined
+    : "landFactory";
+};
+const armyGapClosable = (gap, stripped) =>
+  gap === "landFactory" &&
+  !LAND_FACTORIES.every((unit) => (stripped || []).includes(unit));
 
 const LOOKUP = {
   via: "specs",
@@ -77,27 +104,51 @@ const LOOKUP = {
   obtainable: [],
 };
 
-// What each card id does when applied.
+// What each card id does when applied. strips: the units its dull removes.
 const EFFECTS = {
   gwc_start_bot: {
-    units: ["/u/commander", "/u/bot_factory", "/u/bot"],
+    units: ["/u/commander", "/u/extractor", "/u/bot_factory", "/u/bot"],
     maxCards: 3,
   },
-  gwc_start: { units: ["/u/commander"], maxCards: 3 },
+  gwc_start: { units: ["/u/commander", "/u/extractor"], maxCards: 3 },
   gwc_start_air: {
-    units: ["/u/commander", "/u/air_factory"],
+    units: ["/u/commander", "/u/extractor", "/u/air_factory"],
     maxCards: 3,
   },
   gwc_start_naval: {
-    units: ["/u/commander", "/u/naval_factory"],
+    units: ["/u/commander", "/u/extractor", "/u/naval_factory"],
+    maxCards: 3,
+  },
+  gwc_start_orbital: {
+    units: ["/u/commander", "/u/extractor", "/u/orbital_factory"],
+    maxCards: 2,
+  },
+  gwc_start_tourist: {
+    units: ["/u/commander", "/u/bot_factory"],
+    strips: ["/u/extractor"],
+    maxCards: 3,
+  },
+  gwc_start_grounded: {
+    units: ["/u/commander", "/u/extractor", "/u/naval_factory"],
+    strips: LAND_FACTORIES,
     maxCards: 3,
   },
   air: { units: ["/u/air_factory"] },
   naval: { units: ["/u/naval_factory"] },
   orbital: { units: ["/u/orbital_factory"] },
+  orbital_titan: { units: ["/u/orbital_factory", "/u/orbital_titan"] },
+  orbital_air: { units: ["/u/orbital_factory", "/u/air_factory"] },
   bot_armour: {
     mods: [{ file: "/u/bot", path: "max_health", op: "multiply", value: 1.5 }],
   },
+  gwc_enable_air_t1: { units: ["/u/air_factory"] },
+  gwc_enable_bots_t1: { units: ["/u/bot_factory", "/u/bot"] },
+  gwc_enable_vehicles_t1: { units: ["/u/vehicle_factory"] },
+  gwc_enable_stripped: { units: ["/u/bot_factory"], strips: LAND_FACTORIES },
+  titan_naval: { units: ["/u/orbital_titan", "/u/naval_factory"] },
+  titan_air: { units: ["/u/orbital_titan", "/u/air_factory"] },
+  gwc_enable_bots_all: { units: ["/u/bot_factory", "/u/bot", "/u/bot_adv"] },
+  slot_card: { maxCards: 1 },
 };
 
 const applyFake = (saved) => {
@@ -110,12 +161,17 @@ const applyFake = (saved) => {
     minions: [],
     maxCards: 0,
   };
+  let strips = [];
   _.forEach(saved.cards, (card) => {
     const effect = EFFECTS[card.id] || {};
     applied.units = _.uniq(applied.units.concat(effect.units || []));
     applied.mods = applied.mods.concat(effect.mods || []);
     applied.maxCards += effect.maxCards || 0;
+    strips = strips.concat(effect.strips || []);
   });
+  applied.units = _.difference(applied.units, strips);
+  // As the real apply's: not enumerable, so no stored copy carries it.
+  Object.defineProperty(applied, "strippedUnits", { value: _.uniq(strips) });
   return applied;
 };
 
@@ -144,11 +200,6 @@ const fakeEffects = (options) => {
           })
       );
     },
-    withoutCard: (saved, index) =>
-      Promise.all([
-        apply(coopAiEffects.removeCard(saved, index)),
-        apply(saved),
-      ]),
   };
 };
 
@@ -216,6 +267,7 @@ function setup(overrides) {
     queued: [],
     afterPass: 0,
     running: [],
+    dealt: [],
   };
   const hands = _.cloneDeep(options.hands);
   const rerolled = _.cloneDeep(options.rerolled);
@@ -270,7 +322,17 @@ function setup(overrides) {
     chanceOf: () => 0,
     isLoadout: (id) => /_start/.test(id),
     rerollsRemain: (used, offered) => used < offered - 1,
+    armyGap,
+    armyGapClosable,
+    factoryCards: options.factoryCards || (() => ["gwc_enable_bots_t1"]),
+    dealCard: (cardId, applied, star) => {
+      calls.dealt.push({ cardId, applied, star });
+      return options.dealCard
+        ? options.dealCard(cardId)
+        : Promise.resolve({ id: cardId });
+    },
     decisionRng: () => undefined,
+    factoryRng: options.factoryRng || (() => undefined),
     enqueue: (label, apply) => {
       calls.queued.push(label);
       apply();
@@ -529,18 +591,14 @@ describe("coop_ai_driver.run", () => {
   });
 });
 
-// The memo each scoreCard call is given, in call order.
-async function memosOf(action) {
+// The memo each call of a scorer is given, in call order.
+async function memosOf(action, scorer = "scoreCard") {
   const memos = [];
-  const scoreCard = coopAiCards.scoreCard;
-  const spy = mock.method(
-    coopAiCards,
-    "scoreCard",
-    (before, after, context) => {
-      memos.push(context.memo);
-      return scoreCard(before, after, context);
-    }
-  );
+  const score = coopAiCards[scorer];
+  const spy = mock.method(coopAiCards, scorer, (before, after, context) => {
+    memos.push(context.memo);
+    return score(before, after, context);
+  });
   try {
     await action();
   } finally {
@@ -566,19 +624,21 @@ describe("coop_ai_driver memo", () => {
 
   it("judges every starting loadout on one memo", async () => {
     const run = setup();
-    const memos = await memosOf(() =>
-      run.driver.chooseStartingLoadout({
-        name: "AI1",
-        candidates: ["gwc_start_air", "gwc_start_naval"],
-        build: (id) =>
-          Promise.resolve({
-            cards: [{ id: id }],
-            tags: { global: { commander: COMMANDER } },
-          }),
-        baseline: { cards: [{ id: "gwc_start" }], tags: {} },
-        commander: COMMANDER,
-        teamDomains: [],
-      })
+    const memos = await memosOf(
+      () =>
+        run.driver.chooseStartingLoadout({
+          name: "AI1",
+          candidates: ["gwc_start_air", "gwc_start_naval"],
+          build: (id) =>
+            Promise.resolve({
+              cards: [{ id: id }],
+              tags: { global: { commander: COMMANDER } },
+            }),
+          baseline: { cards: [{ id: "gwc_start" }], tags: {} },
+          commander: COMMANDER,
+          teamDomains: [],
+        }),
+      "scoreLoadout"
     );
 
     assert.equal(memos.length, 2);
@@ -765,44 +825,117 @@ describe("coop_ai_driver.chooseStartingLoadout", () => {
       cards: [{ id: id }],
       tags: { global: { commander: COMMANDER } },
     });
+  // A stream whose every roll is `value`, as chooseLoadout reads one.
+  const roll = (value) => () => value;
+  const choose = (run, extra) =>
+    run.driver.chooseStartingLoadout(
+      Object.assign(
+        {
+          name: "AI1",
+          candidates: ["gwc_start_air", "gwc_start_naval"],
+          build,
+          baseline: {
+            cards: [{ id: "gwc_start" }],
+            tags: { global: { commander: COMMANDER } },
+          },
+          commander: COMMANDER,
+          teamDomains: ["Land", "Air"],
+        },
+        extra
+      )
+    );
+  const loadoutLine = () => _.find(lines, (line) => / loadout via=/.test(line));
 
-  it("takes the loadout that opens the domain its team lacks", async () => {
-    const run = setup();
-    const chosen = await run.driver.chooseStartingLoadout({
-      name: "AI1",
-      candidates: ["gwc_start_air", "gwc_start_naval"],
-      build,
-      baseline: {
-        cards: [{ id: "gwc_start" }],
-        tags: { global: { commander: COMMANDER } },
-      },
-      commander: COMMANDER,
-      teamDomains: ["Land", "Air"],
-    });
+  // Air scores 18 and Naval 23 with Land and Air fielded, so Naval, which
+  // opens the domain the team lacks, is drawn 23 times in 41.
+  it("draws the loadout from its stream, the likelier the more it scores", async () => {
+    const stream = () =>
+      gwoStreams.coopAiLoadoutRng(gwoRng.create("loadout war"), 1);
+    const chosen = await choose(setup(), { rng: stream() });
 
     assert.equal(chosen.loadoutCardId, "gwc_start_naval");
     assert.deepEqual(_.pluck(chosen.inventory.cards, "id"), [
       "gwc_start_naval",
     ]);
-    assert.ok(
-      lines.some((line) =>
-        /^\[GW COOP AI\] AI1 loadout via=specs candidates: gwc_start_air=.*gwc_start_naval=.* -> chose gwc_start_naval$/.test(
-          line
-        )
-      ),
-      JSON.stringify(lines)
+    assert.equal(
+      (await choose(setup(), { rng: stream() })).loadoutCardId,
+      chosen.loadoutCardId
+    );
+    assert.match(
+      loadoutLine(),
+      /^\[GW COOP AI\] AI1 loadout via=specs candidates: gwc_start_air=18 \(.* chance 43\.9%\), gwc_start_naval=23 \(.* chance 56\.1%\) -> chose gwc_start_naval$/
     );
   });
 
+  it("takes the roll from the stream it is given", async () => {
+    assert.equal(
+      (await choose(setup(), { rng: roll(0.43) })).loadoutCardId,
+      "gwc_start_air"
+    );
+    assert.equal(
+      (await choose(setup(), { rng: roll(0.44) })).loadoutCardId,
+      "gwc_start_naval"
+    );
+  });
+
+  // Tourist strips every extractor, and a dull stripping every basic land
+  // factory would strip one a card granted too. Naval's gap a factory card
+  // closes, so it stays.
+  it("drops a loadout it could never fight with, and logs it with its gap", async () => {
+    const chosen = await choose(setup(), {
+      candidates: [
+        "gwc_start_tourist",
+        "gwc_start_grounded",
+        "gwc_start_naval",
+      ],
+      rng: roll(0),
+    });
+
+    assert.equal(chosen.loadoutCardId, "gwc_start_naval");
+    assert.match(
+      loadoutLine(),
+      /candidates: gwc_start_naval=23 \(.* chance 100%\) dropped: gwc_start_tourist \(extractor\), gwc_start_grounded \(landFactory\) -> chose gwc_start_naval$/
+    );
+  });
+
+  it("under Unique AI loadouts, leaves out the loadouts in use and logs them", async () => {
+    const chosen = await choose(setup(), {
+      used: ["gwc_start_naval", "gwc_start_bot"],
+      rng: roll(0.99),
+    });
+
+    assert.equal(chosen.loadoutCardId, "gwc_start_air");
+    assert.match(
+      loadoutLine(),
+      /gwc_start_air=18 \(.* chance 100%\), gwc_start_naval=23 \(.* chance 0%\) used: gwc_start_naval, gwc_start_bot -> chose gwc_start_air$/
+    );
+  });
+
+  it("draws from the whole pool when every loadout worth a slot is in use", async () => {
+    const chosen = await choose(setup(), {
+      used: ["gwc_start_air", "gwc_start_naval"],
+      rng: roll(0.99),
+    });
+
+    assert.equal(chosen.loadoutCardId, "gwc_start_naval");
+    assert.match(
+      loadoutLine(),
+      /chance 56\.1%\) used: gwc_start_air, gwc_start_naval \(all in use: full pool\) -> chose gwc_start_naval$/
+    );
+  });
+
+  it("leaves nothing out with Unique AI loadouts off", async () => {
+    const chosen = await choose(setup(), { rng: roll(0.99) });
+
+    assert.equal(chosen.loadoutCardId, "gwc_start_naval");
+    assert.doesNotMatch(loadoutLine(), / used: /);
+  });
+
   it("skips a loadout that cannot be built", async () => {
-    const run = setup();
-    const chosen = await run.driver.chooseStartingLoadout({
-      name: "AI1",
+    const chosen = await choose(setup(), {
       candidates: ["broken", "gwc_start_bot"],
       build: (id) =>
         id === "broken" ? Promise.reject(new Error("no card")) : build(id),
-      baseline: { cards: [{ id: "gwc_start" }], tags: {} },
-      commander: COMMANDER,
       teamDomains: [],
     });
 
@@ -811,17 +944,253 @@ describe("coop_ai_driver.chooseStartingLoadout", () => {
   });
 
   it("fails when no loadout can be built", async () => {
-    const run = setup();
     await assert.rejects(
-      run.driver.chooseStartingLoadout({
-        name: "AI1",
+      choose(setup(), {
         candidates: ["broken"],
         build: () => Promise.reject(new Error("no card")),
-        baseline: { cards: [{ id: "gwc_start" }], tags: {} },
-        commander: COMMANDER,
-        teamDomains: [],
       }),
       /no starting loadout/
     );
+    assert.match(loadoutLine(), /-> none$/);
+  });
+});
+
+describe("coop_ai_driver T1 factory card", () => {
+  // An AI on the Naval loadout, which has no basic land factory.
+  const navalAi = (cards) =>
+    aiRecord(1, cards || hand(["gwc_start_naval"]), {
+      loadoutCardId: "gwc_start_naval",
+    });
+  const T1 = [
+    "gwc_enable_air_t1",
+    "gwc_enable_bots_t1",
+    "gwc_enable_vehicles_t1",
+  ];
+
+  it("assigns one in place of the first deal's hand, and logs it", async () => {
+    // No hand is ever answered, so dealing one would time out.
+    const run = setup({ records: [navalAi()], hands: {} });
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), [
+      "gwc_start_naval",
+      "gwc_enable_bots_t1",
+    ]);
+    assert.equal(record.techCardDealCount, 1);
+    assert.ok(record.inventory.units.includes("/u/bot_factory"));
+    assert.equal(run.calls.deals.length, 0);
+    assert.deepEqual(run.calls.dealt[0].star, { index: 0 });
+    assert.ok(run.calls.dealt[0].applied.units.includes("/u/naval_factory"));
+    assert.ok(
+      lines.includes(
+        "[GW COOP AI] AI1 deal=1 star=0 -> assigned gwc_enable_bots_t1 (no basic land factory)"
+      ),
+      JSON.stringify(lines)
+    );
+  });
+
+  it("draws the card from the AI's factory stream, the same on a reload", async () => {
+    const assigned = async (serial) => {
+      const run = setup({
+        records: [
+          aiRecord(serial, hand(["gwc_start_naval"]), {
+            loadoutCardId: "gwc_start_naval",
+          }),
+        ],
+        hands: {},
+        factoryCards: () => T1,
+        factoryRng: (record, dealIndex) =>
+          gwoStreams.coopAiFactoryRng(
+            gwoRng.create("factory war"),
+            record.gwaioAi.serial,
+            dealIndex
+          ),
+      });
+      await run.driver.run();
+      return cardIds(run.store.find("gwo_ai_" + serial))[1];
+    };
+
+    const first = await assigned(1);
+    assert.ok(T1.includes(first), first);
+    assert.equal(await assigned(1), first);
+    const picks = new Set();
+    for (let serial = 1; serial <= 12; serial++) {
+      picks.add(await assigned(serial));
+    }
+    assert.ok(picks.size > 1, [...picks].join());
+  });
+
+  it("deals a hand as usual when no factory card qualifies", async () => {
+    const run = setup({
+      records: [navalAi()],
+      hands: { 1: [hand(["air"])] },
+      factoryCards: () => [],
+    });
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_naval",
+      "air",
+    ]);
+    assert.ok(
+      lines.includes(
+        "[GW COOP AI] AI1 deal=1 star=0 no basic land factory, no factory card to assign: dealing a hand"
+      ),
+      JSON.stringify(lines)
+    );
+  });
+
+  // A third-party dull could strip the factory the card grants.
+  it("deals a hand as usual when the card leaves it without one", async () => {
+    const run = setup({
+      records: [navalAi()],
+      hands: { 1: [hand(["air"])] },
+      factoryCards: () => ["gwc_enable_stripped"],
+    });
+    await run.driver.run();
+
+    assert.ok(
+      lines.some((line) =>
+        /deal=1 star=0 no basic land factory, still none with gwc_enable_stripped: dealing a hand$/.test(
+          line
+        )
+      ),
+      JSON.stringify(lines)
+    );
+    assert.equal(run.calls.deals.length, 1);
+  });
+
+  it("deals a hand as usual when the card cannot be dealt", async () => {
+    const run = setup({
+      records: [navalAi()],
+      hands: { 1: [hand(["air"])] },
+      dealCard: () => Promise.reject(new Error("GWO card not found")),
+    });
+    await run.driver.run();
+
+    assert.deepEqual(cardIds(run.store.find("gwo_ai_1")), [
+      "gwc_start_naval",
+      "air",
+    ]);
+    assert.ok(
+      lines.some((line) =>
+        /no basic land factory, gwc_enable_bots_t1 not dealt: GWO card not found: dealing a hand$/.test(
+          line
+        )
+      ),
+      JSON.stringify(lines)
+    );
+  });
+
+  it("deals a hand as usual when the bank has no room for the card", async () => {
+    const run = setup({
+      records: [navalAi(hand(["gwc_start_naval", "junk", "junk2"]))],
+      hands: { 1: [hand(["air"])] },
+    });
+    await run.driver.run();
+
+    assert.ok(
+      lines.some((line) =>
+        /no basic land factory, no room for gwc_enable_bots_t1: dealing a hand$/.test(
+          line
+        )
+      ),
+      JSON.stringify(lines)
+    );
+    assert.equal(run.calls.deals.length, 1);
+  });
+
+  it("deals an AI with a basic land factory its hand", async () => {
+    const run = setup();
+    await run.driver.run();
+
+    assert.equal(run.calls.dealt.length, 0);
+    assert.equal(run.calls.deals.length, 1);
+  });
+});
+
+describe("coop_ai_driver swap judgement", () => {
+  // A full bank: the loadout's slots, all taken. Each hand is one card, so
+  // no reroll is left to spend.
+  const fullAi = (ids) => aiRecord(1, hand(ids), { loadoutCardId: ids[0] });
+  const settled = async (records, incoming) => {
+    const run = setup({ records, hands: { 1: [hand([incoming])] } });
+    await run.driver.run();
+    return cardIds(run.store.find("gwo_ai_1"));
+  };
+
+  it("deletes the T1 card an incoming card makes redundant", async () => {
+    assert.deepEqual(
+      await settled(
+        [fullAi(["gwc_start_naval", "gwc_enable_bots_t1", "bot_armour"])],
+        "gwc_enable_bots_all"
+      ),
+      ["gwc_start_naval", "bot_armour", "gwc_enable_bots_all"]
+    );
+    assert.ok(
+      lines.some((line) =>
+        /-> deleted gwc_enable_bots_t1 took gwc_enable_bots_all$/.test(line)
+      ),
+      JSON.stringify(lines)
+    );
+  });
+
+  it("deletes the T1 card first once its replacement is held", async () => {
+    assert.deepEqual(
+      await settled(
+        [
+          fullAi([
+            "gwc_start_naval",
+            "gwc_enable_bots_all",
+            "gwc_enable_bots_t1",
+          ]),
+        ],
+        "orbital"
+      ),
+      ["gwc_start_naval", "gwc_enable_bots_all", "orbital"]
+    );
+  });
+
+  // Worth 36 against the T1 card's 17.5, so only the gap keeps the card.
+  it("keeps the card that gives its only basic land factory", async () => {
+    assert.deepEqual(
+      await settled(
+        [fullAi(["gwc_start_orbital", "gwc_enable_bots_t1"])],
+        "titan_naval"
+      ),
+      ["gwc_start_orbital", "gwc_enable_bots_t1"]
+    );
+    assert.ok(lines.some((line) => /declined \(bank full\)/.test(line)));
+  });
+
+  it("lets that card go for one that brings a basic land factory", async () => {
+    assert.deepEqual(
+      await settled(
+        [fullAi(["gwc_start_orbital", "gwc_enable_bots_t1"])],
+        "titan_air"
+      ),
+      ["gwc_start_orbital", "titan_air"]
+    );
+  });
+
+  // Deleting a card that brought its own slot frees none, so the swap would
+  // overflow the bank, though the card itself is worth nothing.
+  it("never counts a card that brought its own slot as freeing one", async () => {
+    assert.deepEqual(
+      await settled(
+        [
+          aiRecord(1, [
+            { id: "gwc_start_bot" },
+            { id: "air" },
+            { id: "naval" },
+            { id: "slot_card", allowOverflow: true },
+          ]),
+        ],
+        "orbital"
+      ),
+      ["gwc_start_bot", "air", "naval", "slot_card"]
+    );
+    assert.ok(lines.some((line) => /declined \(bank full\)/.test(line)));
   });
 });

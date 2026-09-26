@@ -276,6 +276,23 @@ define([
     return _.reject(ids, params.raceLocks);
   };
 
+  // The loadouts the war's players hold, for Unique AI loadouts: the first
+  // card of each inventory, a GWInventory or a saved one, if it is still a
+  // loadout, since any card can be deleted.
+  var loadoutsInUse = function (inventories, isLoadout) {
+    return _(inventories)
+      .compact()
+      .map(function (inventory) {
+        var cards = _.isFunction(inventory.cards)
+          ? inventory.cards()
+          : inventory.cards;
+        return _.get(cards, "0.id");
+      })
+      .filter(isLoadout)
+      .uniq()
+      .value();
+  };
+
   // The units and commander of each of an AI's teammates, from a GWInventory
   // or a saved inventory, for the team factor in its card scores.
   var teammates = function (inventories) {
@@ -435,6 +452,7 @@ define([
     pickAiCommander: pickAiCommander,
     pickAiRace: pickAiRace,
     loadoutCandidates: loadoutCandidates,
+    loadoutsInUse: loadoutsInUse,
     teammates: teammates,
     buildAiRecord: buildAiRecord,
     withStartingTech: withStartingTech,

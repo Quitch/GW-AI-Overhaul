@@ -1,6 +1,7 @@
 // The race picker: the player's race and the commander list for the chosen
 // race. Only shown when GW Server Mods has a race's server mod active. The
-// AI brains are per race, in ai_picker.js's modal. See races.md.
+// AI brains are per race, in ai_picker.js's modal. See races.md. Also the
+// co-op modal's Separate races and Unique AI loadouts rows.
 (function () {
   // A throw in the requireGW callback below would otherwise escape into
   // RequireJS with no GWO prefix, and Go To War would stay blocked.
@@ -48,14 +49,30 @@
       }
       model.gwoDraftPerPlayerRace(!model.gwoDraftPerPlayerRace());
     };
+    // Co-op: an AI player never draws a loadout another player holds. Only
+    // per-player tech gives an AI a loadout of its own. See coop.md.
+    model.gwoDraftUniqueAiLoadouts = ko.observable(false);
+    model.gwoUniqueAiLoadoutsSwitchText = ko.computed(function () {
+      return model.gwoDraftUniqueAiLoadouts() &&
+        model.draftNewGamePerPlayerTechCards()
+        ? loc("!LOC:ON")
+        : loc("!LOC:OFF");
+    });
+    model.toggleGwoDraftUniqueAiLoadouts = function () {
+      if (!model.draftNewGamePerPlayerTechCards()) {
+        return;
+      }
+      model.gwoDraftUniqueAiLoadouts(!model.gwoDraftUniqueAiLoadouts());
+    };
     model.draftNewGamePerPlayerTechCards.subscribe(function (value) {
       if (!value) {
         model.gwoDraftPerPlayerRace(false);
+        model.gwoDraftUniqueAiLoadouts(false);
       }
     });
 
     // The stock co-op modal owns the draft/apply cycle, so seed from and commit
-    // to the setting through its own two functions. See shadowing.md,
+    // to the settings through its own two functions. See shadowing.md,
     // "Function hijacking".
     var openCoopSettingsModal = model.openCoopSettingsModal;
     model.openCoopSettingsModal = function () {
@@ -63,6 +80,9 @@
       model.gwoDraftPerPlayerRace(
         settings.perPlayerRace() && model.draftNewGamePerPlayerTechCards()
       );
+      // Not gated on the per-player draft: stock never remembers that, so
+      // the row would forget the saved choice at every new war.
+      model.gwoDraftUniqueAiLoadouts(settings.uniqueAiLoadouts());
     };
     var applyCoopSettingsModal = model.applyCoopSettingsModal;
     model.applyCoopSettingsModal = function () {
@@ -70,11 +90,17 @@
         model.gwoDraftPerPlayerRace() &&
           !!model.draftNewGamePerPlayerTechCards()
       );
+      settings.uniqueAiLoadouts(
+        model.gwoDraftUniqueAiLoadouts() &&
+          !!model.draftNewGamePerPlayerTechCards()
+      );
       applyCoopSettingsModal.apply(this, arguments);
     };
 
     model.gwoPerPlayerRaceTooltip =
       "!LOC:Each player picks their own race when they choose their loadout. Requires Separate loadout &amp; tech.";
+    model.gwoUniqueAiLoadoutsTooltip =
+      "!LOC:An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.";
     model.gwoRaceTooltip =
       "!LOC:The units you and your Sub Commanders field. Each race's AI is picked with the AI button.";
     model.gwoUniqueRacesTooltip =
@@ -105,6 +131,12 @@
         )
       );
     locTree($("#gwo-per-player-race-row"));
+    $("#gwo-per-player-race-row").after(
+      loadHtml(
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/coop_ai_loadouts_row.html"
+      )
+    );
+    locTree($("#gwo-unique-ai-loadouts-row"));
 
     requireGW(
       [
