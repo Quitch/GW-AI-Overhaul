@@ -20,7 +20,7 @@
 
 ### Bugfix
 
-- In a Galactic War battle, every player's units on your screen now match the ones the game runs, including the tech that changes weapon lists or armour damage, such as Stryker and Pelican upgrades and the anti tech
+- In a Galactic War battle, every army's units on your screen now match the ones the game runs, including tech that changes weapon lists or armour damage, such as the Stryker and Pelican upgrades and the anti tech, and the enemy's own tech
 
 ## v7.4.1 - 2026-09-24
 

@@ -1,4 +1,4 @@
-// Stock gw_lobby and gw_reconnect_loading rebuild each player tag's specs
+// Stock gw_lobby and gw_reconnect_loading rebuild each army tag's specs
 // from local files through stock GW.specs, and mount that overlay over the
 // referee's files. Before either scene's handler builds it, this swaps
 // GW.specs.genUnitSpecs and modSpecs for shared/lobby_specs.js's stand-ins

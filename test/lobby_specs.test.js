@@ -49,13 +49,14 @@ function fakes() {
 }
 
 describe("sentByReferee", () => {
-  it("is true only for a player tag whose unit list the referee sent", () => {
+  it("is true only for a tag whose unit list the referee sent", () => {
     const files = refereeFiles();
     assert.equal(lobbySpecs.sentByReferee(files, ".player"), true);
     assert.equal(lobbySpecs.sentByReferee(files, ".player1"), true);
+    assert.equal(lobbySpecs.sentByReferee(files, ".ai0"), true);
     assert.equal(lobbySpecs.sentByReferee(files, ".player2"), false);
-    assert.equal(lobbySpecs.sentByReferee(files, ".ai0"), false);
-    assert.equal(lobbySpecs.sentByReferee(files, ".playerx"), false);
+    assert.equal(lobbySpecs.sentByReferee(files, ".ai1"), false);
+    assert.equal(lobbySpecs.sentByReferee(files, ""), false);
     assert.equal(lobbySpecs.sentByReferee(files, undefined), false);
     assert.equal(lobbySpecs.sentByReferee(undefined, ".player"), false);
   });
@@ -67,9 +68,10 @@ describe("replacements.genUnitSpecs", () => {
     const { calls, stock, mod } = fakes();
     const specs = lobbySpecs.replacements(refereeFiles(), stock, mod);
 
-    const resolved = await specs.genUnitSpecs([TANK], ".player");
-
-    assert.deepEqual(resolved, {});
+    assert.deepEqual(await specs.genUnitSpecs([TANK], ".player"), {});
+    // An enemy AI's tag too: stock would mount unmodded copies over the
+    // referee's AI tech.
+    assert.deepEqual(await specs.genUnitSpecs([TANK], ".ai0"), {});
     assert.deepEqual(calls.gen, []);
   });
 
@@ -77,12 +79,12 @@ describe("replacements.genUnitSpecs", () => {
     const { calls, stock, mod } = fakes();
     const specs = lobbySpecs.replacements(refereeFiles(), stock, mod);
 
-    assert.deepEqual(specs.genUnitSpecs([TANK], ".ai0"), { stock: ".ai0" });
+    assert.deepEqual(specs.genUnitSpecs([TANK], ".ai1"), { stock: ".ai1" });
     assert.deepEqual(specs.genUnitSpecs([TANK], ".player2"), {
       stock: ".player2",
     });
     assert.deepEqual(calls.gen, [
-      [[TANK], ".ai0"],
+      [[TANK], ".ai1"],
       [[TANK], ".player2"],
     ]);
   });
