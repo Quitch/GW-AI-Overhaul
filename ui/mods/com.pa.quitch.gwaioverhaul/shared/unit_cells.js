@@ -25,6 +25,13 @@ define([
     });
   };
 
+  // Whether the types say what the unit is for. The Deep Space Radar's stub
+  // carries only its faction bit, which classify would put in the basic
+  // fabrication tower's cell. See races.md, "Add-ons".
+  var classifiable = function (types) {
+    return stripTypes(types).length > 0;
+  };
+
   // First match wins. Orbital before Land keeps the launcher orbital; Land
   // before Naval puts the vanilla mine, tagged both, beside a race's land-only
   // one.
@@ -606,6 +613,7 @@ define([
     COMMANDER: COMMANDER,
     bare: bare,
     stripTypes: stripTypes,
+    classifiable: classifiable,
     classify: classify,
     chainValue: chainValue,
     effectiveTypes: effectiveTypes,

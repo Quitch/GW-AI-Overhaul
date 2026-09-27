@@ -218,6 +218,48 @@ describe("Second Wave under capability cells", () => {
     assert.ok(!bugsFielded.includes(secondWave.units.metalGenerator));
   });
 
+  it("brings each race's basic fabrication tower to a basic fabber, past the Deep Space Radar stub (skipped without it in the fixture)", (t) => {
+    if (!harvested) {
+      t.skip("fixture harvested without Second Wave");
+      return;
+    }
+    const held = [gwoUnit.botFabber, gwoUnit.vehicleFabber];
+    const radar = gwoUnit.deepSpaceOrbitalRadar;
+    const radarMod = {
+      file: radar,
+      path: "max_health",
+      op: "multiply",
+      value: 2,
+    };
+    // Share the tower's cell, and nothing held builds them.
+    const unbuilt = [
+      "/pa/units/research/unlocks/base_unlock/base_unlock.json",
+      "/pa/units/land/l_land_mine/triggered/l_land_mine.json",
+    ];
+    for (const [raceId, tower] of [
+      ["mla", secondWave.units.fabricationTower],
+      ["legion", secondWave.units.fabricationTurret],
+      ["bugs", secondWave.units.fabricationTowerBugs],
+    ]) {
+      const index = fixtureIndex(raceId);
+      const fielded =
+        raceId === "mla"
+          ? cells.addonUnitsFor(held, index.vanilla, index.race)
+          : cells.raceUnitsFor(held, index.vanilla, index.race);
+      assert.equal(index.vanilla.cellOf[radar], undefined, raceId);
+      assert.ok(fielded.includes(tower), raceId);
+      for (const unit of unbuilt) {
+        assert.ok(!fielded.includes(unit), raceId + " " + unit);
+      }
+      // A mod on the radar stays on it, not on the towers.
+      assert.deepEqual(
+        cells.expandMods([radarMod], index.vanilla, index.race, () => true),
+        [radarMod],
+        raceId
+      );
+    }
+  });
+
   it("keeps its units out of the vanilla side of every index (skipped without it in the fixture)", (t) => {
     if (!harvested) {
       t.skip("fixture harvested without Second Wave");

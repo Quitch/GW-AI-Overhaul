@@ -913,6 +913,99 @@ describe("exclusive units and add-ons", () => {
     assert.ok(!cells.raceUnitsFor([FACTORY], v, r).includes(FX_TANK));
   });
 
+  describe("a vanilla unit whose only type is its faction bit", () => {
+    // The Deep Space Radar's stub: classify puts it in the basic fabrication
+    // tower's cell, where it is the only buildable vanilla occupant.
+    const RADAR = "/pa/units/orbital/deep_space_radar/deep_space_radar.json";
+    const FABBER = "/pa/units/land/fabrication_bot/fabrication_bot.json";
+    const FX_FABBER = "/pa/units/land/fx_fabber/fx_fabber.json";
+    const TOWER = "/pa/units/addon/fab_tower/fab_tower.json";
+    const FX_FAB_TOWER = "/pa/units/fx_addon/fab_tower/fab_tower.json";
+    const stubSpecs = Object.assign({}, specs, {
+      [RADAR]: { unit_types: T("Custom58") },
+      [FABBER]: {
+        unit_types: T("Basic Bot Construction Fabber Land Mobile Custom58"),
+        buildable_types: "FabBuild & Custom58",
+      },
+      [FX_FABBER]: {
+        unit_types: T("Basic Bot Construction Fabber Land Mobile Custom7"),
+        buildable_types: "FabBuild & Custom7",
+      },
+      [TOWER]: { unit_types: T("Basic Structure FabBuild Custom58") },
+      [FX_FAB_TOWER]: { unit_types: T("Basic Structure FabBuild Custom7") },
+    });
+    const stubUnits = units.concat([
+      RADAR,
+      FABBER,
+      FX_FABBER,
+      TOWER,
+      FX_FAB_TOWER,
+    ]);
+    const vanillaSide = (classifiableOnly) =>
+      cells.buildIndex(
+        stubUnits,
+        stubSpecs,
+        (types, path) =>
+          cells.vanillaMember(types) &&
+          (!classifiableOnly || cells.classifiable(types)) &&
+          !addonPaths[path] &&
+          path !== TOWER
+      );
+    const race = cells.buildIndex(
+      stubUnits,
+      stubSpecs,
+      cells.raceMember("Custom7"),
+      exclusive
+    );
+    const addon = cells.buildIndex(
+      stubUnits,
+      stubSpecs,
+      (types, path) => cells.vanillaMember(types) && path === TOWER,
+      exclusive
+    );
+
+    it("is not classifiable", () => {
+      assert.equal(cells.classifiable(T("Custom58")), false);
+      assert.equal(cells.classifiable(T("Custom58 FabBuild NoBuild")), false);
+      assert.equal(cells.classifiable(undefined), false);
+      assert.equal(cells.classifiable(T("Structure Custom58")), true);
+      // classify still files it by its defaults.
+      assert.equal(cells.classify(T("Custom58")).key, "Land/Basic/Structure");
+    });
+
+    it("fills the tower's cell when indexed, so no tower is reached", () => {
+      const filled = vanillaSide(false);
+      assert.deepEqual(filled.unitsByCell["Land/Basic/Structure"], [RADAR]);
+      assert.ok(
+        !cells.raceUnitsFor([FABBER], filled, race).includes(FX_FAB_TOWER)
+      );
+      assert.ok(!cells.addonUnitsFor([FABBER], filled, addon).includes(TOWER));
+    });
+
+    it("left out of the vanilla side, lets a held fabber build the tower", () => {
+      const vanilla = vanillaSide(true);
+      assert.equal(vanilla.cellOf[RADAR], undefined);
+      assert.deepEqual(cells.raceUnitsFor([FABBER], vanilla, race), [
+        FX_FABBER,
+        FX_FAB_TOWER,
+      ]);
+      assert.deepEqual(cells.addonUnitsFor([FABBER], vanilla, addon), [
+        FABBER,
+        TOWER,
+      ]);
+      // A mod on the stub stays on it rather than landing on the towers.
+      const mod = { file: RADAR, path: "max_health", op: "multiply", value: 2 };
+      assert.deepEqual(
+        cells.expandMods([mod], vanilla, race, () => true),
+        [mod]
+      );
+      assert.deepEqual(
+        cells.expandMods([mod], vanilla, addon, () => true),
+        [mod]
+      );
+    });
+  });
+
   describe("addonUnitsFor", () => {
     it("keeps everything held and adds the add-on units of the held cells", () => {
       assert.deepEqual(cells.addonUnitsFor([ANT, ANT, DOX], v, a), [
