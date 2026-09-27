@@ -2863,6 +2863,10 @@
     "message": "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.",
     "description": "Description of a starting commander loadout (a start card), shown as body text under the loadout name in the loadout picker when starting a Galactic War and in its card tooltip. This is the Tactical Nuke Commander loadout: it starts with a vehicle factory, Ant tanks, Skitter scouts, vehicle fabbers and a Nuke Launcher whose missiles are made about 100 times cheaper but do about 2% of normal damage with a much smaller blast radius, and it can never build the Anchor, Catapult, Flak Cannon, Kessler, laser defence towers or the advanced torpedo launcher. Must agree with the loadout name 'Tactical Nuke Commander' and with the two unit blurbs 'Tactical Nuke Launcher - ...' and 'Tactical Nuke - ...'. 'Nuke' is the game's own short word for a nuclear missile; keep the same term. (nem_start_nuke.js)"
   },
+  "Report a Galactic War Bug": {
+    "message": "Report a Galactic War Bug",
+    "description": "Label of a button and two menu items that open this mod's bug-report form on GitHub in the player's web browser. Shown on the war setup screen (gw_start) beside \"Saved Games\", in the galaxy map's game menu (gw_play) after \"Settings\", and in the in-battle menu of a Galactic War battle (live_game) after \"Game Settings\". Imperative verb phrase; render \"Galactic War\" the way the game's own translation renders the mode's name. Title case, no punctuation; the war setup screen shows it in capitals. (gw_start/report_bug_button.html, gw_play/menu.html, live_game/menu.js)"
+  },
   "Reroll the data caches but get offered one less.": {
     "message": "Reroll the data caches but get offered one less.",
     "description": "Tooltip on the \"Reroll Tech\" button under the tech card offer on the galaxy map; \"data caches\" is Galactic War flavour for the tech cards on offer. Rerolling draws a new set with one fewer card. Sentence, keep the full stop. (cards_system_reroll.html)"

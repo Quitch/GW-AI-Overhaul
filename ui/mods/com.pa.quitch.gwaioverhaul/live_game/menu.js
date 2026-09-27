@@ -8,6 +8,12 @@
       return condition ? stringIfTrue : stringIfFalse;
     };
 
+    model.gwoMenuReportBug = function () {
+      model.closeMenu();
+      model.gwoReportBug();
+    };
+    $(".div_game_menu").addClass("gwo-game-menu");
+
     requireGW(["shared/gw_common"], function (GW) {
       var activeGameId = ko.observable().extend({ local: "gw_active_game" });
       var hardcore = ko.observable();
@@ -68,6 +74,10 @@
             action: "menuSettings",
           },
           {
+            label: "!LOC:Report a Galactic War Bug",
+            action: "gwoMenuReportBug",
+          },
+          {
             // patch Surrender and Continue War buttons to handle more than two teams
             label: getMenuString(playerLost, overString, exitString),
             action: getMenuAction(playerLost),
@@ -80,7 +90,7 @@
         ];
 
         if (model.canSave()) {
-          menu.splice(6, 0, {
+          menu.splice(7, 0, {
             label: "!LOC:Save Game",
             action: "menuSaveWar",
           });

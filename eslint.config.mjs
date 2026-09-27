@@ -39,6 +39,7 @@ export default defineConfig([
         PlayFab: "readonly",
         Build: "readonly",
         i18n: "readonly",
+        engine: "readonly",
       },
       sourceType: "script",
     },

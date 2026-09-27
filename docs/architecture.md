@@ -30,7 +30,7 @@ nothing else. `validate:docs` checks this table against that block:
 | `gw_start`                   | War creation: the setup lobby, difficulty/AI pickers, loadout selection.                           |
 | `gw_play`                    | The galaxy map and everything during a war: cards, referees, panels, intel, ping, co-op selection. |
 | `gw_war_over`                | Victory/defeat bookkeeping: records the highest difficulty defeated.                               |
-| `live_game`                  | In-battle menu patches (surrender/continue with more than two teams).                              |
+| `live_game`                  | In-battle menu patches (surrender/continue with more than two teams; Report a Galactic War Bug).   |
 | `live_game_options_bar`      | Win-conditions text on the in-battle options bar.                                                  |
 | `shared_build`               | Planetary radar behaviour.                                                                         |
 | `start`                      | Main menu.                                                                                         |

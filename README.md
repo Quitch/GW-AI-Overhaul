@@ -171,7 +171,7 @@ GWO's text is translated into German, Spanish, French, Italian, Japanese, Korean
 
 ## Report a Bug
 
-Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository.
+Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHub repository. In the game, the Report a Galactic War Bug button on the war setup screen, in the galaxy map's menu, and in the battle menu opens a new bug report there.
 
 ### Known issues
 
