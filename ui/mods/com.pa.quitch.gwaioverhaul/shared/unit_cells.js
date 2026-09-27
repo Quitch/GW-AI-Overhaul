@@ -483,19 +483,29 @@ define([
         return;
       }
 
-      if (_.isFunction(has) && has(mod.file)) {
-        out.push(mod);
-      }
-
       var change = [mod.path, mod.op, JSON.stringify(mod.value)].join("|");
-      _.forEach(targets, function (target) {
+      // A kept original joins the passes too: a race can mount the vanilla
+      // file itself (Legion's commanders fire the stock AA ammo), and that
+      // file must take the change once, not once as itself and again as a
+      // race part.
+      var land = function (target, landed) {
         var key = target + "|" + change;
         var pass = passes[key];
         if (!pass || pass[mod.file]) {
           pass = passes[key] = {};
-          out.push(_.assign({}, mod, { file: target }));
+          out.push(landed);
         }
         pass[mod.file] = true;
+      };
+
+      var kept = _.isFunction(has) && has(mod.file);
+      if (kept) {
+        land(mod.file, mod);
+      }
+      _.forEach(targets, function (target) {
+        if (!kept || target !== mod.file) {
+          land(target, _.assign({}, mod, { file: target }));
+        }
       });
     });
 
