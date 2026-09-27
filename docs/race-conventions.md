@@ -57,7 +57,10 @@ race needs something new.
    descriptor shape. They check that the cells the starter set and the `gwc_`
    cards open all hold a race unit. They check any race-specific grant rule
    (Bugs' research). They check that the withheld-card list is exactly the
-   MLA-only set plus whatever the race lacks.
+   MLA-only set plus whatever the race lacks. `test/unit_jobs.test.js` covers
+   every registered race without a change: it fails when a race unit of a
+   mobile combat cell has no vanilla unit a card can grant standing for it,
+   and when a mobile combat unit carries a bit the job rule does not know.
 6. **Docs**: add a section in `races.md`, a CHANGELOG line, and anything new
    here.
 7. **Live**: play a war as the race and a war against it. Check the primed
@@ -121,13 +124,16 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   no `Custom*` at all. A commander's `buildable_types` is the race's `CmdBuild`
   expression. `races.commanderRetagMods` produces exactly that shape for a
   vanilla commander that a race army keeps.
-- **Cells decide what a race player fields.** Nothing per race is hand-mapped.
-  `test/unit_groups_cells.test.js` validates the classifier's domain and class
-  precedence (`shared/unit_cells.js`) against `shared/unit_groups.js`. A new
-  race vocabulary (Legion `Shield`, Bugs `TacticalDefense`, Exiles `Sub`) needs
-  no change unless it names a domain or class the classifier does not know.
-- **A part belongs to the unit whose directory holds it** when units of
-  several cells share it (the Dox's ammo also arms an advanced vehicle).
+- **Cells and jobs decide what a race player fields.** Nothing per race is
+  hand-mapped. `test/unit_groups_cells.test.js` validates the classifier's
+  domain and class precedence (`shared/unit_cells.js`) against
+  `shared/unit_groups.js`. A race's bits on a mobile combat unit (Legion
+  `Shield`, Bugs `TacticalDefense`, Exiles `Sub`) are jobs
+  ([`races.md`](races.md), "Jobs"). A bit that is neither a domain, tier,
+  class, or job bit nor stripped fails `test/unit_jobs.test.js`, and needs a
+  decision: a job in `unit_cells`' `JOBS` table, or the test's ignore list.
+- **A part belongs to the unit whose directory holds it** when several units
+  share it (the Dox's ammo also arms an advanced vehicle).
 - **`unit_list.json` is authoritative.** A race's units are the list's. A
   spec that its AI unit map names but its list lacks is a bug in the mod's AI
   data (Bugs' Evolution Chambers). This repo never adds a workaround for it.

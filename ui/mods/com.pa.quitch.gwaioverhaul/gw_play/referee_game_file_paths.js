@@ -135,10 +135,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   // The units a player's specs are built for, and the retag mods its
-  // commanders need. A race player fields the race's units of the cells the
-  // vanilla ones held occupy, and a kept vanilla unit (the Colonel) is
-  // retagged so the race can build it; an MLA player keeps everything held and
-  // gains the add-on units of those cells. Neither keeps another race's units
+  // commanders need. A race player fields the race units the vanilla ones
+  // held stand for, and a kept vanilla unit (the Colonel) is retagged so the
+  // race can build it; an MLA player keeps everything held and gains the
+  // add-on units they stand for. Neither keeps another race's units
   // from `units`; `extra` is kept whole. params: units, extra, cells, race,
   // isMla, commanders, unitCells, gwoRaces. See races.md.
   var specPlan = function (params) {

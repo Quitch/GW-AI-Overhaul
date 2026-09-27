@@ -165,7 +165,10 @@ describe("Second Wave under capability cells", () => {
         secondWave.units.metalGenerator
       )
     );
-    assert.ok(fielded([gwoUnit.dox]).includes(secondWave.units.rex));
+    // The Rex's OrbitalDefense is no basic vanilla bot's job, so the bots
+    // whose jobs no add-on unit shares bring it, and the Dox does not.
+    assert.ok(fielded([gwoUnit.grenadier]).includes(secondWave.units.rex));
+    assert.ok(!fielded([gwoUnit.dox]).includes(secondWave.units.rex));
     assert.ok(fielded([gwoUnit.atlas]).includes(secondWave.units.juno));
     // The advanced towers and storages sit in cells no vanilla unit fills:
     // an advanced fabber builds them.

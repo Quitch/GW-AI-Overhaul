@@ -18,6 +18,7 @@ const unitGroups = loadCouiModule(MOD_ROOT + "/shared/unit_groups.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const gwoSpecs = loadCouiModule(MOD_ROOT + "/gw_play/specs.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
+const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 
 races.registerShipped();
 
@@ -41,8 +42,12 @@ const HOST_COMMANDER =
   "/pa/units/commanders/imperial_invictus/imperial_invictus.json";
 const LEGION_FACTORY =
   "/pa/units/land/l_vehicle_factory/l_vehicle_factory.json";
-// Legion's units of the Ant's cell, Vehicle/Basic/Combat.
-const ANT_CELL = LEGION.race.unitsByCell[LEGION.vanilla.cellOf[gwoUnit.ant]];
+// The Legion units the Ant stands for: the Shank and the Stoke.
+const ANT_STAND_INS = unitCells.standInsFor(
+  LEGION.vanilla,
+  LEGION.race
+)(gwoUnit.ant);
+const LYNX = "/pa/units/l_addon/anti_orbital_armor/lynx.json";
 
 const health = (file) => ({
   file,
@@ -53,7 +58,7 @@ const health = (file) => ({
 const sorted = (list) => list.slice().sort();
 
 describe("coop_ai_fielded inventory", () => {
-  it("fields the race's units of the cells the vanilla ones held occupy", () => {
+  it("fields the race units the vanilla ones held stand for", () => {
     const saved = {
       units: [LEGION_COMMANDER, gwoUnit.vehicleFactory, gwoUnit.ant],
       mods: [],
@@ -61,16 +66,23 @@ describe("coop_ai_fielded inventory", () => {
     };
     const fielded = viewOf("legion", LEGION).inventory(saved);
 
-    assert.ok(ANT_CELL.length > 1);
-    for (const unit of ANT_CELL.concat(LEGION_COMMANDER, LEGION_FACTORY)) {
+    assert.deepEqual(
+      sorted(ANT_STAND_INS),
+      sorted([gwoUnit.legion.shank, gwoUnit.legion.stoke])
+    );
+    for (const unit of ANT_STAND_INS.concat(LEGION_COMMANDER, LEGION_FACTORY)) {
       assert.ok(fielded.units.includes(unit), unit);
     }
     assert.ok(!fielded.units.includes(gwoUnit.ant));
+    assert.ok(
+      !fielded.units.includes(LYNX),
+      "the Spinner's job, not the Ant's"
+    );
     assert.equal(fielded.cards, saved.cards);
     assert.equal(saved.units.length, 3, "the saved inventory is left as is");
   });
 
-  it("lands a vanilla unit's mod on each of the race's units of its cell", () => {
+  it("lands a vanilla unit's mod on each race unit it stands for", () => {
     const fielded = viewOf("legion", LEGION).inventory({
       units: [LEGION_COMMANDER, gwoUnit.vehicleFactory, gwoUnit.ant],
       mods: [health(gwoUnit.ant)],
@@ -78,7 +90,7 @@ describe("coop_ai_fielded inventory", () => {
 
     assert.deepEqual(
       sorted(fielded.mods.map((mod) => mod.file)),
-      sorted(ANT_CELL)
+      sorted(ANT_STAND_INS)
     );
   });
 
@@ -109,9 +121,17 @@ describe("coop_ai_fielded inventory", () => {
       legion.inventory({ units, mods: [], strippedUnits: [gwoUnit.ant] })
         .strippedUnits;
 
-    assert.deepEqual(sorted(stripped([LEGION_COMMANDER])), sorted(ANT_CELL));
-    // The Inferno shares the Ant's cell, so the cell is fielded.
-    assert.deepEqual(stripped([LEGION_COMMANDER, gwoUnit.inferno]), []);
+    assert.deepEqual(
+      sorted(stripped([LEGION_COMMANDER])),
+      sorted(ANT_STAND_INS)
+    );
+    // The Inferno stands for the Maul alone; the Stryker, like the Ant, for
+    // the Shank and the Stoke.
+    assert.deepEqual(
+      sorted(stripped([LEGION_COMMANDER, gwoUnit.inferno])),
+      sorted(ANT_STAND_INS)
+    );
+    assert.deepEqual(stripped([LEGION_COMMANDER, gwoUnit.stryker]), []);
   });
 
   it("hands back the same inventory for the same saved one, the latest 16 kept", () => {
@@ -137,7 +157,7 @@ describe("coop_ai_fielded reach and obtainable", () => {
     const fielded = legion.inventory({ units: units.concat(LEGION_COMMANDER) });
     const reached = legion.reachable(fielded.units, LEGION_COMMANDER, []);
 
-    for (const unit of ANT_CELL.concat(LEGION_FACTORY)) {
+    for (const unit of ANT_STAND_INS.concat(LEGION_FACTORY)) {
       assert.ok(reached.includes(unit), unit);
     }
   });
@@ -147,7 +167,7 @@ describe("coop_ai_fielded reach and obtainable", () => {
     const fielded = legion.inventory({ units: units.concat(HOST_COMMANDER) });
     const reached = legion.reachable(fielded.units, HOST_COMMANDER, []);
 
-    for (const unit of ANT_CELL.concat(LEGION_FACTORY)) {
+    for (const unit of ANT_STAND_INS.concat(LEGION_FACTORY)) {
       assert.ok(reached.includes(unit), unit);
     }
     assert.deepEqual(
@@ -157,7 +177,7 @@ describe("coop_ai_fielded reach and obtainable", () => {
   });
 
   it("lists the race's units a card could grant, commanders aside", () => {
-    for (const unit of ANT_CELL) {
+    for (const unit of ANT_STAND_INS) {
       assert.ok(legion.obtainable.includes(unit), unit);
     }
     assert.ok(!legion.obtainable.includes(gwoUnit.ant));
@@ -207,11 +227,17 @@ describe("coop_ai_fielded scoring", () => {
     );
   });
 
-  it("values a vanilla unit whose cell the race already fields at nothing", () => {
+  it("values a vanilla unit that stands for race units already fielded at nothing", () => {
     const race = inventory(LEGION_COMMANDER);
-    const inferno = { units: [gwoUnit.inferno] };
+    const stryker = { units: [gwoUnit.stryker] };
 
-    assert.ok(score(race, inferno).unlock > 0);
-    assert.equal(score(race, inferno, legion).unlock, 0);
+    assert.ok(score(race, stryker).unlock > 0);
+    assert.equal(score(race, stryker, legion).unlock, 0);
+  });
+
+  it("values a vanilla unit of the Ant's cell with another job for the unit it brings", () => {
+    const race = inventory(LEGION_COMMANDER);
+
+    assert.ok(score(race, { units: [gwoUnit.spinner] }, legion).unlock > 0);
   });
 });

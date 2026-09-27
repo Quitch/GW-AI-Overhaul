@@ -159,6 +159,14 @@ define([
           );
           return index;
         }
+        if (_.isEmpty(index.vanilla.fieldable)) {
+          console.warn(
+            "gwoRaces: no stock unit is buildable from a commander - jobs" +
+              " off, " +
+              race.id +
+              "'s cells whole"
+          );
+        }
         indexes[key] = index;
         gwoRaces.setCells(race.id, index);
       }

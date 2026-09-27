@@ -26,9 +26,9 @@ their own cards, and their own subcommanders. That changes several assumptions:
 
 The race is read per inventory, never from the host's. The loadout scene stamps
 a race onto the viewer's starting inventory. The per-player referee expands each
-viewer's units and mods onto that race's files by capability cell. It retags
-their commander (and its Sub Commanders') the way the Guardians' Unicorn is
-retagged. It routes their subcommanders to that race's tree. **Separate races**
+viewer's units and mods onto that race's files by capability cell and job. It
+retags their commander (and its Sub Commanders') the way the Guardians' Unicorn
+is retagged. It routes their subcommanders to that race's tree. **Separate races**
 decides which race is stamped. When it is off, every viewer gets the host's
 race. When it is on, each viewer gets their own pick. See
 [`races.md`](races.md).
@@ -594,8 +594,8 @@ inventory. Each AI has:
   first AI is `.player1`. The tag is not stored, so it can change from battle to
   battle.
 - **Its own specs**: its units plus `model.gwoSpecs`, generated on its tag with
-  its own mods. Its units and mods follow its race's capability cells, and its
-  commanders are retagged, exactly as the host's are
+  its own mods. Its units and mods follow its race's capability cells and
+  jobs, and its commanders are retagged, exactly as the host's are
   (`referee_game_file_paths.specPlan`).
 - **Its own AI tree**: `player_coopai_<serial>/` on its co-op brain, so an MLA
   AI's tree carries its own AI mods ([`ai-paths.md`](ai-paths.md), "Co-op AI

@@ -119,7 +119,7 @@ define([
           );
         }
         // The AI's tech names vanilla files; a race army's land on the race
-        // files of the same cell too, and an MLA army's on the add-on files.
+        // files they stand for too, and an MLA army's on the add-on files.
         // Its spec set holds every listed unit, so the originals stay as
         // well. A mod on a race file the specs lack is dropped. See races.md.
         aiInventory = gwoRaces.modsFor(
@@ -388,7 +388,8 @@ define([
         // A race army reads the brain that carries its race (or Titans) from
         // that brain's own map with the race's maps laid over it, at the race's
         // tree; a vanilla spec_id the race maps left falls back to a race unit
-        // of its cell. Guardians mirror the player, race included. See races.md.
+        // it stands for. Guardians mirror the player, race included. See
+        // races.md.
         var armyOf = function (n) {
           return n === 0 ? ai : ai.foes[n - 1];
         };
@@ -403,8 +404,9 @@ define([
             loadMap(getAIUnitMapPath(false, brain)),
             loadMap(getAIUnitMapPath(true, brain)),
           ].concat(_.map(raceMaps, loadMap));
-          // A key the race maps left falls back to a race unit of its cell,
-          // preferring one the race's own AI data knows over an add-on's.
+          // A key the race maps left falls back to a race unit its vanilla
+          // unit stands for, preferring one the race's own AI data knows over
+          // an add-on's.
           var merge = function (base, extra) {
             var merged = mergeUnitMaps(base, extra);
             return cells

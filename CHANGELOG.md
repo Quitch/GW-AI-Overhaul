@@ -18,6 +18,7 @@
 - Tooltips stay open while the pointer is over them, close with Escape, and have more space between lines
 - Warning and progress text is easier to read against the background
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover
+- Tech cards and loadouts for one kind of unit now give and change only the Legion, Bugs, Exiles, and add-on units that do the same job: an Ant card no longer changes the Lynx, and a Spinner card no longer changes the Shank
 
 ### Bugfix
 
