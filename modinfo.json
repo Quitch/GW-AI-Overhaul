@@ -56,6 +56,10 @@
     "gw_war_over": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_war_over/stats.js"
     ],
+    "gw_lobby": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_lobby/specs.js"],
+    "gw_reconnect_loading": [
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_lobby/specs.js"
+    ],
     "live_game": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/win_conditions.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"

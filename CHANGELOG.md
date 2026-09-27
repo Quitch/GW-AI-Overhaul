@@ -26,6 +26,7 @@
 - Tech that changes commander weapons no longer applies twice to the anti-air and torpedo weapons of Legion commanders
 - MLA, Legion, and Bugs armies with Second Wave, and Exiles armies, can build their basic fabrication tower without the Planetary Radar
 - A tech card from another mod that changes the Planetary Radar no longer changes the basic fabrication towers too
+- In a Galactic War battle, every army's units on your screen now match the ones the game runs, including tech that changes weapon lists or armour damage, such as the Stryker and Pelican upgrades and the anti tech, and the enemy's own tech
 
 ## v7.4.1 - 2026-09-24
 
