@@ -67,7 +67,10 @@ function fixtureIndex(raceId) {
       units,
       specs,
       (types, unit) =>
-        unitCells.vanillaMember(types) && !isAddon(unit) && !foreign[unit]
+        unitCells.vanillaMember(types) &&
+        unitCells.classifiable(types) &&
+        !isAddon(unit) &&
+        !foreign[unit]
     ),
     race: unitCells.buildIndex(
       units,

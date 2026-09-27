@@ -635,6 +635,54 @@ describe("races", () => {
     );
   });
 
+  it("deals a card whose entry lists races to those races alone", () => {
+    const deal = (race, id, entry) =>
+      helpers.raceCanDeal(races, inventoryOf(race), id, [
+        Object.assign({ id: id }, entry),
+      ]);
+
+    // MLA only, whatever its id.
+    assert.equal(
+      deal("mla", "mym_ant_health", { units: [gwoUnit.ant], races: ["mla"] }),
+      true
+    );
+    assert.equal(
+      deal("fixture", "mym_ant_health", {
+        units: [gwoUnit.ant],
+        races: ["mla"],
+      }),
+      false
+    );
+    // In place of the _upgrade_ rule, and trimmed and case-blind.
+    assert.equal(
+      deal("fixture", "gwaio_upgrade_ant", {
+        units: [gwoUnit.ant],
+        races: [" Fixture ", "mla"],
+      }),
+      true
+    );
+    assert.equal(
+      deal("mla", "gwaio_upgrade_ant", {
+        units: [gwoUnit.ant],
+        races: ["fixture"],
+      }),
+      false
+    );
+    // A listed race still needs a unit in a cell it fills.
+    assert.equal(
+      deal("fixture", "mym_dox_health", {
+        units: [gwoUnit.dox],
+        races: ["fixture"],
+      }),
+      false
+    );
+    // No list: the rules above.
+    assert.equal(
+      deal("fixture", "gwaio_upgrade_ant", { units: [gwoUnit.ant] }),
+      false
+    );
+  });
+
   it("sees an entry pushed, or changed, after an earlier deal", () => {
     const list = [{ id: "bot_card", units: [gwoUnit.dox] }];
     const fixture = inventoryOf("fixture");

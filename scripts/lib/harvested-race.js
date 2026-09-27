@@ -24,7 +24,11 @@ function harvestedIndex(unitTypes, buildable, bit) {
   }
   const units = Object.keys(specs);
   return {
-    vanilla: cells.buildIndex(units, specs, cells.vanillaMember),
+    vanilla: cells.buildIndex(
+      units,
+      specs,
+      (types) => cells.vanillaMember(types) && cells.classifiable(types)
+    ),
     race: cells.buildIndex(units, specs, cells.raceMember(bit)),
   };
 }

@@ -214,6 +214,28 @@ walker treats the leaf segment differently. The leaf is allowed to see a real
 "missing" signal, so that ops like `multiplyOrCreate` and `add` can tell "absent"
 from "present".
 
+## A modded spec is flattened
+
+The first mod on a spec flattens it: `specs.mod` merges the spec's `base_spec`
+chain into it and drops `base_spec`. It reads each base as it stands at that
+moment, so a base that an earlier mod changed passes the change down. A child
+modded after its base therefore takes the change twice on every key it
+inherits: once from the base, and once as its own mod. A key that the child
+sets itself is not affected, because the child's value wins the merge.
+
+So a group that names a child and its base lists the child first.
+`gwoGroup.commanderAmmo` lists the main gun's ammo
+(`base_commander_ammo_bullet.json`, `base_commander_ammo_laser.json`) before
+`base_commander_ammo.json`. Both set their own `damage`. They inherit other
+keys, such as the `armor_damage_map` that the armour cards create. Ops run in
+buckets ([the op table](#the-op-table)), and each bucket keeps the list's
+order, so the rule holds for every op. `test/specs.test.js` pins both the
+doubling and this order.
+
+Without a mod, a spec keeps its `base_spec`. The engine then resolves the chain
+itself, and a key that the child sets replaces the key of the base. A mod on a
+base alone therefore never reaches a child that sets the same key.
+
 ## Arrays replace, they do not merge
 
 `_.merge`'s default behaviour for arrays is index-by-index, which is wrong for PA
@@ -273,6 +295,46 @@ file again instead of inheriting the rejection.
 and `references` are both walks over it, so the two cannot disagree about what
 counts as a reference. Projectiles such as Lob ammo can spawn units when they
 expire, so `spawn_unit_on_death` is one of them.
+
+## The lobby overlay
+
+Every client of a Galactic War battle passes through stock's `gw_lobby`, which
+mounts the files the referee sent. A client that rejoins a battle passes
+through `gw_reconnect_loading`, which does the same with the files the server
+sends again. Before it mounts them, each scene's `buildLocalClientOverlayFiles`
+rebuilds every army tag from local files with stock `GW.specs.genUnitSpecs`.
+For a player tag (`.player`, and each `.player<N>` of per-player tech) it also
+applies the saved inventory's mods with stock `GW.specs.modSpecs`. An enemy AI's
+tag (`.ai<N>`) gets no mods at all, where the referee applied its AI tech. The
+result is mounted over the referee's files.
+
+Stock's `modSpecs` has no `wipe`, `prepend` or `multiplyOrCreate`, and it logs
+`Invalid operation in mod` for each of them. It has no op order, and it never
+lands a mod on race or add-on units. Its `tag` also tags a reference a second
+time after a skipped `prepend` (`.player.player`). So a client mounted specs
+that differed from the ones the referee built and the server ran, for players
+and enemy AIs alike.
+
+`gw_lobby/specs.js`, listed in both scenes, wraps the handler that receives
+the files (`gw_config` in `gw_lobby`, `memory_files` in
+`gw_reconnect_loading`). It holds the stock handler until it has swapped
+`GW.specs.genUnitSpecs` and `modSpecs` for the stand-ins in
+`shared/lobby_specs.js`. Stock looks both up on the module when it calls them,
+through the loader it chooses (`requireGW` when defined), so the script uses
+the same loader. If the modules fail to load, stock runs unchanged.
+
+- For a tag whose `/pa/units/unit_list.json<tag>` the referee sent,
+  `genUnitSpecs` resolves `{}` at once, so nothing is fetched. For a player
+  tag, `modSpecs` then deletes every file the referee also sent, so the
+  referee's copy is the one mounted. What is left is the tag's AI unit maps
+  that stock builds and the referee did not send, as before.
+- A tag the referee did not send goes to stock's `genUnitSpecs`. A player tag
+  of that kind then takes GWO's `gw_play/specs.js` `mod` in place of stock's
+  `modSpecs`: GWO's ops and their order, with no race expansion.
+
+The client therefore mounts exactly what the server runs for every army. A
+client's own skin mods no longer apply to the units of a battle's armies: the
+referee's files win.
 
 ## Where to look next
 

@@ -35,6 +35,8 @@ nothing else. `validate:docs` checks this table against that block:
 | `shared_build`               | Planetary radar behaviour.                                                                         |
 | `start`                      | Main menu.                                                                                         |
 | `gw_coop_per_player_loadout` | Per-player loadout selection for co-op viewers.                                                    |
+| `gw_lobby`                   | The battle lobby: the referee's army specs win over stock's local rebuild.                         |
+| `gw_reconnect_loading`       | Rejoining a battle: the same as `gw_lobby`, for the files the server sends again.                  |
 | `global_mod_list`            | Every panel, before the scene's own scripts: translation registration only.                        |
 
 `gw_play` carries most of the entries. Two of its entries own a panel outright.
@@ -120,6 +122,10 @@ steps in order:
    galaxy.md, "Difficulty" and "AI personalities and penchants".
 5. In co-op with per-player tech, `gw_per_player_tech_referee.js` runs afterwards
    and adds each viewer's own specs and subcommanders.
+6. Every client then enters stock's `gw_lobby`, which mounts the referee's files.
+   Stock first rebuilds each army tag's specs from local files, and that
+   overlay would replace the referee's. `gw_lobby/specs.js` keeps the referee's
+   copies. See [`specs.md`](specs.md), "The lobby overlay".
 
 Everything from the click to the hand-off to `connect_to_game` sits behind
 `gw_play/launch_progress.js`. That file wraps `model.fight` and shows a loading
