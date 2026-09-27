@@ -98,7 +98,7 @@ function otherSites(count) {
   return " and " + count + " other site" + (count > 1 ? "s" : "");
 }
 
-// The generated translator note: role, site, where a player sees it, the
+// The generated translator note: role, site file, where a player sees it, the
 // source snippet, the facts the site carries, and the rules for the role.
 function describe(key, entry) {
   const site = entry.sites[0];
@@ -106,7 +106,7 @@ function describe(key, entry) {
   const others = entry.sites.length - 1;
 
   parts.push(
-    site.role + " in " + site.file + ":" + site.line + otherSites(others) + ".",
+    site.role + " in " + site.file + otherSites(others) + ".",
     "Shown: " + shownIn(site.file) + ".",
     "Source: `" + site.snippet + "`."
   );

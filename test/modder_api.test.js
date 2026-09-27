@@ -263,6 +263,7 @@ const CARD_HELPERS = [
   "observerPaths",
   "playerIsCluster",
   "startCard",
+  "stockOnly",
   "subcommanderWeight",
   "travelledFar",
   "travelledModerate",

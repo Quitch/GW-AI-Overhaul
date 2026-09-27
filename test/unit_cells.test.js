@@ -450,6 +450,121 @@ describe("expandMods", () => {
     );
   });
 
+  it("lands a change once on a vanilla part the race also mounts", () => {
+    // Legion's commanders fire the stock commander AA ammo, so that file is
+    // both the army's own and one of the race's parts.
+    const MAIN_WEAPON =
+      "/pa/units/commanders/base_commander/base_commander_tool_laser_weapon.json";
+    const MAIN_AMMO =
+      "/pa/units/commanders/base_commander/base_commander_ammo_laser.json";
+    const AA_WEAPON =
+      "/pa/units/commanders/base_commander/base_commander_tool_aa_weapon.json";
+    const AA_AMMO =
+      "/pa/units/commanders/base_commander/base_commander_aa_ammo.json";
+    const FX_COMMANDER2 = "/pa/units/commanders/fx_beta/fx_beta.json";
+    const specs = Object.assign({}, SPECS, {
+      [COMMANDER]: Object.assign({}, SPECS[COMMANDER], {
+        tools: [{ spec_id: MAIN_WEAPON }, { spec_id: AA_WEAPON }],
+      }),
+      [MAIN_WEAPON]: { ammo_id: MAIN_AMMO },
+      [MAIN_AMMO]: { damage: 80 },
+      [AA_WEAPON]: { ammo_id: AA_AMMO },
+      [AA_AMMO]: { damage: 200 },
+      [FX_COMMANDER2]: {
+        unit_types: T("Commander Construction Land Mobile Custom7"),
+        tools: [{ spec_id: AA_WEAPON }],
+      },
+    });
+    const units = UNITS.concat([FX_COMMANDER2]);
+    const v = cells.buildIndex(units, specs, cells.vanillaMember);
+    const r = cells.buildIndex(units, specs, cells.raceMember("Custom7"));
+    const has = (file) => file === AA_AMMO;
+
+    // Kept as itself, and not landed on itself again as a race part.
+    assert.deepEqual(
+      cells.expandMods([mod(AA_AMMO, "damage", 1.25)], v, r, has),
+      [mod(AA_AMMO, "damage", 1.25), mod(FX_COMMANDER_AMMO, "damage", 1.25)]
+    );
+
+    // Reached first as a race part of the main gun's change, the kept
+    // original joins that pass.
+    const group = [
+      mod(MAIN_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+    ];
+    assert.deepEqual(cells.expandMods(group, v, r, has), [
+      mod(FX_COMMANDER_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+    ]);
+
+    // A second card still stacks.
+    assert.deepEqual(cells.expandMods(group.concat(group), v, r, has), [
+      mod(FX_COMMANDER_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+      mod(FX_COMMANDER_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+    ]);
+
+    // The documented limit (races.md): the passes carry no card. One card
+    // naming the main gun's ammo and another naming the AA ammo with the same
+    // change give the list above, so the AA ammo takes the change once, as
+    // every race part in the pass does.
+    const twoCards = [mod(MAIN_AMMO, "damage", 1.25)].concat([
+      mod(AA_AMMO, "damage", 1.25),
+    ]);
+    assert.deepEqual(cells.expandMods(twoCards, v, r, has), [
+      mod(FX_COMMANDER_AMMO, "damage", 1.25),
+      mod(AA_AMMO, "damage", 1.25),
+    ]);
+
+    // A stockOnly change sits outside the passes, so the second card still
+    // lands on the AA ammo.
+    const stockOnlyAa = Object.assign(mod(AA_AMMO, "damage", 1.25), {
+      stockOnly: true,
+    });
+    assert.deepEqual(
+      cells.expandMods(
+        [mod(MAIN_AMMO, "damage", 1.25), stockOnlyAa],
+        v,
+        r,
+        has
+      ),
+      [
+        mod(FX_COMMANDER_AMMO, "damage", 1.25),
+        mod(AA_AMMO, "damage", 1.25),
+        stockOnlyAa,
+      ]
+    );
+  });
+
+  it("keeps a stockOnly change on the file it names, where the army holds it", () => {
+    const stockOnly = (file, path, value) =>
+      Object.assign(mod(file, path, value), { stockOnly: true });
+    const antHealth = stockOnly(ANT, "max_health", 1.5);
+    const antOnly = (file) => file === ANT;
+
+    // Never landed on the race's cell-mate.
+    assert.deepEqual(cells.expandMods([antHealth], vanilla, race, antOnly), [
+      antHealth,
+    ]);
+    // Dropped where the army lacks the file, kept where no `has` is given.
+    assert.deepEqual(
+      cells.expandMods([antHealth], vanilla, race, () => false),
+      []
+    );
+    assert.deepEqual(cells.expandMods([antHealth], vanilla, race), [antHealth]);
+    // It does not remake the file: another change to the Ant still travels.
+    assert.deepEqual(
+      cells.expandMods(
+        [antHealth, mod(ANT, "max_health", 1.2)],
+        vanilla,
+        race,
+        antOnly
+      ),
+      [antHealth, mod(ANT, "max_health", 1.2), mod(FX_TANK, "max_health", 1.2)]
+    );
+  });
+
   it("applies a group card once per pass, and stacks a second card", () => {
     const oneCard = [
       mod(ANT_AMMO, "damage", 1.25),
@@ -843,6 +958,99 @@ describe("exclusive units and add-ons", () => {
     assert.ok(cells.raceUnitsFor([FABBER_ADV], v, r).includes(FX_TOWER));
     // A cell with a buildable vanilla occupant is still filled.
     assert.ok(!cells.raceUnitsFor([FACTORY], v, r).includes(FX_TANK));
+  });
+
+  describe("a vanilla unit whose only type is its faction bit", () => {
+    // The Deep Space Radar's stub: classify puts it in the basic fabrication
+    // tower's cell, where it is the only buildable vanilla occupant.
+    const RADAR = "/pa/units/orbital/deep_space_radar/deep_space_radar.json";
+    const FABBER = "/pa/units/land/fabrication_bot/fabrication_bot.json";
+    const FX_FABBER = "/pa/units/land/fx_fabber/fx_fabber.json";
+    const TOWER = "/pa/units/addon/fab_tower/fab_tower.json";
+    const FX_FAB_TOWER = "/pa/units/fx_addon/fab_tower/fab_tower.json";
+    const stubSpecs = Object.assign({}, specs, {
+      [RADAR]: { unit_types: T("Custom58") },
+      [FABBER]: {
+        unit_types: T("Basic Bot Construction Fabber Land Mobile Custom58"),
+        buildable_types: "FabBuild & Custom58",
+      },
+      [FX_FABBER]: {
+        unit_types: T("Basic Bot Construction Fabber Land Mobile Custom7"),
+        buildable_types: "FabBuild & Custom7",
+      },
+      [TOWER]: { unit_types: T("Basic Structure FabBuild Custom58") },
+      [FX_FAB_TOWER]: { unit_types: T("Basic Structure FabBuild Custom7") },
+    });
+    const stubUnits = units.concat([
+      RADAR,
+      FABBER,
+      FX_FABBER,
+      TOWER,
+      FX_FAB_TOWER,
+    ]);
+    const vanillaSide = (classifiableOnly) =>
+      cells.buildIndex(
+        stubUnits,
+        stubSpecs,
+        (types, path) =>
+          cells.vanillaMember(types) &&
+          (!classifiableOnly || cells.classifiable(types)) &&
+          !addonPaths[path] &&
+          path !== TOWER
+      );
+    const race = cells.buildIndex(
+      stubUnits,
+      stubSpecs,
+      cells.raceMember("Custom7"),
+      exclusive
+    );
+    const addon = cells.buildIndex(
+      stubUnits,
+      stubSpecs,
+      (types, path) => cells.vanillaMember(types) && path === TOWER,
+      exclusive
+    );
+
+    it("is not classifiable", () => {
+      assert.equal(cells.classifiable(T("Custom58")), false);
+      assert.equal(cells.classifiable(T("Custom58 FabBuild NoBuild")), false);
+      assert.equal(cells.classifiable(undefined), false);
+      assert.equal(cells.classifiable(T("Structure Custom58")), true);
+      // classify still files it by its defaults.
+      assert.equal(cells.classify(T("Custom58")).key, "Land/Basic/Structure");
+    });
+
+    it("fills the tower's cell when indexed, so no tower is reached", () => {
+      const filled = vanillaSide(false);
+      assert.deepEqual(filled.unitsByCell["Land/Basic/Structure"], [RADAR]);
+      assert.ok(
+        !cells.raceUnitsFor([FABBER], filled, race).includes(FX_FAB_TOWER)
+      );
+      assert.ok(!cells.addonUnitsFor([FABBER], filled, addon).includes(TOWER));
+    });
+
+    it("left out of the vanilla side, lets a held fabber build the tower", () => {
+      const vanilla = vanillaSide(true);
+      assert.equal(vanilla.cellOf[RADAR], undefined);
+      assert.deepEqual(cells.raceUnitsFor([FABBER], vanilla, race), [
+        FX_FABBER,
+        FX_FAB_TOWER,
+      ]);
+      assert.deepEqual(cells.addonUnitsFor([FABBER], vanilla, addon), [
+        FABBER,
+        TOWER,
+      ]);
+      // A mod on the stub stays on it rather than landing on the towers.
+      const mod = { file: RADAR, path: "max_health", op: "multiply", value: 2 };
+      assert.deepEqual(
+        cells.expandMods([mod], vanilla, race, () => true),
+        [mod]
+      );
+      assert.deepEqual(
+        cells.expandMods([mod], vanilla, addon, () => true),
+        [mod]
+      );
+    });
   });
 
   describe("addonUnitsFor", () => {

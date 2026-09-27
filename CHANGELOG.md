@@ -6,6 +6,7 @@
 
 - Card mods can target Legion, Bugs, Exiles, Second Wave, Section 17, and Osmech units; a card that names only such units is dealt only to players whose race fields them - see the `New-GW-Cards` template
 - Card mods can put a group of units inside a list of units, when adding, removing, or changing units
+- Card mods can keep one change on the stock unit alone, so it does not also reach race and add-on units, and can limit a card to some races - see the `New-GW-Cards` template
 - The host of a co-op war can add AI players to open slots; they fight beside the human players, can be kicked from their slot, and with per-player tech each choose their own loadout and tech cards
 - The AI settings choose which AI brain the co-op AI players use, per race
 - Co-op AI players ping the star they want to go to next
@@ -20,6 +21,11 @@
 
 ### Bugfix
 
+- Tech that changes no units, such as Sub Commander Tech, and your loadout no longer show "Which Units?" when you select them in your Tech Bank
+- Tech and loadouts that change commander weapons, such as Commander Ammunition Tech and Commander Combat Tech, now also change the main gun of MLA commanders, as do the enemy factions' commander bonuses
+- Tech that changes commander weapons no longer applies twice to the anti-air and torpedo weapons of Legion commanders
+- MLA, Legion, and Bugs armies with Second Wave, and Exiles armies, can build their basic fabrication tower without the Planetary Radar
+- A tech card from another mod that changes the Planetary Radar no longer changes the basic fabrication towers too
 - In a Galactic War battle, every army's units on your screen now match the ones the game runs, including tech that changes weapon lists or armour damage, such as the Stryker and Pelican upgrades and the anti tech, and the enemy's own tech
 
 ## v7.4.1 - 2026-09-24

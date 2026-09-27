@@ -133,6 +133,7 @@ define([
             function (types, path) {
               return (
                 unitCells.vanillaMember(types) &&
+                unitCells.classifiable(types) &&
                 !isAddon(path) &&
                 !foreign[path]
               );

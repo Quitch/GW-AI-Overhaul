@@ -214,6 +214,28 @@ walker treats the leaf segment differently. The leaf is allowed to see a real
 "missing" signal, so that ops like `multiplyOrCreate` and `add` can tell "absent"
 from "present".
 
+## A modded spec is flattened
+
+The first mod on a spec flattens it: `specs.mod` merges the spec's `base_spec`
+chain into it and drops `base_spec`. It reads each base as it stands at that
+moment, so a base that an earlier mod changed passes the change down. A child
+modded after its base therefore takes the change twice on every key it
+inherits: once from the base, and once as its own mod. A key that the child
+sets itself is not affected, because the child's value wins the merge.
+
+So a group that names a child and its base lists the child first.
+`gwoGroup.commanderAmmo` lists the main gun's ammo
+(`base_commander_ammo_bullet.json`, `base_commander_ammo_laser.json`) before
+`base_commander_ammo.json`. Both set their own `damage`. They inherit other
+keys, such as the `armor_damage_map` that the armour cards create. Ops run in
+buckets ([the op table](#the-op-table)), and each bucket keeps the list's
+order, so the rule holds for every op. `test/specs.test.js` pins both the
+doubling and this order.
+
+Without a mod, a spec keeps its `base_spec`. The engine then resolves the chain
+itself, and a key that the child sets replaces the key of the base. A mod on a
+base alone therefore never reaches a child that sets the same key.
+
 ## Arrays replace, they do not merge
 
 `_.merge`'s default behaviour for arrays is index-by-index, which is wrong for PA

@@ -473,6 +473,15 @@ define([
     //      mods(gwoUnit.x, "multiply", gwoCard.paths.navigation, 1.25)
     mods: mods,
 
+    // The same descriptors, each kept on the unit it names: never landed on
+    // a race or add-on unit. See tech-cards.md, "Which races a card reaches".
+    // e.g. stockOnly(mods(gwoUnit.dox, "multiply", { max_health: 1.5 }))
+    stockOnly: function (list) {
+      return _.map(list || [], function (mod) {
+        return _.assign({}, mod, { stockOnly: true });
+      });
+    },
+
     // The attribute sets cards multiply as one, in the order they emit them.
     paths: {
       navigation: [

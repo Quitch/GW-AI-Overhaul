@@ -172,9 +172,21 @@ emits a race target set once per **pass**. A pass ends when a vanilla source
 already seen recurs. One card is one pass, and two copies stack. A mod on a
 race path is passed through, so a card that makes one change to the Ant and to
 the race tank of its cell changes that tank twice. The passes carry no card, so
-they cannot tell that case from two cards. The New-GW-Cards README tells
-authors to name one or the other. A mod whose
-`path` a race file lacks is the no-op it always was in `specs.mod`.
+they cannot tell that case from two cards. A card that means the Ant's change for
+the Ant alone marks it `stockOnly`, which keeps it off the race tank
+([`tech-cards.md`](tech-cards.md), "Which races a card reaches"). A
+`stockOnly` change sits outside the passes. A mod whose `path` a race file
+lacks is the no-op it always was in `specs.mod`.
+
+A race can mount a vanilla part itself. Legion's commanders mount the stock
+commander main gun, AA, and torpedo weapons, so they fire the stock ammo. Such a
+file is both a file the army holds and one of the race's parts. A mod on it that
+is kept, because the army holds the file, joins the pass for that file, like any
+race part. One card that names the file and a cell-mate therefore changes the
+file once, whichever it reaches first. The limit above applies to the file too:
+a card that changes a cell-mate, and a second card that makes the same change to
+the file, change it once, as they change every race part of that pass once.
+`test/unit_cells.test.js` pins both.
 
 A single-unit grant opens its whole cell: `gwc_start_subcdr`'s Ant brings every
 basic race tank. That is accepted. What no cell can carry is a hand-picked
@@ -227,6 +239,8 @@ the race fields, not what the player holds; the card's `deal` asks that. It
 applies to MLA too, and `raceCanDeal` skips `MLA_ONLY` and the `_upgrade_` rule
 for such a card: a third-party `mym_upgrade_shank` naming a Legion unit is dealt
 to Legion players only. A card with no foreign unit is gated exactly as before.
+An entry's `races` list overrides both: the card is offered only to the races
+listed, and still needs a unit in a cell the race fills.
 The entry may nest lists (a card's own group beside single paths); every reader
 flattens it (`unit_cells.unitList`) and ignores a whole `gwoUnit` race table in
 it. So do the unit lists a card hands `inventory.addUnits`,
@@ -627,7 +641,11 @@ storages, Section 17's gantry, Poseidon) arrive through the build rule, from
 a held vanilla builder or an add-on unit already granted. The vanilla side of
 the index is the base game's units alone: an add-on's vanilla-typed units are
 kept out of it, or they would fill exactly those cells and nothing could ever
-reach them, for MLA or for the race twins Legion and Bugs get. A spec mod on
+reach them, for MLA or for the race twins Legion and Bugs get. So is a vanilla
+unit whose types say nothing once `stripTypes` drops its faction bit
+(`unit_cells.classifiable`): the Deep Space Radar's stub, typed
+`UNITTYPE_Custom58` alone, would otherwise fill the basic fabrication towers'
+cell, and a mod on it would land on them. A spec mod on
 a vanilla unit lands on its add-on cell-mates too, and the original stays
 because the army still holds its file. No commander is retagged and no unit
 map falls back for MLA. An MLA AI army and a co-op viewer get the same
