@@ -13,12 +13,19 @@ const cells = loadCouiModule(
 
 const T = (list) => list.split(" ").map((tag) => "UNITTYPE_" + tag);
 
-// Vanilla ant and dox with their weapon/ammo chains, a factory, a commander
-// and a race (Custom7) counterpart of each, so every rule has both sides.
+// Vanilla ant, stryker, skitter and dox with their weapon/ammo chains, a
+// factory, a commander and a race (Custom7) counterpart of each, so every
+// rule has both sides. The commander builds the factory and the factory the
+// three tanks, so their jobs count: the ant and the stryker have none and
+// stand for the race tank, and the skitter's Scout job is no race unit's.
 const ANT = "/pa/units/land/tank_light_laser/tank_light_laser.json";
 const ANT_WEAPON =
   "/pa/units/land/tank_light_laser/tank_light_laser_tool_weapon.json";
 const ANT_AMMO = "/pa/units/land/tank_light_laser/tank_light_laser_ammo.json";
+const STRYKER = "/pa/units/land/attack_vehicle/attack_vehicle.json";
+const STRYKER_WEAPON =
+  "/pa/units/land/attack_vehicle/attack_vehicle_tool_weapon.json";
+const STRYKER_AMMO = "/pa/units/land/attack_vehicle/attack_vehicle_ammo.json";
 const SKITTER = "/pa/units/land/land_scout/land_scout.json";
 const SKITTER_WEAPON = "/pa/units/land/land_scout/land_scout_tool_weapon.json";
 const SKITTER_AMMO = "/pa/units/land/land_scout/land_scout_ammo.json";
@@ -51,9 +58,18 @@ const SPECS = {
   },
   [ANT_WEAPON]: { ammo_id: ANT_AMMO },
   [ANT_AMMO]: { damage: 10 },
+  [STRYKER]: {
+    base_spec: BASE_VEHICLE,
+    unit_types: T("Basic Land Mobile Offense Tank Custom58 FactoryBuild"),
+    tools: [{ spec_id: STRYKER_WEAPON }],
+  },
+  [STRYKER_WEAPON]: { ammo_id: STRYKER_AMMO },
+  [STRYKER_AMMO]: { damage: 8 },
   [SKITTER]: {
     base_spec: BASE_VEHICLE,
-    unit_types: T("Basic Land Mobile Offense Scout Tank Vehicle Custom58"),
+    unit_types: T(
+      "Basic Land Mobile Offense Scout Tank Vehicle Custom58 FactoryBuild"
+    ),
     tools: [{ spec_id: SKITTER_WEAPON }],
   },
   [SKITTER_WEAPON]: { ammo_id: [{ id: SKITTER_AMMO }] },
@@ -70,11 +86,17 @@ const SPECS = {
   },
   [DOX_AMMO]: {},
   [FACTORY]: {
-    unit_types: T("Basic Construction Factory Land Structure Tank Custom58"),
+    unit_types: T(
+      "Basic Construction Factory Land Structure Tank CmdBuild Custom58"
+    ),
+    buildable_types: "FactoryBuild & Custom58",
     tools: [{ spec_id: FACTORY_ARM }],
   },
   [FACTORY_ARM]: { construction_demand: { metal: 10 } },
-  [COMMANDER]: { unit_types: T("Commander Construction Land Mobile Custom58") },
+  [COMMANDER]: {
+    unit_types: T("Commander Construction Land Mobile Custom58"),
+    buildable_types: "CmdBuild & Custom58",
+  },
   [COLONEL]: {
     unit_types: T(
       "Advanced Bot Construction Fabber Land Mobile SupportCommander Custom58"
@@ -269,11 +291,12 @@ describe("effectiveTypes and partsOf", () => {
 });
 
 describe("buildIndex", () => {
-  it("keeps the members only, cells them, and indexes parts by role and cell", () => {
+  it("keeps the members only, cells them, and indexes parts by role and owner", () => {
     // No faction bit at all reads as vanilla, base specs included.
     assert.deepEqual(vanilla.units, [
       BASE_VEHICLE,
       ANT,
+      STRYKER,
       SKITTER,
       DOX,
       FACTORY,
@@ -282,19 +305,23 @@ describe("buildIndex", () => {
       FX_TANK2,
     ]);
     assert.deepEqual(vanilla.unitsByCell["Vehicle/Basic/Combat"], [
+      STRYKER,
       BASE_VEHICLE,
       FX_TANK2,
       SKITTER,
       ANT,
     ]);
     assert.equal(vanilla.cellOf[DOX], "Bot/Basic/Combat");
+    assert.deepEqual(vanilla.jobsOf[SKITTER], ["Scout"]);
+    assert.deepEqual(vanilla.jobsOf[ANT], []);
+    assert.deepEqual(vanilla.jobsOf[FACTORY], []);
     assert.deepEqual(vanilla.partIndex[ANT_AMMO], {
       role: "ammo",
-      cells: ["Vehicle/Basic/Combat"],
+      units: [ANT],
     });
     assert.deepEqual(vanilla.partIndex[FACTORY_ARM], {
       role: "buildArm",
-      cells: ["Vehicle/Basic/Factory"],
+      units: [FACTORY],
     });
     assert.deepEqual(race.units, [FX_TANK, FX_FACTORY, FX_COMMANDER]);
     assert.equal(race.cellOf[FX_TANK2], undefined);
@@ -303,6 +330,23 @@ describe("buildIndex", () => {
       cells.buildIndex(["/pa/units/none.json"], SPECS, cells.vanillaMember)
         .units,
       []
+    );
+  });
+
+  it("marks what a commander can build, and what that builds, as fieldable", () => {
+    // Not the commander itself, nor a base spec nothing builds.
+    assert.deepEqual(Object.keys(vanilla.fieldable).sort(), [
+      STRYKER,
+      SKITTER,
+      ANT,
+      FACTORY,
+    ]);
+    const noBuildList = Object.assign({}, SPECS, {
+      [COMMANDER]: { unit_types: SPECS[COMMANDER].unit_types },
+    });
+    assert.deepEqual(
+      cells.buildIndex(UNITS, noBuildList, cells.vanillaMember).fieldable,
+      {}
     );
   });
 
@@ -316,7 +360,7 @@ describe("buildIndex", () => {
 });
 
 describe("raceUnitsFor", () => {
-  it("grants the race's units of every held cell and passes the rest through", () => {
+  it("grants the race units the held ones stand for and passes the rest through", () => {
     assert.deepEqual(
       cells.raceUnitsFor(
         [ANT, SKITTER, FACTORY, FX_COMMANDER, "/pa/units/mod/x.json", ANT],
@@ -389,7 +433,7 @@ describe("expandMods", () => {
     value,
   });
 
-  it("lands a unit mod on the race units of the cell and a part mod on the race parts of the role", () => {
+  it("lands a unit mod on the race units it stands for and a part mod on their parts of the role", () => {
     assert.deepEqual(
       cells.expandMods(
         [
@@ -568,6 +612,7 @@ describe("expandMods", () => {
   it("applies a group card once per pass, and stacks a second card", () => {
     const oneCard = [
       mod(ANT_AMMO, "damage", 1.25),
+      mod(STRYKER_AMMO, "damage", 1.25),
       mod(SKITTER_AMMO, "damage", 1.25),
     ];
     assert.deepEqual(cells.expandMods(oneCard, vanilla, race), [
@@ -585,7 +630,7 @@ describe("expandMods", () => {
       cells.expandMods(
         [
           mod(ANT_AMMO, "damage", 1.25),
-          mod(SKITTER_AMMO, "damage", 2),
+          mod(STRYKER_AMMO, "damage", 2),
           mod(ANT_AMMO, "splash_damage", 1.25),
         ],
         vanilla,
@@ -632,7 +677,7 @@ describe("expandMods", () => {
     const v = cells.buildIndex(units, specs, cells.vanillaMember);
     const r = cells.buildIndex(units, specs, cells.raceMember("Custom7"));
 
-    assert.deepEqual(v.partIndex[DOX_AMMO].cells, ["Bot/Basic/Combat"]);
+    assert.deepEqual(v.partIndex[DOX_AMMO].units, [DOX]);
     assert.deepEqual(
       cells.expandMods(
         [mod(DOX_AMMO, "damage", 1.25), mod(DOX_AMMO, "damage", 1.25)],
@@ -673,7 +718,7 @@ describe("expandMods", () => {
       mod(ANT, "max_health", 5),
       mod(ANT, "unit_types", ["UNITTYPE_Commander"], "replace"),
       mod(ANT, "build_metal_cost", 25000, "replace"),
-      mod(SKITTER, "max_health", 2),
+      mod(STRYKER, "max_health", 2),
     ];
     assert.deepEqual(cells.expandMods(conversion, vanilla, race), [
       mod(ANT, "max_health", 5),
@@ -726,9 +771,10 @@ describe("expandMods pass-through", () => {
 });
 
 describe("cardUsable", () => {
-  it("is true when the race owns something in a cell the card names", () => {
+  it("is true when a unit the card names stands for a race unit", () => {
     assert.equal(cells.cardUsable([ANT, DOX], vanilla, race), true);
     assert.equal(cells.cardUsable([DOX], vanilla, race), false);
+    assert.equal(cells.cardUsable([SKITTER], vanilla, race), false);
     assert.equal(
       cells.cardUsable(["/pa/units/mod/x.json"], vanilla, race),
       false
@@ -738,11 +784,12 @@ describe("cardUsable", () => {
 });
 
 describe("cardUnitsFor", () => {
-  it("lists the race's units of every cell a card names, once each, in card order", () => {
+  it("lists the race units each unit a card names stands for, once each, in card order", () => {
     assert.deepEqual(cells.cardUnitsFor([ANT], vanilla, race), [FX_TANK]);
-    assert.deepEqual(cells.cardUnitsFor([ANT, SKITTER, ANT], vanilla, race), [
+    assert.deepEqual(cells.cardUnitsFor([ANT, STRYKER, ANT], vanilla, race), [
       FX_TANK,
     ]);
+    assert.deepEqual(cells.cardUnitsFor([SKITTER], vanilla, race), []);
     assert.deepEqual(cells.cardUnitsFor([FACTORY, ANT], vanilla, race), [
       FX_FACTORY,
       FX_TANK,
@@ -792,11 +839,12 @@ describe("cardUnitsFor", () => {
 });
 
 describe("unitMapFallback", () => {
-  it("re-points a vanilla spec_id the race maps did not set to the first race unit of its cell", () => {
+  it("re-points a vanilla spec_id the race maps did not set to the first race unit it stands for", () => {
     const map = {
       unit_map: {
         Tank: { spec_id: ANT },
         Scout: { spec_id: SKITTER },
+        LandScout: { spec_id: SKITTER },
         Bot: { spec_id: DOX },
         Foreign: { spec_id: "/pa/units/x/x.json" },
         Type: { unit_types: "Tank & Custom7" },
@@ -812,6 +860,8 @@ describe("unitMapFallback", () => {
       unit_map: {
         Tank: { spec_id: FX_TANK },
         Scout: { spec_id: SKITTER },
+        // Stands for nothing, so it stays, and the army never builds it.
+        LandScout: { spec_id: SKITTER },
         Bot: { spec_id: DOX },
         Foreign: { spec_id: "/pa/units/x/x.json" },
         Type: { unit_types: "Tank & Custom7" },
@@ -1135,6 +1185,251 @@ describe("unitMapFallback with avoid", () => {
         [FX_TANK]: true,
       }).unit_map.Tank.spec_id,
       EARLY_TANK
+    );
+  });
+});
+
+describe("jobs", () => {
+  const V = (name) => "/pa/units/land/v_" + name + "/v_" + name + ".json";
+  const R = (name) => "/pa/units/land/r_" + name + "/r_" + name + ".json";
+  const WEAPON = (unit) => unit.replace(/\.json$/, "_tool_weapon.json");
+  const AMMO = (unit) => unit.replace(/\.json$/, "_ammo.json");
+  const mod = (file, path, value) => ({ file, path, op: "multiply", value });
+
+  // Basic tanks, each with its own weapon and ammo, the vanilla ones named
+  // by v_, the race's (Custom7) by r_. The commander builds the factory and
+  // the factory every vanilla tank typed FactoryBuild. `tweak` edits the
+  // specs before they are indexed.
+  const indexes = (vanillaTypes, raceTypes, tweak) => {
+    const specs = {
+      [COMMANDER]: {
+        unit_types: T("Commander Construction Land Mobile Custom58"),
+        buildable_types: "CmdBuild & Custom58",
+      },
+      [FACTORY]: {
+        unit_types: T(
+          "Basic Construction Factory Land Structure Tank CmdBuild Custom58"
+        ),
+        buildable_types: "FactoryBuild & Custom58",
+      },
+    };
+    const add = (unit, types) => {
+      specs[unit] = {
+        unit_types: T("Basic Land Mobile Offense Tank " + types),
+        tools: [{ spec_id: WEAPON(unit) }],
+      };
+      specs[WEAPON(unit)] = { ammo_id: AMMO(unit) };
+      specs[AMMO(unit)] = {};
+    };
+    for (const [name, types] of Object.entries(vanillaTypes)) {
+      add(V(name), ("Custom58 " + types).trim());
+    }
+    for (const [name, types] of Object.entries(raceTypes)) {
+      add(R(name), ("Custom7 " + types).trim());
+    }
+    if (tweak) {
+      tweak(specs);
+    }
+    const units = Object.keys(specs).filter((unit) =>
+      /\/([^/]+)\/\1\.json$/.test(unit)
+    );
+    const v = cells.buildIndex(units, specs, cells.vanillaMember);
+    const r = cells.buildIndex(units, specs, cells.raceMember("Custom7"));
+    return { v, r, standIns: cells.standInsFor(v, r) };
+  };
+
+  it("reads a mobile combat unit's jobs in table order, Recon as Scout", () => {
+    const jobs = (list) => cells.classify(T(list)).jobs;
+
+    assert.deepEqual(jobs("Basic Land Mobile Offense Tank Hover Artillery"), [
+      "Artillery",
+      "Hover",
+    ]);
+    assert.deepEqual(jobs("Advanced Air Mobile Offense Bomber Heavy"), [
+      "Heavy",
+      "Bomber",
+    ]);
+    assert.deepEqual(jobs("Basic Air Mobile Offense Recon Scout"), ["Scout"]);
+    assert.deepEqual(jobs("Basic Orbital Mobile Recon"), ["Scout"]);
+    assert.deepEqual(jobs("Basic Land Mobile Offense Tank"), []);
+    // Combat cells only.
+    assert.deepEqual(jobs("Basic AirDefense Defense Land Structure"), []);
+    assert.deepEqual(jobs("Basic Bot Construction Fabber Land Mobile"), []);
+    assert.deepEqual(jobs("Advanced Air Bomber Mobile Offense Titan"), []);
+  });
+
+  it("gives a race unit to the vanilla units that share its first shared job", () => {
+    // Artillery is no vanilla unit's job, so the Corsair-like tank goes to
+    // the hover tank.
+    const { standIns } = indexes(
+      {
+        plain: "FactoryBuild",
+        aa: "FactoryBuild AirDefense",
+        hover: "FactoryBuild Hover",
+      },
+      { aa: "AirDefense", corsair: "Artillery Hover", plain: "" }
+    );
+
+    assert.deepEqual(standIns(V("aa")), [R("aa")]);
+    assert.deepEqual(standIns(V("hover")), [R("corsair")]);
+    assert.deepEqual(standIns(V("plain")), [R("plain")]);
+  });
+
+  it("homes a race unit no job matches on the job-less vanilla units", () => {
+    // The amphibious tank has a job, but no vanilla unit shares it.
+    const { standIns } = indexes(
+      { plain: "FactoryBuild", aa: "FactoryBuild AirDefense" },
+      { aa: "AirDefense", amphibious: "Amphibious", plain: "" }
+    );
+
+    assert.deepEqual(standIns(V("plain")), [R("amphibious"), R("plain")]);
+    assert.deepEqual(standIns(V("aa")), [R("aa")]);
+  });
+
+  it("with no job-less vanilla unit, homes it on those whose job no race unit shares", () => {
+    const { standIns } = indexes(
+      {
+        aa: "FactoryBuild AirDefense",
+        artillery: "FactoryBuild Artillery",
+        scout: "FactoryBuild Scout",
+      },
+      { aa: "AirDefense", plain: "" }
+    );
+
+    assert.deepEqual(standIns(V("aa")), [R("aa")]);
+    assert.deepEqual(standIns(V("artillery")), [R("plain")]);
+    assert.deepEqual(standIns(V("scout")), [R("plain")]);
+  });
+
+  it("with neither, homes it on every vanilla unit of the cell", () => {
+    const { standIns } = indexes(
+      { aa: "FactoryBuild AirDefense", artillery: "FactoryBuild Artillery" },
+      { aa: "AirDefense", artillery: "Artillery", plain: "" }
+    );
+
+    assert.deepEqual(standIns(V("aa")), [R("aa"), R("plain")]);
+    assert.deepEqual(standIns(V("artillery")), [R("artillery"), R("plain")]);
+  });
+
+  it("leaves a unit whose job no race unit shares, and no home, standing for nothing", () => {
+    const { v, r, standIns } = indexes(
+      { plain: "FactoryBuild", scout: "FactoryBuild Scout" },
+      { plain: "" }
+    );
+
+    assert.deepEqual(standIns(V("scout")), []);
+    assert.deepEqual(cells.raceUnitsFor([V("scout")], v, r), []);
+    assert.deepEqual(cells.cardUnitsFor([V("scout")], v, r), []);
+    assert.equal(cells.cardUsable([V("scout")], v, r), false);
+    assert.deepEqual(
+      cells.expandMods([mod(V("scout"), "max_health", 2)], v, r),
+      []
+    );
+    assert.deepEqual(
+      cells.unitMapFallback(
+        {
+          unit_map: {
+            LandScout: { spec_id: V("scout") },
+            Tank: { spec_id: V("plain") },
+          },
+        },
+        [],
+        v,
+        r
+      ).unit_map,
+      {
+        LandScout: { spec_id: V("scout") },
+        Tank: { spec_id: R("plain") },
+      }
+    );
+  });
+
+  it("lets a unit no commander can build stand for its whole cell, and gives it no say in the jobs", () => {
+    // The drone's Scout job is not counted, so the race scout is homed on
+    // the anti-air tank, the only vanilla unit that counts.
+    const { v, standIns } = indexes(
+      { aa: "FactoryBuild AirDefense", drone: "Scout" },
+      { aa: "AirDefense", scout: "Scout" }
+    );
+
+    assert.equal(v.fieldable[V("drone")], undefined);
+    assert.deepEqual(standIns(V("drone")), [R("aa"), R("scout")]);
+    assert.deepEqual(standIns(V("aa")), [R("aa"), R("scout")]);
+  });
+
+  it("keeps every cell whole when no commander has a build list", () => {
+    const { v, standIns } = indexes(
+      { plain: "FactoryBuild", aa: "FactoryBuild AirDefense" },
+      { aa: "AirDefense", plain: "" },
+      (specs) => {
+        delete specs[COMMANDER].buildable_types;
+      }
+    );
+
+    assert.deepEqual(v.fieldable, {});
+    assert.deepEqual(standIns(V("aa")), [R("aa"), R("plain")]);
+    assert.deepEqual(standIns(V("plain")), [R("aa"), R("plain")]);
+  });
+
+  it("lands a part mod on the same role under its owners' stand-ins", () => {
+    // The shared tool sits in neither tank's directory, so it belongs to
+    // both.
+    const SHARED = "/pa/tools/shared_weapon.json";
+    const { v, r } = indexes(
+      { plain: "FactoryBuild", aa: "FactoryBuild AirDefense" },
+      { aa: "AirDefense", plain: "" },
+      (specs) => {
+        specs[SHARED] = { ammo_id: "/pa/ammo/shared_ammo.json" };
+        specs[V("plain")].tools.push({ spec_id: SHARED });
+        specs[V("aa")].tools.push({ spec_id: SHARED });
+      }
+    );
+
+    assert.deepEqual(v.partIndex[AMMO(V("aa"))], {
+      role: "ammo",
+      units: [V("aa")],
+    });
+    assert.deepEqual(v.partIndex[SHARED], {
+      role: "weapon",
+      units: [V("plain"), V("aa")],
+    });
+    assert.deepEqual(
+      cells.expandMods([mod(AMMO(V("aa")), "damage", 2)], v, r),
+      [mod(AMMO(R("aa")), "damage", 2)]
+    );
+    assert.deepEqual(
+      cells.expandMods([mod(WEAPON(V("plain")), "rate_of_fire", 2)], v, r),
+      [mod(WEAPON(R("plain")), "rate_of_fire", 2)]
+    );
+    assert.deepEqual(cells.expandMods([mod(SHARED, "rate_of_fire", 2)], v, r), [
+      mod(WEAPON(R("plain")), "rate_of_fire", 2),
+      mod(WEAPON(R("aa")), "rate_of_fire", 2),
+    ]);
+  });
+
+  it("changes a race unit once for one card naming three of its homes, and twice for two copies", () => {
+    const { v, r } = indexes(
+      {
+        aa: "FactoryBuild AirDefense",
+        artillery: "FactoryBuild Artillery",
+        hover: "FactoryBuild Hover",
+        scout: "FactoryBuild Scout",
+      },
+      { aa: "AirDefense", plain: "" }
+    );
+    const homes = ["artillery", "hover", "scout"];
+    const card = homes
+      .map((name) => mod(V(name), "max_health", 1.25))
+      .concat(homes.map((name) => mod(AMMO(V(name)), "damage", 1.25)));
+    const once = [
+      mod(R("plain"), "max_health", 1.25),
+      mod(AMMO(R("plain")), "damage", 1.25),
+    ];
+
+    assert.deepEqual(cells.expandMods(card, v, r), once);
+    assert.deepEqual(
+      cells.expandMods(card.concat(card), v, r),
+      once.concat(once)
     );
   });
 });

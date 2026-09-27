@@ -98,8 +98,9 @@ define([
     };
     var buildFiles = function (cells, maps) {
       var extra = maps.slice(2);
-      // A key the race maps left falls back to a race unit of its cell,
-      // preferring one the race's own AI data knows over an add-on's.
+      // A key the race maps left falls back to a race unit its vanilla unit
+      // stands for, preferring one the race's own AI data knows over an
+      // add-on's.
       var merge = function (base) {
         var merged = gameFilePaths.mergeUnitMaps(base, extra);
         return cells
@@ -118,9 +119,9 @@ define([
       var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
       var playerX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, playerTag);
       var held = inventory.units().concat(model.gwoSpecs);
-      // A race viewer fields the race's units of the cells the vanilla ones
-      // held occupy; an MLA viewer keeps everything held and gains the
-      // add-on units of those cells. Neither keeps another race's units.
+      // A race viewer fields the race units the vanilla ones held stand
+      // for; an MLA viewer keeps everything held and gains the add-on units
+      // they stand for. Neither keeps another race's units.
       var playerSpecs = gwoRaces.fieldedFor(
         race,
         gwoRaces

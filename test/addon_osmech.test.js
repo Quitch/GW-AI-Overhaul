@@ -85,7 +85,7 @@ describe("the Osmech descriptor", () => {
 });
 
 describe("Osmech under capability cells", () => {
-  it("brings its titans with the vanilla titans and its bots with the Dox (skipped without it in the fixture)", (t) => {
+  it("brings its titans with the vanilla titans and its bots by job (skipped without it in the fixture)", (t) => {
     if (!harvested) {
       t.skip("fixture harvested without Osmech");
       return;
@@ -98,10 +98,14 @@ describe("Osmech under capability cells", () => {
     for (const key of ["atAt", "tripod", "toblerone", "theEgg"]) {
       assert.ok(titans.includes(osmech.units[key]), key);
     }
-    const bots = fielded([gwoUnit.dox]);
+    // The Spartak is Heavy, the Spark's job. The Dagua's Hover is no basic
+    // vanilla bot's, so the bots whose jobs no add-on unit shares bring it.
+    const bots = fielded([gwoUnit.spark, gwoUnit.grenadier]);
     for (const key of ["dagua", "spartak"]) {
       assert.ok(bots.includes(osmech.units[key]), key);
     }
+    assert.ok(!fielded([gwoUnit.dox]).includes(osmech.units.dagua));
+    assert.ok(!fielded([gwoUnit.grenadier]).includes(osmech.units.spartak));
     assert.ok(!bots.includes(osmech.units.tripod));
     assert.equal(index.race.exclusive[osmech.units.tripod], undefined);
   });

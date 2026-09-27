@@ -125,7 +125,11 @@ With that fixture, `test/unit_groups_cells.test.js` can check the cell
 classifier against `unit_groups.js` in CI, `test/race_legion.test.js` can see
 Legion's cells, and `test/addon_second_wave.test.js` can see what an add-on
 brings (`scripts/lib/addon-fixture.js` builds the index as `race_cells.js`
-does). With a PA install present, the test asserts that the fixture is fresh.
+does). `test/unit_jobs.test.js` checks the job rule over every registered
+race's index: a job pinned for each mobile combat unit `shared/units.js`
+names, a vanilla unit a card can grant standing for each race unit of a combat
+cell, and no bit on a mobile combat unit that the rule does not know. With a PA
+install present, the test asserts that the fixture is fresh.
 **Re-harvest it after a PA, race or add-on patch.**
 
 **`test/fixtures/race_specs.json` is the race tables' source, harvested the
@@ -379,7 +383,8 @@ ping windows through fake timers and values, and `test/star_threat.test.js`
 pins the threat the intelligence panel and the pings share.
 
 `scripts/lib/harvested-race.js` holds what the `race_*.test.js` files share.
-`harvestedIndex` builds a shipped race's cell index from `unit_types.json`.
+Each file builds its race's cell index from `unit_types.json` with
+`scripts/lib/addon-fixture.js`'s `fixtureIndex`, as `race_cells.js` builds it.
 `withheldCards` and `expectedWithheld` compare the cards the race is not dealt
 with the MLA-only cards plus the race's own list. `unnamedCardUnits` lists each
 tooltip unit that has no name. What each race expects stays in its own file.

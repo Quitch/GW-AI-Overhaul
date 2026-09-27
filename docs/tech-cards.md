@@ -239,9 +239,9 @@ did nothing at all for a player without the advanced factory. Only its
 `card_units.js` entry named that factory.
 
 A race player narrows this further. The deal withholds a card whose `card_units.js`
-entry names no unit in a cell the race fills. It also withholds every card in
-`cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards keep naming
-vanilla units, and the unit's capability cell decides. An entry's `races` list
+entry names no unit that stands for a unit of the race. It also withholds every
+card in `cards_deal_helpers.MLA_ONLY` (`cards_deal_helpers.raceCanDeal`). Cards
+keep naming vanilla units, and the unit's capability cell and job decide. An entry's `races` list
 takes the place of `MLA_ONLY` and the `_upgrade_` rule for its card
 (["Which races a card reaches"](#which-races-a-card-reaches)).
 
@@ -252,9 +252,9 @@ included. An entry that also names a stock unit is dealt through either half. Th
 `deal` to test, with `gwoCard.fieldedUnits`. See [`races.md`](races.md),
 "Capability cells".
 
-The tooltip shows that same entry translated by cell: the race units of each cell a
-named vanilla unit occupies, and the race or add-on units it names that the race
-fields. It never shows a second, race-written list. See [`races.md`](races.md).
+The tooltip shows that same entry translated for the race: the race units each
+named vanilla unit stands for, and the race or add-on units it names that the
+race fields. It never shows a second, race-written list. See [`races.md`](races.md).
 
 `test/card_deal_unit_gate.test.js` enforces this in both directions. A card must not
 be dealable to a player who owns none of its units. A card must be dealable to a
@@ -404,8 +404,8 @@ published. Re-point a unit path whenever the base game moves a file.
 under a key of its own: `gwoUnit.legion.shank`, `gwoUnit.osmech.aegis`. A table
 leaves out the stock files its units share. A card reaches one of those by its
 stock key where there is one, else by its path, and changes it as a stock file:
-in a race army that change also reaches the race files of the same role in the
-cell of the base-game unit that uses it. The
+in a race army that change also reaches the race files of the same role under
+the race units that the base-game unit that uses it stands for. The
 keys inside those tables are generated, and a mod update can change them
 ([`races.md`](races.md), "Unit tables"). A whole table is not a unit list:
 every reader ignores one, and `validate:refs` fails a card, `card_units.js` or
@@ -432,8 +432,8 @@ army.
   card only to players of the races listed. The ids are trimmed and compared
   case-blind (`races.normalizeId`). The list takes the place of `MLA_ONLY` and
   the `_upgrade_` rule for that card, so an `_upgrade_` card that lists a race
-  is offered to it. A listed race still needs a unit in a cell it fills
-  (`cardUsable`). `cards_deal_helpers.raceCanDeal` reads the list. Loadouts
+  is offered to it. A listed race still needs a unit that stands for one of
+  its own (`cardUsable`). `cards_deal_helpers.raceCanDeal` reads the list. Loadouts
   are not affected: the loadout scenes lock a loadout by `mlaOnlyCard` alone.
 - **`stockOnly: true` on a mod.** `unit_cells.expandMods` keeps that one change
   on the file it names, and never lands it on a race or add-on unit. It is kept
@@ -577,7 +577,7 @@ its parts carry the names the debug lines print
   Mods a card removes count against it, on the inventory before the card.
 - **`later`**: the same for the units the AI does not field yet, at a quarter of
   their worth. These are every unit a card can grant (`unit_groups.units`,
-  commanders aside, or for a race AI the race's units of their cells) and every
+  commanders aside, or for a race AI the race units they stand for) and every
   held unit its commander cannot reach, less the inventory's stripped units. In each cell, the later units the card touches
   are taken in path order and counted on from the units fielded there, each
   worth 0.6 of the one before. That bounds a card that touches a whole family.
@@ -733,15 +733,15 @@ cells"), and so does an MLA AI's with add-ons active. From the specs, such an
 AI is judged on what its army fields, as the referee builds it
 (`shared/coop_ai_fielded.js`), and its debug lines read `via=fielded`:
 
-- Its units are the race's units of the cells its vanilla units occupy
+- Its units are the race units its vanilla units stand for
   (`races.fieldedFor`), and its mods land on those units (`races.modsFor`).
-  Its stripped units are the race's units of the stripped units' cells, less
+  Its stripped units are the race units the stripped units stand for, less
   those it fields.
 - Its commander reaches by its own build list. A commander of another race's,
   which a race AI takes once the race's own are all in use, gets the race's
   build list, as the referee retags it.
-- The units it could get are the race's units of the cells of
-  `unit_groups.units`, commanders aside.
+- The units it could get are the race units that the units of
+  `unit_groups.units` stand for, commanders aside.
 
 The cells come from the specs lookup's own unit list, through
 `race_cells.indexFor`, as the referee's do, not from the cells
@@ -755,16 +755,23 @@ onto a unit just as the card that grants the unit is scored, and count again
 beside the held-tech boost.
 
 Two results follow, both as in battle. A card that names a vanilla unit
-reaches every race unit of that unit's cell: an Ant health card reaches
-Legion's five basic vehicle combat units, and scores for all five. A card that
-grants a vanilla unit whose cell the race already fields scores no `unlock`,
-since the army gains nothing.
+reaches the race units it stands for ([`races.md`](races.md), "Jobs"): an Ant
+health card reaches Legion's Shank and Stoke, and scores for both. A card that
+grants a vanilla unit scores no `unlock` when the army already fields every
+race unit it stands for: for a Legion AI that holds the Ant, the Stryker
+scores none, and the Inferno scores for the Maul it brings.
 
-To a race AI, then, a card that names one vanilla unit is a card for that
-unit's whole cell. It scores as a card that names every vanilla unit of the
-cell does, since `expandMods` lands a group on each race unit once. A group
-card therefore scores about the same for every race, and a single-unit card
-scores more for a race than for MLA.
+To a race AI, then, a card that names one vanilla unit is a card for the race
+units that unit stands for. It scores as a card that names every vanilla unit
+standing for them does, since `expandMods` lands a group on each race unit
+once. A group card therefore scores about the same for every race. A
+single-unit card scores more for a race than for MLA where its unit stands for
+several race units, and nothing where it stands for none.
+
+Jobs decide reach, not worth. A unit's worth, and the 0.6 step between the
+`later` units of one cell, still go by domain, tier, and class
+(`lookup.classOf`), so a Legion AI that fields the Maul and the Shank counts
+them as one cell.
 
 An AI whose race has no cells built, or an MLA AI with no add-on active, is
 judged on its saved paths. So is every AI while the groups stand in. A race

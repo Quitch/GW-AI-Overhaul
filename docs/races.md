@@ -134,18 +134,18 @@ reaches. It reads through `spec_cache`, so `genUnitSpecs` fetches nothing
 twice. From those it builds two indexes: vanilla (`Custom58` or no faction bit)
 and the race (`UNITTYPE_<bit>`). Then it applies these rules:
 
-| Rule                                                                                                                                                                                 | Result                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| A held vanilla unit                                                                                                                                                                  | every race unit of its cell (`raceUnitsFor`)                                     |
-| A held path that is not a vanilla unit (race commander, a mod)                                                                                                                       | passed through untouched, unless another race's or add-on's (`races.ownedPaths`) |
-| A race unit in a cell no vanilla unit fills                                                                                                                                          | granted when something granted can build it (`build_types`)                      |
-| A held vanilla `Commander`-class unit (the Colonel)                                                                                                                                  | kept and retagged to the race's bit (`races.unitRetagMods`)                      |
-| A `Commander` cell                                                                                                                                                                   | never granted; race commanders arrive as commanders do                           |
-| A spec mod on a vanilla unit                                                                                                                                                         | one on each race unit of its cell (`expandMods`)                                 |
-| A spec mod on a vanilla weapon, ammo, build arm or death ammo                                                                                                                        | one on each race part of the same role under race units of the part's cells      |
-| A mod on a file the army still holds (a retagged Pumpkin, `model.gwoSpecs`)                                                                                                          | kept as well                                                                     |
-| A mod that changes what a unit is (`unit_types`, `buildable_types`, `tools`, `command_caps`, `si_name`, …) or says `exact: true` - and every other mod on that unit in the same list | stays on its own unit, never travels by cell                                     |
-| A unit-map `spec_id` the race maps left pointing at a vanilla unit                                                                                                                   | the first race unit of its cell (`unitMapFallback`)                              |
+| Rule                                                                                                                                                                                 | Result                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A held vanilla unit                                                                                                                                                                  | the race units it stands for: every race unit of its cell, or in a mobile `Combat` cell those the job rule gives it (`raceUnitsFor`, "Jobs" below) |
+| A held path that is not a vanilla unit (race commander, a mod)                                                                                                                       | passed through untouched, unless another race's or add-on's (`races.ownedPaths`)                                                                   |
+| A race unit in a cell no vanilla unit fills                                                                                                                                          | granted when something granted can build it (`build_types`)                                                                                        |
+| A held vanilla `Commander`-class unit (the Colonel)                                                                                                                                  | kept and retagged to the race's bit (`races.unitRetagMods`)                                                                                        |
+| A `Commander` cell                                                                                                                                                                   | never granted; race commanders arrive as commanders do                                                                                             |
+| A spec mod on a vanilla unit                                                                                                                                                         | one on each race unit it stands for (`expandMods`)                                                                                                 |
+| A spec mod on a vanilla weapon, ammo, build arm or death ammo                                                                                                                        | one on each race part of the same role under the race units that the part's units stand for                                                        |
+| A mod on a file the army still holds (a retagged Pumpkin, `model.gwoSpecs`)                                                                                                          | kept as well                                                                                                                                       |
+| A mod that changes what a unit is (`unit_types`, `buildable_types`, `tools`, `command_caps`, `si_name`, …) or says `exact: true` - and every other mod on that unit in the same list | stays on its own unit, never travels to a race unit                                                                                                |
+| A unit-map `spec_id` the race maps left pointing at a vanilla unit                                                                                                                   | the first race unit it stands for, or left as it is when it stands for none (`unitMapFallback`)                                                    |
 
 The build rule is what carries Bugs' research. Its research factories share the
 factories' cells. The unlock tokens they build sit in cells of their own, so
@@ -166,13 +166,17 @@ right, so `A & B - C | D` excludes C from the first alternative only. An
 unknown token is absent from the tag set and so reads false. The engine treats
 it the same way. An empty expression is false.
 
-A group card names several vanilla files of one cell (`gwoGroup.botsAmmo`
-names eight). It must land once on a race ammo, not eight times. `expandMods`
-emits a race target set once per **pass**. A pass ends when a vanilla source
-already seen recurs. One card is one pass, and two copies stack. A mod on a
-race path is passed through, so a card that makes one change to the Ant and to
-the race tank of its cell changes that tank twice. The passes carry no card, so
-they cannot tell that case from two cards. A card that means the Ant's change for
+A group card names several vanilla files that can stand for the same race
+unit (`gwoGroup.botsAmmo` names eight). It must land once on a race ammo, not
+eight times. `expandMods` emits a race target set once per **pass**. A pass
+ends when a vanilla source already seen recurs. One card is one pass, and two
+copies stack. A mod on a race path is passed through, so a card that makes one
+change to the Ant and to a race tank it stands for changes that tank twice. The
+passes carry no card, so they cannot tell that case from two cards, nor two
+cards that make one change to two vanilla units standing for the same race
+unit from one card: that race unit takes the change once. Jobs make that
+rarer, since fewer vanilla units share a race unit; the homes of a cell still
+share theirs (see "Jobs" below). A card that means the Ant's change for
 the Ant alone marks it `stockOnly`, which keeps it off the race tank
 ([`tech-cards.md`](tech-cards.md), "Which races a card reaches"). A
 `stockOnly` change sits outside the passes. A mod whose `path` a race file
@@ -182,15 +186,17 @@ A race can mount a vanilla part itself. Legion's commanders mount the stock
 commander main gun, AA, and torpedo weapons, so they fire the stock ammo. Such a
 file is both a file the army holds and one of the race's parts. A mod on it that
 is kept, because the army holds the file, joins the pass for that file, like any
-race part. One card that names the file and a cell-mate therefore changes the
-file once, whichever it reaches first. The limit above applies to the file too:
-a card that changes a cell-mate, and a second card that makes the same change to
-the file, change it once, as they change every race part of that pass once.
+race part. One card that names the file and a vanilla unit that stands for its
+owner therefore changes the file once, whichever it reaches first. The limit
+above applies to the file too: a card that changes such a unit, and a second
+card that makes the same change to the file, change it once, as they change
+every race part of that pass once.
 `test/unit_cells.test.js` pins both.
 
-A single-unit grant opens its whole cell: `gwc_start_subcdr`'s Ant brings every
-basic race tank. That is accepted. What no cell can carry is a hand-picked
-list. `cards_deal_helpers.MLA_ONLY` names the cards the deal never gives a race
+A single-unit grant brings the race units its unit stands for:
+`gwc_start_subcdr`'s Ant brings Legion's Shank and Stoke, and not the Corsair,
+the Maul, or Second Wave's Lynx. What no job can carry is a hand-picked list.
+`cards_deal_helpers.MLA_ONLY` names the cards the deal never gives a race
 player, and each entry says why. `mlaOnlyCard` adds every `_upgrade_` card but
 the commander's (`ubercannon`, `subcommander`), since those are tuned to the
 MLA unit they name. A race gets its own.
@@ -205,9 +211,9 @@ a locked card to the first usable one. `gw_play/treasure_loadouts.js` still
 excludes them from a race player's treasure pool, because they would be an
 unusable prize.
 
-The deal gives any other card when `races.cardUsable` finds a race unit in a
-cell its `card_units.js` entry names. A card with no entry passes, and every
-loadout has no entry. Every card that names a stock unit passes until the
+The deal gives any other card when `races.cardUsable` finds a race unit that a
+unit its `card_units.js` entry names stands for. A card with no entry passes,
+and every loadout has no entry. Every card that names a stock unit passes until the
 race's cells are built, and `gw_play/races.js` starts building them as the
 scene loads. Deals are
 synchronous and gate on the cells, so the cells are built as soon as the
@@ -240,7 +246,7 @@ applies to MLA too, and `raceCanDeal` skips `MLA_ONLY` and the `_upgrade_` rule
 for such a card: a third-party `mym_upgrade_shank` naming a Legion unit is dealt
 to Legion players only. A card with no foreign unit is gated exactly as before.
 An entry's `races` list overrides both: the card is offered only to the races
-listed, and still needs a unit in a cell the race fills.
+listed, and still needs a unit that stands for one of the race's.
 The entry may nest lists (a card's own group beside single paths); every reader
 flattens it (`unit_cells.unitList`) and ignores a whole `gwoUnit` race table in
 it. So do the unit lists a card hands `inventory.addUnits`,
@@ -268,7 +274,7 @@ brings for them. `upgradeCard` reads it, so `requires` may name a race unit.
 The two card tooltips (the hand hover and a star's "Which Units?") follow the
 same rule. `gw_play/card_tooltips.js` lists what `races.cardUnitsFor` gives:
 the race or add-on units the entry names that the race fields, and the race
-units of each cell a stock unit in it occupies (`unit_cells.cardUnitsFor`).
+units each stock unit in it stands for (`unit_cells.cardUnitsFor`).
 That lookup has no build reach, so a factory card lists Bugs' research factories but not their
 unlock tokens. A Commander-cell path is kept.
 
@@ -282,6 +288,88 @@ The inventory is the client's own: a viewer's record under per-player tech.
 Until the cells land, the tooltip shows the MLA list. `gw_play/races.js` sets
 `model.gwoRaceCellsPrimed` once priming completes, and the open star's and the
 hovered card's tooltips are rebuilt.
+
+### Jobs
+
+A mobile `Combat` cell mixes units with different jobs: with Second Wave,
+Legion's basic tanks are the Lynx (anti-air), the Corsair, the Maul, the
+Shank, and the Stoke.
+Within such a cell a vanilla unit stands for the race units that do its job,
+not for the whole cell. Every other class keeps its cell whole: titans,
+commanders, fabbers, factories, and structures.
+
+`unit_cells.classify` reads a mobile combat unit's jobs off its stripped
+types, in this order:
+
+| Order | Jobs                                                                                                                                                                                                                                                                                                                                                                                     |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `Heavy`                                                                                                                                                                                                                                                                                                                                                                                  |
+| 2     | `SelfDestruct`, `Fighter`, `Bomber`, `Gunship`, `LaserPlatform`, `Tactical`, `AirDefense`, `OrbitalDefense`, `MissileDefense`, `NukeDefense`, `Defense`, `SurfaceDefense`, `Shield`, `Artillery`, `TacticalDefense`, `Transport`, `Teleporter`, `Scout` (`Scout` or `Recon`), `RadarJammer`, `Radar`, `Construction`, `Deconstruction`, `MetalProduction`, `EnergyProduction`, `Economy` |
+| 3     | `Hover`, `WaterHover`, `Amphibious`, `Sub`                                                                                                                                                                                                                                                                                                                                               |
+
+Each bit is one job, except that `Recon` is `Scout` too. A unit with none of
+them has no job. `Heavy` comes first, what a unit is for next, and how it
+moves last: the Ward, typed `Heavy`, `NukeDefense`, and `Hover`, lists
+`Heavy` first, and the Locusts, typed `Deconstruction` and `Hover`, list
+`Deconstruction` first.
+
+Only a vanilla unit a commander can build counts. `buildIndex` marks as
+`fieldable` what the index's `Commander`-cell units can build, and what that
+builds in turn, through `buildable_types`. Each distinct expression is
+evaluated once. A vanilla unit outside that set stands for its whole cell, as
+every unit did before jobs, and plays no part in the rule below. Such units are
+base specs such as `base_orbital` (the Rapid start changes its spawn layers),
+spawned units such as the Squall's drone, and the portal's ammo. When no
+commander has a build list, nothing is `fieldable`, every cell stays whole,
+and `gw_play/race_cells.js` warns.
+
+`unit_cells.standInsFor` applies the rule within each mobile `Combat` cell:
+
+1. A vanilla unit's job is its first job.
+2. A race unit **matches** the first of its jobs that is a vanilla unit's job
+   in the cell. The Corsair is `Artillery` and `Hover`. No basic vanilla tank
+   is artillery, so the Corsair matches `Hover`, the Drifter's job. A race
+   unit with no such job is **unmatched**, whether or not it has jobs: the
+   Stoke is `Amphibious`, and no basic vanilla tank is.
+3. A vanilla unit stands for the race units that match its job.
+4. The unmatched race units belong to the cell's **homes**. The homes are the
+   vanilla units with no job. If there are none, they are the **leftover**
+   units, whose job no race unit matches. If there are none of those either,
+   every vanilla unit of the cell is a home.
+5. Any other vanilla unit stands for **nothing**. For Legion the Skitter does:
+   no basic Legion tank scouts, and the Ant and the Stryker, which have no
+   job, are the homes.
+
+So for Legion with Second Wave, the Ant stands for the Shank and the Stoke,
+the Spinner for the Lynx, the Drifter for the Corsair, and the Inferno for the
+Maul. Without Second Wave, Legion has no anti-air tank, and the Spinner stands
+for nothing. The homes rule
+leaves no race unit of a cell a vanilla unit fills without a vanilla unit to
+stand for it, so the build rule and `unfilledByVanilla` are unchanged.
+`test/unit_jobs.test.js` checks that for every shipped race and the add-on
+index, and that a card can grant a vanilla unit that stands for each one.
+
+Every reader asks `standInsFor`: `raceUnitsFor`, `addonUnitsFor`,
+`expandMods`, `cardUsable`, `cardUnitsFor`, and `unitMapFallback`. A part
+follows the units that mount it (`partIndex[path].units`, narrowed to the unit
+whose directory holds the part), so a mod on the Spinner's ammo lands on the
+Lynx's ammo alone.
+
+The AI unit map follows the same rule. A stock key the race's maps leave on a
+vanilla unit that stands for nothing keeps pointing at that unit, which the
+race army cannot build, so the base files' build items for it never build. The
+Skitter's `LandScout` is one for Legion and Bugs. The AI still orders such an
+item whenever its conditions pass, so with `--ai-log` the server log repeats
+its refusal (`FactoryManager: Attempted to order a factory [...] to build
+[.../land_scout.json...]`). The factory goes on to build the rest of its list.
+
+The rule has two known limits:
+
+- It reads the race mods' own bits. Legion's Stoke is typed `Amphibious`, not
+  `Artillery`, so it belongs to the Ant, not to an artillery unit.
+- The Squall's drone sits in the basic air cell and no commander builds it, so
+  a naval card that names it reaches a race's whole basic air cell. That
+  predates jobs.
 
 ## Race trees
 
@@ -331,7 +419,7 @@ The engine lists `unit_maps/` and loads each file it finds with the army's tag
 appended. The referee therefore never copies the race's map as a file. It
 merges the race's map over the brain's map
 (`referee_game_file_paths.mergeUnitMaps`), and race keys win. A vanilla
-`spec_id` the race map left resolves to a race unit of its cell. The referee
+`spec_id` the race map left resolves to a race unit it stands for. The referee
 writes the result as the army's tagged `ai_unit_map[_x1].json.<tag>`. It also
 copies the brain's untagged map, so the engine has a name to derive the tagged
 one from. With only the tagged file present, the engine looks for
@@ -634,9 +722,9 @@ already sits untagged, so nothing is merged for it.
 
 **What an MLA player fields** (`unit_cells.addonUnitsFor`) is additive. Every
 held path MLA owns stays, parts and commander-class units included. Each held vanilla
-unit brings every add-on unit of its cell: an extractor brings Second Wave's
-Metal Generator, the Atlas brings Juno and Osmech's bot titans. Add-on units
-in cells no vanilla unit fills (the fabrication towers, the advanced
+unit brings the add-on units it stands for: an extractor brings Second Wave's
+Metal Generator, the Atlas brings Juno and Osmech's bot titans, and the Spark
+brings Osmech's Spartak. Add-on units in cells no vanilla unit fills (the fabrication towers, the advanced
 storages, Section 17's gantry, Poseidon) arrive through the build rule, from
 a held vanilla builder or an add-on unit already granted. The vanilla side of
 the index is the base game's units alone: an add-on's vanilla-typed units are
@@ -645,12 +733,12 @@ reach them, for MLA or for the race twins Legion and Bugs get. So is a vanilla
 unit whose types say nothing once `stripTypes` drops its faction bit
 (`unit_cells.classifiable`): the Deep Space Radar's stub, typed
 `UNITTYPE_Custom58` alone, would otherwise fill the basic fabrication towers'
-cell, and a mod on it would land on them. A spec mod on
-a vanilla unit lands on its add-on cell-mates too, and the original stays
-because the army still holds its file. No commander is retagged and no unit
+cell, and a mod on it would land on them. A spec mod on a vanilla unit lands
+on the add-on units it stands for too, and the original stays because the army
+still holds its file. No commander is retagged and no unit
 map falls back for MLA. An MLA AI army and a co-op viewer get the same
-treatment. `unit_cells.addonCardUnitsFor` lists a card's own units and the
-add-on units of their cells for the tooltips.
+treatment. For the tooltips, `unit_cells.addonCardUnitsFor` lists a card's
+own units and the add-on units they stand for.
 
 **Exclusive units** carry a `Custom` bit nothing registered owns and none
 that is: Section 17's Big Bill, Pineapple, Floater and Horntail are
@@ -666,7 +754,7 @@ counts as unfilled for that rule. A card that names one directly is dealt to a
 race that can build it (`races.fieldsUnit`, "Capability cells").
 
 **The fallback set.** A unit-map `spec_id` a race's maps left on a vanilla
-unit still falls back to a race unit of its cell, but `unitMapFallback` now
+unit still falls back to a race unit it stands for, but `unitMapFallback` now
 takes an `avoid` set - every add-on unit path - and prefers a unit outside
 it. `/pa/units/l_addon/` sorts before `/pa/units/land/`, so without it the
 base map keys Legion leaves vanilla would land on Second Wave's units, which
