@@ -641,7 +641,11 @@ storages, Section 17's gantry, Poseidon) arrive through the build rule, from
 a held vanilla builder or an add-on unit already granted. The vanilla side of
 the index is the base game's units alone: an add-on's vanilla-typed units are
 kept out of it, or they would fill exactly those cells and nothing could ever
-reach them, for MLA or for the race twins Legion and Bugs get. A spec mod on
+reach them, for MLA or for the race twins Legion and Bugs get. So is a vanilla
+unit whose types say nothing once `stripTypes` drops its faction bit
+(`unit_cells.classifiable`): the Deep Space Radar's stub, typed
+`UNITTYPE_Custom58` alone, would otherwise fill the basic fabrication towers'
+cell, and a mod on it would land on them. A spec mod on
 a vanilla unit lands on its add-on cell-mates too, and the original stays
 because the army still holds its file. No commander is retagged and no unit
 map falls back for MLA. An MLA AI army and a co-op viewer get the same

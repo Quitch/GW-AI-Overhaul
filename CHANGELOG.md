@@ -21,8 +21,11 @@
 
 ### Bugfix
 
+- Tech that changes no units, such as Sub Commander Tech, and your loadout no longer show "Which Units?" when you select them in your Tech Bank
 - Tech and loadouts that change commander weapons, such as Commander Ammunition Tech and Commander Combat Tech, now also change the main gun of MLA commanders, as do the enemy factions' commander bonuses
 - Tech that changes commander weapons no longer applies twice to the anti-air and torpedo weapons of Legion commanders
+- MLA, Legion, and Bugs armies with Second Wave, and Exiles armies, can build their basic fabrication tower without the Planetary Radar
+- A tech card from another mod that changes the Planetary Radar no longer changes the basic fabrication towers too
 
 ## v7.4.1 - 2026-09-24
 

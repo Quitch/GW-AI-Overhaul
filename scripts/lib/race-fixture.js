@@ -108,7 +108,7 @@ function fixtureIndex() {
     vanilla: unitCells.buildIndex(
       FIXTURE_UNITS,
       FIXTURE_SPECS,
-      unitCells.vanillaMember
+      (types) => unitCells.vanillaMember(types) && unitCells.classifiable(types)
     ),
     race: unitCells.buildIndex(
       FIXTURE_UNITS,
@@ -217,7 +217,10 @@ function fixtureAddonIndex() {
     vanilla: unitCells.buildIndex(
       units,
       specs,
-      (types, path) => unitCells.vanillaMember(types) && !addonPaths.has(path)
+      (types, path) =>
+        unitCells.vanillaMember(types) &&
+        unitCells.classifiable(types) &&
+        !addonPaths.has(path)
     ),
     race: unitCells.buildIndex(
       units,
