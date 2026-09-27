@@ -95,13 +95,18 @@ scripts that need it are local-only, like `validate:race-trees`.
 ## The catalog's descriptions
 
 The `description` is the only context a translator gets, and the generated note
-is a starting point, not the finished one. It carries the role, the `file:line`,
-where a player sees the text, the source snippet, the card or race facts, and the
-rules for the role. Short keys ("Mods", "Win", "Cluster", "Eradicate") are the
+is a starting point, not the finished one. It carries the role, the file, where a
+player sees the text, the source snippet, the card or race facts, and the rules
+for the role. Short keys ("Mods", "Win", "Cluster", "Eradicate") are the
 ambiguous ones: part of speech, what it refers to, and what to keep verbatim
 belong in a hand-written note, which `i18n:catalog` keeps across reruns.
 
 Conventions the notes and the translations follow:
+
+- A note names the file, never a line. `i18n:catalog` keeps a hand-written note
+  as it is, so a line number in one goes stale as the code moves. Where two mod
+  files share a name (`cards.js`, `races.js`), the note gives the folder too:
+  `gw_play/cards.js`.
 
 - Numbers, percentages, `<br>`, `[strong]`, `__x__` and `{n}` are kept exactly.
   `validate:translations` checks them as a multiset per entry.
@@ -121,8 +126,9 @@ Conventions the notes and the translations follow:
   non-empty string `message`, trimmed keys, no `;;` or `::` in a key (i18next's
   separators; such a key can never resolve), keys in code-point order, no
   duplicate keys (a line scan, since `JSON.parse` keeps the last silently).
-- `en-US.json`: `message === key`, a non-empty `description`, and the key set
-  equals what `loc-keys.js` extracts from the tree, both ways.
+- `en-US.json`: `message === key`, a non-empty `description` with no
+  `file:line` reference, and the key set equals what `loc-keys.js` extracts from
+  the tree, both ways.
 - Other files: every key is in the catalog, no `description`, and the
   placeholders and style codes in the message match the key's.
 
