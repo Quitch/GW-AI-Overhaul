@@ -271,6 +271,7 @@
     $("#new-game-left").remove();
     addHtml.before("#gwo-game-options-panel", "commander_button.html");
     addHtml.before(".div_commit_cont", "war_generation_error.html");
+    addHtml.append(".div_commit_secondary_options", "report_bug_button.html");
     // Must hang off body: the modal is position: absolute, and in the Setup
     // column it would resolve against a short, scrolling ancestor.
     addHtml.append("body", "commander_modal.html");
@@ -284,6 +285,7 @@
     // and so leaves that header's <loc> unreached.
     locTree($("#gwo-ai-settings"));
     locTree($("#difficulty-cards"));
+    locTree($("#gwo-report-bug"));
 
     model.gwoFactionTooltip +=
       "<br>" +

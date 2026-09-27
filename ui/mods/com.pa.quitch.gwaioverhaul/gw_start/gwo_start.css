@@ -323,7 +323,8 @@
 #gwo-ai-panel .coop-setup-configure,
 #gwo-game-options-modal .gw-start-square-switch,
 #gwo-per-player-race-row .gw-start-square-switch,
-#gwo-unique-ai-loadouts-row .gw-start-square-switch {
+#gwo-unique-ai-loadouts-row .gw-start-square-switch,
+#gwo-report-bug {
   position: relative;
 }
 
@@ -375,5 +376,14 @@
   top: 0;
   right: 0;
   bottom: -11px;
+  left: 0;
+}
+
+#gwo-report-bug::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 0;
+  bottom: -5px;
   left: 0;
 }

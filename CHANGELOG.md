@@ -10,6 +10,7 @@
 - The host of a co-op war can add AI players to open slots; they fight beside the human players, can be kicked from their slot, and with per-player tech each choose their own loadout and tech cards
 - The AI settings choose which AI brain the co-op AI players use, per race
 - Co-op AI players ping the star they want to go to next
+- The war setup screen, the galaxy map's menu, and the menu in Galactic War battles have a Report a Galactic War Bug button, which opens a new bug report on GitHub in your web browser
 
 ### Changed
 

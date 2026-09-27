@@ -19,6 +19,7 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_start.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/setup.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/report_bug.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ui.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/race_picker.js",
@@ -43,6 +44,8 @@
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_progress.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_progress.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/report_bug.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/menu.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/planets.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee.js",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/section_of_foreign_intelligence/section_of_foreign_intelligence.css",
@@ -62,6 +65,8 @@
     ],
     "live_game": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/win_conditions.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/report_bug.js",
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/live_game/menu.js"
     ],
     "live_game_options_bar": [
