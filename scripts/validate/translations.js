@@ -2,9 +2,10 @@
 
 // The translation files under ui/mods/<id>/translations/: named for a PA
 // locale, shaped as PA's own tables, keys in code-point order with no
-// duplicates, the en-US catalog equal to what the tree asks loc() for, every
-// other file a subset of it, and placeholders and style codes preserved per
-// entry. Needs no PA install, so it runs in verify. See docs/translations.md.
+// duplicates, the en-US catalog equal to what the tree asks loc() for with no
+// file:line in its notes, every other file a subset of it, and placeholders
+// and style codes preserved per entry. Needs no PA install, so it runs in
+// verify. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -21,6 +22,8 @@ const {
 const { reportProblems } = require("../lib/report-failures.js");
 
 const SEPARATORS = /;;|::/;
+// A translator note's `file:line` reference; the line moves with the code.
+const LINE_REFERENCE = /[\w-]\.(?:js|html|json|css):\d/;
 // What a translation must carry over from its key, counted as a multiset.
 const PRESERVED = [
   /__\w+__/g,
@@ -125,6 +128,12 @@ function checkEntry(problems, label, key, entry, isCatalog) {
     }
     if (typeof entry.description !== "string" || !entry.description.trim()) {
       problems.push(label + ": no description for " + JSON.stringify(key));
+    } else if (LINE_REFERENCE.test(entry.description)) {
+      problems.push(
+        label +
+          ": description names a line, which goes stale; name the file only: " +
+          JSON.stringify(key)
+      );
     }
     return;
   }
