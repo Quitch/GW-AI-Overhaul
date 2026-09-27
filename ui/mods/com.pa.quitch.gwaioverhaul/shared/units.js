@@ -145,6 +145,12 @@ define([
       "/pa/units/commanders/base_commander/base_commander_aa_ammo.json",
     commanderAmmo:
       "/pa/units/commanders/base_commander/base_commander_ammo.json",
+    // What the three primaries fire under TITANS: the missile weapon fires the
+    // laser's ammo, and base_commander_ammo_missile.json is fired by nothing.
+    commanderAmmoBullet:
+      "/pa/units/commanders/base_commander/base_commander_ammo_bullet.json",
+    commanderAmmoLaser:
+      "/pa/units/commanders/base_commander/base_commander_ammo_laser.json",
     commanderBuildArm: "/pa/tools/commander_build_arm/commander_build_arm.json",
     commanderDeath: "/pa/ammo/nuke_pbaoe/nuke_pbaoe.json",
     commanderDeathAir: "/pa/ammo/nuke_pbaoe/nuke_pbaoe_air.json",

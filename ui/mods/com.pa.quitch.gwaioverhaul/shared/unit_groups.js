@@ -581,8 +581,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     vehiclesAmmo
   );
 
+  // The main gun's ammo comes before the base it inherits from. See specs.md,
+  // "A modded spec is flattened".
   var commanderAmmo = [
     gwoUnit.commanderAAAmmo,
+    gwoUnit.commanderAmmoBullet,
+    gwoUnit.commanderAmmoLaser,
     gwoUnit.commanderAmmo,
     gwoUnit.commanderSecondaryAmmo,
     gwoUnit.commanderTorpedoLandAmmo,
