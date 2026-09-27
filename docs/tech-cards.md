@@ -756,6 +756,12 @@ Legion's five basic vehicle combat units, and scores for all five. A card that
 grants a vanilla unit whose cell the race already fields scores no `unlock`,
 since the army gains nothing.
 
+To a race AI, then, a card that names one vanilla unit is a card for that
+unit's whole cell. It scores as a card that names every vanilla unit of the
+cell does, since `expandMods` lands a group on each race unit once. A group
+card therefore scores about the same for every race, and a single-unit card
+scores more for a race than for MLA.
+
 An AI whose race has no cells built, or an MLA AI with no add-on active, is
 judged on its saved paths. So is every AI while the groups stand in. A race
 commander then reaches what `base_commander.json` builds, and owns the files
