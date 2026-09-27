@@ -14,7 +14,6 @@ const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const {
-  harvestedIndex,
   withheldCards,
   expectedWithheld,
   unnamedCardUnits,
@@ -72,10 +71,7 @@ describe("the Exiles descriptor", () => {
 describe("Exiles under capability cells", () => {
   before(() => {
     if (exilesUnits.length) {
-      races.setCells(
-        "exiles",
-        harvestedIndex(fixture.units, fixture.buildable, "Custom6")
-      );
+      races.setCells("exiles", fixtureIndex("exiles"));
     }
   });
   after(() => {
@@ -120,9 +116,7 @@ describe("Exiles under capability cells", () => {
       t.skip("fixture harvested without Exiles");
       return;
     }
-    // As race_cells.js builds it. harvestedIndex keeps Second Wave's own
-    // vanilla-typed tower on the vanilla side, where it fills the cell.
-    const index = fixtureIndex("exiles");
+    const index = races.cellsOf("exiles");
     assert.equal(
       index.vanilla.cellOf[gwoUnit.deepSpaceOrbitalRadar],
       undefined

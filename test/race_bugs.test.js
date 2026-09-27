@@ -14,11 +14,11 @@ const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const {
-  harvestedIndex,
   withheldCards,
   expectedWithheld,
   unnamedCardUnits,
 } = require("../scripts/lib/harvested-race.js");
+const { fixtureIndex } = require("../scripts/lib/addon-fixture.js");
 const fixture = require("./fixtures/unit_types.json");
 
 const bugsUnits = Object.keys(fixture.units).filter((unit) =>
@@ -59,10 +59,7 @@ describe("the Bugs descriptor", () => {
 describe("Bugs under capability cells", () => {
   before(() => {
     if (bugsUnits.length) {
-      races.setCells(
-        "bugs",
-        harvestedIndex(fixture.units, fixture.buildable, "Custom2")
-      );
+      races.setCells("bugs", fixtureIndex("bugs"));
     }
   });
   after(() => {

@@ -379,7 +379,8 @@ ping windows through fake timers and values, and `test/star_threat.test.js`
 pins the threat the intelligence panel and the pings share.
 
 `scripts/lib/harvested-race.js` holds what the `race_*.test.js` files share.
-`harvestedIndex` builds a shipped race's cell index from `unit_types.json`.
+Each file builds its race's cell index from `unit_types.json` with
+`scripts/lib/addon-fixture.js`'s `fixtureIndex`, as `race_cells.js` builds it.
 `withheldCards` and `expectedWithheld` compare the cards the race is not dealt
 with the MLA-only cards plus the race's own list. `unnamedCardUnits` lists each
 tooltip unit that has no name. What each race expects stays in its own file.

@@ -15,11 +15,11 @@ const { userDataDir } = require("../scripts/lib/pa-install.js");
 const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const {
-  harvestedIndex,
   withheldCards,
   expectedWithheld,
   unnamedCardUnits,
 } = require("../scripts/lib/harvested-race.js");
+const { fixtureIndex } = require("../scripts/lib/addon-fixture.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
 // Cards a Legion player is never dealt beyond the MLA-only set every race
@@ -98,7 +98,7 @@ describe("the Legion descriptor", () => {
 describe("Legion under capability cells", () => {
   before(() => {
     if (legionUnits.length) {
-      races.setCells("legion", harvestedIndex(fixture, undefined, "Custom1"));
+      races.setCells("legion", fixtureIndex("legion"));
     }
   });
   after(() => {
