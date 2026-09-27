@@ -340,8 +340,10 @@ and `gw_play/race_cells.js` warns.
    no basic Legion tank scouts, and the Ant and the Stryker, which have no
    job, are the homes.
 
-So for Legion the Ant stands for the Shank and the Stoke, the Spinner for the
-Lynx, the Drifter for the Corsair, and the Inferno for the Maul. The homes rule
+So for Legion with Second Wave, the Ant stands for the Shank and the Stoke,
+the Spinner for the Lynx, the Drifter for the Corsair, and the Inferno for the
+Maul. Without Second Wave, Legion has no anti-air tank, and the Spinner stands
+for nothing. The homes rule
 leaves no race unit of a cell a vanilla unit fills without a vanilla unit to
 stand for it, so the build rule and `unfilledByVanilla` are unchanged.
 `test/unit_jobs.test.js` checks that for every shipped race and the add-on

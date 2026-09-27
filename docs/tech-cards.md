@@ -759,7 +759,7 @@ reaches the race units it stands for ([`races.md`](races.md), "Jobs"): an Ant
 health card reaches Legion's Shank and Stoke, and scores for both. A card that
 grants a vanilla unit scores no `unlock` when the army already fields every
 race unit it stands for: for a Legion AI that holds the Ant, the Stryker
-scores none, and the Spinner scores for the Lynx it brings.
+scores none, and the Inferno scores for the Maul it brings.
 
 To a race AI, then, a card that names one vanilla unit is a card for the race
 units that unit stands for. It scores as a card that names every vanilla unit
@@ -770,7 +770,7 @@ several race units, and nothing where it stands for none.
 
 Jobs decide reach, not worth. A unit's worth, and the 0.6 step between the
 `later` units of one cell, still go by domain, tier, and class
-(`lookup.classOf`), so a Legion AI that fields the Lynx and the Shank counts
+(`lookup.classOf`), so a Legion AI that fields the Maul and the Shank counts
 them as one cell.
 
 An AI whose race has no cells built, or an MLA AI with no add-on active, is
