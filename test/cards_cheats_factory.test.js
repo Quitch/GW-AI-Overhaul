@@ -20,7 +20,9 @@ const makeFactory = loadCouiModule(
 );
 
 // An inventory whose card list is a callable observable, as the base game's is.
-function makeInventory(maxCards, initial) {
+// applyCards calls done on a later turn, as the real pass does, or keeps it in
+// `held` when the test finishes the apply itself.
+function makeInventory(maxCards, initial, holdApply) {
   const list = (initial || []).slice();
   const cards = function () {
     return list;
@@ -31,8 +33,14 @@ function makeInventory(maxCards, initial) {
     cards,
     maxCards: () => maxCards,
     applied: 0,
-    applyCards() {
+    held: [],
+    applyCards(done) {
       this.applied += 1;
+      if (holdApply) {
+        this.held.push(done);
+      } else if (done) {
+        setImmediate(done);
+      }
     },
   };
 }
@@ -51,6 +59,7 @@ function setup(overrides = {}) {
       playerFaction: 0,
       commanderNames: {},
       missing: [],
+      holdApply: false,
     },
     overrides
   );
@@ -63,7 +72,11 @@ function setup(overrides = {}) {
     penchants: [],
   };
 
-  const inventory = makeInventory(options.maxCards, options.startingCards);
+  const inventory = makeInventory(
+    options.maxCards,
+    options.startingCards,
+    options.holdApply
+  );
   const factions = [
     { minions: [{ name: "Able", commander: "/pa/units/x.json" }] },
     { minions: [{ name: "Baker" }] },
@@ -155,6 +168,28 @@ async function capture(stream, run) {
   return mocked.mock.calls.map((call) => call.arguments.join(" "));
 }
 
+// A save between applyCards' buff and dull phases keeps the loadout's
+// buffCount, and the war then loads without the loadout's units (#358).
+async function assertFinishesAfterApply(cheat, snapshotName) {
+  const { inventory, calls } = build({ holdApply: true });
+
+  cheat();
+  await flush();
+
+  assert.equal(inventory.held.length, 1);
+  assert.equal(typeof inventory.held[0], "function");
+  assert.deepEqual(calls.aiDeals, []);
+  assert.deepEqual(calls.snapshots, []);
+  assert.deepEqual(calls.saves, []);
+
+  inventory.held[0]();
+  await flush();
+
+  assert.deepEqual(calls.aiDeals, [false]);
+  assert.deepEqual(calls.snapshots, [[snapshotName, true]]);
+  assert.deepEqual(calls.saves, [true]);
+}
+
 describe("cheats install", () => {
   it("replaces both cheats so they deal from GWO's deck", () => {
     build();
@@ -222,6 +257,9 @@ describe("cheats testCards", () => {
     assert.deepEqual(calls.snapshots, [["gwo_cheat_test_cards", true]]);
     assert.deepEqual(calls.saves, [true]);
   });
+
+  it("re-deals, broadcasts and saves only once the apply has finished", () =>
+    assertFinishesAfterApply(testCards, "gwo_cheat_test_cards"));
 
   // The base game logs an error for a snapshot sent with no co-op session to
   // receive it.
@@ -366,6 +404,9 @@ describe("cheats giveCard", () => {
     assert.deepEqual(calls.snapshots, [["gwo_cheat_give_card", true]]);
     assert.deepEqual(calls.saves, [true]);
   });
+
+  it("re-deals, broadcasts and saves only once the apply has finished", () =>
+    assertFinishesAfterApply(giveCard, "gwo_cheat_give_card"));
 
   it("saves without broadcasting in a solo war", async () => {
     const { calls } = build({ isHost: false, campaignActive: false });
