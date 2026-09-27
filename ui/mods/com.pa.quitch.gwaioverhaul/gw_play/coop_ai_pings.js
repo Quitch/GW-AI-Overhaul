@@ -145,7 +145,8 @@ define([
   // What a card is worth to an AI, judged as it would judge it in a hand.
   // judge: effects (a coop_ai_effects.js instance), lookup(),
   // teamDomains(playerId, lookup), namesUnits(cardId), chanceOf(card,
-  // applied, star), isLoadout(cardId). holder: { playerId, inventory,
+  // applied, star), isLoadout(cardId), and optionally fielded(saved, lookup)
+  // (gw_play/coop_ai_driver.js's). holder: { playerId, inventory,
   // commander }, the saved inventory the card is judged against. star: the
   // galaxy star itself, which a card's deal() takes. memo: shared by the
   // cards an AI judges in one window.
@@ -154,20 +155,23 @@ define([
     if (!lookup || !holder.inventory) {
       return Promise.resolve(0);
     }
-    return judge.effects
-      .withCard(holder.inventory, card, judge.isLoadout(card.id))
-      .then(function (pair) {
-        return coopAiCards.scoreCard(pair[0], pair[1], {
-          lookup: lookup,
-          commander: holder.commander,
-          teamDomains: judge.teamDomains(holder.playerId, lookup),
-          memo: memo || {},
-          namesUnits: judge.namesUnits(card.id),
-          chance: function () {
-            return judge.chanceOf(card, pair[0], star);
-          },
-        }).total;
-      });
+    return Promise.all([
+      judge.effects.withCard(holder.inventory, card, judge.isLoadout(card.id)),
+      judge.fielded && judge.fielded(holder.inventory, lookup),
+    ]).then(function (results) {
+      var pair = results[0];
+      return coopAiCards.scoreCard(pair[0], pair[1], {
+        lookup: lookup,
+        commander: holder.commander,
+        teamDomains: judge.teamDomains(holder.playerId, lookup),
+        memo: memo || {},
+        fielded: results[1],
+        namesUnits: judge.namesUnits(card.id),
+        chance: function () {
+          return judge.chanceOf(card, pair[0], star);
+        },
+      }).total;
+    });
   };
 
   // params:

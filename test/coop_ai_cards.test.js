@@ -660,6 +660,61 @@ describe("reach under an inventory's mods", () => {
   });
 });
 
+// A race AI's saved inventory holds vanilla paths, and its view
+// (shared/coop_ai_fielded.js) says what its army fields: here a race whose
+// grenadier stands in for the Dox. coop_ai_fielded.test.js covers the real
+// view.
+describe("scoring on a fielded view", () => {
+  const asFielded = (units) =>
+    (units || []).map((unit) => (unit === "dox" ? "grenadier" : unit));
+  const view = (obtainable) => {
+    const calls = { inventory: 0, reachable: [] };
+    return {
+      calls,
+      inventory: (saved) => {
+        calls.inventory += 1;
+        return Object.assign({}, saved, { units: asFielded(saved.units) });
+      },
+      obtainable: obtainable || ["grenadier"],
+      reachable: (units) => {
+        calls.reachable.push(units);
+        return lookup.reachable(units);
+      },
+    };
+  };
+  const onGrenadier = [mod("grenadier", "max_health", "multiply", 1.5)];
+
+  it("judges a card on what the army fields, each side read once", () => {
+    const fielded = view();
+    const before = inventory();
+
+    assert.equal(score(before, { mods: onGrenadier }).mods, 0);
+    assert.ok(score(before, { mods: onGrenadier }, { fielded }).mods > 0);
+    assert.equal(fielded.calls.inventory, 2);
+    assert.ok(fielded.calls.reachable.length > 0);
+    assert.ok(fielded.calls.reachable.every((units) => !units.includes("dox")));
+  });
+
+  it("reads the units a card could grant from the view", () => {
+    const onBoom = { mods: [mod("boom", "max_health", "multiply", 1.5)] };
+    const before = inventory();
+
+    assert.ok(score(before, onBoom).later > 0);
+    assert.equal(score(before, onBoom, { fielded: view() }).later, 0);
+  });
+
+  it("scores a loadout on what the army fields, each side read once", () => {
+    const before = inventory({ units: [COMMANDER, "botFactory"] });
+    const after = withCard(before, { units: ["dox"] });
+    const grantable = view();
+    const loadout = (fielded) =>
+      coopAiCards.scoreLoadout(before, after, context({ fielded }));
+
+    assert.ok(loadout(grantable).unlock < loadout(view([])).unlock);
+    assert.equal(grantable.calls.inventory, 2);
+  });
+});
+
 describe("chooseLoadout", () => {
   const scored = [
     { id: "strong", total: 30 },

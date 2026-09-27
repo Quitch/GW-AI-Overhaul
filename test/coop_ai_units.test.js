@@ -211,6 +211,30 @@ describe("fromSpecs", () => {
     ]);
   });
 
+  // What the army fields (shared/coop_ai_fielded.js) is the race's own
+  // units, which the base commander's build list does not reach.
+  it("reaches from a race commander's own build list when what is held is fielded", () => {
+    const RACE_FACTORY = "/pa/units/land/l_bot_factory/l_bot_factory.json";
+    const RACE_BOT = "/pa/units/land/l_bot/l_bot.json";
+    const race = coopAiUnits.fromSpecs({
+      units: [BASE_COMMANDER, RACE_COMMANDER, RACE_FACTORY, RACE_BOT],
+      specs: Object.assign({}, COMMANDER_SPECS, {
+        [RACE_FACTORY]: {
+          unit_types: types("Custom1", "Factory", "Structure", "Bot"),
+          buildable_types: "Custom1 & Mobile",
+        },
+        [RACE_BOT]: { unit_types: types("Custom1", "Mobile", "Bot") },
+      }),
+    });
+    const fielded = [RACE_FACTORY, RACE_BOT];
+
+    assert.deepEqual(
+      race.reachable(fielded, RACE_COMMANDER, [], true),
+      fielded
+    );
+    assert.deepEqual(race.reachable(fielded, RACE_COMMANDER), []);
+  });
+
   it("lists the obtainable units it knows, commanders aside", () => {
     assert.deepEqual(commanders.obtainable, [BOT_FACTORY, DOX]);
     assert.deepEqual(lookup.obtainable, []);
