@@ -481,6 +481,16 @@ define([
         return;
       }
 
+      // Kept on the file it names, and outside the passes, so no other
+      // card's change can stand in for it. See tech-cards.md, "Which races a
+      // card reaches".
+      if (mod.stockOnly === true) {
+        if (!_.isFunction(has) || has(mod.file)) {
+          out.push(mod);
+        }
+        return;
+      }
+
       var targets =
         passThrough && passThrough[mod.file]
           ? undefined

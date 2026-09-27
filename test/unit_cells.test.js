@@ -516,6 +516,53 @@ describe("expandMods", () => {
       mod(FX_COMMANDER_AMMO, "damage", 1.25),
       mod(AA_AMMO, "damage", 1.25),
     ]);
+
+    // A stockOnly change sits outside the passes, so the second card still
+    // lands on the AA ammo.
+    const stockOnlyAa = Object.assign(mod(AA_AMMO, "damage", 1.25), {
+      stockOnly: true,
+    });
+    assert.deepEqual(
+      cells.expandMods(
+        [mod(MAIN_AMMO, "damage", 1.25), stockOnlyAa],
+        v,
+        r,
+        has
+      ),
+      [
+        mod(FX_COMMANDER_AMMO, "damage", 1.25),
+        mod(AA_AMMO, "damage", 1.25),
+        stockOnlyAa,
+      ]
+    );
+  });
+
+  it("keeps a stockOnly change on the file it names, where the army holds it", () => {
+    const stockOnly = (file, path, value) =>
+      Object.assign(mod(file, path, value), { stockOnly: true });
+    const antHealth = stockOnly(ANT, "max_health", 1.5);
+    const antOnly = (file) => file === ANT;
+
+    // Never landed on the race's cell-mate.
+    assert.deepEqual(cells.expandMods([antHealth], vanilla, race, antOnly), [
+      antHealth,
+    ]);
+    // Dropped where the army lacks the file, kept where no `has` is given.
+    assert.deepEqual(
+      cells.expandMods([antHealth], vanilla, race, () => false),
+      []
+    );
+    assert.deepEqual(cells.expandMods([antHealth], vanilla, race), [antHealth]);
+    // It does not remake the file: another change to the Ant still travels.
+    assert.deepEqual(
+      cells.expandMods(
+        [antHealth, mod(ANT, "max_health", 1.2)],
+        vanilla,
+        race,
+        antOnly
+      ),
+      [antHealth, mod(ANT, "max_health", 1.2), mod(FX_TANK, "max_health", 1.2)]
+    );
   });
 
   it("applies a group card once per pass, and stacks a second card", () => {

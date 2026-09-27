@@ -268,7 +268,13 @@ define([
       var race = races.raceOf(inventory);
       var entry = entryFor(cardsToUnits, cardId);
       var units = entry ? entry.units : undefined;
-      if (
+      // An entry's `races` names the races outright, in place of the
+      // MLA-only rule. See tech-cards.md, "Which races a card reaches".
+      if (entry && _.isArray(entry.races)) {
+        if (!_.includes(_.map(entry.races, races.normalizeId), race)) {
+          return false;
+        }
+      } else if (
         !races.isMla(race) &&
         mlaOnlyCard(cardId) &&
         !races.namesForeignUnit(units)

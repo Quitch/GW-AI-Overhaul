@@ -172,9 +172,11 @@ emits a race target set once per **pass**. A pass ends when a vanilla source
 already seen recurs. One card is one pass, and two copies stack. A mod on a
 race path is passed through, so a card that makes one change to the Ant and to
 the race tank of its cell changes that tank twice. The passes carry no card, so
-they cannot tell that case from two cards. The New-GW-Cards README tells
-authors to name one or the other. A mod whose `path` a race file lacks is the
-no-op it always was in `specs.mod`.
+they cannot tell that case from two cards. A card that means the Ant's change for
+the Ant alone marks it `stockOnly`, which keeps it off the race tank
+([`tech-cards.md`](tech-cards.md), "Which races a card reaches"). A
+`stockOnly` change sits outside the passes. A mod whose `path` a race file
+lacks is the no-op it always was in `specs.mod`.
 
 A race can mount a vanilla part itself. Legion's commanders mount the stock
 commander main gun, AA, and torpedo weapons, so they fire the stock ammo. Such a
@@ -237,6 +239,8 @@ the race fields, not what the player holds; the card's `deal` asks that. It
 applies to MLA too, and `raceCanDeal` skips `MLA_ONLY` and the `_upgrade_` rule
 for such a card: a third-party `mym_upgrade_shank` naming a Legion unit is dealt
 to Legion players only. A card with no foreign unit is gated exactly as before.
+An entry's `races` list overrides both: the card is offered only to the races
+listed, and still needs a unit in a cell the race fills.
 The entry may nest lists (a card's own group beside single paths); every reader
 flattens it (`unit_cells.unitList`) and ignores a whole `gwoUnit` race table in
 it. So do the unit lists a card hands `inventory.addUnits`,
