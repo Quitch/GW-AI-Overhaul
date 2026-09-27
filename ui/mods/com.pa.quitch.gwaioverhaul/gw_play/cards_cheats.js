@@ -187,10 +187,11 @@ define(function () {
       $.when.apply($, deferredQueue).then(function () {
         // Once per cheat, not per card: each applyCards re-applies every card
         // held.
-        inventory.applyCards();
-        if (!failed) {
-          finishCheat("gwo_cheat_test_cards");
-        }
+        inventory.applyCards(function () {
+          if (!failed) {
+            finishCheat("gwo_cheat_test_cards");
+          }
+        });
       });
     };
 
@@ -219,8 +220,9 @@ define(function () {
           )
           .then(function (product) {
             inventory.cards.push(prepareProduct(product, inventory));
-            inventory.applyCards();
-            finishCheat("gwo_cheat_give_card");
+            inventory.applyCards(function () {
+              finishCheat("gwo_cheat_give_card");
+            });
           });
       } else {
         console.error(

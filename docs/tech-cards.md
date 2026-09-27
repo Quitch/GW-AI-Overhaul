@@ -114,6 +114,10 @@ Ordering matters and is not obvious:
 - `removeUnits` strips _every_ copy of a unit. This is a GWO change to base
   behaviour. A `dull()` that removes a whole group can therefore wipe units that
   other cards granted.
+- `applyCards` is asynchronous, and calls its `done` argument when the pass has
+  finished. Save the war, or send it to co-op players, only from `done`. Until
+  the `dull()`s have run, the loadout's `buffCount` tag is set, and a war saved
+  with it loads with none of the loadout's units.
 
 A card's `buff()` and `dull()` also run speculatively, on the host, whenever a
 co-op AI player judges the card. See "How AI players judge a card" for what that
