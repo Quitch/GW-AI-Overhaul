@@ -25,6 +25,13 @@ define([
     });
   };
 
+  // Whether the types say what the unit is for. The Deep Space Radar's stub
+  // carries only its faction bit, which classify would put in the basic
+  // fabrication tower's cell. See races.md, "Add-ons".
+  var classifiable = function (types) {
+    return stripTypes(types).length > 0;
+  };
+
   // First match wins. Orbital before Land keeps the launcher orbital; Land
   // before Naval puts the vanilla mine, tagged both, beside a race's land-only
   // one.
@@ -474,6 +481,16 @@ define([
         return;
       }
 
+      // Kept on the file it names, and outside the passes, so no other
+      // card's change can stand in for it. See tech-cards.md, "Which races a
+      // card reaches".
+      if (mod.stockOnly === true) {
+        if (!_.isFunction(has) || has(mod.file)) {
+          out.push(mod);
+        }
+        return;
+      }
+
       var targets =
         passThrough && passThrough[mod.file]
           ? undefined
@@ -483,19 +500,29 @@ define([
         return;
       }
 
-      if (_.isFunction(has) && has(mod.file)) {
-        out.push(mod);
-      }
-
       var change = [mod.path, mod.op, JSON.stringify(mod.value)].join("|");
-      _.forEach(targets, function (target) {
+      // A kept original joins the passes too: a race can mount the vanilla
+      // file itself (Legion's commanders fire the stock AA ammo), and that
+      // file must take the change once, not once as itself and again as a
+      // race part.
+      var land = function (target, landed) {
         var key = target + "|" + change;
         var pass = passes[key];
         if (!pass || pass[mod.file]) {
           pass = passes[key] = {};
-          out.push(_.assign({}, mod, { file: target }));
+          out.push(landed);
         }
         pass[mod.file] = true;
+      };
+
+      var kept = _.isFunction(has) && has(mod.file);
+      if (kept) {
+        land(mod.file, mod);
+      }
+      _.forEach(targets, function (target) {
+        if (!kept || target !== mod.file) {
+          land(target, _.assign({}, mod, { file: target }));
+        }
       });
     });
 
@@ -596,6 +623,7 @@ define([
     COMMANDER: COMMANDER,
     bare: bare,
     stripTypes: stripTypes,
+    classifiable: classifiable,
     classify: classify,
     chainValue: chainValue,
     effectiveTypes: effectiveTypes,

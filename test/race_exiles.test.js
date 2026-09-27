@@ -11,12 +11,15 @@ const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 
 const exiles = loadCouiModule(MOD_ROOT + "/race/exiles.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
+const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
+const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const {
   harvestedIndex,
   withheldCards,
   expectedWithheld,
   unnamedCardUnits,
 } = require("../scripts/lib/harvested-race.js");
+const { fixtureIndex } = require("../scripts/lib/addon-fixture.js");
 const fixture = require("./fixtures/unit_types.json");
 
 // Exiles fields no orbital unit beyond its launcher, so every card naming
@@ -110,6 +113,25 @@ describe("Exiles under capability cells", () => {
     }
     assert.equal(index.race.unitsByCell["Orbital/Basic/Combat"], undefined);
     assert.equal(index.race.unitsByCell["Land/Basic/Commander"].length, 4);
+  });
+
+  it("fields the fabrication complex from a basic fabber, past the Deep Space Radar stub (skipped without Exiles in the fixture)", (t) => {
+    if (!exilesUnits.length) {
+      t.skip("fixture harvested without Exiles");
+      return;
+    }
+    // As race_cells.js builds it. harvestedIndex keeps Second Wave's own
+    // vanilla-typed tower on the vanilla side, where it fills the cell.
+    const index = fixtureIndex("exiles");
+    assert.equal(
+      index.vanilla.cellOf[gwoUnit.deepSpaceOrbitalRadar],
+      undefined
+    );
+    assert.ok(
+      cells
+        .raceUnitsFor([gwoUnit.botFabber], index.vanilla, index.race)
+        .includes(exiles.units.fabricationComplex)
+    );
   });
 
   it("withholds the MLA-only cards and the orbital cards", (t) => {
