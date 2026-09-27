@@ -109,29 +109,31 @@
           // commander read before its zip is mounted caches a failure, and the
           // name never recovers.
           raceMods.mountRoot().always(function () {
+            var stock;
+            var offerRaceCommanders = function () {
+              var choices = pickerOptions.commanderChoices(
+                races.byId(model.gwoViewerRace()),
+                stock,
+                races.MLA_ID
+              );
+
+              model.commanders(choices);
+              if (
+                choices.length &&
+                !_.includes(choices, model.selectedCommander.peek())
+              ) {
+                model.selectedCommander(choices[0]);
+              }
+              if (_.isFunction(model.gwoRebuildStartCards)) {
+                model.gwoRebuildStartCards();
+              }
+            };
+
             // Waiting for the stock list too, so the race's does not get
             // overwritten a moment later.
             CommanderUtility.afterCommandersLoaded(function () {
-              var stock = model.commanders();
-
-              ko.computed(function () {
-                var choices = pickerOptions.commanderChoices(
-                  races.byId(model.gwoViewerRace()),
-                  stock,
-                  races.MLA_ID
-                );
-
-                model.commanders(choices);
-                if (
-                  choices.length &&
-                  !_.includes(choices, model.selectedCommander.peek())
-                ) {
-                  model.selectedCommander(choices[0]);
-                }
-                if (_.isFunction(model.gwoRebuildStartCards)) {
-                  model.gwoRebuildStartCards();
-                }
-              });
+              stock = model.commanders();
+              ko.computed(offerRaceCommanders);
             });
           });
         });

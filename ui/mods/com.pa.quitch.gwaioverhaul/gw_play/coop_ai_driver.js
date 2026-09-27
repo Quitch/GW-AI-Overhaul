@@ -361,6 +361,39 @@ define([
         }
       };
 
+      var roomFor = function (card) {
+        return fits(applied, card.card);
+      };
+
+      // Logs the decision on a hand, then rerolls or settles it.
+      var act = function (hand, scored, decision) {
+        live();
+        console.log(
+          coopAiCards.describeHand({
+            name: client.name,
+            deal: entry.dealIndex,
+            star: entry.star,
+            via: lookup.via,
+            scored: scored,
+            decision: decision,
+          })
+        );
+
+        if (decision.action === "reroll") {
+          return Promise.resolve(
+            params.rerollHand({
+              record: record,
+              client: client,
+              pendingTechCards: hand,
+              star: star,
+            })
+          ).then(function (rerolled) {
+            return judge(rerolled.pendingTechCards);
+          });
+        }
+        return outcomeOf(record, decision, scored);
+      };
+
       var judge = function (hand) {
         live();
         progress.hand = hand;
@@ -380,9 +413,7 @@ define([
             fullness: applied.maxCards
               ? (applied.cards || []).length / applied.maxCards
               : 1,
-            roomFor: function (card) {
-              return fits(applied, card.card);
-            },
+            roomFor: roomFor,
             held: held,
             rng: params.decisionRng(record, entry.dealIndex, rerollsUsed),
           });
@@ -402,33 +433,7 @@ define([
                 ).then(_.partial(decide, scored))
               : Promise.resolve(first);
 
-          return decided.then(function (decision) {
-            live();
-            console.log(
-              coopAiCards.describeHand({
-                name: client.name,
-                deal: entry.dealIndex,
-                star: entry.star,
-                via: lookup.via,
-                scored: scored,
-                decision: decision,
-              })
-            );
-
-            if (decision.action === "reroll") {
-              return Promise.resolve(
-                params.rerollHand({
-                  record: record,
-                  client: client,
-                  pendingTechCards: hand,
-                  star: star,
-                })
-              ).then(function (rerolled) {
-                return judge(rerolled.pendingTechCards);
-              });
-            }
-            return outcomeOf(record, decision, scored);
-          });
+          return decided.then(_.partial(act, hand, scored));
         });
       };
 
@@ -746,17 +751,20 @@ define([
           });
       };
 
+      // The candidates scored so far, and `id` once it scores.
+      var scoreNext = function (before, id, scored) {
+        return scoreCandidate(before, id).then(function (entry) {
+          return entry ? scored.concat(entry) : scored;
+        });
+      };
+
       return params.effects
         .apply(options.baseline)
         .then(function (before) {
           return _.reduce(
             options.candidates,
             function (chain, id) {
-              return chain.then(function (scored) {
-                return scoreCandidate(before, id).then(function (entry) {
-                  return entry ? scored.concat(entry) : scored;
-                });
-              });
+              return chain.then(_.partial(scoreNext, before, id));
             },
             Promise.resolve([])
           );

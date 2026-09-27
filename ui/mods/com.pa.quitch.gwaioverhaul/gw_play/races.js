@@ -167,25 +167,26 @@
             return;
           }
 
-          raceMods.mountRoot().always(function () {
-            raceCells.load().then(
-              function (loaded) {
-                // prime swallows its own errors, so this always settles.
-                Promise.all(
-                  _.map(toPrime, function (race) {
-                    return raceCells.prime(race, loaded.units);
-                  })
-                ).then(function () {
-                  model.gwoRaceCellsPrimed(true);
-                });
-              },
-              function (error) {
-                console.error(
-                  "gwoRaces: unit list not read: " +
-                    ((error && error.stack) || error)
-                );
-              }
+          var markPrimed = function () {
+            model.gwoRaceCellsPrimed(true);
+          };
+          // prime swallows its own errors, so this always settles.
+          var primeAll = function (loaded) {
+            Promise.all(
+              _.map(toPrime, function (race) {
+                return raceCells.prime(race, loaded.units);
+              })
+            ).then(markPrimed);
+          };
+          var unitListFailed = function (error) {
+            console.error(
+              "gwoRaces: unit list not read: " +
+                ((error && error.stack) || error)
             );
+          };
+
+          raceMods.mountRoot().always(function () {
+            raceCells.load().then(primeAll, unitListFailed);
           });
         };
 

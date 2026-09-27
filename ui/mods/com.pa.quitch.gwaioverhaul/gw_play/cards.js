@@ -547,29 +547,24 @@
                 lookup(groupsLookup);
               }
             }, LOOKUP_WAIT_MS);
-            raceMods.mountRoot().always(function () {
-              raceCells.load().then(
-                function (loaded) {
-                  clearTimeout(fallback);
-                  lookup(
-                    coopAiUnits.fromSpecs(
-                      loaded,
-                      unitGroups.units,
-                      gwoSpecs.mod
-                    )
-                  );
-                },
-                function (error) {
-                  clearTimeout(fallback);
-                  console.error(
-                    "[GW COOP AI] unit specs not read: " +
-                      ((error && error.stack) || error)
-                  );
-                  if (!lookup()) {
-                    lookup(groupsLookup);
-                  }
-                }
+            var specsRead = function (loaded) {
+              clearTimeout(fallback);
+              lookup(
+                coopAiUnits.fromSpecs(loaded, unitGroups.units, gwoSpecs.mod)
               );
+            };
+            var specsNotRead = function (error) {
+              clearTimeout(fallback);
+              console.error(
+                "[GW COOP AI] unit specs not read: " +
+                  ((error && error.stack) || error)
+              );
+              if (!lookup()) {
+                lookup(groupsLookup);
+              }
+            };
+            raceMods.mountRoot().always(function () {
+              raceCells.load().then(specsRead, specsNotRead);
             });
           };
           // Under shared tech the lookup serves the pings alone, so it waits
@@ -826,6 +821,36 @@
               : roster.LOADOUTS_AI_CANNOT_USE;
           };
 
+          // One candidate loadout's starting inventory, with the Sub
+          // Commanders a General Commander loadout brings. ai: record,
+          // playerFaction, race, star, and handle, the General Commander's.
+          var buildLoadout = function (ai, loadoutCardId) {
+            return Promise.resolve(
+              startingInventory.build({
+                GWInventory: params.GWInventory,
+                gwoDeal: params.gwoDeal,
+                loaded: loadoutsLoaded,
+                loadedCards: loadoutCards,
+                loadoutCardId: loadoutCardId,
+                commander: ai.record.commander,
+                playerFaction: ai.playerFaction,
+                playerRace: ai.race,
+                galaxy: galaxy,
+                star: ai.star,
+              })
+            ).then(function (saved) {
+              // Plain data: a save carries the GWInventory methods.
+              return ai.handle.appendRecordMinions(
+                coopAiEffects.plain(saved),
+                gwoStreams.coopPlayerKey(ai.record)
+              );
+            });
+          };
+
+          var unlocked = function (id) {
+            return params.startCardUnlocked({ id: id });
+          };
+
           // A new AI's loadout and starting inventory: every loadout the host
           // has unlocked that its race may field and an AI can use, scored.
           // options: record (commander and serial set), race.
@@ -855,12 +880,8 @@
                   candidates: roster.loadoutCandidates({
                     starting: startingIds,
                     locked: lockedIds,
-                    unlocked: function (id) {
-                      return params.startCardUnlocked({ id: id });
-                    },
-                    raceLocks: function (id) {
-                      return helpers.raceLocksLoadout(race, id);
-                    },
+                    unlocked: unlocked,
+                    raceLocks: _.partial(helpers.raceLocksLoadout, race),
                     aiCannotUse: loadoutsAiCannotUse(),
                   }),
                   baseline: {
@@ -874,28 +895,13 @@
                     record.gwaioAi.serial
                   ),
                   used: used,
-                  build: function (loadoutCardId) {
-                    return Promise.resolve(
-                      startingInventory.build({
-                        GWInventory: params.GWInventory,
-                        gwoDeal: params.gwoDeal,
-                        loaded: loadoutsLoaded,
-                        loadedCards: loadoutCards,
-                        loadoutCardId: loadoutCardId,
-                        commander: record.commander,
-                        playerFaction: playerFaction,
-                        playerRace: race,
-                        galaxy: galaxy,
-                        star: star,
-                      })
-                    ).then(function (saved) {
-                      // Plain data: a save carries the GWInventory methods.
-                      return handle.appendRecordMinions(
-                        coopAiEffects.plain(saved),
-                        gwoStreams.coopPlayerKey(record)
-                      );
-                    });
-                  },
+                  build: _.partial(buildLoadout, {
+                    record: record,
+                    playerFaction: playerFaction,
+                    race: race,
+                    star: star,
+                    handle: handle,
+                  }),
                 });
               }
             );

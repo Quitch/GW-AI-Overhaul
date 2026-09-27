@@ -118,14 +118,15 @@
           }
 
           var cookedFiles = gameFilePaths.cookFiles(allFiles);
+          var resolveMounted = function () {
+            deferred.resolve();
+          };
 
           // community mods will hook unmountAllMemoryFiles to remount client mods
           api.file.unmountAllMemoryFiles().always(function () {
             self.stage("!LOC:Mounting game files");
             api.file.mountMemoryFiles(cookedFiles).then(function () {
-              gwoBiomeMods.mount(self.biomeMods).always(function () {
-                deferred.resolve();
-              });
+              gwoBiomeMods.mount(self.biomeMods).always(resolveMounted);
             });
           });
 
