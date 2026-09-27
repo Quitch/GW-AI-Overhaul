@@ -19,6 +19,7 @@
 - Warning and progress text is easier to read against the background
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover
 - Tech cards and loadouts for one kind of combat unit no longer give or change every Legion, Bugs, Exiles, or add-on unit of that kind, because units are also matched by job: an Ant card no longer changes the Legion Maul or Corsair, and a Spinner card no longer changes the Shank
+- The Galactic War Overhaul panel's Incompatible Mods list now includes every client mod from Community Mods that changes unit files without a server mod, such as effects, selection, and commander cosmetic mods
 
 ### Bugfix
 
@@ -28,6 +29,7 @@
 - MLA, Legion, and Bugs armies with Second Wave, and Exiles armies, can build their basic fabrication tower without the Planetary Radar
 - A tech card from another mod that changes the Planetary Radar no longer changes the basic fabrication towers too
 - In a Galactic War battle, every army's units on your screen now match the ones the game runs, including tech that changes weapon lists or armour damage, such as the Stryker and Pelican upgrades and the anti tech, and the enemy's own tech
+- Bigger Explosions is now listed under Incompatible Mods when enabled
 
 ## v7.4.1 - 2026-09-24
 
