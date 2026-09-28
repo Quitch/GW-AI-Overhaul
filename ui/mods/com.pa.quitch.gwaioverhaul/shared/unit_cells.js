@@ -531,9 +531,41 @@ define([
       });
     };
 
+    // A builder stands for itself only when it can build something the army
+    // fields: MLA's fabrication barge builds only the mine and teleporter,
+    // which Bugs field as their own.
+    var selfBuilt;
+    var buildsFielded = function (unit) {
+      var buildable = vanilla.buildableOf[unit];
+      if (!buildable) {
+        return true;
+      }
+      if (!selfBuilt) {
+        selfBuilt = _.filter(
+          _.keys(raceBuiltVanilla(vanilla, race)),
+          function (built) {
+            return !cellStandIns(built).length;
+          }
+        );
+      }
+      var matches = function (tagsOf) {
+        return function (target) {
+          return (
+            target !== unit && buildTypes.matches(buildable, tagsOf[target])
+          );
+        };
+      };
+      return (
+        _.some(selfBuilt, matches(vanilla.tagsOf)) ||
+        _.some(race.units, matches(race.tagsOf))
+      );
+    };
+
     return function (unit) {
       var standIns = cellStandIns(unit);
-      return standIns.length || !raceBuiltVanilla(vanilla, race)[unit]
+      return standIns.length ||
+        !raceBuiltVanilla(vanilla, race)[unit] ||
+        !buildsFielded(unit)
         ? standIns
         : [unit];
     };

@@ -381,7 +381,10 @@ for itself. "Can build" is `unit_cells.raceBuiltVanilla`: what the race's
 `Commander`-cell units build, and what that builds in turn, each builder by
 its own `buildable_types`, MLA builders included. Each distinct expression is
 evaluated once, and the result is kept for the last few index pairs, because
-the deal asks once per card.
+the deal asks once per card. A builder stands for itself only when it can build
+something the army fields, another such unit or a race unit. MLA's fabrication
+barge builds only the mine and teleporter, which Bugs field as their own, so a
+Bugs army does not field the barge.
 
 Every reader of `standInsFor` follows. The army fields such a unit only when
 it holds it, so tech gating is unchanged. The deal (`cardUsable`) and the
@@ -392,7 +395,7 @@ same role, so a mod on it lands only when held too. `MLA_ONLY` and the
 
 `test/unit_jobs.test.js` pins each shipped race's list:
 
-- Bugs: the ten MLA ships its naval hives build.
+- Bugs: the nine MLA ships its naval hives build, the fabrication barge aside.
 - Exiles: the MLA orbital fabber, fighter, lander, probe, and radar satellite
   its launcher builds, and the thirteen units the orbital fabber leads on to:
   the orbital factory and its units, the Anchor, the orbital mine, the mining

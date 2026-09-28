@@ -228,7 +228,6 @@ const SELF_STANDING = {
     "/pa/units/sea/battleship/battleship.json",
     "/pa/units/sea/destroyer/destroyer.json",
     "/pa/units/sea/drone_carrier/carrier/carrier.json",
-    "/pa/units/sea/fabrication_barge/fabrication_barge.json",
     "/pa/units/sea/frigate/frigate.json",
     "/pa/units/sea/hover_ship/hover_ship.json",
     "/pa/units/sea/missile_ship/missile_ship.json",

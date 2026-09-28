@@ -1448,6 +1448,9 @@ describe("units a race builds itself", () => {
   const R_HIVE = U("sea", "r_hive");
   const R_LAUNCHER = U("orbital", "r_launcher");
   const R_TANK = U("land", "r_tank");
+  const BARGE = U("sea", "v_barge");
+  const MINE = U("land", "v_mine");
+  const R_MINE = U("land", "r_mine");
 
   // The race's hive builds the vanilla ships and its launcher the vanilla
   // orbital fabber, which builds the vanilla orbital factory, as Bugs' naval
@@ -1500,6 +1503,18 @@ describe("units a race builds itself", () => {
       buildable_types: "Orbital & Mobile & Custom58",
     },
     [R_TANK]: { unit_types: T("Basic Land Mobile Offense Tank Custom7") },
+    // The hive also builds the vanilla barge, whose only target, the mine,
+    // stands for the race's mine, as MLA's barge does in a Bugs army.
+    [BARGE]: {
+      unit_types: T("Basic Naval Mobile Fabber Custom58"),
+      buildable_types: "CombatFabBuild & Custom58",
+    },
+    [MINE]: {
+      unit_types: T("Basic Land Structure Defense CombatFabBuild Custom58"),
+    },
+    [R_MINE]: {
+      unit_types: T("Basic Land Structure Defense CombatFabBuild Custom7"),
+    },
   };
   const units = Object.keys(specs).filter((unit) =>
     /\/([^/]+)\/\1\.json$/.test(unit)
@@ -1554,6 +1569,11 @@ describe("units a race builds itself", () => {
   it("follows a kept vanilla builder, as a skirmish does", () => {
     assert.deepEqual(standIns(ORBITAL_FABBER), [ORBITAL_FABBER]);
     assert.deepEqual(standIns(ORBITAL_FACTORY), [ORBITAL_FACTORY]);
+  });
+
+  it("does not field a builder that would build nothing the army fields", () => {
+    assert.deepEqual(standIns(MINE), [R_MINE]);
+    assert.deepEqual(standIns(BARGE), []);
   });
 
   it("does not let a unit that stands for race units also stand for itself", () => {
