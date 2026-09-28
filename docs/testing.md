@@ -162,9 +162,10 @@ add-ons, so the validator activates every registered one itself, matching
 its own `descriptorLayers()`. The check requires the Titans race
 tree to match that merge exactly, minus every other layer. An MLA pass then
 requires the sweep into `/pa/ai/player_guardians/` to hold the base files
-and MLA's add-on files, untagged add-on maps included, and no race layer. It
-then re-runs with every mod mounted to prove that no other layer leaks into
-any tree, and checks each mounted descriptor's `unitMaps` and `sources`
+and MLA's add-on files, untagged add-on maps included, and no race layer but
+its templates. It then re-runs with every mod mounted to prove that no other
+layer's files but its templates leak into any tree, and that every platoon
+build in each tree finds its template there. It also checks each mounted descriptor's `unitMaps` and `sources`
 against the merge, so a descriptor that has gone stale fails rather than
 silently claiming nothing. The reverse holds too: every AI file an add-on's
 server mod ships must be claimed by one of its layers, so a layer the mod

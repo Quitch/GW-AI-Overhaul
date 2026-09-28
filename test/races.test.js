@@ -590,6 +590,25 @@ describe("treeFilter", () => {
     assert.equal(keep("/pa/ai/neural_networks/fixture/x.json"), false);
   });
 
+  it("under Titans keeps every layer's platoon templates, since a base build file can name another race's", () => {
+    races.register(
+      Object.assign({}, RIVAL_RACE, {
+        ai: {
+          titans: {
+            sources: RIVAL_RACE.ai.titans.sources.concat([
+              { dir: "/pa/ai/platoon_templates/", match: "rival.json" },
+            ]),
+          },
+        },
+      })
+    );
+    const keep = races.treeFilter("fixture", "Titans", "/pa/ai/");
+
+    assert.equal(keep("/pa/ai/platoon_templates/rival.json"), true);
+    assert.equal(keep("/pa/ai/platoon_templates/platoon_templates.json"), true);
+    assert.equal(keep("/pa/ai/factory_builds/rival_air.json"), false);
+  });
+
   it("under a brain that carries the race keeps everything but the excluded fragments and the race's maps", () => {
     races.register(
       Object.assign({}, FIXTURE_RACE, {
@@ -621,6 +640,10 @@ describe("treeFilter", () => {
       keep("/pa/ai_queller/q_uber/fabber_builds/mla/land.json"),
       false
     );
+    assert.equal(
+      keep("/pa/ai_queller/q_uber/platoon_templates/mla/orbital.json"),
+      true
+    );
     assert.equal(keep("/pa/ai_queller/q_uber/unit_maps/mla.json"), false);
     assert.equal(keep("/pa/ai_queller/q_uber/unit_maps/fixture.json"), false);
   });
@@ -638,6 +661,7 @@ describe("treeFilter", () => {
     assert.equal(keep("/pa/ai_penchant/ai_config.json"), true);
     assert.equal(keep("/pa/ai_penchant/unit_maps/ai_unit_map.json"), true);
     assert.equal(keep("/pa/ai_penchant/fabber_builds/x.json"), false);
+    assert.equal(keep("/pa/ai_penchant/platoon_templates/x.json"), false);
   });
 });
 
@@ -739,6 +763,20 @@ describe("raceLayerTest", () => {
     );
     // A near-miss of a race's prefix is a base file, as treeFilter reads it.
     assert.equal(claimed("/pa/ai/factory_builds/fixtures_air.json"), false);
+  });
+
+  it("never claims a platoon template, which an MLA tree keeps", () => {
+    races.register({
+      id: "rival",
+      ai: {
+        titans: {
+          sources: [{ dir: "/pa/ai/platoon_templates/", match: "rival.json" }],
+        },
+      },
+    });
+    const claimed = races.raceLayerTest();
+
+    assert.equal(claimed("/pa/ai/platoon_templates/rival.json"), false);
   });
 
   it("leaves a brain that carries the race its own files", () => {

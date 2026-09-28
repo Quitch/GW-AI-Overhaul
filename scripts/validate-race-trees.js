@@ -86,8 +86,12 @@ function claimedBy(rel, layer) {
 }
 
 // Whether a layer other than `ownId`'s claims the file and `ownId`'s does
-// not - what every tree subtracts.
+// not - what every tree subtracts. A platoon template never is: every tree
+// carries every layer's.
 function claimedByOthers(rel, layers, ownId) {
+  if (rel.startsWith("ai/platoon_templates/")) {
+    return false;
+  }
   const own = layers[ownId];
   if (own && claimedBy(rel, own)) {
     return false;
@@ -194,8 +198,8 @@ function compareTrees(label, expected, actual) {
   return true;
 }
 
-// Every mod mounted at once: another layer must never reach this tree,
-// however the shared listing interleaves.
+// Every mod mounted at once: another layer's files, templates aside, must
+// never reach this tree, however the shared listing interleaves.
 function checkSubtraction(label, layers, ownId, actual, destRoot) {
   const leaked = [...actual.keys()].filter((key) =>
     claimedByOthers("ai/" + key.slice(destRoot.length), layers, ownId)
@@ -212,6 +216,39 @@ function checkSubtraction(label, layers, ownId, actual, destRoot) {
       ": no other layer's files among " +
       actual.size +
       " with every mod mounted"
+  );
+  return true;
+}
+
+// Every platoon a tree's builds name has its template in the same tree, as in
+// a skirmish, where every mod's templates load together.
+function checkTemplates(label, actual, destRoot) {
+  const defined = new Set();
+  const named = [];
+  for (const [key, value] of actual) {
+    const rel = key.slice(destRoot.length);
+    if (rel.startsWith("platoon_templates/")) {
+      Object.keys(value.platoon_templates || {}).forEach((name) =>
+        defined.add(name)
+      );
+    } else if (rel.startsWith("platoon_builds/")) {
+      for (const item of value.build_list || []) {
+        if (item.to_build) {
+          named.push({ rel, template: item.to_build });
+        }
+      }
+    }
+  }
+  const missing = named.filter((entry) => !defined.has(entry.template));
+  if (missing.length) {
+    console.error(label + ": platoon templates missing from the tree");
+    for (const entry of missing) {
+      console.error("  " + entry.rel + " names " + entry.template);
+    }
+    return false;
+  }
+  console.log(
+    label + ": all " + named.length + " platoon builds find their template"
   );
   return true;
 }
@@ -328,6 +365,7 @@ async function main() {
       destRoot
     );
     ok = checkSubtraction(race.id, layers, race.id, actual, destRoot) && ok;
+    ok = checkTemplates(race.id, actual, destRoot) && ok;
   }
   const mlaAll = await refereeTree(
     { enemyType: "guardians" },
@@ -335,6 +373,7 @@ async function main() {
     GUARDIANS_ROOT
   );
   ok = checkSubtraction(MLA, layers, MLA, mlaAll, GUARDIANS_ROOT) && ok;
+  ok = checkTemplates(MLA, mlaAll, GUARDIANS_ROOT) && ok;
 
   for (const race of candidates) {
     ok = checkDescriptor(race.id, [race.ai.titans], allMounted) && ok;

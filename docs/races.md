@@ -396,16 +396,26 @@ distinct (source, destination):
   but the brain's own `ai_unit_map*.json`. It drops `neural_networks/`. Files
   a race ships at vanilla paths are indistinguishable from base files.
   Examples are Exiles' `platoon_templates.json` and `platoon_land_builds.json`,
-  and Bugs' `platoon_builds/platoon_misc_builds.json`. They enter every race
-  tree's base layer with the merged content.
+  and Bugs' `platoon_builds/platoon_misc_builds.json` and
+  `platoon_builds/platoon_orbital_builds.json`. They enter every race tree's
+  base layer with the merged content.
+
+  **Platoon templates are never dropped.** Every tree carries every layer's
+  `platoon_templates/` files, as a skirmish loads them all, because a build
+  file at a vanilla path can name another layer's templates. Bugs' orbital
+  and misc builds name the `Bugs_Orbital_*` and `Bugs_UnitCannon` templates
+  in Bugs' own `bugs.json`. Without them no orbital platoon formed in any
+  other race's tree or in an MLA scoped tree, so radar satellites and orbital
+  fighters never left their planet. A template does nothing until a build
+  names it.
 
   `scripts/validate-race-trees.js` checks the tree against a manual mount-order
   merge of the real files on disk. `referee_ai.js`'s sweep writes an MLA tree
   to a scoped destination (`/pa/ai/player_guardians/`, a viewer's Sub
   Commanders). That tree is the base layer plus MLA's own add-on layer, by the
   same rule. It drops every file a race's layer claims and MLA's does not
-  (`races.raceLayerTest`), so an MLA army's `unit_maps/` never lists a
-  race's map. An add-on's MLA map, and a map both MLA and a race claim, ride
+  (`races.raceLayerTest`), templates aside, so an MLA army's `unit_maps/`
+  never lists a race's map. An add-on's MLA map, and a map both MLA and a race claim, ride
   along untagged, as the live `/pa/ai/` listing has them.
 
 - **A brain that carries the race** (Queller carries Legion): the tree is the

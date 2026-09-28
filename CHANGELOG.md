@@ -31,6 +31,7 @@
 - A tech card from another mod that changes the Planetary Radar no longer changes the basic fabrication towers too
 - In a Galactic War battle, every army's units on your screen now match the ones the game runs, including tech that changes weapon lists or armour damage, such as the Stryker and Pelican upgrades and the anti tech, and the enemy's own tech
 - Bigger Explosions is now listed under Incompatible Mods when enabled
+- With Bugs installed, Legion and Exiles AIs, the Guardians, and some MLA Sub Commanders and co-op AI players no longer keep their radar satellites and orbital fighters on the planet where they were built
 
 ## v7.4.1 - 2026-09-24
 
