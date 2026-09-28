@@ -32,6 +32,13 @@ define(function () {
         "/pa/units/land/t_anti_nuke_launcher/t_anti_nuke_launcher.json",
       ControlModule: "/pa/units/addon/t_control_module/t_control_module.json",
     },
+    // The stock build orders have MLA's orbital fabber build these, although
+    // an Exiles unit shares their cell. See races.md, "Units a race builds
+    // itself".
+    stockUnits: [
+      "/pa/units/land/teleporter/teleporter.json",
+      "/pa/units/land/metal_extractor/metal_extractor.json",
+    ],
     commanders: [
       { spec: "/pa/units/commanders/exiles_maxim/exiles_maxim.json" },
       { spec: "/pa/units/commanders/exiles_taurus/exiles_taurus.json" },

@@ -278,8 +278,14 @@ define([
       return held || [];
     }
 
-    return (isMla(raceId) ? unitCells.addonUnitsFor : unitCells.raceUnitsFor)(
+    if (isMla(raceId)) {
+      return unitCells.addonUnitsFor(held, cells.vanilla, cells.race);
+    }
+
+    return unitCells.buildableStockUnits(
+      unitCells.raceUnitsFor(held, cells.vanilla, cells.race),
       held,
+      stockUnitsFor(raceId),
       cells.vanilla,
       cells.race
     );
@@ -784,6 +790,15 @@ define([
     return (race && race.engineKeys) || {};
   };
 
+  // The stock units the race builds with MLA builders it fields, although a
+  // race unit shares their cell. None for MLA. See races.md, "Units a race
+  // builds itself".
+  var stockUnitsFor = function (raceId) {
+    var race = byId(raceId);
+
+    return (race && race.stockUnits) || [];
+  };
+
   // Every brain key any descriptor names a layer for.
   var brainKeys = function () {
     return _.uniq(
@@ -1003,6 +1018,7 @@ define([
     raceLayerFilter: raceLayerFilter,
     stockBuildFilter: stockBuildFilter,
     engineKeysFor: engineKeysFor,
+    stockUnitsFor: stockUnitsFor,
     raceLayerTest: raceLayerTest,
     unitMapsFor: unitMapsFor,
     assign: assign,

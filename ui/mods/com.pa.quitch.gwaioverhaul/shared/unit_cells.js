@@ -390,6 +390,34 @@ define([
     });
   };
 
+  // `granted` plus each candidate that something in it can build, each
+  // builder by `buildable(unit)`, until nothing more is reachable.
+  var addBuildable = function (granted, candidates, tagsOf, buildable) {
+    var result = granted.slice();
+    var pending = candidates;
+    var added = true;
+
+    while (added && pending.length) {
+      added = false;
+      var builders = _.filter(result, function (unit) {
+        return !!buildable(unit);
+      });
+      pending = _.filter(pending, function (candidate) {
+        var tags = tagsOf[candidate];
+        var reachable = _.some(builders, function (builder) {
+          return buildTypes.matches(buildable(builder), tags);
+        });
+        if (reachable) {
+          result.push(candidate);
+          added = true;
+        }
+        return !reachable;
+      });
+    }
+
+    return result;
+  };
+
   // The race's units in cells no vanilla unit occupies, and its exclusive
   // units whatever their cell, that something already granted can build -
   // Bugs' research unlock tokens, made by its research factories - until
@@ -413,28 +441,32 @@ define([
         );
       }
     );
-    var result = granted.slice();
-    var added = true;
 
-    while (added && orphans.length) {
-      added = false;
-      var builders = _.filter(result, function (unit) {
-        return !!buildable(unit);
-      });
-      orphans = _.filter(orphans, function (orphan) {
-        var tags = race.tagsOf[orphan];
-        var reachable = _.some(builders, function (builder) {
-          return buildTypes.matches(buildable(builder), tags);
-        });
-        if (reachable) {
-          result.push(orphan);
-          added = true;
-        }
-        return !reachable;
-      });
-    }
+    return addBuildable(granted, orphans, race.tagsOf, buildable);
+  };
 
-    return result;
+  // `fielded` plus each unit of `stock` that is held and that something
+  // fielded can build, MLA builders included: stock units a race builds
+  // although a race unit shares their cell. See races.md, "Units a race
+  // builds itself".
+  var buildableStockUnits = function (
+    fielded,
+    heldPaths,
+    stock,
+    vanilla,
+    race
+  ) {
+    var candidates = _.filter(_.uniq(stock || []), function (unit) {
+      return (
+        _.includes(heldPaths || [], unit) &&
+        !_.includes(fielded, unit) &&
+        Object.prototype.hasOwnProperty.call(vanilla.tagsOf, unit)
+      );
+    });
+
+    return addBuildable(fielded, candidates, vanilla.tagsOf, function (unit) {
+      return race.buildableOf[unit] || vanilla.buildableOf[unit];
+    });
   };
 
   // The deal asks once per card, so the last few index pairs are kept.
@@ -851,6 +883,7 @@ define([
     isCommanderCell: isCommanderCell,
     standInsFor: standInsFor,
     raceUnitsFor: raceUnitsFor,
+    buildableStockUnits: buildableStockUnits,
     addonUnitsFor: addonUnitsFor,
     heldCommanderUnits: heldCommanderUnits,
     expandMods: expandMods,

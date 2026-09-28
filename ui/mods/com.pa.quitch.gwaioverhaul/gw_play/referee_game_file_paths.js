@@ -69,10 +69,11 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 
   // A race army's map: the merge, then each stock spec_id the race maps left
   // pointed at a race unit it stands for (one the race's own AI data knows
-  // over an add-on's), then the race's engineKeys, where null keeps the stock
-  // unit. The engine reads those keys by name. Without cells, or for MLA, the
-  // merge alone. params: base, raceMaps, cells, race, unitCells, gwoRaces. See
-  // races.md, "Race trees" and "Add-ons".
+  // over an add-on's) unless it is one of the race's stockUnits, then the
+  // race's engineKeys, where null keeps the stock unit. The engine reads
+  // those keys by name. Without cells, or for MLA, the merge alone. params:
+  // base, raceMaps, cells, race, unitCells, gwoRaces. See races.md, "Race
+  // trees" and "Add-ons".
   var raceUnitMap = function (params) {
     var merged = mergeUnitMaps(params.base, params.raceMaps);
     if (!params.cells || params.gwoRaces.isMla(params.race)) {
@@ -87,6 +88,12 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       params.gwoRaces.addonUnitPaths()
     );
     var unitMap = _.assign({}, translated.unit_map);
+    var stockUnits = params.gwoRaces.stockUnitsFor(params.race);
+    _.forEach(merged.unit_map, function (entry, key) {
+      if (entry && _.includes(stockUnits, entry.spec_id)) {
+        unitMap[key] = entry;
+      }
+    });
     _.forEach(params.gwoRaces.engineKeysFor(params.race), function (unit, key) {
       if (unitMap[key]) {
         unitMap[key] =

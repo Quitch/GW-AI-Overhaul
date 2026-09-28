@@ -761,6 +761,7 @@ describe("race army maps", () => {
           Missing: "/pa/units/r_missing.json",
         };
       },
+      stockUnitsFor: () => [],
     };
 
     const map = refereeGameFiles.raceUnitMap({
@@ -787,6 +788,41 @@ describe("race army maps", () => {
         avoid: { "/pa/units/addon.json": true },
       },
     ]);
+  });
+
+  it("raceUnitMap keeps a key on one of the race's stock units, unless an engine key names another unit", () => {
+    const unitCells = { unitMapFallback: fallback };
+    const gwoRaces = {
+      isMla: () => false,
+      addonUnitPaths: () => ({}),
+      engineKeysFor: () => ({ Factory: "/pa/units/r_factory.json" }),
+      stockUnitsFor: (race) => {
+        assert.equal(race, "fixture");
+        return ["/pa/units/tank.json", "/pa/units/factory.json"];
+      },
+    };
+    const merged = refereeGameFiles.mergeUnitMaps(base, [raceMap]);
+
+    const map = refereeGameFiles.raceUnitMap({
+      base,
+      raceMaps: [raceMap],
+      cells: { vanilla: "V", race: "R" },
+      race: "fixture",
+      unitCells,
+      gwoRaces,
+    });
+
+    assert.deepEqual(map.unit_map, {
+      Tank: { spec_id: "/pa/units/tank.json" },
+      Factory: { spec_id: "/pa/units/r_factory.json" },
+      BotFactory: { spec_id: "/pa/units/r_token2.json" },
+      Commander: { unit_types: "Commander & Custom58" },
+      RaceTank: { spec_id: "/pa/units/r_tank.json" },
+    });
+    assert.deepEqual(refereeGameFiles.repointedKeys(merged, map), {
+      Factory: true,
+      BotFactory: true,
+    });
   });
 
   it("raceUnitMap without cells is the merge alone", () => {
@@ -907,6 +943,7 @@ describe("race army maps", () => {
       isMla: () => false,
       addonUnitPaths: () => ({}),
       engineKeysFor: () => ({ Launcher: "/pa/units/r_launcher.json" }),
+      stockUnitsFor: () => [],
     };
     const unitCells = { unitMapFallback: fallback };
     try {
