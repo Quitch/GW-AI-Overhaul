@@ -33,7 +33,7 @@
 - Bigger Explosions is now listed under Incompatible Mods when enabled
 - With Bugs installed, Legion and Exiles AIs, the Guardians, and some MLA Sub Commanders and co-op AI players no longer keep their radar satellites and orbital fighters on the planet where they were built
 - Legion, Bugs, and Exiles AIs no longer also follow MLA's factory and fabber build orders, which had Legion building Marauders as air scouts and Bugs ordering its research unlocks to build air units they cannot make
-- Bugs players now field the MLA ships their naval hives build, and Exiles players the MLA orbital units their orbital launcher builds, so their Sub Commanders can use them; Exiles players are now dealt the orbital tech cards
+- Bugs players now field the MLA ships their naval hives build, and Exiles players the MLA orbital units their orbital launcher builds and the Zeus, Ares, and Helios titans those orbital fabbers build, so their Sub Commanders can use them; Exiles players are now dealt the orbital tech cards
 
 ## v7.4.1 - 2026-09-24
 
