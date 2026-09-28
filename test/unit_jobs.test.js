@@ -215,3 +215,62 @@ describe("jobs over the harvested fixture", () => {
     }
   });
 });
+
+// The vanilla units each index's race builds that stand for none of its own
+// units, so they stand for themselves. A race mod or add-on update that adds
+// a race unit to one of their cells moves it off this list. See races.md,
+// "Capability cells".
+const SELF_STANDING = {
+  mla: [],
+  legion: [],
+  bugs: [
+    "/pa/units/sea/attack_sub/attack_sub.json",
+    "/pa/units/sea/battleship/battleship.json",
+    "/pa/units/sea/destroyer/destroyer.json",
+    "/pa/units/sea/drone_carrier/carrier/carrier.json",
+    "/pa/units/sea/frigate/frigate.json",
+    "/pa/units/sea/hover_ship/hover_ship.json",
+    "/pa/units/sea/missile_ship/missile_ship.json",
+    "/pa/units/sea/nuclear_sub/nuclear_sub.json",
+    "/pa/units/sea/sea_scout/sea_scout.json",
+  ],
+  exiles: [
+    "/pa/units/air/titan_air/titan_air.json",
+    "/pa/units/land/titan_vehicle/titan_vehicle.json",
+    "/pa/units/orbital/defense_satellite/defense_satellite.json",
+    "/pa/units/orbital/mining_platform/mining_platform.json",
+    "/pa/units/orbital/orbital_battleship/orbital_battleship.json",
+    "/pa/units/orbital/orbital_carrier/orbital_carrier.json",
+    "/pa/units/orbital/orbital_fabrication_bot/orbital_fabrication_bot.json",
+    "/pa/units/orbital/orbital_factory/orbital_factory.json",
+    "/pa/units/orbital/orbital_fighter/orbital_fighter.json",
+    "/pa/units/orbital/orbital_lander/orbital_lander.json",
+    "/pa/units/orbital/orbital_laser/orbital_laser.json",
+    "/pa/units/orbital/orbital_mine/orbital_mine.json",
+    "/pa/units/orbital/orbital_probe/orbital_probe.json",
+    "/pa/units/orbital/orbital_railgun/orbital_railgun.json",
+    "/pa/units/orbital/radar_satellite/radar_satellite.json",
+    "/pa/units/orbital/radar_satellite_adv/radar_satellite_adv.json",
+    "/pa/units/orbital/solar_array/solar_array.json",
+    "/pa/units/orbital/titan_orbital/titan_orbital.json",
+  ],
+};
+
+describe("units a race builds itself, over the harvested fixture", () => {
+  it("pins the vanilla units each race builds that stand for themselves", (t) => {
+    for (const { id, index } of INDEXES) {
+      if (!index.race.units.length) {
+        t.diagnostic("fixture harvested without " + id);
+        continue;
+      }
+      const standIns = cells.standInsFor(index.vanilla, index.race);
+      const self = Object.keys(index.vanilla.cellOf)
+        .filter((unit) => {
+          const units = standIns(unit);
+          return units.length === 1 && units[0] === unit;
+        })
+        .sort();
+      assert.deepEqual(self, SELF_STANDING[id], id);
+    }
+  });
+});

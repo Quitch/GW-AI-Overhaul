@@ -138,6 +138,7 @@ and the race (`UNITTYPE_<bit>`). Then it applies these rules:
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | A held vanilla unit                                                                                                                                                                  | the race units it stands for: every race unit of its cell, or in a mobile `Combat` cell those the job rule gives it (`raceUnitsFor`, "Jobs" below)                |
 | A held path that is not a vanilla unit (race commander, a mod)                                                                                                                       | passed through untouched, unless another race's or add-on's (`races.ownedPaths`)                                                                                  |
+| A held vanilla unit that stands for no race unit, but that the race can build                                                                                                        | itself ("Units a race builds itself" below)                                                                                                                       |
 | A race unit in a cell no vanilla unit fills                                                                                                                                          | granted when something granted can build it (`build_types`)                                                                                                       |
 | A held vanilla `Commander`-class unit (the Colonel)                                                                                                                                  | kept and retagged to the race's bit (`races.unitRetagMods`)                                                                                                       |
 | A `Commander` cell                                                                                                                                                                   | never granted; race commanders arrive as commanders do                                                                                                            |
@@ -336,7 +337,8 @@ and `gw_play/race_cells.js` warns.
    vanilla units with no job. If there are none, they are the **leftover**
    units, whose job no race unit matches. If there are none of those either,
    every vanilla unit of the cell is a home.
-5. Any other vanilla unit stands for **nothing**. For Legion the Skitter does:
+5. Any other vanilla unit stands for **nothing**, unless the race builds it
+   itself ("Units a race builds itself" below). For Legion the Skitter does:
    no basic Legion tank scouts, and the Ant and the Stryker, which have no
    job, are the homes.
 
@@ -368,6 +370,42 @@ The rule has two known limits:
 - The Squall's drone sits in the basic air cell and no commander builds it, so
   a naval card that names it reaches a race's whole basic air cell. That
   predates jobs.
+
+### Units a race builds itself
+
+Some race builders build MLA units, as they do in a skirmish: Bugs' naval
+hives build MLA ships, and Exiles' orbital launcher builds MLA orbital units.
+Those units stand for no race unit, so the cells alone would drop them. So a
+vanilla unit that stands for no race unit, but that the race can build, stands
+for itself. "Can build" is `unit_cells.raceBuiltVanilla`: what the race's
+`Commander`-cell units build, and what that builds in turn, each builder by
+its own `buildable_types`, MLA builders included. Each distinct expression is
+evaluated once, and the result is kept for the last few index pairs, because
+the deal asks once per card. A builder stands for itself only when it can build
+something the army fields, another such unit or a race unit. MLA's fabrication
+barge builds only the mine and teleporter, which Bugs field as their own, so a
+Bugs army does not field the barge.
+
+Every reader of `standInsFor` follows. The army fields such a unit only when
+it holds it, so tech gating is unchanged. The deal (`cardUsable`) and the
+tooltips (`cardUnitsFor`) count it, and `expandMods` lands a mod on it only
+when the army holds its file. A part of such a unit has no race part of the
+same role, so a mod on it lands only when held too. `MLA_ONLY` and the
+`_upgrade_` rule are unchanged, so those units' upgrade cards stay withheld.
+
+`test/unit_jobs.test.js` pins each shipped race's list:
+
+- Bugs: the nine MLA ships its naval hives build, the fabrication barge aside.
+- Exiles: the MLA orbital fabber, fighter, lander, probe, and radar satellite
+  its launcher builds, and the thirteen units the orbital fabber leads on to:
+  the orbital factory and its units, the Anchor, the orbital mine, the mining
+  platform, the solar array, and the Zeus, Ares, and Helios titans.
+- Legion: none.
+
+The rule applies only while the unit's cell holds no race unit it would stand
+for. If an add-on shipped a Bugs naval combat unit, the MLA ships would stand
+for it instead of themselves, and the hives would lose them. The pinned lists
+catch that.
 
 ## Race trees
 
@@ -688,10 +726,12 @@ whose art is in blue paint (hue 200). The player icon comes from the server
 mod's own `ui/mods/com.pa.nik.exiles/img/exiles_icon_{fill,outline}.png`.
 
 Exiles is Titans only. Its build orders are the `exiles/` sub-directories under
-each build directory, plus `unit_maps/exiles.json`. Exiles fields no orbital
-unit beyond its launcher, so the cells the orbital cards open stay empty. The
-deal withholds those cards (`test/race_exiles.test.js` pins the list). The
-table keys 287 Exiles specs.
+each build directory, plus `unit_maps/exiles.json`. Exiles has no orbital
+unit beyond its launcher, which builds MLA's orbital units, so those stand for
+themselves (see "Units a race builds itself"), and so do the units MLA's
+orbital fabber builds, the Zeus, Ares, and Helios titans among them. The deal
+withholds nothing beyond the MLA-only set (`test/race_exiles.test.js` pins the
+orbital cards). The table keys 287 Exiles specs.
 
 The mod also ships `platoon_templates.json` and `platoon_land_builds.json` at
 the **vanilla** paths. They are copies of the TITANS files, with the raid and
