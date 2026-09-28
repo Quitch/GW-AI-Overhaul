@@ -1433,3 +1433,135 @@ describe("jobs", () => {
     );
   });
 });
+
+describe("units a race builds itself", () => {
+  const U = (dir, name) =>
+    "/pa/units/" + dir + "/" + name + "/" + name + ".json";
+  const SHIP = U("sea", "v_ship");
+  const SHIP_AMMO = SHIP.replace(/\.json$/, "_ammo.json");
+  const NAVAL_FACTORY = U("sea", "v_naval_factory");
+  const ORBITAL_FABBER = U("orbital", "v_orbital_fabber");
+  const ORBITAL_FACTORY = U("orbital", "v_orbital_factory");
+  const AIR_SCOUT = U("air", "v_air_scout");
+  const TANK = U("land", "v_tank");
+  const R_COMMANDER = "/pa/units/commanders/r_commander/r_commander.json";
+  const R_HIVE = U("sea", "r_hive");
+  const R_LAUNCHER = U("orbital", "r_launcher");
+  const R_TANK = U("land", "r_tank");
+
+  // The race's hive builds the vanilla ships and its launcher the vanilla
+  // orbital fabber, which builds the vanilla orbital factory, as Bugs' naval
+  // hives and Exiles' launcher do. Its commander also builds the vanilla
+  // tank, whose cell holds a race tank. Nothing race-side builds the scout.
+  const specs = {
+    [COMMANDER]: {
+      unit_types: T("Commander Construction Land Mobile Custom58"),
+      buildable_types: "CmdBuild & Custom58",
+    },
+    [NAVAL_FACTORY]: {
+      unit_types: T(
+        "Basic Construction Factory Naval Structure CmdBuild Custom58"
+      ),
+      buildable_types: "Naval & FactoryBuild & Custom58",
+    },
+    [SHIP]: {
+      unit_types: T("Basic Naval Mobile Offense FactoryBuild Custom58"),
+      tools: [{ spec_id: SHIP.replace(/\.json$/, "_tool_weapon.json") }],
+    },
+    [SHIP.replace(/\.json$/, "_tool_weapon.json")]: { ammo_id: SHIP_AMMO },
+    [SHIP_AMMO]: {},
+    [ORBITAL_FABBER]: {
+      unit_types: T("Basic Orbital Mobile Construction Fabber Custom58"),
+      buildable_types: "Orbital & Structure & Custom58",
+    },
+    [ORBITAL_FACTORY]: {
+      unit_types: T("Advanced Orbital Structure Factory Construction Custom58"),
+    },
+    [AIR_SCOUT]: {
+      unit_types: T("Basic Air Mobile Offense Scout FactoryBuild Custom58"),
+    },
+    [TANK]: {
+      unit_types: T("Basic Land Mobile Offense Tank FactoryBuild Custom58"),
+    },
+    [R_COMMANDER]: {
+      unit_types: T("Commander Construction Land Mobile Custom7"),
+      buildable_types: "(CmdBuild & Custom7) | (Tank & Custom58)",
+    },
+    [R_HIVE]: {
+      unit_types: T(
+        "Basic Construction Factory Naval Structure CmdBuild Custom7"
+      ),
+      buildable_types: "Naval & Mobile & Custom58",
+    },
+    [R_LAUNCHER]: {
+      unit_types: T(
+        "Basic Construction Factory Orbital Structure CmdBuild Custom7"
+      ),
+      buildable_types: "Orbital & Mobile & Custom58",
+    },
+    [R_TANK]: { unit_types: T("Basic Land Mobile Offense Tank Custom7") },
+  };
+  const units = Object.keys(specs).filter((unit) =>
+    /\/([^/]+)\/\1\.json$/.test(unit)
+  );
+  const v = cells.buildIndex(units, specs, cells.vanillaMember);
+  const r = cells.buildIndex(units, specs, cells.raceMember("Custom7"));
+  const standIns = cells.standInsFor(v, r);
+  const mod = (file) => ({
+    file,
+    path: "max_health",
+    op: "multiply",
+    value: 2,
+  });
+
+  it("lets a unit the race builds, and that stands for no race unit, stand for itself", () => {
+    assert.deepEqual(standIns(SHIP), [SHIP]);
+    assert.deepEqual(standIns(NAVAL_FACTORY), [R_HIVE]);
+  });
+
+  it("fields it only when held", () => {
+    assert.deepEqual(cells.raceUnitsFor([NAVAL_FACTORY, SHIP], v, r), [
+      R_HIVE,
+      SHIP,
+    ]);
+    assert.deepEqual(cells.raceUnitsFor([NAVAL_FACTORY], v, r), [R_HIVE]);
+  });
+
+  it("deals a card that names it, and lists it in the tooltip", () => {
+    assert.equal(cells.cardUsable([SHIP], v, r), true);
+    assert.deepEqual(cells.cardUnitsFor([SHIP], v, r), [SHIP]);
+  });
+
+  it("lands a mod on it once when held, and never when not", () => {
+    assert.deepEqual(
+      cells.expandMods([mod(SHIP)], v, r, () => true),
+      [mod(SHIP)]
+    );
+    assert.deepEqual(
+      cells.expandMods([mod(SHIP)], v, r, () => false),
+      []
+    );
+    assert.deepEqual(
+      cells.expandMods([mod(SHIP_AMMO)], v, r, () => true),
+      [mod(SHIP_AMMO)]
+    );
+    assert.deepEqual(
+      cells.expandMods([mod(SHIP_AMMO)], v, r, () => false),
+      []
+    );
+  });
+
+  it("follows a kept vanilla builder, as a skirmish does", () => {
+    assert.deepEqual(standIns(ORBITAL_FABBER), [ORBITAL_FABBER]);
+    assert.deepEqual(standIns(ORBITAL_FACTORY), [ORBITAL_FACTORY]);
+  });
+
+  it("does not let a unit that stands for race units also stand for itself", () => {
+    assert.deepEqual(standIns(TANK), [R_TANK]);
+  });
+
+  it("leaves a unit the race cannot build standing for nothing", () => {
+    assert.deepEqual(standIns(AIR_SCOUT), []);
+    assert.equal(cells.cardUsable([AIR_SCOUT], v, r), false);
+  });
+});

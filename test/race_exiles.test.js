@@ -21,9 +21,10 @@ const {
 const { fixtureIndex } = require("../scripts/lib/addon-fixture.js");
 const fixture = require("./fixtures/unit_types.json");
 
-// Exiles fields no orbital unit beyond its launcher, so every card naming
-// only orbital units is withheld. A change here is a balance decision.
-const WITHHELD_BY_CELLS = [
+// Exiles has no orbital unit beyond its launcher, which builds MLA's, so the
+// cards naming only orbital units are dealt for those. A change here is a
+// balance decision.
+const ORBITAL_CARDS = [
   "gwaio_cooldown_orbital",
   "gwc_combat_orbital",
   "gwc_cost_orbital",
@@ -143,15 +144,18 @@ describe("Exiles under capability cells", () => {
     );
   });
 
-  it("withholds the MLA-only cards and the orbital cards", (t) => {
+  it("withholds the MLA-only cards, and deals the orbital cards for the MLA units its launcher builds", (t) => {
     if (!exilesUnits.length) {
       t.skip("fixture harvested without Exiles");
       return;
     }
     const withheld = withheldCards("exiles");
 
-    assert.deepEqual(withheld, expectedWithheld(WITHHELD_BY_CELLS));
+    assert.deepEqual(withheld, expectedWithheld([]));
     assert.ok(!withheld.includes("gwc_combat_bots"));
+    for (const card of ORBITAL_CARDS) {
+      assert.ok(!withheld.includes(card), card);
+    }
   });
 
   it("names every unit the tooltip lists for a card Exiles can be dealt (skipped without Exiles in the fixture)", (t) => {

@@ -257,28 +257,30 @@ define([
     return _.endsWith(cell || "", "/" + COMMANDER);
   };
 
-  // What the index's commanders can build, and what that builds in turn.
-  var buildReach = function (index) {
-    var reached = {};
-    var evaluated = {};
-    var candidates = _.keys(index.tagsOf);
-    var builders = _.filter(index.units, function (unit) {
+  var commandersOf = function (index) {
+    return _.filter(index.units, function (unit) {
       return isCommanderCell(index.cellOf[unit]);
     });
+  };
+
+  // What `commanders` can build, and what that builds in turn, among the
+  // units `tagsOf` holds. Each distinct build list is evaluated once.
+  var reachFrom = function (commanders, tagsOf, buildableOf) {
+    var reached = {};
+    var evaluated = {};
+    var candidates = _.keys(tagsOf);
+    var builders = commanders;
 
     while (builders.length) {
       var next = [];
       _.forEach(builders, function (builder) {
-        var buildable = index.buildableOf[builder];
+        var buildable = buildableOf(builder);
         if (!buildable || evaluated[buildable]) {
           return;
         }
         evaluated[buildable] = true;
         _.forEach(candidates, function (unit) {
-          if (
-            !reached[unit] &&
-            buildTypes.matches(buildable, index.tagsOf[unit])
-          ) {
+          if (!reached[unit] && buildTypes.matches(buildable, tagsOf[unit])) {
             reached[unit] = true;
             next.push(unit);
           }
@@ -288,6 +290,13 @@ define([
     }
 
     return reached;
+  };
+
+  // What the index's commanders can build, and what that builds in turn.
+  var buildReach = function (index) {
+    return reachFrom(commandersOf(index), index.tagsOf, function (unit) {
+      return index.buildableOf[unit];
+    });
   };
 
   // `member(types, path)` says what is indexed; an optional
@@ -428,11 +437,50 @@ define([
     return result;
   };
 
+  // The deal asks once per card, so the last few index pairs are kept.
+  var BUILT_CACHE_SIZE = 4;
+  var builtCache = [];
+
+  // The vanilla units the race can build, as a skirmish reaches them: what
+  // its commanders build, and what that builds in turn, each builder by its
+  // own list. See races.md, "Capability cells".
+  var raceBuiltVanilla = function (vanilla, race) {
+    var cached = _.find(
+      builtCache,
+      // By instance, not by the deep equality the shorthand would use.
+      // eslint-disable-next-line lodash/matches-shorthand
+      function (entry) {
+        return entry.vanilla === vanilla && entry.race === race;
+      }
+    );
+    if (cached) {
+      return cached.built;
+    }
+
+    var reached = reachFrom(
+      commandersOf(race),
+      _.assign({}, vanilla.tagsOf, race.tagsOf),
+      function (unit) {
+        return race.buildableOf[unit] || vanilla.buildableOf[unit];
+      }
+    );
+    var built = _.pick(reached, function (value, unit) {
+      return Object.prototype.hasOwnProperty.call(vanilla.cellOf, unit);
+    });
+
+    builtCache.push({ vanilla: vanilla, race: race, built: built });
+    if (builtCache.length > BUILT_CACHE_SIZE) {
+      builtCache.shift();
+    }
+    return built;
+  };
+
   // A lookup from a vanilla unit to the race units it stands for: every race
   // unit of its cell, except in a mobile combat cell, where a unit a
   // commander can build stands for the race units that share its job, and
-  // the cell's homes also stand for those that share none. See races.md,
-  // "Jobs".
+  // the cell's homes also stand for those that share none. A unit that
+  // stands for none but that the race can build stands for itself. See
+  // races.md, "Jobs" and "Capability cells".
   var standInsFor = function (vanilla, race) {
     var plans = {};
 
@@ -468,7 +516,7 @@ define([
       return plans[cell];
     };
 
-    return function (unit) {
+    var cellStandIns = function (unit) {
       var cell = vanilla.cellOf[unit];
       var raceUnits = race.unitsByCell[cell] || [];
       if (!vanilla.fieldable[unit] || !_.endsWith(cell, "/" + COMBAT)) {
@@ -481,6 +529,13 @@ define([
         var match = plan.matchOf[raceUnit];
         return match ? match === job : home;
       });
+    };
+
+    return function (unit) {
+      var standIns = cellStandIns(unit);
+      return standIns.length || !raceBuiltVanilla(vanilla, race)[unit]
+        ? standIns
+        : [unit];
     };
   };
 
@@ -642,8 +697,9 @@ define([
       if (kept) {
         land(mod.file, mod);
       }
+      // A unit that stands for itself takes the mod only as kept.
       _.forEach(targets, function (target) {
-        if (!kept || target !== mod.file) {
+        if (target !== mod.file) {
           land(target, _.assign({}, mod, { file: target }));
         }
       });

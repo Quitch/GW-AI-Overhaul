@@ -424,6 +424,13 @@ co-op.
 
 ### Which races a card reaches
 
+A card that names MLA units a race builds itself reaches that race too. The
+naval cards give and change the MLA ships Bugs' hives build, and Exiles
+players are dealt the orbital cards (`gwc_enable_orbital_all`,
+`gwc_enable_orbital_t2`, the `gwc_*_orbital` stat cards, and
+`gwaio_cooldown_orbital`). See [`races.md`](races.md), "Units a race builds
+itself".
+
 A card mod has two controls over how far a card reaches in a race or add-on
 army.
 
