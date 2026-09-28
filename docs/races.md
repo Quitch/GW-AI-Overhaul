@@ -134,18 +134,18 @@ reaches. It reads through `spec_cache`, so `genUnitSpecs` fetches nothing
 twice. From those it builds two indexes: vanilla (`Custom58` or no faction bit)
 and the race (`UNITTYPE_<bit>`). Then it applies these rules:
 
-| Rule                                                                                                                                                                                 | Result                                                                                                                                             |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A held vanilla unit                                                                                                                                                                  | the race units it stands for: every race unit of its cell, or in a mobile `Combat` cell those the job rule gives it (`raceUnitsFor`, "Jobs" below) |
-| A held path that is not a vanilla unit (race commander, a mod)                                                                                                                       | passed through untouched, unless another race's or add-on's (`races.ownedPaths`)                                                                   |
-| A race unit in a cell no vanilla unit fills                                                                                                                                          | granted when something granted can build it (`build_types`)                                                                                        |
-| A held vanilla `Commander`-class unit (the Colonel)                                                                                                                                  | kept and retagged to the race's bit (`races.unitRetagMods`)                                                                                        |
-| A `Commander` cell                                                                                                                                                                   | never granted; race commanders arrive as commanders do                                                                                             |
-| A spec mod on a vanilla unit                                                                                                                                                         | one on each race unit it stands for (`expandMods`)                                                                                                 |
-| A spec mod on a vanilla weapon, ammo, build arm or death ammo                                                                                                                        | one on each race part of the same role under the race units that the part's units stand for                                                        |
-| A mod on a file the army still holds (a retagged Pumpkin, `model.gwoSpecs`)                                                                                                          | kept as well                                                                                                                                       |
-| A mod that changes what a unit is (`unit_types`, `buildable_types`, `tools`, `command_caps`, `si_name`, …) or says `exact: true` - and every other mod on that unit in the same list | stays on its own unit, never travels to a race unit                                                                                                |
-| A unit-map `spec_id` the race maps left pointing at a vanilla unit                                                                                                                   | the first race unit it stands for, or left as it is when it stands for none (`unitMapFallback`)                                                    |
+| Rule                                                                                                                                                                                 | Result                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A held vanilla unit                                                                                                                                                                  | the race units it stands for: every race unit of its cell, or in a mobile `Combat` cell those the job rule gives it (`raceUnitsFor`, "Jobs" below)                |
+| A held path that is not a vanilla unit (race commander, a mod)                                                                                                                       | passed through untouched, unless another race's or add-on's (`races.ownedPaths`)                                                                                  |
+| A race unit in a cell no vanilla unit fills                                                                                                                                          | granted when something granted can build it (`build_types`)                                                                                                       |
+| A held vanilla `Commander`-class unit (the Colonel)                                                                                                                                  | kept and retagged to the race's bit (`races.unitRetagMods`)                                                                                                       |
+| A `Commander` cell                                                                                                                                                                   | never granted; race commanders arrive as commanders do                                                                                                            |
+| A spec mod on a vanilla unit                                                                                                                                                         | one on each race unit it stands for (`expandMods`)                                                                                                                |
+| A spec mod on a vanilla weapon, ammo, build arm or death ammo                                                                                                                        | one on each race part of the same role under the race units that the part's units stand for                                                                       |
+| A mod on a file the army still holds (a retagged Pumpkin, `model.gwoSpecs`)                                                                                                          | kept as well                                                                                                                                                      |
+| A mod that changes what a unit is (`unit_types`, `buildable_types`, `tools`, `command_caps`, `si_name`, …) or says `exact: true` - and every other mod on that unit in the same list | stays on its own unit, never travels to a race unit                                                                                                               |
+| A unit-map `spec_id` the race maps left pointing at a vanilla unit                                                                                                                   | the first race unit it stands for, or left as it is when it stands for none (`unitMapFallback`); a key in the race's `engineKeys` takes that unit (`raceUnitMap`) |
 
 The build rule is what carries Bugs' research. Its research factories share the
 factories' cells. The unlock tokens they build sit in cells of their own, so
@@ -357,11 +357,9 @@ Lynx's ammo alone.
 
 The AI unit map follows the same rule. A stock key the race's maps leave on a
 vanilla unit that stands for nothing keeps pointing at that unit, which the
-race army cannot build, so the base files' build items for it never build. The
-Skitter's `LandScout` is one for Legion and Bugs. The AI still orders such an
-item whenever its conditions pass, so with `--ai-log` the server log repeats
-its refusal (`FactoryManager: Attempted to order a factory [...] to build
-[.../land_scout.json...]`). The factory goes on to build the rest of its list.
+race army cannot build. The Skitter's `LandScout` is one for Legion and Bugs.
+The stock build items that name it lose their race builders with the rest of
+MLA's orders (see "Race trees"), so no race factory is ordered to build it.
 
 The rule has two known limits:
 
@@ -385,6 +383,23 @@ distinct (source, destination):
   Bugs' `bugs/` sub-directories) layered over the brain's base files. No race
   mod ships a complete AI, and the base files fill its gaps the way they do in
   a skirmish.
+
+  **The stock factory and fabber lists lose MLA's orders.** The army's map
+  (below) points most stock keys at race units, so a stock item would order
+  the race's builders to build race units by MLA's lists: the stock air scout
+  item built Legion Marauders, and Bugs' research tokens were ordered to build
+  air units and refused tens of thousands of times a battle. In every
+  base-layer file under `fabber_builds/` and `factory_builds/`
+  (`races.stockBuildFilter`), the referee takes from each item every builder
+  the race's map re-points, and drops the item when none is left or when it
+  builds a re-pointed unit, which the stock builder left cannot build
+  (`referee_game_file_paths.stripStockBuilds`, with the keys from
+  `repointedFor`). What stays is what a skirmish runs for the race: the items
+  for an MLA builder the race builds itself, such as Exiles' orbital fabber
+  and orbital factory. Items whose builders are unit-type classes
+  (`AnyBasicFabber`, `Commander`) stay too, and never run, because the classes
+  require `Custom58`. Without the race's cells (its zip not mounted yet) the
+  lists are copied whole.
 
   The source listing is the merged filesystem, so a race file that shadows a
   base path already reads as the race's. The race's own **layer** is its
@@ -429,11 +444,24 @@ The engine lists `unit_maps/` and loads each file it finds with the army's tag
 appended. The referee therefore never copies the race's map as a file. It
 merges the race's map over the brain's map
 (`referee_game_file_paths.mergeUnitMaps`), and race keys win. A vanilla
-`spec_id` the race map left resolves to a race unit it stands for. The referee
-writes the result as the army's tagged `ai_unit_map[_x1].json.<tag>`. It also
-copies the brain's untagged map, so the engine has a name to derive the tagged
-one from. With only the tagged file present, the engine looks for
-`ai_unit_map.json.ai0.ai0` and finds nothing.
+`spec_id` the race map left resolves to a race unit it stands for. Then the
+race's `engineKeys` apply (`raceUnitMap`): the race's own unit for each stock
+key the engine reads by name, `BasicVehicleFactory`, `BasicBotFactory`,
+`BasicAirFactory`, `BasicNavalFactory`, `OrbitalLauncher`, `AntiNukeSilo`, and
+`ControlModule`, or `null` to keep the stock unit. The cells choose by type,
+and Bugs' research tokens carry factory types, so without the table the
+engine would read a token as Bugs' land, air, and orbital factory. The
+extractor pair has its own hook (see "Commanders"). These keys matter most
+under low tech: in a Casual war whose Legion player held no advanced factory,
+Legion Sub Commanders whose stock keys stayed on MLA units built one factory
+and never left their planet, while with the keys translated they built 57-66
+factories and spread to six planets.
+
+The referee writes the result as the army's tagged
+`ai_unit_map[_x1].json.<tag>`. It also copies the brain's untagged map, so
+the engine has a name to derive the tagged one from. With only the tagged
+file present, the engine looks for `ai_unit_map.json.ai0.ai0` and finds
+nothing.
 
 No AI mod (`addAIMods`) is applied to a race tree in this pass. The descriptors
 name MLA build entries, which a race tree does not have. An AI's stat tech
@@ -475,8 +503,12 @@ A race army fields one of the race's commanders, drawn at war creation
 (`ai_population.js`'s `giveRace`). Two armies keep a vanilla one and are **retagged**
 instead. The boss keeps its Pumpkin and the Guardians keep the Unicorn.
 `races.commanderRetagMods` swaps `UNITTYPE_Custom58` for the race's bit and
-replaces `buildable_types` with the race's. That is exactly the shape every
-real race commander has.
+replaces `buildable_types` with the race's. It also sets
+`ai_metal_extractor_names` to the race's `commanderTypes.metalExtractorNames`,
+so the AI's metal-spot logic names the race's extractors
+(`Found faction replacement 'BasicMetalExtractor' => …` with `--ai-log`). That
+is exactly the shape every real race commander has. A race that declares no
+names gets no such mod.
 
 `commanderModsFor` decides. It gives nothing for one of the race's own, and the
 retag for anything else. So a player who somehow fields a vanilla commander as

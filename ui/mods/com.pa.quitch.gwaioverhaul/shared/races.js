@@ -543,7 +543,7 @@ define([
   };
 
   // A vanilla commander fielded by a race: the retag plus the race's build
-  // list. See races.md.
+  // list and metal extractor names. See races.md.
   var commanderRetagMods = function (raceId, commanderPath) {
     var mods = unitRetagMods(raceId, commanderPath);
 
@@ -551,14 +551,23 @@ define([
       return mods;
     }
 
-    return mods.concat([
-      {
+    var types = byId(raceId).commanderTypes;
+    mods.push({
+      file: commanderPath,
+      path: "buildable_types",
+      op: "replace",
+      value: types.buildable,
+    });
+    if (types.metalExtractorNames) {
+      mods.push({
         file: commanderPath,
-        path: "buildable_types",
+        path: "ai_metal_extractor_names",
         op: "replace",
-        value: byId(raceId).commanderTypes.buildable,
-      },
-    ]);
+        value: _.clone(types.metalExtractorNames),
+      });
+    }
+
+    return mods;
   };
 
   var matchesSource = function (filePath, source) {
@@ -738,6 +747,41 @@ define([
         !_.includes(c.baseMaps, filePath)
       );
     };
+  };
+
+  // Whether a file of the race's tree is a stock factory or fabber build list:
+  // kept from the base layer, so the referee strips MLA's orders from it. A
+  // brain that carries the race has none. See races.md, "Race trees".
+  var stockBuildFilter = function (raceId, brain, sourceRoot) {
+    var c = treeConfig(raceId, brain, sourceRoot);
+    var keep = treeFilter(raceId, brain, sourceRoot);
+    var own = (c.race && layersFor(c.brainKey)[c.race.id]) || {
+      unitMaps: [],
+      sources: [],
+    };
+    var buildDirs = [
+      sourceRoot + "fabber_builds/",
+      sourceRoot + "factory_builds/",
+    ];
+
+    return function (filePath) {
+      return (
+        own.sources.length > 0 &&
+        keep(filePath) &&
+        _.some(buildDirs, function (dir) {
+          return _.startsWith(filePath, dir);
+        }) &&
+        !layerClaims(own, filePath)
+      );
+    };
+  };
+
+  // The race's own unit for each stock key the engine reads by name; null
+  // keeps the stock unit. None for MLA.
+  var engineKeysFor = function (raceId) {
+    var race = byId(raceId);
+
+    return (race && race.engineKeys) || {};
   };
 
   // Every brain key any descriptor names a layer for.
@@ -957,6 +1001,8 @@ define([
     commanderFor: commanderFor,
     treeFilter: treeFilter,
     raceLayerFilter: raceLayerFilter,
+    stockBuildFilter: stockBuildFilter,
+    engineKeysFor: engineKeysFor,
     raceLayerTest: raceLayerTest,
     unitMapsFor: unitMapsFor,
     assign: assign,

@@ -35,6 +35,21 @@ describe("the Bugs descriptor", () => {
     assert.equal(race.unitTypeBit, "Custom2");
     assert.equal(race.commanderArtHue, 120);
     assert.equal(race.commanderTypes.buildable, "CmdBuild & Custom2");
+    assert.deepEqual(race.commanderTypes.metalExtractorNames, {
+      basic: "BugBasicMetalExtractor",
+      advanced: "BugAdvancedMetalExtractor",
+    });
+    assert.deepEqual(race.engineKeys, {
+      BasicVehicleFactory: "/pa/units/structure/basic_hive/basic_hive.json",
+      BasicBotFactory: null,
+      BasicAirFactory: "/pa/units/structure/basic_air_hive/basic_air_hive.json",
+      BasicNavalFactory:
+        "/pa/units/structure/basic_naval_hive/basic_naval_hive.json",
+      OrbitalLauncher:
+        "/pa/units/structure/bug_orbital_launcher/bug_orbital_launcher.json",
+      AntiNukeSilo: "/pa/units/structure/bug_anti_nuke/bug_anti_nuke.json",
+      ControlModule: "/pa/units/structure/bug_catalyst/bug_catalyst.json",
+    });
     assert.equal(race.ai.titans.sources.length, 4);
     assert.equal(race.ai.queller, undefined);
     assert.equal(races.supportedBy("Queller", "bugs"), false);

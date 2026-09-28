@@ -16,6 +16,21 @@ define(function () {
     commanderTypes: {
       unitType: "UNITTYPE_Custom6",
       buildable: "CmdBuild & Custom6",
+      metalExtractorNames: {
+        basic: "ExilesBasicMetalExtractor",
+        advanced: "ExilesAdvancedMetalExtractor",
+      },
+    },
+    engineKeys: {
+      BasicVehicleFactory: "/pa/units/land/t_tank_fac/t_tank_fac.json",
+      BasicBotFactory: "/pa/units/land/t_bot_fac/t_bot_fac.json",
+      BasicAirFactory: "/pa/units/air/t_air_fac/t_air_fac.json",
+      BasicNavalFactory: "/pa/units/sea/t_naval_fac/t_naval_fac.json",
+      OrbitalLauncher:
+        "/pa/units/orbital/t_orbital_launcher/t_orbital_launcher.json",
+      AntiNukeSilo:
+        "/pa/units/land/t_anti_nuke_launcher/t_anti_nuke_launcher.json",
+      ControlModule: "/pa/units/addon/t_control_module/t_control_module.json",
     },
     commanders: [
       { spec: "/pa/units/commanders/exiles_maxim/exiles_maxim.json" },

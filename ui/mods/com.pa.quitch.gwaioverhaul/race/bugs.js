@@ -18,6 +18,23 @@ define(function () {
     commanderTypes: {
       unitType: "UNITTYPE_Custom2",
       buildable: "CmdBuild & Custom2",
+      metalExtractorNames: {
+        basic: "BugBasicMetalExtractor",
+        advanced: "BugAdvancedMetalExtractor",
+      },
+    },
+    // The research unlock tokens carry factory types, so the cells would pick
+    // them. Bugs have no bot factory.
+    engineKeys: {
+      BasicVehicleFactory: "/pa/units/structure/basic_hive/basic_hive.json",
+      BasicBotFactory: null,
+      BasicAirFactory: "/pa/units/structure/basic_air_hive/basic_air_hive.json",
+      BasicNavalFactory:
+        "/pa/units/structure/basic_naval_hive/basic_naval_hive.json",
+      OrbitalLauncher:
+        "/pa/units/structure/bug_orbital_launcher/bug_orbital_launcher.json",
+      AntiNukeSilo: "/pa/units/structure/bug_anti_nuke/bug_anti_nuke.json",
+      ControlModule: "/pa/units/structure/bug_catalyst/bug_catalyst.json",
     },
     commanders: [
       { spec: "/pa/units/commanders/bug_commander/bug_commander.json" },

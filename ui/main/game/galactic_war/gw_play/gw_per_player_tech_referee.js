@@ -98,20 +98,15 @@ define([
     };
     var buildFiles = function (cells, maps) {
       var extra = maps.slice(2);
-      // A key the race maps left falls back to a race unit its vanilla unit
-      // stands for, preferring one the race's own AI data knows over an
-      // add-on's.
       var merge = function (base) {
-        var merged = gameFilePaths.mergeUnitMaps(base, extra);
-        return cells
-          ? unitCells.unitMapFallback(
-              merged,
-              extra,
-              cells.vanilla,
-              cells.race,
-              gwoRaces.addonUnitPaths()
-            )
-          : merged;
+        return gameFilePaths.raceUnitMap({
+          base: base,
+          raceMaps: extra,
+          cells: cells,
+          race: race,
+          unitCells: unitCells,
+          gwoRaces: gwoRaces,
+        });
       };
       var aiUnitMap = merge(maps[0]);
       var aiX1UnitMap = merge(maps[1]);

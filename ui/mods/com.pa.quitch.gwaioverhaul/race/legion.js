@@ -15,6 +15,22 @@ define(function () {
     commanderTypes: {
       unitType: "UNITTYPE_Custom1",
       buildable: "CmdBuild & Custom1",
+      metalExtractorNames: {
+        basic: "LegionEcoBasicMetalExtractor",
+        advanced: "LegionEcoAdvancedMetalExtractor",
+      },
+    },
+    engineKeys: {
+      BasicVehicleFactory:
+        "/pa/units/land/l_vehicle_factory/l_vehicle_factory.json",
+      BasicBotFactory: "/pa/units/land/l_bot_factory/l_bot_factory.json",
+      BasicAirFactory: "/pa/units/air/l_air_factory/l_air_factory.json",
+      BasicNavalFactory: "/pa/units/sea/l_naval_factory/l_naval_factory.json",
+      OrbitalLauncher:
+        "/pa/units/orbital/l_orbital_launcher/l_orbital_launcher.json",
+      AntiNukeSilo:
+        "/pa/units/land/l_anti_nuke_launcher/l_anti_nuke_launcher.json",
+      ControlModule: "/pa/units/land/l_control_module/l_control_module.json",
     },
     commanders: [
       { spec: "/pa/units/commanders/l_overwatch/l_overwatch.json" },

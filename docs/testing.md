@@ -177,6 +177,12 @@ listings (`test/races.test.js`, `test/referee_ai_file_processing.test.js`). Run
 it after a PA, race or add-on patch. Also run it after you change
 `races.treeFilter`, `races.raceLayerTest` or `referee_ai.js`'s tree writing.
 
+The validator runs the referee without the races' capability cells, so the
+race trees it checks keep the stock factory and fabber lists whole. Their
+stripping (`races.md`, "Race trees") is pinned by unit tests alone
+(`test/referee_game_files_ai_paths.test.js`,
+`test/referee_ai_race_trees.test.js`).
+
 The local-only scripts find the PA install through `scripts/lib/pa-install.js`.
 The media folder is `PA_MEDIA`, else Steam's default Windows path. PA's user
 data folder, which holds `download/` and `server_mods/`, is `PA_USER_DATA`,

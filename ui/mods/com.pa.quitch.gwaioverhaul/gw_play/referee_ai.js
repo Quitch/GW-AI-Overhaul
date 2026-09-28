@@ -4,7 +4,17 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_ai_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
-], function (gwoAI, gwoCard, refereeAIPaths, refereeCoop, gwoRaces) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (
+  gwoAI,
+  gwoCard,
+  refereeAIPaths,
+  refereeCoop,
+  gwoRaces,
+  gameFilePaths,
+  unitCells
+) {
   // The walk append, prepend and replace share. A build entry for toBuild that
   // carries idToMod (and refId/refValue, when given) is the target; otherwise
   // every test in its build_conditions that refId/refValue or matchAll selects
@@ -701,6 +711,16 @@ define([
         destination: target,
         keep: gwoRaces.treeFilter(race, brain, source),
         raceOwned: gwoRaces.raceLayerFilter(race, brain, source),
+        stockBuild: gwoRaces.stockBuildFilter(race, brain, source),
+        repointed: function () {
+          return gameFilePaths.repointedFor({
+            race: race,
+            brain: brain,
+            source: source,
+            unitCells: unitCells,
+            gwoRaces: gwoRaces,
+          });
+        },
       };
     };
 
@@ -809,23 +829,34 @@ define([
     return _.values(requests);
   };
 
+  // The stock factory and fabber lists lose MLA's orders to the race's
+  // builders, by the keys the race's army maps re-point. See races.md, "Race
+  // trees".
   var writeRaceTree = function (job, treeCache, configFiles) {
-    return treeCache.list(job.source).then(function (fileList) {
-      var kept = _.filter(fileList, job.keep);
+    return Promise.all([treeCache.list(job.source), job.repointed()]).then(
+      function (loaded) {
+        var fileList = loaded[0];
+        var keys = loaded[1];
+        var kept = _.filter(fileList, job.keep);
 
-      if (!_.some(fileList, job.raceOwned)) {
-        console.warn("gwoRefereeAi: no race build orders under " + job.source);
+        if (!_.some(fileList, job.raceOwned)) {
+          console.warn(
+            "gwoRefereeAi: no race build orders under " + job.source
+          );
+        }
+
+        return Promise.all(
+          _.map(kept, function (filePath) {
+            return treeCache.getJSON(filePath).then(function (json) {
+              configFiles[job.destination + filePath.slice(job.source.length)] =
+                keys && job.stockBuild(filePath)
+                  ? gameFilePaths.stripStockBuilds(json, keys)
+                  : json;
+            });
+          })
+        );
       }
-
-      return Promise.all(
-        _.map(kept, function (filePath) {
-          return treeCache.getJSON(filePath).then(function (json) {
-            configFiles[job.destination + filePath.slice(job.source.length)] =
-              json;
-          });
-        })
-      );
-    });
+    );
   };
 
   var whoIsCluster = function () {
@@ -860,6 +891,7 @@ define([
       applyAiMods: applyAiMods,
       raceTreeJobs: raceTreeJobs,
       coopAiTreeRequests: coopAiTreeRequests,
+      writeRaceTree: writeRaceTree,
     };
   }
 
