@@ -751,6 +751,7 @@ describe("race army maps", () => {
       },
     };
     const gwoRaces = {
+      isMla: () => false,
       addonUnitPaths: () => ({ "/pa/units/addon.json": true }),
       engineKeysFor: (race) => {
         assert.equal(race, "fixture");
@@ -799,6 +800,35 @@ describe("race army maps", () => {
     });
 
     assert.deepEqual(map, refereeGameFiles.mergeUnitMaps(base, [raceMap]));
+  });
+
+  it("raceUnitMap for MLA with add-on cells is the merge alone, the host's map", () => {
+    const seen = [];
+    const unitCells = {
+      unitMapFallback: (merged) => {
+        seen.push(merged);
+        return fallback(merged);
+      },
+    };
+    const gwoRaces = {
+      isMla: (race) => race === "mla",
+      addonUnitPaths: () => ({ "/pa/units/addon.json": true }),
+      engineKeysFor: () => {
+        throw new Error("engineKeysFor reached for MLA");
+      },
+    };
+
+    const map = refereeGameFiles.raceUnitMap({
+      base,
+      raceMaps: [],
+      cells: { vanilla: "V", race: "R" },
+      race: "mla",
+      unitCells,
+      gwoRaces,
+    });
+
+    assert.deepEqual(seen, []);
+    assert.deepEqual(map, refereeGameFiles.mergeUnitMaps(base, []));
   });
 
   it("repointedKeys names the keys whose spec_id the translation changed", () => {
@@ -874,6 +904,7 @@ describe("race army maps", () => {
         );
         return ["/pa/ai/unit_maps/fixture_repointed.json"];
       },
+      isMla: () => false,
       addonUnitPaths: () => ({}),
       engineKeysFor: () => ({ Launcher: "/pa/units/r_launcher.json" }),
     };
