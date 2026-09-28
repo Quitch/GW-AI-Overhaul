@@ -624,6 +624,7 @@ define([
       exclude: config.exclude || [],
       aiConfig: sourceRoot + "ai_config.json",
       mapsDir: sourceRoot + "unit_maps/",
+      templatesDir: sourceRoot + "platoon_templates/",
       // The engine lists unit_maps/ and loads each file it finds plus the
       // army's tag, so the tagged merged map is only read when its untagged
       // namesake is there to be listed. The brain's own map files fill that
@@ -649,6 +650,7 @@ define([
       .map("sources")
       .flatten()
       .value();
+    var hasData = own.sources.length > 0 || c.exclude.length > 0;
 
     var isUnitMap = function (filePath) {
       return _.some(own.unitMaps, function (map) {
@@ -667,6 +669,12 @@ define([
 
       if (isUnitMap(filePath) || _.includes(filePath, "/neural_networks/")) {
         return false;
+      }
+
+      // Every layer's templates, as in a skirmish: a build file at a vanilla
+      // path can name another race's (Bugs' orbital builds do).
+      if (hasData && _.startsWith(filePath, c.templatesDir)) {
+        return true;
       }
 
       if (own.sources.length) {
@@ -753,7 +761,8 @@ define([
   // MLA's add-on files, so referee_ai.js's sweep drops these and keeps the
   // rest - an add-on map both MLA and a race claim rides along untagged. A
   // relative unit map names a file the brain ships itself, never a race
-  // mod's, and matches nothing here.
+  // mod's, and matches nothing here. Nor does a platoon template, which every
+  // tree carries (see treeFilter).
   //
   // raceLayerTest builds the layers once, for a caller testing a whole file
   // list: nothing it reads changes during one sweep.
@@ -761,6 +770,10 @@ define([
     var layerSets = _.map(brainKeys(), layersFor);
 
     return function (filePath) {
+      if (_.includes(filePath, "/platoon_templates/")) {
+        return false;
+      }
+
       var mla = false;
       var other = false;
 
