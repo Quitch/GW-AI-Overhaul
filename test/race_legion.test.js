@@ -49,6 +49,22 @@ describe("the Legion descriptor", () => {
     assert.equal(race.unitTypeBit, "Custom1");
     assert.equal(race.commanderArtHue, 0);
     assert.equal(race.commanderTypes.buildable, "CmdBuild & Custom1");
+    assert.deepEqual(race.commanderTypes.metalExtractorNames, {
+      basic: "LegionEcoBasicMetalExtractor",
+      advanced: "LegionEcoAdvancedMetalExtractor",
+    });
+    assert.deepEqual(race.engineKeys, {
+      BasicVehicleFactory:
+        "/pa/units/land/l_vehicle_factory/l_vehicle_factory.json",
+      BasicBotFactory: "/pa/units/land/l_bot_factory/l_bot_factory.json",
+      BasicAirFactory: "/pa/units/air/l_air_factory/l_air_factory.json",
+      BasicNavalFactory: "/pa/units/sea/l_naval_factory/l_naval_factory.json",
+      OrbitalLauncher:
+        "/pa/units/orbital/l_orbital_launcher/l_orbital_launcher.json",
+      AntiNukeSilo:
+        "/pa/units/land/l_anti_nuke_launcher/l_anti_nuke_launcher.json",
+      ControlModule: "/pa/units/land/l_control_module/l_control_module.json",
+    });
     assert.ok(race.ai.titans.sources.length >= 4);
     assert.deepEqual(race.ai.queller.exclude, ["/mla/", "/unit_maps/mla.json"]);
     assert.ok(race.playerIcon.fill && race.playerIcon.outline);

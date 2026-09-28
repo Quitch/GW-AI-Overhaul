@@ -721,3 +721,188 @@ describe("describeError", () => {
     assert.equal(describeError(undefined), "undefined");
   });
 });
+
+describe("race army maps", () => {
+  const base = {
+    unit_map: {
+      Tank: { spec_id: "/pa/units/tank.json" },
+      Factory: { spec_id: "/pa/units/factory.json" },
+      BotFactory: { spec_id: "/pa/units/bot_factory.json" },
+      Commander: { unit_types: "Commander & Custom58" },
+    },
+  };
+  const raceMap = {
+    unit_map: { RaceTank: { spec_id: "/pa/units/r_tank.json" } },
+  };
+  const fallback = (merged) => ({
+    unit_map: Object.assign({}, merged.unit_map, {
+      Tank: { spec_id: "/pa/units/r_tank.json" },
+      Factory: { spec_id: "/pa/units/r_token.json" },
+      BotFactory: { spec_id: "/pa/units/r_token2.json" },
+    }),
+  });
+
+  it("raceUnitMap translates the merge, then lays the race's engine keys over it, null keeping the stock unit", () => {
+    const seen = [];
+    const unitCells = {
+      unitMapFallback: (merged, raceMaps, vanilla, race, avoid) => {
+        seen.push({ raceMaps, vanilla, race, avoid });
+        return fallback(merged);
+      },
+    };
+    const gwoRaces = {
+      addonUnitPaths: () => ({ "/pa/units/addon.json": true }),
+      engineKeysFor: (race) => {
+        assert.equal(race, "fixture");
+        return {
+          Factory: "/pa/units/r_factory.json",
+          BotFactory: null,
+          Missing: "/pa/units/r_missing.json",
+        };
+      },
+    };
+
+    const map = refereeGameFiles.raceUnitMap({
+      base,
+      raceMaps: [raceMap],
+      cells: { vanilla: "V", race: "R" },
+      race: "fixture",
+      unitCells,
+      gwoRaces,
+    });
+
+    assert.deepEqual(map.unit_map, {
+      Tank: { spec_id: "/pa/units/r_tank.json" },
+      Factory: { spec_id: "/pa/units/r_factory.json" },
+      BotFactory: { spec_id: "/pa/units/bot_factory.json" },
+      Commander: { unit_types: "Commander & Custom58" },
+      RaceTank: { spec_id: "/pa/units/r_tank.json" },
+    });
+    assert.deepEqual(seen, [
+      {
+        raceMaps: [raceMap],
+        vanilla: "V",
+        race: "R",
+        avoid: { "/pa/units/addon.json": true },
+      },
+    ]);
+  });
+
+  it("raceUnitMap without cells is the merge alone", () => {
+    const map = refereeGameFiles.raceUnitMap({
+      base,
+      raceMaps: [raceMap],
+      cells: undefined,
+      race: "fixture",
+      unitCells: {},
+      gwoRaces: {},
+    });
+
+    assert.deepEqual(map, refereeGameFiles.mergeUnitMaps(base, [raceMap]));
+  });
+
+  it("repointedKeys names the keys whose spec_id the translation changed", () => {
+    const merged = refereeGameFiles.mergeUnitMaps(base, [raceMap]);
+
+    assert.deepEqual(refereeGameFiles.repointedKeys(merged, fallback(merged)), {
+      Tank: true,
+      Factory: true,
+      BotFactory: true,
+    });
+  });
+
+  it("stripStockBuilds drops re-pointed builders, then items left with none or building a re-pointed unit", () => {
+    const kept = { builders: ["Stock"], to_build: "StockUnit" };
+    const json = {
+      build_list: [
+        { builders: ["Factory", "Stock"], to_build: "StockUnit", priority: 1 },
+        { builders: ["Factory"], to_build: "StockUnit" },
+        { builders: ["Stock"], to_build: "Tank" },
+        kept,
+      ],
+    };
+
+    const stripped = refereeGameFiles.stripStockBuilds(json, {
+      Factory: true,
+      Tank: true,
+    });
+
+    assert.deepEqual(stripped.build_list, [
+      { builders: ["Stock"], to_build: "StockUnit", priority: 1 },
+      kept,
+    ]);
+    assert.equal(stripped.build_list[1], kept);
+    assert.equal(json.build_list.length, 4);
+    assert.deepEqual(json.build_list[0].builders, ["Factory", "Stock"]);
+    const templates = { platoon_templates: {} };
+    assert.equal(refereeGameFiles.stripStockBuilds(templates, {}), templates);
+  });
+
+  it("repointedFor unions the classic and Titans maps' re-pointed keys, or resolves null without the race's cells", async () => {
+    const stubs = createGlobalStubs();
+    const maps = {
+      "spec://pa/ai_penchant/unit_maps/ai_unit_map.json": base,
+      "spec://pa/ai_penchant/unit_maps/ai_unit_map_x1.json": {
+        unit_map: { Launcher: { spec_id: "/pa/units/launcher.json" } },
+      },
+      "spec://pa/ai/unit_maps/fixture_repointed.json": raceMap,
+    };
+    const gets = [];
+    const $ = function () {};
+    $.get = (url) => {
+      gets.push(url);
+      return {
+        then: (fn) => Promise.resolve(fn(JSON.stringify(maps[url]))),
+      };
+    };
+    $.when = function () {
+      const loads = Array.prototype.slice.call(arguments);
+      return {
+        then: (fn) =>
+          Promise.all(loads).then((values) => fn.apply(null, values)),
+      };
+    };
+    stubs.setGlobal("$", $);
+    stubs.setGlobal("parse", JSON.parse);
+    const gwoRaces = {
+      cellsOf: (race) =>
+        race === "fixture" ? { vanilla: {}, race: {} } : undefined,
+      unitMapsFor: (race, brain, source) => {
+        assert.deepEqual(
+          [race, brain, source],
+          ["fixture", "Penchant", "/pa/ai_penchant/"]
+        );
+        return ["/pa/ai/unit_maps/fixture_repointed.json"];
+      },
+      addonUnitPaths: () => ({}),
+      engineKeysFor: () => ({ Launcher: "/pa/units/r_launcher.json" }),
+    };
+    const unitCells = { unitMapFallback: fallback };
+    try {
+      assert.equal(
+        await refereeGameFiles.repointedFor({
+          race: "nope",
+          brain: "Penchant",
+          source: "/pa/ai_penchant/",
+          unitCells,
+          gwoRaces,
+        }),
+        null
+      );
+      assert.deepEqual(gets, []);
+
+      assert.deepEqual(
+        await refereeGameFiles.repointedFor({
+          race: "fixture",
+          brain: "Penchant",
+          source: "/pa/ai_penchant/",
+          unitCells,
+          gwoRaces,
+        }),
+        { Tank: true, Factory: true, BotFactory: true, Launcher: true }
+      );
+    } finally {
+      stubs.restoreGlobals();
+    }
+  });
+});

@@ -122,8 +122,17 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
 - **Race membership is the unit-type bit alone.** A unit is the race's when
   its effective `unit_types` carry `UNITTYPE_<bit>`. Vanilla is `Custom58` or
   no `Custom*` at all. A commander's `buildable_types` is the race's `CmdBuild`
-  expression. `races.commanderRetagMods` produces exactly that shape for a
-  vanilla commander that a race army keeps.
+  expression, and its `ai_metal_extractor_names` names the race's extractors.
+  `races.commanderRetagMods` produces exactly that shape for a vanilla
+  commander that a race army keeps, from the descriptor's `commanderTypes`.
+  Copy `commanderTypes.metalExtractorNames` from the race mod's commander
+  specs. Nothing checks it against the mod.
+- **`engineKeys` names the race's own unit for each stock key the engine
+  reads by name** (`races.md`, "Race trees"). Pick each from the race mod's
+  units by type: a factory key wants the race's basic factory of that kind.
+  `null` keeps the stock unit where the race has none (Bugs have no bot
+  factory). `test/race_*.test.js` pins the table; nothing checks it against
+  the mod.
 - **Cells and jobs decide what a race player fields.** Nothing per race is
   hand-mapped. `test/unit_groups_cells.test.js` validates the classifier's
   domain and class precedence (`shared/unit_cells.js`) against

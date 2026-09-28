@@ -26,6 +26,10 @@ const FIXTURE_RACE = {
   commanderTypes: {
     unitType: "UNITTYPE_Custom7",
     buildable: "CmdBuild & Custom7",
+    metalExtractorNames: {
+      basic: "FixtureBasicMetalExtractor",
+      advanced: "FixtureAdvancedMetalExtractor",
+    },
   },
   commanders: [
     { spec: FX_ALPHA, name: "Alpha" },

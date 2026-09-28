@@ -48,6 +48,21 @@ describe("the Exiles descriptor", () => {
     assert.equal(race.unitTypeBit, "Custom6");
     assert.equal(race.commanderArtHue, 200);
     assert.equal(race.commanderTypes.buildable, "CmdBuild & Custom6");
+    assert.deepEqual(race.commanderTypes.metalExtractorNames, {
+      basic: "ExilesBasicMetalExtractor",
+      advanced: "ExilesAdvancedMetalExtractor",
+    });
+    assert.deepEqual(race.engineKeys, {
+      BasicVehicleFactory: "/pa/units/land/t_tank_fac/t_tank_fac.json",
+      BasicBotFactory: "/pa/units/land/t_bot_fac/t_bot_fac.json",
+      BasicAirFactory: "/pa/units/air/t_air_fac/t_air_fac.json",
+      BasicNavalFactory: "/pa/units/sea/t_naval_fac/t_naval_fac.json",
+      OrbitalLauncher:
+        "/pa/units/orbital/t_orbital_launcher/t_orbital_launcher.json",
+      AntiNukeSilo:
+        "/pa/units/land/t_anti_nuke_launcher/t_anti_nuke_launcher.json",
+      ControlModule: "/pa/units/addon/t_control_module/t_control_module.json",
+    });
     assert.equal(race.ai.titans.sources.length, 4);
     assert.equal(race.ai.queller, undefined);
     assert.equal(races.brainFor("Queller", "exiles"), "Titans");

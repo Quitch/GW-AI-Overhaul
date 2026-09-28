@@ -431,7 +431,7 @@ describe("aiRoot", () => {
 });
 
 describe("commanderRetagMods", () => {
-  it("swaps the vanilla unit-type bit for the race's and replaces the build list", () => {
+  it("swaps the vanilla unit-type bit for the race's and replaces the build list and metal extractor names", () => {
     const unicorn = "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
 
     assert.deepEqual(races.unitRetagMods("fixture", gwoUnit.colonel), [
@@ -469,8 +469,34 @@ describe("commanderRetagMods", () => {
         op: "replace",
         value: "CmdBuild & Custom7",
       },
+      {
+        file: unicorn,
+        path: "ai_metal_extractor_names",
+        op: "replace",
+        value: {
+          basic: "FixtureBasicMetalExtractor",
+          advanced: "FixtureAdvancedMetalExtractor",
+        },
+      },
     ]);
     assert.deepEqual(races.commanderRetagMods("mla", unicorn), []);
+  });
+
+  it("names no metal extractors for a race that declares none", () => {
+    const unicorn = "/pa/units/commanders/raptor_unicorn/raptor_unicorn.json";
+    races.register(
+      Object.assign({}, FIXTURE_RACE, {
+        commanderTypes: {
+          unitType: "UNITTYPE_Custom7",
+          buildable: "CmdBuild & Custom7",
+        },
+      })
+    );
+
+    assert.deepEqual(
+      races.commanderRetagMods("fixture", unicorn).map((mod) => mod.path),
+      ["unit_types", "unit_types", "buildable_types"]
+    );
   });
 });
 
@@ -796,6 +822,76 @@ describe("raceLayerTest", () => {
       claimed("/pa/ai_queller/q_uber/factory_builds/carried/x.json"),
       false
     );
+  });
+});
+
+describe("stockBuildFilter", () => {
+  const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
+
+  it("under Titans picks the base layer's factory and fabber lists, not the race's own layer, its add-ons', or other files", () => {
+    races.register({
+      id: "rival",
+      ai: {
+        titans: {
+          sources: [{ dir: "/pa/ai/factory_builds/", match: "rival_" }],
+        },
+      },
+    });
+    races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons(["fixture_addon"]);
+    const stock = races.stockBuildFilter("fixture", "Titans", "/pa/ai/");
+
+    assert.equal(stock("/pa/ai/fabber_builds/fabber_land_builds.json"), true);
+    assert.equal(stock("/pa/ai/factory_builds/factory_air_builds.json"), true);
+    assert.equal(stock("/pa/ai/fabber_builds/fixture/fabber_land.json"), false);
+    assert.equal(stock("/pa/ai/factory_builds/fixture_air.json"), false);
+    assert.equal(stock("/pa/ai/factory_builds/fixture/factory_2w.json"), false);
+    assert.equal(stock("/pa/ai/factory_builds/rival_air.json"), false);
+    assert.equal(
+      stock("/pa/ai/platoon_builds/platoon_land_builds.json"),
+      false
+    );
+    assert.equal(stock("/pa/ai/ai_config.json"), false);
+  });
+
+  it("picks nothing for MLA or under a brain that carries the race", () => {
+    assert.equal(
+      races.stockBuildFilter(
+        "mla",
+        "Titans",
+        "/pa/ai/"
+      )("/pa/ai/fabber_builds/fabber_land_builds.json"),
+      false
+    );
+    races.register(
+      Object.assign({}, FIXTURE_RACE, {
+        ai: {
+          queller: { unitMaps: ["unit_maps/fixture.json"], exclude: ["/mla/"] },
+        },
+      })
+    );
+    assert.equal(
+      races.stockBuildFilter(
+        "fixture",
+        "Queller",
+        "/pa/ai_queller/q_uber/"
+      )("/pa/ai_queller/q_uber/fabber_builds/land.json"),
+      false
+    );
+  });
+});
+
+describe("engineKeysFor", () => {
+  it("gives the race's engine keys, and none for MLA or an unknown race", () => {
+    const engineKeys = {
+      BasicVehicleFactory: "/pa/units/fixture/factory.json",
+      BasicBotFactory: null,
+    };
+    races.register(Object.assign({}, FIXTURE_RACE, { engineKeys }));
+
+    assert.deepEqual(races.engineKeysFor("fixture"), engineKeys);
+    assert.deepEqual(races.engineKeysFor("mla"), {});
+    assert.deepEqual(races.engineKeysFor("nope"), {});
   });
 });
 

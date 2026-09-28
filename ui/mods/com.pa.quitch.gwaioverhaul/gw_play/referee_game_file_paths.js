@@ -67,6 +67,125 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return _.assign({}, baseMap, { unit_map: merged });
   };
 
+  // A race army's map: the merge, then each stock spec_id the race maps left
+  // pointed at a race unit it stands for (one the race's own AI data knows
+  // over an add-on's), then the race's engineKeys, where null keeps the stock
+  // unit. The engine reads those keys by name. Without cells, the merge alone.
+  // params: base, raceMaps, cells, race, unitCells, gwoRaces. See races.md,
+  // "Race trees".
+  var raceUnitMap = function (params) {
+    var merged = mergeUnitMaps(params.base, params.raceMaps);
+    if (!params.cells) {
+      return merged;
+    }
+
+    var translated = params.unitCells.unitMapFallback(
+      merged,
+      params.raceMaps,
+      params.cells.vanilla,
+      params.cells.race,
+      params.gwoRaces.addonUnitPaths()
+    );
+    var unitMap = _.assign({}, translated.unit_map);
+    _.forEach(params.gwoRaces.engineKeysFor(params.race), function (unit, key) {
+      if (unitMap[key]) {
+        unitMap[key] =
+          unit === null
+            ? merged.unit_map[key]
+            : _.assign({}, unitMap[key], { spec_id: unit });
+      }
+    });
+
+    return _.assign({}, translated, { unit_map: unitMap });
+  };
+
+  // The keys a race army's map points somewhere other than the merge did.
+  var repointedKeys = function (merged, translated) {
+    var keys = {};
+
+    _.forEach(translated.unit_map, function (entry, key) {
+      var before = merged.unit_map[key];
+      if (entry && before && entry.spec_id !== before.spec_id) {
+        keys[key] = true;
+      }
+    });
+
+    return keys;
+  };
+
+  // A stock build list without MLA's orders to a race's builders: an item
+  // loses every builder its race re-pointed at a race unit, and goes when none
+  // is left or when it builds a re-pointed unit, which the stock builder left
+  // cannot build. What stays is what a skirmish runs for the race.
+  var stripStockBuilds = function (json, repointed) {
+    if (!json || !_.isArray(json.build_list)) {
+      return json;
+    }
+
+    var items = [];
+    _.forEach(json.build_list, function (item) {
+      var builders = _.reject(item.builders, function (builder) {
+        return repointed[builder];
+      });
+      if (!builders.length || repointed[item.to_build]) {
+        return;
+      }
+      items.push(
+        builders.length === item.builders.length
+          ? item
+          : _.assign({}, item, { builders: builders })
+      );
+    });
+
+    return _.assign({}, json, { build_list: items });
+  };
+
+  // The keys a race's army maps re-point, over the brain's classic and Titans
+  // maps, or null without the race's cells. params: race, brain, source,
+  // unitCells, gwoRaces.
+  var repointedFor = function (params) {
+    var cells = params.gwoRaces.cellsOf(params.race);
+    if (!cells) {
+      return Promise.resolve(null);
+    }
+
+    var loads = [
+      loadMap(getAIUnitMapPath(false, params.brain)),
+      loadMap(getAIUnitMapPath(true, params.brain)),
+    ].concat(
+      _.map(
+        params.gwoRaces.unitMapsFor(params.race, params.brain, params.source),
+        loadMap
+      )
+    );
+
+    // A jQuery promise adopted by a native one hands over its first argument
+    // only, so the loads are gathered into one first.
+    return Promise.resolve(
+      $.when.apply($, loads).then(function () {
+        return _.toArray(arguments);
+      })
+    ).then(function (maps) {
+      var raceMaps = maps.slice(2);
+      var keys = {};
+      _.forEach(maps.slice(0, 2), function (base) {
+        var translated = raceUnitMap({
+          base: base,
+          raceMaps: raceMaps,
+          cells: cells,
+          race: params.race,
+          unitCells: params.unitCells,
+          gwoRaces: params.gwoRaces,
+        });
+        _.assign(
+          keys,
+          repointedKeys(mergeUnitMaps(base, raceMaps), translated)
+        );
+      });
+      return keys;
+    });
+  };
+
   // params.race is optional: without it the player is MLA. params.mods, when
   // given, is the inventory's mods already fitted to the player's race
   // (races.modsFor); otherwise the mods land as they always have.
@@ -286,6 +405,10 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     getAIUnitMapPath: getAIUnitMapPath,
     getAIUnitMapDestinationPath: getAIUnitMapDestinationPath,
     mergeUnitMaps: mergeUnitMaps,
+    raceUnitMap: raceUnitMap,
+    repointedKeys: repointedKeys,
+    stripStockBuilds: stripStockBuilds,
+    repointedFor: repointedFor,
     clusterArmyIndex: clusterArmyIndex,
     resolveAiUnitMapPaths: resolveAiUnitMapPaths,
     buildPlayerFiles: buildPlayerFiles,

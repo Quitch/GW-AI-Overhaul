@@ -24,7 +24,6 @@ define([
 ) {
   var getAIUnitMapPath = gameFilePaths.getAIUnitMapPath;
   var getAIUnitMapDestinationPath = gameFilePaths.getAIUnitMapDestinationPath;
-  var mergeUnitMaps = gameFilePaths.mergeUnitMaps;
   var resolveAiUnitMapPaths = gameFilePaths.resolveAiUnitMapPaths;
   var buildPlayerFiles = gameFilePaths.buildPlayerFiles;
   var specFetch = gameFilePaths.specFetch;
@@ -387,9 +386,8 @@ define([
 
         // A race army reads the brain that carries its race (or Titans) from
         // that brain's own map with the race's maps laid over it, at the race's
-        // tree; a vanilla spec_id the race maps left falls back to a race unit
-        // it stands for. Guardians mirror the player, race included. See
-        // races.md.
+        // tree, translated to the race's units (gameFilePaths.raceUnitMap).
+        // Guardians mirror the player, race included. See races.md.
         var armyOf = function (n) {
           return n === 0 ? ai : ai.foes[n - 1];
         };
@@ -404,20 +402,15 @@ define([
             loadMap(getAIUnitMapPath(false, brain)),
             loadMap(getAIUnitMapPath(true, brain)),
           ].concat(_.map(raceMaps, loadMap));
-          // A key the race maps left falls back to a race unit its vanilla
-          // unit stands for, preferring one the race's own AI data knows over
-          // an add-on's.
           var merge = function (base, extra) {
-            var merged = mergeUnitMaps(base, extra);
-            return cells
-              ? unitCells.unitMapFallback(
-                  merged,
-                  extra,
-                  cells.vanilla,
-                  cells.race,
-                  gwoRaces.addonUnitPaths()
-                )
-              : merged;
+            return gameFilePaths.raceUnitMap({
+              base: base,
+              raceMaps: extra,
+              cells: cells,
+              race: race,
+              unitCells: unitCells,
+              gwoRaces: gwoRaces,
+            });
           };
 
           return $.when.apply($, loads).then(function () {
