@@ -723,10 +723,12 @@ whose art is in blue paint (hue 200). The player icon comes from the server
 mod's own `ui/mods/com.pa.nik.exiles/img/exiles_icon_{fill,outline}.png`.
 
 Exiles is Titans only. Its build orders are the `exiles/` sub-directories under
-each build directory, plus `unit_maps/exiles.json`. Exiles fields no orbital
-unit beyond its launcher, so the cells the orbital cards open stay empty. The
-deal withholds those cards (`test/race_exiles.test.js` pins the list). The
-table keys 287 Exiles specs.
+each build directory, plus `unit_maps/exiles.json`. Exiles has no orbital
+unit beyond its launcher, which builds MLA's orbital units, so those stand for
+themselves (see "Units a race builds itself"), and so do the units MLA's
+orbital fabber builds, the Zeus, Ares, and Helios titans among them. The deal
+withholds nothing beyond the MLA-only set (`test/race_exiles.test.js` pins the
+orbital cards). The table keys 287 Exiles specs.
 
 The mod also ships `platoon_templates.json` and `platoon_land_builds.json` at
 the **vanilla** paths. They are copies of the TITANS files, with the raid and
