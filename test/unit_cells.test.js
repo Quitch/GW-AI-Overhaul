@@ -1585,3 +1585,125 @@ describe("units a race builds itself", () => {
     assert.equal(cells.cardUsable([AIR_SCOUT], v, r), false);
   });
 });
+
+describe("buildableStockUnits", () => {
+  const U = (dir, name) =>
+    "/pa/units/" + dir + "/" + name + "/" + name + ".json";
+  const R_COMMANDER = "/pa/units/commanders/r_commander/r_commander.json";
+  const R_LAUNCHER = U("orbital", "r_launcher");
+  const R_TELEPORTER = U("land", "r_teleporter");
+  const ORBITAL_FABBER = U("orbital", "v_orbital_fabber");
+  const ORBITAL_FACTORY = U("orbital", "v_orbital_factory");
+  const TELEPORTER = U("land", "v_teleporter");
+  const COLONEL = U("land", "v_colonel");
+
+  // The race's launcher builds the vanilla orbital fabber, which builds the
+  // vanilla orbital factory and the vanilla teleporter, whose cell holds the
+  // race's teleporter, as Exiles' launcher does. The colonel is a kept
+  // vanilla commander-class unit whose build list still names vanilla
+  // structures.
+  const specs = {
+    [R_COMMANDER]: {
+      unit_types: T("Commander Construction Land Mobile Custom7"),
+      buildable_types: "CmdBuild & Custom7",
+    },
+    [R_LAUNCHER]: {
+      unit_types: T(
+        "Basic Construction Factory Orbital Structure CmdBuild Custom7"
+      ),
+      buildable_types: "Orbital & Mobile & Custom58",
+    },
+    [R_TELEPORTER]: {
+      unit_types: T("Basic Land Structure Teleporter CmdBuild Custom7"),
+    },
+    [ORBITAL_FABBER]: {
+      unit_types: T("Basic Orbital Mobile Construction Fabber Custom58"),
+      buildable_types: "FabOrbBuild & Custom58",
+    },
+    [ORBITAL_FACTORY]: {
+      unit_types: T(
+        "Advanced Orbital Structure Factory Construction FabOrbBuild Custom58"
+      ),
+    },
+    [TELEPORTER]: {
+      unit_types: T(
+        "Basic Land Structure Teleporter FabBuild FabOrbBuild Custom58"
+      ),
+    },
+    [COLONEL]: {
+      unit_types: T(
+        "SupportCommander Advanced Bot Mobile Construction Custom58"
+      ),
+      buildable_types: "FabBuild & Custom58",
+    },
+  };
+  const units = Object.keys(specs);
+  const v = cells.buildIndex(units, specs, cells.vanillaMember);
+  const r = cells.buildIndex(units, specs, cells.raceMember("Custom7"));
+  const fielded = (held, stock) =>
+    cells.buildableStockUnits(
+      cells.raceUnitsFor(held, v, r),
+      held,
+      stock,
+      v,
+      r
+    );
+
+  it("adds a held stock unit that something fielded can build, beside the race unit it stands for", () => {
+    assert.deepEqual(fielded([ORBITAL_FABBER, TELEPORTER], [TELEPORTER]), [
+      ORBITAL_FABBER,
+      R_TELEPORTER,
+      TELEPORTER,
+    ]);
+  });
+
+  it("leaves out a stock unit that is not held", () => {
+    assert.deepEqual(fielded([ORBITAL_FABBER], [TELEPORTER]), [ORBITAL_FABBER]);
+  });
+
+  it("leaves out a stock unit that nothing fielded can build", () => {
+    assert.deepEqual(fielded([TELEPORTER], [TELEPORTER]), [R_TELEPORTER]);
+  });
+
+  it("reads each builder's own list, so a kept vanilla commander-class unit counts", () => {
+    assert.deepEqual(fielded([COLONEL, TELEPORTER], [TELEPORTER]), [
+      COLONEL,
+      R_TELEPORTER,
+      TELEPORTER,
+    ]);
+  });
+
+  it("adds nothing without stock units, never a unit twice or a path outside the vanilla index, and leaves its input alone", () => {
+    const held = [ORBITAL_FABBER, TELEPORTER];
+    const base = [ORBITAL_FABBER, R_TELEPORTER, TELEPORTER];
+
+    assert.deepEqual(cells.buildableStockUnits(base, held, [], v, r), base);
+    assert.deepEqual(
+      cells.buildableStockUnits(base, held, undefined, v, r),
+      base
+    );
+    assert.deepEqual(
+      cells.buildableStockUnits(
+        base,
+        held.concat(R_TELEPORTER),
+        [TELEPORTER, R_TELEPORTER],
+        v,
+        r
+      ),
+      base
+    );
+    assert.deepEqual(
+      cells.buildableStockUnits(
+        [ORBITAL_FABBER],
+        undefined,
+        [TELEPORTER],
+        v,
+        r
+      ),
+      [ORBITAL_FABBER]
+    );
+    const input = [ORBITAL_FABBER];
+    cells.buildableStockUnits(input, held, [TELEPORTER], v, r);
+    assert.deepEqual(input, [ORBITAL_FABBER]);
+  });
+});

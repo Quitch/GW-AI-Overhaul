@@ -256,7 +256,39 @@ const SELF_STANDING = {
   ],
 };
 
+// The stock units each race fields beside the race units they stand for,
+// holding every vanilla unit: its descriptor's stockUnits.
+const STOCK_BUILT = {
+  mla: [],
+  legion: [],
+  bugs: [],
+  exiles: [
+    "/pa/units/land/metal_extractor/metal_extractor.json",
+    "/pa/units/land/teleporter/teleporter.json",
+  ],
+};
+
 describe("units a race builds itself, over the harvested fixture", () => {
+  it("adds to what a race fields only the stock units its descriptor names", (t) => {
+    for (const { id, index } of INDEXES) {
+      if (!index.race.units.length) {
+        t.diagnostic("fixture harvested without " + id);
+        continue;
+      }
+      const held = index.vanilla.units;
+      const base = (races.isMla(id) ? cells.addonUnitsFor : cells.raceUnitsFor)(
+        held,
+        index.vanilla,
+        index.race
+      );
+      const added = races
+        .fieldedFor(id, held, index)
+        .filter((unit) => !base.includes(unit))
+        .sort();
+      assert.deepEqual(added, STOCK_BUILT[id], id);
+    }
+  });
+
   it("pins the vanilla units each race builds that stand for themselves", (t) => {
     for (const { id, index } of INDEXES) {
       if (!index.race.units.length) {

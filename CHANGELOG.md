@@ -35,6 +35,7 @@
 - Legion, Bugs, and Exiles AIs no longer also follow MLA's factory and fabber build orders, which had Legion building Marauders as air scouts and Bugs ordering its research unlocks to build air units they cannot make
 - Bugs players now field the MLA ships their naval hives build, and Exiles players the MLA orbital units their orbital launcher builds and the Zeus, Ares, and Helios titans those orbital fabbers build, so their Sub Commanders can use them; Exiles players are now dealt the orbital tech cards
 - With Second Wave, Section 17, or Osmech installed, the Sub Commanders of an MLA player who joins a co-op war with per-player tech now build metal extractors, energy plants, and factories
+- Exiles AIs and Sub Commanders now have the skirmish orders to build MLA teleporters and metal extractors with MLA orbital fabbers, and Exiles players who have the orbital fabber and the teleporter can build them too
 
 ## v7.4.1 - 2026-09-24
 

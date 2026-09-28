@@ -39,6 +39,9 @@ const exilesUnits = Object.keys(fixture.units).filter((unit) =>
   fixture.units[unit].includes("UNITTYPE_Custom6")
 );
 
+const TELEPORTER = "/pa/units/land/teleporter/teleporter.json";
+const METAL_EXTRACTOR = "/pa/units/land/metal_extractor/metal_extractor.json";
+
 describe("the Exiles descriptor", () => {
   it("is registered as shipped, with four commanders and the Titans layout only", () => {
     const race = races.byId("exiles");
@@ -64,6 +67,8 @@ describe("the Exiles descriptor", () => {
         "/pa/units/land/t_anti_nuke_launcher/t_anti_nuke_launcher.json",
       ControlModule: "/pa/units/addon/t_control_module/t_control_module.json",
     });
+    assert.deepEqual(race.stockUnits, [TELEPORTER, METAL_EXTRACTOR]);
+    assert.deepEqual(races.stockUnitsFor("exiles"), race.stockUnits);
     assert.equal(race.ai.titans.sources.length, 4);
     assert.equal(race.ai.queller, undefined);
     assert.equal(races.brainFor("Queller", "exiles"), "Titans");
@@ -141,6 +146,36 @@ describe("Exiles under capability cells", () => {
       cells
         .raceUnitsFor([gwoUnit.botFabber], index.vanilla, index.race)
         .includes(exiles.units.fabricationComplex)
+    );
+  });
+
+  it("fields MLA's teleporter and basic metal extractor beside its own when it fields a builder of them (skipped without Exiles in the fixture)", (t) => {
+    if (!exilesUnits.length) {
+      t.skip("fixture harvested without Exiles");
+      return;
+    }
+    const index = races.cellsOf("exiles");
+    const held = [TELEPORTER, METAL_EXTRACTOR];
+    const withFabber = races.fieldedFor(
+      "exiles",
+      held.concat(gwoUnit.orbitalFabber),
+      index
+    );
+    const without = races.fieldedFor("exiles", held, index);
+
+    assert.ok(withFabber.includes(TELEPORTER));
+    assert.ok(withFabber.includes(METAL_EXTRACTOR));
+    assert.ok(withFabber.includes(exiles.units.teleporter));
+    assert.ok(withFabber.includes(exiles.units.basicMetalExtractor));
+    assert.deepEqual(
+      without.sort(),
+      [exiles.units.teleporter, exiles.units.basicMetalExtractor].sort()
+    );
+    // A kept Colonel builds them too: the retag leaves its build list stock.
+    assert.ok(
+      races
+        .fieldedFor("exiles", held.concat(gwoUnit.colonel), index)
+        .includes(TELEPORTER)
     );
   });
 

@@ -895,6 +895,19 @@ describe("engineKeysFor", () => {
   });
 });
 
+describe("stockUnitsFor", () => {
+  it("gives the race's stock units, and none for MLA, an unknown race, or a race without the field", () => {
+    const stockUnits = [gwoUnit.vehicleFactory];
+
+    assert.deepEqual(races.stockUnitsFor("fixture"), []);
+    races.register(Object.assign({}, FIXTURE_RACE, { stockUnits }));
+
+    assert.deepEqual(races.stockUnitsFor("fixture"), stockUnits);
+    assert.deepEqual(races.stockUnitsFor("mla"), []);
+    assert.deepEqual(races.stockUnitsFor("nope"), []);
+  });
+});
+
 describe("unitMapsFor", () => {
   it("resolves relative map paths against the source root and keeps absolute ones", () => {
     races.register(
