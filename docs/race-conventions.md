@@ -11,7 +11,10 @@ race needs something new.
    `shared/races_shipped.js`. Its fields are `id`, `name`, `serverMods` (every
    identifier that counts as the mod active, matched exactly), `unitTypeBit`
    (`Custom<N>`), `commanderTypes`, `commanders`, `commanderArtHue`,
-   `playerIcon`, `ai`, `units`, `unitNames`.
+   `playerIcon`, `ai`, `units`, `unitNames`. `stockUnits` is optional: the
+   stock units the race builds with an MLA builder it fields, although a race
+   unit shares their cell (Exiles' teleporter and basic metal extractor;
+   [`races.md`](races.md), "Units a race builds itself").
 2. **Unit table.** `units` keys every spec the race ships by a name of the
    race's own (`shank`, `crusher`). It keys parts by owner plus role
    (`shankAmmo`, `crusherWeapon`, `hiveBuildArm`), research factories as
