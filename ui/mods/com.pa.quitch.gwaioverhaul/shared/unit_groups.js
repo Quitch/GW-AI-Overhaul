@@ -478,23 +478,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   var fabbersBasic = [
     gwoUnit.airFabber,
-    gwoUnit.barnacle,
     gwoUnit.botFabber,
     gwoUnit.navalFabber,
     gwoUnit.orbitalFabber,
-    gwoUnit.stitch,
     gwoUnit.vehicleFabber,
   ];
   var fabbersAdvanced = [
     gwoUnit.airFabberAdvanced,
-    gwoUnit.angel,
     gwoUnit.botFabberAdvanced,
     gwoUnit.colonel,
-    gwoUnit.mend,
     gwoUnit.navalFabberAdvanced,
     gwoUnit.vehicleFabberAdvanced,
   ];
-  var fabbers = fabbersBasic.concat(fabbersAdvanced);
+  var fabbersCombatBasic = [gwoUnit.barnacle, gwoUnit.stitch];
+  var fabbersCombatAdvanced = [gwoUnit.angel, gwoUnit.mend];
+  var fabbersCombat = fabbersCombatBasic.concat(fabbersCombatAdvanced);
+  var fabbers = fabbersBasic.concat(fabbersAdvanced, fabbersCombat);
 
   var landFactoriesBasic = [
     gwoUnit.airFactory,
@@ -848,6 +847,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     fabbers: fabbers,
     fabbersAdvanced: fabbersAdvanced,
     fabbersBasic: fabbersBasic,
+    fabbersCombat: fabbersCombat,
+    fabbersCombatAdvanced: fabbersCombatAdvanced,
+    fabbersCombatBasic: fabbersCombatBasic,
     factories: factories,
     factoriesAdvanced: factoriesAdvanced,
     factoriesBasic: factoriesBasic,

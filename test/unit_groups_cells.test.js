@@ -32,6 +32,8 @@ const EXPECTED = {
   orbitalAdvancedCombat: "Orbital/Advanced/Combat",
   fabbersBasic: "*/Basic/Fabber",
   fabbersAdvanced: "*/Advanced/Fabber",
+  fabbersCombatBasic: "*/Basic/Combat",
+  fabbersCombatAdvanced: "*/Advanced/Combat",
   factoriesBasic: "*/Basic/Factory",
   factoriesAdvanced: "*/Advanced/Factory",
   botFactories: "Bot/*/Factory",
@@ -59,14 +61,8 @@ const DEVIATIONS = {
     [gwoUnit.mend]: "Bot/Advanced/Fabber",
   },
   navalAdvancedCombat: { [gwoUnit.squall]: "Air/Basic/Combat" },
-  fabbersBasic: {
-    [gwoUnit.barnacle]: "Naval/Basic/Combat",
-    [gwoUnit.stitch]: "Bot/Basic/Combat",
-  },
-  fabbersAdvanced: {
-    [gwoUnit.angel]: "Air/Advanced/Combat",
-    [gwoUnit.colonel]: "Bot/Advanced/Commander",
-  },
+  fabbersAdvanced: { [gwoUnit.colonel]: "Bot/Advanced/Commander" },
+  fabbersCombatAdvanced: { [gwoUnit.mend]: "Bot/Advanced/Fabber" },
   structuresDefencesBasic: { [gwoUnit.anchor]: "Orbital/Advanced/Defense" },
   structuresEcoAdvanced: { [gwoUnit.jig]: "Orbital/Basic/Metal" },
   // TITANS ships the Deepspace Radar as a stub typed Custom58 only.

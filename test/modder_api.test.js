@@ -249,6 +249,7 @@ const CARD_HELPERS = [
   "floodsPlanets",
   "getAllConnectedPlayerCards",
   "getContext",
+  "hasAdvancedFabber",
   "hasAllUnits",
   "hasT2Access",
   "hasUnit",
@@ -319,6 +320,12 @@ const GROUP_IDS = [
   "botsBasicMobile",
   "commanderPrimaryWeapons",
   "deathAmmo",
+  "fabbers",
+  "fabbersAdvanced",
+  "fabbersBasic",
+  "fabbersCombat",
+  "fabbersCombatAdvanced",
+  "fabbersCombatBasic",
   "factoriesAdvanced",
   "landFactoriesBasic",
   "navalMobile",
@@ -393,6 +400,24 @@ describe("the unit and group ids cards are written against", () => {
       gwoGroup.commanderPrimaryWeapons,
       gwoGroup.commanderWeapons.filter((w) => w !== gwoUnit.commanderAA)
     );
+  });
+
+  it("keeps the combat fabbers out of the basic and advanced fabbers, and in fabbers", () => {
+    assert.deepEqual(
+      gwoGroup.fabbersCombat,
+      gwoGroup.fabbersCombatBasic.concat(gwoGroup.fabbersCombatAdvanced)
+    );
+    assert.deepEqual(
+      gwoGroup.fabbers,
+      gwoGroup.fabbersBasic.concat(
+        gwoGroup.fabbersAdvanced,
+        gwoGroup.fabbersCombat
+      )
+    );
+    for (const unit of gwoGroup.fabbersCombat) {
+      assert.ok(!gwoGroup.fabbersBasic.includes(unit), unit);
+      assert.ok(!gwoGroup.fabbersAdvanced.includes(unit), unit);
+    }
   });
 });
 

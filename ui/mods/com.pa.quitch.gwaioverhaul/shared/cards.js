@@ -4,7 +4,9 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
-], function (races, unitCells) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
+], function (races, unitCells, gwoUnit, gwoGroup) {
   // Mirrors gwoAI.CLUSTER_FACTION; this module imports only pure modules.
   var CLUSTER_FACTION = 4;
 
@@ -534,6 +536,16 @@ define([
       return _.some(inventory.cards(), function (card) {
         return _.includes(model.gwoCardsGrantingAdvancedTech, card.id);
       });
+    },
+
+    // Cluster makes the Colonel a Sub Commander that builds only what a
+    // commander builds (faction/cluster_setup.js), so a Cluster player's does
+    // not count.
+    hasAdvancedFabber: function (inventory) {
+      var fabbers = playerIsCluster(inventory)
+        ? _.without(gwoGroup.fabbersAdvanced, gwoUnit.colonel)
+        : gwoGroup.fabbersAdvanced;
+      return hasUnit(inventory.units(), fabbers);
     },
 
     getAllConnectedPlayerCards: function (hostInventory, game) {

@@ -16,7 +16,6 @@
     var allFixesApplied =
       gwoSettings &&
       gwoSettings.treasurePlanetFixed &&
-      gwoSettings.clusterFixed &&
       gwoSettings.treasureLoadoutDerived &&
       gwoSettings.planetPositionFixed &&
       luckyCommanderFixed();
@@ -94,24 +93,19 @@
       return checkVersion(version) >= 0;
     };
 
-    var checkIfPatchesNeeded = function (gwoCard) {
-      var playerIsCluster = gwoCard.playerIsCluster(model.game().inventory());
-
+    var checkIfPatchesNeeded = function () {
       // No version sets planetPositionFixed: Shared Systems for GW generates
       // the systems of any war, so a new war can still need it. Nor
       // luckyCommanderFixed: it is the profile's bank, not the war's.
       if (atLeastVersion("6.8.0")) {
         gwoSettings.treasureLoadoutDerived = true;
       }
-      if (atLeastVersion("5.52.2") || playerIsCluster) {
-        gwoSettings.clusterFixed = true;
-      }
       if (atLeastVersion("5.18.0")) {
         gwoSettings.treasurePlanetFixed = true;
       }
     };
 
-    var applyFixes = function (gwoTreasure, gwoBank, clusterRepair, stockBank) {
+    var applyFixes = function (gwoTreasure, gwoBank, stockBank) {
       for (var star of galaxy.stars()) {
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
@@ -122,16 +116,11 @@
         }
       }
 
-      if (!gwoSettings.clusterFixed) {
-        clusterRepair.repairStars(galaxy.stars());
-      }
-
       if (!gwoSettings.treasureLoadoutDerived) {
         deriveTreasureLoadout(gwoTreasure);
       }
 
       gwoSettings.treasurePlanetFixed = true; // Treasure planet might not exist
-      gwoSettings.clusterFixed = true; // Cluster might not exist
       gwoSettings.treasureLoadoutDerived = true;
       gwoSettings.planetPositionFixed = true;
 
@@ -145,13 +134,11 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cluster_repair.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
         "shared/gw_common",
       ],
-      function (gwoSave, gwoTreasure, gwoBank, clusterRepair, gwoCard, GW) {
-        checkIfPatchesNeeded(gwoCard);
-        applyFixes(gwoTreasure, gwoBank, clusterRepair, GW.bank);
+      function (gwoSave, gwoTreasure, gwoBank, GW) {
+        checkIfPatchesNeeded();
+        applyFixes(gwoTreasure, gwoBank, GW.bank);
         gwoSave(game, true);
       }
     );

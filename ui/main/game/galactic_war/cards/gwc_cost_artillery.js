@@ -3,6 +3,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_groups.js",
 ], function (GW, gwoCard, gwoGroup) {
+  var artillery = gwoGroup.structuresArtillery.concat(gwoGroup.artilleryMobile);
+
   return {
     visible: _.constant(true),
     describe: _.constant(
@@ -19,14 +21,11 @@ define([
     deal: function (system, context, inventory) {
       var sizes = GW.balance.numberOfSystems;
       return gwoCard.conditionalDeal(
-        gwoCard.hasUnit(inventory.units(), gwoGroup.structuresArtillery),
+        gwoCard.hasUnit(inventory.units(), artillery),
         gwoCard.travelledShort(system, context, sizes) ? 70 : 35
       );
     },
     buff: function (inventory) {
-      var artillery = gwoGroup.structuresArtillery.concat(
-        gwoGroup.artilleryMobile
-      );
       inventory.addMods(
         gwoCard.flatMapMods(artillery, "multiply", { build_metal_cost: 0.25 })
       );

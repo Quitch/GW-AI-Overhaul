@@ -178,12 +178,22 @@ any other card's result. See [`galaxy.md`](galaxy.md), "Play-scene streams".
 | `navalWeight(inventory, chance, dryChance)`       | Full weight only when planets flood.                                      |
 | `floodsPlanets(inventory)`                        | The flooding test `navalWeight` uses, for a card that gates on it.        |
 | `playerIsCluster(inventory)`                      | The player picked Cluster. Read the passed inventory, not the host's.     |
+| `hasAdvancedFabber(inventory)`                    | The player holds an advanced fabber, bar a Cluster player's Colonel.      |
 | `antiTechDeal(inventory, base, excludedId)`       | The `gwaio_anti_*` counter-tech shape.                                    |
 | `travelledShort/Moderate/Far(system, context, n)` | Distance-gated availability.                                              |
 
 `upgradeDeal` tests `chance` for `undefined` rather than for falsiness. A caller that
 legitimately computes a weight of 0 (as `navalWeight` can) therefore gets the 0 it
 asked for, not the 60 default.
+
+`hasAdvancedFabber` reads the held units: `gwoGroup.fabbersAdvanced`, which leaves
+the combat fabbers to `gwoGroup.fabbersCombat`. Cluster makes the Colonel a Sub
+Commander that builds only what a commander builds (`faction/cluster_setup.js`), so
+for a Cluster player it does not count. `hasT2Access` reads the held cards against
+`model.gwoCardsGrantingAdvancedTech` instead. Advanced Defense Technology, Titan
+Tech, and Planetary Radar Tech deal on either, because a Fabrication Upgrade Tech
+lets a basic fabber build advanced structures, the Ragnarok and the Planetary Radar
+among them, without granting an advanced fabber.
 
 An upgrade card is the whole contract built from a handful of values.
 `gwoCard.upgradeCard(options)` returns it:
@@ -308,7 +318,8 @@ roughly consistent share of stars at every size (short ~45%, moderate ~30%, far
 `farForSize` is exported for cards that need a bespoke table, but no card needs one
 today. Prefer the wrappers, which keep the tables private. `numberOfSystems` is
 passed in rather than imported so that this module imports only pure modules
-(`shared/races.js` and `shared/unit_cells.js`). Every card transitively depends on
+(`shared/races.js`, `shared/unit_cells.js`, `shared/units.js`, and
+`shared/unit_groups.js`). Every card transitively depends on
 `shared/cards.js`. An import of `shared/gw_common` here would make the whole card
 set unloadable under the test harness.
 

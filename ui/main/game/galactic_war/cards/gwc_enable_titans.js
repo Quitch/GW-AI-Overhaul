@@ -18,7 +18,8 @@ define([
     getContext: gwoCard.getContext,
     deal: function (system, context, inventory) {
       return gwoCard.conditionalDeal(
-        gwoCard.hasUnit(inventory.units(), gwoGroup.fabbersAdvanced) ||
+        gwoCard.hasAdvancedFabber(inventory) ||
+          gwoCard.hasT2Access(inventory) ||
           (gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFactory) &&
             gwoCard.hasUnit(inventory.units(), gwoUnit.orbitalFabber)),
         150

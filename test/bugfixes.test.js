@@ -68,7 +68,6 @@ function installWar(version) {
   const gwaio = {
     version,
     treasurePlanetFixed: true,
-    clusterFixed: true,
     treasureLoadoutDerived: true,
     planetPositionFixed: true,
   };
@@ -76,7 +75,6 @@ function installWar(version) {
   const game = {
     isTutorial: () => false,
     galaxy: () => ({ stars: () => [star], origin: () => 0 }),
-    inventory: () => ({}),
   };
   stubs.setGlobal("model", { game: () => game });
 }
@@ -91,8 +89,6 @@ function runRepair(stockBank) {
       (game) => saves.push(game),
       {},
       { addStartCard: (card) => banked.push(card.id) },
-      {},
-      { playerIsCluster: () => false },
       { bank: stockBank }
     )
   );

@@ -330,3 +330,21 @@ describe("no unit outside a card's affected set makes it dealable", () => {
     );
   });
 });
+
+// A card whose buff grants every unit its entry names has nothing in `gated`, so
+// the sweeps above skip it. Boom Upgrade Tech grants the Lob and loads it with
+// the player's Booms, whose tagged spec exists only while the Boom is held
+// (specs.md, "Writing a spec reference"), so it deals on the Boom. Its entry
+// names the Boom too, which keeps it inside the sweeps.
+describe("Boom Upgrade Tech", () => {
+  it("names the Boom its deal needs, so the sweeps probe it", () => {
+    const entry = probed.find(
+      (candidate) => candidate.id === "gwaio_upgrade_boom"
+    );
+
+    assert.ok(
+      maxChance(entry.card, makeInventory([...STARTER, gwoUnit.boom])) > 0
+    );
+    assert.deepEqual(entry.gated, [gwoUnit.boom]);
+  });
+});

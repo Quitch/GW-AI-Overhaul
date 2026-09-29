@@ -45,8 +45,6 @@ define([
     gwaio.staticTech = settings.staticTech();
     // We don't need to apply the hotfix as it's for v5.17.1 and earlier
     gwaio.treasurePlanetFixed = true;
-    // We don't need to apply the hotfix as it's for v5.22.1 and earlier
-    gwaio.clusterFixed = true;
     // This war never pre-dealt a treasure loadout to strip
     gwaio.treasureLoadoutDerived = true;
     gwaio.treasureStar = war.treasureStar;

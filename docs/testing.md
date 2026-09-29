@@ -486,10 +486,9 @@ place. Its pure logic is extracted into `define()` modules. The siblings
 `cards_cheats.js`, `coop_ai_driver.js`, and `coop_ai_effects.js` each return a
 factory that `cards.js` calls with its collaborators.
 `shared/cards_deal_helpers.js` returns its helpers directly, and
-`shared/loadouts.js` requires it too. `gw_play/bugfixes.js` is self-invoking
-too, and its Cluster repair lives in `cluster_repair.js`. So is the per-player
-loadout scene's `gwo_loadouts.js`, and the starting inventory it builds lives
-in `shared/starting_inventory.js`, which `cards.js` uses for a co-op AI
+`shared/loadouts.js` requires it too. The per-player loadout scene's
+`gwo_loadouts.js` is self-invoking too, and the starting inventory it builds
+lives in `shared/starting_inventory.js`, which `cards.js` uses for a co-op AI
 player's.
 
 Where a helper inside such a module is not reachable through the returned

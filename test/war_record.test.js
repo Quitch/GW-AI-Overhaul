@@ -93,7 +93,6 @@ describe("build", () => {
       "techCardDeck",
       "staticTech",
       "treasurePlanetFixed",
-      "clusterFixed",
       "treasureLoadoutDerived",
       "treasureStar",
       "coopPlayerScalingCount",
@@ -102,7 +101,6 @@ describe("build", () => {
       "biomeMods",
     ]);
     assert.equal(record.treasurePlanetFixed, true);
-    assert.equal(record.clusterFixed, true);
     assert.equal(record.treasureLoadoutDerived, true);
     assert.equal(record.version, gwoVersion);
     assert.equal(record.seed, "abc");
