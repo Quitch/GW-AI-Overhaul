@@ -325,7 +325,7 @@ function buildRaceTable(input, source) {
       const stem = stemOf(unit);
       let key = raceUnitKey(input, reader, unit, stem);
       if (table.taken(key, unit)) {
-        key += camelKeepCase(dirOf(unit));
+        key += upperFirst(camelKeepCase(dirOf(unit)));
       }
       if (table.taken(key, unit)) {
         throw keyClash(input.id, key, unit);
@@ -347,6 +347,15 @@ function buildRaceTable(input, source) {
 
 // --- Add-ons ---------------------------------------------------------------
 
+// The words of a part's file name that its role already says, wherever they
+// sit; a number after one stays ("ammo_2" and "tool2" give "2"). "death" is
+// a role word only on a death weapon: the Metal Generator's death_range.json
+// is a weapon.
+const ROLE_WORDS = /(^|_)(build_arm|tool|weapon|ammo)(?=\d*(_|$))/g;
+const DEATH_WORD = /(^|_)death(?=\d*(_|$))/g;
+
+// The owner's key, what the part's file name adds past the owner's
+// directory or stem and the role words, then the role.
 function addonPartKey(entry, partPath, role) {
   let rest = stemOf(partPath);
   for (const prefix of [dirOf(partPath), stemOf(entry.unit)]) {
@@ -354,14 +363,10 @@ function addonPartKey(entry, partPath, role) {
       rest = rest.slice(prefix.length);
     }
   }
-  rest = rest
-    .replace(/_?tool$/, "")
-    .replace(/_?tool_weapon$/, "")
-    .replace(/_?ammo$/, "")
-    .replace(/_?build_arm$/, "")
-    .replace(/_?weapon$/, "")
-    .replace(/_?death$/, "")
-    .replace(/^_/, "");
+  rest = rest.replaceAll(ROLE_WORDS, "$1");
+  if (role === "DeathAmmo") {
+    rest = rest.replaceAll(DEATH_WORD, "$1");
+  }
   return entry.key + upperFirst(camelLower(rest)) + role;
 }
 

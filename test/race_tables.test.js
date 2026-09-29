@@ -230,9 +230,9 @@ describe("race naming rules", () => {
     );
   });
 
-  it("gives a shared name the unit's directory, and follows base_spec for the bit", () => {
+  it("gives a shared name the unit's directory, joined in camel case, and follows base_spec for the bit", () => {
     assert.equal(
-      new Map(table(RACE).units).get("heavyAATankfxTankFast"),
+      new Map(table(RACE).units).get("heavyAATankFxTankFast"),
       "/pa/units/land/fx_tank_fast/fx_tank_fast.json"
     );
   });
@@ -240,7 +240,7 @@ describe("race naming rules", () => {
   it("reads only a unit's own types when told to", () => {
     const keyed = new Map(table({ ...RACE, ownTypesOnly: true }).units);
 
-    assert.equal(keyed.has("heavyAATankfxTankFast"), false);
+    assert.equal(keyed.has("heavyAATankFxTankFast"), false);
   });
 
   it("keys parts by owner plus role, from tools, ammo and death weapons", () => {
@@ -327,7 +327,7 @@ describe("race naming rules", () => {
     const names = new Map(table(RACE).unitNames);
 
     assert.equal(names.get("heavyAATank"), "!LOC:Fx Heavy AA Tank");
-    assert.equal(names.get("heavyAATankfxTankFast"), "!LOC:Heavy AA Tank");
+    assert.equal(names.get("heavyAATankFxTankFast"), "!LOC:Heavy AA Tank");
   });
 
   it("sorts keys in code-point order", () => {
@@ -358,9 +358,9 @@ describe("race naming rules", () => {
       () =>
         table({
           ...RACE,
-          units: { heavyAATankfxTankFast: "/pa/units/land/fx_x/fx_x.json" },
+          units: { heavyAATankFxTankFast: "/pa/units/land/fx_x/fx_x.json" },
         }),
-      /fx: key heavyAATankfxTankFast for \/pa\/units\/land\/fx_tank_fast\/fx_tank_fast\.json is already taken/
+      /fx: key heavyAATankFxTankFast for \/pa\/units\/land\/fx_tank_fast\/fx_tank_fast\.json is already taken/
     );
   });
 });
@@ -498,6 +498,43 @@ describe("add-on naming rules", () => {
     assert.equal(camelLower("Planet-wide Radar"), "planetWideRadar");
     assert.equal(camelLower("ARKYD Déjà"), "arkydDeja");
     assert.equal(camelKeepCase("Bug Heavy AA Turret"), "bugHeavyAATurret");
+  });
+
+  it("drops the role words from a part's key wherever its file name puts them", () => {
+    const tower = "/pa/units/addon/tower/tower.json";
+    const part = (stem) => "/pa/units/addon/tower/tower_" + stem + ".json";
+    const specs = {
+      [tower]: {
+        display_name: "Tower",
+        tools: [
+          part("tool_weapon_missile"),
+          part("tool_2"),
+          part("death_range"),
+          part("tool_build_arm"),
+        ],
+        death_weapon: { ground_ammo_spec: part("ammo_death_2") },
+      },
+      [part("tool_weapon_missile")]: { ammo_id: part("ammo_missile") },
+      [part("tool_2")]: { ammo_id: part("ammo2") },
+      [part("death_range")]: { ammo_id: part("death_range_ammo") },
+      [part("tool_build_arm")]: {},
+      [part("ammo_missile")]: {},
+      [part("ammo2")]: {},
+      [part("death_range_ammo")]: {},
+      [part("ammo_death_2")]: {},
+    };
+
+    assert.deepEqual(addon([tower], specs).units, [
+      ["tower", tower],
+      ["towerMissileWeapon", part("tool_weapon_missile")],
+      ["towerMissileAmmo", part("ammo_missile")],
+      ["tower2Weapon", part("tool_2")],
+      ["tower2Ammo", part("ammo2")],
+      ["towerDeathRangeWeapon", part("death_range")],
+      ["towerDeathRangeAmmo", part("death_range_ammo")],
+      ["towerBuildArm", part("tool_build_arm")],
+      ["tower2DeathAmmo", part("ammo_death_2")],
+    ]);
   });
 });
 
