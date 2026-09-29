@@ -450,8 +450,9 @@ define([
 
   return {
     // GWO - Shared Systems for Galactic War replaces the base template-loader wholesale
-    // and marks its version with loadOptions, the same capability check setup.js uses.
-    // Where it is present it owns system selection, so defer to it.
+    // and marks its version with loadOptions, the same capability check
+    // war_generation.js uses. Where it is present it owns system selection, so
+    // defer to it.
     chooseFor: function (baseLoader, content, easier) {
       if (_.isFunction(baseLoader) && _.isFunction(baseLoader.loadOptions)) {
         return baseLoader(content, easier);

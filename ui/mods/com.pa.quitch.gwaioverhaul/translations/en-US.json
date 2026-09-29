@@ -1429,7 +1429,7 @@
   },
   "Epic": {
     "message": "Epic",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (setup.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (war_generation.js)"
   },
   "Eradicate": {
     "message": "Eradicate",
@@ -1673,7 +1673,7 @@
   },
   "Gigantic": {
     "message": "Gigantic",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (setup.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (war_generation.js)"
   },
   "Gil-E Upgrade Tech": {
     "message": "Gil-E Upgrade Tech",
@@ -2105,7 +2105,7 @@
   },
   "Large": {
     "message": "Large",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (setup.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (war_generation.js)"
   },
   "Large Planets": {
     "message": "Large Planets",
@@ -2209,7 +2209,7 @@
   },
   "Marathon": {
     "message": "Marathon",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. \"Marathon\" is the largest size; noun used as a label. (setup.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. \"Marathon\" is the largest size; noun used as a label. (war_generation.js)"
   },
   "Maximum delay between units produced from a factory.": {
     "message": "Maximum delay between units produced from a factory.",
@@ -2225,7 +2225,7 @@
   },
   "Medium": {
     "message": "Medium",
-    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (setup.js)"
+    "description": "Galaxy size name, one of nine (Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon; the last four come from the Bigger Galactic War mod). Shown in the \"Size:\" row of the war-info panel on the galaxy map and as the third part of the auto-generated war name (\"<Difficulty> - <N> Players - <Size> - <start card>\"). Adjective used as a label, no punctuation; keep in step with the stock game's translation of the same size word where one exists. (war_generation.js)"
   },
   "Mend Upgrade Tech": {
     "message": "Mend Upgrade Tech",
@@ -3057,7 +3057,7 @@
   },
   "Ridiculous": {
     "message": "Ridiculous",
-    "description": "Name of a galaxy size, one of Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon (the last four come from the Bigger Galactic War mod). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word; keep the ordering sense (bigger than Gigantic). (setup.js)"
+    "description": "Name of a galaxy size, one of Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon (the last four come from the Bigger Galactic War mod). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word; keep the ordering sense (bigger than Gigantic). (war_generation.js)"
   },
   "Roboticist": {
     "message": "Roboticist",
@@ -3221,7 +3221,7 @@
   },
   "Small": {
     "message": "Small",
-    "description": "Name of the smallest galaxy size (Small, Medium, Large, Epic, Uber, then the Bigger Galactic War sizes). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word. (setup.js)"
+    "description": "Name of the smallest galaxy size (Small, Medium, Large, Epic, Uber, then the Bigger Galactic War sizes). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word. (war_generation.js)"
   },
   "Sniper": {
     "message": "Sniper",
@@ -3977,7 +3977,7 @@
   },
   "Vast": {
     "message": "Vast",
-    "description": "Name of a galaxy size added by the Bigger Galactic War mod (order: Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word; match the Bigger Galactic War mod's translation if one exists. (setup.js)"
+    "description": "Name of a galaxy size added by the Bigger Galactic War mod (order: Small, Medium, Large, Epic, Uber, Vast, Gigantic, Ridiculous, Marathon). Shown in the generated war name on the war setup screen and on the \"Size:\" row of the GWO panel. Adjective, one word; match the Bigger Galactic War mod's translation if one exists. (war_generation.js)"
   },
   "Vehicle Ammunition Tech": {
     "message": "Vehicle Ammunition Tech",

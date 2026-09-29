@@ -2,7 +2,7 @@
 // shadow: stock calls getTeam as _.map(aiFactions, GWTeams.getTeam), which would
 // hand the added rng parameter the array index. See shadowing.md.
 //
-// makeWorker is deliberately absent; gw_start/setup.js supplies its own.
+// makeWorker is deliberately absent: gw_start/war_generation.js has its own.
 define([
   "main/game/galactic_war/shared/js/systems/template-loader",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/gwo_system_templates.js",

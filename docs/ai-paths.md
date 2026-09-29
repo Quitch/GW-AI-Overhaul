@@ -222,8 +222,8 @@ no unit cap.
 ## What `shared/ai.js` adds
 
 `aiInUse(alignment, race)` reads the origin system's `gwaio` blob. That blob
-holds the settings that `gw_start/setup.js` attaches to the galaxy at war
-creation. The brain is per race and per side (`shared/brain_table.js`). The
+holds the settings that `gw_start/war_generation.js` attaches to the galaxy at
+war creation. The brain is per race and per side (`shared/brain_table.js`). The
 function reads the race's `gwaio.aiByRace` row: `ally` for
 `alignment === "subcommander"`, `coop` for a co-op AI player's `"coop"`, and
 `enemy` otherwise. It falls back to the war-wide `gwaio.aiAlly`/`gwaio.aiCoop`/
