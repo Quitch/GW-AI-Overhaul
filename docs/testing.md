@@ -146,7 +146,9 @@ broken unit cannot drop out of a table unseen.
 parts. `test/race_tables.test.js` calls `generateAll` from
 `scripts/lib/race-tables.js`, the generator behind
 `scripts/generate-race-tables.js`, in memory and requires every `race/` and
-`addon/` file to come out byte for byte as committed. After a re-harvest,
+`addon/` file to come out byte for byte as committed. It also requires every
+path a table names to be a spec the harvest found in the table's own mods,
+and, where those mods are on disk, a file they ship. After a re-harvest,
 `npm run generate:race-tables` rewrites the tables, and the diff is the review. See
 [races.md](races.md), "Unit tables".
 
@@ -354,12 +356,16 @@ deliberately refuses to do. Four decisions in it are load-bearing:
   A change to `gwoGroup.orbitalBasic` therefore moves the baseline instead of
   silently disagreeing with it.
 
-The test carries three coverage floors: `MIN_PROBED`, `MIN_DEALABLE` and the
-partition assertion that no card is unclassified. `MIN_DEALABLE` is the one with
-no analogue in `validate:cards`. Without it, a broken `gw_common` stub that made
-every `deal()` return 0 would leave the card count intact and every assertion
-vacuously green. Raise the floors when coverage genuinely rises. Never lower one
-to make a run pass.
+The test carries four coverage floors: `MIN_PROBED`, `MIN_GATED`,
+`MIN_DEALABLE` and the partition assertion that no card is unclassified. The
+sweeps read two things for each card: the units it gates on and the chances it
+reaches. `MIN_GATED` and `MIN_DEALABLE` keep each of them from emptying unseen.
+A `grantedUnits` that over-reported would leave no card a unit to gate on, and
+each sweep would then skip every card. A broken `gw_common` stub that made
+every `deal()` return 0 would leave no card a chance. The sweep that offers a
+card to a player who owns its units also fails then, but it reads only the
+cards with a unit to gate on. Raise the floors when coverage genuinely rises.
+Never lower one to make a run pass.
 
 `scripts/lib/capturing-inventory.js` is the inventory every card sweep hands to
 `buff()`/`dull()`. The caller's explicit answers steer a card down the branch

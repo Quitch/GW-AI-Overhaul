@@ -126,10 +126,12 @@ describe("bank load", () => {
     assert.deepEqual(bank.startCards(), []);
   });
 
+  // Counted rather than compared: a write-back of this record would store the
+  // same bytes. reload() seeds the store without setItem.
   it("does not write the record back while loading it", () => {
-    const stored = JSON.stringify({ startCards: [{ id: "gwaio_start_ceo" }] });
-    reload(stored);
-    assert.equal(storage[LS_KEY], stored);
+    const setItem = mock.method(storage, "setItem");
+    reload(JSON.stringify({ startCards: [{ id: "gwaio_start_ceo" }] }));
+    assert.equal(setItem.mock.callCount(), 0);
   });
 });
 

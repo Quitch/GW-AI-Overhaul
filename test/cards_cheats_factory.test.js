@@ -13,15 +13,28 @@ const {
   createGlobalStubs,
   trackActive,
 } = require("../scripts/lib/global-stubs.js");
-const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const {
+  installFakeJQuery,
+  makeDeferred,
+} = require("../scripts/lib/fake-jquery.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_cheats.js"
 );
 
+// A jQuery promise, as dealCard returns, settled on a later turn. $.when waits
+// only for a promise with a promise() method, and a deal already settled would
+// land ahead of an apply that did not wait for it.
+function laterDeal(settle) {
+  const deferred = makeDeferred();
+  setImmediate(() => settle(deferred));
+  return deferred.promise();
+}
+
 // An inventory whose card list is a callable observable, as the base game's is.
-// applyCards calls done on a later turn, as the real pass does, or keeps it in
-// `held` when the test finishes the apply itself.
+// applyCards records the hand it applied, then calls done on a later turn, as
+// the real pass does, or keeps it in `held` when the test finishes the apply
+// itself.
 function makeInventory(maxCards, initial, holdApply) {
   const list = (initial || []).slice();
   const cards = function () {
@@ -33,9 +46,11 @@ function makeInventory(maxCards, initial, holdApply) {
     cards,
     maxCards: () => maxCards,
     applied: 0,
+    appliedHands: [],
     held: [],
     applyCards(done) {
       this.applied += 1;
+      this.appliedHands.push(list.map((card) => card.id));
       if (holdApply) {
         this.held.push(done);
       } else if (done) {
@@ -108,10 +123,11 @@ function setup(overrides = {}) {
     gwoDeal: {
       dealCard: (request) => {
         calls.dealt.push(request);
-        if (options.missing.includes(request.id)) {
-          return Promise.reject(new Error("GWO card not found: " + request.id));
-        }
-        return Promise.resolve({ id: request.id });
+        return laterDeal((deferred) =>
+          options.missing.includes(request.id)
+            ? deferred.reject(new Error("GWO card not found: " + request.id))
+            : deferred.resolve({ id: request.id })
+        );
       },
     },
     gwoAI: { name: "ai" },
@@ -211,7 +227,7 @@ describe("cheats testCards", () => {
     assert.equal(calls.dealt[0].inventory, current().inventory);
   });
 
-  it("adds each dealt card and applies the inventory once", async () => {
+  it("adds each dealt card and applies the inventory once, after them all", async () => {
     const { inventory } = build();
 
     testCards();
@@ -221,7 +237,9 @@ describe("cheats testCards", () => {
       inventory.cards().map((card) => card.id),
       ["gwc_combat_bots", "gwc_orbital"]
     );
-    assert.equal(inventory.applied, 1);
+    assert.deepEqual(inventory.appliedHands, [
+      ["gwc_combat_bots", "gwc_orbital"],
+    ]);
   });
 
   // $.when rejects on the first failed deal, so without settling each one the
@@ -241,7 +259,9 @@ describe("cheats testCards", () => {
       inventory.cards().map((card) => card.id),
       ["gwc_combat_bots", "gwc_orbital"]
     );
-    assert.equal(inventory.applied, 1);
+    assert.deepEqual(inventory.appliedHands, [
+      ["gwc_combat_bots", "gwc_orbital"],
+    ]);
     assert.match(errors[0], /GWO card not found: gwc_missing/);
     assert.deepEqual(calls.snapshots, []);
     assert.deepEqual(calls.saves, []);

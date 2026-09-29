@@ -29,14 +29,22 @@ describe("mergeInto", () => {
   });
 
   // cards.js and card_tooltips.js each merge the list, in either order.
-  it("adds nothing the second time", () => {
+  it("adds every GWO entry to a list that exists, and nothing the second time", () => {
     setGlobal("model", { gwoCardsToUnits: [] });
     const target = cardUnits.mergeInto();
-    const length = target.length;
+    const ids = cardUnits.cards.map((entry) => entry.id);
+
+    assert.deepEqual(
+      target.map((entry) => entry.id),
+      ids
+    );
 
     cardUnits.mergeInto();
 
-    assert.equal(target.length, length);
+    assert.deepEqual(
+      target.map((entry) => entry.id),
+      ids
+    );
   });
 
   it("keeps a card mod's own entries, and its entry for a GWO id", () => {
@@ -49,10 +57,10 @@ describe("mergeInto", () => {
 
     assert.equal(target[0], modEntry);
     assert.equal(target[1], override);
-    assert.equal(
-      target.filter((entry) => entry.id === override.id).length,
-      1,
-      "the mod's entry is not joined by GWO's"
+    // Every other GWO entry joins after them, and the overridden id only once.
+    assert.deepEqual(
+      target.map((entry) => entry.id),
+      ["mym_card"].concat(cardUnits.cards.map((entry) => entry.id))
     );
   });
 });

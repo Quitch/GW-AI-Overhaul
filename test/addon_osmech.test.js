@@ -79,9 +79,6 @@ describe("the Osmech descriptor", () => {
       return;
     }
     for (const [key, value] of Object.entries(osmech.units)) {
-      if (!value.includes("/thorosmen/") && !value.includes("/st_")) {
-        continue;
-      }
       assert.ok(files.has(value.slice(1)), key + " -> " + value);
     }
   });

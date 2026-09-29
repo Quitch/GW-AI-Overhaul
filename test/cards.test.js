@@ -263,10 +263,12 @@ describe("navalWeight", () => {
     assert.equal(cards.navalWeight(holding("gwaio_start_air"), 30), 12);
   });
 
-  it("rounds the fallback to a whole chance", () => {
+  it("rounds the fallback to the nearest whole chance", () => {
     // No shipped card passes a base that divides unevenly, so this pins the
     // rounding for one that later does rather than describing today's callers.
+    // 13.2 rounds down and 13.6 up, so neither floor nor ceil passes both.
     assert.equal(cards.navalWeight(holding(), 33), 13);
+    assert.equal(cards.navalWeight(holding(), 34), 14);
   });
 
   it("uses an explicit dry chance in place of the fallback, including 0", () => {
@@ -357,6 +359,44 @@ describe("farForSize", () => {
       true
     );
   });
+
+  // The tier stops at the last entry of the shorter table. One past the end of
+  // the size table picks the next threshold; one past the end of the
+  // thresholds finds none, and `distance > undefined` is false at every
+  // distance.
+  it("clamps a galaxy larger than a short size table to its last tier", () => {
+    const baseSizes = [18, 24, 36, 54, 78];
+    assert.equal(
+      cards.farForSize(systemAt(50), { totalSize: 234 }, baseSizes, thresholds),
+      false
+    );
+    assert.equal(
+      cards.farForSize(systemAt(51), { totalSize: 234 }, baseSizes, thresholds),
+      true
+    );
+  });
+
+  it("clamps to a thresholds table shorter than the size table", () => {
+    const fiveThresholds = thresholds.slice(0, 5);
+    assert.equal(
+      cards.farForSize(
+        systemAt(50),
+        { totalSize: 234 },
+        numberOfSystems,
+        fiveThresholds
+      ),
+      false
+    );
+    assert.equal(
+      cards.farForSize(
+        systemAt(51),
+        { totalSize: 234 },
+        numberOfSystems,
+        fiveThresholds
+      ),
+      true
+    );
+  });
 });
 
 describe("travelled* distance wrappers", () => {
@@ -438,19 +478,13 @@ describe("antiTechDeal", () => {
     );
   });
 
-  it("returns the full base chance when no anti_ tech is held yet", () => {
+  // The host holds anti_ tech, so a co-op viewer's offer weighted on the
+  // host's inventory rather than the viewer's own would be halved.
+  it("returns the full base chance when the player holds no anti_ tech yet", () => {
     installAntiAirHost();
     assert.deepEqual(
       cards.antiTechDeal(inventoryWith([]), 70, "gwaio_anti_orbital"),
       { chance: 70 }
-    );
-  });
-
-  it("weights a co-op viewer's offer on the viewer's own anti_ tech, not the host's", () => {
-    installAntiAirHost();
-    assert.deepEqual(
-      cards.antiTechDeal(inventoryWith([]), 40, "gwaio_anti_sea").chance,
-      40
     );
   });
 });
@@ -513,15 +547,20 @@ describe("loadout", () => {
     assert.deepEqual(h.calls, [["setTag", "buffCount", 2]]);
   });
 
+  // The dull clears buffCount after every pass (applyDulls), so in game each
+  // pass buffs the start card as a first buff. always must run there too.
   it("runs always on every buff of the start card, with the context", () => {
     const h = harness({ lookupCard: 0, buffCount: 0, maxCards: 4 });
     h.options.always = (inventory, context) =>
       h.calls.push(["always", context]);
     const frame = cards.loadout(CARD, h.options);
     frame.buff(h.inventory, "first");
-    h.calls.length = 0;
-    cards.loadout(CARD, h.options).buff(h.inventory, "again");
+    frame.buff(h.inventory, "again");
     assert.deepEqual(h.calls, [
+      ["start"],
+      ["apply"],
+      ["always", "first"],
+      ["setTag", "buffCount", 1],
       ["maxCards", 5],
       ["always", "again"],
       ["setTag", "buffCount", 2],
@@ -830,6 +869,8 @@ describe("flatMapMods", () => {
   });
 });
 
+// No GWO code calls isEnglish. shared/cards.js still returns it, so a card mod
+// can.
 describe("isEnglish", () => {
   function detecting(language) {
     setGlobal("i18n", { detectLanguage: () => language });
@@ -847,8 +888,8 @@ describe("isEnglish", () => {
   });
 
   // detectLanguage reads the querystring, a cookie, then navigator.language, none of
-  // which the engine is obliged to supply. Falling through to the non-English arm would
-  // show English players the text the English arm exists to correct.
+  // which the engine is obliged to supply. The source strings are English, so a
+  // language it cannot detect counts as English.
   it("treats an undetected language as English", () => {
     detecting(undefined);
     assert.equal(cards.isEnglish(), true);
@@ -959,16 +1000,11 @@ describe("hasT2Access", () => {
     );
   });
 
-  it("is false when no held card grants advanced tech", () => {
+  // Every caller calls it inside a card's deal(), which under per-player tech
+  // runs against a viewer's inventory.
+  it("is false when no held card grants advanced tech, whatever the host holds", () => {
     installGrantingHost();
     assert.equal(cards.hasT2Access(inventoryWithCards(["gwc_minion"])), false);
-  });
-
-  // Its one caller, cards/gwc_enable_defenses_t2.js, calls it inside deal(),
-  // which under per-player tech runs against a viewer's inventory.
-  it("reads a co-op viewer's own cards, not the host's", () => {
-    installGrantingHost();
-    assert.equal(cards.hasT2Access(inventoryWithCards([])), false);
   });
 });
 
@@ -1278,15 +1314,12 @@ describe("uniqueValue", () => {
   );
 
   // gw_inventory.hasCard tests !card.unique, so a zero would permanently stop
-  // that card being dealt again for that seed.
-  it("is always truthy for a seeded rng", () => {
-    const rng = gwoRng.create("unique-seed");
-    for (let i = 0; i < 10000; i++) {
-      const value = cards.uniqueValue(rng);
-      assert.ok(value, `draw ${i} yielded ${value}`);
-      assert.ok(value >= 1, `draw ${i} fell below 1: ${value}`);
-      assert.ok(value < 2, `draw ${i} reached 2 or above: ${value}`);
-    }
+  // that card being dealt again for that seed. gwo_rng.test.js pins the draw's
+  // range; this pins the offset that keeps a draw of zero truthy.
+  it("offsets a seeded draw by one, so a draw of zero is still truthy", () => {
+    const drawing = (value) => () => value;
+    assert.equal(cards.uniqueValue(drawing(0)), 1);
+    assert.equal(cards.uniqueValue(drawing(0.5)), 1.5);
   });
 
   it("reproduces the same value for the same seed", () => {

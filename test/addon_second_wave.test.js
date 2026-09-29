@@ -90,9 +90,6 @@ describe("the Second Wave descriptor", () => {
       return;
     }
     for (const [key, value] of Object.entries(secondWave.units)) {
-      if (!/\/(addon|l_addon|b_addon)\//.test(value)) {
-        continue;
-      }
       assert.ok(zips.has(value.slice(1)), key + " -> " + value);
     }
     const names = zips.names();

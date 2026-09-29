@@ -193,10 +193,16 @@ function raceRows(input, source, reader) {
 }
 
 // A table holds the files the race's or add-on's own mod ships; a base-game
-// file its units reuse is left out. See races.md, "Unit tables".
+// file its units reuse is left out, and so is a part no mod ships. See
+// races.md, "Unit tables".
 function isBaseGame(reader, specPath) {
   const spec = reader.read(specPath);
   return Boolean(spec) && spec.mod === undefined;
+}
+
+function modShips(reader, specPath) {
+  const spec = reader.read(specPath);
+  return Boolean(spec) && spec.mod !== undefined;
 }
 
 function pinned(input, reader, entries) {
@@ -283,7 +289,7 @@ function keyClash(id, key, unit) {
 function addRaceParts(input, reader, table, { key, unit, stem }) {
   const parts = raceParts(input, reader.read(unit), reader.read);
   for (const part of parts) {
-    if (reader.read(part) && !isBaseGame(reader, part) && !table.has(part)) {
+    if (modShips(reader, part) && !table.has(part)) {
       const free = freeKey(key + raceSuffix(input, stem, part), (candidate) =>
         table.taken(candidate, part)
       );
@@ -319,7 +325,7 @@ function buildRaceTable(input, source) {
       const stem = stemOf(unit);
       let key = raceUnitKey(input, reader, unit, stem);
       if (table.taken(key, unit)) {
-        key += camelKeepCase(dirOf(unit));
+        key += upperFirst(camelKeepCase(dirOf(unit)));
       }
       if (table.taken(key, unit)) {
         throw keyClash(input.id, key, unit);
@@ -341,6 +347,15 @@ function buildRaceTable(input, source) {
 
 // --- Add-ons ---------------------------------------------------------------
 
+// The words of a part's file name that its role already says, wherever they
+// sit; a number after one stays ("ammo_2" and "tool2" give "2"). "death" is
+// a role word only on a death weapon: the Metal Generator's death_range.json
+// is a weapon.
+const ROLE_WORDS = /(^|_)(build_arm|tool|weapon|ammo)(?=\d*(_|$))/g;
+const DEATH_WORD = /(^|_)death(?=\d*(_|$))/g;
+
+// The owner's key, what the part's file name adds past the owner's
+// directory or stem and the role words, then the role.
 function addonPartKey(entry, partPath, role) {
   let rest = stemOf(partPath);
   for (const prefix of [dirOf(partPath), stemOf(entry.unit)]) {
@@ -348,14 +363,10 @@ function addonPartKey(entry, partPath, role) {
       rest = rest.slice(prefix.length);
     }
   }
-  rest = rest
-    .replace(/_?tool$/, "")
-    .replace(/_?tool_weapon$/, "")
-    .replace(/_?ammo$/, "")
-    .replace(/_?build_arm$/, "")
-    .replace(/_?weapon$/, "")
-    .replace(/_?death$/, "")
-    .replace(/^_/, "");
+  rest = rest.replaceAll(ROLE_WORDS, "$1");
+  if (role === "DeathAmmo") {
+    rest = rest.replaceAll(DEATH_WORD, "$1");
+  }
   return entry.key + upperFirst(camelLower(rest)) + role;
 }
 
@@ -450,7 +461,7 @@ function buildAddonTable(id, source, baseUnits) {
       entry.spec,
       reader.chain
     )) {
-      if (isBaseGame(reader, partPath)) {
+      if (!modShips(reader, partPath)) {
         continue;
       }
       const key = freeKey(
