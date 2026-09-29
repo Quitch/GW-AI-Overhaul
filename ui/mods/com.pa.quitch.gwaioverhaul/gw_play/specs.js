@@ -110,7 +110,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
     );
   }
 
-  // An empty navigation object marks a structure as mobile. See specs.md.
+  // A mod that writes into navigation and a later one that removes the value
+  // leave it empty, which marks a structure as mobile. See specs.md.
   function pruneEmptyNavigation(spec) {
     if (!_.isPlainObject(spec) || !_.isPlainObject(spec.navigation)) {
       return;
@@ -288,6 +289,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         clone: true,
       };
 
+      // These return a missing target unchanged, so a container made on the
+      // way to one would be left behind empty. See specs.md.
+      var opsThatDoNotCreate = {
+        multiply: true,
+        tag: true,
+      };
+
       var applyMod = function (mod) {
         var spec = load(mod.file);
         if (!spec) {
@@ -378,7 +386,25 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             : cookObjectStep(step, op);
         };
 
+        // Whether cookStep would have to make an intermediate `step`.
+        var isMissing = function (step) {
+          if (!_.isArray(spec)) {
+            return !Object.prototype.hasOwnProperty.call(spec, step);
+          }
+          var index = Number(step);
+          return (
+            step === "+" ||
+            (!Number.isNaN(index) &&
+              !Object.prototype.hasOwnProperty.call(spec, index))
+          );
+        };
+
         while (path.length > 1) {
+          if (opsThatDoNotCreate[mod.op] && isMissing(path[path.length - 1])) {
+            // As at a missing leaf, the op sees undefined, so tag still warns.
+            ops[mod.op](undefined, mod.value);
+            return;
+          }
           var level = cookStep(path.pop());
 
           if (_.isString(spec[level])) {

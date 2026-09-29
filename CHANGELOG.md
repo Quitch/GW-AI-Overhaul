@@ -41,6 +41,7 @@
 - A co-op viewer who rerolls their tech while the host wins a battle now still gets new star cards, rather than keeping last turn's
 - In co-op with per-player tech, a viewer who picks a tech card while another viewer rerolls, sets up the General Commander, or joins no longer has their offer come back, which could stop the host exploring or fighting until they reloaded
 - MLA Sub Commanders whose AI differs from the enemy's now build all the units their AI orders, such as Queller's orbital fabricators, Avengers, and Astraeus, and so do the Sub Commanders of MLA co-op players and co-op AI players with per-player tech
+- Protocol: Blindness, Protocol: Precision, Protocol: Wrath, and other tech that changes a value some units lack no longer add empty entries to those units, and neither does a `multiply` or `tag` in a card mod
 
 ## v7.4.1 - 2026-09-24
 
