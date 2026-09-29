@@ -969,6 +969,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
       ],
       function (
         GW,
@@ -987,7 +988,8 @@
         gwoStreams,
         gwoTreasure,
         gwoLoadoutBanks,
-        gwoRaces
+        gwoRaces,
+        gwoPromise
       ) {
         helpers = cardsDealHelpers;
         globals.CardViewModel = gwoCardViewModel;
@@ -1290,17 +1292,26 @@
             });
 
             // Not $.when(deferredQueue): it takes an array as one value and
-            // resolves at once. It would need $.when.apply.
-            Promise.all(deferredQueue)
-              .then(function () {
-                // The one caller that replaces cards viewers already hold, so
-                // their offers move exactly when the host's do.
-                return coopStarCards.refresh({ redeal: true });
-              })
-              .then(function () {
+            // resolves at once. It would need $.when.apply. Settled either
+            // way, as model.win saves and opens the exit gate only after it.
+            gwoPromise
+              .settled(
+                Promise.all(deferredQueue).then(function () {
+                  // The one caller that replaces cards viewers already hold,
+                  // so their offers move exactly when the host's do.
+                  return coopStarCards.refresh({ redeal: true });
+                }),
+                function (reason) {
+                  console.error(
+                    "GWO failed to deal the AI stars' cards: " +
+                      ((reason && reason.stack) || reason)
+                  );
+                }
+              )
+              .always(function () {
                 dealt();
                 deferred.resolve();
-              }, dealt);
+              });
           } else {
             deferred.resolve();
           }

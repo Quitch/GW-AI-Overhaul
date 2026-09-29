@@ -51,6 +51,18 @@ describe("settled", () => {
     assert.equal(await waiting, "fallback");
   });
 
+  // So a caller can log why, as dealing the AI stars' cards does.
+  it("hands onFailure the reason the call failed", async () => {
+    const reasons = [];
+    const failed = Promise.reject(new Error("refresh failed"));
+
+    await gwoPromise.settled(failed, (reason) => {
+      reasons.push(reason.message);
+    });
+
+    assert.deepEqual(reasons, ["refresh failed"]);
+  });
+
   it("resolves undefined when a failure has nothing to fall back on", async () => {
     const engine = enginePromise();
     const waiting = gwoPromise.settled(engine);
