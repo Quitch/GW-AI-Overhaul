@@ -657,11 +657,14 @@ on every boss, worker and foe. `gw_play/ai_tech.js`'s `loadoutFor()` builds the
 descriptors from the live tables at launch (`referee_game_file_paths.js`'s
 `armyInventory()`), so a rebalance reaches wars in progress.
 
-A war saved before this carries the built descriptors as `ai.inventory` and no
-`typeOfBuffs` on its foes. `armyInventory()` uses those as they are, and
-`gw_play/bugfixes.js`'s Cluster commander repair only ever touches such a baked
-inventory. The Guardians take the faction tech of the worker they replaced but never
-the Cluster commander mods. They field the Unicorn, which those mods do not name.
+A war saved before this also carries the descriptors it built, as each AI's
+`inventory`. `armyInventory()` builds from `typeOfBuffs` wherever the war recorded
+it, and uses a baked `inventory` as it is only where the war recorded none: on the
+foes of such a war, and on every AI of a war from before `typeOfBuffs` was
+recorded at all. Nothing repairs a baked `inventory`, so a Cluster foe keeps the
+commander mods of the version that made its war. The Guardians take the faction
+tech of the worker they replaced but never the Cluster commander mods. They field
+the Unicorn, which those mods do not name.
 
 Two modules are involved:
 

@@ -265,7 +265,7 @@ fixed.
 Know the shape before you add a fix to it:
 
 - **A flag, not a version alone, gates a fix.** `treasurePlanetFixed`,
-  `clusterFixed`, `treasureLoadoutDerived` and `planetPositionFixed` live on
+  `treasureLoadoutDerived`, and `planetPositionFixed` live on
   `originSystem.gwaio`.
   `gwaio_lucky_commander_fixed` lives in `localStorage`. Once a repair runs, or
   is ruled unnecessary, the flag says so. The file then skips the scan for good.
@@ -281,10 +281,11 @@ Know the shape before you add a fix to it:
   forever.
 - It finishes by calling `gw_play/save.js`, so a repaired war is persisted rather
   than repaired again on the next visit.
-- **A repair edits only what the save still owns.** The Cluster commander repair
-  rewrites `ai.inventory` descriptors in place. A war that records
-  `typeOfBuffs` has no such descriptors. Its descriptors are built at launch
-  from the live Cluster mods, so the repair returns early for it.
+- **A repair edits only what a battle still reads.** A war that records
+  `typeOfBuffs` builds each army's spec mods from them at launch, and an AI's
+  baked `inventory` counts only where the war recorded no `typeOfBuffs` for it.
+  See galaxy.md, "AI tech". There is no repair of old wars' Cluster commander
+  mods.
 
 `gw_play/save.js` is the shared save wrapper that this file and the card code
 use. It drives `model.driveAccessInProgress` around the write, and it **no-ops
