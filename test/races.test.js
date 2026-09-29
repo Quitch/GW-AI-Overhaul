@@ -412,6 +412,20 @@ describe("raceOf", () => {
     assert.equal(races.raceOf({}), "mla");
     assert.equal(races.raceOf(undefined), "mla");
   });
+
+  // A host's co-op record holds inventory.save(), which is ko.toJS: the
+  // prototype's getTag is copied, and it reads tags() as the observable a
+  // plain copy no longer has.
+  it("reads a saved inventory's plain tags without calling its copied getTag", () => {
+    const saved = {
+      tags: { global: { playerRace: "Fixture" } },
+      getTag: function () {
+        return this.tags().global;
+      },
+    };
+
+    assert.equal(races.raceOf(saved), "fixture");
+  });
 });
 
 describe("aiRoot", () => {

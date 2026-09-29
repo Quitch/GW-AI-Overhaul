@@ -166,4 +166,21 @@ describe("a viewer that has chosen a star", () => {
 
     assert.equal(selection(), 2);
   });
+
+  // Once the host stands on the chosen star, the viewer is following again,
+  // so the host's next move takes the selection along.
+  it("follows the host's next move from a star the host moved onto", async () => {
+    const { replayMove, selection } = build();
+
+    selection(2);
+    const first = replayMove(2);
+    first.settle();
+    await first.applying;
+
+    const second = replayMove(4);
+    second.settle();
+    await second.applying;
+
+    assert.equal(selection(), 4);
+  });
 });

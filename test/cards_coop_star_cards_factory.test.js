@@ -9,7 +9,7 @@
 // scripts/lib/ai-path-fixtures.js does. The pure predicates the factory delegates
 // to are pinned separately in cards_coop_star_cards.test.js.
 
-const { describe, it, afterEach, mock } = require("node:test");
+const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
@@ -22,6 +22,9 @@ const {
   inventoryClass,
   viewer,
 } = require("../scripts/lib/coop-fixtures.js");
+const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js"
@@ -841,6 +844,56 @@ describe("coop star cards refresh - coalescing", () => {
     await coopStarCards.refresh({ redeal: true });
 
     assert.deepEqual(starsDealt(calls), [0]);
+  });
+});
+
+describe("coop star cards refresh - a throwing step", () => {
+  let timers;
+
+  before(() => {
+    timers = installFakeLodashTimers();
+  });
+
+  after(() => timers.restore());
+
+  // A records subscriber runs inside a write, so a viewer's step can throw.
+  // The refresh must still end, or every later refresh only joins it.
+  it("ends the refresh when a viewer's step throws", async () => {
+    const { coopStarCards, calls } = build({
+      stars: [{ ai: null }],
+      records: {
+        alice: {
+          id: "alice",
+          inventory: { cards: [] },
+          gwaioStarCards: { redealOwed: true },
+        },
+      },
+      onUpsert: () => {
+        throw new Error("subscriber threw");
+      },
+    });
+
+    let outcome;
+    await captureErrors(async () => {
+      const refreshed = coopStarCards.refresh().then(() => "ended");
+      for (let tick = 0; tick < 50 && !timers.delayed.length; tick += 1) {
+        await Promise.resolve();
+      }
+      assert.equal(timers.delayed.length, 1, "the viewer's step is deferred");
+      // The engine logs a throw from a deferred callback and carries on.
+      try {
+        timers.delayed.shift().fn();
+      } catch (error) {
+        console.error(String(error));
+      }
+      outcome = await Promise.race([
+        refreshed,
+        new Promise((resolve) => setTimeout(resolve, 100, "hung")),
+      ]);
+    });
+
+    assert.equal(outcome, "ended");
+    assert.deepEqual(calls.busy, [true, false]);
   });
 });
 

@@ -36,6 +36,10 @@
 - Bugs players now field the MLA ships their naval hives build, and Exiles players the MLA orbital units their orbital launcher builds and the Zeus, Ares, and Helios titans those orbital fabbers build, so their Sub Commanders can use them; Exiles players are now dealt the orbital tech cards
 - With Second Wave, Section 17, or Osmech installed, the Sub Commanders of an MLA player who joins a co-op war with per-player tech now build metal extractors, energy plants, and factories
 - Exiles AIs and Sub Commanders now have the skirmish orders to build MLA teleporters and metal extractors with MLA orbital fabbers, and Exiles players who have the orbital fabber and the teleporter can build them too
+- A co-op viewer who selected the star the host then moved to now follows the host's next move, rather than being pulled back to that star
+- A co-op viewer whose tech reroll gets no answer, for example because the host reloaded, gets their offer back after 2 minutes rather than waiting until they reload
+- A co-op viewer who rerolls their tech while the host wins a battle now still gets new star cards, rather than keeping last turn's
+- In co-op with per-player tech, a viewer who picks a tech card while another viewer rerolls, sets up the General Commander, or joins no longer has their offer come back, which could stop the host exploring or fighting until they reloaded
 
 ## v7.4.1 - 2026-09-24
 

@@ -543,7 +543,7 @@ and without the held one, against the inventory with both.
 Three rules keep this affordable and safe:
 
 - **One apply runs at a time.** The bank hold and the card modules are shared.
-- **Each apply has a timeout**, 5 seconds, set in `gw_play/cards.js`. An apply
+- **Each apply has a timeout**, 10 seconds, set in `gw_play/cards.js`. An apply
   that never finishes is abandoned, and its hold is released.
 - **An apply is cached by what it applies**: the cards and their tags, from
   which `applyCards` rebuilds everything else. A failed apply is dropped from
@@ -803,7 +803,7 @@ not the host's. So a card must:
   effect is cached by exactly those, and after a take the inventory the AI
   keeps is the one the judging apply produced. A random choice belongs in
   `deal()`'s `params`, which travel with the card.
-- **Be fast.** Each apply has 5 seconds, and each deal 20. A deal that fails or
+- **Be fast.** Each apply has 10 seconds, and each deal 20. A deal that fails or
   runs out falls back to a quick pick, and an AI whose deals run out twice
   stops choosing until `gw_play` next loads.
 - **Touch only the inventory it is passed.** GWO's and the base game's banks

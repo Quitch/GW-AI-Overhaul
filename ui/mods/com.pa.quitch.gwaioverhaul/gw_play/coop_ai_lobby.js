@@ -5,7 +5,8 @@
 // coop.md, "AI players".
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
-], function (roster) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+], function (roster, coopPublish) {
   var LOG = "[GW COOP AI] ";
   // A per-player build not settled in this long fails the add, since the
   // lobby is held until it is. A build takes a few seconds.
@@ -44,12 +45,6 @@ define([
     return _.isArray(clients) ? clients : [];
   };
 
-  var hasViewer = function () {
-    return _.some(connectedClients(), function (client) {
-      return client && client.role === "viewer";
-    });
-  };
-
   var hasEmptySlot = function () {
     var max = maxClients();
     return _.isFinite(max) && connectedClients().length < max;
@@ -72,8 +67,7 @@ define([
   // battle, 0 once none are), and the observables ready, busy, armed (the AI
   // whose Kick was pressed once) and inFlight (the modify_settings requests the
   // server has not answered). Under per-player tech, perPlayerReady() says the
-  // modules that build an AI's tech are in, and publishReady() that every
-  // viewer is level with the host. buildTimeoutMs is for tests.
+  // modules that build an AI's tech are in. buildTimeoutMs is for tests.
   var factory = function (params) {
     var game = params.game;
     var buildTimeoutMs = params.buildTimeoutMs || BUILD_TIMEOUT_MS;
@@ -84,9 +78,6 @@ define([
     // re-apply sends one with no callback.
     var inFlight = params.inFlight;
     var perPlayerReady = params.perPlayerReady || _.constant(false);
-    var publishReady = params.publishReady || _.constant(true);
-    // A roster change viewers have yet to be sent.
-    var debt;
 
     // initialCoopSettingsApplied is a plain field, so a computed reading this
     // does not track it. gwCampaignControl is read first, and unconditionally:
@@ -141,32 +132,8 @@ define([
       );
     };
 
-    // Viewers hold no tech state under shared tech, so a roster change goes out
-    // at once. Under per-player tech a viewer's newest choices reach the host
-    // after the server has them, and a snapshot would overwrite them there, so
-    // the change waits until every viewer is level. With nobody to tell, a
-    // joiner's initial sync asks for a snapshot of its own.
-    var settleDebt = function () {
-      if (!debt) {
-        return false;
-      }
-      if (!hasViewer()) {
-        debt = undefined;
-        return false;
-      }
-      if (model.gwCampaignPerPlayerTechCards() && !publishReady()) {
-        return false;
-      }
-
-      var reason = debt;
-      debt = undefined;
-      model.sendCampaignSnapshot("gwo_coop_ai_" + reason, true);
-      return true;
-    };
-
     var publish = function (reason) {
-      debt = reason;
-      return settleDebt();
+      return coopPublish.publish("gwo_coop_ai_" + reason);
     };
 
     // Only an add changes the stars: the serial lives on the origin system.
@@ -329,7 +296,16 @@ define([
       }
 
       // Before the slot comes back, so a lock's limit counts it.
-      game.coopPlayerInventoryData(kept);
+      try {
+        game.coopPlayerInventoryData(kept);
+      } catch (error) {
+        // As in writeNewAi: a subscriber's throw comes after the write, so
+        // the AI is gone and its slot still comes back.
+        if (stored(row.id)) {
+          throw error;
+        }
+        console.error(LOG + "kicked with an error: " + describe(error));
+      }
       console.log(LOG + "kicked " + row.name + " (" + row.id + ")");
       saveWar("kick", false);
       try {
@@ -372,14 +348,23 @@ define([
       return true;
     };
 
+    // Every record write re-lists the AIs, so an armed Kick lets go only once
+    // its AI has left the roster.
+    var rosterChanged = function (records) {
+      var id = armed();
+      if (!_.isUndefined(id) && !_.some(records, { playerId: id })) {
+        armed(undefined);
+      }
+    };
+
     return {
       canAddAi: canAddAi,
       addAi: addAi,
       canKickAi: canKickAi,
       kickAi: kickAi,
+      rosterChanged: rosterChanged,
       lobbySettled: lobbySettled,
       publish: publish,
-      settleDebt: settleDebt,
     };
   };
 

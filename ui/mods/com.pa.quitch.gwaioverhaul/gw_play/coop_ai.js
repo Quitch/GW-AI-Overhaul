@@ -81,8 +81,10 @@
       return mods() ? mods().roster.aiRecords(all) : _.filter(all, isAiRecord);
     });
 
-    records.subscribe(function () {
-      armed(undefined);
+    records.subscribe(function (list) {
+      if (lobby()) {
+        lobby().rosterChanged(list);
+      }
     });
 
     var perPlayer = function () {
@@ -406,8 +408,7 @@
         "shared/gw_factions",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_check.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_star_cards.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
       ],
       function (
         roster,
@@ -422,8 +423,7 @@
         factions,
         raceMods,
         raceCheck,
-        coopStarCards,
-        refereeCoop
+        coopPublish
       ) {
         var warRng = function () {
           return gwoStreams.warRng(gwoAI.originSettings(game));
@@ -527,27 +527,11 @@
             perPlayerReady: function () {
               return !!tech() && tech().ready();
             },
-            // The star-card refresh's own test, over the connected viewers.
-            publishReady: function () {
-              return coopStarCards.viewersReadyForStarRefresh({
-                viewers: refereeCoop.viewersOf(
-                  model.gwCampaignConnectedClients()
-                ),
-                findRecord: function (client) {
-                  return refereeCoop.recordForClient(game, client);
-                },
-                getDealCount: model.getCoopPlayerTechCardDealCount,
-                hostDealCount: game.hostTechCardDealCount(),
-                setupBlocked: model.gwCampaignPlayerSetupBlocked(),
-                turnState: game.turnState(),
-                aiDeciding: model.gwoCoopAiDeciding(),
-              });
-            },
           })
         );
         ready(true);
 
-        // A roster change held for the viewers goes out once they are level.
+        // A snapshot held for the viewers goes out once they are level.
         ko.computed(function () {
           model.gwCampaignConnectedClients();
           game.coopPlayerInventoryData();
@@ -555,9 +539,7 @@
           game.turnState();
           model.gwCampaignPlayerSetupBlocked();
           model.gwoCoopAiDeciding();
-          _.defer(function () {
-            lobby().settleDebt();
-          });
+          _.defer(coopPublish.settle);
         });
 
         // An AI falls back to the host's commander if none could be checked.

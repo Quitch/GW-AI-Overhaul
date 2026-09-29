@@ -308,8 +308,12 @@ so after the AI is in, and the AI keeps its slot.
 
 Kicking is the only way an AI leaves, and it deletes the AI and its record for
 good. So its Kick asks first, like Delete Tech
-([`accessibility.md`](accessibility.md), 3.3.6). The record goes before the slot
-comes back, so a lock's limit counts it.
+([`accessibility.md`](accessibility.md), 3.3.6). The first press arms that AI's
+Kick until the AI leaves the roster; a record write in between, which every
+settled deal makes, does not disarm it. The record goes before the slot comes
+back, so a lock's limit counts it. A subscriber that throws does so after the
+record is gone, so the kick is still saved and published, and the slot still
+comes back.
 
 A human whose slot an AI took is refused with "No room" when they come back,
 until the host kicks the AI or adds a slot. Stock has no hook that could tell
@@ -540,15 +544,34 @@ player sets up: `coop_ai.js` rebinds its disabled look to
 ### Publishing to viewers
 
 Viewers learn of an AI's tech, as of its arrival and its departure, from a
-snapshot. Under per-player tech a viewer's newest choices reach the host after
-the server has them, and a snapshot sent in between would overwrite them there.
-So `coop_ai_lobby.js` holds every roster publish, an add's, a kick's, and a
-pass's, as a debt until every viewer is level. The test is the star-card
-refresh's own, `viewersReadyForStarRefresh`, over the connected viewers: nobody
-is mid-setup, the host is not exploring, no AI is deciding, and every viewer is
-loaded and level with the host's deal count. A computed in `gw_play/coop_ai.js`
-settles the debt when those change. With no viewer connected the debt is
-dropped, since a viewer who joins asks for a snapshot as its first step.
+snapshot. Under per-player tech the server applies a viewer's tech choice to
+its own copy of the war before the host has it, and a snapshot replaces that
+copy whole. A snapshot sent in between drops the choice there, and the server
+then leaves that viewer picking, which blocks Explore and Fight until they
+reload.
+
+So `gw_play/coop_publish.js` holds every snapshot GWO sends as a debt until
+every viewer is level: an AI's add, kick, or pass (`coop_ai_lobby.js`), a
+viewer's reroll (`cards_coop_reroll.js`), a viewer's General Commander setup
+(`cards_start_subcdr.js`), and a viewer's report of their loadouts
+(`treasure_loadouts.js`). The test is the star-card refresh's own,
+`viewersReadyForStarRefresh`, over the connected viewers: nobody is mid-setup,
+the host is not exploring, no AI is deciding, and every viewer is loaded and
+level with the host's deal count. A viewer with an offer open is not level, so
+no choice can be in flight when the snapshot goes out. The module returns one
+object, so the scene has one debt, and a later reason replaces one still held.
+A computed in `gw_play/coop_ai.js` settles the debt when those change. With no
+viewer connected the debt is dropped, since a viewer who joins asks for a
+snapshot as its first step.
+
+A reroll is the one exception. The rerolling viewer waits for the host's reply
+with its offer hidden, so it cannot choose while the snapshot goes out. The
+reroll's snapshot therefore goes out at once when no other viewer has an offer
+open or deals to catch up, which with one viewer is always. Only while another
+viewer has one is it held, and then the server's copy of the rerolling viewer's
+hand, and the other viewers' view of it, wait until everyone has chosen. If the
+rerolling viewer's `gw_play` reloads in that window, the server shows it the old
+hand, and a pick from it gives a different card or is refused by the host.
 
 ### Catching up
 
@@ -650,6 +673,21 @@ offered cards.
 The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat. That delay is
 scheduled but not awaited.
+
+A viewer's request that gets no answer within 2 minutes is let go: the overlay
+drops and the offer shows again. No host may be connected, or the host may have
+reloaded mid-exchange. The request is not sent again; the viewer can reroll
+again. The viewer waits only on its newest request, so an answer to an older one
+is ignored while a newer one waits. A late answer is applied only while the
+offer it replaces is still open: once the viewer has chosen, the server holds no
+offer, so it is dropped. The timeout does not close every gap. A host whose
+campaign queue holds a request past it can still reroll a hand the viewer has
+since chosen from, and that reroll's snapshot reopens the offer on the server.
+
+The host re-reads the viewer's record after the deal and writes the new hand
+onto that copy. If the pending hand changed meanwhile, the reroll is refused as
+stale. Otherwise a debt a host win set in the window would be lost ("Per-player
+pre-dealt cards").
 
 ## General Commander setup
 
@@ -1097,6 +1135,15 @@ banking the same way, and can release the hold when an apply hangs. The hold
 matters there. Judging a loadout puts it first, which pushes the AI's own
 loadout into second place, and a loadout in any place but the first banks
 itself in its `buff`. An AI never takes a loadout, so it never banks one.
+
+The release has one gap. An apply that is slow rather than hung runs the rest
+of its cards after the timeout, with banking back on, so a judged loadout's
+second place would bank into the host's own bank. The timeout keeps this out of
+reach rather than closing it: holding on until a late apply finished would
+refuse the host's own treasure loadout for the rest of the scene whenever one
+truly hangs. Measured on 2026-09-29, an apply took under 0.1 s in play, whatever
+the number of cards, and at most 2.8 s when it ran while `gw_play` was still
+loading, against a timeout of 10 seconds.
 
 **The star is identified by index, not by `ai.treasurePlanet`.** Beating the
 Guardians runs `winTurn`'s boss branch, which calls `defeatTeam(ai.team)`.
