@@ -67,18 +67,24 @@ are in `scripts/lib/race-table-inputs.js`:
 
 - A race keys each unit that its own mod lists and ships and that carries its
   bit. The key is the display name, less the race's prefix, with "Advanced"
-  moved last. A name two units share takes the unit's directory. A part is
-  keyed by its owner's key plus the role its file name gives (`shankAmmo`,
-  `crusherWeapon`). Bugs keys a research factory `<x>Research` and its
-  token `<x>Unlock`.
+  moved last. A name two units share adds the unit's directory
+  (`boomerBugBoomer`). A part is keyed by its owner's key plus the role its
+  file name gives (`shankAmmo`, `crusherWeapon`). Bugs keys a research
+  factory `<x>Research` and its token `<x>Unlock`.
 - An add-on keys each unit its list has and the base game's lists do not. A
   name two units share takes the race word of each one's bit, then the unit's
-  directory. Each unit is followed by its tools, ammo and death weapons.
+  directory. Each unit is followed by its tools, ammo and death weapons. A
+  part's key is its owner's key, what its file name adds, and its role:
+  `Weapon`, `Ammo`, `BuildArm` or `DeathAmmo`. The role words in the file name
+  (`tool`, `weapon`, `ammo`, `build_arm`, and `death` on a death weapon) are
+  left out wherever they sit, so `orbital_anti_nuke_weapon_land.json` is
+  `orbitalAntiNukeCannonLandWeapon`.
 - A table holds only the files the race's or add-on's own mod ships. A
   base-game file its units reuse (the Havoc fires the Gil-E's beam ammo) is
   left out: a card reaches it by its stock key where `shared/units.js` has one,
-  otherwise by its path, and changes it as a stock file. The generator refuses
-  an input that pins a base-game file the harvest read (a `baseGame` table's).
+  otherwise by its path, and changes it as a stock file. A part that no mod
+  ships is left out too. The generator refuses an input that pins a base-game
+  file the harvest read (a `baseGame` table's).
 - A file the race's mod ships over a base-game path stays in the table, but it
   is a stock path to everything else: `shared/units.js` leaves it out of the
   published table, and it is never foreign. Keep base-game paths out of a

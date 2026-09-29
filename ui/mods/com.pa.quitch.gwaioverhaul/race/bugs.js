@@ -116,6 +116,11 @@ define(function () {
       bombardierWeapon: "/pa/units/land/bug_gren/bug_gren_weapon.json",
       boomer: "/pa/units/land/bug_boomer/bug_boomer.json",
       boomerAmmo: "/pa/units/land/bug_boomer/bug_boomer_ammo.json",
+      boomerBugBoomer: "/pa/units/land/bug_boomer/bug_boomer_r.json",
+      boomerBugBoomerAltAmmo:
+        "/pa/units/land/bug_boomer/bug_boomer_alt_ammo.json",
+      boomerBugBoomerAltWeapon:
+        "/pa/units/land/bug_boomer/bug_boomer_alt_weapon.json",
       boomerDeathExplosion:
         "/pa/units/land/bug_boomer/bug_boomer_death_explosion.json",
       boomerEgg: "/pa/units/structure/bug_mine/bug_mine.json",
@@ -131,11 +136,6 @@ define(function () {
       boomerMineUnlock:
         "/pa/units/research/unlocks/bug_boomer_mine_unlock/bug_boomer_mine_unlock.json",
       boomerWeapon: "/pa/units/land/bug_boomer/bug_boomer_weapon.json",
-      boomerbugBoomer: "/pa/units/land/bug_boomer/bug_boomer_r.json",
-      boomerbugBoomerAltAmmo:
-        "/pa/units/land/bug_boomer/bug_boomer_alt_ammo.json",
-      boomerbugBoomerAltWeapon:
-        "/pa/units/land/bug_boomer/bug_boomer_alt_weapon.json",
       cataclysm: "/pa/units/structure/bug_rag/bug_rag.json",
       cataclysmAmmo: "/pa/units/structure/bug_rag/bug_rag_ammo.json",
       cataclysmWeapon: "/pa/units/structure/bug_rag/bug_rag_weapon.json",
@@ -192,10 +192,10 @@ define(function () {
       fighterWeapon: "/pa/units/air/bug_fighter/bug_fighter_weapon.json",
       firefly: "/pa/units/air/bug_air_scout/bug_air_scout.json",
       forager: "/pa/units/land/bug_combat_fab/bug_combat_fab.json",
+      foragerBugCombatFab:
+        "/pa/units/land/bug_combat_fab/bug_combat_fab_cheap.json",
       foragerBuildArm:
         "/pa/units/land/bug_combat_fab/bug_combat_fab_build_arm.json",
-      foragerbugCombatFab:
-        "/pa/units/land/bug_combat_fab/bug_combat_fab_cheap.json",
       gasHive: "/pa/units/structure/bug_gas_hive/bug_gas_hive.json",
       grunt: "/pa/units/land/bug_grunt/bug_grunt.json",
       gruntWeapon: "/pa/units/land/bug_grunt/bug_grunt_weapon.json",
@@ -287,8 +287,8 @@ define(function () {
         "/pa/units/structure/bug_turret_needle/bug_turret_needle_weapon.json",
       needler: "/pa/units/land/bug_needler/bug_needler.json",
       needlerAmmo: "/pa/units/land/bug_needler/bug_needler_ammo.json",
+      needlerBugNeedler: "/pa/units/land/bug_needler/bug_needler_fast.json",
       needlerWeapon: "/pa/units/land/bug_needler/bug_needler_weapon.json",
-      needlerbugNeedler: "/pa/units/land/bug_needler/bug_needler_fast.json",
       nug: "/pa/units/land/bug_titan/bug_titan.json",
       nugWeapon: "/pa/units/land/bug_titan/bug_titan_weapon.json",
       orbitalCarrierResearch:
@@ -373,10 +373,10 @@ define(function () {
       seeker: "/pa/units/orbital/bug_orbital_fighter/bug_orbital_fighter.json",
       seekerAmmo:
         "/pa/units/orbital/bug_orbital_fighter/bug_orbital_fighter_ammo.json",
+      seekerBugOrbitalFighter:
+        "/pa/units/orbital/bug_orbital_fighter/bug_orbital_fighter_vision.json",
       seekerWeapon:
         "/pa/units/orbital/bug_orbital_fighter/bug_orbital_fighter_weapon.json",
-      seekerbugOrbitalFighter:
-        "/pa/units/orbital/bug_orbital_fighter/bug_orbital_fighter_vision.json",
       smallSpitterTurret:
         "/pa/units/structure/bug_turret_small/bug_turret_small.json",
       smallSpitterTurretAmmo:
@@ -462,10 +462,10 @@ define(function () {
       bigBoomerEgg: "!LOC:Big Boomer Egg",
       bombardier: "!LOC:Bombardier",
       boomer: "!LOC:Boomer",
+      boomerBugBoomer: "!LOC:Boomer",
       boomerEgg: "!LOC:Boomer Egg",
       boomerMineResearch: "!LOC:Bug Boomer Mine Unlock",
       boomerMineUnlock: "!LOC:Bug Boomer Mine Unlock",
-      boomerbugBoomer: "!LOC:Boomer",
       cataclysm: "!LOC:Cataclysm",
       catalyst: "!LOC:Catalyst",
       chargingPortal: "!LOC:Charging Portal",
@@ -491,7 +491,7 @@ define(function () {
       fighter: "!LOC:Bug Fighter",
       firefly: "!LOC:Firefly",
       forager: "!LOC:Forager",
-      foragerbugCombatFab: "!LOC:Forager",
+      foragerBugCombatFab: "!LOC:Forager",
       gasHive: "!LOC:Gas Hive",
       grunt: "!LOC:Grunt",
       halley: "!LOC:Halley",
@@ -518,7 +518,7 @@ define(function () {
       navalFactoryAdvanced: "!LOC:Advanced Naval Factory",
       needleTurret: "!LOC:Needle Turret",
       needler: "!LOC:Needler",
-      needlerbugNeedler: "!LOC:Needler",
+      needlerBugNeedler: "!LOC:Needler",
       nug: "!LOC:Nug",
       orbitalCarrierResearch: "!LOC:Bug Orbital Carrier Unlock",
       orbitalCarrierUnlock: "!LOC:Bug Orbital Carrier Unlock",
@@ -544,7 +544,7 @@ define(function () {
       scorcher: "!LOC:Scorcher",
       scourgeToxinLauncher: "!LOC:Scourge Toxin Launcher",
       seeker: "!LOC:Seeker",
-      seekerbugOrbitalFighter: "!LOC:Seeker",
+      seekerBugOrbitalFighter: "!LOC:Seeker",
       smallSpitterTurret: "!LOC:Small Spitter Turret",
       sniper: "!LOC:Bug Sniper",
       spire: "!LOC:Spire",
