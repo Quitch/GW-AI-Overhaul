@@ -96,7 +96,7 @@ are in `scripts/lib/race-table-inputs.js`:
 What no rule derives is written in the inputs, each with its reason: Legion's
 keys for the units it names twice and for its storage, and the entries its
 first, hand-mapped table carried that no rule reaches; the Bugs rule that reads only a unit's own
-types; and Exiles' Jelly, held under its first key and name after the mod
+types; and Exiles' Jelly, which keeps its first key although Exiles 0.8.4
 renamed it Navigator. A key is what a race-only card addresses, as
 `gwoUnit.<race or add-on>.<key>` through `shared/units.js`, so a table
 changes after a mod update on purpose, not as a side effect: re-harvest, run
@@ -748,7 +748,7 @@ for the checklist a race follows.
 
 The descriptor is `race/exiles.js`. The server mod is `com.pa.nik.exiles`, with
 companions `commander-merge` and `build-bar-tabs`. The unit-type bit is
-`Custom6`. There are four commanders: Maxim, Taurus, Blueberry and Brainiac,
+`Custom6`. There are three commanders: Maxim, Blueberry, and Brainiac,
 whose art is in blue paint (hue 200). The player icon comes from the server
 mod's own `ui/mods/com.pa.nik.exiles/img/exiles_icon_{fill,outline}.png`.
 
@@ -761,7 +761,7 @@ orbital fabber builds, the Zeus, Ares, and Helios titans among them. Its
 build orders have that fabber build. An MLA teleporter links with an Exiles
 one of the same army, so Exiles fabbers can use it. The deal withholds nothing
 beyond the MLA-only set (`test/race_exiles.test.js` pins the orbital cards).
-The table keys 287 Exiles specs.
+The table keys 281 Exiles specs.
 
 The mod also ships `platoon_templates.json` and `platoon_land_builds.json` at
 the **vanilla** paths. They are copies of the TITANS files, with the raid and
