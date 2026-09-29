@@ -45,6 +45,7 @@
 - A malformed unit file from another mod no longer leaves Fight stuck
 - An AI folder the game cannot list, or an AI build file from another mod that cannot be processed, now fails the battle launch with an error instead of leaving Fight stuck
 - An error while the AI stars' tech cards are dealt after you win a battle no longer stops the war from saving or ending
+- A Legion, Bugs, Exiles, or add-on unit whose file fails to load while its mod is still loading is now read again later, rather than being missed by tech cards until you reload
 
 ## v7.4.1 - 2026-09-24
 
