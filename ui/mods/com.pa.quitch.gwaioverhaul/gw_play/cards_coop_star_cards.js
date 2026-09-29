@@ -297,6 +297,17 @@ define([
       });
     };
 
+    var saveIfChanged = function (changed) {
+      if (!changed) {
+        return undefined;
+      }
+
+      console.log("[GW COOP] refreshed co-op player star cards");
+      return Promise.resolve(gwoSave(game, false)).then(function () {
+        model.sendCampaignSnapshot("gwo_star_cards", true);
+      });
+    };
+
     var runRefresh = function (redeal) {
       if (redeal && !(gwoSettings && gwoSettings.staticTech)) {
         oweRedealToEveryViewer();
@@ -323,16 +334,7 @@ define([
         return Promise.resolve();
       }
 
-      return refreshEachViewer(viewers).then(function (changed) {
-        if (!changed) {
-          return undefined;
-        }
-
-        console.log("[GW COOP] refreshed co-op player star cards");
-        return Promise.resolve(gwoSave(game, false)).then(function () {
-          model.sendCampaignSnapshot("gwo_star_cards", true);
-        });
-      });
+      return refreshEachViewer(viewers).then(saveIfChanged);
     };
 
     // redeal replaces every viewer's card, and belongs only to the host's own

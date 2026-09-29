@@ -103,10 +103,11 @@
           // cards read global.playerFaction, so it comes from the campaign
           // game - and the race with it: the viewer's own pick under
           // Separate races, the host's otherwise.
-          hostWar.load().then(function (host) {
-            var viewerRace = model.gwoViewerRace();
-            startingInventory
-              .build({
+          hostWar
+            .load()
+            .then(function (host) {
+              var viewerRace = model.gwoViewerRace();
+              return startingInventory.build({
                 GWInventory: GWInventory,
                 gwoDeal: gwoDeal,
                 loaded: loaded,
@@ -119,9 +120,9 @@
                   (host && host.race),
                 galaxy: galaxy,
                 star: star,
-              })
-              .then(result.resolve, result.reject);
-          });
+              });
+            })
+            .then(result.resolve, result.reject);
 
           return result.promise();
         };

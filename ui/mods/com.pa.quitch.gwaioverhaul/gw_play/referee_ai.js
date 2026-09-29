@@ -655,7 +655,7 @@ define([
       deferred.reject(error);
     };
 
-    request.treeCache.list(aiPath).then(function (fileList) {
+    var processList = function (fileList) {
       try {
         var aisToModify = request.forceSubCommanderScope
           ? "SubCommanders"
@@ -701,7 +701,9 @@ define([
       } catch (error) {
         fail(error);
       }
-    }, fail);
+    };
+
+    request.treeCache.list(aiPath).then(processList, fail);
 
     return deferred.promise();
   };

@@ -518,15 +518,14 @@ async function renderFile(input, table, current) {
 // Every table's file as the generator writes it, { file: content }, given a
 // reader for a file's current content.
 async function generateAll(fixture, readCurrent) {
-  const out = {};
-  for (const input of TABLES) {
-    out[input.file] = await renderFile(
-      input,
-      buildTable(input, fixture),
-      readCurrent(input.file)
-    );
-  }
-  return out;
+  const rendered = await Promise.all(
+    TABLES.map(async (input) =>
+      renderFile(input, buildTable(input, fixture), readCurrent(input.file))
+    )
+  );
+  return Object.fromEntries(
+    TABLES.map((input, index) => [input.file, rendered[index]])
+  );
 }
 
 module.exports = {

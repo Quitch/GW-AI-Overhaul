@@ -326,7 +326,12 @@ describe("the ping window", () => {
         calls.pings.push([star, sender.name]);
         return state.pingResult;
       },
-      delay: (fn, ms) => calls.delays.push({ fn: fn, ms: ms }),
+      delay: (fn, ms) => {
+        if (state.delayThrows) {
+          throw new Error("no timer");
+        }
+        calls.delays.push({ fn: fn, ms: ms });
+      },
       now: () => state.now,
     });
 
@@ -604,5 +609,17 @@ describe("the ping window", () => {
     pings.update();
     await flush();
     assert.deepEqual(calls.pings, [[2, "Tank"]]);
+  });
+
+  it("logs a retry that cannot be scheduled", async () => {
+    const { pings, state, calls, flush } = setup({ pingResult: false });
+    pings.update();
+    state.delayThrows = true;
+    await flush();
+
+    assert.match(calls.log[0], /-> no ping \(refused\)$/);
+    assert.deepEqual(calls.log.slice(1), [
+      "[GW COOP AI] Tank ping failed: no timer",
+    ]);
   });
 });

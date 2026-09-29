@@ -310,6 +310,42 @@ define([
         return result.promise();
       }
 
+      var storeRerolled = function (rerolled) {
+        // Re-read: the apply and the deal are async, and a host win can
+        // have owed this record a re-deal since it was read above.
+        var fresh = coopHost.recordFor(game, operator);
+        if (!fresh || !_.isEqual(fresh.pendingTechCards, pendingTechCards)) {
+          failReroll("stale pending tech cards");
+          return;
+        }
+
+        var nextPendingTechCards = rerolled.pendingTechCards;
+        var updatedAt = nextPendingTechCards.updatedAt;
+        var stored = coopHost.upsertRecord(game, fresh, {
+          pendingTechCards: nextPendingTechCards,
+          updatedAt: updatedAt,
+        });
+        if (!stored) {
+          failReroll("failed to store rerolled pending tech");
+          return;
+        }
+
+        coopPublish.publish(rerollPendingTechRequest, {
+          id: operator.client_id,
+          name: operator.client_name,
+        });
+        coopHost.reply(rerollPendingTechResult, operator, {
+          pendingTechCards: nextPendingTechCards,
+          rerolls_used: rerolled.rerollsUsed,
+          offer_rerolls: dealHelpers.rerollsRemain(
+            rerolled.rerollsUsed,
+            rerolled.cardsOffered
+          ),
+          updated_at: updatedAt,
+        });
+        gwoSave(game, false).then(resolveResult, rejectResult);
+      };
+
       var dealCards = function (playerInventory) {
         rerolledHandFor({
           record: record,
@@ -317,41 +353,7 @@ define([
           pendingTechCards: pendingTechCards,
           inventory: playerInventory,
           star: star,
-        }).then(function (rerolled) {
-          // Re-read: the apply and the deal are async, and a host win can
-          // have owed this record a re-deal since it was read above.
-          var fresh = coopHost.recordFor(game, operator);
-          if (!fresh || !_.isEqual(fresh.pendingTechCards, pendingTechCards)) {
-            failReroll("stale pending tech cards");
-            return;
-          }
-
-          var nextPendingTechCards = rerolled.pendingTechCards;
-          var updatedAt = nextPendingTechCards.updatedAt;
-          var stored = coopHost.upsertRecord(game, fresh, {
-            pendingTechCards: nextPendingTechCards,
-            updatedAt: updatedAt,
-          });
-          if (!stored) {
-            failReroll("failed to store rerolled pending tech");
-            return;
-          }
-
-          coopPublish.publish(rerollPendingTechRequest, {
-            id: operator.client_id,
-            name: operator.client_name,
-          });
-          coopHost.reply(rerollPendingTechResult, operator, {
-            pendingTechCards: nextPendingTechCards,
-            rerolls_used: rerolled.rerollsUsed,
-            offer_rerolls: dealHelpers.rerollsRemain(
-              rerolled.rerollsUsed,
-              rerolled.cardsOffered
-            ),
-            updated_at: updatedAt,
-          });
-          gwoSave(game, false).then(resolveResult, rejectResult);
-        }, failReroll);
+        }).then(storeRerolled, failReroll);
       };
 
       gwoBank.applyRecordInventory(GWInventory, record, stockBank, dealCards);

@@ -170,13 +170,21 @@
           var markPrimed = function () {
             model.gwoRaceCellsPrimed(true);
           };
+          var renameFailed = function (error) {
+            console.error(
+              "gwoRaces: star cards not renamed: " +
+                ((error && error.stack) || error)
+            );
+          };
           // prime swallows its own errors, so this always settles.
           var primeAll = function (loaded) {
             Promise.all(
               _.map(toPrime, function (race) {
                 return raceCells.prime(race, loaded.units);
               })
-            ).then(markPrimed);
+            )
+              .then(markPrimed)
+              .then(null, renameFailed);
           };
           var unitListFailed = function (error) {
             console.error(

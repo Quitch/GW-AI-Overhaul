@@ -290,21 +290,22 @@ define([
     };
 
     var schedule = function (ai, key, wait) {
+      var failed = function (error) {
+        console.error(LOG + ai.name + " ping failed: " + describeError(error));
+      };
+
       settling[ai.id] = key;
       delay(function () {
         settle(ai, key)
-          .then(null, function (error) {
-            console.error(
-              LOG + ai.name + " ping failed: " + describeError(error)
-            );
-          })
+          .then(null, failed)
           .then(function (retryIn) {
             if (_.isNumber(retryIn)) {
               schedule(ai, key, retryIn);
             } else if (settling[ai.id] === key) {
               delete settling[ai.id];
             }
-          });
+          })
+          .then(null, failed);
       }, wait);
     };
 
