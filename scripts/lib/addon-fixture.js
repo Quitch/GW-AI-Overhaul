@@ -1,44 +1,37 @@
 "use strict";
 
-// What the add-on tests share: the store zip an add-on's server mod ships
-// as, when it is on disk, and the { vanilla, race } index race_cells.js
-// would build over the harvested fixture (test/fixtures/unit_types.json) for
-// MLA or a race, with every shipped add-on registered. See testing.md.
+// What the race and add-on tests share: a mod's files as they are on disk,
+// and the { vanilla, race } index race_cells.js would build over the
+// harvested fixture (test/fixtures/unit_types.json) for MLA or a race, with
+// every shipped add-on registered. See testing.md.
 
-const fs = require("node:fs");
-const path = require("node:path");
 const { MOD_ROOT, loadCouiModule } = require("./amd-loader.js");
-const { userDataDir } = require("./pa-install.js");
-const { ZipReader } = require("./zip-read.js");
+const { modRoots } = require("./mod-roots.js");
 
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const fixture = require("../../test/fixtures/unit_types.json");
 
-const DOWNLOAD = path.join(userDataDir(), "download");
-
-// The zip under download/ for a mod identifier, or undefined.
-function downloadZip(identifier) {
-  const candidate = path.join(DOWNLOAD, identifier + ".zip");
-  return fs.existsSync(candidate) ? candidate : undefined;
-}
-
-// A reader over every zip found among the identifiers, or undefined when
-// none is on disk: `has(name)` and `names()` across all of them.
-function zipsFor(identifiers) {
-  const readers = identifiers
-    .map(downloadZip)
-    .filter(Boolean)
-    .map((file) => new ZipReader(file));
-  if (!readers.length) {
+// The mods' files as the harvests read them, through mod-roots.js: each
+// mod's store zip, then any server_mods/ build shadowing it. Undefined when
+// none is on disk. `has(name)`, `names()` and `readJson(name)` take and give
+// "pa/..." paths.
+function modFiles(identifiers) {
+  const roots = modRoots(identifiers);
+  if (!roots.length) {
     return undefined;
   }
+  const relative = (name) => name.replace(/^pa\//, "");
   return {
-    has: (name) => readers.some((zip) => zip.has(name)),
-    names: () => readers.flatMap((zip) => zip.names()),
+    has: (name) => roots.some((root) => root.has(relative(name))),
+    names: () => [
+      ...new Set(
+        roots.flatMap((root) => root.list("").map((rel) => "pa/" + rel))
+      ),
+    ],
     readJson: (name) => {
-      const zip = readers.find((candidate) => candidate.has(name));
-      return zip ? zip.readJson(name) : undefined;
+      const root = roots.findLast((candidate) => candidate.has(relative(name)));
+      return root ? JSON.parse(root.read(relative(name))) : undefined;
     },
   };
 }
@@ -88,4 +81,4 @@ function inFixture(addon) {
   );
 }
 
-module.exports = { downloadZip, zipsFor, fixtureIndex, inFixture };
+module.exports = { modFiles, fixtureIndex, inFixture };

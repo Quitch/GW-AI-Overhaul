@@ -9,7 +9,7 @@ const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
-  zipsFor,
+  modFiles,
   fixtureIndex,
   inFixture,
 } = require("../scripts/lib/addon-fixture.js");
@@ -84,7 +84,7 @@ describe("the Second Wave descriptor", () => {
   });
 
   it("maps to files and AI data the installed zips ship (skipped without them)", (t) => {
-    const zips = zipsFor(ZIPS);
+    const zips = modFiles(ZIPS);
     if (!zips) {
       t.skip("no Second Wave zip installed");
       return;
@@ -121,8 +121,8 @@ describe("the Second Wave descriptor", () => {
   });
 
   it("names Bugs builders the Bugs mod's own map supplies (skipped without both zips)", (t) => {
-    const zips = zipsFor(ZIPS);
-    const bugs = zipsFor(["com.pa.ferretmaster.bugs"]);
+    const zips = modFiles(ZIPS);
+    const bugs = modFiles(["com.pa.ferretmaster.bugs"]);
     if (!zips || !bugs) {
       t.skip("no Second Wave or Bugs zip installed");
       return;

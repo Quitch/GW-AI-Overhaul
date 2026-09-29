@@ -130,7 +130,8 @@ does). `test/unit_jobs.test.js` checks the job rule over every registered
 race's index: a job pinned for each mobile combat unit `shared/units.js`
 names, a vanilla unit a card can grant standing for each race unit of a combat
 cell, and no bit on a mobile combat unit that the rule does not know. With a PA
-install present, the test asserts that the fixture is fresh.
+install present, `test/unit_groups_cells.test.js` re-harvests and asserts that
+the fixture is fresh, its `buildable_types` as well as its `unit_types`.
 **Re-harvest it after a PA, race or add-on patch.**
 
 **`test/fixtures/race_specs.json` is the race tables' source, harvested the
@@ -190,7 +191,10 @@ data folder, which holds `download/` and `server_mods/`, is `PA_USER_DATA`,
 else `Uber Entertainment/Planetary Annihilation` under `%LOCALAPPDATA%`.
 The two harvests and `validate:race-trees` read `pa/` files through
 `scripts/lib/mod-roots.js`. A server mod mounts as its `download/` zip, then any
-`server_mods/` build, which shadows the zip.
+`server_mods/` build, which shadows the zip. The race and add-on tests that
+check a mod's files read them the same way, through `scripts/lib/addon-fixture.js`'s
+`modFiles`, so they see what the harvests saw. Without the mod on disk in
+either form, those tests are skipped.
 
 `npm run minify:json -- <dir>` is the one data script that is not a check. It
 rewrites every `.json` under `<dir>` onto one line, which is how `pa/**` is
