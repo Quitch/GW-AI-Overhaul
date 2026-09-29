@@ -404,7 +404,7 @@ silently discards everything the mod registered.
 | `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`    |
 | `gwoStartingCards`             | start, coop loadout       | `shared/loadouts.js`                            |
 | `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
-| `gwoLoadoutsAiCannotUse`       | play                      | `gw_play/cards.js`, when an AI is added         |
+| `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added    |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
 | `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |
 | `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`       |
@@ -559,8 +559,9 @@ and without the held one, against the inventory with both.
 Four rules keep this affordable and safe:
 
 - **One apply runs at a time.** The bank hold and the card modules are shared.
-- **Each apply has a timeout**, 10 seconds, set in `gw_play/cards.js`. An apply
-  that never finishes is abandoned, and its hold is released.
+- **Each apply has a timeout**, 10 seconds, set in
+  `gw_play/cards_coop_ai_tech.js`. An apply that never finishes is abandoned,
+  and its hold is released.
 - **An apply is cached by what it applies**: the cards and their tags, from
   which `applyCards` rebuilds everything else. A failed apply is dropped from
   the cache.
@@ -738,7 +739,7 @@ and every debug line names the one it used:
   inventory's `unit_types` and `buildable_types` mods leave them: what the
   commander builds, what that builds, and so on. Those mods are applied to a
   copy of the files they name with the battle's own op engine
-  (`gw_play/specs.js`'s `mod`, passed in by `gw_play/cards.js`), and the
+  (`gw_play/specs.js`'s `mod`, passed in by `gw_play/cards_coop_ai_tech.js`), and the
   resulting types and build lists are kept for the last 64 mod lists. A commander the lookup does
   not know reaches everything, because an unknown builder is no reason to value
   a unit at a quarter. The units it could get are those of

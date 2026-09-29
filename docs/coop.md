@@ -370,8 +370,8 @@ cards, as a viewer does. Nobody sits at its controls, so the host makes every
 choice a viewer would make. `gw_play/coop_ai_driver.js` settles the AI's deals.
 `gw_play/coop_ai_effects.js` and `shared/coop_ai_cards.js` judge its cards, as
 [`tech-cards.md`](tech-cards.md), "How AI players judge a card", describes.
-`setupCoopAiTech` in `gw_play/cards.js` is the glue. All of it runs on the host
-alone, and only in a session.
+`gw_play/cards_coop_ai_tech.js` is the glue. All of it runs on the host alone,
+and only in a session.
 
 ### The record
 
@@ -827,8 +827,8 @@ replacement orphans.
 
 A co-op AI player pings too, in either tech mode, so the players can see where
 it wants to go next. It has no client to send from, so the host pings for it.
-`gw_play/coop_ai_pings.js` holds the rules, and `setupCoopAiPings` in
-`gw_play/cards.js` is the glue.
+`gw_play/coop_ai_pings.js` holds the rules, and `gw_play/cards_coop_ai_pings.js`
+is the glue.
 
 **When.** An AI considers a ping once in each window. A window is keyed by the
 host's turn count, the current star, the host's deal count, and a digest of the

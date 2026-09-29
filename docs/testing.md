@@ -499,9 +499,11 @@ this page is not a second copy of it.
 Several scene scripts are not modules at all. `gw_play/cards.js` is
 self-invoking and never calls `define()`, so the harness cannot load it in
 place. Its pure logic is extracted into `define()` modules. The siblings
+`cards_dealer.js`, `cards_ai_star_deal.js`, `cards_explore.js`, `cards_win.js`,
 `cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_card_name_sync.js`,
-`cards_cheats.js`, `coop_ai_driver.js`, and `coop_ai_effects.js` each return a
-factory that `cards.js` calls with its collaborators.
+`cards_cheats.js`, `cards_coop_ai_tech.js`, `cards_coop_ai_pings.js`,
+`coop_ai_driver.js`, and `coop_ai_effects.js` each return a factory that
+`cards.js`, or another of them, calls with its collaborators.
 `shared/cards_deal_helpers.js` returns its helpers directly, and
 `shared/loadouts.js` requires it too. The per-player loadout scene's
 `gwo_loadouts.js` is self-invoking too, and the starting inventory it builds
