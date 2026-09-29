@@ -46,6 +46,7 @@
 - Naval Commander is now offered Advanced Defense Technology, as is anyone with an advanced fabricator
 - Titan Tech and Planetary Radar Tech are now offered to a player with a Fabrication Upgrade Tech, whose basic fabricators can build the Ragnarok and the Planetary Radar
 - Artillery Fabrication Tech is now offered to a player whose only artillery is mobile, such as the Grenadier, Gil-E, Sheller, or Leviathan
+- Boom Upgrade Tech's "Which Units?" now lists the Boom as well as the Lob
 
 ## v7.4.1 - 2026-09-24
 
