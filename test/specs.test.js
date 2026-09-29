@@ -10,6 +10,9 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const specs = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js"
 );
+const gwoCard = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"
+);
 
 afterEach(() => {
   mock.restoreAll();
@@ -299,6 +302,128 @@ describe("specs.mod - path walking", () => {
   });
 });
 
+// multiply and tag return a missing target unchanged, so a container made on
+// the way to it would be left behind empty. See specs.md.
+describe("specs.mod - a missing intermediate segment", () => {
+  const observerItem = {
+    layer: "surface_and_air",
+    channel: "sight",
+    shape: "capsule",
+    radius: 100,
+  };
+  const oneObserverItem = () => ({
+    recon: { observer: { items: [{ ...observerItem }] } },
+  });
+
+  it("multiply scales the observer items a unit has and adds none", () => {
+    const data = { "unit.json": oneObserverItem() };
+    specs.mod(
+      data,
+      gwoCard.mods(
+        "unit.json",
+        "multiply",
+        gwoCard.observerPaths(2, "radius"),
+        1.5
+      ),
+      ""
+    );
+    assert.deepEqual(data["unit.json"].recon.observer.items, [
+      { ...observerItem, radius: 150 },
+    ]);
+  });
+
+  it('multiply appends no element for a "+" segment', () => {
+    const data = { "unit.json": { list: [{ a: 1 }] } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "list.+.a", op: "multiply", value: 2 }],
+      ""
+    );
+    assert.deepEqual(data["unit.json"].list, [{ a: 1 }]);
+  });
+
+  // The last segment too: a "+" or an index past the end is a missing target.
+  for (const [op, path, start] of [
+    ["multiply", "list.+", [1]],
+    ["multiply", "list.3", [1]],
+    ["tag", "list.+", ["tool.json"]],
+    ["tag", "list.2", ["tool.json"]],
+  ]) {
+    it(`${op} on ${path} leaves the array as it was`, () => {
+      mock.method(console, "warn", () => {});
+      const data = { "unit.json": { list: start.slice() } };
+      specs.mod(
+        data,
+        [{ file: "unit.json", path: path, op: op, value: 2 }],
+        ".player"
+      );
+      assert.deepEqual(data["unit.json"].list, start);
+    });
+  }
+
+  it("tag adds no tool the unit lacks, and warns as for a missing value", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "unit.json": { tools: [{ spec_id: "tool.json" }] } };
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tools.1.spec_id", op: "tag" }],
+      ".player"
+    );
+    assert.deepEqual(data["unit.json"].tools, [{ spec_id: "tool.json" }]);
+    assert.equal(warnMock.mock.callCount(), 1);
+  });
+
+  // A segment the walker cannot follow makes a malformed path, not a missing
+  // one, so it is still reported.
+  for (const [spec, path] of [
+    [{ a: 5 }, "a.b"],
+    [{ list: [{ a: 1 }] }, "list.x.a"],
+  ]) {
+    it("multiply still reports " + path + ", which cannot be walked", () => {
+      const errorMock = mock.method(console, "error", () => {});
+      const data = { "unit.json": structuredClone(spec) };
+      specs.mod(
+        data,
+        [{ file: "unit.json", path, op: "multiply", value: 2 }],
+        ""
+      );
+      assert.deepEqual(data["unit.json"], spec);
+      assert.equal(errorMock.mock.callCount(), 1);
+    });
+  }
+
+  for (const [op, value] of [
+    ["replace", 5],
+    ["multiplyOrCreate", 5],
+    ["add", 5],
+    ["merge", { a: 1 }],
+    ["push", 5],
+    ["prepend", 5],
+    ["pull", 5],
+    ["wipe", ["a", "b"]],
+    ["eval", "return 5;"],
+  ]) {
+    it(op + " still creates the observer item it writes to", () => {
+      const data = { "unit.json": oneObserverItem() };
+      specs.mod(
+        data,
+        [
+          {
+            file: "unit.json",
+            path: "recon.observer.items.1.radius",
+            op,
+            value,
+          },
+        ],
+        ""
+      );
+      const items = data["unit.json"].recon.observer.items;
+      assert.equal(items.length, 2);
+      assert.ok("radius" in items[1]);
+    });
+  }
+});
+
 describe("specs.mod - base_spec inheritance", () => {
   it("flattens an inherited base_spec onto the child before applying the mod", () => {
     const data = {
@@ -542,30 +667,31 @@ describe("specs.mod - malformed-mod tolerance", () => {
 
 describe("specs.mod - navigation pruning", () => {
   // An empty navigation object marks a structure as mobile. See specs.md.
-  it("removes a navigation object left empty by a mod on a structure", () => {
+  // The prune would delete one after the fact, so the writes are recorded.
+  it("never writes navigation onto a structure for a multiply of its movement stats", () => {
     const warnMock = mock.method(console, "warn", () => {});
-    const data = { "struct.json": { hp: 100 } };
+    const struct = { hp: 100 };
+    const written = [];
+    const data = {
+      "struct.json": new Proxy(struct, {
+        set(target, key, value) {
+          written.push(key);
+          target[key] = value;
+          return true;
+        },
+      }),
+    };
     specs.mod(
       data,
-      [
-        {
-          file: "struct.json",
-          path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.5,
-        },
-      ],
+      gwoCard.mods("struct.json", "multiply", gwoCard.paths.navigation, 1.5),
       ""
     );
-    // multiply on a nonexistent numeric leaf leaves navigation.move_speed
-    // undefined - which serialises to navigation: {} - so navigation is stripped.
-    assert.equal("navigation" in data["struct.json"], false);
-    assert.equal(data["struct.json"].hp, 100);
-    // multiply on a missing leaf is silent.
+    assert.deepEqual(written, []);
+    assert.deepEqual(struct, { hp: 100 });
     assert.equal(warnMock.mock.callCount(), 0);
   });
 
-  it("removes navigation after several navigation.* mods all resolve to undefined", () => {
+  it("removes a navigation object a later mod leaves empty", () => {
     const data = { "struct.json": { hp: 100 } };
     specs.mod(
       data,
@@ -573,31 +699,40 @@ describe("specs.mod - navigation pruning", () => {
         {
           file: "struct.json",
           path: "navigation.move_speed",
-          op: "multiply",
-          value: 1.5,
+          op: "replace",
+          value: 10,
         },
         {
           file: "struct.json",
-          path: "navigation.brake",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: "struct.json",
-          path: "navigation.acceleration",
-          op: "multiply",
-          value: 1.5,
-        },
-        {
-          file: "struct.json",
-          path: "navigation.turn_speed",
-          op: "multiply",
-          value: 1.5,
+          path: "navigation.move_speed",
+          op: "replace",
+          value: undefined,
         },
       ],
       ""
     );
-    assert.equal("navigation" in data["struct.json"], false);
+    assert.deepEqual(data["struct.json"], { hp: 100 });
+  });
+
+  it("removes the empty navigation a merge of nothing makes on a structure", () => {
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [{ file: "struct.json", path: "navigation", op: "merge", value: {} }],
+      ""
+    );
+    assert.deepEqual(data["struct.json"], { hp: 100 });
+  });
+
+  // An empty teleportable means true, so no other empty object is pruned.
+  it("keeps the empty teleportable the Nomad loadout writes", () => {
+    const data = { "struct.json": { hp: 100 } };
+    specs.mod(
+      data,
+      [{ file: "struct.json", path: "teleportable", op: "replace", value: {} }],
+      ""
+    );
+    assert.deepEqual(data["struct.json"], { hp: 100, teleportable: {} });
   });
 
   it("keeps a populated navigation object on a genuinely mobile unit", () => {

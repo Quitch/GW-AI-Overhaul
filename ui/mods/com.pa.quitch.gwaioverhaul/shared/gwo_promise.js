@@ -2,9 +2,9 @@
 // identify one by a `promise` method, which an engine promise has not got, so
 // neither waits for one. See constraints.md.
 define(function () {
-  // Resolves either way, with onFailure()'s value when the call fails: jQuery
-  // 2.1.4 does not turn a fail handler's return into a resolution, so the two
-  // outcomes are joined here rather than left to the caller.
+  // Resolves either way, with onFailure(reason)'s value when the call fails:
+  // jQuery 2.1.4 does not turn a fail handler's return into a resolution, so
+  // the two outcomes are joined here rather than left to the caller.
   var settled = function (enginePromise, onFailure) {
     var done = $.Deferred();
 
@@ -12,8 +12,8 @@ define(function () {
       function (result) {
         done.resolve(result);
       },
-      function () {
-        done.resolve(onFailure ? onFailure() : undefined);
+      function (reason) {
+        done.resolve(onFailure ? onFailure(reason) : undefined);
       }
     );
 

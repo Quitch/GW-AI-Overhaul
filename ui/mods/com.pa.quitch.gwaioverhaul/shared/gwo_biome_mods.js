@@ -87,19 +87,15 @@ define([
   // Never rejects: with nothing readable the caller keeps the stock biomes.
   // With GW Server Mods present a mod it must serve is a provider too.
   var providers = function () {
-    var done = $.Deferred();
     var gwsm = !!manifest();
 
-    enabledServerZipMods().then(function (mods) {
-      if (!mods.length) {
-        done.resolve({});
-        return;
-      }
-      $.when.apply($, _.map(mods, catalogOf)).then(function () {
-        done.resolve(gwoBiomes.providersFrom(_.toArray(arguments), gwsm));
+    return enabledServerZipMods()
+      .then(function (mods) {
+        return $.when.apply($, _.map(mods, catalogOf));
+      })
+      .then(function () {
+        return gwoBiomes.providersFrom(_.toArray(arguments), gwsm);
       });
-    });
-    return done.promise();
   };
 
   // What GW Server Mods will mount of the stamped mods it serves: `served` in

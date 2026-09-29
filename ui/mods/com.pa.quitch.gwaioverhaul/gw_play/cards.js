@@ -969,6 +969,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
       ],
       function (
         GW,
@@ -987,7 +988,8 @@
         gwoStreams,
         gwoTreasure,
         gwoLoadoutBanks,
-        gwoRaces
+        gwoRaces,
+        gwoPromise
       ) {
         helpers = cardsDealHelpers;
         globals.CardViewModel = gwoCardViewModel;
@@ -1290,17 +1292,26 @@
             });
 
             // Not $.when(deferredQueue): it takes an array as one value and
-            // resolves at once. It would need $.when.apply.
-            Promise.all(deferredQueue)
-              .then(function () {
-                // The one caller that replaces cards viewers already hold, so
-                // their offers move exactly when the host's do.
-                return coopStarCards.refresh({ redeal: true });
-              })
-              .then(function () {
+            // resolves at once. It would need $.when.apply. Settled either
+            // way, as model.win saves and opens the exit gate only after it.
+            gwoPromise
+              .settled(
+                Promise.all(deferredQueue).then(function () {
+                  // The one caller that replaces cards viewers already hold,
+                  // so their offers move exactly when the host's do.
+                  return coopStarCards.refresh({ redeal: true });
+                }),
+                function (reason) {
+                  console.error(
+                    "GWO failed to deal the AI stars' cards: " +
+                      ((reason && reason.stack) || reason)
+                  );
+                }
+              )
+              .always(function () {
                 dealt();
                 deferred.resolve();
-              }, dealt);
+              });
           } else {
             deferred.resolve();
           }
@@ -1673,45 +1684,43 @@
             selectedCardIndex
           );
 
-          return game.winTurn(wonIndex).then(function (didWin) {
-            if (!didWin) {
-              console.error(
-                "Failed winning turn at star " + game.currentStar()
-              );
-              return $.Deferred().reject("Failed winning turn").promise();
-            }
+          return game
+            .winTurn(wonIndex)
+            .then(function (didWin) {
+              if (!didWin) {
+                console.error(
+                  "Failed winning turn at star " + game.currentStar()
+                );
+                return $.Deferred().reject("Failed winning turn").promise();
+              }
 
-            if (model.isCampaignViewer()) {
-              model.syncViewerStarsFromGame("win_applied");
-            }
+              if (model.isCampaignViewer()) {
+                model.syncViewerStarsFromGame("win_applied");
+              }
 
-            model.maybePlayCaptureSound();
+              model.maybePlayCaptureSound();
 
-            return dealCardToSelectableAI(true, game.turnState())
-              .then(function () {
-                return gwoSave(game, true);
-              })
-              .then(function () {
-                if (model.gameOver()) {
-                  // always, so a failed stat write still opens the gate.
-                  api.tally
-                    .incStatInt("gw_war_victory")
-                    .always(resolveExitGate);
-                } else {
-                  resolveExitGate();
+              return dealCardToSelectableAI(true, game.turnState());
+            })
+            .then(function () {
+              return gwoSave(game, true);
+            })
+            .then(function () {
+              if (model.gameOver()) {
+                // always, so a failed stat write still opens the gate.
+                api.tally.incStatInt("gw_war_victory").always(resolveExitGate);
+              } else {
+                resolveExitGate();
 
-                  if (playTechAudio) {
-                    if (techAudio) {
-                      api.audio.playSound(techAudio);
-                    } else {
-                      api.audio.playSound(
-                        "/VO/Computer/gw/board_tech_acquired"
-                      );
-                    }
+                if (playTechAudio) {
+                  if (techAudio) {
+                    api.audio.playSound(techAudio);
+                  } else {
+                    api.audio.playSound("/VO/Computer/gw/board_tech_acquired");
                   }
                 }
-              });
-          });
+              }
+            });
         };
       }
     );

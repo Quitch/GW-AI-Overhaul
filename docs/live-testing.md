@@ -389,7 +389,8 @@ The outcome is one of:
 - `no ping (refused)`: the host's checks turned it down. The AI tries again 5
   seconds later, up to three times in a window.
 
-`<name> ping failed: <error>` is a throw while it judged its stars.
+`<name> ping failed: <error>` is a throw while it judged its stars or set up
+its next try.
 
 ## Proving that a change alters nothing
 

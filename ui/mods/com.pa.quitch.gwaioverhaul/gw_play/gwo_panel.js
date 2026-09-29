@@ -437,11 +437,6 @@
             };
           };
 
-          var coopCampaign = !!model.gwCampaignActive();
-          model.gwCampaignActive.subscribe(function (active) {
-            coopCampaign = !!active;
-          });
-
           // Stable view models, so async loadout text does not flicker when the
           // computed below re-evaluates.
           var coopCommanderCache = {};
@@ -516,7 +511,7 @@
             var connectedClients = model.gwCampaignConnectedClients();
             var activeCommanderKeys = {};
 
-            if (coopCampaign) {
+            if (model.gwCampaignActive()) {
               commanders = _.map(connectedClients, function (client) {
                 var cacheKey = gwoRefereeCoop.clientKey(client.id, client.name);
                 activeCommanderKeys[cacheKey] = true;
@@ -579,50 +574,62 @@
     }
   }
 
-  var gwoPanelLoaderInitialized = false;
-  var gwoPanelLoaderNeedsDispose = false;
-  var gwoPanelLoadWarned = false;
+  try {
+    var gwoPanelLoaderInitialized = false;
+    var gwoPanelLoaderNeedsDispose = false;
+    var gwoPanelLoadWarned = false;
 
-  // The computed below can dispose itself on its first evaluation, which runs
-  // before gwoPanelLoader is assigned. Defer to the flag in that case.
-  var disposeGwoPanelLoader = function () {
-    if (gwoPanelLoaderInitialized) {
+    // The computed below can dispose itself on its first evaluation, which runs
+    // before gwoPanelLoader is assigned. Defer to the flag in that case.
+    var disposeGwoPanelLoader = function () {
+      if (gwoPanelLoaderInitialized) {
+        gwoPanelLoader.dispose();
+      } else {
+        gwoPanelLoaderNeedsDispose = true;
+      }
+    };
+
+    var gwoPanelLoader = ko.computed(function () {
+      var game = model.game();
+      var galaxy = game.galaxy();
+
+      if (gwoWarInfoPanelLoaded || game.isTutorial()) {
+        disposeGwoPanelLoader();
+        return;
+      }
+
+      // A co-op viewer's scene starts on stock's bootstrap game, whose galaxy
+      // has no stars until the host's war arrives.
+      if (!galaxy.stars().length) {
+        return;
+      }
+
+      var originSystem = galaxy.stars()[galaxy.origin()].system();
+      if (_.isPlainObject(originSystem.gwaio)) {
+        console.log("GWO settings found and panel loading");
+        gwoWarInfoPanel(originSystem.gwaio);
+        gwoWarInfoPanelLoaded = true;
+        disposeGwoPanelLoader();
+        return;
+      }
+
+      // The galaxy may still be loading, so stay subscribed - but a non-GWO war
+      // never resolves, so warn once rather than on every galaxy change.
+      if (!gwoPanelLoadWarned) {
+        gwoPanelLoadWarned = true;
+        console.warn(
+          "No GWO settings on the origin system yet; the war information panel will load if they appear."
+        );
+      }
+    });
+
+    gwoPanelLoaderInitialized = true;
+    if (gwoPanelLoaderNeedsDispose) {
       gwoPanelLoader.dispose();
-    } else {
-      gwoPanelLoaderNeedsDispose = true;
     }
-  };
-
-  var gwoPanelLoader = ko.computed(function () {
-    var game = model.game();
-    var galaxy = game.galaxy();
-    var originSystem = galaxy.stars()[galaxy.origin()].system();
-
-    if (gwoWarInfoPanelLoaded || game.isTutorial()) {
-      disposeGwoPanelLoader();
-      return;
-    }
-
-    if (_.isPlainObject(originSystem.gwaio)) {
-      console.log("GWO settings found and panel loading");
-      gwoWarInfoPanel(originSystem.gwaio);
-      gwoWarInfoPanelLoaded = true;
-      disposeGwoPanelLoader();
-      return;
-    }
-
-    // The galaxy may still be loading, so stay subscribed - but a non-GWO war
-    // never resolves, so warn once rather than on every galaxy change.
-    if (!gwoPanelLoadWarned) {
-      gwoPanelLoadWarned = true;
-      console.warn(
-        "No GWO settings on the origin system yet; the war information panel will load if they appear."
-      );
-    }
-  });
-
-  gwoPanelLoaderInitialized = true;
-  if (gwoPanelLoaderNeedsDispose) {
-    gwoPanelLoader.dispose();
+  } catch (e) {
+    console.error(
+      "Galactic War Overhaul (GWO): " + (e.stack || e.message || e)
+    );
   }
 })();

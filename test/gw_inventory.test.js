@@ -310,6 +310,43 @@ describe("gw_inventory - a card that throws", () => {
   });
 });
 
+describe("gw_inventory - a card that fails to load", () => {
+  // The loader can run a failed require's errback a second time, when the
+  // next require's check re-emits the module's error. Counting both ended the
+  // phase before the other cards had run.
+  it("counts a card whose errback runs twice once", () => {
+    mock.method(console, "error", () => {});
+    const order = [];
+    cardModules.gwc_start_orbital = {
+      buff: () => order.push("buff"),
+      dull: () => order.push("dull"),
+    };
+    const requireCards = global.requireGW;
+    global.requireGW = (ids, onLoad, onError) => {
+      if (ids[0] === "cards/gwc_missing") {
+        onError("no such card");
+        onError("no such card");
+        return;
+      }
+      requireCards(ids, onLoad, onError);
+    };
+
+    try {
+      inventoryHolding([
+        { id: "gwc_missing" },
+        { id: "gwc_start_orbital" },
+      ]).applyCards(() => order.push("done"));
+      while (timers.delayed.length) {
+        timers.delayed.shift().fn();
+      }
+    } finally {
+      global.requireGW = requireCards;
+    }
+
+    assert.deepEqual(order, ["buff", "dull", "done"]);
+  });
+});
+
 describe("gw_inventory - the inventory itself", () => {
   it("loads an absent config as an empty inventory", () => {
     const inventory = new GWInventory();

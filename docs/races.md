@@ -224,7 +224,9 @@ or once a unit list read returns with no race unit in it.
 
 One unit list read serves every race. A read taken before the mount has no race
 unit, and it is discarded. If each race took its own read, some reads would
-land either side of the mount and prime only some races.
+land either side of the mount and prime only some races. A read in which a spec
+failed is used but not kept, cells included, so the next caller reads that spec
+again.
 
 **Race and add-on cards.** A card whose entry names a race or add-on unit is
 written for that race or add-on. A foreign unit is any path in a registered

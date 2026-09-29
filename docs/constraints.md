@@ -114,12 +114,19 @@ the adapter fails a test rather than skipping the wait in a war. An audit on
 2026-08-31 found that every other `$.when` in the mod is handed a jQuery promise
 or a plain value.
 
-`.then` on a jQuery promise also returns a _new_ promise each time. The AI tree
-cache depends on that.
+An engine promise has a trap of its own. PA's `coherent.js` settles the promise
+that `.then` returns only through a handler, so when the call fails, a `.then`
+given no error callback leaves it pending for good, with no error.
+`api.file.list` fails this way for a path it cannot list. Give an engine call's
+`.then` an error callback, or adopt the call into a native promise first, as the
+AI tree cache does.
 
 `requireGW` is configured `waitSeconds: 0`, so a module that never arrives never
 errors either. The callback simply never fires. A tally that counts callbacks
 must count failures too. Otherwise the promise it gates is never settled at all.
+An errback can also run a second time for the same failed module, when a later
+require reports the failure again, so a tally counts each module once
+(`_.once`).
 
 ## Where a defensive check belongs
 
@@ -146,10 +153,11 @@ already validated. Do not write a half-guard. `card.deal && card.deal(…)`
 followed by an unguarded read of the result is worse than neither, because it
 advertises a safety it does not provide.
 
-`gw_play/gwo_panel.js` is the calibration. It walks
-`model.game() → galaxy() → stars()[origin()].system()` unguarded, then checks
-`_.isPlainObject(originSystem.gwaio)`. It trusts the base game and checks the
-field that an old save may lack.
+`gw_play/gwo_panel.js` is the calibration. It waits while the galaxy has no
+stars, as a co-op viewer's bootstrap game has none. It then walks
+`model.game() → galaxy() → stars()[origin()].system()` unguarded, and checks
+`_.isPlainObject(originSystem.gwaio)`. It trusts the base game's loaded war and
+checks the field that an old save may lack.
 
 Two shapes satisfy this rather than scattering checks. The first is a **named
 pre-flight gate** that refuses the whole operation with a diagnostic

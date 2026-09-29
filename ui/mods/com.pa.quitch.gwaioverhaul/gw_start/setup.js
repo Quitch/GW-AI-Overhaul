@@ -458,8 +458,7 @@
             $.when.apply($, loading).then(onSystemsLoaded, withoutBrackets);
           };
 
-          // modsMounted is an engine promise, which $.when does not wait for.
-          gwoPromise.settled(modsMounted).then(function () {
+          var loadOptions = function () {
             // Capability rather than the mod identifier: the identifier changes on a
             // dev build of Shared Systems, this does not.
             if (
@@ -470,10 +469,21 @@
               withoutBrackets();
               return;
             }
-            chooseStarSystemTemplates
-              .loadOptions()
-              .then(onOptionsLoaded, withoutBrackets);
-          });
+            // Shared Systems' own call, guarded as option.load() is above.
+            try {
+              chooseStarSystemTemplates
+                .loadOptions()
+                .then(onOptionsLoaded, withoutBrackets);
+            } catch (e) {
+              console.error(
+                "System sources failed to load: " + ((e && e.stack) || e)
+              );
+              withoutBrackets();
+            }
+          };
+
+          // modsMounted is an engine promise, which $.when does not wait for.
+          gwoPromise.settled(modsMounted).then(loadOptions);
 
           return ready.promise();
         };

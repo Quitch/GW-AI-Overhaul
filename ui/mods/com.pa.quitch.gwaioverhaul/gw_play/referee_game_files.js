@@ -439,71 +439,70 @@ define([
             return [unitsGet, aiUnitMap, aiX1UnitMap];
           }
         );
-        Promise.resolve(loads)
-          .then(function (loaded) {
-            var units = parse(loaded[0][0]).units;
-            // Under shared tech a co-op AI fields the host's units, its
-            // commander among them, as the star's ally does.
-            var coopAiCommanders = _.pluck(
-              _.filter(coopAis, { tag: PLAYER_TAG }),
-              "commander"
-            );
-            var battle = {
-              game: game,
-              inventory: inventory,
-              ai: ai,
-              aiTag: aiTag,
-              aiFactions: aiFactions,
-              playerRace: playerRace,
-              playerFileGen: playerFileGen,
-              ownFileGens: ownFileGens,
-              armyOf: armyOf,
-              raceOfArmy: raceOfArmy,
-              armyMaps: armyMaps,
-              aiUnitMap: loaded[1],
-              aiX1UnitMap: loaded[2],
-              // Identical for every faction - build it once rather than per
-              // iteration.
-              aiSpecs: units.concat(model.gwoSpecs),
-              // A race's capability cells, from the same specs genUnitSpecs
-              // will fetch. MLA's are its add-on cells, and undefined while
-              // no add-on is mounted. See races.md, "Add-ons".
-              cellsFor: function (race) {
-                return gwoRaceCells.indexFor(race, units);
-              },
-              additionalPlayerSpecs: (_.isUndefined(ai.ally)
-                ? model.gwoSpecs
-                : model.gwoSpecs.concat(ai.ally.commander)
-              ).concat(coopAiCommanders),
-              playerCommanders: [inventory.getTag("global", "commander")]
-                .concat(_.pluck(inventory.minions(), "commander"))
-                .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander])
-                .concat(coopAiCommanders),
-            };
+        var buildArmyFiles = function (loaded) {
+          var units = parse(loaded[0][0]).units;
+          // Under shared tech a co-op AI fields the host's units, its
+          // commander among them, as the star's ally does.
+          var coopAiCommanders = _.pluck(
+            _.filter(coopAis, { tag: PLAYER_TAG }),
+            "commander"
+          );
+          var battle = {
+            game: game,
+            inventory: inventory,
+            ai: ai,
+            aiTag: aiTag,
+            aiFactions: aiFactions,
+            playerRace: playerRace,
+            playerFileGen: playerFileGen,
+            ownFileGens: ownFileGens,
+            armyOf: armyOf,
+            raceOfArmy: raceOfArmy,
+            armyMaps: armyMaps,
+            aiUnitMap: loaded[1],
+            aiX1UnitMap: loaded[2],
+            // Identical for every faction - build it once rather than per
+            // iteration.
+            aiSpecs: units.concat(model.gwoSpecs),
+            // A race's capability cells, from the same specs genUnitSpecs
+            // will fetch. MLA's are its add-on cells, and undefined while
+            // no add-on is mounted. See races.md, "Add-ons".
+            cellsFor: function (race) {
+              return gwoRaceCells.indexFor(race, units);
+            },
+            additionalPlayerSpecs: (_.isUndefined(ai.ally)
+              ? model.gwoSpecs
+              : model.gwoSpecs.concat(ai.ally.commander)
+            ).concat(coopAiCommanders),
+            playerCommanders: [inventory.getTag("global", "commander")]
+              .concat(_.pluck(inventory.minions(), "commander"))
+              .concat(_.isUndefined(ai.ally) ? [] : [ai.ally.commander])
+              .concat(coopAiCommanders),
+          };
 
-            _.times(aiFactionCount, function (n) {
-              enemyArmyFiles(battle, n).then(null, fail);
-            });
+          _.times(aiFactionCount, function (n) {
+            enemyArmyFiles(battle, n).then(null, fail);
+          });
 
-            Promise.all(_.map(coopAis, _.partial(coopAiMaps, battle)))
-              .then(function (maps) {
-                coopAiFileGen.resolve(
-                  gameFilePaths.coopAiMapFiles(
-                    coopAis,
-                    _.partial(mapsOfCoopAi, coopAis, maps),
-                    GW.specs.genAIUnitMap
-                  )
-                );
-              })
-              .then(null, fail);
+          Promise.all(_.map(coopAis, _.partial(coopAiMaps, battle)))
+            .then(function (maps) {
+              coopAiFileGen.resolve(
+                gameFilePaths.coopAiMapFiles(
+                  coopAis,
+                  _.partial(mapsOfCoopAi, coopAis, maps),
+                  GW.specs.genAIUnitMap
+                )
+              );
+            })
+            .then(null, fail);
 
-            _.forEach(ownFileAis, function (coopAi, index) {
-              ownAiFiles(battle, coopAi, index).then(null, fail);
-            });
+          _.forEach(ownFileAis, function (coopAi, index) {
+            ownAiFiles(battle, coopAi, index).then(null, fail);
+          });
 
-            playerFiles(battle).then(null, fail);
-          })
-          .then(null, fail);
+          playerFiles(battle).then(null, fail);
+        };
+        Promise.resolve(loads).then(buildArmyFiles).then(null, fail);
 
         _.times(aiFactionCount, function (n) {
           filesToProcess.push(aiFactions[n]);

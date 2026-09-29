@@ -114,10 +114,18 @@ container for `push`, `pull` and `merge`. An op therefore branches only on the v
 it was handed. Most ops treat a missing attribute and one that explicitly holds
 `null` alike. The two exceptions, `multiply` and `merge`, are noted under the table.
 
-The walker creates missing intermediate segments too. A path that goes several
-levels deeper than the stock spec therefore still lands. `replace` writes whatever it
-is given regardless. It is therefore the op to use, unless the new value has to be
-derived from the old one.
+The walker creates missing intermediate segments too, for every op but `multiply`
+and `tag`. A path that goes several levels deeper than the stock spec therefore
+still lands. `replace` writes whatever it is given regardless. It is therefore the
+op to use, unless the new value has to be derived from the old one.
+
+`multiply` and `tag` hand a missing target back unchanged. A container made on the
+way to one would therefore be left behind empty. So at a missing intermediate
+segment the walk stops, and nothing is written. The op is still handed the missing
+target, as at a missing leaf, so `tag` warns and `multiply` stays silent. A radar
+card's `observerPaths(5, "radius")` therefore scales the observer items a unit has
+and adds none. A `multiply` of `gwoCard.paths.navigation` gives a structure no
+`navigation` at all.
 
 | Op                        | Attribute missing                             | Attribute present, holding `null` |
 | ------------------------- | --------------------------------------------- | --------------------------------- |
@@ -127,6 +135,7 @@ derived from the old one.
 | `push`, `prepend`, `pull` | Creates the array.                            | Creates the array.                |
 | `wipe`                    | Creates the string.                           | Creates the string.               |
 | `multiply`                | **Writes nothing, silently.**                 | **Warns, writes nothing.**        |
+| `tag`                     | **Warns, writes nothing.**                    | **Warns, writes nothing.**        |
 | `merge`                   | Creates the object. The walker seeds it `{}`. | **Warns, writes nothing.**        |
 
 `multiply` is the one to watch. It deliberately does not create (see above), and it
@@ -209,8 +218,10 @@ A `path` walks into nested spec structure. There are two conventions:
   element.
 
 When an intermediate segment is missing, the walker creates a container. It creates
-an array if the _next_ segment indexes into one, otherwise a plain object. The
-walker treats the leaf segment differently. The leaf is allowed to see a real
+an array if the _next_ segment indexes into one, otherwise a plain object.
+`multiply` and `tag` stop there instead, and to them a `"+"` is always missing
+([Creating an attribute that doesn't exist](#creating-an-attribute-that-doesnt-exist)).
+The walker treats the leaf segment differently. The leaf is allowed to see a real
 "missing" signal, so that ops like `multiplyOrCreate` and `add` can tell "absent"
 from "present".
 
@@ -256,13 +267,22 @@ arguments. The array replacer clones any array it returns.
 
 The game treats any unit with a `navigation` object as mobile, **even an empty
 one**. A mod that writes into `navigation` and then removes the value leaves
-`navigation: {}` behind, once JSON serialisation drops the now-`undefined` key. The
-result is a structure wrongly marked mobile, which adds needless Nav Agent load.
+`navigation: {}` behind, once JSON serialisation drops the now-`undefined` key. A
+`merge` of `{}` into a missing `navigation` leaves one too. The result is a
+structure wrongly marked mobile, which adds needless Nav Agent load.
 
-`pruneEmptyNavigation` handles this. It must inspect the _file's top-level_ spec.
-That is why the reference to that spec is captured before the path walk reassigns
-`spec` to a nested container. The first path segment (e.g. `"navigation"`) is
-always created on the top-level spec.
+A `multiply` of `navigation.*` on a structure never gets this far. It stops at the
+missing `navigation` and writes nothing
+([Creating an attribute that doesn't exist](#creating-an-attribute-that-doesnt-exist)).
+
+`pruneEmptyNavigation` handles the rest. It must inspect the _file's top-level_
+spec. That is why the reference to that spec is captured before the path walk
+reassigns `spec` to a nested container. The first path segment (e.g.
+`"navigation"`) is always a key of the top-level spec.
+
+Only `navigation` is pruned. Elsewhere an empty object can carry meaning:
+`teleportable: {}` makes a unit teleportable, and the Nomad loadout writes exactly
+that.
 
 Note that "empty" here means _empty after serialisation_. `JSON.stringify` drops a
 key whose value is `undefined`. `navigation` therefore counts as non-empty only if
@@ -277,7 +297,9 @@ parses each file at most once and reuses it across every tag.
 
 The invariant that makes it safe is this: **tag a clone, never the cached pristine
 copy.** A failed fetch is deliberately not cached. A later tag can therefore retry
-rather than inherit a permanent failure. `fetchRaw` hands a caller the pristine
+rather than inherit a permanent failure. A spec that fails to fetch or to tag, such
+as a file that parses to `null`, is logged and left out of that tag's set, so one
+bad file cannot stall the launch. `fetchRaw` hands a caller the pristine
 parsed spec through the same cache. `references` lists a spec's untagged references
 without touching it. `gw_play/race_cells.js` uses both to read every spec ahead of
 the referee, which then fetches nothing twice.

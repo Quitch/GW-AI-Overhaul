@@ -296,7 +296,9 @@ that war back on the first attempt.
 When generation gives up, the seed is put back to `<base>`, and a message appears
 above Go To War. For a spawn shortage it says to choose a larger galaxy or to turn
 on Faction Scaling. Anything else is a bug, so the message asks the player to report
-it with the seed and the PA log.
+it with the seed and the PA log. The steps run in a jQuery chain, where a throw
+would leave Go To War waiting instead, so `gw_start/galaxy_build.js` turns a throw
+in the build, Shared Systems' system loader's included, into a rejection.
 
 ## System scaling
 

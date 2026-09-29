@@ -164,7 +164,10 @@ button dead. So `referee_game_files.js` routes every path that can throw into
 one `fail` that rejects its deferred. Those paths are the synchronous prelude
 and each nested spec-fetch chain. `referee_biomes.js` runs each callback as a
 `gwoPromise.steps` step instead, so a rejection or a throw after an engine call
-rejects the step. The hire's own fail handler in `referee.js`
+rejects the step. `referee_ai.js` holds every tree listing and file read as a
+native promise, so a failed read, or a throw in the work on a file, rejects
+too. The one read it skips instead is a card's `load` file (see
+[`ai-pipeline.md`](ai-pipeline.md)). The hire's own fail handler in `referee.js`
 logs the error through `gameFilePaths.describeError`, which formats a jqXHR
 as its HTTP status rather than `[object Object]`, and clears
 `launchingFight`, which closes the panel.
@@ -267,14 +270,21 @@ Know the shape before you add a fix to it:
 - **A flag, not a version alone, gates a fix.** `treasurePlanetFixed`,
   `treasureLoadoutDerived`, and `planetPositionFixed` live on
   `originSystem.gwaio`.
-  `gwaio_lucky_commander_fixed` lives in `localStorage`. Once a repair runs, or
+  `gwaio_lucky_commander_moved` lives in `localStorage`. Once a repair runs, or
   is ruled unnecessary, the flag says so. The file then skips the scan for good.
-- **`checkIfPatchesNeeded` sets those flags from `gwoSettings.version`** via
+- **`checkIfPatchesNeeded` sets the war's flags from `gwoSettings.version`** via
   `atLeastVersion`. So a war created after a fix shipped never pays for the
   scan. A war with no recorded version compares as older than everything. That
   is the safe direction. `planetPositionFixed` has no version: its defect also
   comes from Shared Systems for GW, which replaces GWO's system loader, so a war
   of any version can need it. Each war pays for one sweep of its planets.
+  `gwaio_lucky_commander_moved` has no version either: it records the profile's
+  bank, which a war's version says nothing about, so its repair runs once per
+  profile. It replaced `gwaio_lucky_commander_fixed`, which versions up to 7.4.1
+  set from the war's version without moving the card. The repair removes the
+  card through the base game's `GW.bank`, not from `gw_bank` itself: that
+  bank read `gw_bank` when the scene loaded, and its next unlock writes its
+  whole list back.
 - **`applyFixes` sets the flags unconditionally after the sweep.** The reason is
   that "the thing this fix targets does not exist in this war" and "it has been
   fixed" want the same outcome. A war with no treasure planet should not re-scan

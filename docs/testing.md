@@ -312,7 +312,10 @@ out of this one file. The rule stays active everywhere else.
 `installFakeJQuery` puts a callable `$` carrying the lot behind a suite's global
 stubs. The file also exports `enginePromise()`. That is the
 `then`-and-nothing-else shape every `api.*` call returns. Hold one pending to
-prove that the code under test waits for it. The file also exports
+prove that the code under test waits for it. `failedEngineCall(reason)` is a
+failed `api.*` call, chained as PA's `coherent.js` chains one: a `.then` given
+an error callback gets the failure, and the promise a `.then` given none
+returns never settles. The file also exports
 `resolved()`/`rejected()`. Those are jQuery-shaped settled promises for a fixture
 that stands in for stock code that returns one.
 
@@ -508,14 +511,29 @@ never returns. A search for `typeof module` under `ui/` lists them all.
 
 **A test file is named for the module it loads, not the feature it belongs to.**
 Once the pure logic is extracted, the bootstrap that is left has nothing the
-harness can reach, and no test. `gw_play/coop_ping.js` injects a button and
-calls `requireGW`, and nothing else.
+AMD harness can reach, and usually no test. `gw_play/coop_ping.js` injects a
+button and calls `requireGW`, and nothing else.
 
 That is expected, but it only stays visible if the tests around it are named
 honestly. `coop_ping_operators.test.js` and `coop_ping_marker.test.js` say which
 module each covers. By saying it, they leave `coop_ping.js` conspicuously
 unclaimed. A `coop_ping.test.js` covering the operators would read as though the
 bootstrap were tested.
+
+### Scene scripts
+
+Where the fault is in the glue itself, `scripts/lib/scene-script.js` runs the
+shipped scene script. `runSceneScript(entry)` reads the file and runs it in the
+test's own context, so the script reads the globals the test stubbed through
+`global-stubs.js`, `requireGW` included. The test answers `requireGW` with
+stand-ins for the modules the script asks for. It suits what a script does
+before its `requireGW` callback, or a callback small enough to stub:
+`test/bugfixes.test.js`, `test/gwo_panel.test.js`, and
+`test/per_player_loadout_race_picker.test.js` use it. A callback that needs
+dozens of modules and much of `model`, as those in `gw_play/cards.js` and
+`gw_start/setup.js` do, gets no such test. Its testable logic is extracted
+instead. A file run this way stays coverage-excluded, because most of it is
+still glue that no test reaches.
 
 `test/version.test.js` deliberately covers the one-line version bump. The
 SonarCloud new-code baseline is the previous version, so a bump always lands

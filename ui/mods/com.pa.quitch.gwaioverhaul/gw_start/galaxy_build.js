@@ -42,7 +42,7 @@ define([
     }, this);
   };
 
-  var build = function (config) {
+  var buildGalaxy = function (config) {
     var self = this;
     config = config || {};
 
@@ -245,6 +245,17 @@ define([
     return $.when.apply($, starGenerators).then(function () {
       return self;
     });
+  };
+
+  // setup.js calls this inside a jQuery .then, where a throw escapes rather
+  // than rejects and war generation waits for good. The system loader can be
+  // Shared Systems', so its code runs here too.
+  var build = function (config) {
+    try {
+      return buildGalaxy.call(this, config);
+    } catch (e) {
+      return $.Deferred().reject(e).promise();
+    }
   };
 
   return {

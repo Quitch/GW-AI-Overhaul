@@ -43,6 +43,16 @@
 - A co-op viewer who rerolls their tech while the host wins a battle now still gets new star cards, rather than keeping last turn's
 - In co-op with per-player tech, a viewer who picks a tech card while another viewer rerolls, sets up the General Commander, or joins no longer has their offer come back, which could stop the host exploring or fighting until they reloaded
 - MLA Sub Commanders whose AI differs from the enemy's now build all the units their AI orders, such as Queller's orbital fabricators, Avengers, and Astraeus, and so do the Sub Commanders of MLA co-op players and co-op AI players with per-player tech
+- Protocol: Blindness, Protocol: Precision, Protocol: Wrath, and other tech that changes a value some units lack no longer add empty entries to those units, and neither does a `multiply` or `tag` in a card mod
+- A tech card from another mod whose AI build file is missing no longer stops every battle while you hold it
+- A malformed unit file from another mod no longer leaves Fight stuck
+- An AI folder the game cannot list, or an AI build file from another mod that cannot be processed, now fails the battle launch with an error instead of leaving Fight stuck
+- An error while the AI stars' tech cards are dealt after you win a battle no longer stops the war from saving or ending
+- A Legion, Bugs, Exiles, or add-on unit whose file fails to load while its mod is still loading is now read again later, rather than being missed by tech cards until you reload
+- Joining a co-op war with per-player tech is no longer stopped by a war the loadout screen cannot read, or by an error in its race picker
+- An error in Shared Systems for Galactic War while a war is created no longer leaves Go To War stuck with no message
+- The war information panel's commander list now changes as soon as a co-op session starts or ends, rather than when a player next joins or leaves
+- A Lucky Commander unlocked with v5.76.0 is now moved to Galactic War Overhaul's own loadouts whichever war you open next, so it no longer causes a 404 error if Galactic War Overhaul is uninstalled
 - Naval Commander is now offered Advanced Defense Technology, as is anyone with an advanced fabricator
 - Titan Tech and Planetary Radar Tech are now offered to a player with a Fabrication Upgrade Tech, whose basic fabricators can build the Ragnarok and the Planetary Radar
 - Artillery Fabrication Tech is now offered to a player whose only artillery is mobile, such as the Grenadier, Gil-E, Sheller, or Leviathan
