@@ -329,7 +329,16 @@ define([
       }
 
       // Before the slot comes back, so a lock's limit counts it.
-      game.coopPlayerInventoryData(kept);
+      try {
+        game.coopPlayerInventoryData(kept);
+      } catch (error) {
+        // As in writeNewAi: a subscriber's throw comes after the write, so
+        // the AI is gone and its slot still comes back.
+        if (stored(row.id)) {
+          throw error;
+        }
+        console.error(LOG + "kicked with an error: " + describe(error));
+      }
       console.log(LOG + "kicked " + row.name + " (" + row.id + ")");
       saveWar("kick", false);
       try {

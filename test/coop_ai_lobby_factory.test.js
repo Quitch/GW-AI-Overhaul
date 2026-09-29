@@ -49,6 +49,7 @@ function setup(overrides) {
       records: [],
       refuseUpsert: false,
       upsertThrows: false,
+      writeThrows: false,
       createThrows: false,
       saveFails: false,
       saveThrows: false,
@@ -141,7 +142,17 @@ function setup(overrides) {
 
   const gwaio = {};
   const game = {
-    coopPlayerInventoryData: records,
+    coopPlayerInventoryData: (...value) => {
+      if (!value.length) {
+        return records();
+      }
+      records(value[0]);
+      // As a throwing subscriber of the records would, after the write.
+      if (options.writeThrows) {
+        throw new Error("subscriber failed");
+      }
+      return undefined;
+    },
     upsertCoopPlayerInventoryData: (record) => {
       if (options.refuseUpsert) {
         return false;
@@ -726,6 +737,25 @@ describe("kickAi", () => {
     assert.equal(run.records().length, 1);
     assert.equal(run.calls.sent.length, 1);
     assert.equal(run.calls.sent[0].payload.max_clients, 3);
+    run.reply(true, { max_clients: 3 });
+    assert.equal(run.state.busy(), false);
+  });
+
+  // A records subscriber runs inside the write, so its throw comes after the
+  // AI is gone: the kick is still saved, published and its slot returned.
+  it("finishes the kick when a records subscriber throws", () => {
+    const run = withAi({ writeThrows: true, connected: [HOST, VIEWER] });
+    run.lobby.kickAi(ROW);
+    run.lobby.kickAi(ROW);
+
+    assert.equal(run.records().length, 1);
+    assert.equal(run.calls.saves, 1);
+    assert.deepEqual(run.calls.snapshots, [
+      { reason: "gwo_coop_ai_kick", force: true },
+    ]);
+    assert.equal(run.calls.sent.length, 1);
+    assert.equal(run.calls.sent[0].payload.max_clients, 3);
+    assert.ok(run.calls.log.some((line) => /kicked with an error/.test(line)));
     run.reply(true, { max_clients: 3 });
     assert.equal(run.state.busy(), false);
   });
