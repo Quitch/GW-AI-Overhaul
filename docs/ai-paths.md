@@ -282,7 +282,7 @@ them relies on them:
 - **The player and the enemy are never simultaneously Cluster.** The mod author
   confirmed this. `referee_config_setup.js` uses this to justify returning the
   same unscoped `/pa/ai_cluster/` path, regardless of which side asked.
-- **The Guardians are never Cluster.** `referee_ai.js`'s `processClusterJson`
+- **The Guardians are never Cluster.** `referee_ai.js`'s `writeClusterFile`
   states this. It is the reason `isCluster` can return early on mirror mode.
 
 A third invariant is not an external assumption but a property of the paths
