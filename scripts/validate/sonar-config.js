@@ -4,7 +4,9 @@
 // so it drifts silently. Two checks, both for failures that already happened:
 //
 //   1. Every exclusion pattern still matches a tracked file, so a rename cannot
-//      leave a stale path sitting there looking intentional.
+//      leave a stale path sitting there looking intentional. That covers the
+//      analysis, coverage and copy-paste exclusions and the file pattern of
+//      every issue-ignore criterion.
 //   2. Every file the scanner indexes decodes as UTF-8, matching the declared
 //      sonar.sourceEncoding.
 //
@@ -18,7 +20,13 @@ const { REPO_ROOT } = require("../lib/amd-loader.js");
 const { reportProblems } = require("../lib/report-failures.js");
 
 const CONFIG_PATH = path.join(REPO_ROOT, "sonar-project.properties");
-const PATTERN_KEYS = ["sonar.exclusions", "sonar.coverage.exclusions"];
+const PATTERN_KEYS = [
+  "sonar.exclusions",
+  "sonar.coverage.exclusions",
+  "sonar.cpd.exclusions",
+];
+const IGNORE_RESOURCE_KEY =
+  /^sonar\.issue\.ignore\.multicriteria\.[^.]+\.resourceKey$/;
 const ENCODING_KEY = "sonar.sourceEncoding";
 const EXPECTED_ENCODING = "UTF-8";
 
@@ -98,8 +106,11 @@ function trackedFiles() {
 function checkPatterns(props, files, failures) {
   const analysisMatchers = [];
   let patternCount = 0;
+  const keys = PATTERN_KEYS.concat(
+    Object.keys(props).filter((key) => IGNORE_RESOURCE_KEY.test(key))
+  );
 
-  for (const key of PATTERN_KEYS) {
+  for (const key of keys) {
     for (const pattern of splitPatterns(props[key])) {
       patternCount++;
       const matcher = patternToRegExp(pattern);
