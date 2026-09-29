@@ -49,16 +49,7 @@ stubs.setGlobal("ko", {
       }, {})
     ),
 });
-// Defined rather than assigned through the stub helper: Node ships its own
-// localStorage accessor, and merely reading it to save a previous value emits an
-// ExperimentalWarning about --localstorage-file.
-Object.defineProperty(global, "localStorage", {
-  value: storage,
-  configurable: true,
-  writable: true,
-});
-after(() => delete global.localStorage);
-
+stubs.setGlobal("localStorage", storage);
 stubs.setGlobal("api", {
   tally: {
     getStatInt: (name) => {

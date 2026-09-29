@@ -321,7 +321,9 @@ that stands in for stock code that returns one.
 
 `scripts/lib/global-stubs.js` saves and restores the engine globals that shipped
 code reads at call time. It is a factory, not a singleton, so two suites never
-share a restore stack. `trackActive(setup)` is the factory-test scaffold built on
+share a restore stack. It saves each global's property rather than reading its
+value, because Node 26 defines `localStorage` as an accessor whose getter warns
+when it is read. `trackActive(setup)` is the factory-test scaffold built on
 it. Its `build()` runs the suite's setup and keeps the result. The `afterEach`
 that the helper registers can then call the result's `restore()`.
 
