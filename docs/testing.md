@@ -272,17 +272,27 @@ test's fixtures therefore cannot silently drift from what the code actually asks
 for.
 
 By default it returns the Promise itself rather than an object with a `then`
-property. That keeps `.then` the real inherited `Promise.prototype.then`. An
-object with its own `then` property is the shape that SonarLint's "objects
-should not have a then property" rule warns about. What `.then` gives back also
-carries `promise`/`done`/`fail`/`always`, as jQuery's does.
+property. That keeps `.then` chaining on the real inherited
+`Promise.prototype.then`. An object with its own `then` property is the shape
+that SonarLint's "objects should not have a then property" rule warns about.
+What `.then` gives back also carries `promise`/`done`/`fail`/`always`, as
+jQuery's does.
 
-The default `when` keeps jQuery 2's shape: one argument resolves to that value,
-and several arguments resolve to the array. It identifies a promise by a
-`promise` **method**. An argument without one therefore passes straight
-through, and `when` never waits for it, exactly as `constraints.md` describes.
-That is why it is hand-built rather than wrapped around `Promise.all`. A native
-promise resolved with a thenable adopts it, which would wait after all.
+The default `when` keeps jQuery 2's shape: its callbacks get each argument's
+value as an argument of its own, which is what shipped code that reads
+`_.toArray(arguments)` expects. It identifies a promise by a `promise`
+**method**. An argument without one therefore passes straight through, and
+`when` never waits for it, exactly as `constraints.md` describes. That is why it
+is hand-built rather than wrapped around `Promise.all`. A native promise
+resolved with a thenable adopts it, which would wait after all.
+
+The default `.then` applies the same test to what a callback returns. jQuery 2
+waits for the returned value only when it has a `promise` method, and passes an
+engine or native promise on as a value, unwaited. The inherited `.then` would
+adopt it and wait, so the fake fails the test instead. It throws, which rejects
+the chain, and it throws again out of band, so a `.fail()` further down cannot
+swallow the error. What a `done`, `fail` or `always` callback returns is not
+tested, because jQuery ignores it.
 
 `installFakeJQuery(stubs, { sync: true })` swaps in a Deferred that models
 jQuery 2.1.4 itself, and a `when` that takes exactly one argument. Its callbacks

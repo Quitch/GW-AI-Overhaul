@@ -3,10 +3,39 @@
 // Covers exactly the $/api subset the shipped referee and co-op code uses - not a
 // general polyfill.
 
-// The Promise itself, augmented, rather than a wrapper - so `.then` stays the
-// inherited Promise.prototype.then rather than a hand-rolled look-alike. What
-// `.then` returns is augmented in the same way, as jQuery's is: setup.js chains
-// .fail() off a .then(), and $.when reads the result of one.
+// jQuery 2's .then waits for what a callback returns only if it has a
+// `promise` method; an engine or native promise is passed on unwaited. The
+// native .then below would wait for one, so the test fails instead - out of
+// band too, so a .fail() further down the chain cannot swallow it.
+function thenCallback(fn) {
+  if (typeof fn !== "function") {
+    return fn;
+  }
+  return function (...args) {
+    var returned = fn(...args);
+    if (
+      returned &&
+      typeof returned.then === "function" &&
+      !isJqueryPromise(returned)
+    ) {
+      var error = new Error(
+        "fake-jquery: a .then callback returned a thenable with no promise() " +
+          "method, which jQuery 2 passes on unwaited - adapt it with " +
+          "shared/gwo_promise.js"
+      );
+      process.nextTick(function () {
+        throw error;
+      });
+      throw error;
+    }
+    return returned;
+  };
+}
+
+// The Promise itself, augmented, rather than a wrapper - so `.then` chains on
+// the inherited Promise.prototype.then rather than a hand-rolled look-alike.
+// What `.then` returns is augmented in the same way, as jQuery's is: setup.js
+// chains .fail() off a .then(), and $.when reads the result of one.
 function decorate(promise) {
   var chain = promise.then.bind(promise);
 
@@ -26,7 +55,7 @@ function decorate(promise) {
     return promise;
   };
   promise.then = function (onDone, onFail) {
-    return decorate(chain(onDone, onFail));
+    return decorate(chain(thenCallback(onDone), thenCallback(onFail)));
   };
 
   return promise;
@@ -210,14 +239,15 @@ function rejected(reason) {
 }
 
 // jQuery 2 identifies a promise by a `promise` method, not by `then`, so an
-// engine promise handed to $.when is read as a plain value and never waited
-// for. Modelled here so a shipped file that does that fails a test.
+// engine promise handed to $.when, or returned from a .then callback, is read
+// as a plain value and never waited for. Modelled here so a shipped file that
+// does that fails a test.
 function isJqueryPromise(value) {
   return !!value && typeof value.promise === "function";
 }
 
 // jQuery 2's $.when: waits on a jQuery promise and passes everything else
-// through. One argument resolves to that value; several to the array of them.
+// through. The callbacks get each argument's value as an argument of its own.
 // The result carries `.always`, as jQuery's does - a caller that only wants to
 // know the wait is over uses it rather than .then.
 //
@@ -248,7 +278,7 @@ function when() {
       settled.then(
         onDone &&
           function () {
-            return onDone(args.length === 1 ? values[0] : values);
+            return onDone(...values);
           },
         onFail
       )
@@ -258,7 +288,9 @@ function when() {
   self.promise = function () {
     return self;
   };
-  self.then = chain;
+  self.then = function (onDone, onFail) {
+    return chain(thenCallback(onDone), thenCallback(onFail));
+  };
   self.done = function (fn) {
     chain(fn);
     return self;

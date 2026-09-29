@@ -12,6 +12,7 @@ const {
   registerModuleStub,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 function Graph(edges) {
   this.connections = [];
@@ -56,25 +57,7 @@ const gwoRng = loadCouiModule(
 const stubs = createGlobalStubs();
 
 before(() => {
-  // Stock relies on jQuery firing these already-resolved callbacks inline. See
-  // galaxy.md on why the workers stream stays ordered.
-  const $ = function () {};
-  $.when = function (...args) {
-    const settled = args.map((a) =>
-      a && a.__value !== undefined ? a.__value : a
-    );
-    return {
-      __value: settled.length === 1 ? settled[0] : settled,
-      then: function (fn) {
-        const out = fn(...settled);
-        return out && out.then
-          ? out
-          : { __value: out, then: (g) => $.when(g(out)) };
-      },
-    };
-  };
-  $.when.apply = (ctx, list) => $.when(...list);
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs);
 });
 
 after(() => stubs.restoreGlobals());
@@ -106,10 +89,10 @@ function chain(count) {
   };
 }
 
-function populate(galaxy, rng, teamCount) {
+async function populate(galaxy, rng, teamCount) {
   const teams = Array.from({ length: teamCount }, (_, i) => ({ color: i }));
   const spawned = [];
-  gwoBreeder.populate({
+  await gwoBreeder.populate({
     galaxy: galaxy,
     teams: teams,
     neutralStars: 1,
@@ -126,26 +109,30 @@ function populate(galaxy, rng, teamCount) {
 }
 
 describe("gwo_breeder populate", () => {
-  it("places the same factions on the same stars for one seed", () => {
-    const a = populate(chain(12), gwoRng.create("breeder-1"), 3);
-    const b = populate(chain(12), gwoRng.create("breeder-1"), 3);
+  it("places the same factions on the same stars for one seed", async () => {
+    const a = await populate(chain(12), gwoRng.create("breeder-1"), 3);
+    const b = await populate(chain(12), gwoRng.create("breeder-1"), 3);
     assert.deepEqual(a, b);
     assert.equal(a.length, 3);
   });
 
-  it("places them differently for a different seed", () => {
+  it("places them differently for a different seed", async () => {
     const runs = new Set();
     for (let i = 0; i < 12; i++) {
       runs.add(
-        JSON.stringify(populate(chain(12), gwoRng.create("seed-" + i), 3))
+        JSON.stringify(await populate(chain(12), gwoRng.create("seed-" + i), 3))
       );
     }
     assert.ok(runs.size > 1, "every seed produced the same placement");
   });
 
-  it("never spawns two factions on one star, nor on the origin", () => {
+  it("never spawns two factions on one star, nor on the origin", async () => {
     for (let i = 0; i < 12; i++) {
-      const placed = populate(chain(12), gwoRng.create("distinct-" + i), 3);
+      const placed = await populate(
+        chain(12),
+        gwoRng.create("distinct-" + i),
+        3
+      );
       const stars = placed.map((p) => p.star);
       assert.equal(new Set(stars).size, stars.length, "duplicate spawn star");
       assert.ok(!stars.includes(0), "spawned on the origin");
@@ -153,8 +140,8 @@ describe("gwo_breeder populate", () => {
   });
 
   // Matching stock without an rng is the whole reason the fallback is kept.
-  it("still runs with no rng, drawing from lodash", () => {
-    const placed = populate(chain(12), undefined, 3);
+  it("still runs with no rng, drawing from lodash", async () => {
+    const placed = await populate(chain(12), undefined, 3);
     assert.equal(placed.length, 3);
   });
 });
