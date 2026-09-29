@@ -3,7 +3,9 @@
 // Existence check for the ai_path source files this repo ships. Why shape is
 // not asserted here: testing.md, "The validators". The remaining ai_path
 // sources are base-game-owned or runtime-synthesised, and
-// test/referee_ai_file_processing.test.js's mocks cover them.
+// test/referee_ai_file_processing.test.js's mocks cover them. The pa/ai_tech/
+// files a card's `load` names are checked against the cards themselves, by
+// validate:ai-mods.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -25,6 +27,10 @@ const REQUIRED_FILES = [
   "pa/ai/factory_builds/factory_land_builds_x1.json",
   "pa/ai/factory_builds/factory_uc_builds_x1.json",
   "pa/ai/platoon_templates/platoon_templates.json",
+  // The Queller unit maps GWO shadows, one per tier it selects.
+  "pa/ai_queller/q_bronze/unit_maps/ai_unit_map.json",
+  "pa/ai_queller/q_silver/unit_maps/ai_unit_map.json",
+  "pa/ai_queller/q_uber/unit_maps/ai_unit_map.json",
 ];
 
 describe("ai_path source files GWO ships", () => {

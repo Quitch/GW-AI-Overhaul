@@ -1,10 +1,10 @@
 "use strict";
 
-// Unit tests for shared/referee_subcommander_tech.js: the three tech-card mutators
-// that rewrite an AI personality when the matching subcommander upgrade card is held.
-// Existing suites already exercise hasSmartSubcommanders and the card-absent
-// branches; these cover the card-present true-branches, which encode the actual AI
-// behaviour change.
+// Unit tests for shared/referee_subcommander_tech.js: the two mutators that
+// rewrite an AI personality, and the duplication count and check, each with its
+// Sub Commander upgrade card held and absent. hasSmartSubcommanders is
+// exercised through the path tests that pick a Queller tier by it (ai.test.js,
+// gw_per_player_tech_referee_ai_paths.test.js).
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
