@@ -323,26 +323,27 @@ define([
       }
       var rng = params.factoryRng(record, entry.dealIndex);
       var id = rng ? rng.pick(ids) : _.sample(ids);
+      var assignDealt = function (card) {
+        live();
+        if (!fits(applied, card)) {
+          return dealingHand("no room for " + id);
+        }
+        return params.effects
+          .apply(coopAiEffects.addCard(record.inventory, card))
+          .then(function (inventory) {
+            live();
+            if (params.armyGap(inventory.units) === "landFactory") {
+              return dealingHand("still none with " + id);
+            }
+            console.log(
+              line + "-> assigned " + id + " (no basic land factory)"
+            );
+            return { inventory: inventory };
+          });
+      };
 
       return Promise.resolve(params.dealCard(id, applied, star)).then(
-        function (card) {
-          live();
-          if (!fits(applied, card)) {
-            return dealingHand("no room for " + id);
-          }
-          return params.effects
-            .apply(coopAiEffects.addCard(record.inventory, card))
-            .then(function (inventory) {
-              live();
-              if (params.armyGap(inventory.units) === "landFactory") {
-                return dealingHand("still none with " + id);
-              }
-              console.log(
-                line + "-> assigned " + id + " (no basic land factory)"
-              );
-              return { inventory: inventory };
-            });
-        },
+        assignDealt,
         function (error) {
           console.error(
             line +
@@ -451,6 +452,18 @@ define([
         });
       };
 
+      var dealAndJudge = function () {
+        return Promise.resolve(
+          params.dealHand({
+            client: client,
+            record: record,
+            dealIndex: entry.dealIndex,
+            starIndex: entry.star,
+            star: star,
+          })
+        ).then(judge);
+      };
+
       return params.effects
         .apply(record.inventory)
         .then(function (inventory) {
@@ -470,15 +483,7 @@ define([
           if (assigned) {
             return assigned;
           }
-          return Promise.resolve(
-            params.dealHand({
-              client: client,
-              record: record,
-              dealIndex: entry.dealIndex,
-              starIndex: entry.star,
-              star: star,
-            })
-          ).then(judge);
+          return dealAndJudge();
         });
     };
 
@@ -493,21 +498,23 @@ define([
         return Promise.resolve({ summary: "declined (fallback, no card)" });
       }
 
+      var takeIfRoom = function (applied) {
+        if (!fits(applied, pick)) {
+          return { summary: "declined (fallback, bank full)" };
+        }
+        return params.effects
+          .apply(coopAiEffects.addCard(record.inventory, pick))
+          .then(function (inventory) {
+            return {
+              inventory: inventory,
+              summary: "took " + pick.id + " (fallback)",
+            };
+          });
+      };
+
       return params.effects
         .apply(record.inventory)
-        .then(function (applied) {
-          if (!fits(applied, pick)) {
-            return { summary: "declined (fallback, bank full)" };
-          }
-          return params.effects
-            .apply(coopAiEffects.addCard(record.inventory, pick))
-            .then(function (inventory) {
-              return {
-                inventory: inventory,
-                summary: "took " + pick.id + " (fallback)",
-              };
-            });
-        })
+        .then(takeIfRoom)
         .then(null, function (error) {
           return {
             summary: "declined (fallback failed: " + describe(error) + ")",

@@ -458,8 +458,7 @@
             $.when.apply($, loading).then(onSystemsLoaded, withoutBrackets);
           };
 
-          // modsMounted is an engine promise, which $.when does not wait for.
-          gwoPromise.settled(modsMounted).then(function () {
+          var loadOptions = function () {
             // Capability rather than the mod identifier: the identifier changes on a
             // dev build of Shared Systems, this does not.
             if (
@@ -473,7 +472,10 @@
             chooseStarSystemTemplates
               .loadOptions()
               .then(onOptionsLoaded, withoutBrackets);
-          });
+          };
+
+          // modsMounted is an engine promise, which $.when does not wait for.
+          gwoPromise.settled(modsMounted).then(loadOptions);
 
           return ready.promise();
         };
