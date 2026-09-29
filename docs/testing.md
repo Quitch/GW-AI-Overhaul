@@ -110,8 +110,7 @@ validates, so the build entry silently never fires. That is how
 `HasEcoForAdvanced` (the real test is `HaveEcoForAdvanced`) went unnoticed.
 
 CI has no base install, so this list has to be committed. **Re-harvest it after
-a PA patch adds tests.** `UnitCountonPlanet` is a base-game spelling variant. It
-stays in the list because the engine accepts what its own data ships.
+a PA patch adds tests.**
 
 **`test/fixtures/unit_types.json` is harvested the same way.**
 `npm run harvest:unit-types` writes it. It holds every listed unit's
