@@ -386,7 +386,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             : cookObjectStep(step, op);
         };
 
-        // Whether cookStep would have to make an intermediate `step`.
+        // Whether cookStep would have to make `step`.
         var isMissing = function (step) {
           if (!_.isArray(spec)) {
             return !Object.prototype.hasOwnProperty.call(spec, step);
@@ -399,10 +399,17 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           );
         };
 
+        // The op still sees undefined, so tag warns.
+        var stopsAt = function (step) {
+          if (!opsThatDoNotCreate[mod.op] || !isMissing(step)) {
+            return false;
+          }
+          ops[mod.op](undefined, mod.value);
+          return true;
+        };
+
         while (path.length > 1) {
-          if (opsThatDoNotCreate[mod.op] && isMissing(path[path.length - 1])) {
-            // As at a missing leaf, the op sees undefined, so tag still warns.
-            ops[mod.op](undefined, mod.value);
+          if (stopsAt(path[path.length - 1])) {
             return;
           }
           var level = cookStep(path.pop());
@@ -423,6 +430,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
         }
 
         if (path.length && path[0]) {
+          if (stopsAt(path[0])) {
+            return;
+          }
           var leaf = cookStep(path[0], mod.op);
           spec[leaf] = ops[mod.op](spec[leaf], mod.value);
         } else if (opsWithoutPath[mod.op]) {

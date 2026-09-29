@@ -342,6 +342,25 @@ describe("specs.mod - a missing intermediate segment", () => {
     assert.deepEqual(data["unit.json"].list, [{ a: 1 }]);
   });
 
+  // The last segment too: a "+" or an index past the end is a missing target.
+  for (const [op, path, start] of [
+    ["multiply", "list.+", [1]],
+    ["multiply", "list.3", [1]],
+    ["tag", "list.+", ["tool.json"]],
+    ["tag", "list.2", ["tool.json"]],
+  ]) {
+    it(`${op} on ${path} leaves the array as it was`, () => {
+      mock.method(console, "warn", () => {});
+      const data = { "unit.json": { list: start.slice() } };
+      specs.mod(
+        data,
+        [{ file: "unit.json", path: path, op: op, value: 2 }],
+        ".player"
+      );
+      assert.deepEqual(data["unit.json"].list, start);
+    });
+  }
+
   it("tag adds no tool the unit lacks, and warns as for a missing value", () => {
     const warnMock = mock.method(console, "warn", () => {});
     const data = { "unit.json": { tools: [{ spec_id: "tool.json" }] } };
