@@ -260,11 +260,7 @@ define([
     var refreshViewerLater = function (client) {
       return new Promise(function (resolve) {
         _.defer(function () {
-          resolve(
-            Promise.resolve().then(function () {
-              return refreshViewer(client);
-            })
-          );
+          resolve(Promise.resolve().then(_.partial(refreshViewer, client)));
         });
       });
     };
