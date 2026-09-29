@@ -9,7 +9,9 @@
     var galaxy = game.galaxy();
     var luckyCommanderFixed = ko
       .observable()
-      .extend({ local: "gwaio_lucky_commander_fixed" });
+      // Not gwaio_lucky_commander_fixed: up to 7.4.1 a war's version set
+      // that without moving the card.
+      .extend({ local: "gwaio_lucky_commander_moved" });
     var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
     var allFixesApplied =
       gwoSettings &&
@@ -64,17 +66,14 @@
       }
     };
 
-    var fixLuckyCommanderLocalStorageVariable = function (gwoBank) {
-      var unlockedVanillaStartCards = ko
-        .observableArray()
-        .extend({ local: "gw_bank" });
-      var index = _.findIndex(unlockedVanillaStartCards().startCards, {
-        id: "gwaio_start_lucky",
-      });
+    // The base game's bank read gw_bank before this runs and saves its own
+    // list on the next unlock, so the card leaves through that bank.
+    var fixLuckyCommanderLocalStorageVariable = function (gwoBank, stockBank) {
+      var startCards = stockBank.startCards();
+      var kept = _.reject(startCards, { id: "gwaio_start_lucky" });
 
-      if (index !== -1) {
-        unlockedVanillaStartCards().startCards.splice(index, 1);
-        unlockedVanillaStartCards.valueHasMutated();
+      if (kept.length !== _.size(startCards)) {
+        stockBank.startCards(kept);
         gwoBank.addStartCard({ id: "gwaio_start_lucky" });
       }
 
@@ -99,12 +98,10 @@
       var playerIsCluster = gwoCard.playerIsCluster(model.game().inventory());
 
       // No version sets planetPositionFixed: Shared Systems for GW generates
-      // the systems of any war, so a new war can still need it.
+      // the systems of any war, so a new war can still need it. Nor
+      // luckyCommanderFixed: it is the profile's bank, not the war's.
       if (atLeastVersion("6.8.0")) {
         gwoSettings.treasureLoadoutDerived = true;
-      }
-      if (atLeastVersion("5.76.1")) {
-        luckyCommanderFixed("true");
       }
       if (atLeastVersion("5.52.2") || playerIsCluster) {
         gwoSettings.clusterFixed = true;
@@ -114,7 +111,7 @@
       }
     };
 
-    var applyFixes = function (gwoTreasure, gwoBank, clusterRepair) {
+    var applyFixes = function (gwoTreasure, gwoBank, clusterRepair, stockBank) {
       for (var star of galaxy.stars()) {
         if (!gwoSettings.treasurePlanetFixed) {
           fixTreasurePlanetCardList(star);
@@ -139,7 +136,7 @@
       gwoSettings.planetPositionFixed = true;
 
       if (luckyCommanderFixed() !== "true") {
-        fixLuckyCommanderLocalStorageVariable(gwoBank);
+        fixLuckyCommanderLocalStorageVariable(gwoBank, stockBank);
       }
     };
 
@@ -150,10 +147,11 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cluster_repair.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+        "shared/gw_common",
       ],
-      function (gwoSave, gwoTreasure, gwoBank, clusterRepair, gwoCard) {
+      function (gwoSave, gwoTreasure, gwoBank, clusterRepair, gwoCard, GW) {
         checkIfPatchesNeeded(gwoCard);
-        applyFixes(gwoTreasure, gwoBank, clusterRepair);
+        applyFixes(gwoTreasure, gwoBank, clusterRepair, GW.bank);
         gwoSave(game, true);
       }
     );

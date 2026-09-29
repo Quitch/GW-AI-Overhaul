@@ -4,7 +4,7 @@
 // The mod-application engine is covered by test/applyAiMods.test.js instead.
 // The module loads for real; only model/$/api are mocked.
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
@@ -17,6 +17,7 @@ const {
   installRefereeFakes,
   runRefereeAi,
 } = require("../scripts/lib/referee-fakes.js");
+const { failedEngineCall } = require("../scripts/lib/fake-jquery.js");
 
 const refereeAi = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
@@ -990,5 +991,65 @@ describe("failure", () => {
     });
 
     await assert.rejects(run({}), /no such directory/);
+  });
+
+  // Nothing checks a third-party card's load target, so a missing one is that
+  // card's loss rather than every battle's while the card is held.
+  it("skips a load file that cannot be read, and logs it", async () => {
+    const errors = mock.method(console, "error", () => {});
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [{ type: "fabber", op: "load", value: "missing.json" }],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: (url) => {
+        if (url.includes("/ai_tech/")) {
+          throw new Error("HTTP 404");
+        }
+        return { build_list: [] };
+      },
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+    errors.mock.restore();
+
+    assert.ok("/pa/ai_subcommander/fabber_builds/x.json" in filesObj);
+    assert.deepEqual(
+      Object.keys(filesObj).filter((key) => key.endsWith("/missing.json")),
+      []
+    );
+    assert.equal(errors.mock.callCount(), 1);
+    assert.match(
+      errors.mock.calls[0].arguments[0],
+      /^AI file of a load mod not read, skipped: \/pa\/ai_tech\/fabber_builds\/missing\.json \(Error: HTTP 404/
+    );
+  });
+
+  // The engine's promise never settles a .then given no error callback when
+  // the call fails, so a listing chained without one hung the launch.
+  it("rejects, rather than hangs, when the engine cannot list a tree", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [],
+    });
+    installModel(fixture.game, []);
+    installFakes({});
+    global.api.file.list = (path) =>
+      failedEngineCall(path + " is not listable");
+
+    const outcome = await Promise.race([
+      run({}).then(
+        () => "resolved",
+        (error) => "rejected: " + error
+      ),
+      new Promise((resolve) => setTimeout(resolve, 100, "hung")),
+    ]);
+
+    assert.equal(outcome, "rejected: /pa/ai/ is not listable");
   });
 });

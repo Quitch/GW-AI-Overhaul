@@ -297,7 +297,9 @@ parses each file at most once and reuses it across every tag.
 
 The invariant that makes it safe is this: **tag a clone, never the cached pristine
 copy.** A failed fetch is deliberately not cached. A later tag can therefore retry
-rather than inherit a permanent failure. `fetchRaw` hands a caller the pristine
+rather than inherit a permanent failure. A spec that fails to fetch or to tag, such
+as a file that parses to `null`, is logged and left out of that tag's set, so one
+bad file cannot stall the launch. `fetchRaw` hands a caller the pristine
 parsed spec through the same cache. `references` lists a spec's untagged references
 without touching it. `gw_play/race_cells.js` uses both to read every spec ahead of
 the referee, which then fetches nothing twice.

@@ -92,7 +92,19 @@ define([
 
     GW.manifest.loadGame(activeGameId).then(
       function (game) {
-        deferred.resolve(readGame(game, hostInstalledInfo()));
+        // Stock resolves with no game for an id it has not stored, and a
+        // throw here escapes jQuery, leaving every consumer waiting.
+        var host;
+        try {
+          host = readGame(game, hostInstalledInfo());
+        } catch (e) {
+          console.error(
+            "Galactic War Overhaul (GWO): war not read: " +
+              ((e && e.stack) || e)
+          );
+          host = empty();
+        }
+        deferred.resolve(host);
       },
       function () {
         deferred.resolve(empty());

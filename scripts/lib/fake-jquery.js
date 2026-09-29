@@ -248,6 +248,37 @@ function enginePromise() {
   };
 }
 
+// A failed api.* call, chained as PA's coherent.js chains one: a .then given
+// an error callback gets the failure, and fails the promise it returns with
+// what that callback returned or threw. The promise a .then given no error
+// callback returns never settles, because the engine's default handler merges
+// rather than rejects. api.file.list fails this way for a path it cannot list.
+// Measured against the game's own coherent.js.
+function failedEngineCall(reason) {
+  return {
+    then: function (onDone, onFail) {
+      if (!onFail) {
+        return neverSettles();
+      }
+      var failure;
+      try {
+        failure = onFail(reason);
+      } catch (e) {
+        failure = e;
+      }
+      return failedEngineCall(failure);
+    },
+  };
+}
+
+function neverSettles() {
+  return {
+    then: function () {
+      return neverSettles();
+    },
+  };
+}
+
 // A settled jQuery promise, for a fixture standing in for code that returns one.
 function resolved(value) {
   return makeDeferred().resolve(value).promise();
@@ -387,6 +418,7 @@ function createFakeApi(overrides) {
 module.exports = {
   makeDeferred: makeDeferred,
   enginePromise: enginePromise,
+  failedEngineCall: failedEngineCall,
   resolved: resolved,
   rejected: rejected,
   createFakeJQuery: createFakeJQuery,

@@ -1,7 +1,8 @@
 "use strict";
 
 // scripts/lib/fake-jquery.js: the default fake's .then refuses what jQuery 2
-// would not wait for, and its $.when calls back as jQuery 2's does.
+// would not wait for, its $.when calls back as jQuery 2's does, and a failed
+// engine call chains as PA's coherent.js chains one.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -10,6 +11,7 @@ const { spawnSync } = require("node:child_process");
 const {
   createFakeJQuery,
   enginePromise,
+  failedEngineCall,
   makeDeferred,
   rejected,
   resolved,
@@ -158,5 +160,41 @@ describe("fake-jquery sync when", () => {
     });
     failing.reject("no");
     assert.equal(reason, "no");
+  });
+});
+
+describe("fake-jquery failedEngineCall", () => {
+  it("hands the failure to an error callback, and fails the next with its return", () => {
+    const reasons = [];
+    failedEngineCall("unlistable")
+      .then(undefined, (reason) => {
+        reasons.push(reason);
+        return "handled";
+      })
+      .then(undefined, (reason) => reasons.push(reason));
+    assert.deepEqual(reasons, ["unlistable", "handled"]);
+  });
+
+  it("never settles what a .then with no error callback returns", async () => {
+    let settled = false;
+    failedEngineCall("unlistable")
+      .then(() => {})
+      .then(
+        () => {
+          settled = true;
+        },
+        () => {
+          settled = true;
+        }
+      );
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.equal(settled, false);
+  });
+
+  it("rejects a native promise that adopts it", async () => {
+    await assert.rejects(
+      Promise.resolve(failedEngineCall(new Error("unlistable"))),
+      /unlistable/
+    );
   });
 });

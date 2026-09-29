@@ -1053,7 +1053,11 @@ Four things about it are not obvious from the scene it sits in:
   `GW.manifest.loadGame(model.activeGameId())` once and caches the promise for
   both scene scripts. It resolves
   `{ faction, colour, race, races, perPlayerRace }` always and never rejects,
-  because a loadout preview outside a war still has to render.
+  because a loadout preview outside a war still has to render. A war it cannot
+  read, such as an id stock's `loadGame` has not stored, is one with no races.
+  Both scripts wait on the same jQuery promise, and jQuery 2.1.4 runs no later
+  callback on a promise once one has thrown. So the race picker's callback
+  catches its own throw, or Join would wait for good.
 
   `colour` is the war's `global.playerColor`. It paints the commander preview
   the way the war setup's Commander picker does: the same

@@ -67,7 +67,10 @@ only. One works on `json.platoon_templates` and is valid for `template` only.
 `addApplicableAiLoadModsToFileList` handles it separately. That function appends
 `/pa/ai_tech/<managerPath(type)>/<value>` to the file list, so a whole extra
 build file joins the walk. If a caller passes `load` to `applyAiMods`, the
-function logs `"Invalid AI mod operation"` and does nothing.
+function logs `"Invalid AI mod operation"` and does nothing. Nothing checks
+that a third-party card's `value` names a file that exists, so a load file that
+cannot be read is logged and skipped. Every other file that cannot be read
+fails the battle.
 
 The pipeline walks a loaded file like any other file. So every in-scope
 descriptor also applies to it, **including the loading card's own**. That is
@@ -214,10 +217,15 @@ Two details make it correct:
   `processDirectories` pushes the pass's `load` paths onto its listing. A shared
   array would carry the host's `/pa/ai_tech/` files into every later pass, a
   viewer's tree and a race tree included.
-- **It re-chains rather than re-fetches.** `.then` returns a new promise each
-  time, on the engine's promise (`api.file.list`) as on jQuery's (`$.getJSON`).
-  So the cache can chain from one stored request repeatedly without consuming
-  it.
+- **It holds native promises and re-chains rather than re-fetches.** Each
+  request, the engine's `api.file.list` and jQuery's `$.getJSON`, is adopted
+  into a native promise when it is made. `.then` returns a new promise each
+  time, so the cache can chain from one stored request repeatedly without
+  consuming it. Native, because neither original settles a failure safely: the
+  engine's promise never settles a `.then` given no error callback when the
+  call fails, and jQuery's lets a callback's throw escape rather than reject.
+  Either would leave a failed listing or a file that throws in the per-file
+  work hanging the launch.
 
 The cache lives exactly one launch. `gw_play/referee.js` creates it on the first
 hire after `launchingFight` becomes true. It passes the same cache to every hire
