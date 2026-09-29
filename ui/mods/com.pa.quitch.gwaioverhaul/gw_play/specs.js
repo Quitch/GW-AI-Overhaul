@@ -408,23 +408,28 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return true;
         };
 
-        while (path.length > 1) {
-          if (stopsAt(path[path.length - 1])) {
-            return;
-          }
-          var level = cookStep(path.pop());
-
+        var stepInto = function (level) {
           if (_.isString(spec[level])) {
             var newSpec = load(spec[level]);
             if (!newSpec) {
               reportError("Undefined mod spec encountered,", level);
-              return;
+              return false;
             }
             spec = newSpec;
           } else if (_.isObject(spec[level])) {
             spec = spec[level];
           } else {
             reportError("Invalid attribute encountered,", level);
+            return false;
+          }
+          return true;
+        };
+
+        while (path.length > 1) {
+          if (stopsAt(path[path.length - 1])) {
+            return;
+          }
+          if (!stepInto(cookStep(path.pop()))) {
             return;
           }
         }
