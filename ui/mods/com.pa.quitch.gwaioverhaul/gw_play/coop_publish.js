@@ -25,12 +25,10 @@ define([
   var othersLevel = function (except) {
     var game = model.game();
     return coopStarCards.viewersReadyForStarRefresh({
-      viewers: _.reject(
-        refereeCoop.viewersOf(connectedClients()),
-        function (client) {
-          return client.id === except.id && client.name === except.name;
-        }
-      ),
+      viewers: _.reject(refereeCoop.viewersOf(connectedClients()), {
+        id: except.id,
+        name: except.name,
+      }),
       findRecord: function (client) {
         return refereeCoop.recordForClient(game, client);
       },
