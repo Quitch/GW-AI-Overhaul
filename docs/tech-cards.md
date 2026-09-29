@@ -35,7 +35,7 @@ save-compatibility with GWO v5.9.0 and earlier. The card is deliberately invisib
 and undiscardable. It exists only so that old saves that reference it still load.
 
 The minion and card-slot redesigns dropped `keep` and `discard`. `gw_inventory.js`
-and `gw_start/setup.js` still call them when a card has them. The contract validator
+and `gw_start/war_generation.js` still call them when a card has them. The contract validator
 therefore continues to accept them. They are legitimate extension points, not typos.
 
 `npm run validate:cards` enforces this shape. It checks what `define()` returns. It
