@@ -195,7 +195,6 @@ describe("CSS the engine drops", () => {
   });
 
   // What this profile catches beyond the plugin, with the rule that must fire.
-  // Each was checked in the engine: see constraints.md.
   const BEYOND_THE_PLUGIN = [
     // A banned keyword anywhere in the value, not only as the whole of it.
     ["overflow: clip visible", VALUES],
