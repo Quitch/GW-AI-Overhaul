@@ -99,12 +99,10 @@
       var playerIsCluster = gwoCard.playerIsCluster(model.game().inventory());
 
       // No version sets planetPositionFixed: Shared Systems for GW generates
-      // the systems of any war, so a new war can still need it.
+      // the systems of any war, so a new war can still need it. Nor
+      // luckyCommanderFixed: it is the profile's bank, not the war's.
       if (atLeastVersion("6.8.0")) {
         gwoSettings.treasureLoadoutDerived = true;
-      }
-      if (atLeastVersion("5.76.1")) {
-        luckyCommanderFixed("true");
       }
       if (atLeastVersion("5.52.2") || playerIsCluster) {
         gwoSettings.clusterFixed = true;

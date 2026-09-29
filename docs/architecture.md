@@ -272,12 +272,15 @@ Know the shape before you add a fix to it:
   `originSystem.gwaio`.
   `gwaio_lucky_commander_fixed` lives in `localStorage`. Once a repair runs, or
   is ruled unnecessary, the flag says so. The file then skips the scan for good.
-- **`checkIfPatchesNeeded` sets those flags from `gwoSettings.version`** via
+- **`checkIfPatchesNeeded` sets the war's flags from `gwoSettings.version`** via
   `atLeastVersion`. So a war created after a fix shipped never pays for the
   scan. A war with no recorded version compares as older than everything. That
   is the safe direction. `planetPositionFixed` has no version: its defect also
   comes from Shared Systems for GW, which replaces GWO's system loader, so a war
   of any version can need it. Each war pays for one sweep of its planets.
+  `gwaio_lucky_commander_fixed` has no version either: it records the profile's
+  bank, which a war's version says nothing about, so its repair runs once per
+  profile.
 - **`applyFixes` sets the flags unconditionally after the sweep.** The reason is
   that "the thing this fix targets does not exist in this war" and "it has been
   fixed" want the same outcome. A war with no treasure planet should not re-scan
