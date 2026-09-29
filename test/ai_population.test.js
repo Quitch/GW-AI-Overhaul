@@ -1,7 +1,7 @@
 "use strict";
 
 // Tests for gw_start/ai_population.js, with hand-built galaxies of the shape
-// gw_start/setup.js hands it.
+// gw_start/war_generation.js hands it.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -12,6 +12,9 @@ const gwoRng = loadCouiModule(
 );
 const gwoPersonality = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai_personality.js"
+);
+const gwoAI = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
 );
 const population = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_population.js"
@@ -71,6 +74,21 @@ function star(distance, ai) {
     ai: () => ai,
     system: () => system,
   };
+}
+
+// Draws pass straight through; every stream derived is recorded by its path.
+function recordStreams(rng, path, paths) {
+  const recorder = () => rng();
+  ["int", "float", "pick", "sample", "shuffle"].forEach((name) => {
+    recorder[name] = (...args) => rng[name](...args);
+  });
+  recorder.stream = (label, index) => {
+    const key = label + (index === undefined ? "" : "." + index);
+    const child = path ? path + "/" + key : key;
+    paths.push(child);
+    return recordStreams(rng.stream(label, index), child, paths);
+  };
+  return recorder;
 }
 
 // One team: a boss at distance 3 and one worker at distance 1, plus a neutral
@@ -186,6 +204,33 @@ describe("populate", () => {
     );
   });
 
+  it("derives every roll from its keyed stream", () => {
+    const { war, teamInfo, boss, worker, guardian } = warWith({
+      settings: { ffaChance: 100, alliedCommanderChance: 100 },
+    });
+    [boss, worker, guardian].forEach((ai) => {
+      ai.race = "legion";
+    });
+    war.raceByFaction = { 0: "legion", 2: "legion" };
+    war.playerRace = "legion";
+    const paths = [];
+    war.rng = recordStreams(war.rng, "", paths);
+    population.populate(war, teamInfo);
+
+    const armies = ["boss/minion.0", "boss/minion.1"].concat(
+      ...[0, 1].map((n) =>
+        ["minion.0", "foe.0", "ally"].map(
+          (child) => "worker." + n + "/" + child
+        )
+      )
+    );
+    const expected = ["ai.0", "ai.0/boss", "ai.0/worker.0", "ai.0/worker.1"]
+      .concat(armies.map((army) => "ai.0/" + army))
+      .concat(armies.map((army) => "ai.0/" + army + "/commander"))
+      .concat(["treasure"]);
+    assert.deepEqual([...new Set(paths)].sort(), expected.sort());
+  });
+
   it("turns the first non-boss AI star into the Guardians", () => {
     const { war, teamInfo, guardian, stars } = warWith();
     const outcome = population.populate(war, teamInfo);
@@ -290,6 +335,47 @@ describe("populate", () => {
     gwoPersonality.FFA_TAGS.forEach((tag) => {
       assert.ok(worker.personality.personality_tags.includes(tag));
       assert.ok(foe.personality.personality_tags.includes(tag));
+    });
+  });
+
+  it("gives an MLA Cluster Worker foe the Cluster Worker's commanders", () => {
+    const pools = factions();
+    pools[CLUSTER] = { minions: [minion("Worker")] };
+    const { war, teamInfo, worker } = warWith({
+      factions: pools,
+      settings: { ffaChance: 100, bossCommanders: 4 },
+    });
+    war.aiFactions = [0, CLUSTER];
+    war.raceByFaction[CLUSTER] = "mla";
+    population.populate(war, teamInfo);
+
+    const foe = worker.foes[0];
+    assert.equal(foe.faction, CLUSTER);
+    // 1 + floor(4 / 2), not round((1 + 1) / 2).
+    assert.equal(foe.commanderCount, 3);
+  });
+
+  it("fails the war when a foe's pool is empty", () => {
+    const pools = factions();
+    pools[2] = { minions: [] };
+    const { war, teamInfo } = warWith({
+      factions: pools,
+      settings: { ffaChance: 100 },
+    });
+    assert.equal(population.populate(war, teamInfo).failed, true);
+  });
+
+  it("gives a Penchant ally a penchant of its own", () => {
+    const { war, teamInfo, worker } = warWith({
+      settings: { alliedCommanderChance: 100 },
+      brains: { aiByRace: {}, ai: "Titans", aiAlly: "Penchant" },
+    });
+    population.populate(war, teamInfo);
+
+    const ally = worker.ally;
+    assert.equal(typeof ally.penchantName, "string");
+    gwoAI.penchantTags(ally.penchantName).forEach((tag) => {
+      assert.ok(ally.personality.personality_tags.includes(tag));
     });
   });
 

@@ -109,6 +109,44 @@ describe("file filtering", () => {
   });
 });
 
+// Under a shared source the enemies read the file's own path, so the base
+// pass copies it there before the Sub Commanders' AI mods apply.
+describe("clean copy", () => {
+  it("keeps the Sub Commanders' AI mods off a shared source's own path", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [
+        {
+          type: "fabber",
+          op: "replace",
+          toBuild: "Bot",
+          idToMod: "priority",
+          value: 42,
+        },
+      ],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [{ to_build: "Bot", priority: 1 }] }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.equal(
+      filesObj["/pa/ai/fabber_builds/x.json"].build_list[0].priority,
+      1
+    );
+    assert.equal(
+      filesObj["/pa/ai_subcommander/fabber_builds/x.json"].build_list[0]
+        .priority,
+      42
+    );
+  });
+});
+
 // The clean copy is for enemies, which never read /pa/ai_tech/.
 describe("load files", () => {
   it("writes no clean copy of a load file to its own path", async () => {

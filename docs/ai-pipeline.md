@@ -166,9 +166,9 @@ or any of its foes is Cluster. Otherwise it returns `"None"`.
 
 ## Writing the output
 
-`processFilesInDirectory` resolves, per file, which destination path(s) the
-contents belong at and which descriptors are in scope. Then `writeConfigFiles`
-applies and writes. Three kinds of file are skipped:
+`resolveWrites` resolves, per file, which destination path(s) the contents
+belong at and which descriptors are in scope. Then `writeConfigFiles` applies
+and writes. Three kinds of file are skipped:
 
 - A file is skipped unless it ends in `.json`.
 - `/neural_networks/` is skipped entirely, because AIs use
@@ -179,7 +179,7 @@ applies and writes. Three kinds of file are skipped:
 Three behaviours here are worth knowing before editing:
 
 **The Cluster duplication is asymmetric on purpose.**
-`applyClusterModsIfNeeded` takes two JSON objects. The player branch uses the
+`writeClusterCopy` takes two JSON objects. The player branch uses the
 mutated `json`, because the player's own Cluster ally is _supposed_ to receive the
 tech. The enemy branch uses `originalJson`, a pre-mod snapshot, so an enemy
 Cluster foe never inherits tech the player bought. The code skips the deep clone

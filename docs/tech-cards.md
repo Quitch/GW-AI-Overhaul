@@ -35,7 +35,7 @@ save-compatibility with GWO v5.9.0 and earlier. The card is deliberately invisib
 and undiscardable. It exists only so that old saves that reference it still load.
 
 The minion and card-slot redesigns dropped `keep` and `discard`. `gw_inventory.js`
-and `gw_start/setup.js` still call them when a card has them. The contract validator
+and `gw_start/war_generation.js` still call them when a card has them. The contract validator
 therefore continues to accept them. They are legitimate extension points, not typos.
 
 `npm run validate:cards` enforces this shape. It checks what `define()` returns. It
@@ -403,7 +403,7 @@ silently discards everything the mod registered.
 | `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee |
 | `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`    |
 | `gwoStartingCards`             | start, coop loadout       | `shared/loadouts.js`                            |
-| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
+| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                    |
 | `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added    |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
 | `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |

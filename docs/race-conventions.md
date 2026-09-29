@@ -181,7 +181,8 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   does a co-op viewer under Separate races. The boss keeps its Pumpkin, and the
   Guardians keep their Unicorn. A viewer that kept a stock commander keeps it.
   All of these are retagged. Commander cells receive mods but are never
-  granted.
+  granted. Every commander in the list is a spec the race's own mods ship.
+  `test/race_tables.test.js` checks the list against the harvest.
 - **Commander art hue.** `commanderArtHue` is the hue that the preview art
   ships in (MLA 210 blue, Legion 0 red). The war setup's Commander picker and
   the co-op loadout scene both rotate from there to the faction colour.
@@ -212,8 +213,18 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
   Chambers) and `bug_turret_spray`. So its AI cannot research in GW until the
   mod lists them. Report this upstream. The list stays authoritative.
 - Exiles' `/pa/units/base/flare/flare.json` tool `flare_sd_Weapon` does not
-  parse server-side (`CostStampSpec::parse failed`). Its unit map names two
-  specs that the zip does not ship (`adv_tank_hover`, `r_artillery`).
+  parse server-side (`CostStampSpec::parse failed`). Its unit map names
+  `r_artillery`, which the zip does not ship. Exiles 0.7.2's `unit_list.json`
+  lists `/pa/units/land/minigun_vehicle/minigun_vehicle.json`, which no mod
+  ships.
+- Exiles 0.7.2 lists three commanders: Maxim, Brainiac, and Blueberry, whose
+  spec is `exiles_blueberry/union_formidable.json`. commander-merge 1.9 ships
+  `exiles_taurus/exiles_taurus.json` and
+  `exiles_blueberry/exiles_blueberry.json` as Exiles 0.8.4 laid them out, and
+  no mod ships what they name: the Taurus model, anim tree, build arm, and
+  weapons, and that Blueberry's anim tree and main weapon. GWO offers only
+  the three that Exiles lists. A war that already holds the Taurus or that
+  Blueberry keeps it.
 - All three race mods keep their AI files under `/pa/ai/`, so every MLA
   Titans AI merges their build entries at equal priorities. Exiles also ships
   `platoon_templates.json` and `platoon_land_builds.json` at the vanilla

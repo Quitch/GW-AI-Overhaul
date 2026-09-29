@@ -3,9 +3,10 @@
 // scripts/lib/race-tables.js: the generator reproduces every race/ and
 // addon/ file from the harvested specs (test/fixtures/race_specs.json) and
 // the hand-kept inputs, and its naming rules on small hand-built sources.
-// Every path a table names is a file its own mods ship. The harvester,
-// scripts/harvest-race-specs.js, fails without writing the fixture when a
-// spec does not parse.
+// Every path a table names is a file its own mods ship, and every commander
+// a descriptor offers is a spec the harvest found in those mods. The
+// harvester, scripts/harvest-race-specs.js, fails without writing the
+// fixture when a spec does not parse.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -80,6 +81,29 @@ describe("every path a race or add-on table names", () => {
           unshipped((specPath) =>
             roots.some((root) => root.has(specPath.replace(/^\/pa\//, "")))
           ),
+          []
+        );
+      }
+    );
+  }
+});
+
+describe("every commander a race or add-on descriptor offers", () => {
+  for (const input of TABLES) {
+    const commanders = loadCouiModule("coui://" + input.file).commanders || [];
+
+    it(
+      input.id + ": is a spec the harvest found in the table's own mods",
+      () => {
+        const specs = fixture.tables[input.id].specs;
+
+        assert.deepEqual(
+          commanders
+            .map((commander) => commander.spec)
+            .filter(
+              (spec) =>
+                !input.mods.some((mod) => Object.hasOwn(specs[mod], spec))
+            ),
           []
         );
       }
