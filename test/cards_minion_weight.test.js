@@ -184,10 +184,14 @@ describe("gwc_minion weight - what zeroes it", () => {
 
   for (const [name, unit] of Object.entries(metalSources)) {
     it("offers at full weight on " + name + " alone", () => {
-      assert.equal(
-        chanceFor({ units: () => [gwoUnit.vehicleFactory, unit] }),
-        BASE_CHANCE
+      install({});
+      const result = minionCard.deal(
+        {},
+        { totalSize: 10, faction: 0 },
+        inventory({ units: () => [gwoUnit.vehicleFactory, unit] }),
+        undefined
       );
+      assert.equal(result.chance, BASE_CHANCE);
     });
   }
 });

@@ -882,15 +882,17 @@ describe("viewer reroll result handler", () => {
     await returned;
   });
 
-  it("reports a failed manifest save without rejecting the handler", async () => {
+  it("reports a failed manifest save, and rejects so the campaign queue sees it", async () => {
     const { handlers } = build({ manifestFails: true });
+    let reason;
 
-    const errors = await captureErrors(() =>
-      rejection(handlers[RESULT](result()))
-    );
+    const errors = await captureErrors(async () => {
+      reason = await rejection(handlers[RESULT](result()));
+    });
 
     assert.ok(
       errors.some((message) => /failed to save rerolled tech/.test(message))
     );
+    assert.equal(reason && reason.message, "manifest failed");
   });
 });

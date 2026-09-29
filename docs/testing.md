@@ -130,7 +130,8 @@ does). `test/unit_jobs.test.js` checks the job rule over every registered
 race's index: a job pinned for each mobile combat unit `shared/units.js`
 names, a vanilla unit a card can grant standing for each race unit of a combat
 cell, and no bit on a mobile combat unit that the rule does not know. With a PA
-install present, the test asserts that the fixture is fresh.
+install present, `test/unit_groups_cells.test.js` re-harvests and asserts that
+the fixture is fresh, its `buildable_types` as well as its `unit_types`.
 **Re-harvest it after a PA, race or add-on patch.**
 
 **`test/fixtures/race_specs.json` is the race tables' source, harvested the
@@ -145,7 +146,9 @@ broken unit cannot drop out of a table unseen.
 parts. `test/race_tables.test.js` calls `generateAll` from
 `scripts/lib/race-tables.js`, the generator behind
 `scripts/generate-race-tables.js`, in memory and requires every `race/` and
-`addon/` file to come out byte for byte as committed. After a re-harvest,
+`addon/` file to come out byte for byte as committed. It also requires every
+path a table names to be a spec the harvest found in the table's own mods,
+and, where those mods are on disk, a file they ship. After a re-harvest,
 `npm run generate:race-tables` rewrites the tables, and the diff is the review. See
 [races.md](races.md), "Unit tables".
 
@@ -190,7 +193,10 @@ data folder, which holds `download/` and `server_mods/`, is `PA_USER_DATA`,
 else `Uber Entertainment/Planetary Annihilation` under `%LOCALAPPDATA%`.
 The two harvests and `validate:race-trees` read `pa/` files through
 `scripts/lib/mod-roots.js`. A server mod mounts as its `download/` zip, then any
-`server_mods/` build, which shadows the zip.
+`server_mods/` build, which shadows the zip. The race and add-on tests that
+check a mod's files read them the same way, through `scripts/lib/addon-fixture.js`'s
+`modFiles`, so they see what the harvests saw. Without the mod on disk in
+either form, those tests are skipped.
 
 `npm run minify:json -- <dir>` is the one data script that is not a check. It
 rewrites every `.json` under `<dir>` onto one line, which is how `pa/**` is
@@ -321,7 +327,9 @@ that stands in for stock code that returns one.
 
 `scripts/lib/global-stubs.js` saves and restores the engine globals that shipped
 code reads at call time. It is a factory, not a singleton, so two suites never
-share a restore stack. `trackActive(setup)` is the factory-test scaffold built on
+share a restore stack. It saves each global's property rather than reading its
+value, because Node 26 defines `localStorage` as an accessor whose getter warns
+when it is read. `trackActive(setup)` is the factory-test scaffold built on
 it. Its `build()` runs the suite's setup and keeps the result. The `afterEach`
 that the helper registers can then call the result's `restore()`.
 
@@ -348,12 +356,16 @@ deliberately refuses to do. Four decisions in it are load-bearing:
   A change to `gwoGroup.orbitalBasic` therefore moves the baseline instead of
   silently disagreeing with it.
 
-The test carries three coverage floors: `MIN_PROBED`, `MIN_DEALABLE` and the
-partition assertion that no card is unclassified. `MIN_DEALABLE` is the one with
-no analogue in `validate:cards`. Without it, a broken `gw_common` stub that made
-every `deal()` return 0 would leave the card count intact and every assertion
-vacuously green. Raise the floors when coverage genuinely rises. Never lower one
-to make a run pass.
+The test carries four coverage floors: `MIN_PROBED`, `MIN_GATED`,
+`MIN_DEALABLE` and the partition assertion that no card is unclassified. The
+sweeps read two things for each card: the units it gates on and the chances it
+reaches. `MIN_GATED` and `MIN_DEALABLE` keep each of them from emptying unseen.
+A `grantedUnits` that over-reported would leave no card a unit to gate on, and
+each sweep would then skip every card. A broken `gw_common` stub that made
+every `deal()` return 0 would leave no card a chance. The sweep that offers a
+card to a player who owns its units also fails then, but it reads only the
+cards with a unit to gate on. Raise the floors when coverage genuinely rises.
+Never lower one to make a run pass.
 
 `scripts/lib/capturing-inventory.js` is the inventory every card sweep hands to
 `buff()`/`dull()`. The caller's explicit answers steer a card down the branch

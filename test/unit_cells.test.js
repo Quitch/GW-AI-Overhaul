@@ -18,6 +18,8 @@ const T = (list) => list.split(" ").map((tag) => "UNITTYPE_" + tag);
 // rule has both sides. The commander builds the factory and the factory the
 // three tanks, so their jobs count: the ant and the stryker have none and
 // stand for the race tank, and the skitter's Scout job is no race unit's.
+// The race side's rx_ paths are this file's own: scripts/lib/race-fixture.js
+// gives its fx_ paths other specs, so no path names two units in the suite.
 const ANT = "/pa/units/land/tank_light_laser/tank_light_laser.json";
 const ANT_WEAPON =
   "/pa/units/land/tank_light_laser/tank_light_laser_tool_weapon.json";
@@ -38,16 +40,16 @@ const COMMANDER = "/pa/units/commanders/base_commander/base_commander.json";
 const COLONEL =
   "/pa/units/land/bot_support_commander/bot_support_commander.json";
 const BASE_VEHICLE = "/pa/units/land/base_vehicle/base_vehicle.json";
-const FX_TANK = "/pa/units/land/fx_tank/fx_tank.json";
-const FX_TANK_WEAPON = "/pa/units/land/fx_tank/fx_tank_tool_weapon.json";
-const FX_TANK_AMMO = "/pa/units/land/fx_tank/fx_tank_ammo.json";
-const FX_TANK2 = "/pa/units/land/fx_tank2/fx_tank2.json";
-const FX_TANK2_AMMO = "/pa/units/land/fx_tank2/fx_tank2_ammo.json";
-const FX_FACTORY = "/pa/units/land/fx_vehicle_factory/fx_vehicle_factory.json";
+const FX_TANK = "/pa/units/land/rx_tank/rx_tank.json";
+const FX_TANK_WEAPON = "/pa/units/land/rx_tank/rx_tank_tool_weapon.json";
+const FX_TANK_AMMO = "/pa/units/land/rx_tank/rx_tank_ammo.json";
+const FX_TANK2 = "/pa/units/land/rx_tank2/rx_tank2.json";
+const FX_TANK2_AMMO = "/pa/units/land/rx_tank2/rx_tank2_ammo.json";
+const FX_FACTORY = "/pa/units/land/rx_vehicle_factory/rx_vehicle_factory.json";
 const FX_FACTORY_ARM =
-  "/pa/units/land/fx_vehicle_factory/fx_vehicle_factory_build_arm.json";
-const FX_COMMANDER = "/pa/units/commanders/fx_alpha/fx_alpha.json";
-const FX_COMMANDER_AMMO = "/pa/units/commanders/fx_alpha/fx_alpha_ammo.json";
+  "/pa/units/land/rx_vehicle_factory/rx_vehicle_factory_build_arm.json";
+const FX_COMMANDER = "/pa/units/commanders/rx_alpha/rx_alpha.json";
+const FX_COMMANDER_AMMO = "/pa/units/commanders/rx_alpha/rx_alpha_ammo.json";
 
 const SPECS = {
   [BASE_VEHICLE]: { unit_types: T("Land Mobile Tank NoBuild") },
@@ -108,14 +110,14 @@ const SPECS = {
     unit_types: T("Basic Land Mobile Offense Tank Custom7"),
     tools: [{ spec_id: FX_TANK_WEAPON }],
   },
-  [FX_TANK_WEAPON]: { base_spec: "/pa/tools/fx_base_weapon.json" },
-  "/pa/tools/fx_base_weapon.json": { ammo_id: FX_TANK_AMMO },
+  [FX_TANK_WEAPON]: { base_spec: "/pa/tools/rx_base_weapon.json" },
+  "/pa/tools/rx_base_weapon.json": { ammo_id: FX_TANK_AMMO },
   [FX_TANK_AMMO]: { damage: 12 },
   [FX_TANK2]: {
     base_spec: BASE_VEHICLE,
-    tools: [{ spec_id: "/pa/units/land/fx_tank2/fx_tank2_tool_weapon.json" }],
+    tools: [{ spec_id: "/pa/units/land/rx_tank2/rx_tank2_tool_weapon.json" }],
   },
-  "/pa/units/land/fx_tank2/fx_tank2_tool_weapon.json": {
+  "/pa/units/land/rx_tank2/rx_tank2_tool_weapon.json": {
     ammo_id: FX_TANK2_AMMO,
   },
   [FX_TANK2_AMMO]: {},
@@ -127,10 +129,10 @@ const SPECS = {
   [FX_COMMANDER]: {
     unit_types: T("Commander Construction Land Mobile Custom7"),
     tools: [
-      { spec_id: "/pa/units/commanders/fx_alpha/fx_alpha_tool_weapon.json" },
+      { spec_id: "/pa/units/commanders/rx_alpha/rx_alpha_tool_weapon.json" },
     ],
   },
-  "/pa/units/commanders/fx_alpha/fx_alpha_tool_weapon.json": {
+  "/pa/units/commanders/rx_alpha/rx_alpha_tool_weapon.json": {
     ammo_id: FX_COMMANDER_AMMO,
   },
   [FX_COMMANDER_AMMO]: {},
@@ -307,8 +309,8 @@ describe("buildIndex", () => {
     assert.deepEqual(vanilla.unitsByCell["Vehicle/Basic/Combat"], [
       STRYKER,
       BASE_VEHICLE,
-      FX_TANK2,
       SKITTER,
+      FX_TANK2,
       ANT,
     ]);
     assert.equal(vanilla.cellOf[DOX], "Bot/Basic/Combat");
@@ -382,9 +384,9 @@ describe("raceUnitsFor", () => {
   it("grants a race unit in a cell vanilla never fills when something granted can build it", () => {
     // Bugs' research: a factory (granted with the vanilla factory's cell)
     // builds an unlock token that sits in a cell of its own.
-    const RESEARCH = "/pa/units/research/fx_research/fx_research.json";
-    const TOKEN = "/pa/units/research/fx_token/fx_token.json";
-    const TOKEN2 = "/pa/units/research/fx_token2/fx_token2.json";
+    const RESEARCH = "/pa/units/research/rx_research/rx_research.json";
+    const TOKEN = "/pa/units/research/rx_token/rx_token.json";
+    const TOKEN2 = "/pa/units/research/rx_token2/rx_token2.json";
     const specs = Object.assign({}, SPECS, {
       [RESEARCH]: {
         unit_types: T("Basic Construction Factory Land Structure Tank Custom7"),
@@ -505,7 +507,7 @@ describe("expandMods", () => {
       "/pa/units/commanders/base_commander/base_commander_tool_aa_weapon.json";
     const AA_AMMO =
       "/pa/units/commanders/base_commander/base_commander_aa_ammo.json";
-    const FX_COMMANDER2 = "/pa/units/commanders/fx_beta/fx_beta.json";
+    const FX_COMMANDER2 = "/pa/units/commanders/rx_beta/rx_beta.json";
     const specs = Object.assign({}, SPECS, {
       [COMMANDER]: Object.assign({}, SPECS[COMMANDER], {
         tools: [{ spec_id: MAIN_WEAPON }, { spec_id: AA_WEAPON }],
@@ -648,10 +650,10 @@ describe("expandMods", () => {
     // The Dox's ammo also arms an advanced vehicle: a bots card naming it
     // must reach the race's basic bot ammo once and no race tank ammo.
     const SHARED_TANK = "/pa/units/land/shared_tank/shared_tank.json";
-    const FX_BOT = "/pa/units/land/fx_bot/fx_bot.json";
-    const FX_BOT_AMMO = "/pa/units/land/fx_bot/fx_bot_ammo.json";
-    const FX_BOT2 = "/pa/units/land/fx_bot2/fx_bot2.json";
-    const FX_BOT2_AMMO = "/pa/units/land/fx_bot2/fx_bot2_ammo.json";
+    const FX_BOT = "/pa/units/land/rx_bot/rx_bot.json";
+    const FX_BOT_AMMO = "/pa/units/land/rx_bot/rx_bot_ammo.json";
+    const FX_BOT2 = "/pa/units/land/rx_bot2/rx_bot2.json";
+    const FX_BOT2_AMMO = "/pa/units/land/rx_bot2/rx_bot2_ammo.json";
     const specs = Object.assign({}, SPECS, {
       [SHARED_TANK]: {
         unit_types: T("Advanced Land Mobile Offense Tank Custom58"),
@@ -662,15 +664,15 @@ describe("expandMods", () => {
       "/pa/units/land/shared_tank/shared_tank_tool.json": { ammo_id: DOX_AMMO },
       [FX_BOT]: {
         unit_types: T("Basic Bot Land Mobile Offense Custom7"),
-        tools: [{ spec_id: "/pa/units/land/fx_bot/fx_bot_tool.json" }],
+        tools: [{ spec_id: "/pa/units/land/rx_bot/rx_bot_tool.json" }],
       },
-      "/pa/units/land/fx_bot/fx_bot_tool.json": { ammo_id: FX_BOT_AMMO },
+      "/pa/units/land/rx_bot/rx_bot_tool.json": { ammo_id: FX_BOT_AMMO },
       [FX_BOT_AMMO]: {},
       [FX_BOT2]: {
         unit_types: T("Basic Bot Land Mobile Offense Custom7"),
-        tools: [{ spec_id: "/pa/units/land/fx_bot2/fx_bot2_tool.json" }],
+        tools: [{ spec_id: "/pa/units/land/rx_bot2/rx_bot2_tool.json" }],
       },
-      "/pa/units/land/fx_bot2/fx_bot2_tool.json": { ammo_id: FX_BOT2_AMMO },
+      "/pa/units/land/rx_bot2/rx_bot2_tool.json": { ammo_id: FX_BOT2_AMMO },
       [FX_BOT2_AMMO]: {},
     });
     const units = UNITS.concat([SHARED_TANK, FX_BOT, FX_BOT2]);
@@ -810,8 +812,8 @@ describe("cardUnitsFor", () => {
   });
 
   it("has no build reach: a factory card lists factories, not what they build", () => {
-    const RESEARCH = "/pa/units/research/fx_research/fx_research.json";
-    const TOKEN = "/pa/units/research/fx_token/fx_token.json";
+    const RESEARCH = "/pa/units/research/rx_research/rx_research.json";
+    const TOKEN = "/pa/units/research/rx_token/rx_token.json";
     const specs = Object.assign({}, SPECS, {
       [RESEARCH]: {
         unit_types: T("Basic Construction Factory Land Structure Tank Custom7"),
@@ -879,15 +881,15 @@ describe("unitMapFallback", () => {
 describe("exclusive units and add-ons", () => {
   const FABBER_ADV =
     "/pa/units/land/fabrication_bot_adv/fabrication_bot_adv.json";
-  const FX_FABBER_ADV = "/pa/units/land/fx_fabber_adv/fx_fabber_adv.json";
+  const FX_FABBER_ADV = "/pa/units/land/rx_fabber_adv/rx_fabber_adv.json";
   const ADDON_TANK = "/pa/units/addon/rex/rex.json";
   const ADDON_TANK_WEAPON = "/pa/units/addon/rex/rex_tool_weapon.json";
   const ADDON_TANK_AMMO = "/pa/units/addon/rex/rex_ammo.json";
   const GANTRY = "/pa/units/addon/gantry/gantry.json";
-  const GANTRY_FX = "/pa/units/addon/fx_gantry/fx_gantry.json";
+  const GANTRY_FX = "/pa/units/addon/rx_gantry/rx_gantry.json";
   const EXCLUSIVE = "/pa/units/addon/big/big.json";
   const LARVA = "/pa/units/addon/larva/larva.json";
-  const FX_TOWER = "/pa/units/addon/fx_tower/fx_tower.json";
+  const FX_TOWER = "/pa/units/addon/rx_tower/rx_tower.json";
   const specs = Object.assign({}, SPECS, {
     [FABBER_ADV]: {
       unit_types: T("Advanced Bot Construction Fabber Land Mobile Custom58"),
@@ -1015,9 +1017,9 @@ describe("exclusive units and add-ons", () => {
     // tower's cell, where it is the only buildable vanilla occupant.
     const RADAR = "/pa/units/orbital/deep_space_radar/deep_space_radar.json";
     const FABBER = "/pa/units/land/fabrication_bot/fabrication_bot.json";
-    const FX_FABBER = "/pa/units/land/fx_fabber/fx_fabber.json";
+    const FX_FABBER = "/pa/units/land/rx_fabber/rx_fabber.json";
     const TOWER = "/pa/units/addon/fab_tower/fab_tower.json";
-    const FX_FAB_TOWER = "/pa/units/fx_addon/fab_tower/fab_tower.json";
+    const FX_FAB_TOWER = "/pa/units/rx_addon/fab_tower/fab_tower.json";
     const stubSpecs = Object.assign({}, specs, {
       [RADAR]: { unit_types: T("Custom58") },
       [FABBER]: {

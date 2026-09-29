@@ -98,8 +98,9 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
    `download/`. The script reads the add-on's `serverMods` from its
    descriptor. Commit `test/fixtures/race_specs.json` from step 2 with it.
 5. **Tests** in `test/addon_<id>.test.js` check the descriptor shape, that
-   every harvested unit is in the table, that the zip ships every path and
-   every layer entry (skipped without the zip), and the cells: a held vanilla
+   every harvested unit is in the table, that the mod ships every path and
+   every layer entry (read from its zip or `server_mods/` build through
+   `modFiles`, and skipped without either), and the cells: a held vanilla
    unit brings the add-on units of its cell, an orphan arrives through a
    builder, an exclusive arrives only through its gantry.
 6. **Validator.** Run `npm run validate:race-trees` with the zip in
@@ -242,5 +243,11 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
   `AnyBugFabberBasic` and `AnyBugFabberAdvanced`, which its own maps never
   define: the Bugs race's `unit_maps/bugs.json` supplies them in every Bugs
   tree (`test/addon_second_wave.test.js` pins the dependency).
+- Second Wave's GigaSilo Storage Device
+  (`/pa/units/l_addon/l_adv_storage/l_adv_storage.json`) names its death
+  weapon as `/pa/units/land/l_adv_storage/l_adv_storage_death_weapon.json`,
+  which no mod ships. The zip has that file under
+  `/pa/units/l_addon/l_adv_storage/`, where nothing in the mod names it. So
+  the table has no key for the part. Report this upstream.
 - Osmech has no AI data. A player fields its units by cell; an AI army never
   builds them.

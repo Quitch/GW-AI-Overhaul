@@ -158,7 +158,7 @@ describe("valueOfCard", () => {
     const calls = { withCard: [], teamDomains: [], chance: [] };
     const lookup = {
       reachable: (units) => units,
-      cellOf: () => undefined,
+      classOf: () => undefined,
       ownersOf: () => [],
     };
     return {

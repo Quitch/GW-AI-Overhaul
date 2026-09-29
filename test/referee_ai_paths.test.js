@@ -402,16 +402,27 @@ describe("race option", () => {
     }
   });
 
+  // Registered, so a source that consulted the race routing would move.
   it("never changes the source: the race tree is written from the brain's files", () => {
-    for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
-      assert.equal(
-        refereeAIPaths.getAIPathSource("enemy", aiInUse, false),
-        refereeAIPaths.getAIPathSource("enemy", aiInUse, false)
-      );
-      assert.equal(
-        refereeAIPaths.getAIPathSource("enemy", aiInUse, false).indexOf("race"),
-        -1
-      );
+    races.register(FIXTURE_RACE);
+    try {
+      for (const aiInUse of SCENARIO_AXES.AI_BRAINS) {
+        const source = refereeAIPaths.getAIPathSource("enemy", aiInUse, false);
+        assert.equal(
+          source,
+          refereeAIPaths.getAIPathDestination("enemy", aiInUse),
+          aiInUse + ": the source is the brain's own tree"
+        );
+        assert.notEqual(
+          source,
+          refereeAIPaths.getAIPathDestination("enemy", aiInUse, {
+            race: "fixture",
+          }),
+          aiInUse + ": the source is not the race's tree"
+        );
+      }
+    } finally {
+      races.reset();
     }
   });
 });

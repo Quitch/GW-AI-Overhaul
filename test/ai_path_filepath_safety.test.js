@@ -11,6 +11,7 @@ const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
   useModel,
+  makeAiDescriptor,
   makeInventory,
   SCENARIO_AXES,
   withTwoViewers,
@@ -187,10 +188,13 @@ describe("referee_ai.js integration: every configFiles key it writes is well-for
     }
   }
 
+  // The Cluster copy is written only for a Cluster player with an ally, so
+  // the fixture needs a Sub Commander for there to be a Cluster key to check.
   it("a Cluster player's scoped copies stay well-formed", async () => {
     const fixture = buildGame({
       aiInUse: "Titans",
       subcommanderType: "cluster",
+      minions: [makeAiDescriptor()],
       aiMods: [{ op: "load", type: "fabber", value: "extra_load.json" }],
     });
     installModel(fixture.game, []);
@@ -199,7 +203,11 @@ describe("referee_ai.js integration: every configFiles key it writes is well-for
     const filesObj = {};
     await run(filesObj);
 
-    assertEveryKeyWellFormed(filesObj, "cluster player");
+    const keys = assertEveryKeyWellFormed(filesObj, "cluster player");
+    assert.ok(
+      keys.some((key) => key.startsWith("/pa/ai_cluster/")),
+      "expected a Cluster copy among: " + keys.join(", ")
+    );
   });
 
   it("per-player-tech viewers with attacker-shaped display names never leak into the path (scope tokens are index-derived, not name-derived)", async () => {

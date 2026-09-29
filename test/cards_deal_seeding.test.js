@@ -19,6 +19,9 @@ const minionCard = loadCouiModule(
 const slotCard = loadCouiModule(
   "coui://ui/main/game/galactic_war/cards/gwc_add_card_slot.js"
 );
+const gwoUnit = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+);
 
 after(restoreGlobals);
 
@@ -29,11 +32,13 @@ const MINIONS = "abcdefgh".split("").map((name) => ({
   personality: { personality_tags: [] },
 }));
 
+// A factory and an extractor, so gwc_minion's deal reaches a chance: without
+// either it is 0 whatever the rng.
 function inventory(over) {
   const opts = over || {};
   return Object.assign(
     {
-      units: () => ["factory_vehicle"],
+      units: () => [gwoUnit.vehicleFactory, gwoUnit.metalExtractor],
       minions: () => [],
       cards: () => [],
       maxCards: () => 5,
@@ -115,7 +120,9 @@ describe("gwc_minion deal seeding", () => {
   // The invariant the speculative-deal design rests on: the dealer calls deal()
   // on every card of the deck for every card of a hand and keeps one result.
   it("gives the same chance with and without an rng", () => {
-    assert.equal(dealWith("s").chance, dealWith(undefined).chance);
+    const seeded = dealWith("s").chance;
+    assert.ok(seeded > 0, "the fixture reaches no chance to compare");
+    assert.equal(seeded, dealWith(undefined).chance);
   });
 
   it("copies the pool entry rather than mutating it", () => {
@@ -152,13 +159,18 @@ describe("gwc_add_card_slot deal seeding", () => {
 
 describe("seeded unique markers", () => {
   // hasCard tests !card.unique, so a zero would make the card unrepeatable for
-  // that seed forever. Both cards route through gwoCard.uniqueValue.
-  it("are never falsy over a long seeded run", () => {
-    const rng = gwoRng.create("marker-seed");
-    for (let i = 0; i < 10000; i++) {
-      const value = slotCard.deal(star, context, inventory(), rng).params
-        .unique;
-      assert.ok(value, `draw ${i} yielded ${value}`);
+  // that seed forever. Both cards route through gwoCard.uniqueValue, which
+  // offsets the draw, so a draw of zero still gives a truthy marker.
+  const drawsZero = Object.assign(() => 0, { pick: (list) => list[0] });
+
+  before(() => {
+    loadCouiModule("shared/gw_factions")[0].minions = MINIONS;
+  });
+
+  it("stay truthy when the seeded draw is zero", () => {
+    installModel({ ai: "TITANS" });
+    for (const card of [slotCard, minionCard]) {
+      assert.ok(card.deal(star, context, inventory(), drawsZero).params.unique);
     }
   });
 });

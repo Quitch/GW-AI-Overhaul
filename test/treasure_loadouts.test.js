@@ -4,7 +4,7 @@
 // pin the two properties that makes possible: it depends only on the player and
 // the star, and it sees mod loadouts the base game's unlock record cannot hold.
 
-const { describe, it, mock } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
@@ -15,6 +15,8 @@ const {
   createGlobalStubs,
   trackActive,
 } = require("../scripts/lib/global-stubs.js");
+
+afterEach(() => mock.restoreAll());
 
 // The gate is pinned in coop_publish.test.js; here it only matters what the
 // report asks it to publish, recorded as the snapshot it would become.

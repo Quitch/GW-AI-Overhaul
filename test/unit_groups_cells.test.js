@@ -16,7 +16,8 @@ const { mediaDir } = require("../scripts/lib/pa-install.js");
 const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoGroup = loadCouiModule(MOD_ROOT + "/shared/unit_groups.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
-const fixture = require("./fixtures/unit_types.json").units;
+const harvested = require("./fixtures/unit_types.json");
+const fixture = harvested.units;
 
 // "*" matches any value of that part; "|" separates alternatives.
 const EXPECTED = {
@@ -116,6 +117,8 @@ describe("the cell classifier against unit_groups.js", () => {
 describe("the harvested fixture", () => {
   const media = mediaDir();
 
+  // Both halves: the buildable_types drive fieldable units, orphan grants and
+  // every job pin as much as the unit_types do.
   it("matches the installed game (skipped without one)", (t) => {
     if (!fs.existsSync(path.join(media, "pa", "units", "unit_list.json"))) {
       t.skip("no PA install");
@@ -133,12 +136,12 @@ describe("the harvested fixture", () => {
         [path.join(__dirname, "..", "scripts", "harvest-unit-types.js")],
         { env: Object.assign({}, process.env, { GWO_HARVEST_OUT: tmp }) }
       );
-      fresh = JSON.parse(fs.readFileSync(tmp, "utf8")).units;
+      fresh = JSON.parse(fs.readFileSync(tmp, "utf8"));
     } finally {
       fs.rmSync(tmp, { force: true });
     }
     assert.deepEqual(
-      fixture,
+      harvested,
       fresh,
       "test/fixtures/unit_types.json is stale: run node scripts/harvest-unit-types.js"
     );

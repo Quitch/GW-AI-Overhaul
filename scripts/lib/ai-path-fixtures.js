@@ -77,6 +77,7 @@ function makeAiDescriptor(overrides) {
 // -> { game, star, ai, inventory }. The non-obvious options:
 //   subcommanderType drives inventory's global:playerFaction tag
 //   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
+//   minions are the player's Sub Commanders, inventory.minions()
 //   viewerInventoryData feeds a fake game.findCoopPlayerInventoryData(client)
 //
 // The origin star's system: its gwaio settings block only when a brain is
@@ -150,6 +151,7 @@ function buildGame(options) {
     cardsList: smartSubcommanders
       ? [{ id: "gwaio_upgrade_subcommander_tactics" }]
       : [],
+    minionsList: opts.minions || [],
     tags: tags,
   });
 

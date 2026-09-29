@@ -20,6 +20,7 @@ const deckMods = loadCouiModule(
 );
 
 const { setGlobal, restoreGlobals } = createGlobalStubs();
+afterEach(() => mock.restoreAll());
 afterEach(() => {
   restoreGlobals();
   // setupGwoCards reaches module-level registry state through decks.js and
@@ -28,15 +29,14 @@ afterEach(() => {
   deckMods.reset();
 });
 
-// jQuery's Deferred.then absorbs the rejection the not-found path returns; a native
-// promise surfaces it as an unhandledRejection. This swallows the callback's own
-// rejection while leaving `result` free to reject for the caller.
+// Stands in for the deferred that resolves once the deck's cards have loaded,
+// and runs the callback on a later turn. dealCard settles its own result in
+// the callback, catching a card's throw, so a throw that escaped it would fail
+// the run as an unhandled rejection.
 function fakeLoaded() {
   return {
     then: function (callback) {
-      Promise.resolve()
-        .then(callback)
-        .catch(function () {});
+      Promise.resolve().then(callback);
     },
   };
 }

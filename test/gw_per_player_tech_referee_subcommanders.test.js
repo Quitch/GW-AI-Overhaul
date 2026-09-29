@@ -27,13 +27,16 @@ const gwoPersonality = loadCouiModule(
 const personalities = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/faction/personalities.js"
 );
+const gwoAI = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/ai.js"
+);
 
 // As gw_per_player_tech_referee.js injects it, for the player faction below.
 const resolvePersonality = (minion) =>
   gwoPersonality.resolve(minion, {
     side: "ally",
     faction: 1,
-    penchantTags: minion.penchantName === "!LOC:Rush" ? ["Rush"] : [],
+    penchantTags: gwoAI.penchantTags(minion.penchantName),
   });
 
 const TACTICS_CARD = { id: "gwaio_upgrade_subcommander_tactics" };
