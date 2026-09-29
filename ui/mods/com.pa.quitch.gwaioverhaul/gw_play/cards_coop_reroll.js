@@ -326,7 +326,10 @@ define([
             return;
           }
 
-          coopPublish.publish(rerollPendingTechRequest);
+          coopPublish.publish(rerollPendingTechRequest, {
+            id: operator.client_id,
+            name: operator.client_name,
+          });
           coopHost.reply(rerollPendingTechResult, operator, {
             pendingTechCards: nextPendingTechCards,
             rerolls_used: rerolled.rerollsUsed,

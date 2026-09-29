@@ -564,9 +564,14 @@ A computed in `gw_play/coop_ai.js` settles the debt when those change. With no
 viewer connected the debt is dropped, since a viewer who joins asks for a
 snapshot as its first step.
 
-The cost falls on a reroll. The rerolling viewer gets the new hand in the
-host's reply, but the server's copy of it, and the other viewers' view of it,
-wait for the snapshot, which goes out once everyone has chosen.
+A reroll is the one exception. The rerolling viewer waits for the host's reply
+with its offer hidden, so it cannot choose while the snapshot goes out. The
+reroll's snapshot therefore goes out at once when no other viewer has an offer
+open or deals to catch up, which with one viewer is always. Only while another
+viewer has one is it held, and then the server's copy of the rerolling viewer's
+hand, and the other viewers' view of it, wait until everyone has chosen. If the
+rerolling viewer's `gw_play` reloads in that window, the server shows it the old
+hand, and a pick from it gives a different card or is refused by the host.
 
 ### Catching up
 

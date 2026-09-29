@@ -20,6 +20,25 @@ define([
     });
   };
 
+  // Whether any viewer but `except` has an offer open or deals to catch up
+  // on: only such a viewer can have a choice on its way to the server.
+  var othersLevel = function (except) {
+    var game = model.game();
+    return coopStarCards.viewersReadyForStarRefresh({
+      viewers: _.reject(
+        refereeCoop.viewersOf(connectedClients()),
+        function (client) {
+          return client.id === except.id && client.name === except.name;
+        }
+      ),
+      findRecord: function (client) {
+        return refereeCoop.recordForClient(game, client);
+      },
+      getDealCount: model.getCoopPlayerTechCardDealCount,
+      hostDealCount: game.hostTechCardDealCount(),
+    });
+  };
+
   // The star-card refresh's own test, over the connected viewers.
   var viewersLevel = function () {
     var game = model.game();
@@ -58,9 +77,20 @@ define([
 
   return {
     // Publishes now, or once every viewer is level. A later reason replaces
-    // one still held: a snapshot carries everything either way.
-    publish: function (reason) {
+    // one still held: a snapshot carries everything either way. `except` is
+    // a viewer who cannot choose while this goes out, as one waiting on its
+    // reroll cannot, so it is published at once if nobody else could.
+    publish: function (reason, except) {
       debt = reason;
+      if (
+        except &&
+        model.gwCampaignPerPlayerTechCards() &&
+        othersLevel(except)
+      ) {
+        debt = undefined;
+        model.sendCampaignSnapshot(reason, true);
+        return true;
+      }
       return settle();
     },
     settle: settle,

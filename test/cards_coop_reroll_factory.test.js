@@ -39,8 +39,8 @@ const published = { reasons: [] };
 registerModuleStub(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
   {
-    publish: (reason) => {
-      published.reasons.push(reason);
+    publish: (reason, except) => {
+      published.reasons.push(except ? { reason, except } : reason);
       return true;
     },
     settle: () => false,
@@ -519,13 +519,16 @@ describe("host reroll handler - the reroll", () => {
   });
 
   // Through the viewers' gate, never straight to the server: another
-  // viewer's choice in flight would otherwise be replaced there.
+  // viewer's choice in flight would otherwise be replaced there. The viewer
+  // who asked is left out of the test, as it waits with its offer hidden.
   it("publishes the new offer through the viewers' gate, and saves it", async () => {
     const { handlers, calls } = build();
 
     await handlers[REQUEST](operator());
 
-    assert.deepEqual(calls.published, [REQUEST]);
+    assert.deepEqual(calls.published, [
+      { reason: REQUEST, except: { id: "alice", name: "alice" } },
+    ]);
     assert.deepEqual(calls.snapshots, []);
     assert.deepEqual(calls.saves, [true]);
   });

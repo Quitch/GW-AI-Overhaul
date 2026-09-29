@@ -22,6 +22,8 @@ const coopPublish = loadCouiModule(
 
 const HOST = { id: "host", name: "Host", role: "host" };
 const ALICE = { id: "alice", name: "Alice", role: "viewer" };
+const BOB = { id: "bob", name: "Bob", role: "viewer" };
+const OPEN = { star: 3, cards: [{ id: "a" }] };
 
 function setup(overrides) {
   const options = Object.assign(
@@ -144,6 +146,48 @@ describe("coop_publish", () => {
     run.options.hostDealCount = 2;
     assert.equal(coopPublish.settle(), false);
     assert.deepEqual(run.snapshots, []);
+  });
+
+  // A viewer waiting on its reroll has its offer hidden, so it cannot choose
+  // while the snapshot goes out; only another viewer could.
+  it("publishes a reroll at once when only the rerolling viewer has an offer", () => {
+    const run = build({
+      turnState: "explore",
+      records: {
+        alice: {
+          playerId: "alice",
+          techCardDealCount: 1,
+          pendingTechCards: OPEN,
+        },
+      },
+    });
+
+    assert.equal(coopPublish.publish("gwo_reroll_pending_tech", ALICE), true);
+    assert.deepEqual(run.snapshots, [["gwo_reroll_pending_tech", true]]);
+  });
+
+  it("holds a reroll while another viewer has an offer, until everyone is level", () => {
+    const run = build({
+      connected: [HOST, ALICE, BOB],
+      records: {
+        alice: {
+          playerId: "alice",
+          techCardDealCount: 1,
+          pendingTechCards: OPEN,
+        },
+        bob: { playerId: "bob", techCardDealCount: 1, pendingTechCards: OPEN },
+      },
+    });
+
+    assert.equal(coopPublish.publish("gwo_reroll_pending_tech", ALICE), false);
+    assert.deepEqual(run.snapshots, []);
+
+    // Once it is held, the rerolling viewer can choose too.
+    run.options.records.bob = { playerId: "bob", techCardDealCount: 2 };
+    assert.equal(coopPublish.settle(), false);
+    run.options.records.alice = { playerId: "alice", techCardDealCount: 2 };
+    assert.equal(coopPublish.settle(), true);
+    assert.deepEqual(run.snapshots, [["gwo_reroll_pending_tech", true]]);
   });
 
   it("owes one snapshot however many publishes wait, under the latest reason", () => {
