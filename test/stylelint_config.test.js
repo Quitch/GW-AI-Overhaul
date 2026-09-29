@@ -56,6 +56,9 @@ async function accepts(code) {
   assert.deepEqual(await rulesFired(code), [], `expected to pass:\n${code}`);
 }
 
+const VALUES = "declaration-property-value-disallowed-list";
+const PROPERTIES = "property-disallowed-list";
+
 function rule(selector, declarations) {
   return `${selector} {\n${declarations.map((d) => `  ${d};\n`).join("")}}\n`;
 }
@@ -189,102 +192,50 @@ describe("CSS the engine drops", () => {
       rule("a", ["overflow: clip"]),
       "declaration-property-value-disallowed-list"
     );
-    await rejects(
-      rule("a", ["cursor: grab"]),
-      "declaration-property-value-disallowed-list"
-    );
   });
 
-  it("rejects the later alignment keywords the engine drops or ignores", async () => {
-    for (const declaration of [
-      "justify-content: safe center",
-      "justify-content: unsafe center",
-      "align-items: first baseline",
-      "align-items: last baseline",
-      "align-self: unsafe center",
-      "align-content: safe center",
-      "justify-content: anchor-center",
-      "align-self: anchor-center",
-    ]) {
-      await rejects(
-        rule("a", ["display: flex", declaration]),
-        "declaration-property-value-disallowed-list"
-      );
-    }
-  });
-
-  it("rejects unprefixed filter as a transition or will-change value", async () => {
-    for (const declaration of [
-      "transition: filter 0.2s",
-      "-webkit-transition: opacity 1s, filter 1s",
-      "transition-property: filter",
-      "will-change: filter",
-    ]) {
-      await rejects(
-        rule("a", [declaration]),
-        "declaration-property-value-disallowed-list"
-      );
-    }
-  });
-
-  it("rejects the box-alignment keywords on align-content too", async () => {
-    for (const value of ["space-evenly", "start", "normal"]) {
-      await rejects(
-        rule("a", ["display: flex", `align-content: ${value}`]),
-        "declaration-property-value-disallowed-list"
-      );
-    }
-  });
-
-  it("rejects a banned keyword anywhere in the value", async () => {
-    await rejects(
-      rule("a", ["overflow: clip visible"]),
-      "declaration-property-value-disallowed-list"
-    );
-    await rejects(
-      rule("a", ["background-clip: padding-box, text"]),
-      "declaration-property-value-disallowed-list"
-    );
-    await rejects(
-      rule("a", ["display: flex", "justify-content: safe start"]),
-      "declaration-property-value-disallowed-list"
-    );
-  });
-
-  it("rejects what the plugin's ignore list hides", async () => {
-    await rejects(
-      rule("a", ["overflow: hidden auto"]),
-      "declaration-property-value-disallowed-list"
-    );
-    await rejects(
-      rule("a", ["touch-action: pan-left"]),
-      "declaration-property-value-disallowed-list"
-    );
-    await rejects(
-      rule("a", ["text-indent: 1em hanging"]),
-      "declaration-property-value-disallowed-list"
-    );
-    await rejects(
-      rule("a", ["word-break: auto-phrase"]),
-      "declaration-property-value-disallowed-list"
-    );
-    await rejects(
-      rule("a", ["-webkit-mask-mode: alpha"]),
-      "property-disallowed-list"
-    );
+  // What this profile catches beyond the plugin, with the rule that must fire.
+  // Each was checked in the engine: see constraints.md.
+  const BEYOND_THE_PLUGIN = [
+    // A banned keyword anywhere in the value, not only as the whole of it.
+    ["overflow: clip visible", VALUES],
+    ["background-clip: padding-box, text", VALUES],
+    ["justify-content: safe start", VALUES],
+    // Hidden by the plugin's ignore list.
+    ["overflow: hidden auto", VALUES],
+    ["touch-action: pan-left", VALUES],
+    ["text-indent: 1em hanging", VALUES],
+    ["word-break: auto-phrase", VALUES],
+    ["-webkit-mask-mode: alpha", PROPERTIES],
     // No hand-written entry: this pins that csstree's grammar still covers it.
-    await rejects(
-      rule("a", ["-webkit-appearance: auto"]),
-      "declaration-property-value-no-unknown"
-    );
-  });
+    ["-webkit-appearance: auto", "declaration-property-value-no-unknown"],
+    // The plugin has no matcher for these.
+    ["accent-color: red", PROPERTIES],
+    ["text-wrap: balance", PROPERTIES],
+    // Later alignment keywords the engine drops, or parses and ignores.
+    ["justify-content: safe center", VALUES],
+    ["justify-content: unsafe center", VALUES],
+    ["justify-content: anchor-center", VALUES],
+    ["align-items: first baseline", VALUES],
+    ["align-items: last baseline", VALUES],
+    ["align-self: unsafe center", VALUES],
+    ["align-self: anchor-center", VALUES],
+    ["align-content: space-evenly", VALUES],
+    ["align-content: start", VALUES],
+    ["align-content: normal", VALUES],
+    ["align-content: safe center", VALUES],
+    // Unprefixed filter and grab, where only the -webkit- forms work.
+    ["transition: filter 0.2s", VALUES],
+    ["-webkit-transition: opacity 1s, filter 1s", VALUES],
+    ["transition-property: filter", VALUES],
+    ["will-change: filter", VALUES],
+    ["cursor: grab", VALUES],
+  ];
 
-  it("rejects properties the plugin has no matcher for", async () => {
-    await rejects(rule("a", ["accent-color: red"]), "property-disallowed-list");
-    await rejects(
-      rule("a", ["text-wrap: balance"]),
-      "property-disallowed-list"
-    );
+  it("rejects what the plugin misses", async () => {
+    for (const [declaration, fires] of BEYOND_THE_PLUGIN) {
+      await rejects(rule("a", ["display: flex", declaration]), fires);
+    }
   });
 
   it("rejects :-webkit-any-link, through the plugin", async () => {
@@ -407,12 +358,6 @@ describe("CSS the engine supports", () => {
     await accepts(rule("a", ["-webkit-clip-path: circle(50%)"]));
     await accepts(rule("a", ["-webkit-column-count: 2"]));
     await accepts(rule("a", ["width: -webkit-fit-content"]));
-    await accepts(rule("a", ["transition: -webkit-filter 0.2s"]));
-    await accepts(rule("a", ["will-change: -webkit-filter"]));
-    await accepts(rule("a", ["cursor: -webkit-grab"]));
-    await accepts(rule("a", [`cursor: url("hand.png") 4 4, -webkit-grab`]));
-    await accepts(rule("a", ["border-image-repeat: space"]));
-    await accepts(rule("a", [`-webkit-mask-box-image: url("a.png") 10`]));
     await accepts(rule("a", ["-webkit-text-fill-color: red"]));
     await accepts(rule("a", ["display: -webkit-box", "-webkit-line-clamp: 2"]));
     await accepts(rule("a::-webkit-input-placeholder", ["color: #fff"]));
@@ -450,13 +395,28 @@ describe("CSS the engine supports", () => {
       rule("a", ["display: flex", "justify-content: space-around"])
     );
     await accepts(rule("a", ["display: flex", "flex-flow: row wrap"]));
-    // The keyword matchers must not catch the flex- spellings.
-    await accepts(rule("a", ["display: flex", "justify-content: flex-end"]));
-    await accepts(rule("a", ["display: flex", "align-content: flex-start"]));
-    await accepts(rule("a", ["display: flex", "align-content: space-between"]));
-    await accepts(rule("a", ["display: flex", "align-content: stretch"]));
+  });
+
+  // The -webkit- forms and flex spellings the added bans must leave alone.
+  const LEFT_ALONE = [
+    "transition: -webkit-filter 0.2s",
+    "will-change: -webkit-filter",
+    "cursor: -webkit-grab",
+    'cursor: url("hand.png") 4 4, -webkit-grab',
+    "border-image-repeat: space",
+    '-webkit-mask-box-image: url("a.png") 10',
+    "justify-content: flex-end",
+    "align-content: flex-start",
+    "align-content: space-between",
+    "align-content: stretch",
     // Parses in the engine, and in flex layout means flex-start anyway.
-    await accepts(rule("a", ["display: flex", "justify-content: stretch"]));
+    "justify-content: stretch",
+  ];
+
+  it("accepts what the added bans must leave alone", async () => {
+    for (const declaration of LEFT_ALONE) {
+      await accepts(rule("a", ["display: flex", declaration]));
+    }
   });
 
   it("accepts legacy colour notation and calc", async () => {
