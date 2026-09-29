@@ -417,8 +417,10 @@ context bound to a recording `setTimeout`, with an optional driven clock behind
 wiring that `referee_ai.js`'s file discovery needs. It returns its own restore
 function. It records every `api.file.list` and `$.getJSON` call unconditionally.
 A test that asserts which paths were walked therefore needs no second, subtly
-different, local installer. The three tests that use it would otherwise each
-have grown one.
+different, local installer. Four test files and `validate:race-trees` use it,
+and each would otherwise have grown one. As in `fake-jquery.js`, a listing or
+file that no option answers rejects, so a test configures every path the
+referee reads.
 
 ## Coverage
 
