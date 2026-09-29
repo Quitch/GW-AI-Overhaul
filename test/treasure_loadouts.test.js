@@ -7,11 +7,28 @@
 const { describe, it, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  registerModuleStub,
+} = require("../scripts/lib/amd-loader.js");
 const {
   createGlobalStubs,
   trackActive,
 } = require("../scripts/lib/global-stubs.js");
+
+// The gate is pinned in coop_publish.test.js; here it only matters what the
+// report asks it to publish, recorded as the snapshot it would become.
+const published = { snapshots: [] };
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  {
+    publish: (reason) => {
+      published.snapshots.push([reason, true]);
+      return true;
+    },
+    settle: () => false,
+  }
+);
 
 const treasure = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/treasure_loadouts.js"
@@ -615,6 +632,7 @@ function install(overrides = {}) {
   );
 
   const calls = { upserts: [], reported: [], snapshots: [] };
+  published.snapshots = calls.snapshots;
   const handlers = {};
   // ko.computed evaluates eagerly and again on every dependency change; the
   // shipped code's "have I already said this?" guard only shows up on a re-run.
@@ -638,7 +656,6 @@ function install(overrides = {}) {
       options.hasRecord ? { id: "alice" } : undefined,
     sendCampaignViewerOperator: (name, payload) =>
       calls.reported.push([name, payload]),
-    sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
   });
 
   const stockBank = bank(options.stockIds);

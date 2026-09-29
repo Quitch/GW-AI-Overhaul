@@ -9,6 +9,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/general_commander_setup.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
 ], function (
   GWFactions,
   gwoAI,
@@ -19,7 +20,8 @@ define([
   gwoCard,
   coopHost,
   gwoRaces,
-  setup
+  setup,
+  coopPublish
 ) {
   return function (params) {
     var game = params.game;
@@ -218,7 +220,7 @@ define([
           return;
         }
 
-        model.sendCampaignSnapshot("gwo_setup_general_commander", true);
+        coopPublish.publish(setupGeneralCommanderRequest);
         coopHost.reply(setupGeneralCommanderResult, operator, {
           changed: true,
           updated_at: nextRecord.updatedAt,

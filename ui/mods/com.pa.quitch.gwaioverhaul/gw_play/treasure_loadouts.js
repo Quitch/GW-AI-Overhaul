@@ -5,7 +5,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadout_banks.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
-], function (gwoLoadoutIds, helpers, gwoLoadoutBanks, coopHost) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+], function (gwoLoadoutIds, helpers, gwoLoadoutBanks, coopHost, coopPublish) {
   var cardId = function (card) {
     if (_.isString(card)) {
       return card;
@@ -224,7 +225,7 @@ define([
       return;
     }
 
-    model.sendCampaignSnapshot(reportOperator, true);
+    coopPublish.publish(reportOperator);
   };
 
   // The host has to know which loadouts a viewer already owns to offer them a

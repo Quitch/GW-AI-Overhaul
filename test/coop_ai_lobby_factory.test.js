@@ -7,7 +7,10 @@
 const { describe, it, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  registerModuleStub,
+} = require("../scripts/lib/amd-loader.js");
 const {
   createGlobalStubs,
   trackActive,
@@ -22,6 +25,23 @@ const {
   resolved,
 } = require("../scripts/lib/fake-jquery.js");
 const { aiRecord } = require("../scripts/lib/coop-ai-fixtures.js");
+
+// The gate itself is pinned in coop_publish.test.js; here it only matters
+// what the lobby asks it to publish.
+const published = { reasons: [], throws: false };
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  {
+    publish: (reason) => {
+      if (published.throws) {
+        throw new Error("snapshot failed");
+      }
+      published.reasons.push(reason);
+      return true;
+    },
+    settle: () => false,
+  }
+);
 
 const makeLobby = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_lobby.js"
@@ -59,7 +79,6 @@ function setup(overrides) {
       // Per-player tech: the AI tech modules are in, and every viewer is
       // level with the host.
       perPlayerReady: true,
-      publishReady: true,
       // createRecord answers with a promise, as a per-player build does.
       asyncRecord: false,
       // The seats the war was made with, and the humans due back from a
@@ -74,11 +93,14 @@ function setup(overrides) {
     sent: [],
     applied: [],
     queued: [],
-    snapshots: [],
+    published: [],
     saves: 0,
     saveStars: [],
     log: [],
   };
+
+  published.reasons = calls.published;
+  published.throws = options.snapshotThrows;
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
@@ -129,13 +151,6 @@ function setup(overrides) {
     enqueueGwCampaignStateApply: (label, apply) => {
       calls.queued.push(label);
       return apply();
-    },
-    sendCampaignSnapshot: (reason, force) => {
-      if (options.snapshotThrows) {
-        throw new Error("snapshot failed");
-      }
-      calls.snapshots.push({ reason, force });
-      return true;
     },
   };
   stubs.setGlobal("model", model);
@@ -198,7 +213,6 @@ function setup(overrides) {
       return aiRecord(identity.serial);
     },
     perPlayerReady: () => options.perPlayerReady,
-    publishReady: () => options.publishReady,
     save: (withStars) => {
       calls.saves += 1;
       calls.saveStars.push(withStars);
@@ -327,20 +341,8 @@ describe("addAi", () => {
     );
     assert.equal(run.gwaio.coopAiSerial, 1);
     assert.equal(run.calls.saves, 1);
-    assert.deepEqual(run.calls.snapshots, [
-      { reason: "gwo_coop_ai_add", force: true },
-    ]);
+    assert.deepEqual(run.calls.published, ["gwo_coop_ai_add"]);
     assert.equal(run.state.busy(), false);
-  });
-
-  // A joining viewer's initial sync asks for a snapshot of its own.
-  it("publishes nothing with no viewer to tell", () => {
-    const run = active.build();
-    run.lobby.addAi();
-    run.reply(true, { max_clients: 2 });
-
-    assert.equal(run.records().length, 1);
-    assert.deepEqual(run.calls.snapshots, []);
   });
 
   // The server keeps max_clients at the number connected, so a human who
@@ -632,46 +634,6 @@ describe("addAi under per-player tech", () => {
     assert.deepEqual(run.calls.queued, []);
     assert.equal(run.gwaio.coopAiSerial, undefined);
   });
-
-  // Between snapshots the server holds viewers' newer choices; a snapshot
-  // sent then would overwrite them.
-  it("holds the viewers' snapshot until every viewer is level", () => {
-    const run = active.build({
-      perPlayerTech: true,
-      connected: [HOST, VIEWER],
-      publishReady: false,
-    });
-    run.lobby.addAi();
-    run.reply(true, { max_clients: 2 });
-
-    assert.equal(run.records().length, 1);
-    assert.deepEqual(run.calls.snapshots, []);
-
-    assert.equal(run.lobby.settleDebt(), false);
-    run.options.publishReady = true;
-    assert.equal(run.lobby.settleDebt(), true);
-    assert.deepEqual(run.calls.snapshots, [
-      { reason: "gwo_coop_ai_add", force: true },
-    ]);
-    assert.equal(run.lobby.settleDebt(), false);
-  });
-
-  it("drops the snapshot it owes once no viewer is left to tell", () => {
-    const run = active.build({
-      perPlayerTech: true,
-      connected: [HOST, VIEWER],
-      publishReady: false,
-    });
-    run.lobby.addAi();
-    run.reply(true, { max_clients: 2 });
-
-    run.options.connected = [HOST];
-    run.options.publishReady = true;
-    assert.equal(run.lobby.settleDebt(), false);
-    run.options.connected = [HOST, VIEWER];
-    assert.equal(run.lobby.settleDebt(), false);
-    assert.deepEqual(run.calls.snapshots, []);
-  });
 });
 
 describe("kickAi", () => {
@@ -739,9 +701,7 @@ describe("kickAi", () => {
     assert.equal(run.calls.sent[0].payload.max_clients, 3);
     assert.equal(run.calls.sent[0].recordsWhenSent, 1);
     assert.equal(run.calls.saves, 1);
-    assert.deepEqual(run.calls.snapshots, [
-      { reason: "gwo_coop_ai_kick", force: true },
-    ]);
+    assert.deepEqual(run.calls.published, ["gwo_coop_ai_kick"]);
     assert.equal(run.state.busy(), true);
 
     run.reply(true, { max_clients: 3 });
@@ -769,9 +729,7 @@ describe("kickAi", () => {
 
     assert.equal(run.records().length, 1);
     assert.equal(run.calls.saves, 1);
-    assert.deepEqual(run.calls.snapshots, [
-      { reason: "gwo_coop_ai_kick", force: true },
-    ]);
+    assert.deepEqual(run.calls.published, ["gwo_coop_ai_kick"]);
     assert.equal(run.calls.sent.length, 1);
     assert.equal(run.calls.sent[0].payload.max_clients, 3);
     assert.ok(run.calls.log.some((line) => /kicked with an error/.test(line)));

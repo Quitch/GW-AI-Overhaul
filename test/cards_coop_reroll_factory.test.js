@@ -11,7 +11,10 @@
 const { describe, it, before, after, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  registerModuleStub,
+} = require("../scripts/lib/amd-loader.js");
 const {
   createGlobalStubs,
   trackActive,
@@ -29,6 +32,20 @@ const {
   inventoryClass,
   rejection,
 } = require("../scripts/lib/coop-fixtures.js");
+
+// The gate is pinned in coop_publish.test.js; here it only matters what the
+// reroll asks it to publish.
+const published = { reasons: [] };
+registerModuleStub(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  {
+    publish: (reason) => {
+      published.reasons.push(reason);
+      return true;
+    },
+    settle: () => false,
+  }
+);
 
 const makeFactory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js"
@@ -94,8 +111,10 @@ function setup(overrides = {}) {
     bank: [],
     offerCounts: [],
     viewerOperators: [],
+    published: [],
     prepared: 0,
   };
+  published.reasons = calls.published;
   let rerollPending = false;
   const handlers = {};
 
@@ -234,6 +253,7 @@ describe("rerollHandForRecord", () => {
     assert.deepEqual(run.calls.upserts, []);
     assert.deepEqual(run.calls.hostOperators, []);
     assert.deepEqual(run.calls.snapshots, []);
+    assert.deepEqual(run.calls.published, []);
     assert.deepEqual(run.calls.saves, []);
   });
 
@@ -498,12 +518,15 @@ describe("host reroll handler - the reroll", () => {
     assert.equal(calls.deals[0].count, 1);
   });
 
-  it("broadcasts and saves the new offer", async () => {
+  // Through the viewers' gate, never straight to the server: another
+  // viewer's choice in flight would otherwise be replaced there.
+  it("publishes the new offer through the viewers' gate, and saves it", async () => {
     const { handlers, calls } = build();
 
     await handlers[REQUEST](operator());
 
-    assert.deepEqual(calls.snapshots, [[REQUEST, true]]);
+    assert.deepEqual(calls.published, [REQUEST]);
+    assert.deepEqual(calls.snapshots, []);
     assert.deepEqual(calls.saves, [true]);
   });
 
@@ -544,6 +567,7 @@ describe("host reroll handler - the reroll", () => {
 
     assert.equal(calls.upserts.length, 1);
   });
+
   // A host win while the reroll was being dealt owes the record a re-deal;
   // writing over the record as first read would drop that debt.
   it("stores the new offer on the record as it is now", async () => {

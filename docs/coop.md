@@ -544,15 +544,29 @@ player sets up: `coop_ai.js` rebinds its disabled look to
 ### Publishing to viewers
 
 Viewers learn of an AI's tech, as of its arrival and its departure, from a
-snapshot. Under per-player tech a viewer's newest choices reach the host after
-the server has them, and a snapshot sent in between would overwrite them there.
-So `coop_ai_lobby.js` holds every roster publish, an add's, a kick's, and a
-pass's, as a debt until every viewer is level. The test is the star-card
-refresh's own, `viewersReadyForStarRefresh`, over the connected viewers: nobody
-is mid-setup, the host is not exploring, no AI is deciding, and every viewer is
-loaded and level with the host's deal count. A computed in `gw_play/coop_ai.js`
-settles the debt when those change. With no viewer connected the debt is
-dropped, since a viewer who joins asks for a snapshot as its first step.
+snapshot. Under per-player tech the server applies a viewer's tech choice to
+its own copy of the war before the host has it, and a snapshot replaces that
+copy whole. A snapshot sent in between drops the choice there, and the server
+then leaves that viewer picking, which blocks Explore and Fight until they
+reload.
+
+So `gw_play/coop_publish.js` holds every snapshot GWO sends as a debt until
+every viewer is level: an AI's add, kick, or pass (`coop_ai_lobby.js`), a
+viewer's reroll (`cards_coop_reroll.js`), a viewer's General Commander setup
+(`cards_start_subcdr.js`), and a viewer's report of their loadouts
+(`treasure_loadouts.js`). The test is the star-card refresh's own,
+`viewersReadyForStarRefresh`, over the connected viewers: nobody is mid-setup,
+the host is not exploring, no AI is deciding, and every viewer is loaded and
+level with the host's deal count. A viewer with an offer open is not level, so
+no choice can be in flight when the snapshot goes out. The module returns one
+object, so the scene has one debt, and a later reason replaces one still held.
+A computed in `gw_play/coop_ai.js` settles the debt when those change. With no
+viewer connected the debt is dropped, since a viewer who joins asks for a
+snapshot as its first step.
+
+The cost falls on a reroll. The rerolling viewer gets the new hand in the
+host's reply, but the server's copy of it, and the other viewers' view of it,
+wait for the snapshot, which goes out once everyone has chosen.
 
 ### Catching up
 

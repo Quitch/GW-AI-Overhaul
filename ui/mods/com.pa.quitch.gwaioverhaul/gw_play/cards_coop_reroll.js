@@ -4,7 +4,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
-], function (dealHelpers, coopHost) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+], function (dealHelpers, coopHost, coopPublish) {
   // Past the host's apply, deal and save. A request the host never answers - no
   // host, or a host reload mid-exchange - would otherwise hide the offer behind
   // the scan until the page reloads.
@@ -114,7 +115,6 @@ define([
         model.scanning(false);
       }, REPLY_TIMEOUT_MS);
     };
-
 
     // A player's rerolled hand, weighed on their own applied inventory: one card
     // fewer, from the stream of the deal it replaces. Resolves { pendingTechCards,
@@ -312,7 +312,7 @@ define([
             return;
           }
 
-          model.sendCampaignSnapshot("gwo_reroll_pending_tech", true);
+          coopPublish.publish(rerollPendingTechRequest);
           coopHost.reply(rerollPendingTechResult, operator, {
             pendingTechCards: nextPendingTechCards,
             rerolls_used: rerolled.rerollsUsed,
