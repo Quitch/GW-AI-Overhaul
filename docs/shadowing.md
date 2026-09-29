@@ -60,8 +60,9 @@ method that GWO never calls.
 
 `gw_play/cards.js` is the largest hijack. It replaces `model.explore`,
 `model.win`, `model.rerollTech` and the `CardViewModel` global rather than the
-files that own them. It also carries its own dealer in place of stock's
-`gw_dealer`. Stock's dealer deals from a fixed card list with a fresh
+files that own them, the first two through its siblings `cards_explore.js` and
+`cards_win.js`. It also carries its own dealer, `cards_dealer.js`, in place of
+stock's `gw_dealer`. Stock's dealer deals from a fixed card list with a fresh
 `Math.seedrandom()`. It knows nothing of third-party decks, the war seed or
 co-op per-player hands. There is therefore no single function in it to patch: the
 deal is GWO's end to end.

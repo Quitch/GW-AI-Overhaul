@@ -547,8 +547,8 @@ describe("coop_ai_effects copies", () => {
     assert.equal(JSON.stringify(stored), before);
   });
 
-  // gw_play/cards.js's chanceOf and dealCard load a JSON copy of an applied
-  // inventory.
+  // gw_play/cards_coop_ai_tech.js's chanceOf and dealCard load a JSON copy of
+  // an applied inventory.
   it("deals from a JSON copy of an applied inventory as from a deep copy", async () => {
     const applied = await effects().apply(stored);
     const copies = [makeEffects.plain(applied), _.cloneDeep(applied)];
@@ -586,8 +586,8 @@ describe("coop_ai_effects copies", () => {
   });
 });
 
-// gw_play/cards.js's valueOf judges every card of a ping window against one
-// save of the host's inventory.
+// gw_play/cards_coop_ai_pings.js's valueOf judges every card of a ping window
+// against one save of the host's inventory.
 describe("coop_ai_effects one save a judge", () => {
   const coopAiPings = loadCouiModule(
     "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_pings.js"
