@@ -108,6 +108,35 @@ describe("file filtering", () => {
   });
 });
 
+// The clean copy is for enemies, which never read /pa/ai_tech/.
+describe("load files", () => {
+  it("writes no clean copy of a load file to its own path", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [{ type: "fabber", op: "load", value: "tech.json" }],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [] }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    const keys = Object.keys(filesObj);
+    assert.deepEqual(
+      keys.filter((key) => key.startsWith("/pa/ai_tech/")),
+      []
+    );
+    assert.ok(
+      keys.some((key) => key.endsWith("/fabber_builds/tech.json")),
+      JSON.stringify(keys)
+    );
+  });
+});
+
 describe("Guardians scoped destination", () => {
   it("writes a scoped copy under the guardians-scoped enemy destination, alongside the source copy", async () => {
     const fixture = buildGame({
@@ -206,9 +235,105 @@ describe("Guardians scoped destination", () => {
       "coui://pa/ai/unit_maps/ai_unit_map.json",
     ]);
   });
+
+  // The Guardians take every player's AI mods through the base pass, load
+  // files included, into their scoped tree. See ai-paths.md, "Invariants".
+  it("gives the guardians-scoped tree every player's load files and AI mods", async () => {
+    const priority = (toBuild, value) => ({
+      type: "fabber",
+      op: "replace",
+      toBuild: toBuild,
+      idToMod: "priority",
+      value: value,
+    });
+    const load = (file) => ({ type: "fabber", op: "load", value: file });
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      perPlayerTech: true,
+      aiMods: [load("host_load.json"), priority("Bot", 50)],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.id === "v1"
+        ? {
+            inventory: makeInventory({
+              aiModsList: [load("viewer_load.json"), priority("Tank", 60)],
+            }),
+          }
+        : undefined;
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    const builds = {
+      "coui://pa/ai/fabber_builds/x.json": ["Bot", "Tank"],
+      "coui://pa/ai_tech/fabber_builds/host_load.json": ["HostUnit"],
+      "coui://pa/ai_tech/fabber_builds/viewer_load.json": ["ViewerUnit"],
+    };
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: (url) => ({
+        build_list: builds[url].map((unit) => ({
+          to_build: unit,
+          priority: 1,
+        })),
+      }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    const guardians = "/pa/ai/player_guardians/fabber_builds/";
+    const priorities = (path) =>
+      filesObj[path].build_list.map((build) => [
+        build.to_build,
+        build.priority,
+      ]);
+    assert.deepEqual(priorities(guardians + "x.json"), [
+      ["Bot", 50],
+      ["Tank", 60],
+    ]);
+    assert.deepEqual(priorities(guardians + "host_load.json"), [
+      ["HostUnit", 1],
+    ]);
+    assert.deepEqual(priorities(guardians + "viewer_load.json"), [
+      ["ViewerUnit", 1],
+    ]);
+  });
 });
 
 describe("per-player-tech viewer processing", () => {
+  // Only the host's unscoped Cluster tree is read. A viewer's Sub Commanders
+  // read their own scoped tree, so a Cluster copy of it would ship unread.
+  it("writes no Cluster tree for a viewer's Sub Commanders", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      subcommanderType: "cluster",
+      perPlayerTech: true,
+    });
+    // A Cluster player routes to the Cluster tree only with an ally to field it.
+    fixture.ai.ally = { commander: "/pa/units/commanders/ally/ally.json" };
+    const connectedClients = withTwoViewers(
+      fixture.game,
+      makeInventory(),
+      makeInventory()
+    );
+    installModel(fixture.game, connectedClients);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [] }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.deepEqual(
+      Object.keys(filesObj).filter((key) => key.startsWith("/pa/ai_cluster/")),
+      ["/pa/ai_cluster/fabber_builds/x.json"]
+    );
+  });
+
   it("gives each connected viewer their own distinct destination, never colliding", async () => {
     const fixture = buildGame({
       aiInUse: "Titans",

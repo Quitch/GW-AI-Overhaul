@@ -118,7 +118,8 @@ viewer's subcommander build orders are written to a path scoped by their own
 tag. Two viewers can therefore never collide on build orders or `ai_unit_map`.
 See [`ai-paths.md`](ai-paths.md) for how the scope token is derived. That
 document also covers the sanitisation asymmetry: the subcommander path keeps the
-leading dot while the Cluster path does not.
+tag's leading dot. A viewer's Sub Commanders get no Cluster tree of their own:
+their scoped tree is already their isolation.
 
 The per-player pass skips the host's minions because the main referee already
 included them. The check is `tag === ".player"`.
