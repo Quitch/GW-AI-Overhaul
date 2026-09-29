@@ -115,8 +115,6 @@ define(function () {
         "/pa/units/l_addon/fab_turret/fab_turret_build_arm.json",
       gigasiloStorageDevice:
         "/pa/units/l_addon/l_adv_storage/l_adv_storage.json",
-      gigasiloStorageDeviceDeathAmmo:
-        "/pa/units/land/l_adv_storage/l_adv_storage_death_weapon.json",
       juno: "/pa/units/addon/demi_titan_bot/demi_titan_bot.json",
       junoWeapon: "/pa/units/addon/demi_titan_bot/demi_titan_bot_weapon.json",
       junoAmmo: "/pa/units/addon/demi_titan_bot/demi_titan_bot_ammo.json",

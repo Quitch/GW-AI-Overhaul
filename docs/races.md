@@ -77,8 +77,9 @@ are in `scripts/lib/race-table-inputs.js`:
 - A table holds only the files the race's or add-on's own mod ships. A
   base-game file its units reuse (the Havoc fires the Gil-E's beam ammo) is
   left out: a card reaches it by its stock key where `shared/units.js` has one,
-  otherwise by its path, and changes it as a stock file. The generator refuses
-  an input that pins a base-game file the harvest read (a `baseGame` table's).
+  otherwise by its path, and changes it as a stock file. A part that no mod
+  ships is left out too. The generator refuses an input that pins a base-game
+  file the harvest read (a `baseGame` table's).
 - A file the race's mod ships over a base-game path stays in the table, but it
   is a stock path to everything else: `shared/units.js` leaves it out of the
   published table, and it is never foreign. Keep base-game paths out of a

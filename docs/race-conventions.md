@@ -242,5 +242,11 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
   `AnyBugFabberBasic` and `AnyBugFabberAdvanced`, which its own maps never
   define: the Bugs race's `unit_maps/bugs.json` supplies them in every Bugs
   tree (`test/addon_second_wave.test.js` pins the dependency).
+- Second Wave's GigaSilo Storage Device
+  (`/pa/units/l_addon/l_adv_storage/l_adv_storage.json`) names its death
+  weapon as `/pa/units/land/l_adv_storage/l_adv_storage_death_weapon.json`,
+  which no mod ships. The zip has that file under
+  `/pa/units/l_addon/l_adv_storage/`, where nothing in the mod names it. So
+  the table has no key for the part. Report this upstream.
 - Osmech has no AI data. A player fields its units by cell; an AI army never
   builds them.

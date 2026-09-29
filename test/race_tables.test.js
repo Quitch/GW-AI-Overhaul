@@ -3,8 +3,9 @@
 // scripts/lib/race-tables.js: the generator reproduces every race/ and
 // addon/ file from the harvested specs (test/fixtures/race_specs.json) and
 // the hand-kept inputs, and its naming rules on small hand-built sources.
-// scripts/harvest-race-specs.js, which writes that fixture, fails without
-// writing it when a spec does not parse.
+// Every path a table names is a file its own mods ship. The harvester,
+// scripts/harvest-race-specs.js, fails without writing the fixture when a
+// spec does not parse.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -21,6 +22,8 @@ const {
   generateAll,
 } = require("../scripts/lib/race-tables.js");
 const { TABLES } = require("../scripts/lib/race-table-inputs.js");
+const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const { modRoots } = require("../scripts/lib/mod-roots.js");
 const fixture = require("./fixtures/race_specs.json");
 
 const read = (file) => fs.readFileSync(path.join(REPO_ROOT, file), "utf8");
@@ -38,6 +41,50 @@ describe("the race table generator", () => {
       assert.equal(lf(content), lf(read(file)), file);
     }
   });
+});
+
+describe("every path a race or add-on table names", () => {
+  for (const input of TABLES) {
+    const units = loadCouiModule("coui://" + input.file).units;
+    const unshipped = (ships) =>
+      Object.entries(units)
+        .filter(([, specPath]) => !ships(specPath))
+        .map(([key, specPath]) => key + " -> " + specPath);
+
+    it(
+      input.id + ": is a spec the harvest found in the table's own mods",
+      () => {
+        const specs = fixture.tables[input.id].specs;
+
+        assert.deepEqual(
+          unshipped((specPath) =>
+            input.mods.some((mod) => Object.hasOwn(specs[mod], specPath))
+          ),
+          []
+        );
+      }
+    );
+
+    it(
+      input.id +
+        ": is a file the table's own mods ship on disk (skipped without them)",
+      (t) => {
+        const byMod = input.mods.map((mod) => modRoots([mod]));
+        if (byMod.some((roots) => !roots.length)) {
+          t.skip("not every mod of " + input.id + " is on disk");
+          return;
+        }
+        const roots = byMod.flat();
+
+        assert.deepEqual(
+          unshipped((specPath) =>
+            roots.some((root) => root.has(specPath.replace(/^\/pa\//, "")))
+          ),
+          []
+        );
+      }
+    );
+  }
 });
 
 describe("the race spec harvester", () => {
@@ -373,6 +420,9 @@ describe("add-on naming rules", () => {
       "/pa/units/addon/rex/base_weapon.json": {
         ammo_id: "/pa/units/addon/rex/rex_ammo.json",
       },
+      "/pa/units/addon/rex/rex_ammo.json": {},
+      "/pa/units/addon/rex/rex_build_arm.json": {},
+      "/pa/units/addon/rex/rex_boom_ammo.json": {},
     };
     const { units, unitNames } = addon(["/pa/units/addon/rex/rex.json"], specs);
 
@@ -386,19 +436,59 @@ describe("add-on naming rules", () => {
     assert.deepEqual(unitNames, [["rex", "!LOC:Rex"]]);
   });
 
+  it("leaves out a part the base game ships, and a part nothing ships", () => {
+    const silo = "/pa/units/addon/silo/silo.json";
+    const baseTool = "/pa/units/land/tank/tank_tool_weapon.json";
+    const { units } = buildTable(
+      { id: "fx", strategy: "addon" },
+      {
+        tables: {
+          fx: {
+            mods: [MOD],
+            unitList: [silo],
+            specs: {
+              [MOD]: {
+                [silo]: {
+                  display_name: "Silo",
+                  tools: [baseTool],
+                  death_weapon: {
+                    ground_ammo_spec:
+                      "/pa/units/land/silo/silo_death_weapon.json",
+                  },
+                },
+              },
+              baseGame: { [baseTool]: {} },
+            },
+          },
+        },
+        baseUnits: [],
+      }
+    );
+
+    assert.deepEqual(units, [["silo", silo]]);
+  });
+
   it("refuses a unit key an earlier unit's part holds", () => {
     const specs = {
       "/pa/units/addon/rex/rex.json": {
         display_name: "Rex",
         tools: ["/pa/units/addon/rex/rex_build_arm.json"],
       },
+      "/pa/units/addon/rex/rex_build_arm.json": {},
       "/pa/units/addon/rex_arm/rex_arm.json": {
         display_name: "Rex Build Arm",
       },
     };
 
     assert.throws(
-      () => addon(Object.keys(specs), specs),
+      () =>
+        addon(
+          [
+            "/pa/units/addon/rex/rex.json",
+            "/pa/units/addon/rex_arm/rex_arm.json",
+          ],
+          specs
+        ),
       /fx: key rexBuildArm for \/pa\/units\/addon\/rex_arm\/rex_arm\.json is already taken/
     );
   });

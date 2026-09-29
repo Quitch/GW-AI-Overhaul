@@ -193,10 +193,16 @@ function raceRows(input, source, reader) {
 }
 
 // A table holds the files the race's or add-on's own mod ships; a base-game
-// file its units reuse is left out. See races.md, "Unit tables".
+// file its units reuse is left out, and so is a part no mod ships. See
+// races.md, "Unit tables".
 function isBaseGame(reader, specPath) {
   const spec = reader.read(specPath);
   return Boolean(spec) && spec.mod === undefined;
+}
+
+function modShips(reader, specPath) {
+  const spec = reader.read(specPath);
+  return Boolean(spec) && spec.mod !== undefined;
 }
 
 function pinned(input, reader, entries) {
@@ -283,7 +289,7 @@ function keyClash(id, key, unit) {
 function addRaceParts(input, reader, table, { key, unit, stem }) {
   const parts = raceParts(input, reader.read(unit), reader.read);
   for (const part of parts) {
-    if (reader.read(part) && !isBaseGame(reader, part) && !table.has(part)) {
+    if (modShips(reader, part) && !table.has(part)) {
       const free = freeKey(key + raceSuffix(input, stem, part), (candidate) =>
         table.taken(candidate, part)
       );
@@ -450,7 +456,7 @@ function buildAddonTable(id, source, baseUnits) {
       entry.spec,
       reader.chain
     )) {
-      if (isBaseGame(reader, partPath)) {
+      if (!modShips(reader, partPath)) {
         continue;
       }
       const key = freeKey(
