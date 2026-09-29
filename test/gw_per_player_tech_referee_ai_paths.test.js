@@ -153,40 +153,43 @@ describe("getViewerSubcommanderAiPath", () => {
   });
 
   // aiRoot only knows a registered race, so the fixture one is registered for
-  // this case alone - see testing.md.
+  // this case alone.
   it("routes two viewers on two races to their own race trees", () => {
     races.register(FIXTURE_RACE);
-    // Separate races: each viewer's race comes off their own inventory, so a
-    // race viewer and an MLA viewer in the same battle land in different roots.
-    const raceInventory = makeInventory({
-      aiModsList: [{ op: "load" }],
-      tags: { "global:playerRace": "fixture" },
-    });
-    const mlaInventory = makeInventory({ aiModsList: [{ op: "load" }] });
+    try {
+      // Separate races: each viewer's race comes off their own inventory, so a
+      // race viewer and an MLA viewer in the same battle land in different roots.
+      const raceInventory = makeInventory({
+        aiModsList: [{ op: "load" }],
+        tags: { "global:playerRace": "fixture" },
+      });
+      const mlaInventory = makeInventory({ aiModsList: [{ op: "load" }] });
 
-    assert.equal(
-      hook.getViewerSubcommanderAiPath(
-        refereeAIPaths,
-        subcommanderTech,
-        "Titans",
-        raceInventory,
-        ".player0",
-        "fixture"
-      ),
-      "/pa/ai_subcommander_race_fixture/player_.player0/"
-    );
-    assert.equal(
-      hook.getViewerSubcommanderAiPath(
-        refereeAIPaths,
-        subcommanderTech,
-        "Titans",
-        mlaInventory,
-        ".player1",
-        "mla"
-      ),
-      "/pa/ai_subcommander/player_.player1/"
-    );
-    races.reset();
+      assert.equal(
+        hook.getViewerSubcommanderAiPath(
+          refereeAIPaths,
+          subcommanderTech,
+          "Titans",
+          raceInventory,
+          ".player0",
+          "fixture"
+        ),
+        "/pa/ai_subcommander_race_fixture/player_.player0/"
+      );
+      assert.equal(
+        hook.getViewerSubcommanderAiPath(
+          refereeAIPaths,
+          subcommanderTech,
+          "Titans",
+          mlaInventory,
+          ".player1",
+          "mla"
+        ),
+        "/pa/ai_subcommander/player_.player1/"
+      );
+    } finally {
+      races.reset();
+    }
   });
 
   it("stays pairwise-distinct across a heterogeneous mix of brains and aiMods states, not just uniform Titans", () => {

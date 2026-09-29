@@ -3,14 +3,11 @@
 // race/legion.js: the Legion Expansion descriptor, its unit table, and what
 // the capability cells make of Legion's units against GWO's cards. The cells
 // come from the harvested fixture (test/fixtures/unit_types.json), which
-// carries Legion's units when the mod's source tree was on disk at harvest.
+// carries Legion's units when the mod was on disk at harvest.
 
 const { describe, it, before, after } = require("node:test");
 const assert = require("node:assert/strict");
-const fs = require("node:fs");
-const path = require("node:path");
 const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
-const { userDataDir } = require("../scripts/lib/pa-install.js");
 
 const legion = loadCouiModule(MOD_ROOT + "/race/legion.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
@@ -19,7 +16,7 @@ const {
   expectedWithheld,
   unnamedCardUnits,
 } = require("../scripts/lib/harvested-race.js");
-const { fixtureIndex } = require("../scripts/lib/addon-fixture.js");
+const { fixtureIndex, modFiles } = require("../scripts/lib/addon-fixture.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
 // Cards a Legion player is never dealt beyond the MLA-only set every race
@@ -31,14 +28,6 @@ const WITHHELD_BY_CELLS = [];
 const legionUnits = Object.keys(fixture).filter((unit) =>
   fixture[unit].includes("UNITTYPE_Custom1")
 );
-
-function legionZip() {
-  const candidates = [
-    process.env.GWO_LEGION_ZIP,
-    path.join(userDataDir(), "download", "com.pa.legion-expansion-server.zip"),
-  ];
-  return candidates.find((candidate) => candidate && fs.existsSync(candidate));
-}
 
 describe("the Legion descriptor", () => {
   it("is registered as shipped, with its six commanders and both AI layouts", () => {
@@ -91,22 +80,20 @@ describe("the Legion descriptor", () => {
     );
   });
 
-  it("maps to files the installed Legion zip ships (skipped without one)", (t) => {
-    const zipPath = legionZip();
-    if (!zipPath) {
-      t.skip("no Legion zip installed");
+  it("maps to files the installed Legion mod ships (skipped without it)", (t) => {
+    const files = modFiles(legion.serverMods);
+    if (!files) {
+      t.skip("no Legion mod on disk");
       return;
     }
-    // A zip's central directory lists every entry name in plain text.
-    const bytes = fs.readFileSync(zipPath).toString("latin1");
     for (const [key, value] of Object.entries(legion.units)) {
       if (!/\/l_/.test(value)) {
         continue;
       }
-      assert.ok(bytes.includes(value.slice(1)), key + " -> " + value);
+      assert.ok(files.has(value.slice(1)), key + " -> " + value);
     }
     for (const commander of legion.commanders) {
-      assert.ok(bytes.includes(commander.spec.slice(1)), commander.spec);
+      assert.ok(files.has(commander.spec.slice(1)), commander.spec);
     }
   });
 });

@@ -649,7 +649,9 @@ describe("treeFilter", () => {
     assert.equal(keep("/pa/ai/factory_builds/rival_air.json"), false);
   });
 
-  it("under a brain that carries the race keeps everything but the excluded fragments and the race's maps", () => {
+  // Templates are kept even under an excluded fragment, as under Titans: a
+  // build file the tree keeps can name any layer's.
+  it("under a brain that carries the race keeps everything but the excluded fragments, templates aside, and the race's maps", () => {
     races.register(
       Object.assign({}, FIXTURE_RACE, {
         ai: {

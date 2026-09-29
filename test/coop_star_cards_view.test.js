@@ -62,15 +62,13 @@ describe("shouldUseViewerStarCard", () => {
     assert.equal(view.shouldUseViewerStarCard(false, true), false);
     assert.equal(view.shouldUseViewerStarCard(false, false), false);
   });
-
-  it("is reachable from the factory too, for bindings holding one", () => {
-    assert.equal(makeFactory.shouldUseViewerStarCard(true, true), true);
-  });
 });
 
+// `failed` names cards whose module fails to load: RequireJS then calls the
+// errback, if one was given, and never the success callback.
 function setup(overrides = {}) {
   const options = Object.assign(
-    { record: undefined, cards: {}, autoResolve: true },
+    { record: undefined, cards: {}, failed: [], autoResolve: true },
     overrides
   );
   const calls = { requested: [] };
@@ -81,9 +79,15 @@ function setup(overrides = {}) {
   stubs.setGlobal("model", {
     currentCoopPlayerInventoryData: () => options.record,
   });
-  stubs.setGlobal("requireGW", (ids, done) => {
+  stubs.setGlobal("requireGW", (ids, done, fail) => {
     const cardId = ids[0].slice("cards/".length);
     calls.requested.push(cardId);
+    if (options.failed.includes(cardId)) {
+      if (fail) {
+        fail(new Error("failed to load cards/" + cardId));
+      }
+      return;
+    }
     const deliver = () => done(options.cards[cardId]);
     if (options.autoResolve) {
       deliver();
@@ -103,6 +107,15 @@ function setup(overrides = {}) {
 }
 
 const { build, current } = trackActive(setup);
+
+describe("coop star cards view model - shouldUseViewerStarCard", () => {
+  // section_of_foreign_intelligence.js reads it off the view model it builds.
+  it("is on the view model", () => {
+    const { viewModel } = build();
+    assert.equal(viewModel.shouldUseViewerStarCard(true, true), true);
+    assert.equal(viewModel.shouldUseViewerStarCard(true, false), false);
+  });
+});
 
 describe("coop star cards view model - cardIdForStar", () => {
   it("reads this viewer's own card off the live inventory record", () => {
@@ -193,11 +206,13 @@ describe("coop star cards view model - cardName", () => {
     );
   });
 
-  it("caches an empty name for a card that failed to load", () => {
-    const { viewModel, calls } = build({ cards: {} });
+  // No name is ever cached for it, so what stops a request per redraw is the
+  // request being remembered before the load answers.
+  it("asks once for a card that failed to load, and shows no name", () => {
+    const { viewModel, calls } = build({ failed: ["gwc_missing"] });
 
-    viewModel.cardName("gwc_missing");
-    viewModel.cardName("gwc_missing");
+    assert.equal(viewModel.cardName("gwc_missing"), "");
+    assert.equal(viewModel.cardName("gwc_missing"), "");
 
     assert.deepEqual(calls.requested, ["gwc_missing"]);
   });

@@ -1,8 +1,9 @@
 "use strict";
 
 // shared/build_types.js: PA's unit-type expression language, the ES5 twin of
-// scripts/lib/build-types.js. The grammar cases mirror
-// test/cluster_subcommander_buildable.test.js.
+// scripts/lib/build-types.js, whose own grammar cases are in
+// test/cluster_subcommander_buildable.test.js. Every case here is run through
+// both twins.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -22,6 +23,14 @@ const CASES = [
   ],
   ["Air | Orbital", ["Orbital"], true],
   ["Air | Orbital", ["Land"], false],
+  // A & B - C | D: "-" excludes C from the first alternative only.
+  ["Bot & Mobile - Construction | Air", ["Air", "Construction"], true],
+  ["Bot & Mobile - Construction | Air", ["Bot", "Mobile"], true],
+  [
+    "Bot & Mobile - Construction | Air",
+    ["Bot", "Mobile", "Construction"],
+    false,
+  ],
   [
     "(Custom2 & FactoryBuild & Basic & Bot & Heavy) - Mobile",
     ["Custom2", "FactoryBuild", "Basic", "Bot", "Heavy"],

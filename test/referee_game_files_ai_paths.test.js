@@ -1,9 +1,10 @@
 "use strict";
 
-// Unit tests for the game-files referee's ai_unit_map path logic. The tested helpers
-// live in the extracted gw_play/referee_game_file_paths.js; the referee file itself
-// depends on the unshipped shared/gw_common and cannot load here, so this loads the
-// extracted module.
+// Unit tests for every helper gw_play/referee_game_file_paths.js returns, the
+// measured half of the game-files referee: unit maps, the player's and co-op
+// AIs' files, spec reads, and the race trees' stock builds. The referee file
+// itself depends on the unshipped shared/gw_common and cannot load here, so
+// this loads the extracted module.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -567,7 +568,6 @@ describe("races", () => {
         playerX1AIUnitMap: { unit_map: {} },
         playerSpecFiles: {},
         inventory: inventory,
-        titans: true,
         race: "fixture",
         mods: [
           {

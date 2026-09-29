@@ -105,6 +105,16 @@ describe("gwo_streams determinism", () => {
         coopAiLoadout: draws(streams.coopAiLoadoutRng(war, 2)),
         coopAiDecision: draws(streams.coopAiDecisionRng(war, 2, 3, 1)),
         coopAiFactory: draws(streams.coopAiFactoryRng(war, 2, 3)),
+        coopReroll: draws(streams.coopRerollRng(war, "uber-1", 2, 1)),
+        iteration: draws(
+          streams.iterationRng(streams.exploreDealRng(war, 3, 5, 1), 2)
+        ),
+        card: draws(
+          streams.cardRng(
+            streams.iterationRng(streams.exploreDealRng(war, 3, 5, 1), 2),
+            "gwc_minion"
+          )
+        ),
       };
     };
     assert.deepEqual(build(), build());
@@ -184,7 +194,7 @@ describe("gwo_streams determinism", () => {
     const war = streams.warRng(SEED);
     assert.deepEqual(
       draws(streams.treasureLoadoutRng(war, "p", 3)),
-      draws(streams.treasureLoadoutRng(war, "p", 3))
+      draws(war.stream("treasure_loadout", "p").stream("star", 3))
     );
   });
 

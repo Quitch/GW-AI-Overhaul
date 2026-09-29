@@ -3,14 +3,14 @@
 // addon/section17.js: the Section 17 descriptor, its unit table, and what
 // the capability cells make of its units - four of them exclusive, reached
 // only through its gantries. The cells come from the harvested fixture
-// (test/fixtures/unit_types.json), which carries the mod's units when its
-// zip was on disk at harvest.
+// (test/fixtures/unit_types.json), which carries the mod's units when the
+// mod was on disk at harvest.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
-  zipsFor,
+  modFiles,
   fixtureIndex,
   inFixture,
 } = require("../scripts/lib/addon-fixture.js");
@@ -21,7 +21,7 @@ const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
-const ZIPS = ["com.pa.daedelus.experimentals"];
+const MODS = ["com.pa.daedelus.experimentals"];
 const EXCLUSIVE_KEYS = ["bigBill", "floater", "horntail", "pineapple"];
 
 const harvested = inFixture(section17);
@@ -78,37 +78,37 @@ describe("the Section 17 descriptor", () => {
     }
   });
 
-  it("maps to files and AI data the installed zip ships (skipped without it)", (t) => {
-    const zips = zipsFor(ZIPS);
-    if (!zips) {
-      t.skip("no Section 17 zip installed");
+  it("maps to files and AI data the installed mod ships (skipped without it)", (t) => {
+    const files = modFiles(MODS);
+    if (!files) {
+      t.skip("no Section 17 mod on disk");
       return;
     }
     for (const [key, value] of Object.entries(section17.units)) {
-      assert.ok(zips.has(value.slice(1)), key + " -> " + value);
+      assert.ok(files.has(value.slice(1)), key + " -> " + value);
     }
     const layer = section17.layers.mla.titans;
     for (const map of layer.unitMaps) {
-      assert.ok(zips.has(map.slice(1)), map);
+      assert.ok(files.has(map.slice(1)), map);
     }
     for (const source of layer.sources) {
-      assert.ok(zips.has((source.dir + source.match).slice(1)), source.match);
+      assert.ok(files.has((source.dir + source.match).slice(1)), source.match);
     }
   });
 
-  it("names builder aliases its own map lacks - Second Wave's aux map supplies them (skipped without the zip)", (t) => {
-    const zips = zipsFor(ZIPS);
-    if (!zips) {
-      t.skip("no Section 17 zip installed");
+  it("names builder aliases its own map lacks - Second Wave's aux map supplies them (skipped without the mod)", (t) => {
+    const files = modFiles(MODS);
+    if (!files) {
+      t.skip("no Section 17 mod on disk");
       return;
     }
-    const map = zips.readJson("pa/ai/unit_maps/s17_paeiou.json").unit_map;
+    const map = files.readJson("pa/ai/unit_maps/s17_paeiou.json").unit_map;
     const referenced = new Set();
-    for (const name of zips.names()) {
+    for (const name of files.names()) {
       if (!/^pa\/ai\/fabber_builds\//.test(name)) {
         continue;
       }
-      for (const build of zips.readJson(name).build_list || []) {
+      for (const build of files.readJson(name).build_list || []) {
         for (const builder of build.builders || []) {
           referenced.add(builder);
         }
