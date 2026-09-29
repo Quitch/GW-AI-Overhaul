@@ -410,6 +410,7 @@ describe("a card is offered for any one of its units", () => {
   // them, so each unit is also held alone.
   it("is opened by each unit it gates on, held alone", () => {
     const closed = [];
+    const stillClosed = new Set();
 
     for (const entry of probed) {
       // As in the drift sweep below: only a card dealable to an owner and not
@@ -423,11 +424,16 @@ describe("a card is offered for any one of its units", () => {
       }
 
       const argued = NOT_OPENED_BY_ONE_UNIT[entry.id];
-      const units = entry.gated.filter(
-        (unit) =>
-          !(argued && argued.units.includes(unit)) &&
-          maxChance(entry.card, makeInventory([...STARTER, unit])) === 0
-      );
+      const units = entry.gated.filter((unit) => {
+        if (maxChance(entry.card, makeInventory([...STARTER, unit])) !== 0) {
+          return false;
+        }
+        if (argued && argued.units.includes(unit)) {
+          stillClosed.add(entry.id + " <- " + unit);
+          return false;
+        }
+        return true;
+      });
 
       if (units.length) {
         closed.push(entry.id + " <- " + units.join(", "));
@@ -439,6 +445,16 @@ describe("a card is offered for any one of its units", () => {
       [],
       "the card affects each of these units, yet owning one alone does not " +
         "make it dealable"
+    );
+
+    const stale = Object.entries(NOT_OPENED_BY_ONE_UNIT)
+      .flatMap(([id, argued]) => argued.units.map((unit) => id + " <- " + unit))
+      .filter((pair) => !stillClosed.has(pair));
+    assert.deepEqual(
+      stale,
+      [],
+      "these exceptions no longer hold: the card is not gated on the unit, " +
+        "or the unit now opens it alone"
     );
   });
 });
