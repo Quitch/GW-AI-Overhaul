@@ -276,7 +276,7 @@ function setup(overrides) {
 
   const driver = makeDriver({
     records: () => store.all(),
-    find: store.find,
+    find: options.find ? options.find(store) : store.find,
     dealCount: (record) => record.techCardDealCount || 0,
     hostDealCount: () => options.history.length,
     entryFor: (dealIndex) => _.find(options.history, { dealIndex }),
@@ -354,7 +354,7 @@ function setup(overrides) {
     afterPass: () => {
       calls.afterPass += 1;
     },
-    defer: (fn) => setImmediate(fn),
+    defer: options.defer || ((fn) => setImmediate(fn)),
     decisionTimeoutMs: options.decisionTimeoutMs,
     writeTimeoutMs: 1000,
   });
@@ -887,6 +887,41 @@ describe("coop_ai_driver writes", () => {
     assert.equal(run.calls.writes.length, 0);
     assert.equal(run.calls.afterPass, 0);
     assert.ok(lines.some((line) => /not written: gone/.test(line)));
+  });
+
+  // A records subscriber runs inside a write, so a step can throw. The pass
+  // must still end, or Fight stays refused until the page reloads.
+  it("ends the pass when a step throws", async () => {
+    let thrown = false;
+    const run = setup({
+      find: (store) => (id) => {
+        if (!thrown) {
+          thrown = true;
+          throw new Error("subscriber threw");
+        }
+        return store.find(id);
+      },
+      // The engine logs a throw from a deferred callback and carries on.
+      defer: (fn) =>
+        setImmediate(() => {
+          try {
+            fn();
+          } catch (error) {
+            console.error(String(error));
+          }
+        }),
+    });
+
+    const outcome = await Promise.race([
+      run.driver.run().then(() => "ended"),
+      new Promise((resolve) => setTimeout(resolve, 200, "hung")),
+    ]);
+
+    assert.equal(outcome, "ended");
+    assert.deepEqual(run.calls.running, [true, false]);
+    assert.ok(
+      lines.some((line) => /pass failed: .*subscriber threw/.test(line))
+    );
   });
 
   it("runs once more when asked again mid-pass", async () => {

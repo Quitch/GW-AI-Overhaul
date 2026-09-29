@@ -143,10 +143,11 @@ define([
     var running;
     var again = false;
 
+    // A throw from step rejects, so the pass still ends.
     var later = function (step) {
       return new Promise(function (resolve) {
         defer(function () {
-          resolve(step());
+          resolve(Promise.resolve().then(step));
         });
       });
     };
