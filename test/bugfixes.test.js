@@ -14,7 +14,35 @@ const stubs = createGlobalStubs();
 
 afterEach(() => stubs.restoreGlobals());
 
+// The base game's bank, as shared/gw_bank.js keeps it: its own copy of
+// gw_bank, read when the scene loads and written back whole on each change.
+function stockBankFor(store) {
+  let startCards = structuredClone(store.gw_bank.startCards);
+  const save = () => {
+    store.gw_bank = { startCards: structuredClone(startCards) };
+  };
+  return {
+    startCards: (...value) => {
+      if (value.length) {
+        startCards = value[0];
+        save();
+        return undefined;
+      }
+      return startCards;
+    },
+    addStartCard: (card) => {
+      if (startCards.some((held) => held.id === card.id)) {
+        return false;
+      }
+      startCards.push(card);
+      save();
+      return true;
+    },
+  };
+}
+
 // localStorage as the `local` extender reads it, keyed as the scene keys it.
+// Returns the base game's bank, loaded from the same profile.
 function installProfile(store) {
   const backedBy = (key) => {
     const observable = function (...value) {
@@ -32,6 +60,7 @@ function installProfile(store) {
     observable: extendable,
     observableArray: extendable,
   });
+  return stockBankFor(store);
 }
 
 // A war whose every war-side repair is already recorded, created by `version`.
@@ -52,7 +81,7 @@ function installWar(version) {
   stubs.setGlobal("model", { game: () => game });
 }
 
-function runRepair() {
+function runRepair(stockBank) {
   const banked = [];
   const saves = [];
   const errors = [];
@@ -63,7 +92,8 @@ function runRepair() {
       {},
       { addStartCard: (card) => banked.push(card.id) },
       {},
-      { playerIsCluster: () => false }
+      { playerIsCluster: () => false },
+      { bank: stockBank }
     )
   );
   runSceneScript(MOD_ROOT + "/gw_play/bugfixes.js");
@@ -80,10 +110,10 @@ describe("the Lucky Commander repair", () => {
         startCards: [{ id: "gwc_start_air" }, { id: "gwaio_start_lucky" }],
       },
     };
-    installProfile(store);
+    const stockBank = installProfile(store);
     installWar("7.4.1");
 
-    const { banked, saves, errors } = runRepair();
+    const { banked, saves, errors } = runRepair(stockBank);
 
     assert.deepEqual(errors, []);
     assert.deepEqual(banked, ["gwaio_start_lucky"]);
@@ -99,13 +129,29 @@ describe("the Lucky Commander repair", () => {
       gw_bank: { startCards: [{ id: "gwaio_start_lucky" }] },
       gwaio_lucky_commander_fixed: "true",
     };
-    installProfile(store);
+    const stockBank = installProfile(store);
     installWar("7.4.1");
 
-    const { banked } = runRepair();
+    const { banked } = runRepair(stockBank);
 
     assert.deepEqual(banked, ["gwaio_start_lucky"]);
     assert.deepEqual(store.gw_bank.startCards, []);
+    assert.equal(store.gwaio_lucky_commander_moved, "true");
+  });
+
+  // The base game's bank still held the card it loaded, and its next unlock
+  // wrote it back, after the flag had stopped any further repair.
+  it("keeps the card out when the base game's bank next saves", () => {
+    const store = {
+      gw_bank: { startCards: [{ id: "gwaio_start_lucky" }] },
+    };
+    const stockBank = installProfile(store);
+    installWar("7.4.1");
+
+    runRepair(stockBank);
+    stockBank.addStartCard({ id: "gwc_start_bot" });
+
+    assert.deepEqual(store.gw_bank.startCards, [{ id: "gwc_start_bot" }]);
     assert.equal(store.gwaio_lucky_commander_moved, "true");
   });
 
@@ -114,10 +160,10 @@ describe("the Lucky Commander repair", () => {
       gw_bank: { startCards: [{ id: "gwaio_start_lucky" }] },
       gwaio_lucky_commander_moved: "true",
     };
-    installProfile(store);
+    const stockBank = installProfile(store);
     installWar("7.4.1");
 
-    const { banked, saves } = runRepair();
+    const { banked, saves } = runRepair(stockBank);
 
     assert.deepEqual(banked, []);
     assert.deepEqual(store.gw_bank.startCards, [{ id: "gwaio_start_lucky" }]);

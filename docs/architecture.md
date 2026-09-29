@@ -281,7 +281,10 @@ Know the shape before you add a fix to it:
   `gwaio_lucky_commander_moved` has no version either: it records the profile's
   bank, which a war's version says nothing about, so its repair runs once per
   profile. It replaced `gwaio_lucky_commander_fixed`, which versions up to 7.4.1
-  set from the war's version without moving the card.
+  set from the war's version without moving the card. The repair removes the
+  card through the base game's `GW.bank`, not from `gw_bank` itself: that
+  bank read `gw_bank` when the scene loaded, and its next unlock writes its
+  whole list back.
 - **`applyFixes` sets the flags unconditionally after the sweep.** The reason is
   that "the thing this fix targets does not exist in this war" and "it has been
   fixed" want the same outcome. A war with no treasure planet should not re-scan
