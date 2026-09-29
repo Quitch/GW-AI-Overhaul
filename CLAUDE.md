@@ -50,9 +50,10 @@ named:
   answer to "may I use X?" - no entry means no.
   ([`constraints.md`](docs/constraints.md))
 - **Shipped CSS is bound by the same engine, and fails more quietly.** An
-  unsupported declaration is dropped silently rather than erroring, so
-  `stylelint.config.mjs` is the CSS half of that whitelist and the answer to "may I
-  use this property?". ([`constraints.md`](docs/constraints.md))
+  unsupported declaration is dropped silently rather than erroring.
+  `stylelint.config.mjs` is the CSS counterpart, but a curated denylist rather
+  than a whitelist: a lint failure means no, and a lint pass is necessary, not
+  sufficient. ([`constraints.md`](docs/constraints.md))
 - **The lodash `v3` lint rules cover `ui/**` only, and ESLint is held at 9.x.**
   Every non-`prefer-*` rule is on; of the `prefer-*` rules only `prefer-get`,
   `prefer-includes`, and `prefer-startswith` are kept, where the lodash method

@@ -210,9 +210,11 @@ exactly as `eslint.config.mjs` is for JS. It works through two nets:
 
 Be honest about the difference from the JS side. **The CSS denylists are
 curated, not exhaustive.** ES5-vs-Chrome-40 is a finite gap that can be
-enumerated. CSS-since-2015 is not. The plugin is the exhaustive half, and the
-hand-written rules are the high-traffic set plus everything the plugin misses.
-"No entry means no" is a promise the JS config keeps and this one cannot.
+enumerated. CSS-since-2015 is not. The plugin is the automatic half, but not an
+exhaustive one: it counts prefixed-only support as support, and it checks only
+the caniuse features it has a matcher for. The hand-written rules are the
+high-traffic set plus the plugin's known misses. "No entry means no" is a
+promise the JS config keeps and this one cannot.
 
 Every Chrome number in that file was verified against a running PA
 (Chrome/40.0.2214.28) over the Coherent inspector. The method was
@@ -268,7 +270,7 @@ The config is calibrated, not over-tuned. Run over the base game's own 57
 unmodified CSS files, it reports no false positives. Everything it flags there
 is either a genuinely inert declaration or a redundant prefix. The inert
 declarations are unprefixed `filter` ×9, `user-select` ×7, `mask` ×2,
-`-webkit-overflow-scrolling` ×1, and `word-break: keep-all` ×1.
+`text-wrap` ×3, `-webkit-overflow-scrolling` ×1, and `word-break: keep-all` ×1.
 
 Do not remove an exclusion or "fix" the usage it covers as a drive-by. The
 `format:css` pass runs `stylelint --fix` repo-wide, and several of these rules

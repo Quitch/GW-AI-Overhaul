@@ -8,13 +8,19 @@
 // otherwise *forces* into syntax the engine rejects.
 //
 // Unlike eslint.config.mjs's ES5 whitelist, these lists are curated rather than
-// exhaustive - CSS-since-2015 is not a finite gap. The plugin is the exhaustive
-// half. See docs/constraints.md.
+// exhaustive - CSS-since-2015 is not a finite gap. The plugin is the automatic
+// half, but not an exhaustive one. See docs/constraints.md.
 //
 // Every `Chrome NN` below is the release that shipped the unprefixed feature, so
 // an entry qualifies when NN > 40. All CSS in this repo is shipped to the engine,
 // so there is no `overrides` block; Node-side CSS, if it ever appears, would need
 // one.
+
+// A plain string entry must equal the whole value, so "clip" would miss
+// `overflow: clip visible`. This matches each word as a whole token anywhere in
+// the value.
+const keyword = (...words) =>
+  String.raw`/(^|[\s,])(${words.join("|")})($|[\s,])/`;
 
 export default {
   extends: ["stylelint-config-standard"],
@@ -32,35 +38,38 @@ export default {
         ignore: [
           // Fires on any overflow-x/overflow-y, because caniuse marks the whole
           // feature partial for Chrome 40 on account of `overflow: clip` and
-          // the two-value shorthand. Both of those are handled by hand below -
-          // `clip` is in declaration-property-value-disallowed-list, and the
-          // shorthand cannot be reached because overflow is in
-          // declaration-block-no-redundant-longhand-properties' ignoreShorthands.
+          // the two-value shorthand. Both are banned by hand in
+          // declaration-property-value-disallowed-list.
           "css-overflow",
           // caniuse marks Chrome 40 "a x" - partial, prefixed. The -webkit-
           // form is the one that works, and property-no-vendor-prefix below
-          // allows only that while property-disallowed-list bans the bare one.
+          // allows only that while property-disallowed-list bans the bare one,
+          // along with the -webkit- names Blink never had.
           "css-masks",
           // Fires on any border-image, because caniuse marks the feature
-          // partial over `fill` and `repeat: space`. Verified working in the
-          // engine, and the base game leans on it for every panel frame.
+          // partial over a border-style bug and `repeat: space`. Verified
+          // working in the engine, `space` included, and the base game leans
+          // on it for every panel frame.
           "border-image",
-          // Fires on `word-break: break-all`, which works. The one value the
-          // engine drops is keep-all, banned by hand below.
+          // Fires on `word-break: break-all`, which works. The values the
+          // engine lacks, keep-all and auto-phrase, are banned by hand below.
           "word-break",
           // Flat false positive: fires on `text-decoration: none`, which is
-          // CSS1. The Chrome 57 part is the multi-value shorthand, and its
+          // CSS1. The Chrome 57 part is the multi-value shorthand, which the
+          // plugin's own text-decoration feature still reports, and its
           // longhands are banned by hand below.
           "mdn-text-decoration-shorthand",
           // Fires on -webkit-appearance, which is the form that works here;
-          // the bare property is banned by hand below.
+          // the bare property is banned by hand below. The partial is `auto`,
+          // which declaration-property-value-no-unknown rejects.
           "css-appearance",
-          // Fires on any text-indent. The partial is each-line/hanging; a plain
-          // length works.
+          // Fires on any text-indent. The partial is each-line/hanging, banned
+          // by hand below; a plain length works.
           "css-text-indent",
           // caniuse's "pointer" is Pointer Events, which Chrome 40 lacks - but
           // the only CSS it owns is touch-action, which shipped in Chrome 36
-          // and is verified working here.
+          // and is verified working here. Its later values are banned by hand
+          // below; caniuse's own css-touch-action does not track them.
           "pointer",
         ],
       },
@@ -90,9 +99,12 @@ export default {
     "color-hex-alpha": "never",
     // Multi-keyword `display: block flow` is Chrome 115. Not in standard.
     "display-notation": "short",
-    // These three prefixed selectors are the whole -webkit- half of stylelint's
-    // autoprefixer table, and each unprefixed form is out of reach: ::placeholder
-    // is Chrome 57, :any-link 65, :fullscreen 71. -moz-/-ms- stay rejected.
+    // The -webkit- half of stylelint's autoprefixer table is these three plus
+    // ::-webkit-backdrop, which stays rejected because ::backdrop works here.
+    // Each unprefixed form below is out of reach: ::placeholder is Chrome 57,
+    // :any-link 65, :fullscreen 71. -moz-/-ms- stay rejected. The plugin still
+    // rejects :-webkit-any-link, by a substring match on :-webkit-any, so its
+    // entry only stops --fix rewriting it.
     "selector-no-vendor-prefix": [
       true,
       {
@@ -113,8 +125,17 @@ export default {
           "-webkit-fit-content",
           "-webkit-min-content",
           "-webkit-max-content",
+          "-webkit-filter", // as a transition value; filter is Chrome 53
+          "-webkit-grab", // Chrome 68
+          "-webkit-grabbing",
         ],
       },
+    ],
+    // csstree's cursor grammar lacks the -webkit- grab cursors, which are the
+    // only ones Chrome 40 has.
+    "declaration-property-value-no-unknown": [
+      true,
+      { ignoreProperties: { cursor: ["/^-webkit-grab(bing)?$/"] } },
     ],
 
     // --- Standard's value is already the Chrome 40 one ----------------------
@@ -144,10 +165,12 @@ export default {
     // engine, but the rule cannot flag them and listing them would be dead
     // config.
     //
-    // Absent for the opposite reason - the engine drops the prefixed form too,
-    // so "unprefix it" would be the wrong advice and the property is banned
-    // outright below: -webkit-hyphens, -webkit-text-decoration-color,
-    // -webkit-text-size-adjust, -webkit-overflow-scrolling.
+    // -webkit-hyphens, -webkit-text-decoration-color, and
+    // -webkit-text-size-adjust are absent because the engine drops the prefixed
+    // form too. This rule reports them, and both spellings are banned outright
+    // below, so --fix's unprefixed form is still rejected.
+    // -webkit-overflow-scrolling, also banned below, is outside the table like
+    // the four above.
     "property-no-vendor-prefix": [
       true,
       {
@@ -169,9 +192,9 @@ export default {
     ],
 
     // --- At-rules ----------------------------------------------------------
-    // at-rule-no-unknown *knows* all of these, so it lets them through; it also
-    // skips vendor-prefixed at-rules outright, which is what lets
-    // @-webkit-keyframes past this list.
+    // at-rule-no-unknown *knows* all of these, so it lets them through. Entries
+    // match the at-rule name exactly, which is what lets @-webkit-keyframes past
+    // `keyframes`.
     //
     // Not listed, deliberately, because Chrome 40 has them and their absence
     // from the base game is an Uber-era habit rather than a constraint:
@@ -209,6 +232,7 @@ export default {
     // multi-value shorthand.
     "property-disallowed-list": [
       "/^--/", // custom properties - Chrome 49
+      "accent-color", // Chrome 93
       "/^animation(-|$)/", // Chrome 43 - use -webkit-animation
       "appearance", // Chrome 84 - use -webkit-appearance
       "aspect-ratio", // Chrome 88
@@ -224,7 +248,6 @@ export default {
       "/^font-synthesis/", // Chrome 97
       "gap", // flex gap - Chrome 84
       "row-gap", // Chrome 84
-      "column-gap", // Chrome 84
       "/^grid(-|$)/", // Chrome 57
       "hyphens", // Chrome 88, and -webkit-hyphens is dropped here too
       "-webkit-hyphens",
@@ -234,6 +257,9 @@ export default {
       "justify-self", // Chrome 57
       "line-clamp", // Chrome 129 - use -webkit-line-clamp
       "/^mask(-|$)/", // Chrome 120 - use -webkit-mask-*
+      // No -webkit- form ever shipped in Blink; its mask-border is
+      // -webkit-mask-box-image.
+      "/^-webkit-mask-(border|mode|type)/",
       "mix-blend-mode", // Chrome 41
       "/^offset(-|$)/", // Chrome 55
       "/^overscroll-behavior/", // Chrome 63
@@ -254,6 +280,7 @@ export default {
       // Never shipped unprefixed, and the prefixed form is dropped here too.
       "text-size-adjust",
       "-webkit-text-size-adjust",
+      "/^text-wrap/", // Chrome 114; text-wrap-mode/-style 130
       "transform-box", // Chrome 64
       "user-select", // Chrome 54 - use -webkit-user-select
       "writing-mode", // Chrome 48 - use -webkit-writing-mode
@@ -355,7 +382,7 @@ export default {
 
     // --- Selectors ---------------------------------------------------------
     "selector-pseudo-class-disallowed-list": [
-      "any-link", // Chrome 65 - use :-webkit-any-link
+      "any-link", // Chrome 65
       "autofill", // Chrome 110
       "defined", // Chrome 54
       "dir", // Chrome 120
@@ -398,7 +425,8 @@ export default {
     // 8-digit hex is handled by color-hex-alpha and multi-keyword display by
     // display-notation, rather than by regexes here.
     "declaration-property-value-disallowed-list": {
-      "background-clip": ["text"], // Chrome 120 - use -webkit-background-clip
+      "background-clip": [keyword("text")], // Chrome 120 - use -webkit-background-clip
+      cursor: [keyword("grab", "grabbing")], // Chrome 68 - use -webkit-grab
       display: [
         "contents", // Chrome 65
         "flow-root", // Chrome 58
@@ -412,32 +440,39 @@ export default {
       // bogus value. CSS.supports() says yes and the page is still wrong.
       // space-around and space-between are genuinely implemented and stay.
       "justify-content": [
-        "end", // box alignment L3 - Chrome 57
-        "left",
-        "normal",
-        "right",
-        "start",
-        "space-evenly", // Chrome 60
+        keyword("end", "left", "normal", "right", "start"), // box alignment L3 - Chrome 57
+        keyword("space-evenly"), // Chrome 60
       ],
       // Chrome 56; -webkit-sticky was removed again in Chrome 37.
       position: ["-webkit-sticky", "sticky"],
-      "white-space": ["break-spaces"], // Chrome 76
-      "word-break": ["keep-all"], // Chrome 44
+      "text-indent": [keyword("each-line", "hanging")], // Chrome 146
+      "touch-action": [
+        keyword("pan-left", "pan-right", "pan-up", "pan-down"), // Chrome 55
+        keyword("pinch-zoom"), // Chrome 56
+      ],
+      "white-space": [keyword("break-spaces")], // Chrome 76
+      "word-break": [
+        "keep-all", // Chrome 44
+        "auto-phrase", // Chrome 119
+      ],
       // box alignment L3 - Chrome 57. flex-start/flex-end/center/baseline/
       // stretch are the Chrome 40 spelling and stay legal.
-      "/^(align-items|align-self|justify-items|justify-self)$/": [
-        "end",
-        "normal",
-        "self-end",
-        "self-start",
-        "start",
+      "/^(align-items|align-self)$/": [
+        keyword("end", "normal", "self-end", "self-start", "start"),
+      ],
+      // box alignment L3 again: the engine drops each, and a wrapping flex
+      // container lays out as if none were set. In flex layout space-evenly is
+      // Chrome 60, baseline 57, and start/end 93.
+      "align-content": [
+        keyword("baseline", "end", "normal", "space-evenly", "start"),
       ],
       // Chrome 46 - use the -webkit- forms.
       "/^(width|height|min-width|max-width|min-height|max-height|flex-basis)$/":
         ["fit-content", "max-content", "min-content", "stretch"],
       // Chrome 90; it computes to `visible` here. `overlay` is left alone - it
       // is non-standard, but this engine does honour it.
-      "/^overflow(-x|-y)?$/": ["clip"],
+      "/^overflow(-x|-y)?$/": [keyword("clip")],
+      overflow: [String.raw`/\s/`], // the two-value shorthand - Chrome 68
     },
 
     // no-unknown-animations is deliberately not enabled: it cannot see

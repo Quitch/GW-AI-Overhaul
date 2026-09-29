@@ -189,6 +189,80 @@ describe("CSS the engine drops", () => {
       rule("a", ["overflow: clip"]),
       "declaration-property-value-disallowed-list"
     );
+    await rejects(
+      rule("a", ["cursor: grab"]),
+      "declaration-property-value-disallowed-list"
+    );
+  });
+
+  it("rejects the box-alignment keywords on align-content too", async () => {
+    for (const value of ["space-evenly", "start", "normal"]) {
+      await rejects(
+        rule("a", ["display: flex", `align-content: ${value}`]),
+        "declaration-property-value-disallowed-list"
+      );
+    }
+  });
+
+  it("rejects a banned keyword anywhere in the value", async () => {
+    await rejects(
+      rule("a", ["overflow: clip visible"]),
+      "declaration-property-value-disallowed-list"
+    );
+    await rejects(
+      rule("a", ["background-clip: padding-box, text"]),
+      "declaration-property-value-disallowed-list"
+    );
+    await rejects(
+      rule("a", ["display: flex", "justify-content: safe start"]),
+      "declaration-property-value-disallowed-list"
+    );
+  });
+
+  it("rejects what the plugin's ignore list hides", async () => {
+    await rejects(
+      rule("a", ["overflow: hidden auto"]),
+      "declaration-property-value-disallowed-list"
+    );
+    await rejects(
+      rule("a", ["touch-action: pan-left"]),
+      "declaration-property-value-disallowed-list"
+    );
+    await rejects(
+      rule("a", ["text-indent: 1em hanging"]),
+      "declaration-property-value-disallowed-list"
+    );
+    await rejects(
+      rule("a", ["word-break: auto-phrase"]),
+      "declaration-property-value-disallowed-list"
+    );
+    await rejects(
+      rule("a", ["-webkit-mask-mode: alpha"]),
+      "property-disallowed-list"
+    );
+    // No hand-written entry: this pins that csstree's grammar still covers it.
+    await rejects(
+      rule("a", ["-webkit-appearance: auto"]),
+      "declaration-property-value-no-unknown"
+    );
+  });
+
+  it("rejects properties the plugin has no matcher for", async () => {
+    await rejects(rule("a", ["accent-color: red"]), "property-disallowed-list");
+    await rejects(
+      rule("a", ["text-wrap: balance"]),
+      "property-disallowed-list"
+    );
+  });
+
+  it("rejects :-webkit-any-link, through the plugin", async () => {
+    // doiuse's css-matches-pseudo matches `:-webkit-any` as a substring, so the
+    // plugin rejects this whatever the engine does. That is why the config does
+    // not recommend it.
+    await rejects(
+      rule("a:-webkit-any-link", ["color: #fff"]),
+      "plugin/no-unsupported-browser-features"
+    );
   });
 
   it("rejects modern functions", async () => {
@@ -272,6 +346,10 @@ describe("CSS the engine drops", () => {
       rule("a", ["-webkit-transition: opacity 1s"]),
       "property-no-vendor-prefix"
     );
+    await rejects(
+      rule("a", ["display: -webkit-flex"]),
+      "value-no-vendor-prefix"
+    );
   });
 });
 
@@ -297,6 +375,9 @@ describe("CSS the engine supports", () => {
     await accepts(rule("a", ["-webkit-clip-path: circle(50%)"]));
     await accepts(rule("a", ["-webkit-column-count: 2"]));
     await accepts(rule("a", ["width: -webkit-fit-content"]));
+    await accepts(rule("a", ["transition: -webkit-filter 0.2s"]));
+    await accepts(rule("a", ["cursor: -webkit-grab"]));
+    await accepts(rule("a", ["border-image-repeat: space"]));
     await accepts(rule("a", ["-webkit-text-fill-color: red"]));
     await accepts(rule("a", ["display: -webkit-box", "-webkit-line-clamp: 2"]));
     await accepts(rule("a::-webkit-input-placeholder", ["color: #fff"]));
@@ -334,6 +415,11 @@ describe("CSS the engine supports", () => {
       rule("a", ["display: flex", "justify-content: space-around"])
     );
     await accepts(rule("a", ["display: flex", "flex-flow: row wrap"]));
+    // The keyword matchers must not catch the flex- spellings.
+    await accepts(rule("a", ["display: flex", "justify-content: flex-end"]));
+    await accepts(rule("a", ["display: flex", "align-content: flex-start"]));
+    await accepts(rule("a", ["display: flex", "align-content: space-between"]));
+    await accepts(rule("a", ["display: flex", "align-content: stretch"]));
   });
 
   it("accepts legacy colour notation and calc", async () => {
@@ -372,6 +458,7 @@ describe("CSS the engine supports", () => {
     // The shorthand this rule would otherwise propose is Chrome 68 for overflow
     // and Chrome 87 for inset - both dropped by the engine.
     await accepts(rule("a", ["overflow-x: hidden", "overflow-y: auto"]));
+    await accepts(rule("a", ["overflow: hidden"]));
     await accepts(
       rule("a", [
         "position: absolute",
