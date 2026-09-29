@@ -293,9 +293,17 @@ define([
           inventory: playerInventory,
           star: star,
         }).then(function (rerolled) {
+          // Re-read: the apply and the deal are async, and a host win can
+          // have owed this record a re-deal since it was read above.
+          var fresh = coopHost.recordFor(game, operator);
+          if (!fresh || !_.isEqual(fresh.pendingTechCards, pendingTechCards)) {
+            failReroll("stale pending tech cards");
+            return;
+          }
+
           var nextPendingTechCards = rerolled.pendingTechCards;
           var updatedAt = nextPendingTechCards.updatedAt;
-          var stored = coopHost.upsertRecord(game, record, {
+          var stored = coopHost.upsertRecord(game, fresh, {
             pendingTechCards: nextPendingTechCards,
             updatedAt: updatedAt,
           });

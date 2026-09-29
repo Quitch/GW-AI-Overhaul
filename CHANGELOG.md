@@ -38,6 +38,7 @@
 - Exiles AIs and Sub Commanders now have the skirmish orders to build MLA teleporters and metal extractors with MLA orbital fabbers, and Exiles players who have the orbital fabber and the teleporter can build them too
 - A co-op viewer who selected the star the host then moved to now follows the host's next move, rather than being pulled back to that star
 - A co-op viewer whose tech reroll gets no answer, for example because the host reloaded, gets their offer back after 30 seconds rather than waiting until they reload
+- A co-op viewer who rerolls their tech while the host wins a battle now still gets new star cards, rather than keeping last turn's
 
 ## v7.4.1 - 2026-09-24
 

@@ -76,6 +76,7 @@ function setup(overrides = {}) {
       upsertOk: true,
       saveFails: false,
       manifestFails: false,
+      duringDeal: undefined,
     },
     overrides
   );
@@ -148,6 +149,9 @@ function setup(overrides = {}) {
     galaxy: { stars: () => options.stars },
     chooseCards: (request) => {
       calls.deals.push(request);
+      if (options.duringDeal) {
+        options.duringDeal(options.records);
+      }
       return resolved(
         Array.from({ length: request.count }, (unused, n) => ({
           id: "reroll_" + n,
@@ -539,6 +543,39 @@ describe("host reroll handler - the reroll", () => {
     await handlers[REQUEST](operator({ payload: {} }));
 
     assert.equal(calls.upserts.length, 1);
+  });
+  // A host win while the reroll was being dealt owes the record a re-deal;
+  // writing over the record as first read would drop that debt.
+  it("stores the new offer on the record as it is now", async () => {
+    const { handlers, calls } = build({
+      duringDeal: (records) => {
+        records.alice = Object.assign({}, records.alice, {
+          gwaioStarCards: { redealOwed: true },
+        });
+      },
+    });
+
+    await handlers[REQUEST](operator());
+
+    assert.equal(calls.upserts.length, 1);
+    assert.deepEqual(calls.upserts[0].gwaioStarCards, { redealOwed: true });
+    assert.equal(calls.upserts[0].pendingTechCards.rerollsUsed, 1);
+  });
+
+  it("refuses when the offer changed while the reroll was dealt", async () => {
+    const { handlers, calls } = build({
+      duringDeal: (records) => {
+        records.alice = Object.assign({}, records.alice, {
+          pendingTechCards: pendingTechCards({ dealIndex: 5 }),
+        });
+      },
+    });
+
+    await captureErrors(() => rejection(handlers[REQUEST](operator())));
+
+    assert.deepEqual(errorsSentBack(calls), ["stale pending tech cards"]);
+    assert.deepEqual(calls.upserts, []);
+    assert.deepEqual(calls.saves, []);
   });
 });
 

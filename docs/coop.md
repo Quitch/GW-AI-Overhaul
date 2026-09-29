@@ -660,6 +660,11 @@ drops and the offer shows again. No host may be connected, or the host may have
 reloaded mid-exchange. The request is not sent again; the viewer can reroll
 again. A late answer is still applied.
 
+The host re-reads the viewer's record after the deal and writes the new hand
+onto that copy. If the pending hand changed meanwhile, the reroll is refused as
+stale. Otherwise a debt a host win set in the window would be lost ("Per-player
+pre-dealt cards").
+
 ## General Commander setup
 
 Under per-player tech, a viewer who picked the General Commander loadout asks
