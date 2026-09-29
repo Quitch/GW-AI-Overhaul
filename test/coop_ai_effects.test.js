@@ -585,3 +585,59 @@ describe("coop_ai_effects copies", () => {
     assert.ok(dealt >= 225, "cards dealt: " + dealt);
   });
 });
+
+// gw_play/cards.js's valueOf judges every card of a ping window against one
+// save of the host's inventory.
+describe("coop_ai_effects one save a judge", () => {
+  const coopAiPings = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_pings.js"
+  );
+
+  it("values cards against one shared inventory as against a copy each, leaving it be", async () => {
+    const live = await lateWarInventory();
+    const hand = [
+      { id: "gwc_damage_vehicles" },
+      { id: "gwaio_anti_air" },
+      { id: "gwc_enable_air_t1" },
+      { id: "gwc_speed_orbital" },
+    ];
+    const judge = () => ({
+      effects: effects(),
+      lookup: () => lookup,
+      teamDomains: () => ["Land"],
+      namesUnits: () => false,
+      chanceOf: () => 0,
+      isLoadout: () => false,
+    });
+    const holder = (inventory) => ({
+      playerId: "gwo_ai_1",
+      inventory: inventory,
+      commander: COMMANDER,
+    });
+    const valueEach = (valueJudge, inventoryFor) => {
+      const memo = {};
+      return Promise.all(
+        hand.map((card, star) =>
+          coopAiPings.valueOfCard(
+            valueJudge,
+            holder(inventoryFor()),
+            card,
+            star,
+            memo
+          )
+        )
+      );
+    };
+
+    const perCard = await valueEach(judge(), () =>
+      makeEffects.plain(live.save())
+    );
+    const shared = makeEffects.plain(live.save());
+    const before = JSON.stringify(shared);
+    const once = await valueEach(judge(), () => shared);
+
+    assert.deepEqual(once, perCard);
+    assert.ok(_.some(once, (value) => value > 0));
+    assert.equal(JSON.stringify(shared), before);
+  });
+});
