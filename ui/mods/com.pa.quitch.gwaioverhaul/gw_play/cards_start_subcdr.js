@@ -209,8 +209,9 @@ define([
           return;
         }
 
+        // Plain data: a save carries the GWInventory methods.
         var nextRecord = coopHost.upsertRecord(game, fresh, {
-          inventory: playerInventory.save(),
+          inventory: JSON.parse(JSON.stringify(playerInventory.save())),
         });
         if (!nextRecord) {
           failSetup("failed to store co-op player inventory");

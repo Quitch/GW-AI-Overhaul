@@ -488,7 +488,8 @@ define([
 
   // An AI descriptor carries `race`; an inventory carries the global tag,
   // through getTag on the live GWInventory or as plain `tags` once serialised
-  // into a co-op record.
+  // into a co-op record. Plain tags are read first: a save() copy carries
+  // getTag too (ko.toJS copies the prototype), and it throws off a live one.
   var raceOf = function (source) {
     if (!source) {
       return MLA_ID;
@@ -496,12 +497,10 @@ define([
 
     var id = source.race;
 
-    if (_.isUndefined(id) && _.isFunction(source.getTag)) {
-      id = source.getTag("global", "playerRace");
-    }
-
     if (_.isUndefined(id) && _.isPlainObject(source.tags)) {
       id = source.tags.global && source.tags.global.playerRace;
+    } else if (_.isUndefined(id) && _.isFunction(source.getTag)) {
+      id = source.getTag("global", "playerRace");
     }
 
     return isMla(id) ? MLA_ID : normalizeId(id);
