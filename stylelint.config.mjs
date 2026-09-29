@@ -452,6 +452,11 @@ export default {
         keyword("safe", "unsafe"),
         keyword("anchor-center"), // Chrome 125
       ],
+      // Unprefixed filter is Chrome 53, so naming it here animates nothing.
+      // Name -webkit-filter instead.
+      "/^(-webkit-)?(transition|transition-property|will-change)$/": [
+        keyword("filter"),
+      ],
       // Chrome 56; -webkit-sticky was removed again in Chrome 37.
       position: ["-webkit-sticky", "sticky"],
       "text-indent": [keyword("each-line", "hanging")], // Chrome 146

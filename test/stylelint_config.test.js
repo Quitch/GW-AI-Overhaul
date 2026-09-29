@@ -213,6 +213,20 @@ describe("CSS the engine drops", () => {
     }
   });
 
+  it("rejects unprefixed filter as a transition or will-change value", async () => {
+    for (const declaration of [
+      "transition: filter 0.2s",
+      "-webkit-transition: opacity 1s, filter 1s",
+      "transition-property: filter",
+      "will-change: filter",
+    ]) {
+      await rejects(
+        rule("a", [declaration]),
+        "declaration-property-value-disallowed-list"
+      );
+    }
+  });
+
   it("rejects the box-alignment keywords on align-content too", async () => {
     for (const value of ["space-evenly", "start", "normal"]) {
       await rejects(
@@ -394,6 +408,7 @@ describe("CSS the engine supports", () => {
     await accepts(rule("a", ["-webkit-column-count: 2"]));
     await accepts(rule("a", ["width: -webkit-fit-content"]));
     await accepts(rule("a", ["transition: -webkit-filter 0.2s"]));
+    await accepts(rule("a", ["will-change: -webkit-filter"]));
     await accepts(rule("a", ["cursor: -webkit-grab"]));
     await accepts(rule("a", [`cursor: url("hand.png") 4 4, -webkit-grab`]));
     await accepts(rule("a", ["border-image-repeat: space"]));
