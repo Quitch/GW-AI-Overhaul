@@ -7,8 +7,8 @@
 //      card_units.js or unit_groups.js resolves against units.js, and none
 //      names a whole race table. A typo there is `undefined` at runtime, with
 //      no error.
-//   3. Every `builders` role in AI build-order JSON resolves against the unit map,
-//      bar the literals in KNOWN_BUILDER_NAMES.
+//   3. Every `builders` role in AI build-order JSON, and every `to_build` in a
+//      fabber or factory build list, resolves against the penchant unit maps.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -30,17 +30,13 @@ const UNIT_LIST_FILES = [
   path.join(MOD_DIR, "gw_play", "card_units.js"),
   path.join(MOD_DIR, "shared", "unit_groups.js"),
 ];
-const UNIT_MAP_PATH = path.join(
-  REPO_ROOT,
-  "pa",
-  "ai_penchant",
-  "unit_maps",
-  "ai_unit_map.json"
+// The engine loads every map under a tree's unit_maps/ into one namespace, and
+// the _x1 map holds the keys TITANS added.
+const UNIT_MAP_PATHS = ["ai_unit_map.json", "ai_unit_map_x1.json"].map((file) =>
+  path.join(REPO_ROOT, "pa", "ai_penchant", "unit_maps", file)
 );
-
-// referee_ai.js names these literally rather than resolving them through the
-// role map, so their absence from ai_unit_map.json is not a gap.
-const KNOWN_BUILDER_NAMES = new Set(["SupportCommander", "SupportPlatform"]);
+// A platoon build's to_build names a platoon template, not a unit.
+const UNIT_BUILD_DIRS = new Set(["fabber_builds", "factory_builds"]);
 
 const failures = [];
 function fail(message) {
@@ -199,29 +195,50 @@ function checkUnitReferencesInCards() {
   );
 }
 
-function checkBuilderRoles() {
-  const unitMap = JSON.parse(fs.readFileSync(UNIT_MAP_PATH, "utf8")).unit_map;
-  const roleKeys = new Set(Object.keys(unitMap));
+// [what, key] for each unit-map key a build entry names. An entry with no
+// to_build is an action, such as a Commander teleport.
+function unitMapReferences(entry, buildsUnits) {
+  const references = (entry.builders || []).map((builder) => [
+    "builder role",
+    builder,
+  ]);
+  if (buildsUnits && entry.to_build !== undefined) {
+    references.push(["to_build", entry.to_build]);
+  }
+  return references;
+}
 
-  const files = aiDataFiles();
+function checkUnitMapKeys() {
+  const unitMapKeys = new Set(
+    UNIT_MAP_PATHS.flatMap((file) =>
+      Object.keys(JSON.parse(fs.readFileSync(file, "utf8")).unit_map)
+    )
+  );
 
   let checked = 0;
-  for (const file of files) {
+  for (const file of aiDataFiles()) {
     const data = JSON.parse(fs.readFileSync(file, "utf8"));
     if (!Array.isArray(data.build_list)) {
       continue;
     }
+    const where = path.relative(REPO_ROOT, file);
+    const buildsUnits = where
+      .split(path.sep)
+      .some((segment) => UNIT_BUILD_DIRS.has(segment));
+
     for (const entry of data.build_list) {
-      for (const builder of entry.builders || []) {
+      for (const [what, key] of unitMapReferences(entry, buildsUnits)) {
         checked++;
-        if (!roleKeys.has(builder) && !KNOWN_BUILDER_NAMES.has(builder)) {
+        if (!unitMapKeys.has(key)) {
           fail(
             "cross-refs: " +
-              path.relative(REPO_ROOT, file) +
+              where +
               ' build_list entry "' +
               entry.name +
-              '" has unresolvable builder role "' +
-              builder +
+              '" has unresolvable ' +
+              what +
+              ' "' +
+              key +
               '"'
           );
         }
@@ -232,14 +249,14 @@ function checkBuilderRoles() {
   console.log(
     "cross-refs: " +
       checked +
-      " builder role references checked against ai_unit_map.json."
+      " builder roles and fabber/factory to_build keys checked against the penchant unit maps."
   );
 }
 
 function main() {
   checkLoadoutCardsExist();
   checkUnitReferencesInCards();
-  checkBuilderRoles();
+  checkUnitMapKeys();
 
   console.log("cross-refs: " + failures.length + " problems.");
   reportProblems(failures);
