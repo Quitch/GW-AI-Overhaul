@@ -198,6 +198,20 @@ define([
         return;
       }
 
+      // A reply that lands after the viewer stopped waiting and chose must not
+      // bring the offer back: the server no longer has it.
+      var open = record.pendingTechCards;
+      if (
+        !open ||
+        open.star !== pendingTechCards.star ||
+        open.dealIndex !== pendingTechCards.dealIndex
+      ) {
+        console.error(
+          "[GW COOP] pending tech reroll result for a closed offer"
+        );
+        return;
+      }
+
       var stored = coopHost.upsertRecord(game, record, {
         pendingTechCards: pendingTechCards,
         updatedAt: payload.updated_at || _.now(),

@@ -820,6 +820,32 @@ describe("viewer reroll result handler", () => {
     assert.match(errors[0], /failed to apply pending tech reroll result/);
   });
 
+  // After the reply timeout the viewer may have chosen from the old hand. The
+  // server then holds no offer, so bringing one back would strand the viewer.
+  it("drops a late reply once the viewer has chosen", async () => {
+    const { handlers, calls } = build({
+      records: { alice: record({ pendingTechCards: undefined }) },
+    });
+
+    const errors = await captureErrors(() => handlers[RESULT](result()));
+
+    assert.deepEqual(calls.upserts, []);
+    assert.deepEqual(calls.rerollsUsed, []);
+    assert.match(errors[0], /pending tech reroll result for a closed offer/);
+  });
+
+  it("drops a reply meant for an earlier deal", async () => {
+    const { handlers, calls } = build({
+      records: {
+        alice: record({ pendingTechCards: pendingTechCards({ dealIndex: 5 }) }),
+      },
+    });
+
+    await captureErrors(() => handlers[RESULT](result()));
+
+    assert.deepEqual(calls.upserts, []);
+  });
+
   // Returned rather than fired and forgotten, so the base campaign queue can
   // order the save against the next operator.
   it("returns work the campaign queue can wait on", async () => {

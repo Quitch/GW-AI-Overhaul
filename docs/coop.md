@@ -672,7 +672,8 @@ scheduled but not awaited.
 A viewer's request that gets no answer within 30 seconds is let go: the overlay
 drops and the offer shows again. No host may be connected, or the host may have
 reloaded mid-exchange. The request is not sent again; the viewer can reroll
-again. A late answer is still applied.
+again. A late answer is applied only while the offer it replaces is still open:
+once the viewer has chosen, the server holds no offer, so it is dropped.
 
 The host re-reads the viewer's record after the deal and writes the new hand
 onto that copy. If the pending hand changed meanwhile, the reroll is refused as
