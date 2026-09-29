@@ -620,7 +620,21 @@ describe("viewer reroll request", () => {
   });
 
   const replyTimeout = () =>
-    timers.delayed.filter((entry) => entry.wait === 30000);
+    timers.delayed.filter((entry) => entry.wait === 120000);
+
+  // The host's answer to the viewer's nth request, as the server relays it:
+  // the request_id the viewer sent comes back on the envelope.
+  const answer = (calls, n, extra) => ({
+    request_id: calls.viewerOperators[n][2].request_id,
+    payload: Object.assign(
+      {
+        client_id: "alice",
+        client_name: "alice",
+        pendingTechCards: pendingTechCards({ cards: [{ id: "x" }] }),
+      },
+      extra
+    ),
+  });
 
   it("asks the host and holds the offer behind the scan", () => {
     const { handle, calls } = build();
@@ -653,35 +667,45 @@ describe("viewer reroll request", () => {
     const { handle, handlers, calls } = build();
 
     handle.requestReroll(pendingTechCards());
-    await handlers[RESULT]({
-      payload: {
-        client_id: "alice",
-        client_name: "alice",
-        pendingTechCards: pendingTechCards({ cards: [{ id: "x" }] }),
-      },
-    });
+    await handlers[RESULT](answer(calls, 0));
     replyTimeout()[0].fn();
 
     assert.deepEqual(calls.rerollPending, [true, false]);
     assert.deepEqual(calls.scanning, [true]);
+    assert.equal(calls.upserts.length, 1);
   });
 
   it("does not cut short a newer request when an older one times out", async () => {
     const { handle, handlers, calls } = build();
 
     handle.requestReroll(pendingTechCards());
-    await handlers[RESULT]({
-      payload: {
-        client_id: "alice",
-        client_name: "alice",
-        pendingTechCards: pendingTechCards({ cards: [{ id: "x" }] }),
-      },
-    });
+    await handlers[RESULT](answer(calls, 0));
     handle.requestReroll(pendingTechCards({ cards: [{ id: "x" }] }));
     replyTimeout()[0].fn();
 
     assert.deepEqual(calls.rerollPending, [true, false, true]);
     assert.deepEqual(calls.scanning, [true, true]);
+  });
+
+  // Asked again after a timeout, the viewer must keep waiting for that answer:
+  // freed by the first, it could choose while the second still rerolls.
+  it("ignores an older request's answer while a newer one waits", async () => {
+    const { handle, handlers, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+    await captureErrors(async () => replyTimeout()[0].fn());
+    handle.requestReroll(pendingTechCards());
+
+    const errors = await captureErrors(() =>
+      handlers[RESULT](answer(calls, 0))
+    );
+    assert.match(errors[0], /pending tech reroll result for an older request/);
+    assert.deepEqual(calls.upserts, []);
+    assert.deepEqual(calls.rerollPending, [true, false, true]);
+
+    await handlers[RESULT](answer(calls, 1));
+    assert.equal(calls.upserts.length, 1);
+    assert.deepEqual(calls.rerollPending, [true, false, true, false]);
   });
 });
 

@@ -674,11 +674,15 @@ The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat. That delay is
 scheduled but not awaited.
 
-A viewer's request that gets no answer within 30 seconds is let go: the overlay
+A viewer's request that gets no answer within 2 minutes is let go: the overlay
 drops and the offer shows again. No host may be connected, or the host may have
 reloaded mid-exchange. The request is not sent again; the viewer can reroll
-again. A late answer is applied only while the offer it replaces is still open:
-once the viewer has chosen, the server holds no offer, so it is dropped.
+again. The viewer waits only on its newest request, so an answer to an older one
+is ignored while a newer one waits. A late answer is applied only while the
+offer it replaces is still open: once the viewer has chosen, the server holds no
+offer, so it is dropped. The timeout does not close every gap. A host whose
+campaign queue holds a request past it can still reroll a hand the viewer has
+since chosen from, and that reroll's snapshot reopens the offer on the server.
 
 The host re-reads the viewer's record after the deal and writes the new hand
 onto that copy. If the pending hand changed meanwhile, the reroll is refused as

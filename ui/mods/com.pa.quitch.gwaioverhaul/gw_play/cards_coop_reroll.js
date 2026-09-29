@@ -6,10 +6,10 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
 ], function (dealHelpers, coopHost, coopPublish) {
-  // Past the host's apply, deal and save. A request the host never answers - no
-  // host, or a host reload mid-exchange - would otherwise hide the offer behind
-  // the scan until the page reloads.
-  var REPLY_TIMEOUT_MS = 30000;
+  // Well past a host's apply, deal and save, and past a busy campaign queue. A
+  // request the host never answers - no host, or a host reload mid-exchange -
+  // would otherwise hide the offer behind the scan until the page reloads.
+  var REPLY_TIMEOUT_MS = 120000;
 
   // A reroll spends one more of the viewer's offered cards.
   var computeRerollDeal = function (cardsOffered, currentCardCount) {
@@ -86,14 +86,15 @@ define([
 
     var rerollPendingTechRequest = "gwo_reroll_pending_tech";
     var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
-    // The newest request, so an older one's timeout leaves it alone.
-    var requestSerial = 0;
+    // The request_id of the request the viewer waits on, until it is answered
+    // or times out.
+    var awaiting;
 
     // A viewer asks the host to reroll its pending offer; the result handler
     // below clears what this sets.
     var requestReroll = function (pendingTechCards) {
-      requestSerial += 1;
-      var request = requestSerial;
+      var request = _.uniqueId("gwo_reroll_");
+      awaiting = request;
       model.gwoRerollPending(true);
       model.scanning(true);
       model.sendCampaignViewerOperator(
@@ -103,13 +104,14 @@ define([
           deal_index: pendingTechCards.dealIndex,
         },
         {
-          request_id: _.uniqueId("gwo_reroll_"),
+          request_id: request,
         }
       );
       _.delay(function () {
-        if (request !== requestSerial || !model.gwoRerollPending()) {
+        if (awaiting !== request) {
           return;
         }
+        awaiting = undefined;
         console.error("[GW COOP] pending tech reroll got no reply");
         model.gwoRerollPending(false);
         model.scanning(false);
@@ -170,6 +172,15 @@ define([
 
     var applyPendingTechRerollResult = function (operator) {
       var payload = (operator && operator.payload) || {};
+      // An answer to an older request, while a newer one waits, is overtaken
+      // by the newer one's.
+      if (awaiting && operator && operator.request_id !== awaiting) {
+        console.error(
+          "[GW COOP] pending tech reroll result for an older request"
+        );
+        return;
+      }
+      awaiting = undefined;
       model.gwoRerollPending(false);
 
       if (payload.error) {
