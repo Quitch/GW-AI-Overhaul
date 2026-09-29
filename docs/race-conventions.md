@@ -98,8 +98,9 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
    `download/`. The script reads the add-on's `serverMods` from its
    descriptor. Commit `test/fixtures/race_specs.json` from step 2 with it.
 5. **Tests** in `test/addon_<id>.test.js` check the descriptor shape, that
-   every harvested unit is in the table, that the zip ships every path and
-   every layer entry (skipped without the zip), and the cells: a held vanilla
+   every harvested unit is in the table, that the mod ships every path and
+   every layer entry (read from its zip or `server_mods/` build through
+   `modFiles`, and skipped without either), and the cells: a held vanilla
    unit brings the add-on units of its cell, an orphan arrives through a
    builder, an exclusive arrives only through its gantry.
 6. **Validator.** Run `npm run validate:race-trees` with the zip in
