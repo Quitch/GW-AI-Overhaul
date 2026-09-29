@@ -450,6 +450,7 @@ export default {
         // Chrome 115. `unsafe` is dropped; `safe center` parses but
         // overflows as plain `center` does, measured.
         keyword("safe", "unsafe"),
+        keyword("anchor-center"), // Chrome 125
       ],
       // Chrome 56; -webkit-sticky was removed again in Chrome 37.
       position: ["-webkit-sticky", "sticky"],
@@ -465,17 +466,17 @@ export default {
       ],
       // box alignment L3 - Chrome 57. flex-start/flex-end/center/baseline/
       // stretch are the Chrome 40 spelling and stay legal. first/last baseline
-      // are Chrome 59 and 108, safe/unsafe 115.
+      // are Chrome 59 and 108, safe/unsafe 115, anchor-center 125.
       "/^(align-items|align-self)$/": [
         keyword("end", "normal", "self-end", "self-start", "start"),
-        keyword("first", "last", "safe", "unsafe"),
+        keyword("first", "last", "safe", "unsafe", "anchor-center"),
       ],
       // box alignment L3 again: the engine drops each, and a wrapping flex
       // container lays out as if none were set. In flex layout space-evenly is
       // Chrome 60, baseline 57, and start/end 93.
       "align-content": [
         keyword("baseline", "end", "normal", "space-evenly", "start"),
-        keyword("first", "last", "safe", "unsafe"),
+        keyword("first", "last", "safe", "unsafe", "anchor-center"),
       ],
       // Chrome 46 - use the -webkit- forms.
       "/^(width|height|min-width|max-width|min-height|max-height|flex-basis)$/":

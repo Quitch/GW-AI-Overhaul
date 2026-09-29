@@ -203,6 +203,8 @@ describe("CSS the engine drops", () => {
       "align-items: last baseline",
       "align-self: unsafe center",
       "align-content: safe center",
+      "justify-content: anchor-center",
+      "align-self: anchor-center",
     ]) {
       await rejects(
         rule("a", ["display: flex", declaration]),
@@ -438,6 +440,8 @@ describe("CSS the engine supports", () => {
     await accepts(rule("a", ["display: flex", "align-content: flex-start"]));
     await accepts(rule("a", ["display: flex", "align-content: space-between"]));
     await accepts(rule("a", ["display: flex", "align-content: stretch"]));
+    // Parses in the engine, and in flex layout means flex-start anyway.
+    await accepts(rule("a", ["display: flex", "justify-content: stretch"]));
   });
 
   it("accepts legacy colour notation and calc", async () => {
