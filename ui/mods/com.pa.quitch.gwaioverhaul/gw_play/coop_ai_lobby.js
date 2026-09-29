@@ -381,11 +381,21 @@ define([
       return true;
     };
 
+    // Every record write re-lists the AIs, so an armed Kick lets go only once
+    // its AI has left the roster.
+    var rosterChanged = function (records) {
+      var id = armed();
+      if (!_.isUndefined(id) && !_.some(records, { playerId: id })) {
+        armed(undefined);
+      }
+    };
+
     return {
       canAddAi: canAddAi,
       addAi: addAi,
       canKickAi: canKickAi,
       kickAi: kickAi,
+      rosterChanged: rosterChanged,
       lobbySettled: lobbySettled,
       publish: publish,
       settleDebt: settleDebt,

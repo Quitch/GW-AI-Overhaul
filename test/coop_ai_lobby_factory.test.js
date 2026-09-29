@@ -701,6 +701,25 @@ describe("kickAi", () => {
     assert.deepEqual(run.calls.queued, ["gwo_coop_ai_kick"]);
   });
 
+  // Every co-op record write re-lists the AIs, and a write lands between the
+  // two presses whenever an AI settles a deal.
+  it("stays armed across a record write, and kicks on the second press", () => {
+    const run = withAi();
+    run.lobby.kickAi(ROW);
+    run.lobby.rosterChanged(run.records().slice());
+
+    assert.equal(run.state.armed(), "gwo_ai_1");
+    assert.equal(run.lobby.kickAi(ROW), true);
+  });
+
+  it("lets go once the armed AI has left the roster", () => {
+    const run = withAi();
+    run.lobby.kickAi(ROW);
+    run.lobby.rosterChanged([aiRecord(2)]);
+
+    assert.equal(run.state.armed(), undefined);
+  });
+
   it("re-asks when another AI's Kick is pressed in between", () => {
     const run = withAi();
     run.lobby.kickAi(ROW);

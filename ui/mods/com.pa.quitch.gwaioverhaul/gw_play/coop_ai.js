@@ -81,8 +81,10 @@
       return mods() ? mods().roster.aiRecords(all) : _.filter(all, isAiRecord);
     });
 
-    records.subscribe(function () {
-      armed(undefined);
+    records.subscribe(function (list) {
+      if (lobby()) {
+        lobby().rosterChanged(list);
+      }
     });
 
     var perPlayer = function () {

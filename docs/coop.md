@@ -308,8 +308,12 @@ so after the AI is in, and the AI keeps its slot.
 
 Kicking is the only way an AI leaves, and it deletes the AI and its record for
 good. So its Kick asks first, like Delete Tech
-([`accessibility.md`](accessibility.md), 3.3.6). The record goes before the slot
-comes back, so a lock's limit counts it.
+([`accessibility.md`](accessibility.md), 3.3.6). The first press arms that AI's
+Kick until the AI leaves the roster; a record write in between, which every
+settled deal makes, does not disarm it. The record goes before the slot comes
+back, so a lock's limit counts it. A subscriber that throws does so after the
+record is gone, so the kick is still saved and published, and the slot still
+comes back.
 
 A human whose slot an AI took is refused with "No room" when they come back,
 until the host kicks the AI or adds a slot. Stock has no hook that could tell
