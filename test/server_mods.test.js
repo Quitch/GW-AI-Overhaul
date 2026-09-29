@@ -27,18 +27,18 @@ describe("shippedServerMods", () => {
     );
   });
 
-  it("mounts each companion just before the mod that needs it", () => {
+  // Bugs' commander-merge named, so an emptied COMPANIONS cannot pass the loop.
+  it("mounts each companion, Bugs' commander-merge among them, just before the mod that needs it", () => {
+    assert.ok(
+      (COMPANIONS["com.pa.ferretmaster.bugs"] || []).includes(
+        "com.pa.ferretmaster.commander-merge"
+      )
+    );
     for (const [id, companions] of Object.entries(COMPANIONS)) {
       const at = mods.indexOf(id);
       assert.ok(at >= 0, id + " is no longer a shipped descriptor's mod");
       assert.deepEqual(mods.slice(at - companions.length, at), companions);
     }
-  });
-
-  it("mounts the Bugs commander-merge before Bugs", () => {
-    const merge = mods.indexOf("com.pa.ferretmaster.commander-merge");
-    assert.ok(merge >= 0);
-    assert.equal(mods[merge + 1], "com.pa.ferretmaster.bugs");
   });
 
   it("names no mod twice", () => {

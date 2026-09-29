@@ -22,7 +22,8 @@ const startingInventory = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/starting_inventory.js"
 );
 
-// A GWInventory whose applyCards runs `buff` over the loaded cards.
+// A GWInventory whose applyCards runs `buff` over the loaded cards. `created`
+// collects each one built, with its state.
 function inventoryClass(buff, created) {
   return function GWInventory() {
     const state = { cards: [], tags: {}, maxCards: 0 };
@@ -40,7 +41,7 @@ function inventoryClass(buff, created) {
     };
     this.save = () => JSON.parse(JSON.stringify(state));
     if (created) {
-      created.push(state);
+      created.push({ inventory: this, state });
     }
   };
 }
@@ -146,7 +147,8 @@ describe("build", () => {
 
     assert.equal(dealt.length, 1);
     assert.equal(dealt[0].id, "gwc_start_air");
-    assert.deepEqual(created[0].tags, {
+    assert.equal(dealt[0].inventory, created[0].inventory);
+    assert.deepEqual(created[0].state.tags, {
       global: { commander: "c.json", playerFaction: 1, playerRace: "mla" },
     });
     assert.deepEqual(saved.cards, [{ id: "gwc_start_air", dealt: true }]);

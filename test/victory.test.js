@@ -65,6 +65,19 @@ function setup(overrides = {}) {
   };
 
   stubs = createGlobalStubs();
+  // A real _.defer fires after the test that scheduled it, into whichever test
+  // runs then, on a setTimeout lodash 3 bound at load. The factory's deferred
+  // checks are held here instead, and run only when a test calls flush().
+  const deferred = [];
+  stubs.setGlobal(
+    "_",
+    global._.runInContext({ setTimeout: (fn) => deferred.push(fn) })
+  );
+  const flush = () => {
+    while (deferred.length) {
+      deferred.shift()();
+    }
+  };
   stubs.setGlobal("$", {
     Deferred: makeDeferred,
     when: (value) => {
@@ -133,7 +146,17 @@ function setup(overrides = {}) {
         : options.playersReturned,
   });
 
-  return { victory, game, calls, saves, stats, gateWrites, exitGate, options };
+  return {
+    victory,
+    game,
+    calls,
+    saves,
+    stats,
+    gateWrites,
+    exitGate,
+    options,
+    flush,
+  };
 }
 
 // Whether the deferred jQuery hands back has run its always() handlers yet.
@@ -232,11 +255,11 @@ describe("ending a won war", () => {
     assert.equal(saves.length, 1);
   });
 
-  it("ends a war won while the scene is open", async () => {
-    const { game, saves } = setup({ gameState: "active" });
+  it("ends a war won while the scene is open", () => {
+    const { game, saves, flush } = setup({ gameState: "active" });
 
     game.gameState("won");
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    flush();
 
     assert.equal(game.turnState(), "end");
     assert.equal(saves.length, 1);
@@ -320,10 +343,10 @@ describe("co-op", () => {
     assert.deepEqual(calls.operators, [[WAR_END, {}]]);
   });
 
-  it("leaves a viewer waiting for that message", async () => {
-    const { game, calls, saves } = setup({ isViewer: true });
+  it("leaves a viewer waiting for that message", () => {
+    const { game, calls, saves, flush } = setup({ isViewer: true });
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    flush();
 
     assert.equal(game.turnState(), "begin");
     assert.deepEqual(calls.operators, []);
@@ -386,24 +409,22 @@ describe("waiting for the players to return", () => {
     assert.equal(game.turnState(), "end");
   });
 
-  it("does not wait on a viewer", async () => {
-    const { calls } = setup({
+  it("does not wait on a viewer", () => {
+    const { calls, flush } = setup({
       coop: true,
       isViewer: true,
       playersReturned: "pending",
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    flush();
 
     assert.equal(calls.waits.length, 0);
   });
 
-  // Async, so the factory's deferred check runs before the globals go.
-  it("ends at once when the wait module never loaded", async () => {
+  it("ends at once when the wait module never loaded", () => {
     const { victory, game } = setup({ coop: true });
 
     victory.endWarIfWon();
-    await new Promise((resolve) => setTimeout(resolve, 0));
 
     assert.equal(game.turnState(), "end");
   });

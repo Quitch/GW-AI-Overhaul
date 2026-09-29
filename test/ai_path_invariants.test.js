@@ -6,9 +6,14 @@
 //   3. No ai_path root sits inside another's engine-scanned directories.
 //   4. A co-op AI player shares an ai_path with no other AI.
 //
-// The first two have one intentional exception each, pinned below as named tests
-// rather than silently excluded. Simultaneous player/enemy Cluster is not swept:
-// the game rules it out, and this suite cannot verify that independently.
+// The first has one intentional exception, pinned below as a named test per
+// brain rather than silently excluded: with no Guardians, Cluster or Sub
+// Commander tech, Titans and Penchant give both sides the brain's own tree
+// (Queller's tiers never meet). The second's documented asymmetry, viewer paths
+// that ignore the Guardians, is pinned in
+// gw_per_player_tech_referee_ai_paths.test.js. Simultaneous player/enemy
+// Cluster is not swept: the game rules it out, and this suite cannot verify
+// that independently.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");

@@ -495,9 +495,28 @@ describe("coop star cards refresh - what it writes", () => {
     );
   });
 
-  // Why the record is re-read at write time rather than closed over: chooseCards
-  // is async, so a viewer can have left and had their record dropped since this
-  // pass began. See coop.md, "Per-player pre-dealt cards".
+  // The record is re-read at write time: chooseCards is async, so a catch-up
+  // deal can land pendingTechCards on it while this pass deals, and writing
+  // over the copy read before the deal would erase that offer. See coop.md,
+  // "Per-player pre-dealt cards".
+  it("keeps an offer a catch-up deal wrote while the deal was in flight", async () => {
+    const offer = { star: 0, cards: [{ id: "gwc_catch_up" }], dealIndex: 3 };
+    const { coopStarCards, options } = build({
+      onDeal: (opts) => {
+        opts.records.alice = Object.assign({}, opts.records.alice, {
+          pendingTechCards: offer,
+        });
+      },
+    });
+
+    await coopStarCards.refresh();
+
+    assert.deepEqual(options.records.alice.pendingTechCards, offer);
+    assert.deepEqual(cardIndexes(options.records.alice), ["0"]);
+  });
+
+  // Read at write time, the record of a viewer who left mid-deal is gone, so
+  // nothing is written back for them.
   it("writes nothing when the record goes while the deal is in flight", async () => {
     const { coopStarCards, calls } = build({
       viewers: [viewer("alice"), viewer("bob")],

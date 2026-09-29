@@ -3,13 +3,13 @@
 // addon/second_wave.js: the Second Wave descriptor, its unit table, and what
 // the capability cells make of its units for an MLA, Legion and Bugs player.
 // The cells come from the harvested fixture (test/fixtures/unit_types.json),
-// which carries the mod's units when its zip was on disk at harvest.
+// which carries the mod's units when the mod was on disk at harvest.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
-  zipsFor,
+  modFiles,
   fixtureIndex,
   inFixture,
 } = require("../scripts/lib/addon-fixture.js");
@@ -20,7 +20,7 @@ const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
-const ZIPS = ["pa.mla.unit.addon", "pa.mla.unit.addon.companion"];
+const MODS = ["pa.mla.unit.addon", "pa.mla.unit.addon.companion"];
 const AUX = "/pa/ai/unit_maps/second_wave_aux.json";
 
 const harvested = inFixture(secondWave);
@@ -83,22 +83,19 @@ describe("the Second Wave descriptor", () => {
     }
   });
 
-  it("maps to files and AI data the installed zips ship (skipped without them)", (t) => {
-    const zips = zipsFor(ZIPS);
-    if (!zips) {
-      t.skip("no Second Wave zip installed");
+  it("maps to files and AI data the installed mods ship (skipped without them)", (t) => {
+    const files = modFiles(MODS);
+    if (!files) {
+      t.skip("no Second Wave mod on disk");
       return;
     }
     for (const [key, value] of Object.entries(secondWave.units)) {
-      if (!/\/(addon|l_addon|b_addon)\//.test(value)) {
-        continue;
-      }
-      assert.ok(zips.has(value.slice(1)), key + " -> " + value);
+      assert.ok(files.has(value.slice(1)), key + " -> " + value);
     }
-    const names = zips.names();
+    const names = files.names();
     for (const layer of Object.values(secondWave.layers)) {
       for (const map of layer.titans.unitMaps) {
-        assert.ok(zips.has(map.slice(1)), map);
+        assert.ok(files.has(map.slice(1)), map);
       }
       for (const source of layer.titans.sources) {
         const prefix = (source.dir + source.match).slice(1);
@@ -110,7 +107,7 @@ describe("the Second Wave descriptor", () => {
     }
     // The aux map holds MLA's builder aliases and nothing of Legion's: since
     // 0.16.1 no Legion build file reads it.
-    const aux = zips.readJson(AUX.slice(1)).unit_map;
+    const aux = files.readJson(AUX.slice(1)).unit_map;
     assert.deepEqual(Object.keys(aux).sort(), [
       "AnyMLAAdvancedFabber",
       "AnyMLABasicFabber",
@@ -120,20 +117,20 @@ describe("the Second Wave descriptor", () => {
     assert.ok(!("LegionCommander" in aux));
   });
 
-  it("names Bugs builders the Bugs mod's own map supplies (skipped without both zips)", (t) => {
-    const zips = zipsFor(ZIPS);
-    const bugs = zipsFor(["com.pa.ferretmaster.bugs"]);
-    if (!zips || !bugs) {
-      t.skip("no Second Wave or Bugs zip installed");
+  it("names Bugs builders the Bugs mod's own map supplies (skipped without both mods)", (t) => {
+    const files = modFiles(MODS);
+    const bugs = modFiles(["com.pa.ferretmaster.bugs"]);
+    if (!files || !bugs) {
+      t.skip("no Second Wave or Bugs mod on disk");
       return;
     }
     const map = bugs.readJson("pa/ai/unit_maps/bugs.json").unit_map;
     const referenced = new Set();
-    for (const name of zips.names()) {
+    for (const name of files.names()) {
       if (!/^pa\/ai\/fabber_builds\/bugs\//.test(name)) {
         continue;
       }
-      for (const build of zips.readJson(name).build_list || []) {
+      for (const build of files.readJson(name).build_list || []) {
         for (const builder of build.builders || []) {
           referenced.add(builder);
         }

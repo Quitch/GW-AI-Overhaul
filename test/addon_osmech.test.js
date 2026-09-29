@@ -3,14 +3,14 @@
 // addon/osmech.js: the Osmech descriptor, its unit table, and what the
 // capability cells make of its units for an MLA player. Osmech ships no AI
 // data, so it has no layers. The cells come from the harvested fixture
-// (test/fixtures/unit_types.json), which carries the mod's units when its
-// zip was on disk at harvest.
+// (test/fixtures/unit_types.json), which carries the mod's units when the
+// mod was on disk at harvest.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
-  zipsFor,
+  modFiles,
   fixtureIndex,
   inFixture,
 } = require("../scripts/lib/addon-fixture.js");
@@ -21,7 +21,7 @@ const cells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const fixture = require("./fixtures/unit_types.json").units;
 
-const ZIPS = ["com.pa.loloares.thorosmen", "com.pa.loloares.thorosmen-client"];
+const MODS = ["com.pa.loloares.thorosmen", "com.pa.loloares.thorosmen-client"];
 
 const harvested = inFixture(osmech);
 
@@ -34,11 +34,14 @@ describe("the Osmech descriptor", () => {
     assert.deepEqual(addon.serverMods, ["com.pa.loloares.thorosmen"]);
     assert.deepEqual(addon.layers, {});
     races.activateAddons(["second_wave", "section17", "osmech"]);
-    assert.deepEqual(races.layersFor("titans").mla.sources, [
-      ...races.addonById("second_wave").layers.mla.titans.sources,
-      ...races.addonById("section17").layers.mla.titans.sources,
-    ]);
-    races.activateAddons([]);
+    try {
+      assert.deepEqual(races.layersFor("titans").mla.sources, [
+        ...races.addonById("second_wave").layers.mla.titans.sources,
+        ...races.addonById("section17").layers.mla.titans.sources,
+      ]);
+    } finally {
+      races.activateAddons([]);
+    }
   });
 
   it("keys every Osmech spec by a name of its own, and names each unit", () => {
@@ -69,17 +72,14 @@ describe("the Osmech descriptor", () => {
     }
   });
 
-  it("maps to files the installed zips ship (skipped without them)", (t) => {
-    const zips = zipsFor(ZIPS);
-    if (!zips) {
-      t.skip("no Osmech zip installed");
+  it("maps to files the installed mods ship (skipped without them)", (t) => {
+    const files = modFiles(MODS);
+    if (!files) {
+      t.skip("no Osmech mod on disk");
       return;
     }
     for (const [key, value] of Object.entries(osmech.units)) {
-      if (!value.includes("/thorosmen/") && !value.includes("/st_")) {
-        continue;
-      }
-      assert.ok(zips.has(value.slice(1)), key + " -> " + value);
+      assert.ok(files.has(value.slice(1)), key + " -> " + value);
     }
   });
 });

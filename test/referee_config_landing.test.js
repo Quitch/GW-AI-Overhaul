@@ -187,8 +187,16 @@ describe("FFA foe landing policy", () => {
     return result;
   }
 
+  // Sampled across stars, as above: foes keyed to one stream would draw the
+  // same policies at every star.
   it("reproduces each foe's policies and keeps them apart from each other", () => {
     assert.deepEqual(foes(battleRng(3, 5)), foes(battleRng(3, 5)));
+
+    const apart = [0, 1, 2, 3, 4, 5].some((star) => {
+      const [first, second] = foes(battleRng(star, 5));
+      return JSON.stringify(first) !== JSON.stringify(second);
+    });
+    assert.ok(apart, "both foes drew the same landing policies at every star");
   });
 
   it("does not move an earlier foe when a later one is added", () => {

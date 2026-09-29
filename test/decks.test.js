@@ -13,6 +13,7 @@ const deckIds = loadCouiModule(MOD_ROOT + "/shared/deck_ids.js");
 
 afterEach(() => {
   decks.reset();
+  mock.restoreAll();
 });
 
 describe("the built-in decks", () => {

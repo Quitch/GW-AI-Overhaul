@@ -18,7 +18,6 @@ const refereeConfig = loadCouiModule(
 
 const installModel = useModel();
 
-// Fields setupAIArmy needs to avoid crashing. None are asserted on.
 describe("setAIPath", () => {
   it("cluster path is the same regardless of isPlayer - only one side can be Cluster", () => {
     const fixture = buildGame({ aiInUse: "Titans" });

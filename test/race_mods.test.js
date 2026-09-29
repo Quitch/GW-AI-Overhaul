@@ -8,7 +8,10 @@ const { describe, it, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
 const { MOD_ROOT, loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
+const {
+  installFakeJQuery,
+  resolved,
+} = require("../scripts/lib/fake-jquery.js");
 const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
 
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
@@ -22,11 +25,12 @@ const FIXTURE_MOD = {
   version: "1.2.0",
 };
 
-// GW Server Mods' manifest, reduced to what race_mods.js calls.
+// GW Server Mods' manifest, reduced to what race_mods.js calls. Its load()
+// returns a jQuery promise, the only kind $.when waits for.
 function fakeManifest(overrides) {
   const opts = overrides || {};
   return {
-    load: () => Promise.resolve(true),
+    load: () => resolved(true),
     listed: () => (opts.listed === undefined ? true : opts.listed),
     activeServerMods: () => opts.active || [],
   };

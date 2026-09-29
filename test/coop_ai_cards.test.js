@@ -940,17 +940,24 @@ describe("decide", () => {
     });
   });
 
-  it("breaks a tie the same way from the same stream", () => {
-    const pick = () =>
+  // Sampled across streams: a tie broken without the stream would pick the
+  // same card from every one.
+  it("breaks a tie from the stream, the same way from the same stream", () => {
+    const pick = (seed) =>
       coopAiCards.decide({
         scored: [card(0, 5), card(1, 5), card(2, 5)],
         rerollsLeft: 0,
         rerollsUsed: 0,
         fullness: 0,
         roomFor: roomy,
-        rng: gwoRng.create("tie"),
+        rng: gwoRng.create(seed),
       }).index;
-    assert.equal(pick(), pick());
+    assert.equal(pick("tie"), pick("tie"));
+
+    const picks = new Set(
+      ["a", "b", "c", "d", "e", "f", "g", "h"].map((seed) => pick(seed))
+    );
+    assert.ok(picks.size > 1, "every stream broke the tie the same way");
   });
 
   it("declines an empty hand", () => {

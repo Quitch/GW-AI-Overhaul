@@ -573,6 +573,51 @@ describe("selectorFor", () => {
   });
 });
 
+// Which systems a star of each size is served from, read off take() alone.
+describe("selectorFor - which systems a star is served from", () => {
+  // Everything a fresh selector hands a star of `armies`, in order, up to
+  // the first system it hands out twice.
+  function served(built, armies) {
+    const selector = brackets.selectorFor(built, () => 0.5);
+    const names = [];
+    for (;;) {
+      const taken = selector.take(armies);
+      if (!taken || names.includes(taken.name)) {
+        return names;
+      }
+      names.push(taken.name);
+    }
+  }
+
+  const built = [
+    ranged(0, 2, ["small"]),
+    ranged(2, 4, ["mid"]),
+    ranged(2, 10, ["large"]),
+  ];
+
+  it("serves the nearest stars from the zero-minimum bracket alone", () => {
+    assert.deepEqual(served(built, 0), ["small"]);
+    assert.deepEqual(served(built, 1), ["small"]);
+  });
+
+  it("drops the smallest systems once the star is beyond their reach", () => {
+    assert.deepEqual(served(built, 3), ["mid", "large"]);
+  });
+
+  it("clamps a star beyond every bracket to the largest", () => {
+    assert.deepEqual(served(built, 40), ["large"]);
+  });
+
+  it("fills a gap in the cover from the closest bracket above it alone", () => {
+    const gapped = [
+      ranged(0, 2, ["small"]),
+      ranged(6, 8, ["near"]),
+      ranged(6, 12, ["far"]),
+    ];
+    assert.deepEqual(served(gapped, 4), ["near"]);
+  });
+});
+
 describe("bracketsFrom - pool order independence", () => {
   // Shared Systems assembles its pool in resolution order, and selectorFor keys off
   // pool order, so without a sort one seed places different systems each load.

@@ -268,8 +268,13 @@ race fields. It never shows a second, race-written list. See [`races.md`](races.
 
 `test/card_deal_unit_gate.test.js` enforces this in both directions. A card must not
 be dealable to a player who owns none of its units. A card must be dealable to a
-player who owns all of them. A new card with no `card_units.js` entry fails the test
-unless it is a loadout or is listed in `gwoCardsWithoutTooltip`.
+player who owns all of them, and to a player who owns only one of them. The test
+lists each unit that does not open its card alone, with the reason. An unlock
+card's `buff()` grants every unit its entry names, so it must be dealable to a
+player who owns none of them. The test lists each unlock card that waits for
+another unit instead, with the units that open it. A new card with no
+`card_units.js` entry fails the test unless it is a loadout or is listed in
+`gwoCardsWithoutTooltip`.
 
 `commanderWeight` scales because these cards mod `base_commander`, the spec that
 every Sub Commander inherits. One card buffs your whole retinue. Retinue size rather
