@@ -42,6 +42,7 @@
 - In co-op with per-player tech, a viewer who picks a tech card while another viewer rerolls, sets up the General Commander, or joins no longer has their offer come back, which could stop the host exploring or fighting until they reloaded
 - MLA Sub Commanders whose AI differs from the enemy's now build all the units their AI orders, such as Queller's orbital fabricators, Avengers, and Astraeus, and so do the Sub Commanders of MLA co-op players and co-op AI players with per-player tech
 - A tech card from another mod whose AI build file is missing no longer stops every battle while you hold it
+- A malformed unit file from another mod no longer leaves Fight stuck
 - An AI folder the game cannot list, or an AI build file from another mod that cannot be processed, now fails the battle launch with an error instead of leaving Fight stuck
 
 ## v7.4.1 - 2026-09-24
