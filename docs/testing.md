@@ -231,11 +231,12 @@ fails loudly.
 
 Two details are load-bearing:
 
-- It passes `configFile` rather than importing the config module. The test
-  therefore exercises the file the CLI actually resolves. It also asserts that
-  `.stylelintrc.json` is **absent**. That name ranks third in cosmiconfig's
-  order and `stylelint.config.mjs` ranks last. A resurrected JSON would
-  therefore silently shadow the whole profile while every other assertion here
+- It passes `configFile` rather than importing the config module. It also
+  asserts that stylelint's own config search, run for a file under `ui/`,
+  resolves to that same config, so the lint cases exercise the file the CLI
+  actually uses. cosmiconfig ranks twenty names above `stylelint.config.mjs` and
+  searches upward from each file. Any of them, at the root or under `ui/`, would
+  otherwise silently shadow the whole profile while every other assertion here
   still passed.
 - `require("stylelint")` works even though stylelint 17 is ESM-only. Node's
   `require(ESM)` interop on the pinned Node version makes that possible.

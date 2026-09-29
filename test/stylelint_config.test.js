@@ -11,7 +11,6 @@
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
-const fs = require("node:fs");
 const path = require("node:path");
 // stylelint 17 is ESM-only; Node's require(ESM) interop is what lets a
 // CommonJS test load it. See its "exports" field and .nvmrc.
@@ -62,12 +61,15 @@ function rule(selector, declarations) {
 }
 
 describe("stylelint config resolution", () => {
-  it("is the .mjs file, with no .stylelintrc.json left to outrank it", () => {
-    // cosmiconfig ranks .stylelintrc.json third and stylelint.config.mjs last,
-    // so a resurrected JSON would silently shadow the whole profile while every
-    // other test here still passed.
-    assert.ok(fs.existsSync(CONFIG_FILE));
-    assert.ok(!fs.existsSync(path.join(REPO_ROOT, ".stylelintrc.json")));
+  it("resolves ui/ CSS to the .mjs file, with nothing outranking it", async () => {
+    // cosmiconfig ranks twenty names above stylelint.config.mjs and searches
+    // upward from each file, so any of them, here or under ui/, would silently
+    // shadow the whole profile while every other test here still passed.
+    assert.deepStrictEqual(
+      await stylelint.resolveConfig(FIXTURE),
+      await stylelint.resolveConfig(FIXTURE, { configFile: CONFIG_FILE }),
+      "stylelint resolves a config other than stylelint.config.mjs for ui/ CSS"
+    );
   });
 });
 
