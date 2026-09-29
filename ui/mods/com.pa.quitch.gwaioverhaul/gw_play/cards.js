@@ -645,7 +645,7 @@
             }
             try {
               var dealInventory = new params.GWInventory();
-              dealInventory.load(_.cloneDeep(applied));
+              dealInventory.load(coopAiEffects.plain(applied));
               var context =
                 module.getContext && module.getContext(galaxy, dealInventory);
               var dealt = module.deal(star, context, dealInventory);
@@ -695,7 +695,7 @@
           // A card as the dealer deals it to the AI, its params included.
           var dealCard = function (cardId, applied, star) {
             var dealInventory = new params.GWInventory();
-            dealInventory.load(_.cloneDeep(applied));
+            dealInventory.load(coopAiEffects.plain(applied));
             return params.gwoDeal.dealCard(
               {
                 id: cardId,

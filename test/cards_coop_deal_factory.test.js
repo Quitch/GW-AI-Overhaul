@@ -452,10 +452,17 @@ describe("dealCoopPlayerPendingTechCards - whose inventory", () => {
 // pinned against a bare inventory shape in cards_deal_helpers.test.js. Here the
 // real helper runs, against a viewer's inventory and a host holding both bonuses.
 describe("dealCoopPlayerPendingTechCards - the bonus rules", () => {
-  const viewerHolding = (cards, maxCards) => ({
+  // The apply rebuilds the slots from the cards, so the first card gives them,
+  // as a loadout's buff does.
+  const viewerHolding = (cards, slots) => ({
     realHelpers: true,
     records: {
-      alice: record("alice", { inventory: { cards, maxCards } }),
+      alice: record("alice", {
+        inventory: {
+          cards: [Object.assign({ slots }, cards[0])].concat(cards.slice(1)),
+          maxCards: slots,
+        },
+      }),
     },
   });
 

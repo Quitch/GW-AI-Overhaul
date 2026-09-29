@@ -287,6 +287,52 @@ describe("bank suspendUnlocks", () => {
   });
 });
 
+// applyCards empties everything else before the first buff(), so only these
+// reach an applied inventory. test/coop_ai_effects.test.js compares whole
+// applies against a whole copy's.
+describe("bank copyForApply", () => {
+  const saved = () => ({
+    units: ["/pa/units/land/tank_light_laser/tank_light_laser.json"],
+    aiMods: [{ type: "fabber", op: "append", value: "x" }],
+    mods: [{ file: "f", path: "p", op: "multiply", value: 2 }],
+    maxCards: 5,
+    cards: [{ id: "gwc_start_bot" }, { id: "gwc_minion", minion: { a: 1 } }],
+    minions: [{ a: 1 }],
+    tags: { global: { playerFaction: 0 }, gwc_start_bot: { buffCount: 1 } },
+  });
+
+  it("copies only the cards and tags of an inventory an apply will run", () => {
+    const source = saved();
+    const copy = bank.copyForApply(source);
+
+    assert.deepEqual(copy, { cards: source.cards, tags: source.tags });
+    assert.notEqual(copy.cards[1], source.cards[1]);
+    assert.notEqual(copy.cards[1].minion, source.cards[1].minion);
+    assert.notEqual(copy.tags.gwc_start_bot, source.tags.gwc_start_bot);
+    assert.deepEqual(source, saved());
+  });
+
+  // One copy of both, as a copy of the whole inventory would be.
+  it("keeps an object the cards and the tags share shared", () => {
+    const source = saved();
+    source.tags.gwc_minion = { minion: source.cards[1].minion };
+    const copy = bank.copyForApply(source);
+
+    assert.equal(copy.tags.gwc_minion.minion, copy.cards[1].minion);
+  });
+
+  it("copies an inventory with no cards whole, since nothing applies it", () => {
+    const source = Object.assign(saved(), { cards: [] });
+    const copy = bank.copyForApply(source);
+
+    assert.deepEqual(copy, source);
+    assert.notEqual(copy.mods, source.mods);
+    assert.notEqual(copy.mods[0], source.mods[0]);
+    assert.deepEqual(bank.copyForApply({ tags: {} }), { tags: {} });
+    assert.equal(bank.copyForApply(undefined), undefined);
+  });
+});
+
 describe("bank applyInventoryHeld", () => {
   const stock = () => ({
     added: [],

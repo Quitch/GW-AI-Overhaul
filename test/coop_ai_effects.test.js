@@ -14,6 +14,7 @@ const {
   installGlobals,
   registerModuleStub,
 } = require("../scripts/lib/amd-loader.js");
+const { listCardFiles, loadCard } = require("../scripts/lib/card-files.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
   makeObservable,
@@ -34,6 +35,8 @@ registerModuleStub("shared/gw_common", {
 });
 registerModuleStub("shared/gw_bank", stockBank);
 registerModuleStub("shared/gw_game_patches", { patch: () => {} });
+// gwc_minion reads the factions in deal() alone.
+registerModuleStub("shared/gw_factions", [{ minions: [] }]);
 
 const stubs = createGlobalStubs();
 // As knockout's own: every enumerable property, the prototype's methods
@@ -123,6 +126,15 @@ const FIXTURE_CARDS = {
   fixture_coopai_throws: fixtureCard("Fixture Broken Tech", 50, () => {
     throw new Error("fixture buff failed");
   }),
+  // Writes a tag of its own that no dull() takes back, and its own params.
+  fixture_coopai_writes: fixtureCard(
+    "Fixture Writing Tech",
+    40,
+    (inventory, params) => {
+      inventory.setTag("", "buffs", inventory.getTag("", "buffs", 0) + 1);
+      params.buffs = (params.buffs || 0) + 1;
+    }
+  ),
 };
 
 const COMMANDER = "/pa/units/commanders/imperial_able/imperial_able.json";
@@ -376,5 +388,200 @@ describe("coop_ai_effects", () => {
       makeEffects.removeCard({ cards: [{ id: "a" }, { id: "b" }] }, 0).cards,
       [{ id: "b" }]
     );
+  });
+});
+
+// An apply copies a saved inventory's cards and tags alone, a scratch
+// inventory shares all but its card list with the saved one, and a deal
+// reads a JSON copy of an applied inventory. Each must give what a whole deep
+// copy gives.
+
+// The whole saved inventory deep-copied, loaded, and applied, with the units
+// its cards remove noted.
+const applyWholeCopy = (saved) =>
+  new Promise((resolve) => {
+    const removed = [];
+    const inventory = new GWInventory();
+    const removeUnits = inventory.removeUnits;
+    inventory.removeUnits = function (units) {
+      if (Array.isArray(units)) {
+        removed.push(...units.filter((unit) => typeof unit === "string"));
+      }
+      return removeUnits.apply(inventory, arguments);
+    };
+    inventory.load(_.cloneDeep(saved));
+    const finish = () => {
+      const applied = makeEffects.plain(inventory.save());
+      resolve({
+        inventory,
+        applied,
+        stripped: _.difference(_.uniq(removed), applied.units),
+      });
+    };
+    if (inventory.cards().length) {
+      inventory.applyCards(finish);
+    } else {
+      finish();
+    }
+  });
+const addToWholeCopy = (saved, card, loadout) => {
+  const next = _.cloneDeep(saved);
+  next.cards = loadout
+    ? [card].concat(next.cards || [])
+    : (next.cards || []).concat(card);
+  return next;
+};
+const removeFromWholeCopy = (saved, index) => {
+  const next = _.cloneDeep(saved);
+  next.cards = _.filter(next.cards || [], (card, at) => at !== index);
+  return next;
+};
+
+const minion = (name) => ({
+  name: name,
+  character: "!LOC:Aggressive",
+  commander: "/pa/units/commanders/quad_osiris/quad_osiris.json",
+  personality: { micro_type: 2, personality_tags: ["Default"] },
+});
+// A late war's hand: a loadout, tech whose mods run to some 2000 descriptors,
+// two Sub Commanders, and a card that writes to its tag and its params.
+const LATE_WAR = {
+  cards: [
+    { id: "gwaio_start_terminal" },
+    { id: "gwaio_anti_structure" },
+    { id: "gwaio_protocol_precision" },
+    { id: "gwc_combat_bots" },
+    { id: "gwc_damage_bots" },
+    { id: "gwc_minion", minion: minion("Alpha"), unique: 1.25 },
+    { id: "gwc_minion", minion: minion("Beta"), unique: 1.5 },
+    { id: "fixture_coopai_writes" },
+  ],
+  tags: BOT_AI.tags,
+};
+
+// The host's inventory, live.
+const lateWarInventory = async () => (await applyWholeCopy(LATE_WAR)).inventory;
+
+describe("coop_ai_effects copies", () => {
+  const bank = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"
+  );
+
+  // A save of the host's inventory, methods and all, and the same as a co-op
+  // record stores it, plain and with the global tags alone.
+  let hostSave;
+  let stored;
+  before(async () => {
+    hostSave = (await lateWarInventory()).save();
+    stored = coopAiDriver.storedInventory(hostSave);
+  });
+
+  it("applies a late war's inventory as a whole copy of it applies", async () => {
+    assert.ok(stored.mods.length > 2000);
+    assert.equal(stored.minions.length, 2);
+    for (const saved of [stored, hostSave]) {
+      const before = JSON.stringify(saved);
+      const expected = await applyWholeCopy(saved);
+      const applied = await effects().apply(saved);
+
+      assert.deepEqual(applied, expected.applied);
+      assert.deepEqual(applied.strippedUnits, expected.stripped);
+      assert.equal(
+        applied.tags.fixture_coopai_writes.buffs,
+        _.get(saved, "tags.fixture_coopai_writes.buffs", 0) + 1
+      );
+      assert.equal(JSON.stringify(saved), before);
+    }
+  });
+
+  it("applies a viewer's record as a whole copy of it applies", async () => {
+    const record = { inventory: stored };
+    const before = JSON.stringify(record);
+    const expected = await applyWholeCopy(stored);
+    const inventory = await new Promise((resolve) =>
+      bank.applyRecordInventory(GWInventory, record, stockBank, resolve)
+    );
+
+    assert.deepEqual(makeEffects.plain(inventory.save()), expected.applied);
+    assert.equal(JSON.stringify(record), before);
+  });
+
+  it("loads an inventory with no cards whole", async () => {
+    const saved = Object.assign({}, stored, { cards: [] });
+    const expected = await applyWholeCopy(saved);
+    const inventory = await new Promise((resolve) =>
+      bank.applyInventoryHeld(GWInventory, saved, stockBank, resolve)
+    );
+
+    assert.deepEqual(makeEffects.plain(inventory.save()), expected.applied);
+    assert.notEqual(inventory.mods(), saved.mods);
+  });
+
+  it("adds and removes a card as whole copies do, leaving the saved inventory be", async () => {
+    const before = JSON.stringify(stored);
+    const incoming = { id: "gwc_enable_air_t1" };
+    const loadout = { id: "gwaio_start_ceo" };
+
+    assert.deepEqual(
+      makeEffects.addCard(stored, incoming),
+      addToWholeCopy(stored, incoming)
+    );
+    assert.deepEqual(
+      makeEffects.addCard(stored, loadout, true),
+      addToWholeCopy(stored, loadout, true)
+    );
+    assert.deepEqual(
+      makeEffects.removeCard(stored, 3),
+      removeFromWholeCopy(stored, 3)
+    );
+    assert.deepEqual(makeEffects.addCard({}, incoming), { cards: [incoming] });
+    assert.deepEqual(makeEffects.removeCard({}, 0), { cards: [] });
+
+    const swapped = await effects().apply(
+      makeEffects.addCard(makeEffects.removeCard(stored, 3), incoming)
+    );
+    const expected = await applyWholeCopy(
+      addToWholeCopy(removeFromWholeCopy(stored, 3), incoming)
+    );
+    assert.deepEqual(swapped, expected.applied);
+    assert.equal(JSON.stringify(stored), before);
+  });
+
+  // gw_play/cards.js's chanceOf and dealCard load a JSON copy of an applied
+  // inventory.
+  it("deals from a JSON copy of an applied inventory as from a deep copy", async () => {
+    const applied = await effects().apply(stored);
+    const copies = [makeEffects.plain(applied), _.cloneDeep(applied)];
+    assert.deepEqual(copies[0], copies[1]);
+
+    const galaxy = { stars: () => new Array(60) };
+    let dealt = 0;
+    for (const file of listCardFiles()) {
+      const loaded = loadCard(file);
+      if (loaded.error) {
+        throw loaded.error;
+      }
+      const card = loaded.card;
+      if (!card || typeof card.deal !== "function") {
+        continue;
+      }
+      const outcomes = copies.map((copy) => {
+        const inventory = new GWInventory();
+        inventory.load(copy);
+        try {
+          const context = card.getContext && card.getContext(galaxy, inventory);
+          return JSON.stringify(
+            card.deal({ distance: () => 4 }, context, inventory, () => 0.5)
+          );
+        } catch (error) {
+          return "threw " + error.message;
+        }
+      });
+      assert.equal(outcomes[0], outcomes[1], file);
+      if (!_.startsWith(outcomes[0], "threw")) {
+        dealt++;
+      }
+    }
+    assert.ok(dealt >= 225, "cards dealt: " + dealt);
   });
 });

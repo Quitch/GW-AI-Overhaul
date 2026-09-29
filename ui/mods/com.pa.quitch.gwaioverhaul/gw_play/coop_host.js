@@ -36,10 +36,16 @@ define([
     });
   };
 
-  // Stores a copy of the record with `patch` applied and updatedAt stamped,
-  // and returns that copy, or undefined when the store refused it.
+  // Stores a plain-data copy of the record, as a save or a snapshot makes it,
+  // with `patch` applied and updatedAt stamped, and returns that copy, or
+  // undefined when the store refused it.
   var upsertRecord = function (game, record, patch) {
-    var next = _.assign({}, _.cloneDeep(record), { updatedAt: _.now() }, patch);
+    var next = _.assign(
+      {},
+      JSON.parse(JSON.stringify(record)),
+      { updatedAt: _.now() },
+      patch
+    );
     return game.upsertCoopPlayerInventoryData(next) ? next : undefined;
   };
 

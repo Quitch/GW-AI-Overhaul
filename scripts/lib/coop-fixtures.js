@@ -17,8 +17,9 @@ function record(id, extra) {
 
 // A minimal stand-in for the base game's GWInventory: the factories only load a
 // record's saved cards, count them, and apply them. `withHand` adds the hand-size
-// answers the per-player deal weighs an offer on; `onApply` sees the instance as
-// it is applied.
+// answers the per-player deal weighs an offer on. As the real applyCards does,
+// an apply rebuilds the slots from the cards alone: a card's `slots` is what its
+// buff gives. `onApply` sees the instance as it is applied.
 function inventoryClass(options) {
   const opts = options || {};
   return function GWInventory() {
@@ -34,6 +35,7 @@ function inventoryClass(options) {
       this.hasCard = (id) => loaded.some((card) => card.id === id);
     }
     this.applyCards = (done) => {
+      limit = loaded.reduce((slots, card) => slots + (card.slots || 0), 0);
       if (opts.onApply) {
         opts.onApply(this);
       }

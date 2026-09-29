@@ -375,7 +375,9 @@ time and the callback reaches `api.tally`.
 `scripts/lib/coop-fixtures.js` holds what the tests for the co-op card factory
 share. It holds a connected `viewer` and its inventory `record`. It holds the
 `inventoryClass` stand-in for the base game's `GWInventory`, which only loads a
-record's saved cards, counts them and applies them. It holds `rejection`,
+record's saved cards, counts them and applies them. Its apply rebuilds the
+slots from the cards alone, as `applyCards` does, since an apply is handed a
+copy of the cards and tags and nothing else. It holds `rejection`,
 because those host handlers reject with a plain string that `assert.rejects`
 will not take as an error. The `HOST_CARDS` trap stays in each file. It hangs
 off that test's own game stub.
@@ -393,11 +395,14 @@ weights in `shared/coop_ai_cards.js` are tuning. `test/coop_ai_driver.test.js`
 drives the driver through a fake apply over a small unit table, so each test
 reads off what the AI did. `test/coop_ai_effects.test.js` is the one that
 applies for real. It loads the shadowed `gw_inventory.js` with the shipped cards
-and bank, and stubs only `shared/gw_common`, `shared/gw_bank`, and
-`shared/gw_game_patches`. Its `ko.toJS` copies the prototype's methods as
-knockout's does, so a save carries `GWInventory`'s methods as it does in the
-game. Two fixture cards stand in for a card mod: one grants a unit that it
-names nowhere else, and one throws. `test/coop_ai_units.test.js` checks the
+and bank, and stubs only `shared/gw_common`, `shared/gw_bank`,
+`shared/gw_game_patches`, and `shared/gw_factions`. Its `ko.toJS` copies the
+prototype's methods as knockout's does, so a save carries `GWInventory`'s
+methods as it does in the game. Three fixture cards stand in for a card mod:
+one grants a unit that it names nowhere else, one throws, and one writes to a
+tag of its own and to its params. It also checks the copies an apply makes
+([`tech-cards.md`](tech-cards.md), "Applying the card") against a whole deep
+copy, on an inventory of some 2000 mods. `test/coop_ai_units.test.js` checks the
 spec lookup on a small spec table and the group lookup on the shipped unit
 groups. `test/coop_ai_fielded.test.js` checks a race AI's view of what its army
 fields on the harvested fixture's specs and cells, through
