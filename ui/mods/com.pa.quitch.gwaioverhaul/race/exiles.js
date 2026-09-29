@@ -41,8 +41,7 @@ define(function () {
     ],
     commanders: [
       { spec: "/pa/units/commanders/exiles_maxim/exiles_maxim.json" },
-      { spec: "/pa/units/commanders/exiles_taurus/exiles_taurus.json" },
-      { spec: "/pa/units/commanders/exiles_blueberry/exiles_blueberry.json" },
+      { spec: "/pa/units/commanders/exiles_blueberry/union_formidable.json" },
       { spec: "/pa/units/commanders/exiles_brainiac/exiles_brainiac.json" },
     ],
     // The server mod ships the pair itself, under its ui/mods folder.
@@ -69,7 +68,6 @@ define(function () {
       advFabricationBot: "/pa/units/land/t_bot_fab_adv/t_bot_fab_adv.json",
       advFabricationBotAdvBuildArm:
         "/pa/units/land/t_bot_fab_adv/adv_build_arm.json",
-      aetherEngine: "/pa/units/exiles/mass_tele_titan/mass_tele_titan.json",
       airFactory: "/pa/units/air/t_air_fac/t_air_fac.json",
       airFactoryAdvanced: "/pa/units/air/t_air_fac_adv/t_air_fac_adv.json",
       ambushTurret: "/pa/units/land/ambush_twr/hid/ambush_twr_hid.json",
@@ -112,10 +110,16 @@ define(function () {
         "/pa/units/land/t_metal_extractor_0/t_metal_extractor_0_ammo.json",
       basicMetalExtractorWeapon:
         "/pa/units/land/t_metal_extractor_0/t_metal_extractor_0_weapon.json",
+      battleFabricator: "/pa/units/exiles/battle_fab/battle_fab.json",
+      battleFabricatorAmmo: "/pa/units/exiles/battle_fab/battle_fab_ammo.json",
+      battleFabricatorToolBuildArm:
+        "/pa/units/exiles/battle_fab/battle_fab_tool_build_arm.json",
+      battleFabricatorWeapon:
+        "/pa/units/exiles/battle_fab/battle_fab_tool_weapon.json",
       blueberryCommander:
-        "/pa/units/commanders/exiles_blueberry/exiles_blueberry.json",
+        "/pa/units/commanders/exiles_blueberry/union_formidable.json",
       blueberryCommanderAmmo:
-        "/pa/units/commanders/exiles_blueberry/exiles_blueberry_ammo.json",
+        "/pa/units/commanders/exiles_blueberry/union_formidable_ammo.json",
       blueberryCommanderAmmoUber:
         "/pa/units/commanders/exiles_blueberry/exiles_blueberry_ammo_uber.json",
       blueberryCommanderBuildArm:
@@ -127,7 +131,7 @@ define(function () {
       blueberryCommanderUberCannon:
         "/pa/units/commanders/exiles_blueberry/exiles_blueberry_uber_cannon.json",
       blueberryCommanderWeapon:
-        "/pa/units/commanders/exiles_blueberry/exiles_blueberry_tool_weapon.json",
+        "/pa/units/commanders/exiles_blueberry/union_formidable_tool_weapon.json",
       bolt: "/pa/units/land/lightning/lightning.json",
       boltAmmo: "/pa/units/land/lightning/lightning_ammo.json",
       boltWeapon: "/pa/units/land/lightning/lightning_tool_weapon.json",
@@ -138,10 +142,14 @@ define(function () {
       botFactoryBuildArm: "/pa/units/land/t_bot_fac/t_bot_fac_build_arm.json",
       brainiacCommander:
         "/pa/units/commanders/exiles_brainiac/exiles_brainiac.json",
-      brainiacCommanderAmmo2:
-        "/pa/units/commanders/exiles_brainiac/exiles_brainiac_ammo2.json",
+      brainiacCommanderAmmo:
+        "/pa/units/commanders/exiles_brainiac/exiles_brainiac_ammo.json",
+      brainiacCommanderAmmoSpawn:
+        "/pa/units/commanders/exiles_brainiac/exiles_brainiac_ammo_spawn.json",
       brainiacCommanderBuildArm:
         "/pa/units/commanders/exiles_brainiac/exiles_brainiac_build_arm.json",
+      brainiacCommanderToolSpawn:
+        "/pa/units/commanders/exiles_brainiac/exiles_brainiac_tool_spawn.json",
       brainiacCommanderToolTracer:
         "/pa/units/commanders/exiles_brainiac/tool_tracer.json",
       brainiacCommanderTracerAmmo:
@@ -192,10 +200,6 @@ define(function () {
       cyclopsAmmo: "/pa/units/land/tripod/tripod_ammo.json",
       cyclopsWeapon: "/pa/units/land/tripod/tripod_tool_weapon.json",
       dragonfly: "/pa/units/air/scout/dragonfly.json",
-      eagleOwl: "/pa/units/air/strat_bomber/strat_bomber.json",
-      eagleOwlAmmo: "/pa/units/air/strat_bomber/strat_bomber_ammo.json",
-      eagleOwlWeapon:
-        "/pa/units/air/strat_bomber/strat_bomber_tool_weapon.json",
       energyPylon: "/pa/units/land/pylon/pylon.json",
       energyPylonOvercharge: "/pa/units/land/pylon/overcharge.json",
       energyPylonOverchargeAmmo: "/pa/units/land/pylon/overcharge_ammo.json",
@@ -253,26 +257,19 @@ define(function () {
       hellnewBallAmmo: "/pa/units/land/tank_wheel/tank_wheel_ammo.json",
       hellnewBallWeapon: "/pa/units/land/tank_wheel/tank_wheel_weapon.json",
       heron: "/pa/units/air/t_transport_adv/t_transport_adv.json",
-      hoverFabricator: "/pa/units/exiles/battle_fab/battle_fab.json",
+      hippo: "/pa/units/land/adv_tank_hover/adv_tank_hover.json",
+      hippoAmmo: "/pa/units/land/adv_tank_hover/adv_tank_hover_ammo.json",
+      hippoWeapon:
+        "/pa/units/land/adv_tank_hover/adv_tank_hover_tool_weapon.json",
       hoverFabricatorAdvanced:
         "/pa/units/exiles/battle_fab_adv/battle_fab_adv.json",
       hoverFabricatorAdvancedToolBuildArm:
         "/pa/units/exiles/battle_fab_adv/battle_fab_adv_tool_build_arm.json",
-      hoverFabricatorToolBuildArm:
-        "/pa/units/exiles/battle_fab/battle_fab_tool_build_arm.json",
       hyena: "/pa/units/land/hyena/hyena.json",
       hyenaFab: "/pa/units/land/hyena/fab_tool.json",
       hyperTideAssembly: "/pa/units/sea/t_naval_fac_adv/t_naval_fac_adv.json",
       hyperTideAssemblyBuildArm:
         "/pa/units/sea/t_naval_fac_adv/t_naval_fac_adv_build_arm.json",
-      jaguar: "/pa/units/land/tank_heavy_adv/tank_heavy_adv.json",
-      jaguarAmmo: "/pa/units/land/tank_heavy_adv/tank_heavy_adv_ammo.json",
-      jaguarAmmoMissile:
-        "/pa/units/land/tank_heavy_adv/tank_heavy_adv_ammo_missile.json",
-      jaguarToolMissile:
-        "/pa/units/land/tank_heavy_adv/tank_heavy_adv_tool_missile.json",
-      jaguarWeapon:
-        "/pa/units/land/tank_heavy_adv/tank_heavy_adv_tool_weapon.json",
       jelly: "/pa/units/land/jelly/jelly.json",
       jellyAmmo: "/pa/units/land/jelly/jelly_ammo.json",
       jellyWeapon: "/pa/units/land/jelly/jelly_tool_weapon.json",
@@ -411,19 +408,6 @@ define(function () {
       tarantulaToolTracer: "/pa/units/land/t_bot_aa/tool_tracer.json",
       tarantulaTracerAmmo: "/pa/units/land/t_bot_aa/tracer_ammo.json",
       tarantulaWeapon: "/pa/units/land/t_bot_aa/t_bot_aa_weapon.json",
-      taurusCommander: "/pa/units/commanders/exiles_taurus/exiles_taurus.json",
-      taurusCommanderAmmo:
-        "/pa/units/commanders/exiles_taurus/exiles_taurus_ammo.json",
-      taurusCommanderBuildArm:
-        "/pa/units/commanders/exiles_taurus/exiles_taurus_build_arm.json",
-      taurusCommanderToolAaWeapon:
-        "/pa/units/commanders/exiles_taurus/exiles_taurus_tool_aa_weapon.json",
-      taurusCommanderUberCannon:
-        "/pa/units/commanders/exiles_taurus/uber_cannon.json",
-      taurusCommanderUberShot:
-        "/pa/units/commanders/exiles_taurus/uber_shot.json",
-      taurusCommanderWeapon:
-        "/pa/units/commanders/exiles_taurus/exiles_taurus_tool_weapon.json",
       teleporter: "/pa/units/addon/r_teleporter/r_teleporter.json",
       tideAssembly: "/pa/units/sea/t_naval_fac/t_naval_fac.json",
       tideAssemblyBuildArm:
@@ -457,11 +441,13 @@ define(function () {
         "/pa/units/land/t_tank_fab_adv/t_tank_fab_adv.json",
       vehicleFabricatorAdvancedBuildArm:
         "/pa/units/land/t_tank_fab_adv/t_tank_fab_adv_build_arm.json",
+      vulture: "/pa/units/air/strat_bomber/strat_bomber.json",
+      vultureAmmo: "/pa/units/air/strat_bomber/strat_bomber_ammo.json",
+      vultureWeapon: "/pa/units/air/strat_bomber/strat_bomber_tool_weapon.json",
       wall: "/pa/units/land/t_wall/t_wall.json",
     },
     unitNames: {
       advFabricationBot: "!LOC:Adv Fabrication Bot",
-      aetherEngine: "!LOC:Aether Engine",
       airFactory: "!LOC:Air factory",
       airFactoryAdvanced: "!LOC:Advanced Air Factory",
       ambushTurret: "!LOC:Ambush Turret",
@@ -471,6 +457,7 @@ define(function () {
       atropa: "!LOC:Atropa",
       auroraTurret: "!LOC:Aurora Turret",
       basicMetalExtractor: "!LOC:Basic Metal Extractor",
+      battleFabricator: "!LOC:Battle Fabricator",
       blueberryCommander: "!LOC:Blueberry Commander",
       bolt: "!LOC:Bolt",
       botFactory: "!LOC:Bot Factory",
@@ -488,7 +475,6 @@ define(function () {
       cyclone: "!LOC:Cyclone",
       cyclops: "!LOC:Cyclops",
       dragonfly: "!LOC:Dragonfly",
-      eagleOwl: "!LOC:Eagle-Owl",
       energyPylon: "!LOC:Energy Pylon",
       energyStorage: "!LOC:Energy Storage",
       experimentalMetalStorage: "!LOC:Experimental Metal Storage",
@@ -508,11 +494,10 @@ define(function () {
       harperTurret: "!LOC:Harper Turret",
       hellnewBall: "!LOC:Hellnew/ball",
       heron: "!LOC:Heron",
-      hoverFabricator: "!LOC:Hover Fabricator",
+      hippo: "!LOC:Hippo",
       hoverFabricatorAdvanced: "!LOC:Advanced Hover Fabricator",
       hyena: "!LOC:Hyena",
       hyperTideAssembly: "!LOC:Hyper Tide Assembly",
-      jaguar: "!LOC:Jaguar",
       jelly: "!LOC:Jelly",
       kikimora: "!LOC:Kikimora",
       lamya: "!LOC:Lamya",
@@ -549,7 +534,6 @@ define(function () {
       tankFactory: "!LOC:Tank factory",
       tankFactoryAdvanced: "!LOC:Advanced Tank factory",
       tarantula: "!LOC:Tarantula",
-      taurusCommander: "!LOC:Taurus Commander",
       teleporter: "!LOC:Teleporter",
       tideAssembly: "!LOC:Tide Assembly",
       tin: "!LOC:Tin",
@@ -562,6 +546,7 @@ define(function () {
       ulua: "!LOC:Ulua",
       umbrella: "!LOC:Umbrella",
       vehicleFabricatorAdvanced: "!LOC:Advanced Vehicle Fabricator",
+      vulture: "!LOC:Vulture",
       wall: "!LOC:Wall",
     },
   };

@@ -94,7 +94,7 @@ describe("the modder globals are adopted, not overwritten", () => {
   // loader has to.
   it("gwoStarCardsWhichBreakAllies is read from the mod's own array", () => {
     assert.match(
-      source(MOD_ROOT + "/gw_start/setup.js"),
+      source(MOD_ROOT + "/gw_start/war_generation.js"),
       /_\.isArray\(\s*model\.gwoStarCardsWhichBreakAllies\s*\)/
     );
   });
@@ -102,7 +102,7 @@ describe("the modder globals are adopted, not overwritten", () => {
   // Read the same way, when an AI is added.
   it("gwoLoadoutsAiCannotUse is read from the mod's own array", () => {
     assert.match(
-      source(MOD_ROOT + "/gw_play/cards.js"),
+      source(MOD_ROOT + "/gw_play/cards_coop_ai_tech.js"),
       /_\.isArray\(\s*model\.gwoLoadoutsAiCannotUse\s*\)/
     );
   });

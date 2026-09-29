@@ -1,5 +1,5 @@
-// gw_start/setup.js shuffles both lists per war. Shuffling here would run at
-// module load and so ignore the seed.
+// gw_start/war_generation.js shuffles both lists per war. Shuffling here
+// would run at module load and so ignore the seed.
 define({
   neutralSystems: [
     {

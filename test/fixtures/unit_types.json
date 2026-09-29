@@ -1003,7 +1003,7 @@
       "UNITTYPE_NoBuild",
       "UNITTYPE_Custom2"
     ],
-    "/pa/units/commanders/exiles_blueberry/exiles_blueberry.json": [
+    "/pa/units/commanders/exiles_blueberry/union_formidable.json": [
       "UNITTYPE_Commander",
       "UNITTYPE_Construction",
       "UNITTYPE_Mobile",
@@ -1023,15 +1023,6 @@
       "UNITTYPE_Custom6"
     ],
     "/pa/units/commanders/exiles_maxim/exiles_maxim.json": [
-      "UNITTYPE_Commander",
-      "UNITTYPE_Construction",
-      "UNITTYPE_Mobile",
-      "UNITTYPE_Offense",
-      "UNITTYPE_Land",
-      "UNITTYPE_NoBuild",
-      "UNITTYPE_Custom6"
-    ],
-    "/pa/units/commanders/exiles_taurus/exiles_taurus.json": [
       "UNITTYPE_Commander",
       "UNITTYPE_Construction",
       "UNITTYPE_Mobile",
@@ -1923,7 +1914,6 @@
     ],
     "/pa/units/exiles/battle_fab/battle_fab.json": [
       "UNITTYPE_Custom6",
-      "UNITTYPE_FactoryBuild",
       "UNITTYPE_Tank",
       "UNITTYPE_Vehicle",
       "UNITTYPE_Fabber",
@@ -1931,29 +1921,20 @@
       "UNITTYPE_Mobile",
       "UNITTYPE_Land",
       "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
       "UNITTYPE_Hover"
     ],
     "/pa/units/exiles/battle_fab_adv/battle_fab_adv.json": [
       "UNITTYPE_Custom6",
-      "UNITTYPE_FactoryBuild",
       "UNITTYPE_Tank",
       "UNITTYPE_Vehicle",
       "UNITTYPE_Fabber",
       "UNITTYPE_Construction",
       "UNITTYPE_Mobile",
       "UNITTYPE_Land",
-      "UNITTYPE_Advanced",
+      "UNITTYPE_Basic",
+      "UNITTYPE_FactoryBuild",
       "UNITTYPE_Hover"
-    ],
-    "/pa/units/exiles/mass_tele_titan/mass_tele_titan.json": [
-      "UNITTYPE_Custom6",
-      "UNITTYPE_Mobile",
-      "UNITTYPE_Land",
-      "UNITTYPE_Advanced",
-      "UNITTYPE_Teleporter",
-      "UNITTYPE_FabAdvBuild",
-      "UNITTYPE_Important",
-      "UNITTYPE_Titan"
     ],
     "/pa/units/l_addon/adv_fab_turret/adv_fab_turret.json": [
       "UNITTYPE_Construction",
@@ -2138,6 +2119,16 @@
       "UNITTYPE_Economy",
       "UNITTYPE_Custom6",
       "UNITTYPE_NoBuild"
+    ],
+    "/pa/units/land/adv_tank_hover/adv_tank_hover.json": [
+      "UNITTYPE_Tank",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
+      "UNITTYPE_Land",
+      "UNITTYPE_Advanced",
+      "UNITTYPE_Hover",
+      "UNITTYPE_FactoryBuild",
+      "UNITTYPE_Custom6"
     ],
     "/pa/units/land/air_defense/air_defense.json": [
       "UNITTYPE_Custom58",
@@ -3936,7 +3927,6 @@
       "UNITTYPE_Custom6"
     ],
     "/pa/units/land/t_tank_fab/t_tank_fab.json": [
-      "UNITTYPE_NoBuild",
       "UNITTYPE_Fabber",
       "UNITTYPE_Construction",
       "UNITTYPE_Land",
@@ -3947,7 +3937,6 @@
       "UNITTYPE_Custom6"
     ],
     "/pa/units/land/t_tank_fab_adv/t_tank_fab_adv.json": [
-      "UNITTYPE_NoBuild",
       "UNITTYPE_Fabber",
       "UNITTYPE_Construction",
       "UNITTYPE_Land",
@@ -4055,16 +4044,6 @@
       "UNITTYPE_FactoryBuild",
       "UNITTYPE_CannonBuildable"
     ],
-    "/pa/units/land/tank_heavy_adv/tank_heavy_adv.json": [
-      "UNITTYPE_Tank",
-      "UNITTYPE_Mobile",
-      "UNITTYPE_Offense",
-      "UNITTYPE_Land",
-      "UNITTYPE_Advanced",
-      "UNITTYPE_Heavy",
-      "UNITTYPE_FactoryBuild",
-      "UNITTYPE_Custom6"
-    ],
     "/pa/units/land/tank_heavy_armor/tank_heavy_armor.json": [
       "UNITTYPE_Custom58",
       "UNITTYPE_Tank",
@@ -4162,6 +4141,8 @@
     ],
     "/pa/units/land/tin/dead/tin_ded.json": [
       "UNITTYPE_Bot",
+      "UNITTYPE_Mobile",
+      "UNITTYPE_Offense",
       "UNITTYPE_Land",
       "UNITTYPE_Basic",
       "UNITTYPE_Custom6",
@@ -4171,7 +4152,6 @@
       "UNITTYPE_Bot",
       "UNITTYPE_Mobile",
       "UNITTYPE_Offense",
-      "UNITTYPE_Heavy",
       "UNITTYPE_Land",
       "UNITTYPE_Basic",
       "UNITTYPE_FactoryBuild",
@@ -6679,10 +6659,9 @@
     "/pa/units/commanders/base_bug_commander/base_commander.json": "(CmdBuild & Custom2)",
     "/pa/units/commanders/base_commander/base_commander.json": "CmdBuild & Custom58",
     "/pa/units/commanders/bug_commander/bug_commander.json": "(CmdBuild & Custom2)",
-    "/pa/units/commanders/exiles_blueberry/exiles_blueberry.json": "CmdBuild & Custom6",
+    "/pa/units/commanders/exiles_blueberry/union_formidable.json": "CmdBuild & Custom6",
     "/pa/units/commanders/exiles_brainiac/exiles_brainiac.json": "CmdBuild & Custom6",
     "/pa/units/commanders/exiles_maxim/exiles_maxim.json": "CmdBuild & Custom6",
-    "/pa/units/commanders/exiles_taurus/exiles_taurus.json": "CmdBuild & Custom6",
     "/pa/units/commanders/imperial_able/imperial_able.json": "CmdBuild & Custom58",
     "/pa/units/commanders/imperial_aceal/imperial_aceal.json": "CmdBuild & Custom58",
     "/pa/units/commanders/imperial_alpha/imperial_alpha.json": "CmdBuild & Custom58",
@@ -6770,7 +6749,7 @@
     "/pa/units/commanders/tutorial_ai_commander_2/tutorial_ai_commander_2.json": "CmdBuild -Air -Bot",
     "/pa/units/commanders/tutorial_ai_commander_3/tutorial_ai_commander_3.json": "CmdBuild -Air",
     "/pa/units/commanders/tutorial_player_commander/tutorial_player_commander.json": "CmdBuild & Custom58",
-    "/pa/units/exiles/battle_fab/battle_fab.json": "(Land & Structure & Basic | Factory & Basic | Factory & Advanced & (Bot | Air | Naval | Tank) | FabBuild) & Custom6 - Custom7",
+    "/pa/units/exiles/battle_fab/battle_fab.json": "(Land & Structure & Basic | Factory & Basic | Factory & Advanced & (Bot | Air | Naval | Tank) | FabBuild) & Custom6",
     "/pa/units/exiles/battle_fab_adv/battle_fab_adv.json": "(Land & Structure & Advanced | Factory & Advanced & (Bot | Air | Naval | Tank) | FabAdvBuild | FabBuild | Titan & Bot) & Custom6",
     "/pa/units/land/avatar_factory/avatar_factory.json": "Mobile - NoBuild",
     "/pa/units/land/bot_factory/bot_factory.json": "Bot & Mobile & Basic & FactoryBuild & Custom58",

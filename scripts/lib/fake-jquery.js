@@ -34,8 +34,9 @@ function thenCallback(fn) {
 
 // The Promise itself, augmented, rather than a wrapper - so `.then` chains on
 // the inherited Promise.prototype.then rather than a hand-rolled look-alike.
-// What `.then` returns is augmented in the same way, as jQuery's is: setup.js
-// chains .fail() off a .then(), and $.when reads the result of one.
+// What `.then` returns is augmented in the same way, as jQuery's is:
+// war_generation.js chains .fail() off a .then(), and $.when reads the result
+// of one.
 function decorate(promise) {
   var chain = promise.then.bind(promise);
 
