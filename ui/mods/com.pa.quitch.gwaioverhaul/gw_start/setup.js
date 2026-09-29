@@ -57,7 +57,10 @@
     // Prevent changes to settings causing creation of new galaxies
     model.makeGame = function () {};
 
-    var enableGoToWar = ko.observable(true);
+    // Not stock's makeGameBusy: under Shared Systems for Galactic War, stock's
+    // own first makeGame fails and never clears it.
+    var generatingWar = ko.observable(false);
+    var systemSourceChosen = ko.observable(true);
     var gwoReady = ko.observable(false); // the modules below have loaded
     var sharedSystemsForGalacticWarActive = false;
     var defaultNewGameName = model.newGameName();
@@ -86,18 +89,15 @@
       return (
         gwoReady() &&
         racesResolved() &&
-        enableGoToWar() &&
+        !generatingWar() &&
+        systemSourceChosen() &&
         !!activeCard &&
         !activeCard.gwoRaceLocked
       );
     });
 
     var onSelectedNamesChanged = function (names) {
-      if (_.isEmpty(names)) {
-        enableGoToWar(false);
-      } else {
-        enableGoToWar(true);
-      }
+      systemSourceChosen(!_.isEmpty(names));
     };
 
     var onModsMounted = function (mods) {
@@ -162,7 +162,7 @@
 
     var warGenerationFailure = function (cause) {
       model.makeGameBusy(false);
-      enableGoToWar(true);
+      generatingWar(false);
       if (generationFailure.shouldRetry(cause, warGenerationAttempts)) {
         // Derived, not re-rolled, so an entered seed reproduces the whole retry chain.
         model.newGameSeed(warGenerationBaseSeed + "-" + warGenerationAttempts);
@@ -408,13 +408,19 @@
           };
         };
 
-        // Never rejects - every failure resolves undefined. Rejecting would fail
-        // the war over brackets it can do without.
+        // Resolves the brackets, or undefined without them. Rejects with
+        // SYSTEM_SOURCES when no source gave a system, or one failed and none
+        // gave a bracket. See galaxy.md, "Shared Systems for Galactic War".
         var loadSystemBrackets = function () {
           var ready = $.Deferred();
+          var sourceFailed = false;
 
           var withoutBrackets = function () {
             ready.resolve(undefined);
+          };
+
+          var sourcesUnavailable = function () {
+            ready.reject(generationFailure.SYSTEM_SOURCES);
           };
 
           var onSystemsLoaded = function () {
@@ -422,12 +428,31 @@
             var systems = _.flatten(_.toArray(arguments));
             gwoBiomeMods.providers().then(function (providers) {
               var built = gwoSystemBrackets.bracketsFrom(systems, providers);
-              ready.resolve(
-                built.length
-                  ? { brackets: built, providers: providers }
-                  : undefined
-              );
+              if (built.length) {
+                ready.resolve({ brackets: built, providers: providers });
+              } else if (sourceFailed || _.isEmpty(systems)) {
+                sourcesUnavailable();
+              } else {
+                withoutBrackets();
+              }
             });
+          };
+
+          // Each source settles on its own: $.when rejects at the first
+          // failure, so one dead source would drop every other's systems.
+          var sourceSystems = function (name, loading) {
+            var settled = $.Deferred();
+            $.when(loading).then(
+              function (systems) {
+                settled.resolve(systems);
+              },
+              function () {
+                console.error("System source failed to load: " + name);
+                sourceFailed = true;
+                settled.resolve([]);
+              }
+            );
+            return settled.promise();
           };
 
           var onOptionsLoaded = function (options) {
@@ -440,7 +465,7 @@
                 // It belongs to another mod, so a throw here would escape the
                 // deferred callback and leave Go To War waiting on `ready`.
                 try {
-                  loading.push(option.load());
+                  loading.push(sourceSystems(name, option.load()));
                 } catch (e) {
                   console.error(
                     "System source failed to load: " +
@@ -448,14 +473,12 @@
                       ": " +
                       ((e && e.stack) || e)
                   );
+                  sourceFailed = true;
                 }
               }
             });
-            if (_.isEmpty(loading)) {
-              withoutBrackets();
-              return;
-            }
-            $.when.apply($, loading).then(onSystemsLoaded, withoutBrackets);
+            // With nothing loading, this resolves at once with no systems.
+            $.when.apply($, loading).then(onSystemsLoaded);
           };
 
           var loadOptions = function () {
@@ -473,12 +496,15 @@
             try {
               chooseStarSystemTemplates
                 .loadOptions()
-                .then(onOptionsLoaded, withoutBrackets);
+                .then(onOptionsLoaded, function () {
+                  console.error("System sources failed to load");
+                  sourcesUnavailable();
+                });
             } catch (e) {
               console.error(
                 "System sources failed to load: " + ((e && e.stack) || e)
               );
-              withoutBrackets();
+              sourcesUnavailable();
             }
           };
 
@@ -512,20 +538,25 @@
             return;
           }
 
-          enableGoToWar(false);
+          generatingWar(true);
           warGenerationFailed = false;
           spawnShortage = false;
           model.gwoWarGenerationError("");
+          // Read once: Shared Systems for Galactic War rerolls the seed when a
+          // source is toggled, which the player can do while this war generates.
+          var seed = model.newGameSeed();
+          var sizeIndex = model.newGameSizeIndex();
+          var brains = warBrains();
           warGenerationAttempts++;
           if (warGenerationAttempts === 1) {
-            warGenerationBaseSeed = model.newGameSeed();
+            warGenerationBaseSeed = seed;
           }
 
           var busyToken = {};
           model.makeGameBusy(busyToken);
 
           // Everything random about this war hangs off here. See galaxy.md.
-          var warRng = gwoRng.create(model.newGameSeed());
+          var warRng = gwoRng.create(seed);
           // Must precede every read of GWFactions: getTeam below shallow-copies a team,
           // snapshotting systemDescription by value.
           gwoFactionSeed.reseed(GWFactions, warRng.stream("factions"));
@@ -568,11 +599,11 @@
             ? tierSnapshot()
             : selectedTier;
           var sizes = GW.balance.numberOfSystems;
-          var size = sizes[model.newGameSizeIndex()] || 40;
+          var size = sizes[sizeIndex] || 40;
           var aiFactions = _.range(GWFactions.length);
           aiFactions.splice(model.playerFactionIndex(), 1);
           if (model.gwoDifficultySettings.factionScaling()) {
-            var numFactions = model.newGameSizeIndex() + 1;
+            var numFactions = sizeIndex + 1;
             aiFactions = teamsRng.sample(aiFactions, numFactions);
           }
           var playerCount = game.coopPlayers();
@@ -584,7 +615,7 @@
               generatedWarName(
                 selectedDifficulty,
                 playerCount,
-                model.newGameSizeIndex(),
+                sizeIndex,
                 startCard,
                 gwoDifficulty.difficulties
               )
@@ -603,7 +634,7 @@
             function (systemBrackets) {
               systemBrackets = systemBrackets || {};
               return game.galaxy().build({
-                seed: model.newGameSeed(),
+                seed: seed,
                 gwoRng: warRng.stream("galaxy"),
                 size: size,
                 useEasierSystemTemplate:
@@ -680,8 +711,7 @@
             _.forEach(teams, function (team, teamIndex) {
               var race = raceByFaction[aiFactions[teamIndex]];
               if (
-                gwoPopulation.brainForRace(warBrains(), race, "enemy") !==
-                "Queller"
+                gwoPopulation.brainForRace(brains, race, "enemy") !== "Queller"
               ) {
                 return;
               }
@@ -815,7 +845,7 @@
                 playerCount: playerCount,
                 settings: model.gwoDifficultySettings,
                 tier: warTierData,
-                brains: warBrains(),
+                brains: brains,
                 rng: warRng,
                 lore: { neutral: neutralLore, ai: aiLore },
                 startCardBreaksAllies: startCardAllyCompatibility(game),
@@ -835,20 +865,22 @@
           var finishAis = aisPlaced.then(onPopulated);
 
           var onAisFinished = function () {
-            if (warGenerationFailed === true) {
+            if (
+              model.makeGameBusy() !== busyToken ||
+              warGenerationFailed === true
+            ) {
               return;
             }
 
             // Hacky way to store war information for the gw_play scene
             gwoAI.originSystem(game).gwaio = gwoWarRecord.build({
-              seed: model.newGameSeed(),
+              seed: seed,
               tier: selectedTier,
               tierData: warTierData,
-              galaxySize:
-                galaxySizeNames[model.newGameSizeIndex()] || "!LOC:Unknown",
+              galaxySize: galaxySizeNames[sizeIndex] || "!LOC:Unknown",
               settings: model.gwoDifficultySettings,
               devMode: model.devMode(),
-              brains: warBrains(),
+              brains: brains,
               installedRaces: installedRaces,
               treasureStar: treasurePlanetStar,
               playerCount: playerCount,
@@ -872,7 +904,6 @@
               return;
             }
 
-            model.makeGameBusy(false);
             model.newGame(game);
             model.updateCommander();
             if (game.perPlayerTechCards()) {
@@ -903,12 +934,18 @@
           };
 
           var onSetupFinished = function () {
+            if (model.makeGameBusy() !== busyToken) {
+              return;
+            }
             if (warGenerationFailed === true) {
               warGenerationFailure(
                 spawnShortage ? generationFailure.SPAWN_SHORTAGE : undefined
               );
               return;
             }
+            // Cleared last, as stock clears it, so every step before this one
+            // can tell that another run has taken over.
+            model.makeGameBusy(false);
 
             // Defensive: success navigates away, but keeps the count per-war if
             // gw_start is ever re-entered without a page load.
@@ -928,7 +965,10 @@
 
           var onWarGenerationError = function (err) {
             console.error(err);
-            warGenerationFailure();
+            if (model.makeGameBusy() !== busyToken) {
+              return;
+            }
+            warGenerationFailure(err);
           };
 
           finishSetup.then(onSetupFinished).fail(onWarGenerationError);

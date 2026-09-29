@@ -530,10 +530,19 @@ stand-ins for the modules the script asks for. It suits what a script does
 before its `requireGW` callback, or a callback small enough to stub:
 `test/bugfixes.test.js`, `test/gwo_panel.test.js`, and
 `test/per_player_loadout_race_picker.test.js` use it. A callback that needs
-dozens of modules and much of `model`, as those in `gw_play/cards.js` and
-`gw_start/setup.js` do, gets no such test. Its testable logic is extracted
-instead. A file run this way stays coverage-excluded, because most of it is
-still glue that no test reaches.
+dozens of modules and much of `model`, as the one in `gw_play/cards.js` does,
+gets no such test. Its testable logic is extracted instead.
+
+`test/gw_start_setup.test.js` is the exception. War generation in
+`gw_start/setup.js` fails on timing across its steps: a seed read late, a run
+another has replaced, a source that fails while the rest load. Only the script
+itself can show that. The test answers 21 of the script's 24 modules with
+stand-ins, holds Shared Systems for Galactic War's sources and the galaxy build,
+and acts while they wait. It uses the sync fake jQuery, so settling a held step
+runs the rest of the chain in that call.
+
+A file run this way stays coverage-excluded, because most of it is still glue
+that no test reaches.
 
 `test/version.test.js` deliberately covers the one-line version bump. The
 SonarCloud new-code baseline is the previous version, so a bump always lands

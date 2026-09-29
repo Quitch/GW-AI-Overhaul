@@ -247,7 +247,8 @@ file to the base game.
 The consequence is that **star routing is no longer GWO's code and is no longer unit
 tested**. `shared/gw_galaxy` cannot load under the Node harness, so there is nothing
 to load directly. `gw_start/gw_galaxy_connect.js` and `gw_start/gw_system_brackets.js`
-remain measured and tested. `build` calls them, not the constructor.
+remain measured and tested. The patched `buildGraph` calls the first and `build` the
+second, not the constructor.
 
 This was measured on a live client rather than reasoned about. One seed built the
 same galaxy before and after the swap: the same gate count, the same origin, and the

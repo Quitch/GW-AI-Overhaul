@@ -10,6 +10,13 @@ GWO deliberately replaces `model.makeGame` with an empty function. As a result, 
 change to a setting does not regenerate the galaxy. Generation instead happens once,
 when the player clicks **Go To War**.
 
+Generation reads the seed, the galaxy size, and the AI brains once, at the click.
+Shared Systems for Galactic War rerolls the seed whenever a source is toggled, and the
+player can do that while a war generates. Go To War stays disabled until generation
+fails or the war opens. That is GWO's own flag, not stock's `makeGameBusy`, which
+stock's first `makeGame` leaves set under Shared Systems. Each step still checks that
+`makeGameBusy` holds its run's token, and only the end of the run clears it.
+
 Roughly, the order is:
 
 1. Build the galaxy (stars, connections, distances).
@@ -45,8 +52,19 @@ edges are precisely the hull edges the strip removed. Restoring them reconnects 
 star to both hull neighbours. Two isolated stars can share a hull edge, so the repair
 restores each edge only once.
 
-This can push a neighbouring star one connection above `config.maxConnections`.
-GWO knowingly accepts that trade: an over-connected star beats an unreachable one.
+GWO's copy of `buildGraph` makes the repair before `reduceConnections`, which then
+trims the restored edges like any others. The order is load-bearing. Stock's
+`Graph.isConnected()` walks from star 0 and counts every star up to the highest one
+with an edge. It never reaches an isolated star below that one, so every trial
+removal reads as a disconnection and is put back, and the galaxy keeps every inner
+edge. The repair used to run after the build, which left about one galaxy in fifty
+with far too many gates, most often a small one. Moving it changed those galaxies,
+and a few whose isolated star was the highest, so their seeds now build different
+wars.
+
+Star 0 still ends above `config.maxConnections` in about half of all galaxies, which
+is stock's doing: `reduceConnections` builds its `nodesToReduce` with `_.compact`,
+which drops index 0.
 
 `getConnections()` is **sparse**: a star that never appeared in any edge has no
 entry at all rather than an empty one. Both cases mean "no gates", which is why the
@@ -278,8 +296,32 @@ whenever that module carries `loadOptions`, and GWO's seeded copy otherwise. Tha
 same capability check `loadSystemBrackets` uses.
 
 With that mod active, the systems are real `.pas` files chosen by
-`gwoSystemBrackets.selectorFor`, which the `brackets` stream already seeds. The loader
-is therefore only reached for boss systems built from a `systemTemplate`.
+`gwoSystemBrackets.selectorFor`, which the `brackets` stream already seeds.
+`loadSystemBrackets` in `gw_start/setup.js` settles each selected source on its own,
+so a source that fails to load drops only its own systems. While no source is
+selected, `setup.js` keeps Go To War disabled.
+
+That mod's loader is still made in two places. `gw_start/gwo_teams.js`'s `makeBoss`
+makes it for a boss system built from a `systemTemplate`, which it builds from the
+template without waiting for any source. `gw_start/galaxy_build.js` makes it for every
+star when there are no brackets. Making the loader loads every selected source again,
+and it deselects each source that fails. It has no failure path: a failed source
+leaves it waiting for good, and Go To War with it.
+
+So `loadSystemBrackets` rejects with the `SYSTEM_SOURCES` cause from
+`gw_start/war_generation_failure.js`, which fails the war before any star reaches
+that loader, when:
+
+- the list of sources failed to load, or `loadOptions` threw;
+- no selected source gave a system: each failed, threw, or was empty, or none was
+  selected;
+- a source failed, and the rest gave only systems the brackets drop.
+
+The message says that the selected sources could not be loaded or have no usable star
+systems, and to choose others. It does not ask for a bug report. The stars still reach
+the loader when every source loaded but the brackets dropped every system, for its
+biomes or its army count. That loader then applies its own rules to the same
+systems. When those leave nothing, the war fails with the bug-report message.
 
 ### Retries
 
@@ -295,8 +337,9 @@ that war back on the first attempt.
 
 When generation gives up, the seed is put back to `<base>`, and a message appears
 above Go To War. For a spawn shortage it says to choose a larger galaxy or to turn
-on Faction Scaling. Anything else is a bug, so the message asks the player to report
-it with the seed and the PA log. The steps run in a jQuery chain, where a throw
+on Faction Scaling. For Shared Systems for Galactic War sources that gave nothing to
+build from, it says to choose other sources (see above). Anything else is a bug, so
+the message asks the player to report it with the seed and the PA log. The steps run in a jQuery chain, where a throw
 would leave Go To War waiting instead, so `gw_start/galaxy_build.js` turns a throw
 in the build, Shared Systems' system loader's included, into a rejection.
 

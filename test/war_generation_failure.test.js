@@ -28,6 +28,7 @@ describe("shouldRetry", () => {
   it("never retries any other failure", () => {
     assert.equal(failure.shouldRetry(undefined, 1), false);
     assert.equal(failure.shouldRetry("something else", 1), false);
+    assert.equal(failure.shouldRetry(failure.SYSTEM_SOURCES, 1), false);
   });
 });
 
@@ -38,6 +39,15 @@ describe("message", () => {
 
     assert.match(text, /larger galaxy/);
     assert.match(text, /Faction Scaling/);
+  });
+
+  // Not a bug: nothing GWO can build from came out of the sources chosen.
+  it("tells the player to choose other system sources when none could be used", () => {
+    const text = failure.message(failure.SYSTEM_SOURCES, "abc");
+
+    assert.match(text, /sources selected under Systems/);
+    assert.match(text, /Select other sources/);
+    assert.doesNotMatch(text, /bug/);
   });
 
   // Node 21+ defines navigator as a getter, so it is redefined, not assigned.
