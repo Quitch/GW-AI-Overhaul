@@ -92,8 +92,10 @@ function setup(overrides = {}) {
     offerRerolls: [],
     bank: [],
     offerCounts: [],
+    viewerOperators: [],
     prepared: 0,
   };
+  let rerollPending = false;
   const handlers = {};
 
   const stubs = createGlobalStubs();
@@ -110,7 +112,15 @@ function setup(overrides = {}) {
     sendCampaignHostOperator: (name, payload, meta) =>
       calls.hostOperators.push([name, payload, meta]),
     sendCampaignSnapshot: (name, flag) => calls.snapshots.push([name, flag]),
-    gwoRerollPending: (value) => calls.rerollPending.push(value),
+    gwoRerollPending: (...value) => {
+      if (value.length) {
+        rerollPending = value[0];
+        calls.rerollPending.push(value[0]);
+      }
+      return rerollPending;
+    },
+    sendCampaignViewerOperator: (name, payload, meta) =>
+      calls.viewerOperators.push([name, payload, meta]),
     scanning: (value) => calls.scanning.push(value),
     gwoRerollsUsed: (value) => calls.rerollsUsed.push(value),
     gwoOfferRerolls: (value) => calls.offerRerolls.push(value),
@@ -529,6 +539,85 @@ describe("host reroll handler - the reroll", () => {
     await handlers[REQUEST](operator({ payload: {} }));
 
     assert.equal(calls.upserts.length, 1);
+  });
+});
+
+describe("viewer reroll request", () => {
+  let timers;
+
+  before(() => {
+    timers = installFakeLodashTimers();
+  });
+
+  after(() => timers.restore());
+
+  afterEach(() => {
+    timers.delayed.length = 0;
+  });
+
+  const replyTimeout = () =>
+    timers.delayed.filter((entry) => entry.wait === 30000);
+
+  it("asks the host and holds the offer behind the scan", () => {
+    const { handle, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+
+    assert.deepEqual(calls.rerollPending, [true]);
+    assert.deepEqual(calls.scanning, [true]);
+    assert.equal(calls.viewerOperators.length, 1);
+    assert.equal(calls.viewerOperators[0][0], REQUEST);
+    assert.deepEqual(calls.viewerOperators[0][1], { star: 2, deal_index: 4 });
+  });
+
+  // No host, or a host reload mid-exchange, and no answer ever comes.
+  it("lets the offer go when the host never answers", async () => {
+    const { handle, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+    const errors = await captureErrors(async () => {
+      assert.equal(replyTimeout().length, 1);
+      replyTimeout()[0].fn();
+    });
+
+    assert.deepEqual(calls.rerollPending, [true, false]);
+    assert.deepEqual(calls.scanning, [true, false]);
+    assert.match(errors[0], /pending tech reroll got no reply/);
+  });
+
+  it("leaves an answered request alone", async () => {
+    const { handle, handlers, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+    await handlers[RESULT]({
+      payload: {
+        client_id: "alice",
+        client_name: "alice",
+        pendingTechCards: pendingTechCards({ cards: [{ id: "x" }] }),
+      },
+    });
+    replyTimeout()[0].fn();
+
+    assert.deepEqual(calls.rerollPending, [true, false]);
+    assert.deepEqual(calls.scanning, [true]);
+  });
+
+  it("does not cut short a newer request when an older one times out", async () => {
+    const { handle, handlers, calls } = build();
+
+    handle.requestReroll(pendingTechCards());
+    await handlers[RESULT]({
+      payload: {
+        client_id: "alice",
+        client_name: "alice",
+        pendingTechCards: pendingTechCards({ cards: [{ id: "x" }] }),
+      },
+    });
+    handle.requestReroll(pendingTechCards({ cards: [{ id: "x" }] }));
+    replyTimeout()[0].fn();
+
+    assert.deepEqual(calls.rerollPending, [true, false, true]);
+    assert.deepEqual(calls.scanning, [true, true]);
   });
 });
 

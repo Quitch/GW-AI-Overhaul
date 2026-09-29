@@ -5,6 +5,11 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
 ], function (dealHelpers, coopHost) {
+  // Past the host's apply, deal and save. A request the host never answers - no
+  // host, or a host reload mid-exchange - would otherwise hide the offer behind
+  // the scan until the page reloads.
+  var REPLY_TIMEOUT_MS = 30000;
+
   // A reroll spends one more of the viewer's offered cards.
   var computeRerollDeal = function (cardsOffered, currentCardCount) {
     var rerollsUsed = Math.max(0, cardsOffered - currentCardCount);
@@ -80,6 +85,36 @@ define([
 
     var rerollPendingTechRequest = "gwo_reroll_pending_tech";
     var rerollPendingTechResult = "gwo_reroll_pending_tech_result";
+    // The newest request, so an older one's timeout leaves it alone.
+    var requestSerial = 0;
+
+    // A viewer asks the host to reroll its pending offer; the result handler
+    // below clears what this sets.
+    var requestReroll = function (pendingTechCards) {
+      requestSerial += 1;
+      var request = requestSerial;
+      model.gwoRerollPending(true);
+      model.scanning(true);
+      model.sendCampaignViewerOperator(
+        rerollPendingTechRequest,
+        {
+          star: pendingTechCards.star,
+          deal_index: pendingTechCards.dealIndex,
+        },
+        {
+          request_id: _.uniqueId("gwo_reroll_"),
+        }
+      );
+      _.delay(function () {
+        if (request !== requestSerial || !model.gwoRerollPending()) {
+          return;
+        }
+        console.error("[GW COOP] pending tech reroll got no reply");
+        model.gwoRerollPending(false);
+        model.scanning(false);
+      }, REPLY_TIMEOUT_MS);
+    };
+
 
     // A player's rerolled hand, weighed on their own applied inventory: one card
     // fewer, from the stream of the deal it replaces. Resolves { pendingTechCards,
@@ -298,10 +333,11 @@ define([
       applyPendingTechRerollResult
     );
 
-    // The same reroll for a player the host deals itself - a co-op AI player -
-    // storing, sending and saving nothing. params: record, client,
-    // pendingTechCards (the hand held in memory), star.
     return {
+      requestReroll: requestReroll,
+      // The same reroll for a player the host deals itself - a co-op AI player -
+      // storing, sending and saving nothing. params: record, client,
+      // pendingTechCards (the hand held in memory), star.
       rerollHandForRecord: function (params) {
         var result = $.Deferred();
         gwoBank.applyRecordInventory(

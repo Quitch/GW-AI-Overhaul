@@ -53,9 +53,10 @@
     );
 
     var numCardsToOffer = 3;
-    // cards_deal_helpers.js, assigned by the main requireGW below. Only read
-    // from bodies that run after that load resolves.
+    // cards_deal_helpers.js and the co-op reroll, assigned by the main
+    // requireGW below. Only read from bodies that run after that load resolves.
     var helpers;
+    var coopReroll;
 
     var currentCoopPendingTechCards = function () {
       return model.canChooseCoopTechCards()
@@ -80,18 +81,7 @@
           return;
         }
 
-        model.gwoRerollPending(true);
-        model.scanning(true);
-        model.sendCampaignViewerOperator(
-          "gwo_reroll_pending_tech",
-          {
-            star: pendingTechCards.star,
-            deal_index: pendingTechCards.dealIndex,
-          },
-          {
-            request_id: _.uniqueId("gwo_reroll_"),
-          }
-        );
+        coopReroll.requestReroll(pendingTechCards);
         return;
       }
 
@@ -1219,8 +1209,9 @@
         });
 
         // Registers the co-op reroll operator handlers, viewer and host, and
-        // hands back the same reroll for a co-op AI player.
-        var coopReroll = cardsCoopReroll({
+        // hands back the viewer's request and the same reroll for a co-op AI
+        // player.
+        coopReroll = cardsCoopReroll({
           game: game,
           galaxy: galaxy,
           chooseCards: chooseCards,

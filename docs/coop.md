@@ -655,6 +655,11 @@ The host's own reroll path and the viewer path both keep the new cards hidden
 behind the scanning overlay for a cosmetic two-second beat. That delay is
 scheduled but not awaited.
 
+A viewer's request that gets no answer within 30 seconds is let go: the overlay
+drops and the offer shows again. No host may be connected, or the host may have
+reloaded mid-exchange. The request is not sent again; the viewer can reroll
+again. A late answer is still applied.
+
 ## General Commander setup
 
 Under per-player tech, a viewer who picked the General Commander loadout asks

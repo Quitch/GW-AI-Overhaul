@@ -37,6 +37,7 @@
 - With Second Wave, Section 17, or Osmech installed, the Sub Commanders of an MLA player who joins a co-op war with per-player tech now build metal extractors, energy plants, and factories
 - Exiles AIs and Sub Commanders now have the skirmish orders to build MLA teleporters and metal extractors with MLA orbital fabbers, and Exiles players who have the orbital fabber and the teleporter can build them too
 - A co-op viewer who selected the star the host then moved to now follows the host's next move, rather than being pulled back to that star
+- A co-op viewer whose tech reroll gets no answer, for example because the host reloaded, gets their offer back after 30 seconds rather than waiting until they reload
 
 ## v7.4.1 - 2026-09-24
 
