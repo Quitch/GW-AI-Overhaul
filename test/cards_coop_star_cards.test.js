@@ -1,8 +1,9 @@
 "use strict";
 
-// The measured half of gw_play/cards_coop_star_cards.js, reached through the
-// module's test-only hook. The async refresh the factory drives is exercised
-// in-game; what is pinned here is when it is allowed to run at all.
+// The helpers of gw_play/cards_coop_star_cards.js reached through the module's
+// test-only hook: when a refresh may run at all, which stars need a card, and
+// how a record's star cards are read, pruned and rebuilt. The async refresh the
+// factory drives is pinned in cards_coop_star_cards_factory.test.js.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
