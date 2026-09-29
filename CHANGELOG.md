@@ -21,6 +21,7 @@
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover
 - Tech cards and loadouts for one kind of combat unit no longer give or change every Legion, Bugs, Exiles, or add-on unit of that kind, because units are also matched by job: an Ant card no longer changes the Legion Maul or Corsair, and a Spinner card no longer changes the Shank
 - The Galactic War Overhaul panel's Incompatible Mods list now includes every client mod from Community Mods that changes unit files without a server mod, such as effects, selection, and commander cosmetic mods
+- Titan Tech and Planetary Radar Tech are no longer offered for units that cannot build them: the Angel, which Air Factory Upgrade Tech gives, and a Cluster player's Colonel Sub Commanders
 - The basic and advanced fabricator groups that card mods name no longer include the Barnacle, Stitch, Mend, and Angel, which have combat fabricator groups of their own - see the `New-GW-Cards` template
 
 ### Bugfix
@@ -42,6 +43,8 @@
 - A co-op viewer who rerolls their tech while the host wins a battle now still gets new star cards, rather than keeping last turn's
 - In co-op with per-player tech, a viewer who picks a tech card while another viewer rerolls, sets up the General Commander, or joins no longer has their offer come back, which could stop the host exploring or fighting until they reloaded
 - MLA Sub Commanders whose AI differs from the enemy's now build all the units their AI orders, such as Queller's orbital fabricators, Avengers, and Astraeus, and so do the Sub Commanders of MLA co-op players and co-op AI players with per-player tech
+- Naval Commander is now offered Advanced Defense Technology, as is anyone with an advanced fabricator
+- Titan Tech and Planetary Radar Tech are now offered to a player with a Fabrication Upgrade Tech, whose basic fabricators can build the Ragnarok and the Planetary Radar
 
 ## v7.4.1 - 2026-09-24
 

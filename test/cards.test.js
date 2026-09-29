@@ -972,6 +972,73 @@ describe("hasT2Access", () => {
   });
 });
 
+describe("hasAdvancedFabber", () => {
+  const gwoUnit = loadCouiModule(
+    "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
+  );
+  const CLUSTER = 4;
+
+  function inventoryWith(units, faction) {
+    return {
+      units: () => units,
+      getTag: (context, name) =>
+        context === "global" && name === "playerFaction" ? faction : undefined,
+    };
+  }
+
+  it("is true for any advanced fabber the player holds", () => {
+    for (const unit of [
+      gwoUnit.airFabberAdvanced,
+      gwoUnit.botFabberAdvanced,
+      gwoUnit.navalFabberAdvanced,
+      gwoUnit.vehicleFabberAdvanced,
+    ]) {
+      assert.equal(cards.hasAdvancedFabber(inventoryWith([unit], 0)), true);
+      assert.equal(
+        cards.hasAdvancedFabber(inventoryWith([unit], CLUSTER)),
+        true
+      );
+    }
+  });
+
+  it("is false for the combat fabbers and the basic fabbers", () => {
+    for (const unit of [
+      gwoUnit.angel,
+      gwoUnit.mend,
+      gwoUnit.barnacle,
+      gwoUnit.stitch,
+      gwoUnit.botFabber,
+      gwoUnit.orbitalFabber,
+    ]) {
+      assert.equal(cards.hasAdvancedFabber(inventoryWith([unit], 0)), false);
+    }
+  });
+
+  // Cluster turns the Colonel into a Sub Commander that builds only what a
+  // commander builds (faction/cluster_setup.js).
+  it("counts the Colonel for every player but a Cluster player", () => {
+    assert.equal(
+      cards.hasAdvancedFabber(inventoryWith([gwoUnit.colonel], 0)),
+      true
+    );
+    assert.equal(
+      cards.hasAdvancedFabber(inventoryWith([gwoUnit.colonel], CLUSTER)),
+      false
+    );
+  });
+
+  it("reads a co-op viewer's own units and faction, not the host's", () => {
+    const host = inventoryWith([gwoUnit.botFabberAdvanced], CLUSTER);
+    setGlobal("model", { game: () => ({ inventory: () => host }) });
+
+    assert.equal(cards.hasAdvancedFabber(inventoryWith([], 0)), false);
+    assert.equal(
+      cards.hasAdvancedFabber(inventoryWith([gwoUnit.colonel], 0)),
+      true
+    );
+  });
+});
+
 describe("getAllConnectedPlayerCards / anyPlayerHasCard", () => {
   // "bob" is in the game data but not connected, so only alice's cards fold in.
   function installCoopModel(connectedClients) {

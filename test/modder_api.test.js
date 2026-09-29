@@ -249,6 +249,7 @@ const CARD_HELPERS = [
   "floodsPlanets",
   "getAllConnectedPlayerCards",
   "getContext",
+  "hasAdvancedFabber",
   "hasAllUnits",
   "hasT2Access",
   "hasUnit",
