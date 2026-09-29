@@ -78,14 +78,14 @@ its own units and should ship their translations; a key seen only there is left
 out of the catalog, so it never reaches a work list or a shipped file. The race
 names themselves (Legion, Bugs, Exiles) stay in.
 
-| Command                         | Needs PA install | Does                                                                                                                                                                                                            |
-| ------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run i18n:extract`          | no               | Counts by role and file; `--json` dumps the site map.                                                                                                                                                           |
-| `npm run i18n:catalog`          | no               | Writes `en-US.json`. Keeps hand-edited descriptions; `--regenerate` overwrites them. Drops and prints keys no longer in the tree.                                                                               |
-| `npm run i18n:missing`          | **yes**          | Per language, the catalog keys the game does not translate. `--out --chunk N` writes work lists to `scripts/i18n/out/`; `--all` lists every key with the game's text as `existing`; `--report` lists overrides. |
-| `npm run i18n:glossary`         | **yes**          | Per language, how the game's own tables render shared terms (Commander, Tech, Data Bank, unit names…) to `scripts/i18n/out/glossary.<lang>.md`.                                                                 |
-| `npm run i18n:merge`            | no               | Assembles `scripts/i18n/out/<lang>.*.json` into `translations/<lang>.json`: empty messages and descriptions dropped, keys sorted, Prettier-identical, idempotent.                                               |
-| `npm run validate:translations` | no               | The file contract (below). Runs in `verify`.                                                                                                                                                                    |
+| Command                         | Needs PA install | Does                                                                                                                                                                                                                                                              |
+| ------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run i18n:extract`          | no               | Counts by role and file; `--json` dumps the site map.                                                                                                                                                                                                             |
+| `npm run i18n:catalog`          | no               | Writes `en-US.json`. Keeps every existing description, generated or hand-edited; `--regenerate` rewrites them all. Drops and prints keys no longer in the tree.                                                                                                   |
+| `npm run i18n:missing`          | **yes**          | Per language, the catalog keys the game does not translate. `--out --chunk N` writes work lists to `scripts/i18n/out/`, replacing that language's earlier ones; `--all` writes every key instead, with the game's text as `existing`; `--report` lists overrides. |
+| `npm run i18n:glossary`         | **yes**          | Per language, how the game's own tables render shared terms (Commander, Tech, Data Bank, unit names…) to `scripts/i18n/out/glossary.<lang>.md`.                                                                                                                   |
+| `npm run i18n:merge`            | no               | Assembles `scripts/i18n/out/<lang>.*.json` into `translations/<lang>.json`: empty messages and descriptions dropped, keys sorted, Prettier-identical, idempotent.                                                                                                 |
+| `npm run validate:translations` | no               | The file contract (below). Runs in `verify`.                                                                                                                                                                                                                      |
 
 The install is named with `PA_MEDIA=<path to media>` or `--pa <path>`, and
 Steam's default Windows path is tried without either; CI has none, so the two
@@ -99,7 +99,10 @@ is a starting point, not the finished one. It carries the role, the file, where 
 player sees the text, the source snippet, the card or race facts, and the rules
 for the role. Short keys ("Mods", "Win", "Cluster", "Eradicate") are the
 ambiguous ones: part of speech, what it refers to, and what to keep verbatim
-belong in a hand-written note, which `i18n:catalog` keeps across reruns.
+belong in a hand-written note, which `i18n:catalog` keeps across reruns. It
+keeps every existing note, generated ones too, so a change to the generator
+reaches only keys new to the catalog; `--regenerate` rewrites every note,
+hand-written ones included.
 
 Conventions the notes and the translations follow:
 

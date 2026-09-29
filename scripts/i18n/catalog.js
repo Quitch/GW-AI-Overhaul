@@ -2,8 +2,9 @@
 
 // Writes translations/en-US.json, the catalog: every key the tree asks loc()
 // for, with `message` equal to the key and a `description` for translators.
-// Hand-edited descriptions survive a rerun; --regenerate overwrites them. Keys
-// no longer in the tree are dropped and printed. See docs/translations.md.
+// Every existing description survives a rerun, generated or hand-edited;
+// --regenerate rewrites them all. Keys no longer in the tree are dropped and
+// printed. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
