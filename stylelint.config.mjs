@@ -135,7 +135,11 @@ export default {
     // only ones Chrome 40 has.
     "declaration-property-value-no-unknown": [
       true,
-      { ignoreProperties: { cursor: ["/^-webkit-grab(bing)?$/"] } },
+      {
+        ignoreProperties: {
+          cursor: [String.raw`/(^|,\s*)-webkit-grab(bing)?$/`],
+        },
+      },
     ],
 
     // --- Standard's value is already the Chrome 40 one ----------------------

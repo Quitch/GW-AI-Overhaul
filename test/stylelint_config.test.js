@@ -377,6 +377,7 @@ describe("CSS the engine supports", () => {
     await accepts(rule("a", ["width: -webkit-fit-content"]));
     await accepts(rule("a", ["transition: -webkit-filter 0.2s"]));
     await accepts(rule("a", ["cursor: -webkit-grab"]));
+    await accepts(rule("a", [`cursor: url("hand.png") 4 4, -webkit-grab`]));
     await accepts(rule("a", ["border-image-repeat: space"]));
     await accepts(rule("a", ["-webkit-text-fill-color: red"]));
     await accepts(rule("a", ["display: -webkit-box", "-webkit-line-clamp: 2"]));
