@@ -427,21 +427,24 @@
           return cards && cards[0];
         },
         valueOf: function (ai, card, star, memo) {
-          var holder = model.gwCampaignPerPlayerTechCards()
-            ? {
-                playerId: ai.id,
-                inventory: ai.record.inventory,
-                commander: commanderOf(ai.record),
-              }
-            : {
-                playerId: ai.id,
-                inventory: params.plain(params.inventory.save()),
-                commander: params.inventory.getTag("global", "commander"),
-              };
+          // Once a judge: saving the host's inventory walks every mod it holds.
+          if (!memo.holder) {
+            memo.holder = model.gwCampaignPerPlayerTechCards()
+              ? {
+                  playerId: ai.id,
+                  inventory: ai.record.inventory,
+                  commander: commanderOf(ai.record),
+                }
+              : {
+                  playerId: ai.id,
+                  inventory: params.plain(params.inventory.save()),
+                  commander: params.inventory.getTag("global", "commander"),
+                };
+          }
           // deal() takes the star itself, as in a hand.
           return coopAiPings.valueOfCard(
             params.judge,
-            holder,
+            memo.holder,
             card,
             galaxy.stars()[star],
             memo
@@ -645,7 +648,7 @@
             }
             try {
               var dealInventory = new params.GWInventory();
-              dealInventory.load(_.cloneDeep(applied));
+              dealInventory.load(coopAiEffects.plain(applied));
               var context =
                 module.getContext && module.getContext(galaxy, dealInventory);
               var dealt = module.deal(star, context, dealInventory);
@@ -695,7 +698,7 @@
           // A card as the dealer deals it to the AI, its params included.
           var dealCard = function (cardId, applied, star) {
             var dealInventory = new params.GWInventory();
-            dealInventory.load(_.cloneDeep(applied));
+            dealInventory.load(coopAiEffects.plain(applied));
             return params.gwoDeal.dealCard(
               {
                 id: cardId,

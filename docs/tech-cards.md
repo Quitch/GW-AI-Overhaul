@@ -556,7 +556,7 @@ the inventory without it. A held card is valued the other way round, for a
 swap, with the hand's best card already in: the inventory with the best card
 and without the held one, against the inventory with both.
 
-Three rules keep this affordable and safe:
+Four rules keep this affordable and safe:
 
 - **One apply runs at a time.** The bank hold and the card modules are shared.
 - **Each apply has a timeout**, 10 seconds, set in `gw_play/cards.js`. An apply
@@ -564,6 +564,12 @@ Three rules keep this affordable and safe:
 - **An apply is cached by what it applies**: the cards and their tags, from
   which `applyCards` rebuilds everything else. A failed apply is dropped from
   the cache.
+- **An apply copies only what it keeps.** `bank.copyForApply` copies the saved
+  inventory's cards and tags, which the apply writes to, and nothing else,
+  because `applyCards` empties the rest before the first `buff()`. lodash 3's
+  `cloneDeep` is quadratic in what it copies, and an inventory's mods run to
+  thousands. An inventory with no cards is not applied, so it is copied whole.
+  The host's applies of a viewer's record copy the same way.
 
 The apply also notes every unit that a card's `removeUnits` takes away. Those
 that no card grants back are the inventory's **stripped** units: the units a

@@ -14,21 +14,21 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
   };
 
   // The saved inventory with `card` added: a loadout goes first, as the war's
-  // start card does, anything else last.
+  // start card does, anything else last. Shallow, as withoutCard is: the
+  // apply copies what it keeps.
   var withCard = function (saved, card, loadout) {
-    var next = _.cloneDeep(saved);
-    next.cards = loadout
-      ? [card].concat(next.cards || [])
-      : (next.cards || []).concat(card);
-    return next;
+    var cards = saved.cards || [];
+    return _.assign({}, saved, {
+      cards: loadout ? [card].concat(cards) : cards.concat(card),
+    });
   };
 
   var withoutCard = function (saved, index) {
-    var next = _.cloneDeep(saved);
-    next.cards = _.filter(next.cards || [], function (card, at) {
-      return at !== index;
+    return _.assign({}, saved, {
+      cards: _.filter(saved.cards || [], function (card, at) {
+        return at !== index;
+      }),
     });
-    return next;
   };
 
   // GWInventory.save() is ko.toJS, which copies the prototype's methods onto

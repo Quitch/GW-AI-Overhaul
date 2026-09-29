@@ -10,6 +10,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/general_commander_setup.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
 ], function (
   GWFactions,
   gwoAI,
@@ -21,7 +22,8 @@ define([
   coopHost,
   gwoRaces,
   setup,
-  coopPublish
+  coopPublish,
+  gwoBank
 ) {
   return function (params) {
     var game = params.game;
@@ -186,7 +188,7 @@ define([
         return result.promise();
       }
 
-      recordInventory = _.cloneDeep(record.inventory);
+      recordInventory = gwoBank.copyForApply(record.inventory);
       cards = recordInventory && recordInventory.cards;
       if (!_.isArray(cards)) {
         failSetup("invalid co-op player inventory");
@@ -269,7 +271,7 @@ define([
     // Commanders appended, unapplied, drawn as a viewer's are. Any other
     // loadout comes back as it was. See coop.md, "AI players' tech".
     var appendRecordMinions = function (savedInventory, playerKey) {
-      var next = _.cloneDeep(savedInventory);
+      var next = JSON.parse(JSON.stringify(savedInventory));
       var recordFaction = _.get(next, "tags.global.playerFaction");
 
       appendGeneralCommanderMinions(
