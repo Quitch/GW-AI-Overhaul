@@ -108,6 +108,35 @@ describe("file filtering", () => {
   });
 });
 
+// The clean copy is for enemies, which never read /pa/ai_tech/.
+describe("load files", () => {
+  it("writes no clean copy of a load file to its own path", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      aiMods: [{ type: "fabber", op: "load", value: "tech.json" }],
+    });
+    installModel(fixture.game, []);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [] }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    const keys = Object.keys(filesObj);
+    assert.deepEqual(
+      keys.filter((key) => key.startsWith("/pa/ai_tech/")),
+      []
+    );
+    assert.ok(
+      keys.some((key) => key.endsWith("/fabber_builds/tech.json")),
+      JSON.stringify(keys)
+    );
+  });
+});
+
 describe("Guardians scoped destination", () => {
   it("writes a scoped copy under the guardians-scoped enemy destination, alongside the source copy", async () => {
     const fixture = buildGame({
@@ -274,6 +303,37 @@ describe("Guardians scoped destination", () => {
 });
 
 describe("per-player-tech viewer processing", () => {
+  // Only the host's unscoped Cluster tree is read. A viewer's Sub Commanders
+  // read their own scoped tree, so a Cluster copy of it would ship unread.
+  it("writes no Cluster tree for a viewer's Sub Commanders", async () => {
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "neither",
+      subcommanderType: "cluster",
+      perPlayerTech: true,
+    });
+    // A Cluster player routes to the Cluster tree only with an ally to field it.
+    fixture.ai.ally = { commander: "/pa/units/commanders/ally/ally.json" };
+    const connectedClients = withTwoViewers(
+      fixture.game,
+      makeInventory(),
+      makeInventory()
+    );
+    installModel(fixture.game, connectedClients);
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [] }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    assert.deepEqual(
+      Object.keys(filesObj).filter((key) => key.startsWith("/pa/ai_cluster/")),
+      ["/pa/ai_cluster/fabber_builds/x.json"]
+    );
+  });
+
   it("gives each connected viewer their own distinct destination, never colliding", async () => {
     const fixture = buildGame({
       aiInUse: "Titans",

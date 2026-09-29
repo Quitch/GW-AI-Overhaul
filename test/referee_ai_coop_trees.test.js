@@ -168,7 +168,6 @@ describe("co-op AI trees", () => {
     assert.equal(requests[0].request.aiPaths.enemySource, "/pa/ai/");
     assert.equal(requests[0].request.forceSubCommanderScope, true);
     assert.equal(requests[0].request.clusterPresence, "None");
-    assert.equal(requests[0].request.scopeToken, "coopai");
   });
 
   it("walks nothing without AI players", () => {
@@ -269,10 +268,10 @@ describe("co-op AI trees", () => {
         "/pa/ai/player_coopai_1/",
       ]
     );
-    // Sanitised as a viewer's is.
-    assert.equal(requests[0].request.scopeToken, "player1");
+    // Neither walk writes a Cluster tree: the scope is the isolation.
+    assert.equal(requests[0].request.clusterPresence, "None");
     assert.equal(requests[0].request.forceSubCommanderScope, true);
-    assert.equal(requests[1].request.scopeToken, "coopai_1");
+    assert.equal(requests[1].request.clusterPresence, "None");
   });
 
   it("gives a race AI's Sub Commanders its race's tree under per-player tech", () => {

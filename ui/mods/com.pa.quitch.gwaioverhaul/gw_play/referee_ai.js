@@ -476,10 +476,15 @@ define([
         }
         aiJsonModsInScope = aiModsInScopeOfFile();
       } else if (aisToModify === "SubCommanders" && fileOwner !== "enemy") {
-        if (fileOwner === "shared" && !forceSubCommanderScope) {
+        if (
+          fileOwner === "shared" &&
+          !forceSubCommanderScope &&
+          !isSubCommanderTechFile
+        ) {
           // A clean copy for enemy AIs, before the JSON is modified. The base
           // pass already wrote this key authoritatively, so re-running it per
-          // viewer would reset that write back to pristine.
+          // viewer would reset that write back to pristine. A load file has
+          // none: no enemy reads /pa/ai_tech/.
           configFiles[filePath] = _.cloneDeep(json);
         }
 
@@ -801,8 +806,8 @@ define([
               subCommanderSource: source,
               subCommanderDestination: destination,
             }),
+            clusterPresence: "None",
             inventory: coopAi.inventory,
-            scopeToken: refereeAIPaths.getScopeToken(coopAi.tag, coopAi.tag),
             forceSubCommanderScope: true,
           }),
         };
@@ -820,7 +825,6 @@ define([
           }),
           clusterPresence: "None",
           inventory: coopAi.inventory,
-          scopeToken: coopAi.scopeToken,
           forceSubCommanderScope: true,
         }),
       };
@@ -932,7 +936,7 @@ define([
     var treeCache = self.treeCache || createTreeCache();
 
     // Shared by every processDirectories call below; the viewer ones override
-    // aiPaths, inventory and the two scope fields.
+    // aiPaths, inventory, clusterPresence and forceSubCommanderScope.
     var launch = {
       configFiles: configFiles,
       aiPaths: aiPaths,
@@ -956,10 +960,6 @@ define([
       function (viewer, viewerIndex) {
         var viewerInventory = viewer.inventory;
         var viewerPlayerTag = ".player" + viewerIndex;
-        var viewerScopeToken = refereeAIPaths.getScopeToken(
-          viewerPlayerTag,
-          viewerPlayerTag
-        );
         // Read from the viewer's own tier, which its destination is built
         // from too: the host's Sub Commander Tactics is not the viewer's.
         var viewerSubCommanderSource = gwoAI.getAIPathSource(
@@ -981,8 +981,8 @@ define([
             viewerSubCommanderSource,
             _.assign({}, launch, {
               aiPaths: viewerAiPaths,
+              clusterPresence: "None",
               inventory: viewerInventory,
-              scopeToken: viewerScopeToken,
               forceSubCommanderScope: true,
             })
           )

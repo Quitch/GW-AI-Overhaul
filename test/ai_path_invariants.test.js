@@ -294,9 +294,6 @@ describe("invariant: a co-op AI player's path is its own", () => {
                 makeInventory({ aiModsList: aiMods }),
                 ".player0"
               ),
-              refereeAIPaths.getAIPathDestination("cluster", aiInUse, {
-                scopeToken: "player0",
-              }),
             ];
 
             assert.equal(new Set(coopPaths).size, coopPaths.length);

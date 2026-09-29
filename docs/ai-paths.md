@@ -148,11 +148,10 @@ return basePath + "player_" + scopeToken + "/";
 So whether a path is sanitised depends entirely on how the caller obtained its
 token. The two live call sites differ:
 
-- `referee_ai.js` computes `viewerScopeToken` via `getScopeToken(".player0", …)`,
-  which sanitises to `player0`. The Cluster path for that viewer is therefore
-  `/pa/ai_cluster/player_player0/`.
+- `getCoopAiPath` runs its token through `getScopeToken`, so a co-op AI
+  player's tree is always sanitised.
 - `shared/ai.js`'s `getSubcommanderPathForViewer` passes the **raw** player tag
-  as `scopeToken`. So the same viewer's subcommander destination is
+  as `scopeToken`. So a viewer's subcommander destination is
   `/pa/ai_subcommander/player_.player0/`, with the dot. The pure module's own
   `getViewerSubcommanderPath` has one special case. The host's tag, `.player`,
   yields no scope at all, because the host's subcommanders already own the
