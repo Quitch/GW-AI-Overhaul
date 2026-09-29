@@ -131,13 +131,14 @@ export default {
         ],
       },
     ],
-    // csstree's cursor grammar lacks the -webkit- grab cursors, which are the
-    // only ones Chrome 40 has.
+    // csstree's grammar lacks the -webkit- grab cursors, which are the only
+    // ones Chrome 40 has, and -webkit-mask-box-image's values, which it takes.
     "declaration-property-value-no-unknown": [
       true,
       {
         ignoreProperties: {
           cursor: [String.raw`/(^|,\s*)-webkit-grab(bing)?$/`],
+          "-webkit-mask-box-image": ["/.+/"],
         },
       },
     ],
@@ -446,6 +447,9 @@ export default {
       "justify-content": [
         keyword("end", "left", "normal", "right", "start"), // box alignment L3 - Chrome 57
         keyword("space-evenly"), // Chrome 60
+        // Chrome 115. `unsafe` is dropped; `safe center` parses but
+        // overflows as plain `center` does, measured.
+        keyword("safe", "unsafe"),
       ],
       // Chrome 56; -webkit-sticky was removed again in Chrome 37.
       position: ["-webkit-sticky", "sticky"],
@@ -460,15 +464,18 @@ export default {
         "auto-phrase", // Chrome 119
       ],
       // box alignment L3 - Chrome 57. flex-start/flex-end/center/baseline/
-      // stretch are the Chrome 40 spelling and stay legal.
+      // stretch are the Chrome 40 spelling and stay legal. first/last baseline
+      // are Chrome 59 and 108, safe/unsafe 115.
       "/^(align-items|align-self)$/": [
         keyword("end", "normal", "self-end", "self-start", "start"),
+        keyword("first", "last", "safe", "unsafe"),
       ],
       // box alignment L3 again: the engine drops each, and a wrapping flex
       // container lays out as if none were set. In flex layout space-evenly is
       // Chrome 60, baseline 57, and start/end 93.
       "align-content": [
         keyword("baseline", "end", "normal", "space-evenly", "start"),
+        keyword("first", "last", "safe", "unsafe"),
       ],
       // Chrome 46 - use the -webkit- forms.
       "/^(width|height|min-width|max-width|min-height|max-height|flex-basis)$/":

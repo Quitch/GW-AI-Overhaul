@@ -195,6 +195,22 @@ describe("CSS the engine drops", () => {
     );
   });
 
+  it("rejects the later alignment keywords the engine drops or ignores", async () => {
+    for (const declaration of [
+      "justify-content: safe center",
+      "justify-content: unsafe center",
+      "align-items: first baseline",
+      "align-items: last baseline",
+      "align-self: unsafe center",
+      "align-content: safe center",
+    ]) {
+      await rejects(
+        rule("a", ["display: flex", declaration]),
+        "declaration-property-value-disallowed-list"
+      );
+    }
+  });
+
   it("rejects the box-alignment keywords on align-content too", async () => {
     for (const value of ["space-evenly", "start", "normal"]) {
       await rejects(
@@ -379,6 +395,7 @@ describe("CSS the engine supports", () => {
     await accepts(rule("a", ["cursor: -webkit-grab"]));
     await accepts(rule("a", [`cursor: url("hand.png") 4 4, -webkit-grab`]));
     await accepts(rule("a", ["border-image-repeat: space"]));
+    await accepts(rule("a", [`-webkit-mask-box-image: url("a.png") 10`]));
     await accepts(rule("a", ["-webkit-text-fill-color: red"]));
     await accepts(rule("a", ["display: -webkit-box", "-webkit-line-clamp: 2"]));
     await accepts(rule("a::-webkit-input-placeholder", ["color: #fff"]));
