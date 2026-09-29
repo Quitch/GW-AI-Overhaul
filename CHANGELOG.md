@@ -23,6 +23,7 @@
 - The Galactic War Overhaul panel's Incompatible Mods list now includes every client mod from Community Mods that changes unit files without a server mod, such as effects, selection, and commander cosmetic mods
 - Titan Tech and Planetary Radar Tech are no longer offered for units that cannot build them: the Angel, which Air Factory Upgrade Tech gives, and a Cluster player's Colonel Sub Commanders
 - The basic and advanced fabricator groups that card mods name no longer include the Barnacle, Stitch, Mend, and Angel, which have combat fabricator groups of their own - see the `New-GW-Cards` template
+- About one galaxy in fifty, most often a small one, no longer has far more gates between its stars than usual, with up to nine on one star, so each seed that made such a galaxy now makes a different war
 
 ### Bugfix
 
@@ -57,6 +58,7 @@
 - Titan Tech and Planetary Radar Tech are now offered to a player with a Fabrication Upgrade Tech, whose basic fabricators can build the Ragnarok and the Planetary Radar
 - Artillery Fabrication Tech is now offered to a player whose only artillery is mobile, such as the Grenadier, Gil-E, Sheller, or Leviathan
 - Boom Upgrade Tech's "Which Units?" now lists the Boom as well as the Lob
+- With Shared Systems for Galactic War, a system source that fails to load, such as a remote server that is down, no longer leaves Go To War stuck: the war is made from the other selected sources, and when none of them can be loaded, a message says so and Go To War is available again
 
 ## v7.4.1 - 2026-09-24
 
