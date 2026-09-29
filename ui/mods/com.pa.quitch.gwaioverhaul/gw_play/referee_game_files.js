@@ -161,6 +161,14 @@ define([
     return { classic: maps[0], x1: maps[1] };
   };
 
+  // An MLA army reads its brain's own maps, as its tree lists them.
+  var mlaMaps = function (brain) {
+    return Promise.all([
+      loadMap(getAIUnitMapPath(false, brain)),
+      loadMap(getAIUnitMapPath(true, brain)),
+    ]).then(mapPair);
+  };
+
   // One enemy army's files: its race's cells and maps, then its specs.
   var enemyArmyFiles = function (battle, n) {
     var ai = battle.ai;
@@ -210,10 +218,7 @@ define([
   // race's merged as the player's are.
   var coopAiMaps = function (battle, coopAi) {
     if (gwoRaces.isMla(coopAi.race)) {
-      return Promise.all([
-        loadMap(getAIUnitMapPath(false, coopAi.brain)),
-        loadMap(getAIUnitMapPath(true, coopAi.brain)),
-      ]).then(mapPair);
+      return mlaMaps(coopAi.brain);
     }
     return battle
       .cellsFor(coopAi.race)
@@ -247,7 +252,7 @@ define([
         gwoRaces: gwoRaces,
       });
       var maps = isMla
-        ? { classic: battle.aiUnitMap, x1: battle.aiX1UnitMap }
+        ? mlaMaps(gwoAI.aiInUse("subcommander", race))
         : battle.armyMaps("subcommander", race, cells);
 
       return Promise.resolve(maps).then(function (unitMaps) {
@@ -296,9 +301,8 @@ define([
       });
       var playerSpecs = plan.specs;
       var playerExtraMods = plan.retagMods;
-      // MLA keeps the enemy brain's map for the player, as it always has.
       var playerMaps = gwoRaces.isMla(playerRace)
-        ? { classic: battle.aiUnitMap, x1: battle.aiX1UnitMap }
+        ? mlaMaps(gwoAI.aiInUse("subcommander", playerRace))
         : battle.armyMaps("subcommander", playerRace, cells);
 
       return Promise.resolve(playerMaps).then(function (unitMaps) {

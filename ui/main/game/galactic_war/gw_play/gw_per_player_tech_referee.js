@@ -59,17 +59,18 @@ define([
   // GWO - the race comes off the player's own inventory, which is the host's
   // under Separate races off and the viewer's own under it on: their units and
   // mods follow the race's capability cells the way the host's do, and their
-  // map is the race's merged one. An MLA viewer's cells are its add-on cells,
-  // undefined while no add-on is mounted. See races.md and coop.md.
+  // map is their ally brain's with the race's merged over it, MLA's included.
+  // An MLA viewer's cells are its add-on cells, undefined while no add-on is
+  // mounted. See races.md and coop.md.
   var generateUnitSpecsForPlayer = function (inventory, playerTag) {
     var done = $.Deferred();
     var race = gwoRaces.raceOf(inventory);
     var isMla = gwoRaces.isMla(race);
     var cellsLoad = gwoRaceCells.indexFor(race);
     var brain = gwoAI.aiInUse("subcommander", race);
-    var mapPath = isMla
-      ? "/pa/ai/unit_maps/ai_unit_map"
-      : gameFilePaths.getAIUnitMapPath(false, brain).replace(/\.json$/, "");
+    var mapPath = gameFilePaths
+      .getAIUnitMapPath(false, brain)
+      .replace(/\.json$/, "");
     var raceMaps = gwoRaces.unitMapsFor(
       race,
       brain,
