@@ -85,10 +85,6 @@ describe("the Section 17 descriptor", () => {
       return;
     }
     for (const [key, value] of Object.entries(section17.units)) {
-      // A few parts are the vanilla ones the mod's units reuse.
-      if (!value.startsWith("/pa/units/paeiou/")) {
-        continue;
-      }
       assert.ok(zips.has(value.slice(1)), key + " -> " + value);
     }
     const layer = section17.layers.mla.titans;
