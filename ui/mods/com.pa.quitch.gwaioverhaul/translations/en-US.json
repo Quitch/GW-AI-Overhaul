@@ -1,4 +1,8 @@
 {
+  "3 - FASTER RAMP UP": {
+    "message": "3 - FASTER RAMP UP",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.49\">3 - FASTER RAMP UP</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.": {
     "message": "A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
     "description": "Lore paragraph for the Synchronous faction, one of five shown at random as the description of a Synchronous-held system in the Planetary Intelligence panel on the galaxy map. Stock Planetary Annihilation flavour text: The Synchronous, Servant, Synchronized/Desynchronized are faction terms; keep \"--\" as a dash. Full paragraph, keep the final full stop. (gw_faction_2.js)"
@@ -655,6 +659,10 @@
     "message": "Avenger Upgrade Tech adds a railgun to the orbital fighter.",
     "description": "Card description, shown in the card tooltip in the Data Bank and when the card is dealt. Effect: the Avenger gains the Artemis's railgun as an extra weapon. 'The orbital fighter' means the Avenger; 'railgun' is a weapon type, reuse the game's own term. Opening words must be identical to the card name 'Avenger Upgrade Tech'. The game appends the separate string 'Adds a new slot for another technology.' after this text, so do not add that idea here. (gwaio_upgrade_avenger.js)"
   },
+  "Average": {
+    "message": "Average",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 1 other site. Shown: the war setup screen. Source: `<option value=\"0.100\">Average</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "Azaghul, one of the largest mining companies in the Progenitor Coalition, was the first to lobby the General Assembly for the mining rights to this system. Azaghul gambled on the system for producing large amounts of metals, and they were not disappointed. As it turned out, Fier produced a new type of iron, which Azaghul scientist labeled 'Dragon'.  The new 'Dragon Iron' had a much higher melting point than normal iron and was naturally stronger than steel, and lighter than aluminum. The discovery of Dragon Iron launched Azaghul to the top, putting them on even terms with Terradine Corp in the mining and refining of metals.": {
     "message": "Azaghul, one of the largest mining companies in the Progenitor Coalition, was the first to lobby the General Assembly for the mining rights to this system. Azaghul gambled on the system for producing large amounts of metals, and they were not disappointed. As it turned out, Fier produced a new type of iron, which Azaghul scientist labeled 'Dragon'.  The new 'Dragon Iron' had a much higher melting point than normal iron and was naturally stronger than steel, and lighter than aluminum. The discovery of Dragon Iron launched Azaghul to the top, putting them on even terms with Terradine Corp in the mining and refining of metals.",
     "description": "Lore text: the description of a system an AI holds, shown in the star detail card on the galaxy map when the war's \"System Lore\" option is on (the original pre-release Galactic War lore). Full paragraph. Progenitor(s), the Progenitor Coalition, the Machine Liberation Army (MLA), Loyalist, the Pro-Com War and the Century War, and the people, companies, ships and places it names are proper nouns from PA's fiction; keep them. (lore.js)"
@@ -1175,6 +1183,10 @@
     "message": "DIAMOND: your loadouts are OP",
     "description": "One line of the difficulty tooltip on the war setup screen (gw_start): the \"?\" beside the Difficulty dropdown lists every difficulty level, one per line, as \"LEVEL: who it suits\". The upper-case word before the colon is the difficulty level's name as it appears in the dropdown; keep it as the game's own translation of that level renders it (uppercased) and keep the colon. The clause after the colon is a short, informal description of the player it is aimed at. Lines are joined with <br> by the code, so no line break in the string. (ui.js, gwoDifficultyLevelsTooltip) \"OP\" is gaming slang for overpowered; a loadout is the player's starting Commander kit (use the stock translation of Loadout)."
   },
+  "DIRE": {
+    "message": "DIRE",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.35\">DIRE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "Damage increased": {
     "message": "Damage increased",
     "description": "One of the AI buff names listed under \"AI Tech\" in the Planetary Intelligence panel on the galaxy map (gw_play). Means the enemy AI's units deal more damage. Short phrase, no punctuation; parallel with \"Health increased\", \"Speed increased\", \"Costs decreased\". (section_of_foreign_intelligence.js)"
@@ -1258,6 +1270,14 @@
   "Difficulty:": {
     "message": "Difficulty:",
     "description": "Row label in the war-info panel on the galaxy map (gw_play), followed by the difficulty tier name (Beginner, Casual, Iron...). Also used to build the co-op lobby title \"GWO Co-op - Difficulty: <tier>\", where the tier name follows after a space, so the colon must stay at the end and the label must read naturally before the value. Noun, singular; keep the trailing colon. (gwo_panel.html, gwo_panel.js)"
+  },
+  "Disabled": {
+    "message": "Disabled",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"false\">Disabled</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "Dismiss Tech": {
+    "message": "Dismiss Tech",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html. Shown: the galaxy map. Source: `<input type=\"button\" value=\"Dismiss Tech\" data-bind=\"visible: !$root.gwoOfferRerolls() && ($root.canChooseCoopTechCards() || !$root.showHostChoosingSharedTech()), click: $root.dismissTech, click_sound: 'default', rollover_sound: 'default'\" />`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "Display the original pre-release Galactic War lore in the Planetary Intelligence panel.": {
     "message": "Display the original pre-release Galactic War lore in the Planetary Intelligence panel.",
@@ -1367,6 +1387,10 @@
     "message": "Enable the missing mods and restart Planetary Annihilation to continue this war.",
     "description": "Final line of the pop-up shown when a war cannot be continued because required mods are missing, on the galaxy map (gw_play). The dialog reads \"This war cannot be fought:\" then a list of missing races/map packs, then this sentence. Imperative sentence; keep the full stop; \"Planetary Annihilation\" is the game title. (gw_play/races.js)"
   },
+  "Enabled": {
+    "message": "Enabled",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"true\">Enabled</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "Enables the building of the Planetary Radar which provides complete planetary radar coverage.": {
     "message": "Enables the building of the Planetary Radar which provides complete planetary radar coverage.",
     "description": "Body text of the tech card 'Planetary Radar Tech', shown in the Data Bank card list, the card tooltip and the tech deal. The card unlocks a mod-added structure called 'Planetary Radar' (a re-purposed Deep Space Radar) whose radar range covers the whole planet's surface, air and underwater layers. 'Planetary Radar' is the building's display name and also a separate string; translate it the same way in both places. (gwaio_enable_planetaryradar.js)"
@@ -1422,6 +1446,22 @@
   "Exiles": {
     "message": "Exiles",
     "description": "The name of the Exiles race, shown in the race picker, on the galaxy map and in unit tooltips wherever the faction is named. It is a proper noun: keep it untranslated in Latin, Cyrillic and Chinese locales and transliterate it in Japanese and Korean the way the game's own faction names are handled. (exiles.js)"
+  },
+  "FAST": {
+    "message": "FAST",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.150\">FAST</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "FASTER": {
+    "message": "FASTER",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.200\">FASTER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "FASTEST": {
+    "message": "FASTEST",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"1\">FASTEST</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "FFA BEHAVIOUR": {
+    "message": "FFA BEHAVIOUR",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"ffa\">FFA BEHAVIOUR</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "FFA Chance": {
     "message": "FFA Chance",
@@ -1543,9 +1583,53 @@
     "message": "GOLD: you beat the Queller AI mod",
     "description": "One line of the difficulty tooltip on the war setup screen (gw_start): the \"?\" beside the Difficulty dropdown lists every difficulty level, one per line, as \"LEVEL: who it suits\". The upper-case word before the colon is the difficulty level's name as it appears in the dropdown; keep it as the game's own translation of that level renders it (uppercased) and keep the colon. The clause after the colon is a short, informal description of the player it is aimed at. Lines are joined with <br> by the code, so no line break in the string. (ui.js, gwoDifficultyLevelsTooltip) Queller is the name of an AI mod, a proper noun; keep it."
   },
+  "GOOD": {
+    "message": "GOOD",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 2 other sites. Shown: the war setup screen. Source: `<option value=\"2\">GOOD</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "GW Server Mods is not enabled": {
     "message": "GW Server Mods is not enabled",
     "description": "Line in the war-info panel and in the \"This war cannot be fought\" pop-up on the galaxy map (gw_play), under \"Missing Races\" or \"Missing Map Packs\", when the GW Server Mods client mod is not enabled (without it no race or map-pack mod can be loaded). \"GW Server Mods\" is a mod name; keep it untranslated. Short sentence, no full stop in the original. (biomes.js, gw_play/races.js)"
+  },
+  "GW-BEGINNER": {
+    "message": "GW-BEGINNER",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"0\">GW-BEGINNER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "GW-BRONZE": {
+    "message": "GW-BRONZE",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"3\">GW-BRONZE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "GW-CASUAL": {
+    "message": "GW-CASUAL",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"1\">GW-CASUAL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "GW-CUSTOM": {
+    "message": "GW-CUSTOM",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"9\">GW-CUSTOM</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "GW-DIAMOND": {
+    "message": "GW-DIAMOND",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"7\">GW-DIAMOND</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "GW-GOLD": {
+    "message": "GW-GOLD",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"5\">GW-GOLD</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "GW-IRON": {
+    "message": "GW-IRON",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"2\">GW-IRON</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "GW-PLATINUM": {
+    "message": "GW-PLATINUM",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"6\">GW-PLATINUM</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "GW-SILVER": {
+    "message": "GW-SILVER",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"4\">GW-SILVER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "GW-UBER": {
+    "message": "GW-UBER",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"8\">GW-UBER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "Galactic War": {
     "message": "Galactic War",
@@ -1614,6 +1698,14 @@
   "Grunt": {
     "message": "Grunt",
     "description": "Two uses. (1) AI personality trait: a one-word characterisation of an enemy Commander's play style, shown after \"Personality:\" in the Planetary Intelligence panel of the galaxy map (gw_play) and in the war-info panel. Adjective or noun used as a label, singular, no punctuation. A penchant word (Artillery, Fortress, Assault...) may be appended after it with a space, so keep it short. This one is specific to the Synchronous commander \"Potbelly79\": a \"grunt\" is a basic foot soldier, i.e. a straightforward, no-frills style. (2) Unit name for the Bugs race (its basic infantry-type unit) in the tech-card \"Which Units?\" tooltip; use whatever the Bugs mod calls that unit in the target locale. Noun, singular. (gw_faction_2.js, bugs.js)"
+  },
+  "HEALTHY": {
+    "message": "HEALTHY",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"1.200\">HEALTHY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "HUGE": {
+    "message": "HUGE",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"300\">HUGE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "Hagihara was famously known for the Siege of Hagihara during the Century War against the Xziphid Hegemony. When the Xziphid invaded the system thirty years into the war they tried their typical direct assault upon the system, only to find it was defended by a heavily entrenched Progenitor civilian populace. Hagihara was a favorite retirement system for Progenitor Coalition military personnel, so when the Xziphid invaded they were faced with over one billion combat trained veterans. Hagihara held out for over three years, during which time the Commanders had entered the war. The siege was finally lifted when Progenitor forces led by Commander Patton drove the Xziphid from the system.": {
     "message": "Hagihara was famously known for the Siege of Hagihara during the Century War against the Xziphid Hegemony. When the Xziphid invaded the system thirty years into the war they tried their typical direct assault upon the system, only to find it was defended by a heavily entrenched Progenitor civilian populace. Hagihara was a favorite retirement system for Progenitor Coalition military personnel, so when the Xziphid invaded they were faced with over one billion combat trained veterans. Hagihara held out for over three years, during which time the Commanders had entered the war. The siege was finally lifted when Progenitor forces led by Commander Patton drove the Xziphid from the system.",
@@ -1738,6 +1830,18 @@
   "Hyakutake was the home of the Terradine corporate shipyards. Merchant and explorer vessels were built in construction yards spread across the system, and then sent out for duty all throughout the Progenitor Coalition. The Battle of Hyakutake during the Century War saw the destruction of the yards and the occupants of the system. The yards were rebuilt after the war, along with a Progenitor military base and a number of orbital weapon platforms.": {
     "message": "Hyakutake was the home of the Terradine corporate shipyards. Merchant and explorer vessels were built in construction yards spread across the system, and then sent out for duty all throughout the Progenitor Coalition. The Battle of Hyakutake during the Century War saw the destruction of the yards and the occupants of the system. The yards were rebuilt after the war, along with a Progenitor military base and a number of orbital weapon platforms.",
     "description": "Lore text: the description of a system an AI holds, shown in the star detail card on the galaxy map when the war's \"System Lore\" option is on (the original pre-release Galactic War lore). Full paragraph. Progenitor(s), the Progenitor Coalition, the Machine Liberation Army (MLA), Loyalist, the Pro-Com War and the Century War, and the people, companies, ships and places it names are proper nouns from PA's fiction; keep them. (lore.js)"
+  },
+  "IMMEDIATELY": {
+    "message": "IMMEDIATELY",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 1 other site. Shown: the war setup screen. Source: `<option value=\"1\">IMMEDIATELY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "IMMENSE": {
+    "message": "IMMENSE",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"400\">IMMENSE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "INCREDIBLE": {
+    "message": "INCREDIBLE",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"10\">INCREDIBLE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "IRON: you no longer turtle": {
     "message": "IRON: you no longer turtle",
@@ -1935,6 +2039,14 @@
     "message": "LAND ANYWHERE: players can start anywhere on viable starting planets.",
     "description": "One line of the Game Modifiers tooltip on the galaxy map's system intelligence panel (gw_play). Each line is \"MODIFIER NAME: what it does\", joined with <br> by the code. The upper-case name before the colon is a game modifier that must match the same modifier's name elsewhere (the Game Modifiers list and the in-battle win-conditions line use the title-case form: Bounties, Land Anywhere, Sudden Death, Eradicate). Keep the colon and the full stop; no line break in the string. (section_of_foreign_intelligence.js, gwoGameModifiersTooltip)"
   },
+  "LARGE": {
+    "message": "LARGE",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"250\">LARGE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "LATE ORBITAL": {
+    "message": "LATE ORBITAL",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"lateorbital\">LATE ORBITAL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "LEGONIS MACHINA: vehicles": {
     "message": "LEGONIS MACHINA: vehicles",
     "description": "One line of the faction tooltip on the war setup screen (gw_start), shown beside the Faction dropdown. Lines read \"FACTION NAME: preferred unit class\", joined with <br> by the code. The upper-case name before the colon is one of the game's enemy factions (a proper noun; render it as the game's own translation does, uppercased) and the word after the colon is the unit class that faction favours (vehicles, air/navy, bots, orbital, land), using the game's stock wording for that class. Keep the colon; no line break in the string. (ui.js, gwoFactionTooltip)"
@@ -1942,6 +2054,30 @@
   "LOCKED": {
     "message": "LOCKED",
     "description": "Value in the \"Player Slots:\" row of the co-op table in the war-info panel on the galaxy map (gw_play), meaning no further players may join (the alternative is \"Unlocked\"). Reuses the base game's upper-case \"LOCKED\" entry (CSS sentence-cases it on screen), so match that translation. Adjective/past participle, no punctuation. (gwo_panel.js)"
+  },
+  "LONG": {
+    "message": "LONG",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 3 other sites. Shown: the war setup screen. Source: `<option value=\"12\">LONG</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "LOVES AIR": {
+    "message": "LOVES AIR",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"air\">LOVES AIR</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "LOVES BOTS": {
+    "message": "LOVES BOTS",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"bot\">LOVES BOTS</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "LOVES LAND": {
+    "message": "LOVES LAND",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"land\">LOVES LAND</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "LOVES ORBITAL": {
+    "message": "LOVES ORBITAL",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"orbital\">LOVES ORBITAL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "LOVES TANKS": {
+    "message": "LOVES TANKS",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"tank\">LOVES TANKS</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "Lambda Geminorum held little interest to the Progenitor Coalition until the Century War. Lambda Geminorum would become immortalized as the site of the 'largest tank battle since Kursk'. Over 17,000 Xziphid Hegemony Scarabs squared off against just over 12,000 Battle Tanks. Despite the numbers involved, the battle was over in just twenty-three minutes. Against the superior tactics of Commander Zhukov, the Xziphid were soundly defeated.": {
     "message": "Lambda Geminorum held little interest to the Progenitor Coalition until the Century War. Lambda Geminorum would become immortalized as the site of the 'largest tank battle since Kursk'. Over 17,000 Xziphid Hegemony Scarabs squared off against just over 12,000 Battle Tanks. Despite the numbers involved, the battle was over in just twenty-three minutes. Against the superior tactics of Commander Zhukov, the Xziphid were soundly defeated.",
@@ -2023,6 +2159,10 @@
     "message": "Lob Upgrade Tech increases the range of the Lob by 150%. Fires twice as fast and no longer costs metal to recharge its ammo.",
     "description": "Body text of a tech card. Shown in the Data Bank card list, in the card tooltip on the galaxy map, and in the tech deal offered after a battle. First sentence of the card body; the game follows it with a space and the separate string 'Fires twice as fast and no longer costs metal to recharge its ammo.', so make the two read as one paragraph. The card multiplies the Lob's range by 2.5. Keep '150%' exactly; 'Lob' is a unit name and stays as the game's tables have it. The opening 'Lob Upgrade Tech' must match the card name. The game appends a blank line and the sentence 'Adds a new slot for another technology.' after this text, so end it as a complete sentence. (gwaio_upgrade_lob.js) The second sentence (\"Fires twice as fast and no longer costs metal to recharge its ammo.\") was once a separate string; it is one description now."
   },
+  "Lobotomy": {
+    "message": "Lobotomy",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"Tutorial\">Lobotomy</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "Locusts Upgrade Tech": {
     "message": "Locusts Upgrade Tech",
     "description": "Name of the tech card gwaio_upgrade_locusts, shown in the Data Bank card list, its tooltip and the tech deal on the galaxy map. \"Upgrade Tech\" is the shared suffix of every unit upgrade card; render it the same way across all of them and reuse the game's own word for Tech (a tech card). \"Locusts\" is a proper-noun unit name: keep it untranslated in Latin, Cyrillic and Chinese locales and transliterate it in Japanese and Korean as the game does for other unit names. The card's text, which repeats the name as its subject, reads \"Locusts Upgrade Tech adds splash damage to nanoswarms.\"; keep the two consistent. (gwaio_upgrade_locusts.js)"
@@ -2038,6 +2178,10 @@
   "Luddite": {
     "message": "Luddite",
     "description": "AI personality trait: a one-word characterisation of an enemy Commander's play style, shown after \"Personality:\" in the Planetary Intelligence panel of the galaxy map (gw_play) and in the war-info panel. Adjective or noun used as a label, singular, no punctuation. A penchant word (Artillery, Fortress, Assault...) may be appended after it with a space, so keep it short. The same trait key is shared by all four stock factions and the Cluster faction; translate it once. \"Luddite\" = avoids advanced (T2) technology; noun. (gw_faction_0.js and the other faction files, cluster_faction.js)"
+  },
+  "MEDIUM": {
+    "message": "MEDIUM",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 4 other sites. Shown: the war setup screen. Source: `<option value=\"6\">MEDIUM</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "MLA": {
     "message": "MLA",
@@ -2183,9 +2327,21 @@
     "message": "Mounting game files",
     "description": "Progress stage text shown on the \"Preparing for battle\" launch progress panel while the mod prepares a battle after pressing Fight (also mirrored to co-op viewers). Present participle phrase, no full stop. \"Mounting\" means loading the game files for the battle. (referee.js)"
   },
+  "NEVER": {
+    "message": "NEVER",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0\">NEVER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "NEW BASE DELAY:": {
     "message": "NEW BASE DELAY:",
     "description": "Label on the AI Settings dialog opened from the war setup screen (Galactic War start). Uppercase row label, keep the trailing colon. Delay before the AI starts building a new base. Must agree with its tooltip \"Delay in creating new bases.\" (ai_settings.html)"
+  },
+  "NONE": {
+    "message": "NONE",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 5 other sites. Shown: the war setup screen. Source: `<option value=\"0\">NONE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "NORMAL": {
+    "message": "NORMAL",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"1\">NORMAL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "Name:": {
     "message": "Name:",
@@ -2551,6 +2707,10 @@
     "message": "PLAYER",
     "description": "The singular unit word after a count on the \"Scaling For:\" row of the Galactic War Overhaul panel on the galaxy map: \"1 PLAYER\" (CSS then lowercases it to \"1 Player\"). Noun, singular; the plural form is the separate string \"Players\". Match the base game's translation of PLAYER. (gwo_panel.js)"
   },
+  "POOR": {
+    "message": "POOR",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 3 other sites. Shown: the war setup screen. Source: `<option value=\"0.500\">POOR</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "POV Camera": {
     "message": "POV Camera",
     "description": "Label of an item on the in-battle menu (opened from the menu button during a Galactic War battle). The base game ships this same menu item, so match the base-game wording. Toggles the point-of-view camera. (live_game/menu.js)"
@@ -2698,6 +2858,10 @@
   "Preparing for battle": {
     "message": "Preparing for battle",
     "description": "Title of the launch progress panel shown after pressing Fight on the galaxy map while the battle is being prepared; the stage lines (\"Mounting game files\" etc.) appear beneath it. Short phrase, no full stop; the base game ships the same string, match it. (launch_progress.js)"
+  },
+  "Prevent Waste": {
+    "message": "Prevent Waste",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"PreventsWaste\">Prevent Waste</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "Processing AI mods": {
     "message": "Processing AI mods",
@@ -2867,6 +3031,10 @@
     "message": "Report a Galactic War Bug",
     "description": "Label of a button and two menu items that open this mod's bug-report form on GitHub in the player's web browser. Shown on the war setup screen (gw_start) beside \"Saved Games\", in the galaxy map's game menu (gw_play) after \"Settings\", and in the in-battle menu of a Galactic War battle (live_game) after \"Game Settings\". Imperative verb phrase; render \"Galactic War\" the way the game's own translation renders the mode's name. Title case, no punctuation; the war setup screen shows it in capitals. (gw_start/report_bug_button.html, gw_play/menu.html, live_game/menu.js)"
   },
+  "Reroll Tech": {
+    "message": "Reroll Tech",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html. Shown: the galaxy map. Source: `<input type=\"button\" value=\"Reroll Tech\" data-bind=\"visible: $root.gwoOfferRerolls() && ($root.canChooseCoopTechCards() || !$root.showHostChoosingSharedTech()), click: $root.rerollTech, click_sound: 'default', rollover_sound: 'default', tooltip: '!LOC:Reroll the data caches but get offered one less…`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "Reroll the data caches but get offered one less.": {
     "message": "Reroll the data caches but get offered one less.",
     "description": "Tooltip on the \"Reroll Tech\" button under the tech card offer on the galaxy map; \"data caches\" is Galactic War flavour for the tech cards on offer. Rerolling draws a new set with one fewer card. Sentence, keep the full stop. (cards_system_reroll.html)"
@@ -2903,9 +3071,33 @@
     "message": "SCOUTING:",
     "description": "Label on the AI Settings dialog opened from the war setup screen (Galactic War start). Uppercase row label, keep the trailing colon; how well the AI scouts. Must agree with its tooltip \"How well the AI scouts.\" (ai_settings.html)"
   },
+  "SHORT": {
+    "message": "SHORT",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 3 other sites. Shown: the war setup screen. Source: `<option value=\"3\">SHORT</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "SILVER: you beat the skirmish AI": {
     "message": "SILVER: you beat the skirmish AI",
     "description": "One line of the difficulty tooltip on the war setup screen (gw_start): the \"?\" beside the Difficulty dropdown lists every difficulty level, one per line, as \"LEVEL: who it suits\". The upper-case word before the colon is the difficulty level's name as it appears in the dropdown; keep it as the game's own translation of that level renders it (uppercased) and keep the colon. The clause after the colon is a short, informal description of the player it is aimed at. Lines are joined with <br> by the code, so no line break in the string. (ui.js, gwoDifficultyLevelsTooltip) The skirmish AI is the base game's AI in a normal custom match."
+  },
+  "SLOW": {
+    "message": "SLOW",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.075\">SLOW</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "SLOWER": {
+    "message": "SLOWER",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.050\">SLOWER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "SLOWEST": {
+    "message": "SLOWEST",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.025\">SLOWEST</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "SMALL": {
+    "message": "SMALL",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"150\">SMALL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "SPAWN ONLY": {
+    "message": "SPAWN ONLY",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0\">SPAWN ONLY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "SUDDEN DEATH CHANCE:",
@@ -3022,6 +3214,10 @@
   "Slammer Upgrade Tech changes the advanced assault bot's torpedo into a rocket that targets surface units.": {
     "message": "Slammer Upgrade Tech changes the advanced assault bot's torpedo into a rocket that targets surface units.",
     "description": "Description of the upgrade tech card 'Slammer Upgrade Tech', shown in the Data Bank card list, the card tooltip on the galaxy map and the tech deal after a battle. The card upgrades the Slammer advanced assault bot: its secondary torpedo weapon is retargeted at land (surface) units and flies as a rocket. The leading card name must match the translation of the card name 'Slammer Upgrade Tech' exactly. Rendered as body text under the card name; the game appends a second paragraph about a new technology slot, so end the sentence with the same punctuation as the source. 'advanced assault bot' is a plain description of the Slammer, not a unit name. 'Surface units' means land units on the ground. (gwaio_upgrade_slammer.js)"
+  },
+  "Slower Expansion": {
+    "message": "Slower Expansion",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"SlowerExpansion\">Slower Expansion</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "Small": {
     "message": "Small",
@@ -3262,6 +3458,14 @@
   "TECHS": {
     "message": "TECHS",
     "description": "Label of the tech card deck drop-down on the war setup screen (\"TECHS:\" - the colon sits outside the tag, do not add one), choosing between the Basic and Galactic War Overhaul card decks. Uppercase plural noun, short for technologies (tech cards). The base game ships the same string in gw_play; match it. (cards_dropdown.html)"
+  },
+  "TERRIBLE": {
+    "message": "TERRIBLE",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.425\">TERRIBLE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
+  "TINY": {
+    "message": "TINY",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"100\">TINY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "TITANS: base game AI": {
     "message": "TITANS: base game AI",
@@ -3683,6 +3887,10 @@
     "message": "UBER: you hate winning",
     "description": "One line of the difficulty tooltip on the war setup screen (gw_start): the \"?\" beside the Difficulty dropdown lists every difficulty level, one per line, as \"LEVEL: who it suits\". The upper-case word before the colon is the difficulty level's name as it appears in the dropdown; keep it as the game's own translation of that level renders it (uppercased) and keep the colon. The clause after the colon is a short, informal description of the player it is aimed at. Lines are joined with <br> by the code, so no line break in the string. (ui.js, gwoDifficultyLevelsTooltip) UBER is the hardest fixed level; the description is a joke meaning it is nearly unwinnable."
   },
+  "UNHEALTHY": {
+    "message": "UNHEALTHY",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.700\">UNHEALTHY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+  },
   "UNIT DELAY (MAX):": {
     "message": "UNIT DELAY (MAX):",
     "description": "Label on the AI Settings dialog opened from the war setup screen (Galactic War start). Uppercase row label, keep the parentheses and trailing colon; the maximum delay between units a factory produces. Pairs with \"UNIT DELAY (MIN):\" and must agree with its tooltip \"Maximum delay between units produced from a factory.\" (ai_settings.html)"
@@ -3834,6 +4042,10 @@
   "View loadout and tech cards": {
     "message": "View loadout and tech cards",
     "description": "Tooltip on the Inventory button of an AI player's row in the co-op lobby's slot list on the galaxy map (gw_play), under per-player tech, once the AI's loadout and tech cards can be shown. Stock's rows show the same tooltip for a human player, in English, since no locale of the game translates it; \"loadout\" and \"tech cards\" as in \"Waiting for loadout\" and \"Processing tech cards\". Imperative verb phrase, no full stop. (coop_ai_roster.js)"
+  },
+  "WEAK": {
+    "message": "WEAK",
+    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.600\">WEAK</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
   },
   "Waiting for loadout": {
     "message": "Waiting for loadout",

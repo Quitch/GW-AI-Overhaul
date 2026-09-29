@@ -2,10 +2,10 @@
 
 // The translation files under ui/mods/<id>/translations/: named for a PA
 // locale, shaped as PA's own tables, keys in code-point order with no
-// duplicates, the en-US catalog equal to what the tree asks loc() for with no
-// file:line in its notes, every other file a subset of it, and placeholders
-// and style codes preserved per entry. Needs no PA install, so it runs in
-// verify. See docs/translations.md.
+// duplicates, the en-US catalog equal to what the tree asks the game to
+// translate with no file:line in its notes, every other file a subset of it,
+// and placeholders and style codes preserved per entry. Needs no PA install,
+// so it runs in verify. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");

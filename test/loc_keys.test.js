@@ -9,6 +9,7 @@ const path = require("node:path");
 const { REPO_ROOT } = require("../scripts/lib/amd-loader.js");
 const { extractFrom } = require("../scripts/lib/loc-keys.js");
 
+const PANEL = "ui/mods/com.pa.quitch.gwaioverhaul/gw_start/test_panel.html";
 const CARD = "ui/main/game/galactic_war/cards/gwaio_test_card.js";
 
 function at(rel, lines) {
@@ -22,6 +23,68 @@ function sitesOf(keys, key) {
   assert.ok(keys.has(key), "no key " + JSON.stringify(key));
   return keys.get(key).sites;
 }
+
+describe("HTML controls", () => {
+  it("keys an option's text and a button's value as locTree looks them up", () => {
+    const keys = extractFrom([
+      at(PANEL, [
+        "<select>",
+        '  <option value="0.35">DIRE</option>',
+        '  <option value="1"',
+        "    >  Slower &amp; Steadier  </option",
+        "  >",
+        "  <option>Unclosed",
+        "</select>",
+        '<input type="button" value=" Reroll Tech " data-bind="visible: a > b" />',
+      ]),
+    ]);
+
+    assert.deepEqual(
+      ["DIRE", "Slower & Steadier", "Unclosed", "Reroll Tech"].map((key) =>
+        sitesOf(keys, key).map((site) => [site.role, site.line])
+      ),
+      [
+        [["html-control", 2]],
+        [["html-control", 3]],
+        [["html-control", 6]],
+        [["html-control", 8]],
+      ]
+    );
+  });
+
+  it("skips what locTree skips, which a bare noloc on a button is not", () => {
+    const keys = extractFrom([
+      at(PANEL, [
+        "<select>",
+        '  <option data-noloc value="1">Kept English</option>',
+        '  <option data-noloc="true">Also English</option>',
+        "  <!-- <option>Commented Out</option> -->",
+        "</select>",
+        '<input type="button" noloc="true" value="Not Looked Up" />',
+        '<input type="button" noloc value="Looked Up" />',
+        '<input type="text" value="Typed" />',
+        '<input type="BUTTON" value="Shouted" />',
+      ]),
+    ]);
+
+    assert.deepEqual(Array.from(keys.keys()), ["Looked Up", "Shouted"]);
+  });
+
+  it("leaves out text with no letter in it", () => {
+    const keys = extractFrom([
+      at(PANEL, [
+        "<select>",
+        '  <option value="0">0%</option>',
+        '  <option value="1">1</option>',
+        '  <option value="0.1">0.1</option>',
+        '  <option value="0.49">3 - FASTER RAMP UP</option>',
+        "</select>",
+      ]),
+    ]);
+
+    assert.deepEqual(Array.from(keys.keys()), ["3 - FASTER RAMP UP"]);
+  });
+});
 
 describe("card roles", () => {
   it("reads a card mod's display_name and description as the unit's", () => {
