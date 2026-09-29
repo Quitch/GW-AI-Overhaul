@@ -365,7 +365,6 @@ define([
     var aisToModify = context.aisToModify;
     var aiPaths = context.aiPaths;
     var clusterPresence = context.clusterPresence;
-    var scopeToken = context.scopeToken;
     var nonLoadAiMods = context.nonLoadAiMods;
     var forceSubCommanderScope = context.forceSubCommanderScope;
     var treeCache = context.treeCache;
@@ -444,10 +443,7 @@ define([
       var clusterFilePath = changeFilePath(
         refereeAIPaths.getAIPathDestination(
           "cluster",
-          gwoAI.aiInUse("subcommander"),
-          {
-            scopeToken: scopeToken,
-          }
+          gwoAI.aiInUse("subcommander")
         ),
         pathLength
       );
@@ -630,7 +626,7 @@ define([
   };
 
   // `request` carries what the whole launch shares (configFiles, aiPaths,
-  // clusterPresence, treeCache) alongside the per-call inventory, scopeToken and
+  // clusterPresence, treeCache) alongside the per-call inventory and
   // forceSubCommanderScope. Most of it is passed straight through to the
   // per-file context below.
   var processDirectories = function (aiPath, request) {
@@ -664,7 +660,6 @@ define([
           aisToModify: aisToModify,
           aiPaths: request.aiPaths,
           clusterPresence: request.clusterPresence,
-          scopeToken: request.scopeToken,
           nonLoadAiMods: nonLoadAiMods,
           forceSubCommanderScope: request.forceSubCommanderScope,
           treeCache: request.treeCache,
@@ -949,7 +944,6 @@ define([
         aiPath,
         _.assign({}, launch, {
           inventory: playerAiModInventory,
-          scopeToken: undefined,
           forceSubCommanderScope: false,
         })
       );
