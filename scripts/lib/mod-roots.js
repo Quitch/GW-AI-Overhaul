@@ -63,13 +63,4 @@ function modRoots(identifiers) {
   return roots;
 }
 
-// Code-unit order, what an argument-less sort gives strings: committed output
-// must not churn with the machine's locale.
-function byCodePoint(a, b) {
-  if (a < b) {
-    return -1;
-  }
-  return a > b ? 1 : 0;
-}
-
-module.exports = { byCodePoint, folderRoot, modRoots, zipRoot };
+module.exports = { folderRoot, modRoots, zipRoot };

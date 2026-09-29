@@ -27,7 +27,7 @@ in a `ko.computed`). Both run before any scene-list script, so a registration fr
 scene list left every string the stock code had already translated in English,
 which is how the Bugs lore stayed English on the galaxy map. A `global_mod_list`
 script runs right after `locInit()`, ahead of both. The cost is one synchronous read
-of the locale file on every panel, not only in GWO's eight scenes; English reads
+of the locale file on every panel, not only in GWO's own scenes; English reads
 nothing. The framework's global is another mod's, so the shim treats absent,
 incomplete and throwing alike: no call, one `console.error` for a throw, and GWO's
 text stays English. `modinfo.json` declares the framework as a dependency, so the
@@ -119,7 +119,8 @@ Conventions the notes and the translations follow:
   `gw_play/cards.js`.
 
 - Numbers, percentages, `<br>`, `[strong]`, `__x__` and `{n}` are kept exactly.
-  `validate:translations` checks them as a multiset per entry.
+  `validate:translations` checks the placeholders and style codes among them as
+  a multiset per entry, but not the numbers and percentages.
 - Unit and race names are proper nouns: untranslated in Latin, Cyrillic and
   Chinese locales, transliterated in ja/ko the way the game's `legion.json` does.
 - Terms the stock UI already renders (Commander, Tech, Data Bank, Galactic War,
@@ -134,7 +135,7 @@ Conventions the notes and the translations follow:
   `en-US.json` is present.
 - Each file is an object of `{ message[, description] }` entries with a
   non-empty string `message`, trimmed keys, no `;;` or `::` in a key (i18next's
-  separators; such a key can never resolve), keys in code-point order, no
+  separators; such a key can never resolve), keys in code-unit order, no
   duplicate keys (a line scan, since `JSON.parse` keeps the last silently).
 - `en-US.json`: `message === key`, a non-empty `description` with no
   `file:line` reference, and the key set equals what `loc-keys.js` extracts from

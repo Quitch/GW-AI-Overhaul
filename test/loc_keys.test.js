@@ -137,3 +137,22 @@ describe("card roles", () => {
     assert.equal(sitesOf(keys, "Loose Unit")[0].role, "loc-call");
   });
 });
+
+describe("site order", () => {
+  // B sorts before a by code unit, and after it under localeCompare.
+  it("orders a key's sites by file in code-unit order, then by line", () => {
+    const keys = extractFrom([
+      at("ui/mods/test/a.js", ['loc("!LOC:Shared");', 'loc("!LOC:Shared");']),
+      at("ui/mods/test/B.js", ['loc("!LOC:Shared");']),
+    ]);
+
+    assert.deepEqual(
+      sitesOf(keys, "Shared").map((site) => [site.file, site.line]),
+      [
+        ["ui/mods/test/B.js", 1],
+        ["ui/mods/test/a.js", 1],
+        ["ui/mods/test/a.js", 2],
+      ]
+    );
+  });
+});

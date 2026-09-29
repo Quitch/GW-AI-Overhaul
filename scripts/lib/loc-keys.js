@@ -667,7 +667,9 @@ function extractFrom(sources) {
     }
   }
   for (const entry of map.values()) {
-    entry.sites.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
+    entry.sites.sort(
+      (a, b) => codeUnitCompare(a.file, b.file) || a.line - b.line
+    );
   }
   addSiblings(map);
   return map;

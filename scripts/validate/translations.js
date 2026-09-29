@@ -1,7 +1,7 @@
 "use strict";
 
 // The translation files under ui/mods/<id>/translations/: named for a PA
-// locale, shaped as PA's own tables, keys in code-point order with no
+// locale, shaped as PA's own tables, keys in code-unit order with no
 // duplicates, the en-US catalog equal to what the tree asks the game to
 // translate with no file:line in its notes, every other file a subset of it,
 // and placeholders and style codes preserved per entry. Needs no PA install,
@@ -182,7 +182,7 @@ function checkFile(problems, file, isCatalog) {
     if (sorted[i] !== inOrder[i]) {
       problems.push(
         label +
-          ": keys are not in code-point order; first out of place: " +
+          ": keys are not in code-unit order; first out of place: " +
           JSON.stringify(inOrder[i])
       );
       break;
