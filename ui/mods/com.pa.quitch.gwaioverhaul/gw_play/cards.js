@@ -604,7 +604,7 @@
           var effects = coopAiEffects({
             GWInventory: params.GWInventory,
             stockBank: params.GW.bank,
-            timeoutMs: 5000,
+            timeoutMs: 10000,
           });
 
           var find = function (playerId) {

@@ -1112,6 +1112,15 @@ matters there. Judging a loadout puts it first, which pushes the AI's own
 loadout into second place, and a loadout in any place but the first banks
 itself in its `buff`. An AI never takes a loadout, so it never banks one.
 
+The release has one gap. An apply that is slow rather than hung runs the rest
+of its cards after the timeout, with banking back on, so a judged loadout's
+second place would bank into the host's own bank. The timeout keeps this out of
+reach rather than closing it: holding on until a late apply finished would
+refuse the host's own treasure loadout for the rest of the scene whenever one
+truly hangs. Measured on 2026-09-29, an apply took under 0.1 s in play, whatever
+the number of cards, and at most 2.8 s when it ran while `gw_play` was still
+loading, against a timeout of 10 seconds.
+
 **The star is identified by index, not by `ai.treasurePlanet`.** Beating the
 Guardians runs `winTurn`'s boss branch, which calls `defeatTeam(ai.team)`.
 `gw_start/ai_population.js` deletes `ai.team` for the treasure planet, so
