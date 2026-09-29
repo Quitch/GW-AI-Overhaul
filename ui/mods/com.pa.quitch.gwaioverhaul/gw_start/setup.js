@@ -470,9 +470,17 @@
               withoutBrackets();
               return;
             }
-            chooseStarSystemTemplates
-              .loadOptions()
-              .then(onOptionsLoaded, withoutBrackets);
+            // Shared Systems' own call, guarded as option.load() is above.
+            try {
+              chooseStarSystemTemplates
+                .loadOptions()
+                .then(onOptionsLoaded, withoutBrackets);
+            } catch (e) {
+              console.error(
+                "System sources failed to load: " + ((e && e.stack) || e)
+              );
+              withoutBrackets();
+            }
           });
 
           return ready.promise();

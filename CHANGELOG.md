@@ -47,6 +47,7 @@
 - An error while the AI stars' tech cards are dealt after you win a battle no longer stops the war from saving or ending
 - A Legion, Bugs, Exiles, or add-on unit whose file fails to load while its mod is still loading is now read again later, rather than being missed by tech cards until you reload
 - Joining a co-op war with per-player tech is no longer stopped by a war the loadout screen cannot read, or by an error in its race picker
+- An error in Shared Systems for Galactic War while a war is created no longer leaves Go To War stuck with no message
 
 ## v7.4.1 - 2026-09-24
 
