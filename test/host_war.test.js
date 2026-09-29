@@ -12,11 +12,13 @@ const {
   requireShippedModule,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
 
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
-// Only load() reaches GW.manifest, and load() is the engine half. See testing.md.
-registerModuleStub("shared/gw_common", { manifest: {} });
+// Only load() reaches GW.manifest; its test sets loadGame.
+const gwCommon = { manifest: {} };
+registerModuleStub("shared/gw_common", gwCommon);
 const hostWar = requireShippedModule(
   MOD_ROOT + "/gw_coop_per_player_loadout/host_war.js"
 );
@@ -278,5 +280,50 @@ describe("readGame", () => {
       info.races.map((race) => race.id),
       ["mla"]
     );
+  });
+});
+
+// Stock's loadGame resolves with no game for an id it has not stored, and
+// reading that threw inside the load's callback. jQuery lets such a throw
+// escape, so the war was never answered, and the loadout scene's race picker
+// and Join waited on it for good. load() caches its answer for the module,
+// so this is its one test.
+describe("load", () => {
+  it("answers a war it cannot read as one with no races", async () => {
+    const $ = installFakeJQuery(stubs, { sync: true });
+    const read = $.Deferred();
+    gwCommon.manifest.loadGame = () => read.promise();
+    stubs.setGlobal("model", { activeGameId: () => "war-1" });
+    stubs.setGlobal("window", {});
+    const errors = [];
+    stubs.setGlobal("console", {
+      error: (text) => errors.push(text),
+    });
+    const loadable = loadCouiModule(
+      MOD_ROOT + "/gw_coop_per_player_loadout/host_war.js"
+    );
+
+    const answered = new Promise((resolve) => {
+      loadable.load().then(resolve);
+    });
+    // The engine logs a throw from a deferred callback and carries on.
+    try {
+      read.resolve();
+    } catch {
+      errors.push("escaped");
+    }
+    const outcome = await Promise.race([
+      answered,
+      new Promise((resolve) => setTimeout(resolve, 100, "hung")),
+    ]);
+
+    assert.notEqual(outcome, "hung");
+    assert.equal(outcome.perPlayerRace, false);
+    assert.deepEqual(
+      outcome.races.map((race) => race.id),
+      ["mla"]
+    );
+    assert.equal(errors.length, 1);
+    assert.match(errors[0], /^Galactic War Overhaul \(GWO\): war not read: /);
   });
 });
