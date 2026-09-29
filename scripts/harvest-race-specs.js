@@ -14,7 +14,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const prettier = require("prettier");
 const { mediaDir } = require("./lib/pa-install.js");
-const { byCodePoint, folderRoot, modRoots } = require("./lib/mod-roots.js");
+const { folderRoot, modRoots } = require("./lib/mod-roots.js");
+const { codeUnitCompare } = require("./lib/loc-keys.js");
 const { TABLES } = require("./lib/race-table-inputs.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -139,7 +140,7 @@ function harvestTable(table) {
   for (const origin of table.mods.concat(table.baseGame ? ["baseGame"] : [])) {
     specs[origin] = {};
   }
-  for (const specPath of Object.keys(found).sort(byCodePoint)) {
+  for (const specPath of Object.keys(found).sort(codeUnitCompare)) {
     specs[found[specPath].mod || "baseGame"][specPath] = found[specPath].out;
   }
   return { mods: table.mods, unitList, specs };
@@ -153,7 +154,7 @@ function baseUnits() {
       units.add(unit);
     }
   }
-  return [...units].sort(byCodePoint);
+  return [...units].sort(codeUnitCompare);
 }
 
 async function main() {

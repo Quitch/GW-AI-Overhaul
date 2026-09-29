@@ -1,9 +1,9 @@
 "use strict";
 
-// Every "!LOC:" key GWO's ui/ tree asks loc() for, with where and how it is
-// used. The i18n:* scripts and validate:translations all read the tree through
-// this one walk, so the catalog, the missing lists and the validator agree on
-// what a key is. See docs/translations.md.
+// Every key GWO's ui/ tree asks the game to translate, with where and how it
+// is used. The i18n:* scripts and validate:translations all read the tree
+// through this one walk, so the catalog, the missing lists and the validator
+// agree on what a key is. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -74,6 +74,10 @@ const ROLE_WINDOW = 600;
 
 const LOC_LITERAL = /(["'])!LOC:((?:\\.|(?!\1).)*)\1/g;
 const LOC_TAG = /<loc\b([^>]*)>([\s\S]*?)<\/loc\s*>/g;
+const CONTROL_TAG = /<(option|input)\b/gi;
+const OPTION_END = /<\/?(?:option|optgroup|select|datalist)\b/gi;
+const ATTRIBUTE = /([^\s=]+)(?:\s*=\s*(["'])([\s\S]*?)\2)?/g;
+const LETTER = /\p{L}/u;
 const HTML_COMMENT = /<!--[\s\S]*?-->/g;
 const ENTITIES = {
   amp: "&",
@@ -299,28 +303,56 @@ const CARD_MARKERS = [
   ["description:", "card-description"],
 ];
 
-function lastIndexIn(window, marker) {
-  return window.lastIndexOf(marker);
+// The last `marker` in `window` that starts a word, so the `name:` of a
+// `display_name:` is not the card's. `before` is the character ahead of the
+// window, "" at the start of the file.
+function lastIndexIn(window, marker, before) {
+  let at = window.lastIndexOf(marker);
+  while (at >= 0 && /\w/.test(at > 0 ? window[at - 1] : before)) {
+    at = at > 0 ? window.lastIndexOf(marker, at - 1) : -1;
+  }
+  return at;
+}
+
+// A card's spec mods carry a unit's own display_name and description, not the
+// card's: the innermost call around the literal, through any object and array
+// literals, is mods() or a …Mods() helper.
+function inModsCall(source, index) {
+  let depth = 0;
+  for (let at = index - 1; at >= 0; at -= 1) {
+    const ch = source[at];
+    if (!"()[]{}".includes(ch) || inString(source, at)) {
+      continue;
+    }
+    if (")]}".includes(ch)) {
+      depth += 1;
+    } else if (depth > 0) {
+      depth -= 1;
+    } else if (ch === "(") {
+      return /(?:\bmods|Mods)\s*$/.test(source.slice(Math.max(0, at - 40), at));
+    }
+  }
+  return false;
 }
 
 // A card literal's role: the nearest marker before it, with a description
 // that sits under a hint read as the hint.
-function cardRole(window) {
+function cardRole(window, before) {
   let best = null;
   for (const [marker, role] of CARD_MARKERS) {
-    const at = lastIndexIn(window, marker);
+    const at = lastIndexIn(window, marker, before);
     if (at >= 0 && (!best || at > best.at)) {
       best = { at: at, role: role, marker: marker };
     }
   }
   if (best && best.marker === "description:") {
     const hintAt = Math.max(
-      lastIndexIn(window, "hint:"),
-      lastIndexIn(window, "lockedHint(")
+      lastIndexIn(window, "hint:", before),
+      lastIndexIn(window, "lockedHint(", before)
     );
     const otherAt = Math.max(
-      lastIndexIn(window, "summarize"),
-      lastIndexIn(window, "describe")
+      lastIndexIn(window, "summarize", before),
+      lastIndexIn(window, "describe", before)
     );
     if (hintAt > otherAt) {
       return "card-hint";
@@ -343,9 +375,12 @@ function raceRole(facts, window, index) {
 }
 
 function jsRole(facts, source, index) {
-  const window = source.slice(Math.max(0, index - ROLE_WINDOW), index);
+  const start = Math.max(0, index - ROLE_WINDOW);
+  const window = source.slice(start, index);
   if (facts.card) {
-    return cardRole(window);
+    return inModsCall(source, index)
+      ? "loc-call"
+      : cardRole(window, source.charAt(start - 1));
   }
   if (facts.faction !== undefined && /character:\s*$/.test(window)) {
     return "faction-character";
@@ -477,6 +512,84 @@ function scanTags(map, facts, html) {
   }
 }
 
+// The `>` that closes the open tag scanned from `from`; a quoted attribute
+// value may hold a `>` of its own.
+function tagEnd(source, from) {
+  let quote = null;
+  for (let at = from; at < source.length; at += 1) {
+    const ch = source[at];
+    if (quote) {
+      quote = ch === quote ? null : quote;
+    } else if (ch === '"' || ch === "'") {
+      quote = ch;
+    } else if (ch === ">") {
+      return at;
+    }
+  }
+  return source.length;
+}
+
+// An open tag's attributes by lower-cased name, values decoded and a bare
+// attribute reading "". The first of a repeated name wins, as in the browser.
+// Prettier quotes every value in GWO's HTML.
+function attributes(text) {
+  const attrs = {};
+  ATTRIBUTE.lastIndex = 0;
+  let match;
+  while ((match = ATTRIBUTE.exec(text)) !== null) {
+    const name = match[1].toLowerCase();
+    if (!Object.hasOwn(attrs, name)) {
+      attrs[name] = decodeEntities(match[3] || "");
+    }
+  }
+  return attrs;
+}
+
+// An <option>'s text runs to the next tag that ends it, closing or not.
+function optionText(source, from) {
+  OPTION_END.lastIndex = from;
+  const end = OPTION_END.exec(source);
+  return decodeEntities(
+    withoutTags(source.slice(from, end ? end.index : source.length))
+  );
+}
+
+// What locTree looks up for the control, or "" where it skips it.
+function controlText(source, from, tag, attrs) {
+  if (tag.toLowerCase() === "option") {
+    return Object.hasOwn(attrs, "data-noloc") ? "" : optionText(source, from);
+  }
+  // locTree skips a button when attr("noloc") is truthy, and a bare noloc
+  // reads "".
+  const button = (attrs.type || "").toLowerCase() === "button";
+  return button && !attrs.noloc ? attrs.value || "" : "";
+}
+
+// Stock locTree also looks up an <option>'s text and an input[type=button]'s
+// value, as they stand. See docs/translations.md, "Tooling".
+function scanControls(map, facts, html) {
+  const source = withoutComments(html);
+  CONTROL_TAG.lastIndex = 0;
+  let match;
+  while ((match = CONTROL_TAG.exec(source)) !== null) {
+    const end = tagEnd(source, CONTROL_TAG.lastIndex);
+    const attrs = attributes(source.slice(CONTROL_TAG.lastIndex, end));
+    const key = controlText(source, end + 1, match[1], attrs).trim();
+    CONTROL_TAG.lastIndex = end;
+    if (!LETTER.test(key)) {
+      continue;
+    }
+    const snippet = squash(htmlElement(source, match.index + 1));
+    addSite(map, key, {
+      file: facts.file,
+      line: lineAt(source, match.index),
+      role: "html-control",
+      snippet: snippet,
+      context: contextFor(facts, key, snippet),
+    });
+  }
+}
+
 // Card names and descriptions of the same card, so a translator sees the
 // pair together; the site's own key is left out.
 function addSiblings(map) {
@@ -537,18 +650,30 @@ function sourceFiles() {
 // Map<key, { sites: [{ file, line, role, snippet, context }] }>, sites in
 // file-then-line order.
 function extractKeys() {
+  return extractFrom(
+    sourceFiles().map((file) => ({
+      file: file,
+      source: fs.readFileSync(file, "utf8"),
+    }))
+  );
+}
+
+// extractKeys over `sources`: [{ file, source }], each `file` absolute.
+function extractFrom(sources) {
   const map = new Map();
-  for (const file of sourceFiles()) {
-    const source = fs.readFileSync(file, "utf8");
+  for (const { file, source } of sources) {
     const facts = fileFacts(file, source);
     const isHtml = path.extname(file) === ".html";
     scanLiterals(map, facts, source, isHtml);
     if (isHtml) {
       scanTags(map, facts, source);
+      scanControls(map, facts, source);
     }
   }
   for (const entry of map.values()) {
-    entry.sites.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line);
+    entry.sites.sort(
+      (a, b) => codeUnitCompare(a.file, b.file) || a.line - b.line
+    );
   }
   addSiblings(map);
   return map;
@@ -573,6 +698,7 @@ module.exports = {
   PA_LOCALES,
   SHIPPED_LOCALES,
   TRANSLATIONS_DIR,
+  extractFrom,
   extractKeys,
   sortedKeys,
 };

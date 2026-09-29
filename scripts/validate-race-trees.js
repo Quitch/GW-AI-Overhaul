@@ -7,7 +7,8 @@
 const path = require("node:path");
 const util = require("node:util");
 const { mediaDir, userDataDir } = require("./lib/pa-install.js");
-const { byCodePoint, folderRoot, modRoots } = require("./lib/mod-roots.js");
+const { folderRoot, modRoots } = require("./lib/mod-roots.js");
+const { codeUnitCompare } = require("./lib/loc-keys.js");
 const { MOD_ROOT, loadCouiModule } = require("./lib/amd-loader.js");
 const { buildGame, installModel } = require("./lib/ai-path-fixtures.js");
 const { installRefereeFakes, runRefereeAi } = require("./lib/referee-fakes.js");
@@ -42,7 +43,7 @@ function mergeRoots(roots) {
     }
   }
   return {
-    rels: [...byRel.keys()].sort(byCodePoint),
+    rels: [...byRel.keys()].sort(codeUnitCompare),
     read: (rel) => JSON.parse(byRel.get(rel).read(rel)),
   };
 }

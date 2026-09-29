@@ -7,7 +7,7 @@
 
 const path = require("node:path");
 const prettier = require("prettier");
-const { byCodePoint } = require("./mod-roots.js");
+const { codeUnitCompare } = require("./loc-keys.js");
 const { TABLES, ADDON_BIT_WORDS } = require("./race-table-inputs.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
@@ -212,7 +212,7 @@ function pinned(input, reader, entries) {
 
 function sortedEntries(object) {
   return Object.keys(object)
-    .sort(byCodePoint)
+    .sort(codeUnitCompare)
     .map((key) => [key, object[key]]);
 }
 
@@ -434,7 +434,7 @@ function buildAddonTable(id, source, baseUnits) {
   const reader = specsReader(source);
   const entries = addonEntries(source, baseUnits, reader);
   resolveAddonKeys(entries);
-  entries.sort((a, b) => byCodePoint(a.key, b.key));
+  entries.sort((a, b) => codeUnitCompare(a.key, b.key));
 
   const units = {};
   const unitNames = [];

@@ -12,7 +12,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { mediaDir } = require("./lib/pa-install.js");
-const { byCodePoint, folderRoot, modRoots } = require("./lib/mod-roots.js");
+const { folderRoot, modRoots } = require("./lib/mod-roots.js");
+const { codeUnitCompare } = require("./lib/loc-keys.js");
 const { shippedServerMods } = require("./lib/server-mods.js");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
@@ -57,7 +58,7 @@ function unitList() {
       }
     }
   }
-  return [...units].sort(byCodePoint);
+  return [...units].sort(codeUnitCompare);
 }
 
 // The first value of `field` up the base_spec chain; null when no spec on
