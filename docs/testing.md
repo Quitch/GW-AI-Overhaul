@@ -293,15 +293,17 @@ engine or native promise on as a value, unwaited. The inherited `.then` would
 adopt it and wait, so the fake fails the test instead. It throws, which rejects
 the chain, and it throws again out of band, so a `.fail()` further down cannot
 swallow the error. What a `done`, `fail` or `always` callback returns is not
-tested, because jQuery ignores it.
+tested, because jQuery ignores it. `$.getJSON` returns a Promise carrying the
+same members as a Deferred's, as jQuery's does, so a callback may return it.
 
 `installFakeJQuery(stubs, { sync: true })` swaps in a Deferred that models
-jQuery 2.1.4 itself, and a `when` that takes exactly one argument. Its callbacks
+jQuery 2.1.4 itself, and jQuery 2.1.4's `when`, which waits on every argument
+without a tick. Its callbacks
 run inside `resolve()` and `reject()`, a callback's throw escapes through the
 call that settled it, and the Deferred is stuck afterwards. The default fake
 runs callbacks a tick later and turns a callback's throw into a rejection, so it
 cannot show a bug that depends on either. Use the sync mode for such code, as
-`race_mods.test.js` and `gwo_promise.test.js` do.
+`race_mods.test.js`, `gwo_promise.test.js`, and `gwo_breeder.test.js` do.
 
 Modelling thenables is the file's whole job. `sonar-project.properties`
 therefore scopes Sonar's `javascript:S7739` ("Do not add `then` to an object")

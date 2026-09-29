@@ -8,6 +8,7 @@ const assert = require("node:assert/strict");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const {
+  createFakeJQuery,
   enginePromise,
   makeDeferred,
   rejected,
@@ -82,6 +83,13 @@ describe("fake-jquery .then", () => {
     assert.equal(await chained, 2);
   });
 
+  it("waits for $.getJSON's result a callback returns, as it has promise()", async () => {
+    const $ = createFakeJQuery({ getJSON: (url) => ({ from: url }) });
+    assert.deepEqual(await resolved(1).then(() => $.getJSON("x.json")), {
+      from: "x.json",
+    });
+  });
+
   // jQuery ignores what these callbacks return.
   it("does not test what a done, fail or always callback returns", async () => {
     const ran = [];
@@ -109,5 +117,38 @@ describe("fake-jquery when", () => {
 
   it("calls back with no arguments when given none", async () => {
     assert.deepEqual(await argsOf(when()), []);
+  });
+});
+
+describe("fake-jquery sync when", () => {
+  const $ = createFakeJQuery({ sync: true });
+
+  it("calls back inline with each argument's value as an argument of its own", () => {
+    let args;
+    $.when($.Deferred().resolve("a").promise(), "b").then((...got) => {
+      args = got;
+    });
+    assert.deepEqual(args, ["a", "b"]);
+  });
+
+  it("calls back inside the resolve() of the last pending argument", () => {
+    const pending = $.Deferred();
+    let args;
+    $.when("a", pending.promise()).done((...got) => {
+      args = got;
+    });
+    assert.equal(args, undefined);
+    pending.resolve("b", "c");
+    assert.deepEqual(args, ["a", ["b", "c"]]);
+  });
+
+  it("rejects with the reason of an argument that rejects", () => {
+    const failing = $.Deferred();
+    let reason;
+    $.when("a", failing.promise()).fail((why) => {
+      reason = why;
+    });
+    failing.reject("no");
+    assert.equal(reason, "no");
   });
 });
