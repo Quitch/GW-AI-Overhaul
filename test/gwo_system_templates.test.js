@@ -281,7 +281,8 @@ TEMPLATES.push(
 );
 
 // The easy sets get a pool of their own, so a system can say which set it came
-// from: setup.js asks for them through galaxy_build's useEasierSystemTemplate.
+// from: war_generation.js asks for them through galaxy_build's
+// useEasierSystemTemplate.
 const EASY_TEMPLATES = [
   {
     Players: [0, 99],

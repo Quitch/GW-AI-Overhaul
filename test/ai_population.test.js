@@ -1,7 +1,7 @@
 "use strict";
 
 // Tests for gw_start/ai_population.js, with hand-built galaxies of the shape
-// gw_start/setup.js hands it.
+// gw_start/war_generation.js hands it.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");

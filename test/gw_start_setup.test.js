@@ -24,6 +24,9 @@ const realModules = {
   "/gw_start/war_generation_failure.js": loadCouiModule(
     MOD_ROOT + "/gw_start/war_generation_failure.js"
   ),
+  "/gw_start/war_generation.js": loadCouiModule(
+    MOD_ROOT + "/gw_start/war_generation.js"
+  ),
 };
 
 const stubs = createGlobalStubs();

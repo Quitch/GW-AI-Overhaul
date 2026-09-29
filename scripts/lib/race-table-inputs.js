@@ -84,11 +84,10 @@ const TABLES = [
     bit: "Custom6",
     namePrefix: "^(Exiles?|Exile) ",
     stemPrefix: "^(t|r|a)_",
-    // Exiles renamed Jelly to Navigator after the table shipped. A key is
-    // what a race-only card addresses, so it stays; the name is held with
-    // it until the table is regenerated on purpose.
+    // Exiles 0.8.4 renamed Jelly to Navigator, and 0.7.2 calls it Jelly. A
+    // key is what a race-only card addresses, so it stays whatever a release
+    // names the unit.
     keys: { "/pa/units/land/jelly/jelly.json": "jelly" },
-    names: { "/pa/units/land/jelly/jelly.json": "Jelly" },
   },
   {
     id: "second_wave",
