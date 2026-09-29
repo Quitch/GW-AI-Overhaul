@@ -206,6 +206,71 @@ describe("Guardians scoped destination", () => {
       "coui://pa/ai/unit_maps/ai_unit_map.json",
     ]);
   });
+
+  // The Guardians take every player's AI mods through the base pass, load
+  // files included, into their scoped tree. See ai-paths.md, "Invariants".
+  it("gives the guardians-scoped tree every player's load files and AI mods", async () => {
+    const priority = (toBuild, value) => ({
+      type: "fabber",
+      op: "replace",
+      toBuild: toBuild,
+      idToMod: "priority",
+      value: value,
+    });
+    const load = (file) => ({ type: "fabber", op: "load", value: file });
+    const fixture = buildGame({
+      aiInUse: "Titans",
+      enemyType: "guardians",
+      perPlayerTech: true,
+      aiMods: [load("host_load.json"), priority("Bot", 50)],
+    });
+    fixture.game.findCoopPlayerInventoryData = (client) =>
+      client.id === "v1"
+        ? {
+            inventory: makeInventory({
+              aiModsList: [load("viewer_load.json"), priority("Tank", 60)],
+            }),
+          }
+        : undefined;
+    installModel(fixture.game, [
+      { id: "host", name: "Host", role: "host" },
+      { id: "v1", name: "Viewer1", role: "viewer" },
+    ]);
+    const builds = {
+      "coui://pa/ai/fabber_builds/x.json": ["Bot", "Tank"],
+      "coui://pa/ai_tech/fabber_builds/host_load.json": ["HostUnit"],
+      "coui://pa/ai_tech/fabber_builds/viewer_load.json": ["ViewerUnit"],
+    };
+    installFakes({
+      fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: (url) => ({
+        build_list: builds[url].map((unit) => ({
+          to_build: unit,
+          priority: 1,
+        })),
+      }),
+    });
+
+    const filesObj = {};
+    await run(filesObj);
+
+    const guardians = "/pa/ai/player_guardians/fabber_builds/";
+    const priorities = (path) =>
+      filesObj[path].build_list.map((build) => [
+        build.to_build,
+        build.priority,
+      ]);
+    assert.deepEqual(priorities(guardians + "x.json"), [
+      ["Bot", 50],
+      ["Tank", 60],
+    ]);
+    assert.deepEqual(priorities(guardians + "host_load.json"), [
+      ["HostUnit", 1],
+    ]);
+    assert.deepEqual(priorities(guardians + "viewer_load.json"), [
+      ["ViewerUnit", 1],
+    ]);
+  });
 });
 
 describe("per-player-tech viewer processing", () => {
