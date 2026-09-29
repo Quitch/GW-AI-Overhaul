@@ -299,8 +299,35 @@ const CARD_MARKERS = [
   ["description:", "card-description"],
 ];
 
+// The last `marker` in `window` that starts a word, so the `name:` of a
+// `display_name:` is not the card's.
 function lastIndexIn(window, marker) {
-  return window.lastIndexOf(marker);
+  let at = window.lastIndexOf(marker);
+  while (at > 0 && /\w/.test(window[at - 1])) {
+    at = window.lastIndexOf(marker, at - 1);
+  }
+  return at;
+}
+
+// A card's spec mods carry a unit's own display_name and description, not the
+// card's: the innermost call around the literal, through any object and array
+// literals, is mods() or a …Mods() helper.
+function inModsCall(source, index) {
+  let depth = 0;
+  for (let at = index - 1; at >= 0; at -= 1) {
+    const ch = source[at];
+    if (!"()[]{}".includes(ch) || inString(source, at)) {
+      continue;
+    }
+    if (")]}".includes(ch)) {
+      depth += 1;
+    } else if (depth > 0) {
+      depth -= 1;
+    } else if (ch === "(") {
+      return /(?:\bmods|Mods)\s*$/.test(source.slice(Math.max(0, at - 40), at));
+    }
+  }
+  return false;
 }
 
 // A card literal's role: the nearest marker before it, with a description
@@ -345,7 +372,7 @@ function raceRole(facts, window, index) {
 function jsRole(facts, source, index) {
   const window = source.slice(Math.max(0, index - ROLE_WINDOW), index);
   if (facts.card) {
-    return cardRole(window);
+    return inModsCall(source, index) ? "loc-call" : cardRole(window);
   }
   if (facts.faction !== undefined && /character:\s*$/.test(window)) {
     return "faction-character";
@@ -537,9 +564,18 @@ function sourceFiles() {
 // Map<key, { sites: [{ file, line, role, snippet, context }] }>, sites in
 // file-then-line order.
 function extractKeys() {
+  return extractFrom(
+    sourceFiles().map((file) => ({
+      file: file,
+      source: fs.readFileSync(file, "utf8"),
+    }))
+  );
+}
+
+// extractKeys over `sources`: [{ file, source }], each `file` absolute.
+function extractFrom(sources) {
   const map = new Map();
-  for (const file of sourceFiles()) {
-    const source = fs.readFileSync(file, "utf8");
+  for (const { file, source } of sources) {
     const facts = fileFacts(file, source);
     const isHtml = path.extname(file) === ".html";
     scanLiterals(map, facts, source, isHtml);
@@ -573,6 +609,7 @@ module.exports = {
   PA_LOCALES,
   SHIPPED_LOCALES,
   TRANSLATIONS_DIR,
+  extractFrom,
   extractKeys,
   sortedKeys,
 };
