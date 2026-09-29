@@ -1,22 +1,6 @@
 (function () {
   var gwoWarInfoPanelLoaded;
 
-  // A third-party card's summarize() is arbitrary code; an empty name beats an
-  // uncaught throw in the requireGW callback.
-  var cardName = function (card, cardId) {
-    try {
-      return card && _.isFunction(card.summarize) ? loc(card.summarize()) : "";
-    } catch (e) {
-      console.error(
-        "GWO card summarize() threw for " +
-          cardId +
-          ": " +
-          ((e && e.stack) || e)
-      );
-      return "";
-    }
-  };
-
   function gwoWarInfoPanel(gwoSettings) {
     try {
       var deckName = function (deckName) {
@@ -161,91 +145,30 @@
 
       requireGW(
         [
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/commander_colour.js",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_config_setup.js",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/referee_subcommander_tech.js",
+          "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/gwo_panel_view.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
-          "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/brain_table.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deck_mods.js",
         ],
-        function (
-          gwoColour,
-          gwoConfigSetup,
-          gwoRefereeCoop,
-          gwoSubcommanderTech,
-          gwoRaces,
-          gwoVersion,
-          gwoBrainTable,
-          gwoDecks,
-          gwoDeckMods
-        ) {
+        function (gwoPanelView, gwoRaces, gwoVersion, gwoDecks, gwoDeckMods) {
           model.gwoVersion = ko.observable(gwoVersion);
 
           // A third-party deck's display name; the provisional deckName()
-          // assignment above already covers the built-ins. A deck whose mod is
-          // gone deals the Expanded deck (decks.cardsFor), so the panel names
-          // that and notes the missing id. Bindings only apply later in this
-          // callback, so the refinement is seen.
+          // assignment above already covers the built-ins. Bindings only
+          // apply later in this callback, so the refinement is seen.
           gwoDeckMods.registerAll();
           var warDeckId = model.gwoSettings.techCardDeck;
-          var warDeck = gwoDecks.byId(warDeckId);
-          if (warDeck) {
-            model.gwoDeck = loc(warDeck.name);
-          } else if (warDeckId) {
-            model.gwoDeck =
-              deckName("Expanded") +
-              " (" +
-              loc("!LOC:missing:") +
-              " " +
-              warDeckId +
-              ")";
+          var warDeckName = gwoPanelView.registeredDeckName(
+            gwoDecks.byId(warDeckId),
+            warDeckId,
+            { expanded: deckName("Expanded"), missing: loc("!LOC:missing:") }
+          );
+          if (!_.isUndefined(warDeckName)) {
+            model.gwoDeck = warDeckName;
           }
 
-          // One name per side when every race the war recorded resolves to the
-          // same brain - every pre-table save, and any uniform table - else the
-          // per-race list. See races.md.
-          var recordedRaces = gwoSettings.races || {};
-          var warRaceIds = _(
-            [gwoRaces.MLA_ID, recordedRaces.player].concat(
-              _.values(recordedRaces.byFaction || {})
-            )
-          )
-            .map(gwoRaces.normalizeId)
-            .filter(function (id) {
-              return id.length > 0;
-            })
-            .uniq()
-            .value();
-          var raceName = function (id) {
-            var descriptor = gwoRaces.byId(id);
-            return descriptor ? loc(descriptor.name) : id;
-          };
-          var brainSummary = function (side, raceIds) {
-            var entries = _.map(raceIds || warRaceIds, function (id) {
-              return {
-                id: id,
-                brain: gwoBrainTable.resolve(
-                  gwoSettings.aiByRace,
-                  gwoSettings.ai,
-                  gwoSettings.aiAlly,
-                  side,
-                  id,
-                  gwoSettings.aiCoop
-                ),
-              };
-            });
-            var brains = _.uniq(_.pluck(entries, "brain"));
-
-            if (brains.length === 1) {
-              return brains[0];
-            }
-            return _.map(entries, function (entry) {
-              return raceName(entry.id) + ": " + entry.brain;
-            }).join(", ");
-          };
+          var brainSummary = gwoPanelView.brainSummaryFor(gwoSettings);
           model.gwoAI = brainSummary("enemy");
           model.gwoAIAlly = brainSummary("ally");
           // Under shared tech every co-op AI player fields the host's race.
@@ -277,75 +200,7 @@
 
           model.gwoIncompatibleMods = ko.observableArray([]);
           api.mods.getMounted("client").then(function (mods) {
-            var incompatibleMods = [
-              "com.heiz.aurora_arty", // Aurora-Artillery
-              "com.wondible.pa.gw_challenge", // Challenge Levels for galactic war
-              "com.wondible.pa.gw_ramp", // Enemy Ramp for galactic war
-              "nemuneko.gw.unique.loadouts", // Galactic War Unique Loadouts
-              "com.pa.domdom.laser_unit_effects", // More Pew Pew
-              "com.wondible.pa.section_of_foreign_intelligence", // Section of Foreign Intelligence for galactic war
-              "com.pa.lulamae.air-scout-select", // Air Scout Select
-              "com.pa.grandhomie.land_scout_combat_grouping_mod", // Land scout combat grouping
-              "ca.pa.metapod.colonel_combat_grouping_mod", // Combat Colonel selection mod
-              "com.pa.nemogielen.client.BetterCombatSelection", // Better Combat Selection
-              "com.uberent.pa.PAFX", // PA-FX Titans
-              "com.uberent.pa.PAFX.classic", // PA-FX Classic
-              "com.pa.client.mirolog.boom", // Bigger Explosions
-              "ca.pa.metapod.effectsandstuffNikVersion", // Nik's 'How is this even legal?!' Mod Pack
-              "com.wondible.pa.gw_classic_systems", // Classic Systems for galactic war
-              "com.pa.kiwi.airtrails", // Air Rainbow Trails
-              "com.pa.kiwi.teamairtrails", // Air Team Colored Trails
-              "com.pa.stuart98.alphaenergy", // Alpha Energy Plant
-              "nl.pa.Alpha.ant_effects_mod", // Ant effect mod
-              "com.stuart98.uberbullets", // Awesome Projectiles
-              "com.pa.nikmx.sound-trim", // Better Audio Overhaul
-              "com.pa.domdom.inferno.blue_flame", // Blue Inferno Flame
-              "nl.pa.Alpha.combat_fabricator_grouping_mod", // combat fabricator group deselect
-              "com.pa.mikeyh.classic-tutorial", // Community Tutorial for Classic
-              "nl.pa.Alpha.CPlosion", // CPlosion Titans
-              "com.pa.tristan.death-anims-client", // Death Animations
-              "nl.pa.Alpha.dox_effects_mod", // Dox effect mod
-              "ca.pa.metapod.effectsandstuff", // effects and stuff
-              "com.pa.ferretmaster.enderEffects", // Enderstryke Commander Effects
-              "com.pa.n30n.fabricatorCommander", // Fabricator commander
-              "com.pa.kiwi.firecomm", // Flaming Commander
-              "com.pa.domdom.commander.fusion", // Fusion Core Commander
-              "nl.pa.Alpha.grenadiers_effects_mod", // Grenadiers effect mod
-              "com.pa.domdom.silent_space_explosions", // In space, no one can hear you explode.
-              "com.pa.ferretmaster.invictusEffects", // Invictus Commander Effects
-              "nl.pa.Alpha.levelers_effects_mod", // Levelers effect mod
-              "com.DeathByDenim.pa.mines_as_strips", // Mines as strips
-              "com.pac.domdom.laser_unit_effects", // More Pew Pew for Classic PA
-              "com.pa.domdom.laser_unit_effects.purple_ant", // More Pewple Ant
-              "com.pa.ferretmaster.mostlikelyEffects", // MostLikely Commander Effects
-              "nl.pa.Alpha.naval_trails", // Naval Trails
-              "com.pa.ferretmaster.nefelEffects", // Nefelpitou Commander Effects
-              "com.pa.alpha2546.naval_projectiles", // PA:T Naval projectiles
-              "com.pa.domdom.pop_dox", // Pop Dox
-              "com.pa.domdom.strategic_projectiles", // Resplendent Palpable Ammunition Projectile Mod
-              "com.pa.domdom.robo_disco", // Robo Disco
-              "com.pa.ferretmaster.shadowEffects", // Shadowdaemon Commander Effects
-              "nl.pa.Alpha.sheller_effect_mod", // Sheller effect mod
-              "nl.pa.Alpha.slammer_projectile_mod", // Slammer effect mod
-              "com.pa.LavaSnake.StargateBugFix", // Stargate Name Bug Fix
-              "com.pa.ferretmaster.stickmanEffects", // Stickman Commander Effects
-              "com.pa.thomas.cosmetic.client", // Thomas the Tank Engine Cosmetics
-              "com.pa.Eterify.Warhammer-40k-model-pack", // Warhammer40k model pack
-              "com.pa.ferretmaster.watermelonEffects", // Watermelon Client Overhaul
-              "ca.pa.metapod.heavy_air_group_deselect", // Wyrm Independence!
-            ];
-            var modIdentifiers = _.map(mods, "identifier");
-            var incompatibleModsInUse = _.intersection(
-              incompatibleMods,
-              modIdentifiers
-            );
-            var incompatibleModNames = _.sortBy(
-              _.map(incompatibleModsInUse, function (incompatibleMod) {
-                var index = _.findIndex(mods, { identifier: incompatibleMod });
-                return mods[index].display_name;
-              })
-            );
-            model.gwoIncompatibleMods(incompatibleModNames);
+            model.gwoIncompatibleMods(gwoPanelView.incompatibleModNames(mods));
           });
 
           var inventory = game.inventory();
@@ -360,201 +215,21 @@
           var factionIndex = inventory.getTag("global", "playerFaction");
           var playerRace = gwoRaces.raceOf(inventory);
           model.gwoFactionName = factions[factionIndex];
-          // Every commander's icon is its race's, which is how a race shows on
-          // the panel; the name stays the faction's. See races.md.
-          var raceIcon = function (race) {
-            var descriptor = gwoRaces.byId(race) || gwoRaces.byId(playerRace);
-            return (descriptor && descriptor.playerIcon) || {};
-          };
-          // The host's colour, written once at war creation and never changed.
-          var playerColourPair = inventory.getTag("global", "playerColor");
-          var playerColour = gwoColour.rgb(playerColourPair);
-
-          // The colour this client gets in the next battle, as the base game
-          // resolves it. See coop.md.
-          var coopColour = function (client) {
-            var resolved = model.gwCoopPlayerColors();
-            var record = _.find(resolved, {
-              id: client.id,
-              name: client.name,
-            });
-
-            // No record means the base game could not resolve one; fall back
-            // rather than blank the swatch.
-            return record && record.color
-              ? gwoColour.rgb(record.color)
-              : playerColour;
-          };
+          var commanderList = gwoPanelView.commanderList({
+            game: game,
+            inventory: inventory,
+            factionIndex: factionIndex,
+            playerRace: playerRace,
+          });
           var cards = inventory.cards();
           var loadoutId = cards[0].id;
           model.gwoLoadout = ko.observable("");
           requireGW(["cards/" + loadoutId], function (card) {
-            model.gwoLoadout(cardName(card, loadoutId));
+            model.gwoLoadout(gwoPanelView.cardName(card, loadoutId));
           });
 
-          // A co-op AI player's own loadout name under per-player tech, one
-          // lookup per loadout.
-          var aiLoadouts = {};
-          var aiLoadout = function (aiLoadoutId) {
-            if (!aiLoadoutId) {
-              return model.gwoLoadout;
-            }
-            if (!aiLoadouts[aiLoadoutId]) {
-              aiLoadouts[aiLoadoutId] = ko.observable("");
-              requireGW(["cards/" + aiLoadoutId], function (card) {
-                aiLoadouts[aiLoadoutId](cardName(card, aiLoadoutId));
-              });
-            }
-            return aiLoadouts[aiLoadoutId];
-          };
-
-          var intelligence = function (subcommanderData, index) {
-            var subcommander = subcommanderData.subcommander;
-            // avoid modifying the original name to prevent duplication of addendum
-            var subcommanderName = subcommander.name;
-            if (
-              gwoSubcommanderTech.hasDuplicatedSubcommanders(
-                subcommanderData.cards
-              )
-            ) {
-              subcommanderName += " x2";
-            }
-            var icon = raceIcon(
-              _.isUndefined(subcommander.race) ? playerRace : subcommander.race
-            );
-            return {
-              name: subcommanderName,
-              color: gwoColour.rgb(
-                gwoColour.pick(
-                  factionIndex,
-                  subcommander.color,
-                  gwoRefereeCoop.alliedColourIndex(index)
-                )
-              ),
-              character: gwoConfigSetup.getAIPersonalityName(subcommander),
-              iconFill: icon.fill,
-              iconOutline: icon.outline,
-            };
-          };
-
-          // Stable view models, so async loadout text does not flicker when the
-          // computed below re-evaluates.
-          var coopCommanderCache = {};
-
-          var updateCoopCommander = function (client, human) {
-            var cacheKey = gwoRefereeCoop.clientKey(client.id, client.name);
-            var commander = coopCommanderCache[cacheKey];
-            var record;
-            var loadoutCardId;
-            var icon;
-            var isHost = client.role === "host";
-            var usesHostLoadout =
-              isHost ||
-              (client.role === "viewer" &&
-                !model.gwCampaignPerPlayerTechCards());
-
-            if (!commander) {
-              commander = {
-                name: client.name,
-                // Observable, not fixed: under Separate races a viewer's own race
-                // is only known once their record has synced. See coop.md.
-                iconFill: ko.observable(raceIcon(playerRace).fill),
-                iconOutline: ko.observable(raceIcon(playerRace).outline),
-                // Not fixed: it moves with army control, and with joins and leaves.
-                color: ko.observable(),
-                // findCoopPlayerInventoryData only tracks synced remote clients, so
-                // the host would otherwise stay stuck on "human" forever.
-                character: usesHostLoadout
-                  ? model.gwoLoadout
-                  : ko.observable(human),
-                loadoutResolved: usesHostLoadout,
-                raceResolved: isHost,
-              };
-              coopCommanderCache[cacheKey] = commander;
-            }
-
-            commander.color(coopColour(client));
-
-            if (!commander.loadoutResolved || !commander.raceResolved) {
-              record = gwoRefereeCoop.recordForClient(game, client);
-              loadoutCardId = record && record.loadoutCardId;
-
-              if (loadoutCardId && !commander.loadoutResolved) {
-                commander.loadoutResolved = true;
-                requireGW(["cards/" + loadoutCardId], function (card) {
-                  commander.character(cardName(card, loadoutCardId));
-                });
-              }
-
-              if (record && record.inventory) {
-                commander.raceResolved = true;
-                icon = raceIcon(gwoRaces.raceOf(record.inventory));
-                commander.iconFill(icon.fill);
-                commander.iconOutline(icon.outline);
-              }
-            }
-
-            return commander;
-          };
-
           model.gwoPlayer = ko.computed(function () {
-            var human = loc("!LOC:Human");
-            var commanders = [
-              {
-                name: model.displayName,
-                color: playerColour,
-                character: model.gwoLoadout,
-                iconFill: raceIcon(playerRace).fill,
-                iconOutline: raceIcon(playerRace).outline,
-              },
-            ];
-            var connectedClients = model.gwCampaignConnectedClients();
-            var activeCommanderKeys = {};
-
-            if (model.gwCampaignActive()) {
-              commanders = _.map(connectedClients, function (client) {
-                var cacheKey = gwoRefereeCoop.clientKey(client.id, client.name);
-                activeCommanderKeys[cacheKey] = true;
-                return updateCoopCommander(client, human);
-              });
-
-              // Co-op AI players, after the humans. Under shared tech they
-              // field the host's loadout, under per-player tech their own.
-              _.forEach(
-                model.gwoCoopAi ? model.gwoCoopAi.panel() : [],
-                function (entry) {
-                  var icon = raceIcon(entry.race);
-                  commanders.push({
-                    name: entry.name,
-                    color: entry.colour
-                      ? gwoColour.rgb(entry.colour)
-                      : playerColour,
-                    character: aiLoadout(entry.loadoutCardId),
-                    iconFill: icon.fill,
-                    iconOutline: icon.outline,
-                  });
-                }
-              );
-
-              // Leaving the campaign refreshes the page, so that case needs no cleanup.
-              _.forEach(_.keys(coopCommanderCache), function (cacheKey) {
-                if (!activeCommanderKeys[cacheKey]) {
-                  delete coopCommanderCache[cacheKey];
-                }
-              });
-            }
-
-            // Host-first: the order the battle config numbers the colours in.
-            var subcommanders = gwoRefereeCoop.getOrderedSubcommanders(
-              inventory,
-              game,
-              gwoRefereeCoop.clientsInPlayerOrder(connectedClients)
-            );
-
-            _.forEach(subcommanders, function (subcommanderData, index) {
-              commanders.push(intelligence(subcommanderData, index));
-            });
-            return commanders;
+            return commanderList(loc("!LOC:Human"));
           });
 
           var url =
