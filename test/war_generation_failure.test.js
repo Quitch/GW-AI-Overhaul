@@ -47,6 +47,7 @@ describe("message", () => {
 
     assert.match(text, /sources selected under Systems/);
     assert.match(text, /Select other sources/);
+    assert.match(text, /leave this screen and come back/);
     assert.doesNotMatch(text, /bug/);
   });
 

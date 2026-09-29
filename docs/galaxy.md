@@ -318,7 +318,9 @@ that loader, when:
 - a source failed, and the rest gave only systems the brackets drop.
 
 The message says that the selected sources could not be loaded or have no usable star
-systems, and to choose others. It does not ask for a bug report. The stars still reach
+systems, and to choose others, or to leave the screen and come back to try them again:
+Shared Systems for Galactic War keeps a source's failed result until the screen
+reloads. It does not ask for a bug report. The stars still reach
 the loader when every source loaded but the brackets dropped every system, for its
 biomes or its army count. That loader then applies its own rules to the same
 systems. When those leave nothing, the war fails with the bug-report message.

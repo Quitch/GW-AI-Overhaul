@@ -42,7 +42,7 @@ define(function () {
       }
       if (cause === SYSTEM_SOURCES) {
         return loc(
-          "!LOC:The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or try again later."
+          "!LOC:The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again."
         );
       }
       return loc(
