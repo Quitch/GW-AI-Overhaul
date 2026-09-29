@@ -153,10 +153,11 @@ already validated. Do not write a half-guard. `card.deal && card.deal(…)`
 followed by an unguarded read of the result is worse than neither, because it
 advertises a safety it does not provide.
 
-`gw_play/gwo_panel.js` is the calibration. It walks
-`model.game() → galaxy() → stars()[origin()].system()` unguarded, then checks
-`_.isPlainObject(originSystem.gwaio)`. It trusts the base game and checks the
-field that an old save may lack.
+`gw_play/gwo_panel.js` is the calibration. It waits while the galaxy has no
+stars, as a co-op viewer's bootstrap game has none. It then walks
+`model.game() → galaxy() → stars()[origin()].system()` unguarded, and checks
+`_.isPlainObject(originSystem.gwaio)`. It trusts the base game's loaded war and
+checks the field that an old save may lack.
 
 Two shapes satisfy this rather than scattering checks. The first is a **named
 pre-flight gate** that refuses the whole operation with a diagnostic
