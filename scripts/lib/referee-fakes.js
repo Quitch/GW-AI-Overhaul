@@ -9,7 +9,8 @@ const { createFakeJQuery, createFakeApi } = require("./fake-jquery.js");
 // options.fileListByPath: { [aiPath]: string[] } - what api.file.list resolves to.
 // options.listFiles: (path) => string[] - takes precedence, for tests that derive the
 //   listing from the requested path rather than enumerating every path up front.
-// options.getJSON: (url) => json - defaults to an empty build_list.
+// options.getJSON: (url) => json.
+// A path or URL no option answers rejects, as in fake-jquery.js.
 function installRefereeFakes(options) {
   const opts = options || {};
   const previousDollar = global.$;
@@ -22,10 +23,15 @@ function installRefereeFakes(options) {
     file: {
       list: (path) => {
         listCalls.push(path);
-        const files = opts.listFiles
-          ? opts.listFiles(path)
-          : (opts.fileListByPath && opts.fileListByPath[path]) || [];
-        return Promise.resolve(files);
+        if (opts.listFiles) {
+          return Promise.resolve(opts.listFiles(path));
+        }
+        if (opts.fileListByPath && Object.hasOwn(opts.fileListByPath, path)) {
+          return Promise.resolve(opts.fileListByPath[path]);
+        }
+        return Promise.reject(
+          new Error("referee-fakes: no file listing configured for " + path)
+        );
       },
     },
   });
@@ -33,7 +39,12 @@ function installRefereeFakes(options) {
   global.$ = createFakeJQuery({
     getJSON: (url) => {
       getJSONCalls.push(url);
-      return opts.getJSON ? opts.getJSON(url) : { build_list: [] };
+      if (!opts.getJSON) {
+        throw new Error(
+          "referee-fakes: no getJSON resolver configured for " + url
+        );
+      }
+      return opts.getJSON(url);
     },
   });
 

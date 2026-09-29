@@ -12,6 +12,7 @@ const {
   registerModuleStub,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const { installFakeJQuery } = require("../scripts/lib/fake-jquery.js");
 
 function Graph(edges) {
   this.connections = [];
@@ -58,23 +59,7 @@ const stubs = createGlobalStubs();
 before(() => {
   // Stock relies on jQuery firing these already-resolved callbacks inline. See
   // galaxy.md on why the workers stream stays ordered.
-  const $ = function () {};
-  $.when = function (...args) {
-    const settled = args.map((a) =>
-      a && a.__value !== undefined ? a.__value : a
-    );
-    return {
-      __value: settled.length === 1 ? settled[0] : settled,
-      then: function (fn) {
-        const out = fn(...settled);
-        return out && out.then
-          ? out
-          : { __value: out, then: (g) => $.when(g(out)) };
-      },
-    };
-  };
-  $.when.apply = (ctx, list) => $.when(...list);
-  stubs.setGlobal("$", $);
+  installFakeJQuery(stubs, { sync: true });
 });
 
 after(() => stubs.restoreGlobals());

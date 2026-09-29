@@ -12,7 +12,10 @@ const {
   registerModuleStub,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
-const { makeDeferred } = require("../scripts/lib/fake-jquery.js");
+const {
+  installFakeJQuery,
+  makeDeferred,
+} = require("../scripts/lib/fake-jquery.js");
 
 const TEMPLATES = [
   {
@@ -319,42 +322,11 @@ function parkedEnginePromise(value) {
   return promise;
 }
 
-// A jQuery-style promise: .then(fn) spreads the resolved values into fn, and .promise()
-// marks it as something $.when will wait for.
-function jqPromise(valuesPromise) {
-  const self = {
-    values: valuesPromise,
-    then: (fn) => jqPromise(valuesPromise.then((vals) => [fn(...vals)])),
-    promise: () => self,
-  };
-  return self;
-}
-
-// jQuery 2's $.when, not Promise.all: it waits only for arguments exposing
-// .promise(), and passes anything else through as itself. A Promise.all-shaped fake
-// here once let a real bug through. See constraints.md.
-function fakeWhen(...args) {
-  const boxed = args.map((arg) => {
-    if (arg && arg.values) {
-      return arg.values.then((vals) => ({ value: vals[0] }));
-    }
-    if (arg && typeof arg.promise === "function") {
-      return Promise.resolve(arg).then((value) => ({ value }));
-    }
-    return Promise.resolve({ value: arg });
-  });
-  return jqPromise(Promise.all(boxed).then((bs) => bs.map((b) => b.value)));
-}
-
 const stubs = createGlobalStubs();
 
 before(() => {
-  const $ = function () {};
-  $.Deferred = makeDeferred;
+  const $ = installFakeJQuery(stubs);
   $.get = () => parkedDeferred(JSON.stringify({ radius_range: [100, 1300] }));
-  $.when = fakeWhen;
-  $.when.apply = (ctx, list) => fakeWhen(...list);
-  stubs.setGlobal("$", $);
   stubs.setGlobal("parse", JSON.parse);
   stubs.setGlobal("api", {
     game: { getRandomPlanetName: () => parkedEnginePromise("PlanetName") },

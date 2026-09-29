@@ -73,8 +73,8 @@ described separately below.
 | `validate:cards`        | Every card exports the fixed contract shape.                                                                                                                                                                                                     |
 | `validate:ai-mods`      | Every card's `buff()`/`dull()` emits descriptors matching `referee_ai.js`'s contract.                                                                                                                                                            |
 | `validate:schemas`      | AI build-order JSON and difficulty/personality data: type consistency.                                                                                                                                                                           |
-| `validate:refs`         | Cross-references: loadout ids against card files, unit keys, AI builder roles against `unit_map`.                                                                                                                                                |
-| `validate:sonar`        | `sonar-project.properties`: no stale exclusion paths, every analysed file is UTF-8.                                                                                                                                                              |
+| `validate:refs`         | Cross-references: loadout ids against card files, unit keys, AI builder roles and fabber/factory `to_build` keys against the unit maps.                                                                                                          |
+| `validate:sonar`        | `sonar-project.properties`: no stale exclusion or issue-ignore paths, every analysed file is UTF-8.                                                                                                                                              |
 | `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree, AI-path tree and validator tables) against the tree and `package.json`.                                                                                            |
 | `validate:translations` | The translation files under `translations/`: PA locale names, PA's table shape, sorted unique keys, the en-US catalog equal to the keys the tree asks the game to translate, other files a subset of it, placeholders and style codes preserved. |
 
@@ -90,7 +90,9 @@ therefore runs a loadout down that path, with both banks stubbed to accept and
 keep nothing. Every card runs twice: once on the stub's answers, and once as a
 Cluster player who holds no cards. The stub alone never takes the Cluster side
 of `playerIsCluster()` or the "not held" side of `hasCard()`, so the second run
-checks the AI mods added only there. `MIN_CARDS_CHECKED` counts cards, not runs.
+checks the AI mods added only there. The validator fails if `playerIsCluster()`
+does not read the second run's answers as Cluster, or if no card asks it.
+`MIN_CARDS_CHECKED` counts cards, not runs.
 It fails the run when fewer cards add AI mods than do today, and an excluded
 card is listed by name.
 
@@ -108,8 +110,7 @@ validates, so the build entry silently never fires. That is how
 `HasEcoForAdvanced` (the real test is `HaveEcoForAdvanced`) went unnoticed.
 
 CI has no base install, so this list has to be committed. **Re-harvest it after
-a PA patch adds tests.** `UnitCountonPlanet` is a base-game spelling variant. It
-stays in the list because the engine accepts what its own data ships.
+a PA patch adds tests.**
 
 **`test/fixtures/unit_types.json` is harvested the same way.**
 `npm run harvest:unit-types` writes it. It holds every listed unit's
@@ -272,25 +273,37 @@ test's fixtures therefore cannot silently drift from what the code actually asks
 for.
 
 By default it returns the Promise itself rather than an object with a `then`
-property. That keeps `.then` the real inherited `Promise.prototype.then`. An
-object with its own `then` property is the shape that SonarLint's "objects
-should not have a then property" rule warns about. What `.then` gives back also
-carries `promise`/`done`/`fail`/`always`, as jQuery's does.
+property. That keeps `.then` chaining on the real inherited
+`Promise.prototype.then`. An object with its own `then` property is the shape
+that SonarLint's "objects should not have a then property" rule warns about.
+What `.then` gives back also carries `promise`/`done`/`fail`/`always`, as
+jQuery's does.
 
-The default `when` keeps jQuery 2's shape: one argument resolves to that value,
-and several arguments resolve to the array. It identifies a promise by a
-`promise` **method**. An argument without one therefore passes straight
-through, and `when` never waits for it, exactly as `constraints.md` describes.
-That is why it is hand-built rather than wrapped around `Promise.all`. A native
-promise resolved with a thenable adopts it, which would wait after all.
+The default `when` keeps jQuery 2's shape: its callbacks get each argument's
+value as an argument of its own, which is what shipped code that reads
+`_.toArray(arguments)` expects. It identifies a promise by a `promise`
+**method**. An argument without one therefore passes straight through, and
+`when` never waits for it, exactly as `constraints.md` describes. That is why it
+is hand-built rather than wrapped around `Promise.all`. A native promise
+resolved with a thenable adopts it, which would wait after all.
+
+The default `.then` applies the same test to what a callback returns. jQuery 2
+waits for the returned value only when it has a `promise` method, and passes an
+engine or native promise on as a value, unwaited. The inherited `.then` would
+adopt it and wait, so the fake fails the test instead. It throws, which rejects
+the chain, and it throws again out of band, so a `.fail()` further down cannot
+swallow the error. What a `done`, `fail` or `always` callback returns is not
+tested, because jQuery ignores it. `$.getJSON` returns a Promise carrying the
+same members as a Deferred's, as jQuery's does, so a callback may return it.
 
 `installFakeJQuery(stubs, { sync: true })` swaps in a Deferred that models
-jQuery 2.1.4 itself, and a `when` that takes exactly one argument. Its callbacks
+jQuery 2.1.4 itself, and jQuery 2.1.4's `when`, which waits on every argument
+without a tick. Its callbacks
 run inside `resolve()` and `reject()`, a callback's throw escapes through the
 call that settled it, and the Deferred is stuck afterwards. The default fake
 runs callbacks a tick later and turns a callback's throw into a rejection, so it
 cannot show a bug that depends on either. Use the sync mode for such code, as
-`race_mods.test.js` and `gwo_promise.test.js` do.
+`race_mods.test.js`, `gwo_promise.test.js`, and `gwo_breeder.test.js` do.
 
 Modelling thenables is the file's whole job. `sonar-project.properties`
 therefore scopes Sonar's `javascript:S7739` ("Do not add `then` to an object")
@@ -407,8 +420,10 @@ context bound to a recording `setTimeout`, with an optional driven clock behind
 wiring that `referee_ai.js`'s file discovery needs. It returns its own restore
 function. It records every `api.file.list` and `$.getJSON` call unconditionally.
 A test that asserts which paths were walked therefore needs no second, subtly
-different, local installer. The three tests that use it would otherwise each
-have grown one.
+different, local installer. Four test files and `validate:race-trees` use it,
+and each would otherwise have grown one. As in `fake-jquery.js`, a listing or
+file that no option answers rejects, so a test configures every path the
+referee reads.
 
 ## Coverage
 

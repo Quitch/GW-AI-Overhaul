@@ -13,6 +13,10 @@ const {
 const { buildGame, useModel } = require("../scripts/lib/ai-path-fixtures.js");
 const { FIXTURE_RACE } = require("../scripts/lib/race-fixture.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
+const {
+  installFakeJQuery,
+  resolved,
+} = require("../scripts/lib/fake-jquery.js");
 
 const { writeRaceTree, raceTreeJobs } = requireShippedModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
@@ -123,21 +127,11 @@ describe("raceTreeJobs", () => {
 
     const stubs = createGlobalStubs();
     const gets = [];
-    const $ = function () {};
+    const $ = installFakeJQuery(stubs);
     $.get = (url) => {
       gets.push(url);
-      return {
-        then: (fn) => Promise.resolve(fn(JSON.stringify({ unit_map: {} }))),
-      };
+      return resolved(JSON.stringify({ unit_map: {} }));
     };
-    $.when = function () {
-      const loads = Array.prototype.slice.call(arguments);
-      return {
-        then: (fn) =>
-          Promise.all(loads).then((values) => fn.apply(null, values)),
-      };
-    };
-    stubs.setGlobal("$", $);
     stubs.setGlobal("parse", JSON.parse);
     try {
       assert.deepEqual(await job.repointed(), {});

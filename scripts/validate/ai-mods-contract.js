@@ -4,19 +4,28 @@
 // against what referee_ai.js's applyAiMods implements. Descriptors exist only as
 // runtime objects, so checking them means calling buff()/dull() for real.
 //
-// The contract, confirmed against every card that authors AI mods:
-//   - Every descriptor has `type` and `op`.
-//   - op "load" carries only `value`, a build-file filename.
+// The contract, as referee_ai.js reads it:
+//   - Every descriptor has `type` and `op`, and no key referee_ai.js does not
+//     read for that op.
+//   - op "load" carries only `value`, the name of a file this repo ships under
+//     pa/ai_tech/.
 //   - Every other op carries `value` and `toBuild`; append/prepend/replace also
 //     need `idToMod`, whose absence silently makes the mod a no-op.
 //   - op "unset" is the exception: it deletes `idToMod` rather than writing it,
 //     so it carries `toBuild` and `idToMod` but no `value`.
 //   - op "silence" matches on builders rather than `toBuild`, so it carries
 //     only `value`: `{ builders, except }`, both arrays of strings.
-//   - `treeOnly`, when present, is a boolean on a build-list op. It keeps the
+//   - `refId` and `refValue` come as a pair.
+//   - `treeOnly`, when present, is a boolean on any op but load. It keeps the
 //     descriptor off files a `load` pulled in from /pa/ai_tech/.
 
-const { registerModuleStub } = require("../lib/amd-loader.js");
+const fs = require("node:fs");
+const path = require("node:path");
+const {
+  REPO_ROOT,
+  loadCouiModule,
+  registerModuleStub,
+} = require("../lib/amd-loader.js");
 const { listCardFiles, loadCard } = require("../lib/card-files.js");
 const { createAutoStub } = require("../lib/auto-stub.js");
 const {
@@ -53,6 +62,31 @@ const REQUIRED_FIELDS_BY_OP = {
   squad: ["value", "toBuild"],
 };
 
+// Every key referee_ai.js reads, bar `type` and `op`: each op's own arguments
+// in applyAiMods, and the `treeOnly` aiModsInScopeOfFile reads for every op but
+// load. Any other key does nothing, so a misspelt `refId` widens the match and
+// a misspelt `treeOnly` lets the descriptor reach a loaded file.
+const MATCH_KEYS = ["toBuild", "idToMod", "refId", "refValue", "matchAll"];
+const KEYS_READ_BY_OP = {
+  load: ["value"],
+  append: ["value", "treeOnly", ...MATCH_KEYS],
+  prepend: ["value", "treeOnly", ...MATCH_KEYS],
+  replace: ["value", "treeOnly", ...MATCH_KEYS],
+  unset: ["treeOnly", ...MATCH_KEYS],
+  remove: ["value", "toBuild", "treeOnly"],
+  new: ["value", "toBuild", "idToMod", "treeOnly"],
+  silence: ["value", "treeOnly"],
+  squad: ["value", "toBuild", "treeOnly"],
+};
+
+// Mirrors referee_ai.js's managerPath(): where a load's file lives.
+const TECH_DIR_BY_TYPE = {
+  fabber: "fabber_builds",
+  factory: "factory_builds",
+  platoon: "platoon_builds",
+  template: "platoon_templates",
+};
+
 // Which `type` each op can legally target. A mismatched pair passes the field
 // shape check and is then dropped at runtime, silently for a shipped card -
 // which is why it is caught here instead. `load` routes through managerPath()
@@ -82,6 +116,11 @@ function startCardAnswers() {
 
 // Cluster's faction index, which shared/cards.js's playerIsCluster() tests for.
 const CLUSTER_FACTION = 4;
+const CARDS_JS = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js";
+
+// How often the Cluster run answered playerFaction, so main() can tell that
+// the run reached a Cluster branch at all.
+let clusterAnswers = 0;
 
 // The stub alone takes one side of each fork: playerIsCluster() is never true
 // and hasCard() always is. This run takes the other side of both, so AI mods
@@ -90,10 +129,13 @@ function clusterWithoutCards(answers) {
   const getTag = answers.getTag || createAutoStub;
   return Object.assign({}, answers, {
     hasCard: () => false,
-    getTag: (context, name) =>
-      context === "global" && name === "playerFaction"
-        ? CLUSTER_FACTION
-        : getTag(context, name),
+    getTag: (context, name) => {
+      if (context === "global" && name === "playerFaction") {
+        clusterAnswers++;
+        return CLUSTER_FACTION;
+      }
+      return getTag(context, name);
+    },
   });
 }
 
@@ -161,13 +203,47 @@ function checkType(problems, where, mod) {
 }
 
 function checkTreeOnly(problems, where, mod) {
-  if (!Object.prototype.hasOwnProperty.call(mod, "treeOnly")) {
+  if (Object.hasOwn(mod, "treeOnly") && typeof mod.treeOnly !== "boolean") {
+    problems.push(where + ": `treeOnly` must be a boolean");
+  }
+}
+
+function checkKeysRead(problems, where, mod) {
+  const read = KEYS_READ_BY_OP[mod.op];
+  for (const key of Object.keys(mod)) {
+    if (key !== "type" && key !== "op" && !read.includes(key)) {
+      problems.push(
+        where + ": `" + key + '` is not read by op "' + mod.op + '"'
+      );
+    }
+  }
+}
+
+// A refId alone matches every entry and test that lacks that field; a
+// refValue alone is never read.
+function checkRefPair(problems, where, mod) {
+  if (
+    KEYS_READ_BY_OP[mod.op].includes("refId") &&
+    (mod.refId === undefined) !== (mod.refValue === undefined)
+  ) {
+    problems.push(where + ": `refId` and `refValue` come as a pair");
+  }
+}
+
+function checkLoadTarget(problems, where, mod) {
+  if (mod.op !== "load" || !Object.hasOwn(TECH_DIR_BY_TYPE, mod.type)) {
     return;
   }
-  if (typeof mod.treeOnly !== "boolean") {
-    problems.push(where + ": `treeOnly` must be a boolean");
-  } else if (mod.op === "load" || mod.op === "squad") {
-    problems.push(where + ': `treeOnly` is not read by op "' + mod.op + '"');
+  const dir = "pa/ai_tech/" + TECH_DIR_BY_TYPE[mod.type];
+  const target =
+    typeof mod.value === "string" &&
+    fs.statSync(path.join(REPO_ROOT, dir, mod.value), {
+      throwIfNoEntry: false,
+    });
+  if (!target || !target.isFile()) {
+    problems.push(
+      where + ": `value` names no file in " + dir + ": " + mod.value
+    );
   }
 }
 
@@ -192,8 +268,9 @@ function checkSilenceValue(problems, where, mod) {
   }
 }
 
-// The checks that need a known op: its required fields, treeOnly, and the
-// types it may target.
+// The checks that need a known op: its required fields, the keys it reads,
+// treeOnly, the refId/refValue pair, a load's file, and the types it may
+// target.
 function checkOp(problems, where, mod, requiredFields) {
   for (const field of requiredFields) {
     if (
@@ -204,7 +281,10 @@ function checkOp(problems, where, mod, requiredFields) {
     }
   }
 
+  checkKeysRead(problems, where, mod);
   checkTreeOnly(problems, where, mod);
+  checkRefPair(problems, where, mod);
+  checkLoadTarget(problems, where, mod);
   checkSilenceValue(problems, where, mod);
 
   const allowedTypes = VALID_TYPES_BY_OP[mod.op];
@@ -275,10 +355,22 @@ function checkFile(file) {
   };
 }
 
+// The Cluster run checks nothing more unless shared/cards.js reads its answers
+// as Cluster and a card asks.
+function clusterRunProblems() {
+  const problems = [];
+  const clusterInventory = createCapturingInventory({
+    answers: clusterWithoutCards({}),
+  });
+  if (!loadCouiModule(CARDS_JS).playerIsCluster(clusterInventory)) {
+    problems.push(
+      "the Cluster run's answers do not make shared/cards.js's playerIsCluster() true"
+    );
+  }
+  return problems;
+}
+
 function main() {
-  // Stubs shared/gw_common, which 59 cards load, 16 of them through
-  // cards/gwc_start. Without it those cards were skipped as excluded, nine of
-  // them AI-mod authors.
   installCardHarness();
   registerModuleStub(
     "shared/gw_common",
@@ -294,6 +386,8 @@ function main() {
   let modsChecked = 0;
   const excluded = [];
   const failures = [];
+  const clusterProblems = clusterRunProblems();
+  clusterAnswers = 0;
 
   for (const file of files) {
     const result = checkFile(file);
@@ -331,6 +425,14 @@ function main() {
           " expected: a card stopped adding them, or the harness stopped reaching it",
       ],
     });
+  }
+  if (!clusterAnswers) {
+    clusterProblems.push(
+      "no card asked the Cluster run for global:playerFaction, so it reached no Cluster branch"
+    );
+  }
+  if (clusterProblems.length) {
+    failures.push({ file: "ai-mods-contract", problems: clusterProblems });
   }
 
   reportFailures(failures);

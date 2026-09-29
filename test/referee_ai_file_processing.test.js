@@ -50,7 +50,7 @@ describe("aisShareAPath", () => {
       aiMods: [],
     });
     installModel(fixture.game, []);
-    const { listCalls } = installFakes({});
+    const { listCalls } = installFakes({ fileListByPath: { "/pa/ai/": [] } });
 
     const filesObj = {};
     await run(filesObj);
@@ -65,7 +65,12 @@ describe("aisShareAPath", () => {
       aiMods: [],
     });
     installModel(fixture.game, []);
-    const { listCalls } = installFakes({});
+    const { listCalls } = installFakes({
+      fileListByPath: {
+        "/pa/ai_queller/q_uber/": [],
+        "/pa/ai_queller/q_bronze/": [],
+      },
+    });
 
     const filesObj = {};
     await run(filesObj);
@@ -93,6 +98,7 @@ describe("file filtering", () => {
           "/pa/ai/readme.txt",
         ],
       },
+      getJSON: () => ({ build_list: [] }),
     });
 
     const filesObj = {};
@@ -178,6 +184,8 @@ describe("Guardians scoped destination", () => {
           "/pa/ai/unit_maps/fixture.json",
         ],
       },
+      getJSON: (url) =>
+        url.includes("/unit_maps/") ? { unit_map: {} } : { build_list: [] },
     });
 
     const filesObj = {};
@@ -217,6 +225,7 @@ describe("per-player-tech viewer processing", () => {
     installModel(fixture.game, connectedClients);
     installFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [] }),
     });
 
     const filesObj = {};
@@ -264,6 +273,7 @@ describe("per-player-tech viewer processing", () => {
           "/pa/ai_queller/q_silver/fabber_builds/silver.json",
         ],
       },
+      getJSON: () => ({ build_list: [] }),
     });
 
     const filesObj = {};
@@ -302,6 +312,7 @@ describe("per-player-tech viewer processing", () => {
     installModel(fixture.game, connectedClients);
     const { listCalls, getJSONCalls } = installFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [] }),
     });
 
     const filesObj = {};
@@ -321,6 +332,7 @@ describe("per-player-tech viewer processing", () => {
     installModel(fixture.game, [{ id: "host", name: "Host", role: "host" }]);
     const { listCalls, getJSONCalls } = installFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/x.json"] },
+      getJSON: () => ({ build_list: [] }),
     });
     const treeCache = refereeAi.createTreeCache();
 
@@ -400,6 +412,7 @@ describe("per-player-tech viewer processing", () => {
     ]);
     installFakes({
       fileListByPath: { "/pa/ai/": ["/pa/ai/fabber_builds/land.json"] },
+      getJSON: () => ({ build_list: [] }),
     });
 
     const filesObj = {};
@@ -648,7 +661,10 @@ describe("race trees", () => {
   it("does nothing extra for an MLA battle", async () => {
     const fixture = buildGame({ aiInUse: "Titans" });
     installModel(fixture.game, []);
-    installFakes({ fileListByPath: { "/pa/ai/": TITANS_FILES } });
+    installFakes({
+      fileListByPath: { "/pa/ai/": TITANS_FILES },
+      getJSON: (url) => ({ from: url }),
+    });
 
     const filesObj = {};
     await run(filesObj);

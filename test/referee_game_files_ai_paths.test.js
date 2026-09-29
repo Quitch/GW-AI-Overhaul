@@ -10,6 +10,7 @@ const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
+  installFakeJQuery,
   makeDeferred,
   rejected: jqRejected,
   resolved: jqResolved,
@@ -914,21 +915,11 @@ describe("race army maps", () => {
       "spec://pa/ai/unit_maps/fixture_repointed.json": raceMap,
     };
     const gets = [];
-    const $ = function () {};
+    const $ = installFakeJQuery(stubs);
     $.get = (url) => {
       gets.push(url);
-      return {
-        then: (fn) => Promise.resolve(fn(JSON.stringify(maps[url]))),
-      };
+      return jqResolved(JSON.stringify(maps[url]));
     };
-    $.when = function () {
-      const loads = Array.prototype.slice.call(arguments);
-      return {
-        then: (fn) =>
-          Promise.all(loads).then((values) => fn.apply(null, values)),
-      };
-    };
-    stubs.setGlobal("$", $);
     stubs.setGlobal("parse", JSON.parse);
     const gwoRaces = {
       cellsOf: (race) =>

@@ -118,7 +118,6 @@ const KNOWN_TEST_TYPES = new Set([
   "UnitCountInCelestialTransit",
   "UnitCountOnPlanet",
   "UnitCountPerPlanetRadius",
-  "UnitCountonPlanet",
   "UnitPoolCount",
   "UnitRatioOnPlanet",
   "WantCommanderOffPlanet",
