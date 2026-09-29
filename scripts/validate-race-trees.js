@@ -172,6 +172,14 @@ async function refereeTree(gameOptions, merged, destRoot) {
   return tree;
 }
 
+// refereeTree swaps the global model, $ and api, so its runs cannot overlap.
+function inTurn(items, step) {
+  return items.reduce(
+    (chain, item) => chain.then(() => step(item)),
+    Promise.resolve()
+  );
+}
+
 function compareTrees(label, expected, actual) {
   const problems = [];
   for (const key of expected.keys()) {
@@ -325,7 +333,7 @@ async function main() {
 
   let ok = true;
 
-  for (const race of candidates) {
+  await inTurn(candidates, async (race) => {
     const destRoot = races.aiRoot(race.id, "/pa/ai/");
     const merged = mergeRoots(
       baseRoots().concat(modRoots(race.serverMods), addonRoots)
@@ -337,7 +345,7 @@ async function main() {
         expectedRaceTree(merged, destRoot, layers, race.id),
         actual
       ) && ok;
-  }
+  });
 
   const mlaMerged = mergeRoots(baseRoots().concat(addonRoots));
   const mlaActual = await refereeTree(
@@ -358,7 +366,7 @@ async function main() {
       addonRoots
     )
   );
-  for (const race of candidates) {
+  await inTurn(candidates, async (race) => {
     const destRoot = races.aiRoot(race.id, "/pa/ai/");
     const actual = await refereeTree(
       { enemyRace: race.id },
@@ -367,7 +375,7 @@ async function main() {
     );
     ok = checkSubtraction(race.id, layers, race.id, actual, destRoot) && ok;
     ok = checkTemplates(race.id, actual, destRoot) && ok;
-  }
+  });
   const mlaAll = await refereeTree(
     { enemyType: "guardians" },
     allMounted,
