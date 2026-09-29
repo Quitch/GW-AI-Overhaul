@@ -304,11 +304,12 @@ const CARD_MARKERS = [
 ];
 
 // The last `marker` in `window` that starts a word, so the `name:` of a
-// `display_name:` is not the card's.
-function lastIndexIn(window, marker) {
+// `display_name:` is not the card's. `before` is the character ahead of the
+// window, "" at the start of the file.
+function lastIndexIn(window, marker, before) {
   let at = window.lastIndexOf(marker);
-  while (at > 0 && /\w/.test(window[at - 1])) {
-    at = window.lastIndexOf(marker, at - 1);
+  while (at >= 0 && /\w/.test(at > 0 ? window[at - 1] : before)) {
+    at = at > 0 ? window.lastIndexOf(marker, at - 1) : -1;
   }
   return at;
 }
@@ -336,22 +337,22 @@ function inModsCall(source, index) {
 
 // A card literal's role: the nearest marker before it, with a description
 // that sits under a hint read as the hint.
-function cardRole(window) {
+function cardRole(window, before) {
   let best = null;
   for (const [marker, role] of CARD_MARKERS) {
-    const at = lastIndexIn(window, marker);
+    const at = lastIndexIn(window, marker, before);
     if (at >= 0 && (!best || at > best.at)) {
       best = { at: at, role: role, marker: marker };
     }
   }
   if (best && best.marker === "description:") {
     const hintAt = Math.max(
-      lastIndexIn(window, "hint:"),
-      lastIndexIn(window, "lockedHint(")
+      lastIndexIn(window, "hint:", before),
+      lastIndexIn(window, "lockedHint(", before)
     );
     const otherAt = Math.max(
-      lastIndexIn(window, "summarize"),
-      lastIndexIn(window, "describe")
+      lastIndexIn(window, "summarize", before),
+      lastIndexIn(window, "describe", before)
     );
     if (hintAt > otherAt) {
       return "card-hint";
@@ -374,9 +375,12 @@ function raceRole(facts, window, index) {
 }
 
 function jsRole(facts, source, index) {
-  const window = source.slice(Math.max(0, index - ROLE_WINDOW), index);
+  const start = Math.max(0, index - ROLE_WINDOW);
+  const window = source.slice(start, index);
   if (facts.card) {
-    return inModsCall(source, index) ? "loc-call" : cardRole(window);
+    return inModsCall(source, index)
+      ? "loc-call"
+      : cardRole(window, source.charAt(start - 1));
   }
   if (facts.faction !== undefined && /character:\s*$/.test(window)) {
     return "faction-character";

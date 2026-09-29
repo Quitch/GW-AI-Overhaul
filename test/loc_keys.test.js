@@ -125,16 +125,20 @@ describe("card roles", () => {
   });
 
   it("does not take the end of a longer property name for a marker", () => {
+    // The second literal sits 600 characters (the role window) after its
+    // name:, so the window starts inside display_name.
     const keys = extractFrom([
       at(CARD, [
         "define([], function () {",
         '  var unit = { display_name: "!LOC:Loose Unit" };',
+        "  var far = { display_name:" + " ".repeat(595) + '"!LOC:Far Unit" };',
         "  return unit;",
         "});",
       ]),
     ]);
 
     assert.equal(sitesOf(keys, "Loose Unit")[0].role, "loc-call");
+    assert.equal(sitesOf(keys, "Far Unit")[0].role, "loc-call");
   });
 });
 
