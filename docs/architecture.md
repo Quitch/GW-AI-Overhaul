@@ -164,7 +164,10 @@ button dead. So `referee_game_files.js` routes every path that can throw into
 one `fail` that rejects its deferred. Those paths are the synchronous prelude
 and each nested spec-fetch chain. `referee_biomes.js` runs each callback as a
 `gwoPromise.steps` step instead, so a rejection or a throw after an engine call
-rejects the step. The hire's own fail handler in `referee.js`
+rejects the step. `referee_ai.js` holds every tree listing and file read as a
+native promise, so a failed read, or a throw in the work on a file, rejects
+too. The one read it skips instead is a card's `load` file (see
+[`ai-pipeline.md`](ai-pipeline.md)). The hire's own fail handler in `referee.js`
 logs the error through `gameFilePaths.describeError`, which formats a jqXHR
 as its HTTP status rather than `[object Object]`, and clears
 `launchingFight`, which closes the panel.

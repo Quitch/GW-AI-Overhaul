@@ -55,6 +55,9 @@ covers each one in full:
   → [ai-paths.md](ai-paths.md)
 - **jQuery 2.x swallows a `throw` inside a deferred callback.** There is no
   rejection and no retry, and the caller hangs. → [constraints.md](constraints.md)
+- **An engine call's `.then` with no error callback never settles if the call
+  fails.** Nothing passes the failure on, and the caller hangs.
+  → [constraints.md](constraints.md)
 - **A defensive check marks a trust boundary, and means nothing anywhere else.**
   Where the mod _calls_ third-party code rather than reads it, the check is
   mandatory. That call sits in a deferred, so a throw is a hang, not an error.

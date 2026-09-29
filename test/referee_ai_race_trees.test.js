@@ -4,7 +4,7 @@
 // MLA's orders to the race's builders, and every other file is copied as it
 // is. See races.md, "Race trees".
 
-const { describe, it, afterEach } = require("node:test");
+const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
 const {
   loadCouiModule,
@@ -19,6 +19,9 @@ const {
 } = require("../scripts/lib/fake-jquery.js");
 
 const { writeRaceTree, raceTreeJobs } = requireShippedModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
+);
+const { createTreeCache } = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
 );
 const races = loadCouiModule(
@@ -97,6 +100,55 @@ describe("writeRaceTree", () => {
       out["/pa/ai_race_fixture/fabber_builds/fabber_land_builds.json"],
       files[STOCK]
     );
+  });
+
+  // jQuery 2.1.4 does not turn a throw in a .then callback into a rejection:
+  // it escapes through the resolve() that ran the callback, and the chain
+  // stays pending. A file read through $.getJSON is processed after the read,
+  // so a stock list with a null entry once left the launch waiting.
+  it("rejects, rather than hangs, when a file fails after it is read", async () => {
+    const stubs = createGlobalStubs();
+    const $ = installFakeJQuery(stubs, { sync: true });
+    const reads = [];
+    $.getJSON = () => {
+      const read = $.Deferred();
+      reads.push(read);
+      return read.promise();
+    };
+    stubs.setGlobal("api", {
+      file: { list: () => Promise.resolve([STOCK]) },
+    });
+    const warn = mock.method(console, "warn", () => {});
+    try {
+      const written = writeRaceTree(
+        jobFor({ BasicVehicleFactory: true }),
+        createTreeCache(),
+        {}
+      ).then(
+        () => "resolved",
+        () => "rejected"
+      );
+      for (let tick = 0; tick < 50 && !reads.length; tick += 1) {
+        await Promise.resolve();
+      }
+      assert.equal(reads.length, 1, "the stock list was read");
+      // The engine logs a throw from a deferred callback and carries on.
+      try {
+        reads[0].resolve({ build_list: [null] });
+      } catch {
+        // Logged by the engine, as the comment above says.
+      }
+
+      const outcome = await Promise.race([
+        written,
+        new Promise((resolve) => setTimeout(resolve, 100, "hung")),
+      ]);
+
+      assert.equal(outcome, "rejected");
+    } finally {
+      warn.mock.restore();
+      stubs.restoreGlobals();
+    }
   });
 });
 

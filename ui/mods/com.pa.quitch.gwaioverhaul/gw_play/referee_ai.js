@@ -552,6 +552,21 @@ define([
       }
     };
 
+    // Nothing checks a third-party card's load target, so an unreadable one is
+    // skipped rather than failing the battle. A failure after the read rejects.
+    var loadFileNotRead = function (error) {
+      if (!filePathStarts(aiTechPath)) {
+        throw error;
+      }
+      console.error(
+        "AI file of a load mod not read, skipped: " +
+          filePath +
+          " (" +
+          gameFilePaths.describeError(error) +
+          ")"
+      );
+    };
+
     return treeCache.getJSON(filePath).then(function (json) {
       // Only applyClusterModsIfNeeded's enemy branch reads this snapshot.
       var originalJson =
@@ -589,7 +604,7 @@ define([
         fileOwner,
         isSubCommanderTechFile
       );
-    });
+    }, loadFileNotRead);
   };
 
   // One launch walks the same build trees once per tree and once per connected
@@ -605,19 +620,21 @@ define([
     };
 
     // Callers mutate what they are handed, so the cache keeps the pristine
-    // result and hands out a copy. .then returns a new promise each time, on
-    // the engine's promise as on jQuery's, so the stored request is not consumed.
+    // result and hands out a copy. Each request is held as a native promise:
+    // the engine's never settles a .then() given no error callback when the
+    // call fails, and jQuery's lets a callback's throw escape. See
+    // ai-pipeline.md, "The tree cache".
     return {
       list: function (aiPath) {
         return cached(listings, aiPath, function (path) {
-          return api.file.list(path, true);
+          return Promise.resolve(api.file.list(path, true));
         }).then(function (fileList) {
           return fileList.slice();
         });
       },
       getJSON: function (filePath) {
         return cached(files, filePath, function (path) {
-          return $.getJSON("coui:/" + path);
+          return Promise.resolve($.getJSON("coui:/" + path));
         }).then(function (json) {
           return _.cloneDeep(json);
         });
@@ -632,8 +649,8 @@ define([
   var processDirectories = function (aiPath, request) {
     var deferred = $.Deferred();
     var inventory = request.inventory;
-    // A throw inside a deferred callback is a hang, not a rejection (see
-    // constraints.md), so every path below that can fail rejects here instead.
+    // The listing and every file reject through `fail`. Nothing reads the
+    // promise the listing's callback returns, so that callback catches its own.
     var fail = function (error) {
       deferred.reject(error);
     };

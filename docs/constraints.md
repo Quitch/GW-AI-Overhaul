@@ -114,8 +114,12 @@ the adapter fails a test rather than skipping the wait in a war. An audit on
 2026-08-31 found that every other `$.when` in the mod is handed a jQuery promise
 or a plain value.
 
-`.then` on a jQuery promise also returns a _new_ promise each time. The AI tree
-cache depends on that.
+An engine promise has a trap of its own. PA's `coherent.js` settles the promise
+that `.then` returns only through a handler, so when the call fails, a `.then`
+given no error callback leaves it pending for good, with no error.
+`api.file.list` fails this way for a path it cannot list. Give an engine call's
+`.then` an error callback, or adopt the call into a native promise first, as the
+AI tree cache does.
 
 `requireGW` is configured `waitSeconds: 0`, so a module that never arrives never
 errors either. The callback simply never fires. A tally that counts callbacks

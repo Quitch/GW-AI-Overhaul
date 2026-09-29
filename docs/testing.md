@@ -312,7 +312,10 @@ out of this one file. The rule stays active everywhere else.
 `installFakeJQuery` puts a callable `$` carrying the lot behind a suite's global
 stubs. The file also exports `enginePromise()`. That is the
 `then`-and-nothing-else shape every `api.*` call returns. Hold one pending to
-prove that the code under test waits for it. The file also exports
+prove that the code under test waits for it. `failedEngineCall(reason)` is a
+failed `api.*` call, chained as PA's `coherent.js` chains one: a `.then` given
+an error callback gets the failure, and the promise a `.then` given none
+returns never settles. The file also exports
 `resolved()`/`rejected()`. Those are jQuery-shaped settled promises for a fixture
 that stands in for stock code that returns one.
 
