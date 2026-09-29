@@ -88,14 +88,31 @@ describe("the Lucky Commander repair", () => {
     assert.deepEqual(errors, []);
     assert.deepEqual(banked, ["gwaio_start_lucky"]);
     assert.deepEqual(store.gw_bank.startCards, [{ id: "gwc_start_air" }]);
-    assert.equal(store.gwaio_lucky_commander_fixed, "true");
+    assert.equal(store.gwaio_lucky_commander_moved, "true");
     assert.equal(saves.length, 1);
+  });
+
+  // Versions up to 7.4.1 set gwaio_lucky_commander_fixed from the war's
+  // version without moving the card, so that flag proves nothing.
+  it("moves it for a profile an older version marked as fixed", () => {
+    const store = {
+      gw_bank: { startCards: [{ id: "gwaio_start_lucky" }] },
+      gwaio_lucky_commander_fixed: "true",
+    };
+    installProfile(store);
+    installWar("7.4.1");
+
+    const { banked } = runRepair();
+
+    assert.deepEqual(banked, ["gwaio_start_lucky"]);
+    assert.deepEqual(store.gw_bank.startCards, []);
+    assert.equal(store.gwaio_lucky_commander_moved, "true");
   });
 
   it("skips the scan once the profile's flag is set", () => {
     const store = {
       gw_bank: { startCards: [{ id: "gwaio_start_lucky" }] },
-      gwaio_lucky_commander_fixed: "true",
+      gwaio_lucky_commander_moved: "true",
     };
     installProfile(store);
     installWar("7.4.1");

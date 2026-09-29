@@ -9,7 +9,9 @@
     var galaxy = game.galaxy();
     var luckyCommanderFixed = ko
       .observable()
-      .extend({ local: "gwaio_lucky_commander_fixed" });
+      // Not gwaio_lucky_commander_fixed: up to 7.4.1 a war's version set
+      // that without moving the card.
+      .extend({ local: "gwaio_lucky_commander_moved" });
     var gwoSettings = galaxy.stars()[galaxy.origin()].system().gwaio;
     var allFixesApplied =
       gwoSettings &&
