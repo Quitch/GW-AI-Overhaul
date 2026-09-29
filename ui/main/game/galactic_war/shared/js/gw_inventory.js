@@ -155,6 +155,8 @@ define([
         } else {
           cardId = cardParams.id;
         }
+        // GWO - once per card: the loader can run a failed card's errback twice
+        var finishThisCard = _.once(finishCard);
         requireGW(
           ["cards/" + cardId],
           function (card) {
@@ -168,11 +170,11 @@ define([
                 "GWO card " + cardId + " threw in " + op + ": " + e
               );
             }
-            finishCard();
+            finishThisCard();
           },
           function (error) {
             console.error("Failed loading card " + cardId + " : " + error);
-            finishCard();
+            finishThisCard();
           }
         );
       };

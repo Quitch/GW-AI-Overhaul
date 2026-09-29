@@ -124,6 +124,9 @@ AI tree cache does.
 `requireGW` is configured `waitSeconds: 0`, so a module that never arrives never
 errors either. The callback simply never fires. A tally that counts callbacks
 must count failures too. Otherwise the promise it gates is never settled at all.
+An errback can also run a second time for the same failed module, when a later
+require reports the failure again, so a tally counts each module once
+(`_.once`).
 
 ## Where a defensive check belongs
 
