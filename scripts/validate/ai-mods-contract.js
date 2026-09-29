@@ -235,10 +235,12 @@ function checkLoadTarget(problems, where, mod) {
     return;
   }
   const dir = "pa/ai_tech/" + TECH_DIR_BY_TYPE[mod.type];
-  if (
-    typeof mod.value !== "string" ||
-    !fs.existsSync(path.join(REPO_ROOT, dir, mod.value))
-  ) {
+  const target =
+    typeof mod.value === "string" &&
+    fs.statSync(path.join(REPO_ROOT, dir, mod.value), {
+      throwIfNoEntry: false,
+    });
+  if (!target || !target.isFile()) {
     problems.push(
       where + ": `value` names no file in " + dir + ": " + mod.value
     );

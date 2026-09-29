@@ -266,7 +266,9 @@ function isJqueryPromise(value) {
 }
 
 // jQuery 2's $.when: waits on a jQuery promise and passes everything else
-// through. The callbacks get each argument's value as an argument of its own.
+// through. The callbacks get each argument's value as an argument of its own,
+// and an argument settled with several values as an array of them. One jQuery
+// promise comes back as itself, as jQuery's does.
 // The result carries `.always`, as jQuery's does - a caller that only wants to
 // know the wait is over uses it rather than .then.
 //
@@ -275,6 +277,9 @@ function isJqueryPromise(value) {
 // all, which is the whole thing this models.
 function when() {
   var args = Array.prototype.slice.call(arguments);
+  if (args.length === 1 && isJqueryPromise(args[0])) {
+    return args[0].promise();
+  }
   var values = args.slice();
   var waits = [];
 
@@ -283,8 +288,8 @@ function when() {
       return;
     }
     waits.push(
-      arg.promise().then(function (value) {
-        values[index] = value;
+      arg.promise().then(function (...settled) {
+        values[index] = settled.length > 1 ? settled : settled[0];
       })
     );
   });

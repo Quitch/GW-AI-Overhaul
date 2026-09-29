@@ -111,6 +111,14 @@ describe("fake-jquery when", () => {
     assert.deepEqual(await argsOf(when("a", "b"), "always"), ["a", "b"]);
   });
 
+  it("passes on an argument settled with several values as an array", async () => {
+    assert.deepEqual(await argsOf(when("z", when(resolved("a"), "b"))), [
+      "z",
+      ["a", "b"],
+    ]);
+    assert.deepEqual(await argsOf(when(when(resolved("a"), "b"))), ["a", "b"]);
+  });
+
   it("calls back with one argument as itself, an array included", async () => {
     assert.deepEqual(await argsOf(when(resolved(["a", "b"]))), [["a", "b"]]);
   });
