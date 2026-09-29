@@ -177,10 +177,15 @@ const applyFake = (saved) => {
 };
 
 const fakeEffects = (options) => {
-  const apply = (saved) =>
-    options.hangApply
-      ? new Promise(() => {})
-      : Promise.resolve(applyFake(saved));
+  const apply = (saved) => {
+    if (options.hangApply) {
+      return new Promise(() => {});
+    }
+    if (options.failApply && options.failApply(saved)) {
+      return Promise.reject(new Error("apply failed"));
+    }
+    return Promise.resolve(applyFake(saved));
+  };
   return {
     apply,
     withCard: (saved, card, loadout) => {
@@ -809,6 +814,54 @@ describe("coop_ai_driver bounds", () => {
     assert.ok(
       lines.some((line) =>
         /fell back: .*scratch apply failed -> took air \(fallback\)/.test(line)
+      ),
+      JSON.stringify(lines)
+    );
+  });
+
+  it("declines in its fallback when the bank has no room", async () => {
+    const run = setup({
+      records: [
+        aiRecord(1, [
+          { id: "gwc_start_bot" },
+          { id: "bot_armour" },
+          { id: "naval" },
+        ]),
+      ],
+      hands: { 1: [hand(["air"])] },
+      failScoring: true,
+    });
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot", "bot_armour", "naval"]);
+    assert.equal(record.techCardDealCount, 1);
+    assert.ok(
+      lines.some((line) =>
+        /fell back: .*scratch apply failed -> declined \(fallback, bank full\)/.test(
+          line
+        )
+      ),
+      JSON.stringify(lines)
+    );
+  });
+
+  it("declines when its fallback cannot apply the card it picked", async () => {
+    const run = setup({
+      hands: { 1: [hand(["air"])] },
+      failScoring: true,
+      failApply: (saved) => _.some(saved.cards, { id: "air" }),
+    });
+    await run.driver.run();
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot"]);
+    assert.equal(record.techCardDealCount, 1);
+    assert.ok(
+      lines.some((line) =>
+        /fell back: .*scratch apply failed -> declined \(fallback failed: apply failed\)/.test(
+          line
+        )
       ),
       JSON.stringify(lines)
     );

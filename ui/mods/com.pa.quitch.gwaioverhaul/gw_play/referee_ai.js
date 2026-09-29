@@ -638,7 +638,9 @@ define([
       deferred.reject(error);
     };
 
-    request.treeCache.list(aiPath).then(function (fileList) {
+    // In game list() is an engine promise, whose .then would pass a returned
+    // Promise.all on unwaited, so processList settles deferred itself.
+    var processList = function (fileList) {
       try {
         var aisToModify = request.forceSubCommanderScope
           ? "SubCommanders"
@@ -684,7 +686,9 @@ define([
       } catch (error) {
         fail(error);
       }
-    }, fail);
+    };
+
+    request.treeCache.list(aiPath).then(processList, fail);
 
     return deferred.promise();
   };

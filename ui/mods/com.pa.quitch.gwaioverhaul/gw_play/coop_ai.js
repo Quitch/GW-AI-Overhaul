@@ -569,6 +569,12 @@
           })
           .then(function () {
             commandersReady(true);
+          })
+          .then(null, function (error) {
+            console.error(
+              "[GW COOP AI] Add AI not offered: " +
+                (error && (error.message || error))
+            );
           });
 
         // The skirmish lobby's own AI name list, read as text: jQuery would

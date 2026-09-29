@@ -1673,45 +1673,43 @@
             selectedCardIndex
           );
 
-          return game.winTurn(wonIndex).then(function (didWin) {
-            if (!didWin) {
-              console.error(
-                "Failed winning turn at star " + game.currentStar()
-              );
-              return $.Deferred().reject("Failed winning turn").promise();
-            }
+          return game
+            .winTurn(wonIndex)
+            .then(function (didWin) {
+              if (!didWin) {
+                console.error(
+                  "Failed winning turn at star " + game.currentStar()
+                );
+                return $.Deferred().reject("Failed winning turn").promise();
+              }
 
-            if (model.isCampaignViewer()) {
-              model.syncViewerStarsFromGame("win_applied");
-            }
+              if (model.isCampaignViewer()) {
+                model.syncViewerStarsFromGame("win_applied");
+              }
 
-            model.maybePlayCaptureSound();
+              model.maybePlayCaptureSound();
 
-            return dealCardToSelectableAI(true, game.turnState())
-              .then(function () {
-                return gwoSave(game, true);
-              })
-              .then(function () {
-                if (model.gameOver()) {
-                  // always, so a failed stat write still opens the gate.
-                  api.tally
-                    .incStatInt("gw_war_victory")
-                    .always(resolveExitGate);
-                } else {
-                  resolveExitGate();
+              return dealCardToSelectableAI(true, game.turnState());
+            })
+            .then(function () {
+              return gwoSave(game, true);
+            })
+            .then(function () {
+              if (model.gameOver()) {
+                // always, so a failed stat write still opens the gate.
+                api.tally.incStatInt("gw_war_victory").always(resolveExitGate);
+              } else {
+                resolveExitGate();
 
-                  if (playTechAudio) {
-                    if (techAudio) {
-                      api.audio.playSound(techAudio);
-                    } else {
-                      api.audio.playSound(
-                        "/VO/Computer/gw/board_tech_acquired"
-                      );
-                    }
+                if (playTechAudio) {
+                  if (techAudio) {
+                    api.audio.playSound(techAudio);
+                  } else {
+                    api.audio.playSound("/VO/Computer/gw/board_tech_acquired");
                   }
                 }
-              });
-          });
+              }
+            });
         };
       }
     );

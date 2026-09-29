@@ -31,8 +31,8 @@ describe("the race table generator", () => {
     const files = await generateAll(fixture, read);
 
     assert.deepEqual(
-      Object.keys(files).sort(),
-      TABLES.map((table) => table.file).sort()
+      Object.keys(files),
+      TABLES.map((table) => table.file)
     );
     for (const [file, content] of Object.entries(files)) {
       assert.equal(lf(content), lf(read(file)), file);
