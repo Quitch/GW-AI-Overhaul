@@ -22,6 +22,7 @@ beforeEach(() => {
 
 afterEach(() => {
   restoreGlobals();
+  mock.restoreAll();
   decks.reset();
   deckMods.reset();
 });

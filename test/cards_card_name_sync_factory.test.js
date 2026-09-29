@@ -198,7 +198,7 @@ describe("card name sync - naming a star the host explored", () => {
 // The star index reaches the operator payload, so it is validated before any
 // broadcast - and the star is still named locally either way.
 describe("card name sync - when the broadcast is skipped", () => {
-  it("skips a star with no usable index", async () => {
+  it("names a star with no usable index, and tells nobody", async () => {
     for (const starIndex of [undefined, "1", NaN]) {
       const { sync, calls, options } = build();
       const system = { star: starWithAi(options.boardAi) };
@@ -206,6 +206,7 @@ describe("card name sync - when the broadcast is skipped", () => {
       await sync.setCardName(system, [{ id: "gwc_combat_bots" }], starIndex);
 
       assert.deepEqual(calls.sent, [], String(starIndex));
+      assert.equal(options.boardAi.cardName, "Combat Bots", String(starIndex));
       release();
     }
   });

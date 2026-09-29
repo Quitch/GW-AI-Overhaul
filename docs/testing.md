@@ -350,12 +350,16 @@ deliberately refuses to do. Four decisions in it are load-bearing:
   A change to `gwoGroup.orbitalBasic` therefore moves the baseline instead of
   silently disagreeing with it.
 
-The test carries three coverage floors: `MIN_PROBED`, `MIN_DEALABLE` and the
-partition assertion that no card is unclassified. `MIN_DEALABLE` is the one with
-no analogue in `validate:cards`. Without it, a broken `gw_common` stub that made
-every `deal()` return 0 would leave the card count intact and every assertion
-vacuously green. Raise the floors when coverage genuinely rises. Never lower one
-to make a run pass.
+The test carries four coverage floors: `MIN_PROBED`, `MIN_GATED`,
+`MIN_DEALABLE` and the partition assertion that no card is unclassified. The
+sweeps read two things for each card: the units it gates on and the chances it
+reaches. `MIN_GATED` and `MIN_DEALABLE` keep each of them from emptying unseen.
+A `grantedUnits` that over-reported would leave no card a unit to gate on, and
+each sweep would then skip every card. A broken `gw_common` stub that made
+every `deal()` return 0 would leave no card a chance. The sweep that offers a
+card to a player who owns its units also fails then, but it reads only the
+cards with a unit to gate on. Raise the floors when coverage genuinely rises.
+Never lower one to make a run pass.
 
 `scripts/lib/capturing-inventory.js` is the inventory every card sweep hands to
 `buff()`/`dull()`. The caller's explicit answers steer a card down the branch

@@ -68,13 +68,20 @@ const stubs = createGlobalStubs();
 stubs.setGlobal("ko", {
   observable: (initial) => makeObservable(initial, hooks),
   observableArray: (initial) => makeObservableArray(initial, hooks),
-  // Own properties only, which is exactly the observables the constructor sets.
-  toJS: (target) =>
-    Object.keys(target).reduce((out, key) => {
+  // As knockout's own: every enumerable property, the prototype's methods
+  // included, with each observable read. GWInventory.save() is this, so a save
+  // carries GWInventory's methods, as it does in the game.
+  toJS: (target) => {
+    const out = {};
+    for (const key in target) {
+      const value = target[key];
       out[key] =
-        typeof target[key] === "function" ? target[key]() : target[key];
-      return out;
-    }, {}),
+        typeof value === "function" && value.subscribe
+          ? JSON.parse(JSON.stringify(value()))
+          : value;
+    }
+    return out;
+  },
 });
 
 // cards/<id> lookups, answered synchronously. applyCards is only asynchronous
@@ -101,7 +108,12 @@ const defineSessionStorage = (value) =>
     writable: true,
   });
 
-defineSessionStorage({ getItem: () => JSON.stringify(role) });
+// Keyed, and null for any other key as sessionStorage is, so the module must
+// ask for the key stock writes the role under.
+const sessionRole = {
+  getItem: (key) => (key === "gw_campaign_role" ? JSON.stringify(role) : null),
+};
+defineSessionStorage(sessionRole);
 
 // _.delay carries the dirty re-run.
 let timers;
@@ -208,7 +220,7 @@ describe("gw_inventory - holding the bank for another player's cards", () => {
     inventoryHolding([{ id: "gwc_start_orbital" }]).applyCards();
 
     assert.deepEqual(bank, []);
-    defineSessionStorage({ getItem: () => JSON.stringify(role) });
+    defineSessionStorage(sessionRole);
   });
 
   // The apply GWGame.load flagged is the one immediately following, so the
@@ -378,7 +390,9 @@ describe("gw_inventory - the inventory itself", () => {
     assert.deepEqual(bank, []);
   });
 
-  it("saves what it loaded", () => {
+  // A copied getTag reads tags() off the save, where tags is plain, so a
+  // reader of a saved record reads its plain tags (races.raceOf).
+  it("saves what it loaded, and the prototype's methods with it", () => {
     const config = {
       units: ["u"],
       aiMods: [{ id: "m" }],
@@ -391,8 +405,10 @@ describe("gw_inventory - the inventory itself", () => {
     const inventory = new GWInventory();
 
     inventory.load(config);
+    const saved = inventory.save();
 
-    assert.deepEqual(inventory.save(), config);
+    assert.deepEqual(JSON.parse(JSON.stringify(saved)), config);
+    assert.equal(saved.getTag, GWInventory.prototype.getTag);
   });
 
   it("appends units, ai mods and mods", () => {
