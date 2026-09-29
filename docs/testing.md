@@ -90,7 +90,9 @@ therefore runs a loadout down that path, with both banks stubbed to accept and
 keep nothing. Every card runs twice: once on the stub's answers, and once as a
 Cluster player who holds no cards. The stub alone never takes the Cluster side
 of `playerIsCluster()` or the "not held" side of `hasCard()`, so the second run
-checks the AI mods added only there. `MIN_CARDS_CHECKED` counts cards, not runs.
+checks the AI mods added only there. The validator fails if `playerIsCluster()`
+does not read the second run's answers as Cluster, or if no card asks it.
+`MIN_CARDS_CHECKED` counts cards, not runs.
 It fails the run when fewer cards add AI mods than do today, and an excluded
 card is listed by name.
 
