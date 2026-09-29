@@ -99,12 +99,21 @@ define(function () {
       suspendedStockBank = undefined;
     },
 
+    // A copy of a saved inventory to load for an apply. See tech-cards.md,
+    // "Applying the card".
+    copyForApply: function (saved) {
+      var cards = _.get(saved, "cards") || [];
+      return cards.length
+        ? _.cloneDeep({ cards: cards, tags: saved.tags })
+        : _.cloneDeep(saved);
+    },
+
     // Loads a co-op viewer's saved inventory into a fresh GWInventory and
     // applies its cards with every bank held off, then hands it to done. Also
     // returned, for a caller that needs it before done runs.
     applyRecordInventory: function (GWInventory, record, stockBank, done) {
       var inventory = new GWInventory();
-      inventory.load(_.cloneDeep(record.inventory));
+      inventory.load(self.copyForApply(record.inventory));
 
       if (!inventory.cards().length) {
         done(inventory);
@@ -138,7 +147,7 @@ define(function () {
         }
       };
 
-      inventory.load(_.cloneDeep(saved));
+      inventory.load(self.copyForApply(saved));
       if (!inventory.cards().length) {
         done(inventory);
         return { inventory: inventory, abandon: release };

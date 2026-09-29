@@ -112,6 +112,63 @@ describe("coop_host.upsertRecord", () => {
     assert.equal(record.pendingTechCards, undefined);
   });
 
+  // An AI's record late in a war: some 2000 mods, star cards, and a hand.
+  const lateWarRecord = () => ({
+    playerId: "gwo_ai_1",
+    commander: "/pa/units/commanders/imperial_able/imperial_able.json",
+    updatedAt: 1,
+    techCardDealCount: 7,
+    gwaioAi: { serial: 1, name: "Sorian", personality: "absurd", race: "mla" },
+    inventory: {
+      units: ["/pa/units/land/tank_light_laser/tank_light_laser.json"],
+      aiMods: [{ type: "fabber", op: "append", toBuild: "Dox", value: 2 }],
+      mods: _.times(2000, (i) => ({
+        file: "/pa/units/u" + (i % 97) + ".json",
+        path: "weapons.0.damage",
+        op: "multiply",
+        value: 1 + (i % 7) / 10,
+      })),
+      maxCards: 9,
+      cards: [
+        { id: "gwc_start_bot" },
+        { id: "gwc_minion", minion: { name: "Alpha" }, unique: 1.25 },
+      ],
+      minions: [{ name: "Alpha" }],
+      tags: { global: { playerFaction: 0, playerRace: "mla" } },
+    },
+    gwaioStarCards: { turn: 12, cards: { 3: { id: "gwc_damage_air" } } },
+    pendingTechCards: {
+      star: 3,
+      cards: [{ id: "gwc_damage_air" }],
+      dealIndex: 8,
+      cardsOffered: 3,
+      updatedAt: 2,
+    },
+  });
+  const accepting = { upsertCoopPlayerInventoryData: () => true };
+
+  it("stores what a deep copy would, sharing nothing with the record", () => {
+    const record = lateWarRecord();
+    const patch = { updatedAt: 9, techCardDealCount: 8 };
+    const next = coopHost.upsertRecord(accepting, record, patch);
+
+    assert.deepEqual(next, _.assign({}, _.cloneDeep(record), patch));
+    next.inventory.mods[0].value = 99;
+    next.gwaioStarCards.cards[3].id = "gwc_damage_bots";
+    assert.deepEqual(record, lateWarRecord());
+  });
+
+  // Stock writes a record's inventory as inventory.save(), which carries
+  // GWInventory's methods.
+  it("stores plain data, leaving a saved inventory's methods behind", () => {
+    const record = lateWarRecord();
+    record.inventory.getTag = function () {};
+    record.inventory.load = function () {};
+    const next = coopHost.upsertRecord(accepting, record, { updatedAt: 9 });
+
+    assert.deepEqual(next, _.assign(lateWarRecord(), { updatedAt: 9 }));
+  });
+
   it("lets the patch supply the timestamp", () => {
     const game = { upsertCoopPlayerInventoryData: () => true };
     const next = coopHost.upsertRecord(game, { id: "abc" }, { updatedAt: 7 });
