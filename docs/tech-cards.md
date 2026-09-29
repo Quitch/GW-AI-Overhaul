@@ -403,7 +403,7 @@ silently discards everything the mod registered.
 | `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee |
 | `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`    |
 | `gwoStartingCards`             | start, coop loadout       | `shared/loadouts.js`                            |
-| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/setup.js`                             |
+| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                    |
 | `gwoLoadoutsAiCannotUse`       | play                      | `gw_play/cards.js`, when an AI is added         |
 | `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
 | `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |

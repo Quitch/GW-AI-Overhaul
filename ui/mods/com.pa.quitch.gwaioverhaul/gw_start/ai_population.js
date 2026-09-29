@@ -193,8 +193,8 @@ define([
     }
   };
 
-  // Every AI in teamInfo, the breeder's result. Returns the outcome setup.js
-  // acts on.
+  // Every AI in teamInfo, the breeder's result. Returns the outcome
+  // war_generation.js acts on.
   var populate = function (war, teamInfo) {
     var outcome = {
       failed: false,
@@ -250,8 +250,8 @@ define([
         war.raceByFaction[info.faction],
         "enemy"
       );
-      // The team pre-filter in setup.js covers the built-in factions; this
-      // catches a modded faction populating team.workers.
+      // The team pre-filter in war_generation.js covers the built-in factions;
+      // this catches a modded faction populating team.workers.
       var workerPool = quellerPool(info.workers, teamBrain);
       var minionPool = quellerPool(
         war.factions[info.faction].minions,

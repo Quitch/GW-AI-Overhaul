@@ -550,13 +550,14 @@ before its `requireGW` callback, or a callback small enough to stub:
 dozens of modules and much of `model`, as the one in `gw_play/cards.js` does,
 gets no such test. Its testable logic is extracted instead.
 
-`test/gw_start_setup.test.js` is the exception. War generation in
-`gw_start/setup.js` fails on timing across its steps: a seed read late, a run
-another has replaced, a source that fails while the rest load. Only the script
-itself can show that. The test answers 21 of the script's 24 modules with
-stand-ins, holds Shared Systems for Galactic War's sources and the galaxy build,
-and acts while they wait. It uses the sync fake jQuery, so settling a held step
-runs the rest of the chain in that call.
+`test/gw_start_setup.test.js` is the exception. War generation fails on timing
+across its steps: a seed read late, a run another has replaced, a source that
+fails while the rest load. `test/war_generation.test.js` pins the steps in
+`gw_start/war_generation.js`, but only the script shows them against the Go To
+War gate that `gw_start/setup.js` keeps. The test answers 21 of the script's 25
+modules with stand-ins, holds Shared Systems for Galactic War's sources and the
+galaxy build, and acts while they wait. It uses the sync fake jQuery, so
+settling a held step runs the rest of the chain in that call.
 
 A file run this way stays coverage-excluded, because most of it is still glue
 that no test reaches.
