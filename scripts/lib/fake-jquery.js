@@ -5,12 +5,12 @@
 
 // jQuery 2's .then waits for what a callback returns only if it has a
 // `promise` method; an engine or native promise is passed on unwaited. The
-// native .then below would wait for one, so the test fails instead - out of
-// band too, so a .fail() further down the chain cannot swallow it.
-// `failWith`, given for an error callback, takes any other return value.
+// native .then below would wait for one, so the callback throws instead.
+// `failWith`, given for an error callback, takes any other return value, and
+// stands in for a missing one.
 function thenCallback(fn, failWith) {
   if (typeof fn !== "function") {
-    return fn;
+    return failWith || fn;
   }
   return function (...args) {
     var returned = fn(...args);
@@ -19,15 +19,11 @@ function thenCallback(fn, failWith) {
       typeof returned.then === "function" &&
       !isJqueryPromise(returned)
     ) {
-      var error = new Error(
+      throw new Error(
         "fake-jquery: a .then callback returned a thenable with no promise() " +
           "method, which jQuery 2 passes on unwaited - adapt it with " +
           "shared/gwo_promise.js"
       );
-      process.nextTick(function () {
-        throw error;
-      });
-      throw error;
     }
     if (failWith && !isJqueryPromise(returned)) {
       return failWith(returned);
@@ -36,20 +32,34 @@ function thenCallback(fn, failWith) {
   };
 }
 
-// jQuery 2 fails the next promise with what an error callback returns,
-// unless it has promise(), where native .then would recover. Nothing reports
-// that failure in the game, so the promise it fails is marked handled. Both
-// steps use native promises: the decorated .then would fail a promise of its
-// own each time, and adopting a decorated promise calls it, so neither would
-// ever end.
-function jqueryThen(chain, onDone, onFail) {
-  var next;
-  var failNext = function (value) {
-    Promise.prototype.then.call(next, undefined, function () {});
-    return Promise.reject(value);
+// jQuery 2.1.4 runs callbacks inside resolve() and reject(), so a callback's
+// throw escapes and no .fail() further down can catch it. The native chain
+// turns it into a rejection, so it is reported out of band as well.
+function escaping(fn) {
+  if (typeof fn !== "function") {
+    return fn;
+  }
+  return function (...args) {
+    try {
+      return fn(...args);
+    } catch (e) {
+      process.nextTick(function () {
+        throw e;
+      });
+      throw e;
+    }
   };
-  next = chain(thenCallback(onDone), thenCallback(onFail, failNext));
-  return next;
+}
+
+function failNext(value) {
+  return Promise.reject(value);
+}
+
+// jQuery 2 fails the next promise with what an error callback returns,
+// unless it has promise(), where native .then would recover. A step with no
+// error callback fails it with the failure it was given.
+function jqueryThen(chain, onDone, onFail) {
+  return chain(onDone, thenCallback(onFail, failNext));
 }
 
 // The Promise itself, augmented, rather than a wrapper - so `.then` chains on
@@ -57,8 +67,17 @@ function jqueryThen(chain, onDone, onFail) {
 // What `.then` returns is augmented in the same way, as jQuery's is:
 // war_generation.js chains .fail() off a .then(), and $.when reads the result
 // of one.
+//
+// A failed jQuery Deferred reports nothing, however far down a chain the
+// failure passes, so each promise, and each one a callback is chained with,
+// is marked handled; only a callback's throw is reported. The mark uses the
+// native .then: the decorated one would mark what it returns, without end.
 function decorate(promise) {
-  var chain = promise.then.bind(promise);
+  var native = promise.then.bind(promise);
+  var chain = function (onDone, onFail) {
+    return decorate(native(escaping(onDone), escaping(onFail)));
+  };
+  native(undefined, function () {});
 
   // A jqXHR is no Promise, so Promise.resolve and await wrap it in a native
   // one, whose .then recovers. They hand back a Promise whose constructor is
@@ -81,7 +100,7 @@ function decorate(promise) {
     return promise;
   };
   promise.then = function (onDone, onFail) {
-    return decorate(jqueryThen(chain, onDone, onFail));
+    return jqueryThen(chain, thenCallback(onDone), onFail);
   };
 
   return promise;
@@ -351,17 +370,20 @@ function when() {
     );
   });
 
+  // An argument's failure, passed on, which nothing in the game reports.
   var settled = Promise.all(waits);
+  settled.catch(function () {});
   var self = {};
 
   var chain = function (onDone, onFail) {
+    var done = escaping(onDone);
     return decorate(
       settled.then(
-        onDone &&
+        done &&
           function () {
-            return onDone(...values);
+            return done(...values);
           },
-        onFail
+        escaping(onFail)
       )
     );
   };
@@ -370,7 +392,7 @@ function when() {
     return self;
   };
   self.then = function (onDone, onFail) {
-    return jqueryThen(chain, onDone, onFail);
+    return jqueryThen(chain, thenCallback(onDone), onFail);
   };
   self.done = function (fn) {
     chain(fn);
@@ -388,9 +410,9 @@ function when() {
   return self;
 }
 
-// Requesting a URL with no configured resolver rejects, so a test's fixtures can't
-// silently drift from what the code under test actually asks for. `sync` swaps
-// in makeSyncDeferred and syncWhen.
+// Requesting a URL with no configured resolver rejects, so a fixture that drifts
+// from what the code under test asks for sends it down its error path. `sync`
+// swaps in makeSyncDeferred and syncWhen.
 function createFakeJQuery(options) {
   var opts = options || {};
 
