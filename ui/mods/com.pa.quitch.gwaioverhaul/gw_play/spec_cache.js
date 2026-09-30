@@ -78,6 +78,9 @@ define(function () {
   // The untagged references a spec makes, in the order tagSpec finds them.
   var references = function (spec) {
     var found = [];
+    if (!spec) {
+      return found;
+    }
     forEachReference(spec, function (obj, key) {
       found = found.concat(obj[key]);
     });

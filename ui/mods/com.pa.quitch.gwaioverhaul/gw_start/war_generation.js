@@ -696,7 +696,7 @@ define(function () {
     };
 
     var onWarGenerationError = function (run, err) {
-      console.error(err);
+      console.error((err && err.stack) || err);
       if (model.makeGameBusy() !== run.token) {
         return;
       }
@@ -704,20 +704,22 @@ define(function () {
     };
 
     var generate = function (run) {
-      var finishSetup = _.reduce(
-        [
-          buildGalaxy,
-          dealStartCard,
-          moveIn,
-          placeAis,
-          populateAis,
-          recordWar,
-          storeWar,
-        ],
-        function (previous, step) {
-          return previous.then(step.bind(null, run));
-        },
-        loadSystemBrackets()
+      var finishSetup = gwoPromise.steps(
+        loadSystemBrackets(),
+        _.map(
+          [
+            buildGalaxy,
+            dealStartCard,
+            moveIn,
+            placeAis,
+            populateAis,
+            recordWar,
+            storeWar,
+          ],
+          function (step) {
+            return step.bind(null, run);
+          }
+        )
       );
 
       finishSetup
