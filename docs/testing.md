@@ -89,7 +89,7 @@ described separately below.
 | `validate:ai-mods`      | Every card's `buff()`/`dull()` emits descriptors matching `referee_ai.js`'s contract.                                                                                                                                                            |
 | `validate:schemas`      | AI build-order JSON and difficulty/personality data: type consistency.                                                                                                                                                                           |
 | `validate:refs`         | Cross-references: loadout ids against card files, unit keys, AI builder roles and fabber/factory `to_build` keys against the unit maps.                                                                                                          |
-| `validate:sonar`        | `sonar-project.properties`: no stale exclusion or issue-ignore paths, every analysed file is UTF-8.                                                                                                                                              |
+| `validate:sonar`        | `sonar-project.properties`: no stale exclusion or issue-ignore paths, every issue-ignore criterion listed and complete, every analysed file is UTF-8.                                                                                            |
 | `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree, AI-path tree and validator tables) against the tree and `package.json`.                                                                                            |
 | `validate:translations` | The translation files under `translations/`: PA locale names, PA's table shape, sorted unique keys, the en-US catalog equal to the keys the tree asks the game to translate, other files a subset of it, placeholders and style codes preserved. |
 
@@ -239,6 +239,11 @@ scanner genuinely reads `sonar-project.properties`, so its exclusions and
 coverage settings are real config. But nothing else reads it. Its paths
 therefore drift silently and only fail on SonarCloud after a push. A rename out
 from under an exclusion once put a GBK-encoded readme back into analysis.
+
+The scanner applies only the issue-ignore criteria that
+`sonar.issue.ignore.multicriteria` lists. So the validator also checks that the
+list names every criterion, and that each criterion it names has both a
+`ruleKey` and a `resourceKey`.
 
 The validator sees only what `git ls-files` returns. A new file that needs an
 exclusion is invisible to it until git tracks it, so run `git add -N <file>`
