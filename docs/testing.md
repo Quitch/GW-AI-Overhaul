@@ -145,9 +145,10 @@ classifier against `unit_groups.js` in CI, `test/race_legion.test.js` can see
 Legion's cells, and `test/addon_second_wave.test.js` can see what an add-on
 brings (`scripts/lib/addon-fixture.js` builds the index as `race_cells.js`
 does). `test/unit_jobs.test.js` checks the job rule over every registered
-race's index: a job pinned for each mobile combat unit `shared/units.js`
-names, a vanilla unit a card can grant standing for each race unit of a combat
-cell, and no bit on a mobile combat unit that the rule does not know. With a PA
+race's index: a job pinned for each mobile combat unit and each defence and
+superweapon structure `shared/units.js` names, a vanilla unit a card can grant
+standing for each race unit of those cells, and no bit on a unit of those cells
+that the rule does not know. With a PA
 install present, `test/unit_groups_cells.test.js` re-harvests and asserts that
 the fixture is fresh, its `buildable_types` as well as its `unit_types`.
 **Re-harvest it after a PA, race or add-on patch.**
