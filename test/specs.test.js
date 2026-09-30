@@ -1085,3 +1085,141 @@ describe("specs.mod - circular base_spec", () => {
     assert.match(warnMock.mock.calls[0].arguments[0], /circular base_spec/);
   });
 });
+
+describe("specs.mod - a card's value is not shared", () => {
+  // A co-op host hires the referee twice from one inventory, so the same
+  // descriptors reach two spec sets. See specs.md, "The op table".
+  function radarMods() {
+    return [
+      {
+        file: "radar.json",
+        path: "recon.observer.items",
+        op: "replace",
+        value: [{ radius: 300 }, { radius: 1200 }],
+      },
+      {
+        file: "radar.json",
+        path: "recon.observer.items.0.radius",
+        op: "multiply",
+        value: 33.33,
+      },
+      {
+        file: "radar.json",
+        path: "recon.observer.items.1.radius",
+        op: "multiply",
+        value: 8.3325,
+      },
+    ];
+  }
+
+  it("leaves a replaced value unchanged when a later mod writes into it", () => {
+    const mods = radarMods();
+    const original = structuredClone(mods[0].value);
+    const data = { "radar.json": { recon: {} } };
+
+    specs.mod(data, mods, "");
+
+    assert.deepEqual(mods[0].value, original);
+    assert.notEqual(data["radar.json"].recon.observer.items, mods[0].value);
+  });
+
+  it("gives two spec sets the same radar radii from one mod list", () => {
+    const mods = radarMods();
+    const first = { "radar.json": { recon: {} } };
+    const second = { "radar.json": { recon: {} } };
+
+    specs.mod(first, mods, "");
+    specs.mod(second, mods, "");
+
+    const radii = (data) =>
+      data["radar.json"].recon.observer.items.map((item) => item.radius);
+    assert.deepEqual(radii(first), [9999, 9999]);
+    assert.deepEqual(radii(second), [9999, 9999]);
+  });
+
+  it("gives two spec sets the same armour damage map from one mod list", () => {
+    const mods = [
+      {
+        file: "ammo.json",
+        path: "armor_damage_map",
+        op: "replace",
+        value: {},
+      },
+      {
+        file: "ammo.json",
+        path: "armor_damage_map.AT_Air",
+        op: "multiplyOrCreate",
+        value: 2,
+      },
+      {
+        file: "ammo.json",
+        path: "armor_damage_map.AT_Orbital",
+        op: "multiplyOrCreate",
+        value: 0.5,
+      },
+    ];
+    const first = { "ammo.json": { armor_damage_map: { AT_Air: 1 } } };
+    const second = { "ammo.json": { armor_damage_map: { AT_Air: 1 } } };
+
+    specs.mod(first, mods, "");
+    specs.mod(second, mods, "");
+
+    const expected = { AT_Air: 2, AT_Orbital: 0.5 };
+    assert.deepEqual(first["ammo.json"].armor_damage_map, expected);
+    assert.deepEqual(second["ammo.json"].armor_damage_map, expected);
+    assert.deepEqual(mods[0].value, {});
+  });
+
+  it("leaves a nested object in a merge value unchanged", () => {
+    const mods = [
+      {
+        file: "unit.json",
+        path: "weapon",
+        op: "merge",
+        value: { targeting: { layers: ["WL_Air"] } },
+      },
+      {
+        file: "unit.json",
+        path: "weapon.targeting.layers",
+        op: "push",
+        value: "WL_Orbital",
+      },
+    ];
+    const data = { "unit.json": { weapon: { range: 5 } } };
+
+    specs.mod(data, mods, "");
+
+    assert.deepEqual(data["unit.json"].weapon, {
+      range: 5,
+      targeting: { layers: ["WL_Air", "WL_Orbital"] },
+    });
+    assert.deepEqual(mods[0].value, { targeting: { layers: ["WL_Air"] } });
+  });
+
+  it("keeps one army's tag when another army's pass tags the same replaced tools", () => {
+    const mods = [
+      {
+        file: "tower.json",
+        path: "tools",
+        op: "replace",
+        value: [{ spec_id: "/pa/tools/arm/arm.json" }],
+      },
+      { file: "tower.json", path: "tools.0.spec_id", op: "tag" },
+    ];
+    const player = { "tower.json": { tools: [] } };
+    const guardians = { "tower.json": { tools: [] } };
+
+    specs.mod(player, mods, ".player");
+    specs.mod(guardians, mods, ".ai0");
+
+    assert.equal(
+      player["tower.json"].tools[0].spec_id,
+      "/pa/tools/arm/arm.json.player"
+    );
+    assert.equal(
+      guardians["tower.json"].tools[0].spec_id,
+      "/pa/tools/arm/arm.json.ai0"
+    );
+    assert.equal(mods[0].value[0].spec_id, "/pa/tools/arm/arm.json");
+  });
+});
