@@ -32,7 +32,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   var treeContext = function (raceId, brain, sourceRoot) {
     var race = gwoRaces.byId(raceId);
     var brainKey = gwoRaces.brainKeyOf(brain);
-    var config = (race && race.ai && race.ai[brainKey]) || {};
+    var config = (race && race.ai[brainKey]) || {};
     var layers = gwoRaces.layersFor(brainKey);
 
     return {
@@ -182,7 +182,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     return _.uniq(
       _.flatten(
         _.map(gwoRaces.all(), function (race) {
-          return _.keys(race.ai || {});
+          return _.keys(race.ai);
         }).concat(
           _.map(gwoRaces.addons(), function (addon) {
             return _.flatten(_.map(addon.layers, _.keys));

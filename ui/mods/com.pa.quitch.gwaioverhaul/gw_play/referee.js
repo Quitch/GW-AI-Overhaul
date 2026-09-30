@@ -58,7 +58,7 @@
         // pass is labelled while it runs. See architecture.md.
         gwoReferee.prototype.stage = function (key) {
           var progress = model.gwoLaunchProgress;
-          if (!progress || !_.isFunction(progress.stage)) {
+          if (!progress) {
             return;
           }
           var text = loc(key);
