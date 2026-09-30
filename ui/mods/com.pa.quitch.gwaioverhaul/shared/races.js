@@ -361,10 +361,7 @@ define([
   };
 
   var hasName = function (descriptor, path) {
-    return (
-      !!descriptor &&
-      Object.prototype.hasOwnProperty.call(descriptor.unitNames, path)
-    );
+    return !!descriptor && hasOwn(descriptor.unitNames, path);
   };
 
   // A unit's display name: the race's, else any add-on's, else undefined for
@@ -458,11 +455,7 @@ define([
 
     var index = cellsOf(raceId);
 
-    return (
-      !index ||
-      !index.race.units.length ||
-      unitCells.cardUsable(split[1], index.vanilla, index.race)
-    );
+    return !index || unitCells.cardUsable(split[1], index.vanilla, index.race);
   };
 
   // The units a card's entry reaches for a player of this race, for the
@@ -597,7 +590,7 @@ define([
     };
 
     _.forEach(all(), function (race) {
-      add(race.id, race.ai && race.ai[brainKey]);
+      add(race.id, race.ai[brainKey]);
     });
     _.forEach(activeAddons(), function (addon) {
       _.forEach(addon.layers, function (brains, raceId) {
