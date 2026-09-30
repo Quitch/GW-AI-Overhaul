@@ -1,8 +1,7 @@
 "use strict";
 
 // gw_play/gwo_panel.js, run as the scene runs it: the loader that waits for
-// the war's settings on the origin system before it builds the panel. A co-op
-// viewer's scene starts on stock's bootstrap game, whose galaxy has no stars.
+// the war's settings on the origin system before it builds the panel.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -22,11 +21,14 @@ afterEach(() => stubs.restoreGlobals());
 // evaluates a computed as it is created; `reevaluate` is the loader's own
 // computed running again, as it does when the game it read changes.
 function installScene() {
-  const scene = { stars: [], logged: [], disposed: false };
+  const scene = { system: {}, logged: [], disposed: false };
   const game = {
     isTutorial: () => false,
     hardcore: () => false,
-    galaxy: () => ({ stars: () => scene.stars, origin: () => 0 }),
+    galaxy: () => ({
+      stars: () => [{ system: () => scene.system }],
+      origin: () => 0,
+    }),
   };
   stubs.setGlobal("model", {
     game: () => game,
@@ -60,23 +62,34 @@ function installScene() {
 }
 
 describe("the panel loader", () => {
-  it("waits, without throwing, while the galaxy has no stars", () => {
+  it("builds the panel when the origin system holds the war's settings", () => {
     const scene = installScene();
+    scene.system = { gwaio: { difficulty: "!LOC:Hard" } };
 
     runSceneScript(MOD_ROOT + "/gw_play/gwo_panel.js");
-
-    assert.deepEqual(scene.logged, []);
-    assert.equal(scene.disposed, false);
-  });
-
-  it("builds the panel once the war's stars arrive", () => {
-    const scene = installScene();
-    runSceneScript(MOD_ROOT + "/gw_play/gwo_panel.js");
-
-    scene.stars = [{ system: () => ({ gwaio: { difficulty: "!LOC:Hard" } }) }];
-    scene.reevaluate();
 
     assert.deepEqual(scene.logged, ["GWO settings found and panel loading"]);
+    assert.equal(scene.disposed, true);
+  });
+
+  it("warns once and stays subscribed until the settings appear", () => {
+    const scene = installScene();
+    const warning =
+      "No GWO settings on the origin system yet; the war information panel will load if they appear.";
+
+    runSceneScript(MOD_ROOT + "/gw_play/gwo_panel.js");
+    scene.reevaluate();
+
+    assert.deepEqual(scene.logged, [warning]);
+    assert.equal(scene.disposed, false);
+
+    scene.system = { gwaio: { difficulty: "!LOC:Hard" } };
+    scene.reevaluate();
+
+    assert.deepEqual(scene.logged, [
+      warning,
+      "GWO settings found and panel loading",
+    ]);
     assert.equal(scene.disposed, true);
   });
 });
