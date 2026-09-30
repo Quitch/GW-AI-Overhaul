@@ -51,10 +51,8 @@ function installScene(options = {}) {
     gwCampaignConnectedClients: makeObservable(options.clients || []),
     gwCampaignPerPlayerTechCards: makeObservable(Boolean(options.perPlayer)),
     gwCoopPlayerColors: makeObservable(options.colours || []),
+    gwoCoopAi: { panel: makeObservable(options.ais || []) },
   };
-  if (options.ais) {
-    model.gwoCoopAi = { panel: makeObservable(options.ais) };
-  }
   stubs.setGlobal("model", model);
   stubs.setGlobal("ko", { observable: makeObservable });
   stubs.setGlobal("requireGW", (deps, callback) => {

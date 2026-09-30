@@ -40,8 +40,7 @@
       ko.computed(function () {
         var playerScaling = gwoSettings.coopPlayerScalingCount;
         var players =
-          model.gwCampaignConnectedClients().length +
-          (model.gwoCoopAi ? model.gwoCoopAi.count() : 0);
+          model.gwCampaignConnectedClients().length + model.gwoCoopAi.count();
         if (
           // A latch - without it the save is rewritten on every join and leave.
           !gwoSettings.tooManyPlayers &&
@@ -108,7 +107,7 @@
           ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
           function (gwoSave) {
             var gwoSettings = model.gwoSettings;
-            if (gwoSettings && !gwoSettings.cheatsUsed) {
+            if (!gwoSettings.cheatsUsed) {
               gwoSettings.cheatsUsed = true;
               options(
                 model.gwoOptions,
