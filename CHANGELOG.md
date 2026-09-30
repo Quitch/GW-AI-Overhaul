@@ -20,6 +20,7 @@
 - Warning and progress text is easier to read against the background
 - Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover
 - Tech cards and loadouts for one kind of combat unit no longer give or change every Legion, Bugs, Exiles, or add-on unit of that kind, because units are also matched by job: an Ant card no longer changes the Legion Maul or Corsair, and a Spinner card no longer changes the Shank
+- Tech cards and loadouts for the Advanced Radar now give or change only Legion, Bugs, Exiles, and add-on radars, and those for the Radar Jamming Station only their jammers, with Legion's Overseer and the Exiles Tremble counting as both; Bugs, who have no jammer, get nothing from the Radar Jamming Station
 - Legion, Bugs, and Exiles players get their race's defences and superweapons by kind, as MLA players do, in wars already under way too: basic artillery, Section 17's included, needs Artillery Tech, the advanced towers need Advanced Defense Technology, and a card for one tower no longer changes the race's walls, mines, and other towers
 - The Galactic War Overhaul panel's Incompatible Mods list now includes every client mod from Community Mods that changes unit files without a server mod, such as effects, selection, and commander cosmetic mods
 - Titan Tech and Planetary Radar Tech are no longer offered for units that cannot build them: the Angel, which Air Factory Upgrade Tech gives, and a Cluster player's Colonel Sub Commanders

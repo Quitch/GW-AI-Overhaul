@@ -1276,8 +1276,14 @@ describe("jobs", () => {
       "Nuke",
     ]);
     assert.deepEqual(jobs("Basic Defense Land Naval Structure"), []);
-    // Combat, defence and superweapon cells only.
-    assert.deepEqual(jobs("Advanced Land Radar Structure"), []);
+    // Recon is every intel structure's class, not its job.
+    assert.deepEqual(jobs("Advanced Land RadarJammer Radar Recon Structure"), [
+      "Radar",
+      "RadarJammer",
+    ]);
+    assert.deepEqual(jobs("Advanced Land Recon Structure"), []);
+    // Combat, defence, superweapon and intel cells only.
+    assert.deepEqual(jobs("Advanced Factory Land Radar Structure"), []);
     assert.deepEqual(jobs("Basic Bot Construction Fabber Land Mobile"), []);
     assert.deepEqual(jobs("Advanced Air Bomber Mobile Offense Titan"), []);
   });
@@ -1510,6 +1516,68 @@ describe("jobs", () => {
     assert.equal(v.fieldable[V("dot")], undefined);
     assert.deepEqual(standIns(V("dot")), [R("turret"), R("wall")]);
     assert.deepEqual(standIns(V("turret")), [R("turret"), R("wall")]);
+  });
+
+  // The same, as intel structures the commander builds.
+  const intel = (vanillaTypes, raceTypes) =>
+    indexes(vanillaTypes, raceTypes, (specs) => {
+      const mobile = new Set(T("Mobile Offense Tank"));
+      for (const [unit, spec] of Object.entries(specs)) {
+        if (/\/[vr]_/.test(unit) && spec.unit_types) {
+          spec.unit_types = spec.unit_types
+            .filter((type) => !mobile.has(type))
+            .concat(T("Structure Recon"));
+        }
+      }
+    });
+  const RADARS = { radar: "CmdBuild Radar", jammer: "CmdBuild RadarJammer" };
+
+  it("gives an intel unit to every vanilla job it shares", () => {
+    const { v, standIns } = intel(RADARS, {
+      both: "Radar RadarJammer",
+      radar: "Radar",
+      plain: "",
+    });
+
+    assert.equal(v.cellOf[V("radar")], "Land/Basic/Intel");
+    assert.deepEqual(standIns(V("radar")), [R("both"), R("plain"), R("radar")]);
+    assert.deepEqual(standIns(V("jammer")), [R("both"), R("plain")]);
+  });
+
+  it("gives a combat unit to its first shared job alone", () => {
+    const { standIns } = indexes(
+      { aa: "FactoryBuild AirDefense", hover: "FactoryBuild Hover" },
+      { both: "AirDefense Hover", hover: "Hover" }
+    );
+
+    assert.deepEqual(standIns(V("aa")), [R("both")]);
+    assert.deepEqual(standIns(V("hover")), [R("hover")]);
+  });
+
+  it("points a map key on an intel unit that stands for nothing at its whole cell", () => {
+    // A race with no jammer: the vanilla jammer stands for nothing.
+    const { v, r, standIns } = intel(RADARS, {
+      radar: "Radar",
+      sonar: "Radar",
+    });
+    const map = {
+      unit_map: {
+        AdvancedRadar: { spec_id: V("radar") },
+        RadarJammer: { spec_id: V("jammer") },
+      },
+    };
+
+    assert.deepEqual(standIns(V("jammer")), []);
+    assert.equal(cells.cardUsable([V("jammer")], v, r), false);
+    assert.deepEqual(cells.unitMapFallback(map, [], v, r).unit_map, {
+      AdvancedRadar: { spec_id: R("radar") },
+      RadarJammer: { spec_id: R("radar") },
+    });
+    assert.equal(
+      cells.unitMapFallback(map, [], v, r, { [R("radar")]: true }).unit_map
+        .RadarJammer.spec_id,
+      R("sonar")
+    );
   });
 });
 
