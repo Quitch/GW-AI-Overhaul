@@ -149,8 +149,16 @@
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deck_mods.js",
+          "shared/gw_factions",
         ],
-        function (gwoPanelView, gwoRaces, gwoVersion, gwoDecks, gwoDeckMods) {
+        function (
+          gwoPanelView,
+          gwoRaces,
+          gwoVersion,
+          gwoDecks,
+          gwoDeckMods,
+          GWFactions
+        ) {
           model.gwoVersion = ko.observable(gwoVersion);
 
           // A third-party deck's display name; the provisional deckName()
@@ -204,16 +212,9 @@
 
           var inventory = game.inventory();
 
-          var factions = [
-            "Legonis Machina",
-            "Foundation",
-            "Synchronous",
-            "Revenants",
-            "Cluster",
-          ];
           var factionIndex = inventory.getTag("global", "playerFaction");
           var playerRace = gwoRaces.raceOf(inventory);
-          model.gwoFactionName = factions[factionIndex];
+          model.gwoFactionName = _.pluck(GWFactions, "name")[factionIndex];
           var commanderList = gwoPanelView.commanderList({
             game: game,
             inventory: inventory,
