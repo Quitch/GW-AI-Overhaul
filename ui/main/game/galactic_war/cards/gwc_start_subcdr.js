@@ -19,12 +19,12 @@ define([
       ]);
     },
     // Support for GWO v4.2.2 and earlier
-    always: function (inventory, context) {
+    always: function (inventory, params) {
       if (inventory.cards()[0].minions) {
-        _.forEach(context.minions, function (minion) {
+        _.forEach(params.minions, function (minion) {
           inventory.minions.push(minion);
         });
-        var minionSpecs = _.compact(_.pluck(context.minions, "commander"));
+        var minionSpecs = _.compact(_.pluck(params.minions, "commander"));
         inventory.addUnits(minionSpecs);
       }
     },

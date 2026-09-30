@@ -302,7 +302,7 @@ define([
     // and its second argument is the card's saved params. See tech-cards.md.
     loadout: function (card, options) {
       return {
-        buff: function (inventory, context) {
+        buff: function (inventory, params) {
           if (inventory.lookupCard(card) === 0) {
             var buffCount = inventory.getTag("", "buffCount", 0);
             if (!buffCount) {
@@ -314,7 +314,7 @@ define([
               inventory.maxCards(inventory.maxCards() + 1);
             }
             if (options.always) {
-              options.always(inventory, context);
+              options.always(inventory, params);
             }
             ++buffCount;
             inventory.setTag("", "buffCount", buffCount);
