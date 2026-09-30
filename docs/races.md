@@ -408,9 +408,10 @@ The rule has these known limits:
   a naval card that names it reaches a race's whole basic air cell. That
   predates jobs.
 - `Intel` cells stay whole. A radar card reaches a race's jammers. Split by
-  job, one job order leaves Exiles' `radar_adv` standing for nothing, and the
-  other leaves Legion's and Bugs' `radar_jammer` standing for nothing: either
-  makes a dead unit-map key.
+  job, Bugs' `radar_jammer` stands for nothing, because Bugs have no jammer.
+  Exiles' one advanced intel unit carries both bits, so with `Radar` first
+  their `radar_jammer` stands for nothing, and with `RadarJammer` first their
+  `radar_adv` does. Each makes a dead unit-map key (#444).
 - `Land/Basic/Storage` and `Naval/Basic/Defense` cannot split: the vanilla
   units in each carry the same bits, so a jobs table gives them the same job.
 
