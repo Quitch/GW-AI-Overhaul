@@ -29,7 +29,6 @@ export default defineConfig([
         loc: "readonly",
         ko: "readonly",
         requireGW: "readonly",
-        star_system_templates: "readonly",
         parse: "readonly",
         loadHtml: "readonly",
         locTree: "readonly",
@@ -37,7 +36,6 @@ export default defineConfig([
         CommanderUtility: "readonly",
         PlayFab: "readonly",
         Build: "readonly",
-        i18n: "readonly",
         engine: "readonly",
       },
       sourceType: "script",
@@ -56,10 +54,13 @@ export default defineConfig([
   },
   {
     // Only gw_play.html loads EaselJS, so no other scene has createjs.
+    // gw_lobby/specs.js also loads gw_play/specs.js, in gw_lobby and
+    // gw_reconnect_loading.
     files: [
       "ui/main/game/galactic_war/gw_play/**/*.js",
       "ui/mods/com.pa.quitch.gwaioverhaul/gw_play/**/*.js",
     ],
+    ignores: ["ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js"],
     languageOptions: {
       globals: {
         createjs: "readonly",
