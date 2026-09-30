@@ -92,6 +92,40 @@ describe("fake-jquery .then", () => {
     });
   });
 
+  it("fails the next promise with what an error callback returns, as jQuery 2 does", async () => {
+    for (const value of ["handled", undefined]) {
+      const outcome = [];
+      rejected("no")
+        .then(undefined, () => value)
+        .then(
+          () => outcome.push("resolved"),
+          (reason) => outcome.push("rejected", reason)
+        );
+      await new Promise((resolve) => setImmediate(resolve));
+      assert.deepEqual(outcome, ["rejected", value]);
+    }
+  });
+
+  it("recovers the chain only through a jQuery promise an error callback returns", async () => {
+    assert.equal(await rejected("no").then(undefined, () => resolved(2)), 2);
+  });
+
+  it("is wrapped by Promise.resolve, as a jqXHR is, so the native chain recovers", async () => {
+    const fake = rejected("no");
+    const wrapped = Promise.resolve(fake);
+    assert.notEqual(wrapped, fake);
+    assert.equal(await wrapped.then(undefined, () => "recovered"), "recovered");
+  });
+
+  it("reports nothing when that failure is left unhandled", () => {
+    const run = runChain(
+      "fake.rejected(1).then(undefined, () => 'handled');" +
+        "setTimeout(() => {}, 10);"
+    );
+    assert.equal(run.status, 0, run.stderr);
+    assert.equal(run.stderr, "");
+  });
+
   // jQuery ignores what these callbacks return.
   it("does not test what a done, fail or always callback returns", async () => {
     const ran = [];
