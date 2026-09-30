@@ -30,7 +30,13 @@ A descriptor:
   name: "!LOC:Legion",
   serverMods: ["com.pa.legion-expansion-server"], // any one active
   unitTypeBit: "Custom1",
-  commanderTypes: { unitType: "UNITTYPE_Custom1", buildable: "CmdBuild & Custom1" },
+  commanderTypes: {
+    unitType: "UNITTYPE_Custom1",
+    buildable: "CmdBuild & Custom1",
+    metalExtractorNames: { basic: "LegionEcoBasicMetalExtractor", advanced: "…" },
+  },
+  engineKeys: { BasicVehicleFactory: "/pa/units/land/l_vehicle_factory/l_vehicle_factory.json", … }, // stock key the engine reads -> the race's unit, or null
+  stockUnits: [paths], // optional: stock units the race builds with an MLA builder
   commanders: [{ spec: "/pa/units/commanders/l_raptor/l_raptor.json" }, …],
   commanderArtHue: 0, // the paint the preview art ships in; MLA's is 210 (blue)
   playerIcon: { fill: "coui://…/icon_player_fill_l.png", outline: "…" },
@@ -627,8 +633,9 @@ placeholder.
 
 The commander list and the preview tint stay MLA's until `raceMods.mountRoot()`
 settles, as they do in the co-op loadout scene. A race commander's spec read
-before its zip is mounted fails, and `race_picker_view.js` holds what it read
-for as long as the tiles are on show. The race setting itself is not held back.
+before its zip is mounted fails, and its tile shows the spec path until a later
+render reads it again: `race_picker_view.js` keeps a read that succeeded and
+forgets one that failed. The race setting itself is not held back.
 
 The war records `global:playerRace` on the inventory, `race` on every AI, and
 `originSystem.gwaio.races = { player, byFaction, unique, mods }`. `mods` is the
@@ -702,24 +709,27 @@ So nothing downstream has to know which mode it is in. See
 
 The descriptor is `race/legion.js`. The server mod is
 `com.pa.legion-expansion-server`, and the unit-type bit is `Custom1`. The
-commanders are Overwatch, Cyclops, Cataphract, Raptor, Quad and Tank. The
-player icon comes from the client mod's own `icon_player_{fill,outline}_l.png`.
+commanders are Overwatch, Cyclopes, Cataphract, Scion, Core, and Reclaimer
+(`l_overwatch`, `l_cyclops`, `l_cataphract`, `l_raptor`, `l_quad`, and
+`l_tank`). The player icon comes from the client mod's own
+`icon_player_{fill,outline}_l.png`.
 
 Under Titans its build orders are the flat `legion_*` files beside the stock
 ones, plus `unit_maps/legion.json`. Under Queller every tier already carries a
 `legion/` side, so the tree is the tier minus `mla/` and `unit_maps/mla.json`.
 
-The table keys 375 Legion specs by their Legion names (Shank, Peacekeeper,
+The table keys 367 Legion specs by their Legion names (Shank, Peacekeeper,
 Dauntless, …) for cards written for Legion alone. Under the cells Legion fills
 every cell GWO's cards open, so the deal withholds nothing beyond the MLA-only
 set (`test/race_legion.test.js` pins that).
 
 Where its types disagree with vanilla's, the cells follow the types. The
 OmniSilo is typed Advanced, so it arrives with advanced economy rather than
-with a storage card. The nuke's projectile is a `Custom1` orbital "unit", so it
-arrives with basic orbital. Helper units (`l_vision`, the bombs, the spawners)
-sit in cells no vanilla unit occupies. They are reached only through their
-parents, as vanilla's own spawned units are.
+with a storage card. The nuke's projectile carries a `Custom1` orbital unit's
+types, but it is the launcher's ammo, not a unit the list names, so no cell
+holds it. Helper units (`l_vision`, the bombs, the spawners) sit in cells no
+vanilla unit occupies. They are reached only through their parents, as
+vanilla's own spawned units are.
 
 ## Bug Faction
 

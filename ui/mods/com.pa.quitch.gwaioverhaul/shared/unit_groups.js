@@ -570,8 +570,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
 
   var teleporters = [gwoUnit.teleporter, gwoUnit.helios];
 
-  // The titan groups already exclude the immobile Ragnarok, so these two drop
-  // only the defensive structures - the same split combatMobile makes.
+  // The mobile units' ammo: titansAmmo and titansWeapons already leave out the
+  // immobile Ragnarok. weaponsMobile, further down, is its weapons counterpart.
   var ammoMobile = airAmmo.concat(
     botsAmmo,
     navalAmmo,

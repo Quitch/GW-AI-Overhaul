@@ -121,6 +121,8 @@ The mods are the shipped descriptors' `serverMods`, every race's and then
 every add-on's, as `validate:race-trees` layers them. A companion mod that a
 descriptor does not list, such as the Bugs commander-merge, is in
 `scripts/lib/server-mods.js`. The mods are read in that order.
+`GWO_RACE_ROOTS`, a list of mod folders separated by the platform's path
+delimiter, adds each folder's `pa/` after every other source.
 
 With that fixture, `test/unit_groups_cells.test.js` can check the cell
 classifier against `unit_groups.js` in CI, `test/race_legion.test.js` can see

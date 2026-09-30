@@ -13,8 +13,7 @@ define([
   var specsLoads = {};
   var indexes = {};
 
-  // The whole list, not a digest of it: two lists of the same count and total
-  // length would otherwise share one entry.
+  // The whole list, so two different lists never share an entry.
   var signatureOf = function (units) {
     return units.join("|");
   };

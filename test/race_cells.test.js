@@ -33,8 +33,8 @@ describe("signatureOf", () => {
     );
   });
 
-  // The old key was the count and the joined length, so swapping a unit for
-  // one whose path had the same length served the old list's cells.
+  // One unit swapped for another of the same path length: the count and the
+  // joined length match, and the key must still differ.
   it("differs for a list with the same count and total length", () => {
     assert.notEqual(
       signatureOf(["/pa/units/a.json", "/pa/units/b.json"]),

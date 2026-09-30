@@ -39,8 +39,8 @@ const TABLES = [
         "imperatorMeteoroid",
     },
     // Keyed before any rule runs, so a rule's key that collides with one of
-    // these takes a suffix instead. They are the entries the table first
-    // carried by hand (29a1c192) that no rule above reaches.
+    // these takes a suffix instead. No rule above reaches them, and a
+    // Legion-only card may address them, so they stay.
     units: { commander: LEGION_COMMANDER },
     parts: {
       infiltratorAmmo:
