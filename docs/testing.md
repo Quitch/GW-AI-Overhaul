@@ -89,7 +89,7 @@ described separately below.
 | `validate:ai-mods`      | Every card's `buff()`/`dull()` emits descriptors matching `referee_ai.js`'s contract.                                                                                                                                                            |
 | `validate:schemas`      | AI build-order JSON and difficulty/personality data: type consistency.                                                                                                                                                                           |
 | `validate:refs`         | Cross-references: loadout ids against card files, unit keys, AI builder roles and fabber/factory `to_build` keys against the unit maps.                                                                                                          |
-| `validate:sonar`        | `sonar-project.properties`: no stale exclusion or issue-ignore paths, every analysed file is UTF-8.                                                                                                                                              |
+| `validate:sonar`        | `sonar-project.properties`: no stale exclusion or issue-ignore paths, every issue-ignore criterion listed and complete, every analysed file is UTF-8.                                                                                            |
 | `validate:docs`         | The hand-maintained inventories in `docs/` (scene, shadowed-file, `pa/` tree, AI-path tree and validator tables) against the tree and `package.json`.                                                                                            |
 | `validate:translations` | The translation files under `translations/`: PA locale names, PA's table shape, sorted unique keys, the en-US catalog equal to the keys the tree asks the game to translate, other files a subset of it, placeholders and style codes preserved. |
 
@@ -240,6 +240,11 @@ coverage settings are real config. But nothing else reads it. Its paths
 therefore drift silently and only fail on SonarCloud after a push. A rename out
 from under an exclusion once put a GBK-encoded readme back into analysis.
 
+The scanner applies only the issue-ignore criteria that
+`sonar.issue.ignore.multicriteria` lists. So the validator also checks that the
+list names every criterion, and that each criterion it names has both a
+`ruleKey` and a `resourceKey`.
+
 The validator sees only what `git ls-files` returns. A new file that needs an
 exclusion is invisible to it until git tracks it, so run `git add -N <file>`
 before `npm run verify`.
@@ -323,6 +328,23 @@ the chain, and it throws again out of band, so a `.fail()` further down cannot
 swallow the error. What a `done`, `fail` or `always` callback returns is not
 tested, because jQuery ignores it. `$.getJSON` returns a Promise carrying the
 same members as a Deferred's, as jQuery's does, so a callback may return it.
+
+An error callback given to the default `.then` cannot recover the chain by
+returning a value. jQuery 2 fails the next promise with whatever that callback
+returns, `undefined` included, unless it has a `promise` method. The inherited
+`.then` would resolve the next promise instead, so the fake fails it. Only a
+returned jQuery promise, such as `$.Deferred().resolve().promise()`, decides
+the outcome. `$.when`'s `.then` does the same. Nothing in the game reports that
+failure, so the fake marks the promise it fails as handled, and Node does not
+report it as an unhandled rejection. A further step with no error callback
+passes the failure on and reports it, as it reports any failure the fake passes
+down a chain.
+
+A chain that shipped code first wraps in `Promise.resolve`, as the referee's
+tree cache does, is native in the game: a jqXHR is not a `Promise`, so the
+wrapper adopts it. The fake's promises are real Promises, which
+`Promise.resolve` and `await` would hand back unwrapped, jQuery rules and all.
+So the fake clears their `constructor`, and both wrap them as they wrap a jqXHR.
 
 `installFakeJQuery(stubs, { sync: true })` swaps in a Deferred that models
 jQuery 2.1.4 itself, and jQuery 2.1.4's `when`, which waits on every argument

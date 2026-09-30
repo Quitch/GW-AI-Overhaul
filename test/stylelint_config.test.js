@@ -378,6 +378,7 @@ describe("CSS the engine supports", () => {
     await accepts(rule("a", ["text-decoration: none"]));
     await accepts(rule("a", ["text-indent: 5px"]));
     await accepts(rule("a", ["word-break: break-all"]));
+    await accepts(rule("a", ["mask-type: luminance"]));
   });
 
   it("accepts the flexbox the whole UI is built on", async () => {
@@ -448,6 +449,21 @@ describe("CSS the engine supports", () => {
     await accepts(
       '@font-face {\n  font-family: Sansation;\n  src: url("x.woff") format("woff");\n}\n'
     );
+  });
+
+  it("leaves a legacy gradient's prefix for a person to remove", async () => {
+    // Unprefixed, 0deg would point up rather than right.
+    const code = rule("a", [
+      "background: -webkit-linear-gradient(0deg, red, blue)",
+    ]);
+    const { code: fixed } = await stylelint.lint({
+      code,
+      codeFilename: FIXTURE,
+      configFile: CONFIG_FILE,
+      fix: true,
+    });
+    assert.equal(fixed, code);
+    await rejects(code, "value-no-vendor-prefix");
   });
 
   it("accepts the longhands that must not be collapsed", async () => {

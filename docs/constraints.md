@@ -235,9 +235,10 @@ MDN alone.
 
 - **`filter` is Chrome 53.** Only `-webkit-filter` does anything.
 - **`animation` and `@keyframes` are Chrome 43.** Only `-webkit-animation` and
-  `@-webkit-keyframes` work. The base game ships 41 prefixed and zero unprefixed.
+  `@-webkit-keyframes` work. The base game ships 46 prefixed and zero unprefixed.
 - **`mask-*` is Chrome 120**, `user-select` is 54, and `appearance` is 84. All
-  three are `-webkit-` only.
+  three are `-webkit-` only. The exception is `mask-type`, unprefixed since
+  Chrome 24.
 - **`justify-content: space-evenly` parses, computes, and does nothing.**
   `CSS.supports()` returns `true` and `getComputedStyle` echoes the value back.
   But flex layout behaves as `flex-start`. Measured, it lays out identically to
@@ -247,7 +248,7 @@ MDN alone.
 
 ### What is fine, despite feeling modern
 
-These all work in Chrome 40: `calc()` (Chrome 26, and the base game uses it ~40
+These all work in Chrome 40: `calc()` (Chrome 26, and the base game uses it 46
 times), `vw`/`vh`/`vmin`/`vmax` (26), `rem` (4), `ch` (27), `object-fit` (32),
 `will-change` (36), `touch-action` (36), `all` (37), `shape-outside` (37),
 `border-image` (16, and PA's panel frames are built on it), `@supports` (28),
@@ -259,7 +260,7 @@ with one simple argument, and flexbox in full (29).
 A prefix is required only where the unprefixed form postdates 40. `transition`
 (Chrome 26), `transform` (36), `box-shadow` (10), `border-radius` (4) and every
 flex property (29) need **no** prefix. The config rejects prefixes on them as
-legacy cruft, even though the base game ships 64 `-webkit-transition` and 10
+legacy cruft, even though the base game ships 92 `-webkit-transition` and 21
 `-webkit-box-shadow`.
 
 Four properties are dropped in **both** spellings, so there is no working form
@@ -275,11 +276,13 @@ ids). It uses `function-url-quotes: "always"` (stock is split three ways). Stock
 is not linted, so a stock violation of a rule is not a reason to loosen the
 rule.
 
-The config is calibrated, not over-tuned. Run over the base game's own 57
-unmodified CSS files, it reports no false positives. Everything it flags there
-is either a genuinely inert declaration or a redundant prefix. The inert
-declarations are unprefixed `filter` ×9, `user-select` ×7, `mask` ×2,
-`text-wrap` ×3, `-webkit-overflow-scrolling` ×1, and `word-break: keep-all` ×1.
+The config is calibrated, not over-tuned. Run over the base game's own 77
+unmodified CSS files under `ui/main` (`thirdparty` aside), it reports no false
+positives. Everything it flags there is either a genuinely inert declaration or
+a redundant prefix. The inert declarations are unprefixed `filter` ×12,
+`user-select` ×19, `mask` ×2, `text-wrap` ×3, `-webkit-overflow-scrolling` ×1,
+`word-break: keep-all` ×1, `clamp()` ×65 (all in `start.css`), flex `gap` ×2,
+and `attr()` outside `content` ×1.
 
 Do not remove an exclusion or "fix" the usage it covers as a drive-by. The
 `format:css` pass runs `stylelint --fix` repo-wide, and several of these rules
