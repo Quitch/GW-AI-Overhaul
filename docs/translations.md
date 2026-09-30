@@ -66,13 +66,14 @@ a changelog line.
 Everything reads the tree through `scripts/lib/loc-keys.js`, so the catalog, the
 work lists and the validator agree on what a key is: a `"!LOC:…"` or `'!LOC:…'`
 literal in a `.js`, `.html` or `.json` file, the text of a `<loc>` tag
-(`data-loc-id` when present), or, in an `.html` file, the text of an `<option>`
-or the value of an `<input type="button">`. Stock `locTree` looks those last two
-up as they stand, with no `!LOC:` prefix, and skips an `<option>` with a
-`data-noloc` attribute and a button whose `noloc` attribute has a value (a bare
-`noloc` does not stop it); the extractor keys and skips them the same way. An
-option or button with no letter in its text (`5`, `50%`) is left out, since
-numbers and percentages are kept exactly (below). Each key carries its
+(`data-loc-id` when present), or, in an `.html` file, the text of an `<option>`,
+the value of an `<input type="button">`, or the `placeholder` of an `<input>`.
+Stock `locTree` looks those last three up as they stand, with no `!LOC:` prefix,
+and skips an `<option>` or a placeholder with a `data-noloc` attribute and a
+button whose `noloc` attribute has a value (a bare `noloc` does not stop it);
+the extractor keys and skips them the same way. An option, button or placeholder
+with no letter in its text (`5`, `50%`) is left out, since numbers and
+percentages are kept exactly (below). Each key carries its
 sites: file, line, a **role** inferred from the syntax (`card-name`,
 `card-description`, `card-hint`, `faction-character`, `race-name`,
 `race-unit-name`, `unit-name`, `html-label`, `html-control`, `tooltip`,
