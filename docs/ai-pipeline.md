@@ -31,7 +31,10 @@ inventory.addAIMods([
 ]);
 ```
 
-`type` maps to a directory via `managerPath()` in `shared/race_ai_mods.js`:
+`type` names a build directory. A `load` finds its file's directory through
+`managerPath()` in `shared/race_ai_mods.js`. Every other op applies to a file
+whose path contains that directory: `pathTypeMap` in `gw_play/referee_ai.js`
+maps each directory back to its `type`.
 
 | `type`     | Directory            |
 | ---------- | -------------------- |
@@ -40,12 +43,13 @@ inventory.addAIMods([
 | `platoon`  | `platoon_builds/`    |
 | `template` | `platoon_templates/` |
 
-Anything else returns `undefined`, and the `load` that asked logs
-`Invalid AI file type in load mod` and adds no file. It does not throw: its
-callers in the referee run in a deferred callback, where a throw is swallowed
-and hangs the battle launch. `npm run validate:ai-mods` rejects an unknown `type` in a shipped
-card. Note that there is no `unit_map` type, so no descriptor
-reaches a unit map. This pipeline copies a tree's untagged maps with its other
+Any other `type` has no directory. On a `load`, `managerPath()` returns
+`undefined`, and the referee logs `Invalid AI file type in load mod` and adds
+no file. It does not throw: its callers in the referee run in a deferred
+callback, where a throw is swallowed and hangs the battle launch. On every other
+op, the descriptor matches no file and does nothing, and nothing is logged.
+`npm run validate:ai-mods` rejects an unknown `type` in a shipped card. Note
+that there is no `unit_map` type, so no descriptor reaches a unit map. This pipeline copies a tree's untagged maps with its other
 files, and `referee_game_files.js` writes the tagged ones.
 
 ## The op table
