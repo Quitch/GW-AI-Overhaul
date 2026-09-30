@@ -302,6 +302,9 @@ keeps its aimed builders without the guard. A file with no `build_list` (a
 launcher becomes `LegionFactoryBasicOrbital`, built by Legion's commanders and
 fabbers.
 
+A co-op AI player of a race counts only the AI mods its race's tree takes
+([`tech-cards.md`](tech-cards.md), "A race's units").
+
 ## The tree cache
 
 One launch walks the same trees repeatedly: the enemy tree, the subcommander tree,

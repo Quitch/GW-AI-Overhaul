@@ -1,8 +1,9 @@
 // The measured half of gw_play/referee_game_files.js. Nothing here may touch an
 // engine global at define time - see testing.md, "Coverage".
-define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
-  gwoCard
-) {
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
+], function (gwoCard, raceAiMods) {
   var getAIUnitMapPath = function (x1, aiInUse) {
     var append = x1 ? "_x1.json" : ".json";
 
@@ -414,10 +415,42 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return mapCache[path];
   };
 
+  // Every file a card's `load` can name, by path, read once per page like
+  // the unit maps. An empty listing rejects, as a failed read does, and
+  // either is dropped from the cache.
+  var aiTechFiles;
+  var loadAiTechFiles = function () {
+    if (!aiTechFiles) {
+      var root = raceAiMods.AI_TECH_PATH;
+      aiTechFiles = Promise.resolve(api.file.list(root, true))
+        .then(function (listing) {
+          var paths = _.filter(listing, function (path) {
+            return _.endsWith(path, ".json");
+          });
+          if (!paths.length) {
+            throw new Error("nothing listed under " + root);
+          }
+          return Promise.all(
+            _.map(paths, function (path) {
+              return Promise.resolve($.getJSON("coui:/" + path));
+            })
+          ).then(function (files) {
+            return _.zipObject(paths, files);
+          });
+        })
+        .then(null, function (error) {
+          aiTechFiles = undefined;
+          throw error;
+        });
+    }
+    return aiTechFiles;
+  };
+
   return {
     cookFiles: cookFiles,
     describeError: describeError,
     loadMap: loadMap,
+    loadAiTechFiles: loadAiTechFiles,
     armyInventory: armyInventory,
     getAIUnitMapPath: getAIUnitMapPath,
     getAIUnitMapDestinationPath: getAIUnitMapDestinationPath,

@@ -1019,3 +1019,68 @@ describe("race army maps", () => {
     }
   });
 });
+
+describe("loadAiTechFiles", () => {
+  const FABBER = "/pa/ai_tech/fabber_builds/card.json";
+  const FACTORY = "/pa/ai_tech/factory_builds/card.json";
+
+  // One case: the cache is the page's, so the failures come before the read
+  // that fills it.
+  it("rejects an empty listing or a failed read and lists again, then reads each .json once through coui:// by path", async () => {
+    const stubs = createGlobalStubs();
+    const listings = [
+      ["/pa/ai_tech/fabber_builds/"],
+      [FABBER],
+      ["/pa/ai_tech/fabber_builds/", FABBER, FACTORY],
+    ];
+    const files = {
+      [FABBER]: [undefined, { build_list: [] }],
+      [FACTORY]: [{ build_list: [1] }],
+    };
+    const lists = [];
+    const reads = [];
+    stubs.setGlobal("api", {
+      file: {
+        list: (path, recursive) => {
+          lists.push([path, recursive]);
+          return Promise.resolve(listings.shift());
+        },
+      },
+    });
+    const $ = installFakeJQuery(stubs);
+    $.getJSON = (url) => {
+      reads.push(url);
+      const json = files[url.slice("coui:/".length)].shift();
+      return json
+        ? jqResolved(json)
+        : jqRejected({ status: 404, statusText: "Not Found" });
+    };
+    try {
+      await assert.rejects(
+        refereeGameFiles.loadAiTechFiles(),
+        /nothing listed under \/pa\/ai_tech\//
+      );
+      await assert.rejects(refereeGameFiles.loadAiTechFiles());
+      const first = await refereeGameFiles.loadAiTechFiles();
+      const again = await refereeGameFiles.loadAiTechFiles();
+
+      assert.deepEqual(first, {
+        [FABBER]: { build_list: [] },
+        [FACTORY]: { build_list: [1] },
+      });
+      assert.equal(again, first);
+      assert.deepEqual(lists, [
+        ["/pa/ai_tech/", true],
+        ["/pa/ai_tech/", true],
+        ["/pa/ai_tech/", true],
+      ]);
+      assert.deepEqual(reads, [
+        "coui:/" + FABBER,
+        "coui:/" + FABBER,
+        "coui:/" + FACTORY,
+      ]);
+    } finally {
+      stubs.restoreGlobals();
+    }
+  });
+});

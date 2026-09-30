@@ -128,6 +128,19 @@ registerModuleStub(MOD + "/shared/coop_ai_fielded.js", {
 registerModuleStub(MOD + "/gw_play/cards_coop_ai_pings.js", (params) => {
   seen.pingsParams = params;
 });
+registerModuleStub(MOD + "/gw_play/referee_game_file_paths.js", {
+  raceKeysFor: (params) => {
+    seen.keys.push(params);
+    return answers.keys(params);
+  },
+  loadAiTechFiles: () => answers.loads(),
+  describeError: (error) => "described " + error,
+});
+registerModuleStub(MOD + "/shared/race_ai_mods.js", {
+  table: (keys) => ({ tableOf: keys }),
+});
+const UNIT_CELLS = { name: "unit cells" };
+registerModuleStub(MOD + "/shared/unit_cells.js", UNIT_CELLS);
 
 const makeTech = loadCouiModule(MOD + "/gw_play/cards_coop_ai_tech.js");
 
@@ -180,6 +193,7 @@ function setup(overrides = {}) {
     mounts: 0,
     primes: [],
     views: [],
+    keys: [],
     upserts: [],
     builds: [],
     viewerGames: [],
@@ -189,6 +203,9 @@ function setup(overrides = {}) {
   });
   answers.specs = options.specs || pending();
   answers.cells = options.cells || {};
+  answers.keys =
+    options.keys || ((params) => Promise.resolve({ race: params.race }));
+  answers.loads = options.loads || (() => Promise.resolve({ file: {} }));
 
   const computeds = [];
   const stubs = createGlobalStubs();
@@ -266,6 +283,8 @@ function setup(overrides = {}) {
       armyGapClosable: (gap, stripped, units) =>
         !(stripped || []).some((unit) => units.includes(unit)),
       originSettings: () => ({ uniqueAiLoadouts: options.uniqueAiLoadouts }),
+      aiInUse: (type, race) => "brain:" + type + ":" + race,
+      getAIPathSource: (type, race) => "/source/" + type + "/" + race + "/",
     },
     gwoDeal: {
       dealCard: (request, loaded, cards) => ({ request, loaded, cards }),
@@ -298,7 +317,7 @@ function setup(overrides = {}) {
     inventory: hostInventory,
     cards: options.cards,
     loaded: { name: "deck loaded" },
-    races: { raceOf: (saved) => saved.race },
+    races: { raceOf: (saved) => saved.race, isMla: (race) => race === "mla" },
     helpers: {
       isStartLoadoutCardId: (id) => /_start_/.test(id),
       rerollsRemain: () => true,
@@ -604,6 +623,80 @@ describe("what a co-op AI player's cards are judged with", () => {
     assert.equal(seen.views[1].lookup, newer);
     assert.equal(await fielded({ race: "bugs" }, lookup), undefined);
     assert.equal(await fielded({ race: "exiles" }, lookup), undefined);
+  });
+
+  it("aims a race's view at its co-op tree's keys, on the cells the view is built on", async () => {
+    const specs = pending();
+    const cells = {
+      legion: { race: { units: ["legion_unit"] } },
+      mla: { race: { units: ["addon_unit"] } },
+    };
+    const run = build({ specs, cells });
+    specs.resolve({ units: ["spec_unit"] });
+    await settle();
+    const lookup = run.lookup();
+
+    await run.pings.judge.fielded({ race: "legion" }, lookup);
+    await run.pings.judge.fielded({ race: "mla" }, lookup);
+
+    assert.deepEqual(seen.keys, [
+      {
+        race: "legion",
+        brain: "brain:coop:legion",
+        source: "/source/coop/legion/",
+        cells: cells.legion,
+        unitCells: UNIT_CELLS,
+        gwoRaces: run.params.races,
+      },
+    ]);
+    assert.deepEqual(seen.views[0].aim, {
+      table: { tableOf: { race: "legion" } },
+      loads: { file: {} },
+    });
+    assert.equal(seen.views[1].aim, undefined, "an add-on view takes none");
+  });
+
+  it("counts the AI mods as saved, and says so, where the aim's inputs are not read", async () => {
+    const specs = pending();
+    const cells = { legion: { race: { units: ["legion_unit"] } } };
+    const run = build({
+      specs,
+      cells,
+      loads: () => Promise.reject("no listing"),
+    });
+    specs.resolve({ units: ["spec_unit"] });
+    await settle();
+
+    const view = await run.pings.judge.fielded(
+      { race: "legion" },
+      run.lookup()
+    );
+
+    assert.deepEqual(view, { fielded: "legion" });
+    assert.equal(seen.views[0].aim, undefined);
+    assert.deepEqual(run.logs, [
+      [
+        "error",
+        "[GW COOP AI] legion AI mods counted as saved: described no listing",
+      ],
+    ]);
+  });
+
+  it("waits for the aim's inputs before it builds the view", async () => {
+    const specs = pending();
+    const keys = pending();
+    const cells = { legion: { race: { units: ["legion_unit"] } } };
+    const run = build({ specs, cells, keys: () => keys });
+    specs.resolve({ units: ["spec_unit"] });
+    await settle();
+
+    const view = run.pings.judge.fielded({ race: "legion" }, run.lookup());
+    await settle();
+    assert.deepEqual(seen.views, []);
+
+    keys.resolve({ race: "legion" });
+    await view;
+    assert.equal(seen.views.length, 1);
   });
 });
 

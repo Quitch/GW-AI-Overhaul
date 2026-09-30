@@ -632,7 +632,8 @@ its parts carry the names the debug lines print
   worth 0.6 of the one before. That bounds a card that touches a whole family.
 - **`minions`**: 12 for the AI's first Sub Commander, and 0.7 of the one before
   for each after it, each times the boost of its own commander.
-- **`aiMods`**: 0.5 for each AI mod added, up to 1.5.
+- **`aiMods`**: 0.5 for each AI mod added, up to 1.5. For a race AI, only the
+  AI mods its race's tree takes count ("A race's units").
 - **`slots`**: the slots the card adds, less the one it takes, priced by how
   full the bank is: 0.5 plus 6 times the share of slots in use.
 - **`floor`**: for a card whose effect shows only in battle. When its `unlock`,
@@ -791,6 +792,14 @@ AI is judged on what its army fields, as the referee builds it
   build list, as the referee retags it.
 - The units it could get are the race units that the units of
   `unit_groups.units` stand for, commanders aside.
+- Its AI mods are the saved descriptors its race's co-op tree takes
+  ([`ai-pipeline.md`](ai-pipeline.md), "Race trees"): one the aim keeps, and a
+  `load` whose file keeps an item. Which of its units its cards remake is read
+  from its saved mods. The keys are resolved on the view's own cells for the
+  AI's co-op brain, and the `/pa/ai_tech/` files are read once per page
+  (`referee_game_file_paths.loadAiTechFiles`), before the view is built. Where
+  either read fails, or `/pa/ai_tech/` lists nothing, the error is logged and
+  the AI mods count as saved. An MLA AI with add-ons counts them as saved.
 
 The cells come from the specs lookup's own unit list, through
 `race_cells.indexFor`, as the referee's do, not from the cells
