@@ -1,7 +1,7 @@
 {
   "3 - FASTER RAMP UP": {
     "message": "3 - FASTER RAMP UP",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.49\">3 - FASTER RAMP UP</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"REINFORCEMENT SYSTEM:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how many systems the player must go through before each faction's systems gain extra armies (Commanders); its choices are NEVER, numbers from 8 down to 2, and IMMEDIATELY. This choice sits between 3 and 2: the first extra army comes after three systems, as with 3, and later ones come sooner than with 3. Keep the \"3 - \" exactly and translate \"FASTER RAMP UP\" (a faster increase). Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.": {
     "message": "A Servant can be Desynchronized when cut off from The Synchronous' massive distributed network architecture. Some that are describe the experience of being Synchronized as one where purpose and directive are always clearly defined--something often comforting to commanders in this dark age, but antithetical to others that seek to be something greater than themselves.",
@@ -661,7 +661,7 @@
   },
   "Average": {
     "message": "Average",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 1 other site. Shown: the war setup screen. Source: `<option value=\"0.100\">Average</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "A middle choice in two drop-downs on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. (1) \"ECONOMIC GROWTH:\", how fast the AI's economy grows deeper into the galaxy, between SLOW and FAST. (2) \"MICRO:\", how well the AI handles its armies in combat, between POOR and GOOD. An adjective meaning middling, one word that fits both. Written in title case because the game's own tables key it that way; the panel shows it in upper case, so the casing of the translation does not matter. (ai_settings.html)"
   },
   "Azaghul, one of the largest mining companies in the Progenitor Coalition, was the first to lobby the General Assembly for the mining rights to this system. Azaghul gambled on the system for producing large amounts of metals, and they were not disappointed. As it turned out, Fier produced a new type of iron, which Azaghul scientist labeled 'Dragon'.  The new 'Dragon Iron' had a much higher melting point than normal iron and was naturally stronger than steel, and lighter than aluminum. The discovery of Dragon Iron launched Azaghul to the top, putting them on even terms with Terradine Corp in the mining and refining of metals.": {
     "message": "Azaghul, one of the largest mining companies in the Progenitor Coalition, was the first to lobby the General Assembly for the mining rights to this system. Azaghul gambled on the system for producing large amounts of metals, and they were not disappointed. As it turned out, Fier produced a new type of iron, which Azaghul scientist labeled 'Dragon'.  The new 'Dragon Iron' had a much higher melting point than normal iron and was naturally stronger than steel, and lighter than aluminum. The discovery of Dragon Iron launched Azaghul to the top, putting them on even terms with Terradine Corp in the mining and refining of metals.",
@@ -1037,7 +1037,7 @@
   },
   "Commander": {
     "message": "Commander",
-    "description": "Standalone noun, singular: the player's Commander unit. It is reused in six places, so keep it a plain noun without an article. (1) It is joined with the separate string 'Naval' as 'Naval' + ' ' + 'Commander' to form the name of the Naval Commander loadout card on the loadout picker and in the Data Bank list, so it must be the word that can follow 'Naval' in your language. (2) It is the unit name in the mod's own unit-name table. (3) It is the label of the button that opens the commander-model picker on the Galactic War start screen and the title of that picker dialog. (4) It is the first item in the 'Eradicate: Commander, Colonel, Factory, Fabber' target list shown on the galaxy map and in the in-battle win-conditions text. Use the game's own stock translation of 'Commander'. (gwaio_start_naval.js; unit_names.js; commander_button.html; commander_modal.html; eradication_label.js)"
+    "description": "Standalone noun, singular: the player's Commander unit. It is reused in the places below, so keep it a plain noun without an article. (1) It is the unit name in the mod's own unit-name table, which the unit lists in card tooltips use. (2) It is the label of the button that opens the commander-model picker on the Galactic War start screen, and (3) the title of that picker dialog. (4) It is the first item in the 'Eradicate: Commander, Colonel, Factory, Fabber' target list shown on the galaxy map and in the in-battle win-conditions text. The Naval Commander loadout card has its own entry, 'Naval Commander'. Use the game's own stock translation of 'Commander'. (unit_names.js; commander_button.html; commander_modal.html; eradication_label.js)"
   },
   "Commander Ammunition Tech": {
     "message": "Commander Ammunition Tech",
@@ -1185,7 +1185,7 @@
   },
   "DIRE": {
     "message": "DIRE",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.35\">DIRE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMY:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets the AI's starting economy, and its choices run from worst to best: DIRE, TERRIBLE, POOR, WEAK, UNHEALTHY, NORMAL, HEALTHY, INCREDIBLE. The worst starting economy. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "Damage increased": {
     "message": "Damage increased",
@@ -1273,11 +1273,11 @@
   },
   "Disabled": {
     "message": "Disabled",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"false\">Disabled</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"COMMANDER TRANSPORT:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets whether AI Commanders may travel by orbital transport and teleporter; Disabled means they may not. The other choice is Enabled. Written in title case because the game's own tables key it that way; the panel shows it in upper case, so the casing of the translation does not matter. (ai_settings.html)"
   },
   "Dismiss Tech": {
     "message": "Dismiss Tech",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html. Shown: the galaxy map. Source: `<input type=\"button\" value=\"Dismiss Tech\" data-bind=\"visible: !$root.gwoOfferRerolls() && ($root.canChooseCoopTechCards() || !$root.showHostChoosingSharedTech()), click: $root.dismissTech, click_sound: 'default', rollover_sound: 'default'\" />`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Button in the tech-card bar on the galaxy map (gw_play), shown in place of \"Reroll Tech\" once no reroll is left. It turns down the offered tech cards without taking one. An imperative verb phrase in title case, short enough for a button; \"Tech\" is a tech card, in the game's own word. The stock galaxy map has the same button, so use the game's own translation. (cards_system_reroll.html)"
   },
   "Display the original pre-release Galactic War lore in the Planetary Intelligence panel.": {
     "message": "Display the original pre-release Galactic War lore in the Planetary Intelligence panel.",
@@ -1389,7 +1389,7 @@
   },
   "Enabled": {
     "message": "Enabled",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"true\">Enabled</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"COMMANDER TRANSPORT:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets whether AI Commanders may travel by orbital transport and teleporter; Enabled means they may. The other choice is Disabled. Written in title case because the game's own tables key it that way; the panel shows it in upper case, so the casing of the translation does not matter. (ai_settings.html)"
   },
   "Enables the building of the Planetary Radar which provides complete planetary radar coverage.": {
     "message": "Enables the building of the Planetary Radar which provides complete planetary radar coverage.",
@@ -1449,19 +1449,19 @@
   },
   "FAST": {
     "message": "FAST",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.150\">FAST</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMIC GROWTH:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how fast the AI's economy grows as the player goes deeper into the galaxy, and its choices run from slowest to fastest: NONE, SLOWEST, SLOWER, SLOW, Average, FAST, FASTER, FASTEST. Just above Average. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "FASTER": {
     "message": "FASTER",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.200\">FASTER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMIC GROWTH:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how fast the AI's economy grows as the player goes deeper into the galaxy, and its choices run from slowest to fastest: NONE, SLOWEST, SLOWER, SLOW, Average, FAST, FASTER, FASTEST. Between FAST and FASTEST. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "FASTEST": {
     "message": "FASTEST",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"1\">FASTEST</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMIC GROWTH:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how fast the AI's economy grows as the player goes deeper into the galaxy, and its choices run from slowest to fastest: NONE, SLOWEST, SLOWER, SLOW, Average, FAST, FASTER, FASTEST. The fastest growth. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "FFA BEHAVIOUR": {
     "message": "FFA BEHAVIOUR",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"ffa\">FFA BEHAVIOUR</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's second group, for the Queller AI. The AI plays as it does in a free-for-all (FFA), where every player fights every other. British spelling \"BEHAVIOUR\". Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "FFA Chance": {
     "message": "FFA Chance",
@@ -1561,7 +1561,7 @@
   },
   "Flak Upgrade Tech enables the targeting of land and surface naval units by anti-air defense.": {
     "message": "Flak Upgrade Tech enables the targeting of land and surface naval units by anti-air defense.",
-    "description": "Body text of the upgrade tech card 'Galata Upgrade Tech', shown in the Data Bank card list, the card tooltip and the tech deal; the game appends a separate sentence about a new card slot after it. 'Anti-air defense' is the Galata Turret structure. The card adds the land and water-surface layers to its weapon's targets and removes its air-only damage bonus, so it fires at mobile land and naval units as well as aircraft. The same sentence, with 'Flak' in place of 'Galata', is used by the 'Flak Upgrade Tech' card; keep the two consistent. US spelling 'defense'. The opening words must match the translated card name 'Galata Upgrade Tech'. (gwaio_upgrade_galata.js)"
+    "description": "Body text of the upgrade tech card 'Flak Upgrade Tech', shown in the Data Bank card list, the card tooltip and the tech deal; the game appends a separate sentence about a new card slot after it. 'Anti-air defense' is the Flak Cannon structure. The card adds the land and water-surface layers to its weapon's targets, so it fires at mobile land and naval units as well as aircraft. The same sentence, with 'Galata' in place of 'Flak', is used by the 'Galata Upgrade Tech' card; keep the two consistent. US spelling 'defense'. The opening words must match the translated card name 'Flak Upgrade Tech'. (gwaio_upgrade_flak.js)"
   },
   "Foc sat smack in the middle of the Hydra Expanse, a favorite hunting ground for pirates. The system didn't see much in the way of attention until the outset of the Century War when pirates attacked a Xziphid Hegemony Hive ship entering the system, thinking it was some new class of Progenitor Coalition merchant vessel. Needless to say, Foc never had trouble with pirates again.": {
     "message": "Foc sat smack in the middle of the Hydra Expanse, a favorite hunting ground for pirates. The system didn't see much in the way of attention until the outset of the Century War when pirates attacked a Xziphid Hegemony Hive ship entering the system, thinking it was some new class of Progenitor Coalition merchant vessel. Needless to say, Foc never had trouble with pirates again.",
@@ -1585,7 +1585,7 @@
   },
   "GOOD": {
     "message": "GOOD",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 2 other sites. Shown: the war setup screen. Source: `<option value=\"2\">GOOD</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "A high-quality choice in three drop-downs on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen: \"MICRO:\" (how well the AI handles its armies in combat, the best of POOR, Average and GOOD), \"SCOUTING:\" and \"TARGET SELECTION:\" (how well the AI scouts and picks who to attack, each POOR or GOOD). The opposite of POOR. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "GW Server Mods is not enabled": {
     "message": "GW Server Mods is not enabled",
@@ -1593,43 +1593,43 @@
   },
   "GW-BEGINNER": {
     "message": "GW-BEGINNER",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"0\">GW-BEGINNER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. The easiest. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "GW-BRONZE": {
     "message": "GW-BRONZE",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"3\">GW-BRONZE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. IRON, BRONZE, SILVER, GOLD, PLATINUM and DIAMOND are ranks named after materials. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "GW-CASUAL": {
     "message": "GW-CASUAL",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"1\">GW-CASUAL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. The second easiest. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "GW-CUSTOM": {
     "message": "GW-CUSTOM",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"9\">GW-CUSTOM</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. Not a rank: it opens the AI Settings panel, where the player sets each AI value by hand. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "GW-DIAMOND": {
     "message": "GW-DIAMOND",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"7\">GW-DIAMOND</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. IRON, BRONZE, SILVER, GOLD, PLATINUM and DIAMOND are ranks named after materials. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "GW-GOLD": {
     "message": "GW-GOLD",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"5\">GW-GOLD</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. IRON, BRONZE, SILVER, GOLD, PLATINUM and DIAMOND are ranks named after materials. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "GW-IRON": {
     "message": "GW-IRON",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"2\">GW-IRON</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. IRON, BRONZE, SILVER, GOLD, PLATINUM and DIAMOND are ranks named after materials. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "GW-PLATINUM": {
     "message": "GW-PLATINUM",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"6\">GW-PLATINUM</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. IRON, BRONZE, SILVER, GOLD, PLATINUM and DIAMOND are ranks named after materials. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "GW-SILVER": {
     "message": "GW-SILVER",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"4\">GW-SILVER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. IRON, BRONZE, SILVER, GOLD, PLATINUM and DIAMOND are ranks named after materials. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "GW-UBER": {
     "message": "GW-UBER",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/difficulty_levels.html. Shown: the war setup screen. Source: `<option value=\"8\">GW-UBER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. The hardest. \"UBER\" means supreme, the top rank. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
   },
   "Galactic War": {
     "message": "Galactic War",
@@ -1701,11 +1701,11 @@
   },
   "HEALTHY": {
     "message": "HEALTHY",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"1.200\">HEALTHY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMY:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets the AI's starting economy, and its choices run from worst to best: DIRE, TERRIBLE, POOR, WEAK, UNHEALTHY, NORMAL, HEALTHY, INCREDIBLE. Just above NORMAL. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "HUGE": {
     "message": "HUGE",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"300\">HUGE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"LANDING EVALUATION:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how far from its spawn point the AI looks when it chooses where to land; the choices run from smallest to largest: SPAWN ONLY, TINY, SMALL, MEDIUM, LARGE, HUGE, IMMENSE. Between LARGE and IMMENSE. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "Hagihara was famously known for the Siege of Hagihara during the Century War against the Xziphid Hegemony. When the Xziphid invaded the system thirty years into the war they tried their typical direct assault upon the system, only to find it was defended by a heavily entrenched Progenitor civilian populace. Hagihara was a favorite retirement system for Progenitor Coalition military personnel, so when the Xziphid invaded they were faced with over one billion combat trained veterans. Hagihara held out for over three years, during which time the Commanders had entered the war. The siege was finally lifted when Progenitor forces led by Commander Patton drove the Xziphid from the system.": {
     "message": "Hagihara was famously known for the Siege of Hagihara during the Century War against the Xziphid Hegemony. When the Xziphid invaded the system thirty years into the war they tried their typical direct assault upon the system, only to find it was defended by a heavily entrenched Progenitor civilian populace. Hagihara was a favorite retirement system for Progenitor Coalition military personnel, so when the Xziphid invaded they were faced with over one billion combat trained veterans. Hagihara held out for over three years, during which time the Commanders had entered the war. The siege was finally lifted when Progenitor forces led by Commander Patton drove the Xziphid from the system.",
@@ -1833,15 +1833,15 @@
   },
   "IMMEDIATELY": {
     "message": "IMMEDIATELY",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 1 other site. Shown: the war setup screen. Source: `<option value=\"1\">IMMEDIATELY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "The earliest choice in two drop-downs on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen: \"REINFORCEMENT SYSTEM:\" (how many systems until each faction gains extra armies) and \"TECH SYSTEM:\" (how many systems until the AI gets tech). Their other choices are numbers of systems. IMMEDIATELY means from the first system. An adverb. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "IMMENSE": {
     "message": "IMMENSE",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"400\">IMMENSE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"LANDING EVALUATION:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how far from its spawn point the AI looks when it chooses where to land; the choices run from smallest to largest: SPAWN ONLY, TINY, SMALL, MEDIUM, LARGE, HUGE, IMMENSE. The largest distance. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "INCREDIBLE": {
     "message": "INCREDIBLE",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"10\">INCREDIBLE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMY:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets the AI's starting economy, and its choices run from worst to best: DIRE, TERRIBLE, POOR, WEAK, UNHEALTHY, NORMAL, HEALTHY, INCREDIBLE. The best starting economy, far above the others. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "IRON: you no longer turtle": {
     "message": "IRON: you no longer turtle",
@@ -2041,11 +2041,11 @@
   },
   "LARGE": {
     "message": "LARGE",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"250\">LARGE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"LANDING EVALUATION:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how far from its spawn point the AI looks when it chooses where to land; the choices run from smallest to largest: SPAWN ONLY, TINY, SMALL, MEDIUM, LARGE, HUGE, IMMENSE. Between MEDIUM and HUGE. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "LATE ORBITAL": {
     "message": "LATE ORBITAL",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"lateorbital\">LATE ORBITAL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's second group, for the Queller AI. The AI goes to orbital units later in a battle. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "LEGONIS MACHINA: vehicles": {
     "message": "LEGONIS MACHINA: vehicles",
@@ -2057,27 +2057,27 @@
   },
   "LONG": {
     "message": "LONG",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 3 other sites. Shown: the war setup screen. Source: `<option value=\"12\">LONG</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in four drop-downs on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen: \"UNIT DELAY (MIN):\" and \"UNIT DELAY (MAX):\" (the shortest and longest wait between units from one factory), \"NEW BASE DELAY:\" (the wait before the AI builds a new base), and \"UNABLE TO EXPAND DELAY:\" (the wait before the AI accepts that it cannot expand). Each offers NONE, SHORT, MEDIUM and LONG. The longest wait. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "LOVES AIR": {
     "message": "LOVES AIR",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"air\">LOVES AIR</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's second group, for the Queller AI. The AI favours air units. The \"LOVES …\" choices share one pattern: keep it the same across all five. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "LOVES BOTS": {
     "message": "LOVES BOTS",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"bot\">LOVES BOTS</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's second group, for the Queller AI. The AI favours bots (walking land units). The \"LOVES …\" choices share one pattern: keep it the same across all five. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "LOVES LAND": {
     "message": "LOVES LAND",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"land\">LOVES LAND</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's second group, for the Queller AI. The AI favours land units. The \"LOVES …\" choices share one pattern: keep it the same across all five. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "LOVES ORBITAL": {
     "message": "LOVES ORBITAL",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"orbital\">LOVES ORBITAL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's second group, for the Queller AI. The AI favours orbital units. The \"LOVES …\" choices share one pattern: keep it the same across all five. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "LOVES TANKS": {
     "message": "LOVES TANKS",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"tank\">LOVES TANKS</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's second group, for the Queller AI. The AI favours tanks (wheeled and tracked land units). The \"LOVES …\" choices share one pattern: keep it the same across all five. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "Lambda Geminorum held little interest to the Progenitor Coalition until the Century War. Lambda Geminorum would become immortalized as the site of the 'largest tank battle since Kursk'. Over 17,000 Xziphid Hegemony Scarabs squared off against just over 12,000 Battle Tanks. Despite the numbers involved, the battle was over in just twenty-three minutes. Against the superior tactics of Commander Zhukov, the Xziphid were soundly defeated.": {
     "message": "Lambda Geminorum held little interest to the Progenitor Coalition until the Century War. Lambda Geminorum would become immortalized as the site of the 'largest tank battle since Kursk'. Over 17,000 Xziphid Hegemony Scarabs squared off against just over 12,000 Battle Tanks. Despite the numbers involved, the battle was over in just twenty-three minutes. Against the superior tactics of Commander Zhukov, the Xziphid were soundly defeated.",
@@ -2161,7 +2161,7 @@
   },
   "Lobotomy": {
     "message": "Lobotomy",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"Tutorial\">Lobotomy</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's first group, for the stock Titans AI and the Penchant AI. Lobotomy gives the AI the stock tutorial AI's tag, which stops it building much of what it normally builds, so it plays very badly. A noun used as a name. Written in title case because the game's own tables key it that way; the panel shows it in upper case, so the casing of the translation does not matter. (ai_settings.html)"
   },
   "Locusts Upgrade Tech": {
     "message": "Locusts Upgrade Tech",
@@ -2181,7 +2181,7 @@
   },
   "MEDIUM": {
     "message": "MEDIUM",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 4 other sites. Shown: the war setup screen. Source: `<option value=\"6\">MEDIUM</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in four drop-downs on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen: \"UNIT DELAY (MIN):\" and \"UNIT DELAY (MAX):\" (the shortest and longest wait between units from one factory), \"NEW BASE DELAY:\" (the wait before the AI builds a new base), and \"UNABLE TO EXPAND DELAY:\" (the wait before the AI accepts that it cannot expand). Each offers NONE, SHORT, MEDIUM and LONG. The middle wait. The same word is also a choice in the \"LANDING EVALUATION:\" drop-down, for a medium distance, between SMALL and LARGE; use one word that fits both a time and a distance. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "MLA": {
     "message": "MLA",
@@ -2329,7 +2329,7 @@
   },
   "NEVER": {
     "message": "NEVER",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0\">NEVER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"REINFORCEMENT SYSTEM:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how many systems the player must go through before each faction's systems gain extra armies (Commanders); its other choices are numbers from 8 down to 2, and IMMEDIATELY. NEVER means the AI never gains extra armies. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "NEW BASE DELAY:": {
     "message": "NEW BASE DELAY:",
@@ -2337,11 +2337,11 @@
   },
   "NONE": {
     "message": "NONE",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 5 other sites. Shown: the war setup screen. Source: `<option value=\"0\">NONE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "The zero choice in six drop-downs on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. (1) \"ECONOMIC GROWTH:\": the AI's economy does not grow deeper into the galaxy. (2) \"TECH SYSTEM:\": the AI never gets tech. (3) to (6): no delay at all, in \"UNIT DELAY (MIN):\" and \"UNIT DELAY (MAX):\" (the shortest and longest wait between units from one factory), \"NEW BASE DELAY:\" (the wait before the AI builds a new base), and \"UNABLE TO EXPAND DELAY:\" (the wait before the AI accepts that it cannot expand). One word meaning none or no amount, that fits all six. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "NORMAL": {
     "message": "NORMAL",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"1\">NORMAL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMY:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets the AI's starting economy, and its choices run from worst to best: DIRE, TERRIBLE, POOR, WEAK, UNHEALTHY, NORMAL, HEALTHY, INCREDIBLE. The unchanged economy, in the middle of the list. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "Name:": {
     "message": "Name:",
@@ -2709,7 +2709,7 @@
   },
   "POOR": {
     "message": "POOR",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 3 other sites. Shown: the war setup screen. Source: `<option value=\"0.500\">POOR</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "A low-quality choice in four drop-downs on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. (1) \"ECONOMY:\", the AI's starting economy, between TERRIBLE and WEAK. (2) \"MICRO:\", how well the AI handles its armies in combat, the worst of POOR, Average and GOOD. (3) \"SCOUTING:\" and (4) \"TARGET SELECTION:\", how well the AI scouts and picks who to attack, each POOR or GOOD. An adjective for a low standard of play or health; one word that fits all four. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "POV Camera": {
     "message": "POV Camera",
@@ -2861,7 +2861,7 @@
   },
   "Prevent Waste": {
     "message": "Prevent Waste",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"PreventsWaste\">Prevent Waste</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's first group, for the stock Titans AI and the Penchant AI. When its metal storage is nearly full, the AI builds more, so that metal is not wasted. An imperative phrase used as a name. Written in title case because the game's own tables key it that way; the panel shows it in upper case, so the casing of the translation does not matter. (ai_settings.html)"
   },
   "Processing AI mods": {
     "message": "Processing AI mods",
@@ -2869,7 +2869,7 @@
   },
   "Processing biome mods": {
     "message": "Processing biome mods",
-    "description": "Progress stage text shown on the \"Preparing for battle\" launch progress panel while the mod prepares a battle after pressing Fight (also mirrored to co-op viewers). Present participle phrase, no full stop. \"Biome mods\" are map pack mods. (referee.js)"
+    "description": "Progress stage text shown on the \"Preparing for battle\" launch progress panel while the mod prepares a battle after pressing Fight (also mirrored to co-op viewers). Present participle phrase, no full stop. \"Biome mods\" are map pack mods. (referee_biomes.js)"
   },
   "Processing game config": {
     "message": "Processing game config",
@@ -3033,7 +3033,7 @@
   },
   "Reroll Tech": {
     "message": "Reroll Tech",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_system_reroll.html. Shown: the galaxy map. Source: `<input type=\"button\" value=\"Reroll Tech\" data-bind=\"visible: $root.gwoOfferRerolls() && ($root.canChooseCoopTechCards() || !$root.showHostChoosingSharedTech()), click: $root.rerollTech, click_sound: 'default', rollover_sound: 'default', tooltip: '!LOC:Reroll the data caches but get offered one less…`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Button in the tech-card bar on the galaxy map (gw_play), shown after the player explores a system while the tech offer can still be rerolled. It replaces the offered tech cards with a new deal of one card fewer (its tooltip: \"Reroll the data caches but get offered one less.\"). An imperative verb phrase in title case, short enough for a button; \"Tech\" is a tech card, in the game's own word. (cards_system_reroll.html)"
   },
   "Reroll the data caches but get offered one less.": {
     "message": "Reroll the data caches but get offered one less.",
@@ -3073,7 +3073,7 @@
   },
   "SHORT": {
     "message": "SHORT",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html and 3 other sites. Shown: the war setup screen. Source: `<option value=\"3\">SHORT</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in four drop-downs on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen: \"UNIT DELAY (MIN):\" and \"UNIT DELAY (MAX):\" (the shortest and longest wait between units from one factory), \"NEW BASE DELAY:\" (the wait before the AI builds a new base), and \"UNABLE TO EXPAND DELAY:\" (the wait before the AI accepts that it cannot expand). Each offers NONE, SHORT, MEDIUM and LONG. The shortest wait above NONE. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "SILVER: you beat the skirmish AI": {
     "message": "SILVER: you beat the skirmish AI",
@@ -3081,23 +3081,23 @@
   },
   "SLOW": {
     "message": "SLOW",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.075\">SLOW</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMIC GROWTH:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how fast the AI's economy grows as the player goes deeper into the galaxy, and its choices run from slowest to fastest: NONE, SLOWEST, SLOWER, SLOW, Average, FAST, FASTER, FASTEST. Just below Average. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "SLOWER": {
     "message": "SLOWER",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.050\">SLOWER</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMIC GROWTH:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how fast the AI's economy grows as the player goes deeper into the galaxy, and its choices run from slowest to fastest: NONE, SLOWEST, SLOWER, SLOW, Average, FAST, FASTER, FASTEST. Between SLOWEST and SLOW. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "SLOWEST": {
     "message": "SLOWEST",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.025\">SLOWEST</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMIC GROWTH:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how fast the AI's economy grows as the player goes deeper into the galaxy, and its choices run from slowest to fastest: NONE, SLOWEST, SLOWER, SLOW, Average, FAST, FASTER, FASTEST. The slowest growth above NONE. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "SMALL": {
     "message": "SMALL",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"150\">SMALL</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"LANDING EVALUATION:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how far from its spawn point the AI looks when it chooses where to land; the choices run from smallest to largest: SPAWN ONLY, TINY, SMALL, MEDIUM, LARGE, HUGE, IMMENSE. Between TINY and MEDIUM. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "SPAWN ONLY": {
     "message": "SPAWN ONLY",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0\">SPAWN ONLY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"LANDING EVALUATION:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how far from its spawn point the AI looks when it chooses where to land; the choices run from smallest to largest: SPAWN ONLY, TINY, SMALL, MEDIUM, LARGE, HUGE, IMMENSE. The AI looks only at its spawn point, and nowhere else. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "SUDDEN DEATH CHANCE:",
@@ -3217,7 +3217,7 @@
   },
   "Slower Expansion": {
     "message": "Slower Expansion",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"SlowerExpansion\">Slower Expansion</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"PERSONALITY MODIFIERS:\" list on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The list takes several choices at once, and each tweaks how the AI plays. This choice is in the list's first group, for the stock Titans AI and the Penchant AI. The AI takes new ground more slowly. Written in title case because the game's own tables key it that way; the panel shows it in upper case, so the casing of the translation does not matter. (ai_settings.html)"
   },
   "Small": {
     "message": "Small",
@@ -3461,11 +3461,11 @@
   },
   "TERRIBLE": {
     "message": "TERRIBLE",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.425\">TERRIBLE</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMY:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets the AI's starting economy, and its choices run from worst to best: DIRE, TERRIBLE, POOR, WEAK, UNHEALTHY, NORMAL, HEALTHY, INCREDIBLE. The second worst. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "TINY": {
     "message": "TINY",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"100\">TINY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"LANDING EVALUATION:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets how far from its spawn point the AI looks when it chooses where to land; the choices run from smallest to largest: SPAWN ONLY, TINY, SMALL, MEDIUM, LARGE, HUGE, IMMENSE. The smallest distance above SPAWN ONLY. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "TITANS: base game AI": {
     "message": "TITANS: base game AI",
@@ -3753,7 +3753,7 @@
   },
   "This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.": {
     "message": "This is a treasure planet, hiding a loadout you have yet to unlock. But beware the guardians! Armed with whatever technology bonuses you bring with you to this planet; they will stop at nothing to defend its secrets.",
-    "description": "System description shown in the star detail card on the galaxy map for a treasure-planet system guarded by \"The Guardians\" AI. \"Loadout\" is a starting loadout (commander unlock). Keep the paragraph's punctuation sense; the semicolon is used as a comma. (setup.js)"
+    "description": "System description shown in the star detail card on the galaxy map for a treasure-planet system guarded by \"The Guardians\" AI. \"Loadout\" is a starting loadout (commander unlock). Keep the paragraph's punctuation sense; the semicolon is used as a comma. (ai_population.js)"
   },
   "This system had been part of the first 'land rush' in the early years of Progenitor Coalition expansion. Despite the fact that all the settlers were Progenitors, two very different cultures developed, and relations began to grow sour. Twenty years before the outset of the Century War the governor of Shoujing declared a state of emergency as years of animosity between the two factions turned into open conflict. Before Progenitor Marines could arrive to quell the unrest, both factions had launched massive nuclear missile strikes against one another. In just a few moments, over seven hundred million were dead. The Progenitor Coalition moved the survivors out of the system and resettled them throughout Progenitor governed space.": {
     "message": "This system had been part of the first 'land rush' in the early years of Progenitor Coalition expansion. Despite the fact that all the settlers were Progenitors, two very different cultures developed, and relations began to grow sour. Twenty years before the outset of the Century War the governor of Shoujing declared a state of emergency as years of animosity between the two factions turned into open conflict. Before Progenitor Marines could arrive to quell the unrest, both factions had launched massive nuclear missile strikes against one another. In just a few moments, over seven hundred million were dead. The Progenitor Coalition moved the survivors out of the system and resettled them throughout Progenitor governed space.",
@@ -3893,7 +3893,7 @@
   },
   "UNHEALTHY": {
     "message": "UNHEALTHY",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.700\">UNHEALTHY</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMY:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets the AI's starting economy, and its choices run from worst to best: DIRE, TERRIBLE, POOR, WEAK, UNHEALTHY, NORMAL, HEALTHY, INCREDIBLE. Just below NORMAL. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "UNIT DELAY (MAX):": {
     "message": "UNIT DELAY (MAX):",
@@ -4049,7 +4049,7 @@
   },
   "WEAK": {
     "message": "WEAK",
-    "description": "html-control in ui/mods/com.pa.quitch.gwaioverhaul/gw_start/ai_settings.html. Shown: the war setup screen. Source: `<option value=\"0.600\">WEAK</option>`. A drop-down choice or a button label, kept short. Match the casing of the labels beside it, and keep any number exactly."
+    "description": "Choice in the \"ECONOMY:\" drop-down on the AI Settings panel of the war setup screen (gw_start), which appears when the Custom difficulty is chosen. The drop-down sets the AI's starting economy, and its choices run from worst to best: DIRE, TERRIBLE, POOR, WEAK, UNHEALTHY, NORMAL, HEALTHY, INCREDIBLE. Between POOR and UNHEALTHY. Upper case, like the other choices in the list. (ai_settings.html)"
   },
   "Waiting for loadout": {
     "message": "Waiting for loadout",

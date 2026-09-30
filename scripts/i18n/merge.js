@@ -1,8 +1,8 @@
 "use strict";
 
-// Assembles the translated work lists, scripts/i18n/out/<L>.*.json, into
-// translations/<L>.json: empty messages and descriptions dropped, keys sorted,
-// Prettier-identical output, idempotent. See docs/translations.md.
+// Assembles the translated work lists, scripts/i18n/out/missing.<L>.<n>.json,
+// into translations/<L>.json: empty messages and descriptions dropped, keys
+// sorted, Prettier-identical output, idempotent. See docs/translations.md.
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -15,8 +15,7 @@ const {
 } = require("../lib/loc-keys.js");
 
 const OUT_DIR = path.join(__dirname, "out");
-const WORK_LIST =
-  /^(?:missing\.|all\.)?([A-Za-z]{2}(?:-[A-Za-z]{2})?)(?:\.\d+)?\.json$/;
+const WORK_LIST = /^missing\.([A-Za-z]{2}(?:-[A-Za-z]{2})?)\.\d+\.json$/;
 
 function workLists() {
   if (!fs.existsSync(OUT_DIR)) {

@@ -579,7 +579,9 @@ Four rules keep this affordable and safe:
   because `applyCards` empties the rest before the first `buff()`. lodash 3's
   `cloneDeep` is quadratic in what it copies, and an inventory's mods run to
   thousands. An inventory with no cards is not applied, so it is copied whole.
-  The host's applies of a viewer's record copy the same way.
+  The host's applies of a viewer's record copy the same way. The applied
+  inventory is read off its observables with one JSON copy, not through
+  `GWInventory.save()`, whose `ko.toJS` is quadratic too.
 
 The apply also notes every unit that a card's `removeUnits` takes away. Those
 that no card grants back are the inventory's **stripped** units: the units a
