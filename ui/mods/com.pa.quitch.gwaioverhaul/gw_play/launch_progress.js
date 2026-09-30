@@ -45,8 +45,8 @@
         // A co-op viewer's only stock signal is the page being replaced, so the
         // host mirrors the panel to every viewer. Wrapping the methods rather
         // than the callers covers stages reported by other mods too. The send
-        // helper no-ops off-host; the handler returns nothing, so it never
-        // joins the state apply tail.
+        // helper no-ops off-host. Stock queues every host operator; the handler
+        // returns nothing, so later updates in that queue need not wait on it.
         var launchProgressOperator = "gwo_launch_progress";
 
         var broadcast = function (action, text) {

@@ -12,6 +12,7 @@ define([
     getTeam: function (index, rng) {
       var faction = GWFactions[index],
         team = rng.pick(faction.teams); // GWO - was _.sample
+      // GWO - _.assign, was its alias _.extend
       return _.assign({}, team, {
         color: faction.color,
         faction: faction,
