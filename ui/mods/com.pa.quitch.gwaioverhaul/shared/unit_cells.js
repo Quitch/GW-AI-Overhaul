@@ -12,6 +12,7 @@ define([
     /^(Custom\d+|FactoryBuild|CmdBuild|FabBuild|FabAdvBuild|FabOrbBuild|CombatFab\w*Build|CannonBuildable|Important|Interplanetary|NoBuild|Debug)$/;
   var COMMANDER = "Commander";
   var COMBAT = "Combat";
+  var SPLIT_CLASSES = [COMBAT, "Defense", "Superweapon"];
   var MAX_CHAIN = 16;
 
   var bare = function (type) {
@@ -87,12 +88,35 @@ define([
     ["Amphibious", ["Amphibious"]],
     ["Sub", ["Sub"]],
   ];
+  // A defence or superweapon structure's jobs, in this order. Defense is
+  // their class tag, so it is no job. See races.md, "Jobs".
+  var STRUCTURE_JOBS = [
+    ["Wall", ["Wall"]],
+    ["Nuke", ["Nuke"]],
+    ["ControlModule", ["ControlModule"]],
+    ["PlanetEngine", ["PlanetEngine"]],
+    ["Tactical", ["Tactical"]],
+    ["AirDefense", ["AirDefense"]],
+    ["OrbitalDefense", ["OrbitalDefense"]],
+    ["NukeDefense", ["NukeDefense"]],
+    ["SurfaceDefense", ["SurfaceDefense"]],
+    ["Artillery", ["Artillery"]],
+  ];
 
   var firstMatch = function (table, has, fallback) {
     var found = _.find(table, function (row) {
       return _.some(row[1], has);
     });
     return found ? found[0] : fallback;
+  };
+
+  var jobsFrom = function (table, has) {
+    return _.pluck(
+      _.filter(table, function (row) {
+        return _.some(row[1], has);
+      }),
+      0
+    );
   };
 
   var classify = function (types) {
@@ -116,15 +140,12 @@ define([
 
     var domain = firstMatch(DOMAINS, has, "Land");
     var tier = has("Advanced") ? "Advanced" : "Basic";
-    var jobs =
-      cls === COMBAT
-        ? _.pluck(
-            _.filter(JOBS, function (row) {
-              return _.some(row[1], has);
-            }),
-            0
-          )
-        : [];
+    var jobs = [];
+    if (cls === COMBAT) {
+      jobs = jobsFrom(JOBS, has);
+    } else if (_.includes(SPLIT_CLASSES, cls)) {
+      jobs = jobsFrom(STRUCTURE_JOBS, has);
+    }
 
     return {
       domain: domain,
@@ -488,11 +509,15 @@ define([
   };
 
   // A lookup from a vanilla unit to the race units it stands for: every race
-  // unit of its cell, except in a mobile combat cell, where a unit a
-  // commander can build stands for the race units that share its job, and
-  // the cell's homes also stand for those that share none. A unit that
+  // unit of its cell, except in a mobile combat, defence or superweapon cell,
+  // where a unit a commander can build stands for the race units that share
+  // its job, and the cell's homes also stand for those that share none. A unit that
   // stands for none but that the race can build stands for itself. See
   // races.md, "Jobs" and "Capability cells".
+  var splitCell = function (cell) {
+    return _.includes(SPLIT_CLASSES, cell.slice(cell.lastIndexOf("/") + 1));
+  };
+
   var standInsFor = function (vanilla, race) {
     var plans = {};
 
@@ -531,7 +556,7 @@ define([
     var cellStandIns = function (unit) {
       var cell = vanilla.cellOf[unit];
       var raceUnits = race.unitsByCell[cell] || [];
-      if (!vanilla.fieldable[unit] || !_.endsWith(cell, "/" + COMBAT)) {
+      if (!vanilla.fieldable[unit] || !splitCell(cell)) {
         return raceUnits;
       }
       var plan = planFor(cell);
