@@ -37,7 +37,7 @@ define([
         if (!file) {
           return false;
         }
-        var aimed = aimer.loadFile(file);
+        var aimed = aimer.loadFile(file, mod.type);
         return !_.isArray(aimed.build_list) || aimed.build_list.length > 0;
       });
     };

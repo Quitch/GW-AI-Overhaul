@@ -947,7 +947,7 @@ define([
                 function (json) {
                   write(
                     filePath,
-                    aimer.loadFile(json),
+                    aimer.loadFile(json, mod.type),
                     job.destination + filePath.slice(aiTechPath.length)
                   );
                 },

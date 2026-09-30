@@ -297,8 +297,8 @@ ones excepted, and it is written at the tree's destination. A file that cannot
 be read is logged and skipped. The aim copies each item once per target, with
 the builders that pass the guard for that target, and drops an item left with
 no builder. An item with no `to_build`, such as Tourist Commander's `GiveUp`,
-keeps its aimed builders without the guard. A file with no `build_list` (a
-`template` load) is written as it is. Space Excavation Commander's opening
+keeps its aimed builders without the guard. A `platoon` or `template` load's
+file is written as it is: a platoon item names a template and has no builders. Space Excavation Commander's opening
 launcher becomes `LegionFactoryBasicOrbital`, built by Legion's commanders and
 fabbers.
 

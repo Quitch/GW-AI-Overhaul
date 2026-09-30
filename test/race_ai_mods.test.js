@@ -249,10 +249,18 @@ describe("race_ai_mods loadFile", () => {
     );
   });
 
-  it("gives a file with no build_list back as written", () => {
+  it("gives a platoon or template load's file, or one with no build_list, back as written", () => {
     const templates = { platoon_templates: { Raid: { units: [] } } };
+    const platoons = {
+      build_list: [{ name: "raid", to_build: "Land_Raid", priority: 1 }],
+    };
 
     assert.equal(aimed({}).loadFile(templates), templates);
+    assert.equal(aimed({}).loadFile(templates, "template"), templates);
+    assert.equal(aimed({}).loadFile(platoons, "platoon"), platoons);
+    assert.deepEqual(aimed({}).loadFile(platoons, "fabber"), {
+      build_list: [],
+    });
   });
 });
 

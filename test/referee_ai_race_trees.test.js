@@ -241,6 +241,30 @@ describe("writeRaceTree, AI mods", () => {
     assert.equal(out[LOAD], undefined);
   });
 
+  it("writes a platoon load's file as it is", async () => {
+    const out = {};
+    const platoons = {
+      build_list: [{ name: "raid", to_build: "Land_Raid", priority: 1 }],
+    };
+
+    await writeRaceTree(
+      jobFor(fixtureRaceKeys(), [
+        { type: "platoon", op: "load", value: "card.json" },
+      ]),
+      treeOf(
+        Object.assign(files(), {
+          "/pa/ai_tech/platoon_builds/card.json": platoons,
+        })
+      ),
+      out
+    );
+
+    assert.deepEqual(
+      out["/pa/ai_race_fixture/platoon_builds/card.json"],
+      platoons
+    );
+  });
+
   it("aims nothing at a unit the job's cards remake", async () => {
     const out = {};
 

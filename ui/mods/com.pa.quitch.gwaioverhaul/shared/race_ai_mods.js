@@ -166,6 +166,8 @@ define([
   };
 
   var BUILDER_OPS = ["append", "prepend", "replace"];
+  // Platoon builds name templates, not unit-map keys.
+  var AS_WRITTEN_TYPES = ["platoon", "template"];
 
   // The aim for one inventory: `remade` ({ file: true }, unit_cells.js
   // remadeFiles) holds the units its own cards remake, which stay MLA's.
@@ -213,8 +215,7 @@ define([
         if (
           !mod ||
           mod.op === "load" ||
-          mod.type === "platoon" ||
-          mod.type === "template"
+          _.includes(AS_WRITTEN_TYPES, mod.type)
         ) {
           out.push(mod);
           return;
@@ -261,11 +262,16 @@ define([
       return out;
     };
 
-    // A load's file: each item once per target, with the builders that can
-    // build it. An item with no to_build (a GiveUp) keeps its aimed
-    // builders. A file with no build_list (a template's) is as written.
-    var loadFile = function (json) {
-      if (!json || !_.isArray(json.build_list)) {
+    // A load's file, by the load's type: each item once per target, with the
+    // builders that can build it. An item with no to_build (a GiveUp) keeps
+    // its aimed builders. A platoon or template load's file is as written: a
+    // platoon item names a template and has no builders.
+    var loadFile = function (json, type) {
+      if (
+        !json ||
+        !_.isArray(json.build_list) ||
+        _.includes(AS_WRITTEN_TYPES, type)
+      ) {
         return json;
       }
 
