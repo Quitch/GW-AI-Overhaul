@@ -72,6 +72,7 @@
 - Anti tech held with the Galata upgrade no longer compounds on the Galata, so Anti-Air Tech gives it ×2 damage against air units and ×0.5 against orbital units; with Second Wave, Section 17, and Osmech installed it gave ×256 and ×1/256, because it compounded once for each add-on unit that stands for the Galata, and it compounded again for the host of a co-op war and at a Guardians star
 - Planetary Radar Upgrade Tech held with Planetary Radar Tech no longer gives the Deep Space Radar over 30 times the sight it should for the host of a co-op war or at a Guardians star
 - At a Guardians star, the Firefly, Kaiju, Single Laser Defense Tower, Skitter, and Stinger upgrades no longer give your units and the Guardians' the same army's copy of the new weapon
+- With Second Wave or Section 17 installed, MLA AIs and Sub Commanders now build the units those mods add to their build orders, such as Section 17's Energy Coil and Second Wave's Spear, which they never built before
 
 ## v7.4.1 - 2026-09-24
 

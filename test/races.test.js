@@ -811,7 +811,7 @@ describe("layersFor", () => {
 describe("unitMapsFor with add-ons", () => {
   const { FIXTURE_ADDON } = require("../scripts/lib/race-fixture.js");
 
-  it("adds the race's add-on maps after its own and gives MLA none", () => {
+  it("adds the race's add-on maps after its own", () => {
     races.registerAddon(FIXTURE_ADDON);
     races.activateAddons(["fixture_addon"]);
 
@@ -820,8 +820,21 @@ describe("unitMapsFor with add-ons", () => {
       "/pa/ai/unit_maps/fixture_addon_fx.json",
       "/pa/ai/unit_maps/fixture_addon_aux.json",
     ]);
-    assert.deepEqual(races.unitMapsFor("mla", "Titans", "/pa/ai/"), []);
     assert.deepEqual(races.unitMapsFor("nope", "Titans", "/pa/ai/"), []);
+  });
+
+  it("gives MLA its add-on maps, for the brain the add-on ships them for", () => {
+    races.registerAddon(FIXTURE_ADDON);
+    races.activateAddons(["fixture_addon"]);
+
+    assert.deepEqual(races.unitMapsFor("mla", "Titans", "/pa/ai/"), [
+      "/pa/ai/unit_maps/fixture_addon.json",
+      "/pa/ai/unit_maps/fixture_addon_aux.json",
+    ]);
+    assert.deepEqual(
+      races.unitMapsFor("mla", "Queller", "/pa/ai_queller/q_uber/"),
+      []
+    );
   });
 
   it("omits an inactive add-on's maps: its files are not on disk to read", () => {
@@ -831,5 +844,6 @@ describe("unitMapsFor with add-ons", () => {
     assert.deepEqual(races.unitMapsFor("fixture", "Titans", "/pa/ai/"), [
       "/pa/ai/unit_maps/fixture.json",
     ]);
+    assert.deepEqual(races.unitMapsFor("mla", "Titans", "/pa/ai/"), []);
   });
 });

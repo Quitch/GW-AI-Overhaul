@@ -157,18 +157,6 @@ define([
     return Object.prototype.hasOwnProperty.call(specFiles, file + tag);
   };
 
-  var mapPair = function (maps) {
-    return { classic: maps[0], x1: maps[1] };
-  };
-
-  // An MLA army reads its brain's own maps, as its tree lists them.
-  var mlaMaps = function (brain) {
-    return Promise.all([
-      loadMap(getAIUnitMapPath(false, brain)),
-      loadMap(getAIUnitMapPath(true, brain)),
-    ]).then(mapPair);
-  };
-
   // One enemy army's files: its race's cells and maps, then its specs.
   var enemyArmyFiles = function (battle, n) {
     var ai = battle.ai;
@@ -179,9 +167,7 @@ define([
     });
 
     return battle.cellsFor(race).then(function (cells) {
-      var maps = gwoRaces.isMla(race)
-        ? { classic: battle.aiUnitMap, x1: battle.aiX1UnitMap }
-        : battle.armyMaps("enemy", race, cells);
+      var maps = battle.armyMaps("enemy", race, cells);
 
       return Promise.resolve(maps).then(function (unitMaps) {
         return buildAiFactionFiles({
@@ -214,12 +200,8 @@ define([
     });
   };
 
-  // Each co-op AI reads its own brain's maps: MLA's as its tree lists them, a
-  // race's merged as the player's are.
+  // Each co-op AI reads its own brain's maps, merged as the player's are.
   var coopAiMaps = function (battle, coopAi) {
-    if (gwoRaces.isMla(coopAi.race)) {
-      return mlaMaps(coopAi.brain);
-    }
     return battle
       .cellsFor(coopAi.race)
       .then(_.partial(battle.armyMaps, "coop", coopAi.race));
@@ -251,9 +233,7 @@ define([
         unitCells: unitCells,
         gwoRaces: gwoRaces,
       });
-      var maps = isMla
-        ? mlaMaps(gwoAI.aiInUse("subcommander", race))
-        : battle.armyMaps("subcommander", race, cells);
+      var maps = battle.armyMaps("subcommander", race, cells);
 
       return Promise.resolve(maps).then(function (unitMaps) {
         return genUnitSpecs(plan.specs, coopAi.tag).then(function (specFiles) {
@@ -301,9 +281,7 @@ define([
       });
       var playerSpecs = plan.specs;
       var playerExtraMods = plan.retagMods;
-      var playerMaps = gwoRaces.isMla(playerRace)
-        ? mlaMaps(gwoAI.aiInUse("subcommander", playerRace))
-        : battle.armyMaps("subcommander", playerRace, cells);
+      var playerMaps = battle.armyMaps("subcommander", playerRace, cells);
 
       return Promise.resolve(playerMaps).then(function (unitMaps) {
         return genUnitSpecs(playerSpecs, PLAYER_TAG).then(
@@ -384,13 +362,11 @@ define([
 
         var inventory = game.inventory();
         var playerRace = gwoRaces.raceOf(inventory);
-        var enemyAI = gwoAI.aiInUse("enemy");
-        var aiUnitMapSourcePath = getAIUnitMapPath(false, enemyAI);
-        var aiUnitMapTitansSourcePath = getAIUnitMapPath(true, enemyAI);
 
         // A race army reads the brain that carries its race (or Titans) from
         // that brain's own map with the race's maps laid over it, at the race's
-        // tree, translated to the race's units (gameFilePaths.raceUnitMap).
+        // tree, translated to the race's units (gameFilePaths.raceUnitMap). An
+        // MLA army reads its brain's map with its add-ons' maps laid over it.
         // Guardians mirror the player, race included. See races.md.
         var armyOf = function (n) {
           return n === 0 ? ai : ai.foes[n - 1];
@@ -428,19 +404,12 @@ define([
         };
 
         var unitsLoad = $.get("spec://pa/units/unit_list.json");
-        var aiMapLoad = loadMap(aiUnitMapSourcePath);
-        var aiX1MapLoad = loadMap(aiUnitMapTitansSourcePath);
         // Native from here on: a jQuery callback that throws hangs the launch,
         // a native one rejects, and every chain below ends in fail. A jQuery
         // promise adopted by a native one hands over its first argument only,
-        // so the three loads are gathered into one first.
-        var loads = $.when(unitsLoad, aiMapLoad, aiX1MapLoad).then(
-          function (unitsGet, aiUnitMap, aiX1UnitMap) {
-            return [unitsGet, aiUnitMap, aiX1UnitMap];
-          }
-        );
-        var buildArmyFiles = function (loaded) {
-          var units = parse(loaded[0][0]).units;
+        // which for $.get is the data.
+        var buildArmyFiles = function (unitList) {
+          var units = parse(unitList).units;
           // Under shared tech a co-op AI fields the host's units, its
           // commander among them, as the star's ally does.
           var coopAiCommanders = _.pluck(
@@ -459,8 +428,6 @@ define([
             armyOf: armyOf,
             raceOfArmy: raceOfArmy,
             armyMaps: armyMaps,
-            aiUnitMap: loaded[1],
-            aiX1UnitMap: loaded[2],
             // Identical for every faction - build it once rather than per
             // iteration.
             aiSpecs: units.concat(model.gwoSpecs),
@@ -502,7 +469,7 @@ define([
 
           playerFiles(battle).then(null, fail);
         };
-        Promise.resolve(loads).then(buildArmyFiles).then(null, fail);
+        Promise.resolve(unitsLoad).then(buildArmyFiles).then(null, fail);
 
         _.times(aiFactionCount, function (n) {
           filesToProcess.push(aiFactions[n]);
