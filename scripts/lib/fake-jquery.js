@@ -36,6 +36,22 @@ function thenCallback(fn, failWith) {
   };
 }
 
+// jQuery 2 fails the next promise with what an error callback returns,
+// unless it has promise(), where native .then would recover. Nothing reports
+// that failure in the game, so the promise it fails is marked handled. Both
+// steps use native promises: the decorated .then would fail a promise of its
+// own each time, and adopting a decorated promise calls it, so neither would
+// ever end.
+function jqueryThen(chain, onDone, onFail) {
+  var next;
+  var failNext = function (value) {
+    Promise.prototype.then.call(next, undefined, function () {});
+    return Promise.reject(value);
+  };
+  next = chain(thenCallback(onDone), thenCallback(onFail, failNext));
+  return next;
+}
+
 // The Promise itself, augmented, rather than a wrapper - so `.then` chains on
 // the inherited Promise.prototype.then rather than a hand-rolled look-alike.
 // What `.then` returns is augmented in the same way, as jQuery's is:
@@ -64,19 +80,8 @@ function decorate(promise) {
     chain(undefined, fn);
     return promise;
   };
-  // jQuery 2 fails the next promise with what an error callback returns,
-  // unless it has promise(), where native .then would recover. Nothing reports
-  // that failure in the game, so it is marked handled. Both steps use native
-  // promises: the decorated .then would fail a promise of its own each time,
-  // and adopting a decorated promise calls it, so neither would ever end.
   promise.then = function (onDone, onFail) {
-    var next;
-    var failNext = function (value) {
-      Promise.prototype.then.call(next, undefined, function () {});
-      return Promise.reject(value);
-    };
-    next = chain(thenCallback(onDone), thenCallback(onFail, failNext));
-    return decorate(next);
+    return decorate(jqueryThen(chain, onDone, onFail));
   };
 
   return promise;
@@ -365,7 +370,7 @@ function when() {
     return self;
   };
   self.then = function (onDone, onFail) {
-    return chain(thenCallback(onDone), thenCallback(onFail));
+    return jqueryThen(chain, onDone, onFail);
   };
   self.done = function (fn) {
     chain(fn);

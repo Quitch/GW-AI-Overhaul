@@ -93,16 +93,20 @@ describe("fake-jquery .then", () => {
   });
 
   it("fails the next promise with what an error callback returns, as jQuery 2 does", async () => {
-    for (const value of ["handled", undefined]) {
-      const outcome = [];
-      rejected("no")
-        .then(undefined, () => value)
-        .then(
-          () => outcome.push("resolved"),
-          (reason) => outcome.push("rejected", reason)
-        );
-      await new Promise((resolve) => setImmediate(resolve));
-      assert.deepEqual(outcome, ["rejected", value]);
+    // $.when's .then is its own, so it is checked alongside.
+    const sources = [() => rejected("no"), () => when(rejected("no"), 1)];
+    for (const source of sources) {
+      for (const value of ["handled", undefined]) {
+        const outcome = [];
+        source()
+          .then(undefined, () => value)
+          .then(
+            () => outcome.push("resolved"),
+            (reason) => outcome.push("rejected", reason)
+          );
+        await new Promise((resolve) => setImmediate(resolve));
+        assert.deepEqual(outcome, ["rejected", value]);
+      }
     }
   });
 
