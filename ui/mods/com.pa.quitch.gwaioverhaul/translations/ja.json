@@ -686,6 +686,9 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "海戦コマンダーの装備には全ての海戦工場が搭載されている。対象となる惑星の水と溶岩の量が増加する。"
   },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "銀河のサイズ、プレイヤー人数、ファクション、難易度、ゲームオプションが一致し、同じMODが導入されていれば、同じシード値から同じ銀河と同じ敵が再現される。惑星名は毎回変わる。新しい銀河にするには、そのままにしておく。"
+  },
   "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
     "message": "あなたとサブコマンダーが使用するユニット。各種族のAIはAIボタンで選択する。"
   },

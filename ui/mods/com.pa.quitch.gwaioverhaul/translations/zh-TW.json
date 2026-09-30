@@ -716,6 +716,9 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "海軍指揮官配備包含所有海軍工廠。增加合適星球上的水與熔岩數量。"
   },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "只要銀河大小、玩家人數、派系、難易度與遊戲選項相同且安裝相同模組，同一個種子就會重建相同的銀河與相同的敵人。星球名稱仍會不同。保持不變即可產生全新的銀河。"
+  },
   "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
     "message": "你與你的次指揮官所使用的單位。每個種族的 AI 以 AI 按鈕選擇。"
   },

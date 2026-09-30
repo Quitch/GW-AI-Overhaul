@@ -686,6 +686,9 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "Снаряжение Коммандера ВМС содержит все военно-морские заводы. Увеличивает количество воды и лавы на подходящих планетах."
   },
+  "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
+    "message": "То же начальное значение воссоздаёт ту же галактику и тех же врагов при условии, что размер галактики, количество игроков, фракция, сложность и настройки игры совпадают и установлены те же моды. Названия планет всё равно меняются. Оставьте поле как есть, чтобы получить новую галактику."
+  },
   "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
     "message": "Юниты, которыми сражаетесь вы и ваши Коммандеры Помощники. ИИ каждой расы выбирается кнопкой ИИ."
   },
