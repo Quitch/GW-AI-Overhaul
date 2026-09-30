@@ -1,8 +1,10 @@
 // Per-player tech in co-op. GWO extracts the validation to the measured
-// gw_play/per_player_tech.js (see testing.md), and continues viewers'
-// subcommanders along the player-faction colour sequence where stock leaves them
-// on colliding raw faction colours. Stock's 23 console.log calls are removed;
-// the seven console.error calls are GWO's. Glue only. See shadowing.md.
+// gw_play/per_player_tech.js (see testing.md). It builds viewers' subcommanders
+// as the host's referee builds its own: the personality rebuilt from the
+// minion's recorded id, GWO's Sub Commander econ rate, and colours that continue
+// the player-faction sequence where stock leaves them on colliding raw faction
+// colours. Stock's 23 console.log calls are removed; the six console.error calls
+// and the console.warn are GWO's. Glue only. See shadowing.md.
 define([
   "shared/gw_common",
   "shared/gw_inventory",

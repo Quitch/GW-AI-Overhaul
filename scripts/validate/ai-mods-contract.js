@@ -49,7 +49,8 @@ const INERT_BANK = {
 
 const VALID_TYPES = new Set(["fabber", "factory", "platoon", "template"]);
 const BUILD_LIST_TYPES = new Set(["fabber", "factory", "platoon"]);
-// Mirrors referee_ai.js's own required-field checks exactly.
+// The fields each op needs. referee_ai.js checks none of them, so a missing one
+// goes unreported at runtime.
 const REQUIRED_FIELDS_BY_OP = {
   load: ["value"],
   append: ["value", "toBuild", "idToMod"],

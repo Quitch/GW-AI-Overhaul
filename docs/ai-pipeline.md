@@ -25,7 +25,7 @@ inventory.addAIMods([
     value: 100,
     refId: "test_type", // optional: narrows the match
     refValue: "HaveEcoForAdvanced",
-    matchAll: false, // optional: match every test, ignore refId/refValue
+    matchAll: false, // optional: at the condition level, every test
     treeOnly: false, // optional: skip files a `load` pulled in from /pa/ai_tech/
   },
 ]);
@@ -40,8 +40,9 @@ inventory.addAIMods([
 | `platoon`  | `platoon_builds/`    |
 | `template` | `platoon_templates/` |
 
-Anything else throws. Note that there is no `unit_map` type.
-`referee_game_files.js` writes unit maps, not this pipeline.
+Anything else throws. Note that there is no `unit_map` type, so no descriptor
+reaches a unit map. This pipeline copies a tree's untagged maps with its other
+files, and `referee_game_files.js` writes the tagged ones.
 
 ## The op table
 
@@ -101,14 +102,16 @@ gwoAI.builderAppendMods(
 );
 ```
 
-That call is one `append` to `builders` per name. It sets `matchAll`, so every
-list that carries the build takes it. `gwoAI.advancedStructureBuilds` is the
-structure list that the four basic-fabber upgrades share.
+That call is one `append` to `builders` per name. It sets no `refId`, so every
+entry for the name with a `builders` list takes it, in every file the pipeline
+walks. `gwoAI.advancedStructureBuilds` is the structure list that the four
+basic-fabber upgrades share.
 
 ### How a build op matches
 
-Each of the six build ops walks `json.build_list` and skips any entry whose
-`to_build` is not the descriptor's `toBuild`. Then:
+`append`, `prepend`, `replace`, and `unset` share one walk
+(`forEachMatchingTarget`). It goes through `json.build_list` and skips any
+entry whose `to_build` is not the descriptor's `toBuild`. Then:
 
 ```js
 var validMatch =
@@ -120,6 +123,9 @@ If that holds, the op applies to the build entry itself. If it does not, the op
 descends into `build.build_conditions`, which is an array of arrays of test
 objects. There the op applies to every test where `matchAll` is set, or where
 `test[refId] === refValue`.
+
+`remove` and `new` skip the same entries, but ignore `refId`, `refValue`, and
+`matchAll`: every entry left takes the op, as the op table describes it.
 
 So one descriptor can hit either the build level or the condition level,
 depending on the file it is applied to. And the pipeline applies the same descriptor
@@ -235,17 +241,20 @@ again. A run that receives no cache (tests, the console) creates its own.
 
 ## Test hook
 
-`referee_ai.js` exposes `applyAiMods` through a `typeof module !== "undefined"`
-guard. That branch never executes in the game's Chromium runtime. It exists so
-`test/applyAiMods.test.js` can reach a function that `define()` never returns.
-Tests reach it with `requireShippedModule`, not `loadCouiModule`. See
-[`testing.md`](testing.md).
+`referee_ai.js` exposes `applyAiMods`, `raceTreeJobs`, `coopAiTreeRequests`, and
+`writeRaceTree` through a `typeof module !== "undefined"` guard. That branch
+never executes in the game's Chromium runtime. It exists so tests can reach
+functions that `define()` never returns: `test/applyAiMods.test.js` and
+`test/rapid_builders.test.js` take `applyAiMods`, and
+`test/referee_ai_race_trees.test.js` and `test/referee_ai_coop_trees.test.js`
+take the rest. Tests reach them with `requireShippedModule`, not
+`loadCouiModule`. See [`testing.md`](testing.md).
 
 ## Where to look next
 
 - [`ai-paths.md`](ai-paths.md): how GWO chooses the source and destination paths.
 - [`tech-cards.md`](tech-cards.md): where `addAIMods` gets called from.
 - `scripts/validate/ai-mods-contract.js`: the shape checker. It mirrors this op
-  table and fails if the two drift. It also carries `load`. `load` is not an op
-  here, but it is a descriptor a card can emit, so the checker checks its shape
-  too.
+  table by hand, and nothing compares the two, so change both together. It also
+  carries `load`. `load` is not an op here, but it is a descriptor a card can
+  emit, so the checker checks its shape too.
