@@ -12,7 +12,7 @@ define([
     /^(Custom\d+|FactoryBuild|CmdBuild|FabBuild|FabAdvBuild|FabOrbBuild|CombatFab\w*Build|CannonBuildable|Important|Interplanetary|NoBuild|Debug)$/;
   var COMMANDER = "Commander";
   var COMBAT = "Combat";
-  var SPLIT_CLASSES = [COMBAT, "Defense", "Superweapon"];
+  var INTEL = "Intel";
   var MAX_CHAIN = 16;
 
   var bare = function (type) {
@@ -52,7 +52,7 @@ define([
     ["Metal", ["MetalProduction"]],
     ["Energy", ["EnergyProduction"]],
     ["Storage", ["Economy"]],
-    ["Intel", ["Recon", "Radar", "RadarJammer"]],
+    [INTEL, ["Recon", "Radar", "RadarJammer"]],
     ["Teleporter", ["Teleporter"]],
   ];
   // A mobile combat unit's jobs, in this order. See races.md, "Jobs".
@@ -102,6 +102,19 @@ define([
     ["SurfaceDefense", ["SurfaceDefense"]],
     ["Artillery", ["Artillery"]],
   ];
+  // An intel structure's jobs. Every intel structure carries Recon, so it is
+  // no job. See races.md, "Jobs".
+  var INTEL_JOBS = [
+    ["Radar", ["Radar"]],
+    ["RadarJammer", ["RadarJammer"]],
+  ];
+  // The classes whose cells split by job, and the table each reads.
+  var JOB_TABLES = {
+    Combat: JOBS,
+    Defense: STRUCTURE_JOBS,
+    Superweapon: STRUCTURE_JOBS,
+    Intel: INTEL_JOBS,
+  };
 
   var firstMatch = function (table, has, fallback) {
     var found = _.find(table, function (row) {
@@ -140,12 +153,8 @@ define([
 
     var domain = firstMatch(DOMAINS, has, "Land");
     var tier = has("Advanced") ? "Advanced" : "Basic";
-    var jobs = [];
-    if (cls === COMBAT) {
-      jobs = jobsFrom(JOBS, has);
-    } else if (_.includes(SPLIT_CLASSES, cls)) {
-      jobs = jobsFrom(STRUCTURE_JOBS, has);
-    }
+    var table = JOB_TABLES[cls];
+    var jobs = table ? jobsFrom(table, has) : [];
 
     return {
       domain: domain,
@@ -508,16 +517,24 @@ define([
     return built;
   };
 
-  // A lookup from a vanilla unit to the race units it stands for: every race
-  // unit of its cell, except in a mobile combat, defence or superweapon cell,
-  // where a unit a commander can build stands for the race units that share
-  // its job, and the cell's homes also stand for those that share none. A unit that
-  // stands for none but that the race can build stands for itself. See
-  // races.md, "Jobs" and "Capability cells".
-  var splitCell = function (cell) {
-    return _.includes(SPLIT_CLASSES, cell.slice(cell.lastIndexOf("/") + 1));
+  var classOfCell = function (cell) {
+    return cell.slice(cell.lastIndexOf("/") + 1);
   };
 
+  var splitCell = function (cell) {
+    return Object.prototype.hasOwnProperty.call(JOB_TABLES, classOfCell(cell));
+  };
+
+  var intelCell = function (cell) {
+    return classOfCell(cell) === INTEL;
+  };
+
+  // A lookup from a vanilla unit to the race units it stands for: every race
+  // unit of its cell, except in a mobile combat, defence, superweapon or
+  // intel cell, where a unit a commander can build stands for the race units
+  // that share its job, and the cell's homes also stand for those that share
+  // none. A unit that stands for none but that the race can build stands for
+  // itself. See races.md, "Jobs" and "Capability cells".
   var standInsFor = function (vanilla, race) {
     var plans = {};
 
@@ -531,13 +548,16 @@ define([
           return vanilla.fieldable[unit];
         });
         var jobs = _.compact(_.map(fielded, jobOf));
+        // Exiles' one advanced intel unit both sees and jams.
+        var matchAll = intelCell(cell);
         var matchOf = {};
         _.forEach(race.unitsByCell[cell] || [], function (unit) {
-          matchOf[unit] = _.find(race.jobsOf[unit], function (job) {
+          var shared = _.filter(race.jobsOf[unit], function (job) {
             return _.includes(jobs, job);
           });
+          matchOf[unit] = matchAll ? shared : _.take(shared);
         });
-        var matched = _.compact(_.values(matchOf));
+        var matched = _.flatten(_.values(matchOf));
         var jobless = _.reject(fielded, jobOf);
         var leftover = _.reject(fielded, function (unit) {
           return _.includes(matched, jobOf(unit));
@@ -564,7 +584,7 @@ define([
       var home = _.includes(plan.homes, unit);
       return _.filter(raceUnits, function (raceUnit) {
         var match = plan.matchOf[raceUnit];
-        return match ? match === job : home;
+        return match.length ? _.includes(match, job) : home;
       });
     };
 
@@ -835,10 +855,11 @@ define([
 
   // A merged unit map's spec_ids the race maps did not set, re-pointed from a
   // vanilla unit to the first race unit it stands for, so a key the engine
-  // reads itself resolves to something the army can own. A unit that stands
-  // for nothing keeps its entry. `avoid` ({ path: true }) names units to pass
-  // over while another stand-in is offered: an add-on's, which the race's own
-  // AI data does not know. Returns a copy.
+  // reads itself resolves to something the army can own. An intel unit that
+  // stands for nothing takes its whole cell (Bugs' jammer key names a Bugs
+  // radar); any other keeps its entry. `avoid` ({ path: true }) names units
+  // to pass over while another stand-in is offered: an add-on's, which the
+  // race's own AI data does not know. Returns a copy.
   var unitMapFallback = function (map, raceMaps, vanilla, race, avoid) {
     if (!map || !map.unit_map) {
       return map;
@@ -863,6 +884,9 @@ define([
       var cell =
         entry && _.isString(entry.spec_id) && vanilla.cellOf[entry.spec_id];
       var stand = cell && !raceKeys[key] ? standIns(entry.spec_id) : undefined;
+      if (stand && !stand.length && intelCell(cell)) {
+        stand = race.unitsByCell[cell] || [];
+      }
       unitMap[key] =
         stand && stand.length
           ? _.assign({}, entry, { spec_id: preferred(stand) })

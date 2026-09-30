@@ -257,8 +257,8 @@ rule that fits:
    `LegionCommander`.
 3. A spec key the army's map keeps is kept as written. The map keeps a key
    whose `engineKeys` entry is `null`, a `stockUnits` unit, a unit the race
-   builds itself, and a unit that stands for nothing. Exiles keeps
-   `BasicMetalExtractor` this way.
+   builds itself, and a unit that stands for nothing, unless it is an intel
+   unit (races.md, "Jobs"). Exiles keeps `BasicMetalExtractor` this way.
 4. A spec key whose unit the inventory's own cards remake is dropped (below).
 5. Any other spec key becomes the race keys that name the race's `engineKeys`
    unit for it, or else its stand-ins.

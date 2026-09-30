@@ -200,6 +200,26 @@ const STRUCTURE_UNREAD_BITS = [
   "Economy",
 ];
 
+// Every bit an intel structure's cell and jobs read, and those decided to be
+// no job of one. A bit outside them is one the intel table has not been
+// decided for.
+const INTEL_READ_BITS = [
+  // Domain and tier.
+  "Air",
+  "Orbital",
+  "Bot",
+  "Land",
+  "Naval",
+  "Advanced",
+  "Basic",
+  // Class.
+  "Recon",
+  // Job.
+  "Radar",
+  "RadarJammer",
+];
+const INTEL_UNREAD_BITS = ["Structure"];
+
 // MLA's is the add-on index.
 const INDEXES = races.all().map((race) => ({
   id: race.id,
@@ -208,9 +228,10 @@ const INDEXES = races.all().map((race) => ({
 const VANILLA = INDEXES[0].index.vanilla;
 
 const isCombat = (index, unit) => /\/Combat$/.test(index.cellOf[unit] || "");
-const SPLIT_CELL = /\/(Combat|Defense|Superweapon)$/;
+const SPLIT_CELL = /\/(Combat|Defense|Superweapon|Intel)$/;
 const isStructure = (index, unit) =>
   /\/(Defense|Superweapon)$/.test(index.cellOf[unit] || "");
+const isIntel = (index, unit) => /\/Intel$/.test(index.cellOf[unit] || "");
 const short = (unit) => unit.slice(unit.lastIndexOf("/") + 1, -".json".length);
 
 describe("jobs over the harvested fixture", () => {
@@ -303,6 +324,79 @@ describe("jobs over the harvested fixture", () => {
         }
       }
     }
+  });
+
+  it("types every intel structure with bits its rule reads or leaves", () => {
+    const known = new Set(INTEL_READ_BITS.concat(INTEL_UNREAD_BITS));
+    for (const { id, index } of INDEXES) {
+      for (const side of [index.vanilla, index.race]) {
+        for (const unit of Object.keys(side.cellOf)) {
+          if (!isIntel(side, unit)) {
+            continue;
+          }
+          for (const bit of cells.stripTypes(fixture[unit])) {
+            assert.ok(known.has(bit), id + ": " + unit + " " + bit);
+          }
+        }
+      }
+    }
+  });
+
+  it("gives the advanced radar a race's radars, and the jammer its jammers", (t) => {
+    // Legion's advanced radar is typed Recon alone, so it is a home of both.
+    const expected = {
+      mla: [["system_radar"], ["jammer_titan"]],
+      legion: [
+        ["l_radar_adv", "system_radar"],
+        ["l_jammer_station", "l_radar_adv"],
+      ],
+      bugs: [["bug_radar_advanced", "system_radar"], []],
+      exiles: [["seizmic"], ["seizmic"]],
+    };
+    for (const { id, index } of INDEXES) {
+      if (!index.race.units.length) {
+        t.diagnostic("fixture harvested without " + id);
+        continue;
+      }
+      const standIns = cells.standInsFor(index.vanilla, index.race);
+      const of = (unit) => standIns(unit).map(short).sort();
+      assert.deepEqual(
+        [of(gwoUnit.radarAdvanced), of(gwoUnit.radarJammingStation)],
+        expected[id],
+        id
+      );
+    }
+  });
+
+  it("points Bugs' jammer key at a Bugs radar, though no jammer card reaches them", (t) => {
+    const { index } = INDEXES.find(({ id }) => id === "bugs");
+    if (!index.race.units.length) {
+      t.diagnostic("fixture harvested without bugs");
+      return;
+    }
+    const map = {
+      unit_map: { RadarJammer: { spec_id: gwoUnit.radarJammingStation } },
+    };
+    const translated = cells.unitMapFallback(
+      map,
+      [],
+      index.vanilla,
+      index.race,
+      races.addonUnitPaths()
+    );
+
+    assert.equal(
+      cells.cardUsable(
+        [gwoUnit.radarJammingStation],
+        index.vanilla,
+        index.race
+      ),
+      false
+    );
+    assert.equal(
+      short(translated.unit_map.RadarJammer.spec_id),
+      "bug_radar_advanced"
+    );
   });
 
   it("gives a laser tower a race's turrets, and the nuke launcher its nukes", (t) => {
