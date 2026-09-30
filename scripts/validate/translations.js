@@ -26,8 +26,10 @@ const { reportProblems } = require("../lib/report-failures.js");
 const SEPARATORS = /;;|::/;
 // A translator note's `file:line` reference; the line moves with the code.
 const LINE_REFERENCE = /[\w-]\.(?:js|html|json|css):\d/;
-// A file a translator note names, as a path or a bare file name.
-const FILE_NAME = /[\w./-]*[\w-]\.(?:js|html|json|css)\b/g;
+// A file a translator note names, as a path or a bare file name: a run of
+// path characters ending in a source extension, less any full stop after it.
+const PATH_RUN = /[\w./-]+/g;
+const SOURCE_FILE = /[\w-]\.(?:js|html|json|css)$/;
 // The game's own files, which a note may name for comparison.
 const GAME_FILES = new Set(["legion.json"]);
 // What a translation must carry over from its key, counted as a multiset.
@@ -232,6 +234,20 @@ function checkCatalogAgainstTree(
   }
 }
 
+function namedFiles(description) {
+  const names = new Set();
+  for (const run of description.match(PATH_RUN) || []) {
+    let name = run;
+    while (name.endsWith(".")) {
+      name = name.slice(0, -1);
+    }
+    if (SOURCE_FILE.test(name)) {
+      names.add(name);
+    }
+  }
+  return names;
+}
+
 // Each file a note names must hold the key as the extractor reads it. A race
 // file's unit names count, though they are not catalogued.
 function checkNoteFiles(problems, catalogFile, catalog, extracted) {
@@ -242,7 +258,7 @@ function checkNoteFiles(problems, catalogFile, catalog, extracted) {
       continue;
     }
     const files = entry.sites.map((site) => site.file);
-    for (const name of new Set(description.match(FILE_NAME))) {
+    for (const name of namedFiles(description)) {
       const held = files.some(
         (file) => file === name || file.endsWith("/" + name)
       );
