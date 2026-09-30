@@ -248,9 +248,8 @@ define([
     });
   };
 
-  // war_generation.js calls this inside a jQuery .then, where a throw escapes
-  // rather than rejects and war generation waits for good. The system loader
-  // can be Shared Systems', so its code runs here too.
+  // Rejects rather than throws. The system loader can be Shared Systems', so
+  // its code runs here too.
   var build = function (config) {
     try {
       return buildGalaxy.call(this, config);

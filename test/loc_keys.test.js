@@ -10,6 +10,7 @@ const { REPO_ROOT } = require("../scripts/lib/amd-loader.js");
 const { extractFrom } = require("../scripts/lib/loc-keys.js");
 
 const PANEL = "ui/mods/com.pa.quitch.gwaioverhaul/gw_start/test_panel.html";
+const RACE = "ui/mods/com.pa.quitch.gwaioverhaul/race/test_race.js";
 const CARD = "ui/main/game/galactic_war/cards/gwaio_test_card.js";
 
 function at(rel, lines) {
@@ -68,6 +69,46 @@ describe("HTML controls", () => {
     ]);
 
     assert.deepEqual(Array.from(keys.keys()), ["Looked Up", "Shouted"]);
+  });
+
+  it("keys an input's placeholder, which only data-noloc skips", () => {
+    const keys = extractFrom([
+      at(PANEL, [
+        '<input type="text" placeholder=" Search Stars " />',
+        '<input type="button" value="Go" placeholder="Pick One" />',
+        '<input placeholder="Kept English" data-noloc />',
+        '<input placeholder="Still Looked Up" noloc="true" />',
+        '<input placeholder="50%" />',
+      ]),
+    ]);
+
+    assert.deepEqual(
+      Array.from(keys, ([key, entry]) => [
+        key,
+        entry.sites.map((site) => [site.role, site.line]),
+      ]),
+      [
+        ["Search Stars", [["placeholder", 1]]],
+        ["Go", [["html-control", 2]]],
+        ["Pick One", [["placeholder", 2]]],
+        ["Still Looked Up", [["placeholder", 4]]],
+      ]
+    );
+  });
+
+  it("reads a whole open tag as the snippet when an attribute holds a >", () => {
+    const button =
+      '<input type="button" value="Reroll Tech" data-bind="visible: a > b" />';
+    const field =
+      '<input type="text" data-bind="attr: { placeholder: \'!LOC:Find\' }, visible: a > b" />';
+    const keys = extractFrom([at(PANEL, [button, field])]);
+
+    assert.deepEqual(
+      ["Reroll Tech", "Find"].map((key) =>
+        sitesOf(keys, key).map((site) => [site.role, site.snippet])
+      ),
+      [[["html-control", button]], [["placeholder", field]]]
+    );
   });
 
   it("leaves out text with no letter in it", () => {
@@ -139,6 +180,38 @@ describe("card roles", () => {
 
     assert.equal(sitesOf(keys, "Loose Unit")[0].role, "loc-call");
     assert.equal(sitesOf(keys, "Far Unit")[0].role, "loc-call");
+  });
+});
+
+describe("race unit names", () => {
+  const race = at(RACE, [
+    "define({",
+    '  id: "test",',
+    '  name: "!LOC:Testers",',
+    "  unitNames: {",
+    '    hive: "!LOC:Hive",',
+    '    boomer: "!LOC:Boomer",',
+    "  },",
+    "});",
+  ]);
+  const elsewhere = at("ui/mods/test/a.js", ['loc("!LOC:Boomer");']);
+
+  it("leaves them out unless keepExcluded is set", () => {
+    const sites = (keys, key) =>
+      sitesOf(keys, key).map((site) => [site.file, site.role]);
+
+    const catalogued = extractFrom([race, elsewhere]);
+    assert.deepEqual(Array.from(catalogued.keys()), ["Testers", "Boomer"]);
+    assert.deepEqual(sites(catalogued, "Boomer"), [
+      ["ui/mods/test/a.js", "loc-call"],
+    ]);
+
+    const all = extractFrom([race, elsewhere], { keepExcluded: true });
+    assert.deepEqual(sites(all, "Hive"), [[RACE, "race-unit-name"]]);
+    assert.deepEqual(
+      sites(all, "Boomer").map((site) => site[1]),
+      ["race-unit-name", "loc-call"]
+    );
   });
 });
 
