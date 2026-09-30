@@ -11,6 +11,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/general_commander_setup.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
 ], function (
   GWFactions,
   gwoAI,
@@ -23,7 +24,8 @@ define([
   gwoRaces,
   setup,
   coopPublish,
-  gwoBank
+  gwoBank,
+  refereeCoop
 ) {
   return function (params) {
     var game = params.game;
@@ -172,11 +174,7 @@ define([
         return result.promise();
       };
 
-      if (
-        !model.isCampaignHost() ||
-        !model.gwCampaignPerPlayerTechCards() ||
-        !operator
-      ) {
+      if (!refereeCoop.hostingPerPlayerSession() || !operator) {
         result.reject("not campaign host or per-player tech disabled");
         return result.promise();
       }

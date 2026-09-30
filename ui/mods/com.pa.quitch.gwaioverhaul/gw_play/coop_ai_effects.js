@@ -14,16 +14,16 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
   };
 
   // The saved inventory with `card` added: a loadout goes first, as the war's
-  // start card does, anything else last. Shallow, as withoutCard is: the
+  // start card does, anything else last. Shallow, as removeCard is: the
   // apply copies what it keeps.
-  var withCard = function (saved, card, loadout) {
+  var addCard = function (saved, card, loadout) {
     var cards = saved.cards || [];
     return _.assign({}, saved, {
       cards: loadout ? [card].concat(cards) : cards.concat(card),
     });
   };
 
-  var withoutCard = function (saved, index) {
+  var removeCard = function (saved, index) {
     return _.assign({}, saved, {
       cards: _.filter(saved.cards || [], function (card, at) {
         return at !== index;
@@ -131,7 +131,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
       withCard: function (saved, card, loadout) {
         return Promise.all([
           apply(saved),
-          apply(withCard(saved, card, loadout)),
+          apply(addCard(saved, card, loadout)),
         ]);
       },
       clear: function () {
@@ -144,8 +144,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
   factory.MAX_CACHED = MAX_CACHED;
   factory.digestOf = digestOf;
   factory.plain = plain;
-  factory.addCard = withCard;
-  factory.removeCard = withoutCard;
+  factory.addCard = addCard;
+  factory.removeCard = removeCard;
 
   return factory;
 });

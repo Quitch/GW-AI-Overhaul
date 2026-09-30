@@ -5,7 +5,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards_deal_helpers.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_host.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
-], function (dealHelpers, coopHost, coopPublish) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+], function (dealHelpers, coopHost, coopPublish, refereeCoop) {
   // Well past a host's apply, deal and save, and past a busy campaign queue. A
   // request the host never answers - no host, or a host reload mid-exchange -
   // would otherwise hide the offer behind the scan until the page reloads.
@@ -280,7 +281,7 @@ define([
         result.reject(error);
       };
 
-      if (!model.isCampaignHost() || !model.gwCampaignPerPlayerTechCards()) {
+      if (!refereeCoop.hostingPerPlayerSession()) {
         result.reject("not campaign host or per-player tech disabled");
         return result.promise();
       }

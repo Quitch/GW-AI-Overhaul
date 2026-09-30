@@ -192,11 +192,7 @@ define([
       var result = $.Deferred();
       var dealOptions = options || {};
 
-      if (
-        !model.gwCampaignActive() ||
-        !model.isCampaignHost() ||
-        !model.gwCampaignPerPlayerTechCards()
-      ) {
+      if (!refereeCoop.hostingPerPlayerSession()) {
         result.resolve([]);
         return result.promise();
       }

@@ -316,3 +316,22 @@ describe("referee_coop.clientKey", () => {
     assert.equal(refereeCoop.clientKey("abc", undefined), "abc::");
   });
 });
+
+describe("referee_coop.hostingPerPlayerSession", () => {
+  const hosting = (active, host, perPlayer) => {
+    installModel(makeGame());
+    Object.assign(global.model, {
+      gwCampaignActive: () => active,
+      isCampaignHost: () => host,
+      gwCampaignPerPlayerTechCards: () => perPlayer,
+    });
+    return refereeCoop.hostingPerPlayerSession();
+  };
+
+  it("is true only for the host of a session played with per-player tech", () => {
+    assert.equal(hosting(true, true, true), true);
+    assert.equal(hosting(false, true, true), false);
+    assert.equal(hosting(true, false, true), false);
+    assert.equal(hosting(true, true, false), false);
+  });
+});

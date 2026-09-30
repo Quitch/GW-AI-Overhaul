@@ -6,7 +6,8 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/per_player_tech.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
-], function (gwoAI, gwoRaces, perPlayerTech, unitCells) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
+], function (gwoAI, gwoRaces, perPlayerTech, unitCells, refereeCoop) {
   var ID_PREFIX = "gwo_ai_";
   var SHARED_SCOPE = "coopai";
   // Stock's gwCampaignMaxClientsLimit before the server reports its own.
@@ -21,11 +22,7 @@ define([
     absurd: "!LOC:Absurd",
   };
 
-  // A record is an AI's iff it carries gwaioAi. It has no playerName, so no
-  // human lookup, by id or by name, can land on it.
-  var isAiRecord = function (record) {
-    return !!record && _.isPlainObject(record.gwaioAi);
-  };
+  var isAiRecord = refereeCoop.isAiRecord;
 
   // Slot order is creation order: serials only grow.
   var aiRecords = function (records) {

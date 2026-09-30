@@ -85,6 +85,7 @@ function setup(overrides = {}) {
   const options = Object.assign(
     {
       records: { alice: record() },
+      campaignActive: true,
       isHost: true,
       perPlayerTech: true,
       stars: [{ id: 0 }, { id: 1 }, { id: 2 }],
@@ -121,6 +122,7 @@ function setup(overrides = {}) {
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
   stubs.setGlobal("model", {
+    gwCampaignActive: () => options.campaignActive,
     isCampaignHost: () => options.isHost,
     gwCampaignPerPlayerTechCards: () => options.perPlayerTech,
     registerCampaignViewerOperatorHandler: (name, fn) => {
@@ -310,7 +312,11 @@ describe("host reroll handler - refusals", () => {
   // No result is sent back here: a client that is not talking to a host with
   // per-player tech on has nothing to apply.
   it("rejects when this client is not a host running per-player tech", async () => {
-    for (const off of [{ isHost: false }, { perPlayerTech: false }]) {
+    for (const off of [
+      { campaignActive: false },
+      { isHost: false },
+      { perPlayerTech: false },
+    ]) {
       const { handlers, calls } = build(off);
       assert.match(
         await rejection(handlers[REQUEST](operator())),
