@@ -120,19 +120,22 @@ whatever code they like anyway, so the risk is not meaningful.
 
 No op ever learns whether the attribute was there. The path walker creates the leaf
 key _before_ it calls the op. The key is created as `undefined`, or as an empty
-container for `push`, `pull` and `merge`. An op therefore branches only on the value
+container for `push`, `pull` and `merge`. For `multiply`, `tag`, and `clone` it is
+not created at all (see below). An op therefore branches only on the value
 it was handed. Most ops treat a missing attribute and one that explicitly holds
 `null` alike. The two exceptions, `multiply` and `merge`, are noted under the table.
 
-The walker creates missing intermediate segments too, for every op but `multiply`
-and `tag`. A path that goes several levels deeper than the stock spec therefore
+The walker creates missing intermediate segments too, for every op but `multiply`,
+`tag`, and `clone`. A path that goes several levels deeper than the stock spec therefore
 still lands. `replace` writes whatever it is given regardless. It is therefore the
 op to use, unless the new value has to be derived from the old one.
 
-`multiply` and `tag` hand a missing target back unchanged. A container made on the
-way to one would therefore be left behind empty. So at a missing intermediate
-segment the walk stops, and nothing is written. The op is still handed the missing
-target, as at a missing leaf, so `tag` warns and `multiply` stays silent. A radar
+`multiply`, `tag`, and `clone` hand a missing target back unchanged. A container
+made on the way to one would therefore be left behind empty. So at a missing
+intermediate segment the walk stops, and nothing is written. The op is still handed
+the missing target, as at a missing leaf, so `tag` and `clone` warn and `multiply`
+stays silent. A `clone` of a missing target creates no copy, so a later mod that
+names the copy is dropped with `"Warning: File not found in mod"`. A radar
 card's `observerPaths(5, "radius")` therefore scales the observer items a unit has
 and adds none. A `multiply` of `gwoCard.paths.navigation` gives a structure no
 `navigation` at all.
@@ -146,6 +149,7 @@ and adds none. A `multiply` of `gwoCard.paths.navigation` gives a structure no
 | `wipe`                    | Creates the string.                           | Creates the string.               |
 | `multiply`                | **Writes nothing, silently.**                 | **Warns, writes nothing.**        |
 | `tag`                     | **Warns, writes nothing.**                    | **Warns, writes nothing.**        |
+| `clone`                   | **Warns, creates no copy.**                   | **Warns, creates no copy.**       |
 | `merge`                   | Creates the object. The walker seeds it `{}`. | **Warns, writes nothing.**        |
 
 `multiply` is the one to watch. It deliberately does not create (see above), and it
@@ -229,7 +233,7 @@ A `path` walks into nested spec structure. There are two conventions:
 
 When an intermediate segment is missing, the walker creates a container. It creates
 an array if the _next_ segment indexes into one, otherwise a plain object.
-`multiply` and `tag` stop there instead, and to them a `"+"` is always missing
+`multiply`, `tag`, and `clone` stop there instead, and to them a `"+"` is always missing
 ([Creating an attribute that doesn't exist](#creating-an-attribute-that-doesnt-exist)).
 The walker treats the leaf segment differently. The leaf is allowed to see a real
 "missing" signal, so that ops like `multiplyOrCreate` and `add` can tell "absent"

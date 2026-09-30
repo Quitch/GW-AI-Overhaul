@@ -373,6 +373,21 @@ describe("specs.mod - a missing intermediate segment", () => {
     assert.equal(warnMock.mock.callCount(), 1);
   });
 
+  for (const path of ["x.y.z", "x", "list.+", "list.1"]) {
+    it(`clone on ${path} adds nothing to the unit, creates no copy, and warns`, () => {
+      const warnMock = mock.method(console, "warn", () => {});
+      const data = { "unit.json": { a: 1, list: ["tool.json"] } };
+      specs.mod(
+        data,
+        [{ file: "unit.json", path, op: "clone", value: "/new.json" }],
+        ".player"
+      );
+      assert.deepEqual(data["unit.json"], { a: 1, list: ["tool.json"] });
+      assert.deepEqual(Object.keys(data), ["unit.json"]);
+      assert.equal(warnMock.mock.callCount(), 1);
+    });
+  }
+
   // A segment the walker cannot follow makes a malformed path, not a missing
   // one, so it is still reported.
   for (const [spec, path] of [
@@ -1061,6 +1076,21 @@ describe("specs.mod - clone through a reference", () => {
     );
 
     assert.equal(data["copy.json"], "missing.json");
+  });
+
+  it("creates no copy of a null field, and warns", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const data = { "unit.json": { tools: null } };
+
+    specs.mod(
+      data,
+      [{ file: "unit.json", path: "tools", op: "clone", value: "copy.json" }],
+      ""
+    );
+
+    assert.equal(Object.hasOwn(data, "copy.json"), false);
+    assert.equal(data["unit.json"].tools, null);
+    assert.equal(warnMock.mock.callCount(), 1);
   });
 });
 
