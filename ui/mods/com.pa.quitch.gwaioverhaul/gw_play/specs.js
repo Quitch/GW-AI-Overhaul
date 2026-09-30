@@ -206,6 +206,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
           return new Function("attribute", value)(attribute);
         },
         clone: function (attribute, value) {
+          if (isNullish(attribute)) {
+            console.warn(
+              "clone: attribute is missing or null. Not creating " +
+                JSON.stringify(value + specTag)
+            );
+            return attribute;
+          }
           var loaded = _.isString(attribute) ? load(attribute) : attribute;
           if (loaded) {
             loaded = _.cloneDeep(loaded);
@@ -294,6 +301,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
       var opsThatDoNotCreate = {
         multiply: true,
         tag: true,
+        clone: true,
       };
 
       var applyMod = function (mod) {
