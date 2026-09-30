@@ -273,12 +273,6 @@
         return;
       }
 
-      // A co-op viewer's scene starts on stock's bootstrap game, whose galaxy
-      // has no stars until the host's war arrives.
-      if (!galaxy.stars().length) {
-        return;
-      }
-
       var originSystem = galaxy.stars()[galaxy.origin()].system();
       if (_.isPlainObject(originSystem.gwaio)) {
         console.log("GWO settings found and panel loading");
