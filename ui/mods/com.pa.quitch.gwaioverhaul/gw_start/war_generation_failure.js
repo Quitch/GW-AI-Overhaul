@@ -1,5 +1,5 @@
-// What gw_start/setup.js does when war generation fails, kept apart from that
-// scene script so it can be tested. See galaxy.md, "Retries".
+// What gw_start/war_generation.js does when war generation fails: which
+// failures it retries, and what it tells the player. See galaxy.md, "Retries".
 define(function () {
   // A new seed lays the galaxy out again, which can give every enemy faction
   // a home system. It cannot fix anything else, so nothing else is retried.

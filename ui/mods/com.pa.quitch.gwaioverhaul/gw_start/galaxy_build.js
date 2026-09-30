@@ -59,7 +59,8 @@ define([
     var self = this;
     config = config || {};
 
-    // GWO - setup.js passes its galaxy stream; the fallback serves any other caller.
+    // GWO - war_generation.js passes its galaxy stream; the fallback serves any
+    // other caller.
     var rng = config.gwoRng || gwoRng.create(config.seed || 0);
 
     var builder = new GalaxyBuilder(config);
@@ -247,9 +248,9 @@ define([
     });
   };
 
-  // setup.js calls this inside a jQuery .then, where a throw escapes rather
-  // than rejects and war generation waits for good. The system loader can be
-  // Shared Systems', so its code runs here too.
+  // war_generation.js calls this inside a jQuery .then, where a throw escapes
+  // rather than rejects and war generation waits for good. The system loader
+  // can be Shared Systems', so its code runs here too.
   var build = function (config) {
     try {
       return buildGalaxy.call(this, config);

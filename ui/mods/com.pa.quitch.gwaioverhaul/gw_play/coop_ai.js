@@ -237,8 +237,8 @@
         );
       });
 
-      // Explore is held too (cards.js's model.explore), so it greys as it does
-      // while a player sets up. gw_play.html binds that look to
+      // Explore is held too (cards_explore.js's model.explore), so it greys as
+      // it does while a player sets up. gw_play.html binds that look to
       // gwCampaignPlayerSetupBlocked, and this runs before the binding.
       model.gwoExploreBlocked = ko.computed(function () {
         return (

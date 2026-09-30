@@ -3,9 +3,10 @@
 // Unit tests for gw_play/referee_coop.js's allied-commander ordering - the single
 // source of truth for which palette entry each player-faction ally gets. Four places
 // number colours from it (referee_config.js and its setup module, the per-player-tech
-// referee through per_player_tech.js, gwo_panel.js and the intelligence panel). The
-// two panels are coverage-excluded glue and the others only consume the order, so
-// this is where that arithmetic is actually pinned down.
+// referee through per_player_tech.js, the war panel through gwo_panel_view.js, and
+// the intelligence panel). The intelligence panel is coverage-excluded glue and the
+// others only consume the order, so this is where that arithmetic is actually
+// pinned down.
 
 const { describe, it, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");

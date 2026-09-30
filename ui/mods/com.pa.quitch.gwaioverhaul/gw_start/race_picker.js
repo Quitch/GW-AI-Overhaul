@@ -27,8 +27,8 @@
     model.gwoRacesAvailable = ko.computed(function () {
       return model.gwoRaceOptions().length > 1;
     });
-    // Read by setup.js at Go To War: the races in play, the mods behind them,
-    // and the add-on mods the war will record.
+    // Read by war_generation.js at Go To War: the races in play, the mods
+    // behind them, and the add-on mods the war will record.
     model.gwoRaceInfo = ko.observable({ races: [], mods: [], addonMods: [] });
     model.gwoCommanderChoices = ko.observableArray(model.commanders());
     model.gwoRaceSelectDisabled = ko.observable(false);

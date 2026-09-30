@@ -62,6 +62,8 @@
 - Artillery Fabrication Tech is now offered to a player whose only artillery is mobile, such as the Grenadier, Gil-E, Sheller, or Leviathan
 - Boom Upgrade Tech's "Which Units?" now lists the Boom as well as the Lob
 - With Shared Systems for Galactic War, a system source that fails to load, such as a remote server that is down, no longer leaves Go To War stuck: the war is made from the other selected sources, and when none of them can be loaded, a message says so and Go To War is available again
+- An Exiles player's tech card tooltips now name the Hippo, Battle Fabricator, and Vulture, rather than showing Unknown Unit, Hover Fabricator, and Eagle-Owl
+- The Taurus commander, which the current Exiles release does not include, is no longer offered to Exiles players or given to Exiles AIs and Sub Commanders, so a seed can now give an Exiles AI or Sub Commander a different commander
 - The war information panel's Missing Map Packs heading is red, as the map packs listed under it and the Incompatible Mods and Missing Races headings are
 
 ## v7.4.1 - 2026-09-24

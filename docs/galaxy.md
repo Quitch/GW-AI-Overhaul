@@ -1,8 +1,9 @@
 # Galaxy, factions and difficulty
 
-War creation happens in `gw_start/setup.js`. It generates the galaxy and places
-AIs. `gw_start/ai_population.js` assigns their personalities and minions, and
-`gw_start/war_record.js` builds the settings GWO stamps onto the save.
+War creation happens in `gw_start/war_generation.js`, which `gw_start/setup.js`
+runs. It generates the galaxy and places AIs. `gw_start/ai_population.js`
+assigns their personalities and minions, and `gw_start/war_record.js` builds the
+settings GWO stamps onto the save.
 
 ## Generation order
 
@@ -132,9 +133,10 @@ its siblings first. Two consequences are worth relying on:
 The `factions` stream is the odd one out, because faction data is loaded, not
 generated. Each `gw_faction_*.js` declares its random choices as a
 `gwaioRandomSpec` and ships a fixed default alongside. `faction/faction_seed.js`
-resolves the spec against the stream. `gw_start/setup.js` calls `reseed()` once
-per war and **before anything reads `GWFactions`**. The order matters: `getTeam`
-shallow-copies a team and snapshots `systemDescription` by value.
+resolves the spec against the stream. `gw_start/war_generation.js` calls
+`reseed()` once per war and **before anything reads `GWFactions`**. The order
+matters: `getTeam` shallow-copies a team and snapshots `systemDescription` by
+value.
 
 `workers` is a single ordered stream rather than a keyed one, because the breeder's
 spread loop is synchronous. Every `$.when` in it wraps an already-resolved value, which
@@ -244,7 +246,7 @@ and would make a hand depend on the order in which cards were acquired.
 | `gw_breeder.js`, `gw_teams.js`                                           | Spawn placement, team pick, and a `makeBoss` that generated its system with no seed at all. Copied into `gw_start/gwo_breeder.js` and `gw_start/gwo_teams.js` rather than shadowed. See below.                                                                                                                                      |
 | `gw_faction_*.js`, `cluster_faction.js`, `cluster_planets.js`, `lore.js` | Sampled at `define()` time, so they re-rolled on every entry into `gw_start` rather than following the seed.                                                                                                                                                                                                                        |
 | `shared/deal.js setupGwoDeck`                                            | Appended each card as `requireGW` resolved it, so the deck's array order was the loader's rather than `model.gwoCards`'. A deal walks the deck in array order subtracting each chance, so the same roll picked a different card run to run. Seeding the roll alone would have changed nothing.                                      |
-| `gw_play/cards.js chooseCards`                                           | Built its own `Math.seedrandom` and no caller ever passed one, so every hand the player was offered and every card on an enemy star came from entropy.                                                                                                                                                                              |
+| `gw_play/cards_dealer.js chooseCards`                                    | Built its own `Math.seedrandom` and no caller ever passed one, so every hand the player was offered and every card on an enemy star came from entropy.                                                                                                                                                                              |
 | `gw_play/referee_config_setup.js`                                        | `setupAIArmy` shuffled the three landing policies with `_.shuffle` at every battle launch, so replaying the same battle from the same save gave the AI different landing behaviour.                                                                                                                                                 |
 
 ### Copies, not shadows
@@ -297,9 +299,9 @@ same capability check `loadSystemBrackets` uses.
 
 With that mod active, the systems are real `.pas` files chosen by
 `gwoSystemBrackets.selectorFor`, which the `brackets` stream already seeds.
-`loadSystemBrackets` in `gw_start/setup.js` settles each selected source on its own,
-so a source that fails to load drops only its own systems. While no source is
-selected, `setup.js` keeps Go To War disabled.
+`loadSystemBrackets` in `gw_start/war_generation.js` settles each selected source
+on its own, so a source that fails to load drops only its own systems. While no
+source is selected, `gw_start/setup.js` keeps Go To War disabled.
 
 That mod's loader is still made in two places. `gw_start/gwo_teams.js`'s `makeBoss`
 makes it for a boss system built from a `systemTemplate`, which it builds from the

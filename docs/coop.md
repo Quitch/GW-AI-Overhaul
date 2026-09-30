@@ -129,8 +129,9 @@ included them. The check is `tag === ".player"`.
 Human army colours come from the base game. `model.gwCoopPlayerColors` in
 `gw_play.js` is the authoritative source. It is a host-first record per
 connected client, and each record carries the `color` pair that client's army
-will get. `gwo_panel.js` reads it rather than computing the answer again. The
-swatch therefore cannot disagree with what the referee assigns.
+will get. The war panel reads it (`gw_play/gwo_panel_view.js`) rather than
+computing the answer again. The swatch therefore cannot disagree with what the
+referee assigns.
 
 Shared armies are a single army, so every co-op commander flies the host's
 colour: the `playerColor` global tag, written once at war creation.
@@ -176,8 +177,8 @@ duplication tech produces a single army with several commander slots.
 
 `gw_play/commander_colour.js` decides which palette entry lands where. It is
 shared rather than per-caller for a reason: `referee_config_setup.js`, the
-shadowed per-player-tech referee, `gwo_panel.js` and the intel panel must all
-agree. Otherwise the panel promises a colour the battle does not deliver. It
+shadowed per-player-tech referee, `gwo_panel_view.js` and the intel panel must
+all agree. Otherwise the panel promises a colour the battle does not deliver. It
 orders a palette by `contrastScore`, which is squared RGB distance plus a
 luminance term weighted 16×. The commanders most likely to be confused are
 therefore the ones pushed furthest apart.
@@ -376,8 +377,8 @@ cards, as a viewer does. Nobody sits at its controls, so the host makes every
 choice a viewer would make. `gw_play/coop_ai_driver.js` settles the AI's deals.
 `gw_play/coop_ai_effects.js` and `shared/coop_ai_cards.js` judge its cards, as
 [`tech-cards.md`](tech-cards.md), "How AI players judge a card", describes.
-`setupCoopAiTech` in `gw_play/cards.js` is the glue. All of it runs on the host
-alone, and only in a session.
+`gw_play/cards_coop_ai_tech.js` is the glue. All of it runs on the host alone,
+and only in a session.
 
 ### The record
 
@@ -833,8 +834,8 @@ replacement orphans.
 
 A co-op AI player pings too, in either tech mode, so the players can see where
 it wants to go next. It has no client to send from, so the host pings for it.
-`gw_play/coop_ai_pings.js` holds the rules, and `setupCoopAiPings` in
-`gw_play/cards.js` is the glue.
+`gw_play/coop_ai_pings.js` holds the rules, and `gw_play/cards_coop_ai_pings.js`
+is the glue.
 
 **When.** An AI considers a ping once in each window. A window is keyed by the
 host's turn count, the current star, the host's deal count, and a digest of the
