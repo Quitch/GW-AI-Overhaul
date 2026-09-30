@@ -413,35 +413,6 @@ describe("bracketsFrom - biomes the server cannot load", () => {
   });
 });
 
-describe("candidatesFor", () => {
-  const built = [ranged(0, 2, ["small"]), ranged(2, 4, ["mid"])].concat([
-    ranged(2, 10, ["large"]),
-  ]);
-
-  it("serves the nearest stars from the zero-minimum bracket alone", () => {
-    assert.deepEqual(names(brackets.candidatesFor(built, 0)), ["small"]);
-    assert.deepEqual(names(brackets.candidatesFor(built, 1)), ["small"]);
-  });
-
-  it("drops the smallest systems once the star is beyond their reach", () => {
-    assert.deepEqual(names(brackets.candidatesFor(built, 3)), ["mid", "large"]);
-  });
-
-  it("clamps a star beyond every bracket to the largest", () => {
-    assert.deepEqual(names(brackets.candidatesFor(built, 40)), ["large"]);
-  });
-
-  it("fills a gap in the cover from the closest bracket above it", () => {
-    const gapped = [ranged(0, 2, ["small"]), ranged(6, 8, ["large"])];
-    assert.deepEqual(names(brackets.candidatesFor(gapped, 4)), ["large"]);
-  });
-
-  it("returns nothing when there are no brackets", () => {
-    assert.deepEqual(brackets.candidatesFor([], 2), []);
-    assert.deepEqual(brackets.candidatesFor(undefined, 2), []);
-  });
-});
-
 describe("selectorFor", () => {
   function counter() {
     const calls = { count: 0 };

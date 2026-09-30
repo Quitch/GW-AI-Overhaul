@@ -6,7 +6,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_roster.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
-], function (roster, coopPublish) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+], function (roster, coopPublish, gwoPromise) {
   var LOG = "[GW COOP AI] ";
   // A per-player build not settled in this long fails the add, since the
   // lobby is held until it is. A build takes a few seconds.
@@ -14,26 +15,6 @@ define([
 
   var describe = function (error) {
     return (error && (error.stack || error.message)) || String(error);
-  };
-
-  // The build, or a rejection once ms pass with it unsettled. A result that
-  // lands later is dropped.
-  var settleWithin = function (build, ms) {
-    return new Promise(function (resolve, reject) {
-      var timer = setTimeout(function () {
-        reject(new Error("AI build timed out after " + ms + "ms"));
-      }, ms);
-      build.then(
-        function (record) {
-          clearTimeout(timer);
-          resolve(record);
-        },
-        function (error) {
-          clearTimeout(timer);
-          reject(error);
-        }
-      );
-    });
   };
 
   var maxClients = function () {
@@ -271,7 +252,9 @@ define([
         // loadout module that never arrives, say - would hold the lobby, so
         // it has a limit.
         if (built && _.isFunction(built.then)) {
-          settleWithin(built, buildTimeoutMs).then(queueWrite, failBuild);
+          gwoPromise
+            .within(built, buildTimeoutMs, "AI build")
+            .then(queueWrite, failBuild);
         } else {
           queueWrite(built);
         }

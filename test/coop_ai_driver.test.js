@@ -245,6 +245,9 @@ function setup(overrides) {
       rerolled: [],
       canRun: true,
       decisionTimeoutMs: 1000,
+      writeTimeoutMs: 1000,
+      // The campaign queue never runs the write.
+      hangWrite: false,
       onDeal: null,
     },
     overrides
@@ -342,7 +345,9 @@ function setup(overrides) {
     factoryRng: options.factoryRng || (() => undefined),
     enqueue: (label, apply) => {
       calls.queued.push(label);
-      apply();
+      if (!options.hangWrite) {
+        apply();
+      }
     },
     write: (record, patch) => {
       calls.writes.push({ id: record.playerId, patch: _.cloneDeep(patch) });
@@ -361,7 +366,7 @@ function setup(overrides) {
     },
     defer: options.defer || ((fn) => setImmediate(fn)),
     decisionTimeoutMs: options.decisionTimeoutMs,
-    writeTimeoutMs: 1000,
+    writeTimeoutMs: options.writeTimeoutMs,
   });
 
   return { driver, store, calls, options };
@@ -865,6 +870,23 @@ describe("coop_ai_driver bounds", () => {
       ),
       JSON.stringify(lines)
     );
+  });
+
+  // A write the queue never runs gives up, and the deal stays owed.
+  it("stops, with the deal unwritten, when the campaign queue never runs the write", async () => {
+    const run = setup({ writeTimeoutMs: 20, hangWrite: true });
+    assert.equal(await run.driver.run(), false);
+
+    const record = run.store.find("gwo_ai_1");
+    assert.deepEqual(cardIds(record), ["gwc_start_bot"]);
+    assert.equal(record.techCardDealCount, 0);
+    assert.deepEqual(run.calls.queued, ["gwo_coop_ai_deal"]);
+    assert.deepEqual(run.calls.writes, []);
+    assert.ok(
+      lines.some((line) => /deal=1 not written: stalled/.test(line)),
+      JSON.stringify(lines)
+    );
+    assert.deepEqual(run.calls.running, [true, false]);
   });
 
   it("declines every remaining deal this session after timing out twice", async () => {

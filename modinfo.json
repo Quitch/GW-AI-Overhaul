@@ -76,10 +76,7 @@
     "shared_build": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared_build/planetary_radar.js"
     ],
-    "start": [
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.js",
-      "coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.css"
-    ],
+    "start": ["coui://ui/mods/com.pa.quitch.gwaioverhaul/start/menu.js"],
     "gw_coop_per_player_loadout": [
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/loadouts.css",
       "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_picker_view.js",

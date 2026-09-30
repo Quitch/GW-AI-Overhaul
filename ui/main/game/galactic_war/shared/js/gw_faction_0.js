@@ -150,7 +150,8 @@ define([
     colour: factionColour,
     coopPlayerColors: [
       factionColour[0],
-      [0, 255, 255],
+      // GWO - replaces stock's [0, 255, 255], a Sub Commander colour; see coop.md.
+      [64, 224, 208],
       [25, 144, 160],
       [168, 177, 255],
       [193, 249, 241],

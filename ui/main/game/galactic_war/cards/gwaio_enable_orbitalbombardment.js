@@ -18,7 +18,7 @@ define([
       if (gwoCard.floodsPlanets(inventory)) {
         return { chance: 0 };
       }
-      if (context.totalSize <= sizes[0] || context.totalSize <= sizes[1]) {
+      if (context.totalSize <= sizes[1]) {
         return { chance: 20 };
       }
       return {

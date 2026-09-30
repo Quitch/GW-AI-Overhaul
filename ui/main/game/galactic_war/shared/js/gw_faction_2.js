@@ -146,11 +146,13 @@ define([
     colour: factionColour,
     coopPlayerColors: [
       factionColour[0],
-      [218, 165, 32],
-      [160, 86, 40],
-      [255, 255, 0],
-      [255, 229, 180],
-      [205, 133, 63],
+      // GWO - greens for the green faction, in place of stock's oranges; see
+      // coop.md.
+      [102, 205, 170],
+      [50, 205, 50],
+      [60, 179, 113],
+      [85, 107, 47],
+      [154, 205, 50],
     ],
     baseline: baselinePersonality,
     boss: boss,

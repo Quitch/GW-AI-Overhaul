@@ -548,8 +548,9 @@ test's own context, so the script reads the globals the test stubbed through
 `global-stubs.js`, `requireGW` included. The test answers `requireGW` with
 stand-ins for the modules the script asks for. It suits what a script does
 before its `requireGW` callback, or a callback small enough to stub:
-`test/bugfixes.test.js`, `test/gwo_panel.test.js`, and
-`test/per_player_loadout_race_picker.test.js` use it. A callback that needs
+`test/bugfixes.test.js`, `test/gwo_panel.test.js`,
+`test/per_player_loadout_race_picker.test.js`, and
+`test/race_picker_view.test.js` use it. A callback that needs
 dozens of modules and much of `model`, as the one in `gw_play/cards.js` does,
 gets no such test. Its testable logic is extracted instead.
 

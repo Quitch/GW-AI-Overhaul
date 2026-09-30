@@ -51,29 +51,15 @@ define([
       return held.slice();
     }
 
-    var reached = [commander];
-    var remaining = _.without(held, commander);
-    var added = true;
-
-    while (added && remaining.length) {
-      added = false;
-      var builders = _.filter(reached, buildableOf);
-      remaining = _.filter(remaining, function (unit) {
-        var tags = tagsOf(unit);
-        var reachable =
-          !!tags &&
-          _.some(builders, function (builder) {
-            return buildTypes.matches(buildableOf(builder), tags);
-          });
-        if (reachable) {
-          reached.push(unit);
-          added = true;
-        }
-        return !reachable;
-      });
-    }
-
-    return _.intersection(held, reached);
+    var reached = buildTypes.reach(
+      [commander],
+      _.without(held, commander),
+      buildableOf,
+      tagsOf
+    );
+    return _.filter(_.uniq(held), function (unit) {
+      return unit === commander || !!reached[unit];
+    });
   };
 
   // loaded is race_cells.load()'s { units, specs }. obtainable is every unit
@@ -392,6 +378,5 @@ define([
   return {
     fromSpecs: fromSpecs,
     fromGroups: fromGroups,
-    reachFrom: reachFrom,
   };
 });

@@ -151,7 +151,8 @@ define([
       [140, 16, 0],
       [237, 12, 83],
       [165, 42, 42],
-      [255, 0, 0],
+      // GWO - replaces stock's [255, 0, 0], a Sub Commander colour; see coop.md.
+      [219, 112, 147],
     ],
     baseline: baselinePersonality,
     boss: boss,

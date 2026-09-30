@@ -19,7 +19,6 @@ function settings() {
     systemScaling: true,
     simpleSystems: false,
     largePlanets: false,
-    easierStart: false,
     techCardDeck: "Expanded",
     staticTech: false,
     uniqueRaces: true,
@@ -42,7 +41,7 @@ function war(overrides) {
             identifier: "com.example.biomes",
             displayName: "Example Biomes",
             version: "1.0",
-            gwsm: true,
+            served: "gwsm",
           },
         ],
       }),
@@ -84,7 +83,6 @@ describe("build", () => {
       "systemScaling",
       "simpleSystems",
       "largePlanets",
-      "easierStart",
       "ai",
       "aiAlly",
       "aiCoop",
@@ -107,6 +105,15 @@ describe("build", () => {
     assert.equal(record.difficulty, "!LOC:Gold");
     assert.equal(record.treasureStar, 3);
     assert.equal(record.coopPlayerScalingCount, 2);
+    // The stamp's map pack is one GW Server Mods serves, so the war depends
+    // on it.
+    assert.deepEqual(record.biomeMods, [
+      {
+        identifier: "com.example.biomes",
+        displayName: "Example Biomes",
+        version: "1.0",
+      },
+    ]);
     // MLA takes the war-wide brains, so it has no row.
     assert.deepEqual(record.aiByRace, {});
     assert.deepEqual(record.races, {
@@ -168,7 +175,7 @@ describe("build", () => {
       keys.indexOf("customDifficulty"),
       keys.indexOf("difficulty") + 1
     );
-    assert.equal(keys.indexOf("cheatsUsed"), keys.indexOf("easierStart") + 1);
+    assert.equal(keys.indexOf("cheatsUsed"), keys.indexOf("largePlanets") + 1);
     assert.deepEqual(record.customDifficulty, { econBase: 1 });
     assert.equal(record.cheatsUsed, true);
     assert.equal(record.races.perPlayerRace, true);

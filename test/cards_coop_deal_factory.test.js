@@ -67,7 +67,7 @@ function setup(overrides = {}) {
     overrides
   );
 
-  const calls = { deals: [], sent: [], actions: [], bank: [], offerCounts: [] };
+  const calls = { deals: [], sent: [], bank: [], offerCounts: [] };
 
   const stubs = createGlobalStubs();
   installFakeJQuery(stubs);
@@ -77,8 +77,12 @@ function setup(overrides = {}) {
     gwCampaignPerPlayerTechCards: () => options.perPlayerTech,
     gwCampaignConnectedClients: () => options.viewers,
     getCoopPlayerTechCardDealCount: (rec) => options.dealCount(rec),
-    send_message: options.sendMessage,
-    sendCampaignAction: (name, payload) => calls.actions.push([name, payload]),
+    send_message:
+      options.sendMessage ||
+      ((name, payload, done) => {
+        calls.sent.push([name, payload]);
+        done(true, {});
+      }),
   });
 
   const handle = makeFactory({
@@ -185,7 +189,6 @@ describe("pendingHandForRecord", () => {
     assert.notEqual(request.inventory.cards(), HOST_CARDS);
     // Nothing is sent: the host keeps the hand.
     assert.deepEqual(run.calls.sent, []);
-    assert.deepEqual(run.calls.actions, []);
   });
 
   it("deals a full hand when the AI holds no card for the star", async () => {
@@ -528,22 +531,17 @@ describe("dealCoopPlayerPendingTechCards - the treasure planet", () => {
 
 describe("dealCoopPlayerPendingTechCards - delivery", () => {
   it("sends the offers to the server with the host's deal bookkeeping", async () => {
-    let sent;
-    const { calls } = build({
-      sendMessage: (name, payload, done) => {
-        sent = [name, payload];
-        done(true, {});
-      },
-    });
+    const { calls } = build();
 
     const updates = await deal(1);
 
+    assert.equal(calls.sent.length, 1);
+    const sent = calls.sent[0];
     assert.equal(sent[0], "set_player_pending_tech_cards");
     assert.equal(sent[1].host_tech_card_deal_count, 4);
     assert.deepEqual(sent[1].host_tech_card_deal_history, ["star-1"]);
     assert.equal(sent[1].players.length, 1);
     assert.equal(updates.length, 1);
-    assert.deepEqual(calls.actions, []);
   });
 
   it("rejects when the server refuses the offers", async () => {
@@ -557,23 +555,11 @@ describe("dealCoopPlayerPendingTechCards - delivery", () => {
     );
   });
 
-  // A viewer has no send_message, so the same handler has to reach the host
-  // through the campaign action channel instead.
-  it("falls back to the campaign action channel", async () => {
-    const { calls } = build();
-
-    const updates = await deal(1);
-
-    assert.equal(calls.actions.length, 1);
-    assert.equal(calls.actions[0][0], "set_player_pending_tech_cards");
-    assert.equal(updates.length, 1);
-  });
-
   it("sends nothing when every viewer was skipped", async () => {
     const { calls } = build({ dealCount: () => 9 });
 
     assert.deepEqual(await deal(1, undefined, { dealIndex: 2 }), []);
 
-    assert.deepEqual(calls.actions, []);
+    assert.deepEqual(calls.sent, []);
   });
 });

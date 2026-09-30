@@ -17,6 +17,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     });
   };
 
+  // The host of a co-op session played with per-player tech: the one client
+  // that deals, rerolls and refreshes the other players' tech.
+  var hostingPerPlayerSession = function () {
+    return !!(
+      model.gwCampaignActive() &&
+      model.isCampaignHost() &&
+      model.gwCampaignPerPlayerTechCards()
+    );
+  };
+
+  // A record is an AI's iff it carries gwaioAi. It has no playerName, so no
+  // human lookup, by id or by name, can land on it.
+  var isAiRecord = function (record) {
+    return !!record && _.isPlainObject(record.gwaioAi);
+  };
+
   // A connected client's co-op record. The game keys records by id and name.
   var recordForClient = function (game, client) {
     return game.findCoopPlayerInventoryData({
@@ -46,8 +62,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   // The co-op AI players' records that field tech of their own: those with an
-  // inventory, under per-player tech, in a session. Slot order. A record is an
-  // AI's iff it carries gwaioAi - coop_ai_roster.js's isAiRecord. See coop.md,
+  // inventory, under per-player tech, in a session. Slot order. See coop.md,
   // "AI players' tech".
   var getCoopAiInventories = function (game) {
     if (!game.perPlayerTechCards() || !model.gwCampaignActive()) {
@@ -56,9 +71,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 
     return _(game.coopPlayerInventoryData())
       .filter(function (record) {
-        return (
-          !!record && _.isPlainObject(record.gwaioAi) && !!record.inventory
-        );
+        return isAiRecord(record) && !!record.inventory;
       })
       .sortBy("gwaioAi.serial")
       .map(function (record) {
@@ -132,6 +145,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
   };
 
   return {
+    hostingPerPlayerSession: hostingPerPlayerSession,
+    isAiRecord: isAiRecord,
     viewersOf: viewersOf,
     recordForClient: recordForClient,
     clientKey: clientKey,

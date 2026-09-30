@@ -9,13 +9,9 @@ define([
       "!LOC:Commander Upgrade Tech increases Uber Cannon damage by 300% and allows you to reclaim friendly Commanders for metal.",
     icon: "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/img/tech/gwc_bot_combat_upgrade.png",
     audio: "/VO/Computer/gw/board_tech_available_ammunition",
-    deal: function (system, context, inventory) {
-      return {
-        params: {
-          allowOverflow: true,
-        },
-        chance: gwoCard.commanderWeight(inventory, 35),
-      };
+    available: _.constant(true),
+    chance: function (inventory) {
+      return gwoCard.commanderWeight(inventory, 35);
     },
     buff: function (inventory) {
       inventory.addMods(

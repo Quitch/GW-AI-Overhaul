@@ -1,5 +1,6 @@
-// PA's unit-type expression language, evaluated against a unit's tags. The ES5
-// twin of scripts/lib/build-types.js. See races.md, "Capability cells".
+// PA's unit-type expression language, evaluated against a unit's tags, and
+// the build reach it gives. matches is the ES5 twin of
+// scripts/lib/build-types.js. See races.md, "Capability cells".
 define(function () {
   var tokenize = function (expression) {
     return String(expression).match(/\w+|[()&|-]/g) || [];
@@ -50,5 +51,35 @@ define(function () {
     return parseOr();
   };
 
-  return { matches: matches };
+  // { unit: true } for each of `candidates` that `builders` can build, and
+  // that what they build can build in turn. A builder is not reached unless
+  // something builds it. `buildableOf(unit)` gives a unit's build list and
+  // `tagsOf(unit)` its tags; each distinct build list is evaluated once.
+  var reach = function (builders, candidates, buildableOf, tagsOf) {
+    var reached = {};
+    var evaluated = {};
+    var current = builders;
+
+    while (current.length) {
+      var next = [];
+      _.forEach(current, function (builder) {
+        var buildable = buildableOf(builder);
+        if (!buildable || evaluated[buildable]) {
+          return;
+        }
+        evaluated[buildable] = true;
+        _.forEach(candidates, function (unit) {
+          if (!reached[unit] && matches(buildable, tagsOf(unit))) {
+            reached[unit] = true;
+            next.push(unit);
+          }
+        });
+      });
+      current = next;
+    }
+
+    return reached;
+  };
+
+  return { matches: matches, reach: reach };
 });

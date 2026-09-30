@@ -264,32 +264,12 @@ define([
   };
 
   // What `commanders` can build, and what that builds in turn, among the
-  // units `tagsOf` holds. Each distinct build list is evaluated once.
+  // units `tagsOf` holds.
   var reachFrom = function (commanders, tagsOf, buildableOf) {
-    var reached = {};
-    var evaluated = {};
-    var candidates = _.keys(tagsOf);
-    var builders = commanders;
-
-    while (builders.length) {
-      var next = [];
-      _.forEach(builders, function (builder) {
-        var buildable = buildableOf(builder);
-        if (!buildable || evaluated[buildable]) {
-          return;
-        }
-        evaluated[buildable] = true;
-        _.forEach(candidates, function (unit) {
-          if (!reached[unit] && buildTypes.matches(buildable, tagsOf[unit])) {
-            reached[unit] = true;
-            next.push(unit);
-          }
-        });
-      });
-      builders = next;
-    }
-
-    return reached;
+    var tagsFor = function (unit) {
+      return tagsOf[unit];
+    };
+    return buildTypes.reach(commanders, _.keys(tagsOf), buildableOf, tagsFor);
   };
 
   // What the index's commanders can build, and what that builds in turn.

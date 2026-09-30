@@ -26,8 +26,7 @@ define([
         _.omit(random.template, "personality"),
         {
           personality: source.personality,
-          personalityId:
-            source.personalityId || gwoPersonality.idOf(source.personality),
+          personalityId: gwoPersonality.idOf(source.personality),
         }
       );
     });
