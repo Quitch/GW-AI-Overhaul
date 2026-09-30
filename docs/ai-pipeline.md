@@ -283,7 +283,8 @@ that unit on the MLA file ([`tech-cards.md`](tech-cards.md), "Which races a
 card reaches"), and a descriptor that names the unit stays on MLA with it. The
 units are `unit_cells.remadeFiles` over the same inventories' spec mods.
 Defense Tech Commander's builder appends name the defences it remakes, so a
-race tree takes none of them.
+race tree would take none of them. That is why the loadout is in
+`cards_deal_helpers.MLA_ONLY`, with the other loadouts that remake MLA units.
 
 **Kept as written.** `refId` and `refValue`, which name one stock item.
 Conditions and their `string0` keys, which the army's map resolves. `platoon`
@@ -302,9 +303,7 @@ be read is logged and skipped. The aim copies each item once per target, with
 the builders that pass the guard for that target, and drops an item left with
 no builder. An item with no `to_build`, such as Tourist Commander's `GiveUp`,
 keeps its aimed builders without the guard. A `platoon` or `template` load's
-file is written as it is: a platoon item names a template and has no builders. Space Excavation Commander's opening
-launcher becomes `LegionFactoryBasicOrbital`, built by Legion's commanders and
-fabbers.
+file is written as it is: a platoon item names a template and has no builders.
 
 A co-op AI player of a race counts only the AI mods its race's tree takes
 ([`tech-cards.md`](tech-cards.md), "A race's units").
