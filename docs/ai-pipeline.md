@@ -104,7 +104,9 @@ gwoAI.builderAppendMods(
 
 That call is one `append` to `builders` per name. It sets no `refId`, so every
 entry for the name with a `builders` list takes it, in every file the pipeline
-walks. `gwoAI.advancedStructureBuilds` is the structure list that the four
+walks. It also sets `matchAll`, so where an entry keeps `builders` in its
+conditions instead, every test that has one takes it (see below).
+`gwoAI.advancedStructureBuilds` is the structure list that the four
 basic-fabber upgrades share.
 
 ### How a build op matches
