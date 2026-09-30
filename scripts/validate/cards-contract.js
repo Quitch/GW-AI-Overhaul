@@ -19,7 +19,14 @@ const REQUIRED_FIELDS = [
   "buff",
   "dull",
 ];
-const OPTIONAL_FIELDS = ["audio", "getContext", "keep", "discard", "hint"];
+const OPTIONAL_FIELDS = [
+  "audio",
+  "getContext",
+  "keep",
+  "discard",
+  "releaseContext",
+  "hint",
+];
 const KNOWN_FIELDS = new Set(REQUIRED_FIELDS.concat(OPTIONAL_FIELDS));
 
 // Coverage floor. NOT_SHIPPED is swallowed generically below, so one broken
