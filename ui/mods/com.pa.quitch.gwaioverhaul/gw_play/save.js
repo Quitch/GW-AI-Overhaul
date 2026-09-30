@@ -1,10 +1,12 @@
 define(["shared/gw_common"], function (GW) {
-  // Does nothing on a viewer. Stock keeps a viewer's local copy of the war, and
-  // cards_coop_reroll.js's result handler saves it with GW.manifest.saveGame.
+  // A viewer writes no save: stock keeps its local copy of the war, and
+  // cards_coop_reroll.js's result handler saves that with
+  // GW.manifest.saveGame. It still clears the Saving indicator, and resolves
+  // as a host's save does.
   return function (gameState, saveStars) {
     if (model.isCampaignViewer()) {
       model.driveAccessInProgress(false);
-      return;
+      return $.Deferred().resolve().promise();
     }
 
     var starsSaved = !saveStars;

@@ -13,13 +13,16 @@
     );
 
     // The observables exist before the bindings and before any mod loaded after
-    // GWO can read them; the methods arrive with the module below. See
-    // architecture.md, "Battle launch, end to end".
+    // GWO can read them; the methods do nothing until the module below replaces
+    // this object. See architecture.md, "Battle launch, end to end".
     model.gwoLaunchProgress = {
       visible: ko.observable(false),
       title: ko.observable(""),
       message: ko.observable(""),
       steps: ko.observableArray([]),
+      begin: _.noop,
+      stage: _.noop,
+      end: _.noop,
     };
 
     requireGW(
