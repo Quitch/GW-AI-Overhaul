@@ -103,6 +103,16 @@ Noise at that volume buries any real typo, so a typo'd or stale path now fails
 silently instead. The split is also why
 `multiplyOrCreate` runs before `multiply` in the op ordering.
 
+An op at a path is handed a deep copy of the mod's `value`, never the value
+itself. One descriptor reaches several specs. It reaches every spec set built
+from the inventory: a co-op host's two referee hires, and the Guardians' specs
+beside the player's. In one spec set, it reaches each race and add-on file that
+stands for its stock file, because `shared/unit_cells.js` copies the descriptor
+shallowly for each. An op that stored the value would let a later mod, such as
+a `multiply` into a replaced object or a `tag` inside replaced `tools`, write
+into that one shared object, so the change would land once for every spec that
+holds it.
+
 `eval` is theoretically unsafe. It is also pointless to worry about it: mods can run
 whatever code they like anyway, so the risk is not meaningful.
 

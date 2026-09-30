@@ -439,7 +439,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"], function (
             return;
           }
           var leaf = cookStep(path[0], mod.op);
-          spec[leaf] = ops[mod.op](spec[leaf], mod.value);
+          // A card's descriptor is shared by every spec set built from the
+          // inventory, so no op may store its value. See specs.md.
+          spec[leaf] = ops[mod.op](spec[leaf], _.cloneDeep(mod.value));
         } else if (opsWithoutPath[mod.op]) {
           ops[mod.op](spec, mod.value);
         } else {

@@ -66,6 +66,9 @@
 - The Taurus commander, which the current Exiles release does not include, is no longer offered to Exiles players or given to Exiles AIs and Sub Commanders, so a seed can now give an Exiles AI or Sub Commander a different commander
 - The war information panel's Missing Map Packs heading is red, as the map packs listed under it and the Incompatible Mods and Missing Races headings are
 - The Seed Value tooltip now says that the galaxy size and the number of players must also match for a seed to rebuild the same galaxy; until it is translated again, it shows in English
+- Anti tech held with the Galata upgrade no longer compounds on the Galata, so Anti-Air Tech gives it ×2 damage against air units and ×0.5 against orbital units; with Second Wave, Section 17, and Osmech installed it gave ×256 and ×1/256, because it compounded once for each add-on unit that stands for the Galata, and it compounded again for the host of a co-op war and at a Guardians star
+- Planetary Radar Upgrade Tech held with Planetary Radar Tech no longer gives the Deep Space Radar over 30 times the sight it should for the host of a co-op war or at a Guardians star
+- At a Guardians star, the Firefly, Kaiju, Single Laser Defense Tower, Skitter, and Stinger upgrades no longer give your units and the Guardians' the same army's copy of the new weapon
 
 ## v7.4.1 - 2026-09-24
 
