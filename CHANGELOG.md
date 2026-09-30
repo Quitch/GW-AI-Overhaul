@@ -4,80 +4,82 @@
 
 ### Added
 
-- Card mods can target Legion, Bugs, Exiles, Second Wave, Section 17, and Osmech units; a card that names only such units is dealt only to players whose race fields them - see the `New-GW-Cards` template
-- Card mods can put a group of units inside a list of units, when adding, removing, or changing units
-- Card mods can keep one change on the stock unit alone, so it does not also reach race and add-on units, and can limit a card to some races - see the `New-GW-Cards` template
 - The host of a co-op war can add AI players to open slots; they fight beside the human players, can be kicked from their slot, and with per-player tech each choose their own loadout and tech cards
 - The AI settings choose which AI brain the co-op AI players use, per race
 - Co-op AI players ping the star they want to go to next
 - The war setup screen, the galaxy map's menu, and the menu in Galactic War battles have a Report a Galactic War Bug button, which opens a new bug report on GitHub in your web browser
 
+### API
+
+- Card mods can target race and add-on units; a card that names only such units is dealt only to players whose race fields them - see the `New-GW-Cards` template
+- Card mods can put a group of units inside a list of units when adding, removing, or changing units
+- Card mods can keep one change on the stock unit alone, so it does not also reach race and add-on units, and can limit a card to some races - see the `New-GW-Cards` template
+- The basic and advanced fabricator groups that card mods name no longer include the Barnacle, Stitch, Mend, and Angel, which have combat fabricator groups of their own - see the `New-GW-Cards` template
+- Card mods can no longer call `gwoCard.isEnglish`
+- Fixed: a card mod `multiply` or `tag` of a value a unit lacks no longer adds empty entries
+- Fixed: a card mod `clone` of a path a unit lacks warns and copies nothing, no longer adding empty entries
+
 ### Changed
 
 - Deleting a tech card now asks you to press Delete Tech a second time to confirm
 - Co-op battles start sooner for the host
-- Tooltips stay open while the pointer is over them, close with Escape, and have more space between lines
+- Tooltips stay open while the pointer is over them, close with Escape, and have more line spacing
 - Warning and progress text is easier to read against the background
-- Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips are easier to hover
-- Tech cards and loadouts for one kind of combat unit no longer give or change every Legion, Bugs, Exiles, or add-on unit of that kind, because units are also matched by job: an Ant card no longer changes the Legion Maul or Corsair, and a Spinner card no longer changes the Shank
-- Tech cards and loadouts for the Advanced Radar now give or change only Legion, Bugs, Exiles, and add-on radars, and those for the Radar Jamming Station only their jammers, with Legion's Overseer and the Exiles Tremble counting as both; Bugs, who have no jammer, get nothing from the Radar Jamming Station
-- Legion, Bugs, and Exiles players get their race's defences and superweapons by kind, as MLA players do, in wars already under way too: basic artillery, Section 17's included, needs Artillery Tech, the advanced towers need Advanced Defense Technology, and a card for one tower no longer changes the race's walls, mines, and other towers
-- The Galactic War Overhaul panel's Incompatible Mods list now includes every client mod from Community Mods that changes unit files without a server mod, such as effects, selection, and commander cosmetic mods
-- Titan Tech and Planetary Radar Tech are no longer offered for units that cannot build them: the Angel, which Air Factory Upgrade Tech gives, and a Cluster player's Colonel Sub Commanders
-- The basic and advanced fabricator groups that card mods name no longer include the Barnacle, Stitch, Mend, and Angel, which have combat fabricator groups of their own - see the `New-GW-Cards` template
+- Buttons, switches, dropdowns, and planet icons are easier to click, and "?" tooltips to hover
+- Tech cards and loadouts for one kind of combat unit no longer give or change every race or add-on unit of that kind
+- Tech cards and loadouts for the Advanced Radar now give or change only race and add-on radars, and those for the Radar Jamming Station only their jammers
+- Non-MLA players get their race's defences and superweapons by kind, as MLA players do
+- The Galactic War Overhaul panel's Incompatible Mods list now includes every client mod from Community Mods that changes unit files without a server mod
 - About one galaxy in fifty, most often a small one, no longer has far more gates between its stars than usual, with up to nine on one star, so each seed that made such a galaxy now makes a different war
-- Legion, Bugs, and Exiles commanders are named as MLA commanders are when you pick a commander, such as Maxim rather than Maxim Commander
-- Synchronous co-op players are given greens, like the faction's own colour, rather than oranges, and no Legonis Machina or Revenants co-op player is given a colour a Sub Commander can also have
-- Card mods can no longer call `gwoCard.isEnglish`, which Galactic War Overhaul's own cards stopped using; give a card one `!LOC:` text and the game translates it
-- Legion, Bugs, and Exiles players can no longer pick the Tactical Nuke, Planetary Excavation, Space Excavation, Defense Tech, or Artillery Commander loadouts, whose changes reach only MLA units
+- Non-MLA commanders are named as MLA commanders are when you pick a commander, such as Maxim rather than Maxim Commander
+- Non-MLA players can no longer pick the Tactical Nuke, Planetary Excavation, Space Excavation, Defense Tech, or Artillery Commander loadouts, whose changes reach only MLA units
 
 ### Bugfix
 
-- Tech that changes no units, such as Sub Commander Tech, and your loadout no longer show "Which Units?" when you select them in your Tech Bank
+- Synchronous co-op players are given greens, like the faction's own colour, rather than oranges, and no Legonis Machina or Revenants co-op player is given a colour a Sub Commander can also have
+- Titan Tech and Planetary Radar Tech are no longer offered for units that cannot build them
+- Tech that changes no units no longer shows "Which Units?" when you select them in your Tech Bank
 - Tech and loadouts that change commander weapons, such as Commander Ammunition Tech and Commander Combat Tech, now also change the main gun of MLA commanders, as do the enemy factions' commander bonuses
-- Tech that changes commander weapons no longer applies twice to the anti-air and torpedo weapons of Legion commanders
-- MLA, Legion, and Bugs armies with Second Wave, and Exiles armies, can build their basic fabrication tower without the Planetary Radar
-- A tech card from another mod that changes the Planetary Radar no longer changes the basic fabrication towers too
-- In a Galactic War battle, every army's units on your screen now match the ones the game runs, including tech that changes weapon lists or armour damage, such as the Stryker and Pelican upgrades and the anti tech, and the enemy's own tech
+- Commander weapon tech no longer applies twice to Legion commanders' anti-air and torpedo weapons
+- Everyone can build their basic fabrication tower without the Planetary Radar
+- Another mod's Planetary Radar tech card no longer changes the basic fabrication towers too
+- Every army's units on your screen now match the ones the game runs, including tech that changes weapon lists or armour damage, such as the Stryker and Pelican upgrades and the anti tech, and the enemy's own tech
 - Bigger Explosions is now listed under Incompatible Mods when enabled
 - With Bugs installed, Legion and Exiles AIs, the Guardians, and some MLA Sub Commanders and co-op AI players no longer keep their radar satellites and orbital fighters on the planet where they were built
-- Legion, Bugs, and Exiles AIs no longer also follow MLA's factory and fabber build orders, which had Legion building Marauders as air scouts and Bugs ordering its research unlocks to build air units they cannot make
+- Non-MLA AIs no longer also follow MLA's factory and fabber build orders, which had Legion building Marauders as air scouts and Bugs ordering its research unlocks to build air units they cannot make
 - Bugs players now field the MLA ships their naval hives build, and Exiles players the MLA orbital units their orbital launcher builds and the Zeus, Ares, and Helios titans those orbital fabbers build, so their Sub Commanders can use them; Exiles players are now dealt the orbital tech cards
-- With Second Wave, Section 17, or Osmech installed, the Sub Commanders of an MLA player who joins a co-op war with per-player tech now build metal extractors, energy plants, and factories
+- With add-ons installed, the Sub Commanders of an MLA player who joins a co-op war with per-player tech now build metal extractors, energy plants, and factories
 - Exiles AIs and Sub Commanders now have the skirmish orders to build MLA teleporters and metal extractors with MLA orbital fabbers, and Exiles players who have the orbital fabber and the teleporter can build them too
 - A co-op viewer who selected the star the host then moved to now follows the host's next move, rather than being pulled back to that star
 - A co-op viewer whose tech reroll gets no answer, for example because the host reloaded, gets their offer back after 2 minutes rather than waiting until they reload
-- A co-op viewer who rerolls their tech while the host wins a battle now still gets new star cards, rather than keeping last turn's
-- In co-op with per-player tech, a viewer who picks a tech card while another viewer rerolls, sets up the General Commander, or joins no longer has their offer come back, which could stop the host exploring or fighting until they reloaded
+- In co-op with per-player tech, a viewer who rerolls their tech while the host takes theirs now gets new star cards, not last turn's
+- In co-op with per-player tech, a viewer no longer has their offer come back if they pick a tech card while another viewer rerolls, sets up the General Commander, or joins; a returned offer could stop the host exploring or fighting until they reloaded
 - MLA Sub Commanders whose AI differs from the enemy's now build all the units their AI orders, such as Queller's orbital fabricators, Avengers, and Astraeus, and so do the Sub Commanders of MLA co-op players and co-op AI players with per-player tech
-- Protocol: Blindness, Protocol: Precision, Protocol: Wrath, and other tech that changes a value some units lack no longer add empty entries to those units, and neither does a `multiply` or `tag` in a card mod
-- A `clone` in a card mod whose path a unit lacks no longer adds empty entries to that unit, and now warns and makes no copy
-- A tech card from another mod whose AI build file is missing no longer stops every battle while you hold it
+- Protocol: Blindness, Precision, Wrath, and other tech that changes a value some units lack no longer add empty entries to those units
+- Another mod's tech card missing its AI build file no longer stops every battle while you hold it
 - A malformed unit file from another mod no longer leaves Fight stuck
 - An AI folder the game cannot list, or an AI build file from another mod that cannot be processed, now fails the battle launch with an error instead of leaving Fight stuck
-- An error while the AI stars' tech cards are dealt after you win a battle no longer stops the war from saving or ending
-- A Legion, Bugs, Exiles, or add-on unit whose file fails to load while its mod is still loading is now read again later, rather than being missed by tech cards until you reload
+- An error dealing AI stars' tech cards after a battle win no longer stops the war saving or ending
+- A race or add-on unit whose file fails to load while its mod is still loading is now read again later, rather than being missed by tech cards until you reload
 - Joining a co-op war with per-player tech is no longer stopped by a war the loadout screen cannot read, or by an error in its race picker
-- An error in Shared Systems for Galactic War while a war is created no longer leaves Go To War stuck with no message
+- A Shared Systems for Galactic War error while creating a war no longer silently hangs Go To War
 - A war that cannot be created because of a bug no longer leaves Go To War stuck with no message; the message asking you to report it with the war seed now appears
-- A unit file from another mod that holds only `null` no longer stops every battle from launching for a Legion, Bugs, or Exiles player, or for an MLA player with an add-on such as Second Wave
+- A unit file from another mod that holds only `null` no longer stops every battle from launching for a non-MLA player, or for an MLA player with an add-on such as Second Wave
 - The war information panel's commander list now changes as soon as a co-op session starts or ends, rather than when a player next joins or leaves
 - A Lucky Commander unlocked with v5.76.0 is now moved to Galactic War Overhaul's own loadouts whichever war you open next, so it no longer causes a 404 error if Galactic War Overhaul is uninstalled
-- Naval Commander is now offered Advanced Defense Technology, as is anyone with an advanced fabricator
+- Naval Commander is now offered Advanced Defense Technology, as is anyone with an advanced fabber
 - Titan Tech and Planetary Radar Tech are now offered to a player with a Fabrication Upgrade Tech, whose basic fabricators can build the Ragnarok and the Planetary Radar
-- Artillery Fabrication Tech is now offered to a player whose only artillery is mobile, such as the Grenadier, Gil-E, Sheller, or Leviathan
+- Artillery Fabrication Tech is now offered to a player whose only artillery is mobile
 - Boom Upgrade Tech's "Which Units?" now lists the Boom as well as the Lob
 - With Shared Systems for Galactic War, a system source that fails to load, such as a remote server that is down, no longer leaves Go To War stuck: the war is made from the other selected sources, and when none of them can be loaded, a message says so and Go To War is available again
 - An Exiles player's tech card tooltips now name the Hippo, Battle Fabricator, and Vulture, rather than showing Unknown Unit, Hover Fabricator, and Eagle-Owl
-- The Taurus commander, which the current Exiles release does not include, is no longer offered to Exiles players or given to Exiles AIs and Sub Commanders, so a seed can now give an Exiles AI or Sub Commander a different commander
 - The war information panel's Missing Map Packs heading is red, as the map packs listed under it and the Incompatible Mods and Missing Races headings are
-- The Seed Value tooltip now says that the galaxy size and the number of players must also match for a seed to rebuild the same galaxy; until it is translated again, it shows in English
-- Anti tech held with the Galata upgrade no longer compounds on the Galata, so Anti-Air Tech gives it ×2 damage against air units and ×0.5 against orbital units; with Second Wave, Section 17, and Osmech installed it gave ×256 and ×1/256, because it compounded once for each add-on unit that stands for the Galata, and it compounded again for the host of a co-op war and at a Guardians star
+- The Seed Value tooltip now says that the galaxy size and the number of players must also match for a seed to rebuild the same galaxy
+- Anti tech held with the Galata upgrade no longer compounds on the Galata
 - Planetary Radar Upgrade Tech held with Planetary Radar Tech no longer gives the Deep Space Radar over 30 times the sight it should for the host of a co-op war or at a Guardians star
 - At a Guardians star, the Firefly, Kaiju, Single Laser Defense Tower, Skitter, and Stinger upgrades no longer give your units and the Guardians' the same army's copy of the new weapon
-- With Second Wave or Section 17 installed, MLA AIs and Sub Commanders now build the units those mods add to their build orders, such as Section 17's Energy Coil and Second Wave's Spear, which they never built before
-- Loadouts and tech that change what your Sub Commanders, allies, and co-op AI players build now also change it for Legion, Bugs, and Exiles AIs where their own units can build it
-- Legion, Bugs, and Exiles co-op AI players no longer value tech for AI build changes their race cannot use
+- With Second Wave or Section 17 installed, MLA AIs and Sub Commanders now build the units those mods add to their build orders
+- Loadouts and tech that change what your Sub Commanders and allies build now also change it for Non-MLA AIs where their own units can build it
 
 ## v7.4.1 - 2026-09-24
 
@@ -172,7 +174,7 @@
 ### Added
 
 - Pressing Fight now shows a loading screen that reports each stage of battle preparation. Other mods can report their own stages through `model.gwoLaunchProgress`
-- Support for Legion, Bugs, and Exiles when you are running GW Server Mods
+- Support for Non-MLA when you are running GW Server Mods
   - Both the player and AI can be any race
   - Enable separate races in co-op war settings to allow multiple races on the player team
   - Disable a race mod to exclude it from a war - GWO does not have a UI for this
