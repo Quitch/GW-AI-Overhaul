@@ -80,7 +80,7 @@ export default {
     // working CSS into CSS the engine drops.
 
     // Unprefixed @keyframes is Chrome 43. @-webkit-keyframes is the only form
-    // that parses here, and the base game ships 41 of them and 0 unprefixed.
+    // that parses here, and the base game ships 46 of them and 0 unprefixed.
     "at-rule-no-vendor-prefix": null,
     // Range syntax `(width >= 600px)` is Chrome 104; only min-/max- parse.
     "media-feature-range-notation": "prefix",
@@ -117,10 +117,14 @@ export default {
     ],
     // Unprefixed intrinsic sizing keywords are Chrome 46. Standard's
     // ignoreValues of box/inline-box is dropped - -webkit-box is not in the
-    // rule's table at all, so those entries never matched anything.
+    // rule's table at all, so those entries never matched anything. No --fix:
+    // it unprefixes -webkit-linear-gradient(0deg, ...) into a standard
+    // gradient, which measures the angle from another side and turns it the
+    // other way, and the result lints clean.
     "value-no-vendor-prefix": [
       true,
       {
+        disableFix: true,
         ignoreValues: [
           "-webkit-fit-content",
           "-webkit-min-content",
@@ -261,7 +265,9 @@ export default {
       "justify-items", // Chrome 57
       "justify-self", // Chrome 57
       "line-clamp", // Chrome 129 - use -webkit-line-clamp
-      "/^mask(-|$)/", // Chrome 120 - use -webkit-mask-*
+      // Chrome 120 - use -webkit-mask-*. mask-type is the exception, unprefixed
+      // since Chrome 24.
+      "/^mask(-(?!type$)|$)/",
       // No -webkit- form ever shipped in Blink; its mask-border is
       // -webkit-mask-box-image.
       "/^-webkit-mask-(border|mode|type)/",
@@ -295,7 +301,7 @@ export default {
 
     // --- Functions ---------------------------------------------------------
     // Kept, so the omission reads as deliberate: calc() (Chrome 26, and the base
-    // game uses it ~40 times), attr(), url(), format(), local(), counter(),
+    // game uses it 46 times), attr(), url(), format(), local(), counter(),
     // rgb()/rgba()/hsl()/hsla(), the linear/radial/repeating gradient family and
     // their -webkit- forms, cubic-bezier(), steps(), the transform functions
     // (36), the filter functions used inside -webkit-filter, and the basic
@@ -333,7 +339,9 @@ export default {
       "conic-gradient", // Chrome 69
       "repeating-conic-gradient", // Chrome 69
       "constant", // iOS-only alias of env()
-      "cross-fade", // unprefixed - Chrome 121
+      // Never shipped unprefixed. -webkit-cross-fade() is Chrome 17 but was
+      // never checked in the engine, and the value rules above reject it.
+      "cross-fade",
       "element", // Firefox only
       "env", // Chrome 69
       "fit-content", // the grid track function - Chrome 57
