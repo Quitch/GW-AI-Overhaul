@@ -56,6 +56,7 @@
 - Joining a co-op war with per-player tech is no longer stopped by a war the loadout screen cannot read, or by an error in its race picker
 - An error in Shared Systems for Galactic War while a war is created no longer leaves Go To War stuck with no message
 - A war that cannot be created because of a bug no longer leaves Go To War stuck with no message; the message asking you to report it with the war seed now appears
+- A unit file from another mod that holds only `null` no longer stops every battle from launching for a Legion, Bugs, or Exiles player, or for an MLA player with an add-on such as Second Wave
 - The war information panel's commander list now changes as soon as a co-op session starts or ends, rather than when a player next joins or leaves
 - A Lucky Commander unlocked with v5.76.0 is now moved to Galactic War Overhaul's own loadouts whichever war you open next, so it no longer causes a 404 error if Galactic War Overhaul is uninstalled
 - Naval Commander is now offered Advanced Defense Technology, as is anyone with an advanced fabricator

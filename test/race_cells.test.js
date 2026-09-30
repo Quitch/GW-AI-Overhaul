@@ -64,14 +64,17 @@ describe("a read in which a spec failed", () => {
   });
 
   // $.ajax as gameFilePaths.specFetch calls it, over the fixture's specs. The
-  // path a test adds to make its list its own reads as an empty spec.
-  function serveSpecs(unreadable) {
+  // path a test adds to make its list its own reads as an empty spec. A path
+  // in `bodies` is served that text instead.
+  function serveSpecs(unreadable, bodies = {}) {
     stubs.setGlobal("$", {
       ajax: (options) => {
         const item = options.url.slice("coui:/".length);
         setImmediate(() => {
           if (unreadable.has(item)) {
             options.error({}, "error", "not mounted yet");
+          } else if (Object.hasOwn(bodies, item)) {
+            options.success(bodies[item]);
           } else {
             options.success(JSON.stringify(FIXTURE_SPECS[item] || {}));
           }
@@ -121,5 +124,20 @@ describe("a read in which a spec failed", () => {
 
     assert.ok(index.race.units.length > 0);
     assert.equal(races.cellsOf("fixture"), index);
+  });
+
+  it("keeps the cells of a read in which a spec holds only null", async () => {
+    races.register(FIXTURE_RACE);
+    serveSpecs(new Set(), { [FX_TANK]: "null" });
+    const units = FIXTURE_UNITS.concat(["/pa/units/null_test.json"]);
+
+    const first = await raceCells.indexFor("fixture", units);
+    const loaded = await raceCells.load(units);
+    const second = await raceCells.indexFor("fixture", units);
+
+    assert.ok(first.race.units.length > 0);
+    assert.ok(!first.race.units.includes(FX_TANK));
+    assert.deepEqual(loaded.failed, []);
+    assert.equal(second, first);
   });
 });
