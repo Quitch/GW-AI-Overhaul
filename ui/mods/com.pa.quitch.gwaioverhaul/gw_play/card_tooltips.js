@@ -34,6 +34,8 @@
       return "<span class='highlight'>" + unitName + "</span>";
     };
 
+    var MAX_UNITS_ONE_PER_LINE = 12;
+
     requireGW(
       [
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/unit_names.js",
@@ -209,7 +211,7 @@
             return undefined;
           }
           return _.map(affectedUnits, function (unitName, index) {
-            if (affectedUnits.length < 13) {
+            if (affectedUnits.length <= MAX_UNITS_ONE_PER_LINE) {
               return unitName.concat("<br>");
             } else if (index < affectedUnits.length - 1) {
               return unitName.concat(" | ");

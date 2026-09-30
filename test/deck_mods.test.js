@@ -87,6 +87,26 @@ describe("registerAll", () => {
     assert.equal(decks.byId("mym-nomad").name, "!LOC:Nomad 2");
   });
 
+  // A refused registration changes nothing, so it only logs why.
+  it("does not warn that a refused deck won, for a built-in or a broken one", () => {
+    const warnMock = mock.method(console, "warn", () => {});
+    const errorMock = mock.method(console, "error", () => {});
+    setGlobal("model", {
+      gwoDecks: [
+        { id: decks.BASIC_ID, name: "!LOC:Mine", cards: ["mym_card_a"] },
+        NOMAD,
+        { id: "mym-nomad", cards: ["mym_card_b"] },
+      ],
+    });
+
+    deckMods.registerAll();
+
+    assert.equal(warnMock.mock.callCount(), 0);
+    assert.equal(errorMock.mock.callCount(), 2);
+    assert.notEqual(decks.byId(decks.BASIC_ID).name, "!LOC:Mine");
+    assert.equal(decks.byId("mym-nomad").name, "!LOC:Nomad");
+  });
+
   // Several consumers call registerAll in one scene (the deal, the picker,
   // the war panel), so a second pass must be a no-op.
   it("handles each pushed descriptor once across repeated calls", () => {
