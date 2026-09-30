@@ -1081,7 +1081,7 @@ describe("failure", () => {
       failedEngineCall(path + " is not listable");
 
     const outcome = await Promise.race([
-      run({}).then(
+      Promise.resolve(run({})).then(
         () => "resolved",
         (error) => "rejected: " + error
       ),

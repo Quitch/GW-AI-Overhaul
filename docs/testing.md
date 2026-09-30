@@ -329,6 +329,23 @@ swallow the error. What a `done`, `fail` or `always` callback returns is not
 tested, because jQuery ignores it. `$.getJSON` returns a Promise carrying the
 same members as a Deferred's, as jQuery's does, so a callback may return it.
 
+An error callback given to the default `.then` cannot recover the chain by
+returning a value. jQuery 2 fails the next promise with whatever that callback
+returns, `undefined` included, unless it has a `promise` method. The inherited
+`.then` would resolve the next promise instead, so the fake fails it. Only a
+returned jQuery promise, such as `$.Deferred().resolve().promise()`, decides
+the outcome. `$.when`'s `.then` does the same. Nothing in the game reports that
+failure, so the fake marks the promise it fails as handled, and Node does not
+report it as an unhandled rejection. A further step with no error callback
+passes the failure on and reports it, as it reports any failure the fake passes
+down a chain.
+
+A chain that shipped code first wraps in `Promise.resolve`, as the referee's
+tree cache does, is native in the game: a jqXHR is not a `Promise`, so the
+wrapper adopts it. The fake's promises are real Promises, which
+`Promise.resolve` and `await` would hand back unwrapped, jQuery rules and all.
+So the fake clears their `constructor`, and both wrap them as they wrap a jqXHR.
+
 `installFakeJQuery(stubs, { sync: true })` swaps in a Deferred that models
 jQuery 2.1.4 itself, and jQuery 2.1.4's `when`, which waits on every argument
 without a tick. Its callbacks
