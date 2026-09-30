@@ -66,13 +66,14 @@ a changelog line.
 Everything reads the tree through `scripts/lib/loc-keys.js`, so the catalog, the
 work lists and the validator agree on what a key is: a `"!LOC:…"` or `'!LOC:…'`
 literal in a `.js`, `.html` or `.json` file, the text of a `<loc>` tag
-(`data-loc-id` when present), or, in an `.html` file, the text of an `<option>`
-or the value of an `<input type="button">`. Stock `locTree` looks those last two
-up as they stand, with no `!LOC:` prefix, and skips an `<option>` with a
-`data-noloc` attribute and a button whose `noloc` attribute has a value (a bare
-`noloc` does not stop it); the extractor keys and skips them the same way. An
-option or button with no letter in its text (`5`, `50%`) is left out, since
-numbers and percentages are kept exactly (below). Each key carries its
+(`data-loc-id` when present), or, in an `.html` file, the text of an `<option>`,
+the value of an `<input type="button">`, or the `placeholder` of an `<input>`.
+Stock `locTree` looks those last three up as they stand, with no `!LOC:` prefix,
+and skips an `<option>` or a placeholder with a `data-noloc` attribute and a
+button whose `noloc` attribute has a value (a bare `noloc` does not stop it);
+the extractor keys and skips them the same way. An option, button or placeholder
+with no letter in its text (`5`, `50%`) is left out, since numbers and
+percentages are kept exactly (below). Each key carries its
 sites: file, line, a **role** inferred from the syntax (`card-name`,
 `card-description`, `card-hint`, `faction-character`, `race-name`,
 `race-unit-name`, `unit-name`, `html-label`, `html-control`, `tooltip`,
@@ -91,7 +92,7 @@ names themselves (Legion, Bugs, Exiles) stay in.
 | `npm run i18n:catalog`          | no               | Writes `en-US.json`. Keeps every existing description, generated or hand-edited; `--regenerate` rewrites them all. Drops and prints keys no longer in the tree.                                                                                                   |
 | `npm run i18n:missing`          | **yes**          | Per language, the catalog keys the game does not translate. `--out --chunk N` writes work lists to `scripts/i18n/out/`, replacing that language's earlier ones; `--all` writes every key instead, with the game's text as `existing`; `--report` lists overrides. |
 | `npm run i18n:glossary`         | **yes**          | Per language, how the game's own tables render shared terms (Commander, Tech, Data Bank, unit names…) to `scripts/i18n/out/glossary.<lang>.md`.                                                                                                                   |
-| `npm run i18n:merge`            | no               | Assembles `scripts/i18n/out/<lang>.*.json` into `translations/<lang>.json`: empty messages and descriptions dropped, keys sorted, Prettier-identical, idempotent.                                                                                                 |
+| `npm run i18n:merge`            | no               | Assembles `scripts/i18n/out/missing.<lang>.<n>.json` into `translations/<lang>.json`: empty messages and descriptions dropped, keys sorted, Prettier-identical, idempotent.                                                                                       |
 | `npm run validate:translations` | no               | The file contract (below). Runs in `verify`.                                                                                                                                                                                                                      |
 
 The install is named with `PA_MEDIA=<path to media>` or `--pa <path>`, and
@@ -116,7 +117,8 @@ Conventions the notes and the translations follow:
 - A note names the file, never a line. `i18n:catalog` keeps a hand-written note
   as it is, so a line number in one goes stale as the code moves. Where two mod
   files share a name (`cards.js`, `races.js`), the note gives the folder too:
-  `gw_play/cards.js`.
+  `gw_play/cards.js`. A file name goes stale too when a string moves, so
+  `validate:translations` checks that each file a note names holds the key.
 
 - Numbers, percentages, `<br>`, `[strong]`, `__x__` and `{n}` are kept exactly.
   `validate:translations` checks the placeholders and style codes among them as
@@ -138,8 +140,10 @@ Conventions the notes and the translations follow:
   separators; such a key can never resolve), keys in code-unit order, no
   duplicate keys (a line scan, since `JSON.parse` keeps the last silently).
 - `en-US.json`: `message === key`, a non-empty `description` with no
-  `file:line` reference, and the key set equals what `loc-keys.js` extracts from
-  the tree, both ways.
+  `file:line` reference, each file the `description` names holding the key as
+  `loc-keys.js` reads it (a race file's unit names count, and the game's own
+  `legion.json` may be named for comparison), and the key set equals what
+  `loc-keys.js` extracts from the tree, both ways.
 - Other files: every key is in the catalog, no `description`, and the
   placeholders and style codes in the message match the key's.
 

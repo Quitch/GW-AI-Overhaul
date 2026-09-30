@@ -39,6 +39,20 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
     return JSON.parse(JSON.stringify(saved));
   };
 
+  // What a save holds, read off the observables: ko.toJS walks the whole
+  // inventory at a cost that grows with the square of what it copies.
+  var plainSave = function (inventory) {
+    return plain({
+      units: inventory.units(),
+      aiMods: inventory.aiMods(),
+      mods: inventory.mods(),
+      maxCards: inventory.maxCards(),
+      cards: inventory.cards(),
+      minions: inventory.minions(),
+      tags: inventory.tags(),
+    });
+  };
+
   // A GWInventory that notes every unit its cards remove.
   var recording = function (GWInventory, removed) {
     return function () {
@@ -91,7 +105,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
             params.stockBank,
             function (inventory) {
               clearTimeout(timer);
-              resolve(withStripped(plain(inventory.save()), removed));
+              resolve(withStripped(plainSave(inventory), removed));
             }
           );
         } catch (error) {
