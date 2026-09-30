@@ -509,8 +509,9 @@ logic is extracted into measured sibling modules. See
 Each sibling is a `define()` with no dependency the repo does not ship, so it
 loads under the Node AMD harness. Several read engine globals (`model`, `ko`,
 `api`, `$`) at call time. Their tests stub those with
-`scripts/lib/global-stubs.js` (see "Test fixtures"). Where a helper needs one of the excluded file's injected
-modules, it takes it as an explicit parameter rather than closing over it.
+`scripts/lib/global-stubs.js` (see "Test fixtures"). Where a helper needs one
+of the excluded file's injected modules, it takes it as an explicit parameter
+rather than closing over it.
 
 The glue file depends on the unshipped `shared/gw_common`. That dependency is
 what stops it loading in the harness in the first place.
