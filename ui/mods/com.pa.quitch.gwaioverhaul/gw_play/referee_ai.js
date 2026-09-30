@@ -6,6 +6,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_trees.js",
 ], function (
   gwoAI,
   gwoCard,
@@ -13,7 +14,8 @@ define([
   refereeCoop,
   gwoRaces,
   gameFilePaths,
-  unitCells
+  unitCells,
+  raceTrees
 ) {
   // The walk append, prepend and replace share. A build entry for toBuild that
   // carries idToMod (and refId/refValue, when given) is the target; otherwise
@@ -686,7 +688,7 @@ define([
           treeCache: request.treeCache,
         };
 
-        var inRaceLayer = gwoRaces.raceLayerTest();
+        var inRaceLayer = raceTrees.raceLayerTest();
         var promises = _.map(fileList, function (filePath) {
           if (
             !_.endsWith(filePath, ".json") ||
@@ -729,12 +731,13 @@ define([
       var source = gwoAI.getAIPathSource(type, race, sourceInventory);
       var target =
         destination || gwoAI.getAIPathDestination(type, { race: race });
+      var tree = raceTrees.treeContext(race, brain, source);
       jobs[source + "|" + target] = {
         source: source,
         destination: target,
-        keep: gwoRaces.treeFilter(race, brain, source),
-        raceOwned: gwoRaces.raceLayerFilter(race, brain, source),
-        stockBuild: gwoRaces.stockBuildFilter(race, brain, source),
+        keep: raceTrees.treeFilter(tree),
+        raceOwned: raceTrees.raceLayerFilter(tree),
+        stockBuild: raceTrees.stockBuildFilter(tree),
         repointed: function () {
           return gameFilePaths.repointedFor({
             race: race,

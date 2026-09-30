@@ -575,13 +575,6 @@ define([
     return mods;
   };
 
-  var matchesSource = function (filePath, source) {
-    return (
-      _.startsWith(filePath, source.dir) &&
-      _.startsWith(filePath.slice(source.dir.length), source.match || "")
-    );
-  };
-
   var brainKeyOf = function (brain) {
     return _.isString(brain) ? brain.toLowerCase() : "";
   };
@@ -615,172 +608,6 @@ define([
     return layers;
   };
 
-  var layerClaims = function (layer, filePath) {
-    return (
-      _.includes(layer.unitMaps, filePath) ||
-      _.some(layer.sources, function (source) {
-        return matchesSource(filePath, source);
-      })
-    );
-  };
-
-  // The parsed `ai` block a brain's tree filters read for a race, plus the
-  // path constants they share.
-  var treeConfig = function (raceId, brain, sourceRoot) {
-    var race = byId(raceId);
-    var brainKey = brainKeyOf(brain);
-    var config = (race && race.ai && race.ai[brainKey]) || {};
-
-    return {
-      race: race,
-      brainKey: brainKey,
-      sources: config.sources || [],
-      exclude: config.exclude || [],
-      aiConfig: sourceRoot + "ai_config.json",
-      mapsDir: sourceRoot + "unit_maps/",
-      templatesDir: sourceRoot + "platoon_templates/",
-      // The engine lists unit_maps/ and loads each file it finds plus the
-      // army's tag, so the tagged merged map is only read when its untagged
-      // namesake is there to be listed. The brain's own map files fill that
-      // role.
-      baseMaps: [
-        sourceRoot + "unit_maps/ai_unit_map.json",
-        sourceRoot + "unit_maps/ai_unit_map_x1.json",
-      ],
-    };
-  };
-
-  // Which files of a brain's source tree make up the race's own tree. See
-  // races.md, "Race trees".
-  var treeFilter = function (raceId, brain, sourceRoot) {
-    var c = treeConfig(raceId, brain, sourceRoot);
-    var layers = layersFor(c.brainKey);
-    // The race's own layer is its `ai` block plus its add-ons'; every other
-    // layer, MLA's add-ons included, is subtracted from the base. A file two
-    // layers claim (Second Wave's aux map) is the race's when its own does.
-    var own = (c.race && layers[c.race.id]) || { unitMaps: [], sources: [] };
-    var otherSources = _(layers)
-      .omit(c.race ? c.race.id : "")
-      .map("sources")
-      .flatten()
-      .value();
-    var hasData = own.sources.length > 0 || c.exclude.length > 0;
-
-    var isUnitMap = function (filePath) {
-      return _.some(own.unitMaps, function (map) {
-        return filePath === map || _.endsWith(filePath, "/" + map);
-      });
-    };
-
-    return function (filePath) {
-      if (!c.race || c.race.id === MLA_ID || !_.endsWith(filePath, ".json")) {
-        return false;
-      }
-
-      if (filePath === c.aiConfig || _.includes(c.baseMaps, filePath)) {
-        return true;
-      }
-
-      if (isUnitMap(filePath) || _.includes(filePath, "/neural_networks/")) {
-        return false;
-      }
-
-      // Every layer's templates, as in a skirmish: a build file at a vanilla
-      // path can name another race's (Bugs' orbital builds do).
-      if (hasData && _.startsWith(filePath, c.templatesDir)) {
-        return true;
-      }
-
-      if (own.sources.length) {
-        if (
-          _.some(own.sources, function (source) {
-            return matchesSource(filePath, source);
-          })
-        ) {
-          return true;
-        }
-
-        // No untagged stray may reach unit_maps/ - the engine would load it
-        // with the army's tag appended.
-        if (_.startsWith(filePath, c.mapsDir)) {
-          return false;
-        }
-
-        // The base layer: whatever no other layer claims.
-        return !_.some(otherSources, function (source) {
-          return matchesSource(filePath, source);
-        });
-      }
-
-      if (!c.exclude.length) {
-        return false;
-      }
-
-      return !_.some(c.exclude, function (fragment) {
-        return _.includes(filePath, fragment);
-      });
-    };
-  };
-
-  // Whether the race mod itself put this file in the tree - the base layer
-  // does not count. The referee warns when nothing matches: no race files in
-  // the merged listing means the race's server mod is not mounted.
-  var raceLayerFilter = function (raceId, brain, sourceRoot) {
-    var c = treeConfig(raceId, brain, sourceRoot);
-    var keep = treeFilter(raceId, brain, sourceRoot);
-
-    return function (filePath) {
-      if (!c.race || c.race.id === MLA_ID || !_.endsWith(filePath, ".json")) {
-        return false;
-      }
-
-      if (c.sources.length) {
-        return _.some(c.sources, function (source) {
-          return matchesSource(filePath, source);
-        });
-      }
-
-      if (!c.exclude.length) {
-        return false;
-      }
-
-      // A brain that carries the race itself: the tier's own data files, not
-      // the config and map boilerplate every tree keeps.
-      return (
-        keep(filePath) &&
-        filePath !== c.aiConfig &&
-        !_.includes(c.baseMaps, filePath)
-      );
-    };
-  };
-
-  // Whether a file of the race's tree is a stock factory or fabber build list:
-  // kept from the base layer, so the referee strips MLA's orders from it. A
-  // brain that carries the race has none. See races.md, "Race trees".
-  var stockBuildFilter = function (raceId, brain, sourceRoot) {
-    var c = treeConfig(raceId, brain, sourceRoot);
-    var keep = treeFilter(raceId, brain, sourceRoot);
-    var own = (c.race && layersFor(c.brainKey)[c.race.id]) || {
-      unitMaps: [],
-      sources: [],
-    };
-    var buildDirs = [
-      sourceRoot + "fabber_builds/",
-      sourceRoot + "factory_builds/",
-    ];
-
-    return function (filePath) {
-      return (
-        own.sources.length > 0 &&
-        keep(filePath) &&
-        _.some(buildDirs, function (dir) {
-          return _.startsWith(filePath, dir);
-        }) &&
-        !layerClaims(own, filePath)
-      );
-    };
-  };
-
   // The race's own unit for each stock key the engine reads by name; null
   // keeps the stock unit. None for MLA.
   var engineKeysFor = function (raceId) {
@@ -796,59 +623,6 @@ define([
     var race = byId(raceId);
 
     return (race && race.stockUnits) || [];
-  };
-
-  // Every brain key any descriptor names a layer for.
-  var brainKeys = function () {
-    return _.uniq(
-      _.flatten(
-        _.map(all(), function (race) {
-          return _.keys(race.ai || {});
-        }).concat(
-          _.map(addons(), function (addon) {
-            return _.flatten(_.map(addon.layers, _.keys));
-          })
-        )
-      )
-    );
-  };
-
-  // Whether a race's layer claims this file and MLA's does not: a race mod's
-  // own build files or unit map, or an add-on's files for a race, under any
-  // brain, in the merged listing. An MLA tree is the brain's base files plus
-  // MLA's add-on files, so referee_ai.js's sweep drops these and keeps the
-  // rest - an add-on map both MLA and a race claim rides along untagged. A
-  // relative unit map names a file the brain ships itself, never a race
-  // mod's, and matches nothing here. Nor does a platoon template, which every
-  // tree carries (see treeFilter).
-  //
-  // raceLayerTest builds the layers once, for a caller testing a whole file
-  // list: nothing it reads changes during one sweep.
-  var raceLayerTest = function () {
-    var layerSets = _.map(brainKeys(), layersFor);
-
-    return function (filePath) {
-      if (_.includes(filePath, "/platoon_templates/")) {
-        return false;
-      }
-
-      var mla = false;
-      var other = false;
-
-      _.forEach(layerSets, function (layers) {
-        _.forEach(layers, function (layer, raceId) {
-          if (layerClaims(layer, filePath)) {
-            if (raceId === MLA_ID) {
-              mla = true;
-            } else {
-              other = true;
-            }
-          }
-        });
-      });
-
-      return other && !mla;
-    };
   };
 
   // The race's unit map files for a brain, its add-ons' included, absolute.
@@ -998,6 +772,7 @@ define([
     modsFor: modsFor,
     cardUnitsFor: cardUnitsFor,
     unitName: unitName,
+    brainKeyOf: brainKeyOf,
     layersFor: layersFor,
     supportedBy: supportedBy,
     brainFor: brainFor,
@@ -1013,12 +788,8 @@ define([
     isRaceCommander: isRaceCommander,
     commanderArtHue: commanderArtHue,
     commanderFor: commanderFor,
-    treeFilter: treeFilter,
-    raceLayerFilter: raceLayerFilter,
-    stockBuildFilter: stockBuildFilter,
     engineKeysFor: engineKeysFor,
     stockUnitsFor: stockUnitsFor,
-    raceLayerTest: raceLayerTest,
     unitMapsFor: unitMapsFor,
     assign: assign,
     // Test-only: a registered race outlives the module, and the harness loads
