@@ -308,9 +308,6 @@
 
     var setupCoopAiTech = function (params) {
       var game = model.game();
-      if (!model.gwoCoopAi) {
-        return;
-      }
       var perPlayer = game.perPlayerTechCards();
 
       requireGW(
@@ -442,7 +439,7 @@
 
         // A co-op AI player settling its deals, from gw_play/coop_ai.js.
         var coopAiDeciding = function () {
-          return !!(model.gwoCoopAiDeciding && model.gwoCoopAiDeciding());
+          return model.gwoCoopAiDeciding();
         };
         var starCardsBusy = ko.observable(false);
 
@@ -460,7 +457,7 @@
           gwoSave: gwoSave,
           gwoTreasure: gwoTreasure,
           aiClients: function () {
-            return model.gwoCoopAi ? model.gwoCoopAi.clients() : [];
+            return model.gwoCoopAi.clients();
           },
           aiDeciding: coopAiDeciding,
           busy: starCardsBusy,

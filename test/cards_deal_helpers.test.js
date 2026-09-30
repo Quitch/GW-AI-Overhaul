@@ -492,35 +492,6 @@ describe("explorationStillLive", () => {
   it("rejects a deal for a star already resolved by a win", () => {
     assert.equal(helpers.explorationStillLive(live, 17, star(true)), false);
   });
-
-  it("rejects a non-numeric star index", () => {
-    assert.equal(
-      helpers.explorationStillLive(live, undefined, star(false)),
-      false
-    );
-    assert.equal(helpers.explorationStillLive(live, "17", star(false)), false);
-  });
-
-  it("rejects a missing game or star without throwing", () => {
-    assert.equal(
-      helpers.explorationStillLive(undefined, 17, star(false)),
-      false
-    );
-    assert.equal(helpers.explorationStillLive(live, 17, undefined), false);
-  });
-
-  it("rejects a game or star missing the accessors it reads", () => {
-    assert.equal(helpers.explorationStillLive({}, 17, star(false)), false);
-    assert.equal(
-      helpers.explorationStillLive(
-        { turnState: () => "explore" },
-        17,
-        star(false)
-      ),
-      false
-    );
-    assert.equal(helpers.explorationStillLive(live, 17, {}), false);
-  });
 });
 
 describe("races", () => {
@@ -593,10 +564,6 @@ describe("races", () => {
       helpers.raceCanDeal(races, inventoryOf("mla"), "gwaio_upgrade_ant", [
         { id: "gwaio_upgrade_ant", units: [gwoUnit.ant] },
       ]),
-      true
-    );
-    assert.equal(
-      helpers.raceCanDeal(undefined, inventoryOf("fixture"), "bot_card", []),
       true
     );
   });
@@ -861,21 +828,9 @@ describe("explorationDealtNothing", () => {
     );
   });
 
-  it("is false while replaying a host action, and for bad inputs", () => {
+  it("is false while replaying a host action", () => {
     assert.equal(
       helpers.explorationDealtNothing(game("explore", 4), 4, star([]), true),
-      false
-    );
-    assert.equal(
-      helpers.explorationDealtNothing(null, 4, star([]), false),
-      false
-    );
-    assert.equal(
-      helpers.explorationDealtNothing(game("explore", 4), "4", star([]), false),
-      false
-    );
-    assert.equal(
-      helpers.explorationDealtNothing(game("explore", 4), 4, {}, false),
       false
     );
   });

@@ -192,15 +192,7 @@ define([
     // the async chooser resolves. See tech-cards.md, "A deal that arrives late,
     // or empty".
     explorationDealtNothing: function (game, starIndex, star, replaying) {
-      if (
-        replaying ||
-        !game ||
-        !_.isFunction(game.turnState) ||
-        !_.isFunction(game.currentStar) ||
-        !_.isNumber(starIndex) ||
-        !star ||
-        !_.isFunction(star.cardList)
-      ) {
+      if (replaying) {
         return false;
       }
 
@@ -211,17 +203,6 @@ define([
       );
     },
     explorationStillLive: function (game, starIndex, star) {
-      if (
-        !game ||
-        !_.isFunction(game.turnState) ||
-        !_.isFunction(game.currentStar) ||
-        !_.isNumber(starIndex) ||
-        !star ||
-        !_.isFunction(star.hasCard)
-      ) {
-        return false;
-      }
-
       return (
         game.turnState() === "explore" &&
         game.currentStar() === starIndex &&
@@ -262,9 +243,6 @@ define([
 
     // cardsToUnits is model.gwoCardsToUnits. See races.md, "Capability cells".
     raceCanDeal: function (races, inventory, cardId, cardsToUnits) {
-      if (!races) {
-        return true;
-      }
       var race = races.raceOf(inventory);
       var entry = entryFor(cardsToUnits, cardId);
       var units = entry ? entry.units : undefined;

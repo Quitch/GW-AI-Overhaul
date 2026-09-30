@@ -28,7 +28,7 @@ define([
         star.explored() &&
         !model.scanning() &&
         !model.gwCampaignPlayerSetupBlocked() &&
-        !(model.gwoCoopAiDeciding && model.gwoCoopAiDeciding()) &&
+        !model.gwoCoopAiDeciding() &&
         !params.starCardsBusy() &&
         !params.aiStarDealing() &&
         !model.gameOver()
@@ -142,7 +142,7 @@ define([
         );
       },
       ping: function (star, sender) {
-        return !!model.gwoPingStarAs && model.gwoPingStarAs(star, sender);
+        return model.gwoPingStarAs(star, sender);
       },
     });
 
