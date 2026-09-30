@@ -695,9 +695,6 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "L'equipaggiamento del Comandante navale contiene tutte le fabbriche navali. Aumenta la quantità di acqua e lava sui pianeti idonei."
   },
-  "The same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
-    "message": "Lo stesso seed ricrea la stessa galassia e gli stessi nemici, purché fazione, difficoltà e opzioni di gioco coincidano e siano installate le stesse mod. I nomi dei pianeti variano comunque. Lascialo com'è per una galassia nuova."
-  },
   "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
     "message": "Le unità che tu e i tuoi Subcomandanti schierate. L'IA di ogni razza si sceglie con il pulsante IA."
   },
