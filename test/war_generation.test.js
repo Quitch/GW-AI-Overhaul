@@ -270,7 +270,7 @@ function makeModel(war) {
       [4, 5, 6],
     ]),
     updateCommander: () => {
-      war.commanderUpdates++;
+      war.commanderUpdates.push(war.model.newGame());
     },
     devMode: makeObservable(false),
     newGame: makeObservable({ id: "stock-first-game" }),
@@ -319,7 +319,7 @@ function makeWar() {
     errors: [],
     pickedTags: [],
     settingsSaved: 0,
-    commanderUpdates: 0,
+    commanderUpdates: [],
     spreadPerTeam: 0,
     bossless: [],
     holdBuild: false,
@@ -472,8 +472,9 @@ describe("a war that generates", () => {
       ],
       "global.playerRace": "mla",
     });
-    // Once for stock's first game, before the new one exists, and once after.
-    assert.equal(war.commanderUpdates, 2);
+    // Once, and on the war's own game rather than stock's first one.
+    assert.equal(war.commanderUpdates.length, 1);
+    assert.equal(war.commanderUpdates[0], game);
   });
 
   it("records the war for the play scene", () => {
