@@ -78,6 +78,31 @@ const JOBS = {
 // Of those, the ones no commander can build: they stand for their whole cell.
 const UNBUILDABLE = ["baseOrbital", "squall"];
 
+// The job of every defence and superweapon structure shared/units.js names,
+// null for none. A change here moves race structures from one card to another.
+const STRUCTURE_JOBS = {
+  anchor: "OrbitalDefense",
+  antiNukeLauncher: "NukeDefense",
+  catalyst: "ControlModule",
+  catapult: "Tactical",
+  flak: "AirDefense",
+  galata: "AirDefense",
+  halley: "PlanetEngine",
+  holkins: "Artillery",
+  kessler: "OrbitalDefense",
+  landMine: null,
+  laserDefenseTower: "SurfaceDefense",
+  laserDefenseTowerAdvanced: "SurfaceDefense",
+  lob: "Artillery",
+  nukeLauncher: "Nuke",
+  pelter: "Artillery",
+  singleLaserDefenseTower: "SurfaceDefense",
+  torpedoLauncher: null,
+  torpedoLauncherAdvanced: null,
+  umbrella: "OrbitalDefense",
+  wall: "Wall",
+};
+
 // Every bit classify reads, beside those it strips. A bit on a mobile combat
 // unit outside them is one the job table has not been decided for.
 const READ_BITS = [
@@ -138,6 +163,43 @@ const READ_BITS = [
 // Section 17's Sigma carries FabberBuild, a build permission.
 const IGNORED_BITS = ["FabberBuild"];
 
+// Every bit a defence or superweapon structure's class and jobs read, and
+// those decided to be no job of one. A bit outside them is one the structure
+// table has not been decided for.
+const STRUCTURE_READ_BITS = [
+  // Domain and tier.
+  "Air",
+  "Orbital",
+  "Land",
+  "Naval",
+  "Advanced",
+  "Basic",
+  // Class.
+  "Defense",
+  "Nuke",
+  "ControlModule",
+  "PlanetEngine",
+  "Wall",
+  "SurfaceDefense",
+  "AirDefense",
+  // Job.
+  "Tactical",
+  "OrbitalDefense",
+  "NukeDefense",
+  "Artillery",
+];
+const STRUCTURE_UNREAD_BITS = [
+  "Structure",
+  "Offense",
+  "Factory",
+  "Construction",
+  "Shield",
+  "TacticalDefense",
+  "SelfDestruct",
+  "EnergyProduction",
+  "Economy",
+];
+
 // MLA's is the add-on index.
 const INDEXES = races.all().map((race) => ({
   id: race.id,
@@ -146,6 +208,10 @@ const INDEXES = races.all().map((race) => ({
 const VANILLA = INDEXES[0].index.vanilla;
 
 const isCombat = (index, unit) => /\/Combat$/.test(index.cellOf[unit] || "");
+const SPLIT_CELL = /\/(Combat|Defense|Superweapon)$/;
+const isStructure = (index, unit) =>
+  /\/(Defense|Superweapon)$/.test(index.cellOf[unit] || "");
+const short = (unit) => unit.slice(unit.lastIndexOf("/") + 1, -".json".length);
 
 describe("jobs over the harvested fixture", () => {
   it("finds units a commander can build in every index", () => {
@@ -169,7 +235,21 @@ describe("jobs over the harvested fixture", () => {
     );
   });
 
-  it("gives every race and add-on unit of a combat cell a stand-in a card can grant", (t) => {
+  it("pins the job of every defence and superweapon structure shared/units.js names", () => {
+    const jobs = {};
+    for (const [key, unit] of Object.entries(gwoUnit)) {
+      if (typeof unit === "string" && isStructure(VANILLA, unit)) {
+        jobs[key] = VANILLA.jobsOf[unit][0] || null;
+      }
+    }
+
+    assert.deepEqual(jobs, STRUCTURE_JOBS);
+    assert.ok(
+      Object.keys(jobs).every((key) => VANILLA.fieldable[gwoUnit[key]])
+    );
+  });
+
+  it("gives every race and add-on unit of a split cell a stand-in a card can grant", (t) => {
     // orbital_carrier can be built, but no card grants it.
     const grantable = gwoGroup.units;
     for (const { id, index } of INDEXES) {
@@ -183,7 +263,7 @@ describe("jobs over the harvested fixture", () => {
         const filled = (index.vanilla.unitsByCell[cell] || []).some(
           (unit) => !index.vanilla.tagsOf[unit].includes("NoBuild")
         );
-        if (!/\/Combat$/.test(cell) || !filled) {
+        if (!SPLIT_CELL.test(cell) || !filled) {
           continue;
         }
         for (const unit of units) {
@@ -206,6 +286,63 @@ describe("jobs over the harvested fixture", () => {
           }
         }
       }
+    }
+  });
+
+  it("types every defence and superweapon structure with bits its rule reads or leaves", () => {
+    const known = new Set(STRUCTURE_READ_BITS.concat(STRUCTURE_UNREAD_BITS));
+    for (const { id, index } of INDEXES) {
+      for (const side of [index.vanilla, index.race]) {
+        for (const unit of Object.keys(side.cellOf)) {
+          if (!isStructure(side, unit)) {
+            continue;
+          }
+          for (const bit of cells.stripTypes(fixture[unit])) {
+            assert.ok(known.has(bit), id + ": " + unit + " " + bit);
+          }
+        }
+      }
+    }
+  });
+
+  it("gives a laser tower a race's turrets, and the nuke launcher its nukes", (t) => {
+    const expected = {
+      legion: [
+        [
+          "basic_missile_defence",
+          "l_swarm_hive",
+          "l_t1_turret_adv",
+          "l_t1_turret_basic",
+        ],
+        ["l_nuke_launcher"],
+      ],
+      bugs: [
+        [
+          "basic_missile_defence",
+          "bug_missile_defence_basic",
+          "bug_turret_acid",
+          "bug_turret_needle",
+          "bug_turret_small",
+        ],
+        ["bug_nuke", "control_node"],
+      ],
+      exiles: [["ambush_twr", "ambush_twr_hid"], ["missile_facility"]],
+    };
+    for (const { id, index } of INDEXES) {
+      if (!expected[id]) {
+        continue;
+      }
+      if (!index.race.units.length) {
+        t.diagnostic("fixture harvested without " + id);
+        continue;
+      }
+      const standIns = cells.standInsFor(index.vanilla, index.race);
+      const of = (unit) => standIns(unit).map(short).sort();
+      assert.deepEqual(
+        [of(gwoUnit.laserDefenseTower), of(gwoUnit.nukeLauncher)],
+        expected[id],
+        id
+      );
     }
   });
 

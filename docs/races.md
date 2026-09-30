@@ -148,7 +148,7 @@ and the race (`UNITTYPE_<bit>`). Then it applies these rules:
 
 | Rule                                                                                                                                                                                 | Result                                                                                                                                                                                             |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A held vanilla unit                                                                                                                                                                  | the race units it stands for: every race unit of its cell, or in a mobile `Combat` cell those the job rule gives it (`raceUnitsFor`, "Jobs" below)                                                 |
+| A held vanilla unit                                                                                                                                                                  | the race units it stands for: every race unit of its cell, or in a mobile `Combat`, `Defense`, or `Superweapon` cell those the job rule gives it (`raceUnitsFor`, "Jobs" below)                    |
 | A held path that is not a vanilla unit (race commander, a mod)                                                                                                                       | passed through untouched, unless another race's or add-on's (`races.ownedPaths`)                                                                                                                   |
 | A held vanilla unit that stands for no race unit, but that the race can build                                                                                                        | itself ("Units a race builds itself" below)                                                                                                                                                        |
 | A held vanilla unit the race names in `stockUnits`, when something fielded can build it                                                                                              | itself, beside the race units it stands for (`buildableStockUnits`, "Units a race builds itself" below)                                                                                            |
@@ -310,9 +310,11 @@ hovered card's tooltips are rebuilt.
 A mobile `Combat` cell mixes units with different jobs: with Second Wave,
 Legion's basic tanks are the Lynx (anti-air), the Corsair, the Maul, the
 Shank, and the Stoke.
-Within such a cell a vanilla unit stands for the race units that do its job,
-not for the whole cell. Every other class keeps its cell whole: titans,
-commanders, fabbers, factories, and structures.
+A `Defense` or `Superweapon` cell does too: Legion's basic defences are four
+turrets, a wall, a mine, and an anti-air, an anti-orbital, and an artillery
+tower. Within these cells a vanilla unit stands for the race units that do its
+job, not for the whole cell. Every other class keeps its cell whole: titans,
+commanders, fabbers, factories, and the other structures.
 
 `unit_cells.classify` reads a mobile combat unit's jobs off its stripped
 types, in this order:
@@ -329,6 +331,14 @@ moves last: the Ward, typed `Heavy`, `NukeDefense`, and `Hover`, lists
 `Heavy` first, and the Locusts, typed `Deconstruction` and `Hover`, list
 `Deconstruction` first.
 
+A defence or superweapon structure reads its jobs from a second table,
+`STRUCTURE_JOBS`, in this order: `Wall`, `Nuke`, `ControlModule`,
+`PlanetEngine`, `Tactical`, `AirDefense`, `OrbitalDefense`, `NukeDefense`,
+`SurfaceDefense`, and `Artillery`. `Defense` is their class bit, so it is no
+job. `Tactical` comes before `SurfaceDefense`, so the Catapult is `Tactical`.
+`AirDefense` comes before `Artillery`, so Bugs' drone launcher goes with the
+Flak. The land mine has none of these bits, so it has no job.
+
 Only a vanilla unit a commander can build counts. `buildIndex` marks as
 `fieldable` what the index's `Commander`-cell units can build, and what that
 builds in turn, through `buildable_types`. Each distinct expression is
@@ -339,7 +349,8 @@ spawned units such as the Squall's drone, and the portal's ammo. When no
 commander has a build list, nothing is `fieldable`, every cell stays whole,
 and `gw_play/race_cells.js` warns.
 
-`unit_cells.standInsFor` applies the rule within each mobile `Combat` cell:
+`unit_cells.standInsFor` applies the rule within each mobile `Combat`,
+`Defense`, and `Superweapon` cell:
 
 1. A vanilla unit's job is its first job.
 2. A race unit **matches** the first of its jobs that is a vanilla unit's job
@@ -363,6 +374,17 @@ Maul. Without Second Wave, Legion has no anti-air tank, and the Spinner stands
 for nothing. The homes rule
 leaves no race unit of a cell a vanilla unit fills without a vanilla unit to
 stand for it, so the build rule and `unfilledByVanilla` are unchanged.
+
+In the defence cells, the land mine has no job, so it is the basic cell's
+home. It stands for each race's mines, and for Bugs' charging portal and
+Exiles' gas turret, whose `Tactical` job no basic vanilla defence has. In the
+advanced cell no race has a `Tactical` defence, so the Catapult is a leftover
+home. Exiles' `anti_ballistics`, which has no job, stands behind the Catapult
+and the Holkins. Bugs' `bug_mine_big` stands behind the Catapult. The MLA
+add-on index's `shield_gen` stands behind the Catapult, the Flak, and the
+anti-nuke launcher. No vanilla defence or superweapon that a commander can
+build stands for nothing in any shipped race, so the split adds no dead
+unit-map keys.
 `test/unit_jobs.test.js` checks that for every shipped race and the add-on
 index, and that a card can grant a vanilla unit that stands for each one.
 
@@ -378,13 +400,19 @@ race army cannot build. The Skitter's `LandScout` is one for Legion and Bugs.
 The stock build items that name it lose their race builders with the rest of
 MLA's orders (see "Race trees"), so no race factory is ordered to build it.
 
-The rule has two known limits:
+The rule has these known limits:
 
 - It reads the race mods' own bits. Legion's Stoke is typed `Amphibious`, not
   `Artillery`, so it belongs to the Ant, not to an artillery unit.
 - The Squall's drone sits in the basic air cell and no commander builds it, so
   a naval card that names it reaches a race's whole basic air cell. That
   predates jobs.
+- `Intel` cells stay whole. A radar card reaches a race's jammers. Split by
+  job, one job order leaves Exiles' `radar_adv` standing for nothing, and the
+  other leaves Legion's and Bugs' `radar_jammer` standing for nothing: either
+  makes a dead unit-map key.
+- `Land/Basic/Storage` and `Naval/Basic/Defense` cannot split: the vanilla
+  units in each carry the same bits, so a jobs table gives them the same job.
 
 ### Units a race builds itself
 

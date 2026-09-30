@@ -63,8 +63,9 @@ race needs something new.
    (Bugs' research). They check that the withheld-card list is exactly the
    MLA-only set plus whatever the race lacks. `test/unit_jobs.test.js` covers
    every registered race without a change: it fails when a race unit of a
-   mobile combat cell has no vanilla unit a card can grant standing for it,
-   and when a mobile combat unit carries a bit the job rule does not know.
+   mobile combat, defence, or superweapon cell has no vanilla unit a card can
+   grant standing for it, and when a unit of one of those cells carries a bit
+   the job rule does not know.
 6. **Docs**: add a section in `races.md`, a CHANGELOG line, and anything new
    here.
 7. **Live**: play a war as the race and a war against it. Check the primed
@@ -146,6 +147,8 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   ([`races.md`](races.md), "Jobs"). A bit that is neither a domain, tier,
   class, or job bit nor stripped fails `test/unit_jobs.test.js`, and needs a
   decision: a job in `unit_cells`' `JOBS` table, or the test's ignore list.
+  A defence or superweapon structure's bits are checked the same way against
+  `STRUCTURE_JOBS` and the test's list of bits that are no structure's job.
 - **A part belongs to the unit whose directory holds it** when several units
   share it (the Dox's ammo also arms an advanced vehicle).
 - **`unit_list.json` is authoritative.** A race's units are the list's. A

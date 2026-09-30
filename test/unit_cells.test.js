@@ -1240,7 +1240,7 @@ describe("jobs", () => {
     return { v, r, standIns: cells.standInsFor(v, r) };
   };
 
-  it("reads a mobile combat unit's jobs in table order, Recon as Scout", () => {
+  it("reads a unit's jobs in its class's table order, Recon as Scout", () => {
     const jobs = (list) => cells.classify(T(list)).jobs;
 
     assert.deepEqual(jobs("Basic Land Mobile Offense Tank Hover Artillery"), [
@@ -1254,8 +1254,30 @@ describe("jobs", () => {
     assert.deepEqual(jobs("Basic Air Mobile Offense Recon Scout"), ["Scout"]);
     assert.deepEqual(jobs("Basic Orbital Mobile Recon"), ["Scout"]);
     assert.deepEqual(jobs("Basic Land Mobile Offense Tank"), []);
-    // Combat cells only.
-    assert.deepEqual(jobs("Basic AirDefense Defense Land Structure"), []);
+    // Defense is a structure's class, not its job.
+    assert.deepEqual(jobs("Basic AirDefense Defense Land Structure"), [
+      "AirDefense",
+    ]);
+    assert.deepEqual(jobs("Basic Defense Land Structure Wall SurfaceDefense"), [
+      "Wall",
+      "SurfaceDefense",
+    ]);
+    assert.deepEqual(
+      jobs(
+        "Advanced Defense Land Structure SurfaceDefense OrbitalDefense Tactical"
+      ),
+      ["Tactical", "OrbitalDefense", "SurfaceDefense"]
+    );
+    assert.deepEqual(jobs("Advanced AirDefense Artillery Defense Land"), [
+      "AirDefense",
+      "Artillery",
+    ]);
+    assert.deepEqual(jobs("Advanced Factory Land Nuke Offense Structure"), [
+      "Nuke",
+    ]);
+    assert.deepEqual(jobs("Basic Defense Land Naval Structure"), []);
+    // Combat, defence and superweapon cells only.
+    assert.deepEqual(jobs("Advanced Land Radar Structure"), []);
     assert.deepEqual(jobs("Basic Bot Construction Fabber Land Mobile"), []);
     assert.deepEqual(jobs("Advanced Air Bomber Mobile Offense Titan"), []);
   });
@@ -1433,6 +1455,61 @@ describe("jobs", () => {
       cells.expandMods(card.concat(card), v, r),
       once.concat(once)
     );
+  });
+
+  // The same, as basic defence structures the commander builds, and the
+  // vanilla ones typed CmdBuild.
+  const structures = (vanillaTypes, raceTypes) =>
+    indexes(vanillaTypes, raceTypes, (specs) => {
+      const mobile = new Set(T("Mobile Offense Tank"));
+      for (const [unit, spec] of Object.entries(specs)) {
+        if (/\/[vr]_/.test(unit) && spec.unit_types) {
+          spec.unit_types = spec.unit_types
+            .filter((type) => !mobile.has(type))
+            .concat(T("Structure Defense"));
+        }
+      }
+    });
+
+  it("splits a defence cell by job: a wall stands for the race's walls alone", () => {
+    const { v, r, standIns } = structures(
+      {
+        mine: "CmdBuild",
+        turret: "CmdBuild SurfaceDefense",
+        wall: "CmdBuild Wall",
+      },
+      { tower: "SurfaceDefense", turret: "SurfaceDefense", wall: "Wall" }
+    );
+
+    assert.equal(v.cellOf[V("wall")], "Land/Basic/Defense");
+    assert.deepEqual(standIns(V("wall")), [R("wall")]);
+    assert.deepEqual(standIns(V("turret")), [R("tower"), R("turret")]);
+    assert.deepEqual(
+      cells.expandMods([mod(V("wall"), "max_health", 2)], v, r),
+      [mod(R("wall"), "max_health", 2)]
+    );
+  });
+
+  it("homes a race structure no job matches on the job-less mine", () => {
+    // No vanilla structure is artillery, so the race's goes to the mine.
+    const { standIns } = structures(
+      { mine: "CmdBuild", turret: "CmdBuild SurfaceDefense" },
+      { artillery: "Artillery", mine: "", turret: "SurfaceDefense" }
+    );
+
+    assert.deepEqual(standIns(V("mine")), [R("artillery"), R("mine")]);
+    assert.deepEqual(standIns(V("turret")), [R("turret")]);
+  });
+
+  it("lets a structure no commander builds stand for its whole cell", () => {
+    const { v, standIns } = structures(
+      { dot: "SurfaceDefense", turret: "CmdBuild SurfaceDefense" },
+      { turret: "SurfaceDefense", wall: "Wall" }
+    );
+
+    assert.equal(v.fieldable[V("dot")], undefined);
+    assert.deepEqual(standIns(V("dot")), [R("turret"), R("wall")]);
+    assert.deepEqual(standIns(V("turret")), [R("turret"), R("wall")]);
   });
 });
 

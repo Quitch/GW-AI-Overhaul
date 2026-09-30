@@ -301,3 +301,55 @@ describe("race_ai_mods table", () => {
     assert.equal(raceAiMods.loadPath({ type: "bogus", value: "x" }), undefined);
   });
 });
+
+describe("race_ai_mods defence keys", () => {
+  const V = (name) => "/pa/units/land/v_" + name + "/v_" + name + ".json";
+  const R = (name) => "/pa/units/land/r_" + name + "/r_" + name + ".json";
+  const types = (list) => list.split(" ").map((tag) => "UNITTYPE_" + tag);
+  const structure = (bits) => ({
+    unit_types: types("Basic Land Structure Defense " + bits),
+  });
+  const COMMANDER = "/pa/units/commanders/v_cmd/v_cmd.json";
+  const RACE_COMMANDER = "/pa/units/commanders/r_cmd/r_cmd.json";
+  const specs = {
+    [COMMANDER]: {
+      unit_types: types("Commander Construction Land Mobile Custom58"),
+      buildable_types: "Structure & Custom58",
+    },
+    [RACE_COMMANDER]: {
+      unit_types: types("Commander Construction Land Mobile Custom7"),
+      buildable_types: "Structure & Custom7",
+    },
+    [V("laser")]: structure("SurfaceDefense Custom58"),
+    [V("wall")]: structure("Wall Custom58"),
+    [V("artillery")]: structure("Artillery Custom58"),
+    [R("turret")]: structure("SurfaceDefense Custom7"),
+    [R("wall")]: structure("Wall Custom7"),
+    [R("artillery")]: structure("Artillery Custom7"),
+  };
+  const units = Object.keys(specs);
+  const aimTable = raceAiMods.table({
+    stock: { BasicLandDefense: { spec_id: V("laser") } },
+    race: {
+      RaceTurret: { spec_id: R("turret") },
+      RaceWall: { spec_id: R("wall") },
+      RaceArtillery: { spec_id: R("artillery") },
+      AnyRaceDefense: { unit_types: "Defense & Custom7" },
+    },
+    repointed: { BasicLandDefense: true },
+    cells: {
+      vanilla: unitCells.buildIndex(units, specs, unitCells.vanillaMember),
+      race: unitCells.buildIndex(units, specs, unitCells.raceMember("Custom7")),
+    },
+  });
+
+  it("aims a laser tower's key at the race's turrets, not its walls or artillery", () => {
+    assert.deepEqual(
+      raceAiMods
+        .aim(aimTable)
+        .mods([replace("BasicLandDefense", 1)])
+        .map((mod) => mod.toBuild),
+      ["RaceTurret"]
+    );
+  });
+});
