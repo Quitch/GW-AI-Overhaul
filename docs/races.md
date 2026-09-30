@@ -505,7 +505,9 @@ files, from one read of the race's layers per tree (`race_trees.treeContext`):
   along untagged, as the live `/pa/ai/` listing has them.
 
 - **A brain that carries the race** (Queller carries Legion): the tree is the
-  tier minus the descriptor's `exclude` fragments, which are the MLA side.
+  tier minus the descriptor's `exclude` fragments, which are the MLA side,
+  templates aside. The race's own unit maps and `neural_networks/` are dropped
+  too.
 
 The referee's "no race build orders" warning fires when the race mod itself
 contributed nothing to the tree (`race_trees.raceLayerFilter`). The base layer is
