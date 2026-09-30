@@ -80,7 +80,7 @@ const KEYS_READ_BY_OP = {
   squad: ["value", "toBuild", "treeOnly"],
 };
 
-// Mirrors referee_ai.js's managerPath(): where a load's file lives.
+// Mirrors shared/race_ai_mods.js's managerPath(): where a load's file lives.
 const TECH_DIR_BY_TYPE = {
   fabber: "fabber_builds",
   factory: "factory_builds",

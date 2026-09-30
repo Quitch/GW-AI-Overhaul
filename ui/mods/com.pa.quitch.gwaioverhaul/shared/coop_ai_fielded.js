@@ -1,19 +1,46 @@
 // What a co-op AI player of a race, or of MLA with add-ons, fields, as the
 // referee builds it: its held units through its race's cells, its mods landed
-// on those units, which of them its commander reaches, and the units a card
-// could still grant it. The scorer reads this view in place of the saved
-// inventory's vanilla paths. Pure. See tech-cards.md, "A race's units".
-define(function () {
+// on those units, the AI mods its race's tree takes, which of its units its
+// commander reaches, and the units a card could still grant it. The scorer
+// reads this view in place of the saved inventory's vanilla paths. Pure. See
+// tech-cards.md, "A race's units".
+define([
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+], function (raceAiMods, unitCells) {
   // Views kept for reuse: a hand's cards share the inventory before them.
   var MAX_CACHED = 16;
 
   // params: race, cells (shared/races.js cellsOf), races (shared/races.js),
-  // lookup (shared/coop_ai_units.js fromSpecs).
+  // lookup (shared/coop_ai_units.js fromSpecs), and for a race's view aim:
+  // table (shared/race_ai_mods.js) and loads (the /pa/ai_tech/ files by
+  // path). Without aim, the AI mods are counted as saved.
   var view = function (params) {
     var race = params.race;
     var cells = params.cells;
     var races = params.races;
     var lookup = params.lookup;
+    var aim = params.aim;
+
+    // The saved descriptors the race's tree takes: those the aim keeps, and
+    // each load whose file keeps an item.
+    var aimedAiMods = function (saved) {
+      var aimer = raceAiMods.aim(
+        aim.table,
+        unitCells.remadeFiles(saved.mods || [])
+      );
+      return _.filter(saved.aiMods || [], function (mod) {
+        if (!mod || mod.op !== "load") {
+          return aimer.mods([mod]).length > 0;
+        }
+        var file = aim.loads[raceAiMods.loadPath(mod)];
+        if (!file) {
+          return false;
+        }
+        var aimed = aimer.loadFile(file, mod.type);
+        return !_.isArray(aimed.build_list) || aimed.build_list.length > 0;
+      });
+    };
 
     // As gw_play/referee_game_file_paths.js specPlan fields them.
     var fieldedUnits = function (paths) {
@@ -69,6 +96,9 @@ define(function () {
           units
         ),
       });
+      if (aim) {
+        fielded.aiMods = aimedAiMods(saved);
+      }
 
       cache.push({ saved: saved, fielded: fielded });
       if (cache.length > MAX_CACHED) {

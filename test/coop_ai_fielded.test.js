@@ -19,6 +19,7 @@ const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const gwoSpecs = loadCouiModule(MOD_ROOT + "/gw_play/specs.js");
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
+const raceAiMods = loadCouiModule(MOD_ROOT + "/shared/race_ai_mods.js");
 
 races.registerShipped();
 
@@ -34,8 +35,8 @@ const lookup = coopAiUnits.fromSpecs(
 
 const LEGION = fixtureIndex("legion");
 const MLA = fixtureIndex("mla");
-const viewOf = (race, cells) =>
-  coopAiFielded.view({ race, cells, races, lookup });
+const viewOf = (race, cells, aim) =>
+  coopAiFielded.view({ race, cells, races, lookup, aim });
 
 const LEGION_COMMANDER = "/pa/units/commanders/l_overwatch/l_overwatch.json";
 const HOST_COMMANDER =
@@ -239,5 +240,105 @@ describe("coop_ai_fielded scoring", () => {
     const race = inventory(LEGION_COMMANDER);
 
     assert.ok(score(race, { units: [gwoUnit.spinner] }, legion).unlock > 0);
+  });
+});
+
+describe("coop_ai_fielded AI mods", () => {
+  const L_LAUNCHER =
+    "/pa/units/orbital/l_orbital_launcher/l_orbital_launcher.json";
+  const LOAD = "/pa/ai_tech/fabber_builds/launcher.json";
+  // A Legion co-op tree's keys, cut down to the units these cases name.
+  const aim = {
+    table: raceAiMods.table({
+      stock: {
+        Commander: { unit_types: "Commander & Custom58" },
+        OrbitalLauncher: { spec_id: gwoUnit.orbitalLauncher },
+        Tank: { spec_id: gwoUnit.ant },
+      },
+      race: {
+        LegionCommander: { unit_types: "Commander & Custom1" },
+        LegionFactoryBasicOrbital: { spec_id: L_LAUNCHER },
+        LegionShank: { spec_id: gwoUnit.legion.shank },
+      },
+      repointed: { OrbitalLauncher: true, Tank: true },
+      cells: LEGION,
+      engineKeys: races.engineKeysFor("legion"),
+    }),
+    loads: {
+      [LOAD]: {
+        build_list: [{ to_build: "OrbitalLauncher", builders: ["Commander"] }],
+      },
+    },
+  };
+  const LANDS = { type: "fabber", op: "load", value: "launcher.json" };
+  const MISSING = { type: "fabber", op: "load", value: "missing.json" };
+  const TANK = {
+    type: "factory",
+    op: "replace",
+    toBuild: "Tank",
+    idToMod: "priority",
+    value: 90,
+  };
+  const PLATOON = { type: "platoon", op: "replace", toBuild: "X", value: 1 };
+  const REMAKE_ANT = {
+    file: gwoUnit.ant,
+    path: "unit_types",
+    op: "push",
+    value: "UNITTYPE_Custom58",
+  };
+  const saved = (aiMods, mods) => ({
+    units: [LEGION_COMMANDER, gwoUnit.vehicleFactory, gwoUnit.ant],
+    mods: mods || [],
+    aiMods,
+    cards: [{ id: "start" }],
+  });
+
+  it("keeps the saved descriptors the race's tree takes, and a load whose file keeps an item", () => {
+    const fielded = viewOf("legion", LEGION, aim).inventory(
+      saved([LANDS, MISSING, TANK, PLATOON])
+    );
+
+    assert.deepEqual(fielded.aiMods, [LANDS, TANK, PLATOON]);
+  });
+
+  it("drops a descriptor naming a unit the inventory's cards remake", () => {
+    const fielded = viewOf("legion", LEGION, aim).inventory(
+      saved([TANK], [REMAKE_ANT])
+    );
+
+    assert.deepEqual(fielded.aiMods, []);
+  });
+
+  it("counts the AI mods as saved without the aim", () => {
+    const fielded = viewOf("legion", LEGION).inventory(saved([MISSING]));
+
+    assert.deepEqual(fielded.aiMods, [MISSING]);
+  });
+
+  it("scores a landing load at 0.5 and a card's AI mods on the unit it remakes at nothing", () => {
+    const view = viewOf("legion", LEGION, aim);
+    const before = Object.assign(saved([]), { minions: [], maxCards: 4 });
+    const withCard = (aiMods, mods) =>
+      Object.assign({}, before, {
+        aiMods,
+        mods: mods || [],
+        cards: before.cards.concat({ id: "card" }),
+        maxCards: before.maxCards + 1,
+      });
+    const score = (after, fielded) =>
+      coopAiCards.scoreCard(before, after, {
+        lookup,
+        commander: LEGION_COMMANDER,
+        teamDomains: [],
+        memo: {},
+        fielded,
+      }).aiMods;
+
+    assert.equal(score(withCard([LANDS]), view), 0.5);
+    assert.equal(score(withCard([TANK], [REMAKE_ANT]), view), 0);
+    assert.equal(
+      score(withCard([TANK], [REMAKE_ANT]), viewOf("legion", LEGION)),
+      0.5
+    );
   });
 });

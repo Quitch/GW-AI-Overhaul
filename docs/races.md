@@ -463,7 +463,7 @@ files, from one read of the race's layers per tree (`race_trees.treeContext`):
   the race's map re-points, and drops the item when none is left or when it
   builds a re-pointed unit, which the stock builder left cannot build
   (`referee_game_file_paths.stripStockBuilds`, with the keys from
-  `repointedFor`). What stays is what a skirmish runs for the race: the items
+  `raceKeysFor`). What stays is what a skirmish runs for the race: the items
   for an MLA builder the race builds itself, such as Exiles' orbital fabber
   and orbital factory. For Exiles those include the stock teleporter and
   orbital metal extractor items: Exiles names their targets in `stockUnits`,
@@ -539,10 +539,11 @@ the engine has a name to derive the tagged one from. With only the tagged
 file present, the engine looks for `ai_unit_map.json.ai0.ai0` and finds
 nothing.
 
-No AI mod (`addAIMods`) is applied to a race tree in this pass. The descriptors
-name MLA build entries, which a race tree does not have. An AI's stat tech
-(`ai.inventory`) expands onto the race's files the way a player's mods do, and
-so do the Guardians' borrowed player mods.
+A race tree takes the AI mods (`addAIMods`) the MLA tree in its place would
+take, aimed at the race's keys: the descriptors name stock keys, which a race
+tree does not use ([`ai-pipeline.md`](ai-pipeline.md), "Race trees"). An AI's
+stat tech (`ai.inventory`) expands onto the race's files the way a player's
+mods do, and so do the Guardians' borrowed player mods.
 
 ## Brains
 

@@ -18,6 +18,9 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/specs.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_fielded.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_ai_pings.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
 ], function (
   coopAiDriver,
   coopAiEffects,
@@ -33,7 +36,10 @@ define([
   gwoLoadoutIds,
   gwoSpecs,
   coopAiFielded,
-  cardsCoopAiPings
+  cardsCoopAiPings,
+  gameFilePaths,
+  raceAiMods,
+  unitCells
 ) {
   return function (params) {
     var game = params.game;
@@ -100,6 +106,38 @@ define([
       }
     });
 
+    // What a race's co-op tree makes of AI mods, on the cells its view is
+    // built on. Undefined, logged, where the maps or the /pa/ai_tech/ files
+    // are not read: the view then counts the AI mods as saved.
+    var aimFor = function (race, cells) {
+      if (params.races.isMla(race)) {
+        return Promise.resolve();
+      }
+      return Promise.all([
+        gameFilePaths.raceKeysFor({
+          race: race,
+          brain: params.gwoAI.aiInUse("coop", race),
+          source: params.gwoAI.getAIPathSource("coop", race),
+          cells: cells,
+          unitCells: unitCells,
+          gwoRaces: params.races,
+        }),
+        gameFilePaths.loadAiTechFiles(),
+      ]).then(
+        function (loaded) {
+          return { table: raceAiMods.table(loaded[0]), loads: loaded[1] };
+        },
+        function (error) {
+          console.error(
+            "[GW COOP AI] " +
+              race +
+              " AI mods counted as saved: " +
+              gameFilePaths.describeError(error)
+          );
+        }
+      );
+    };
+
     // What an AI of the saved inventory's race fields, one view per
     // race for each specs lookup, its cells built from the same unit
     // list as the referee's. Resolves undefined where the AI fields
@@ -114,14 +152,18 @@ define([
         views[race] = {
           lookup: current,
           view: raceCells.prime(race, specsUnits).then(function (cells) {
-            return cells && cells.race.units.length
-              ? coopAiFielded.view({
-                  race: race,
-                  cells: cells,
-                  races: params.races,
-                  lookup: current,
-                })
-              : undefined;
+            if (!cells || !cells.race.units.length) {
+              return undefined;
+            }
+            return aimFor(race, cells).then(function (aim) {
+              return coopAiFielded.view({
+                race: race,
+                cells: cells,
+                races: params.races,
+                lookup: current,
+                aim: aim,
+              });
+            });
           }),
         };
       }

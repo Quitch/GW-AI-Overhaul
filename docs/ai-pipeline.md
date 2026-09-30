@@ -31,7 +31,7 @@ inventory.addAIMods([
 ]);
 ```
 
-`type` maps to a directory via `managerPath()`:
+`type` maps to a directory via `managerPath()` in `shared/race_ai_mods.js`:
 
 | `type`     | Directory            |
 | ---------- | -------------------- |
@@ -41,9 +41,9 @@ inventory.addAIMods([
 | `template` | `platoon_templates/` |
 
 Anything else returns `undefined`, and the `load` that asked logs
-`Invalid AI file type in load mod` and adds no file. It does not throw: its only
-caller runs in a deferred callback, where a throw is swallowed and hangs the
-battle launch. `npm run validate:ai-mods` rejects an unknown `type` in a shipped
+`Invalid AI file type in load mod` and adds no file. It does not throw: its
+callers in the referee run in a deferred callback, where a throw is swallowed
+and hangs the battle launch. `npm run validate:ai-mods` rejects an unknown `type` in a shipped
 card. Note that there is no `unit_map` type, so no descriptor
 reaches a unit map. This pipeline copies a tree's untagged maps with its other
 files, and `referee_game_files.js` writes the tagged ones.
@@ -214,6 +214,97 @@ the plain path onto the write list explicitly. Otherwise `writeConfigFiles`' "no
 paths resolved, fall back to the original" branch would be skipped, and the plain
 write would be lost.
 
+## Race trees
+
+A race AI reads a race tree ([`races.md`](races.md), "Race trees"). Each tree
+takes the AI mods of the inventories whose mods the MLA tree in its place takes
+(`referee_ai.js`'s `raceTreeJobs`):
+
+- An enemy and its foes take none. Under Guardians they take every player's:
+  the host's, the connected viewers', and the co-op AI players'.
+- The host's Sub Commanders and the star's ally take the host's. Under
+  Guardians they take every player's.
+- A viewer's Sub Commanders take the viewer's.
+- A co-op AI player's tree, and its Sub Commanders' tree under per-player
+  tech, take its own inventory's. Under shared tech that is the host's.
+
+A tree's destination changes whenever its list does, so the (source,
+destination) key that joins two jobs into one never joins two lists.
+
+The descriptors name stock unit-map keys, and a race tree does not use them.
+Its stock items are stripped, and its race's own items name the race's keys.
+No race key equals a stock key, and the stock class keys (`Commander`,
+`AnyBasicFabber`, `AnyAdvancedFabber`, `AnyBasicFactory`, `AnyAdvancedFactory`,
+and Titans' `SupportCommander`) require `Custom58`, which no race unit
+carries. So `writeRaceTree` first aims the descriptors at the race's keys
+(`shared/race_ai_mods.js`). It works from the context
+`referee_game_file_paths.raceKeysFor` resolves: the brain's stock maps, the
+race's maps, the stock keys the army's map re-points, the race's cells, and
+its `engineKeys`. Without the race's cells nothing is aimed, and the tree takes
+no AI mods.
+
+**A key's targets.** Each `toBuild` and each builder key is aimed by the first
+rule that fits:
+
+1. A key the stock maps lack is kept as written: a race's key, or a third
+   party's.
+2. A class key (a `unit_types` expression) becomes the race keys whose units
+   all stand in for the class's vanilla members. `Commander` becomes Legion's
+   `LegionCommander`.
+3. A spec key the army's map keeps is kept as written. The map keeps a key
+   whose `engineKeys` entry is `null`, a `stockUnits` unit, a unit the race
+   builds itself, and a unit that stands for nothing. Exiles keeps
+   `BasicMetalExtractor` this way.
+4. A spec key whose unit the inventory's own cards remake is dropped (below).
+5. Any other spec key becomes the race keys that name the race's `engineKeys`
+   unit for it, or else its stand-ins.
+
+A race key names a set of units when its units are not empty and all of them
+are in the set. Its units are its `spec_id`, or the race's units its
+`unit_types` expression matches. So `OrbitalLauncher` becomes Legion's
+`LegionFactoryBasicOrbital` and not `AnyLegionFactoryOrbital`, which also
+covers the advanced orbital factory.
+
+**The guard.** A builder key joins a target only when every unit it covers has
+`buildable_types` that match every unit of the target. A key that covers no
+unit fails, and so does a unit with no `buildable_types`, such as Bugs'
+research tokens. A stock structure key stands for its whole race cell
+(`BasicLandDefense` for seven Legion keys), so without the guard a builder
+would be ordered to build what it cannot, and the engine repeats a refused
+order. An `append`, `prepend`, or `replace` of `builders` that has no builder
+left for a target lands nothing there.
+
+**Remade units.** A card that remakes a unit keeps every change it makes to
+that unit on the MLA file ([`tech-cards.md`](tech-cards.md), "Which races a
+card reaches"), and a descriptor that names the unit stays on MLA with it. The
+units are `unit_cells.remadeFiles` over the same inventories' spec mods.
+Defense Tech Commander's builder appends name the defences it remakes, so a
+race tree takes none of them.
+
+**Kept as written.** `refId` and `refValue`, which name one stock item.
+Conditions and their `string0` keys, which the army's map resolves. `platoon`
+and `template` descriptors. `silence` has its `builders` and `except` aimed
+without the guard, and is dropped when no builder is left.
+
+**Passes.** As `expandMods` lands a spec mod ([`races.md`](races.md),
+"Capability cells"), a target and a change land once per pass. Two stock keys
+that reach one race key change it once. A pass ends when a stock key already
+seen for it comes again, so a second copy of a card stacks.
+
+**Load files.** Each `load` file is read from `/pa/ai_tech/` through the tree
+cache and aimed. The in-scope descriptors are then walked over it, `treeOnly`
+ones excepted, and it is written at the tree's destination. A file that cannot
+be read is logged and skipped. The aim copies each item once per target, with
+the builders that pass the guard for that target, and drops an item left with
+no builder. An item with no `to_build`, such as Tourist Commander's `GiveUp`,
+keeps its aimed builders without the guard. A `platoon` or `template` load's
+file is written as it is: a platoon item names a template and has no builders. Space Excavation Commander's opening
+launcher becomes `LegionFactoryBasicOrbital`, built by Legion's commanders and
+fabbers.
+
+A co-op AI player of a race counts only the AI mods its race's tree takes
+([`tech-cards.md`](tech-cards.md), "A race's units").
+
 ## The tree cache
 
 One launch walks the same trees repeatedly: the enemy tree, the subcommander tree,
@@ -252,8 +343,8 @@ again. A run that receives no cache (tests, the console) creates its own.
 never executes in the game's Chromium runtime. It exists so tests can reach
 functions that `define()` never returns: `test/applyAiMods.test.js` and
 `test/rapid_builders.test.js` take `applyAiMods`, and
-`test/referee_ai_race_trees.test.js` and `test/referee_ai_coop_trees.test.js`
-take the rest. Tests reach them with `requireShippedModule`, not
+`test/referee_ai_race_trees.test.js`, `test/referee_ai_coop_trees.test.js`, and
+`test/referee_ai_file_processing.test.js` take the rest. Tests reach them with `requireShippedModule`, not
 `loadCouiModule`. See [`testing.md`](testing.md).
 
 ## Where to look next

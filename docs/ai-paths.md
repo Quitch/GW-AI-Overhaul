@@ -182,7 +182,9 @@ Its source is `getAIPathSource("coop", …)`, the co-op brain's own root.
 `referee_ai.js` copies that whole tree to the AI's path with the AI's mods, as
 it does a viewer's Sub Commanders' tree. It writes nothing else: the scope is
 the tree's isolation, so there is no Cluster routing and no Cluster AI op, as
-for a viewer. A race AI's tree is a race tree job instead, with no AI mods.
+for a viewer. A race AI's tree is a race tree job instead, which takes the AI's
+mods aimed at its race's keys ([`ai-pipeline.md`](ai-pipeline.md), "Race
+trees").
 
 The brain is `aiInUse("coop", race)`. It reads the race's `coop` cell, then its
 `enemy` cell, then the war-wide `gwaio.aiCoop`, then `gwaio.ai`. A war saved

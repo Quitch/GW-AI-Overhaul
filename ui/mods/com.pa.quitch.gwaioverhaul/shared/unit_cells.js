@@ -866,6 +866,7 @@ define([
     buildableStockUnits: buildableStockUnits,
     addonUnitsFor: addonUnitsFor,
     heldCommanderUnits: heldCommanderUnits,
+    remadeFiles: remadeFiles,
     expandMods: expandMods,
     unitPaths: unitPaths,
     unitList: unitList,

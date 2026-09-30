@@ -6,7 +6,10 @@
 
 const { describe, it, afterEach, mock } = require("node:test");
 const assert = require("node:assert/strict");
-const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
+const {
+  loadCouiModule,
+  requireShippedModule,
+} = require("../scripts/lib/amd-loader.js");
 const {
   buildGame,
   useModel,
@@ -820,6 +823,111 @@ describe("race trees", () => {
       ),
       []
     );
+  });
+
+  describe("each job's AI mods, as the MLA tree in its place takes them", () => {
+    const { raceTreeJobs } = requireShippedModule(
+      "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_ai.js"
+    );
+    const HOST = { type: "fabber", op: "load", value: "host.json" };
+    const VIEWER = { type: "fabber", op: "load", value: "viewer.json" };
+    const COOP = { type: "fabber", op: "load", value: "coop.json" };
+    const REMAKE = {
+      file: "/pa/units/land/tank/tank.json",
+      path: "unit_types",
+      op: "push",
+      value: "UNITTYPE_Custom58",
+    };
+    const modsOf = (jobs) =>
+      Object.fromEntries(
+        jobs.map((job) => [job.destination, job.aiMods.map((mod) => mod.value)])
+      );
+
+    it("gives the host's Sub Commanders and its ally the host's, with the units its cards remake, and the enemy and its foes none", () => {
+      const fixture = buildGame({
+        aiInUse: "Titans",
+        playerRace: "fixture",
+        enemyRace: "fixture",
+        foes: [{ race: "rival" }],
+        aiMods: [HOST],
+        mods: [REMAKE],
+      });
+      fixture.ai.ally = { race: "rival" };
+      installModel(fixture.game, []);
+
+      const jobs = raceTreeJobs(fixture.game, [], []);
+
+      assert.deepEqual(modsOf(jobs), {
+        "/pa/ai_race_fixture/": [],
+        "/pa/ai_race_rival/": [],
+        "/pa/ai_subcommander_race_fixture/": ["host.json"],
+        "/pa/ai_subcommander_race_rival/": ["host.json"],
+      });
+      assert.deepEqual(jobs[2].remade, { [REMAKE.file]: true });
+      assert.deepEqual(jobs[0].remade, {});
+    });
+
+    it("shares a same-race enemy's tree when the host holds no AI mods, where both take none", () => {
+      const fixture = buildGame({
+        aiInUse: "Titans",
+        playerRace: "fixture",
+        enemyRace: "fixture",
+      });
+      installModel(fixture.game, []);
+
+      assert.deepEqual(modsOf(raceTreeJobs(fixture.game, [], [])), {
+        "/pa/ai_race_fixture/": [],
+      });
+    });
+
+    it("gives the Guardians and the host's Sub Commanders every player's, and a viewer and a co-op AI their own", () => {
+      const viewer = makeInventory({
+        aiModsList: [VIEWER],
+        tags: { "global:playerRace": "fixture" },
+      });
+      const coopInventory = {
+        aiMods: [COOP],
+        mods: [REMAKE],
+        cards: [],
+        tags: { global: { playerRace: "fixture" } },
+      };
+      const fixture = buildGame({
+        aiInUse: "Titans",
+        enemyType: "guardians",
+        playerRace: "fixture",
+        aiMods: [HOST],
+        perPlayerTech: true,
+        viewerInventoryData: { v1: { inventory: viewer } },
+        coopRecords: [{ gwaioAi: { serial: 1 }, inventory: coopInventory }],
+      });
+      installModel(fixture.game, [
+        { id: "host", name: "Host", role: "host" },
+        { id: "v1", name: "Viewer1", role: "viewer" },
+      ]);
+
+      const jobs = raceTreeJobs(fixture.game, undefined, [
+        {
+          race: "fixture",
+          path: "/pa/ai_race_fixture/player_ai1/",
+          inventory: coopInventory,
+          perPlayer: true,
+          tag: ".ai1",
+        },
+      ]);
+
+      const every = ["host.json", "viewer.json", "coop.json"];
+      assert.deepEqual(modsOf(jobs), {
+        "/pa/ai_race_fixture/player_guardians/": every,
+        "/pa/ai_race_fixture/": every,
+        "/pa/ai_subcommander_race_fixture/player_.player0/": ["viewer.json"],
+        "/pa/ai_race_fixture/player_ai1/": ["coop.json"],
+        "/pa/ai_subcommander_race_fixture/player_.ai1/": ["coop.json"],
+      });
+      assert.deepEqual(
+        jobs.find((job) => job.destination === "/pa/ai_race_fixture/").remade,
+        { [REMAKE.file]: true }
+      );
+    });
   });
 
   it("does nothing extra for an MLA battle", async () => {

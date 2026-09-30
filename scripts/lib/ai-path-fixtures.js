@@ -149,6 +149,7 @@ function buildGame(options) {
 
   var inventory = makeInventory({
     aiModsList: aiMods,
+    modsList: opts.mods || [],
     cardsList: smartSubcommanders
       ? [{ id: "gwaio_upgrade_subcommander_tactics" }]
       : [],
