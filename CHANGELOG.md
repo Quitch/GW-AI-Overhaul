@@ -65,6 +65,7 @@
 - An Exiles player's tech card tooltips now name the Hippo, Battle Fabricator, and Vulture, rather than showing Unknown Unit, Hover Fabricator, and Eagle-Owl
 - The Taurus commander, which the current Exiles release does not include, is no longer offered to Exiles players or given to Exiles AIs and Sub Commanders, so a seed can now give an Exiles AI or Sub Commander a different commander
 - The war information panel's Missing Map Packs heading is red, as the map packs listed under it and the Incompatible Mods and Missing Races headings are
+- The Seed Value tooltip now says that the galaxy size and the number of players must also match for a seed to rebuild the same galaxy; until it is translated again, it shows in English
 
 ## v7.4.1 - 2026-09-24
 

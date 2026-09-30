@@ -686,9 +686,6 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "해양 지휘관 로드아웃은 모든 조선소를 포함합니다. 조건에 맞는 행성의 물과 용암의 양을 늘립니다."
   },
-  "The same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
-    "message": "진영, 난이도, 게임 옵션이 같고 같은 모드가 설치되어 있으면 같은 시드로 같은 은하와 같은 적이 다시 만들어집니다. 행성 이름은 여전히 달라집니다. 새로운 은하를 원하면 그대로 두십시오."
-  },
   "The units you and your Sub Commanders field. Each race's AI is picked with the AI button.": {
     "message": "나와 내 부관이 사용하는 유닛입니다. 각 종족의 AI는 AI 버튼으로 선택합니다."
   },
