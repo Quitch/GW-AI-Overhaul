@@ -6251,11 +6251,14 @@
     "exiles": {
       "mods": ["com.pa.nik.exiles", "com.pa.ferretmaster.commander-merge"],
       "unitList": [
+        "/pa/units/air/base_flyer/base_flyer.json",
         "/pa/units/land/base_bot/base_bot.json",
+        "/pa/units/land/base_structure/base_structure.json",
         "/pa/units/land/base_vehicle/base_vehicle.json",
-        "/pa/units/commanders/exiles_blueberry/union_formidable.json",
+        "/pa/units/commanders/exiles_blueberry/exiles_blueberry.json",
         "/pa/units/commanders/exiles_maxim/exiles_maxim.json",
         "/pa/units/commanders/exiles_brainiac/exiles_brainiac.json",
+        "/pa/units/commanders/exiles_taurus/exiles_taurus.json",
         "/pa/units/addon/r_radar/r_radar.json",
         "/pa/units/addon/r_teleporter/r_teleporter.json",
         "/pa/units/addon/r_umbrella/r_umbrella.json",
@@ -6318,7 +6321,7 @@
         "/pa/units/land/t_tank_fab/t_tank_fab.json",
         "/pa/units/land/t_tank_fab_adv/t_tank_fab_adv.json",
         "/pa/units/land/tank_wheel/tank_wheel.json",
-        "/pa/units/land/adv_tank_hover/adv_tank_hover.json",
+        "/pa/units/land/tank_heavy_adv/tank_heavy_adv.json",
         "/pa/units/land/roamer/roamer.json",
         "/pa/units/land/lightning/lightning.json",
         "/pa/units/land/t_tank_flak/t_tank_flak.json",
@@ -6330,6 +6333,7 @@
         "/pa/units/land/shah/shah.json",
         "/pa/units/land/t_chimera/t_chimera.json",
         "/pa/units/land/cyclone/cyclone.json",
+        "/pa/units/exiles/mass_tele_titan/mass_tele_titan.json",
         "/pa/units/land/seizmic/seizmic.json",
         "/pa/units/land/pylon/pylon.json",
         "/pa/units/land/pylon/overcharged/pylon_overcharged.json",
@@ -6381,7 +6385,7 @@
               "UNITTYPE_CombatFabAdvBuild",
               "UNITTYPE_Radar"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
           },
           "/pa/units/addon/r_teleporter/r_teleporter.json": {
             "display_name": "!LOC:Teleporter",
@@ -6396,7 +6400,7 @@
               "UNITTYPE_CombatFabBuild",
               "UNITTYPE_FabOrbBuild"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
           },
           "/pa/units/addon/r_umbrella/r_umbrella.json": {
             "display_name": "Umbrella",
@@ -6411,7 +6415,7 @@
               "UNITTYPE_CombatFabAdvBuild",
               "UNITTYPE_CmdBuild"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/orbital/ion_defense/ion_defense_tool_weapon.json",
               "/pa/units/orbital/ion_defense/ion_defense_tool_antidrop.json"
@@ -6427,7 +6431,7 @@
               "UNITTYPE_FabAdvBuild",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
           },
           "/pa/units/addon/t_delta_v_engine/t_delta_v_engine.json": {
             "display_name": "Halley",
@@ -6442,7 +6446,15 @@
               "UNITTYPE_FabAdvBuild",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
+          },
+          "/pa/units/air/base_flyer/base_flyer.json": {
+            "display_name": "Base Flyer",
+            "unit_types": [
+              "UNITTYPE_Mobile",
+              "UNITTYPE_Air",
+              "UNITTYPE_NoBuild"
+            ]
           },
           "/pa/units/air/fighter_stealth/fighter_stealth.json": {
             "display_name": "Kikimora",
@@ -6455,7 +6467,7 @@
               "UNITTYPE_Basic",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": [
               "/pa/units/air/fighter_stealth/fighter_stealth_tool_weapon.json"
             ]
@@ -6478,10 +6490,10 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json"
           },
           "/pa/units/air/strat_bomber/strat_bomber.json": {
-            "display_name": "Vulture",
+            "display_name": "Eagle-Owl",
             "unit_types": [
               "UNITTYPE_Custom6",
               "UNITTYPE_Bomber",
@@ -6493,7 +6505,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": [
               "/pa/units/air/strat_bomber/strat_bomber_tool_weapon.json"
             ]
@@ -6516,7 +6528,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": ["/pa/units/air/swordfish/swordfish_tool_weapon.json"]
           },
           "/pa/units/air/swordfish/swordfish_ammo.json": {
@@ -6554,7 +6566,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": [
               "/pa/units/air/t_air_fab_adv/t_air_fab_adv_build_arm.json"
             ]
@@ -6603,7 +6615,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": ["/pa/units/air/t_bomber/t_bomber_tool_weapon.json"]
           },
           "/pa/units/air/t_bomber/t_bomber_ammo.json": {
@@ -6624,7 +6636,7 @@
               "UNITTYPE_Advanced",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": ["/pa/units/air/t_gunship/t_gunship_tool_weapon.json"]
           },
           "/pa/units/air/t_gunship/t_gunship_ammo.json": {
@@ -6645,7 +6657,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": ["/pa/units/air/t_int/t_int_tool_weapon.json"]
           },
           "/pa/units/air/t_int/t_int_ammo.json": {
@@ -6667,7 +6679,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json"
           },
           "/pa/units/air/t_transport_adv/t_transport_adv.json": {
             "display_name": "Heron",
@@ -6683,7 +6695,7 @@
               "UNITTYPE_Interplanetary",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json"
           },
           "/pa/units/air/t_vulture/t_vulture.json": {
             "display_name": "Kikimora",
@@ -6696,7 +6708,7 @@
               "UNITTYPE_Basic",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": [
               "/pa/units/air/t_vulture/t_vulture_tool_weapon.json",
               "/pa/units/air/t_vulture/t_vulture_tool_weapon.json"
@@ -6769,7 +6781,7 @@
               "UNITTYPE_Air",
               "UNITTYPE_Basic"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": []
           },
           "/pa/units/base/regen_1/regen_1_ammo.json": {},
@@ -6786,7 +6798,7 @@
               "UNITTYPE_Air",
               "UNITTYPE_Basic"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": ["/pa/units/base/shrapnel/shrapnel_tool_weapon.json"]
           },
           "/pa/units/base/shrapnel/shrapnel_ammo.json": {
@@ -6805,7 +6817,7 @@
               "UNITTYPE_Custom58",
               "UNITTYPE_NoBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": ["/pa/units/base/stun/stun_tool_weapon.json"]
           },
           "/pa/units/base/stun/stun_ammo.json": {},
@@ -6823,7 +6835,7 @@
               "UNITTYPE_Custom58",
               "UNITTYPE_NoBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": ["/pa/units/base/stun_huge/stun_huge_tool_weapon.json"]
           },
           "/pa/units/base/stun_huge/stun_huge_ammo.json": {},
@@ -6841,7 +6853,7 @@
               "UNITTYPE_Custom58",
               "UNITTYPE_NoBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": ["/pa/units/base/stun_small/stun_small_tool_weapon.json"]
           },
           "/pa/units/base/stun_small/stun_small_ammo.json": {},
@@ -6849,7 +6861,7 @@
             "base_spec": "/pa/tools/base_artillery_turret/base_artillery_turret.json",
             "ammo_id": "/pa/units/base/stun_small/stun_small_ammo.json"
           },
-          "/pa/units/commanders/base_exiles_commander/base_exiles_commander.json": {
+          "/pa/units/commanders/exiles_blueberry/exiles_blueberry.json": {
             "display_name": "Blueberry Commander",
             "unit_types": [
               "UNITTYPE_Commander",
@@ -6860,14 +6872,17 @@
               "UNITTYPE_NoBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/commanders/base_commander/base_commander.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_commander.json",
             "tools": [
               "/pa/units/commanders/exiles_blueberry/exiles_blueberry_build_arm.json",
-              "/pa/units/commanders/exiles_blueberry/union_formidable_tool_weapon.json",
+              "/pa/units/commanders/exiles_blueberry/exiles_blueberry_tool_weapon.json",
               "/pa/units/commanders/exiles_blueberry/exiles_blueberry_uber_cannon.json",
               "/pa/units/commanders/exiles_blueberry/exiles_blueberry_tool_aa_weapon.json",
               "/pa/units/commanders/exiles_blueberry/exiles_blueberry_tool_torpedo_weapon.json"
             ]
+          },
+          "/pa/units/commanders/exiles_blueberry/exiles_blueberry_ammo.json": {
+            "base_spec": "/pa/units/commanders/base_commander/base_commander_ammo.json"
           },
           "/pa/units/commanders/exiles_blueberry/exiles_blueberry_ammo_uber.json": {},
           "/pa/units/commanders/exiles_blueberry/exiles_blueberry_build_arm.json": {},
@@ -6882,38 +6897,15 @@
               "/pa/units/commanders/base_commander/base_commander_torpedo_ammo_land.json"
             ]
           },
+          "/pa/units/commanders/exiles_blueberry/exiles_blueberry_tool_weapon.json": {
+            "base_spec": "/pa/tools/base_bot_weapon/base_bot_weapon.json",
+            "ammo_id": [
+              "/pa/units/commanders/exiles_blueberry/exiles_blueberry_ammo.json"
+            ]
+          },
           "/pa/units/commanders/exiles_blueberry/exiles_blueberry_uber_cannon.json": {
             "base_spec": "/pa/tools/base_shell_turret/base_shell_turret.json",
             "ammo_id": "/pa/units/commanders/exiles_blueberry/exiles_blueberry_ammo_uber.json"
-          },
-          "/pa/units/commanders/exiles_blueberry/union_formidable.json": {
-            "display_name": "Blueberry Commander",
-            "unit_types": [
-              "UNITTYPE_Commander",
-              "UNITTYPE_Construction",
-              "UNITTYPE_Mobile",
-              "UNITTYPE_Offense",
-              "UNITTYPE_Land",
-              "UNITTYPE_NoBuild",
-              "UNITTYPE_Custom6"
-            ],
-            "base_spec": "/pa/units/commanders/base_exiles_commander/base_exiles_commander.json",
-            "tools": [
-              "/pa/units/commanders/exiles_blueberry/exiles_blueberry_build_arm.json",
-              "/pa/units/commanders/exiles_blueberry/union_formidable_tool_weapon.json",
-              "/pa/units/commanders/exiles_blueberry/exiles_blueberry_uber_cannon.json",
-              "/pa/units/commanders/exiles_blueberry/exiles_blueberry_tool_aa_weapon.json",
-              "/pa/units/commanders/exiles_blueberry/exiles_blueberry_tool_torpedo_weapon.json"
-            ]
-          },
-          "/pa/units/commanders/exiles_blueberry/union_formidable_ammo.json": {
-            "base_spec": "/pa/units/commanders/base_commander/base_commander_ammo.json"
-          },
-          "/pa/units/commanders/exiles_blueberry/union_formidable_tool_weapon.json": {
-            "base_spec": "/pa/tools/base_bot_weapon/base_bot_weapon.json",
-            "ammo_id": [
-              "/pa/units/commanders/exiles_blueberry/union_formidable_ammo.json"
-            ]
           },
           "/pa/units/commanders/exiles_brainiac/exiles_brainiac.json": {
             "display_name": "Brainiac Commander",
@@ -6927,28 +6919,18 @@
               "UNITTYPE_NoBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/commanders/base_exiles_commander/base_exiles_commander.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_commander.json",
             "tools": [
               "/pa/units/commanders/exiles_brainiac/exiles_brainiac_build_arm.json",
               "/pa/units/commanders/exiles_brainiac/exiles_brainiac_tool_weapon.json",
-              "/pa/units/commanders/exiles_brainiac/tool_tracer.json",
-              "/pa/units/commanders/exiles_brainiac/exiles_brainiac_tool_spawn.json"
+              "/pa/units/commanders/exiles_brainiac/tool_tracer.json"
             ]
           },
-          "/pa/units/commanders/exiles_brainiac/exiles_brainiac_ammo.json": {
-            "base_spec": "/pa/ammo/base_beam/base_beam.json"
-          },
-          "/pa/units/commanders/exiles_brainiac/exiles_brainiac_ammo_spawn.json": {
-            "base_spec": "/pa/ammo/base_bomb/base_bomb.json"
-          },
+          "/pa/units/commanders/exiles_brainiac/exiles_brainiac_ammo2.json": {},
           "/pa/units/commanders/exiles_brainiac/exiles_brainiac_build_arm.json": {},
-          "/pa/units/commanders/exiles_brainiac/exiles_brainiac_tool_spawn.json": {
-            "base_spec": "/pa/tools/base_artillery_turret/base_artillery_turret.json",
-            "ammo_id": "/pa/units/commanders/exiles_brainiac/exiles_brainiac_ammo_spawn.json"
-          },
           "/pa/units/commanders/exiles_brainiac/exiles_brainiac_tool_weapon.json": {
             "base_spec": "/pa/tools/base_laser_turret/base_laser_turret.json",
-            "ammo_id": "/pa/units/commanders/exiles_brainiac/exiles_brainiac_ammo.json"
+            "ammo_id": "/pa/units/commanders/exiles_brainiac/exiles_brainiac_ammo2.json"
           },
           "/pa/units/commanders/exiles_brainiac/tool_tracer.json": {
             "base_spec": "/pa/tools/base_laser_turret/base_laser_turret.json",
@@ -6968,7 +6950,7 @@
               "UNITTYPE_NoBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/commanders/base_exiles_commander/base_exiles_commander.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_commander.json",
             "tools": [
               "/pa/units/commanders/exiles_maxim/exiles_maxim_build_arm.json",
               "/pa/units/commanders/exiles_maxim/exiles_maxim_tool_weapon.json",
@@ -7000,6 +6982,41 @@
             "ammo_id": "/pa/units/commanders/exiles_maxim/uber_shot.json"
           },
           "/pa/units/commanders/exiles_maxim/uber_shot.json": {},
+          "/pa/units/commanders/exiles_taurus/exiles_taurus.json": {
+            "display_name": "Taurus Commander",
+            "unit_types": [
+              "UNITTYPE_Commander",
+              "UNITTYPE_Construction",
+              "UNITTYPE_Mobile",
+              "UNITTYPE_Offense",
+              "UNITTYPE_Land",
+              "UNITTYPE_NoBuild",
+              "UNITTYPE_Custom6"
+            ],
+            "base_spec": "/pa/units/exiles_base/base_exiles_commander.json",
+            "tools": [
+              "/pa/units/commanders/exiles_taurus/exiles_taurus_build_arm.json",
+              "/pa/units/commanders/exiles_taurus/exiles_taurus_tool_weapon.json",
+              "/pa/units/commanders/exiles_taurus/uber_cannon.json",
+              "/pa/units/commanders/exiles_taurus/exiles_taurus_tool_aa_weapon.json",
+              "/pa/units/commanders/base_commander/base_commander_tool_torpedo_weapon.json"
+            ]
+          },
+          "/pa/units/commanders/exiles_taurus/exiles_taurus_ammo.json": {},
+          "/pa/units/commanders/exiles_taurus/exiles_taurus_build_arm.json": {},
+          "/pa/units/commanders/exiles_taurus/exiles_taurus_tool_aa_weapon.json": {
+            "base_spec": "/pa/tools/base_bot_weapon/base_bot_weapon.json",
+            "ammo_id": "/pa/units/commanders/base_commander/base_commander_aa_ammo.json"
+          },
+          "/pa/units/commanders/exiles_taurus/exiles_taurus_tool_weapon.json": {
+            "ammo_id": [
+              "/pa/units/commanders/exiles_taurus/exiles_taurus_ammo.json"
+            ]
+          },
+          "/pa/units/commanders/exiles_taurus/uber_cannon.json": {
+            "ammo_id": "/pa/units/commanders/exiles_taurus/uber_shot.json"
+          },
+          "/pa/units/commanders/exiles_taurus/uber_shot.json": {},
           "/pa/units/commanders/ft_commander/ft_commander.json": {
             "display_name": "Puma",
             "unit_types": [
@@ -7036,9 +7053,10 @@
             "ammo_id": "/pa/units/commanders/ft_commander/ft_commander_ammo_alt.json"
           },
           "/pa/units/exiles/battle_fab/battle_fab.json": {
-            "display_name": "Battle Fabricator",
+            "display_name": "Hover Fabricator",
             "unit_types": [
               "UNITTYPE_Custom6",
+              "UNITTYPE_FactoryBuild",
               "UNITTYPE_Tank",
               "UNITTYPE_Vehicle",
               "UNITTYPE_Fabber",
@@ -7046,40 +7064,31 @@
               "UNITTYPE_Mobile",
               "UNITTYPE_Land",
               "UNITTYPE_Basic",
-              "UNITTYPE_FactoryBuild",
               "UNITTYPE_Hover"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": [
-              "/pa/units/exiles/battle_fab/battle_fab_tool_weapon.json",
               "/pa/units/exiles/battle_fab/battle_fab_tool_build_arm.json"
             ]
           },
-          "/pa/units/exiles/battle_fab/battle_fab_ammo.json": {
-            "base_spec": "/pa/ammo/base_bullet/base_bullet.json"
-          },
           "/pa/units/exiles/battle_fab/battle_fab_tool_build_arm.json": {
-            "base_spec": "/pa/tools/factory_build_arm/factory_build_arm.json"
-          },
-          "/pa/units/exiles/battle_fab/battle_fab_tool_weapon.json": {
-            "base_spec": "/pa/tools/base_shell_turret/base_shell_turret.json",
-            "ammo_id": "/pa/units/exiles/battle_fab/battle_fab_ammo.json"
+            "base_spec": "/pa/tools/t_build_arm/t_build_arm.json"
           },
           "/pa/units/exiles/battle_fab_adv/battle_fab_adv.json": {
             "display_name": "Advanced Hover Fabricator",
             "unit_types": [
               "UNITTYPE_Custom6",
+              "UNITTYPE_FactoryBuild",
               "UNITTYPE_Tank",
               "UNITTYPE_Vehicle",
               "UNITTYPE_Fabber",
               "UNITTYPE_Construction",
               "UNITTYPE_Mobile",
               "UNITTYPE_Land",
-              "UNITTYPE_Basic",
-              "UNITTYPE_FactoryBuild",
+              "UNITTYPE_Advanced",
               "UNITTYPE_Hover"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": [
               "/pa/units/exiles/battle_fab_adv/battle_fab_adv_tool_build_arm.json"
             ]
@@ -7087,16 +7096,36 @@
           "/pa/units/exiles/battle_fab_adv/battle_fab_adv_tool_build_arm.json": {
             "base_spec": "/pa/tools/engineer_build_arm/engineer_build_arm.json"
           },
-          "/pa/units/generic/strS.json": {
-            "base_spec": "/pa/units/generic/str_.json"
+          "/pa/units/exiles/mass_tele_titan/mass_tele_titan.json": {
+            "display_name": "Aether Engine",
+            "unit_types": [
+              "UNITTYPE_Custom6",
+              "UNITTYPE_Mobile",
+              "UNITTYPE_Land",
+              "UNITTYPE_Advanced",
+              "UNITTYPE_Teleporter",
+              "UNITTYPE_FabAdvBuild",
+              "UNITTYPE_Important",
+              "UNITTYPE_Titan"
+            ],
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json"
           },
-          "/pa/units/generic/str_.json": {
+          "/pa/units/exiles_base/base_exiles_bot.json": {
+            "base_spec": "/pa/units/land/base_bot/base_bot.json"
+          },
+          "/pa/units/exiles_base/base_exiles_commander.json": {
+            "base_spec": "/pa/units/commanders/base_commander/base_commander.json"
+          },
+          "/pa/units/exiles_base/base_exiles_flyer.json": {
+            "base_spec": "/pa/units/air/base_flyer/base_flyer.json"
+          },
+          "/pa/units/exiles_base/base_exiles_ship.json": {
+            "base_spec": "/pa/units/sea/base_ship/base_ship.json"
+          },
+          "/pa/units/exiles_base/base_exiles_structure.json": {
             "base_spec": "/pa/units/land/base_structure/base_structure.json"
           },
-          "/pa/units/generic/veh.json": {
-            "base_spec": "/pa/units/generic/veh_.json"
-          },
-          "/pa/units/generic/veh_.json": {
+          "/pa/units/exiles_base/base_exiles_vehicle.json": {
             "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json"
           },
           "/pa/units/land/aa_missile_launcher/aa_missile_launcher.json": {
@@ -7112,7 +7141,7 @@
               "UNITTYPE_Important",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/aa_missile_launcher/air_defense_complex_adv_build_arm.json",
               "/pa/units/land/aa_missile_launcher/air_defense_complex_adv_tool_weapon.json"
@@ -7138,7 +7167,7 @@
               "UNITTYPE_Economy",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/land/adv_pylon/overcharge.json"]
           },
           "/pa/units/land/adv_pylon/overcharge.json": {
@@ -7158,7 +7187,7 @@
               "UNITTYPE_Custom6",
               "UNITTYPE_NoBuild"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/adv_pylon/overcharged/self_destruct_weapon.json"
             ],
@@ -7169,30 +7198,6 @@
           "/pa/units/land/adv_pylon/overcharged/death_weapon.json": {},
           "/pa/units/land/adv_pylon/overcharged/self_destruct_weapon.json": {
             "ammo_id": "/pa/units/land/pylon/overcharged/self_destruct_ammo.json"
-          },
-          "/pa/units/land/adv_tank_hover/adv_tank_hover.json": {
-            "display_name": "!LOC:Hippo",
-            "unit_types": [
-              "UNITTYPE_Tank",
-              "UNITTYPE_Mobile",
-              "UNITTYPE_Offense",
-              "UNITTYPE_Land",
-              "UNITTYPE_Advanced",
-              "UNITTYPE_Hover",
-              "UNITTYPE_FactoryBuild",
-              "UNITTYPE_Custom6"
-            ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
-            "tools": [
-              "/pa/units/land/adv_tank_hover/adv_tank_hover_tool_weapon.json"
-            ]
-          },
-          "/pa/units/land/adv_tank_hover/adv_tank_hover_ammo.json": {
-            "base_spec": "/pa/ammo/base_shell/base_shell.json"
-          },
-          "/pa/units/land/adv_tank_hover/adv_tank_hover_tool_weapon.json": {
-            "base_spec": "/pa/tools/base_shell_turret/base_shell_turret.json",
-            "ammo_id": "/pa/units/land/adv_tank_hover/adv_tank_hover_ammo.json"
           },
           "/pa/units/land/ambush_twr/ambush_twr.json": {
             "display_name": "!LOC:Ambush Turret (Deployed)",
@@ -7205,13 +7210,15 @@
               "UNITTYPE_NoBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": [
               "/pa/units/land/ambush_twr/ambush_twr_tool_weapon.json",
               "/pa/units/land/ambush_twr/ambush_twr_tool_recover.json"
             ]
           },
-          "/pa/units/land/ambush_twr/ambush_twr_ammo.json": {},
+          "/pa/units/land/ambush_twr/ambush_twr_ammo.json": {
+            "base_spec": "/pa/ammo/base_beam/base_beam.json"
+          },
           "/pa/units/land/ambush_twr/ambush_twr_recover_ammo.json": {
             "base_spec": "/pa/ammo/base_bomb/base_bomb.json"
           },
@@ -7235,7 +7242,7 @@
               "UNITTYPE_CombatFabAdvBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/ambush_twr/hid/ambush_twr_hid_tool_weapon.json"
             ]
@@ -7257,7 +7264,7 @@
               "UNITTYPE_FabAdvBuild",
               "UNITTYPE_CombatFabAdvBuild"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/anti_ballistics/anti_ballistics_tool_weapon.json"
             ]
@@ -7280,6 +7287,10 @@
               "UNITTYPE_NoBuild"
             ]
           },
+          "/pa/units/land/base_structure/base_structure.json": {
+            "display_name": "Base Structure",
+            "unit_types": ["UNITTYPE_Structure", "UNITTYPE_NoBuild"]
+          },
           "/pa/units/land/base_vehicle/base_vehicle.json": {
             "display_name": "Base Vehicle",
             "unit_types": [
@@ -7300,7 +7311,7 @@
               "UNITTYPE_Basic",
               "UNITTYPE_FabAdvBuild"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/bug_gas_turret/bug_gas_turret_weapon.json"
             ]
@@ -7322,11 +7333,8 @@
               "UNITTYPE_CannonBuildable",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
-            "tools": [
-              "/pa/units/land/can/can_tool_weapon.json",
-              "/pa/units/land/can/can_tool_weapon.json"
-            ]
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
+            "tools": ["/pa/units/land/can/can_tool_weapon.json"]
           },
           "/pa/units/land/can/can_ammo.json": {
             "base_spec": "/pa/ammo/base_bullet/base_bullet.json"
@@ -7347,7 +7355,7 @@
               "UNITTYPE_Basic",
               "UNITTYPE_Hover"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/cyclone/cyclone_tool_weapon.json"]
           },
           "/pa/units/land/cyclone/cyclone_ammo.json": {
@@ -7370,7 +7378,7 @@
               "UNITTYPE_FabAdvBuild",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/land/factory_1/factory_1_build_arm.json"]
           },
           "/pa/units/land/factory_1/factory_1_build_arm.json": {
@@ -7391,7 +7399,7 @@
               "UNITTYPE_RadarJammer",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": ["/pa/units/land/gale/tool_deploy.json"]
           },
           "/pa/units/land/gale/nuke_mine/nuke_mine.json": {
@@ -7428,7 +7436,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/hail/hail_tool_weapon.json"]
           },
           "/pa/units/land/hail/hail_ammo.json": {
@@ -7472,7 +7480,7 @@
               "UNITTYPE_Basic",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/hunter/hunter_weapon.json"]
           },
           "/pa/units/land/hunter/hunter_ammo.json": {
@@ -7496,11 +7504,11 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": ["/pa/units/land/hyena/fab_tool.json"]
           },
           "/pa/units/land/jelly/jelly.json": {
-            "display_name": "Jelly",
+            "display_name": "Navigator",
             "unit_types": [
               "UNITTYPE_Custom6",
               "UNITTYPE_Bot",
@@ -7511,7 +7519,7 @@
               "UNITTYPE_Hover",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/jelly/jelly_tool_weapon.json"]
           },
           "/pa/units/land/jelly/jelly_ammo.json": {
@@ -7533,7 +7541,7 @@
               "UNITTYPE_CannonBuildable",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json"
           },
           "/pa/units/land/lightning/lightning.json": {
             "display_name": "Bolt",
@@ -7546,7 +7554,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/generic/veh.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/lightning/lightning_tool_weapon.json"]
           },
           "/pa/units/land/lightning/lightning_ammo.json": {},
@@ -7567,7 +7575,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": ["/pa/units/land/luddite/weapon.json"]
           },
           "/pa/units/land/luddite/weapon.json": {
@@ -7587,7 +7595,7 @@
               "UNITTYPE_Radar",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/meerkat/meerkat_tool_interception.json"]
           },
           "/pa/units/land/meerkat/meerkat_interception_ammo.json": {},
@@ -7609,7 +7617,7 @@
               "UNITTYPE_Important",
               "UNITTYPE_Interplanetary"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/missile_facility/missile_facility_tool_weapon.json",
               "/pa/units/land/nuke_launcher/nuke_launcher_build_arm.json"
@@ -7657,7 +7665,7 @@
               "UNITTYPE_Economy",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/land/pylon/overcharge.json"]
           },
           "/pa/units/land/quad_turret/quad_turret.json": {
@@ -7671,7 +7679,7 @@
               "UNITTYPE_FabAdvBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/land/quad_turret/quad_turret_weapon.json"]
           },
           "/pa/units/land/quad_turret/quad_turret_ammo.json": {
@@ -7692,7 +7700,7 @@
               "UNITTYPE_Custom6",
               "UNITTYPE_Custom7"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/base/regen_1/regen_1_tool.json"]
           },
           "/pa/units/land/roamer/roamer.json": {
@@ -7707,7 +7715,7 @@
               "UNITTYPE_Hover",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/roamer/roamer_tool_weapon.json"]
           },
           "/pa/units/land/roamer/roamer_ammo.json": {
@@ -7730,7 +7738,7 @@
               "UNITTYPE_Recon",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
           },
           "/pa/units/land/shah/shah.json": {
             "display_name": "Shah",
@@ -7743,7 +7751,7 @@
               "UNITTYPE_Advanced",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/shah/shah_tool_weapon.json"]
           },
           "/pa/units/land/shah/shah_ammo.json": {
@@ -7754,19 +7762,20 @@
             "ammo_id": "/pa/units/land/shah/shah_ammo.json"
           },
           "/pa/units/land/stalker/stalker.json": {
-            "display_name": "!LOC:Cobra",
+            "display_name": "!LOC:Gremlin",
             "unit_types": [
               "UNITTYPE_Tank",
               "UNITTYPE_Vehicle",
               "UNITTYPE_Mobile",
               "UNITTYPE_Land",
+              "UNITTYPE_Hover",
               "UNITTYPE_Advanced",
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_CannonBuildable",
               "UNITTYPE_Offense",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/stalker/stalker_weapon.json"]
           },
           "/pa/units/land/stalker/stalker_ammo.json": {
@@ -7789,7 +7798,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_CannonBuildable"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": ["/pa/units/land/sword_dox/sword_dox_tool_weapon.json"]
           },
           "/pa/units/land/sword_dox/sword_dox_ammo.json": {
@@ -7813,7 +7822,7 @@
               "UNITTYPE_CombatFabAdvBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/land/t_aa_twr/t_aa_twr_weapon.json"]
           },
           "/pa/units/land/t_aa_twr/t_aa_twr_ammo.json": {
@@ -7834,7 +7843,7 @@
               "UNITTYPE_FabAdvBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/land/t_aa_twr_adv/t_aa_twr_adv_weapon.json"]
           },
           "/pa/units/land/t_aa_twr_adv/t_aa_twr_adv_ammo.json": {
@@ -7858,7 +7867,7 @@
               "UNITTYPE_CombatFabAdvBuild",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_build_arm.json",
               "/pa/units/land/anti_nuke_launcher/anti_nuke_launcher_tool_weapon.json"
@@ -7874,7 +7883,7 @@
               "UNITTYPE_FabBuild",
               "UNITTYPE_Basic"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/land/t_arta/t_arta_tool_weapon.json"]
           },
           "/pa/units/land/t_arta/t_arta_ammo.json": {},
@@ -7896,7 +7905,7 @@
               "UNITTYPE_FabAdvBuild",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/t_arta_long/t_arta_long_tool_weapon.json",
               "/pa/units/land/t_arta_long/t_arta_long_build_arm.json"
@@ -7921,7 +7930,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_CannonBuildable"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": [
               "/pa/units/land/t_bot_aa/t_bot_aa_weapon.json",
               "/pa/units/land/t_bot_aa/tool_tracer.json",
@@ -7959,7 +7968,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": ["/pa/units/land/t_bot_fab/t_bot_fab_build_arm.json"]
           },
           "/pa/units/land/t_bot_fab/t_bot_fab_build_arm.json": {
@@ -7980,7 +7989,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": ["/pa/units/land/t_bot_fab_adv/adv_build_arm.json"]
           },
           "/pa/units/land/t_bot_fac/t_bot_fac.json": {
@@ -7997,7 +8006,7 @@
               "UNITTYPE_FabAdvBuild",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/land/t_bot_fac/t_bot_fac_build_arm.json"]
           },
           "/pa/units/land/t_bot_fac/t_bot_fac_build_arm.json": {
@@ -8015,7 +8024,7 @@
               "UNITTYPE_Advanced",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/t_bot_fac_adv/t_bot_fac_adv_build_arm.json"
             ]
@@ -8036,7 +8045,7 @@
               "UNITTYPE_FabOrbBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/t_chimera/t_chimera_weapon.json"]
           },
           "/pa/units/land/t_chimera/t_chimera_ammo.json": {
@@ -8058,7 +8067,7 @@
               "UNITTYPE_Economy",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/t_metal_extractor_0/t_metal_extractor_0_weapon.json",
               "/pa/units/land/t_metal_extractor_0/t_metal_extractor_0_weapon.json"
@@ -8081,7 +8090,7 @@
               "UNITTYPE_CombatFabAdvBuild",
               "UNITTYPE_Economy"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/land/t_metal_extractor_01/t_metal_extractor_01_weapon.json",
               "/pa/units/land/t_metal_extractor_01/t_metal_extractor_01_weapon.json"
@@ -8104,7 +8113,7 @@
               "UNITTYPE_FabBuild",
               "UNITTYPE_Economy"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
           },
           "/pa/units/land/t_metal_extractor_2/t_metal_extractor_2.json": {
             "display_name": "!LOC:Advanced Metal Extractor",
@@ -8116,7 +8125,7 @@
               "UNITTYPE_FabAdvBuild",
               "UNITTYPE_Economy"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
           },
           "/pa/units/land/t_power_storage/t_power_storage.json": {
             "display_name": "!LOC:Energy Storage",
@@ -8129,7 +8138,7 @@
               "UNITTYPE_Economy",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
           },
           "/pa/units/land/t_storage/t_storage.json": {
             "display_name": "Experimental Metal Storage",
@@ -8142,7 +8151,7 @@
               "UNITTYPE_Economy",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "death_weapon": {
               "ground_ammo_spec": "/pa/units/land/t_storage/t_storage_death_weapon.json"
             }
@@ -8151,6 +8160,7 @@
           "/pa/units/land/t_tank_fab/t_tank_fab.json": {
             "display_name": "Fabrication Vehicle",
             "unit_types": [
+              "UNITTYPE_NoBuild",
               "UNITTYPE_Fabber",
               "UNITTYPE_Construction",
               "UNITTYPE_Land",
@@ -8169,6 +8179,7 @@
           "/pa/units/land/t_tank_fab_adv/t_tank_fab_adv.json": {
             "display_name": "Advanced Vehicle Fabricator",
             "unit_types": [
+              "UNITTYPE_NoBuild",
               "UNITTYPE_Fabber",
               "UNITTYPE_Construction",
               "UNITTYPE_Land",
@@ -8240,7 +8251,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_AirDefense"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": [
               "/pa/units/land/t_tank_flak/t_tank_flak_tool_weapon.json",
               "/pa/units/land/t_tank_flak/t_tank_flak_tool_weapon.json"
@@ -8263,7 +8274,7 @@
               "UNITTYPE_FabBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/generic/strS.json"
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json"
           },
           "/pa/units/land/tank_gattling/tank_gattling.json": {
             "display_name": "Cougar",
@@ -8278,7 +8289,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_CannonBuildable"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": [
               "/pa/units/land/tank_gattling/tank_gattling_tool_weapon.json"
             ]
@@ -8289,6 +8300,39 @@
           "/pa/units/land/tank_gattling/tank_gattling_tool_weapon.json": {
             "base_spec": "/pa/tools/base_turret/base_turret.json",
             "ammo_id": "/pa/units/land/tank_gattling/tank_gattling_ammo.json"
+          },
+          "/pa/units/land/tank_heavy_adv/tank_heavy_adv.json": {
+            "display_name": "!LOC:Jaguar",
+            "unit_types": [
+              "UNITTYPE_Tank",
+              "UNITTYPE_Mobile",
+              "UNITTYPE_Offense",
+              "UNITTYPE_Land",
+              "UNITTYPE_Advanced",
+              "UNITTYPE_Heavy",
+              "UNITTYPE_FactoryBuild",
+              "UNITTYPE_Custom6"
+            ],
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
+            "tools": [
+              "/pa/units/land/tank_heavy_adv/tank_heavy_adv_tool_weapon.json",
+              "/pa/units/land/tank_heavy_adv/tank_heavy_adv_tool_missile.json"
+            ]
+          },
+          "/pa/units/land/tank_heavy_adv/tank_heavy_adv_ammo.json": {
+            "base_spec": "/pa/ammo/base_shell/base_shell.json"
+          },
+          "/pa/units/land/tank_heavy_adv/tank_heavy_adv_ammo_missile.json": {
+            "display_name": "!LOC:Bluehawk Tactical Missile",
+            "base_spec": "/pa/ammo/base_missiles/base_missile_tactical.json"
+          },
+          "/pa/units/land/tank_heavy_adv/tank_heavy_adv_tool_missile.json": {
+            "base_spec": "/pa/tools/base_shell_turret/base_shell_turret.json",
+            "ammo_id": "/pa/units/land/tank_heavy_adv/tank_heavy_adv_ammo_missile.json"
+          },
+          "/pa/units/land/tank_heavy_adv/tank_heavy_adv_tool_weapon.json": {
+            "base_spec": "/pa/tools/base_shell_turret/base_shell_turret.json",
+            "ammo_id": "/pa/units/land/tank_heavy_adv/tank_heavy_adv_ammo.json"
           },
           "/pa/units/land/tank_wheel/tank_wheel.json": {
             "display_name": "Hellnew/ball",
@@ -8302,7 +8346,7 @@
               "UNITTYPE_Basic",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": [
               "/pa/units/land/tank_wheel/tank_wheel_weapon.json",
               "/pa/units/land/tank_wheel/tank_wheel_weapon.json"
@@ -8317,14 +8361,12 @@
             "display_name": "Tin but dead",
             "unit_types": [
               "UNITTYPE_Bot",
-              "UNITTYPE_Mobile",
-              "UNITTYPE_Offense",
               "UNITTYPE_Land",
               "UNITTYPE_Basic",
               "UNITTYPE_Custom6",
               "UNITTYPE_SelfDestruct"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": ["/pa/units/land/tin/dead/tin_ded_death_weapon.json"]
           },
           "/pa/units/land/tin/dead/tin_ded_ammo.json": {
@@ -8339,13 +8381,14 @@
               "UNITTYPE_Bot",
               "UNITTYPE_Mobile",
               "UNITTYPE_Offense",
+              "UNITTYPE_Heavy",
               "UNITTYPE_Land",
               "UNITTYPE_Basic",
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_CannonBuildable",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": ["/pa/units/land/tin/tin_tool_weapon.json"]
           },
           "/pa/units/land/tin/tin_ammo.json": {
@@ -8367,7 +8410,7 @@
               "UNITTYPE_Offense",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_vehicle/base_vehicle.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_vehicle.json",
             "tools": ["/pa/units/land/torch/torch_weapon.json"]
           },
           "/pa/units/land/torch/torch_ammo.json": {
@@ -8391,7 +8434,7 @@
               "UNITTYPE_Advanced",
               "UNITTYPE_Amphibious"
             ],
-            "base_spec": "/pa/units/land/base_bot/base_bot.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_bot.json",
             "tools": ["/pa/units/land/tripod/tripod_tool_weapon.json"]
           },
           "/pa/units/land/tripod/tripod_ammo.json": {
@@ -8416,7 +8459,7 @@
               "UNITTYPE_Important",
               "UNITTYPE_CmdBuild"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/orbital/orbital_launcher/orbital_launcher_build_arm.json"
             ]
@@ -8431,7 +8474,7 @@
               "UNITTYPE_Basic",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": ["/pa/units/sea/a_croc/a_croc_tool_weapon.json"]
           },
           "/pa/units/sea/a_croc/a_croc_ammo.json": {
@@ -8451,7 +8494,7 @@
               "UNITTYPE_Basic",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": ["/pa/units/sea/a_mortar/a_mortar_tool_weapon.json"]
           },
           "/pa/units/sea/a_mortar/a_mortar_ammo.json": {
@@ -8472,7 +8515,7 @@
               "UNITTYPE_Sub",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": ["/pa/units/sea/cruiser/cruiser_tool_weapon.json"]
           },
           "/pa/units/sea/cruiser/cruiser_ammo.json": {
@@ -8492,7 +8535,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/air/base_flyer/base_flyer.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_flyer.json",
             "tools": [
               "/pa/units/sea/drone_aa/chirp/l_air_bomb_death_tool_weapon.json",
               "/pa/units/sea/drone_aa/chirp/l_air_bomb_tool_weapon.json",
@@ -8531,7 +8574,7 @@
               "UNITTYPE_Tactical",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": [
               "/pa/units/sea/drone_aa/drone_aa_tool_drone.json",
               "/pa/units/sea/drone_aa/drone_aa_tool_drone.json",
@@ -8562,7 +8605,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_WaterHover"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": [
               "/pa/units/sea/hardtack/hardtack_tool_weapon.json",
               "/pa/units/sea/hardtack/hardtack_tool_weapon.json",
@@ -8594,7 +8637,7 @@
               "UNITTYPE_Sub",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": ["/pa/units/sea/scilla/scilla_tool_weapon.json"]
           },
           "/pa/units/sea/scilla/scilla_ammo.json": {
@@ -8605,7 +8648,7 @@
             "ammo_id": "/pa/units/sea/scilla/scilla_ammo.json"
           },
           "/pa/units/sea/t_battleship/t_battleship.json": {
-            "display_name": "Leviathan",
+            "display_name": "Fangtooth",
             "unit_types": [
               "UNITTYPE_Custom6",
               "UNITTYPE_Naval",
@@ -8615,13 +8658,24 @@
               "UNITTYPE_Advanced",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": [
-              "/pa/units/sea/battleship/battleship_tool_weapon.json",
-              "/pa/units/sea/battleship/battleship_tool_weapon.json",
-              "/pa/units/sea/battleship/battleship_tool_weapon.json",
-              "/pa/units/sea/battleship/battleship_tool_weapon.json"
+              "/pa/units/sea/t_battleship/t_battleship_tool_weapon.json",
+              "/pa/units/sea/t_battleship/t_battleship_tool_weapon_2.json",
+              "/pa/units/sea/t_battleship/t_battleship_tool_weapon_2.json",
+              "/pa/units/sea/t_battleship/t_battleship_tool_weapon.json"
             ]
+          },
+          "/pa/units/sea/t_battleship/t_battleship_ammo.json": {
+            "base_spec": "/pa/ammo/base_beam/base_beam.json"
+          },
+          "/pa/units/sea/t_battleship/t_battleship_tool_weapon.json": {
+            "base_spec": "/pa/tools/base_shell_turret/base_shell_turret.json",
+            "ammo_id": "/pa/units/sea/t_battleship/t_battleship_ammo.json"
+          },
+          "/pa/units/sea/t_battleship/t_battleship_tool_weapon_2.json": {
+            "base_spec": "/pa/tools/base_shell_turret/base_shell_turret.json",
+            "ammo_id": "/pa/units/sea/t_battleship/t_battleship_ammo.json"
           },
           "/pa/units/sea/t_hover_skiff/t_hover_skiff.json": {
             "display_name": "Skipper",
@@ -8634,7 +8688,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_Hover"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": [
               "/pa/units/sea/t_hover_skiff/t_hover_skiff_tool_weapon.json"
             ]
@@ -8658,7 +8712,7 @@
               "UNITTYPE_FactoryBuild",
               "UNITTYPE_WaterHover"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": ["/pa/units/sea/t_naval_fab/t_naval_fab_build_arm.json"]
           },
           "/pa/units/sea/t_naval_fab/t_naval_fab_build_arm.json": {
@@ -8675,7 +8729,7 @@
               "UNITTYPE_Advanced",
               "UNITTYPE_FactoryBuild"
             ],
-            "base_spec": "/pa/units/sea/base_ship/base_ship.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_ship.json",
             "tools": [
               "/pa/units/sea/t_naval_fab_adv/t_naval_fab_adv_build_arm.json"
             ]
@@ -8697,7 +8751,7 @@
               "UNITTYPE_Important",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": ["/pa/units/sea/t_naval_fac/t_naval_fac_build_arm.json"]
           },
           "/pa/units/sea/t_naval_fac/t_naval_fac_build_arm.json": {
@@ -8714,7 +8768,7 @@
               "UNITTYPE_Advanced",
               "UNITTYPE_Important"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/sea/t_naval_fac_adv/t_naval_fac_adv_build_arm.json"
             ]
@@ -8734,7 +8788,7 @@
               "UNITTYPE_FabBuild",
               "UNITTYPE_CombatFabAdvBuild"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/sea/torpedo_launcher/torpedo_launcher_tool_weapon.json"
             ]
@@ -8749,7 +8803,7 @@
               "UNITTYPE_Defense",
               "UNITTYPE_FabAdvBuild"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/sea/torpedo_launcher_adv/torpedo_launcher_adv_tool_weapon.json"
             ]
@@ -8766,7 +8820,7 @@
               "UNITTYPE_Fabber",
               "UNITTYPE_Custom6"
             ],
-            "base_spec": "/pa/units/land/base_structure/base_structure.json",
+            "base_spec": "/pa/units/exiles_base/base_exiles_structure.json",
             "tools": [
               "/pa/units/structures/fab_complex/adv_fab_turret_build_arm.json"
             ]
