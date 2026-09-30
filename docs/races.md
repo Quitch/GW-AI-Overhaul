@@ -502,7 +502,9 @@ files, from one read of the race's layers per tree (`race_trees.treeContext`):
   same rule. It drops every file a race's layer claims and MLA's does not
   (`race_trees.raceLayerTest`), templates aside, so an MLA army's `unit_maps/`
   never lists a race's map. An add-on's MLA map, and a map both MLA and a race claim, ride
-  along untagged, as the live `/pa/ai/` listing has them.
+  along untagged, as the live `/pa/ai/` listing has them. The engine never
+  reads those untagged copies; their keys reach the army through its merged
+  map ("Add-ons").
 
 - **A brain that carries the race** (Queller carries Legion): the tree is the
   tier minus the descriptor's `exclude` fragments, which are the MLA side,
@@ -841,9 +843,13 @@ and none of its `mla/` ones, and its merged map carries the
 untagged into every scoped MLA tree; now it is Legion's and stays out. A
 file two layers claim belongs to each of them, and both name it (Second
 Wave's `second_wave_aux.json` was one until 0.16.1, when its Legion build
-files stopped reading it; it is MLA's alone now). `unitMapsFor` gives MLA no
-maps at all. An MLA army's `unit_maps/` is the live listing, where an add-on's map
-already sits untagged, so nothing is merged for it.
+files stopped reading it; it is MLA's alone now). `unitMapsFor` gives MLA its
+active add-ons' maps, and the referee merges them into every MLA army's
+tagged map untranslated: `raceUnitMap` is the merge alone for MLA. The engine
+loads only `<file>.<tag>`, so the add-on's own untagged map beside the brain's
+is never read, and each attempt logs a failed `UnitMapSpec` open. Before the
+merge, no MLA army had the add-on keys that Second Wave's and Section 17's MLA
+build files name.
 
 **What an MLA player fields** (`unit_cells.addonUnitsFor`) is additive. Every
 held path MLA owns stays, parts and commander-class units included. Each held vanilla

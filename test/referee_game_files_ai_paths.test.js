@@ -840,6 +840,9 @@ describe("race army maps", () => {
   });
 
   it("raceUnitMap for MLA with add-on cells is the merge alone, the host's map", () => {
+    const addonMap = {
+      unit_map: { AddonTank: { spec_id: "/pa/units/addon.json" } },
+    };
     const seen = [];
     const unitCells = {
       unitMapFallback: (merged) => {
@@ -857,7 +860,7 @@ describe("race army maps", () => {
 
     const map = refereeGameFiles.raceUnitMap({
       base,
-      raceMaps: [],
+      raceMaps: [addonMap],
       cells: { vanilla: "V", race: "R" },
       race: "mla",
       unitCells,
@@ -865,7 +868,8 @@ describe("race army maps", () => {
     });
 
     assert.deepEqual(seen, []);
-    assert.deepEqual(map, refereeGameFiles.mergeUnitMaps(base, []));
+    assert.deepEqual(map, refereeGameFiles.mergeUnitMaps(base, [addonMap]));
+    assert.deepEqual(map.unit_map.AddonTank, addonMap.unit_map.AddonTank);
   });
 
   it("repointedKeys names the keys whose spec_id the translation changed", () => {

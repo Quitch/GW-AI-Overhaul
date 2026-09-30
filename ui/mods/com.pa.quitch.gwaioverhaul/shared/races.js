@@ -619,12 +619,12 @@ define([
   };
 
   // The race's unit map files for a brain, its add-ons' included, absolute.
-  // None for MLA: an MLA army's unit_maps/ is the live listing, where an
-  // add-on's map already sits untagged, so nothing is merged for it.
+  // MLA's are its add-ons' alone: the engine loads only tagged maps, so an
+  // add-on's untagged map beside the brain's is never read.
   var unitMapsFor = function (raceId, brain, sourceRoot) {
     var race = byId(raceId);
 
-    if (!race || race.id === MLA_ID) {
+    if (!race) {
       return [];
     }
 
