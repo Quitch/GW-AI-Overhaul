@@ -40,7 +40,11 @@ inventory.addAIMods([
 | `platoon`  | `platoon_builds/`    |
 | `template` | `platoon_templates/` |
 
-Anything else throws. Note that there is no `unit_map` type, so no descriptor
+Anything else returns `undefined`, and the `load` that asked logs
+`Invalid AI file type in load mod` and adds no file. It does not throw: its only
+caller runs in a deferred callback, where a throw is swallowed and hangs the
+battle launch. `npm run validate:ai-mods` rejects an unknown `type` in a shipped
+card. Note that there is no `unit_map` type, so no descriptor
 reaches a unit map. This pipeline copies a tree's untagged maps with its other
 files, and `referee_game_files.js` writes the tagged ones.
 
