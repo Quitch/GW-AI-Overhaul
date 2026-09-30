@@ -24,6 +24,8 @@
 - Titan Tech and Planetary Radar Tech are no longer offered for units that cannot build them: the Angel, which Air Factory Upgrade Tech gives, and a Cluster player's Colonel Sub Commanders
 - The basic and advanced fabricator groups that card mods name no longer include the Barnacle, Stitch, Mend, and Angel, which have combat fabricator groups of their own - see the `New-GW-Cards` template
 - About one galaxy in fifty, most often a small one, no longer has far more gates between its stars than usual, with up to nine on one star, so each seed that made such a galaxy now makes a different war
+- Legion, Bugs, and Exiles commanders are named as MLA commanders are when you pick a commander, such as Maxim rather than Maxim Commander
+- Synchronous co-op players are given greens, like the faction's own colour, rather than oranges, and no Legonis Machina or Revenants co-op player is given a colour a Sub Commander can also have
 - Card mods can no longer call `gwoCard.isEnglish`, which Galactic War Overhaul's own cards stopped using; give a card one `!LOC:` text and the game translates it
 
 ### Bugfix
@@ -60,6 +62,7 @@
 - Artillery Fabrication Tech is now offered to a player whose only artillery is mobile, such as the Grenadier, Gil-E, Sheller, or Leviathan
 - Boom Upgrade Tech's "Which Units?" now lists the Boom as well as the Lob
 - With Shared Systems for Galactic War, a system source that fails to load, such as a remote server that is down, no longer leaves Go To War stuck: the war is made from the other selected sources, and when none of them can be loaded, a message says so and Go To War is available again
+- The war information panel's Missing Map Packs heading is red, as the map packs listed under it and the Incompatible Mods and Missing Races headings are
 
 ## v7.4.1 - 2026-09-24
 

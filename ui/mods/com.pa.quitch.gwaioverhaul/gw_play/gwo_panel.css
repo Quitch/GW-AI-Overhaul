@@ -23,13 +23,14 @@
 /* 7:1 against the panel even over a white backdrop, which is why the panel
    is 95% opaque. */
 #incompatible-mods,
-#missing-races {
+#missing-races,
+#missing-map-packs {
   color: #f99;
 }
 
 /* A race mod that has merely changed version: worth reading, not worth alarm.
-   The missing-race rows below share the red of #incompatible-mods, since both
-   say the war will not play as it was built. */
+   The missing-race and missing-map-pack rows below share the red of
+   #incompatible-mods, since all say the war will not play as it was built. */
 .gwo-info .gwo-race-warning {
   color: #ffc14d;
   padding: 2px 0;
