@@ -225,10 +225,10 @@ define([
       var settings = gwoSettings || {};
       var allyBrain = brainTable.resolve(
         settings.aiByRace,
-        settings.ai,
-        settings.aiAlly,
         "ally",
-        race
+        race,
+        settings.ai,
+        settings.aiAlly
       );
       if (allyBrain !== "Penchant") {
         return;

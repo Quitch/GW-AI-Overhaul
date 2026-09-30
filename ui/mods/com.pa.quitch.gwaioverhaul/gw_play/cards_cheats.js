@@ -87,7 +87,7 @@ define(function () {
       return product;
     };
 
-    var prepareProduct = function (product, inventory, testing) {
+    var prepareProduct = function (product, testing) {
       if (product.id === "gwc_minion") {
         if (testing) {
           testMinions(product);
@@ -173,7 +173,7 @@ define(function () {
                 cards
               )
               .then(function (product) {
-                inventory.cards.push(prepareProduct(product, inventory, true));
+                inventory.cards.push(prepareProduct(product, true));
               })
           )
         );
@@ -217,7 +217,7 @@ define(function () {
             cards
           )
           .then(function (product) {
-            inventory.cards.push(prepareProduct(product, inventory));
+            inventory.cards.push(prepareProduct(product));
             inventory.applyCards(function () {
               finishCheat("gwo_cheat_give_card");
             });

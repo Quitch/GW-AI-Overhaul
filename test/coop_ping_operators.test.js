@@ -2,8 +2,8 @@
 
 // The pure halves of gw_play/coop_ping_operators.js: what a host will accept
 // and how often it will accept it. The handlers built around them are covered
-// by coop_ping_factory.test.js, and the marker's frame maths - which lives in
-// coop_ping_marker.js - by coop_ping_marker.test.js.
+// by coop_ping_operators_factory.test.js, and the marker's frame maths -
+// which lives in coop_ping_marker.js - by coop_ping_marker.test.js.
 //
 // Note that gw_play/coop_ping.js, the scene bootstrap, has no test of its own:
 // it injects the button's HTML and calls requireGW, so there is nothing in it

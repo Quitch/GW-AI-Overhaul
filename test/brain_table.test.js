@@ -246,10 +246,10 @@ describe("rowsFor", () => {
       pinned[1].coop,
       brainTable.resolve(
         undefined,
-        "Titans",
-        "Titans",
         "coop",
         "legion",
+        "Titans",
+        "Titans",
         "Queller"
       )
     );
@@ -283,22 +283,22 @@ describe("resolve", () => {
 
   it("answers from the race's row, per side", () => {
     assert.equal(
-      brainTable.resolve(table, "Penchant", "Penchant", "enemy", "legion"),
+      brainTable.resolve(table, "enemy", "legion", "Penchant", "Penchant"),
       "Queller"
     );
     assert.equal(
-      brainTable.resolve(table, "Penchant", "Penchant", "ally", "legion"),
+      brainTable.resolve(table, "ally", "legion", "Penchant", "Penchant"),
       "Titans"
     );
   });
 
   it("coerces a row the race cannot run", () => {
     assert.equal(
-      brainTable.resolve(table, "Titans", "Titans", "enemy", "fixture"),
+      brainTable.resolve(table, "enemy", "fixture", "Titans", "Titans"),
       "Titans"
     );
     assert.equal(
-      brainTable.resolve(table, "Titans", "Titans", "ally", "fixture"),
+      brainTable.resolve(table, "ally", "fixture", "Titans", "Titans"),
       "Titans"
     );
   });
@@ -307,15 +307,15 @@ describe("resolve", () => {
     const trap = { mla: { enemy: "Titans", ally: "Titans" } };
 
     assert.equal(
-      brainTable.resolve(trap, "Penchant", "Queller", "enemy", "mla"),
+      brainTable.resolve(trap, "enemy", "mla", "Penchant", "Queller"),
       "Penchant"
     );
     assert.equal(
-      brainTable.resolve(trap, "Penchant", "Queller", "ally", "mla"),
+      brainTable.resolve(trap, "ally", "mla", "Penchant", "Queller"),
       "Queller"
     );
     assert.equal(
-      brainTable.resolve(trap, "Penchant", undefined, "ally", undefined),
+      brainTable.resolve(trap, "ally", undefined, "Penchant", undefined),
       "Penchant"
     );
   });
@@ -326,11 +326,11 @@ describe("resolve", () => {
     };
 
     assert.equal(
-      brainTable.resolve(withCoop, "Titans", "Titans", "coop", "legion"),
+      brainTable.resolve(withCoop, "coop", "legion", "Titans", "Titans"),
       "Queller"
     );
     assert.equal(
-      brainTable.resolve(withCoop, "Titans", "Titans", "enemy", "legion"),
+      brainTable.resolve(withCoop, "enemy", "legion", "Titans", "Titans"),
       "Titans"
     );
   });
@@ -340,8 +340,8 @@ describe("resolve", () => {
   it("resolves a war saved before the co-op column like its enemy side", () => {
     for (const race of ["mla", "legion", "fixture", "bugs"]) {
       assert.equal(
-        brainTable.resolve(table, "Penchant", "Titans", "coop", race),
-        brainTable.resolve(table, "Penchant", "Titans", "enemy", race),
+        brainTable.resolve(table, "coop", race, "Penchant", "Titans"),
+        brainTable.resolve(table, "enemy", race, "Penchant", "Titans"),
         race
       );
     }
@@ -349,39 +349,39 @@ describe("resolve", () => {
 
   it("routes MLA's co-op side to the war-wide co-op string", () => {
     assert.equal(
-      brainTable.resolve(table, "Penchant", "Titans", "coop", "mla", "Queller"),
+      brainTable.resolve(table, "coop", "mla", "Penchant", "Titans", "Queller"),
       "Queller"
     );
     // A race with no co-op cell follows its opponent, not the MLA string.
     assert.equal(
       brainTable.resolve(
         table,
-        "Penchant",
-        "Titans",
         "coop",
         "legion",
+        "Penchant",
+        "Titans",
         "Titans"
       ),
       "Queller"
     );
     // A race with no row takes the co-op string.
     assert.equal(
-      brainTable.resolve({}, "Titans", "Titans", "coop", "legion", "Queller"),
+      brainTable.resolve({}, "coop", "legion", "Titans", "Titans", "Queller"),
       "Queller"
     );
   });
 
   it("falls back to the strings for a race with no row, then to Titans", () => {
     assert.equal(
-      brainTable.resolve({}, "Queller", undefined, "enemy", "legion"),
+      brainTable.resolve({}, "enemy", "legion", "Queller", undefined),
       "Queller"
     );
     assert.equal(
-      brainTable.resolve({}, "Penchant", undefined, "enemy", "legion"),
+      brainTable.resolve({}, "enemy", "legion", "Penchant", undefined),
       "Titans"
     );
     assert.equal(
-      brainTable.resolve(undefined, undefined, undefined, "enemy", "legion"),
+      brainTable.resolve(undefined, "enemy", "legion", undefined, undefined),
       "Titans"
     );
   });

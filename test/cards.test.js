@@ -549,10 +549,9 @@ describe("loadout", () => {
 
   // The dull clears buffCount after every pass (applyDulls), so in game each
   // pass buffs the start card as a first buff. always must run there too.
-  it("runs always on every buff of the start card, with the context", () => {
+  it("runs always on every buff of the start card, with the card's params", () => {
     const h = harness({ lookupCard: 0, buffCount: 0, maxCards: 4 });
-    h.options.always = (inventory, context) =>
-      h.calls.push(["always", context]);
+    h.options.always = (inventory, params) => h.calls.push(["always", params]);
     const frame = cards.loadout(CARD, h.options);
     frame.buff(h.inventory, "first");
     frame.buff(h.inventory, "again");

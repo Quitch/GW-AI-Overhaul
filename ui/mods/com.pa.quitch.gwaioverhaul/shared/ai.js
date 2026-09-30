@@ -71,10 +71,10 @@ define([
     if (gwoSettings) {
       return brainTable.resolve(
         gwoSettings.aiByRace,
-        gwoSettings.ai,
-        gwoSettings.aiAlly,
         sideOf(alignment),
         race,
+        gwoSettings.ai,
+        gwoSettings.aiAlly,
         gwoSettings.aiCoop
       );
     }

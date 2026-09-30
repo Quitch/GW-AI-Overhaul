@@ -82,7 +82,7 @@ const TABLES = [
     strategy: "race",
     mods: ["com.pa.nik.exiles", "com.pa.ferretmaster.commander-merge"],
     bit: "Custom6",
-    namePrefix: "^(Exiles?|Exile) ",
+    namePrefix: "^Exiles? ",
     stemPrefix: "^(t|r|a)_",
     // Exiles 0.8.4 renamed Jelly to Navigator, and 0.7.2 calls it Jelly. A
     // key is what a race-only card addresses, so it stays whatever a release

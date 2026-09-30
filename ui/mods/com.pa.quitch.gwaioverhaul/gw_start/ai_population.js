@@ -12,10 +12,10 @@ define([
   var brainForRace = function (brains, race, side) {
     return gwoBrainTable.resolve(
       brains.aiByRace,
-      brains.ai,
-      brains.aiAlly,
       side,
-      race
+      race,
+      brains.ai,
+      brains.aiAlly
     );
   };
 

@@ -28,6 +28,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 | `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` | Always functions, on every card.                                                                                                                                               |
 | `audio`, `getContext`                                              | On every tech card but two: a legacy exception and `gwc_start.js`. Loadout cards have neither: `gwoCard.loadout()` returns only `buff` and `dull`.                             |
 | `keep`, `discard`                                                  | Optional. No card carries either today.                                                                                                                                        |
+| `releaseContext`                                                   | Optional. No card carries one today. `shared/deal.js`'s `dealCard` and `gw_start/war_generation.js` call it after `keep`, with what `getContext` returned.                     |
 | `hint`                                                             | Optional, loadout cards only: the icon and text of the locked-loadout hover, read by stock `gw_start.js` and `gw_coop_per_player_loadout.js`. `gwoCard.lockedHint` builds one. |
 
 The legacy exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
