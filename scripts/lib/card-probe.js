@@ -51,9 +51,9 @@ function installCardHarness() {
 }
 
 // Deliberately no `model` global. No card in scope reads one inside deal(), and
-// leaving it undefined means a card that starts to throws here rather than being
-// silently weighted against a fake galaxy - the same reasoning amd-loader.js gives
-// for leaving api/model/ko undefined.
+// leaving it undefined means a card that starts reading one throws here rather
+// than being silently weighted against a fake galaxy - the same reasoning
+// amd-loader.js gives for leaving api/model/ko undefined.
 function loadAllCards() {
   installCardHarness();
 

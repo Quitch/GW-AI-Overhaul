@@ -49,6 +49,8 @@ define([
       self.aiMods(config.aiMods || []);
       self.maxCards(_.isUndefined(config.maxCards) ? 0 : config.maxCards);
 
+      // GWO - stock gw_play's cardsChanged calls applyCards when the cards
+      // change mid-apply; the stub keeps this reset from queueing a re-run.
       self.applyCards = function () {};
       self.cards(config.cards || []);
       delete self.applyCards;
@@ -112,7 +114,7 @@ define([
         delete self.applyCards;
         delete self.isApplyingCards;
         if (foreignCards) {
-          foreignCards = false; // GWO - a dirty re-run suspends for itself
+          foreignCards = false; // GWO - the dirty re-run below is not held
           gwoBank.resumeUnlocks();
         }
         if (dirty) {
@@ -206,8 +208,8 @@ define([
         return id === card.id && !card.unique;
       });
     },
-    // GWO - nothing uses this but we keep it for compatibility with other mods that might use it
-    // or in case the game itself uses it in the future. test is a CardViewModel, whose id is a computed.
+    // GWO - unchanged from stock; nothing shipped calls it. test is a
+    // CardViewModel, whose id is a computed.
     hasCardLike: function (test) {
       var ok = test && test.id;
       if (!ok) {

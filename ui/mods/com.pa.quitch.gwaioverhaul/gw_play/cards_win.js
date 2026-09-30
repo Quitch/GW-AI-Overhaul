@@ -29,9 +29,8 @@ define(function () {
       var techCard = model.currentSystemCardList()[selectedCardIndex];
       var techAudio =
         techCard && techCard.audio() ? techCard.audio().found : null;
-      // Every loadout id, not just the ones the server misfiles: banking
-      // is held for the whole scene on a viewer, so the server's own
-      // GW.bank.addStartCard would be suppressed along with the rest.
+      // Every loadout id, not just the ones the server misfiles, is banked
+      // here and submitted as -1. See coop.md, "Treasure loadouts".
       var submittedIndex = bankWonLoadout(
         techCard && techCard.id(),
         selectedCardIndex

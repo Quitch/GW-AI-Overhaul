@@ -1039,9 +1039,8 @@ explore. The base game instead adds the card and a free slot to cover it
 The server already banks a viewer's loadout choice without touching the
 inventory, but only for ids that pass `isBaseLoadoutCardId`. It pushes every mod
 loadout into the viewer's war inventory instead. GWO therefore intercepts
-**every** loadout id on a viewer, banks it locally and submits `-1`. It cannot
-leave the base ids to the server, because banking is held shut on viewers for
-the reason below.
+**every** loadout id on a viewer, the base ones included. It banks the card
+locally and submits `-1`.
 
 ## The per-player loadout scene
 
@@ -1140,6 +1139,9 @@ The mirror of this is the host collecting a _viewer's_ loadouts. It comes from
 the host applying each viewer's inventory, and each co-op AI player's, to size
 their deals. Banking is suspended at each of those call sites
 (`cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_coop_star_cards.js`).
+The host's General Commander setup (`cards_start_subcdr.js`) applies a viewer's
+inventory without the hold. That inventory is the General Commander loadout,
+first, and its Sub Commander cards, and a loadout in first place never banks.
 
 The host also applies an AI's inventory to judge its cards, in
 `gw_play/coop_ai_effects.js`, through `bank.applyInventoryHeld`. That holds

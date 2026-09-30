@@ -87,8 +87,6 @@ define(function () {
       return product;
     };
 
-    // The per-card fix-up a real deal does in model.win: a minion product
-    // needs a Sub Commander, a slot product its overflow flag.
     var prepareProduct = function (product, inventory, testing) {
       if (product.id === "gwc_minion") {
         if (testing) {

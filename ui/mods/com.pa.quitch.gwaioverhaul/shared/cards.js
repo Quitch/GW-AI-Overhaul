@@ -88,8 +88,9 @@ define([
     far: [4, 5, 6, 7, 8, 10, 11, 12, 13],
   };
 
-  // Clamped against thresholds, not numberOfSystems: a longer third-party size
-  // table would index past the end, and `distance > undefined` is silently false.
+  // Clamped to the shorter table: a third-party size table longer than the
+  // thresholds would index past their end, and `distance > undefined` is
+  // silently false.
   var farForSize = function (system, context, numberOfSystems, thresholds) {
     var lastTier = Math.min(numberOfSystems.length, thresholds.length) - 1;
     var tier = 0;
@@ -294,10 +295,11 @@ define([
 
     applyDulls: applyDulls,
 
-    // The buff/dull pair every loadout shares. The first buff of the war
-    // runs the default start and `apply`; a later one only adds the slot
-    // (unless `repeatSlot` is false); a copy dealt after the start goes to
-    // `bank`. `always` runs on every buff of the start card. See tech-cards.md.
+    // The buff/dull pair every loadout shares. The first buff of each
+    // applyCards pass runs the default start and `apply`; a later one only
+    // adds the slot (unless `repeatSlot` is false); a copy dealt after the
+    // start goes to `bank`. `always` runs on every buff of the start card,
+    // and its second argument is the card's saved params. See tech-cards.md.
     loadout: function (card, options) {
       return {
         buff: function (inventory, context) {
