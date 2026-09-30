@@ -178,9 +178,10 @@ grows upstream (Second Wave's Bugs layer in 0.16.1) fails here instead of
 being dropped from every tree.
 
 CI has none of those files, so the unit tests pin the same contract on mocked
-listings (`test/races.test.js`, `test/referee_ai_file_processing.test.js`). Run
-it after a PA, race or add-on patch. Also run it after you change
-`races.treeFilter`, `races.raceLayerTest` or `referee_ai.js`'s tree writing.
+listings (`test/race_trees.test.js`, `test/races.test.js`,
+`test/referee_ai_file_processing.test.js`). Run it after a PA, race or add-on
+patch. Also run it after you change `race_trees.treeFilter`,
+`race_trees.raceLayerTest` or `referee_ai.js`'s tree writing.
 
 The validator runs the referee without the races' capability cells, so the
 race trees it checks keep the stock factory and fabber lists whole. Their

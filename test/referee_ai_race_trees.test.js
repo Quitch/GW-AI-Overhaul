@@ -168,6 +168,20 @@ describe("raceTreeJobs", () => {
     assert.equal(job.stockBuild(OWN), false);
     assert.equal(await job.repointed(), null);
   });
+  it("reads each job's layers once, for all three of its filters", () => {
+    races.register(FIXTURE_RACE);
+    const fixture = buildGame({ aiInUse: "Titans", enemyRace: "fixture" });
+    installModel(fixture.game, []);
+    const layersFor = mock.method(races, "layersFor");
+    try {
+      const jobs = raceTreeJobs(fixture.game, [], []);
+
+      assert.equal(jobs.length, 1);
+      assert.equal(layersFor.mock.callCount(), 1);
+    } finally {
+      layersFor.mock.restore();
+    }
+  });
   it("looks the race's re-pointed keys up from its maps once the race has cells", async () => {
     races.register(FIXTURE_RACE);
     races.setCells("fixture", { vanilla: { cellOf: {} }, race: {} });

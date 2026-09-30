@@ -439,7 +439,8 @@ MLA build lists. It gets a **synthesised tree** at the brain's root with
 `/pa/ai_queller/q_uber/` → `/pa/ai_queller_race_legion/q_uber/`. The tree
 follows the same scope rules as every other destination (`player_guardians/`,
 `player_.player0/`). `referee_ai.js`'s `raceTreeJobs` writes one tree per
-distinct (source, destination):
+distinct (source, destination). `shared/race_trees.js` picks each tree's
+files, from one read of the race's layers per tree (`race_trees.treeContext`):
 
 - **Titans**: the tree is the race's `sources` files (Legion's flat `legion_*`,
   Bugs' `bugs/` sub-directories) layered over the brain's base files. No race
@@ -452,7 +453,7 @@ distinct (source, destination):
   item built Legion Marauders, and Bugs' research tokens were ordered to build
   air units and refused tens of thousands of times a battle. In every
   base-layer file under `fabber_builds/` and `factory_builds/`
-  (`races.stockBuildFilter`), the referee takes from each item every builder
+  (`race_trees.stockBuildFilter`), the referee takes from each item every builder
   the race's map re-points, and drops the item when none is left or when it
   builds a re-pointed unit, which the stock builder left cannot build
   (`referee_game_file_paths.stripStockBuilds`, with the keys from
@@ -493,7 +494,7 @@ distinct (source, destination):
   to a scoped destination (`/pa/ai/player_guardians/`, a viewer's Sub
   Commanders). That tree is the base layer plus MLA's own add-on layer, by the
   same rule. It drops every file a race's layer claims and MLA's does not
-  (`races.raceLayerTest`), templates aside, so an MLA army's `unit_maps/`
+  (`race_trees.raceLayerTest`), templates aside, so an MLA army's `unit_maps/`
   never lists a race's map. An add-on's MLA map, and a map both MLA and a race claim, ride
   along untagged, as the live `/pa/ai/` listing has them.
 
@@ -501,7 +502,7 @@ distinct (source, destination):
   tier minus the descriptor's `exclude` fragments, which are the MLA side.
 
 The referee's "no race build orders" warning fires when the race mod itself
-contributed nothing to the tree (`races.raceLayerFilter`). The base layer is
+contributed nothing to the tree (`race_trees.raceLayerFilter`). The base layer is
 always present, so an empty tree can no longer show that.
 
 The engine lists `unit_maps/` and loads each file it finds with the army's tag
@@ -820,7 +821,7 @@ MLA a layer too. An inactive add-on's files are not on disk, and
 `unitMapsFor` names files the referee reads: before activation existed, a
 Legion player could not Fight while Second Wave was disabled, because the
 hire tried to read `second_wave_legion.json` and failed. That table is what
-`treeFilter`, `raceLayerTest` and `unitMapsFor`
+`treeContext`, `raceLayerTest` and `unitMapsFor`
 read. A race tree keeps its own layer and subtracts every other, MLA's
 included, so a Legion tree holds Second Wave's `factory_builds/legion/` files
 and none of its `mla/` ones, and its merged map carries the
