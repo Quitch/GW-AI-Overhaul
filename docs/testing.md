@@ -302,8 +302,9 @@ session.
 
 `scripts/lib/fake-jquery.js` covers only the `$`/`api` subset the shipped code
 under test uses. A request for a URL with no configured resolver rejects. A
-test's fixtures therefore cannot silently drift from what the code actually asks
-for.
+fixture that drifts from what the code actually asks for therefore sends the
+code down its error path. Like any failure the fake passes on, the rejection
+reports nothing by itself, so a test asserts on what the code does next.
 
 By default it returns the Promise itself rather than an object with a `then`
 property. That keeps `.then` chaining on the real inherited
@@ -323,10 +324,11 @@ resolved with a thenable adopts it, which would wait after all.
 The default `.then` applies the same test to what a callback returns. jQuery 2
 waits for the returned value only when it has a `promise` method, and passes an
 engine or native promise on as a value, unwaited. The inherited `.then` would
-adopt it and wait, so the fake fails the test instead. It throws, which rejects
-the chain, and it throws again out of band, so a `.fail()` further down cannot
-swallow the error. What a `done`, `fail` or `always` callback returns is not
-tested, because jQuery ignores it. `$.getJSON` returns a Promise carrying the
+adopt it and wait, so the fake fails the test instead. The callback throws,
+and the fake reports that throw as it reports any other (see below), so a
+`.fail()` further down cannot swallow the error. What a `done`, `fail` or
+`always` callback returns is not tested, because jQuery ignores it.
+`$.getJSON` returns a Promise carrying the
 same members as a Deferred's, as jQuery's does, so a callback may return it.
 
 An error callback given to the default `.then` cannot recover the chain by
@@ -334,11 +336,18 @@ returning a value. jQuery 2 fails the next promise with whatever that callback
 returns, `undefined` included, unless it has a `promise` method. The inherited
 `.then` would resolve the next promise instead, so the fake fails it. Only a
 returned jQuery promise, such as `$.Deferred().resolve().promise()`, decides
-the outcome. `$.when`'s `.then` does the same. Nothing in the game reports that
-failure, so the fake marks the promise it fails as handled, and Node does not
-report it as an unhandled rejection. A further step with no error callback
-passes the failure on and reports it, as it reports any failure the fake passes
-down a chain.
+the outcome. `$.when`'s `.then` does the same.
+
+A failed jQuery Deferred reports nothing in the game, whether or not anything is
+chained to it, and however many steps with no error callback pass the failure
+on. The fake therefore marks every promise it makes as handled, `$.when`'s
+included, and Node reports none of them as an unhandled rejection. A test of
+shipped `x.done(update)` whose `x` fails needs no `fail` handler of its own.
+What the fake does report is a callback's throw. In jQuery 2.1.4 that throw
+escapes through the call that settled the Deferred, and no `.fail()` further
+down sees it. The fake rejects the chain with it, as the inherited `.then`
+does, and throws it again out of band. The test therefore fails even when a
+`.fail()` further down handles the rejection.
 
 A chain that shipped code first wraps in `Promise.resolve`, as the referee's
 tree cache does, is native in the game: a jqXHR is not a `Promise`, so the
@@ -351,8 +360,9 @@ jQuery 2.1.4 itself, and jQuery 2.1.4's `when`, which waits on every argument
 without a tick. Its callbacks
 run inside `resolve()` and `reject()`, a callback's throw escapes through the
 call that settled it, and the Deferred is stuck afterwards. The default fake
-runs callbacks a tick later and turns a callback's throw into a rejection, so it
-cannot show a bug that depends on either. Use the sync mode for such code, as
+runs callbacks a tick later, reports a callback's throw out of band rather than
+through the call that settled it, and never sticks, so it cannot show a bug
+that depends on any of those. Use the sync mode for such code, as
 `race_mods.test.js`, `gwo_promise.test.js`, and `gwo_breeder.test.js` do.
 
 Modelling thenables is the file's whole job. `sonar-project.properties`

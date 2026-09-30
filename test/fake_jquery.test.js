@@ -1,8 +1,9 @@
 "use strict";
 
 // scripts/lib/fake-jquery.js: the default fake's .then refuses what jQuery 2
-// would not wait for, its $.when calls back as jQuery 2's does, and a failed
-// engine call chains as PA's coherent.js chains one.
+// would not wait for, its $.when calls back as jQuery 2's does, a failure it
+// passes on reports nothing while a callback's throw does, and a failed engine
+// call chains as PA's coherent.js chains one.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -128,6 +129,58 @@ describe("fake-jquery .then", () => {
     );
     assert.equal(run.status, 0, run.stderr);
     assert.equal(run.stderr, "");
+  });
+
+  it("reports nothing when a failure passes a step with no error callback, as jQuery 2.1.4 does", () => {
+    for (const chain of [
+      "fake.rejected(1)",
+      "fake.rejected(1).done(() => {})",
+      "fake.rejected(1).then(() => {})",
+      "fake.rejected(1).then(undefined, () => 'v').then(() => {})",
+      "fake.when(fake.rejected(1), 2)",
+      "fake.when(fake.rejected(1), 2).done(() => {})",
+      "fake.when(fake.rejected(1), 2).then(() => {})",
+      "fake.createFakeJQuery().getJSON('x.json').done(() => {})",
+    ]) {
+      const run = runChain(chain + ";setTimeout(() => {}, 10);");
+      assert.equal(run.status, 0, chain + "\n" + run.stderr);
+      assert.equal(run.stderr, "", chain);
+    }
+  });
+
+  it("reports a callback's throw, however the chain goes on", () => {
+    for (const chain of [
+      "fake.resolved(1).done(() => { throw new Error('boom'); })",
+      "fake.rejected(1).fail(() => { throw new Error('boom'); })",
+      "fake.resolved(1).always(() => { throw new Error('boom'); })",
+      "fake.resolved(1).then(() => { throw new Error('boom'); }).then(() => {})",
+      "fake.rejected(1).then(undefined, () => { throw new Error('boom'); })",
+      "fake.when(1, 2).done(() => { throw new Error('boom'); })",
+      "fake.when(fake.rejected(1)).fail(() => { throw new Error('boom'); })",
+    ]) {
+      const run = runChain(chain + ";");
+      assert.notEqual(run.status, 0, chain);
+      assert.match(run.stderr, /Error: boom/, chain);
+    }
+  });
+
+  // In jQuery 2.1.4 the throw escapes through resolve(), so no .fail() sees it
+  // at all; the fake rejects as well, but cannot keep the report from it.
+  it("reports a callback's throw once even when a .fail() further down catches it", () => {
+    for (const chain of [
+      "fake.resolved(1).then(() => { throw new Error('boom'); })",
+      "fake.when(1, 2).then(() => { throw new Error('boom'); })",
+    ]) {
+      const run = runChain(
+        chain + ".fail((e) => seen.push('rejected: ' + e.message));",
+        true
+      );
+      assert.deepEqual(
+        JSON.parse(run.stdout).sort(),
+        ["rejected: boom", "uncaught: boom"],
+        chain
+      );
+    }
   });
 
   // jQuery ignores what these callbacks return.
