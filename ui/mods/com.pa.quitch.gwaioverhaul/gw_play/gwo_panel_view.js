@@ -265,19 +265,16 @@ define([
 
         // Co-op AI players, after the humans. Under shared tech they
         // field the host's loadout, under per-player tech their own.
-        _.forEach(
-          model.gwoCoopAi ? model.gwoCoopAi.panel() : [],
-          function (entry) {
-            var icon = raceIcon(entry.race);
-            commanders.push({
-              name: entry.name,
-              color: entry.colour ? gwoColour.rgb(entry.colour) : playerColour,
-              character: aiLoadout(entry.loadoutCardId),
-              iconFill: icon.fill,
-              iconOutline: icon.outline,
-            });
-          }
-        );
+        _.forEach(model.gwoCoopAi.panel(), function (entry) {
+          var icon = raceIcon(entry.race);
+          commanders.push({
+            name: entry.name,
+            color: entry.colour ? gwoColour.rgb(entry.colour) : playerColour,
+            character: aiLoadout(entry.loadoutCardId),
+            iconFill: icon.fill,
+            iconOutline: icon.outline,
+          });
+        });
 
         // Leaving the campaign refreshes the page, so that case needs no cleanup.
         _.forEach(_.keys(coopCommanderCache), function (cacheKey) {

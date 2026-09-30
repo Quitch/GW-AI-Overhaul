@@ -20,10 +20,7 @@ define([
     },
     // Support for GWO v4.2.2 and earlier
     always: function (inventory, context) {
-      if (
-        inventory.cards()[0].id === "gwc_start_subcdr" &&
-        inventory.cards()[0].minions
-      ) {
+      if (inventory.cards()[0].minions) {
         _.forEach(context.minions, function (minion) {
           inventory.minions.push(minion);
         });

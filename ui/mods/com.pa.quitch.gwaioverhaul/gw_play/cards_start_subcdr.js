@@ -187,7 +187,7 @@ define([
       }
 
       recordInventory = gwoBank.copyForApply(record.inventory);
-      cards = recordInventory && recordInventory.cards;
+      cards = recordInventory.cards;
       if (!_.isArray(cards)) {
         failSetup("invalid co-op player inventory");
         return result.promise();

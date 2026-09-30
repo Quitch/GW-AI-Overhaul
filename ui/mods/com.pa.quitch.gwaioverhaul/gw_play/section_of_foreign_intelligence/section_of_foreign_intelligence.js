@@ -10,12 +10,6 @@
   // shared/ai.js's BUFF_TYPES, filled once it loads, plus `commanders`, which
   // only v5.11.0 and earlier saves carry.
   var gwoBuffType = {};
-  var eradicationModes = [];
-  var eradicationModeNames = {
-    SubCommanders: "!LOC:Colonel",
-    Factories: "!LOC:Factory",
-    Fabbers: "!LOC:Fabber",
-  };
 
   try {
     model.gwoAvailableTechTooltip =
@@ -55,7 +49,7 @@
       return _.isUndefined(commander.faction) ? index + 1 : 0;
     };
 
-    var getFactionName = function (commander, currentFaction) {
+    var getFactionName = function (commander, currentFaction, GWFactions) {
       if (_.isUndefined(commander.faction)) {
         return {
           name: "",
@@ -67,20 +61,20 @@
         .game()
         .inventory()
         .getTag("global", "playerFaction");
-      var factionInfo = [
-        { name: "Legonis Machina", tooltip: "!LOC:Prefers vehicles." },
-        { name: "Foundation", tooltip: "!LOC:Prefers air and navy." },
-        { name: "Synchronous", tooltip: "!LOC:Prefers bots." },
-        { name: "Revenants", tooltip: "!LOC:Prefers orbital." },
-        {
-          name: "Cluster",
-          tooltip:
-            "!LOC:Prefers bots and vehicles; applies tech to structures.",
-        },
+      var factionTooltips = [
+        "!LOC:Prefers vehicles.",
+        "!LOC:Prefers air and navy.",
+        "!LOC:Prefers bots.",
+        "!LOC:Prefers orbital.",
+        "!LOC:Prefers bots and vehicles; applies tech to structures.",
       ];
+      // A copy: the ALLY suffix below must not reach shared/gw_factions.
       var faction = commander.mirrorMode
         ? { name: "Guardians", tooltip: "!LOC:A mystery." }
-        : factionInfo[commander.faction];
+        : {
+            name: GWFactions[commander.faction].name,
+            tooltip: factionTooltips[commander.faction],
+          };
 
       if (currentFaction === playerFaction) {
         faction.name += " (" + loc("!LOC:ALLY") + ")";
@@ -133,28 +127,6 @@
       return star.ai().cardName || "";
     };
 
-    var eradicatorModeNameBuilder = function (ai) {
-      var commander = loc("!LOC:Commander");
-      var modes = [commander];
-      _.forEach(eradicationModes, function (mode) {
-        if (ai["eradicationMode" + mode]) {
-          modes.push(loc(eradicationModeNames[mode]));
-        }
-      });
-
-      var append = "";
-
-      _.forEach(modes, function (mode, i) {
-        append += " ";
-        append += mode;
-        if (i !== modes.length - 1) {
-          append += ",";
-        }
-      });
-
-      return append;
-    };
-
     var convertBuffNumberToName = function (ai) {
       var buffs = ai.typeOfBuffs;
       var guardians = ai.mirrorMode;
@@ -205,6 +177,8 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_star_cards_view.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/star_threat.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/eradication_label.js",
+        "shared/gw_factions",
       ],
       function (
         gwoColour,
@@ -213,11 +187,12 @@
         gwoRefereeCoop,
         gwoStarCardsView,
         gwoRaces,
-        gwoStarThreat
+        gwoStarThreat,
+        eradicationLabel,
+        GWFactions
       ) {
         var starCardsView = gwoStarCardsView();
         _.assign(gwoBuffType, gwoAI.BUFF_TYPES, { commanders: 5 });
-        eradicationModes = gwoAI.ERADICATION_MODES;
 
         var getNumberOfCommanders = function (commander) {
           return gwoAI.commanderCount(commander);
@@ -257,7 +232,14 @@
             gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication")
           ) {
             gameModifiers.push(
-              loc("!LOC:Eradicate") + ":" + eradicatorModeNameBuilder(ai)
+              eradicationLabel(
+                {
+                  subCommanders: ai.eradicationModeSubCommanders,
+                  factories: ai.eradicationModeFactories,
+                  fabbers: ai.eradicationModeFabbers,
+                },
+                loc
+              )
             );
           }
           return gameModifiers;
@@ -283,7 +265,7 @@
           var numCommanders = getNumberOfCommanders(commander);
           // The race shows through the icon, not the name. See races.md.
           var raceDescriptor = gwoRaces.byId(commander.race);
-          var faction = getFactionName(commander, factionIndex);
+          var faction = getFactionName(commander, factionIndex, GWFactions);
 
           if (numCommanders > 1) {
             name = name.concat(" x", numCommanders);
