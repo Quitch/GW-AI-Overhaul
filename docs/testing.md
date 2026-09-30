@@ -18,12 +18,26 @@ Run one file with `node --test test/specs.test.js`. Run one test with
 `scripts/lib/amd-loader.js` loads shipped modules by stubbing `define()` and a
 handful of engine globals.
 
-The whole loader rests on one invariant. **Shipped files reference engine globals
+The whole loader rests on one rule. **Shipped files reference engine globals
 only inside function bodies, never at the top level of a `define()` factory.**
 The loader therefore deliberately leaves `api`, `model`, `ko`, `$`, `createjs`,
-`window` and `requireGW` _unstubbed_ at define time. A file that violates the
-rule then fails loudly and specifically. It does not silently pass against a
-fake engine.
+`window` and `requireGW` _unstubbed_ at define time. A file that breaks the rule
+then fails loudly and specifically. It does not silently pass against a fake
+engine.
+
+Two kinds of file are sanctioned exceptions:
+
+- **A module that seeds a `model.gwo*` modder-API array at load**:
+  `shared/loadouts.js`, `gw_play/referee_game_files.js`, and the shadowed
+  `gw_per_player_tech_referee.js`.
+- **A singleton built at load**: `shared/bank.js` and `gw_start/favourites.js`
+  construct their one instance at load, from `ko` observables, and the bank
+  reads `localStorage` then too.
+
+A test that loads such a file, or anything that requires one, sets those
+globals first: `model` for the first kind, `ko` (and `localStorage` for the
+bank) for the second. `scripts/lib/global-stubs.js` sets and restores them, and
+`scripts/lib/fake-knockout.js` supplies a `ko`.
 
 The loader has two entry points, and the difference between them matters:
 
@@ -51,7 +65,8 @@ those cards. For those sweeps, `registerModuleStub` is an opt-in escape hatch.
 It does **not** weaken the default.
 
 `scripts/lib/card-probe.js` takes that hatch, and so do `validate:ai-mods` and
-`test/coop_ai_effects.test.js`. With `shared/gw_common` stubbed, every card
+five tests: `coop_ai_effects`, `cost_artillery`, `host_war`, `modder_api`, and
+`save` (each `test/<name>.test.js`). With `shared/gw_common` stubbed, every card
 loads. That sits oddly beside `validate:cards`'s `MIN_CHECKED` floor until you
 notice that they answer different questions. The validator refuses the hatch on
 purpose. Its number is therefore what can be checked with no stand-in at all.
@@ -104,16 +119,17 @@ primitive conversion traps. Arithmetic on a stubbed value
 is fine here.
 
 **`validate:schemas` carries `KNOWN_TEST_TYPES`**, every `test_type` the engine
-implements. That list is harvested from the base game's own AI data. The engine
-does not report an unrecognised value as an error. The condition simply never
-validates, so the build entry silently never fires. That is how
-`HasEcoForAdvanced` (the real test is `HaveEcoForAdvanced`) went unnoticed.
+implements. That list was collected by hand from the base game's own AI data:
+no script harvests it. The engine does not report an unrecognised value as an
+error. The condition simply never validates, so the build entry silently never
+fires. That is how `HasEcoForAdvanced` (the real test is `HaveEcoForAdvanced`)
+went unnoticed.
 
-CI has no base install, so this list has to be committed. **Re-harvest it after
-a PA patch adds tests.**
+CI has no base install, so this list has to be committed. **Collect it again, by
+hand, after a PA patch adds tests.**
 
-**`test/fixtures/unit_types.json` is harvested the same way.**
-`npm run harvest:unit-types` writes it. It holds every listed unit's
+**`test/fixtures/unit_types.json` is harvested from the install too, by a
+script.** `npm run harvest:unit-types` writes it. It holds every listed unit's
 effective `unit_types`, with their `buildable_types`. The sources are the
 installed game (`pa_ex1` over `pa`) and the race and add-on server mods on
 disk. A server mod on disk is a `download/` zip or a `server_mods/` folder.
@@ -261,9 +277,11 @@ denylist would therefore rewrite working CSS into CSS the engine drops.
 `scripts/lib/ai-path-fixtures.js` holds the shared scenario matrix, so no test
 file reinvents its own list. Two things about it are load-bearing:
 
-- `buildGame()`/`installModel()` return the **same object references** on every
-  call. That matches production code, which calls `model.game()`/`game.galaxy()`
-  repeatedly rather than caching a snapshot.
+- `model.game()` returns the same game on every call, and the game's
+  `inventory()`, and its star's `system()` and `ai()`, the same objects. That
+  matches production code, which calls them repeatedly rather than caching a
+  snapshot. `galaxy()` is the exception: each call builds a new wrapper, around
+  the same star.
 - A suite passes connected clients separately to
   `installModel(game, connectedClients)`, **not** through `buildGame`'s options.
   `useModel()` is the same installer with the `afterEach` restore built in. A
@@ -520,6 +538,7 @@ factory, it is re-exported through:
 ```js
 // eslint-disable-next-line no-undef
 if (typeof module !== "undefined" && module.exports) {
+  // eslint-disable-next-line no-undef
   module.exports = { applyAiMods: applyAiMods };
 }
 ```
@@ -535,7 +554,8 @@ never returns. A search for `typeof module` under `ui/` lists them all.
 **A test file is named for the module it loads, not the feature it belongs to.**
 Once the pure logic is extracted, the bootstrap that is left has nothing the
 AMD harness can reach, and usually no test. `gw_play/coop_ping.js` injects a
-button and calls `requireGW`, and nothing else.
+button, defines the `model` members it binds to, and hands the modules it loads
+through `requireGW` their collaborators.
 
 That is expected, but it only stays visible if the tests around it are named
 honestly. `coop_ping_operators.test.js` and `coop_ping_marker.test.js` say which

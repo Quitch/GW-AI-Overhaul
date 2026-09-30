@@ -3,8 +3,9 @@
 // Shared fixtures for testing ai_path resolution: the minimal model.game()-shaped
 // surface those files read, not a full GW.Game.
 //
-// buildGame()/installModel() return the same object references on every call,
-// matching production code, which re-reads rather than snapshotting.
+// model.game(), and the game's inventory() and its star's system() and ai(),
+// return the same objects on every call, matching production code, which
+// re-reads rather than snapshotting. galaxy() builds a new wrapper each call.
 
 var afterEach = require("node:test").afterEach;
 
@@ -74,12 +75,6 @@ function makeAiDescriptor(overrides) {
   );
 }
 
-// -> { game, star, ai, inventory }. The non-obvious options:
-//   subcommanderType drives inventory's global:playerFaction tag
-//   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
-//   minions are the player's Sub Commanders, inventory.minions()
-//   viewerInventoryData feeds a fake game.findCoopPlayerInventoryData(client)
-//
 // The origin star's system: its gwaio settings block only when a brain is
 // recorded, as a war saved before GWO existed carries none.
 function buildSystem(opts, aiInUse, aiAllyInUse) {
@@ -116,6 +111,12 @@ function buildSystem(opts, aiInUse, aiAllyInUse) {
   return { gwaio: gwaio };
 }
 
+// -> { game, star, ai, inventory }. The non-obvious options:
+//   subcommanderType drives inventory's global:playerFaction tag
+//   smartSubcommanders adds the subcommander tactics tech card to inventory.cards()
+//   minions are the player's Sub Commanders, inventory.minions()
+//   viewerInventoryData feeds a fake game.findCoopPlayerInventoryData(client)
+//
 // Connected clients go to installModel(), not here.
 function buildGame(options) {
   var opts = options || {};

@@ -75,8 +75,9 @@ unsuppressible parse error that silently skips every other rule in the file.
 ## Available libraries
 
 The globals in every scene are **lodash** (`_`), **jQuery** (`$`), **Knockout**
-(`ko`), **createjs**, and **`Math.seedrandom`**. `ui/main/shared/js/thirdparty`
-holds what else the engine ships.
+(`ko`), and **`Math.seedrandom`**, all from stock's `ui/boot.json`. **createjs**
+(EaselJS) is not among them: only `gw_play.html` loads it.
+`ui/main/shared/js/thirdparty` holds what else the engine ships.
 
 `Math.seedrandom` exists in the game but **not** in Node, so nothing on a
 testable path can use it. That is why `shared/gwo_rng.js` exists and carries its
@@ -143,7 +144,7 @@ Guard when the data is:
   template. The validators cover shipped cards only ([`tech-cards.md`](tech-cards.md)).
 - **Remote**: an operator payload from another peer ([`coop.md`](coop.md)).
 - **Persisted**: an older GWO's save, or user-writable `localStorage`. Name the
-  version the field appeared in, as `shared/deal.js` does.
+  version the field appeared in, as `shared/decks.js`'s `cardsFor` does.
 - **Scene- or mod-conditional**: a symbol genuinely absent from a scene the
   module also loads into, or a base path another mod may own.
 - **Optional by contract**: `rng` on `deal()`, `keep`/`discard`.
@@ -286,8 +287,9 @@ are fixable. So a mis-set rule rewrites working CSS into dropped CSS.
 `test/stylelint_config.test.js` is what stops that.
 
 CSS load order is also not what it looks like. Mod CSS is injected at runtime
-via `head.appendChild` in `loadCSS`, fired from a delayed `ko.computed`. So it
-loads **after** the scene's own static `<link>` stylesheets, not before.
+via `head.appendChild` in `loadCSS`, when the scene loads its mods (in
+`gw_start`, from a delayed `ko.computed`). So it loads **after** the scene's own
+static `<link>` stylesheets, not before.
 Overrides should out-specify rather than rely on source order.
 
 ## Localisation
@@ -308,8 +310,8 @@ Do not restore it in a shadowed file "to match stock". It has no effect and no
 consumer in this repo.
 
 `loc()` lookups are **case sensitive**, and the shipped translation tables are
-inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has 14.
-`LOCKED` is the only casing shipped at all. That is why several UI strings
+inconsistent about casing. `PLAYER` has entries in 20 locales where `Player` has 14,
+and `LOCKED` in 18 where `Locked` has 14. That is why several UI strings
 are requested in a shouty casing and then down-cased in CSS rather than written
 naturally. `locTree` only rewrites an element's `innerHTML`, so attributes (and
 therefore CSS classes) survive translation. That is what makes the trick work.

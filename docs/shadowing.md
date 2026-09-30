@@ -229,7 +229,8 @@ base-game modules all the same:
 | `gw_play/gwo_panel.js` (GWO's own)          | `gw_play/gwo_panel_view.js`                                                                                               |
 | `gw_start/setup.js` (GWO's own)             | `gw_start/war_generation.js`, `gw_start/ai_population.js`, `gw_start/war_record.js`, `gw_start/war_generation_failure.js` |
 
-The glue file keeps only the `model`/`ko`/`api` glue and is coverage-excluded.
+The glue file keeps only the `model`/`ko`/`api` glue and is coverage-excluded,
+bar `gw_play/referee_config.js`, which the harness loads, so it stays measured.
 The sibling holds the logic and is unit-tested. Do **not** instead hoist helpers
 to file top level. In PA's RequireJS runtime that creates a `window` global. See
 [`constraints.md`](constraints.md).

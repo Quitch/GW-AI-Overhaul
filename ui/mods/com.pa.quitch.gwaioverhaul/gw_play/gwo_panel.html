@@ -73,8 +73,8 @@
           <div class="td"><loc>Scaling For:</loc></div>
           <!-- The count and the word are separate spans because .gwo-sentence-case
           works through ::first-letter, and on "1 Player" the first letter is the
-          digit. The word carries the class on its own so PLAYER - the only casing the
-          game ships an entry for - is cased back down after translation. -->
+          digit. The word carries the class on its own so PLAYER - the casing with the
+          widest locale coverage - is cased back down after translation. -->
           <div class="data">
             <span data-bind="text: $root.gwoCoopPlayerScalingCount"></span>
             <span
@@ -93,7 +93,7 @@
         </div>
         <div class="tr">
           <div class="td"><loc>Player Slots:</loc></div>
-          <!-- LOCKED is the only casing the game ships an entry for, so gwo_panel.js
+          <!-- LOCKED is the casing with the widest locale coverage, so gwo_panel.js
           asks for that id and .gwo-sentence-case cases it back down here. The span is
           deliberate: the class sets display: inline-block for ::first-letter, which
           would fight the .data cell's display: table-cell if applied to it directly. -->

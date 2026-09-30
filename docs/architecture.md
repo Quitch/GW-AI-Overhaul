@@ -29,10 +29,10 @@ nothing else. `validate:docs` checks this table against that block:
 | ---------------------------- | -------------------------------------------------------------------------------------------------- |
 | `gw_start`                   | War creation: the setup lobby, difficulty/AI pickers, loadout selection.                           |
 | `gw_play`                    | The galaxy map and everything during a war: cards, referees, panels, intel, ping, co-op selection. |
-| `gw_war_over`                | Victory/defeat bookkeeping: records the highest difficulty defeated.                               |
-| `live_game`                  | In-battle menu patches (surrender/continue with more than two teams; Report a Galactic War Bug).   |
+| `gw_war_over`                | A won war only: records the highest difficulty won with its loadout, for the loadout's badge.      |
+| `live_game`                  | Menu patches (surrender/continue past two teams; Report a Galactic War Bug); win-conditions text.  |
 | `live_game_options_bar`      | Win-conditions text on the in-battle options bar.                                                  |
-| `shared_build`               | Planetary radar behaviour.                                                                         |
+| `shared_build`               | Moves the Deep Space Radar's build-bar slot off the radar jammer's.                                |
 | `start`                      | Main menu.                                                                                         |
 | `gw_coop_per_player_loadout` | Per-player loadout selection for co-op viewers.                                                    |
 | `gw_lobby`                   | The battle lobby: the referee's army specs win over stock's local rebuild.                         |
@@ -148,11 +148,11 @@ panel that `model.gwoLaunchProgress` drives. That object is a public surface:
   and stages during a launch. The mirroring wraps the methods themselves, so it
   also covers stages that other mods (e.g. GW Server Mods) report. Stage text
   arrives already localised in the host's language.
-- Stock sets `launchingFight` only after the war is saved. A mod may wrap
-  `model.fight` to do slow work first (GW Server Mods mounts server mods
-  there). The panel covers such a mod from the click only if GWO's wrapper is
-  outside the mod's own wrapper. That means the mod must load before GWO, with
-  a lower `priority` than GWO's 200. Such a mod resolves
+- Stock sets `launchingFight` only once its checks pass and it starts saving
+  the war. A mod may wrap `model.fight` to do slow work first (GW Server Mods
+  mounts server mods there). The panel covers such a mod from the click only if
+  GWO's wrapper is outside the mod's own wrapper. That means the mod must load
+  before GWO, with a lower `priority` than GWO's 200. Such a mod resolves
   `model.gwoLaunchProgress` at call time, never at load, because the object
   does not exist yet when that mod runs. If a later-loading mod wraps
   `model.fight` instead, the panel still appears, but only once

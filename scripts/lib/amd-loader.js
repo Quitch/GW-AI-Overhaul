@@ -1,8 +1,9 @@
 "use strict";
 
 // Loads GWO's shipped AMD modules under plain Node, without the game's Chromium
-// UI runtime. Safe because shipped files only touch engine globals inside function
-// bodies, never at define time. See testing.md.
+// UI runtime. Safe because shipped files touch engine globals only inside
+// function bodies, bar the few testing.md names, whose tests set those globals
+// before loading them. See testing.md, "The AMD harness".
 
 const fs = require("node:fs");
 const path = require("node:path");

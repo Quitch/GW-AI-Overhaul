@@ -57,6 +57,7 @@ Please attach a screenshot of the top-right GWO panel, including any Co-Op Setti
 - Size:
 - Opponent AI:
 - Ally AI:
+- Co-op AI:
 - Deck:
 - Options:
 - Faction:
