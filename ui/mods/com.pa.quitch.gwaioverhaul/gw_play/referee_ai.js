@@ -179,9 +179,7 @@ define([
 
         _.forEach(build.build_conditions, function (testArray) {
           _.remove(testArray, function (object) {
-            if (_.isEqual(object, value)) {
-              return object;
-            }
+            return _.isEqual(object, value);
           });
         });
       });

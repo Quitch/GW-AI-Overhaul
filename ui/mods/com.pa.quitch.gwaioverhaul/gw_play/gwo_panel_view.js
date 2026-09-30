@@ -75,10 +75,10 @@ define([
           id: id,
           brain: gwoBrainTable.resolve(
             gwoSettings.aiByRace,
-            gwoSettings.ai,
-            gwoSettings.aiAlly,
             side,
             id,
+            gwoSettings.ai,
+            gwoSettings.aiAlly,
             gwoSettings.aiCoop
           ),
         };

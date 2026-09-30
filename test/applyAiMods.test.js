@@ -225,6 +225,32 @@ describe("applyAiMods - remove", () => {
     ]);
     assert.deepEqual(json.build_list[0].build_conditions, [[]]);
   });
+
+  it("keeps every test that does not equal the value", () => {
+    const json = buildJson([
+      {
+        to_build: "Bot",
+        build_conditions: [
+          [
+            { test_type: "AloneOnPlanet", boolean: false },
+            { test_type: "AloneOnPlanet", boolean: true },
+          ],
+          [{ test_type: "HaveEcoForAdvanced", boolean: true }],
+        ],
+      },
+    ]);
+    applyAiMods(json, [
+      {
+        op: "remove",
+        toBuild: "Bot",
+        value: { test_type: "AloneOnPlanet", boolean: false },
+      },
+    ]);
+    assert.deepEqual(json.build_list[0].build_conditions, [
+      [{ test_type: "AloneOnPlanet", boolean: true }],
+      [{ test_type: "HaveEcoForAdvanced", boolean: true }],
+    ]);
+  });
 });
 
 describe("applyAiMods - new", () => {

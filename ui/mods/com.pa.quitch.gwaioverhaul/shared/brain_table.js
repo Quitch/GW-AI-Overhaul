@@ -108,7 +108,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
   // string for that side, coerced through brainFor either way. MLA has no
   // row - the strings ARE the MLA row. A row without a co-op cell follows its
   // opponent.
-  var resolve = function (stored, ai, aiAlly, side, raceId, aiCoop) {
+  var resolve = function (stored, side, raceId, ai, aiAlly, aiCoop) {
     var id = races.normalizeId(raceId);
     var base = baseFor(side, ai, aiAlly, aiCoop);
     var value = base;
@@ -139,9 +139,9 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
       }
 
       record[id] = {
-        enemy: resolve(stored, ai, aiAlly, "enemy", id, aiCoop),
-        ally: resolve(stored, ai, aiAlly, "ally", id, aiCoop),
-        coop: resolve(stored, ai, aiAlly, "coop", id, aiCoop),
+        enemy: resolve(stored, "enemy", id, ai, aiAlly, aiCoop),
+        ally: resolve(stored, "ally", id, ai, aiAlly, aiCoop),
+        coop: resolve(stored, "coop", id, ai, aiAlly, aiCoop),
       };
     });
 
