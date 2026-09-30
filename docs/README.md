@@ -71,7 +71,8 @@ covers each one in full:
   `/pa/terrain/*.json` hangs every player at loading with no error. The hang
   does not happen when GWO or GW Server Mods supplied the mod.
   → [galaxy.md](galaxy.md)
-- **`filter`, `animation`, `@keyframes` and `mask-*` are all inert in Chrome 40.**
+- **`filter`, `animation`, `@keyframes` and `mask-*` (bar `mask-type`) are all
+  inert in Chrome 40.**
   → [constraints.md](constraints.md)
 - **`justify-content: space-evenly` parses and does nothing.**
   → [constraints.md](constraints.md)

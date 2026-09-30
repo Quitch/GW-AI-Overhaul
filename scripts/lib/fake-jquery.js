@@ -7,7 +7,8 @@
 // `promise` method; an engine or native promise is passed on unwaited. The
 // native .then below would wait for one, so the test fails instead - out of
 // band too, so a .fail() further down the chain cannot swallow it.
-function thenCallback(fn) {
+// `failWith`, given for an error callback, takes any other return value.
+function thenCallback(fn, failWith) {
   if (typeof fn !== "function") {
     return fn;
   }
@@ -28,8 +29,27 @@ function thenCallback(fn) {
       });
       throw error;
     }
+    if (failWith && !isJqueryPromise(returned)) {
+      return failWith(returned);
+    }
     return returned;
   };
+}
+
+// jQuery 2 fails the next promise with what an error callback returns,
+// unless it has promise(), where native .then would recover. Nothing reports
+// that failure in the game, so the promise it fails is marked handled. Both
+// steps use native promises: the decorated .then would fail a promise of its
+// own each time, and adopting a decorated promise calls it, so neither would
+// ever end.
+function jqueryThen(chain, onDone, onFail) {
+  var next;
+  var failNext = function (value) {
+    Promise.prototype.then.call(next, undefined, function () {});
+    return Promise.reject(value);
+  };
+  next = chain(thenCallback(onDone), thenCallback(onFail, failNext));
+  return next;
 }
 
 // The Promise itself, augmented, rather than a wrapper - so `.then` chains on
@@ -39,6 +59,11 @@ function thenCallback(fn) {
 // of one.
 function decorate(promise) {
   var chain = promise.then.bind(promise);
+
+  // A jqXHR is no Promise, so Promise.resolve and await wrap it in a native
+  // one, whose .then recovers. They hand back a Promise whose constructor is
+  // Promise unwrapped, so this one must not have that constructor.
+  promise.constructor = undefined;
 
   promise.promise = function () {
     return promise;
@@ -56,7 +81,7 @@ function decorate(promise) {
     return promise;
   };
   promise.then = function (onDone, onFail) {
-    return decorate(chain(thenCallback(onDone), thenCallback(onFail)));
+    return decorate(jqueryThen(chain, onDone, onFail));
   };
 
   return promise;
@@ -345,7 +370,7 @@ function when() {
     return self;
   };
   self.then = function (onDone, onFail) {
-    return chain(thenCallback(onDone), thenCallback(onFail));
+    return jqueryThen(chain, onDone, onFail);
   };
   self.done = function (fn) {
     chain(fn);

@@ -259,6 +259,17 @@ describe("ending a won war", () => {
     assert.equal(game.turnState(), "end");
     assert.equal(saves.length, 1);
   });
+
+  // gw_play applies a real battle's result before mod scripts load, so the war
+  // is already won when the factory runs and gameState never changes after.
+  it("ends a war already won when the scene opens", () => {
+    const { game, saves, flush } = setup();
+
+    flush();
+
+    assert.equal(game.turnState(), "end");
+    assert.equal(saves.length, 1);
+  });
 });
 
 // The Guardians carry ai.boss, so beating them can be what wins the war - and
