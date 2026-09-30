@@ -480,11 +480,13 @@ army.
 
 A card's AI mods reach a race AI's tree aimed at the race's keys, where the
 race's own units can do what they ask ([`ai-pipeline.md`](ai-pipeline.md),
-"Race trees"). Space Excavation Commander's opening orbital launcher reaches
-Legion, Bugs, and Exiles Sub Commanders this way. A descriptor that names a
-unit its card remakes stays on MLA with the unit. So a card that pushes a
-`unit_types` or `buildable_types` change onto an MLA unit keeps its AI mods for
-that unit on MLA too, even where the race's unit already carries the tag.
+"Race trees"). A descriptor that names a unit its card remakes stays on MLA
+with the unit. So a card that pushes a `unit_types` or `buildable_types` change
+onto an MLA unit keeps its AI mods for that unit on MLA too, even where the
+race's unit already carries the tag. The Tactical Nuke, Planetary Excavation,
+Space Excavation, Defense Tech, and Artillery Commander loadouts remake the MLA
+units they change, so their changes to those units would not reach a race
+player's units. They are in `cards_deal_helpers.MLA_ONLY` for that reason.
 
 ### Third-party decks
 

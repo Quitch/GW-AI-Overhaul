@@ -690,6 +690,11 @@ describe("races", () => {
       "gwaio_protocol_killswitch",
       "gwaio_enable_planetaryradar",
       "gwaio_start_rapid",
+      "nem_start_nuke",
+      "nem_start_planetary",
+      "nem_start_deepspace",
+      "nem_start_tower_rush",
+      "gwc_start_artillery",
     ]);
     assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_ant"), true);
     assert.equal(helpers.mlaOnlyCard("gwaio_upgrade_subcommander_1"), false);
