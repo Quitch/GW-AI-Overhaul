@@ -70,6 +70,21 @@ describe("HTML controls", () => {
     assert.deepEqual(Array.from(keys.keys()), ["Looked Up", "Shouted"]);
   });
 
+  it("reads a whole open tag as the snippet when an attribute holds a >", () => {
+    const button =
+      '<input type="button" value="Reroll Tech" data-bind="visible: a > b" />';
+    const field =
+      '<input type="text" data-bind="attr: { placeholder: \'!LOC:Find\' }, visible: a > b" />';
+    const keys = extractFrom([at(PANEL, [button, field])]);
+
+    assert.deepEqual(
+      ["Reroll Tech", "Find"].map((key) =>
+        sitesOf(keys, key).map((site) => [site.role, site.snippet])
+      ),
+      [[["html-control", button]], [["placeholder", field]]]
+    );
+  });
+
   it("leaves out text with no letter in it", () => {
     const keys = extractFrom([
       at(PANEL, [

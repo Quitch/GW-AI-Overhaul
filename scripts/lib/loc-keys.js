@@ -239,16 +239,16 @@ function htmlElement(source, index) {
     return source.slice(Math.max(0, index - 100), index + 100);
   }
   const tag = /^<([a-zA-Z][\w-]*)/.exec(source.slice(open));
-  const tagEnd = source.indexOf(">", index);
-  if (!tag || tagEnd < 0) {
+  const openEnd = tagEnd(source, open);
+  if (!tag || openEnd >= source.length) {
     return source.slice(open, index + 100);
   }
-  const close = source.indexOf("</" + tag[1] + ">", tagEnd);
-  const nextOpen = source.indexOf("<" + tag[1], tagEnd);
+  const close = source.indexOf("</" + tag[1] + ">", openEnd);
+  const nextOpen = source.indexOf("<" + tag[1], openEnd);
   if (close >= 0 && (nextOpen < 0 || close < nextOpen)) {
     return source.slice(open, close + tag[1].length + 3);
   }
-  return source.slice(open, tagEnd + 1);
+  return source.slice(open, openEnd + 1);
 }
 
 function fileFacts(file, source) {
