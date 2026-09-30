@@ -134,10 +134,6 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/bank.js"], function (
           apply(addCard(saved, card, loadout)),
         ]);
       },
-      clear: function () {
-        cache = {};
-        order = [];
-      },
     };
   };
 

@@ -11,7 +11,6 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/launch_progress.html"
       )
     );
-    locTree($(".gwo-launch-progress"));
 
     // The observables exist before the bindings and before any mod loaded after
     // GWO can read them; the methods arrive with the module below. See

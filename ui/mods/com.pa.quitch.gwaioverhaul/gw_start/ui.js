@@ -36,7 +36,6 @@
       factionScaling: ko.observable(true),
       systemScaling: ko.observable(true),
       simpleSystems: ko.observable(false),
-      easierStart: ko.observable(true),
       ai: ko.observable("Titans"),
       paLore: ko.observable(false),
       techCardDeck: ko.observable("Expanded"),
@@ -158,7 +157,6 @@
       systemScaling: ko.observable(false),
       simpleSystems: ko.observable(false),
       largePlanets: ko.observable(false),
-      easierStart: ko.observable(false),
       paLore: ko.observable(false),
       staticTech: ko.observable(false),
       uniqueRaces: ko.observable(false),
@@ -171,7 +169,6 @@
       draft.systemScaling(difficultySettings.systemScaling());
       draft.simpleSystems(difficultySettings.simpleSystems());
       draft.largePlanets(difficultySettings.largePlanets());
-      draft.easierStart(difficultySettings.easierStart());
       draft.paLore(difficultySettings.paLore());
       draft.staticTech(difficultySettings.staticTech());
       draft.uniqueRaces(difficultySettings.uniqueRaces());
@@ -193,7 +190,6 @@
       difficultySettings.systemScaling(draft.systemScaling());
       difficultySettings.simpleSystems(draft.simpleSystems());
       difficultySettings.largePlanets(draft.largePlanets());
-      difficultySettings.easierStart(draft.easierStart());
       difficultySettings.paLore(draft.paLore());
       difficultySettings.staticTech(draft.staticTech());
       difficultySettings.uniqueRaces(draft.uniqueRaces());

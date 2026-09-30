@@ -226,15 +226,6 @@ define([
       return !hasUnit(inventoryUnits, units);
     },
 
-    // Substring rather than a prefix test because the shipped English locales are "en"
-    // and "en-US", and Chrome 40's startsWith ignores its second argument. detectLanguage
-    // returns nothing when the engine has no locale to report, and the source strings are
-    // English, so that case is English too.
-    isEnglish: function () {
-      var language = i18n.detectLanguage();
-      return !language || _.includes(language, "en");
-    },
-
     withSlot: withSlot,
 
     loadoutIcon: function (loadoutId) {

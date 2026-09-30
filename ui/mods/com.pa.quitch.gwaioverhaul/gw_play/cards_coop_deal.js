@@ -266,26 +266,21 @@ define([
           host_tech_card_deal_history: game.hostTechCardDealHistory(),
         };
 
-        if (_.isFunction(model.send_message)) {
-          model.send_message(
-            "set_player_pending_tech_cards",
-            payload,
-            function (success, response) {
-              if (!success) {
-                result.reject(
-                  "set_player_pending_tech_cards failed response=" +
-                    JSON.stringify(response || {})
-                );
-                return;
-              }
-
-              result.resolve(updates);
+        model.send_message(
+          "set_player_pending_tech_cards",
+          payload,
+          function (success, response) {
+            if (!success) {
+              result.reject(
+                "set_player_pending_tech_cards failed response=" +
+                  JSON.stringify(response || {})
+              );
+              return;
             }
-          );
-        } else {
-          model.sendCampaignAction("set_player_pending_tech_cards", payload);
-          result.resolve(updates);
-        }
+
+            result.resolve(updates);
+          }
+        );
       });
 
       return result.promise();

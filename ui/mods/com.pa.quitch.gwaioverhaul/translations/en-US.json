@@ -1637,7 +1637,7 @@
   },
   "Galactic War Overhaul": {
     "message": "Galactic War Overhaul",
-    "description": "Name of this mod, used in six places: the sub-menu button on the main menu that enters Galactic War Overhaul (start), the title of the war setup screen, the heading of the war-info panel on the galaxy map, and the name of the mod's own full tech-card deck (deck picker and \"Deck:\" row, matching \"GALACTIC WAR OVERHAUL\" in the deck tooltip). Proper noun, title case, no punctuation; translate every site identically (or leave as the mod's name). (gwo_panel.html, gwo_panel.js, ui.js, decks.js, menu.html, menu_old.html)"
+    "description": "Name of this mod, used in five places: the sub-menu button on the main menu that enters Galactic War Overhaul (start), the title of the war setup screen, the heading of the war-info panel on the galaxy map, and the name of the mod's own full tech-card deck (deck picker and \"Deck:\" row, matching \"GALACTIC WAR OVERHAUL\" in the deck tooltip). Proper noun, title case, no punctuation; translate every site identically (or leave as the mod's name). (gwo_panel.html, gwo_panel.js, ui.js, decks.js, menu.html)"
   },
   "Galata Upgrade Tech": {
     "message": "Galata Upgrade Tech",

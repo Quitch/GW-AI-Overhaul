@@ -24,6 +24,7 @@
 - Titan Tech and Planetary Radar Tech are no longer offered for units that cannot build them: the Angel, which Air Factory Upgrade Tech gives, and a Cluster player's Colonel Sub Commanders
 - The basic and advanced fabricator groups that card mods name no longer include the Barnacle, Stitch, Mend, and Angel, which have combat fabricator groups of their own - see the `New-GW-Cards` template
 - About one galaxy in fifty, most often a small one, no longer has far more gates between its stars than usual, with up to nine on one star, so each seed that made such a galaxy now makes a different war
+- Card mods can no longer call `gwoCard.isEnglish`, which Galactic War Overhaul's own cards stopped using; give a card one `!LOC:` text and the game translates it
 
 ### Bugfix
 
