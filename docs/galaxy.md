@@ -397,6 +397,32 @@ this order:
 
 A system that yields none of them is dropped with a warning.
 
+The quantity is armies, not humans. Map makers use `players` to count humans, and
+humans share an army, so a declared `[2,10]` on two landing zones is two armies of
+five. The zone count caps the declared maximum, and the minimum follows it down rather
+than inverting. Without that cap, two structurally identical maps land eight brackets
+apart purely because one carries a `players` key.
+
+Two rules make the brackets cover the galaxy. The lowest-minimum, smallest-range bracket
+has its minimum set to **0**, because `star.distance()` starts at 0 and no derived range
+starts below 2. A distance above every bracket **clamps** to the highest. That is the
+same membership-plus-clamp shape the stock template-loader uses.
+
+Selection is **ordered consumption**, not a draw. The pool is ordered by maximum armies
+(shuffled within equal maxima, from the seeded `rng`, once). Stars are served in
+distance order, and each takes the first unused system that still fits. Nearer stars
+therefore claim the smaller systems, and no system repeats until every eligible one is
+placed. A pool smaller than the galaxy exhausts and starts reusing rather than leaving
+a star empty.
+
+`bracketsFrom` **sorts the pool by name** before grouping, and that sort is load-bearing
+for determinism rather than cosmetic. Shared Systems assembles the pool as its sources
+resolve. It pushes remote servers and map packs in completion order, so the order
+differs between scene loads. This was observed directly, with one source moving from
+third to twelfth. The shuffle keys above are assigned in pool order. Without the sort,
+the same seed would therefore place different systems whenever more than one source
+was selected.
+
 A system is also dropped, with a warning naming the biome, when any planet's
 `generator.biome` is not one the Galactic War server can load. Map packs carry biomes
 from server mods (`oasis` from _multiple Biomes for System Designers_, for one). GW
@@ -423,6 +449,11 @@ textures) is a provider only with GW Server Mods active, which mounts every acti
 server mod for a GW battle. Without GW Server Mods such a system is dropped as before.
 `selectorFor` stamps the providing mods onto the placed copy as `gwoBiomeMods`, so
 battle launch reads that stamp instead of resolving again.
+
+This path bypasses wondible's `withoutBrokenSystems`, so its name and `_.matches`
+blocklists no longer apply, and the screen above replaces its stock-biome whitelist.
+The `starting_planet` backfill is reproduced on the returned copy. The pool is never
+mutated, because My Systems is a live IndexedDB row.
 
 ### Biome mods in a GW battle
 
@@ -493,37 +524,6 @@ mod later is enough.
 
 A co-op viewer needs no biome mod installed to join such a battle. It reads the
 cooked copy from `gw_config`, at `coui://pa/terrain/<biome>.json`.
-
-The quantity is armies, not humans. Map makers use `players` to count humans, and
-humans share an army, so a declared `[2,10]` on two landing zones is two armies of
-five. The zone count caps the declared maximum, and the minimum follows it down rather
-than inverting. Without that cap, two structurally identical maps land eight brackets
-apart purely because one carries a `players` key.
-
-Two rules make the brackets cover the galaxy. The lowest-minimum, smallest-range bracket
-has its minimum set to **0**, because `star.distance()` starts at 0 and no derived range
-starts below 2. A distance above every bracket **clamps** to the highest. That is the
-same membership-plus-clamp shape the stock template-loader uses.
-
-Selection is **ordered consumption**, not a draw. The pool is ordered by maximum armies
-(shuffled within equal maxima, from the seeded `rng`, once). Stars are served in
-distance order, and each takes the first unused system that still fits. Nearer stars
-therefore claim the smaller systems, and no system repeats until every eligible one is
-placed. A pool smaller than the galaxy exhausts and starts reusing rather than leaving
-a star empty.
-
-`bracketsFrom` **sorts the pool by name** before grouping, and that sort is load-bearing
-for determinism rather than cosmetic. Shared Systems assembles the pool as its sources
-resolve. It pushes remote servers and map packs in completion order, so the order
-differs between scene loads. This was observed directly, with one source moving from
-third to twelfth. The shuffle keys above are assigned in pool order. Without the sort,
-the same seed would therefore place different systems whenever more than one source
-was selected.
-
-This path bypasses wondible's `withoutBrokenSystems`, so its name and `_.matches`
-blocklists no longer apply, and the screen above replaces its stock-biome whitelist.
-The `starting_planet` backfill is reproduced on the returned copy. The pool is never
-mutated, because My Systems is a live IndexedDB row.
 
 ## Factions
 

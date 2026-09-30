@@ -150,7 +150,7 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   share it (the Dox's ammo also arms an advanced vehicle).
 - **`unit_list.json` is authoritative.** A race's units are the list's. A
   spec that its AI unit map names but its list lacks is a bug in the mod's AI
-  data (Bugs' Evolution Chambers). This repo never adds a workaround for it.
+  data. This repo never adds a workaround for it.
 - **A race unit in a cell vanilla never fills is granted only when something
   granted can build it** (`buildable_types`, evaluated by
   `shared/build_types.js`). That is how Bugs' research unlock tokens travel
