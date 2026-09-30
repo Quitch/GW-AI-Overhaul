@@ -120,10 +120,7 @@ describe("a viewer that has chosen a star", () => {
     selection(5);
     const move = replayMove(2);
     move.fail();
-    await move.applying.then(
-      () => {},
-      () => {}
-    );
+    await Promise.resolve(move.applying).catch(() => {});
 
     assert.equal(selection(), 5);
   });
