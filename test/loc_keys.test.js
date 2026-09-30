@@ -71,6 +71,46 @@ describe("HTML controls", () => {
     assert.deepEqual(Array.from(keys.keys()), ["Looked Up", "Shouted"]);
   });
 
+  it("keys an input's placeholder, which only data-noloc skips", () => {
+    const keys = extractFrom([
+      at(PANEL, [
+        '<input type="text" placeholder=" Search Stars " />',
+        '<input type="button" value="Go" placeholder="Pick One" />',
+        '<input placeholder="Kept English" data-noloc />',
+        '<input placeholder="Still Looked Up" noloc="true" />',
+        '<input placeholder="50%" />',
+      ]),
+    ]);
+
+    assert.deepEqual(
+      Array.from(keys, ([key, entry]) => [
+        key,
+        entry.sites.map((site) => [site.role, site.line]),
+      ]),
+      [
+        ["Search Stars", [["placeholder", 1]]],
+        ["Go", [["html-control", 2]]],
+        ["Pick One", [["placeholder", 2]]],
+        ["Still Looked Up", [["placeholder", 4]]],
+      ]
+    );
+  });
+
+  it("reads a whole open tag as the snippet when an attribute holds a >", () => {
+    const button =
+      '<input type="button" value="Reroll Tech" data-bind="visible: a > b" />';
+    const field =
+      '<input type="text" data-bind="attr: { placeholder: \'!LOC:Find\' }, visible: a > b" />';
+    const keys = extractFrom([at(PANEL, [button, field])]);
+
+    assert.deepEqual(
+      ["Reroll Tech", "Find"].map((key) =>
+        sitesOf(keys, key).map((site) => [site.role, site.snippet])
+      ),
+      [[["html-control", button]], [["placeholder", field]]]
+    );
+  });
+
   it("leaves out text with no letter in it", () => {
     const keys = extractFrom([
       at(PANEL, [

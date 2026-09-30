@@ -239,16 +239,16 @@ function htmlElement(source, index) {
     return source.slice(Math.max(0, index - 100), index + 100);
   }
   const tag = /^<([a-zA-Z][\w-]*)/.exec(source.slice(open));
-  const tagEnd = source.indexOf(">", index);
-  if (!tag || tagEnd < 0) {
+  const openEnd = tagEnd(source, open);
+  if (!tag || openEnd >= source.length) {
     return source.slice(open, index + 100);
   }
-  const close = source.indexOf("</" + tag[1] + ">", tagEnd);
-  const nextOpen = source.indexOf("<" + tag[1], tagEnd);
+  const close = source.indexOf("</" + tag[1] + ">", openEnd);
+  const nextOpen = source.indexOf("<" + tag[1], openEnd);
   if (close >= 0 && (nextOpen < 0 || close < nextOpen)) {
     return source.slice(open, close + tag[1].length + 3);
   }
-  return source.slice(open, tagEnd + 1);
+  return source.slice(open, openEnd + 1);
 }
 
 function fileFacts(file, source) {
@@ -554,19 +554,33 @@ function optionText(source, from) {
   );
 }
 
-// What locTree looks up for the control, or "" where it skips it.
-function controlText(source, from, tag, attrs) {
+// What locTree looks up for the control, as [role, text] pairs, skipping what
+// it skips.
+function controlTexts(source, from, tag, attrs) {
   if (tag.toLowerCase() === "option") {
-    return Object.hasOwn(attrs, "data-noloc") ? "" : optionText(source, from);
+    return Object.hasOwn(attrs, "data-noloc")
+      ? []
+      : [["html-control", optionText(source, from)]];
   }
+  const texts = [];
   // locTree skips a button when attr("noloc") is truthy, and a bare noloc
   // reads "".
-  const button = (attrs.type || "").toLowerCase() === "button";
-  return button && !attrs.noloc ? attrs.value || "" : "";
+  if ((attrs.type || "").toLowerCase() === "button" && !attrs.noloc) {
+    texts.push(["html-control", attrs.value || ""]);
+  }
+  // A placeholder is skipped by data-noloc, as an option is.
+  if (
+    Object.hasOwn(attrs, "placeholder") &&
+    !Object.hasOwn(attrs, "data-noloc")
+  ) {
+    texts.push(["placeholder", attrs.placeholder]);
+  }
+  return texts;
 }
 
-// Stock locTree also looks up an <option>'s text and an input[type=button]'s
-// value, as they stand. See docs/translations.md, "Tooling".
+// Stock locTree also looks up an <option>'s text, an input[type=button]'s
+// value, and an input[placeholder]'s value, as they stand. See
+// docs/translations.md, "Tooling".
 function scanControls(map, facts, html) {
   const source = withoutComments(html);
   CONTROL_TAG.lastIndex = 0;
@@ -574,20 +588,26 @@ function scanControls(map, facts, html) {
   while ((match = CONTROL_TAG.exec(source)) !== null) {
     const end = tagEnd(source, CONTROL_TAG.lastIndex);
     const attrs = attributes(source.slice(CONTROL_TAG.lastIndex, end));
-    const key = controlText(source, end + 1, match[1], attrs).trim();
+    const texts = controlTexts(source, end + 1, match[1], attrs);
     CONTROL_TAG.lastIndex = end;
-    if (!LETTER.test(key)) {
-      continue;
+    for (const [role, text] of texts) {
+      addControl(map, facts, source, match.index, role, text.trim());
     }
-    const snippet = squash(htmlElement(source, match.index + 1));
-    addSite(map, key, {
-      file: facts.file,
-      line: lineAt(source, match.index),
-      role: "html-control",
-      snippet: snippet,
-      context: contextFor(facts, key, snippet),
-    });
   }
+}
+
+function addControl(map, facts, source, index, role, key) {
+  if (!LETTER.test(key)) {
+    return;
+  }
+  const snippet = squash(htmlElement(source, index + 1));
+  addSite(map, key, {
+    file: facts.file,
+    line: lineAt(source, index),
+    role: role,
+    snippet: snippet,
+    context: contextFor(facts, key, snippet),
+  });
 }
 
 // Card names and descriptions of the same card, so a translator sees the
