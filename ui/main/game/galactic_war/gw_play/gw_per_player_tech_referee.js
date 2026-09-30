@@ -54,7 +54,8 @@ define([
 
   var loadInventoryFromRecord = function (record) {
     var inventory = new GWInventory();
-    inventory.load(_.cloneDeep(record.inventory));
+    // GWO - a JSON copy, as lodash 3's cloneDeep is quadratic in what it copies
+    inventory.load(JSON.parse(JSON.stringify(record.inventory)));
     return inventory;
   };
 

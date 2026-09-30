@@ -444,7 +444,7 @@ function addSite(map, key, site) {
   map.get(key).sites.push(site);
 }
 
-function scanLiterals(map, facts, source, isHtml) {
+function scanLiterals(map, facts, source, isHtml, options) {
   LOC_LITERAL.lastIndex = 0;
   let match;
   while ((match = LOC_LITERAL.exec(source)) !== null) {
@@ -457,7 +457,7 @@ function scanLiterals(map, facts, source, isHtml) {
     const role = isHtml
       ? htmlRole(source, start)
       : jsRole(facts, source, start);
-    if (EXCLUDED_ROLES.includes(role)) {
+    if (!options.keepExcluded && EXCLUDED_ROLES.includes(role)) {
       continue;
     }
     const snippet = squash(
@@ -668,23 +668,25 @@ function sourceFiles() {
 }
 
 // Map<key, { sites: [{ file, line, role, snippet, context }] }>, sites in
-// file-then-line order.
-function extractKeys() {
+// file-then-line order. `options.keepExcluded` keeps the EXCLUDED_ROLES
+// sites, and the keys seen only there.
+function extractKeys(options) {
   return extractFrom(
     sourceFiles().map((file) => ({
       file: file,
       source: fs.readFileSync(file, "utf8"),
-    }))
+    })),
+    options
   );
 }
 
 // extractKeys over `sources`: [{ file, source }], each `file` absolute.
-function extractFrom(sources) {
+function extractFrom(sources, options) {
   const map = new Map();
   for (const { file, source } of sources) {
     const facts = fileFacts(file, source);
     const isHtml = path.extname(file) === ".html";
-    scanLiterals(map, facts, source, isHtml);
+    scanLiterals(map, facts, source, isHtml, options || {});
     if (isHtml) {
       scanTags(map, facts, source);
       scanControls(map, facts, source);
@@ -714,6 +716,7 @@ function sortedKeys(iterable) {
 module.exports = {
   CATALOG_LOCALE,
   codeUnitCompare,
+  EXCLUDED_ROLES,
   MOD_ID,
   PA_LOCALES,
   SHIPPED_LOCALES,

@@ -19,9 +19,9 @@ const { loadCouiModule, REPO_ROOT } = require("../lib/amd-loader.js");
 const { reportProblems } = require("../lib/report-failures.js");
 const { aiDataFiles } = require("../lib/walk.js");
 
-// Every `test_type` the engine implements, harvested from media/pa/ai/ and
-// media/pa_ex1/ai_queller/. Re-harvest after a PA patch adds tests. An entry with
-// an unrecognised test silently never fires. See testing.md.
+// Every `test_type` the engine implements, collected by hand from the base game's
+// AI data; no script harvests it. Collect it again after a PA patch adds tests. An
+// entry with an unrecognised test silently never fires. See testing.md.
 const KNOWN_TEST_TYPES = new Set([
   "AllMetalSpotsFull",
   "AlliedUnitCountOnPlanet",

@@ -117,7 +117,8 @@ Conventions the notes and the translations follow:
 - A note names the file, never a line. `i18n:catalog` keeps a hand-written note
   as it is, so a line number in one goes stale as the code moves. Where two mod
   files share a name (`cards.js`, `races.js`), the note gives the folder too:
-  `gw_play/cards.js`.
+  `gw_play/cards.js`. A file name goes stale too when a string moves, so
+  `validate:translations` checks that each file a note names holds the key.
 
 - Numbers, percentages, `<br>`, `[strong]`, `__x__` and `{n}` are kept exactly.
   `validate:translations` checks the placeholders and style codes among them as
@@ -139,8 +140,10 @@ Conventions the notes and the translations follow:
   separators; such a key can never resolve), keys in code-unit order, no
   duplicate keys (a line scan, since `JSON.parse` keeps the last silently).
 - `en-US.json`: `message === key`, a non-empty `description` with no
-  `file:line` reference, and the key set equals what `loc-keys.js` extracts from
-  the tree, both ways.
+  `file:line` reference, each file the `description` names holding the key as
+  `loc-keys.js` reads it (a race file's unit names count, and the game's own
+  `legion.json` may be named for comparison), and the key set equals what
+  `loc-keys.js` extracts from the tree, both ways.
 - Other files: every key is in the catalog, no `description`, and the
   placeholders and style codes in the message match the key's.
 
