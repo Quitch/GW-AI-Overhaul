@@ -101,8 +101,9 @@ A war remembers the race mods it was created with. Remove one and the war cannot
 ## Seeds
 
 The **Seed Value** field in the war setup panel controls galaxy generation. Entering the
-same seed rebuilds the same galaxy and the same enemies, provided the faction, difficulty,
-game options and installed mods match. Planet names still vary.
+same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number
+of players, faction, difficulty, game options, and installed mods match. Planet names
+still vary.
 
 A war's seed is shown in its Galactic War Overhaul panel, so a galaxy worth replaying can
 be noted down and returned to. Leave the field alone for a fresh galaxy each time.

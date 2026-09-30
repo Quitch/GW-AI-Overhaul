@@ -1,10 +1,10 @@
-// Every seeded stream key the gw_play scene uses, in one file so the key layout
+// Every parent stream key the gw_play scene uses, in one file so the key layout
 // documented in galaxy.md has a single place to be checked against.
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_rng.js",
 ], function (gwoRng) {
-  // gwo_rng joins a label and index with a space, so a label carrying one could
-  // make stream("a b") collide with stream("a", "b"). Player names carry spaces.
+  // gwo_rng separates a label from its index with NUL, so no collision needs
+  // this, and it makes "a b" and "a_b" one key. Kept: live wars are keyed by it.
   var safeLabel = function (value) {
     return String(value).replace(/\s+/g, "_");
   };

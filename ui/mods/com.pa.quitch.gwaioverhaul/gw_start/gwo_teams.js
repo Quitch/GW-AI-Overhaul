@@ -37,6 +37,7 @@ define([
           // GWO - stock omits this, so every boss system re-rolled its terrain.
           seed: seed,
         };
+        // GWO - the seeded copy, or Shared Systems' loader when it is installed
         return gwoSystemTemplates
           .chooseFor(activeStarSystemTemplates)
           .generate(generatorConfig)

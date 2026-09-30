@@ -1,8 +1,8 @@
 "use strict";
 
-// Tests for gw_play/gwo_streams.js, which holds every stream key the play scene
-// draws from. The collision suite is the point of the file: a key that shadows
-// another would silently make two unrelated deals identical.
+// Tests for gw_play/gwo_streams.js, which holds every parent stream key the
+// play scene draws from. The collision suite is the point of the file: a key
+// that shadows another would silently make two unrelated deals identical.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -60,7 +60,7 @@ describe("coopPlayerKey", () => {
     assert.equal(streams.coopPlayerKey(undefined, undefined), "unknown");
   });
 
-  // A space in a label would let stream("a b") collide with stream("a", "b").
+  // Pinned because live wars' streams are keyed with the squash. See galaxy.md.
   it("squashes whitespace in a player name", () => {
     assert.equal(
       streams.coopPlayerKey({}, { name: "Big Bad Bob" }),
@@ -330,8 +330,8 @@ describe("gwo_streams key collisions", () => {
     assert.ok(built.length > 100, `only checked ${built.length} keys`);
   });
 
-  // "uber 1" and "uber_1" are the same key by design - squashing is what stops
-  // a name with a space from colliding with a two-argument stream instead.
+  // "big bob" and "big_bob" share a key: the squash's known cost, kept because
+  // dropping it would re-key every live war. See galaxy.md.
   it("collapses a spaced name onto its underscored form", () => {
     const war = streams.warRng(SEED);
     assert.deepEqual(
