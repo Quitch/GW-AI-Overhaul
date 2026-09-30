@@ -129,8 +129,9 @@ included them. The check is `tag === ".player"`.
 Human army colours come from the base game. `model.gwCoopPlayerColors` in
 `gw_play.js` is the authoritative source. It is a host-first record per
 connected client, and each record carries the `color` pair that client's army
-will get. `gwo_panel.js` reads it rather than computing the answer again. The
-swatch therefore cannot disagree with what the referee assigns.
+will get. The war panel reads it (`gw_play/gwo_panel_view.js`) rather than
+computing the answer again. The swatch therefore cannot disagree with what the
+referee assigns.
 
 Shared armies are a single army, so every co-op commander flies the host's
 colour: the `playerColor` global tag, written once at war creation.
@@ -170,8 +171,8 @@ duplication tech produces a single army with several commander slots.
 
 `gw_play/commander_colour.js` decides which palette entry lands where. It is
 shared rather than per-caller for a reason: `referee_config_setup.js`, the
-shadowed per-player-tech referee, `gwo_panel.js` and the intel panel must all
-agree. Otherwise the panel promises a colour the battle does not deliver. It
+shadowed per-player-tech referee, `gwo_panel_view.js` and the intel panel must
+all agree. Otherwise the panel promises a colour the battle does not deliver. It
 orders a palette by `contrastScore`, which is squared RGB distance plus a
 luminance term weighted 16×. The commanders most likely to be confused are
 therefore the ones pushed furthest apart.
