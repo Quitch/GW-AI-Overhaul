@@ -32,6 +32,7 @@ function installScene() {
     game: () => game,
     setDefaultGwCoopLobbyTitle: () => {},
     gwCampaignConnectedClients: () => [],
+    gwoCoopAi: { count: () => 0 },
     isCampaignViewer: () => false,
     gwCampaignConnected: makeObservable(false),
     devMode: makeObservable(false),

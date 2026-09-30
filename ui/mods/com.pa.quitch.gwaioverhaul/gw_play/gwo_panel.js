@@ -40,8 +40,7 @@
       ko.computed(function () {
         var playerScaling = gwoSettings.coopPlayerScalingCount;
         var players =
-          model.gwCampaignConnectedClients().length +
-          (model.gwoCoopAi ? model.gwoCoopAi.count() : 0);
+          model.gwCampaignConnectedClients().length + model.gwoCoopAi.count();
         if (
           // A latch - without it the save is rewritten on every join and leave.
           !gwoSettings.tooManyPlayers &&
@@ -108,7 +107,7 @@
           ["coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/save.js"],
           function (gwoSave) {
             var gwoSettings = model.gwoSettings;
-            if (gwoSettings && !gwoSettings.cheatsUsed) {
+            if (!gwoSettings.cheatsUsed) {
               gwoSettings.cheatsUsed = true;
               options(
                 model.gwoOptions,
@@ -150,8 +149,16 @@
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/version.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/decks.js",
           "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/deck_mods.js",
+          "shared/gw_factions",
         ],
-        function (gwoPanelView, gwoRaces, gwoVersion, gwoDecks, gwoDeckMods) {
+        function (
+          gwoPanelView,
+          gwoRaces,
+          gwoVersion,
+          gwoDecks,
+          gwoDeckMods,
+          GWFactions
+        ) {
           model.gwoVersion = ko.observable(gwoVersion);
 
           // A third-party deck's display name; the provisional deckName()
@@ -205,16 +212,9 @@
 
           var inventory = game.inventory();
 
-          var factions = [
-            "Legonis Machina",
-            "Foundation",
-            "Synchronous",
-            "Revenants",
-            "Cluster",
-          ];
           var factionIndex = inventory.getTag("global", "playerFaction");
           var playerRace = gwoRaces.raceOf(inventory);
-          model.gwoFactionName = factions[factionIndex];
+          model.gwoFactionName = _.pluck(GWFactions, "name")[factionIndex];
           var commanderList = gwoPanelView.commanderList({
             game: game,
             inventory: inventory,

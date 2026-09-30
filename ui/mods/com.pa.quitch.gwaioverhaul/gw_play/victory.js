@@ -86,7 +86,7 @@ define(function () {
         endWar();
       };
 
-      if (!playersReturned || !model.gwCampaignEnabled()) {
+      if (!model.gwCampaignEnabled()) {
         tellViewersAndEnd();
         return;
       }

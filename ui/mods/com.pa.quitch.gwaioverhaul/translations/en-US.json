@@ -1021,7 +1021,7 @@
   },
   "Colonel": {
     "message": "Colonel",
-    "description": "Unit name used as an eradication target: listed after \"Eradicate:\" in the Planetary Intelligence panel on the galaxy map and in the in-game HUD win-conditions line (\"Eradicate: Commander, Colonel, Factory, Fabber\"), meaning the enemy's Sub Commander units must all be destroyed. \"Colonel\" is the stock name of the Sub Commander unit; use the game's translation of that unit. Noun, singular, no punctuation. (section_of_foreign_intelligence.js, win_conditions_text.js)"
+    "description": "Unit name used as an eradication target: listed after \"Eradicate:\" in the Planetary Intelligence panel on the galaxy map and in the in-game HUD win-conditions line (\"Eradicate: Commander, Colonel, Factory, Fabber\"), meaning the enemy's Sub Commander units must all be destroyed. \"Colonel\" is the stock name of the Sub Commander unit; use the game's translation of that unit. Noun, singular, no punctuation. (eradication_label.js)"
   },
   "Colonel Upgrade Tech": {
     "message": "Colonel Upgrade Tech",
@@ -1037,7 +1037,7 @@
   },
   "Commander": {
     "message": "Commander",
-    "description": "Standalone noun, singular: the player's Commander unit. It is reused in six places, so keep it a plain noun without an article. (1) It is joined with the separate string 'Naval' as 'Naval' + ' ' + 'Commander' to form the name of the Naval Commander loadout card on the loadout picker and in the Data Bank list, so it must be the word that can follow 'Naval' in your language. (2) It is the unit name in the mod's own unit-name table. (3) It is the label of the button that opens the commander-model picker on the Galactic War start screen and the title of that picker dialog. (4) It is the first item in the 'Eradicate: Commander, Colonel, Factory, Fabber' target list shown on the galaxy map and in the in-battle win-conditions text. Use the game's own stock translation of 'Commander'. (gwaio_start_naval.js; section_of_foreign_intelligence.js; unit_names.js; commander_button.html; commander_modal.html; win_conditions_text.js)"
+    "description": "Standalone noun, singular: the player's Commander unit. It is reused in six places, so keep it a plain noun without an article. (1) It is joined with the separate string 'Naval' as 'Naval' + ' ' + 'Commander' to form the name of the Naval Commander loadout card on the loadout picker and in the Data Bank list, so it must be the word that can follow 'Naval' in your language. (2) It is the unit name in the mod's own unit-name table. (3) It is the label of the button that opens the commander-model picker on the Galactic War start screen and the title of that picker dialog. (4) It is the first item in the 'Eradicate: Commander, Colonel, Factory, Fabber' target list shown on the galaxy map and in the in-battle win-conditions text. Use the game's own stock translation of 'Commander'. (gwaio_start_naval.js; unit_names.js; commander_button.html; commander_modal.html; eradication_label.js)"
   },
   "Commander Ammunition Tech": {
     "message": "Commander Ammunition Tech",
@@ -1433,7 +1433,7 @@
   },
   "Eradicate": {
     "message": "Eradicate",
-    "description": "Game modifier name listed under \"Game Modifiers\" in the Planetary Intelligence panel on the galaxy map (gw_play), one per line, and in the win-conditions line of the in-game HUD (live_game), where modifiers are joined with \" | \". \"Eradicate\" is followed by a colon and the list of target types (\"Eradicate: Commander, Colonel, Factory, Fabber\"): the code appends the colon and list, so keep no punctuation in the string itself and make sure the word reads as a heading before a colon. Imperative verb used as a name; must match \"ERADICATE\" in the Game Modifiers tooltip. (section_of_foreign_intelligence.js, win_conditions_text.js)"
+    "description": "Game modifier name listed under \"Game Modifiers\" in the Planetary Intelligence panel on the galaxy map (gw_play), one per line, and in the win-conditions line of the in-game HUD (live_game), where modifiers are joined with \" | \". \"Eradicate\" is followed by a colon and the list of target types (\"Eradicate: Commander, Colonel, Factory, Fabber\"): the code appends the colon and list, so keep no punctuation in the string itself and make sure the word reads as a heading before a colon. Imperative verb used as a name; must match \"ERADICATE\" in the Game Modifiers tooltip. (eradication_label.js)"
   },
   "Eradication Tech": {
     "message": "Eradication Tech",
@@ -1473,7 +1473,7 @@
   },
   "Fabber": {
     "message": "Fabber",
-    "description": "Two uses. (1) AI personality trait: a one-word characterisation of an enemy Commander's play style, shown after \"Personality:\" in the Planetary Intelligence panel of the galaxy map (gw_play) and in the war-info panel. Adjective or noun used as a label, singular, no punctuation. A penchant word (Artillery, Fortress, Assault...) may be appended after it with a space, so keep it short. \"Fabber\" = a builder-focused style. (2) An eradication target listed after \"Eradicate:\" on the galaxy map and in the in-game HUD (\"Eradicate: Commander, Colonel, Factory, Fabber\"), meaning all enemy fabrication (builder) units must be destroyed. \"Fabber\" is the game's slang for a fabrication unit; use the base game's rendering of that word. Noun, singular. (gw_faction_0.js and the other faction files, cluster_faction.js, section_of_foreign_intelligence.js, win_conditions_text.js)"
+    "description": "Two uses. (1) AI personality trait: a one-word characterisation of an enemy Commander's play style, shown after \"Personality:\" in the Planetary Intelligence panel of the galaxy map (gw_play) and in the war-info panel. Adjective or noun used as a label, singular, no punctuation. A penchant word (Artillery, Fortress, Assault...) may be appended after it with a space, so keep it short. \"Fabber\" = a builder-focused style. (2) An eradication target listed after \"Eradicate:\" on the galaxy map and in the in-game HUD (\"Eradicate: Commander, Colonel, Factory, Fabber\"), meaning all enemy fabrication (builder) units must be destroyed. \"Fabber\" is the game's slang for a fabrication unit; use the base game's rendering of that word. Noun, singular. (gw_faction_0.js and the other faction files, cluster_faction.js, eradication_label.js)"
   },
   "Fabrication Aircraft": {
     "message": "Fabrication Aircraft",
@@ -1533,7 +1533,7 @@
   },
   "Factory": {
     "message": "Factory",
-    "description": "Two uses. (1) AI personality trait: a one-word characterisation of an enemy Commander's play style, shown after \"Personality:\" in the Planetary Intelligence panel of the galaxy map (gw_play) and in the war-info panel. Adjective or noun used as a label, singular, no punctuation. A penchant word (Artillery, Fortress, Assault...) may be appended after it with a space, so keep it short. \"Factory\" = mass-produces from many factories. (2) An eradication target listed after \"Eradicate:\" on the galaxy map and in the in-game HUD (\"Eradicate: Commander, Colonel, Factory, Fabber\"), meaning all enemy factories must be destroyed. Noun, singular, no punctuation. (gw_faction_0.js and the other faction files, cluster_faction.js, section_of_foreign_intelligence.js, win_conditions_text.js)"
+    "description": "Two uses. (1) AI personality trait: a one-word characterisation of an enemy Commander's play style, shown after \"Personality:\" in the Planetary Intelligence panel of the galaxy map (gw_play) and in the war-info panel. Adjective or noun used as a label, singular, no punctuation. A penchant word (Artillery, Fortress, Assault...) may be appended after it with a space, so keep it short. \"Factory\" = mass-produces from many factories. (2) An eradication target listed after \"Eradicate:\" on the galaxy map and in the in-game HUD (\"Eradicate: Commander, Colonel, Factory, Fabber\"), meaning all enemy factories must be destroyed. Noun, singular, no punctuation. (gw_faction_0.js and the other faction files, cluster_faction.js, eradication_label.js)"
   },
   "Factory cooldown decreased": {
     "message": "Factory cooldown decreased",

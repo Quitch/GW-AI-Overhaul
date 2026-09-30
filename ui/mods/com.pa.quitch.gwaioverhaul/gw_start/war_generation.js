@@ -384,7 +384,6 @@ define(function () {
       }
       game.name(model.newGameName());
 
-      model.updateCommander();
       game
         .inventory()
         .setTag("global", "playerFaction", model.playerFactionIndex());

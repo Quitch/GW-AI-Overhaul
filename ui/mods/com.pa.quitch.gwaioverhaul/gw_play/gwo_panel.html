@@ -13,7 +13,6 @@
           <div class="td"><loc>Mod:</loc></div>
           <div class="data" data-bind="text: $root.gwoVersion"></div>
         </div>
-        <!-- ko if: $root.gwoSettings -->
         <div class="tr">
           <div class="td"><loc>War:</loc></div>
           <div class="data" data-bind="text: $root.gwoSettings.version"></div>
@@ -49,10 +48,8 @@
           <div class="td"><loc>Deck:</loc></div>
           <div class="data" data-bind="text: $root.gwoDeck"></div>
         </div>
-        <!-- /ko -->
       </div>
     </div>
-    <!-- ko if: $root.gwoSettings -->
     <div class="table">
       <div
         class="tablebody"
@@ -66,7 +63,6 @@
         </div>
       </div>
     </div>
-    <!-- /ko -->
     <h3 id="co-op-settings" data-bind="visible:$root.gwCampaignEnabled()">
       <loc>Co-Op Settings</loc>
     </h3>

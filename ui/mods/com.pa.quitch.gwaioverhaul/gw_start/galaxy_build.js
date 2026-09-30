@@ -170,7 +170,7 @@ define([
       // A real-system pool has no simpler template set for Easy Systems to swap
       // to, so it asks for the lowest bracket. Last, so it wins over the rest.
       if (brackets && model.gwoDifficultySettings.simpleSystems()) {
-        systemSize = Math.min(systemSize, 0);
+        systemSize = 0;
       }
       return systemSize;
     };

@@ -130,13 +130,16 @@ function makeGalaxy() {
 }
 
 // System Scaling on, as by default, so each star asks for its distance.
-function installSettings() {
+function installSettings(overrides = {}) {
   stubs.setGlobal("model", {
-    gwoDifficultySettings: {
-      systemScaling: () => true,
-      largePlanets: () => false,
-      simpleSystems: () => false,
-    },
+    gwoDifficultySettings: Object.assign(
+      {
+        systemScaling: () => true,
+        largePlanets: () => false,
+        simpleSystems: () => false,
+      },
+      overrides
+    ),
   });
 }
 
@@ -185,6 +188,40 @@ describe("build", () => {
       galaxy.stars().map((star) => star.system().name),
       ["Earthlike", "Earthlike", "Earthlike"]
     );
+  });
+
+  // Large Planets has every star ask for size 4 or more; Easy Systems asks for
+  // the lowest bracket instead.
+  it("places the lowest bracket's systems under Easy Systems", async () => {
+    installFakeJQuery(stubs);
+    const brackets = [
+      {
+        min: 0,
+        max: 3,
+        systems: [Object.assign({}, earthlike, { name: "Small" })],
+      },
+      {
+        min: 4,
+        max: 32,
+        systems: [Object.assign({}, earthlike, { name: "Big" })],
+      },
+    ];
+    const placed = async (simpleSystems) => {
+      installSettings({
+        largePlanets: () => true,
+        simpleSystems: () => simpleSystems,
+      });
+      const galaxy = makeGalaxy();
+      await GWGalaxy.prototype.build.call(galaxy, {
+        seed: 1,
+        content: "PAExpansion1",
+        gwoSystemBrackets: brackets,
+      });
+      return galaxy.stars().map((star) => star.system().name);
+    };
+
+    assert.deepEqual(await placed(false), ["Big", "Big", "Big"]);
+    assert.deepEqual(await placed(true), ["Small", "Small", "Small"]);
   });
 
   it("makes the system loader once when there are no brackets", async () => {

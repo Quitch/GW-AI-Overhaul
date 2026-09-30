@@ -218,13 +218,6 @@ describe("the co-op AI pings' window", () => {
     assert.equal(run.params.windowOpen(), false);
   });
 
-  it("reads no AI settling its deals where the scene has no such flag", () => {
-    const run = build();
-    delete run.model.gwoCoopAiDeciding;
-
-    assert.equal(run.params.windowOpen(), true);
-  });
-
   it("reads the game the scene held when the pings were set up", () => {
     const run = build();
     run.model.game = () => ({ turnState: () => "fight" });
@@ -385,10 +378,5 @@ describe("what the co-op AI pings judge", () => {
     release();
     const refused = build({ pingAs: false });
     assert.equal(refused.params.ping(2, {}), false);
-
-    release();
-    const unable = build();
-    delete unable.model.gwoPingStarAs;
-    assert.equal(unable.params.ping(2, {}), false);
   });
 });

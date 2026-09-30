@@ -90,6 +90,13 @@ registerModuleStub(MOD + "/gw_play/coop_host.js", {
   },
 });
 registerModuleStub(MOD + "/gw_play/referee_coop.js", {
+  // As the real predicate reads the scene; test/referee_coop.test.js pins it.
+  hostingPerPlayerSession: () =>
+    !!(
+      globalThis.model.gwCampaignActive() &&
+      globalThis.model.isCampaignHost() &&
+      globalThis.model.gwCampaignPerPlayerTechCards()
+    ),
   getConnectedViewerInventories: (game) => {
     seen.viewerGames.push(game);
     return [{ client: { id: "c_v1" }, inventory: { owner: "viewer" } }];

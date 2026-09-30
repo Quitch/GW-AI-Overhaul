@@ -33,8 +33,6 @@ function setup(overrides = {}) {
       perPlayerTech: false,
       isViewer: false,
       coop: false,
-      // Undefined stands for a scene where the wait module never loaded.
-      playersReturned: undefined,
       records: [{ gwaioUnlockedStartCardIds: [] }],
       stars: [],
     },
@@ -140,10 +138,7 @@ function setup(overrides = {}) {
     treasure,
     stockBank: "stock-bank",
     gwoBank: "gwo-bank",
-    playersReturned:
-      options.playersReturned === "pending"
-        ? { wait: (onDone) => calls.waits.push(onDone) }
-        : options.playersReturned,
+    playersReturned: { wait: (onDone) => calls.waits.push(onDone) },
   });
 
   return {
@@ -363,10 +358,7 @@ describe("co-op", () => {
 // before the viewers are, and a war-end operator sent then never reaches them.
 describe("waiting for the players to return", () => {
   it("holds the operator and the turn end until everyone is back", () => {
-    const { victory, game, calls, saves } = setup({
-      coop: true,
-      playersReturned: "pending",
-    });
+    const { victory, game, calls, saves } = setup({ coop: true });
 
     victory.endWarIfWon();
 
@@ -383,10 +375,7 @@ describe("waiting for the players to return", () => {
   });
 
   it("asks once, however often the win is noticed", () => {
-    const { victory, calls } = setup({
-      coop: true,
-      playersReturned: "pending",
-    });
+    const { victory, calls } = setup({ coop: true });
 
     victory.endWarIfWon();
     victory.endWarIfWon();
@@ -398,10 +387,7 @@ describe("waiting for the players to return", () => {
   });
 
   it("does not wait in a solo war", () => {
-    const { victory, game, calls } = setup({
-      coop: false,
-      playersReturned: "pending",
-    });
+    const { victory, game, calls } = setup({ coop: false });
 
     victory.endWarIfWon();
 
@@ -410,22 +396,10 @@ describe("waiting for the players to return", () => {
   });
 
   it("does not wait on a viewer", () => {
-    const { calls, flush } = setup({
-      coop: true,
-      isViewer: true,
-      playersReturned: "pending",
-    });
+    const { calls, flush } = setup({ coop: true, isViewer: true });
 
     flush();
 
     assert.equal(calls.waits.length, 0);
-  });
-
-  it("ends at once when the wait module never loaded", () => {
-    const { victory, game } = setup({ coop: true });
-
-    victory.endWarIfWon();
-
-    assert.equal(game.turnState(), "end");
   });
 });

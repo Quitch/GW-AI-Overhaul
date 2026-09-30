@@ -48,9 +48,7 @@ define([
     var hostingSession = function () {
       return model.isCampaignHost() && model.gwCampaignActive();
     };
-    var hosting = function () {
-      return model.gwCampaignPerPlayerTechCards() && hostingSession();
-    };
+    var hosting = refereeCoop.hostingPerPlayerSession;
 
     // The unit specs, read once the host opens a session; unit-group
     // membership stands in if they are not in within 8 s, and is
