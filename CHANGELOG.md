@@ -27,6 +27,7 @@
 - Legion, Bugs, and Exiles commanders are named as MLA commanders are when you pick a commander, such as Maxim rather than Maxim Commander
 - Synchronous co-op players are given greens, like the faction's own colour, rather than oranges, and no Legonis Machina or Revenants co-op player is given a colour a Sub Commander can also have
 - Card mods can no longer call `gwoCard.isEnglish`, which Galactic War Overhaul's own cards stopped using; give a card one `!LOC:` text and the game translates it
+- Legion, Bugs, and Exiles players can no longer pick the Tactical Nuke, Planetary Excavation, Space Excavation, Defense Tech, or Artillery Commander loadouts, whose changes reach only MLA units
 
 ### Bugfix
 

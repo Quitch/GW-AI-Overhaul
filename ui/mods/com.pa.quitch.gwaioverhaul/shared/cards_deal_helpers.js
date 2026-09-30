@@ -7,14 +7,20 @@ define([
   // unit upgrades are tuned to the MLA unit they name (the commander's
   // excepted - every race has one), these
   // loadouts and protocols are built on hand-picked unit lists no cell reads,
-  // and the Deepspace Radar is a TITANS stub only its card brings back. A
-  // race gets its own. See races.md.
+  // the Deepspace Radar is a TITANS stub only its card brings back, and a
+  // loadout that changes what an MLA unit is or builds keeps all its changes
+  // to that unit on MLA. A race gets its own. See races.md.
   var MLA_ONLY = [
     "gwaio_start_paratrooper", // specific to Unit Cannon and Lob
     "gwaio_start_nomad",
     "gwaio_protocol_killswitch", // unit scoped - cannot be automatically translated
     "gwaio_enable_planetaryradar", // MLA only unit
     "gwaio_start_rapid", // loads AI files specific to MLA
+    "nem_start_nuke", // pushes a build type and a description onto the MLA nuke
+    "nem_start_planetary", // its description change keeps the extractor changes on MLA
+    "nem_start_deepspace", // changes the Jig's description and model, and the orbital fabber's build list
+    "nem_start_tower_rush", // pushes build types onto MLA defences
+    "gwc_start_artillery", // pushes a build type onto MLA artillery
   ];
   var RACE_UPGRADES = /_upgrade_(subcommander|ubercannon)/;
 
