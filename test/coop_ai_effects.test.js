@@ -269,6 +269,16 @@ describe("coop_ai_effects", () => {
     );
   });
 
+  // An apply reads the observables one by one rather than calling save(), so
+  // a field GWInventory gains must be read there too.
+  it("hands back every field a save holds", async () => {
+    const applied = await effects().apply(BOT_AI);
+    assert.deepEqual(
+      Object.keys(applied),
+      Object.keys(makeEffects.plain(new GWInventory().save()))
+    );
+  });
+
   // Tourist Commander's dull removes its forbidden units on every apply,
   // whether or not anything granted them.
   it("lists the units the cards strip, and no copy of the result carries them", async () => {

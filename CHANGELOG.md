@@ -55,6 +55,8 @@
 - A Legion, Bugs, Exiles, or add-on unit whose file fails to load while its mod is still loading is now read again later, rather than being missed by tech cards until you reload
 - Joining a co-op war with per-player tech is no longer stopped by a war the loadout screen cannot read, or by an error in its race picker
 - An error in Shared Systems for Galactic War while a war is created no longer leaves Go To War stuck with no message
+- A war that cannot be created because of a bug no longer leaves Go To War stuck with no message; the message asking you to report it with the war seed now appears
+- A unit file from another mod that holds only `null` no longer stops every battle from launching for a Legion, Bugs, or Exiles player, or for an MLA player with an add-on such as Second Wave
 - The war information panel's commander list now changes as soon as a co-op session starts or ends, rather than when a player next joins or leaves
 - A Lucky Commander unlocked with v5.76.0 is now moved to Galactic War Overhaul's own loadouts whichever war you open next, so it no longer causes a 404 error if Galactic War Overhaul is uninstalled
 - Naval Commander is now offered Advanced Defense Technology, as is anyone with an advanced fabricator
@@ -66,6 +68,9 @@
 - The Taurus commander, which the current Exiles release does not include, is no longer offered to Exiles players or given to Exiles AIs and Sub Commanders, so a seed can now give an Exiles AI or Sub Commander a different commander
 - The war information panel's Missing Map Packs heading is red, as the map packs listed under it and the Incompatible Mods and Missing Races headings are
 - The Seed Value tooltip now says that the galaxy size and the number of players must also match for a seed to rebuild the same galaxy; until it is translated again, it shows in English
+- Anti tech held with the Galata upgrade no longer compounds on the Galata, so Anti-Air Tech gives it ×2 damage against air units and ×0.5 against orbital units; with Second Wave, Section 17, and Osmech installed it gave ×256 and ×1/256, because it compounded once for each add-on unit that stands for the Galata, and it compounded again for the host of a co-op war and at a Guardians star
+- Planetary Radar Upgrade Tech held with Planetary Radar Tech no longer gives the Deep Space Radar over 30 times the sight it should for the host of a co-op war or at a Guardians star
+- At a Guardians star, the Firefly, Kaiju, Single Laser Defense Tower, Skitter, and Stinger upgrades no longer give your units and the Guardians' the same army's copy of the new weapon
 
 ## v7.4.1 - 2026-09-24
 

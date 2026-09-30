@@ -1,11 +1,9 @@
 "use strict";
 
-// gw_start/galaxy_build.js's build(), which gw_start/war_generation.js calls
-// inside a jQuery .then. jQuery 2.1.4 lets a throw there escape instead of
-// rejecting, so war generation waited for good: Go To War stayed disabled and
-// the player never saw the report-it-with-the-seed message. Shared Systems for
-// Galactic War replaces the system loader build() calls, so that call runs
-// another mod's code. The base game's modules are stubbed, as CI has none.
+// gw_start/galaxy_build.js's build(), which rejects rather than throws when
+// the build fails. Shared Systems for Galactic War replaces the system loader
+// build() calls, so that call runs another mod's code. The base game's modules
+// are stubbed, as CI has none.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");

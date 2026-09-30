@@ -347,9 +347,11 @@ When generation gives up, the seed is put back to `<base>`, and a message appear
 above Go To War. For a spawn shortage it says to choose a larger galaxy or to turn
 on Faction Scaling. For Shared Systems for Galactic War sources that gave nothing to
 build from, it says to choose other sources (see above). Anything else is a bug, so
-the message asks the player to report it with the seed and the PA log. The steps run in a jQuery chain, where a throw
-would leave Go To War waiting instead, so `gw_start/galaxy_build.js` turns a throw
-in the build, Shared Systems' system loader's included, into a rejection.
+the message asks the player to report it with the seed and the PA log. The steps run
+on `shared/gwo_promise.js`'s `steps`, so a throw in any step reaches that message.
+Code that runs in a callback of its own, such as the start card's deal, Shared
+Systems' sources, and the placement of each star's system, still turns a throw into
+a rejection itself.
 
 ## System scaling
 

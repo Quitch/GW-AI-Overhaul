@@ -61,9 +61,8 @@ define([
     } else {
       selectedMinion = _.cloneDeep(rng.pick(minions));
     }
-    // Call sites must check the result. These run inside jQuery deferred
-    // callbacks, where a throw escapes .fail() instead of rejecting, so a
-    // TypeError here hangs Go To War with no seed retry.
+    // Call sites must check the result: an unchecked one fails the war as a
+    // bug with a TypeError that does not name the faction.
     if (_.isUndefined(selectedMinion)) {
       console.error("No minion found for faction " + faction);
     }

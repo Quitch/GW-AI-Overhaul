@@ -1054,6 +1054,29 @@ describe("a war whose AIs could not be peopled", () => {
   });
 });
 
+describe("a war whose step throws", () => {
+  it("is not retried, and is reported as a bug with the seed entered", () => {
+    const war = makeWar();
+    war.modules.gwoWarRecord.build = () => {
+      throw new Error("no record");
+    };
+
+    war.start();
+
+    assert.equal(war.builds.length, 1);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.model.newGameSeed(), "base-seed");
+    assert.equal(war.generatingWar(), false);
+    assert.equal(war.model.makeGameBusy(), false);
+    assert.deepEqual(war.saved, []);
+    assert.match(war.errors[0], /^Error: no record\n\s+at /);
+    assert.equal(
+      war.errors[1],
+      "Failed to generate valid war: Error: no record"
+    );
+  });
+});
+
 describe("a war another run has taken over", () => {
   const takenOver = (war) => {
     assert.deepEqual(war.saved, []);
