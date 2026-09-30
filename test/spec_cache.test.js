@@ -220,6 +220,7 @@ describe("references", () => {
       "/pa/ammo/one.json",
     ]);
     assert.deepEqual(specCache.references("not a spec"), []);
+    assert.deepEqual(specCache.references(null), []);
     assert.deepEqual(specCache.references({ base_spec: 7 }), []);
   });
 
