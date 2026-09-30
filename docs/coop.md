@@ -363,8 +363,10 @@ resolver builds its pairs in order, so no human's colour moves.
 
 Under shared tech every AI fields the host's units under `.player`. Each AI's
 commander joins the `.player` specs, as the star's ally's does. The AIs share
-one AI tree on the war's Co-op brain, written with the host's AI mods. The tree
-is identical for every AI, because they share the brain, race, AI mods and tag.
+one AI tree on the war's Co-op brain. For MLA AIs it is written with the host's
+AI mods. Race AIs read their race's tree, and no AI mod is applied to a race
+tree ([`races.md`](races.md), "Race trees"). The tree is identical for every AI,
+because they share the brain, race, AI mods and tag.
 See [`ai-paths.md`](ai-paths.md), "Co-op AI players". Under per-player tech
 each AI fields its own, on a tag and trees of its own ("AI players' tech").
 
@@ -651,7 +653,8 @@ active: `anyPlayerHasCard` and `getAllConnectedPlayerCards` in `shared/cards.js`
 include them. So an AI's Tsunami Tech floods the battle's planets and its
 Bounty Tech turns on bounty mode, as a viewer's do. The Guardians, who turn the
 players' technology against them, take each AI's unit mods, AI mods, and cards
-along with every other player's.
+along with every other player's. Race Guardians read a race tree, so they take
+no AI mods from anyone ([`races.md`](races.md), "Race trees").
 
 ## Addressing a host's reply
 
