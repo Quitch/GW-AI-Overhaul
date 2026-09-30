@@ -20,7 +20,7 @@ define([
   // for the session.
   var DEGRADED_AFTER = 2;
   // A decision whose record changed before it was written is redone this
-  // often at most in one pass.
+  // often at most for each deal.
   var MAX_REDOS = 3;
 
   // One line: PA's log keeps a console call's first argument only.

@@ -239,8 +239,8 @@ define([
       showPing(payload.star, model.displayName());
     };
 
-    // Returns nothing: a ping mutates no campaign state, so it must not join the
-    // queue the base game orders authoritative updates with.
+    // Returns nothing: stock queues every operator, and a ping mutates no
+    // campaign state, so later updates in that queue need not wait on it.
     var relayPingToViewers = function (operator) {
       // The handler is registered on every client, host or not.
       if (!model.isCampaignHost() || !model.gwCampaignConnected()) {
