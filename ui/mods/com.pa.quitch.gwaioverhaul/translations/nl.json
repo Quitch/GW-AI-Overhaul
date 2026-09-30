@@ -1,4 +1,7 @@
 {
+  "3 - FASTER RAMP UP": {
+    "message": "3 - SNELLERE OPBOUW"
+  },
   "A map pack this war uses is missing": {
     "message": "Een kaartenpakket dat deze oorlog gebruikt, ontbreekt"
   },
@@ -23,6 +26,9 @@
   "ARMIES/COMMANDERS:": {
     "message": "LEGERS/COMMANDANTEN:"
   },
+  "Add-on mods this war began with are no longer enabled:": {
+    "message": "Add-on-mods waarmee deze oorlog begon en die niet meer ingeschakeld zijn:"
+  },
   "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
     "message": "Geavanceerde defensietechnologie geeft toegang tot sterkere verdedigingsmiddelen. Geavanceerde verdedigingsmiddelen worden gebouwd via geavanceerde fabricage-eenheden."
   },
@@ -37,6 +43,9 @@
   },
   "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
     "message": "Afkoeltechnologie voor vliegtuigfabrieken halveert de afkoeltijd tussen bouwopdrachten voor alle vliegtuigfabrieken."
+  },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "Een AI-speler begint nooit met een uitrusting die een andere speler al heeft, tenzij elke uitrusting die hij zou kunnen nemen al vergeven is. Vereist \"Separate loadout &amp; tech\"."
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "Een AI die een ras niet kent, wordt er niet voor aangeboden."
@@ -242,6 +251,9 @@
   "DIAMOND: your loadouts are OP": {
     "message": "DIAMANT: je uitrustingen zijn OP"
   },
+  "DIRE": {
+    "message": "RAMPZALIG"
+  },
   "Deck:": {
     "message": "Kaartenset:"
   },
@@ -302,6 +314,18 @@
   "Exiles": {
     "message": "Exiles"
   },
+  "FAST": {
+    "message": "SNEL"
+  },
+  "FASTER": {
+    "message": "SNELLER"
+  },
+  "FASTEST": {
+    "message": "SNELST"
+  },
+  "FFA BEHAVIOUR": {
+    "message": "FFA-GEDRAG"
+  },
   "FOUNDATION: air/navy": {
     "message": "FOUNDATION: lucht/marine"
   },
@@ -317,8 +341,20 @@
   "GOLD: you beat the Queller AI mod": {
     "message": "GOUD: je hebt de Queller AI mod verslagen"
   },
+  "GOOD": {
+    "message": "GOED"
+  },
   "GW Server Mods is not enabled": {
     "message": "GW Server Mods is niet ingeschakeld"
+  },
+  "GW-BEGINNER": {
+    "message": "GW-BEGINNER"
+  },
+  "HEALTHY": {
+    "message": "GEZOND"
+  },
+  "HUGE": {
+    "message": "ENORM"
   },
   "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
     "message": "De opwaardeertechnologie voor de Halley verdubbelt de gezondheid van de delta-V-motor en halveert zijn kosten."
@@ -334,6 +370,15 @@
   },
   "How well the AI scouts.": {
     "message": "Hoe goed de AI verkent."
+  },
+  "IMMEDIATELY": {
+    "message": "ONMIDDELLIJK"
+  },
+  "IMMENSE": {
+    "message": "IMMENS"
+  },
+  "INCREDIBLE": {
+    "message": "ONGELOOFLIJK"
   },
   "IRON: you no longer turtle": {
     "message": "IJZER: je speelt niet langer als een schildpad"
@@ -371,8 +416,29 @@
   "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
     "message": "KAN OVERAL LANDEN: spelers kunnen overal op geschikte startplaneten beginnen."
   },
+  "LATE ORBITAL": {
+    "message": "LAAT ORBITAAL"
+  },
   "LEGONIS MACHINA: vehicles": {
     "message": "LEGONIS MACHINA: voertuigen"
+  },
+  "LONG": {
+    "message": "LANG"
+  },
+  "LOVES AIR": {
+    "message": "VOORKEUR VOOR LUCHT"
+  },
+  "LOVES BOTS": {
+    "message": "VOORKEUR VOOR ROBOTS"
+  },
+  "LOVES LAND": {
+    "message": "VOORKEUR VOOR LAND"
+  },
+  "LOVES ORBITAL": {
+    "message": "VOORKEUR VOOR ORBITAAL"
+  },
+  "LOVES TANKS": {
+    "message": "VOORKEUR VOOR TANKS"
   },
   "Land Anywhere Tech": {
     "message": "Technologie voor overal landen"
@@ -491,6 +557,9 @@
   "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
     "message": "Afkoeltechnologie voor orbitale fabrieken halveert de afkoeltijd tussen bouwopdrachten voor alle orbitale fabrieken."
   },
+  "Osmech": {
+    "message": "Osmech"
+  },
   "PENCHANT: increased personality": {
     "message": "PENCHANT: sterkere persoonlijkheid"
   },
@@ -499,6 +568,9 @@
   },
   "PLATINUM: one enemy is no challenge": {
     "message": "PLATINA: één vijand is geen uitdaging"
+  },
+  "POOR": {
+    "message": "SLECHT"
   },
   "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
     "message": "De opwaardeertechnologie voor de Pelican laat luchttransporten commandanten vervoeren. Elke eenheid kan schieten terwijl ze vervoerd wordt."
@@ -569,11 +641,29 @@
   "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
     "message": "Vervangt conventionele atoombommen door een nieuwe, goedkope/minder krachtige variant en vertrouwt er zwaar op voor zowel aanval als verdediging. Geeft daarvoor de meeste geavanceerde verdedigingsmiddelen op."
   },
+  "Report a Galactic War Bug": {
+    "message": "Bug in Galactische Oorlog melden"
+  },
   "SCOUTING:": {
     "message": "VERKENNING:"
   },
+  "SHORT": {
+    "message": "KORT"
+  },
   "SILVER: you beat the skirmish AI": {
     "message": "ZILVER: je hebt de schermutseling-AI verslagen"
+  },
+  "SLOW": {
+    "message": "LANGZAAM"
+  },
+  "SLOWER": {
+    "message": "LANGZAMER"
+  },
+  "SLOWEST": {
+    "message": "LANGZAAMST"
+  },
+  "SPAWN ONLY": {
+    "message": "ALLEEN SPAWNPUNT"
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "KANS OP UITSCHAKELING:"
@@ -589,6 +679,12 @@
   },
   "Scaling For:": {
     "message": "Schaling voor:"
+  },
+  "Second Wave": {
+    "message": "Second Wave"
+  },
+  "Section 17": {
+    "message": "Section 17"
   },
   "Separate": {
     "message": "Gescheiden"
@@ -662,6 +758,12 @@
   "TECH SYSTEM:": {
     "message": "TECHNOLOGIESYSTEEM:"
   },
+  "TERRIBLE": {
+    "message": "VRESELIJK"
+  },
+  "TINY": {
+    "message": "PIEPKLEIN"
+  },
   "TITANS: base game AI": {
     "message": "TITANS: AI van het basisspel"
   },
@@ -686,6 +788,9 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "De uitrusting van de Marinecommandant bevat alle scheepswerven. Verhoogt de hoeveelheid water en lava op geschikte planeten."
   },
+  "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
+    "message": "Het sterrenstelsel is te klein om elke vijandige factie een thuisstelsel te geven. Kies een groter sterrenstelsel of schakel \"Factie-opschaling\" in, zodat kleinere sterrenstelsels minder facties hebben."
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "Dezelfde seed bouwt hetzelfde sterrenstelsel en dezelfde vijanden opnieuw op, mits de grootte van het sterrenstelsel, het aantal spelers, de factie, de moeilijkheid en de spelopties overeenkomen en dezelfde mods geïnstalleerd zijn. Planeetnamen verschillen nog steeds. Laat het veld met rust voor een nieuw sterrenstelsel."
   },
@@ -694,6 +799,12 @@
   },
   "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
     "message": "De eenheden waarmee jij en je subcommandanten strijden. Alleen de rassen waarmee de oorlog van de host is gemaakt, kunnen gekozen worden."
+  },
+  "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.": {
+    "message": "De oorlog kon door een bug niet worden aangemaakt. Meld dit op __url__ en voeg de seed van de oorlog (__seed__) en je PA-logbestand toe, dat in __folder__ staat."
+  },
+  "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.": {
+    "message": "De oorlog kon niet worden aangemaakt, omdat de bronnen die onder \"Systems\" zijn geselecteerd niet konden worden geladen of geen bruikbare stelsels bevatten. Selecteer andere bronnen, of verlaat dit scherm en kom terug om ze opnieuw te laten laden."
   },
   "This card will be offered as part of the first draw.": {
     "message": "Deze kaart wordt aangeboden bij de eerste trekking."
@@ -734,11 +845,17 @@
   "UBER: you hate winning": {
     "message": "ÜBER: je hebt een hekel aan winnen"
   },
+  "UNHEALTHY": {
+    "message": "ONGEZOND"
+  },
   "UNIT DELAY (MAX):": {
     "message": "EENHEIDSVERTRAGING (MAX):"
   },
   "UNIT DELAY (MIN):": {
     "message": "EENHEIDSVERTRAGING (MIN):"
+  },
+  "Unique AI loadouts": {
+    "message": "Unieke AI-uitrustingen"
   },
   "Unique Races": {
     "message": "Unieke rassen"
@@ -769,6 +886,9 @@
   },
   "View loadout and tech cards": {
     "message": "Uitrusting en technologiekaarten bekijken"
+  },
+  "WEAK": {
+    "message": "ZWAK"
   },
   "Waiting for loadout": {
     "message": "Wachten op uitrusting"

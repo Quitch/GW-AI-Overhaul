@@ -1,4 +1,7 @@
 {
+  "3 - FASTER RAMP UP": {
+    "message": "3 - SZYBSZY WZROST"
+  },
   "A map pack this war uses is missing": {
     "message": "Brakuje pakietu map używanego w tej wojnie"
   },
@@ -23,6 +26,9 @@
   "ARMIES/COMMANDERS:": {
     "message": "ARMIE/DOWÓDCY:"
   },
+  "Add-on mods this war began with are no longer enabled:": {
+    "message": "Dodatkowe mody, z którymi rozpoczęto tę wojnę, nie są już włączone:"
+  },
   "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
     "message": "Zaaw. technologia obronna umożliwia budowę potężniejszych struktur obronnych. Zaawansowane struktury obronne budują zaawansowane fabrykatory."
   },
@@ -37,6 +43,9 @@
   },
   "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
     "message": "Technologia odnowienia fabryk lotniczych skraca o połowę czas odnowienia między kolejnymi jednostkami we wszystkich fabrykach lotniczych."
+  },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "Gracz SI nigdy nie zaczyna z wyposażeniem, które ma już inny gracz, chyba że każde wyposażenie, które mógłby wybrać, jest już zajęte. Wymaga opcji „Separate loadout &amp; tech”."
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "SI, która nie zna danej rasy, nie jest dla niej proponowana."
@@ -242,6 +251,9 @@
   "DIAMOND: your loadouts are OP": {
     "message": "DIAMENT: twoje wyposażenia są OP"
   },
+  "DIRE": {
+    "message": "KATASTROFALNA"
+  },
   "Deck:": {
     "message": "Talia:"
   },
@@ -302,6 +314,18 @@
   "Exiles": {
     "message": "Exiles"
   },
+  "FAST": {
+    "message": "SZYBKI"
+  },
+  "FASTER": {
+    "message": "SZYBSZY"
+  },
+  "FASTEST": {
+    "message": "NAJSZYBSZY"
+  },
+  "FFA BEHAVIOUR": {
+    "message": "ZACHOWANIE FFA"
+  },
   "FOUNDATION: air/navy": {
     "message": "FOUNDATION: powietrzne/morskie"
   },
@@ -317,8 +341,20 @@
   "GOLD: you beat the Queller AI mod": {
     "message": "ZŁOTY: pokonałeś mod SI Queller"
   },
+  "GOOD": {
+    "message": "DOBRA"
+  },
   "GW Server Mods is not enabled": {
     "message": "GW Server Mods nie jest włączony"
+  },
+  "GW-BEGINNER": {
+    "message": "WG-POCZĄTKUJĄCY"
+  },
+  "HEALTHY": {
+    "message": "ZDROWA"
+  },
+  "HUGE": {
+    "message": "OGROMNA"
   },
   "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
     "message": "Technologia ulepszająca Halleye podwaja żywotność silnika delta-V i zmniejsza o połowę jego koszt."
@@ -334,6 +370,15 @@
   },
   "How well the AI scouts.": {
     "message": "Jak dobrze SI prowadzi zwiad."
+  },
+  "IMMEDIATELY": {
+    "message": "NATYCHMIAST"
+  },
+  "IMMENSE": {
+    "message": "GIGANTYCZNA"
+  },
+  "INCREDIBLE": {
+    "message": "NIESAMOWITA"
   },
   "IRON: you no longer turtle": {
     "message": "ŻELAZNY: już nie okopujesz się w bazie"
@@ -371,8 +416,29 @@
   "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
     "message": "LĄDUJ GDZIEKOLWIEK: gracze mogą zacząć w dowolnym miejscu na odpowiednich planetach startowych."
   },
+  "LATE ORBITAL": {
+    "message": "PÓŹNE JEDNOSTKI ORBITALNE"
+  },
   "LEGONIS MACHINA: vehicles": {
     "message": "LEGONIS MACHINA: pojazdy"
+  },
+  "LONG": {
+    "message": "DŁUGIE"
+  },
+  "LOVES AIR": {
+    "message": "PREFERUJE LOTNICTWO"
+  },
+  "LOVES BOTS": {
+    "message": "PREFERUJE BOTY"
+  },
+  "LOVES LAND": {
+    "message": "PREFERUJE JEDNOSTKI LĄDOWE"
+  },
+  "LOVES ORBITAL": {
+    "message": "PREFERUJE JEDNOSTKI ORBITALNE"
+  },
+  "LOVES TANKS": {
+    "message": "PREFERUJE CZOŁGI"
   },
   "Land Anywhere Tech": {
     "message": "Technologia Ląduj gdziekolwiek"
@@ -491,6 +557,9 @@
   "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
     "message": "Technologia odnowienia fabryk orbitalnych skraca o połowę czas odnowienia między kolejnymi jednostkami we wszystkich fabrykach orbitalnych."
   },
+  "Osmech": {
+    "message": "Osmech"
+  },
   "PENCHANT: increased personality": {
     "message": "PENCHANT: wyrazistsza osobowość"
   },
@@ -499,6 +568,9 @@
   },
   "PLATINUM: one enemy is no challenge": {
     "message": "PLATYNOWY: jeden wróg to żadne wyzwanie"
+  },
+  "POOR": {
+    "message": "KIEPSKA"
   },
   "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
     "message": "Technologia ulepszająca Pelicany pozwala transportowcom powietrznym przewozić dowódców. Każda jednostka może strzelać podczas transportu."
@@ -569,11 +641,29 @@
   "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
     "message": "Zastępuje konwencjonalne pociski nuklearne nowym, tanim wariantem o małej mocy i polega na nim zarówno w ataku, jak i w obronie. Rezygnuje w tym celu z większości zaawansowanych struktur obronnych."
   },
+  "Report a Galactic War Bug": {
+    "message": "Zgłoś błąd w Wojnie galaktycznej"
+  },
   "SCOUTING:": {
     "message": "ZWIAD:"
   },
+  "SHORT": {
+    "message": "KRÓTKIE"
+  },
   "SILVER: you beat the skirmish AI": {
     "message": "SREBRNY: pokonałeś SI w potyczce"
+  },
+  "SLOW": {
+    "message": "WOLNY"
+  },
+  "SLOWER": {
+    "message": "WOLNIEJSZY"
+  },
+  "SLOWEST": {
+    "message": "NAJWOLNIEJSZY"
+  },
+  "SPAWN ONLY": {
+    "message": "TYLKO MIEJSCE LĄDOWANIA"
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "SZANSA NA SUDDEN DEATH:"
@@ -589,6 +679,12 @@
   },
   "Scaling For:": {
     "message": "Skalowanie dla:"
+  },
+  "Second Wave": {
+    "message": "Second Wave"
+  },
+  "Section 17": {
+    "message": "Section 17"
   },
   "Separate": {
     "message": "Osobne"
@@ -662,6 +758,12 @@
   "TECH SYSTEM:": {
     "message": "SYSTEM TECHNOLOGII:"
   },
+  "TERRIBLE": {
+    "message": "FATALNA"
+  },
+  "TINY": {
+    "message": "BARDZO MAŁA"
+  },
   "TITANS: base game AI": {
     "message": "TITANS: SI z podstawowej gry"
   },
@@ -686,6 +788,9 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "Na wyposażeniu dowódcy marynarki znajdują się wszystkie fabryki morskie. Zwiększa ilość wody i lawy na odpowiednich planetach."
   },
+  "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
+    "message": "Galaktyka jest za mała, aby każda wroga frakcja miała system macierzysty. Wybierz większą galaktykę lub włącz „Skalowanie frakcji”, aby mniejsze galaktyki miały mniej frakcji."
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "Ten sam zarodek odtwarza tę samą galaktykę i tych samych wrogów, o ile wielkość galaktyki, liczba graczy, frakcja, poziom trudności i opcje gry są zgodne, a zainstalowane są te same mody. Nazwy planet i tak się różnią. Zostaw bez zmian, aby dostać nową galaktykę."
   },
@@ -694,6 +799,12 @@
   },
   "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
     "message": "Jednostki, którymi walczysz ty i twoi wicedowódcy. Można wybrać tylko rasy, z którymi utworzono wojnę gospodarza."
+  },
+  "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.": {
+    "message": "Nie udało się utworzyć wojny z powodu błędu. Zgłoś go na __url__ i dołącz zarodek wojny (__seed__) oraz plik dziennika PA, który znajduje się w __folder__."
+  },
+  "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.": {
+    "message": "Nie udało się utworzyć wojny, ponieważ nie udało się wczytać źródeł wybranych w „Systems” lub nie mają one użytecznych systemów gwiezdnych. Wybierz inne źródła albo opuść ten ekran i wróć, aby wczytać je ponownie."
   },
   "This card will be offered as part of the first draw.": {
     "message": "Ta karta zostanie zaproponowana w pierwszym rozdaniu."
@@ -734,11 +845,17 @@
   "UBER: you hate winning": {
     "message": "UBER: nienawidzisz wygrywać"
   },
+  "UNHEALTHY": {
+    "message": "NIEZDROWA"
+  },
   "UNIT DELAY (MAX):": {
     "message": "OPÓŹNIENIE JEDNOSTEK (MAKS.):"
   },
   "UNIT DELAY (MIN):": {
     "message": "OPÓŹNIENIE JEDNOSTEK (MIN.):"
+  },
+  "Unique AI loadouts": {
+    "message": "Unikalne wyposażenie SI"
   },
   "Unique Races": {
     "message": "Unikalne rasy"
@@ -769,6 +886,9 @@
   },
   "View loadout and tech cards": {
     "message": "Pokaż wyposażenie i karty technologii"
+  },
+  "WEAK": {
+    "message": "SŁABA"
   },
   "Waiting for loadout": {
     "message": "Oczekiwanie na wyposażenie"

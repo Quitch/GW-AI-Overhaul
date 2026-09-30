@@ -1,4 +1,7 @@
 {
+  "3 - FASTER RAMP UP": {
+    "message": "3 - 加快增援"
+  },
   "A map pack this war uses is missing": {
     "message": "缺少這場戰爭使用的地圖包"
   },
@@ -23,6 +26,9 @@
   "ARMIES/COMMANDERS:": {
     "message": "軍隊/指揮官："
   },
+  "Add-on mods this war began with are no longer enabled:": {
+    "message": "這場戰爭開始時啟用、現已停用的附加模組："
+  },
   "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
     "message": "進階防禦科技啟用更強大的防禦設施。進階防禦設施由進階製造者建造。"
   },
@@ -40,6 +46,9 @@
   },
   "All-terrain": {
     "message": "全地形"
+  },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "除非 AI 玩家可選的配備都已被其他玩家佔用，否則它不會以其他玩家持有的配備開局。需要啟用「Separate loadout &amp; tech」。"
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "不熟悉某個種族的 AI 不會提供給該種族。"
@@ -254,6 +263,9 @@
   "DIAMOND: your loadouts are OP": {
     "message": "鑽石：你的配備太強了"
   },
+  "DIRE": {
+    "message": "慘淡"
+  },
   "Deck:": {
     "message": "牌組："
   },
@@ -314,6 +326,18 @@
   "Exiles": {
     "message": "Exiles"
   },
+  "FAST": {
+    "message": "快"
+  },
+  "FASTER": {
+    "message": "更快"
+  },
+  "FASTEST": {
+    "message": "最快"
+  },
+  "FFA BEHAVIOUR": {
+    "message": "混戰打法"
+  },
   "FOUNDATION: air/navy": {
     "message": "FOUNDATION：空中/海軍"
   },
@@ -332,8 +356,20 @@
   "GOLD: you beat the Queller AI mod": {
     "message": "黃金：你已打敗 Queller AI 模組"
   },
+  "GOOD": {
+    "message": "良好"
+  },
   "GW Server Mods is not enabled": {
     "message": "GW Server Mods 未啟用"
+  },
+  "GW-BEGINNER": {
+    "message": "GW-新手"
+  },
+  "HEALTHY": {
+    "message": "健康"
+  },
+  "HUGE": {
+    "message": "很大"
   },
   "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
     "message": "哈雷升級科技使 delta-V 引擎的生命值加倍，費用減半。"
@@ -352,6 +388,15 @@
   },
   "How well the AI scouts.": {
     "message": "AI 偵察的能力。"
+  },
+  "IMMEDIATELY": {
+    "message": "立即"
+  },
+  "IMMENSE": {
+    "message": "極大"
+  },
+  "INCREDIBLE": {
+    "message": "驚人"
   },
   "IRON: you no longer turtle": {
     "message": "鋼鐵：你不再龜縮固守"
@@ -392,8 +437,29 @@
   "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
     "message": "從任何地點開始：玩家可以在合適的起始星球上任何地點開始。"
   },
+  "LATE ORBITAL": {
+    "message": "延後發展軌道"
+  },
   "LEGONIS MACHINA: vehicles": {
     "message": "LEGONIS MACHINA：載具"
+  },
+  "LONG": {
+    "message": "長"
+  },
+  "LOVES AIR": {
+    "message": "偏好空軍"
+  },
+  "LOVES BOTS": {
+    "message": "偏好機器人"
+  },
+  "LOVES LAND": {
+    "message": "偏好陸軍"
+  },
+  "LOVES ORBITAL": {
+    "message": "偏好軌道單位"
+  },
+  "LOVES TANKS": {
+    "message": "偏好坦克"
   },
   "Land Anywhere Tech": {
     "message": "從任何地點開始科技"
@@ -515,6 +581,9 @@
   "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
     "message": "軌道冷卻科技將所有軌道工廠建造之間的冷卻時間減半。"
   },
+  "Osmech": {
+    "message": "Osmech"
+  },
   "PENCHANT: increased personality": {
     "message": "PENCHANT：更鮮明的個性"
   },
@@ -523,6 +592,9 @@
   },
   "PLATINUM: one enemy is no challenge": {
     "message": "白金：一個敵人算不上挑戰"
+  },
+  "POOR": {
+    "message": "較差"
   },
   "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
     "message": "鵜鶘升級科技允許空中運輸機搭載指揮官。每個單位都能在運輸途中射擊。"
@@ -596,11 +668,29 @@
   "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
     "message": "以新的低成本/低當量型號取代傳統核武，並在攻防兩方面都高度依賴它。為此放棄大部分進階防禦設施。"
   },
+  "Report a Galactic War Bug": {
+    "message": "回報銀河戰爭錯誤"
+  },
   "SCOUTING:": {
     "message": "偵察："
   },
+  "SHORT": {
+    "message": "短"
+  },
   "SILVER: you beat the skirmish AI": {
     "message": "白銀：你已打敗遭遇戰 AI"
+  },
+  "SLOW": {
+    "message": "慢"
+  },
+  "SLOWER": {
+    "message": "更慢"
+  },
+  "SLOWEST": {
+    "message": "最慢"
+  },
+  "SPAWN ONLY": {
+    "message": "僅生成點"
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "驟死機率："
@@ -616,6 +706,12 @@
   },
   "Scaling For:": {
     "message": "調整對象："
+  },
+  "Second Wave": {
+    "message": "Second Wave"
+  },
+  "Section 17": {
+    "message": "Section 17"
   },
   "Separate": {
     "message": "個別"
@@ -692,6 +788,12 @@
   "TECH SYSTEM:": {
     "message": "科技星系："
   },
+  "TERRIBLE": {
+    "message": "糟糕"
+  },
+  "TINY": {
+    "message": "極小"
+  },
   "TITANS: base game AI": {
     "message": "TITANS：原版遊戲 AI"
   },
@@ -716,6 +818,9 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "海軍指揮官配備包含所有海軍工廠。增加合適星球上的水與熔岩數量。"
   },
+  "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
+    "message": "銀河太小，無法讓每個敵方派系都擁有母星系。請選擇更大的銀河，或啟用「派系成長」，讓較小的銀河擁有較少的派系。"
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "只要銀河大小、玩家人數、派系、難易度與遊戲選項相同且安裝相同模組，同一個種子就會重建相同的銀河與相同的敵人。星球名稱仍會不同。保持不變即可產生全新的銀河。"
   },
@@ -724,6 +829,12 @@
   },
   "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
     "message": "你與你的次指揮官所使用的單位。只能選擇主機戰爭建立時使用的種族。"
+  },
+  "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.": {
+    "message": "由於程式錯誤，無法建立戰爭。請在 __url__ 回報，並附上戰爭種子（__seed__）以及你的 PA 記錄檔，該檔案位於 __folder__。"
+  },
+  "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.": {
+    "message": "無法建立戰爭，因為在「Systems」下選取的來源無法載入，或沒有可用的星系。請選取其他來源，或離開此畫面再返回，以便重新載入它們。"
   },
   "This card will be offered as part of the first draw.": {
     "message": "這張卡片會在第一次抽卡時提供。"
@@ -764,11 +875,17 @@
   "UBER: you hate winning": {
     "message": "UBER：你討厭獲勝"
   },
+  "UNHEALTHY": {
+    "message": "欠佳"
+  },
   "UNIT DELAY (MAX):": {
     "message": "單位延遲（最大）："
   },
   "UNIT DELAY (MIN):": {
     "message": "單位延遲（最小）："
+  },
+  "Unique AI loadouts": {
+    "message": "AI 玩家配備不重複"
   },
   "Unique Races": {
     "message": "獨特種族"
@@ -799,6 +916,9 @@
   },
   "View loadout and tech cards": {
     "message": "檢視配備和科技卡"
+  },
+  "WEAK": {
+    "message": "疲弱"
   },
   "Waiting for loadout": {
     "message": "正在等待配備"

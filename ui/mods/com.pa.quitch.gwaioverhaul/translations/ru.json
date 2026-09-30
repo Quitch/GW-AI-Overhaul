@@ -1,4 +1,7 @@
 {
+  "3 - FASTER RAMP UP": {
+    "message": "3 - Ускоренный рост"
+  },
   "A map pack this war uses is missing": {
     "message": "Отсутствует набор карт, используемый в этой войне"
   },
@@ -23,6 +26,9 @@
   "ARMIES/COMMANDERS:": {
     "message": "АРМИИ/КОММАНДЕРЫ:"
   },
+  "Add-on mods this war began with are no longer enabled:": {
+    "message": "Моды-дополнения, с которыми началась эта война, больше не включены:"
+  },
   "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
     "message": "Усовершенствованная оборонная технология открывает более мощные оборонительные сооружения. Продвинутые оборонительные сооружения строятся продвинутыми фабрикаторами."
   },
@@ -37,6 +43,9 @@
   },
   "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
     "message": "Технология перезарядки авиазаводов вдвое сокращает время перезарядки между постройками для всех авиазаводов."
+  },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "ИИ-игрок никогда не начинает со снаряжением, которое есть у другого игрока, если только все доступные ему варианты снаряжения не заняты. Требуется «Separate loadout &amp; tech»."
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "ИИ, не знакомый с расой, для неё не предлагается."
@@ -242,6 +251,9 @@
   "DIAMOND: your loadouts are OP": {
     "message": "АЛМАЗ: ваше снаряжение имбовое"
   },
+  "DIRE": {
+    "message": "Катастрофический"
+  },
   "Deck:": {
     "message": "Колода:"
   },
@@ -302,6 +314,18 @@
   "Exiles": {
     "message": "Exiles"
   },
+  "FAST": {
+    "message": "Быстрый"
+  },
+  "FASTER": {
+    "message": "Более быстрый"
+  },
+  "FASTEST": {
+    "message": "Самый быстрый"
+  },
+  "FFA BEHAVIOUR": {
+    "message": "Поведение FFA"
+  },
   "FOUNDATION: air/navy": {
     "message": "FOUNDATION: авиация/флот"
   },
@@ -317,8 +341,20 @@
   "GOLD: you beat the Queller AI mod": {
     "message": "ЗОЛОТО: вы победили мод ИИ Queller"
   },
+  "GOOD": {
+    "message": "Хороший"
+  },
   "GW Server Mods is not enabled": {
     "message": "GW Server Mods не включён"
+  },
+  "GW-BEGINNER": {
+    "message": "GW-НАЧАЛЬНЫЙ"
+  },
+  "HEALTHY": {
+    "message": "Здоровый"
+  },
+  "HUGE": {
+    "message": "Гигантский"
   },
   "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
     "message": "Технология модернизации \"Галлей\" удваивает прочность двигателя дельта-V и вдвое снижает его стоимость."
@@ -334,6 +370,15 @@
   },
   "How well the AI scouts.": {
     "message": "Насколько хорошо ИИ ведёт разведку."
+  },
+  "IMMEDIATELY": {
+    "message": "Сразу"
+  },
+  "IMMENSE": {
+    "message": "Колоссальный"
+  },
+  "INCREDIBLE": {
+    "message": "Невероятный"
   },
   "IRON: you no longer turtle": {
     "message": "ЖЕЛЕЗНЫЙ: вы больше не отсиживаетесь в обороне"
@@ -371,8 +416,29 @@
   "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
     "message": "НАЧАТЬ ГДЕ УГОДНО: игроки могут начать в любой точке пригодных стартовых планет."
   },
+  "LATE ORBITAL": {
+    "message": "Поздний выход на орбиту"
+  },
   "LEGONIS MACHINA: vehicles": {
     "message": "LEGONIS MACHINA: машины"
+  },
+  "LONG": {
+    "message": "Долгий"
+  },
+  "LOVES AIR": {
+    "message": "Предпочитает авиацию"
+  },
+  "LOVES BOTS": {
+    "message": "Предпочитает ботов"
+  },
+  "LOVES LAND": {
+    "message": "Предпочитает наземные юниты"
+  },
+  "LOVES ORBITAL": {
+    "message": "Предпочитает орбитальные юниты"
+  },
+  "LOVES TANKS": {
+    "message": "Предпочитает танки"
   },
   "Land Anywhere Tech": {
     "message": "Технология «Начать где угодно»"
@@ -491,6 +557,9 @@
   "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
     "message": "Технология перезарядки орбитальных заводов вдвое сокращает время перезарядки между постройками для всех орбитальных заводов."
   },
+  "Osmech": {
+    "message": "Osmech"
+  },
   "PENCHANT: increased personality": {
     "message": "PENCHANT: более выраженный характер"
   },
@@ -499,6 +568,9 @@
   },
   "PLATINUM: one enemy is no challenge": {
     "message": "ПЛАТИНА: один враг — не испытание"
+  },
+  "POOR": {
+    "message": "Плохой"
   },
   "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
     "message": "Технология модернизации \"Пеликана\" позволяет воздушным транспортам перевозить коммандеров. Каждый юнит может стрелять во время перевозки."
@@ -569,11 +641,29 @@
   "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
     "message": "Заменяет обычные ядерные ракеты новым дешёвым маломощным вариантом и во многом полагается на него как в нападении, так и в обороне. Ради этого отказывается от большинства продвинутых оборонительных сооружений."
   },
+  "Report a Galactic War Bug": {
+    "message": "Сообщить об ошибке в Галактической Войне"
+  },
   "SCOUTING:": {
     "message": "РАЗВЕДКА:"
   },
+  "SHORT": {
+    "message": "Короткий"
+  },
   "SILVER: you beat the skirmish AI": {
     "message": "СЕРЕБРО: вы победили ИИ в схватке"
+  },
+  "SLOW": {
+    "message": "Медленный"
+  },
+  "SLOWER": {
+    "message": "Более медленный"
+  },
+  "SLOWEST": {
+    "message": "Самый медленный"
+  },
+  "SPAWN ONLY": {
+    "message": "Только точка высадки"
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "ШАНС МГНОВЕННОЙ СМЕРТИ:"
@@ -589,6 +679,12 @@
   },
   "Scaling For:": {
     "message": "Масштаб для:"
+  },
+  "Second Wave": {
+    "message": "Second Wave"
+  },
+  "Section 17": {
+    "message": "Section 17"
   },
   "Separate": {
     "message": "Раздельные"
@@ -662,6 +758,12 @@
   "TECH SYSTEM:": {
     "message": "СИСТЕМА ТЕХНОЛОГИЙ:"
   },
+  "TERRIBLE": {
+    "message": "Ужасный"
+  },
+  "TINY": {
+    "message": "Крошечный"
+  },
   "TITANS: base game AI": {
     "message": "TITANS: ИИ базовой игры"
   },
@@ -686,6 +788,9 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "Снаряжение Коммандера ВМС содержит все военно-морские заводы. Увеличивает количество воды и лавы на подходящих планетах."
   },
+  "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
+    "message": "Галактика слишком мала, чтобы у каждой вражеской фракции была родная система. Выберите галактику побольше или включите параметр «Корректировка фракций», чтобы в небольших галактиках было меньше фракций."
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "То же начальное значение воссоздаёт ту же галактику и тех же врагов при условии, что размер галактики, количество игроков, фракция, сложность и настройки игры совпадают и установлены те же моды. Названия планет всё равно меняются. Оставьте поле как есть, чтобы получить новую галактику."
   },
@@ -694,6 +799,12 @@
   },
   "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
     "message": "Юниты, которыми сражаетесь вы и ваши Коммандеры Помощники. Можно выбрать только расы, с которыми была создана война хоста."
+  },
+  "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.": {
+    "message": "Не удалось создать войну из-за ошибки. Сообщите о ней на __url__, укажите начальное значение войны (__seed__) и приложите файл журнала PA, который находится в __folder__."
+  },
+  "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.": {
+    "message": "Не удалось создать войну, потому что источники, выбранные в разделе «Systems», не удалось загрузить или в них нет подходящих звёздных систем. Выберите другие источники или покиньте этот экран и вернитесь, чтобы попробовать загрузить их снова."
   },
   "This card will be offered as part of the first draw.": {
     "message": "Эта карта будет предложена в первой раздаче."
@@ -734,11 +845,17 @@
   "UBER: you hate winning": {
     "message": "UBER: вы ненавидите побеждать"
   },
+  "UNHEALTHY": {
+    "message": "Нездоровый"
+  },
   "UNIT DELAY (MAX):": {
     "message": "ЗАДЕРЖКА ЮНИТОВ (МАКС.):"
   },
   "UNIT DELAY (MIN):": {
     "message": "ЗАДЕРЖКА ЮНИТОВ (МИН.):"
+  },
+  "Unique AI loadouts": {
+    "message": "Уникальное снаряжение ИИ"
   },
   "Unique Races": {
     "message": "Уникальные расы"
@@ -769,6 +886,9 @@
   },
   "View loadout and tech cards": {
     "message": "Просмотреть снаряжение и карты технологий"
+  },
+  "WEAK": {
+    "message": "Слабый"
   },
   "Waiting for loadout": {
     "message": "Ожидание снаряжения"

@@ -1,4 +1,7 @@
 {
+  "3 - FASTER RAMP UP": {
+    "message": "3 - 増援ペース加速"
+  },
   "A map pack this war uses is missing": {
     "message": "この戦争で使用するマップパックが見つからない"
   },
@@ -23,6 +26,9 @@
   "ARMIES/COMMANDERS:": {
     "message": "アーミー/コマンダー:"
   },
+  "Add-on mods this war began with are no longer enabled:": {
+    "message": "この戦争の開始時に有効で、現在は無効になっているアドオンMOD:"
+  },
   "Advanced Defense Technology enables more powerful defenses. Advanced defenses are built via advanced fabricators.": {
     "message": "上級防衛テクノは、より強力な防衛の利用を可能とする。上級防衛構造体は上級ファブリケーターで建造できる。"
   },
@@ -37,6 +43,9 @@
   },
   "Air Cooldown Tech halves the cooldown time between builds for all air factories.": {
     "message": "飛行クールダウンテクノは、全飛行工場の建造間のクールダウン時間を半減させる。"
+  },
+  "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
+    "message": "AIプレイヤーは、選べる装備がすべて他のプレイヤーに使われていない限り、他のプレイヤーと同じ装備では開始しない。「Separate loadout &amp; tech」が必要。"
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "その種族に対応していないAIは、その種族の選択肢には表示されない。"
@@ -242,6 +251,9 @@
   "DIAMOND: your loadouts are OP": {
     "message": "DIAMOND: 装備が強すぎる人向け"
   },
+  "DIRE": {
+    "message": "壊滅的"
+  },
   "Deck:": {
     "message": "デッキ:"
   },
@@ -302,6 +314,18 @@
   "Exiles": {
     "message": "エグザイルズ"
   },
+  "FAST": {
+    "message": "速い"
+  },
+  "FASTER": {
+    "message": "より速い"
+  },
+  "FASTEST": {
+    "message": "最も速い"
+  },
+  "FFA BEHAVIOUR": {
+    "message": "FFAの立ち回り"
+  },
   "FOUNDATION: air/navy": {
     "message": "FOUNDATION: 飛行/海戦"
   },
@@ -317,8 +341,20 @@
   "GOLD: you beat the Queller AI mod": {
     "message": "GOLD: Queller AI MODを制した人向け"
   },
+  "GOOD": {
+    "message": "高水準"
+  },
   "GW Server Mods is not enabled": {
     "message": "GW Server Modsが有効になっていない"
+  },
+  "GW-BEGINNER": {
+    "message": "GW-BEGINNER"
+  },
+  "HEALTHY": {
+    "message": "健全"
+  },
+  "HUGE": {
+    "message": "巨大"
   },
   "Halley Upgrade Tech doubles the health of the delta V engine and halves its cost.": {
     "message": "Halley アップグレードテクノは、デルタVエンジンのライフを2倍にし、コストを半減させる。"
@@ -334,6 +370,15 @@
   },
   "How well the AI scouts.": {
     "message": "AIのスカウト能力の程度。"
+  },
+  "IMMEDIATELY": {
+    "message": "即時"
+  },
+  "IMMENSE": {
+    "message": "超巨大"
+  },
+  "INCREDIBLE": {
+    "message": "驚異的"
   },
   "IRON: you no longer turtle": {
     "message": "IRON: もう籠城しなくなった人向け"
@@ -371,8 +416,29 @@
   "LAND ANYWHERE: players can start anywhere on viable starting planets.": {
     "message": "どこでも着陸可能: プレイヤーは開始可能な惑星のどこからでも開始できる。"
   },
+  "LATE ORBITAL": {
+    "message": "衛星軌道は後回し"
+  },
   "LEGONIS MACHINA: vehicles": {
     "message": "LEGONIS MACHINA: 陸戦車両"
+  },
+  "LONG": {
+    "message": "長い"
+  },
+  "LOVES AIR": {
+    "message": "飛行を好む"
+  },
+  "LOVES BOTS": {
+    "message": "ボットを好む"
+  },
+  "LOVES LAND": {
+    "message": "陸戦を好む"
+  },
+  "LOVES ORBITAL": {
+    "message": "衛星軌道を好む"
+  },
+  "LOVES TANKS": {
+    "message": "戦車を好む"
   },
   "Land Anywhere Tech": {
     "message": "どこでも着陸可能テクノ"
@@ -491,6 +557,9 @@
   "Orbital Cooldown Tech halves the cooldown time between builds for all orbital factories.": {
     "message": "衛星軌道クールダウンテクノは、全衛星軌道工場の建造間のクールダウン時間を半減させる。"
   },
+  "Osmech": {
+    "message": "オスメック"
+  },
   "PENCHANT: increased personality": {
     "message": "PENCHANT: パーソナリティの強化"
   },
@@ -499,6 +568,9 @@
   },
   "PLATINUM: one enemy is no challenge": {
     "message": "PLATINUM: 敵1体では物足りない人向け"
+  },
+  "POOR": {
+    "message": "低水準"
   },
   "Pelican Upgrade Tech allows air transports to carry commanders. Every unit can shoot while being transported.": {
     "message": "Pelican アップグレードテクノは、空輸機がコマンダーを運べるようにする。全ユニットが輸送中も射撃できる。"
@@ -569,11 +641,29 @@
   "Replaces conventional nukes with a new low-cost/low-yield variant and relies heavily on it for both offense and defence. Gives up most advanced defenses to do it.": {
     "message": "通常の核を低コスト/低威力の新型に置き換え、攻防ともにそれに大きく依存する。その代わりに上級防衛の大部分を失う。"
   },
+  "Report a Galactic War Bug": {
+    "message": "星系間戦争のバグを報告"
+  },
   "SCOUTING:": {
     "message": "スカウト:"
   },
+  "SHORT": {
+    "message": "短い"
+  },
   "SILVER: you beat the skirmish AI": {
     "message": "SILVER: スカーミッシュのAIを制した人向け"
+  },
+  "SLOW": {
+    "message": "遅い"
+  },
+  "SLOWER": {
+    "message": "より遅い"
+  },
+  "SLOWEST": {
+    "message": "最も遅い"
+  },
+  "SPAWN ONLY": {
+    "message": "スポーン地点のみ"
   },
   "SUDDEN DEATH CHANCE:": {
     "message": "サドンデス発生率:"
@@ -589,6 +679,12 @@
   },
   "Scaling For:": {
     "message": "スケーリング対象:"
+  },
+  "Second Wave": {
+    "message": "セカンドウェーブ"
+  },
+  "Section 17": {
+    "message": "セクション17"
   },
   "Separate": {
     "message": "個別"
@@ -662,6 +758,12 @@
   "TECH SYSTEM:": {
     "message": "テクノ星系:"
   },
+  "TERRIBLE": {
+    "message": "劣悪"
+  },
+  "TINY": {
+    "message": "極小"
+  },
   "TITANS: base game AI": {
     "message": "TITANS: 基本ゲームのAI"
   },
@@ -686,6 +788,9 @@
   "The Naval Commander loadout contains all naval factories. Increases the amount of water and lava on eligible planets.": {
     "message": "海戦コマンダーの装備には全ての海戦工場が搭載されている。対象となる惑星の水と溶岩の量が増加する。"
   },
+  "The galaxy is too small for every enemy faction to have a home system. Choose a larger galaxy, or turn on Faction Scaling so that smaller galaxies have fewer factions.": {
+    "message": "銀河が小さすぎて、すべての敵ファクションに本拠星系を割り当てられない。より大きな銀河を選ぶか、「ファクション スケーリング」を有効にして、小さな銀河のファクション数を減らそう。"
+  },
   "The same seed rebuilds the same galaxy and the same enemies, provided the galaxy size, number of players, faction, difficulty, and game options match and the same mods are installed. Planet names still vary. Leave it alone for a fresh galaxy.": {
     "message": "銀河のサイズ、プレイヤー人数、ファクション、難易度、ゲームオプションが一致し、同じMODが導入されていれば、同じシード値から同じ銀河と同じ敵が再現される。惑星名は毎回変わる。新しい銀河にするには、そのままにしておく。"
   },
@@ -694,6 +799,12 @@
   },
   "The units you and your Sub Commanders field. Only the races the host's war was created with can be chosen.": {
     "message": "あなたとサブコマンダーが使用するユニット。ホストの戦争が作成された時の種族のみ選択できる。"
+  },
+  "The war could not be created because of a bug. Please report it at __url__ and include the war seed (__seed__) and your PA log file, which is in __folder__.": {
+    "message": "バグのため戦争を作成できなかった。__url__ で報告し、戦争のシード値（__seed__）と、__folder__ にあるPAのログファイルを添えよう。"
+  },
+  "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.": {
+    "message": "「Systems」で選択したソースを読み込めなかったか、使用可能な星系がないため、戦争を作成できなかった。別のソースを選ぶか、この画面を離れてから戻って、もう一度読み込ませよう。"
   },
   "This card will be offered as part of the first draw.": {
     "message": "このカードは最初のドローで提示される。"
@@ -734,11 +845,17 @@
   "UBER: you hate winning": {
     "message": "UBER: 勝つのが嫌いな人向け"
   },
+  "UNHEALTHY": {
+    "message": "不健全"
+  },
   "UNIT DELAY (MAX):": {
     "message": "ユニット遅延 (最大):"
   },
   "UNIT DELAY (MIN):": {
     "message": "ユニット遅延 (最小):"
+  },
+  "Unique AI loadouts": {
+    "message": "AI装備の重複なし"
   },
   "Unique Races": {
     "message": "固有種族"
@@ -769,6 +886,9 @@
   },
   "View loadout and tech cards": {
     "message": "装備とテクノカードを表示"
+  },
+  "WEAK": {
+    "message": "脆弱"
   },
   "Waiting for loadout": {
     "message": "装備を待機中"

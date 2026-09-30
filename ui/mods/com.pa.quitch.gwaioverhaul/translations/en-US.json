@@ -425,7 +425,7 @@
   },
   "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.": {
     "message": "An AI player never starts with a loadout another player holds, unless every loadout it could take is held. Requires Separate loadout &amp; tech.",
-    "description": "Tooltip on the \"Unique AI loadouts\" switch in the co-op settings modal on the war setup screen (gw_start). \"AI player\" = a computer-controlled co-op player the host adds; \"loadout\" = starting tech card; \"holds\" = has as its loadout. \"Separate loadout & tech\" is the name of the base game's co-op option this depends on, so match that translation. Keep \"&amp;\" as written (it renders as \"&\"). Two sentences; keep the full stops. (gw_start/race_picker.js, gwoUniqueAiLoadoutsTooltip)"
+    "description": "Tooltip on the \"Unique AI loadouts\" switch in the co-op settings modal on the war setup screen (gw_start). \"AI player\" = a computer-controlled co-op player the host adds; \"loadout\" = starting tech card; \"holds\" = has as its loadout. \"Separate loadout & tech\" is the name of the base game's co-op option this depends on. The game's own tables have no translation of it, so it shows in English in every language: keep it in English, so the player can find it. Keep \"&amp;\" as written (it renders as \"&\"). Two sentences; keep the full stops. (gw_start/race_picker.js, gwoUniqueAiLoadoutsTooltip)"
   },
   "An AI that does not know a race is not offered for it.": {
     "message": "An AI that does not know a race is not offered for it.",
@@ -1593,7 +1593,7 @@
   },
   "GW-BEGINNER": {
     "message": "GW-BEGINNER",
-    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. The easiest. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Upper case. (difficulty_levels.html)"
+    "description": "Difficulty in the Galactic War difficulty drop-down on the war setup screen (gw_start). The choices run from easiest to hardest: GW-BEGINNER, GW-CASUAL, GW-IRON, GW-BRONZE, GW-SILVER, GW-GOLD, GW-PLATINUM, GW-DIAMOND, GW-UBER, then GW-CUSTOM. The easiest. \"GW\" stands for Galactic War: keep \"GW-\" and translate the word after it, as the game's own tables do for these names (German \"GW-EISEN\" for GW-IRON). Follow the other names in your language's table: Polish uses \"WG-\" in place of \"GW-\", and Japanese keeps the English names. Upper case. (difficulty_levels.html)"
   },
   "GW-BRONZE": {
     "message": "GW-BRONZE",
@@ -3737,7 +3737,7 @@
   },
   "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.": {
     "message": "The war could not be created because the sources selected under Systems could not be loaded or have no usable star systems. Select other sources, or leave this screen and come back to try them again.",
-    "description": "Error shown above the Go To War button on the war setup screen when a new war cannot be created because the Shared Systems for Galactic War mod is in use and the sources selected in its Systems list could not be loaded (for example, a remote server that is down) or have no star systems a battle can use. 'Systems' is the label of that list: use the game's own translation of the label 'Systems' (German 'Systeme', French 'Systèmes'), so the player can find it. The sources are the entries in that list. 'This screen' is the war setup screen: the sources are only tried again after the player leaves it and comes back. This is not a bug in the mod, so do not word it as one. Full sentences; keep the full stops. (war_generation_failure.js)"
+    "description": "Error shown above the Go To War button on the war setup screen when a new war cannot be created because the Shared Systems for Galactic War mod is in use and the sources selected in its Systems list could not be loaded (for example, a remote server that is down) or have no star systems a battle can use. 'Systems' is the label of that list. Shared Systems for Galactic War adds it after the game has translated the screen, so it shows in English in every language: keep 'Systems' in English, so the player can find it. The sources are the entries in that list. 'This screen' is the war setup screen: the sources are only tried again after the player leaves it and comes back. This is not a bug in the mod, so do not word it as one. Full sentences; keep the full stops. (war_generation_failure.js)"
   },
   "This Commander likes to raid and has modified its blueprints to that end. Units are twice as fast and 30% cheaper but have damage output decreased by 50%.": {
     "message": "This Commander likes to raid and has modified its blueprints to that end. Units are twice as fast and 30% cheaper but have damage output decreased by 50%.",

@@ -33,6 +33,7 @@
 - About one galaxy in fifty, most often a small one, no longer has far more gates between its stars than usual, with up to nine on one star, so each seed that made such a galaxy now makes a different war
 - Non-MLA commanders are named as MLA commanders are when you pick a commander, such as Maxim rather than Maxim Commander
 - Non-MLA players can no longer pick the Tactical Nuke, Planetary Excavation, Space Excavation, Defense Tech, or Artillery Commander loadouts, whose changes reach only MLA units
+- The AI Settings choices, such as DIRE and LOVES AIR, the GW-BEGINNER difficulty, the galaxy map's warning that a war's add-on mods are no longer enabled, and the messages shown when a war cannot be created are now translated
 
 ### Bugfix
 
