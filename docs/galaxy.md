@@ -73,22 +73,25 @@ check is `!links || links.length === 0`.
 
 ## Determinism and the war seed
 
-The same seed rebuilds the same galaxy and the same enemies, given the same player
-faction, difficulty, game options and mod set. The player enters the seed in the lobby
-(`#game-seed`, which stock hides and `gw_start/ui.js` un-hides). GWO records the seed
-on the save as `originSystem.gwaio.seed` and shows it in the `gw_play` panel.
+The same seed rebuilds the same galaxy and the same enemies, given the same galaxy
+size, co-op player count, player faction, difficulty, game options, and mod set.
+The player enters the seed in the lobby (`#game-seed`, which stock hides and
+`gw_start/ui.js` un-hides). GWO records the seed on the save as
+`originSystem.gwaio.seed` and shows it in the `gw_play` panel.
 
 **Out of the seed's reach**, deliberately or unavoidably:
 
 - **Planet names**: `api.game.getRandomPlanetName()` is an engine call with no seed.
 - **Unlocked loadouts**, which decide what the treasure planet can offer each player.
 - **The Shared Systems / My Systems pool**, which lives in IndexedDB per machine.
-- **The mod set**, and **the player faction**, which is an input rather than an output.
+- **The mod set**, **the galaxy size**, **the co-op player count**, and **the player
+  faction**, which are inputs rather than outputs.
 
-`gwo_system_templates.generate()` keeps stock's unseeded fallback. The module is a
-drop-in for `template-loader.js`, and a non-GWO caller may reach it without a seed.
-It `console.warn`s when it does. If it silently used `Math.random()` there, it would
-produce a war that looks reproducible and is not.
+`gwo_system_templates.generate()` keeps stock's unseeded fallback for a call with
+no seed. The module is a copy of `template-loader.js` in GWO's namespace, not a
+shadow, and only GWO's war generation reaches it; both of its callers pass a
+seed. It `console.warn`s on a call without one. If it silently used
+`Math.random()` there, it would produce a war that looks reproducible and is not.
 
 ### Why a bespoke PRNG
 
@@ -206,12 +209,13 @@ The rest of the components are:
   what that viewer would have seen. The host's own draw uses the literal player key
   `host`. See [`coop.md`](coop.md).
 - **`<player>`**: this is `record.playerId`, the uberId, not `client_id`. A viewer who
-  reconnects must get their own minions and offers back. Whitespace in any label is
-  squashed to `_`, because `gwo_rng` joins a label and index with a space. Otherwise
-  `stream("a b")` would collide with `stream("a", "b")`. A co-op AI player's
-  `record.playerId` is its `gwo_ai_<serial>`, so under per-player tech its
-  hands, star cards, and General Commander Sub Commanders come from streams of
-  its own.
+  reconnects must get their own minions and offers back. Whitespace in a player
+  key or a card id is squashed to `_`. That prevents no collision, because
+  `gwo_rng` separates a label from its index with NUL, and it gives `a b` and
+  `a_b` one key. It stays because every live war's streams are keyed with it. A
+  co-op AI player's `record.playerId` is its `gwo_ai_<serial>`, so under
+  per-player tech its hands, star cards, and General Commander Sub Commanders
+  come from streams of its own.
 - **`coop_ai_player.<serial>`**: `gw_play/coop_ai_roster.js` draws a co-op AI
   player's identity from it when the host adds one, each part from its own
   child. The serial never repeats, so an AI added after a kick draws from a
@@ -489,7 +493,6 @@ mod later is enough.
 
 A co-op viewer needs no biome mod installed to join such a battle. It reads the
 cooked copy from `gw_config`, at `coui://pa/terrain/<biome>.json`.
-`api.file.zip.catalog` returns `[{name, crc32, size}]`.
 
 The quantity is armies, not humans. Map makers use `players` to count humans, and
 humans share an army, so a declared `[2,10]` on two landing zones is two armies of
@@ -584,9 +587,11 @@ These consequences surface elsewhere:
 
 A faction's race is the unit faction it fields. It is drawn per faction from the
 `teams` stream's `races` child once the factions are shuffled, and stamped onto
-every AI that faction spawns (`ai.race`). Each non-boss AI takes one of the
-race's commanders from `warRng.stream("race", faction)`. The boss keeps its
-Pumpkin and the Guardians keep the Unicorn, retagged at launch.
+every AI that faction spawns (`ai.race`). Each system AI but the boss takes one
+of the race's commanders from `warRng.stream("race", faction)`, keyed by spawn
+order. A minion, an FFA foe, or an ally draws its commander from its own stream
+under `ai.<team>`. The boss keeps its Pumpkin and the Guardians keep the
+Unicorn, retagged at launch.
 
 Cluster draws a race like any other faction, and takes a Unique Races slot. Under
 Unique Races the first pass through the pool is seeded with the player's race

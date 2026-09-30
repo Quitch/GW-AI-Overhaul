@@ -1,5 +1,5 @@
-// The loadout card ids, in one place. loadouts.js cannot serve deal.js directly:
-// it touches model.makeKnown and GW.bank at load time, and gw_play has neither.
+// The loadout card ids, in one place, for modules that need only the ids. See
+// tech-cards.md, "Loadouts".
 define(function () {
   var starting = [
     "gwc_start_vehicle",

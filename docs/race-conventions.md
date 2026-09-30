@@ -10,14 +10,15 @@ race needs something new.
 1. **Descriptor.** Add `ui/mods/…/race/<id>.js` and list it in
    `shared/races_shipped.js`. Its fields are `id`, `name`, `serverMods` (every
    identifier that counts as the mod active, matched exactly), `unitTypeBit`
-   (`Custom<N>`), `commanderTypes`, `commanders`, `commanderArtHue`,
-   `playerIcon`, `ai`, `units`, `unitNames`. `stockUnits` is optional: the
-   stock units the race builds with an MLA builder it fields, although a race
-   unit shares their cell (Exiles' teleporter and basic metal extractor;
-   [`races.md`](races.md), "Units a race builds itself").
+   (`Custom<N>`), `commanderTypes`, `engineKeys` (see "Conventions the code
+   relies on" below), `commanders`, `commanderArtHue`, `playerIcon`, `ai`,
+   `units`, and `unitNames`. `stockUnits` is optional: the stock units the race
+   builds with an MLA builder it fields, although a race unit shares their cell
+   (Exiles' teleporter and basic metal extractor; [`races.md`](races.md),
+   "Units a race builds itself").
 2. **Unit table.** `units` keys every spec the race ships by a name of the
    race's own (`shank`, `crusher`). It keys parts by owner plus role
-   (`shankAmmo`, `crusherWeapon`, `hiveBuildArm`), research factories as
+   (`shankAmmo`, `crusherWeapon`, `fabBuildArm`), research factories as
    `<x>Research`, and unlock tokens as `<x>Unlock`. It holds only the files the
    race's own mod ships; a base-game file its units reuse is left out and stays
    stock. The table is for cards written for that race alone, and it marks its
@@ -186,8 +187,10 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
 - **Commander art hue.** `commanderArtHue` is the hue that the preview art
   ships in (MLA 210 blue, Legion 0 red). The war setup's Commander picker and
   the co-op loadout scene both rotate from there to the faction colour.
-- **Player icon** is a 16px fill/outline pair the race's own mod ships,
-  reached through GW Server Mods' root mount (`coui://ui/mods/<mod>/img/…`).
+- **Player icon** is a 16px fill/outline pair at `coui://ui/mods/<mod>/img/…`.
+  Legion and Bugs ship theirs only in their client mods, which the game mounts
+  itself. Exiles ships its pair in both its client and its server mod, and GW
+  Server Mods' root mount reaches the server copy.
 - **Brains.** Titans runs every race, with the mod's own `/pa/ai/` files
   layered over the base game's. Queller runs MLA and Legion. Penchant runs
   MLA. A brain that does not know a race in play is not offered, and
@@ -207,11 +210,8 @@ Each issue gets a bug report in Simplified Technical English (ASD-STE100) for
 the mod's author. The report is kept outside the repo (the user's Desktop).
 
 - Bugs' `unit_list.json` lists `/pa/units/air/bug_siren/bug_siren.json`,
-  which the zip does not ship (`Failed to load unit spec … .ai0`). Its
-  `unit_maps/bugs.json` builds three specs that the list lacks:
-  `basic_research_station`, `advanced_research_station` (the Evolution
-  Chambers) and `bug_turret_spray`. So its AI cannot research in GW until the
-  mod lists them. Report this upstream. The list stays authoritative.
+  which the zip does not ship (`Failed to load unit spec … .ai0`). Report this
+  upstream. The list stays authoritative.
 - Exiles' `/pa/units/base/flare/flare.json` tool `flare_sd_Weapon` does not
   parse server-side (`CostStampSpec::parse failed`). Its unit map names
   `r_artillery`, which the zip does not ship. Exiles 0.7.2's `unit_list.json`

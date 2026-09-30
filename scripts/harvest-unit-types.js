@@ -23,9 +23,11 @@ const OUT =
 
 const MEDIA = mediaDir();
 
-// A folder build beside a zip wins.
 const SERVER_MODS = shippedServerMods();
 
+// A mod's folder build beside its zip wins (modRoots). GWO_RACE_ROOTS adds mod
+// folders, split on path.delimiter, each read through its pa/ folder after
+// every other root.
 const ROOTS = [
   folderRoot(path.join(MEDIA, "pa")),
   folderRoot(path.join(MEDIA, "pa_ex1")),

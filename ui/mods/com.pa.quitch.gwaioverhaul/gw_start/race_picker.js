@@ -151,9 +151,9 @@
         try {
           raceMods.registerAll();
 
-          // A commander read before its zip is mounted caches a failure, and the
-          // name never recovers, so the list stays MLA's until the mount
-          // settles. See races.md.
+          // A commander read before its zip is mounted fails, and its tile shows
+          // the spec path until a later render reads it again, so the list
+          // stays MLA's until the mount settles. See races.md.
           var mounted = ko.observable(false);
 
           // The commander list follows the race; a race's list is its own, and

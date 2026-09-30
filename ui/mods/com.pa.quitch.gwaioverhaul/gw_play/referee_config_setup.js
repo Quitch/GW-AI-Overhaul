@@ -85,7 +85,7 @@ define([
         aiPersonalityTags.push("air");
         break;
       default:
-        // falls through - Queller has no naval personality tag
+        // Queller has no naval personality tag
         break;
     }
     return aiPersonalityTags;

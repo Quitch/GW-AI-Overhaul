@@ -42,8 +42,9 @@ define([], function () {
         steps([]);
       },
 
-      // Every early return in stock fight leaves launchingFight false. An outer
-      // wrapper may defer the stock call behind a promise, so settle after it.
+      // Stock fight's early returns leave launchingFight as they found it, so
+      // the panel closes unless a launch is already running. An outer wrapper
+      // may defer the stock call behind a promise, so settle after it.
       settle: function (result, launching) {
         var check = function () {
           if (!launching()) {

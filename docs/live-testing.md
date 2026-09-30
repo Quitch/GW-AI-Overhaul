@@ -69,8 +69,8 @@ Lines that mean something:
   card file logs `Script error for: cards/<id>` and leaves the client on
   `gw_start` for ever.
 - `battle preparation failed: <stack>` is a throw inside a referee. Fight is
-  re-enabled afterwards ([architecture.md](architecture.md)).
-  `model.gwoLaunchProgress` holds the stage the launch reached.
+  re-enabled afterwards ([architecture.md](architecture.md)). The launch panel
+  closes with it, so this line, not `model.gwoLaunchProgress`, says what failed.
 - With `--ai-log`, the server log has `Army: <name> - Loading unit map <path>`
   for every map each army loaded. Without the flag the server prints
   `The AI has ancountered an error. Please enable AI logging` instead, which

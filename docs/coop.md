@@ -122,7 +122,7 @@ tag's leading dot. A viewer's Sub Commanders get no Cluster tree of their own:
 their scoped tree is already their isolation.
 
 The per-player pass skips the host's minions because the main referee already
-included them. The check is `tag === ".player"`.
+included them. The check is `playerTag === ".player"`.
 
 ## Colour allocation
 
@@ -190,16 +190,21 @@ let two armies collide.
 ## Resolving viewers
 
 `getConnectedViewerInventories(game, connectedClients)` returns
-`{client, inventory}` pairs for connected **viewer-role** clients. It drops any
-client whose inventory is not resolvable yet.
+`{client, inventory}` pairs for connected **viewer-role** clients. It drops,
+without a log line, any client whose record or inventory is not resolvable yet.
 
-It guards against two failure modes:
+Two cases are easy to misread:
 
 - If no authenticated user ever loaded a viewer's PA profile, that viewer has an
-  empty `uberId`/`displayName`. The function reports that rather than silently
-  mishandling it.
-- `game.findCoopPlayerInventoryData` never returns a record for the **host**.
-  The host's own loadout is resolved locally via `model.gwoLoadout`.
+  empty `uberId`/`displayName`. Records are keyed by that identity, so every
+  lookup for the viewer finds nothing, and the function drops it. The viewer's
+  own war panel logs the cause once (`gw_play/gwo_panel.js`).
+- The function leaves the **host** out by role, not by record. Under per-player
+  tech the host has a co-op record too (`gw_start/war_generation.js` writes it,
+  and stock's `syncHostCoopInventoryRecord` keeps it current), so
+  `game.findCoopPlayerInventoryData` can return it, and a walk over
+  `game.coopPlayerInventoryData()` meets it. The host's own loadout is resolved
+  locally via `model.gwoLoadout`.
 
 Minion counting deliberately includes players who are not currently in the game.
 The minions of a player who leaves and rejoins therefore do not vanish and
@@ -301,8 +306,8 @@ viewer still reconnecting, and turn them away with "No room".
 
 Stock's "+" and "−" send an absolute count read from `gwCampaignMaxClients`.
 While an add, a kick, or any other `modify_settings` is in flight that count is
-stale, and a "+" sent then would undo the add. Both are held until the count
-settles.
+stale, and a "+" sent then would undo the add. While it is in flight, "+" is
+greyed out, and a press of either is dropped with a log line.
 
 The add asks the server for one slot fewer, and writes nothing before it
 answers. An answer with any other count abandons it. A human who joined
@@ -518,9 +523,9 @@ The write runs inside the campaign state queue (`enqueueGwCampaignStateApply`),
 where every host record write runs, so it cannot interleave with a viewer's
 queued write. It re-reads the record first. It writes nothing if the AI has
 gone, if the deal was settled meanwhile, or if the AI's cards differ from those
-it decided on. A decision made on changed cards is redone, up to three times in
-a pass. The patch goes over the fresh record, so a star-card write made while
-the AI decided is kept.
+it decided on. A decision made on changed cards is redone, up to three times
+for each deal. The patch goes over the fresh record, so a star-card write made
+while the AI decided is kept.
 
 Each step is bounded. A deal not settled within 20 seconds falls back to a
 quick pick: the first card of the hand in play that is not a loadout, if the
@@ -667,9 +672,10 @@ same reason `gwo_streams.coopPlayerKey` prefers `record.playerId`.
 Every reply that concerns one player addresses itself, including the failure
 replies (`cards_coop_reroll.js`'s `failReroll`, `cards_start_subcdr.js`'s
 `failSetup`). An unaddressed error would put one viewer's refusal on every
-viewer's screen. Two host→viewer operators carry **no** target, and both are
-broadcasts by design. One is the ping, which self-identifies and deduplicates by
-`ping_id`. The other is the star-card name sync.
+viewer's screen. Four host→viewer operators carry **no** target, and all four
+are broadcasts by design: the ping, which self-identifies and deduplicates by
+`ping_id`, the star-card name sync, the launch progress (`gwo_launch_progress`),
+and the war end (`gwo_war_end`).
 
 ## Rerolls
 
@@ -955,9 +961,10 @@ last turn's cards, which could duplicate cards they had just taken.
 
 The debt is kept **on each viewer's record**, as `gwaioStarCards.redealOwed`.
 A re-deal sets it on every co-op record before the gate is consulted: every
-viewer's, connected or not, and every AI player's. The write that stores a
-viewer's new cards drops it, so each debt clears only when that viewer's own
-re-deal succeeds. A viewer with nothing left to re-deal has the flag dropped on
+viewer's, connected or not, every AI player's, and the host's own. The host's
+flag is inert: the refresh walks only viewers and AI players, so nothing reads
+or clears it. The write that stores a viewer's new cards drops it, so each debt
+clears only when that viewer's own re-deal succeeds. A viewer with nothing left to re-deal has the flag dropped on
 its own. Otherwise the first gap-filling refresh of the next turn would re-deal
 them.
 
@@ -1039,18 +1046,17 @@ explore. The base game instead adds the card and a free slot to cover it
 The server already banks a viewer's loadout choice without touching the
 inventory, but only for ids that pass `isBaseLoadoutCardId`. It pushes every mod
 loadout into the viewer's war inventory instead. GWO therefore intercepts
-**every** loadout id on a viewer, banks it locally and submits `-1`. It cannot
-leave the base ids to the server, because banking is held shut on viewers for
-the reason below.
+**every** loadout id on a viewer, the base ones included. It banks the card
+locally and submits `-1`.
 
 ## The per-player loadout scene
 
 `gw_coop_per_player_loadout` is its own scene. It is where a viewer picks their
 war loadout and, under Separate races, their race. It has to build that
-loadout's starting inventory itself rather than inherit the host's. GWO puts
-three files in it: `shared/race_picker_view.js`,
-`gw_coop_per_player_loadout/race_picker.js` and
-`gw_coop_per_player_loadout/gwo_loadouts.js`.
+loadout's starting inventory itself rather than inherit the host's. GWO loads
+four scripts in it: `shared/race_picker_view.js`,
+`gw_coop_per_player_loadout/race_picker.js`,
+`gw_coop_per_player_loadout/gwo_loadouts.js`, and `shared/tooltips.js`.
 
 Four things about it are not obvious from the scene it sits in:
 
@@ -1140,6 +1146,9 @@ The mirror of this is the host collecting a _viewer's_ loadouts. It comes from
 the host applying each viewer's inventory, and each co-op AI player's, to size
 their deals. Banking is suspended at each of those call sites
 (`cards_coop_deal.js`, `cards_coop_reroll.js`, `cards_coop_star_cards.js`).
+The host's General Commander setup (`cards_start_subcdr.js`) applies a viewer's
+inventory without the hold. That inventory is the General Commander loadout,
+first, and its Sub Commander cards, and a loadout in first place never banks.
 
 The host also applies an AI's inventory to judge its cards, in
 `gw_play/coop_ai_effects.js`, through `bank.applyInventoryHeld`. That holds

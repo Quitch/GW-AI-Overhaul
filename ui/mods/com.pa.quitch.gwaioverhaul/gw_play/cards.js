@@ -33,8 +33,8 @@
       model.gwoConfirmDiscard(false);
     });
 
-    // Used by cards checking for T2 access - global for modders,
-    // New-GW-Cards pushes here - see tech-cards.md
+    // Used by cards checking for T2 access - global for modders, which a card
+    // mod may push its own ids onto - see tech-cards.md
     model.gwoCardsGrantingAdvancedTech = _.isArray(
       model.gwoCardsGrantingAdvancedTech
     )
@@ -482,8 +482,7 @@
         });
 
         // Reports a viewer's loadout unlocks to the host, which needs the mod
-        // ones the base game's own record cannot carry, and holds a viewer's
-        // banking closed against the host's inventory.
+        // ones the base game's own record cannot carry.
         var treasureUnlocks = gwoTreasure.install({
           game: game,
           stockBank: GW.bank,

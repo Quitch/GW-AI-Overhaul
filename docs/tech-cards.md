@@ -26,17 +26,22 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 | Field                                                              | Required?                                                                                                                                                                      |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `visible`, `describe`, `summarize`, `icon`, `deal`, `buff`, `dull` | Always functions, on every card.                                                                                                                                               |
-| `audio`, `getContext`                                              | On every tech card except one legacy exception. Loadout cards have neither: `gwoCard.loadout()` returns only `buff` and `dull`, and only `gwc_start_subcdr` adds `getContext`. |
+| `audio`, `getContext`                                              | On every tech card but two: a legacy exception and `gwc_start.js`. Loadout cards have neither: `gwoCard.loadout()` returns only `buff` and `dull`.                             |
 | `keep`, `discard`                                                  | Optional. No card carries either today.                                                                                                                                        |
 | `hint`                                                             | Optional, loadout cards only: the icon and text of the locked-loadout hover, read by stock `gw_start.js` and `gw_coop_per_player_loadout.js`. `gwoCard.lockedHint` builds one. |
 
-The tech-card exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
+The legacy exception is `gwaio_enable_bot_aa.js`. GWO keeps it for
 save-compatibility with GWO v5.9.0 and earlier. The card is deliberately invisible
 and undiscardable. It exists only so that old saves that reference it still load.
+`gwc_start.js` is the default start that every loadout buffs first. Of the
+loadouts, `gwc_start_subcdr` alone adds a `getContext`, and nothing reads what it
+returns.
 
-The minion and card-slot redesigns dropped `keep` and `discard`. `gw_inventory.js`
-and `gw_start/war_generation.js` still call them when a card has them. The contract validator
-therefore continues to accept them. They are legitimate extension points, not typos.
+The minion and card-slot redesigns dropped `keep` and `discard`.
+`shared/deal.js`'s `dealCard` and `gw_start/war_generation.js` still call `keep`
+when a card has it, and stock's `gw_start/gw_dealer.js` calls both. The contract
+validator therefore continues to accept them. They are legitimate extension
+points, not typos.
 
 `npm run validate:cards` enforces this shape. It checks what `define()` returns. It
 does not call `deal`/`buff`/`dull`. The validator skips a card as `NOT_SHIPPED` when
@@ -136,10 +141,10 @@ the war. A tech bonus applied there would survive the discard of the card that
 granted it, and would compound across battles. Both referees therefore copy before
 they apply:
 
-| Path                                    | Copy                                         |
-| --------------------------------------- | -------------------------------------------- |
-| Host, `gw_play/referee_config_setup.js` | `_.cloneDeep(liveAlly)` per ally             |
-| Viewer, `gw_play/per_player_tech.js`    | `_.cloneDeep(minion.personality)` per minion |
+| Path                                    | Copy                                                      |
+| --------------------------------------- | --------------------------------------------------------- |
+| Host, `gw_play/referee_config_setup.js` | `_.cloneDeep(liveAlly)` per ally                          |
+| Viewer, `gw_play/per_player_tech.js`    | `params.resolvePersonality(minion)`, a new one per minion |
 
 The mutators write in place and return their argument. The copy is therefore the
 callers' responsibility. Both copies have a regression test. The test asserts that
@@ -335,8 +340,10 @@ Loadout cards are the war-start choice. Their ids live in one place,
 the start, base-game loadouts unlocked by a war win, and GWO-added loadouts unlocked
 the same way.
 
-`loadout_ids.js` exists separately from `loadouts.js` because `loadouts.js` touches
-`model.makeKnown` and `GW.bank` at load time. Neither exists in the `gw_play` scene.
+`loadout_ids.js` holds the ids and nothing else. `loadouts.js`, which builds the
+picker's cards from them, requires `shared/gw_common`, and at load it seeds
+`model.gwoStartingCards` and `model.gwoNewStartCards` with GWO's loadouts. It
+reads `model.makeKnown` and the banks only in `startCards`.
 
 A treasure planet's loadout is drawn from those same unlockable ids. The draw
 happens at exploration rather than at war creation, and from the acting player's
@@ -356,10 +363,12 @@ var loadout = gwoCard.loadout(CARD, {
 });
 ```
 
-The first buff of the war runs `start.buff` and then `apply`. Every later buff of
-the start card only adds the card slot (`repeatSlot: false` drops that). A copy
-dealt later in the war adds its slot and goes to `bank`. `always(inventory, context)`
-runs on every buff of the start card, for work that must repeat. `dull` is
+The first buff of each `applyCards` pass runs `start.buff` and then `apply`:
+`dull` clears the count the buffs keep, so the next pass starts over. A later
+buff of the start card in the same pass only adds the card slot
+(`repeatSlot: false` drops that). A copy dealt later in the war adds its slot
+and goes to `bank`. `always(inventory, params)` runs on every buff of the start
+card, for work that must repeat. `params` is the card's saved params. `dull` is
 `applyDulls` over `dulls`. `gwoCard.lockedHint(description)` is the `hint` a locked
 loadout shows.
 
@@ -394,21 +403,21 @@ synchronously at scene load. It therefore always pushes before GWO's own `requir
 callbacks run. A bare assignment in place of an `_.isArray(...) ? ... : []` guard
 silently discards everything the mod registered.
 
-| Global                         | Scene                     | Read by                                         |
-| ------------------------------ | ------------------------- | ----------------------------------------------- |
-| `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                |
-| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate       |
-| `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                      |
-| `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                 |
-| `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee |
-| `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`    |
-| `gwoStartingCards`             | start, coop loadout       | `shared/loadouts.js`                            |
-| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                    |
-| `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added    |
-| `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                       |
-| `gwoDecks`                     | start, play               | `shared/deck_mods.js`                           |
-| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`       |
-| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`      |
+| Global                         | Scene                     | Read by                                                               |
+| ------------------------------ | ------------------------- | --------------------------------------------------------------------- |
+| `gwoCards`                     | play                      | `shared/deal.js` `setupGwoCards`                                      |
+| `gwoCardsToUnits`              | play                      | `gw_play/card_tooltips.js`, the deal gate                             |
+| `gwoCardsWithoutTooltip`       | play                      | `gw_play/card_tooltips.js`                                            |
+| `gwoCardsGrantingAdvancedTech` | play                      | `shared/cards.js` `hasT2Access`                                       |
+| `gwoSpecs`                     | play                      | `referee_game_files.js`, the per-player referee                       |
+| `gwoNewStartCards`             | start, play, coop loadout | `shared/loadouts.js`, `treasure_loadouts.js`, `cards_coop_ai_tech.js` |
+| `gwoStartingCards`             | start, play, coop loadout | `shared/loadouts.js`, `cards_coop_ai_tech.js`                         |
+| `gwoStarCardsWhichBreakAllies` | start                     | `gw_start/war_generation.js`                                          |
+| `gwoLoadoutsAiCannotUse`       | play                      | `cards_coop_ai_tech.js`, when an AI is added                          |
+| `gwoLoadoutBanks`              | start, play, coop loadout | `shared/loadout_banks.js`                                             |
+| `gwoDecks`                     | start, play               | `shared/deck_mods.js`                                                 |
+| `gwoRaces`, `gwoAddons`        | start, play, coop loadout | `shared/race_mods.js`, `gw_play/races.js`                             |
+| `gwoLaunchProgress`            | play                      | other mods: GW Server Mods calls `stage()`                            |
 
 The public API goes beyond the globals. The helper names that `shared/cards.js`
 returns are equally published. So are the **key** names in `shared/units.js` and
@@ -442,10 +451,9 @@ co-op.
 
 A card that names MLA units a race builds itself reaches that race too. The
 naval cards give and change the MLA ships Bugs' hives build, and Exiles
-players are dealt the orbital cards (`gwc_enable_orbital_all`,
-`gwc_enable_orbital_t2`, the `gwc_*_orbital` stat cards, and
-`gwaio_cooldown_orbital`). See [`races.md`](races.md), "Units a race builds
-itself".
+players are dealt the orbital cards (`gwc_enable_orbital_all`, the
+`gwc_*_orbital` stat cards, and `gwaio_cooldown_orbital`). See
+[`races.md`](races.md), "Units a race builds itself".
 
 A card mod has two controls over how far a card reaches in a race or add-on
 army.
@@ -472,8 +480,8 @@ army.
 ### Third-party decks
 
 A mod can offer a whole deck in the TECHS picker rather than add cards to every
-deck. It pushes a descriptor onto `model.gwoDecks` in `gw_start` (the picker),
-`gw_play` (the deal) and `gw_coop_per_player_loadout` (viewer deals):
+deck. It pushes a descriptor onto `model.gwoDecks` in `gw_start` (the picker)
+and `gw_play` (the deal, a co-op viewer's included, since the host deals it):
 
 ```js
 model.gwoDecks.push({

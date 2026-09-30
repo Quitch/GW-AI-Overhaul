@@ -134,10 +134,11 @@ For an object, it takes the first present of `playerTag`, `specTag`,
 `sanitizeToken`, which does three things:
 
 1. It strips leading dots.
-2. It replaces anything outside `[A-Za-z0-9_-]` with `_`.
+2. It replaces each run of characters outside `[A-Za-z0-9_-]` with one `_`.
 3. It trims leading and trailing underscores.
 
-If nothing survives, the token is `"player"`.
+If nothing survives, the token is the sanitised `fallbackToken`, and if nothing
+survives that either, `"player"`.
 
 **`appendScope` does not sanitise.** It concatenates whatever it receives:
 
@@ -260,11 +261,11 @@ viewer the isolation that would otherwise be needed.
 
 `gw_play/per_player_tech.js`'s `getViewerSubcommanderAiPath` follows the same
 rule. For the same reason, it also never routes a Cluster-faction viewer to the
-`"cluster"` type. This differs from `referee_config.js`'s
-`setupAlliedCommanders` and `referee_game_files.js`'s `buildPlayerFiles`, which
-do check the host's `playerFaction` tag. The Cluster destination exists only to
-stop a Cluster player's AI-mod writes from leaking into the shared brain-based
-tree. Other allies and enemies read from that tree. A per-player-tech viewer
+`"cluster"` type. This differs from `referee_config_setup.js`'s
+`setupAlliedCommanders` and `referee_game_file_paths.js`'s `buildPlayerFiles`,
+which do check the host's `playerFaction` tag. The Cluster destination exists
+only to stop a Cluster player's AI-mod writes from leaking into the shared
+brain-based tree. Other allies and enemies read from that tree. A per-player-tech viewer
 already has that isolation from their own scope, whatever their faction. So a
 second mechanism would be redundant.
 
@@ -285,9 +286,9 @@ them relies on them:
 - **The Guardians are never Cluster.** `referee_ai.js`'s `writeClusterFile`
   states this. It is the reason `isCluster` can return early on mirror mode.
 
-A third invariant is not an external assumption but a property of the paths
-themselves. So, unlike those two, it _is_ machine-checkable, and a test checks
-it:
+Two more invariants are not external assumptions but properties of the paths
+themselves. So, unlike the first two, they _are_ machine-checkable, and tests
+check them:
 
 - **No `ai_path` root ever lands inside another `ai_path`'s five scanned
   directories.** See [above](#why-scoped-trees-can-nest-safely) for why that is

@@ -106,8 +106,8 @@
 
           // Zip mounts only, no content remount: the commander specs and
           // portraits are read through coui:. See races.md. Waited on - a
-          // commander read before its zip is mounted caches a failure, and the
-          // name never recovers.
+          // commander read before its zip is mounted fails, and its tile shows
+          // the spec path until a later render reads it again.
           raceMods.mountRoot().always(function () {
             var stock;
             var offerRaceCommanders = function () {

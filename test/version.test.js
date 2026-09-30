@@ -33,7 +33,7 @@ describe("mod version", () => {
     assert.equal(match[1].trim(), modinfo.version);
   });
 
-  it("is a bare dotted string, as both consumers concatenate it directly", () => {
+  it("is a bare dotted string, as saves record it and bugfixes.js compares it", () => {
     assert.equal(typeof version, "string");
     assert.match(version, /^\d+\.\d+\.\d+$/);
   });

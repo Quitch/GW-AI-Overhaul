@@ -1,9 +1,9 @@
 "use strict";
 
-// The race and add-on server mods GWO ships descriptors for, in the order the
-// local-only scripts mount them: every race's, then every add-on's, each in
-// registry order, as validate-race-trees.js layers them. A later mod shadows an
-// earlier one.
+// The race and add-on server mods GWO ships descriptors for, in the order
+// harvest-unit-types.js mounts them: every race's, then every add-on's, each in
+// registry order, with a mod's companions just before it. A later mod shadows
+// an earlier one.
 
 const { MOD_ROOT, loadCouiModule } = require("./amd-loader.js");
 
