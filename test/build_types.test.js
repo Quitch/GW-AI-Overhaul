@@ -2,8 +2,8 @@
 
 // shared/build_types.js: PA's unit-type expression language, the ES5 twin of
 // scripts/lib/build-types.js, whose own grammar cases are in
-// test/cluster_subcommander_buildable.test.js. Every case here is run through
-// both twins.
+// test/cluster_subcommander_buildable.test.js. Every matches case here is run
+// through both twins; reach, the build reach it gives, has no twin.
 
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -74,5 +74,68 @@ describe("build_types.matches", () => {
         String(expression)
       );
     }
+  });
+});
+
+describe("build_types.reach", () => {
+  const TAGS = {
+    commander: ["Commander", "Land"],
+    factory: ["Factory", "Bot", "Basic"],
+    dox: ["Bot", "Mobile", "Basic"],
+    advancedFactory: ["Factory", "Bot", "Advanced"],
+    slammer: ["Bot", "Mobile", "Advanced"],
+    untagged: undefined,
+  };
+  const BUILDS = {
+    commander: "Factory & Basic",
+    factory: "(Bot & Mobile & Basic) | (Factory & Advanced)",
+    advancedFactory: "Bot & Mobile & Advanced",
+  };
+  const tagsOf = (unit) => TAGS[unit];
+  const buildableOf = (unit) => BUILDS[unit];
+  const reached = (builders, candidates) =>
+    Object.keys(
+      buildTypes.reach(builders, candidates, buildableOf, tagsOf)
+    ).sort();
+
+  it("reaches what the builders build, and what that builds in turn", () => {
+    assert.deepEqual(reached(["commander"], Object.keys(TAGS)), [
+      "advancedFactory",
+      "dox",
+      "factory",
+      "slammer",
+    ]);
+  });
+
+  it("reaches only among the candidates", () => {
+    assert.deepEqual(reached(["commander"], ["factory", "slammer"]), [
+      "factory",
+    ]);
+  });
+
+  // The commander itself is not in the result: nothing here builds it.
+  it("leaves out a builder that nothing builds", () => {
+    assert.deepEqual(reached(["factory"], ["factory", "dox"]), ["dox"]);
+  });
+
+  it("never reaches a candidate with no tags, nor from a builder with no list", () => {
+    assert.deepEqual(reached(["commander"], ["untagged"]), []);
+    assert.deepEqual(reached(["dox"], Object.keys(TAGS)), []);
+  });
+
+  it("evaluates each distinct build list once", () => {
+    const asked = [];
+    buildTypes.reach(
+      ["factory", "factory", "commander"],
+      ["dox", "slammer"],
+      buildableOf,
+      (unit) => {
+        asked.push(unit);
+        return TAGS[unit];
+      }
+    );
+    // The factory's list asks after both, once; the commander's only after
+    // the Slammer, which is not reached yet.
+    assert.deepEqual(asked, ["dox", "slammer", "slammer"]);
   });
 });

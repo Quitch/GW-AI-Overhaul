@@ -9,7 +9,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/coop_ai_cards.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_effects.js",
-], function (coopAiCards, coopAiEffects) {
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/gwo_promise.js",
+], function (coopAiCards, coopAiEffects, gwoPromise) {
   var LOG = "[GW COOP AI] ";
   // A deal not settled in this long falls back to a quick pick.
   var DECISION_TIMEOUT_MS = 20000;
@@ -31,25 +32,7 @@ define([
     return !!(error && error.gwoTimedOut);
   };
 
-  var withTimeout = function (promise, ms, what) {
-    return new Promise(function (resolve, reject) {
-      var timer = setTimeout(function () {
-        var error = new Error(what + " timed out after " + ms + "ms");
-        error.gwoTimedOut = true;
-        reject(error);
-      }, ms);
-      promise.then(
-        function (value) {
-          clearTimeout(timer);
-          resolve(value);
-        },
-        function (error) {
-          clearTimeout(timer);
-          reject(error);
-        }
-      );
-    });
-  };
+  var withTimeout = gwoPromise.within;
 
   // As the server stores a viewer's: plain data, and only the global tags,
   // since card-context tags are rebuilt by every apply.
@@ -588,7 +571,7 @@ define([
               return;
             }
 
-            var patch = { techCardDealCount: Math.max(count, dealIndex) };
+            var patch = { techCardDealCount: dealIndex };
             if (outcome.inventory) {
               patch.inventory = storedInventory(outcome.inventory);
             }

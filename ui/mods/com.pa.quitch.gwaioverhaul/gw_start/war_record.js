@@ -23,7 +23,6 @@ define([
     gwaio.systemScaling = settings.systemScaling();
     gwaio.simpleSystems = settings.simpleSystems();
     gwaio.largePlanets = settings.largePlanets();
-    gwaio.easierStart = settings.easierStart();
     if (war.devMode) {
       gwaio.cheatsUsed = true;
     }

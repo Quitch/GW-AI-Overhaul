@@ -1,6 +1,6 @@
-// Engine promises are not jQuery promises: $.when and deferred.then both
-// identify one by a `promise` method, which an engine promise has not got, so
-// neither waits for one. See constraints.md.
+// Promise helpers. Engine promises are not jQuery promises: $.when and
+// deferred.then both identify one by a `promise` method, which an engine
+// promise has not got, so neither waits for one. See constraints.md.
 define(function () {
   // Resolves either way, with onFailure(reason)'s value when the call fails:
   // jQuery 2.1.4 does not turn a fail handler's return into a resolution, so
@@ -40,5 +40,28 @@ define(function () {
     );
   };
 
-  return { settled: settled, steps: steps };
+  // A native promise of what `promise` settles with, or a rejection once `ms`
+  // pass with it unsettled: an Error naming `what`, marked gwoTimedOut. A
+  // result that lands later is dropped.
+  var within = function (promise, ms, what) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () {
+        var error = new Error(what + " timed out after " + ms + "ms");
+        error.gwoTimedOut = true;
+        reject(error);
+      }, ms);
+      promise.then(
+        function (value) {
+          clearTimeout(timer);
+          resolve(value);
+        },
+        function (error) {
+          clearTimeout(timer);
+          reject(error);
+        }
+      );
+    });
+  };
+
+  return { settled: settled, steps: steps, within: within };
 });

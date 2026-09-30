@@ -146,6 +146,12 @@ of the palette. Before PA 124670 the palette was private to
 own Cluster in `faction/cluster_faction.js`. The base game treats the array as
 optional: a faction without one silently drops to the generic lobby palette.
 
+After its first entry, the faction colour, no `coopPlayerColors` entry is also
+in that faction's Sub Commander palette (below), so a player is never given
+the colour of a Sub Commander. Legonis Machina and Revenants each replace the
+one stock entry that broke this rule. Synchronous takes greens of GWO's own in
+place of stock's oranges, since its faction colour is GWO's green.
+
 Subcommander colours are a separate system and still GWO's own. See
 `gw_play/commander_colour.js`. `gw_play/referee_coop.js` provides the ordering:
 

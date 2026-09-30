@@ -151,8 +151,6 @@ define([
 
   return {
     commanderUnits: commanderUnits,
-    commanderWeapons: commanderWeapons,
-    commanderBuildArms: commanderBuildArms,
 
     legonisUnitsImmobile: legonisUnitsImmobile,
     legonisUnitsMobile: legonisUnitsMobile,
@@ -179,8 +177,6 @@ define([
     synchronousAmmo: synchronousAmmo.concat(commanderAmmo),
     synchronousBuildArms: synchronousBuildArms.concat(commanderBuildArms),
 
-    revenantsUnitsImmobile: revenantsUnitsImmobile,
-    revenantsUnitsImmobileWithAmmo: revenantsUnitsImmobileWithAmmo,
     revenantsUnitsMobile: revenantsUnitsMobile,
     revenantsUnitsWithAmmo: revenantsUnitsMobile.concat(
       revenantsUnitsImmobileWithAmmo
@@ -197,7 +193,6 @@ define([
     clusterUnitsMobile: clusterUnitsMobile,
     clusterUnitsImmobile: clusterUnitsImmobile,
     clusterUnitsFactories: clusterUnitsFactories,
-    clusterUnits: clusterUnitsMobile.concat(clusterUnitsImmobile),
     clusterWeapons: clusterWeapons.concat(commanderWeapons),
     clusterAmmo: clusterAmmo.concat(commanderAmmo, clusterCommanderAmmo),
     clusterBuildArms: clusterBuildArms.concat(commanderBuildArms),

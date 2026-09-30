@@ -36,7 +36,8 @@ define([
             gwoCard.flatMapMods(
               gwoGroup.structuresArtilleryWeapons,
               "multiply",
-              { ammo_capacity: 0.1, ammo_demand: 0.1, ammo_per_shot: 0.1 }
+              gwoCard.paths.energyWeapon,
+              0.1
             )
           )
       );

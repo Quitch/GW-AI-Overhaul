@@ -342,11 +342,7 @@ define([
     var refresh = function (options) {
       var redeal = !!(options && options.redeal);
 
-      if (
-        !model.gwCampaignActive() ||
-        !model.isCampaignHost() ||
-        !model.gwCampaignPerPlayerTechCards()
-      ) {
+      if (!refereeCoop.hostingPerPlayerSession()) {
         return Promise.resolve();
       }
 

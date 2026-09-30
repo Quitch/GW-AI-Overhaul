@@ -135,6 +135,11 @@ panel that `model.gwoLaunchProgress` drives. That object is a public surface:
   `stage(text)` and `end()` drive them. `begin()` is idempotent, and `stage()`
   is a no-op outside a launch. So a mod may report from work that also runs on
   scene entry.
+- Until `launch_progress_state.js` loads, the object is a placeholder whose
+  `begin()`, `stage()` and `end()` do nothing, so what a mod reports before
+  then is not shown. The loaded module replaces the object and keeps its
+  observables. A mod therefore reads `model.gwoLaunchProgress` each time it
+  reports, rather than keeping the object it first found.
 - The referee reports its own stages through `gwoReferee.prototype.stage`. A
   co-op host's two hires are labelled "Co-op shared setup" and "Co-op host
   setup", so the repeat reads as intended.

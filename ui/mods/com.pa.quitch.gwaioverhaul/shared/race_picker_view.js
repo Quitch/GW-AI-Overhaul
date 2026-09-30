@@ -7,6 +7,14 @@
   try {
     var commanderInfo = {};
 
+    // CommanderUtility strips it from a listed commander's name too.
+    var NAME_SUFFIX = " Commander";
+    var displayName = function (name) {
+      return _.endsWith(name, NAME_SUFFIX)
+        ? name.slice(0, -NAME_SUFFIX.length)
+        : name;
+    };
+
     model.gwoCommanderInfo = function (spec) {
       if (!commanderInfo[spec]) {
         commanderInfo[spec] = ko.observable({
@@ -19,7 +27,7 @@
             .done(function (data) {
               var ui = _.get(data, "client.ui") || {};
               commanderInfo[spec]({
-                name: (data && data.display_name) || spec,
+                name: displayName((data && data.display_name) || spec),
                 image: ui.image ? "coui:/" + ui.image : undefined,
                 profile: ui.profile_image
                   ? "coui:/" + ui.profile_image
