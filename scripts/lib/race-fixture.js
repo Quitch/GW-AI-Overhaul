@@ -107,18 +107,62 @@ const FIXTURE_UNITS = [
 ];
 
 // The { vanilla, race } cell index race_cells.js would build for the fixture.
-function fixtureIndex() {
+// `overrides` ({ path: fields }), if given, is merged into those units' specs.
+function fixtureIndex(overrides) {
+  const specs = Object.assign({}, FIXTURE_SPECS);
+  for (const [path, fields] of Object.entries(overrides || {})) {
+    specs[path] = Object.assign({}, specs[path], fields);
+  }
   return {
     vanilla: unitCells.buildIndex(
       FIXTURE_UNITS,
-      FIXTURE_SPECS,
+      specs,
       (types) => unitCells.vanillaMember(types) && unitCells.classifiable(types)
     ),
     race: unitCells.buildIndex(
       FIXTURE_UNITS,
-      FIXTURE_SPECS,
+      specs,
       unitCells.raceMember("Custom7")
     ),
+  };
+}
+
+// A race tree's keys context (gw_play/referee_game_file_paths.js
+// raceKeysFor) over the fixture, for the AI-mod aim: commanders build
+// structures and factories build tanks on each side; the stock vehicle
+// factory and ant re-point to the fixture's, and the dox, with no stand-in,
+// is kept. options: specs (more overrides), engineKeys.
+const FX_OTHER = "/pa/units/land/fx_other/fx_other.json";
+const FIXTURE_BUILDERS = {
+  [gwoUnit.commander]: { buildable_types: "Structure & Custom58" },
+  [gwoUnit.vehicleFactory]: { buildable_types: "Mobile & Tank & Custom58" },
+  [FX_ALPHA]: { buildable_types: "Structure & Custom7" },
+  [FX_BETA]: { buildable_types: "Structure & Custom7" },
+  [FX_VEHICLE_FACTORY]: { buildable_types: "Mobile & Tank & Custom7" },
+};
+const FIXTURE_STOCK_KEYS = {
+  Commander: { unit_types: "Commander & Custom58" },
+  AnyBasicFactory: { unit_types: "Factory & Basic & Custom58" },
+  BasicVehicleFactory: { spec_id: gwoUnit.vehicleFactory },
+  Tank: { spec_id: gwoUnit.ant },
+  Dox: { spec_id: gwoUnit.dox },
+};
+const FIXTURE_RACE_KEYS = {
+  FixtureCommander: { unit_types: "Commander & Custom7" },
+  FixtureFactory: { spec_id: FX_VEHICLE_FACTORY },
+  AnyFixtureFactory: { unit_types: "Factory & Custom7" },
+  FixtureTank: { spec_id: FX_TANK },
+  FixtureOther: { spec_id: FX_OTHER },
+  AnyFixture: { unit_types: "Custom7" },
+};
+
+function fixtureRaceKeys(options = {}) {
+  return {
+    stock: FIXTURE_STOCK_KEYS,
+    race: FIXTURE_RACE_KEYS,
+    repointed: { BasicVehicleFactory: true, Tank: true },
+    cells: fixtureIndex(Object.assign({}, FIXTURE_BUILDERS, options.specs)),
+    engineKeys: options.engineKeys || {},
   };
 }
 
@@ -256,6 +300,7 @@ module.exports = {
   FIXTURE_ADDON_SPECS,
   FIXTURE_ADDON_UNITS,
   fixtureIndex,
+  fixtureRaceKeys,
   fixtureAddonIndex,
   predictableRng,
 };

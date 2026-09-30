@@ -478,6 +478,14 @@ army.
   `gwoCard.stockOnly(gwoCard.mods(gwoUnit.dox, "multiply", { max_health: 1.5 }))`.
   An army with no race cells (MLA with no add-on) applies the change as usual.
 
+A card's AI mods reach a race AI's tree aimed at the race's keys, where the
+race's own units can do what they ask ([`ai-pipeline.md`](ai-pipeline.md),
+"Race trees"). Space Excavation Commander's opening orbital launcher reaches
+Legion, Bugs, and Exiles Sub Commanders this way. A descriptor that names a
+unit its card remakes stays on MLA with the unit. So a card that pushes a
+`unit_types` or `buildable_types` change onto an MLA unit keeps its AI mods for
+that unit on MLA too, even where the race's unit already carries the tag.
+
 ### Third-party decks
 
 A mod can offer a whole deck in the TECHS picker rather than add cards to every

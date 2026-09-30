@@ -147,11 +147,13 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     return _.assign({}, json, { build_list: items });
   };
 
-  // The keys a race's army maps re-point, over the brain's classic and Titans
-  // maps, or null without the race's cells. params: race, brain, source,
-  // unitCells, gwoRaces.
-  var repointedFor = function (params) {
-    var cells = params.gwoRaces.cellsOf(params.race);
+  // What a race tree's orders are fitted by, over the brain's classic and
+  // Titans maps: the keys the race's army maps re-point, the stock and race
+  // unit_maps, the cells and the race's engine keys, or null without cells.
+  // params: race, brain, source, unitCells, gwoRaces, and cells, the race's
+  // published cells by default.
+  var raceKeysFor = function (params) {
+    var cells = params.cells || params.gwoRaces.cellsOf(params.race);
     if (!cells) {
       return Promise.resolve(null);
     }
@@ -174,7 +176,8 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       })
     ).then(function (maps) {
       var raceMaps = maps.slice(2);
-      var keys = {};
+      var repointed = {};
+      var stock = {};
       _.forEach(maps.slice(0, 2), function (base) {
         var translated = raceUnitMap({
           base: base,
@@ -185,11 +188,18 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
           gwoRaces: params.gwoRaces,
         });
         _.assign(
-          keys,
+          repointed,
           repointedKeys(mergeUnitMaps(base, raceMaps), translated)
         );
+        _.assign(stock, base && base.unit_map);
       });
-      return keys;
+      return {
+        repointed: repointed,
+        stock: stock,
+        race: mergeUnitMaps(undefined, raceMaps).unit_map,
+        cells: cells,
+        engineKeys: params.gwoRaces.engineKeysFor(params.race),
+      };
     });
   };
 
@@ -415,7 +425,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     raceUnitMap: raceUnitMap,
     repointedKeys: repointedKeys,
     stripStockBuilds: stripStockBuilds,
-    repointedFor: repointedFor,
+    raceKeysFor: raceKeysFor,
     clusterArmyIndex: clusterArmyIndex,
     resolveAiUnitMapPaths: resolveAiUnitMapPaths,
     buildPlayerFiles: buildPlayerFiles,

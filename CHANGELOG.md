@@ -73,6 +73,7 @@
 - Planetary Radar Upgrade Tech held with Planetary Radar Tech no longer gives the Deep Space Radar over 30 times the sight it should for the host of a co-op war or at a Guardians star
 - At a Guardians star, the Firefly, Kaiju, Single Laser Defense Tower, Skitter, and Stinger upgrades no longer give your units and the Guardians' the same army's copy of the new weapon
 - With Second Wave or Section 17 installed, MLA AIs and Sub Commanders now build the units those mods add to their build orders, such as Section 17's Energy Coil and Second Wave's Spear, which they never built before
+- Loadouts and tech that change what your Sub Commanders, allies, and co-op AI players build now also change it for Legion, Bugs, and Exiles AIs where their own units can build it, such as Space Excavation Commander's early orbital launcher
 
 ## v7.4.1 - 2026-09-24
 

@@ -7,6 +7,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_trees.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
 ], function (
   gwoAI,
   gwoCard,
@@ -15,7 +16,8 @@ define([
   gwoRaces,
   gameFilePaths,
   unitCells,
-  raceTrees
+  raceTrees,
+  raceAiMods
 ) {
   // The walk append, prepend and replace share. A build entry for toBuild that
   // carries idToMod (and refId/refValue, when given) is the target; otherwise
@@ -255,18 +257,35 @@ define([
 
   var getRefereeInventoryAiMods = gwoAI.getInventoryAiMods;
 
-  // Every other player's AI mods: the connected viewers' and, under
+  // As getInventoryAiMods reads aiMods: an observable on the host's, an array
+  // on a record's.
+  var getRefereeInventoryMods = function (inventory) {
+    if (_.isFunction(inventory.mods)) {
+      return inventory.mods();
+    }
+
+    return inventory.mods || [];
+  };
+
+  // Every other player's inventory: the connected viewers' and, under
   // per-player tech, the co-op AI players'.
+  var getConnectedClientInventories = function (game, connectedClients) {
+    return _.pluck(
+      refereeCoop
+        .getConnectedViewerInventories(game, connectedClients)
+        .concat(refereeCoop.getCoopAiInventories(game)),
+      "inventory"
+    );
+  };
+
   var getConnectedClientAiMods = function (game, connectedClients) {
     var connectedClientAiMods = [];
 
     _.forEach(
-      refereeCoop
-        .getConnectedViewerInventories(game, connectedClients)
-        .concat(refereeCoop.getCoopAiInventories(game)),
-      function (player) {
+      getConnectedClientInventories(game, connectedClients),
+      function (inventory) {
         connectedClientAiMods = connectedClientAiMods.concat(
-          getRefereeInventoryAiMods(player.inventory)
+          getRefereeInventoryAiMods(inventory)
         );
       }
     );
@@ -307,21 +326,14 @@ define([
     return "None";
   };
 
-  var managerPath = function (type) {
-    switch (type) {
-      case "fabber":
-        return "fabber_builds/";
-      case "factory":
-        return "factory_builds/";
-      case "platoon":
-        return "platoon_builds/";
-      case "template":
-        return "platoon_templates/";
-      default:
-        // Undefined rather than a throw: the only caller runs inside a deferred
-        // callback, where a throw is swallowed and hangs the battle launch.
-        return undefined;
+  var aiTechPath = raceAiMods.AI_TECH_PATH;
+
+  var loadModFilePath = function (mod) {
+    var filePath = raceAiMods.loadPath(mod);
+    if (_.isUndefined(filePath)) {
+      console.error("Invalid AI file type in load mod: " + JSON.stringify(mod));
     }
+    return filePath;
   };
 
   var addApplicableAiLoadModsToFileList = function (
@@ -341,14 +353,10 @@ define([
       });
 
       _.forEach(aiLoadMods, function (file) {
-        var directory = managerPath(file.type);
-        if (_.isUndefined(directory)) {
-          console.error(
-            "Invalid AI file type in load mod: " + JSON.stringify(file)
-          );
-          return;
+        var filePath = loadModFilePath(file);
+        if (filePath) {
+          fileList.push(filePath);
         }
-        fileList.push("/pa/ai_tech/" + directory + file.value);
       });
     }
   };
@@ -359,8 +367,6 @@ define([
     "/platoon_builds/": "platoon",
     "/platoon_templates/": "template",
   };
-
-  var aiTechPath = "/pa/ai_tech/";
 
   var isLoadFile = function (filePath) {
     return _.startsWith(filePath, aiTechPath);
@@ -714,14 +720,26 @@ define([
 
   // Every race tree a battle needs: one per distinct (source, destination),
   // the race's files layered over the brain's base files, written to the
-  // race's own root. AI mods are not applied to a race tree - see races.md.
+  // race's own root. Each takes the AI mods of the inventories whose mods the
+  // MLA tree in its place would take. See races.md, "Race trees".
   var raceTreeJobs = function (game, connectedClients, coopAis) {
     var inventory = game.inventory();
     var ai = gwoAI.currentStarAi(game);
     var playerRace = gwoRaces.raceOf(inventory);
+    var guardians = ai.mirrorMode;
+    var everyPlayer = [inventory].concat(
+      getConnectedClientInventories(game, connectedClients)
+    );
     var jobs = {};
 
-    var add = function (type, race, destination, sourceInventory) {
+    // modInventories: whose AI mods the tree takes.
+    var add = function (
+      type,
+      race,
+      destination,
+      sourceInventory,
+      modInventories
+    ) {
       if (gwoRaces.isMla(race)) {
         return;
       }
@@ -730,14 +748,19 @@ define([
       var target =
         destination || gwoAI.getAIPathDestination(type, { race: race });
       var tree = raceTrees.treeContext(race, brain, source);
+      var inventories = modInventories || [];
       jobs[source + "|" + target] = {
         source: source,
         destination: target,
         keep: raceTrees.treeFilter(tree),
         raceOwned: raceTrees.raceLayerFilter(tree),
         stockBuild: raceTrees.stockBuildFilter(tree),
-        repointed: function () {
-          return gameFilePaths.repointedFor({
+        aiMods: _.flatten(_.map(inventories, getRefereeInventoryAiMods)),
+        remade: unitCells.remadeFiles(
+          _.flatten(_.map(inventories, getRefereeInventoryMods))
+        ),
+        keys: function () {
+          return gameFilePaths.raceKeysFor({
             race: race,
             brain: brain,
             source: source,
@@ -748,15 +771,26 @@ define([
       };
     };
 
-    add("enemy", ai.mirrorMode ? playerRace : gwoRaces.raceOf(ai));
+    var enemyMods = guardians ? everyPlayer : [];
+    var hostSubCommanderMods = guardians ? everyPlayer : [inventory];
+    add(
+      "enemy",
+      guardians ? playerRace : gwoRaces.raceOf(ai),
+      undefined,
+      undefined,
+      enemyMods
+    );
     _.forEach(ai.foes, function (foe) {
-      add("enemy", gwoRaces.raceOf(foe));
+      add("enemy", gwoRaces.raceOf(foe), undefined, undefined, enemyMods);
     });
-    add("subcommander", playerRace);
+    add("subcommander", playerRace, undefined, undefined, hostSubCommanderMods);
     if (!_.isUndefined(ai.ally)) {
       add(
         "subcommander",
-        _.isUndefined(ai.ally.race) ? playerRace : gwoRaces.raceOf(ai.ally)
+        _.isUndefined(ai.ally.race) ? playerRace : gwoRaces.raceOf(ai.ally),
+        undefined,
+        undefined,
+        hostSubCommanderMods
       );
     }
     // Each viewer's own race: the host's under Separate races off, and whatever
@@ -774,14 +808,17 @@ define([
             ".player" + viewerIndex,
             viewerRace
           ),
-          viewer.inventory
+          viewer.inventory,
+          [viewer.inventory]
         );
       }
     );
     // A race co-op AI player's own tree, on its co-op brain, and under
     // per-player tech its Sub Commanders' as a viewer's. See coop.md.
     _.forEach(coopAis, function (coopAi) {
-      add("coop", coopAi.race, coopAi.path, coopAi.inventory);
+      add("coop", coopAi.race, coopAi.path, coopAi.inventory, [
+        coopAi.inventory,
+      ]);
       if (coopAi.perPlayer) {
         add(
           "subcommander",
@@ -791,7 +828,8 @@ define([
             coopAi.tag,
             coopAi.race
           ),
-          coopAi.inventory
+          coopAi.inventory,
+          [coopAi.inventory]
         );
       }
     });
@@ -853,14 +891,34 @@ define([
   };
 
   // The stock factory and fabber lists lose MLA's orders to the race's
-  // builders, by the keys the race's army maps re-point. See races.md, "Race
-  // trees".
+  // builders, by the keys the race's army maps re-point, and the job's AI
+  // mods are aimed at the race's keys. Without the race's cells neither is
+  // done. See races.md, "Race trees".
   var writeRaceTree = function (job, treeCache, configFiles) {
-    return Promise.all([treeCache.list(job.source), job.repointed()]).then(
+    return Promise.all([treeCache.list(job.source), job.keys()]).then(
       function (loaded) {
         var fileList = loaded[0];
         var keys = loaded[1];
         var kept = _.filter(fileList, job.keep);
+        var aimer =
+          keys && !_.isEmpty(job.aiMods)
+            ? raceAiMods.aim(raceAiMods.table(keys), job.remade)
+            : undefined;
+        var context = {
+          nonLoadAiMods: aimer
+            ? aimer.mods(_.reject(job.aiMods, { op: "load" }))
+            : [],
+        };
+        var write = function (filePath, json, destinationPath) {
+          applyAiMods(
+            json,
+            aiModsInScopeOfFile(
+              { path: filePath, isLoadFile: isLoadFile(filePath) },
+              context
+            )
+          );
+          configFiles[destinationPath] = json;
+        };
 
         if (!_.some(fileList, job.raceOwned)) {
           console.warn(
@@ -868,16 +926,39 @@ define([
           );
         }
 
-        return Promise.all(
-          _.map(kept, function (filePath) {
-            return treeCache.getJSON(filePath).then(function (json) {
-              configFiles[job.destination + filePath.slice(job.source.length)] =
-                keys && job.stockBuild(filePath)
-                  ? gameFilePaths.stripStockBuilds(json, keys)
-                  : json;
-            });
-          })
-        );
+        var treeFiles = _.map(kept, function (filePath) {
+          return treeCache.getJSON(filePath).then(function (json) {
+            write(
+              filePath,
+              keys && job.stockBuild(filePath)
+                ? gameFilePaths.stripStockBuilds(json, keys.repointed)
+                : json,
+              job.destination + filePath.slice(job.source.length)
+            );
+          });
+        });
+        var loadFiles = aimer
+          ? _.map(_.filter(job.aiMods, { op: "load" }), function (mod) {
+              var filePath = loadModFilePath(mod);
+              if (!filePath) {
+                return undefined;
+              }
+              return treeCache.getJSON(filePath).then(
+                function (json) {
+                  write(
+                    filePath,
+                    aimer.loadFile(json),
+                    job.destination + filePath.slice(aiTechPath.length)
+                  );
+                },
+                function (error) {
+                  skipUnreadableLoadFile(filePath, error);
+                }
+              );
+            })
+          : [];
+
+        return Promise.all(treeFiles.concat(loadFiles));
       }
     );
   };
