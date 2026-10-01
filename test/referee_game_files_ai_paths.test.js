@@ -909,6 +909,75 @@ describe("race army maps", () => {
     assert.equal(refereeGameFiles.stripStockBuilds(templates, {}), templates);
   });
 
+  it("armyUnitMaps reads the brain's two maps and the race's once, and translates both, the merge alone without cells", async () => {
+    const stubs = createGlobalStubs();
+    const x1Base = {
+      unit_map: { Launcher: { spec_id: "/pa/units/launcher.json" } },
+    };
+    const maps = {
+      "spec://pa/ai_queller/q_uber/unit_maps/ai_unit_map.json": base,
+      "spec://pa/ai_queller/q_uber/unit_maps/ai_unit_map_x1.json": x1Base,
+      "spec://pa/ai/unit_maps/fixture_army.json": raceMap,
+    };
+    const gets = [];
+    const $ = installFakeJQuery(stubs);
+    $.get = (url) => {
+      gets.push(url);
+      return jqResolved(JSON.stringify(maps[url]));
+    };
+    stubs.setGlobal("parse", JSON.parse);
+    const cells = { vanilla: {}, race: { units: ["/pa/units/r_tank.json"] } };
+    const params = {
+      race: "fixture",
+      brain: "Queller",
+      source: "/pa/ai_queller/q_uber/",
+      unitCells: { unitMapFallback: fallback },
+      gwoRaces: {
+        unitMapsFor: (race, brain, source) => {
+          assert.deepEqual(
+            [race, brain, source],
+            ["fixture", "Queller", "/pa/ai_queller/q_uber/"]
+          );
+          return ["/pa/ai/unit_maps/fixture_army.json"];
+        },
+        isMla: () => false,
+        addonUnitPaths: () => ({}),
+        engineKeysFor: () => ({ Launcher: "/pa/units/r_launcher.json" }),
+        stockUnitsFor: () => [],
+      },
+    };
+    const translate = (map, given) =>
+      refereeGameFiles.raceUnitMap(
+        Object.assign({}, params, {
+          base: map,
+          raceMaps: [raceMap],
+          cells: given,
+        })
+      );
+    try {
+      const army = await refereeGameFiles.armyUnitMaps(
+        Object.assign({}, params, { cells })
+      );
+      assert.deepEqual(army.classic, translate(base, cells));
+      assert.deepEqual(army.x1, translate(x1Base, cells));
+      assert.deepEqual(army.bases, [base, x1Base]);
+      assert.deepEqual(army.raceMaps, [raceMap]);
+
+      const cellLess = await refereeGameFiles.armyUnitMaps(params);
+      assert.deepEqual(
+        cellLess.classic,
+        refereeGameFiles.mergeUnitMaps(base, [raceMap])
+      );
+      assert.deepEqual(
+        cellLess.x1,
+        refereeGameFiles.mergeUnitMaps(x1Base, [raceMap])
+      );
+      assert.deepEqual(gets, Object.keys(maps));
+    } finally {
+      stubs.restoreGlobals();
+    }
+  });
+
   it("raceKeysFor unions the classic and Titans maps' re-pointed and stock keys, merges the race maps, or resolves null without cells or a race unit in them", async () => {
     const stubs = createGlobalStubs();
     const maps = {

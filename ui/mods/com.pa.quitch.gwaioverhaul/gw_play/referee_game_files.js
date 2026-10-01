@@ -22,12 +22,10 @@ define([
   unitCells,
   gwoTech
 ) {
-  var getAIUnitMapPath = gameFilePaths.getAIUnitMapPath;
   var getAIUnitMapDestinationPath = gameFilePaths.getAIUnitMapDestinationPath;
   var resolveAiUnitMapPaths = gameFilePaths.resolveAiUnitMapPaths;
   var buildPlayerFiles = gameFilePaths.buildPlayerFiles;
   var specFetch = gameFilePaths.specFetch;
-  var loadMap = gameFilePaths.loadMap;
   // Drop-in for GW.specs.genUnitSpecs, fetching each spec file at most once.
   var genUnitSpecs = function (units, tag) {
     return gwoSpecCache.genUnitSpecs(units, tag, { fetch: specFetch });
@@ -375,31 +373,13 @@ define([
           return ai.mirrorMode ? playerRace : gwoRaces.raceOf(armyOf(n));
         };
         var armyMaps = function (type, race, cells) {
-          var brain = gwoAI.aiInUse(type, race);
-          var source = gwoAI.getAIPathSource(type, race);
-          var raceMaps = gwoRaces.unitMapsFor(race, brain, source);
-          var loads = [
-            loadMap(getAIUnitMapPath(false, brain)),
-            loadMap(getAIUnitMapPath(true, brain)),
-          ].concat(_.map(raceMaps, loadMap));
-          var merge = function (base, extra) {
-            return gameFilePaths.raceUnitMap({
-              base: base,
-              raceMaps: extra,
-              cells: cells,
-              race: race,
-              unitCells: unitCells,
-              gwoRaces: gwoRaces,
-            });
-          };
-
-          return $.when.apply($, loads).then(function () {
-            var maps = _.toArray(arguments);
-            var extra = maps.slice(2);
-            return {
-              classic: merge(maps[0], extra),
-              x1: merge(maps[1], extra),
-            };
+          return gameFilePaths.armyUnitMaps({
+            race: race,
+            brain: gwoAI.aiInUse(type, race),
+            source: gwoAI.getAIPathSource(type, race),
+            cells: cells,
+            unitCells: unitCells,
+            gwoRaces: gwoRaces,
           });
         };
 

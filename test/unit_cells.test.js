@@ -1854,3 +1854,21 @@ describe("buildableStockUnits", () => {
     assert.deepEqual(input, [ORBITAL_FABBER]);
   });
 });
+
+describe("standInsFor", () => {
+  it("keeps the lookup of each of the last four index pairs, by instance", () => {
+    const vanilla = {};
+    const race = {};
+    const lookup = cells.standInsFor(vanilla, race);
+
+    assert.equal(cells.standInsFor(vanilla, race), lookup);
+    assert.notEqual(cells.standInsFor(vanilla, {}), lookup);
+    assert.notEqual(cells.standInsFor({}, race), lookup);
+    assert.equal(cells.standInsFor(vanilla, race), lookup);
+
+    cells.standInsFor({}, {});
+    cells.standInsFor({}, {});
+    cells.standInsFor({}, {});
+    assert.notEqual(cells.standInsFor(vanilla, race), lookup);
+  });
+});

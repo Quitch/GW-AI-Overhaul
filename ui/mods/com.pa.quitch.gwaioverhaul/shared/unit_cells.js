@@ -479,26 +479,10 @@ define([
     });
   };
 
-  // The deal asks once per card, so the last few index pairs are kept.
-  var BUILT_CACHE_SIZE = 4;
-  var builtCache = [];
-
   // The vanilla units the race can build, as a skirmish reaches them: what
   // its commanders build, and what that builds in turn, each builder by its
   // own list. See races.md, "Capability cells".
   var raceBuiltVanilla = function (vanilla, race) {
-    var cached = _.find(
-      builtCache,
-      // By instance, not by the deep equality the shorthand would use.
-      // eslint-disable-next-line lodash/matches-shorthand
-      function (entry) {
-        return entry.vanilla === vanilla && entry.race === race;
-      }
-    );
-    if (cached) {
-      return cached.built;
-    }
-
     var reached = reachFrom(
       commandersOf(race),
       _.assign({}, vanilla.tagsOf, race.tagsOf),
@@ -506,15 +490,9 @@ define([
         return race.buildableOf[unit] || vanilla.buildableOf[unit];
       }
     );
-    var built = _.pick(reached, function (value, unit) {
+    return _.pick(reached, function (value, unit) {
       return Object.prototype.hasOwnProperty.call(vanilla.cellOf, unit);
     });
-
-    builtCache.push({ vanilla: vanilla, race: race, built: built });
-    if (builtCache.length > BUILT_CACHE_SIZE) {
-      builtCache.shift();
-    }
-    return built;
   };
 
   var classOfCell = function (cell) {
@@ -529,14 +507,17 @@ define([
     return classOfCell(cell) === INTEL;
   };
 
-  // A lookup from a vanilla unit to the race units it stands for: every race
-  // unit of its cell, except in a mobile combat, defence, superweapon or
-  // intel cell, where a unit a commander can build stands for the race units
-  // that share its job, and the cell's homes also stand for those that share
-  // none. A unit that stands for none but that the race can build stands for
-  // itself. See races.md, "Jobs" and "Capability cells".
-  var standInsFor = function (vanilla, race) {
+  // A lookup from a vanilla unit to the race units it stands for. See
+  // races.md, "Jobs" and "Units a race builds itself".
+  var buildStandIns = function (vanilla, race) {
     var plans = {};
+    var raceBuilt;
+    var builtVanilla = function () {
+      if (!raceBuilt) {
+        raceBuilt = raceBuiltVanilla(vanilla, race);
+      }
+      return raceBuilt;
+    };
 
     var jobOf = function (unit) {
       return vanilla.jobsOf[unit][0];
@@ -598,12 +579,9 @@ define([
         return true;
       }
       if (!selfBuilt) {
-        selfBuilt = _.filter(
-          _.keys(raceBuiltVanilla(vanilla, race)),
-          function (built) {
-            return !cellStandIns(built).length;
-          }
-        );
+        selfBuilt = _.filter(_.keys(builtVanilla()), function (built) {
+          return !cellStandIns(built).length;
+        });
       }
       var matches = function (tagsOf) {
         return function (target) {
@@ -620,12 +598,36 @@ define([
 
     return function (unit) {
       var standIns = cellStandIns(unit);
-      return standIns.length ||
-        !raceBuiltVanilla(vanilla, race)[unit] ||
-        !buildsFielded(unit)
+      return standIns.length || !builtVanilla()[unit] || !buildsFielded(unit)
         ? standIns
         : [unit];
     };
+  };
+
+  // The deal asks once per card, so the last few index pairs are kept.
+  var STAND_INS_KEPT = 4;
+  var standInsKept = [];
+
+  // buildStandIns, kept per index pair by instance.
+  var standInsFor = function (vanilla, race) {
+    var kept = _.find(
+      standInsKept,
+      // By instance, not by the deep equality the shorthand would use.
+      // eslint-disable-next-line lodash/matches-shorthand
+      function (entry) {
+        return entry.vanilla === vanilla && entry.race === race;
+      }
+    );
+    if (kept) {
+      return kept.standIns;
+    }
+
+    var standIns = buildStandIns(vanilla, race);
+    standInsKept.push({ vanilla: vanilla, race: race, standIns: standIns });
+    if (standInsKept.length > STAND_INS_KEPT) {
+      standInsKept.shift();
+    }
+    return standIns;
   };
 
   // The race units the held vanilla units stand for, a commander-class unit
@@ -853,13 +855,8 @@ define([
     );
   };
 
-  // A merged unit map's spec_ids the race maps did not set, re-pointed from a
-  // vanilla unit to the first race unit it stands for, so a key the engine
-  // reads itself resolves to something the army can own. An intel unit that
-  // stands for nothing takes its whole cell (Bugs' jammer key names a Bugs
-  // radar); any other keeps its entry. `avoid` ({ path: true }) names units
-  // to pass over while another stand-in is offered: an add-on's, which the
-  // race's own AI data does not know. Returns a copy.
+  // A copy of a merged unit map, its spec_ids the race maps did not set
+  // re-pointed to a race unit. See races.md, "Jobs" and "Add-ons".
   var unitMapFallback = function (map, raceMaps, vanilla, race, avoid) {
     if (!map || !map.unit_map) {
       return map;
