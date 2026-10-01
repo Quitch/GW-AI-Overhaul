@@ -20,6 +20,7 @@ const _ = require("lodash");
 const {
   loadCouiModule,
   installGlobals,
+  requireShippedModule,
 } = require("../scripts/lib/amd-loader.js");
 const { createGlobalStubs } = require("../scripts/lib/global-stubs.js");
 const {
@@ -39,6 +40,9 @@ after(() => stubs.restoreGlobals());
 
 const makeDriver = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_driver.js"
+);
+const { computeRerollDeal } = requireShippedModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_coop_reroll.js"
 );
 const coopAiEffects = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_effects.js"
@@ -324,6 +328,7 @@ function setup(overrides) {
         cardsOffered: 3,
       });
     },
+    computeRerollDeal,
     effects: fakeEffects(options),
     lookup: () => LOOKUP,
     fielded: options.fielded,

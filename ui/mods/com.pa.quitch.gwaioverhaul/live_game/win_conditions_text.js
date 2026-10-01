@@ -1,9 +1,8 @@
 define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/eradication_label.js",
 ], function (eradicationLabel) {
-  // options is the game_options object the server echoes to live_game clients;
-  // loc is passed in so the module stays loadable under the Node test harness
-  return function (options, loc) {
+  // options is the game_options object the server echoes to live_game clients
+  return function (options) {
     if (!options || options.game_type !== "Galactic War") {
       return "";
     }
@@ -14,14 +13,11 @@ define([
       modifiers.push(loc("!LOC:Sudden Death"));
     } else if (options.eradication_mode) {
       modifiers.push(
-        eradicationLabel(
-          {
-            subCommanders: options.eradication_mode_sub_commanders,
-            factories: options.eradication_mode_factories,
-            fabbers: options.eradication_mode_fabricators,
-          },
-          loc
-        )
+        eradicationLabel({
+          subCommanders: options.eradication_mode_sub_commanders,
+          factories: options.eradication_mode_factories,
+          fabbers: options.eradication_mode_fabricators,
+        })
       );
     }
     if (options.bounty_mode) {

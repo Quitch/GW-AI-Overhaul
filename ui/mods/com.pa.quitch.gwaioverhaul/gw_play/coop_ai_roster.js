@@ -98,12 +98,6 @@ define([
     return maxClients + seatedAis(records).length > warSeats;
   };
 
-  // The human seats a new session opens with: the war's own, less those its
-  // AIs hold. An AI in a seat the host opened for it takes none of them.
-  var humanSeats = function (warSeats, records) {
-    return Math.max(1, warSeats - seatedAis(records).length);
-  };
-
   // Every name a new AI must not take: the connected players', the records'
   // players', the other AIs', the host's, and the stock "Player".
   var takenNames = function (connected, records, hostName) {
@@ -131,26 +125,20 @@ define([
     return sharedArmy ? 1 : Math.max(1, connectedCount);
   };
 
-  // Whether a record holds what the stock inventory modal shows, as
-  // gw_play.js's validateGwCampaignInventoryRecord asks.
-  var inventoryReady = function (record) {
-    var inventory = record && record.inventory;
-    return !!(
-      inventory &&
-      _.isArray(inventory.cards) &&
-      _.isNumber(inventory.maxCards) &&
-      inventory.maxCards >= 0 &&
-      _.isString(record.loadoutCardId) &&
-      record.loadoutCardId.length
-    );
-  };
-
   // An AI's row in the slot list, with every field a stock row carries, so the
   // stock markup binds it unchanged. canKick is false: GWO's own Kick removes
-  // an AI. Under per-player tech its Inventory button opens its record, by id.
-  var slotRows = function (records, firstIndex, loadingTooltip, perPlayer) {
+  // an AI. Under per-player tech its Inventory button opens its record, by id,
+  // once inventoryReady(record) - stock's validateGwCampaignInventoryRecord -
+  // says the record holds what the stock inventory modal shows.
+  var slotRows = function (
+    records,
+    firstIndex,
+    loadingTooltip,
+    perPlayer,
+    inventoryReady
+  ) {
     return _.map(records, function (record, index) {
-      var available = !!perPlayer && inventoryReady(record);
+      var available = !!perPlayer && !!inventoryReady(record);
       return {
         index: firstIndex + index,
         id: record.playerId,
@@ -450,11 +438,9 @@ define([
     humanCapacity: humanCapacity,
     roomForSlot: roomForSlot,
     takesExtraSeat: takesExtraSeat,
-    humanSeats: humanSeats,
     takenNames: takenNames,
     fieldedCommanders: fieldedCommanders,
     humanArmies: humanArmies,
-    inventoryReady: inventoryReady,
     slotRows: slotRows,
     parseAiNames: parseAiNames,
     pickAiName: pickAiName,

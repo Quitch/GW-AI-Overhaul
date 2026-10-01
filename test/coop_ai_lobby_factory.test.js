@@ -65,7 +65,6 @@ function setup(overrides) {
       launching: false,
       setupBlocked: false,
       locked: false,
-      ready: true,
       records: [],
       refuseUpsert: false,
       upsertThrows: false,
@@ -182,7 +181,6 @@ function setup(overrides) {
   };
 
   const state = {
-    ready: observable(options.ready),
     busy: observable(false),
     armed: observable(),
     inFlight: observable(0),
@@ -221,7 +219,6 @@ function setup(overrides) {
       }
       return options.saveFails ? rejected("disk full") : resolved();
     },
-    ready: state.ready,
     busy: state.busy,
     armed: state.armed,
     inFlight: state.inFlight,
@@ -274,7 +271,6 @@ describe("canAddAi", () => {
     "the restart re-apply pending": { restartPending: true },
     "the saved settings not applied yet": { initialApplied: false },
     "no max_clients from the server yet": { control: {} },
-    "the AI modules not loaded": { ready: false },
     "a war without GWO's settings": { noGwaio: true },
     "the last battle's humans still reconnecting": { expectedBack: 2 },
   };

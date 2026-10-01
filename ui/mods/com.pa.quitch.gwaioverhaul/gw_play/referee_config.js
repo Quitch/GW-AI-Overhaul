@@ -116,6 +116,8 @@ define([
       game.stats().turns()
     );
     var aiTag = gwoAI.aiTags(ai);
+    var coopAis = self.coopAis || [];
+    var aiInventories = refereeCoop.launchAiInventories(coopAis);
 
     setupAlliedCommanders(
       inventory.minions(),
@@ -136,7 +138,12 @@ define([
         armies,
         inventory,
         playerTag,
-        refereeCoop.getOrderedSubcommanders(inventory, game).length,
+        refereeCoop.getOrderedSubcommanders(
+          inventory,
+          game,
+          undefined,
+          aiInventories
+        ).length,
         battleRng,
         { ffa: !_.isEmpty(ai.foes) }
       );
@@ -191,24 +198,20 @@ define([
       });
     });
     config.player.commander += playerTag;
-    setupCoopAiArmies(self.coopAis || [], config.armies, battleRng, {
+    setupCoopAiArmies(coopAis, config.armies, battleRng, {
       playerFaction: inventory.getTag("global", "playerFaction"),
       ffa: !_.isEmpty(ai.foes),
     });
     // After every human's in the colour sequence, before the star's ally.
-    var aiSubcommanderCount = _.sum(
-      _.map(refereeCoop.getCoopAiInventories(game), function (player) {
-        return _.isArray(player.inventory.minions)
-          ? player.inventory.minions.length
-          : 0;
-      })
-    );
-    setupCoopAiSubcommanders(self.coopAis || [], config.armies, {
+    setupCoopAiSubcommanders(coopAis, config.armies, {
       playerFaction: inventory.getTag("global", "playerFaction"),
       playerColor: inventory.getTag("global", "playerColor"),
-      colourStart:
-        refereeCoop.getOrderedSubcommanders(inventory, game).length -
-        aiSubcommanderCount,
+      colourStart: refereeCoop.getOrderedSubcommanders(
+        inventory,
+        game,
+        undefined,
+        []
+      ).length,
     });
     // Store the game in the config for diagnostic purposes.
     config.gw = game.save();

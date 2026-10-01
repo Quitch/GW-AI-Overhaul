@@ -269,6 +269,51 @@ describe("referee_coop co-op AI players", () => {
     );
   });
 
+  // A hire numbers the AI players it fields (ref.coopAis), not the records.
+  it("numbers a hire's own AI players in place of the records'", () => {
+    const game = makeGame({
+      perPlayerTechCards: true,
+      records: { "view-1": makeRecord(["Beta"]) },
+      aiRecords: [makeAiRecord(1, ["Gamma"])],
+    });
+    installModel(game, [HOST, VIEWER_ONE]);
+    const coopAis = [
+      {
+        id: "gwo_ai_2",
+        perPlayer: true,
+        inventory: makeRecord(["Delta"]).inventory,
+      },
+      { id: "gwo_ai_3", perPlayer: false, inventory: hostInventory },
+    ];
+
+    const fielded = refereeCoop.launchAiInventories(coopAis);
+    assert.deepEqual(_.map(fielded, "id"), ["gwo_ai_2"]);
+    assert.deepEqual(
+      names(
+        refereeCoop.getOrderedSubcommanders(
+          hostInventory,
+          game,
+          [HOST, VIEWER_ONE],
+          fielded
+        )
+      ),
+      ["Alpha", "Beta", "Delta"]
+    );
+    // An empty list counts the humans' alone.
+    assert.deepEqual(
+      names(
+        refereeCoop.getOrderedSubcommanders(
+          hostInventory,
+          game,
+          [HOST, VIEWER_ONE],
+          []
+        )
+      ),
+      ["Alpha", "Beta"]
+    );
+    assert.deepEqual(refereeCoop.launchAiInventories(undefined), []);
+  });
+
   it("skips an AI record with no inventory", () => {
     const game = makeGame({
       perPlayerTechCards: true,

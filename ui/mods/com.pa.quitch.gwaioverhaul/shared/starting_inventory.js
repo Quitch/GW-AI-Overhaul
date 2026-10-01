@@ -45,27 +45,6 @@ define(function () {
     return globalTags;
   };
 
-  var dealStartingCard = function (
-    gwoDeal,
-    loaded,
-    loadedCards,
-    loadoutCardId,
-    dealInventory,
-    galaxy,
-    star
-  ) {
-    return gwoDeal.dealCard(
-      {
-        id: loadoutCardId,
-        inventory: dealInventory,
-        galaxy: galaxy,
-        star: star,
-      },
-      loaded,
-      loadedCards
-    );
-  };
-
   var applyStartingInventory = function (
     GWInventory,
     loadoutCardId,
@@ -111,28 +90,31 @@ define(function () {
       dealInventory.setTag("global", name, value);
     });
 
-    dealStartingCard(
-      params.gwoDeal,
-      params.loaded,
-      params.loadedCards,
-      params.loadoutCardId,
-      dealInventory,
-      params.galaxy,
-      params.star
-    ).then(
-      function (startCardProduct) {
-        applyStartingInventory(
-          params.GWInventory,
-          params.loadoutCardId,
-          globalTags,
-          startCardProduct,
-          result
-        );
-      },
-      function (error) {
-        result.reject(error);
-      }
-    );
+    params.gwoDeal
+      .dealCard(
+        {
+          id: params.loadoutCardId,
+          inventory: dealInventory,
+          galaxy: params.galaxy,
+          star: params.star,
+        },
+        params.loaded,
+        params.loadedCards
+      )
+      .then(
+        function (startCardProduct) {
+          applyStartingInventory(
+            params.GWInventory,
+            params.loadoutCardId,
+            globalTags,
+            startCardProduct,
+            result
+          );
+        },
+        function (error) {
+          result.reject(error);
+        }
+      );
 
     return result.promise();
   };
@@ -140,8 +122,6 @@ define(function () {
   return {
     validateStartingInventory: validateStartingInventory,
     buildGlobalTags: buildGlobalTags,
-    dealStartingCard: dealStartingCard,
-    applyStartingInventory: applyStartingInventory,
     build: build,
   };
 });

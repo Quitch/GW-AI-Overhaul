@@ -55,7 +55,7 @@ define([
     }, this);
   };
 
-  var buildGalaxy = function (config) {
+  var build = function (config) {
     var self = this;
     config = config || {};
 
@@ -246,16 +246,6 @@ define([
     return $.when.apply($, starGenerators).then(function () {
       return self;
     });
-  };
-
-  // Rejects rather than throws. The system loader can be Shared Systems', so
-  // its code runs here too.
-  var build = function (config) {
-    try {
-      return buildGalaxy.call(this, config);
-    } catch (e) {
-      return $.Deferred().reject(e).promise();
-    }
   };
 
   return {

@@ -31,7 +31,7 @@ define([
     return gwoSpecCache.genUnitSpecs(units, tag, { fetch: specFetch });
   };
 
-  var guardianMods = function (game, hostMods) {
+  var guardianMods = function (game, hostMods, coopAis) {
     // Without per-player tech every viewer draws from the host's inventory.
     if (!game.perPlayerTechCards()) {
       return hostMods;
@@ -41,7 +41,7 @@ define([
     _.forEach(
       refereeCoop
         .getConnectedViewerInventories(game)
-        .concat(refereeCoop.getCoopAiInventories(game)),
+        .concat(refereeCoop.launchAiInventories(coopAis)),
       function (player) {
         mods = mods.concat(player.inventory.mods || []);
       }
@@ -112,7 +112,7 @@ define([
         var guardians = ai.mirrorMode;
         if (guardians) {
           aiInventory = aiInventory.concat(
-            guardianMods(game, inventory.mods())
+            guardianMods(game, inventory.mods(), params.coopAis)
           );
         }
         // The AI's tech names vanilla files; a race army's land on the race
@@ -192,6 +192,7 @@ define([
           clusterUnitMapTitansPath: CLUSTER_UNIT_MAP_X1,
           game: battle.game,
           inventory: battle.inventory,
+          coopAis: battle.coopAis,
           aiFactionDeferred: battle.aiFactions[n],
         });
       });
@@ -399,6 +400,7 @@ define([
           var battle = {
             game: game,
             inventory: inventory,
+            coopAis: coopAis,
             ai: ai,
             aiTag: aiTag,
             aiFactions: aiFactions,

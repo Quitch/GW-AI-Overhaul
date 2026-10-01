@@ -270,21 +270,25 @@ define([
   };
 
   // Every other player's inventory: the connected viewers' and, under
-  // per-player tech, the co-op AI players'.
-  var getConnectedClientInventories = function (game, connectedClients) {
+  // per-player tech, the hire's co-op AI players' (ref.coopAis).
+  var getConnectedClientInventories = function (
+    game,
+    connectedClients,
+    coopAis
+  ) {
     return _.pluck(
       refereeCoop
         .getConnectedViewerInventories(game, connectedClients)
-        .concat(refereeCoop.getCoopAiInventories(game)),
+        .concat(refereeCoop.launchAiInventories(coopAis)),
       "inventory"
     );
   };
 
-  var getConnectedClientAiMods = function (game, connectedClients) {
+  var getConnectedClientAiMods = function (game, connectedClients, coopAis) {
     var connectedClientAiMods = [];
 
     _.forEach(
-      getConnectedClientInventories(game, connectedClients),
+      getConnectedClientInventories(game, connectedClients, coopAis),
       function (inventory) {
         connectedClientAiMods = connectedClientAiMods.concat(
           getRefereeInventoryAiMods(inventory)
@@ -298,10 +302,11 @@ define([
   var getInventoryWithAllPlayerAiMods = function (
     inventory,
     game,
-    connectedClients
+    connectedClients,
+    coopAis
   ) {
     var allPlayerAiMods = getRefereeInventoryAiMods(inventory).concat(
-      getConnectedClientAiMods(game, connectedClients)
+      getConnectedClientAiMods(game, connectedClients, coopAis)
     );
 
     return {
@@ -730,7 +735,7 @@ define([
     var playerRace = gwoRaces.raceOf(inventory);
     var guardians = ai.mirrorMode;
     var everyPlayer = [inventory].concat(
-      getConnectedClientInventories(game, connectedClients)
+      getConnectedClientInventories(game, connectedClients, coopAis)
     );
     var jobs = {};
 
@@ -1033,11 +1038,13 @@ define([
     var ai = gwoAI.currentStarAi(game);
     var guardians = ai.mirrorMode;
     var connectedClients = refereeCoop.getConnectedClients();
+    var coopAis = self.coopAis || [];
     var playerAiModInventory = guardians
       ? getInventoryWithAllPlayerAiMods(
           game.inventory(),
           game,
-          connectedClients
+          connectedClients,
+          coopAis
         )
       : game.inventory();
 
@@ -1099,7 +1106,6 @@ define([
       }
     );
 
-    var coopAis = self.coopAis || [];
     _.forEach(coopAiTreeRequests(coopAis, launch), function (tree) {
       promises.push(processDirectories(tree.source, tree.request));
     });

@@ -93,8 +93,8 @@ define([
   // - dealCount(record), hostDealCount(), entryFor(dealIndex) - the stock
   //   deal counters and history
   // - starAt(starIndex) - the galaxy star
-  // - dealHand(params), rerollHand(params) - cards_coop_deal.js's and
-  //   cards_coop_reroll.js's cores
+  // - dealHand(params), rerollHand(params), computeRerollDeal(cardsOffered,
+  //   cardCount) - cards_coop_deal.js's and cards_coop_reroll.js's cores
   // - effects - a coop_ai_effects.js instance
   // - lookup() - the current shared/coop_ai_units.js lookup
   // - fielded(saved, lookup) - resolves the shared/coop_ai_fielded.js view
@@ -395,11 +395,14 @@ define([
       var judge = function (hand) {
         live();
         progress.hand = hand;
-        // As cards_coop_reroll.js counts them: a thin deck deals a short
-        // hand, and each card it lacks counts as a reroll spent.
+        // A thin deck deals a short hand, and each card it lacks counts as a
+        // reroll spent.
         var rerollsUsed = Math.max(
           hand.rerollsUsed || 0,
-          (hand.cardsOffered || 0) - (hand.cards || []).length
+          params.computeRerollDeal(
+            hand.cardsOffered || 0,
+            (hand.cards || []).length
+          ).rerollsUsed
         );
         var decide = function (scored, held) {
           return coopAiCards.decide({

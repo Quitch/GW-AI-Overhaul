@@ -227,7 +227,7 @@ describe("humanCapacity / roomForSlot", () => {
   });
 });
 
-describe("takesExtraSeat / humanSeats", () => {
+describe("takesExtraSeat", () => {
   it("knows an AI added past the war's seats from one filling them", () => {
     const seated = aiRecord(1);
     const extra = aiRecord(2, {
@@ -245,19 +245,6 @@ describe("takesExtraSeat / humanSeats", () => {
     assert.equal(roster.takesExtraSeat(2, [extra], 2), false);
     // Both AIs are in, and the host pressed "+" again.
     assert.equal(roster.takesExtraSeat(2, [seated, extra], 2), true);
-  });
-
-  it("opens the war's seats less those its AIs hold, at least one", () => {
-    const seated = aiRecord(1);
-    const extra = aiRecord(2, {
-      gwaioAi: { serial: 2, name: "AI2", extraSeat: true },
-    });
-    const human = { playerId: "uber-1", playerName: "Alice" };
-
-    assert.equal(roster.humanSeats(3, [seated, human]), 2);
-    assert.equal(roster.humanSeats(2, [seated, extra]), 1);
-    assert.equal(roster.humanSeats(1, [seated]), 1);
-    assert.equal(roster.humanSeats(2, undefined), 2);
   });
 });
 
@@ -343,8 +330,25 @@ describe("slotRows under per-player tech", () => {
     inventory: { cards: [{ id: "gwc_start_bot" }], maxCards: 5 },
   });
 
-  it("opens an AI's inventory once its record is complete", () => {
-    const rows = roster.slotRows([complete, aiRecord(2)], 2, "", true);
+  // Stands in for stock's validateGwCampaignInventoryRecord.
+  const asked = [];
+  const inventoryReady = (record) => {
+    asked.push(record);
+    return record === complete;
+  };
+
+  it("opens an AI's inventory once stock's check passes its record", () => {
+    asked.length = 0;
+    const incomplete = aiRecord(2);
+    const rows = roster.slotRows(
+      [complete, incomplete],
+      2,
+      "",
+      true,
+      inventoryReady
+    );
+
+    assert.deepEqual(asked, [complete, incomplete]);
 
     assert.equal(rows[0].showInventory, true);
     assert.equal(rows[0].inventoryAvailable, true);
@@ -355,26 +359,11 @@ describe("slotRows under per-player tech", () => {
   });
 
   it("shows no Inventory button under shared tech", () => {
-    const rows = roster.slotRows([complete], 2, "", false);
+    asked.length = 0;
+    const rows = roster.slotRows([complete], 2, "", false, inventoryReady);
     assert.equal(rows[0].showInventory, false);
     assert.equal(rows[0].inventoryAvailable, false);
-  });
-
-  it("asks of a record what the stock modal asks", () => {
-    const without = (patch) => Object.assign({}, complete, patch);
-    assert.equal(roster.inventoryReady(complete), true);
-    assert.equal(roster.inventoryReady(without({ loadoutCardId: "" })), false);
-    assert.equal(
-      roster.inventoryReady(
-        without({ inventory: { cards: [], maxCards: -1 } })
-      ),
-      false
-    );
-    assert.equal(
-      roster.inventoryReady(without({ inventory: { maxCards: 3 } })),
-      false
-    );
-    assert.equal(roster.inventoryReady(undefined), false);
+    assert.deepEqual(asked, []);
   });
 });
 
