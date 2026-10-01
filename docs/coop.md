@@ -77,10 +77,9 @@ of that:
 
 The local referee's files are mounted on the host alone. Stock deep-clones them
 first with lodash 3's `cloneDeep`, whose cost is quadratic in the objects it
-copies: a battle's 2,000 or so files took 11.5 s, and the 9,800 of a battle with
-11 per-player AI players took 136 s. So the host's own pass hands its files over
-as JSON text (`gameFilePaths.cookFiles`), which clones in milliseconds.
-`mountFiles` would have made that text anyway.
+copies, and a battle mounts thousands of files. So the host's own pass hands its
+files over as JSON text (`gameFilePaths.cookFiles`), which clones in
+milliseconds. `mountFiles` would have made that text anyway.
 
 Only the host hires a referee. A viewer runs GWO's readers on the war snapshot
 the host broadcasts. The war panel and the intelligence panel derive what they
@@ -336,6 +335,22 @@ A human whose slot an AI took is refused with "No room" when they come back,
 until the host kicks the AI or adds a slot. Stock has no hook that could tell
 them why.
 
+`gw_play/coop_ai_lobby.js` reads the rest of the scene from `model` when it is
+called, and takes from `coop_ai.js`:
+
+- `game`, and `gwaio()`, the war's `originSystem.gwaio`.
+- `createRecord(identity)`, which builds the new AI's record or a promise of it,
+  and `save(withStars)`, a promise.
+- `warSeats()`, the seats the war was made with (stock's `savedCoopPlayers`),
+  and `expectedBack()`, the humans still due back from the last battle, 0 once
+  none are.
+- The observables `busy`, `armed` (the AI whose Kick was pressed once), and
+  `inFlight` (the `modify_settings` requests the server has not answered).
+- `perPlayerReady()`: under per-player tech, whether the modules that build an
+  AI's tech are in.
+
+Tests also pass `buildTimeoutMs`.
+
 ### Sitting out
 
 An AI is added only inside a session, but its record stays in the war's save.
@@ -464,8 +479,10 @@ lookup is in.
 An AI **owes** a deal while its `techCardDealCount` is below
 `game.hostTechCardDealCount()`, which is the test the server makes of a viewer
 for catch-up. A pass of the driver starts whenever a session opens, the host
-records a deal, the records change, the unit lookup arrives, or a star-card
-refresh ends. A pass with nothing owed does nothing. It serves the AIs in slot
+records a deal, the records change, the unit lookup arrives, the deck and
+`card_units.js` finish loading, or a star-card refresh ends. No pass runs
+before that load, because the factory-card pick below reads
+`model.gwoCardsToUnits`. A pass with nothing owed does nothing. It serves the AIs in slot
 order, and settles each AI's owed deals one at a time, in the order of the
 host's history, yielding between them. For each deal it:
 
@@ -549,6 +566,32 @@ these is logged ([`live-testing.md`](live-testing.md), "AI players").
 After a pass that wrote anything, the host refreshes an open inventory modal,
 saves the war, and owes the viewers a snapshot ("Publishing to viewers").
 
+The driver reads nothing from the scene itself. `cards_coop_ai_tech.js` hands
+it:
+
+- `records()`, the AIs to serve in slot order, empty outside a hosted
+  per-player-tech session, and `find(playerId)`, an AI's record as it stands.
+- Stock's deal counters and history, `dealCount(record)`, `hostDealCount()`,
+  and `entryFor(dealIndex)`, and `starAt(starIndex)`, the galaxy star.
+- The viewer's deal and reroll cores: `dealHand`, `rerollHand`, and
+  `computeRerollDeal(cardsOffered, cardCount)`.
+- What judges a card: `effects` (a `coop_ai_effects.js` instance), `lookup()`,
+  the optional `fielded(saved, lookup)`, `teamDomains(playerId, lookup)`,
+  `namesUnits(cardId)`, `chanceOf(card, applied, star)`, `isLoadout(cardId)`,
+  and `rerollsRemain(rerollsUsed, cardsOffered)`.
+- `shared/ai.js`'s army rule, `armyGap` and `armyGapClosable`, and the factory
+  card's `factoryCards(record, applied)` and `dealCard(cardId, applied, star)`.
+- The streams, `decisionRng(record, dealIndex, rerollsUsed)` and
+  `factoryRng(record, dealIndex)`.
+- `enqueue(label, apply)`, the campaign state queue, and
+  `write(record, patch)`, which stores a patched copy and returns it, or
+  undefined.
+- `canRun()`, false while anything a pass must wait for is in flight;
+  `running`, an observable a pass holds true; and `afterPass()`, which saves
+  and publishes.
+
+Tests also pass `defer`, `decisionTimeoutMs`, and `writeTimeoutMs`.
+
 ### Holding the war
 
 `model.gwoCoopAiDeciding` is true on the host while a pass runs, or while any AI
@@ -579,9 +622,10 @@ the host is not exploring, no AI is deciding, and every viewer is loaded and
 level with the host's deal count. A viewer with an offer open is not level, so
 no choice can be in flight when the snapshot goes out. The module returns one
 object, so the scene has one debt, and a later reason replaces one still held.
-A computed in `gw_play/coop_ai.js` settles the debt when those change. With no
-viewer connected the debt is dropped, since a viewer who joins asks for a
-snapshot as its first step.
+The module settles a held debt itself, from a computed over those inputs that
+it makes when it first holds one, so a held snapshot goes out even if the AI
+modules fail to load. With no viewer connected the debt is dropped, since a
+viewer who joins asks for a snapshot as its first step.
 
 A reroll is the one exception. The rerolling viewer waits for the host's reply
 with its offer hidden, so it cannot choose while the snapshot goes out. The
@@ -648,9 +692,8 @@ inventory. Each AI has:
   come after every human's Sub Commanders and before the star's ally ("Colour
   allocation").
 
-Each AI adds some 630 to 750 files to a battle. A battle with the 11 AI players
-that the slot limit allows beside the host mounts about 9,800, which is why the
-host's own pass hands its files over as JSON text ("The two referees").
+Each AI adds hundreds of files to a battle, which is why the host's own pass
+hands its files over as JSON text ("The two referees").
 
 An AI's cards count wherever GWO asks what any player holds, while a session is
 active: `anyPlayerHasCard` and `getAllConnectedPlayerCards` in `shared/cards.js`
@@ -817,7 +860,8 @@ nothing left there to ask the host for. That observable travels in
 rather than inferred.
 
 Every check but the connected viewer's lives in `starOpenForPing`, which the
-host's pings for its AI players share ("AI pings").
+host's pings for its AI players share ("AI pings"). The checks of the war alone
+are `warOpenForPing`.
 
 It also refuses while the turn state is `explore` or `fight`. Once the host
 commits to a destination, where to go next is no longer a question. Testing for
@@ -855,12 +899,14 @@ is the glue.
 host's turn count, the current star, the host's deal count, and a digest of the
 cards every AI would find at every AI star. So a move, a won star, a deal, or a
 re-deal of the stars' cards opens a new one, and a judgement made on cards
-since replaced is dropped. It is open while the host holds a session with
-an AI in it and the unit lookup is in, the current star is explored, the turn
-state is neither `explore` nor `fight`, nothing is scanning, no player is
-choosing tech, no AI is settling its deals, the war is not over, and nothing is
-re-dealing the stars' cards: neither the deal of the selectable AI stars'
-cards, which a won star starts, nor the star-card refresh it ends with. An AI
+since replaced is dropped. It is open only while the host could ping at any
+star (`canPingAsNow`, below), so the window and the send make the same checks
+of the war. It is also open only while the session has an AI in it, the unit
+lookup is in, the current star is explored, no player is setting up
+(`gwCampaignPlayerSetupBlocked`, which also counts a viewer still loading or
+picking a loadout), no AI is settling its deals, the war is not over, and
+nothing is re-dealing the stars' cards: neither the deal of the selectable AI
+stars' cards, which a won star starts, nor the star-card refresh it ends with. An AI
 therefore judges the cards the stars will offer. The AIs settle in slot order,
 the first 1.5 seconds after the window opens and each after it 1.2 seconds
 later, so their pings do not land together. Judging takes time, so each checks
@@ -893,14 +939,36 @@ seconds later. Either retry happens three times at most in one window.
 **Sending.** `pingStarAs(star, sender)` in `coop_ping_operators.js` is the
 host's send on another's behalf. `canPingAs` makes the viewer's checks of the
 war and the star (`starOpenForPing`), and asks that this client be a connected
-host rather than a viewer. The host's cooldown keys on the AI, as it does on a
+host rather than a viewer. `canPingAsNow` is the same without the star. The host's cooldown keys on the AI, as it does on a
 viewer. The broadcast is the viewer's own `gwo_ping_star_broadcast`, naming the
 AI as its sender, and the host shows the ping locally. So every client gets the
 marker and the chat line "`<AI name>`: Ping! `<star>`". `gw_play/coop_ping.js`
-exposes the send as `model.gwoPingStarAs` and `model.gwoCanPingStarAs`.
+exposes the send as `model.gwoPingStarAs` and `model.gwoCanPingStarAs`, and
+the window's check as `model.gwoCanPingAsNow`.
 
 Each settle logs one line ([`live-testing.md`](live-testing.md), "AI
 players").
+
+**The glue.** `cards_coop_ai_pings.js` hands `coop_ai_pings.js`:
+
+- `ais()`, the AI players in the session in slot order, as `{ id, name }`.
+- `windowKey()` and `windowOpen()`, the current window and whether it is open.
+- `candidates()`, the stars an AI may ping, as `{ star, hops, threat }`, and
+  `allThreats()`, every AI star's threat.
+- `cardFor(ai, star)`, the card the AI would find there, if any, and
+  `valueOf(ai, card, star, memo)`, its worth to the AI or a promise of it.
+- `ping(star, sender)`, true when the ping went out.
+
+Tests also pass `delay(fn, ms)` and `now()`.
+
+`valueOf` asks `coop_ai_pings.valueOfCard(judge, holder, card, star, memo)`.
+The `judge` is the driver's own judging tools: `effects` (a
+`coop_ai_effects.js` instance), `lookup()`, `teamDomains(playerId, lookup)`,
+`namesUnits(cardId)`, `chanceOf(card, applied, star)`, `isLoadout(cardId)`,
+and the optional `fielded(saved, lookup)`. The `holder` is
+`{ playerId, inventory, commander }`, with the saved inventory the card is
+judged against. The `star` is the galaxy star itself, which a card's `deal()`
+takes, and the `memo` is shared by the cards an AI judges in one window.
 
 ## Per-player pre-dealt cards
 
@@ -1170,9 +1238,8 @@ of its cards after the timeout, with banking back on, so a judged loadout's
 second place would bank into the host's own bank. The timeout keeps this out of
 reach rather than closing it: holding on until a late apply finished would
 refuse the host's own treasure loadout for the rest of the scene whenever one
-truly hangs. Measured on 2026-09-29, an apply took under 0.1 s in play, whatever
-the number of cards, and at most 2.8 s when it ran while `gw_play` was still
-loading, against a timeout of 10 seconds.
+truly hangs. An apply in play takes a small fraction of the 10-second
+timeout.
 
 **The star is identified by index, not by `ai.treasurePlanet`.** Beating the
 Guardians runs `winTurn`'s boss branch, which calls `defeatTeam(ai.team)`.
