@@ -74,7 +74,10 @@ describe("toCsv", () => {
 describe("outFile", () => {
   it("resolves --out and refuses one with no path", () => {
     assert.equal(outFile(["--out", "x.csv"]), path.resolve("x.csv"));
-    assert.equal(path.basename(outFile([])), "gw-ai-overhaul-playglot.csv");
+    assert.equal(
+      outFile([]),
+      path.join(__dirname, "..", "scripts", "i18n", "out", "gwo-strings.csv")
+    );
     for (const argv of [["--out"], ["--out", "--pa"]]) {
       assert.throws(() => outFile(argv), {
         message: "--out takes a file path",
