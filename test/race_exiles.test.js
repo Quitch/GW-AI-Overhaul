@@ -43,12 +43,12 @@ const TELEPORTER = "/pa/units/land/teleporter/teleporter.json";
 const METAL_EXTRACTOR = "/pa/units/land/metal_extractor/metal_extractor.json";
 
 describe("the Exiles descriptor", () => {
-  it("is registered as shipped, with three commanders and the Titans layout only", () => {
+  it("is registered as shipped, with four commanders and the Titans layout only", () => {
     const race = races.byId("exiles");
 
     assert.equal(race.id, "exiles");
     assert.deepEqual(race.serverMods, ["com.pa.nik.exiles"]);
-    assert.equal(race.commanders.length, 3);
+    assert.equal(race.commanders.length, 4);
     assert.equal(race.unitTypeBit, "Custom6");
     assert.equal(race.commanderArtHue, 200);
     assert.equal(race.commanderTypes.buildable, "CmdBuild & Custom6");
@@ -129,7 +129,7 @@ describe("Exiles under capability cells", () => {
       assert.ok(index.race.unitsByCell[cell], cell + " has no Exiles unit");
     }
     assert.equal(index.race.unitsByCell["Orbital/Basic/Combat"], undefined);
-    assert.equal(index.race.unitsByCell["Land/Basic/Commander"].length, 3);
+    assert.equal(index.race.unitsByCell["Land/Basic/Commander"].length, 4);
   });
 
   it("fields the fabrication complex from a basic fabber, past the Deep Space Radar stub (skipped without Exiles in the fixture)", (t) => {
