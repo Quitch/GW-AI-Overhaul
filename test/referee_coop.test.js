@@ -189,8 +189,9 @@ describe("referee_coop.getOrderedSubcommanders", () => {
     assert.deepEqual(ordered[2].cards, []);
   });
 
-  // referee_game_files.js and referee_config.js both call through without a
-  // client list, leaving it to read model.gwCampaignConnectedClients().
+  // referee_config.js and section_of_foreign_intelligence.js both call through
+  // without a client list, leaving it to read
+  // model.gwCampaignConnectedClients().
   it("reads the connected clients itself when given none", () => {
     const game = makeGame({
       perPlayerTechCards: true,

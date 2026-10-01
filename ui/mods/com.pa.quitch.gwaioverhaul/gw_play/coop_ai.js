@@ -260,10 +260,12 @@
         missing("the Explore button's " + stockExploreBind);
       }
       $explore.attr("data-bind", function (index, bind) {
-        return bind.replace(
-          stockExploreBind,
-          "btn_hero_disabled: gwoExploreBlocked"
-        );
+        return _.isString(bind)
+          ? bind.replace(
+              stockExploreBind,
+              "btn_hero_disabled: gwoExploreBlocked"
+            )
+          : bind;
       });
 
       // An AI settling its deals holds the Fight button as a viewer choosing
