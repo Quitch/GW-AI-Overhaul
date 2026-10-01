@@ -317,7 +317,7 @@ function stringLiterals(source) {
       literals.set(node.range[0], stack.slice().reverse());
     }
     stack.push(node);
-    for (const key of espree.VisitorKeys[node.type] || []) {
+    for (const key of espree.VisitorKeys[node.type]) {
       for (const child of [].concat(node[key])) {
         if (child) {
           visit(child);
@@ -458,7 +458,9 @@ function addSite(map, key, site) {
 
 function scanLiterals(map, facts, source, isHtml, options) {
   const cardLiterals =
-    facts.card && !isHtml ? stringLiterals(source) : undefined;
+    facts.card && path.extname(facts.file) === ".js"
+      ? stringLiterals(source)
+      : undefined;
   LOC_LITERAL.lastIndex = 0;
   let match;
   while ((match = LOC_LITERAL.exec(source)) !== null) {

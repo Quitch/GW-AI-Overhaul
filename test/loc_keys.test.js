@@ -183,7 +183,7 @@ describe("card roles", () => {
       at(CARD, [
         "define([], function () {",
         "  return {",
-        "    summarize: function () {",
+        '    "summarize": function () {',
         '      return "!LOC:Long Tech";',
         "    },",
         "    describe: _.constant(",
