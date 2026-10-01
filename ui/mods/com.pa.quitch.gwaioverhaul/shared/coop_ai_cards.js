@@ -279,10 +279,17 @@ define([
     });
   };
 
-  // A file's drains are scored apart from its other mods, so a buff on the
-  // same file does not average them away.
+  // A file's drains are scored as one, apart from its other mods, so a buff
+  // on the same file does not average them away.
   var drainSplit = function (mods) {
-    return _.reject(_.partition(mods, isDrain), _.isEmpty);
+    var parts = _.partition(mods, isDrain);
+    var lists = _.isEmpty(parts[1]) ? [] : [parts[1]];
+    if (!_.isEmpty(parts[0])) {
+      lists.push([
+        _.assign({}, parts[0][0], { value: _.sum(parts[0], "value") }),
+      ]);
+    }
+    return lists;
   };
 
   // A mod list by what it changes, whichever file it is on.

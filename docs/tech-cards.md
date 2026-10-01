@@ -624,8 +624,9 @@ its parts carry the names the debug lines print
   build time, demand, consumption, reload, or per-shot path. A health drain, a
   negative add to `passive_health_regen`, is judged by the share of the unit's
   health it takes over a 1200-second battle (`drainSeconds`), and counts as
-  the unit's whole health when that is unknown. A file's drains are a list of
-  their own, so a buff on the same file does not average them away. Every
+  the unit's whole health when that is unknown. A file's drains are added up
+  and judged as one list of their own, so a buff on the same file does not
+  average them away. Every
   direction is held between −1 and 2. Each fielded unit adds its direction
   times its worth and its boost, 1.2 times on the domain the AI fields most. Each commander, the
   AI's own and each Sub Commander's, adds its direction times 10 and its boost.

@@ -240,6 +240,14 @@ describe("scoreCard on health drains", () => {
     assert.ok(both < drained([buff], health));
   });
 
+  it("adds up a file's drains before judging them", () => {
+    const health = seconds * 10;
+    assert.equal(
+      drained([drain(-3), drain(-7)], health),
+      drained([drain(-10)], health)
+    );
+  });
+
   it("counts a drain on a unit of unknown health as a full drain", () => {
     assert.equal(
       drained([drain(-1)], undefined),
