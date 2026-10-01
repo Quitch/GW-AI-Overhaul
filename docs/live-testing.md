@@ -386,6 +386,9 @@ The outcome is one of:
 - `ping <star> (wants)` or `ping <star> (lead)`: the AI pinged, and why. Host
   and viewers get the marker and the chat line "`<name>`: Ping! `<star>`".
 - `no ping (indifferent)`, or `no ping (no star)` when it has nothing to ping.
+- `no ping (neutral <star> first)`: the nearest unexplored neutral star ranked
+  first. It is listed among the candidates as
+  `<star>=<score> (neutral 10, threat 0, hops <h>)`.
 - `no ping (<name> pinged <star>)`: another AI pinged that star this window.
 - `no ping (pinged <star> already)`.
 - `no ping (pinged <star> too recently)`: the AI tries again, in the same
