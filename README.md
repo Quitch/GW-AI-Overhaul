@@ -179,7 +179,7 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - Enemy Cluster Worker and Security commanders will use the Angel and Colonel icons - this is a PA bug.
 - The player and planet lists will show MLA commanders icons regardless of race - this is a PA bug.
 - Some loadouts are disabled for races other than MLA due to unit dependencies
-- Bugs and Exiles are not dealt some tech cards for MLA units they have access to
+- Bugs and Exiles are not dealt the upgrade tech cards for the MLA units they field
 
 ## Recommended mods
 
@@ -203,10 +203,8 @@ Open a [new issue](https://github.com/Quitch/GW-AI-Overhaul/issues) on the GitHu
 - Challenge Levels for galactic war
 - Enemy ramp for galactic war
 - Galactic War Unique Loadouts
-- More Pew Pew
 - Section of Foreign Intelligence for galactic war
-- Selection and combat grouping mods e.g. Air Scout Select
-- Client mod which modifies unit files and is incompatible with PA 116982 or later. Disable any unit, selection, FX, or faction mod which hasn't been updated since at least 12 June 2023.
+- Unit selection and FX mods
 
 ## Thanks to
 
