@@ -180,10 +180,11 @@ Commanders read a tree scoped by its player tag, as a viewer's do
 
 Its source is `getAIPathSource("coop", …)`, the co-op brain's own root.
 `referee_ai.js` copies that whole tree to the AI's path with the AI's mods, as
-it does a viewer's Sub Commanders' tree. It writes nothing else: the scope is
-the tree's isolation, so there is no Cluster routing and no Cluster AI op, as
-for a viewer. A race AI's tree, and its Sub Commanders' under per-player tech,
-are race tree jobs instead, which take the AI's mods aimed at its race's keys
+it does an MLA viewer's Sub Commanders' tree. It writes nothing else: the
+scope is the tree's isolation, so there is no Cluster routing and no Cluster AI
+op, as for a viewer. A race AI's tree, and its Sub Commanders' under per-player
+tech, are race tree jobs instead, as a race viewer's Sub Commanders' tree is.
+Each takes its owner's mods aimed at its race's keys
 ([`ai-pipeline.md`](ai-pipeline.md), "Race trees").
 
 The brain is `aiInUse("coop", race)`. It reads the race's `coop` cell, then its

@@ -390,10 +390,9 @@ The outcome is one of:
 - `no ping (pinged <star> already)`.
 - `no ping (pinged <star> too recently)`: the AI tries again, in the same
   window, once 20 seconds have passed since its last ping.
-- `no ping (refused)`: the host's checks turned it down. The AI tries again 5
-  seconds later, up to three times in a window. A window opens only while the
-  host's checks of the war pass, so a refusal points at the star or at the
-  host's cooldown.
+- `no ping (refused)`: the host's checks turned it down. The AI does not try
+  again in that window. A window opens only while the host's checks of the war
+  pass, so a refusal points at the star or at the host's cooldown.
 
 `<name> ping failed: <error>` is a throw while it judged its stars or set up
 its next try.

@@ -78,7 +78,12 @@ sites: file, line, a **role** inferred from the syntax (`card-name`,
 `card-description`, `card-hint`, `faction-character`, `race-name`,
 `race-unit-name`, `unit-name`, `html-label`, `html-control`, `tooltip`,
 `placeholder`, else `loc-call`), the enclosing statement or element as a snippet,
-and the facts around it (card id and sibling keys, race id, faction index).
+and the facts around it (card id and sibling keys, race id, faction index). A
+card literal takes its role from the property it is the value of, read from the
+card file parsed with espree: `summarize` or `name` is the name, `describe` or
+`description` the description, anything under `hint` or `lockedHint()` the
+hint, and anything inside a `mods()` or `…Mods()` call a `loc-call`, since those
+are a unit's own texts. Other roles come from the text just before the literal.
 
 **Race unit names are excluded.** The display names in each race file's
 `unitNames` table (`race-unit-name` sites) belong to the race mod, which ships

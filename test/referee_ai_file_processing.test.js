@@ -716,7 +716,8 @@ describe("race trees", () => {
     ]);
   });
 
-  it("writes one tree per distinct destination: guardians, a race player, its viewers", async () => {
+  // A race host under Guardians, with one viewer of the same race.
+  const runRaceHostAndViewer = async () => {
     const fixture = buildGame({
       aiInUse: "Titans",
       enemyType: "guardians",
@@ -743,6 +744,11 @@ describe("race trees", () => {
 
     const filesObj = {};
     await run(filesObj);
+    return { filesObj, listCalls };
+  };
+
+  it("writes one tree per distinct destination: guardians, a race player, its viewers", async () => {
+    const { filesObj, listCalls } = await runRaceHostAndViewer();
 
     assert.ok(filesObj["/pa/ai_race_fixture/player_guardians/ai_config.json"]);
     // Under Guardians the host subcommander shares the brain root, as for MLA.
@@ -784,6 +790,22 @@ describe("race trees", () => {
       ],
       undefined
     );
+    assert.ok(filesObj["/pa/ai/player_.player0/ai_config.json"]);
+  });
+
+  // A race viewer's Sub Commanders read their race tree, so an MLA copy at
+  // their MLA path would ship unread.
+  it("gives a race viewer its race tree and no MLA tree", async () => {
+    const { filesObj } = await runRaceHostAndViewer();
+
+    const viewerRoots = new Set(
+      Object.keys(filesObj)
+        .filter((key) => key.includes("/player_.player0/"))
+        .map((key) => key.slice(0, key.indexOf("/player_.player0/")))
+    );
+    assert.deepEqual([...viewerRoots], ["/pa/ai_subcommander_race_fixture"]);
+    assert.ok(filesObj["/pa/ai_race_fixture/player_guardians/ai_config.json"]);
+    assert.ok(filesObj["/pa/ai_race_fixture/ai_config.json"]);
   });
 
   it("warns when the race mod itself has no build orders under the source, base layer or not", async () => {

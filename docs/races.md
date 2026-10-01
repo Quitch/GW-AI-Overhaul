@@ -491,8 +491,10 @@ MLA build lists. It gets a **synthesised tree** at the brain's root with
 `/pa/ai_queller/q_uber/` → `/pa/ai_queller_race_legion/q_uber/`. The tree
 follows the same scope rules as every other destination (`player_guardians/`,
 `player_.player0/`). `referee_ai.js`'s `raceTreeJobs` writes one tree per
-distinct (source, destination). `shared/race_trees.js` picks each tree's
-files, from one read of the race's layers per tree (`race_trees.treeContext`):
+distinct (source, destination). A race viewer's Sub Commanders, like a race
+co-op AI's, get a race tree job and no MLA tree. `shared/race_trees.js` picks
+each tree's files, from one read of the race's layers per tree
+(`race_trees.treeContext`):
 
 - **Titans**: the tree is the race's `sources` files (Legion's flat `legion_*`,
   Bugs' `bugs/` sub-directories) layered over the brain's base files. No race
@@ -543,7 +545,7 @@ files, from one read of the race's layers per tree (`race_trees.treeContext`):
 
   `scripts/validate-race-trees.js` checks the tree against a manual mount-order
   merge of the real files on disk. `referee_ai.js`'s sweep writes an MLA tree
-  to a scoped destination (`/pa/ai/player_guardians/`, a viewer's Sub
+  to a scoped destination (`/pa/ai/player_guardians/`, an MLA viewer's Sub
   Commanders). That tree is the base layer plus MLA's own add-on layer, by the
   same rule. It drops every file a race's layer claims and MLA's does not
   (`race_trees.raceLayerTest`), templates aside, so an MLA army's `unit_maps/`
