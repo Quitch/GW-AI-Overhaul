@@ -15,6 +15,9 @@ const {
   createGlobalStubs,
   trackActive,
 } = require("../scripts/lib/global-stubs.js");
+const {
+  installFakeLodashTimers,
+} = require("../scripts/lib/fake-lodash-timers.js");
 
 const coopPublish = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js"
@@ -24,6 +27,9 @@ const HOST = { id: "host", name: "Host", role: "host" };
 const ALICE = { id: "alice", name: "Alice", role: "viewer" };
 const BOB = { id: "bob", name: "Bob", role: "viewer" };
 const OPEN = { star: 3, cards: [{ id: "a" }] };
+
+// Every ko.computed the module makes, across the file: it makes one a scene.
+const computeds = [];
 
 function setup(overrides) {
   const options = Object.assign(
@@ -40,23 +46,40 @@ function setup(overrides) {
   );
   const snapshots = [];
 
+  const reads = [];
+  const read = (name, value) => () => {
+    reads.push(name);
+    return value();
+  };
+
   const stubs = createGlobalStubs();
+  stubs.setGlobal("ko", {
+    computed: (fn) => {
+      computeds.push(fn);
+      return fn;
+    },
+  });
   stubs.setGlobal("model", {
-    gwCampaignConnectedClients: () => options.connected,
+    gwCampaignConnectedClients: read("connected", () => options.connected),
     gwCampaignPerPlayerTechCards: () => options.perPlayerTech,
-    gwCampaignPlayerSetupBlocked: () => options.setupBlocked,
-    gwoCoopAiDeciding: () => options.aiDeciding,
+    gwCampaignPlayerSetupBlocked: read(
+      "setupBlocked",
+      () => options.setupBlocked
+    ),
+    gwoCoopAiDeciding: read("aiDeciding", () => options.aiDeciding),
     getCoopPlayerTechCardDealCount: (record) => record.techCardDealCount,
     sendCampaignSnapshot: (reason, force) => snapshots.push([reason, force]),
     game: () => ({
       findCoopPlayerInventoryData: (client) => options.records[client.id],
-      hostTechCardDealCount: () => options.hostDealCount,
-      turnState: () => options.turnState,
+      coopPlayerInventoryData: read("records", () => options.records),
+      hostTechCardDealCount: read("hostDealCount", () => options.hostDealCount),
+      turnState: read("turnState", () => options.turnState),
     }),
   });
 
   return {
     options,
+    reads,
     snapshots,
     restore: () => stubs.restoreGlobals(),
   };
@@ -71,6 +94,7 @@ describe("coop_publish", () => {
     assert.equal(coopPublish.publish("gwo_reroll_pending_tech"), true);
     assert.deepEqual(run.snapshots, [["gwo_reroll_pending_tech", true]]);
     assert.equal(coopPublish.settle(), false, "nothing is left owed");
+    assert.equal(computeds.length, 0, "nothing held, so nothing watched");
   });
 
   // Its choice would reach the server before the host, and a snapshot sent
@@ -199,5 +223,36 @@ describe("coop_publish", () => {
     assert.equal(coopPublish.settle(), true);
     assert.equal(coopPublish.settle(), false);
     assert.deepEqual(run.snapshots, [["gwo_reroll_pending_tech", true]]);
+  });
+
+  // Made by the module itself, so a held snapshot goes out even if the
+  // co-op AI modules that once settled it never load.
+  it("settles a held debt whenever what the test reads changes", () => {
+    const run = build({ hostDealCount: 3 });
+    coopPublish.publish("gwo_reroll_pending_tech");
+    coopPublish.publish("gwo_coop_ai_add");
+    assert.equal(computeds.length, 1, "one watcher for the scene");
+
+    run.options.hostDealCount = 2;
+    run.reads.length = 0;
+    const timers = installFakeLodashTimers();
+    try {
+      computeds[0]();
+    } finally {
+      timers.restore();
+    }
+    assert.deepEqual(run.reads, [
+      "connected",
+      "records",
+      "hostDealCount",
+      "turnState",
+      "setupBlocked",
+      "aiDeciding",
+    ]);
+    assert.deepEqual(run.snapshots, [], "deferred, not run in the computed");
+
+    assert.equal(timers.delayed.length, 1);
+    timers.delayed[0].fn();
+    assert.deepEqual(run.snapshots, [["gwo_coop_ai_add", true]]);
   });
 });

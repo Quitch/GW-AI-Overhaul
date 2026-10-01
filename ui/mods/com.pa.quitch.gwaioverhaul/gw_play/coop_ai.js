@@ -203,9 +203,28 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_ai_slot.html"
       )
     );
+    var missing = function (what) {
+      console.error(
+        "Galactic War Overhaul (GWO): co-op AI players: " +
+          what +
+          " not found in gw_play.html"
+      );
+    };
     var $row = $("#gw-campaign-settings .gw-campaign-slot-row");
-    $row.find(".gw-slot-name").append($slot.filter(".gwo-slot-ai-marker"));
-    $row.find(".gw-slot-remove").before($slot.filter(".gwo-slot-button"));
+    var $name = $row.find(".gw-slot-name");
+    var $remove = $row.find(".gw-slot-remove");
+    if (!$row.length) {
+      missing(".gw-campaign-slot-row");
+    } else {
+      if (!$name.length) {
+        missing(".gw-slot-name");
+      }
+      if (!$remove.length) {
+        missing(".gw-slot-remove");
+      }
+    }
+    $name.append($slot.filter(".gwo-slot-ai-marker"));
+    $remove.before($slot.filter(".gwo-slot-button"));
     locTree($slot);
 
     model.gwoWhenBound(function () {
@@ -235,9 +254,14 @@
           model.gwCampaignPlayerSetupBlocked() || model.gwoCoopAiDeciding()
         );
       });
-      $(".btn_hero.explore").attr("data-bind", function (index, bind) {
+      var stockExploreBind = "btn_hero_disabled: gwCampaignPlayerSetupBlocked";
+      var $explore = $(".btn_hero.explore");
+      if (!_.includes($explore.attr("data-bind"), stockExploreBind)) {
+        missing("the Explore button's " + stockExploreBind);
+      }
+      $explore.attr("data-bind", function (index, bind) {
         return bind.replace(
-          "btn_hero_disabled: gwCampaignPlayerSetupBlocked",
+          stockExploreBind,
           "btn_hero_disabled: gwoExploreBlocked"
         );
       });
@@ -389,7 +413,6 @@
         "shared/gw_factions",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_mods.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_check.js",
-        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
       ],
       function (
         roster,
@@ -403,8 +426,7 @@
         colours,
         factions,
         raceMods,
-        raceCheck,
-        coopPublish
+        raceCheck
       ) {
         var warRng = function () {
           return gwoStreams.warRng(gwoAI.originSettings(game));
@@ -509,17 +531,6 @@
             },
           })
         );
-
-        // A snapshot held for the viewers goes out once they are level.
-        ko.computed(function () {
-          model.gwCampaignConnectedClients();
-          game.coopPlayerInventoryData();
-          game.hostTechCardDealCount();
-          game.turnState();
-          model.gwCampaignPlayerSetupBlocked();
-          model.gwoCoopAiDeciding();
-          _.defer(coopPublish.settle);
-        });
 
         // An AI falls back to the host's commander if none could be checked.
         var specDeps = { fetch: gameFilePaths.specFetch };

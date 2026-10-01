@@ -8,6 +8,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_coop.js",
 ], function (coopStarCards, refereeCoop) {
   var debt;
+  var settling;
 
   var connectedClients = function () {
     var clients = model.gwCampaignConnectedClients();
@@ -73,6 +74,23 @@ define([
     return true;
   };
 
+  // Made by the first debt held, so it waits on no other module loading.
+  var settleWhenLevel = function () {
+    if (settling) {
+      return;
+    }
+    settling = ko.computed(function () {
+      var game = model.game();
+      model.gwCampaignConnectedClients();
+      game.coopPlayerInventoryData();
+      game.hostTechCardDealCount();
+      game.turnState();
+      model.gwCampaignPlayerSetupBlocked();
+      model.gwoCoopAiDeciding();
+      _.defer(settle);
+    });
+  };
+
   return {
     // Publishes now, or once every viewer is level. A later reason replaces
     // one still held: a snapshot carries everything either way. `except` is
@@ -89,7 +107,13 @@ define([
         model.sendCampaignSnapshot(reason, true);
         return true;
       }
-      return settle();
+      if (settle()) {
+        return true;
+      }
+      if (debt) {
+        settleWhenLevel();
+      }
+      return false;
     },
     settle: settle,
   };
