@@ -141,6 +141,9 @@ registerModuleStub(MOD + "/shared/race_ai_mods.js", {
 });
 const UNIT_CELLS = { name: "unit cells" };
 registerModuleStub(MOD + "/shared/unit_cells.js", UNIT_CELLS);
+registerModuleStub(MOD + "/gw_play/coop_publish.js", {
+  publish: (reason) => seen.events.push(["publish", reason]),
+});
 
 const makeTech = loadCouiModule(MOD + "/gw_play/cards_coop_ai_tech.js");
 
@@ -236,7 +239,6 @@ function setup(overrides = {}) {
       records,
       driving: makeObservable(false),
       tech: makeObservable(),
-      publish: (reason) => seen.events.push(["publish", reason]),
     },
     gwoCards: options.gwoCards,
     gwoCardsToUnits: options.cardsToUnits,
@@ -325,7 +327,10 @@ function setup(overrides = {}) {
       raceLocksLoadout: (race, id) => [race, id],
     },
     coopDeal: { pendingHandForRecord: () => "hand" },
-    coopReroll: { rerollHandForRecord: () => "reroll" },
+    coopReroll: {
+      rerollHandForRecord: () => "reroll",
+      computeRerollDeal: () => "reroll deal",
+    },
     starCardsBusy,
     aiStarDealing: makeObservable(0),
     startCardUnlocked: (card) => card.id !== "gwc_start_orbital",
@@ -734,6 +739,10 @@ describe("the co-op AI driver's wiring", () => {
     assert.equal(driver.starAt(2), run.stars[2]);
     assert.equal(driver.dealHand, run.params.coopDeal.pendingHandForRecord);
     assert.equal(driver.rerollHand, run.params.coopReroll.rerollHandForRecord);
+    assert.equal(
+      driver.computeRerollDeal,
+      run.params.coopReroll.computeRerollDeal
+    );
     assert.equal(driver.enqueue, run.model.enqueueGwCampaignStateApply);
     assert.equal(driver.running, run.model.gwoCoopAi.driving);
   });
@@ -817,7 +826,7 @@ describe("the co-op AI driver's wiring", () => {
     assert.deepEqual(seen.events, [
       ["refresh"],
       ["save", true, false],
-      ["publish", "deal"],
+      ["publish", "gwo_coop_ai_deal"],
     ]);
   });
 
