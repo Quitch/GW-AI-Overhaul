@@ -564,8 +564,8 @@ place. Its pure logic is extracted into `define()` modules. The siblings
 `shared/cards_deal_helpers.js` returns its helpers directly, and
 `shared/loadouts.js` requires it too. The per-player loadout scene's
 `gwo_loadouts.js` is self-invoking too, and the starting inventory it builds
-lives in `shared/starting_inventory.js`, which `cards.js` uses for a co-op AI
-player's.
+lives in `shared/starting_inventory.js`, which `gw_play/cards_coop_ai_tech.js`
+uses for a co-op AI player's.
 
 Where a helper inside such a module is not reachable through the returned
 factory, it is re-exported through:
