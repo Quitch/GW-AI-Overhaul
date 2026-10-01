@@ -172,10 +172,10 @@ descriptor offers must be such a spec too. After a re-harvest,
 `npm run generate:race-tables` rewrites the tables, and the diff is the review. See
 [races.md](races.md), "Unit tables".
 
-**`i18n:missing` and `i18n:glossary` are local-only for the same reason.** They
-read the game's own translation tables from the PA install (`--pa <path>`, or
-as below) to list what each language still lacks and how the stock UI renders
-shared terms. `validate:translations` needs no install and runs in `verify`. See
+**`i18n:missing`, `i18n:glossary` and `i18n:playglot` are local-only for the
+same reason.** They read the game's own translation tables from the PA install
+(`--pa <path>`, or as below) to list what each language still lacks, how the
+stock UI renders shared terms, and the game's text for the Playglot export. `validate:translations` needs no install and runs in `verify`. See
 [translations.md](translations.md).
 
 **`npm run validate:race-trees` is local-only for the same reason.** It runs
