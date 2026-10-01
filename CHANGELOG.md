@@ -60,6 +60,7 @@
 - Protocol: Blindness, Precision, Wrath, and other tech that changes a value some units lack no longer add empty entries to those units
 - Another mod's tech card missing its AI build file no longer stops every battle while you hold it
 - The Radar Jamming Station and Nyx upgrades now double the jamming and radar radius of add-on and race units, not their vision, and Protocol: Blindness now removes only the vision of race and add-on units, leaving their radar and jamming
+- Protocol: Wrath and Precision now change only vision, on every layer, and no longer change the radar of the Manhattan, the Ward, and race and add-on units
 - A malformed unit file from another mod no longer leaves Fight stuck
 - An AI folder the game cannot list, or an AI build file from another mod that cannot be processed, now fails the battle launch with an error instead of leaving Fight stuck
 - An error dealing AI stars' tech cards after a battle win no longer stops the war saving or ending
