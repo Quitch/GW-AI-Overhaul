@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- Co-op AI players no longer ping an enemy star when an unexplored neutral star nearby is the better choice
+
 ## v7.5.0 - 2026-10-01
 
 ### Added
