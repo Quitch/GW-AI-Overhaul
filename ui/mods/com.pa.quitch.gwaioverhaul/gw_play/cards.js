@@ -354,6 +354,7 @@
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_ai_star_deal.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_explore.js",
         "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_win.js",
+        "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
       ],
       function (
         GW,
@@ -377,7 +378,8 @@
         cardsDealer,
         cardsAiStarDeal,
         cardsExplore,
-        cardsWin
+        cardsWin,
+        cardsStartSubcdr
       ) {
         helpers = cardsDealHelpers;
         globals.CardViewModel = gwoCardViewModel;
@@ -533,26 +535,12 @@
         });
 
         // The handle a co-op AI player's starting loadout is set up with.
-        var generalCommander = $.Deferred();
-        requireGW(
-          [
-            "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/cards_start_subcdr.js",
-          ],
-          function (cardsStartSubcdr) {
-            var handle = cardsStartSubcdr({
-              game: game,
-              gwoSettings: gwoSettings,
-              playerFaction: playerFaction,
-              inventory: inventory,
-            });
-            handle.setupGeneralCommander();
-            generalCommander.resolve(handle);
-          },
-          function () {
-            console.error("GWO failed to load cards_start_subcdr.js");
-            generalCommander.reject("cards_start_subcdr.js not loaded");
-          }
-        );
+        var generalCommander = cardsStartSubcdr({
+          game: game,
+          gwoSettings: gwoSettings,
+          playerFaction: playerFaction,
+          inventory: inventory,
+        });
 
         var dealCardToSelectableAIWhenWarStarts = function (settings) {
           if (settings && !settings.firstDealComplete) {
@@ -628,7 +616,7 @@
           starCardsBusy: starCardsBusy,
           aiStarDealing: aiStarDeal.dealing,
           startCardUnlocked: startCardUnlocked,
-          generalCommander: generalCommander.promise(),
+          generalCommander: generalCommander,
         });
 
         // Installs model.win.
@@ -639,6 +627,8 @@
           dealCardToSelectableAI: dealCardToSelectableAI,
           gwoSave: gwoSave,
         });
+
+        generalCommander.setupGeneralCommander();
       }
     );
   } catch (e) {

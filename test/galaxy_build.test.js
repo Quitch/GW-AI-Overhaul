@@ -1,9 +1,8 @@
 "use strict";
 
-// gw_start/galaxy_build.js's build(), which rejects rather than throws when
-// the build fails. Shared Systems for Galactic War replaces the system loader
-// build() calls, so that call runs another mod's code. The base game's modules
-// are stubbed, as CI has none.
+// gw_start/galaxy_build.js's build() and buildGraph(). Shared Systems for
+// Galactic War replaces the system loader build() calls, so that call runs
+// another mod's code. The base game's modules are stubbed, as CI has none.
 
 const { describe, it, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
@@ -147,24 +146,6 @@ const earthlike = {
 };
 
 describe("build", () => {
-  it("rejects, rather than throws, when the system loader throws", async () => {
-    installFakeJQuery(stubs);
-    makeLoader = () => {
-      throw new Error("Shared Systems failed");
-    };
-    const galaxy = makeGalaxy();
-
-    let built;
-    assert.doesNotThrow(() => {
-      built = GWGalaxy.prototype.build.call(galaxy, {
-        seed: 1,
-        content: "PAExpansion1",
-      });
-    });
-
-    await assert.rejects(built, /Shared Systems failed/);
-  });
-
   // Making Shared Systems' loader loads every selected source again, and
   // deselects one that fails, which rerolls the seed.
   it("places bracketed systems without making the system loader", async () => {

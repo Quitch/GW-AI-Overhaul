@@ -232,14 +232,11 @@
             gwoCards.anyPlayerHasCard(inventory, "gwaio_enable_eradication")
           ) {
             gameModifiers.push(
-              eradicationLabel(
-                {
-                  subCommanders: ai.eradicationModeSubCommanders,
-                  factories: ai.eradicationModeFactories,
-                  fabbers: ai.eradicationModeFabbers,
-                },
-                loc
-              )
+              eradicationLabel({
+                subCommanders: ai.eradicationModeSubCommanders,
+                factories: ai.eradicationModeFactories,
+                fabbers: ai.eradicationModeFabbers,
+              })
             );
           }
           return gameModifiers;

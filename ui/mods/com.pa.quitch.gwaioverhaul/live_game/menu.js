@@ -48,7 +48,7 @@
 
         var playerLost = model.gameOver() || model.isSpectator();
 
-        var menu = [
+        var menu = _.compact([
           {
             label: "!LOC:Pause Game",
             action: "menuPauseGame",
@@ -77,6 +77,10 @@
             label: "!LOC:Report a Galactic War Bug",
             action: "gwoMenuReportBug",
           },
+          model.canSave() && {
+            label: "!LOC:Save Game",
+            action: "menuSaveWar",
+          },
           {
             // patch Surrender and Continue War buttons to handle more than two teams
             label: getMenuString(playerLost, overString, exitString),
@@ -87,14 +91,7 @@
             label: "!LOC:Quit",
             action: "menuExit",
           },
-        ];
-
-        if (model.canSave()) {
-          menu.splice(7, 0, {
-            label: "!LOC:Save Game",
-            action: "menuSaveWar",
-          });
-        }
+        ]);
 
         var translatedMenu = _.map(menu, function (entry) {
           return {
