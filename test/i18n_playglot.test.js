@@ -36,7 +36,7 @@ describe("buildRows", () => {
       [
         "Key",
         "English(en)",
-        "Shared Comments",
+        "Context",
         "German(de)",
         "Traditional Chinese(zh-TW)",
       ],

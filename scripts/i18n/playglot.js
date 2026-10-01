@@ -1,7 +1,7 @@
 "use strict";
 
 // Every catalog key as one Playglot import CSV: Key, English(en), the
-// catalog's description as Shared Comments, then one column per shipped
+// catalog's description as Context, then one column per shipped
 // locale. A locale's cell is GWO's own entry, else the game's text for the
 // key, else empty. Local-only: reads the PA install (--pa, else PA_MEDIA,
 // else the default). Writes to PA's user data folder unless --out names a
@@ -64,9 +64,7 @@ function toCsv(rows) {
 // `catalog` is en-US.json; `byLocale` maps each locale to its GWO file and
 // the game's merged tables, as readLocale returns them.
 function buildRows(catalog, locales, byLocale) {
-  const rows = [
-    ["Key", "English(en)", "Shared Comments"].concat(locales.map(header)),
-  ];
+  const rows = [["Key", "English(en)", "Context"].concat(locales.map(header))];
   for (const key of Object.keys(catalog)) {
     const row = [key, catalog[key].message, catalog[key].description || ""];
     for (const locale of locales) {
