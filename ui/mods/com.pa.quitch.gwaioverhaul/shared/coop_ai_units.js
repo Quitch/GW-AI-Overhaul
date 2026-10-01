@@ -1,6 +1,7 @@
 // What a co-op AI player's units are, for judging a card by what it changes:
 // each unit's domain, tier and class, the units a mod's file belongs to,
-// which held units its commander can reach, and the units it could get later.
+// which held units its commander can reach, the units it could get later,
+// and each unit's health.
 // Two lookups answer the same questions: one from the unit specs, and a
 // vanilla-only one from unit-group membership for when the specs are not in.
 // Pure. See tech-cards.md, "How AI players judge a card".
@@ -250,12 +251,18 @@ define([
       );
     };
 
+    var healthOf = function (path) {
+      var health = unitCells.chainValue(path, specs, "max_health");
+      return _.isNumber(health) && health > 0 ? health : undefined;
+    };
+
     return {
       via: "specs",
       classOf: classOf,
       ownersOf: ownersOf,
       ownedBy: ownedBy,
       reachable: reachable,
+      healthOf: healthOf,
       obtainable: obtainableOf(obtainable, classOf),
     };
   };
@@ -371,6 +378,7 @@ define([
       ownersOf: ownersOf,
       ownedBy: ownedBy,
       reachable: reachable,
+      healthOf: _.noop,
       obtainable: obtainableOf(groups.units, classOf),
     };
   };

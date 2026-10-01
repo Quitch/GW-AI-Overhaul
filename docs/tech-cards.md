@@ -621,9 +621,13 @@ its parts carry the names the debug lines print
   unit's weapons changes the unit once. A multiplier's direction is its gain,
   an add's is 0.25 with the add's sign, and any other op counts 0.25. A
   multiplier's or an add's direction is reversed on a cost, cooldown, delay,
-  build time, demand, consumption, reload, or per-shot path. Every direction is
-  held between −1 and 2. Each fielded unit adds its direction times its worth
-  and its boost, 1.2 times on the domain the AI fields most. Each commander, the
+  build time, demand, consumption, reload, or per-shot path. A health drain, a
+  negative add to `passive_health_regen`, is judged by the share of the unit's
+  health it takes over a 1200-second battle (`drainSeconds`), and counts as
+  the unit's whole health when that is unknown. A file's drains are a list of
+  their own, so a buff on the same file does not average them away. Every
+  direction is held between −1 and 2. Each fielded unit adds its direction
+  times its worth and its boost, 1.2 times on the domain the AI fields most. Each commander, the
   AI's own and each Sub Commander's, adds its direction times 10 and its boost.
   Mods a card removes count against it, on the inventory before the card.
 - **`later`**: the same for the units the AI does not field yet, at a quarter of
@@ -671,7 +675,7 @@ is no head start. The other parts stack with cards, so they stand. A unit
 loadout's lean towards the domain its team lacks therefore stays, but counts for
 a quarter as much against a loadout of stat mods. With everything unlocked,
 Hoarder Commander falls from 414 to 104, level with Swarm Commander, while Terminal
-Commander, whose worth is all stat mods, keeps its 224.
+Commander, whose worth is all stat mods, keeps all of it.
 
 The loadout's mods stand as well, so the units a card could grant are reached,
 on both sides of the discount, as the loadout leaves the build lists.
@@ -765,7 +769,9 @@ and every debug line names the one it used:
   resulting types and build lists are kept for the last 64 mod lists. A commander the lookup does
   not know reaches everything, because an unknown builder is no reason to value
   a unit at a quarter. The units it could get are those of
-  `unit_groups.units` that the specs index, commanders aside.
+  `unit_groups.units` that the specs index, commanders aside. A unit's health
+  is the `max_health` nearest up its chain, as the specs declare it: the
+  inventory's mods do not change it.
 - **From the unit groups** (`via=groups`). This is membership in
   `shared/unit_groups.js`, most specific group first. It knows vanilla units
   only, since a race's units are in no group. It has no build lists either, so
@@ -773,7 +779,7 @@ and every debug line names the one it used:
   held, and anything else always does. It has no `base_spec` chains, so a file
   that `base_commander.json` owns counts as every commander's, any unit under
   `/pa/units/commanders/`. The units it could get are those of
-  `unit_groups.units` that have a cell.
+  `unit_groups.units` that have a cell. It knows no unit's health.
 
 The groups stand in when the specs are not in within 8 seconds of the session
 opening, or fail to load. The specs replace them when they land.
