@@ -34,6 +34,9 @@ const races = loadCouiModule(
 const gwoUnit = loadCouiModule(
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/units.js"
 );
+const raceCells = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js"
+);
 
 const installModel = useModel();
 
@@ -349,20 +352,50 @@ describe("writeRaceTree, AI mods", () => {
 });
 
 describe("raceTreeJobs", () => {
-  it("gives each race tree its stock-list filter and a keys lookup, null without the race's cells", async () => {
+  it("gives each race tree its stock-list filter and a keys lookup, null without the race's cells or a race unit in them", async () => {
     races.register(FIXTURE_RACE);
     const fixture = buildGame({ aiInUse: "Titans", enemyRace: "fixture" });
     installModel(fixture.game, []);
-
-    const jobs = raceTreeJobs(fixture.game, [], []);
-    const job = jobs.find(
-      (entry) => entry.destination === "/pa/ai_race_fixture/"
+    const indexes = [
+      undefined,
+      { vanilla: { cellOf: {} }, race: { units: [] } },
+    ];
+    const indexFor = mock.method(raceCells, "indexFor", () =>
+      Promise.resolve(indexes.shift())
     );
+    try {
+      const jobs = raceTreeJobs(fixture.game, [], []);
+      const job = jobs.find(
+        (entry) => entry.destination === "/pa/ai_race_fixture/"
+      );
 
-    assert.ok(job);
-    assert.equal(job.stockBuild(STOCK), true);
-    assert.equal(job.stockBuild(OWN), false);
-    assert.equal(await job.keys(), null);
+      assert.ok(job);
+      assert.equal(job.stockBuild(STOCK), true);
+      assert.equal(job.stockBuild(OWN), false);
+      assert.equal(await job.keys(), null);
+      assert.equal(await job.keys(), null);
+      assert.deepEqual(indexFor.mock.calls[0].arguments, ["fixture"]);
+    } finally {
+      indexFor.mock.restore();
+    }
+  });
+  it("rejects the keys lookup when the race's cells cannot be read", async () => {
+    races.register(FIXTURE_RACE);
+    const fixture = buildGame({ aiInUse: "Titans", enemyRace: "fixture" });
+    installModel(fixture.game, []);
+    const failure = new Error("unit list not read");
+    const indexFor = mock.method(raceCells, "indexFor", () =>
+      Promise.reject(failure)
+    );
+    try {
+      const job = raceTreeJobs(fixture.game, [], []).find(
+        (entry) => entry.destination === "/pa/ai_race_fixture/"
+      );
+
+      await assert.rejects(job.keys(), failure);
+    } finally {
+      indexFor.mock.restore();
+    }
   });
   it("reads each job's layers once, for all three of its filters", () => {
     races.register(FIXTURE_RACE);
@@ -378,9 +411,15 @@ describe("raceTreeJobs", () => {
       layersFor.mock.restore();
     }
   });
-  it("looks the race's keys up from its maps once the race has cells", async () => {
+  it("looks the race's keys up from its maps on the cells race_cells builds, published or not", async () => {
     races.register(FIXTURE_RACE);
-    races.setCells("fixture", { vanilla: { cellOf: {} }, race: {} });
+    const cells = {
+      vanilla: { cellOf: {} },
+      race: { units: ["/pa/units/land/fx_tank/fx_tank.json"] },
+    };
+    const indexFor = mock.method(raceCells, "indexFor", () =>
+      Promise.resolve(cells)
+    );
     const fixture = buildGame({ aiInUse: "Titans", playerRace: "fixture" });
     installModel(fixture.game, []);
     const job = raceTreeJobs(fixture.game, [], []).find(
@@ -396,9 +435,14 @@ describe("raceTreeJobs", () => {
     };
     stubs.setGlobal("parse", JSON.parse);
     try {
-      assert.deepEqual((await job.keys()).repointed, {});
+      const keys = await job.keys();
+
+      assert.equal(keys.cells, cells);
+      assert.deepEqual(keys.repointed, {});
       assert.ok(gets.includes("spec://pa/ai/unit_maps/ai_unit_map.json"));
+      assert.equal(races.cellsOf("fixture"), undefined);
     } finally {
+      indexFor.mock.restore();
       stubs.restoreGlobals();
     }
   });

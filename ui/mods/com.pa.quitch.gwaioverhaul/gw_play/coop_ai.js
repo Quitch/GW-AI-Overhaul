@@ -16,7 +16,7 @@
     var savedAiCount = function () {
       return _.filter(game.coopPlayerInventoryData(), isAiRecord).length;
     };
-    // roster.humanSeats' count: the AIs in the war's own seats.
+    // The AIs in the war's own seats.
     var seatedAiCount = function () {
       return _.filter(game.coopPlayerInventoryData(), function (record) {
         return isAiRecord(record) && !record.gwaioAi.extraSeat;
@@ -28,16 +28,13 @@
     // Every session open seeds max_clients from this, and a locked war's slot
     // limit, so an AI's slot never reopens to a human. Wrapped here rather than
     // in a module callback, which lands after a new session's saved settings
-    // apply, so until the roster loads the count is made here.
+    // apply.
     var savedCoopPlayers = model.savedCoopPlayers;
     var warSeats = function () {
       return savedCoopPlayers.apply(model, arguments);
     };
     model.savedCoopPlayers = function () {
-      var all = game.coopPlayerInventoryData();
-      return mods()
-        ? mods().roster.humanSeats(warSeats(), all)
-        : Math.max(1, warSeats() - seatedAiCount());
+      return Math.max(1, warSeats() - seatedAiCount());
     };
 
     // A session that came back from a battle waits for the humans who fought
@@ -54,9 +51,7 @@
     }
 
     var lobby = ko.observable();
-    // The modules are in: an AI can fight.
-    var ready = ko.observable(false);
-    // The names and the host's commanders are in too: an AI can be added.
+    // The names and the host's commanders are in: an AI can be added.
     var namesReady = ko.observable(false);
     var commandersReady = ko.observable(false);
     var busy = ko.observable(false);
@@ -72,13 +67,14 @@
     var names = [];
     var ownedCommanders = [];
 
-    // An AI sits out a war played without a session.
+    // An AI sits out a war played without a session. Slot order: serials only
+    // grow.
     var records = ko.computed(function () {
       var all = game.coopPlayerInventoryData();
       if (!model.gwCampaignActive()) {
         return [];
       }
-      return mods() ? mods().roster.aiRecords(all) : _.filter(all, isAiRecord);
+      return _.sortBy(_.filter(all, isAiRecord), "gwaioAi.serial");
     });
 
     records.subscribe(function (list) {
@@ -150,8 +146,6 @@
     };
 
     model.gwoCoopAi = {
-      ready: ready,
-      busy: busy,
       tech: tech,
       driving: driving,
       records: records,
@@ -160,11 +154,6 @@
         return _.map(records(), function (record) {
           return { id: record.playerId, name: record.gwaioAi.name, role: "ai" };
         });
-      },
-      publish: function (reason) {
-        if (lobby()) {
-          lobby().publish(reason);
-        }
       },
       count: ko.computed(function () {
         return records().length;
@@ -232,7 +221,8 @@
             records(),
             rows.length + 1,
             model.getGwCampaignLoadingTooltip(),
-            perPlayer()
+            perPlayer(),
+            model.validateGwCampaignInventoryRecord
           )
         );
       });
@@ -321,15 +311,6 @@
         }
       });
 
-      // Stock's own Kick only disconnects a client; an AI row has none.
-      var stockKick = model.kickGwCampaignClient;
-      model.kickGwCampaignClient = function (slot) {
-        if (slot && slot.gwoAi) {
-          return;
-        }
-        return stockKick.apply(this, arguments);
-      };
-
       // A battle launched mid-add or without the AI modules would be fought
       // without its AI players, so it waits.
       var gate = function (name) {
@@ -342,7 +323,7 @@
               );
               return;
             }
-            if (savedAiCount() && !ready()) {
+            if (savedAiCount() && !mods()) {
               console.error(
                 "[GW COOP AI] " +
                   name +
@@ -520,7 +501,6 @@
             },
             warSeats: warSeats,
             expectedBack: expectedBack,
-            ready: ready,
             busy: busy,
             armed: armed,
             inFlight: settingsInFlight,
@@ -529,7 +509,6 @@
             },
           })
         );
-        ready(true);
 
         // A snapshot held for the viewers goes out once they are level.
         ko.computed(function () {

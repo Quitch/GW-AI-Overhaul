@@ -80,14 +80,6 @@ const KEYS_READ_BY_OP = {
   squad: ["value", "toBuild", "treeOnly"],
 };
 
-// Mirrors shared/race_ai_mods.js's managerPath(): where a load's file lives.
-const TECH_DIR_BY_TYPE = {
-  fabber: "fabber_builds",
-  factory: "factory_builds",
-  platoon: "platoon_builds",
-  template: "platoon_templates",
-};
-
 // Which `type` each op can legally target. A mismatched pair passes the field
 // shape check and is then dropped at runtime, silently for a shipped card -
 // which is why it is caught here instead. `load` routes through managerPath()
@@ -118,6 +110,9 @@ function startCardAnswers() {
 // Cluster's faction index, which shared/cards.js's playerIsCluster() tests for.
 const CLUSTER_FACTION = 4;
 const CARDS_JS = "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js";
+const raceAiMods = loadCouiModule(
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js"
+);
 
 // How often the Cluster run answered playerFaction, so main() can tell that
 // the run reached a Cluster branch at all.
@@ -232,19 +227,15 @@ function checkRefPair(problems, where, mod) {
 }
 
 function checkLoadTarget(problems, where, mod) {
-  if (mod.op !== "load" || !Object.hasOwn(TECH_DIR_BY_TYPE, mod.type)) {
+  const file = mod.op === "load" ? raceAiMods.loadPath(mod) : undefined;
+  if (file === undefined) {
     return;
   }
-  const dir = "pa/ai_tech/" + TECH_DIR_BY_TYPE[mod.type];
   const target =
     typeof mod.value === "string" &&
-    fs.statSync(path.join(REPO_ROOT, dir, mod.value), {
-      throwIfNoEntry: false,
-    });
+    fs.statSync(path.join(REPO_ROOT, file), { throwIfNoEntry: false });
   if (!target || !target.isFile()) {
-    problems.push(
-      where + ": `value` names no file in " + dir + ": " + mod.value
-    );
+    problems.push(where + ": `value` names no file: " + file);
   }
 }
 

@@ -80,14 +80,28 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
       .value();
   };
 
+  // The co-op AI players of one hire (ref.coopAis) that field tech of their
+  // own, in slot order. Each carries its inventory, as getCoopAiInventories'
+  // pairs do.
+  var launchAiInventories = function (coopAis) {
+    return _.filter(coopAis, "perPlayer");
+  };
+
   // {subcommander, cards} pairs for every allied AI commander drawing from the
   // player faction's palette, in battle-config colour order: the host's, each
   // viewer's, then each co-op AI player's. The cards are the owning player's,
   // since a subcommander's tech comes from its own player.
   //
   // Order in equals order out, so a caller that cares which colour lands where
-  // must pass clients host-first. See coop.md for what is excluded and why.
-  var getOrderedSubcommanders = function (inventory, game, connectedClients) {
+  // must pass clients host-first. A hire passes its AI players as
+  // aiInventories (launchAiInventories); without them the records are read.
+  // See coop.md for what is excluded and why.
+  var getOrderedSubcommanders = function (
+    inventory,
+    game,
+    connectedClients,
+    aiInventories
+  ) {
     // The host's own inventory is always the live GWInventory. Only the viewer
     // records below arrive as plain objects, hence the _.isArray tests there.
     var hostCards = inventory.cards();
@@ -103,7 +117,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
 
     _.forEach(
       getConnectedViewerInventories(game, connectedClients).concat(
-        getCoopAiInventories(game)
+        aiInventories || getCoopAiInventories(game)
       ),
       function (player) {
         if (!_.isArray(player.inventory.minions)) {
@@ -153,6 +167,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/cards.js"], function (
     getConnectedClients: getConnectedClients,
     getConnectedViewerInventories: getConnectedViewerInventories,
     getCoopAiInventories: getCoopAiInventories,
+    launchAiInventories: launchAiInventories,
     getOrderedSubcommanders: getOrderedSubcommanders,
     alliedColourIndex: alliedColourIndex,
     clientsInPlayerOrder: clientsInPlayerOrder,
