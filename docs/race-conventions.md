@@ -216,18 +216,7 @@ the mod's author. The report is kept outside the repo (the user's Desktop).
   which the zip does not ship (`Failed to load unit spec … .ai0`). Report this
   upstream. The list stays authoritative.
 - Exiles' `/pa/units/base/flare/flare.json` tool `flare_sd_Weapon` does not
-  parse server-side (`CostStampSpec::parse failed`). Its unit map names
-  `r_artillery`, which the zip does not ship. Exiles 0.7.2's `unit_list.json`
-  lists `/pa/units/land/minigun_vehicle/minigun_vehicle.json`, which no mod
-  ships.
-- Exiles 0.7.2 lists three commanders: Maxim, Brainiac, and Blueberry, whose
-  spec is `exiles_blueberry/union_formidable.json`. commander-merge 1.9 ships
-  `exiles_taurus/exiles_taurus.json` and
-  `exiles_blueberry/exiles_blueberry.json` as Exiles 0.8.4 laid them out, and
-  no mod ships what they name: the Taurus model, anim tree, build arm, and
-  weapons, and that Blueberry's anim tree and main weapon. GWO offers only
-  the three that Exiles lists. A war that already holds the Taurus or that
-  Blueberry keeps it.
+  parse server-side (`CostStampSpec::parse failed`).
 - All three race mods keep their AI files under `/pa/ai/`, so every MLA
   Titans AI merges their build entries at equal priorities. Exiles also ships
   `platoon_templates.json` and `platoon_land_builds.json` at the vanilla

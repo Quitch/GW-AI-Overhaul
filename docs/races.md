@@ -809,7 +809,7 @@ for the checklist a race follows.
 
 The descriptor is `race/exiles.js`. The server mod is `com.pa.nik.exiles`, with
 companions `commander-merge` and `build-bar-tabs`. The unit-type bit is
-`Custom6`. There are three commanders: Maxim, Blueberry, and Brainiac,
+`Custom6`. There are four commanders: Maxim, Taurus, Blueberry, and Brainiac,
 whose art is in blue paint (hue 200). The player icon comes from the server
 mod's own `ui/mods/com.pa.nik.exiles/img/exiles_icon_{fill,outline}.png`.
 
@@ -822,7 +822,7 @@ orbital fabber builds, the Zeus, Ares, and Helios titans among them. Its
 build orders have that fabber build. An MLA teleporter links with an Exiles
 one of the same army, so Exiles fabbers can use it. The deal withholds nothing
 beyond the MLA-only set (`test/race_exiles.test.js` pins the orbital cards).
-The table keys 281 Exiles specs.
+The table keys 290 Exiles specs.
 
 The mod also ships `platoon_templates.json` and `platoon_land_builds.json` at
 the **vanilla** paths. They are copies of the TITANS files, with the raid and

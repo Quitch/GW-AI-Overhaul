@@ -41,7 +41,8 @@ define(function () {
     ],
     commanders: [
       { spec: "/pa/units/commanders/exiles_maxim/exiles_maxim.json" },
-      { spec: "/pa/units/commanders/exiles_blueberry/union_formidable.json" },
+      { spec: "/pa/units/commanders/exiles_taurus/exiles_taurus.json" },
+      { spec: "/pa/units/commanders/exiles_blueberry/exiles_blueberry.json" },
       { spec: "/pa/units/commanders/exiles_brainiac/exiles_brainiac.json" },
     ],
     // The server mod ships the pair itself, under its ui/mods folder.
