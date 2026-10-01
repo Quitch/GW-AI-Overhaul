@@ -9,6 +9,7 @@ const { MOD_ROOT, loadCouiModule } = require("./amd-loader.js");
 
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
 const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
+const raceCells = loadCouiModule(MOD_ROOT + "/gw_play/race_cells.js");
 
 const FX_TANK = "/pa/units/land/fx_tank/fx_tank.json";
 const FX_TANK_WEAPON = "/pa/units/land/fx_tank/fx_tank_tool_weapon.json";
@@ -256,27 +257,14 @@ const FIXTURE_ADDON_UNITS = [
 ];
 
 // The add-on index race_cells.js builds for MLA over the fixture race and
-// add-on: the add-on's vanilla-typed units, its exclusive unit apart.
+// add-on: the add-on's vanilla-typed units, its exclusive unit apart. The
+// fixture race and add-on must be registered.
 function fixtureAddonIndex() {
-  const units = FIXTURE_UNITS.concat(FIXTURE_ADDON_UNITS);
-  const specs = Object.assign({}, FIXTURE_SPECS, FIXTURE_ADDON_SPECS);
-  const addonPaths = new Set(Object.values(FIXTURE_ADDON.units));
-  return {
-    vanilla: unitCells.buildIndex(
-      units,
-      specs,
-      (types, path) =>
-        unitCells.vanillaMember(types) &&
-        unitCells.classifiable(types) &&
-        !addonPaths.has(path)
-    ),
-    race: unitCells.buildIndex(
-      units,
-      specs,
-      (types, path) => unitCells.vanillaMember(types) && addonPaths.has(path),
-      unitCells.exclusiveMember(["Custom58", "Custom7"])
-    ),
-  };
+  return raceCells.buildIndex(
+    "mla",
+    FIXTURE_UNITS.concat(FIXTURE_ADDON_UNITS),
+    Object.assign({}, FIXTURE_SPECS, FIXTURE_ADDON_SPECS)
+  );
 }
 
 // A stand-in for gwo_rng: pick takes the first entry, shuffle reverses, so a

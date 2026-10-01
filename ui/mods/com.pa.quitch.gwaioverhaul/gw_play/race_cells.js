@@ -105,6 +105,37 @@ define([
     });
   };
 
+  var buildIndex = function (raceId, units, specs) {
+    var race = gwoRaces.byId(raceId);
+    var isMla = gwoRaces.isMla(raceId);
+    var addonPaths = gwoRaces.addonUnitPaths();
+    var isAddon = function (path) {
+      return !!addonPaths[path];
+    };
+    var foreign = gwoRaces.foreignUnitPaths();
+    var member = isMla
+      ? function (types, path) {
+          return unitCells.vanillaMember(types) && isAddon(path);
+        }
+      : unitCells.raceMember(race.unitTypeBit);
+    return {
+      vanilla: unitCells.buildIndex(units, specs, function (types, path) {
+        return (
+          unitCells.vanillaMember(types) &&
+          unitCells.classifiable(types) &&
+          !isAddon(path) &&
+          !foreign[path]
+        );
+      }),
+      race: unitCells.buildIndex(
+        units,
+        specs,
+        member,
+        unitCells.exclusiveMember(gwoRaces.knownBits())
+      ),
+    };
+  };
+
   var keepIndex = function (key, index, failed) {
     if (!failed.length) {
       indexes[key] = index;
@@ -137,35 +168,7 @@ define([
     return load(units).then(function (loaded) {
       var key = race.id + "@" + signatureOf(loaded.units);
       if (!indexes[key]) {
-        var isAddon = function (path) {
-          return !!addonPaths[path];
-        };
-        var foreign = gwoRaces.foreignUnitPaths();
-        var member = isMla
-          ? function (types, path) {
-              return unitCells.vanillaMember(types) && isAddon(path);
-            }
-          : unitCells.raceMember(race.unitTypeBit);
-        var index = {
-          vanilla: unitCells.buildIndex(
-            loaded.units,
-            loaded.specs,
-            function (types, path) {
-              return (
-                unitCells.vanillaMember(types) &&
-                unitCells.classifiable(types) &&
-                !isAddon(path) &&
-                !foreign[path]
-              );
-            }
-          ),
-          race: unitCells.buildIndex(
-            loaded.units,
-            loaded.specs,
-            member,
-            unitCells.exclusiveMember(gwoRaces.knownBits())
-          ),
-        };
+        var index = buildIndex(race.id, loaded.units, loaded.specs);
         if (!index.race.units.length) {
           if (isMla) {
             return undefined;
@@ -219,6 +222,7 @@ define([
 
   return {
     load: load,
+    buildIndex: buildIndex,
     indexFor: indexFor,
     prime: prime,
   };
