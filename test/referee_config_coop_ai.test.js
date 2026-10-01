@@ -8,6 +8,7 @@ const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
 const { loadCouiModule } = require("../scripts/lib/amd-loader.js");
 const {
+  DEFAULT_FACTION,
   buildGame,
   useModel,
   makeAiDescriptor,
@@ -266,13 +267,25 @@ describe("setupCoopAiArmies", () => {
 });
 
 describe("referee_config.js with co-op AI players", () => {
-  function generate(coopAis) {
+  function generate(coopAis, options) {
+    const opts = options || {};
     const fixture = buildGame({
       aiInUse: "Titans",
       difficultyName: "!LOC:Gold",
+      perPlayerTech: opts.perPlayerTech,
     });
     fixture.inventory.hasCard = () => false;
     Object.assign(fixture.ai, makeAiDescriptor({ foes: [] }));
+    if (opts.ally) {
+      fixture.ai.ally = opts.ally;
+    }
+    if (opts.playerColor) {
+      const getTag = fixture.inventory.getTag;
+      fixture.inventory.getTag = (context, name) =>
+        name === "playerColor"
+          ? opts.playerColor
+          : getTag.call(fixture.inventory, context, name);
+    }
     Object.assign(fixture.star.system(), {
       name: "Test System",
       planets: [],
@@ -304,6 +317,53 @@ describe("referee_config.js with co-op AI players", () => {
     assert.equal(config.armies[0].slots[0].name, "Tester");
     // The enemy's own commander still takes its tag in the loop.
     assert.ok(config.armies[1].slots[0].commander.endsWith(".ai0"));
+  });
+
+  // The hire's roster is the one source: the war's records hold no AI here,
+  // so a count read from them would put the ally on the AI's colour.
+  it("colours the hire's AI Sub Commanders after the humans', and the ally after them", () => {
+    const minion = {
+      name: "Alpha",
+      commander: "/pa/units/commanders/imperial_alpha/imperial_alpha.json",
+    };
+    const entry = coopAiEntry({
+      tag: ".player1",
+      perPlayer: true,
+      inventory: {
+        cards: [{ id: "gwc_start_subcdr" }],
+        minions: [minion],
+        aiMods: [],
+      },
+    });
+    const playerColor = [
+      [0, 176, 255],
+      [192, 192, 192],
+    ];
+    const config = generate([entry], {
+      perPlayerTech: true,
+      ally: makeAiDescriptor({ name: "Ally", color: playerColor }),
+      playerColor: playerColor,
+    });
+    const colourOf = (name) =>
+      config.armies.find((army) => army.slots[0].name === name).color;
+
+    assert.deepEqual(
+      colourOf("Alpha"),
+      gwoColour.pick(
+        DEFAULT_FACTION,
+        playerColor,
+        refereeCoop.alliedColourIndex(0)
+      )
+    );
+    assert.deepEqual(
+      colourOf("Ally"),
+      gwoColour.pick(
+        DEFAULT_FACTION,
+        playerColor,
+        refereeCoop.alliedColourIndex(1)
+      )
+    );
+    assert.notDeepEqual(colourOf("Ally"), colourOf("Alpha"));
   });
 
   it("adds no army when the hire has no roster", () => {

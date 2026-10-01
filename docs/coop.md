@@ -155,14 +155,19 @@ place of stock's oranges, since its faction colour is GWO's green.
 Subcommander colours are a separate system and still GWO's own. See
 `gw_play/commander_colour.js`. `gw_play/referee_coop.js` provides the ordering:
 
-- `getOrderedSubcommanders(inventory, game, connectedClients)` returns every
-  allied AI commander that draws from the player faction's palette. The list is
-  **in the order the battle config numbers their colours**: the host's
-  subcommanders first, then each connected viewer's, then, under per-player
-  tech, each AI player's in slot order. Order in equals order out.
-  Callers that care which colour lands where must therefore pass clients
-  host-first (see this module's `clientsInPlayerOrder`). Callers that only want
-  a count can pass any order.
+- `getOrderedSubcommanders(inventory, game, connectedClients, aiInventories)`
+  returns every allied AI commander that draws from the player faction's
+  palette. The list is **in the order the battle config numbers their
+  colours**: the host's subcommanders first, then each connected viewer's,
+  then, under per-player tech, each AI player's in slot order. Order in equals
+  order out. Callers that care which colour lands where must therefore pass
+  clients host-first (see this module's `clientsInPlayerOrder`). Callers that
+  only want a count can pass any order.
+- A hire passes `aiInventories`, its own AI players
+  (`launchAiInventories(ref.coopAis)`), so its colours count the AIs it
+  fields. The referee's AI files and the Guardians' mods read the same list.
+  The war panel and the intelligence panel run without a hire, and leave it
+  out, so the AI players' records are read.
 - `alliedColourIndex(position)` returns `position + 1`. Index 0 is reserved for
   the player, whose army takes the faction's own colour pair rather than a
   palette entry.
@@ -237,8 +242,7 @@ open slots and the AIs in the war's seats, against the war's seats. An AI in a
 "+" seat is left out of that count, so the seat a player left is still the
 war's, and an AI that takes it holds it. The wrap is made synchronously at
 scene load, because a module callback lands after a new session's saved
-settings apply, so until the roster loads the wrap makes `roster.humanSeats`'
-count itself.
+settings apply.
 
 `gwCampaignSlots` becomes stock's rows plus one row per AI. An AI row carries
 every field a stock row has, so the stock markup binds it unchanged. Its
@@ -566,10 +570,10 @@ then leaves that viewer picking, which blocks Explore and Fight until they
 reload.
 
 So `gw_play/coop_publish.js` holds every snapshot GWO sends as a debt until
-every viewer is level: an AI's add, kick, or pass (`coop_ai_lobby.js`), a
-viewer's reroll (`cards_coop_reroll.js`), a viewer's General Commander setup
-(`cards_start_subcdr.js`), and a viewer's report of their loadouts
-(`treasure_loadouts.js`). The test is the star-card refresh's own,
+every viewer is level: an AI's add or kick (`coop_ai_lobby.js`) or pass
+(`cards_coop_ai_tech.js`), a viewer's reroll (`cards_coop_reroll.js`), a
+viewer's General Commander setup (`cards_start_subcdr.js`), and a viewer's
+report of their loadouts (`treasure_loadouts.js`). The test is the star-card refresh's own,
 `viewersReadyForStarRefresh`, over the connected viewers: nobody is mid-setup,
 the host is not exploring, no AI is deciding, and every viewer is loaded and
 level with the host's deal count. A viewer with an offer open is not level, so
@@ -615,10 +619,10 @@ loadout ("Treasure loadouts").
 
 Under per-player tech an AI's slot row shows stock's Inventory button. It opens
 stock's inventory modal on the AI's record, found by its id, once the record
-holds what the modal needs: `coop_ai_roster.inventoryReady` asks what stock's
-`validateGwCampaignInventoryRecord` asks. Records travel in every snapshot, so a
-viewer can open it too. The war panel's line for each AI names its own loadout
-and race.
+holds what the modal needs, which stock's own
+`validateGwCampaignInventoryRecord` decides. Records travel in every snapshot,
+so a viewer can open it too. The war panel's line for each AI names its own
+loadout and race.
 
 ### A per-player AI in a battle
 

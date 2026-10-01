@@ -374,6 +374,7 @@ define([
 
     return {
       requestReroll: requestReroll,
+      computeRerollDeal: computeRerollDeal,
       // The same reroll for a player the host deals itself - a co-op AI player -
       // storing, sending and saving nothing. params: record, client,
       // pendingTechCards (the hand held in memory), star.

@@ -299,25 +299,21 @@ describe("co-op AI trees", () => {
     );
   });
 
-  // The Guardians field every player's tech, AI players' included.
+  // The Guardians field every player's tech, AI players' included: the
+  // hire's own, not the records'.
   it("hands the Guardians an AI player's AI mods under per-player tech", async () => {
     const fixture = buildGame({
       aiInUse: "Titans",
       enemyType: "guardians",
       perPlayerTech: true,
       aiMods: [HOST_MOD],
-      coopRecords: [
-        {
-          playerId: "gwo_ai_1",
-          gwaioAi: { serial: 1 },
-          inventory: { cards: [], aiMods: [marker("aiGuardian")] },
-        },
-      ],
     });
     installModel(fixture.game, [{ id: "host", name: "Host", role: "host" }]);
     installTrees();
 
-    const files = await generate([]);
+    const files = await generate(
+      ownRoster([{ cards: [], aiMods: [marker("aiGuardian")] }])
+    );
     const lists = Object.keys(files)
       .filter((key) => key.endsWith("fabber_land_builds.json"))
       .map((key) => files[key].build_list[0].builders);

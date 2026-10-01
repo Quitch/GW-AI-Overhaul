@@ -21,6 +21,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/referee_game_file_paths.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/coop_publish.js",
 ], function (
   coopAiDriver,
   coopAiEffects,
@@ -39,7 +40,8 @@ define([
   cardsCoopAiPings,
   gameFilePaths,
   raceAiMods,
-  unitCells
+  unitCells,
+  coopPublish
 ) {
   return function (params) {
     var game = params.game;
@@ -312,6 +314,7 @@ define([
       },
       dealHand: params.coopDeal.pendingHandForRecord,
       rerollHand: params.coopReroll.rerollHandForRecord,
+      computeRerollDeal: params.coopReroll.computeRerollDeal,
       effects: effects,
       lookup: lookup,
       fielded: fielded,
@@ -355,7 +358,7 @@ define([
       afterPass: function () {
         model.refreshGwCampaignInventoryModal();
         return Promise.resolve(params.gwoSave(game, false)).then(function () {
-          model.gwoCoopAi.publish("deal");
+          coopPublish.publish("gwo_coop_ai_deal");
         });
       },
     });
