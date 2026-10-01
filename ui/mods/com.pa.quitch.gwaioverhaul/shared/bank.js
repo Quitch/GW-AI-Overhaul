@@ -108,35 +108,23 @@ define(function () {
         : _.cloneDeep(saved);
     },
 
-    // Loads a co-op viewer's saved inventory into a fresh GWInventory and
-    // applies its cards with every bank held off, then hands it to done. Also
-    // returned, for a caller that needs it before done runs.
+    // As applyInventoryHeld, from a co-op viewer's record, returning only the
+    // inventory.
     applyRecordInventory: function (GWInventory, record, stockBank, done) {
-      var inventory = new GWInventory();
-      inventory.load(self.copyForApply(record.inventory));
-
-      if (!inventory.cards().length) {
-        done(inventory);
-        return inventory;
-      }
-
-      self.suspendUnlocks(stockBank);
-      try {
-        inventory.applyCards(function () {
-          self.resumeUnlocks();
-          done(inventory);
-        });
-      } catch (e) {
-        self.resumeUnlocks();
-        throw e;
-      }
-      return inventory;
+      return self.applyInventoryHeld(
+        GWInventory,
+        record.inventory,
+        stockBank,
+        done
+      ).inventory;
     },
 
-    // As applyRecordInventory, from a saved inventory, and abandonable: the
-    // hold is released only when the apply finishes, so a caller that stops
-    // waiting for a hung one calls abandon() to release it, and done never
-    // runs. Returns { inventory, abandon }.
+    // Loads a saved inventory into a fresh GWInventory and applies its cards
+    // with every bank held off, then hands it to done. Abandonable: the hold
+    // is released only when the apply finishes, so a caller that stops waiting
+    // for a hung one calls abandon() to release it, and done never runs.
+    // Returns { inventory, abandon }, the inventory for a caller that needs it
+    // before done runs.
     applyInventoryHeld: function (GWInventory, saved, stockBank, done) {
       var inventory = new GWInventory();
       var held = false;

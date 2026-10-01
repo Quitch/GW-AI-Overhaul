@@ -357,7 +357,7 @@ function setup(overrides = {}) {
     starCardsBusy,
     aiStarDealing: makeObservable(0),
     startCardUnlocked: (card) => card.id !== "gwc_start_orbital",
-    generalCommander: Promise.resolve(handle),
+    generalCommander: handle,
   };
   makeTech(params);
 

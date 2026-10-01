@@ -26,13 +26,7 @@ define(["coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/races.js"], function (
     };
   };
 
-  // The modal's rows, in the caller's race order: the stored cell where it is
-  // still offerable, the seeded default otherwise. Stored races no longer in
-  // the list follow as disabled rows, so a remembered choice stays visible.
-  // coopFollows says the co-op cell has no brain of its own and follows the
-  // row's opponent: MLA's with no aiCoop, a stored race row's with no
-  // offerable coop, and an unstored race row's with no aiCoop, since resolve
-  // gives that row the war-wide co-op brain.
+  // The modal's rows, in the caller's race order. See races.md, "Brains".
   var rowsFor = function (stored, raceIds, ai, aiAlly, aiCoop) {
     var table = stored || {};
     var listed = _.map(raceIds || [], races.normalizeId);

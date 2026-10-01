@@ -8,6 +8,7 @@ define([
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/unit_cells.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_trees.js",
   "coui://ui/mods/com.pa.quitch.gwaioverhaul/shared/race_ai_mods.js",
+  "coui://ui/mods/com.pa.quitch.gwaioverhaul/gw_play/race_cells.js",
 ], function (
   gwoAI,
   gwoCard,
@@ -17,7 +18,8 @@ define([
   gameFilePaths,
   unitCells,
   raceTrees,
-  raceAiMods
+  raceAiMods,
+  raceCells
 ) {
   // The walk append, prepend and replace share. A build entry for toBuild that
   // carries idToMod (and refId/refValue, when given) is the target; otherwise
@@ -765,12 +767,15 @@ define([
           _.flatten(_.map(inventories, getRefereeInventoryMods))
         ),
         keys: function () {
-          return gameFilePaths.raceKeysFor({
-            race: race,
-            brain: brain,
-            source: source,
-            unitCells: unitCells,
-            gwoRaces: gwoRaces,
+          return raceCells.indexFor(race).then(function (cells) {
+            return gameFilePaths.raceKeysFor({
+              race: race,
+              brain: brain,
+              source: source,
+              cells: cells,
+              unitCells: unitCells,
+              gwoRaces: gwoRaces,
+            });
           });
         },
       };
@@ -846,11 +851,16 @@ define([
   // with its AI mods, as a viewer's Sub Commanders' is. Nothing else is
   // written: the scope is its isolation, so no Cluster routing either. AIs
   // sharing a tree share one walk. Under per-player tech its Sub Commanders
-  // get a tree of their own too, exactly as a viewer's do.
+  // get a tree of their own too, exactly as a viewer's do. A race AI's trees
+  // are race tree jobs (raceTreeJobs).
   var coopAiTreeRequests = function (coopAis, launch) {
     var requests = {};
 
     _.forEach(coopAis, function (coopAi) {
+      if (!gwoRaces.isMla(coopAi.race)) {
+        return;
+      }
+
       if (coopAi.perPlayer) {
         var source = gwoAI.getAIPathSource(
           "subcommander",
@@ -875,7 +885,7 @@ define([
         };
       }
 
-      if (!gwoRaces.isMla(coopAi.race) || requests[coopAi.path]) {
+      if (requests[coopAi.path]) {
         return;
       }
       requests[coopAi.path] = {

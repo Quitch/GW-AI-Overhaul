@@ -14,6 +14,8 @@ const {
 
 const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
 const gwoUnit = loadCouiModule(MOD_ROOT + "/shared/units.js");
+const shipped = loadCouiModule(MOD_ROOT + "/shared/races_shipped.js");
+const harvested = require("./fixtures/unit_types.json").units;
 
 beforeEach(() => {
   races.reset();
@@ -613,6 +615,22 @@ describe("stockUnitsFor", () => {
     assert.deepEqual(races.stockUnitsFor("mla"), []);
     assert.deepEqual(races.stockUnitsFor("nope"), []);
   });
+});
+
+describe("every unit a shipped descriptor's engineKeys and stockUnits name", () => {
+  for (const descriptor of shipped) {
+    it(descriptor.id + ": is in the harvested unit list", () => {
+      const named = Object.values(descriptor.engineKeys)
+        .filter((unit) => unit !== null)
+        .concat(descriptor.stockUnits || []);
+
+      assert.ok(named.length);
+      assert.deepEqual(
+        named.filter((unit) => !Object.hasOwn(harvested, unit)),
+        []
+      );
+    });
+  }
 });
 
 describe("unitMapsFor", () => {

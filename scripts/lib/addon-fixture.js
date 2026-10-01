@@ -8,8 +8,7 @@
 const { MOD_ROOT, loadCouiModule } = require("./amd-loader.js");
 const { modRoots } = require("./mod-roots.js");
 
-const races = loadCouiModule(MOD_ROOT + "/shared/races.js");
-const unitCells = loadCouiModule(MOD_ROOT + "/shared/unit_cells.js");
+const raceCells = loadCouiModule(MOD_ROOT + "/gw_play/race_cells.js");
 const fixture = require("../../test/fixtures/unit_types.json");
 
 // The mods' files as the harvests read them, through mod-roots.js: each
@@ -47,31 +46,7 @@ function fixtureIndex(raceId) {
       buildable_types: fixture.buildable[unit],
     };
   }
-  const units = Object.keys(specs);
-  const addonPaths = races.addonUnitPaths();
-  const isAddon = (unit) => !!addonPaths[unit];
-  const foreign = races.foreignUnitPaths();
-  const race = races.byId(raceId);
-  const member = races.isMla(raceId)
-    ? (types, unit) => unitCells.vanillaMember(types) && isAddon(unit)
-    : unitCells.raceMember(race.unitTypeBit);
-  return {
-    vanilla: unitCells.buildIndex(
-      units,
-      specs,
-      (types, unit) =>
-        unitCells.vanillaMember(types) &&
-        unitCells.classifiable(types) &&
-        !isAddon(unit) &&
-        !foreign[unit]
-    ),
-    race: unitCells.buildIndex(
-      units,
-      specs,
-      member,
-      unitCells.exclusiveMember(races.knownBits())
-    ),
-  };
+  return raceCells.buildIndex(raceId, Object.keys(specs), specs);
 }
 
 // Whether the fixture was harvested with the add-on's units on disk.

@@ -479,7 +479,7 @@ define([
           )
         : undefined;
 
-      return Promise.resolve(params.generalCommander).then(function (handle) {
+      return Promise.resolve().then(function () {
         return driver.chooseStartingLoadout({
           name: record.gwaioAi.name,
           candidates: roster.loadoutCandidates({
@@ -502,7 +502,7 @@ define([
             playerFaction: playerFaction,
             race: race,
             star: star,
-            handle: handle,
+            handle: params.generalCommander,
           }),
         });
       });

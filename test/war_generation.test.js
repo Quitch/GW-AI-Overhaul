@@ -66,6 +66,9 @@ function makeGame(war) {
     origin: () => 0,
     build: (config) => {
       war.builds.push(config);
+      if (war.buildThrows) {
+        throw war.buildThrows;
+      }
       war.build = war.$.Deferred();
       if (!war.holdBuild) {
         war.build.resolve(galaxy);
@@ -1073,6 +1076,23 @@ describe("a war whose step throws", () => {
     assert.equal(
       war.errors[1],
       "Failed to generate valid war: Error: no record"
+    );
+  });
+
+  // The system loader the galaxy build makes can be Shared Systems for
+  // Galactic War's.
+  it("reports a galaxy build's throw as a bug", () => {
+    const war = makeWar();
+    war.buildThrows = new Error("Shared Systems failed");
+
+    war.start();
+
+    assert.equal(war.builds.length, 1);
+    assert.match(war.model.gwoWarGenerationError(), /because of a bug/);
+    assert.equal(war.generatingWar(), false);
+    assert.equal(
+      war.errors[1],
+      "Failed to generate valid war: Error: Shared Systems failed"
     );
   });
 });

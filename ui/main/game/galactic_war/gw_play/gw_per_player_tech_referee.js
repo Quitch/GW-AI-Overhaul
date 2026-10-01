@@ -71,24 +71,7 @@ define([
     var isMla = gwoRaces.isMla(race);
     var cellsLoad = gwoRaceCells.indexFor(race);
     var brain = gwoAI.aiInUse("subcommander", race);
-    var mapPath = gameFilePaths
-      .getAIUnitMapPath(false, brain)
-      .replace(/\.json$/, "");
-    var raceMaps = gwoRaces.unitMapsFor(
-      race,
-      brain,
-      gwoAI.getAIPathSource("subcommander", race, inventory)
-    );
-    var loadMap = gameFilePaths.loadMap;
-    var loads = [
-      loadMap(mapPath + ".json"),
-      loadMap(mapPath + "_x1.json"),
-    ].concat(_.map(raceMaps, loadMap));
-    // Gathered into one first: a jQuery promise adopted by a native one hands
-    // over its first argument only, as referee_game_files.js notes.
-    var mapsLoad = $.when.apply($, loads).then(function () {
-      return _.toArray(arguments);
-    });
+    var source = gwoAI.getAIPathSource("subcommander", race, inventory);
     // Every path that can fail ends here, so a viewer's failed read rejects
     // rather than hanging the launch. See architecture.md, "Battle launch".
     var fail = function (error) {
@@ -101,63 +84,25 @@ define([
       done.reject(error);
     };
     var buildFiles = function (cells, maps) {
-      var extra = maps.slice(2);
-      var merge = function (base) {
-        return gameFilePaths.raceUnitMap({
-          base: base,
-          raceMaps: extra,
-          cells: cells,
-          race: race,
-          unitCells: unitCells,
-          gwoRaces: gwoRaces,
-        });
-      };
-      var aiUnitMap = merge(maps[0]);
-      var aiX1UnitMap = merge(maps[1]);
-
-      var playerAIUnitMap = GW.specs.genAIUnitMap(aiUnitMap, playerTag);
-      var playerX1AIUnitMap = GW.specs.genAIUnitMap(aiX1UnitMap, playerTag);
-      var held = inventory.units().concat(model.gwoSpecs);
-      // A race viewer fields the race units the vanilla ones held stand
-      // for; an MLA viewer keeps everything held and gains the add-on units
-      // they stand for. Neither keeps another race's units.
-      var playerSpecs = gwoRaces.fieldedFor(
-        race,
-        gwoRaces
-          .ownedPaths(race, inventory.units(), cells)
-          .concat(model.gwoSpecs),
-        cells
-      );
-      // A viewer that picked no race commander is on the stock list, so its
-      // vanilla commander (and its Sub Commanders') is retagged the way the
-      // Guardians' Unicorn is; a kept vanilla Commander-class unit likewise.
-      // commanderModsFor is a no-op for a commander already of the race, and
-      // for MLA.
-      var viewerCommanders = [inventory.getTag("global", "commander")].concat(
-        _.pluck(inventory.minions(), "commander")
-      );
-      var retagMods = _.flatten(
-        _.map(viewerCommanders, function (commander) {
-          return gwoRaces.commanderModsFor(race, commander);
-        }).concat(
-          _.map(
-            cells && !isMla
-              ? _.difference(
-                  unitCells.heldCommanderUnits(held, cells.vanilla),
-                  viewerCommanders
-                )
-              : [],
-            function (unit) {
-              return gwoRaces.unitRetagMods(race, unit);
-            }
-          )
-        )
-      );
+      var playerAIUnitMap = GW.specs.genAIUnitMap(maps.classic, playerTag);
+      var playerX1AIUnitMap = GW.specs.genAIUnitMap(maps.x1, playerTag);
+      var plan = gameFilePaths.specPlan({
+        units: inventory.units(),
+        extra: model.gwoSpecs,
+        cells: cells,
+        race: race,
+        isMla: isMla,
+        commanders: [inventory.getTag("global", "commander")].concat(
+          _.pluck(inventory.minions(), "commander")
+        ),
+        unitCells: unitCells,
+        gwoRaces: gwoRaces,
+      });
 
       // The same cache the game-files referee filled, so a viewer's specs cost
       // no second fetch of what the host's pass already read. See specs.md.
       return gwoSpecCache
-        .genUnitSpecs(playerSpecs, playerTag, {
+        .genUnitSpecs(plan.specs, playerTag, {
           fetch: gameFilePaths.specFetch,
         })
         .then(function (playerSpecFiles) {
@@ -193,7 +138,7 @@ define([
             );
           };
           var mods = gwoRaces.modsFor(race, inventory.mods(), cells, has);
-          gwoSpecs.mod(playerFiles, mods.concat(retagMods), playerTag);
+          gwoSpecs.mod(playerFiles, mods.concat(plan.retagMods), playerTag);
           done.resolve(playerFiles);
         });
     };
@@ -214,9 +159,18 @@ define([
         return undefined;
       })
       .then(function (cells) {
-        return Promise.resolve(mapsLoad).then(function (maps) {
-          return buildFiles(cells, maps);
-        });
+        return gameFilePaths
+          .armyUnitMaps({
+            race: race,
+            brain: brain,
+            source: source,
+            cells: cells,
+            unitCells: unitCells,
+            gwoRaces: gwoRaces,
+          })
+          .then(function (maps) {
+            return buildFiles(cells, maps);
+          });
       })
       .then(null, fail);
 

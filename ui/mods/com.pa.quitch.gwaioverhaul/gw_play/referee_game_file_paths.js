@@ -68,13 +68,9 @@ define([
     return _.assign({}, baseMap, { unit_map: merged });
   };
 
-  // A race army's map: the merge, then each stock spec_id the race maps left
-  // pointed at a race unit it stands for (one the race's own AI data knows
-  // over an add-on's) unless it is one of the race's stockUnits, then the
-  // race's engineKeys, where null keeps the stock unit. The engine reads
-  // those keys by name. Without cells, or for MLA, the merge alone. params:
-  // base, raceMaps, cells, race, unitCells, gwoRaces. See races.md, "Race
-  // trees" and "Add-ons".
+  // A race army's map, or the merge alone without cells or for MLA. See
+  // races.md, "Race trees" and "Add-ons".
+  // params: base, raceMaps, cells, race, unitCells, gwoRaces.
   var raceUnitMap = function (params) {
     var merged = mergeUnitMaps(params.base, params.raceMaps);
     if (!params.cells || params.gwoRaces.isMla(params.race)) {
@@ -148,17 +144,10 @@ define([
     return _.assign({}, json, { build_list: items });
   };
 
-  // What a race tree's orders are fitted by, over the brain's classic and
-  // Titans maps: the keys the race's army maps re-point, the stock and race
-  // unit_maps, the cells and the race's engine keys, or null without cells.
-  // params: race, brain, source, unitCells, gwoRaces, and cells, the race's
-  // published cells by default.
-  var raceKeysFor = function (params) {
-    var cells = params.cells || params.gwoRaces.cellsOf(params.race);
-    if (!cells) {
-      return Promise.resolve(null);
-    }
-
+  // An army's classic and Titans maps (raceUnitMap over the brain's two maps),
+  // with the maps they came from: bases and raceMaps. A native Promise.
+  // params: race, brain, source, cells, unitCells, gwoRaces.
+  var armyUnitMaps = function (params) {
     var loads = [
       loadMap(getAIUnitMapPath(false, params.brain)),
       loadMap(getAIUnitMapPath(true, params.brain)),
@@ -176,28 +165,52 @@ define([
         return _.toArray(arguments);
       })
     ).then(function (maps) {
+      var bases = maps.slice(0, 2);
       var raceMaps = maps.slice(2);
-      var repointed = {};
-      var stock = {};
-      _.forEach(maps.slice(0, 2), function (base) {
-        var translated = raceUnitMap({
+      var translate = function (base) {
+        return raceUnitMap({
           base: base,
           raceMaps: raceMaps,
-          cells: cells,
+          cells: params.cells,
           race: params.race,
           unitCells: params.unitCells,
           gwoRaces: params.gwoRaces,
         });
+      };
+      return {
+        classic: translate(bases[0]),
+        x1: translate(bases[1]),
+        bases: bases,
+        raceMaps: raceMaps,
+      };
+    });
+  };
+
+  // What a race tree's orders are fitted by, or null without cells or a race
+  // unit in them. See ai-pipeline.md, "Race trees".
+  // params: race, brain, source, cells (race_cells.indexFor), unitCells,
+  // gwoRaces.
+  var raceKeysFor = function (params) {
+    var cells = params.cells;
+    if (!cells || _.isEmpty(cells.race.units)) {
+      return Promise.resolve(null);
+    }
+
+    return armyUnitMaps(params).then(function (maps) {
+      var repointed = {};
+      var stock = {};
+      _.forEach([maps.classic, maps.x1], function (translated, index) {
+        var base = maps.bases[index];
         _.assign(
           repointed,
-          repointedKeys(mergeUnitMaps(base, raceMaps), translated)
+          repointedKeys(mergeUnitMaps(base, maps.raceMaps), translated)
         );
         _.assign(stock, base && base.unit_map);
       });
       return {
         repointed: repointed,
         stock: stock,
-        race: mergeUnitMaps(undefined, raceMaps).unit_map,
+        race: mergeUnitMaps(undefined, maps.raceMaps).unit_map,
         cells: cells,
         engineKeys: params.gwoRaces.engineKeysFor(params.race),
       };
@@ -271,13 +284,9 @@ define([
     return files;
   };
 
-  // The units a player's specs are built for, and the retag mods its
-  // commanders need. A race player fields the race units the vanilla ones
-  // held stand for, and a kept vanilla unit (the Colonel) is retagged so the
-  // race can build it; an MLA player keeps everything held and gains the
-  // add-on units they stand for. Neither keeps another race's units
-  // from `units`; `extra` is kept whole. params: units, extra, cells, race,
-  // isMla, commanders, unitCells, gwoRaces. See races.md.
+  // The units a player's specs are built for, `extra` kept whole, and the
+  // retag mods its commanders need. See races.md, "Capability cells".
+  // params: units, extra, cells, race, isMla, commanders, unitCells, gwoRaces.
   var specPlan = function (params) {
     var cells = params.cells;
     var gwoRaces = params.gwoRaces;
@@ -458,6 +467,7 @@ define([
     raceUnitMap: raceUnitMap,
     repointedKeys: repointedKeys,
     stripStockBuilds: stripStockBuilds,
+    armyUnitMaps: armyUnitMaps,
     raceKeysFor: raceKeysFor,
     clusterArmyIndex: clusterArmyIndex,
     resolveAiUnitMapPaths: resolveAiUnitMapPaths,

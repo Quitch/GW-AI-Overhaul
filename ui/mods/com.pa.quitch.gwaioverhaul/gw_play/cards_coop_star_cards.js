@@ -112,10 +112,10 @@ define([
     var gwoTreasure = params.gwoTreasure;
     // The co-op AI players, as clients with role "ai", and whether one is
     // settling its deals. See coop.md, "AI players' tech".
-    var aiClients = params.aiClients || _.constant([]);
-    var aiDeciding = params.aiDeciding || _.constant(false);
+    var aiClients = params.aiClients;
+    var aiDeciding = params.aiDeciding;
     // Held true while a refresh is in flight.
-    var busy = params.busy || _.noop;
+    var busy = params.busy;
 
     var isTreasureStar = function (starIndex) {
       return gwoTreasure.isTreasureStar(gwoSettings, starIndex);

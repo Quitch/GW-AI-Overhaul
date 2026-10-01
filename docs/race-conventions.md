@@ -137,8 +137,10 @@ An add-on adds units to races that exist (Second Wave, Section 17, Osmech).
   reads by name** (`races.md`, "Race trees"). Pick each from the race mod's
   units by type: a factory key wants the race's basic factory of that kind.
   `null` keeps the stock unit where the race has none (Bugs have no bot
-  factory). `test/race_*.test.js` pins the table; nothing checks it against
-  the mod.
+  factory). `test/race_*.test.js` pins the table. `test/races.test.js`
+  checks that every unit it and `stockUnits` name is in the harvested unit
+  list (`test/fixtures/unit_types.json`), so a renamed unit fails; nothing
+  checks that each is the right unit.
 - **Cells and jobs decide what a race player fields.** Nothing per race is
   hand-mapped. `test/unit_groups_cells.test.js` validates the classifier's
   domain and class precedence (`shared/unit_cells.js`) against
