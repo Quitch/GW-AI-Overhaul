@@ -66,6 +66,22 @@ gwoCard.mods(
 );
 ```
 
+Units do not agree on the slot order. Stock's Radar Jamming Station has its
+jammer in slot 2, and Legion's and Second Wave's jammers have underwater sight
+there. A mod re-aimed at a race or add-on unit keeps its path, so an index lands
+on whatever that unit keeps in the slot. To change one item, name it by layer and
+channel. `observerPath(layer, channel, field)` builds that path
+([Path segments](#path-segments)):
+
+```js
+gwoCard.mods(
+  gwoUnit.radarJammingStation,
+  "multiply",
+  [gwoCard.observerPath("surface_and_air", "radar_jammer", "radius")],
+  2
+);
+```
+
 ## The op table
 
 | Op                 | Behaviour                                                                                        |
@@ -225,11 +241,24 @@ declares them.
 
 ## Path segments
 
-A `path` walks into nested spec structure. There are two conventions:
+A `path` walks into nested spec structure. There are three conventions:
 
 - A **numeric** segment indexes into an array.
 - `"+"` **appends**. This is the base game's own convention for adding an array
   element.
+- `[layer=<layer>,channel=<channel>]` **selects** every item of an array whose
+  `layer` and `channel` equal those values. It is a GWO addition, made for
+  `recon.observer.items`.
+
+`specs.mod` resolves a selector against the spec as it stands when the mod
+applies, so it sees what earlier op buckets did, such as a whole-array
+`replace`. The mod then applies once for each matching item, with that item's
+index in place of the selector. A later selector in the path resolves inside
+each item. The walk to the selector only reads. A missing segment, a prefix that
+is not an array, or no matching item writes nothing and logs nothing, for every
+op, so a selector never creates an item or a container. A selector needs both
+keys, in that order. Any other form logs `Invalid selector in mod`, and the mod
+is skipped.
 
 When an intermediate segment is missing, the walker creates a container. It creates
 an array if the _next_ segment indexes into one, otherwise a plain object.
@@ -345,7 +374,8 @@ tag (`.ai<N>`) gets no mods at all, where the referee applied its AI tech. The
 result is mounted over the referee's files.
 
 Stock's `modSpecs` has no `wipe`, `prepend` or `multiplyOrCreate`, and it logs
-`Invalid operation in mod` for each of them. It has no op order, and it never
+`Invalid operation in mod` for each of them. It cannot read a selector segment
+either: it logs `Invalid attribute encountered` and skips the mod. It has no op order, and it never
 lands a mod on race or add-on units. Its `tag` also tags a reference a second
 time after a skipped `prepend` (`.player.player`). So a client mounted specs
 that differed from the ones the referee built and the server ran, for players
