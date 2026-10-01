@@ -186,6 +186,78 @@ describe("modDirection", () => {
   it("reads a cheaper shot as a gain", () => {
     assert.equal(direction("multiply", 0.25, "ammo_per_shot"), 0.75);
   });
+
+  it("reads a health drain by the share of health it takes, all of it at most", () => {
+    const seconds = coopAiCards.WEIGHTS.drainSeconds;
+    const drain = (value) => ({
+      file: "dox",
+      path: "passive_health_regen",
+      op: "add",
+      value,
+    });
+    const healthOf = (health) => ({ healthOf: () => health });
+
+    assert.equal(
+      coopAiCards.modDirection(drain(-1), healthOf(seconds * 4)),
+      -0.25
+    );
+    assert.equal(
+      coopAiCards.modDirection(drain(-1), healthOf(seconds / 2)),
+      -1
+    );
+    assert.equal(coopAiCards.modDirection(drain(-1), healthOf(undefined)), -1);
+    assert.equal(coopAiCards.modDirection(drain(-1)), -1);
+    assert.equal(coopAiCards.modDirection(drain(1), healthOf(seconds)), 0.25);
+  });
+});
+
+describe("scoreCard on health drains", () => {
+  const seconds = coopAiCards.WEIGHTS.drainSeconds;
+  const drain = (value) => mod("dox", "passive_health_regen", "add", value);
+  const buff = mod("dox", "damage", "multiply", 1.5);
+  const withHealth = (health) => ({
+    lookup: Object.assign({}, lookup, { healthOf: () => health }),
+  });
+  const drained = (mods, health) =>
+    score(inventory(), { mods }, withHealth(health)).mods;
+
+  it("costs a fragile unit more than a sturdy one", () => {
+    const sturdy = drained([drain(-1)], seconds * 10);
+    const fragile = drained([drain(-1)], seconds * 2);
+    assert.ok(sturdy < 0);
+    assert.ok(fragile < sturdy);
+  });
+
+  it("costs no more than the unit's whole health", () => {
+    assert.equal(drained([drain(-1)], seconds), drained([drain(-5)], seconds));
+  });
+
+  it("scores a drain apart from a buff on the same file", () => {
+    const health = seconds * 2;
+    const both = drained([buff, drain(-1)], health);
+    const apart = drained([buff], health) + drained([drain(-1)], health);
+    assert.ok(Math.abs(both - apart) < 0.15);
+    assert.ok(both < drained([buff], health));
+  });
+
+  it("adds up a file's drains before judging them", () => {
+    const health = seconds * 10;
+    assert.equal(
+      drained([drain(-3), drain(-7)], health),
+      drained([drain(-10)], health)
+    );
+  });
+
+  it("counts a drain on a unit of unknown health as a full drain", () => {
+    assert.equal(
+      drained([drain(-1)], undefined),
+      drained([drain(-1)], seconds)
+    );
+    assert.equal(
+      score(inventory(), { mods: [drain(-1)] }).mods,
+      drained([drain(-1)], seconds)
+    );
+  });
 });
 
 describe("scoreCard orderings", () => {

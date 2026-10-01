@@ -43,6 +43,8 @@ define([
     future: 0.25,
     // The most the AI's held stat mods on a unit raise its worth, or lower it.
     heldTech: 0.5,
+    // The battle length a health drain is judged over, in seconds.
+    drainSeconds: 1200,
     // An add or a replace: known to change, not by how much.
     addStep: 0.25,
     otherOp: 0.25,
@@ -205,7 +207,29 @@ define([
     return value < 0 ? -1 : 0;
   };
 
-  var modDirection = function (mod) {
+  var isDrain = function (mod) {
+    return (
+      mod.op === "add" &&
+      mod.path === "passive_health_regen" &&
+      _.isNumber(mod.value) &&
+      mod.value < 0
+    );
+  };
+
+  // A health drain by the share of the unit's health it takes over a battle,
+  // and all of it where the health is unknown.
+  var drainDirection = function (mod, lookup) {
+    var health = lookup && lookup.healthOf && lookup.healthOf(mod.file);
+    if (!health) {
+      return -1;
+    }
+    return -Math.min(1, (-mod.value * WEIGHTS.drainSeconds) / health);
+  };
+
+  var modDirection = function (mod, lookup) {
+    if (isDrain(mod)) {
+      return drainDirection(mod, lookup);
+    }
     var value = mod.value;
     var direction = WEIGHTS.otherOp;
 
@@ -241,12 +265,31 @@ define([
     return best;
   };
 
-  var meanDirection = function (mods) {
-    return _(mods).map(modDirection).sum() / mods.length;
+  var meanDirection = function (mods, lookup) {
+    return (
+      _.sum(mods, function (mod) {
+        return modDirection(mod, lookup);
+      }) / mods.length
+    );
   };
 
-  var totalDirection = function (mods) {
-    return _(mods).map(modDirection).sum();
+  var totalDirection = function (mods, lookup) {
+    return _.sum(mods, function (mod) {
+      return modDirection(mod, lookup);
+    });
+  };
+
+  // A file's drains are scored as one, apart from its other mods, so a buff
+  // on the same file does not average them away.
+  var drainSplit = function (mods) {
+    var parts = _.partition(mods, isDrain);
+    var lists = _.isEmpty(parts[1]) ? [] : [parts[1]];
+    if (!_.isEmpty(parts[0])) {
+      lists.push([
+        _.assign({}, parts[0][0], { value: _.sum(parts[0], "value") }),
+      ]);
+    }
+    return lists;
   };
 
   // A mod list by what it changes, whichever file it is on.
@@ -263,11 +306,13 @@ define([
   // mods grouped by file.
   var listsByUnit = function (byFile, lookup) {
     var lists = {};
-    _.forEach(byFile, function (mods, file) {
-      var changes = changesOf(mods);
-      _.forEach(lookup.ownersOf(file), function (unit) {
-        lists[unit] = lists[unit] || {};
-        lists[unit][changes] = mods;
+    _.forEach(byFile, function (fileMods, file) {
+      _.forEach(drainSplit(fileMods), function (mods) {
+        var changes = changesOf(mods);
+        _.forEach(lookup.ownersOf(file), function (unit) {
+          lists[unit] = lists[unit] || {};
+          lists[unit][changes] = mods;
+        });
       });
     });
     return lists;
@@ -277,7 +322,9 @@ define([
     var lists = {};
     _.forEach(byFile, function (mods, file) {
       if (lookup.ownedBy(file, commander)) {
-        lists[changesOf(mods)] = mods;
+        _.forEach(drainSplit(mods), function (list) {
+          lists[changesOf(list)] = list;
+        });
       }
     });
     return lists;
@@ -296,9 +343,12 @@ define([
       }),
       "file"
     );
-    var totals = _.mapValues(listsByUnit(byFile, lookup), function (lists) {
-      return _(lists).map(totalDirection).sum();
-    });
+    var total = function (lists) {
+      return _.sum(lists, function (list) {
+        return totalDirection(list, lookup);
+      });
+    };
+    var totals = _.mapValues(listsByUnit(byFile, lookup), total);
     var commanders = {};
 
     return {
@@ -308,9 +358,7 @@ define([
       commander: function (commander) {
         if (!_.has(commanders, commander)) {
           commanders[commander] = boostOf(
-            _(commanderLists(byFile, lookup, commander))
-              .map(totalDirection)
-              .sum()
+            total(commanderLists(byFile, lookup, commander))
           );
         }
         return commanders[commander];
@@ -383,13 +431,14 @@ define([
   var modsParts = function (mods, profile, context, heldTech) {
     var lookup = context.lookup;
     var byFile = _.groupBy(mods, "file");
-    var directions = _.mapValues(listsByUnit(byFile, lookup), function (lists) {
-      return _(lists).map(meanDirection).sum();
-    });
+    var direction = function (lists) {
+      return _.sum(lists, function (list) {
+        return meanDirection(list, lookup);
+      });
+    };
+    var directions = _.mapValues(listsByUnit(byFile, lookup), direction);
     var commanderDirection = _.memoize(function (commander) {
-      return _(commanderLists(byFile, lookup, commander))
-        .map(meanDirection)
-        .sum();
+      return direction(commanderLists(byFile, lookup, commander));
     });
     var focus = focusDomain(profile.fielded, lookup);
     var cellKey = function (unit) {

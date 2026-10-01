@@ -239,6 +239,22 @@ describe("fromSpecs", () => {
     assert.deepEqual(commanders.obtainable, [BOT_FACTORY, DOX]);
     assert.deepEqual(lookup.obtainable, []);
   });
+
+  it("reads a unit's health up its base_spec chain", () => {
+    const healthy = coopAiUnits.fromSpecs({
+      units: [BOT_FACTORY, DOX, BUMBLEBEE],
+      specs: Object.assign({}, SPECS, {
+        [BASE_BOT]: Object.assign({}, SPECS[BASE_BOT], { max_health: 40 }),
+        [BOT_FACTORY]: Object.assign({}, SPECS[BOT_FACTORY], {
+          max_health: 0,
+        }),
+      }),
+    });
+    assert.equal(healthy.healthOf(DOX), 40);
+    assert.equal(healthy.healthOf(BUMBLEBEE), undefined);
+    assert.equal(healthy.healthOf(BOT_FACTORY), undefined);
+    assert.equal(healthy.healthOf("/pa/units/nowhere.json"), undefined);
+  });
 });
 
 // Build-type mods as a battle applies them: a pushed unit type or a longer
@@ -368,6 +384,10 @@ describe("fromGroups", () => {
     );
     assert.equal(byGroups.classOf(gwoUnit.botFabber).cls, "Fabber");
     assert.equal(byGroups.classOf("/pa/units/race/unit.json"), undefined);
+  });
+
+  it("knows no unit's health", () => {
+    assert.equal(byGroups.healthOf(gwoUnit.dox), undefined);
   });
 
   it("owns a part by its directory", () => {
